@@ -204,6 +204,52 @@ pythonGaussianSmoothingIsotropic(NumpyArray<ndim, Multiband<VoxelType> > volume,
     return pythonGaussianSmoothing(volume, python::make_tuple(sigma), res);
 }
 
+template < class VoxelType>
+NumpyAnyArray 
+pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
+                        python::tuple sigmas,
+                        NumpyArray<3, Multiband<VoxelType> > res=python::object())
+{
+    typedef typename NumericTraits<VoxelType>::RealPromote TmpType;
+
+    const unsigned int ndim = 3;
+    unsigned int sigmaCount = python::len(sigmas);
+    vigra_precondition(sigmaCount == 1 || sigmaCount == ndim-1,
+       "recursiveGaussianSmoothing(): Number of kernels must be 1 or equal to the number of spatial dimensions.");
+       
+    ArrayVector<double> scales;
+    for(unsigned int k=0; k < sigmaCount; ++k)
+    {
+        scales.push_back(python::extract<double>(sigmas[k]));        
+    }
+    for(unsigned int k=sigmaCount; k < ndim-1; ++k)
+    {
+        scales.push_back(scales.back());
+    }
+    
+    res.reshapeIfEmpty(image.shape(), "recursiveGaussianSmoothing(): Output array has wrong shape.");
+    MultiArray<ndim-1, TmpType> tmp(image.bindOuter(0).shape());
+
+    for(int k=0;k<image.shape(ndim-1);++k)
+    {
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bimage = image.bindOuter(k);
+    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+    	recursiveGaussianFilterX(srcImageRange(bimage), destImage(tmp), scales[0]);
+    	recursiveGaussianFilterY(srcImageRange(tmp), destImage(bres), scales[1]);
+    }
+    return res;
+
+}
+
+template < class VoxelType >
+NumpyAnyArray 
+pythonRecursiveGaussianIsotropic(NumpyArray<3, Multiband<VoxelType> > image,
+                                 double sigma,
+                                 NumpyArray<3, Multiband<VoxelType> > res=python::object())
+{
+    return pythonRecursiveGaussian(image, python::make_tuple(sigma), res);
+}
+
 template <class PixelType>
 NumpyAnyArray 
 pythonSimpleSharpening2D(NumpyArray<3, Multiband<PixelType> > image, 
@@ -440,6 +486,25 @@ void defineConvolutionFunctions()
         registerConverters(&pythonGaussianSmoothing<float,4>),
         (arg("volume"), arg("sigmas"), arg("out")=python::object()),
         "Smooth volume with an anisotropic Gaussian.\n");
+
+    def("recursiveGaussianSmoothing2D",
+        registerConverters(&pythonRecursiveGaussian<float>),               
+        (arg("image"), arg("sigma"), arg("out")=python::object()),
+        "Compute a fast approximate Gaussian smoothing of a 2D scalar or multiband image.\n\n"
+        "This function uses the third-order recursive filter approximation to the "
+        "Gaussian filter proposed by Young and van Vliet. "
+        "Each channel of the array is smoothed independently. "
+        "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is "
+        "applied (i.e. each dimension is smoothed in the same way). "
+        "If 'sigma' is a tuple of values, the amount of smoothing will be different "
+        "for each spatial dimension. The length of the tuple must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see recursiveGaussianFilterLine_ in the vigra C++ documentation.\n");
+
+    def("recursiveGaussianSmoothing2D",
+        registerConverters(&pythonRecursiveGaussianIsotropic<float>),               
+        (arg("image"), arg("sigma"), arg("out")=python::object()),
+        "Compute isotropic fast approximate Gaussian smoothing.\n");
 
     def("simpleSharpening2D", 
         registerConverters(&pythonSimpleSharpening2D<float>),

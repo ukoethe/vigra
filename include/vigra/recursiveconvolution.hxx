@@ -43,6 +43,7 @@
 #include "numerictraits.hxx"
 #include "imageiteratoradapter.hxx"
 #include "bordertreatment.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 
@@ -173,6 +174,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     vigra_precondition(-1.0 < b && b < 1.0,
                  "recursiveFilterLine(): -1 < factor < 1 required.\n");
                  
+    // trivial case: b == 0.0 is an identity filter => simply copy the data and return
     if(b == 0.0)
     {
         for(; is != isend; ++is, ++id)
@@ -354,6 +356,164 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         ad.set(line[x], id);
     }
 }
+            
+/********************************************************/
+/*                                                      */
+/*              recursiveGaussianFilterLine             */
+/*                                                      */
+/********************************************************/
+
+// AUTHOR: Sebastian Boppel
+
+/** \brief Compute a 1-dimensional recursive approximation of Gaussian smoothing.
+
+    The function applies a causal and an anti-causal third order recursive filter 
+    which optimally approximates the Gaussian filter, as proposed in
+    
+    I. Young, L. van Vliet: <i>Recursive implementation of the Gaussian filter</i><br>
+    Signal Processing 44:139-151, 1995
+    
+    The formulas for transforming the given scale parameter <tt>sigma</tt> into the actual filter coefficients
+    are taken from Luigi Rosa's Matlab implementation.
+   
+    The signal's value_type (SrcAccessor::value_type) must be a
+    linear space over <TT>double</TT>, i.e. addition of source values, multiplication with <TT>double</TT>,
+    and <TT>NumericTraits</TT> must be defined.     
+    
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                                    DestIterator id, DestAccessor ad, 
+                                    double sigma);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    Namespace: vigra
+    
+    
+    \code
+    vector<float> src, dest;    
+    ...
+    
+    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    double sigma = 2.5;
+    
+    vigra::recursiveGaussianFilterLine(src.begin(), src.end(), FAccessor(), 
+                                       dest.begin(), FAccessor(), 
+                                       sigma);
+    \endcode
+
+    <b> Required Interface:</b>
+    
+    \code
+    RandomAccessIterator is, isend;
+    RandomAccessIterator id;
+    
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
+    
+    NumericTraits<SrcAccessor::value_type>::RealPromote s = src_accessor(is);
+    double d;
+    
+    s = s + s;
+    s = d * s;
+
+    dest_accessor.set(
+        NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
+
+    \endcode
+
+    <b> Preconditions:</b>
+    
+    \code
+    0 <= sigma (absolute values are used for negative sigma)
+    \endcode
+
+*/
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterLine)
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void 
+recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
+                            DestIterator id, DestAccessor ad, 
+                            double sigma)
+{
+    //coefficients taken out Luigi Rosa's implementation for Matlab
+    double q = 1.31564 * (std::sqrt(1.0 + 0.490811 * sigma*sigma) - 1.0);
+    double qq = q*q;
+    double qqq = qq*q;
+    double b0 = 1.0/(1.57825 + 2.44413*q + 1.4281*qq + 0.422205*qqq);
+    double b1 = (2.44413*q + 2.85619*qq + 1.26661*qqq)*b0;
+    double b2 = (-1.4281*qq - 1.26661*qqq)*b0;
+    double b3 = 0.422205*qqq*b0;
+    double B = 1.0 - (b1 + b2 + b3);
+    
+    int w = isend - is;
+    vigra_precondition(w >= 4,
+        "recursiveGaussianFilterLine(): line must have at least length 4.");
+        
+    int kernelw = std::min(w-4, (int)(4.0*sigma));
+ 
+    int x;
+    
+    typedef typename
+        NumericTraits<typename SrcAccessor::value_type>::RealPromote TempType;
+    typedef NumericTraits<typename DestAccessor::value_type> DestTraits;
+    
+    // speichert das Ergebnis der linkseitigen Filterung.
+    std::vector<TempType> yforward(w);
+    
+    std::vector<TempType> ybackward(w, 0.0);
+    
+    // initialise the filter for reflective boundary conditions
+    for(x=kernelw; x>=0; --x)
+    {
+        ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B*as(is, x) + (b1*ybackward[x+1]+b2*ybackward[x+2]+b3*ybackward[x+3]));
+    }
+
+	//from left to right - causal - forward
+    yforward[0] = detail::RequiresExplicitCast<TempType>::cast(B*as(is) + (b1*ybackward[1]+b2*ybackward[2]+b3*ybackward[3]));
+
+    ++is;    
+    yforward[1] = detail::RequiresExplicitCast<TempType>::cast(B*as(is) + (b1*yforward[0]+b2*ybackward[1]+b3*ybackward[2]));
+
+    ++is;
+    yforward[2] = detail::RequiresExplicitCast<TempType>::cast(B*as(is) + (b1*yforward[1]+b2*yforward[0]+b3*ybackward[1]));
+
+    ++is;
+    for(x=3; x < w; ++x, ++is)
+    {
+        yforward[x] = detail::RequiresExplicitCast<TempType>::cast(B*as(is) + (b1*yforward[x-1]+b2*yforward[x-2]+b3*yforward[x-3]));
+    }
+    
+    //from right to left - anticausal - backward
+    ybackward[w-1] = detail::RequiresExplicitCast<TempType>::cast(B*yforward[w-1] + (b1*yforward[w-2]+b2*yforward[w-3]+b3*yforward[w-4]));
+        
+    ybackward[w-2] = detail::RequiresExplicitCast<TempType>::cast(B*yforward[w-2] + (b1*ybackward[w-1]+b2*yforward[w-2]+b3*yforward[w-3]));
+    
+    ybackward[w-3] = detail::RequiresExplicitCast<TempType>::cast(B*yforward[w-3] + (b1*ybackward[w-2]+b2*ybackward[w-1]+b3*yforward[w-2]));
+    
+    for(x=w-4; x>=0; --x)
+    {
+        ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B*yforward[x]+(b1*ybackward[x+1]+b2*ybackward[x+2]+b3*ybackward[x+3]));
+    }
+
+	// output
+    for(x=0; x < w; ++x, ++id)
+    {
+        ad.set(ybackward[x], id);
+    }
+}
+
             
 /********************************************************/
 /*                                                      */
@@ -831,6 +991,100 @@ inline void recursiveFilterX(
                       dest.first, dest.second, b1, b2);
 }
             
+
+
+/********************************************************/
+/*                                                      */
+/*               recursiveGaussianFilterX               */
+/*                                                      */
+/********************************************************/
+
+// AUTHOR: Sebastian Boppel
+
+/** \brief Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.
+
+    It calls \ref recursiveGaussianFilterLine() for every column of the
+    image. See \ref recursiveGaussianFilterLine() for more information about 
+    required interfaces and vigra_preconditions.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterX(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                                 DestImageIterator dupperleft, DestAccessor ad, 
+                                 double sigma);
+    }
+    \endcode
+    
+    
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                                 pair<DestImageIterator, DestAccessor> dest, 
+                                 double sigma);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    Namespace: vigra
+    
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveGaussianFilterX(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+
+*/
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterX)
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+void 
+recursiveGaussianFilterX(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                         DestImageIterator dupperleft, DestAccessor ad, 
+                         double sigma)
+{
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    int y;
+    
+    for(y=0; y<h; ++y, ++supperleft.y, ++dupperleft.y)
+    {
+        typename SrcImageIterator::row_iterator rs = supperleft.rowIterator();
+        typename DestImageIterator::row_iterator rd = dupperleft.rowIterator();
+
+        recursiveGaussianFilterLine(rs, rs+w, as, 
+                                    rd, ad, 
+                                    sigma);
+    }
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                         pair<DestImageIterator, DestAccessor> dest, 
+                         double sigma)
+{
+    recursiveGaussianFilterX(src.first, src.second, src.third,
+                             dest.first, dest.second, sigma);
+}
+
+            
 /********************************************************/
 /*                                                      */
 /*                    recursiveSmoothX                  */
@@ -891,7 +1145,7 @@ template <class SrcImageIterator, class SrcAccessor,
 void recursiveSmoothX(SrcImageIterator supperleft, 
                       SrcImageIterator slowerright, SrcAccessor as,
                       DestImageIterator dupperleft, DestAccessor ad, 
-              double scale)
+                      double scale)
 {
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
@@ -1067,6 +1321,99 @@ inline void recursiveFilterY(
                       dest.first, dest.second, b1, b2);
 }
             
+
+/********************************************************/
+/*                                                      */
+/*               recursiveGaussianFilterY               */
+/*                                                      */
+/********************************************************/
+
+// AUTHOR: Sebastian Boppel
+
+/** \brief Compute 1 dimensional recursive approximation of Gaussian smoothing in y direction.
+
+    It calls \ref recursiveGaussianFilterLine() for every column of the
+    image. See \ref recursiveGaussianFilterLine() for more information about 
+    required interfaces and vigra_preconditions.
+    
+    <b> Declarations:</b>
+    
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterY(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                                 DestImageIterator dupperleft, DestAccessor ad, 
+                                 double sigma);
+    }
+    \endcode
+    
+    
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                                 pair<DestImageIterator, DestAccessor> dest, 
+                                 double sigma);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    Namespace: vigra
+    
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveGaussianFilterY(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+
+*/
+doxygen_overloaded_function(template <...> void recursiveGaussianFilterY)
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+void 
+recursiveGaussianFilterY(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                         DestImageIterator dupperleft, DestAccessor ad, 
+                         double sigma)
+{
+    int w = slowerright.x - supperleft.x;
+    int h = slowerright.y - supperleft.y;
+    
+    int x;
+    
+    for(x=0; x<w; ++x, ++supperleft.x, ++dupperleft.x)
+    {
+        typename SrcImageIterator::column_iterator cs = supperleft.columnIterator();
+        typename DestImageIterator::column_iterator cd = dupperleft.columnIterator();
+
+        recursiveGaussianFilterLine(cs, cs+h, as, 
+                                    cd, ad, 
+                                    sigma);
+    } 
+}
+
+template <class SrcImageIterator, class SrcAccessor,
+          class DestImageIterator, class DestAccessor>
+inline void 
+recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                         pair<DestImageIterator, DestAccessor> dest, 
+                         double sigma)
+{
+    recursiveGaussianFilterY(src.first, src.second, src.third,
+                             dest.first, dest.second, sigma);
+}
+
+
 /********************************************************/
 /*                                                      */
 /*                     recursiveSmoothY                 */
@@ -1515,6 +1862,7 @@ inline void recursiveSecondDerivativeY(
     recursiveSecondDerivativeY(src.first, src.second, src.third,
                           dest. first, dest.second, scale);
 }
+            
             
 //@}
 
