@@ -34,8 +34,8 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_RANDOM_FOREST_HXX
-#define VIGRA_RANDOM_FOREST_HXX
+#ifndef VIGRA_RANDOM_FOREST_DEPREC_HXX
+#define VIGRA_RANDOM_FOREST_DEPREC_HXX
 
 #include <algorithm>
 #include <map>
@@ -50,6 +50,7 @@
 
 #define RandomForest RandomForestDeprec
 #define DecisionTree DecisionTreeDeprec
+#define RandomForestOptions RandomForestOptionsDeprec
 
 namespace vigra
 {
@@ -272,7 +273,7 @@ DecisionTreeAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const & feat
 
 	// find the best gini index
     double minGini = NumericTraits<double>::max();
-    IndexIterator bestSplit;
+    IndexIterator bestSplit = indices;
     for(int k=0; k<mtry; ++k)
     {
         sorter.setColumn(splitColumns[k]);
@@ -1138,6 +1139,7 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
 } // namespace vigra
 
 #undef RandomForest
+#undef RandomForestOptions
 #undef DecisionTree
 
 #endif // VIGRA_RANDOM_FOREST_HXX
