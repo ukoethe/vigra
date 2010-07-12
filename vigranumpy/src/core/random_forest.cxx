@@ -68,6 +68,7 @@ pythonConstructRandomForest(int treeCount,
                             bool sample_classes_individually,
                             bool prepare_online)
 
+
 {
     RandomForestOptions options;
     options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount).prepare_online_learning(prepare_online)
@@ -110,8 +111,12 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
 {
     VariableImportanceVisitor var_imp;
 
-    double oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
-    std::cout << "out of bag: " << oob << std::endl;
+    double oob;
+	Py_BEGIN_ALLOW_THREADS
+	oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
+	Py_END_ALLOW_THREADS
+
+    // std::cout << "out of bag: " << oob << std::endl;
 
     NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),
                                                            var_imp.variable_importance_.shape(1))); 
@@ -129,9 +134,13 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels)
 {
-  double oob = rf.learn(trainData, trainLabels);
-  std::cout << "out of bag: " << oob << std::endl;
+  double oob;
 
+  Py_BEGIN_ALLOW_THREADS
+  oob = rf.learn(trainData, trainLabels);
+  Py_END_ALLOW_THREADS
+  
+  //std::cout << "out of bag: " << oob << std::endl;
   return oob;
 }
 
@@ -182,7 +191,9 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "Output array has wrong dimensions.");
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(testData,res);
+	Py_END_ALLOW_THREADS
     return res;
 }
 

@@ -510,8 +510,9 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     This function is a shorthand for the concatenation of a call to
     \ref separableConvolveX() and \ref separableConvolveY() with a
-    Gaussian kernel of the given scale. The function uses 
-    <TT>BORDER_TREATMENT_REFLECT</TT>.
+    Gaussian kernel of the given scale. If two scales are provided, 
+    smoothing in x and y direction will have different strength. 
+    The function uses <TT>BORDER_TREATMENT_REFLECT</TT>. 
 
     <b> Declarations:</b>
 
@@ -523,7 +524,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         void gaussianSmoothing(SrcIterator supperleft,
                                 SrcIterator slowerright, SrcAccessor sa,
                                 DestIterator dupperleft, DestAccessor da,
-                                double scale);
+                                double scale_x, double scale_y = scale_x);
     }
     \endcode
 
@@ -536,7 +537,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         inline void
         gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
-                          double scale);
+                          double scale_x, double scale_y = scale_x);
     }
     \endcode
 
@@ -559,24 +560,49 @@ doxygen_overloaded_function(template <...> void gaussianSmoothing)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void gaussianSmoothing(SrcIterator supperleft,
-                        SrcIterator slowerright, SrcAccessor sa,
-                        DestIterator dupperleft, DestAccessor da,
-                        double scale)
+void 
+gaussianSmoothing(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
+                  DestIterator dupperleft, DestAccessor da,
+                  double scale_x, double scale_y)
 {
     typedef typename
         NumericTraits<typename SrcAccessor::value_type>::RealPromote
         TmpType;
     BasicImage<TmpType> tmp(slowerright - supperleft, SkipInitialization);
 
-    Kernel1D<double> smooth;
-    smooth.initGaussian(scale);
-    smooth.setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    Kernel1D<double> smooth_x, smooth_y;
+    smooth_x.initGaussian(scale_x);
+    smooth_x.setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    smooth_y.initGaussian(scale_y);
+    smooth_y.setBorderTreatment(BORDER_TREATMENT_REFLECT);
 
     separableConvolveX(srcIterRange(supperleft, slowerright, sa),
-                       destImage(tmp), kernel1d(smooth));
+                       destImage(tmp), kernel1d(smooth_x));
     separableConvolveY(srcImageRange(tmp),
-                       destIter(dupperleft, da), kernel1d(smooth));
+                       destIter(dupperleft, da), kernel1d(smooth_y));
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void 
+gaussianSmoothing(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor sa,
+                  DestIterator dupperleft, DestAccessor da,
+                  double scale)
+{
+    gaussianSmoothing(supperleft, slowerright, sa,
+                      dupperleft, da,
+                      scale, scale);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                  pair<DestIterator, DestAccessor> dest,
+                  double scale_x, double scale_y)
+{
+    gaussianSmoothing(src.first, src.second, src.third,
+                 dest.first, dest.second, scale_x, scale_y);
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -587,7 +613,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   double scale)
 {
     gaussianSmoothing(src.first, src.second, src.third,
-                 dest.first, dest.second, scale);
+                      dest.first, dest.second, scale, scale);
 }
 
 /********************************************************/

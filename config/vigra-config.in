@@ -1,96 +1,90 @@
-#!/bin/sh
-# @configure_input@
+#!/usr/bin/env python
 
-prefix="@prefix@"
-exec_prefix="@exec_prefix@"
+from optparse import OptionParser
+import sys
 
-usage()
-{
-  if test -z '@FFTW_LIB@'; then
-    fftwstatus=" (not configured)"
-    fftwflags=" (fftw not configured)"
-  else
-    fftwflags=" and fftw"
-  fi
+hasFFTW = bool('@FFTW3_LIBRARY@')
 
-  cat <<EOF
-Usage: $0 [OPTIONS]
-Options:
-    [--version]      output version ("@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@")
-    [--target]       output platform this VIGRA library was configured for
-    [--impex-lib]    output flags for linking libvigraimpex
-    [--fftw-lib]     output flags for linking libfftw$fftwstatus
-    [--rfftw-lib]    output flags for linking librfftw and libfftw$fftwstatus
-    [--cppflags]     output include flags for vigra$fftwflags
-    [--include-path] output path to VIGRA includes
-    [--docdir]       output path to VIGRA documentation
-   ([--libs]         synonym for --impex-lib)
-EOF
-    exit $1
-}
+parser = OptionParser()
 
-echopath()
-{
-    echo "$1" \
-    | sed "s,\$[({]exec_prefix[})],@exec_prefix@," \
-    | sed "s,\$[({]prefix[})],@prefix@,"
-}
+parser.add_option("--version", action = 'store_true',
+				  help = "output version (@vigra_version@)")
+#parser.add_option("--target", action = 'store_true',
+#				  help = "output platform this VIGRA library was configured for")
+parser.add_option("--impex-lib", "--libs", action = 'store_true',
+				  help = "output flags for linking libvigraimpex")
+parser.add_option("--fftw-lib", action = 'store_true',
+				  help = "output flags for linking libfftw"
+				  + " (unavailable)" if not hasFFTW else "")
+#parser.add_option("--rfftw-lib", action = 'store_true',
+#				  help = "output flags for linking librfftw and libfftw")
+parser.add_option("--cppflags", action = 'store_true',
+				  help = "output include flags for vigra"
+				  + " and fftw" if hasFFTW else "")
+parser.add_option("--include-path", "--includepath", action = 'store_true',
+				  help = "output path to VIGRA includes")
+parser.add_option("--docdir", action = 'store_true',
+				  help = "output path to VIGRA documentation")
 
-if test $# -eq 0; then
-    echo "ERROR: no parameters given!" 1>&2
-    usage 1 1>&2
-fi
+(op, args) = parser.parse_args()
 
-try=false
+if len(sys.argv) < 2:
+	sys.stderr.write("ERROR: no parameters given.\n")
+	parser.print_help()
+	sys.exit(1)
 
-while test $# -gt 0; do
-  case $1 in
-    --version)
-      echo @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@
-      ;;
-    --target|--platform)
-      echo @target@
-      ;;
-    --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags)
-      echopath '@POSTINSTALLCPPFLAGS@'
-      ;;
-    --impex_lib|--impex-lib|--libs)
-      echopath '@IMPEX_LIB@'
-      ;;
-    --fftw_lib|--fftw-lib)
-      if test -z '@FFTW_LIB@'; then
-        echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
-      else
-        echopath '@FFTW_LIB@'
-      fi
-      ;;
-    --rfftw_lib|--rfftw-lib)
-      if test -z '@RFFTW_LIB@'; then
-        echo "VIGRA was configured without fftw switches, libpath unknown!" 1>&2
-      else
-        echopath '@RFFTW_LIB@'
-      fi
-      ;;
-    --include_path|--include-path|--includepath)
-      echopath '@VIGRA_INCPATH@'
-      ;;
-    --docdir)
-      echopath '@docdir@'
-      ;;
-    --help|-h|-?)
-      usage 0 1>&2
-      ;;
-    --try)
-      try=true
-      ;;
-    *)
-      if $try; then
-        exit 2
-      else
-        echo "ERROR: unknown parameter '$1'!"
-        usage 2 1>&2
-      fi
-      ;;
-  esac
-  shift
-done
+# --------------------------------------------------------------------
+
+import os.path
+
+# don't output -L flags for the following dirs (assumed to be compiler
+# built-in):
+standardLibDirs = ["/lib", "/usr/lib", "/lib64", "/usr/lib64"]
+
+def filename2ldflags(libFilename):
+	dir, fn = os.path.split(libFilename)
+	if not (fn.startswith("lib") and fn.endswith(".so")):
+		if libFilename:
+			sys.stderr.write("ERROR: don't know how to handle %r!\n" % libFilename)
+		return []
+	lib = fn[3:-3]
+
+	result = []
+	if dir not in standardLibDirs:
+		result.append("-L" + dir)
+	result.append("-l" + lib)
+	return result
+
+if op.version:
+	print "@vigra_version@"
+
+if op.cppflags: # was: --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags
+	print '-I@CMAKE_INSTALL_PREFIX@/include'
+
+if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
+	ldflags = []
+
+	libDir = '@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@'
+	if libDir not in standardLibDirs:
+		ldflags.append('-L' + libDir)
+
+	ldflags.append('-lvigraimpex')
+
+	for flag in '@vigraimpex_LIB_DEPENDS@'.split(';'):
+		if flag == 'general':
+			continue
+		ldflags.extend(filename2ldflags(flag))
+
+	print " ".join(ldflags)
+
+if op.fftw_lib:
+	if not hasFFTW:
+		sys.stderr.write("VIGRA was configured without FFTW switches, libpath unknown!\n")
+		sys.exit(1)
+	print " ".join(filename2ldflags('@FFTW3_LIBRARY@'))
+
+if op.include_path: # was: --include_path|--include-path|--includepath
+	print '@CMAKE_INSTALL_PREFIX@/include'
+
+if op.docdir:
+	print '@DOCDIR@'

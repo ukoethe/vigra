@@ -37,8 +37,10 @@
 #include <Python.h>
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
+#include <vigra/multi_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/fftw3.hxx>
+#include <vigra/gaborfilter.hxx>
 #include <iostream>
 
 namespace vigra {
@@ -51,30 +53,43 @@ struct NumpyArrayValuetypeTraits<FFTWComplex>
         return PyArray_EquivTypenums(NPY_CDOUBLE, PyArray_DESCR((PyObject *)obj)->type_num) &&
                PyArray_ITEMSIZE((PyObject *)obj) == sizeof(FFTWComplex);
     }
-   
+
     static NPY_TYPES const typeCode = NPY_CDOUBLE;
-   
+
     static std::string typeName()
     {
         return "complex128";
     }
-   
+
     static std::string typeNameImpex()
     {
         return "";
     }
-   
+
     static PyObject * typeObject()
     {
         return PyArray_TypeObjectFromType(NPY_CDOUBLE);
     }
 };
 
+template <class T>
+NumpyAnyArray
+pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
+                        double orientation, double centerFrequency,
+                        double angularSigma, double radialSigma, NumpyArray<2,Singleband<T> > res)
+{
+    res.reshapeIfEmpty(shape, "createGaborFilter(): Output array has wrong shape.");
+
+    createGaborFilter(destImageRange(res),
+                      orientation, centerFrequency, angularSigma, radialSigma);
+    return res;
+}
+
 template <unsigned int N, int SIGN>
-NumpyAnyArray 
+NumpyAnyArray
 pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex> > in, NumpyArray<N, Multiband<FFTWComplex> > res)
 {
-    res.reshapeIfEmpty(in.shape(), in.strideOrdering(), 
+    res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
         "fourierTransform(): Output array must have the same shape and stride ordering as input array.", true);
 
     for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
@@ -90,7 +105,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex> > in, NumpyArray<N, 
             ototal[j] = bres.stride(j-1) / bres.stride(j);
             norm *= (double)bshape[j];
         }
-        
+
         fftw_plan plan = fftw_plan_many_dft(N-1, bshape.begin(), 1,
                                             (fftw_complex*)bin.data(), itotal.begin(),
                                             bin.stride(N-2), 0,
@@ -108,7 +123,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex> > in, NumpyArray<N, 
     return res;
 }
 
-NumpyAnyArray 
+NumpyAnyArray
 pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
 {
     switch(in.spatialDimensions())
@@ -138,29 +153,39 @@ using namespace vigra;
 BOOST_PYTHON_MODULE_INIT(fourier)
 {
     import_vigranumpy();
-    
+
     docstring_options doc_options(true, true, false);
-    
+
     def("fourierTransform", registerConverters(&pythonFourierTransformR2C),
         (arg("image"), arg("out") = object()),
         "Perform 2-dimensional or 3-dimensional Fourier transformation of a scalar float64 array."
         "If the input array has multiple channels, each channel is transformed separately.\n"
         );
-        
+
     def("fourierTransform", registerConverters(&pythonFourierTransform<3, FFTW_FORWARD>),
         (arg("image"), arg("out") = object()),
         "Likewise for a 2D complex128 image.\n");
-        
+
     def("fourierTransform", registerConverters(&pythonFourierTransform<4, FFTW_FORWARD>),
         (arg("volume"), arg("out") = object()),
         "Likewise for a 3D complex128 volume.\n");
-        
+
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<3, FFTW_BACKWARD>),
         (arg("image"), arg("out") = object()),
         "Perform 2-dimensional inverse Fourier transformation of a complex array."
         "If the input array has multiple channels, each channel is transformed separately.\n");
-        
+
     def("fourierTransformInverse", registerConverters(&pythonFourierTransform<4, FFTW_BACKWARD>),
         (arg("volume"), arg("out") = object()),
         "Likewise for a 3D complex128 volume.\n");
+
+    def("createGaborFilter", registerConverters(&pythonCreateGaborFilter<float>),
+        (arg("shape"),arg("orientation"),arg("centerFrequency"),arg("angularSigma"),arg("radialSigma"), arg("out") = object()),
+        "Create a 2-dimensional gabor filter in frequency space.");
+
+    def("radialGaborSigma", &radialGaborSigma,
+        "Calculate sensible radial sigma for given parameters.");
+
+    def("angularGaborSigma", &angularGaborSigma,
+        "Calculate sensible angular sigma for given parameters.");
 }

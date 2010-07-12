@@ -150,6 +150,17 @@ NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> >
     return res;
 }
 
+template < class VoxelType, unsigned int N >
+NumpyAnyArray 
+pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
+                          double sigma,
+                          NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
+    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+    return res;
+}
+
 template < class VoxelType>
 NumpyAnyArray 
 pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
@@ -374,9 +385,9 @@ void defineTensor()
         "\n"
         "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
-   // def("hessianOfGaussian",
-   // 	registerConverters(&pythonHessianOfGaussianND<float,3>),
-   // 	(arg("volume"), arg("sigma"), arg("out")=python::object()));
+    def("hessianOfGaussian",
+    	registerConverters(&pythonHessianOfGaussianND<float,3>),
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
 
     def("structureTensor",
     	registerConverters(&pythonStructureTensor<float,3>),

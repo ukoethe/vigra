@@ -59,7 +59,11 @@ ADD_CUSTOM_TARGET(ctest COMMAND ${CMAKE_CTEST_COMMAND})
 ADD_CUSTOM_TARGET(check_cpp)
 ADD_DEPENDENCIES(check check_cpp)
 
-INCLUDE(CTest)
+
+OPTION(CREATE_CTEST_TARGETS "Create special targets for CTest" OFF)
+IF(CREATE_CTEST_TARGETS)
+  INCLUDE(CTest)
+ENDIF()
 
 IF(WITH_VIGRANUMPY)
     ADD_CUSTOM_TARGET(check_python)
@@ -110,8 +114,10 @@ ENDIF()
 #
 ##################################################
 
-INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra DESTINATION include)
-INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
+		DESTINATION include)
+INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra
+		DESTINATION include)
 
 ##################################################
 #
@@ -125,10 +131,28 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
 		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
 		@ONLY)
 
+##################################################
+#
+#  enable other non-CMake projects to find Vigra
+#
+##################################################
+
+IF(NOT WIN32)
+# vigra-config script for (non-CMake-based) third party packages
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/vigra-config.in
+		${PROJECT_BINARY_DIR}/bin/vigra-config
+		@ONLY IMMEDIATE)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/bin/vigra-config
+		DESTINATION bin
+		PERMISSIONS
+			OWNER_READ OWNER_WRITE OWNER_EXECUTE
+			GROUP_READ GROUP_EXECUTE
+			WORLD_READ WORLD_EXECUTE)
+ENDIF(NOT WIN32)
 
 ##################################################
 #
-#     enable other CMake projects to find Vigra 
+#     enable other CMake projects to find Vigra
 #
 ##################################################
 
@@ -142,11 +166,11 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
 		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
 		@ONLY IMMEDIATE)
 
-
 # export targets:
-#export(TARGETS all FILE 
-INSTALL(EXPORT vigra-targets DESTINATION lib${LIBDIR_SUFFIX}/vigra)
-INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+INSTALL(EXPORT vigra-targets
+		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -233,7 +257,7 @@ ELSE()
   MESSAGE( STATUS "  vigranumpy will NOT be installed" )
 ENDIF()
 
-IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR 
+IF(NOT TIFF_FOUND OR NOT JPEG_FOUND OR NOT PNG_FOUND OR NOT FFTW3_FOUND OR
    NOT HDF5_FOUND OR NOT VIGRANUMPY_DEPENDENCIES_FOUND)
   MESSAGE( STATUS "" )
   MESSAGE( STATUS "Consider setting DEPENDENCY_SEARCH_PREFIX to find missing libraries" )
