@@ -686,7 +686,7 @@ public:
         while( next  != end)
         {
 
-                    loss = right.decrement(iter, next + 1) 
+            double loss = right.decrement(iter, next + 1) 
                      +     left.increment(iter , next + 1);
 #ifdef CLASSIFIER_TEST
             if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
@@ -707,14 +707,10 @@ public:
             next = std::adjacent_find(iter, end, comp);
         }
         next = begin + min_index_ - 1; 
-#ifdef CLASSIFIER_TEST
-            if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
-#else
-            if(loss < min_gini_ )
-#endif 
-            {
-                 min_threshold_  = (column(*next,g) + column(*(next +1), g))/2;
-            }
+        if(next != end-1)
+        {
+            min_threshold_  = (column(*next,g) + column(*(next +1), g))/2;
+        }
     }
 
     template<class DataSource_t, class Iter, class Array>
