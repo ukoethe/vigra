@@ -71,15 +71,14 @@ pythonConstructRandomForest(int treeCount,
 
 {
     RandomForestOptions options;
-    options .features_per_node(mtry)
-            .sample_with_replacement(sample_with_replacement)
+    options .sample_with_replacement(sample_with_replacement)
             .tree_count(treeCount)
             .prepare_online_learning(prepare_online)
             .min_split_node_size(min_split_node_size);
 
 
     if(mtry  > 0)
-        options.samples_per_tree(mtry);
+        options.features_per_node(mtry);
 
     if(training_set_size != 0)
         options.samples_per_tree(training_set_size);
