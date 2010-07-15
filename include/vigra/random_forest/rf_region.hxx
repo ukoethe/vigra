@@ -74,7 +74,7 @@ class DT_StackEntry
 
 
     // RegionSpecificStuff
-    ArrayVector<Int32>                      classCounts_;
+    ArrayVector<double>                     classCounts_;
     ArrayVector<double>                     weightedClassCounts_;
     bool                                    classCountsIsValid;
     bool                                    weightedClassCountsIsValid;
@@ -145,11 +145,11 @@ class DT_StackEntry
     {
         return oob_end_;
     }
-    ArrayVector<Int32> & classCounts()
+    ArrayVector<double> & classCounts()
     {
         return classCounts_;
     }
-    ArrayVector<Int32> & weightedClassCounts()
+    ArrayVector<double> & weightedClassCounts()
     {
         return classCounts_;
     }

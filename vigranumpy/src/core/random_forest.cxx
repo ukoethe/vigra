@@ -18,7 +18,7 @@
 /*    Software is furnished to do so, subject to the following          */
 /*    conditions:                                                       */
 /*                                                                      */
-/*    The above copyrigfht notice and this permission notice shall be    */
+/*    The above copyright notice and this permission notice shall be    */
 /*    included in all copies or substantial portions of the             */
 /*    Software.                                                         */
 /*                                                                      */
@@ -71,9 +71,14 @@ pythonConstructRandomForest(int treeCount,
 
 {
     RandomForestOptions options;
-    options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount).prepare_online_learning(prepare_online)
-    .min_split_node_size(min_split_node_size);
+    options .sample_with_replacement(sample_with_replacement)
+            .tree_count(treeCount)
+            .prepare_online_learning(prepare_online)
+            .min_split_node_size(min_split_node_size);
 
+
+    if(mtry  > 0)
+        options.features_per_node(mtry);
 
     if(training_set_size != 0)
         options.samples_per_tree(training_set_size);
@@ -249,7 +254,7 @@ void defineRandomForest()
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
                                                  boost::python::default_call_policies(),
                                                  ( arg("treeCount")=255,
-                                                   arg("mtry")=RF_ALL,
+                                                   arg("mtry")= -1,
                                                    arg("min_split_node_size")=1,
                                                    arg("training_set_size")=0,
                                                    arg("training_set_proportions")=1.0,
