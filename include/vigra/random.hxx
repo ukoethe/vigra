@@ -41,6 +41,7 @@
 #include "functortraits.hxx"
 
 #include <time.h>
+#include <ctime>
 
 namespace vigra {
 
@@ -502,6 +503,16 @@ class RandomNumberGenerator
     {
         static RandomNumberGenerator generator;
         return generator;
+    }
+
+    static int & globalCount()
+    {
+        static int _count;
+		if (_count == 0) {
+			_count = clock();
+		}
+		_count += 1;
+        return _count;
     }
 
     static UInt32 factorForUniformInt(UInt32 range)

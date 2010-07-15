@@ -394,7 +394,8 @@ class RandomForest
                         Stop_t                              stop)
 
     {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+		RandomNumberGenerator<> rnd(RandomNumberGenerator<>().globalCount());
+        //RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         return learn(features, response,
                      visitor, split, stop,
                      rnd);
@@ -420,7 +421,8 @@ class RandomForest
     double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
     {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+		RandomNumberGenerator<> rnd(RandomNumberGenerator<>().globalCount());
+        //RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         return onlineLearn(features, 
                      labels, 
                      new_start_index,
@@ -450,7 +452,8 @@ class RandomForest
                      MultiArrayView<2, U2, C2> const & labels,
                      int treeId)
     {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+		RandomNumberGenerator<> rnd(RandomNumberGenerator<>().globalCount());
+        //RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         reLearnTree(features,
                     labels,
                     treeId,
