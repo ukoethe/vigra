@@ -33,14 +33,15 @@
 /*                                                                      */
 /************************************************************************/
 
-
-#ifndef VIGRA_RANDOM_FOREST_HXX
-#define VIGRA_RANDOM_FOREST_HXX
+#ifndef VIGRA_RANDOM_FOREST_DEPREC_HXX
+#define VIGRA_RANDOM_FOREST_DEPREC_HXX
 
 #include <algorithm>
 #include <map>
 #include <numeric>
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 #include "vigra/mathutil.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/sized_int.hxx"
@@ -50,6 +51,7 @@
 
 #define RandomForest RandomForestDeprec
 #define DecisionTree DecisionTreeDeprec
+#define RandomForestOptions RandomForestOptionsDeprec
 
 namespace vigra
 {
@@ -272,7 +274,7 @@ DecisionTreeAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const & feat
 
 	// find the best gini index
     double minGini = NumericTraits<double>::max();
-    IndexIterator bestSplit;
+    IndexIterator bestSplit = indices;
     for(int k=0; k<mtry; ++k)
     {
         sorter.setColumn(splitColumns[k]);
@@ -805,7 +807,8 @@ class RandomForest
     template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
     {
-        return learn(features, labels, RandomTT800::global());
+		RandomNumberGenerator<> generator(RandomNumberGenerator<>().globalCount());
+        return learn(features, labels, generator);
     }
 
     template <class U, class C>
@@ -1138,6 +1141,7 @@ RandomForest<ClassLabelType>::predictNodes(MultiArrayView<2, U, C1> const & feat
 } // namespace vigra
 
 #undef RandomForest
+#undef RandomForestOptions
 #undef DecisionTree
 
 #endif // VIGRA_RANDOM_FOREST_HXX

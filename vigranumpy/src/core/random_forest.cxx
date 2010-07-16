@@ -18,7 +18,7 @@
 /*    Software is furnished to do so, subject to the following          */
 /*    conditions:                                                       */
 /*                                                                      */
-/*    The above copyright notice and this permission notice shall be    */
+/*    The above copyrigfht notice and this permission notice shall be    */
 /*    included in all copies or substantial portions of the             */
 /*    Software.                                                         */
 /*                                                                      */
@@ -68,11 +68,17 @@ pythonConstructRandomForest(int treeCount,
                             bool sample_classes_individually,
                             bool prepare_online)
 
+
 {
     RandomForestOptions options;
-    options.features_per_node(mtry).sample_with_replacement(sample_with_replacement).tree_count(treeCount).prepare_online_learning(prepare_online)
-    .min_split_node_size(min_split_node_size);
+    options .sample_with_replacement(sample_with_replacement)
+            .tree_count(treeCount)
+            .prepare_online_learning(prepare_online)
+            .min_split_node_size(min_split_node_size);
 
+
+    if(mtry  > 0)
+        options.features_per_node(mtry);
 
     if(training_set_size != 0)
         options.samples_per_tree(training_set_size);
@@ -110,8 +116,12 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
 {
     VariableImportanceVisitor var_imp;
 
-    double oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
-    std::cout << "out of bag: " << oob << std::endl;
+    double oob;
+	Py_BEGIN_ALLOW_THREADS
+	oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
+	Py_END_ALLOW_THREADS
+
+    // std::cout << "out of bag: " << oob << std::endl;
 
     NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),
                                                            var_imp.variable_importance_.shape(1))); 
@@ -129,9 +139,13 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels)
 {
-  double oob = rf.learn(trainData, trainLabels);
-  std::cout << "out of bag: " << oob << std::endl;
+  double oob;
 
+  Py_BEGIN_ALLOW_THREADS
+  oob = rf.learn(trainData, trainLabels);
+  Py_END_ALLOW_THREADS
+  
+  //std::cout << "out of bag: " << oob << std::endl;
   return oob;
 }
 
@@ -182,7 +196,9 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "Output array has wrong dimensions.");
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(testData,res);
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -195,14 +211,15 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
                        "Output array has wrong dimenstions.");
-    Py_BEGIN_ALLOW_THREADS
     clock_t start=clock();
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(predSet, res);
+    Py_END_ALLOW_THREADS
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;
-    Py_END_ALLOW_THREADS
     return res;
 }
+
 
 void defineRandomForest()
 {
@@ -237,7 +254,7 @@ void defineRandomForest()
         .def("__init__",python::make_constructor(registerConverters(&pythonConstructRandomForest<UInt32,float>),
                                                  boost::python::default_call_policies(),
                                                  ( arg("treeCount")=255,
-                                                   arg("mtry")=RF_SQRT,
+                                                   arg("mtry")= -1,
                                                    arg("min_split_node_size")=1,
                                                    arg("training_set_size")=0,
                                                    arg("training_set_proportions")=1.0,

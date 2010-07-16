@@ -385,7 +385,7 @@ public:
     {
 
         int     class_count     = hist.size();
-        double  gini            = 0;
+        double  gini            = 0.0;
         if(class_count == 2)
         {
             double w            = weights[0] * weights[1];
@@ -410,7 +410,7 @@ class ImpurityLoss
 
     DataSource  const &         labels_;
     ArrayVector<double>        counts_;
-    ArrayVector<double> const & class_weights_;
+    ArrayVector<double> const  class_weights_;
     double                      total_counts_;
     Impurity                    impurity_;
 
@@ -460,19 +460,19 @@ class ImpurityLoss
     {
         for(Iter iter = begin; iter != end; ++iter)
         {
-            counts_[labels_[*iter]] +=1;
-            total_counts_ +=1;
+            counts_[labels_(*iter, 0)] +=1.0;
+            total_counts_ +=1.0;
         }
         return impurity_(counts_, class_weights_, total_counts_);
     }
 
     template<class Iter>
-    double decrement(Iter begin, Iter end)
+    double decrement(Iter const &  begin, Iter const & end)
     {
         for(Iter iter = begin; iter != end; ++iter)
         {
-            counts_[labels_[*iter]] -=1;
-            total_counts_ -=1;
+            counts_[labels_(*iter,0)] -=1.0;
+            total_counts_ -=1.0;
         }
         return impurity_(counts_, class_weights_, total_counts_);
     }
@@ -660,13 +660,14 @@ public:
                 class I_Iter, 
                 class Array>
     void operator()(DataSourceF_t   const & column,
+                    int                     g,
                     DataSource_t    const & labels,
                     I_Iter                & begin, 
                     I_Iter                & end,
                     Array           const & region_response)
     {
         std::sort(begin, end, 
-                  SortSamplesByDimensions<DataSourceF_t>(column, 0));
+                  SortSamplesByDimensions<DataSourceF_t>(column, g));
         typedef typename 
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss left(labels, ext_param_);
@@ -677,27 +678,35 @@ public:
         min_gini_ = right.init(begin, end, region_response);
         min_threshold_ = *begin;
         min_index_     = 0;
-        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
+        DimensionNotEqual<DataSourceF_t> comp(column, g); 
         
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
+        double loss;
         while( next  != end)
         {
 
             double loss = right.decrement(iter, next + 1) 
-                    +     left.increment(iter , next + 1);
+                     +     left.increment(iter , next + 1);
+#ifdef CLASSIFIER_TEST
             if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
+#else
+            if(loss < min_gini_ )
+#endif 
             {
                 bestCurrentCounts[0] = left.response();
                 bestCurrentCounts[1] = right.response();
+#ifdef CLASSIFIER_TEST
                 min_gini_       = loss < min_gini_? loss : min_gini_;
+#else
+                min_gini_       = loss; 
+#endif
                 min_index_      = next - begin +1 ;
-                min_threshold_  = (column[*next] + column[*(next +1)])/2;
+                min_threshold_  = (column(*next,g) + column(*(next +1), g))/2;
             }
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);
         }
-
     }
 
     template<class DataSource_t, class Iter, class Array>
@@ -781,7 +790,7 @@ class ThresholdSplit: public SplitBase<Tag>
                            region.classCounts().end(), 0) != region.size())
         {
             RandomForestClassCounter<   MultiArrayView<2,T2, C2>, 
-                                        ArrayVector<Int32> >
+                                        ArrayVector<double> >
                 counter(labels, region.classCounts());
             std::for_each(  region.begin(), region.end(), counter);
             region.classCountsIsValid = true;
@@ -807,16 +816,20 @@ class ThresholdSplit: public SplitBase<Tag>
         for(int k=0; k<num2try; ++k)
         {
             //this functor does all the work
-            bgfunc(columnVector(features, splitColumns[k]),
+            bgfunc(features,
+                   splitColumns[k],
                    labels, 
                    region.begin(), region.end(), 
                    region.classCounts());
             min_gini_[k]            = bgfunc.min_gini_; 
             min_indices_[k]         = bgfunc.min_index_;
             min_thresholds_[k]      = bgfunc.min_threshold_;
-
+#ifdef CLASSIFIER_TEST
             if(     bgfunc.min_gini_ < current_min_gini
                &&  !closeAtTolerance(bgfunc.min_gini_, current_min_gini))
+#else
+            if(bgfunc.min_gini_ < current_min_gini)
+#endif
             {
                 current_min_gini = bgfunc.min_gini_;
                 childRegions[0].classCounts() = bgfunc.bestCurrentCounts[0];

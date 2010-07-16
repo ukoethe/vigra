@@ -43,6 +43,7 @@
 #include <cmath>
 
 #define RandomForest RandomForestDeprec
+#define RandomForestOptions RandomForestOptionsDeprec
 #define DecisionTree DecisionTreeDeprec
 
 namespace python = boost::python;
@@ -67,9 +68,14 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
         .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
     std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
 
-    RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
-    rf->learn(trainData,trainLabels);
+	RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+	double oob;
 
+	Py_BEGIN_ALLOW_THREADS
+    oob = rf->learn(trainData, trainLabels);
+	Py_END_ALLOW_THREADS
+	
+	std::cout << "Out-of-bag error " << oob << std::endl;
     return rf;
 }
 
@@ -94,7 +100,9 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf.labelCount()),
                                                 "Output array has wrong dimensions.");
+	Py_BEGIN_ALLOW_THREADS
     rf.predictProbabilities(testData,res);
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -151,3 +159,6 @@ void defineRandomForestOld()
 
 } // namespace vigra
 
+#undef RandomForest
+#undef RandomForestOptions
+#undef DecisionTree

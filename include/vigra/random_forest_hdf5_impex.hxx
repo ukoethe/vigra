@@ -492,20 +492,26 @@ bool rf_export_HDF5(RandomForest<T> const &rf,
 	using detail::options_export_HDF5;
 	using detail::problemspec_export_HDF5;
 	using detail::dt_export_HDF5;
-	//if file exists delete it.
-	FILE* pFile = fopen ( filename.c_str(), "r" );
-	if ( pFile != NULL && !overwriteflag)
-		return 0;
-	else if(pFile != 0 &&std::remove(filename.c_str()) != 0)
-		return 0;
 	
-	//create a new file and group.
-	hid_t file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 
-												H5P_DEFAULT, 
+	hid_t file_id;
+	//if file exists load it.
+	FILE* pFile = fopen ( filename.c_str(), "r" );
+	if ( pFile != NULL)
+		file_id = H5Fopen(filename.c_str(), H5F_ACC_RDWR, 
 												H5P_DEFAULT);
+	else{
+	//create a new file.
+		file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 
+													H5P_DEFAULT, 
+													H5P_DEFAULT);}
 	vigra_postcondition(file_id >= 0, 
 						"rf_export_HDF5(): Unable to open file.");
-    std::cerr << pathname.c_str();
+    //std::cerr << pathname.c_str()
+
+	//if the group already exists this will cause an error
+	//we will have to use the overwriteflag to check for 
+	//this, but i dont know how to delete groups...
+
     hid_t group_id = pathname== "" ?
 						file_id
 					:	H5Gcreate(file_id, pathname.c_str(), 

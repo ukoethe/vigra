@@ -390,17 +390,22 @@ void DecisionTree::continueLearn(   MultiArrayView<2, U, C> const       & featur
         //produce a Terminal Node or the Split itself decides what 
         //kind of node to make
         TreeInt NodeID;
+        
         if(stop(top))
             NodeID = split.makeTerminalNode(features, 
                                             labels, 
                                             top, 
                                             randint);
         else
+        {
+            //TIC;
             NodeID = split.findBestSplit(features, 
                                          labels, 
                                          top, 
                                          child_stack_entry, 
                                          randint);
+            //std::cerr << TOC <<" " << NodeID << ";" <<std::endl;
+        }
 
         // do some visiting yawn - just added this comment as eye candy
         // (looks odd otherwise with my syntax highlighting....

@@ -55,7 +55,9 @@ NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > 
                                        NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "gaussianGradient(): Output array has wrong shape.");
+	Py_BEGIN_ALLOW_THREADS
     gaussianGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -72,6 +74,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
     res.reshapeIfEmpty(tmpShape, "gaussianGradientMagnitude(): Output array has wrong shape.");
     res.init(NumericTraits<VoxelType>::zero());
     MultiArray<ndim-1, TinyVector<VoxelType, (int)(ndim-1)> > grad(tmpShape);
+	Py_BEGIN_ALLOW_THREADS
     for(int k=0; k<volume.shape(ndim-1); ++k)
     {
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
@@ -81,6 +84,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
                               squaredNorm(Arg1())+Arg2());
     }
     transformMultiArray(srcMultiArrayRange(res), destMultiArray(res), sqrt(Arg1()));
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -112,6 +116,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
     
     typename MultiArrayShape<ndim-1>::type tmpShape(volume.shape().begin());
     MultiArray<ndim-1, TinyVector<VoxelType, (int)(ndim-1)> > grad(tmpShape);
+	Py_BEGIN_ALLOW_THREADS
     for(int k=0; k<volume.shape(ndim-1); ++k)
     {
     	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
@@ -120,6 +125,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
         gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), sigma);
         transformMultiArray(srcMultiArrayRange(grad), destMultiArray(bres), norm(Arg1()));
     }
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -155,6 +161,34 @@ pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
     return res;
 }
 
+template < class VoxelType>
+NumpyAnyArray 
+pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
+                          double sigma,
+                          NumpyArray<3, TinyVector<VoxelType, 6> > res=python::object())
+{
+    res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
+	Py_BEGIN_ALLOW_THREADS
+    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+	Py_END_ALLOW_THREADS
+    return res;
+}
+
+template < class PixelType>
+NumpyAnyArray 
+pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
+                          double sigma,
+                          NumpyArray<2, TinyVector<PixelType, 3> > res=python::object())
+{
+    res.reshapeIfEmpty(image.shape(), "hessianOfGaussian(): Output array has wrong shape.");
+	Py_BEGIN_ALLOW_THREADS
+    hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), sigma);
+	Py_END_ALLOW_THREADS
+    return res;
+}
+
+
+
 template <class PixelType, unsigned int N>
 NumpyAnyArray 
 pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image, 
@@ -167,12 +201,15 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
                  "structureTensor(): Output array has wrong shape.");
     
     MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(0);
+	Py_BEGIN_ALLOW_THREADS
     structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), 
                               innerScale, outerScale);
+	
     
     if(image.shape(N-1) > 1)
     {
         MultiArray<N-1, TinyVector<PixelType, int(N*(N-1)/2)> > st(res.shape());
+		
         for(int b=1; b<image.shape(N-1); ++b)
         {
             MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(b);
@@ -181,7 +218,9 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
             combineTwoMultiArrays(srcMultiArrayRange(res), srcMultiArray(st), 
                                   destMultiArray(res), Arg1() + Arg2());
         }
+		
     }
+	Py_END_ALLOW_THREADS
     return res;
 }
 
@@ -205,8 +244,9 @@ pythonTensorEigenRepresentation2D(NumpyArray<2, TinyVector<SrcPixelType, 3> >ima
                                   NumpyArray<2, TinyVector<DestPixelType, 3> > res = python::object())
 {
     res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "tensorEigenRepresentation2D(): Output array has wrong shape.");    
-    
+    Py_BEGIN_ALLOW_THREADS
     tensorEigenRepresentation(srcImageRange(image), destImage(res));
+	Py_END_ALLOW_THREADS
      
     return res;
 }
@@ -257,9 +297,9 @@ pythonTensorEigenvalues(NumpyArray<N, TinyVector<PixelType, int(N*(N+1)/2)> > im
                         NumpyArray<N, TinyVector<PixelType, int(N)> > res = python::object())
 {
     res.reshapeIfEmpty(image.shape(), "tensorEigenvalues(): Output array has wrong shape.");    
-    
+    Py_BEGIN_ALLOW_THREADS
     tensorEigenvaluesMultiArray(srcMultiArrayRange(image), destMultiArray(res));
-     
+    Py_END_ALLOW_THREADS 
     return res;
 }
 
@@ -329,18 +369,25 @@ void defineTensor()
         (arg("volume"), arg("out")=python::object()),
         "Likewise for a 3D scalar volume.\n");
     
-    def("hessianOfGaussian",
-    	registerConverters(&pythonHessianOfGaussianND<float,2>),
+    def("hessianOfGaussian2D",
+    	registerConverters(&pythonHessianOfGaussian2D<float>),
     	(arg("image"), arg("sigma"), arg("out")=python::object()),
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D scalar image.\n"
         "\n"
         "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
+	def("hessianOfGaussian3D",
+    	registerConverters(&pythonHessianOfGaussian3D<float>),
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Calculate the Hessian matrix by means of a derivative of "
+        "Gaussian filters at the given scale for a 2D or 3D scalar image.\n"
+        "\n"
+        "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
+
     def("hessianOfGaussian",
     	registerConverters(&pythonHessianOfGaussianND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
-        "Likewise for a 3D scalar volume.\n");
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
 
     def("structureTensor",
     	registerConverters(&pythonStructureTensor<float,3>),
