@@ -40,7 +40,6 @@
 #include "mathutil.hxx"
 #include "functortraits.hxx"
 
-#include <time.h>
 #include <ctime>
 
 namespace vigra {
@@ -107,8 +106,9 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
 template <RandomEngineTag EngineTag>
 void seed(RandomSeedTag, RandomState<EngineTag> & engine)
 {
-    UInt32 init[2] = { (UInt32)time(0), (UInt32)clock() };
-    seed(init, 2, engine);
+    static UInt32 globalCount = 0;
+    UInt32 init[3] = { (UInt32)time(0), (UInt32)clock(), ++globalCount };
+    seed(init, 3, engine);
 }
 
 
@@ -503,16 +503,6 @@ class RandomNumberGenerator
     {
         static RandomNumberGenerator generator;
         return generator;
-    }
-
-    static int & globalCount()
-    {
-        static int _count;
-		if (_count == 0) {
-			_count = clock();
-		}
-		_count += 1;
-        return _count;
     }
 
     static UInt32 factorForUniformInt(UInt32 range)
