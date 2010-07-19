@@ -213,6 +213,12 @@ struct UnrollSquaredNorm
     {
         return vigra::squaredNorm(*d) + UnrollSquaredNorm<LEVEL-1>::squaredNorm(d+1);
     }
+
+    static std::ptrdiff_t
+    squaredNorm(std::ptrdiff_t const * d)
+    {
+        return (*d)*(*d) + UnrollSquaredNorm<LEVEL-1>::squaredNorm(d+1);
+    }
 };
 
 template <>
@@ -223,6 +229,12 @@ struct UnrollSquaredNorm<1>
     squaredNorm(T const * d)
     {
         return vigra::squaredNorm(*d);
+    }
+
+    static std::ptrdiff_t
+    squaredNorm(std::ptrdiff_t const * d)
+    {
+        return (*d)*(*d);
     }
 };
 

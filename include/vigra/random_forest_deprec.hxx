@@ -807,11 +807,7 @@ class RandomForest
     template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
     {
-		double seed = clock();
-		std::cout << "Seed " << seed << std::endl;
-		srand((unsigned)seed%31452); 
-		int seedInt = rand(); 
-		RandomNumberGenerator<> generator(seedInt);
+		RandomNumberGenerator<> generator(RandomNumberGenerator<>().globalCount());
         return learn(features, labels, generator);
     }
 
