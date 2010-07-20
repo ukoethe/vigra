@@ -545,9 +545,17 @@ double RandomNumberGenerator<Engine>::normal() const
     */
 typedef RandomNumberGenerator<>  RandomTT800; 
 
+    /** Shorthand for the TT800 random number generator class (same as RandomTT800).
+    */
+typedef RandomNumberGenerator<>  TemperedTwister; 
+
     /** Shorthand for the MT19937 random number generator class.
     */
 typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > RandomMT19937;
+
+    /** Shorthand for the MT19937 random number generator class (same as RandomMT19937).
+    */
+typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > MersenneTwister;
 
     /** Access the global (program-wide) instance of the TT800 random number generator.
     */
