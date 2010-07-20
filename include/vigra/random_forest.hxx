@@ -152,7 +152,7 @@ class RandomForest
     //function or the learn function is called
     ArrayVector<DecisionTree_t>                 trees_;
     ProblemSpec_t                               ext_param_;
-    mutable ArrayVector<int>                    tree_indices_;
+    /*mutable ArrayVector<int>                    tree_indices_;*/
     rf::visitors::OnlineLearnVisitor            online_visitor_;
 
 
@@ -203,11 +203,11 @@ class RandomForest
                  ProblemSpec_t const & ext_param = ProblemSpec_t())
     :
         options_(options),
-        ext_param_(ext_param),
-        tree_indices_(options.tree_count_,0)
+        ext_param_(ext_param)/*,
+        tree_indices_(options.tree_count_,0)*/
     {
-        for(int ii = 0 ; ii < int(tree_indices_.size()); ++ii)
-            tree_indices_[ii] = ii;
+        /*for(int ii = 0 ; ii < int(tree_indices_.size()); ++ii)
+            tree_indices_[ii] = ii;*/
     }
 
     /**\brief Create RF from external source
@@ -1191,11 +1191,14 @@ void RandomForest<LabelType, PreprocessorTag>
     #undef RF_CHOOSER 
     stop.set_external_parameters(ext_param_, tree_count());
     prob.init(NumericTraits<T>::zero());
+    /* This code was originally there for testing early stopping
+     * - we wanted the order of the trees to be randomized
     if(tree_indices_.size() != 0)
     {
        std::random_shuffle(tree_indices_.begin(),
                            tree_indices_.end()); 
     }
+    */
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
@@ -1208,7 +1211,7 @@ void RandomForest<LabelType, PreprocessorTag>
         for(int k=0; k<options_.tree_count_; ++k)
         {
             //get weights predicted by single tree
-            weights = trees_[tree_indices_[k]].predict(rowVector(features, row));
+            weights = trees_[k /*tree_indices_[k]*/].predict(rowVector(features, row));
 
             //update votecount.
             int weighted = options_.predict_weighted_;

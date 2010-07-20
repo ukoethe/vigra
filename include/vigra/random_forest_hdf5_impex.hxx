@@ -599,9 +599,9 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 	if(pathname != "")
 		H5Gclose(group_id);
 	H5Fclose(file_id);
-    rf.tree_indices_.resize(rf.tree_count());
+    /*rf.tree_indices_.resize(rf.tree_count());
     for(int ii = 0; ii < rf.tree_count(); ++ii)
-        rf.tree_indices_[ii] = ii; 
+        rf.tree_indices_[ii] = ii; */
 	return 1;
 }
 } // namespace vigra
