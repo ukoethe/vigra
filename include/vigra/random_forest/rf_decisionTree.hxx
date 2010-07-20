@@ -49,6 +49,7 @@
 #include <vector>
 
 #include "rf_common.hxx"
+#include "rf_visitors.hxx"
 #include "rf_nodeproxy.hxx"
 namespace vigra
 {
@@ -283,7 +284,7 @@ class DecisionTree
     template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features) const
     {
-        RF_Traits::StopVisiting_t stop;
+        rf::StopVisiting stop;
         return getToLeaf(features, stop);
     }
 

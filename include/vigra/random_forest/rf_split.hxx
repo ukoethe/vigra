@@ -45,6 +45,7 @@
 #include "../functorexpression.hxx"
 #include "rf_nodeproxy.hxx"
 #include "rf_sampling.hxx"
+#include "rf_region.hxx"
 //#include "../hokashyap.hxx"
 //#include "vigra/rf_helpers.hxx"
 
@@ -724,7 +725,7 @@ public:
 
 };
 
-template<class ColumnDecisionFunctor, class Tag>
+template<class ColumnDecisionFunctor, class Tag = ClassificationTag>
 class ThresholdSplit: public SplitBase<Tag>
 {
   public:

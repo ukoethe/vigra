@@ -87,7 +87,7 @@ class staticMultiArrayViewHelper
 
 /* \brief sampling option factory function
  */
-SamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
+SamplingOptions make_sampler_opt ( RandomForestOptions     & RF_opt,
                                    MultiArrayView<2, Int32> & labels
                                         = staticMultiArrayViewHelper::array)
 {
@@ -122,18 +122,20 @@ SamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
  * 
  *
 */
-template <class LabelType , class PreprocessorTag >
+template <class LabelType = double , class PreprocessorTag = ClassificationTag >
 class RandomForest
 {
 
   public:
     //public typedefs
-    typedef RF_Traits::Options_t            Options_t;
-    typedef RF_Traits::DecisionTree_t       DecisionTree_t;
-    typedef ProblemSpec<LabelType>      ProblemSpec_t;
-    typedef RF_Traits::Default_Split_t      Default_Split_t;
-    typedef RF_Traits::Default_Stop_t       Default_Stop_t;
-    typedef RF_Traits::Default_Visitor_t    Default_Visitor_t;
+    typedef RandomForestOptions             Options_t;
+    typedef detail::DecisionTree            DecisionTree_t;
+    typedef ProblemSpec<LabelType>          ProblemSpec_t;
+    typedef GiniSplit                       Default_Split_t;
+    typedef EarlyStoppStd                   Default_Stop_t;
+    typedef rf::StopVisiting                Default_Visitor_t;
+    typedef  DT_StackEntry<ArrayVectorView<Int32>::iterator>
+                    StackEntry_t;
     typedef LabelType                       LabelT; 
   protected:
 
@@ -638,7 +640,6 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
 
     using namespace rf;
     //typedefs
-    typedef typename Split_t::StackEntry_t StackEntry_t;
     typedef Processor<PreprocessorTag,LabelType,U,C1,U2,C2> Preprocessor_t;
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
@@ -775,8 +776,8 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                  Random_t & random)
 {
     using namespace rf;
-    //We store as a local variable, beacause there is no global interest ?!?
-    typedef typename Split_t::StackEntry_t          StackEntry_t;
+    
+    
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
 
@@ -881,7 +882,6 @@ double RandomForest<LabelType, PreprocessorTag>::
     using namespace rf;
     //this->reset();
     //typedefs
-    typedef typename Split_t::StackEntry_t          StackEntry_t;
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
 
