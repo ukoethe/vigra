@@ -79,7 +79,7 @@ class staticMultiArrayViewHelper
     public:
         static vigra::MultiArrayView<2, Int32> array;
     public:
-        friend SamplingOptions
+        friend RFSamplingOptions
         createSamplingOptions(vigra::RandomForestOptions& RF_opt,
                               vigra::MultiArrayView<2, int> & labels);
 };
@@ -87,11 +87,11 @@ class staticMultiArrayViewHelper
 
 /* \brief sampling option factory function
  */
-SamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
+RFSamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
                                    MultiArrayView<2, Int32> & labels
                                         = staticMultiArrayViewHelper::array)
 {
-    SamplingOptions return_opt;
+    RFSamplingOptions return_opt;
     return_opt.sample_with_replacement = RF_opt.sample_with_replacement_;
     if(labels.data() != 0)
     {
@@ -825,7 +825,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
      *          and is making code slower according to me.
      *          Comment from Nathan: This is copied from Rahul, so me=Rahul
      */
-    Sampler<RandFunctor_t > sampler(ext_param().row_count_,
+    RFSampler<RandFunctor_t > sampler(ext_param().row_count_,
                                     ext_param().actual_msample_,
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
@@ -936,7 +936,7 @@ double RandomForest<LabelType, PreprocessorTag>::
     /**\todo    replace this crappy class out. It uses function pointers.
      *          and is making code slower according to me
      */
-    Sampler<RandFunctor_t > sampler(ext_param().actual_msample_,
+    RFSampler<RandFunctor_t > sampler(ext_param().actual_msample_,
                                     ext_param().row_count_,
                                     detail::make_sampler_opt(options_,
                                                      preprocessor.strata()),
