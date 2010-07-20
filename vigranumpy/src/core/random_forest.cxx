@@ -114,13 +114,14 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
                                             NumpyArray<2,FeatureType> trainData, 
                                             NumpyArray<2,LabelType> trainLabels)
 {
-    VariableImportanceVisitor var_imp;
-
+    using namespace rf;
+    visitors::VariableImportanceVisitor var_imp;
+    visitors::OOB_Error                 oob_v;
     double oob;
 	Py_BEGIN_ALLOW_THREADS
-	oob = rf.learn(trainData, trainLabels, create_visitor(var_imp));
+	rf.learn(trainData, trainLabels, visitors::create_visitor(var_imp, oob_v));
 	Py_END_ALLOW_THREADS
-
+    oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
 
     NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),
@@ -139,11 +140,13 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels)
 {
+  using namespace rf;
   double oob;
-
+  visitors::OOB_Error oob_v;
   Py_BEGIN_ALLOW_THREADS
-  oob = rf.learn(trainData, trainLabels);
+  rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
   Py_END_ALLOW_THREADS
+  oob = oob_v.oob_breiman;
   
   //std::cout << "out of bag: " << oob << std::endl;
   return oob;

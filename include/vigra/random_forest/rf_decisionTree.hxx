@@ -284,7 +284,7 @@ class DecisionTree
     template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features) const
     {
-        rf::StopVisiting stop;
+        ::vigra::rf::visitors::StopVisiting stop;
         return getToLeaf(features, stop);
     }
 

@@ -133,7 +133,7 @@ class RandomForest
     typedef ProblemSpec<LabelType>          ProblemSpec_t;
     typedef GiniSplit                       Default_Split_t;
     typedef EarlyStoppStd                   Default_Stop_t;
-    typedef rf::StopVisiting                Default_Visitor_t;
+    typedef rf::visitors::StopVisiting      Default_Visitor_t;
     typedef  DT_StackEntry<ArrayVectorView<Int32>::iterator>
                     StackEntry_t;
     typedef LabelType                       LabelT; 
@@ -146,15 +146,14 @@ class RandomForest
   public:
 
     //problem independent data.
-    Options_t                       options_;
+    Options_t                                   options_;
     //problem dependent data members - is only set if
     //a copy constructor, some sort of import
     //function or the learn function is called
-    ArrayVector<DecisionTree_t>
-                                    trees_;
-    ProblemSpec_t                   ext_param_;
-    mutable ArrayVector<int>                tree_indices_;
-    OnlineLearnVisitor              online_visitor_;
+    ArrayVector<DecisionTree_t>                 trees_;
+    ProblemSpec_t                               ext_param_;
+    mutable ArrayVector<int>                    tree_indices_;
+    rf::visitors::OnlineLearnVisitor            online_visitor_;
 
 
     void reset()
@@ -336,6 +335,68 @@ class RandomForest
       return options_.tree_count_;
     }
 
+
+    
+    template<class U,class C1,
+        class U2, class C2,
+        class Split_t,
+        class Stop_t,
+        class Visitor_t,
+        class Random_t>
+    void onlineLearn(   MultiArrayView<2,U,C1> const & features,
+                        MultiArrayView<2,U2,C2> const & response,
+                        int new_start_index,
+                        Visitor_t visitor_,
+                        Split_t split_,
+                        Stop_t stop_,
+                        Random_t & random,
+                        bool adjust_thresholds=false);
+
+    template <class U, class C1, class U2,class C2>
+    void onlineLearn(   MultiArrayView<2, U, C1> const  & features,
+                        MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
+    {
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        onlineLearn(features, 
+                    labels, 
+                    new_start_index,
+                    rf_default(), 
+                    rf_default(), 
+                    rf_default(),
+                    rnd,
+                    adjust_thresholds);
+    }
+
+    template<class U,class C1,
+        class U2, class C2,
+        class Split_t,
+        class Stop_t,
+        class Visitor_t,
+        class Random_t>
+    void reLearnTree(MultiArrayView<2,U,C1> const & features,
+                     MultiArrayView<2,U2,C2> const & response,
+                     int treeId,
+                     Visitor_t visitor_,
+                     Split_t split_,
+                     Stop_t stop_,
+                     Random_t & random);
+
+    template<class U, class C1, class U2, class C2>
+    void reLearnTree(MultiArrayView<2, U, C1> const & features,
+                     MultiArrayView<2, U2, C2> const & labels,
+                     int treeId)
+    {
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        reLearnTree(features,
+                    labels,
+                    treeId,
+                    rf_default(),
+                    rf_default(),
+                    rf_default(),
+                    rnd);
+    }
+
+
     /**\name Learning
      * Following functions differ in the degree of customization
      * allowed
@@ -377,117 +438,58 @@ class RandomForest
              class Stop_t,
              class Visitor_t,
              class Random_t>
-    double learn(       MultiArrayView<2, U, C1> const  &   features,
-                        MultiArrayView<2, U2,C2> const  &   response,
-                        Visitor_t                           visitor,
-                        Split_t                             split,
-                        Stop_t                              stop,
-                        Random_t                 const  &   random);
+    void learn( MultiArrayView<2, U, C1> const  &   features,
+                MultiArrayView<2, U2,C2> const  &   response,
+                Visitor_t                           visitor,
+                Split_t                             split,
+                Stop_t                              stop,
+                Random_t                 const  &   random);
 
     template <class U, class C1,
              class U2,class C2,
              class Split_t,
              class Stop_t,
              class Visitor_t>
-    double learn(       MultiArrayView<2, U, C1> const  &   features,
-                        MultiArrayView<2, U2,C2> const  &   response,
-                        Visitor_t                           visitor,
-                        Split_t                             split,
-                        Stop_t                              stop)
+    void learn( MultiArrayView<2, U, C1> const  &   features,
+                MultiArrayView<2, U2,C2> const  &   response,
+                Visitor_t                           visitor,
+                Split_t                             split,
+                Stop_t                              stop)
 
     {
         RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
-        return learn(features, response,
-                     visitor, split, stop,
-                     rnd);
+        learn(  features, 
+                response,
+                visitor, 
+                split, 
+                stop,
+                rnd);
     }
-
-    
-    template<class U,class C1,
-        class U2, class C2,
-        class Split_t,
-        class Stop_t,
-        class Visitor_t,
-        class Random_t>
-    double onlineLearn(MultiArrayView<2,U,C1> const & features,
-                       MultiArrayView<2,U2,C2> const & response,
-                       int new_start_index,
-                       Visitor_t visitor_,
-                       Split_t split_,
-                       Stop_t stop_,
-                       Random_t & random,
-                       bool adjust_thresholds=false);
-
-    template <class U, class C1, class U2,class C2>
-    double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
-    {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
-        return onlineLearn(features, 
-                     labels, 
-                     new_start_index,
-                     rf_default(), 
-                     rf_default(), 
-                     rf_default(),
-                     rnd,
-                     adjust_thresholds);
-    }
-
-    template<class U,class C1,
-        class U2, class C2,
-        class Split_t,
-        class Stop_t,
-        class Visitor_t,
-        class Random_t>
-    void reLearnTree(MultiArrayView<2,U,C1> const & features,
-                     MultiArrayView<2,U2,C2> const & response,
-                     int treeId,
-                     Visitor_t visitor_,
-                     Split_t split_,
-                     Stop_t stop_,
-                     Random_t & random);
-
-    template<class U, class C1, class U2, class C2>
-    void reLearnTree(MultiArrayView<2, U, C1> const & features,
-                     MultiArrayView<2, U2, C2> const & labels,
-                     int treeId)
-    {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
-        reLearnTree(features,
-                    labels,
-                    treeId,
-                    rf_default(),
-                    rf_default(),
-                    rf_default(),
-                    rnd);
-    }
-
-
 
     template <class U, class C1, class U2,class C2, class Visitor_t>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,
-                    Visitor_t                         visitor)
+    void learn( MultiArrayView<2, U, C1> const  & features,
+                MultiArrayView<2, U2,C2> const  & labels,
+                Visitor_t                         visitor)
     {
-        return learn(features, 
-                     labels, 
-                     visitor, 
-                     rf_default(), 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                visitor, 
+                rf_default(), 
+                rf_default());
     }
 
     template <class U, class C1, class U2,class C2, 
               class Visitor_t, class Split_t>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,
-                    Visitor_t                         visitor,
-                    Split_t                           split)
+    void learn(   MultiArrayView<2, U, C1> const  & features,
+                  MultiArrayView<2, U2,C2> const  & labels,
+                  Visitor_t                         visitor,
+                  Split_t                           split)
     {
-        return learn(features, 
-                     labels, 
-                     visitor, 
-                     split, 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                visitor, 
+                split, 
+                rf_default());
     }
 
     /**\brief learn on data with default configuration
@@ -499,26 +501,24 @@ class RandomForest
      *                  be 1 and ignore any additional columns.
      *                  this is not enforced to allow future support
      *                  for uncertain labels.
-     * \return          out of bag error estimate.
      *
      * learning is done with:
      *
-     * \sa GiniSplit, EarlyStoppingStd, OOB_Visitor
+     * \sa GiniSplit, EarlyStoppingStd
      *
      * - Randomly seeded random number generator
      * - default gini split functor as described by Breiman
      * - default The standard early stopping criterion
-     * - the oob visitor, whose value is returned.
      */
     template <class U, class C1, class U2,class C2>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
+    void learn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels)
     {
-        return learn(features, 
-                     labels, 
-                     rf_default(), 
-                     rf_default(), 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                rf_default(), 
+                rf_default(), 
+                rf_default());
     }
     /*\}*/
 
@@ -626,7 +626,7 @@ template<class U,class C1,
     class Stop_t,
     class Visitor_t,
     class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1> const & features,
+void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1> const & features,
                                                              MultiArrayView<2,U2,C2> const & response,
                                                              int new_start_index,
                                                              Visitor_t visitor_,
@@ -655,13 +655,13 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode
+                <rf::visitors::OnlineLearnVisitor, 
+                 typename RF_CHOOSER(Visitor_t)::type> 
+                                                        IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
 
     // Preprocess the data to get something the split functor can work
@@ -756,8 +756,6 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
 
     //visitor.visit_at_end(*this, preprocessor);
     online_visitor_.deactivate();
-
-    return  visitor.return_val();
 }
 
 template<class LabelType, class PreprocessorTag>
@@ -797,13 +795,12 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode
+                <rf::visitors::OnlineLearnVisitor, 
+                typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
     vigra_precondition(options_.prepare_online_learning_,"reLearnTree: Re learning trees only makes sense, if online learning is enabled");
     online_visitor_.activate();
@@ -871,7 +868,7 @@ template <class U, class C1,
          class Stop_t,
          class Visitor_t,
          class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::
+void RandomForest<LabelType, PreprocessorTag>::
                      learn( MultiArrayView<2, U, C1> const  &   features,
                             MultiArrayView<2, U2,C2> const  &   response,
                             Visitor_t                           visitor_,
@@ -900,13 +897,12 @@ double RandomForest<LabelType, PreprocessorTag>::
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode<
+                rf::visitors::OnlineLearnVisitor, 
+                typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
     if(options_.prepare_online_learning_)
         online_visitor_.activate();
@@ -975,8 +971,6 @@ double RandomForest<LabelType, PreprocessorTag>::
 
     visitor.visit_at_end(*this, preprocessor);
     online_visitor_.deactivate();
-
-    return  visitor.return_val();
 }
 
 

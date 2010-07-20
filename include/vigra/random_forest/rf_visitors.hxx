@@ -38,10 +38,17 @@
 #ifdef HasHDF5
 # include "vigra/hdf5impex.hxx"
 #endif // HasHDF5
+#include <vigra/windows.h>
+#include <iostream>
+#include <iomanip>
+#include <vigra/timing.hxx>
 
 namespace vigra
 {
-
+namespace rf
+{
+namespace visitors
+{
     
     
 /** Base Class from which all Visitors derive
@@ -166,8 +173,6 @@ class VisitorBase
     }
 };
 
-namespace rf
-{
 
 /** Last Visitor that should be called to stop the recursion.
  */
@@ -183,6 +188,8 @@ class StopVisiting: public VisitorBase
         return -1.0;
     }
 };
+namespace detail
+{
 /** Container elements of the statically linked Visitor list.
  *
  * use the create_visitor() factory functions to create visitors up to size 10;
@@ -269,79 +276,79 @@ class VisitorNode
     }
 };
 
-} //namespace rf
+} //namespace detail
 
 //////////////////////////////////////////////////////////////////////////////
 //  Visitor Factory function up to 10 visitors                              //
 //////////////////////////////////////////////////////////////////////////////
 template<class A>
-rf::VisitorNode<A>
+detail::VisitorNode<A>
 create_visitor(A & a)
 {
-   typedef rf::VisitorNode<A> _0_t;
+   typedef detail::VisitorNode<A> _0_t;
    _0_t _0(a);
    return _0;
 }
 
 
 template<class A, class B>
-rf::VisitorNode<A, rf::VisitorNode<B> >
+detail::VisitorNode<A, detail::VisitorNode<B> >
 create_visitor(A & a, B & b)
 {
-   typedef rf::VisitorNode<B> _1_t;
+   typedef detail::VisitorNode<B> _1_t;
    _1_t _1(b);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C> > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C> > >
 create_visitor(A & a, B & b, C & c)
 {
-   typedef rf::VisitorNode<C> _2_t;
+   typedef detail::VisitorNode<C> _2_t;
    _2_t _2(c);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C, class D>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D> > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D> > > >
 create_visitor(A & a, B & b, C & c, D & d)
 {
-   typedef rf::VisitorNode<D> _3_t;
+   typedef detail::VisitorNode<D> _3_t;
    _3_t _3(d);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 
 template<class A, class B, class C, class D, class E>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E> > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E> > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e)
 {
-   typedef rf::VisitorNode<E> _4_t;
+   typedef detail::VisitorNode<E> _4_t;
    _4_t _4(e);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -349,22 +356,22 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
          class F>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F> > > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F> > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f)
 {
-   typedef rf::VisitorNode<F> _5_t;
+   typedef detail::VisitorNode<F> _5_t;
    _5_t _5(f);
-   typedef rf::VisitorNode<E, _5_t> _4_t;
+   typedef detail::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -372,25 +379,25 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
          class F, class G>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
-    rf::VisitorNode<G> > > > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+    detail::VisitorNode<G> > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, G & g)
 {
-   typedef rf::VisitorNode<G> _6_t;
+   typedef detail::VisitorNode<G> _6_t;
    _6_t _6(g);
-   typedef rf::VisitorNode<F, _6_t> _5_t;
+   typedef detail::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef rf::VisitorNode<E, _5_t> _4_t;
+   typedef detail::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -398,28 +405,28 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
          class F, class G, class H>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
-    rf::VisitorNode<G, rf::VisitorNode<H> > > > > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+    detail::VisitorNode<G, detail::VisitorNode<H> > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h)
 {
-   typedef rf::VisitorNode<H> _7_t;
+   typedef detail::VisitorNode<H> _7_t;
    _7_t _7(h);
-   typedef rf::VisitorNode<G, _7_t> _6_t;
+   typedef detail::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef rf::VisitorNode<F, _6_t> _5_t;
+   typedef detail::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef rf::VisitorNode<E, _5_t> _4_t;
+   typedef detail::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
@@ -427,75 +434,74 @@ create_visitor(A & a, B & b, C & c,
 
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
-    rf::VisitorNode<G, rf::VisitorNode<H, rf::VisitorNode<I> > > > > > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+    detail::VisitorNode<G, detail::VisitorNode<H, detail::VisitorNode<I> > > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h, I & i)
 {
-   typedef rf::VisitorNode<I> _8_t;
+   typedef detail::VisitorNode<I> _8_t;
    _8_t _8(i);
-   typedef rf::VisitorNode<H, _8_t> _7_t;
+   typedef detail::VisitorNode<H, _8_t> _7_t;
    _7_t _7(h, _8);
-   typedef rf::VisitorNode<G, _7_t> _6_t;
+   typedef detail::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef rf::VisitorNode<F, _6_t> _5_t;
+   typedef detail::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef rf::VisitorNode<E, _5_t> _4_t;
+   typedef detail::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I, class J>
-rf::VisitorNode<A, rf::VisitorNode<B, rf::VisitorNode<C, 
-    rf::VisitorNode<D, rf::VisitorNode<E, rf::VisitorNode<F, 
-    rf::VisitorNode<G, rf::VisitorNode<H, rf::VisitorNode<I,
-    rf::VisitorNode<J> > > > > > > > > >
+detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
+    detail::VisitorNode<D, detail::VisitorNode<E, detail::VisitorNode<F, 
+    detail::VisitorNode<G, detail::VisitorNode<H, detail::VisitorNode<I,
+    detail::VisitorNode<J> > > > > > > > > >
 create_visitor(A & a, B & b, C & c, 
                D & d, E & e, F & f, 
                G & g, H & h, I & i,
                J & j)
 {
-   typedef rf::VisitorNode<J> _9_t;
+   typedef detail::VisitorNode<J> _9_t;
    _9_t _9(j);
-   typedef rf::VisitorNode<I, _9_t> _8_t;
+   typedef detail::VisitorNode<I, _9_t> _8_t;
    _8_t _8(i, _9);
-   typedef rf::VisitorNode<H, _8_t> _7_t;
+   typedef detail::VisitorNode<H, _8_t> _7_t;
    _7_t _7(h, _8);
-   typedef rf::VisitorNode<G, _7_t> _6_t;
+   typedef detail::VisitorNode<G, _7_t> _6_t;
    _6_t _6(g, _7);
-   typedef rf::VisitorNode<F, _6_t> _5_t;
+   typedef detail::VisitorNode<F, _6_t> _5_t;
    _5_t _5(f, _6);
-   typedef rf::VisitorNode<E, _5_t> _4_t;
+   typedef detail::VisitorNode<E, _5_t> _4_t;
    _4_t _4(e, _5);
-   typedef rf::VisitorNode<D, _4_t> _3_t;
+   typedef detail::VisitorNode<D, _4_t> _3_t;
    _3_t _3(d, _4);
-   typedef rf::VisitorNode<C, _3_t> _2_t;
+   typedef detail::VisitorNode<C, _3_t> _2_t;
    _2_t _2(c, _3);
-   typedef rf::VisitorNode<B, _2_t> _1_t;
+   typedef detail::VisitorNode<B, _2_t> _1_t;
    _1_t _1(b, _2);
-   typedef rf::VisitorNode<A, _1_t> _0_t;
+   typedef detail::VisitorNode<A, _1_t> _0_t;
    _0_t _0(a, _1);
    return _0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
-// Visitors of communal interest. Do not spam this file with stuff          //
-// nobody wants.                                                            //
+// Visitors of communal interest.                                           //
 //////////////////////////////////////////////////////////////////////////////
 
 
-/** Vistior to gain information, later needed for online learning.
+/** Visitor to gain information, later needed for online learning.
  */
 
 class OnlineLearnVisitor: public VisitorBase
@@ -678,20 +684,22 @@ public:
      */
 };
 
+//////////////////////////////////////////////////////////////////////////////
+// Out of Bag Error estimates                                               //
+//////////////////////////////////////////////////////////////////////////////
 
-/** Visitor that calculates the oob error of the random forest. 
- * this is the default visitor used. 
- *
- * To bored to comment each line of this class - trust me it works.
+
+/** Visitor that calculates the oob error of each individual randomized
+ * decision tree. 
  */
-class OOB_Visitor:public VisitorBase
+class OOB_PerTreeError:public VisitorBase
 {
 public:
     double oobError;
     int totalOobCount;
     ArrayVector<int> oobCount,oobErrorCount;
 
-    OOB_Visitor()
+    OOB_PerTreeError()
     : oobError(0.0),
       totalOobCount(0)
     {}
@@ -701,6 +709,8 @@ public:
     {
         return true;
     }
+
+
     /** does the basic calculation per tree*/
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
@@ -743,15 +753,342 @@ public:
                 ++totalOobCount;
             }
         } 
+        oobError/=totalOobCount;
     }
     
-    //returns value of the learn function. 
-    double return_val()
+};
+
+/** Visitor that calculates the oob error of the ensemble
+ *  This error rate should be used to estimate the crossvalidation 
+ *  error rate.
+ */
+class OOB_Error : public VisitorBase
+{
+    typedef MultiArrayShape<2>::type Shp;
+    int class_count;
+    bool is_weighted;
+    MultiArray<2,double> tmp_prob;
+    public:
+
+    MultiArray<2, double>       prob_oob; 
+    double                      oob_breiman;
+
+    MultiArray<2, double>       oobCount;
+    ArrayVector< int>           indices; 
+    OOB_Error() : VisitorBase(), oob_breiman(0.0) {}
+
+    void save(std::string filen, std::string pathn)
     {
-        return oobError/totalOobCount;
+        if(*(pathn.end()-1) != '/')
+            pathn += "/";
+        const char* filename = filen.c_str();
+        MultiArray<2, double> temp(Shp(1,1), 0.0); 
+        temp[0] = oob_breiman;
+        writeHDF5(filename, (pathn + "breiman_error").c_str(), temp);
+    }
+    // negative value if sample was ib, number indicates how often.
+    //  value >=0  if sample was oob, 0 means fail 1, corrrect
+
+    template<class RF, class PR>
+    void visit_at_beginning(RF & rf, PR & pr)
+    {
+        class_count = rf.class_count();
+        tmp_prob.reshape(Shp(1, class_count), 0); 
+        prob_oob.reshape(Shp(rf.ext_param().row_count_,class_count), 0);
+        is_weighted = rf.options().predict_weighted_;
+        indices.resize(rf.ext_param().row_count_);
+        if(int(oobCount.size()) != rf.ext_param_.row_count_)
+        {
+            oobCount.reshape(Shp(rf.ext_param_.row_count_, 1), 0);
+        }
+        for(int ii = 0; ii < rf.ext_param().row_count_; ++ii)
+        {
+            indices[ii] = ii;
+        }
+    }
+
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+        // go through the samples
+        int total_oob =0;
+        int wrong_oob =0;
+        if(rf.ext_param_.actual_msample_ < pr.features().shape(0)- 10000)
+        {
+            ArrayVector<int> oob_indices;
+            ArrayVector<int> cts(class_count, 0);
+            std::random_shuffle(indices.begin(), indices.end());
+            for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+            {
+                if(!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 40000)
+                {
+                    oob_indices.push_back(indices[ii]);
+                    ++cts[pr.response()(indices[ii], 0)];
+                }
+            }
+            for(int ll = 0; ll < oob_indices.size(); ++ll)
+            {
+                // update number of trees in which current sample is oob
+                ++oobCount[oob_indices[ll]];
+
+                // update number of oob samples in this tree.
+                ++total_oob; 
+                // get the predicted votes ---> tmp_prob;
+                int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),oob_indices[ll]));
+                Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                                                    rf.tree(index).parameters_,
+                                                    pos);
+                tmp_prob.init(0); 
+                for(int ii = 0; ii < class_count; ++ii)
+                {
+                    tmp_prob[ii] = node.prob_begin()[ii];
+                }
+                if(is_weighted)
+                {
+                    for(int ii = 0; ii < class_count; ++ii)
+                        tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
+                }
+                rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
+                int label = argMax(tmp_prob); 
+                
+            }
+        }else
+        {
+            for(int ll = 0; ll < rf.ext_param_.row_count_; ++ll)
+            {
+                // if the lth sample is oob...
+                if(!sm.is_used()[ll])
+                {
+                    // update number of trees in which current sample is oob
+                    ++oobCount[ll];
+
+                    // update number of oob samples in this tree.
+                    ++total_oob; 
+                    // get the predicted votes ---> tmp_prob;
+                    int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
+                    Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                                                        rf.tree(index).parameters_,
+                                                        pos);
+                    tmp_prob.init(0); 
+                    for(int ii = 0; ii < class_count; ++ii)
+                    {
+                        tmp_prob[ii] = node.prob_begin()[ii];
+                    }
+                    if(is_weighted)
+                    {
+                        for(int ii = 0; ii < class_count; ++ii)
+                            tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
+                    }
+                    rowVector(prob_oob, ll) += tmp_prob;
+                    int label = argMax(tmp_prob); 
+                    
+                }
+            }
+        }
+        // go through the ib samples; 
+    }
+
+    /** Normalise variable importance after the number of trees is known.
+     */
+    template<class RF, class PR>
+    void visit_at_end(RF & rf, PR & pr)
+    {
+        // ullis original metric and breiman style stuff
+        int totalOobCount =0;
+        int breimanstyle = 0;
+        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        {
+            if(oobCount[ll])
+            {
+                if(argMax(rowVector(prob_oob, ll)) != pr.response()(ll, 0))
+                   ++breimanstyle;
+                ++totalOobCount;
+            }
+        }
+        oob_breiman = double(breimanstyle)/totalOobCount; 
     }
 };
 
+
+/** Visitor that calculates different OOB error statistics
+ */
+class CompleteOOBInfo : public VisitorBase
+{
+    typedef MultiArrayShape<2>::type Shp;
+    int class_count;
+    bool is_weighted;
+    MultiArray<2,double> tmp_prob;
+    public:
+
+    
+    MultiArray<2, double>       oob_per_tree;
+    double                      oob_mean;
+    double                      oob_std;
+    
+    MultiArray<2, double>       prob_oob; 
+    double                      oob_breiman;
+
+    MultiArray<2, double>       oobCount;
+    MultiArray<2, double>       oobErrorCount;
+    double                      oob_per_tree2;
+
+    MultiArray<2, double>       breiman_per_tree;
+    MultiArray<4, double>       oobroc_per_tree;
+    
+    CompleteOOBInfo() : VisitorBase(), oob_mean(0), oob_std(0), oob_per_tree2(0)  {}
+
+    void save(std::string filen, std::string pathn)
+    {
+        if(*(pathn.end()-1) != '/')
+            pathn += "/";
+        const char* filename = filen.c_str();
+        MultiArray<2, double> temp(Shp(1,1), 0.0); 
+        writeHDF5(filename, (pathn + "oob_per_tree").c_str(), oob_per_tree);
+        writeHDF5(filename, (pathn + "oobroc_per_tree").c_str(), oobroc_per_tree);
+        writeHDF5(filename, (pathn + "breiman_per_tree").c_str(), breiman_per_tree);
+        temp[0] = oob_mean;
+        writeHDF5(filename, (pathn + "per_tree_error").c_str(), temp);
+        temp[0] = oob_std;
+        writeHDF5(filename, (pathn + "per_tree_error_std").c_str(), temp);
+        temp[0] = oob_breiman;
+        writeHDF5(filename, (pathn + "breiman_error").c_str(), temp);
+        temp[0] = oob_per_tree2;
+        writeHDF5(filename, (pathn + "ulli_error").c_str(), temp);
+    }
+    // negative value if sample was ib, number indicates how often.
+    //  value >=0  if sample was oob, 0 means fail 1, corrrect
+
+    template<class RF, class PR>
+    void visit_at_beginning(RF & rf, PR & pr)
+    {
+        class_count = rf.class_count();
+        if(class_count == 2)
+            oobroc_per_tree.reshape(MultiArrayShape<4>::type(2,2,rf.tree_count(), rf.tree_count()));
+        else
+            oobroc_per_tree.reshape(MultiArrayShape<4>::type(rf.class_count(),rf.class_count(),1, rf.tree_count()));
+        tmp_prob.reshape(Shp(1, class_count), 0); 
+        prob_oob.reshape(Shp(rf.ext_param().row_count_,class_count), 0);
+        is_weighted = rf.options().predict_weighted_;
+        oob_per_tree.reshape(Shp(1, rf.tree_count()), 0);
+        breiman_per_tree.reshape(Shp(1, rf.tree_count()), 0);
+        //do the first time called.
+        if(int(oobCount.size()) != rf.ext_param_.row_count_)
+        {
+            oobCount.reshape(Shp(rf.ext_param_.row_count_, 1), 0);
+            oobErrorCount.reshape(Shp(rf.ext_param_.row_count_,1), 0);
+        }
+    }
+
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
+    {
+        // go through the samples
+        int total_oob =0;
+        int wrong_oob =0;
+        for(int ll = 0; ll < rf.ext_param_.row_count_; ++ll)
+        {
+            // if the lth sample is oob...
+            if(!sm.is_used()[ll])
+            {
+                // update number of trees in which current sample is oob
+                ++oobCount[ll];
+
+                // update number of oob samples in this tree.
+                ++total_oob; 
+                // get the predicted votes ---> tmp_prob;
+                int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
+                Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                                                    rf.tree(index).parameters_,
+                                                    pos);
+                tmp_prob.init(0); 
+                for(int ii = 0; ii < class_count; ++ii)
+                {
+                    tmp_prob[ii] = node.prob_begin()[ii];
+                }
+                if(is_weighted)
+                {
+                    for(int ii = 0; ii < class_count; ++ii)
+                        tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
+                }
+                rowVector(prob_oob, ll) += tmp_prob;
+                int label = argMax(tmp_prob); 
+                
+                if(label != pr.response()(ll, 0))
+                {
+                    // update number of wrong oob samples in this tree.
+                    ++wrong_oob;
+                    // update number of trees in which current sample is wrong oob
+                    ++oobErrorCount[ll];
+                }
+            }
+        }
+        int breimanstyle = 0;
+        int totalOobCount = 0;
+        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        {
+            if(oobCount[ll])
+            {
+                if(argMax(rowVector(prob_oob, ll)) != pr.response()(ll, 0))
+                   ++breimanstyle;
+                ++totalOobCount;
+                if(oobroc_per_tree.shape(2) == 1)
+                {
+                    oobroc_per_tree(pr.response()(ll,0), argMax(rowVector(prob_oob, ll)),0 ,index)++;
+                }
+            }
+        }
+        if(oobroc_per_tree.shape(2) == 1)
+            oobroc_per_tree.bindOuter(index)/=totalOobCount;
+        if(oobroc_per_tree.shape(2) > 1)
+        {
+            MultiArrayView<3, double> current_roc 
+                    = oobroc_per_tree.bindOuter(index);
+            for(int gg = 0; gg < current_roc.shape(2); ++gg)
+            {
+                for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+                {
+                    if(oobCount[ll])
+                    {
+                        int pred = prob_oob(ll, 1) > (double(gg)/double(current_roc.shape(2)))?
+                                        1 : 0; 
+                        current_roc(pr.response()(ll, 0), pred, gg)+= 1; 
+                    }
+                }
+                current_roc.bindOuter(gg)/= totalOobCount;
+            }
+        }
+        breiman_per_tree[index] = double(breimanstyle)/double(totalOobCount);
+        oob_per_tree[index] = double(wrong_oob)/double(total_oob);
+        // go through the ib samples; 
+    }
+
+    /** Normalise variable importance after the number of trees is known.
+     */
+    template<class RF, class PR>
+    void visit_at_end(RF & rf, PR & pr)
+    {
+        // ullis original metric and breiman style stuff
+        oob_per_tree2 = 0; 
+        int totalOobCount =0;
+        int breimanstyle = 0;
+        for(int ll=0; ll < (int)rf.ext_param_.row_count_; ++ll)
+        {
+            if(oobCount[ll])
+            {
+                if(argMax(rowVector(prob_oob, ll)) != pr.response()(ll, 0))
+                   ++breimanstyle;
+                oob_per_tree2 += double(oobErrorCount[ll]) / oobCount[ll];
+                ++totalOobCount;
+            }
+        }
+        oob_per_tree2 /= totalOobCount; 
+        oob_breiman = double(breimanstyle)/totalOobCount; 
+        // mean error of each tree
+        MultiArrayView<2, double> mean(Shp(1,1), &oob_mean);
+        MultiArrayView<2, double> stdDev(Shp(1,1), &oob_std);
+        rowStatistics(oob_per_tree, mean, stdDev);
+    }
+};
 
 /** calculate variable importance while learning.
  */
@@ -948,5 +1285,39 @@ class VariableImportanceVisitor : public VisitorBase
     }
 };
 
+
+class RandomForestProgressVisitor : public VisitorBase {
+    public:
+    RandomForestProgressVisitor() : VisitorBase() {}
+
+    template<class RF, class PR, class SM, class ST>
+    void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index){
+        if(index != rf.options().tree_count_-1) {
+            std::cout << "\r[" << std::setw(10) << (index+1)/static_cast<double>(rf.options().tree_count_)*100 << "%]"
+                      << " (" << index+1 << " of " << rf.options().tree_count_ << ") done" << std::flush;
+        }
+        else {
+            std::cout << "\r[" << std::setw(10) << 100.0 << "%]" << std::endl;
+        }
+    }
+    
+    template<class RF, class PR>
+    void visit_at_end(RF const & rf, PR const & pr) {
+        std::string a = TOCS;
+        std::cout << "all " << rf.options().tree_count_ << " trees have been learned in " << a  << std::endl;
+    }
+    
+    template<class RF, class PR>
+    void visit_at_beginning(RF const & rf, PR const & pr) {
+        TIC;
+        std::cout << "growing random forest, which will have " << rf.options().tree_count_ << " trees" << std::endl;
+    }
+    
+    private:
+    USETICTOC;
+};
+
+} // namespace visitors
+} // namespace rf
 } // namespace vigra
 #endif // RF_VISITORS_HXX
