@@ -43,7 +43,7 @@
 namespace vigra
 {
 
-class SamplingOptions
+class RFSamplingOptions
 {
     public:
     typedef std::auto_ptr<vigra::ArrayVectorView<int> > strata_ptr_type;
@@ -55,19 +55,19 @@ class SamplingOptions
     ArrayVectorView<Int32> mem;
 
 
-    SamplingOptions(): sample_with_replacement(true),
+    RFSamplingOptions(): sample_with_replacement(true),
                         sample_stratified(false), sample_classes_individually(false),
                         use_internal_mem(true)
     { this->strata = strata_ptr_type(new vigra::ArrayVectorView<int>());
     }
 
-    SamplingOptions( SamplingOptions const& rhs): sample_with_replacement(rhs.sample_with_replacement),
+    RFSamplingOptions( RFSamplingOptions const& rhs): sample_with_replacement(rhs.sample_with_replacement),
                         sample_stratified(rhs.sample_stratified), sample_classes_individually(rhs.sample_classes_individually)
     {
         this->strata = strata_ptr_type(new vigra::ArrayVectorView<int>(*(rhs.strata)));
     }
 
-    void operator=(SamplingOptions const& rhs)
+    void operator=(RFSamplingOptions const& rhs)
     {
         this->sample_with_replacement = rhs.sample_with_replacement;
         this->sample_stratified = rhs.sample_stratified;
@@ -76,13 +76,13 @@ class SamplingOptions
         this->use_internal_mem = rhs.use_internal_mem;
         this->mem = rhs.mem;
     }
-    SamplingOptions& sampleWithReplacement(bool in =true)
+    RFSamplingOptions& sampleWithReplacement(bool in =true)
     {
         sample_with_replacement = in;
         return *this;
     }
 
-    SamplingOptions& useExternalMemory(ArrayVectorView<Int32> & mem_)
+    RFSamplingOptions& useExternalMemory(ArrayVectorView<Int32> & mem_)
     {
         this->use_internal_mem = false;
         this->mem = mem_;
@@ -90,14 +90,14 @@ class SamplingOptions
     }
 
 
-    SamplingOptions& sampleWithoutReplacement()
+    RFSamplingOptions& sampleWithoutReplacement()
     {
         sample_with_replacement = false;
         return *this;
     }
 
 
-    SamplingOptions& sampleStratified(vigra::ArrayVectorView<int> in)
+    RFSamplingOptions& sampleStratified(vigra::ArrayVectorView<int> in)
     {
 
         strata = strata_ptr_type(new vigra::ArrayVectorView<int>(in));
@@ -106,7 +106,7 @@ class SamplingOptions
         return *this;
     }
 
-    SamplingOptions& sampleClassesIndividually(vigra::ArrayVectorView<int> in)
+    RFSamplingOptions& sampleClassesIndividually(vigra::ArrayVectorView<int> in)
     {
         strata = strata_ptr_type(new vigra::ArrayVectorView<int>(in));
         sample_stratified = false;
@@ -114,7 +114,7 @@ class SamplingOptions
         return *this;
     }
 
-    SamplingOptions& resetStrata()
+    RFSamplingOptions& resetStrata()
     {
         strata.reset(new vigra::ArrayVectorView<int>());
         sample_stratified = false;
@@ -131,7 +131,7 @@ class SamplingOptions
 
 
 template<class Random =UniformIntRandomFunctor<RandomTT800> >
-class Sampler
+class RFSampler
 {
     public:
     typedef Int32                               IndexType;
@@ -153,7 +153,7 @@ class Sampler
         IndexArrayType        unused_indices_;
         IsUsedArrayType         is_used_;
 
-        void (Sampler::*sampling_func_ptr_)(void);
+        void (RFSampler::*sampling_func_ptr_)(void);
 
         void sample_stratified_w_rep()
         {
@@ -228,7 +228,7 @@ class Sampler
 
     public:
 
-    SamplingOptions options_;
+    RFSamplingOptions options_;
 
     IndexType const & operator[](int in)
     {
@@ -292,13 +292,13 @@ class Sampler
             used_indices_ = internal_used_indices_;
         }
         else if (!options_.use_internal_mem)
-            vigra_fail("Sampler::numOfSamples() : Sampler is using external memory - no resize possible");
+            vigra_fail("RFSampler::numOfSamples() : RFSampler is using external memory - no resize possible");
         return num_of_samples;
     }
 
     void init(  int numOfSamples ,
                 int maxIndex     ,
-                SamplingOptions const & opt)
+                RFSamplingOptions const & opt)
     {
         unused_indices_set = false;
         strata_indices_.clear();
@@ -387,7 +387,7 @@ class Sampler
               // Set sampling function
             if(options_.sample_with_replacement)
             {
-                sampling_func_ptr_ = &Sampler::sample_stratified_w_rep;
+                sampling_func_ptr_ = &RFSampler::sample_stratified_w_rep;
             }
             else
             {
@@ -399,7 +399,7 @@ class Sampler
                                                 "Not enough samples to sample classes individually //stratified and\
                                                     without replacement");
                 }
-                sampling_func_ptr_ = &Sampler::sample_stratified_wo_rep;
+                sampling_func_ptr_ = &RFSampler::sample_stratified_wo_rep;
             }
             // Allocate memory for output
             if(options_.use_internal_mem)
@@ -419,7 +419,7 @@ class Sampler
                     internal_used_indices_.resize(num_of_samples);
                     used_indices_ = internal_used_indices_;
                 }
-                sampling_func_ptr_ = &Sampler::sample_w_rep;
+                sampling_func_ptr_ = &RFSampler::sample_w_rep;
             }
             else
             {
@@ -435,7 +435,7 @@ class Sampler
                     }
                 }
 
-                sampling_func_ptr_ = &Sampler::sample_wo_rep;
+                sampling_func_ptr_ = &RFSampler::sample_wo_rep;
 
             }
         }
@@ -445,14 +445,14 @@ class Sampler
         }
     }
 
-    inline Sampler(int numOfSamples,int maxIndex, SamplingOptions const & opt, Random & rnd)
+    inline RFSampler(int numOfSamples,int maxIndex, RFSamplingOptions const & opt, Random & rnd)
     :
         randint(rnd)
     {
         init(numOfSamples,maxIndex, opt);
     }
 
-    inline Sampler(int numOfSamples, int maxIndex, SamplingOptions const & opt)
+    inline RFSampler(int numOfSamples, int maxIndex, RFSamplingOptions const & opt)
     {
          init(numOfSamples,maxIndex, opt);
     }
