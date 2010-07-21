@@ -176,11 +176,11 @@ class SamplerOptions
     <b>\#include</b> \<<a href="index__sampling_8hxx-source.html">vigra/index_sampling.hxx</a>\><br>
     Namespace: vigra
     
-    \code
-    // Create aSampler with default options, i.e. sample as many indices as there 
-    // are data elements, with replacement.
-    // (on average, the sample will contain 0.63*totalCount distinct indices)
+    Create a Sampler with default options, i.e. sample as many indices as there 
+    are data elements, with replacement. On average, the sample will contain 
+    <tt>0.63*totalCount</tt> distinct indices.
     
+    \code
     int totalCount = 10000;   // total number of data elements
     int numberOfSamples = 20; // repeat experiment 20 times 
     Sampler<> sampler(totalCount);
@@ -195,11 +195,11 @@ class SamplerOptions
         // create next sample
         sampler.sample();
     }
+    \endcode
     
+    Create a Sampler for stratified sampling, without replacement.
     
-    ////////////////////////////////////////////////////////////////
-    // Create a Sampler for stratified sampling, without replacement.
-    
+    \code
     // prepare the strata (i.e. specify which stratum each element belongs to)
     int stratumSize1 = 2000, stratumSize2 = 8000,
         totalCount = stratumSize1 + stratumSize2;
