@@ -45,18 +45,36 @@
 namespace vigra
 {
 
-class SamplingOptions
+/** \addtogroup MachineLearning Machine Learning
+**/
+//@{
+
+
+/**\brief Options object for the Sampler class.
+ 
+  <b>usage:</b>
+ 
+  \code
+  SamplerOptions opt =  SamplerOptions()
+                               .withReplacement()
+                               .sampleProportion(0.5);
+  \endcode
+ 
+  Note that the return value of all methods is <tt>*this</tt> which makes
+  concatenating of options as above possible.
+*/
+class SamplerOptions
 {
   public:
 
     double sample_proportion;
-    unsigned int sample_count;
+    unsigned int sample_size;
     bool   sample_with_replacement;
     bool   stratified_sampling;
     
-    SamplingOptions()
+    SamplerOptions()
     : sample_proportion(1.0),
-      sample_count(0), 
+      sample_size(0), 
       sample_with_replacement(true),
       stratified_sampling(false)
     {}
@@ -65,7 +83,7 @@ class SamplingOptions
          *
          * <br> Default: true
          */
-    SamplingOptions& withReplacement(bool in = true)
+    SamplerOptions& withReplacement(bool in = true)
     {
         sample_with_replacement = in;
         return *this;
@@ -75,29 +93,29 @@ class SamplingOptions
          *
          * <br> Default (if you don't call this function): false
          */
-    SamplingOptions& withoutReplacement(bool in = true)
+    SamplerOptions& withoutReplacement(bool in = true)
     {
         sample_with_replacement = !in;
         return *this;
     }
 
         /**\brief Draw the given number of samples.
-         * If stratifiedSampling is true, the count is equally distributed
-         * accross all strata (e.g. <tt>count / strataCount</tt> samples are taken 
-         * from each stratum).
+         * If stratifiedSampling is true, the \a size is equally distributed
+         * accross all strata (e.g. <tt>size / strataCount</tt> samples are taken 
+         * from each stratum, subject to rounding).
          *
          * <br> Default: 0 (i.e. determine the count by means of sampleProportion())
          */
-    SamplingOptions& sampleCount(unsigned int count)
+    SamplerOptions& sampleSize(unsigned int size)
     {
-        sample_count = count;
+        sample_size = size;
         return *this;
     }
 
 
         /**\brief Determine the number of samples to draw as a proportion of the total
          * number. That is, we draw <tt>count = totalCount * proportion</tt> samples. 
-         * This option is overridden when an absolute count is specified by sampleCount().
+         * This option is overridden when an absolute count is specified by sampleSize().
          * 
          * If stratifiedSampling is true, the count is equally distributed
          * accross all strata (e.g. <tt>totalCount * proportion / strataCount</tt> samples are taken 
@@ -105,10 +123,10 @@ class SamplingOptions
          *
          * <br> Default: 1.0
          */
-    SamplingOptions& sampleProportion(double proportion)
+    SamplerOptions& sampleProportion(double proportion)
     {
         vigra_precondition(proportion >= 0.0,
-               "SamplingOptions::sampleProportion(): argument must not be negative.");
+               "SamplerOptions::sampleProportion(): argument must not be negative.");
         sample_proportion = proportion;
         return *this;
     }
@@ -123,19 +141,107 @@ class SamplingOptions
          *
          * <br> Default (if you don't call this function): false
          */
-    SamplingOptions& stratified(bool in = true)
+    SamplerOptions& stratified(bool in = true)
     {
         stratified_sampling = in;
         return *this;
     }
 };
 
+/************************************************************/
+/*                                                          */
+/*                        Sampler                           */
+/*                                                          */
+/************************************************************/
+
+/** \brief Create random samples from a sequence of indices.
+
+    Selecting data items at random is a basic task of machine learning,
+    for example in boostrapping, RandomForest training, and cross validation.
+    This class implements various ways to select random samples via their indices. 
+    Indices are assumed to be consecutive in
+    the range <tt>0 &lt;= index &lt; total_sample_count</tt>.
+    
+    The class always contains a current sample which can be accessed by 
+    the index operator or by the function sampledIndices(). The indices
+    that are not in the current sample (out-of-bag indices) can be accessed
+    via the function oobIndices().
+    
+    The sampling method (with/without replacement, stratified or not) and the
+    number of samples to draw are determined by the option object 
+    SamplerOptions.
+    
+    <b>Usage:</b>
+    
+    <b>\#include</b> \<<a href="index__sampling_8hxx-source.html">vigra/index_sampling.hxx</a>\><br>
+    Namespace: vigra
+    
+    \code
+    // Create aSampler with default options, i.e. sample as many indices as there 
+    // are data elements, with replacement.
+    // (on average, the sample will contain 0.63*totalCount distinct indices)
+    
+    int totalCount = 10000;   // total number of data elements
+    int numberOfSamples = 20; // repeat experiment 20 times 
+    Sampler<> sampler(totalCount);
+    for(int k=0; k<numberOfSamples; ++k)
+    {
+        // process current sample
+        for(int i=0; i<sampler.sampleSize(); ++i)
+        {
+            int currentIndex = sampler[i];
+            processData(data[currentIndex]);
+        }
+        // create next sample
+        sampler.sample();
+    }
+    
+    
+    ////////////////////////////////////////////////////////////////
+    // Create a Sampler for stratified sampling, without replacement.
+    
+    // prepare the strata (i.e. specify which stratum each element belongs to)
+    int stratumSize1 = 2000, stratumSize2 = 8000,
+        totalCount = stratumSize1 + stratumSize2;
+    ArrayVerctor<int> strata(totalCount);
+    for(int i=0; i<stratumSize1; ++i)
+        strata[i] = 1;
+    for(int i=stratumSize1; i<stratumSize2; ++i)
+        strata[i] = 2;
+        
+    int sampleSize = 200; // i.e. sample 100 elements from each of the two strata
+    int numberOfSamples = 20; // repeat experiment 20 times 
+    Sampler<> stratifiedSampler(strata.begin(), strata.end(),
+                     SamplerOptions().withoutReplacement().stratified().sampleSize(sampleSize));
+
+    for(int k=0; k<numberOfSamples; ++k)
+    {
+        // process current sample
+        for(int i=0; i<sampler.sampleSize(); ++i)
+        {
+            int currentIndex = sampler[i];
+            processData(data[currentIndex]);
+        }
+        // create next sample
+        sampler.sample();
+    }
+    \endcode
+*/
 template<class Random = MersenneTwister >
 class Sampler
 {
   public:
+        /** Internal type of the indices.
+            Currently, 64-bit indices are not supported because this
+            requires extension of the random number generator classes.
+        */
     typedef Int32                               IndexType;
+    
     typedef ArrayVector     <IndexType>  IndexArrayType;
+    
+        /** Type of the array view object that is returned by 
+            sampledIndices() and oobIndices().
+        */
     typedef ArrayVectorView <IndexType>  IndexArrayViewType;
 
   private:
@@ -146,34 +252,34 @@ class Sampler
     
     static const int oobInvalid = -1;
 
-    int total_count_, sample_count_;
+    int total_count_, sample_size_;
 	mutable int current_oob_count_;
     StrataIndicesType     strata_indices_;
-    StrataSizesType       strata_sample_count_;
+    StrataSizesType       strata_sample_size_;
     IndexArrayType        current_sample_;
     mutable IndexArrayType        current_oob_sample_;
     IsUsedArrayType       is_used_;
     Random random_;
-    SamplingOptions options_;
+    SamplerOptions options_;
 
     void initStrataCount()
     {
         // compute how many samples to take from each stratum
-        // (may be unequal if sample_count_ is not a multiple of strataCount())
-        int strata_sample_count = (int)std::ceil(double(sample_count_) / strataCount());
-        int strata_total_count = strata_sample_count * strataCount();
+        // (may be unequal if sample_size_ is not a multiple of strataCount())
+        int strata_sample_size = (int)std::ceil(double(sample_size_) / strataCount());
+        int strata_total_count = strata_sample_size * strataCount();
 
         for(StrataIndicesType::iterator i = strata_indices_.begin(); 
              i != strata_indices_.end(); ++i)
         {
-            if(strata_total_count > sample_count_)
+            if(strata_total_count > sample_size_)
             {
-                strata_sample_count_[i->first] = strata_sample_count - 1;
+                strata_sample_size_[i->first] = strata_sample_size - 1;
                 --strata_total_count;
             }
             else
             {
-                strata_sample_count_[i->first] = strata_sample_count;
+                strata_sample_size_[i->first] = strata_sample_size;
             }
         }
     }
@@ -186,20 +292,20 @@ class Sampler
             indices according to the options passed. If no options are given, 
             <tt>totalCount</tt> indices will be drawn with replacement.
         */
-    Sampler(UInt32 totalCount, SamplingOptions const & opt = SamplingOptions(), 
+    Sampler(UInt32 totalCount, SamplerOptions const & opt = SamplerOptions(), 
             Random const & rnd = Random(RandomSeed))
     : total_count_(totalCount),
-      sample_count_(opt.sample_count == 0
+      sample_size_(opt.sample_size == 0
                          ? (int)(std::ceil(total_count_ * opt.sample_proportion))
-                         : opt.sample_count),
+                         : opt.sample_size),
       current_oob_count_(oobInvalid),
-      current_sample_(sample_count_),
+      current_sample_(sample_size_),
       current_oob_sample_(total_count_),
       is_used_(total_count_),
       random_(rnd),
       options_(opt)
     {
-        vigra_precondition(opt.sample_with_replacement || sample_count_ <= total_count_,
+        vigra_precondition(opt.sample_with_replacement || sample_size_ <= total_count_,
           "Sampler(): Cannot draw without replacement when data size is smaller than sample count.");
           
         vigra_precondition(!opt.stratified_sampling,
@@ -219,25 +325,25 @@ class Sampler
             <tt>strataBegin</tt> and <tt>strataEnd</tt> must refer to a sequence 
             which specifies for each sample the stratum it belongs to. The
             total number of data objects will be set to <tt>strataEnd - strataBegin</tt>.
-            Equally many samples (+- 1) will be drawn from each stratum, unless the 
-            option object explicitly requests unstratified sampling, in which case the 
-            strata are ignored.
+            Equally many samples (subject to rounding) will be drawn from each stratum, 
+            unless the option object explicitly requests unstratified sampling, 
+            in which case the strata are ignored.
         */
     template <class Iterator>
-    Sampler(Iterator strataBegin, Iterator strataEnd, SamplingOptions const & opt = SamplingOptions(), 
+    Sampler(Iterator strataBegin, Iterator strataEnd, SamplerOptions const & opt = SamplerOptions(), 
             Random const & rnd = Random(RandomSeed))
     : total_count_(strataEnd - strataBegin),
-      sample_count_(opt.sample_count == 0
+      sample_size_(opt.sample_size == 0
                          ? (int)(std::ceil(total_count_ * opt.sample_proportion))
-                         : opt.sample_count),
+                         : opt.sample_size),
       current_oob_count_(oobInvalid),
-      current_sample_(sample_count_),
+      current_sample_(sample_size_),
       current_oob_sample_(total_count_),
       is_used_(total_count_),
       random_(rnd),
       options_(opt)
     {
-        vigra_precondition(opt.sample_with_replacement || sample_count_ <= total_count_,
+        vigra_precondition(opt.sample_with_replacement || sample_size_ <= total_count_,
           "Sampler(): Cannot draw without replacement when data size is smaller than sample count.");
           
         // copy the strata indices
@@ -245,61 +351,23 @@ class Sampler
         {
             strata_indices_[*strataBegin].push_back(i);
         }
-        vigra_precondition(sample_count_ >= (int)strata_indices_.size(),
+        vigra_precondition(sample_size_ >= (int)strata_indices_.size(),
             "Sampler(): Requested sample count must be at least as large as the number of strata.");
 
         initStrataCount();
         sample();
     }
 
-        /** Return the k-th sampled index.
+        /** Return the k-th index in the current sample.
          */
-    IndexType const & operator[](int k)
+    IndexType operator[](int k) const
     {
         return current_sample_[k];
     }
 
         /** Create a new sample.
          */
-    void sample()
-    {
-        current_oob_count_ = oobInvalid;
-        is_used_.init(false);
-        
-        if(options_.sample_with_replacement)
-        {
-            //Go thru all strata
-            int j = 0;
-            StrataIndicesType::iterator iter;
-            for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
-            {
-                // do sampling with replacement in each strata and copy data.
-                int stratum_size = iter->second.size();
-                for(int i = 0; i < (int)strata_sample_count_[iter->first]; ++i, ++j)
-                {
-                    current_sample_[j] = iter->second[random_.uniformInt(stratum_size)];
-                    is_used_[current_sample_[j]] = true;
-                }
-            }
-        }
-        else
-        {
-            //Go thru all strata
-            int j = 0;
-            StrataIndicesType::iterator iter;
-            for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
-            {
-                // do sampling without replacement in each strata and copy data.
-                int stratum_size = iter->second.size();
-                for(int i = 0; i < (int)strata_sample_count_[iter->first]; ++i, ++j)
-                {
-                    std::swap(iter->second[i], iter->second[i+ random_.uniformInt(stratum_size - i)]);
-                    current_sample_[j] = iter->second[i];
-                    is_used_[current_sample_[j]] = true;
-                }
-            }
-        }
-    }
+    void sample();
 
         /** The total number of data elements.
          */
@@ -308,15 +376,23 @@ class Sampler
         return total_count_;
     }
 
-        /** The number of data elements to be sampled.
+        /** The number of data elements that have been sampled.
          */
-    int sampleCount() const
+    int sampleSize() const
     {
-        return sample_count_;
+        return sample_size_;
+    }
+
+        /** Same as sampleSize().
+         */
+    int size() const
+    {
+        return sample_size_;
     }
 
         /** The number of strata to be used.
-            will be 1 if no strata are given.
+            Will be 1 if no strata are given. Will be ognored when
+            stratifiedSampling() is false.
          */
     int strataCount() const
     {
@@ -365,6 +441,51 @@ class Sampler
         return current_oob_sample_.subarray(0, current_oob_count_);
     }
 };
+
+
+template<class Random>
+void Sampler<Random>::sample()
+{
+    current_oob_count_ = oobInvalid;
+    is_used_.init(false);
+    
+    if(options_.sample_with_replacement)
+    {
+        //Go thru all strata
+        int j = 0;
+        StrataIndicesType::iterator iter;
+        for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
+        {
+            // do sampling with replacement in each strata and copy data.
+            int stratum_size = iter->second.size();
+            for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
+            {
+                current_sample_[j] = iter->second[random_.uniformInt(stratum_size)];
+                is_used_[current_sample_[j]] = true;
+            }
+        }
+    }
+    else
+    {
+        //Go thru all strata
+        int j = 0;
+        StrataIndicesType::iterator iter;
+        for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
+        {
+            // do sampling without replacement in each strata and copy data.
+            int stratum_size = iter->second.size();
+            for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
+            {
+                std::swap(iter->second[i], iter->second[i+ random_.uniformInt(stratum_size - i)]);
+                current_sample_[j] = iter->second[i];
+                is_used_[current_sample_[j]] = true;
+            }
+        }
+    }
+}
+
+
+//@}
 
 } // namespace vigra
 

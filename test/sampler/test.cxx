@@ -444,17 +444,17 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
     {
         // check basic attributes
         Sampler<> sampler( totalDataCount, 
-            SamplingOptions().withReplacement(withReplacement).sampleCount(numOfSamples));
+            SamplerOptions().withReplacement(withReplacement).sampleSize(numOfSamples));
         shouldEqual(sampler.totalCount(), totalDataCount);
-        shouldEqual(sampler.sampleCount(), numOfSamples);
+        shouldEqual(sampler.sampleSize(), numOfSamples);
         shouldEqual(sampler.strataCount(), 1);
         shouldEqual(sampler.stratifiedSampling(), false);
         shouldEqual(sampler.withReplacement(), withReplacement);
 
         Sampler<> samplerProportional( totalDataCount, 
-            SamplingOptions().withReplacement(withReplacement).sampleProportion(0.5));
+            SamplerOptions().withReplacement(withReplacement).sampleProportion(0.5));
         shouldEqual(samplerProportional.totalCount(), totalDataCount);
-        shouldEqual(samplerProportional.sampleCount(), numOfSamples);
+        shouldEqual(samplerProportional.sampleSize(), numOfSamples);
         shouldEqual(samplerProportional.strataCount(), 1);
         shouldEqual(samplerProportional.withReplacement(), withReplacement);
         
@@ -501,7 +501,7 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
         try
         {
             Sampler<> sampler( 2, 
-                 SamplingOptions().withoutReplacement().sampleCount(9));
+                 SamplerOptions().withoutReplacement().sampleSize(9));
             failTest("No exception thrown when there are too few data for sampling.");
         }
         catch(PreconditionViolation &)
@@ -533,9 +533,9 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     {
         int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
-             SamplingOptions().withReplacement(withReplacement).sampleCount(10).stratified());
+             SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         shouldEqual(sampler.totalCount(), totalDataCount);
-        shouldEqual(sampler.sampleCount(), 10);
+        shouldEqual(sampler.sampleSize(), 10);
         shouldEqual(sampler.strataCount(), 2);
         shouldEqual(sampler.stratifiedSampling(), true);
         shouldEqual(sampler.withReplacement(), withReplacement);
@@ -578,8 +578,8 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     {
         int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
-             SamplingOptions().withReplacement(withReplacement).sampleCount(9).stratified());
-        shouldEqual(sampler.sampleCount(), 9);
+             SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
+        shouldEqual(sampler.sampleSize(), 9);
 
         ArrayVector<bool> wasPicked(totalDataCount, false);
         for(int ii = 0; ii < 4; ++ii)
@@ -616,7 +616,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     {
         int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
-             SamplingOptions().withReplacement(withReplacement).sampleCount(10).stratified());
+             SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
 
         for(int ii = 0; ii < 5; ++ii)
         {
@@ -637,7 +637,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     try
     {
         Sampler<> sampler( strata.begin(), strata.end(), 
-             SamplingOptions().withReplacement(withReplacement).sampleCount(2).stratified());
+             SamplerOptions().withReplacement(withReplacement).sampleSize(2).stratified());
         failTest("No exception thrown when there are too few data for stratified sampling.");
     }
     catch(PreconditionViolation &)
@@ -646,13 +646,16 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
 
 void SamplerTests::testSamplingWithoutReplacementChi2()
 {
-    // check that all permutations of the indices occur with about equal frequency
-    // use fixed random numbers so that the sampling is reproducible 
+    // Check that all permutations of the indices occur with about equal frequency.
+    // (Residuals are Poisson distributed, which is approximated by a Gaussian
+    //  distribution with data-dependent variance, so that conformance can be checked
+    //  by a chi-square test.)
+    // Use fixed random numbers so that the sampling is reproducible.
     int nsamples = 120000;
     int nclasses = 120;
     Sampler<> sampler( 5, 
-                SamplingOptions().withoutReplacement().sampleCount(5),
-                MersenneTwister(987928));
+                SamplerOptions().withoutReplacement().sampleSize(5),
+                MersenneTwister());
     std::map<unsigned int, int> wierdmap;
     std::map<unsigned int , int>::iterator iter;
     for(int ii = 0; ii < 1000; ++ii)
@@ -667,7 +670,10 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
         }
         wierdmap[hash] = 0;
     }
+    
+    // check that all 120 permutations occured after 1000 trials
     shouldEqual(wierdmap.size(), nclasses);
+    
     for(int ii = 0; ii < nsamples; ++ii)
     {
         sampler.sample();
@@ -686,21 +692,28 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
     {
         chi_squared += sq(iter->second - ratio)/ratio;
     }
-    should(chi2CDF(119, chi_squared) < 0.1);
+    
+    // check that we are in the 80% quantile of the expected distribution
+    shouldEqualTolerance (0, chi2CDF(119, chi_squared)-0.5, 0.4);
 }
 
 void SamplerTests::testSamplingWithReplacementChi2()
 {
+    // Check that samples are selected with uniform probability
+    // (Residuals are Poisson distributed, which is approximated by a Gaussian
+    //  distribution with data-dependent variance, so that conformance can be checked
+    //  by a chi-square test.)
+    // Use fixed random numbers so that the sampling is reproducible.
     vigra::ArrayVector<int> observed(10);
     observed.init(0);
     int totalDataCount = 10;
-    int numOfSamples = 1000000;
+    int numOfSamples = 100000;
     double chi_squared = 0,
            ratio = double(numOfSamples) / totalDataCount;
 
     {
         Sampler<> sampler(totalDataCount, 
-             SamplingOptions().withReplacement().sampleCount(numOfSamples),
+             SamplerOptions().withReplacement().sampleSize(numOfSamples),
              MersenneTwister());
 
         for(int ii = 0; ii < numOfSamples; ++ii)
@@ -711,22 +724,24 @@ void SamplerTests::testSamplingWithReplacementChi2()
         {
             chi_squared += sq(observed[ii] - ratio)/ratio;
         }
-        should(chi2CDF(9, chi_squared) < 0.1);
+        // check that we are in the 80% quantile of the expected distribution
+        shouldEqualTolerance (0, chi2CDF(9, chi_squared)-0.5, 0.4);
     }
+
+    /* when sampling k times without replacement
+    the probability p of a sample not being pickes is ((k-1)/k)^k
+    The Distribution of the number of samples not being choosen is a
+    Binomial distribution with n = k and p = ((k-1)/k)^k.
+    The expectation value of a Binomial Distribution is n*p ==>
+    The percentage of samples not used is (n*p)/k = p
+    For large n p converges to 0.366 => numpositives should be
+    around 0.63 +/- 0.01 */
     totalDataCount = 10000;
     {
         Sampler<> sampler( totalDataCount, 
-             SamplingOptions().withReplacement().sampleCount(totalDataCount));
+             SamplerOptions().withReplacement().sampleSize(totalDataCount));
         double numPositives = double(totalDataCount - sampler.oobIndices().size()) / totalDataCount;
 
-        /* when sampling k times without replacement
-        the probability p of a sample not being pickes is ((k-1)/k)^k
-        The Distribution of the number of samples not being choosen is a
-        Binomial distribution with n = k and p = ((k-1)/k)^k.
-        The expectation value of a Binomial Distribution is n*p ==>
-        The percentage of samples not used is (n*p)/k = p
-        For large n p converges to 0.366 => numpositives should be
-        around 0.63 +/- 0.01 */
         shouldEqualTolerance (0, numPositives-0.63, 0.01);
     }
 }
