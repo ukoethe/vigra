@@ -259,7 +259,7 @@ class Sampler
     IndexArrayType        current_sample_;
     mutable IndexArrayType        current_oob_sample_;
     IsUsedArrayType       is_used_;
-    Random random_;
+    Random const & random_;
     SamplerOptions options_;
 
     void initStrataCount()
@@ -317,7 +317,8 @@ class Sampler
             strata_indices_[0][i] = i;
 
         initStrataCount();
-        sample();
+        //this is screwing up the random forest tests.
+        //sample();
     }
     
         /** Create a sampler for stratified sampling.
@@ -347,15 +348,26 @@ class Sampler
           "Sampler(): Cannot draw without replacement when data size is smaller than sample count.");
           
         // copy the strata indices
-        for(int i = 0; strataBegin != strataEnd; ++i, ++strataBegin)
+        if(opt.stratified_sampling)
         {
-            strata_indices_[*strataBegin].push_back(i);
+            for(int i = 0; strataBegin != strataEnd; ++i, ++strataBegin)
+            {
+                strata_indices_[*strataBegin].push_back(i);
+            }
         }
+        else
+        {
+            strata_indices_[0].resize(total_count_);
+            for(int i=0; i<total_count_; ++i)
+                strata_indices_[0][i] = i;
+        }
+            
         vigra_precondition(sample_size_ >= (int)strata_indices_.size(),
             "Sampler(): Requested sample count must be at least as large as the number of strata.");
 
         initStrataCount();
-        sample();
+        //this is screwing up the random forest tests.
+        //sample();
     }
 
         /** Return the k-th index in the current sample.
@@ -439,6 +451,10 @@ class Sampler
             }
         }
         return current_oob_sample_.subarray(0, current_oob_count_);
+    }
+    IsUsedArrayType const & is_used() const
+    {
+        return is_used_;
     }
 };
 
