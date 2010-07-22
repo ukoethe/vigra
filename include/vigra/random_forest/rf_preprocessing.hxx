@@ -209,9 +209,9 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 
 	/** Access processed strata
 	 */
-	MultiArrayView<2, LabelInt>&  strata()
+	ArrayVectorView < LabelInt>  strata()
 	{
-		return intLabels_;
+		return ArrayVectorView<LabelInt>(intLabels_.size(), intLabels_.data());
 	}
 
 	/** Access strata fraction sized - not used currently
