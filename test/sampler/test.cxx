@@ -458,6 +458,8 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
         shouldEqual(samplerProportional.strataCount(), 1);
         shouldEqual(samplerProportional.withReplacement(), withReplacement);
         
+        sampler.sample();
+        samplerProportional.sample();
         // check that indices are either sampled or out-of-bag
         {
             ArrayVector<bool> wasPicked(totalDataCount, false);
@@ -539,6 +541,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         shouldEqual(sampler.strataCount(), 2);
         shouldEqual(sampler.stratifiedSampling(), true);
         shouldEqual(sampler.withReplacement(), withReplacement);
+        sampler.sample();
         if(withReplacement)
             should(sampler.sampledIndices().size()+sampler.oobIndices().size() >= (unsigned int)totalDataCount);
         else
@@ -579,6 +582,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
+        sampler.sample();
         shouldEqual(sampler.sampleSize(), 9);
 
         ArrayVector<bool> wasPicked(totalDataCount, false);
@@ -617,6 +621,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
+        sampler.sample();
 
         for(int ii = 0; ii < 5; ++ii)
         {
@@ -716,6 +721,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
              SamplerOptions().withReplacement().sampleSize(numOfSamples),
              MersenneTwister());
 
+        sampler.sample();
         for(int ii = 0; ii < numOfSamples; ++ii)
         {
             observed[sampler.sampledIndices()[ii]]++;
@@ -740,6 +746,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
     {
         Sampler<> sampler( totalDataCount, 
              SamplerOptions().withReplacement().sampleSize(totalDataCount));
+        sampler.sample();
         double numPositives = double(totalDataCount - sampler.oobIndices().size()) / totalDataCount;
 
         shouldEqualTolerance (0, numPositives-0.63, 0.01);
