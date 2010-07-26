@@ -72,24 +72,11 @@ namespace vigra
 namespace detail
 {
 
-/* todo - remove and make the labels parameter in the sampling options
- * const*/
-class staticMultiArrayViewHelper
-{
-    public:
-        static vigra::MultiArrayView<2, Int32> array;
-    public:
-        friend RFSamplingOptions
-        createSamplingOptions(vigra::RandomForestOptions& RF_opt,
-                              vigra::MultiArrayView<2, int> & labels);
-};
 
 
 /* \brief sampling option factory function
  */
-SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt,
-                                   MultiArrayView<2, Int32> & labels
-                                        = staticMultiArrayViewHelper::array)
+SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
 {
     SamplerOptions return_opt;
     return_opt.withReplacement(RF_opt.sample_with_replacement_);
