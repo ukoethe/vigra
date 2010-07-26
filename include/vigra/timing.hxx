@@ -37,9 +37,9 @@
 
 #ifndef VIGRA_TIMING_HXX
 #define VIGRA_TIMING_HXX
-
 #ifndef VIGRA_NO_TIMING
 
+#include <iostream>
 #include <sstream>
 #ifdef MULTI_TICTOC
     #include <vector>

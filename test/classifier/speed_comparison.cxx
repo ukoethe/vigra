@@ -38,11 +38,11 @@ int main(int argc, char ** argv)
     std::cerr << "Learning New Random Forest:" << std::endl;
     TIC;
     rf_new.learn(features, labels, rf_default(), rf_default(), rf_default(), random);
-    std::cerr << TOC<< std::endl;
+    TOC;
     std::cerr << "Learning Old Random Forest:" << std::endl;
     TIC;
     rf_old.learn(features, labels, random_old); 
-    std::cerr << TOC << std::endl;
+    TOC;
     return 0;
 
 }
