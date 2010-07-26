@@ -703,7 +703,7 @@ public:
                 min_gini_       = loss; 
 #endif
                 min_index_      = next - begin +1 ;
-                min_threshold_  = (column(*next,g) + column(*(next +1), g))/2;
+                min_threshold_  = (double(column(*next,g)) + double(column(*(next +1), g)))/2.0;
             }
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);

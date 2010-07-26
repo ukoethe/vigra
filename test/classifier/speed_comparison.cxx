@@ -1,3 +1,5 @@
+//We need to undefine NDEBUG so that we have TIC, TOC available!
+#undef NDEBUG
 
 #include <vigra/timing.hxx>
 USETICTOC;

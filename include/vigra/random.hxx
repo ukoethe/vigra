@@ -40,7 +40,7 @@
 #include "mathutil.hxx"
 #include "functortraits.hxx"
 
-#include <time.h>
+#include <ctime>
 
 namespace vigra {
 
@@ -106,8 +106,9 @@ void seed(Iterator init, UInt32 key_length, RandomState<EngineTag> & engine)
 template <RandomEngineTag EngineTag>
 void seed(RandomSeedTag, RandomState<EngineTag> & engine)
 {
-    UInt32 init[2] = { (UInt32)time(0), (UInt32)clock() };
-    seed(init, 2, engine);
+    static UInt32 globalCount = 0;
+    UInt32 init[3] = { (UInt32)time(0), (UInt32)clock(), ++globalCount };
+    seed(init, 3, engine);
 }
 
 
@@ -544,9 +545,17 @@ double RandomNumberGenerator<Engine>::normal() const
     */
 typedef RandomNumberGenerator<>  RandomTT800; 
 
+    /** Shorthand for the TT800 random number generator class (same as RandomTT800).
+    */
+typedef RandomNumberGenerator<>  TemperedTwister; 
+
     /** Shorthand for the MT19937 random number generator class.
     */
 typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > RandomMT19937;
+
+    /** Shorthand for the MT19937 random number generator class (same as RandomMT19937).
+    */
+typedef RandomNumberGenerator<detail::RandomState<detail::MT19937> > MersenneTwister;
 
     /** Access the global (program-wide) instance of the TT800 random number generator.
     */

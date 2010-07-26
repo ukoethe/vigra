@@ -55,7 +55,7 @@
 #include "random_forest/rf_decisionTree.hxx"
 #include "random_forest/rf_visitors.hxx"
 #include "random_forest/rf_region.hxx"
-#include "random_forest/rf_sampling.hxx"
+#include "index_sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
 #include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
@@ -79,7 +79,7 @@ class staticMultiArrayViewHelper
     public:
         static vigra::MultiArrayView<2, Int32> array;
     public:
-        friend SamplingOptions
+        friend RFSamplingOptions
         createSamplingOptions(vigra::RandomForestOptions& RF_opt,
                               vigra::MultiArrayView<2, int> & labels);
 };
@@ -87,25 +87,13 @@ class staticMultiArrayViewHelper
 
 /* \brief sampling option factory function
  */
-SamplingOptions make_sampler_opt ( RandomForestOptions     & RF_opt,
+SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt,
                                    MultiArrayView<2, Int32> & labels
                                         = staticMultiArrayViewHelper::array)
 {
-    SamplingOptions return_opt;
-    return_opt.sample_with_replacement = RF_opt.sample_with_replacement_;
-    if(labels.data() != 0)
-    {
-        if(RF_opt.stratification_method_ == RF_EQUAL)
-            return_opt
-                .sampleClassesIndividually(
-                    ArrayVectorView<int>(labels.size(),
-                                         labels.data()));
-        else if(RF_opt.stratification_method_ == RF_PROPORTIONAL)
-            return_opt
-                .sampleStratified(
-                    ArrayVectorView<int>(labels.size(),
-                                         labels.data()));
-    }
+    SamplerOptions return_opt;
+    return_opt.withReplacement(RF_opt.sample_with_replacement_);
+    return_opt.stratified(RF_opt.stratification_method_ == RF_EQUAL);
     return return_opt;
 }
 }//namespace detail
@@ -457,7 +445,7 @@ class RandomForest
                 Stop_t                              stop)
 
     {
-        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         learn(  features, 
                 response,
                 visitor, 
@@ -823,23 +811,22 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
      *          and is making code slower according to me.
      *          Comment from Nathan: This is copied from Rahul, so me=Rahul
      */
-    Sampler<RandFunctor_t > sampler(ext_param().row_count_,
-                                    ext_param().actual_msample_,
-                                    detail::make_sampler_opt(options_,
-                                                     preprocessor.strata()),
-                                    randint);
-
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                               preprocessor.strata().end(),
+                               detail::make_sampler_opt(options_)
+                                        .sampleSize(ext_param().actual_msample_),
+                                    random);
     //initialize First region/node/stack entry
     sampler
         .sample();
 
     StackEntry_t
-        first_stack_entry(  sampler.used_indices().begin(),
-                            sampler.used_indices().end(),
+        first_stack_entry(  sampler.sampledIndices().begin(),
+                            sampler.sampledIndices().end(),
                             ext_param_.class_count_);
     first_stack_entry
-        .set_oob_range(     sampler.unused_indices().begin(),
-                            sampler.unused_indices().end());
+        .set_oob_range(     sampler.oobIndices().begin(),
+                            sampler.oobIndices().end());
     online_visitor_.reset_tree(treeId);
     online_visitor_.tree_id=treeId;
     trees_[treeId].reset();
@@ -929,14 +916,11 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    /**\todo    replace this crappy class out. It uses function pointers.
-     *          and is making code slower according to me
-     */
-    Sampler<RandFunctor_t > sampler(ext_param().actual_msample_,
-                                    ext_param().row_count_,
-                                    detail::make_sampler_opt(options_,
-                                                     preprocessor.strata()),
-                                    randint);
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                               preprocessor.strata().end(),
+                               detail::make_sampler_opt(options_)
+                                        .sampleSize(ext_param().actual_msample_),
+                                    random);
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
@@ -947,12 +931,12 @@ void RandomForest<LabelType, PreprocessorTag>::
         sampler
             .sample();  
         StackEntry_t
-            first_stack_entry(  sampler.used_indices().begin(),
-                                sampler.used_indices().end(),
+            first_stack_entry(  sampler.sampledIndices().begin(),
+                                sampler.sampledIndices().end(),
                                 ext_param_.class_count_);
         first_stack_entry
-            .set_oob_range(     sampler.unused_indices().begin(),
-                                sampler.unused_indices().end());
+            .set_oob_range(     sampler.oobIndices().begin(),
+                                sampler.oobIndices().end());
         trees_[ii]
             .learn(             preprocessor.features(),
                                 preprocessor.response(),
