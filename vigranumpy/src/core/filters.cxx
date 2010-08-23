@@ -82,7 +82,7 @@ void defineFilters2D()
     
     def("nonlinearDiffusion", 
         registerConverters(&pythonNonlinearDiffusion2D<float>),
-        (arg("image"), arg("edgeThreshold"), arg("scale")),
+        (arg("image"), arg("edgeThreshold"), arg("scale"), arg("out")=python::object()),
         "Perform edge-preserving smoothing at the given scale."
         "\n\n"
         "For details see nonlinearDiffusion_ in the vigra C++ documentation.\n");
