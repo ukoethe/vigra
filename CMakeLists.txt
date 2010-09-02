@@ -134,11 +134,6 @@ INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
 ##################################################
 INCLUDE(CPackConfig)
 
-# configure version header
-CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/configVersion.hxx.in
-		${PROJECT_BINARY_DIR}/include/vigra/configVersion.hxx
-		@ONLY)
-
 ##################################################
 #
 #  enable other non-CMake projects to find Vigra
