@@ -7,9 +7,19 @@ cmake_minimum_required(VERSION 2.6)
 ##################################################
 
 PROJECT(vigra)
-SET(vigra_version_short 1.7)
-SET(vigra_version 1.7.1)
-SET(vigra_year 2010)
+
+# read the current version from configVersion.hxx
+file(READ ${vigra_SOURCE_DIR}/include/vigra/configVersion.hxx VIGRA_VERSION_FILE)
+string(REGEX MATCH "VIGRA_VERSION_MAJOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_FILE})
+string(REGEX REPLACE "VIGRA_VERSION_MAJOR[ \t\n]" "" VIGRA_VERSION_MAJOR ${VIGRA_VERSION_MAJOR})
+string(REGEX MATCH "VIGRA_VERSION_MINOR[ \t\n]+[^ \t\n]+" VIGRA_VERSION_MINOR ${VIGRA_VERSION_FILE})
+string(REGEX REPLACE "VIGRA_VERSION_MINOR[ \t\n]" "" VIGRA_VERSION_MINOR ${VIGRA_VERSION_MINOR})
+string(REGEX MATCH "VIGRA_VERSION_PATCH[ \t\n]+[^ \t\n]+" VIGRA_VERSION_PATCH ${VIGRA_VERSION_FILE})
+string(REGEX REPLACE "VIGRA_VERSION_PATCH[ \t\n]" "" VIGRA_VERSION_PATCH ${VIGRA_VERSION_PATCH})
+
+SET(vigra_version_short ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR})
+SET(vigra_version ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR}.${VIGRA_VERSION_PATCH})
+message("Configuring VIGRA version ${vigra_version} ${vigra_year}")
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
@@ -115,8 +125,6 @@ ENDIF()
 ##################################################
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
-		DESTINATION include)
-INSTALL(DIRECTORY ${PROJECT_BINARY_DIR}/include/vigra
 		DESTINATION include)
 
 ##################################################
