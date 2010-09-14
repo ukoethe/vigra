@@ -1235,7 +1235,7 @@ public:
     }
 
         /** Get the difference vector (Diff2D) from the center to the current neighbor. */
-    Diff2D const & diff() const
+    typename NEIGHBOROFFSETCIRCULATOR::value_type const & diff() const
     {
         return neighborCode_.diff();
     }
@@ -1465,7 +1465,7 @@ public:
     }
 
         /** Get the difference vector (Diff2D) from the center to the current neighbor. */
-    Diff2D const & diff() const
+    typename NeighborCode::difference_type const & diff() const
     {
         return BaseType::diff();
     }
