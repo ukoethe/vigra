@@ -19,7 +19,7 @@ string(REGEX REPLACE "VIGRA_VERSION_PATCH[ \t\n]" "" VIGRA_VERSION_PATCH ${VIGRA
 
 SET(vigra_version_short ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR})
 SET(vigra_version ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR}.${VIGRA_VERSION_PATCH})
-message("Configuring VIGRA version ${vigra_version} ${vigra_year}")
+message("Configuring VIGRA version ${vigra_version}")
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
@@ -28,7 +28,7 @@ include(VigraSetDefaults)
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
 IF (MSVC)
-    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SECURE_SCL=0)
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SECURE_SCL=0 -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
 ##################################################
