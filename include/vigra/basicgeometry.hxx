@@ -342,6 +342,7 @@ reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
+// names clash with sys/types.h on Mac OS / Darwin, see docs below
 enum Transpose{major = 1, minor = 2};
 
 /** \brief Transpose an image over the major or minor diagonal.
@@ -353,6 +354,9 @@ enum Transpose{major = 1, minor = 2};
     <tt>vigra::major</tt> and <tt>vigra::minor</tt>. The two directions 
     can also be "or"ed together to perform both reflections simultaneously 
     (see example below) -- this is the same as a 180 degree rotation.
+    (Caution: When doing multi-platform development, you should be
+    aware that some <sys/types.h> define major/minor, too.  Do not omit
+    the vigra namespace prefix.)
     
     <b> Declarations:</b>
     
