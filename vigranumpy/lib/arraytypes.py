@@ -424,9 +424,9 @@ class Image(_VigraArray):
         yxImage = self.swapaxes(0, 1)
 
         if self.channels == 1:
-            q = qimage2ndarray.gray2qimage(yxImage)
+            q = qimage2ndarray.gray2qimage(yxImage, normalize)
         else:
-            q = qimage2ndarray.array2qimage(yxImage)
+            q = qimage2ndarray.array2qimage(yxImage, normalize)
 
         return q
         
