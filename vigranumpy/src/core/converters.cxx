@@ -216,7 +216,7 @@ struct MultiArrayShapeConverter
         if(obj == 0 || !PySequence_Check(obj) || (M != 0 && PySequence_Length(obj) != M))
             return 0;
         for(int i=0; i<PySequence_Length(obj); ++i)
-            if(!PyNumber_Check(PySequence_Fast_GET_ITEM(obj, i)))
+            if(!PyNumber_Check(PySequence_ITEM(obj, i)))
                 return 0;
         return obj;
     }
@@ -230,7 +230,7 @@ struct MultiArrayShapeConverter
 
         ShapeType * shape = detail::MultiArrayShapeConverterTraits<M, T>::construct(storage, obj);
         for(int i=0; i<PySequence_Length(obj); ++i)
-            (*shape)[i] = python::extract<T>(PySequence_Fast_GET_ITEM(obj, i));
+            (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
         data->convertible = storage;
     }
 
