@@ -66,6 +66,8 @@ namespace vigra
 
     This module provides classification algorithms that map 
     features to labels or label probablities.
+	Look at the RandomForest class first for a overview of most of the 
+	functionality provided as well as use cases. 
 **/
 //@{
 
@@ -92,9 +94,33 @@ SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *          ClassificationTag and RegressionTag. It is recommended to use
  *          Splitfunctor::Preprocessor_t while using custom splitfunctors
  *          as they may need the data to be in a different format. 
- *          \sa Preprocessor, How to make a Split Functor
+ *          \sa Preprocessor
+ * 	
+ * 	simple usage for classification (regression is not yet supported):
+ * 	look at RandomForest::learn() as well as RandomForestOptions() for additional
+ * 	options. 
  *
- * 
+ * 	\code
+ *  typedef xxx feature_t \\ replace xxx with whichever type
+ *  typedef yyy label_t   \\ meme chose. 
+ *  MultiArrayView<2, feature_t> f = get_some_features();
+ *  MultiArrayView<2, label_t>   l = get_some_labels)(
+ *  RandomForest<> rf()
+ *  double oob_error = rf.learn(f, l);
+ *      
+ *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
+ *  MultiArrayView<2, label_t> prediction 
+ *          	                            = allocate_space_for_response();
+ *  MultiArrayView<2, double> prob  = allocate_space_for_probability();
+ *      
+ *  rf.predict_labels(pf, prediction);
+ *  rf.predict_probabilities(pf, prob);
+ *
+ * 	\endcode
+ *
+ * 	Additional information such as OOB Error and Variable Importance measures are accessed
+ * 	via Visitors defined in rf::visitors. 
+ *  Have a look at rf::split for other splitting methods.
  *
 */
 template <class LabelType = double , class PreprocessorTag = ClassificationTag >
@@ -150,29 +176,8 @@ class RandomForest
      *                  Options_t
      * \param ext_param problem specific values that can be supplied 
      *                  additionally. (class weights , labels etc)
-     * \sa  ProblemSpec_t
+     * \sa  RandomForestOptions, ProblemSpec
      *
-     *
-     * simple usage for classification (regression is not yet supported):
-     * \code
-     *      typedef xxx feature_t \\ replace xxx with whichever type
-     *      typedef yyy label_t   \\ meme chose. 
-     *      MultiArrayView<2, feature_t> f = get_some_features();
-     *      MultiArrayView<2, label_t>   l = get_some_labels)(
-     *      RandomForest<> rf()
-     *      double oob_error = rf.learn(f, l);
-     *      
-     *      MultiArrayView<2, feature_t> pf = get_some_unknown_features();
-     *      MultiArrayView<2, label_t> prediction 
-     *                                      = allocate_space_for_response();
-     *      MultiArrayView<2, double> prob  = allocate_space_for_probability();
-     *      
-     *      rf.predict_labels(pf, prediction);
-     *      rf.predict_probabilities(pf, prob);
-     *
-     * \endcode
-     *
-     * - Default Response/Label type is double
      */
     RandomForest(Options_t const & options = Options_t(), 
                  ProblemSpec_t const & ext_param = ProblemSpec_t())
@@ -187,10 +192,15 @@ class RandomForest
 
     /**\brief Create RF from external source
      * \param treeCount Number of trees to add.
-     * \param trees     Iterator to a Container where the topology_ data
+     * \param topology_begin     
+	 * 					Iterator to a Container where the topology_ data
      *                  of the trees are stored.
-     * \param weights  iterator to a Container where the parameters_ data
-     *                  of the trees are stored.
+	 *                  Iterator should support at least treeCount forward 
+	 *                  iterations. (i.e. topology_end - topology_begin >= treeCount
+     * \param parameter_begin  
+	 * 					iterator to a Container where the parameters_ data
+     *                  of the trees are stored. Iterator should support at 
+	 *                  least treeCount forward iterations.
      * \param problem_spec 
      *                  Extrinsic parameters that specify the problem e.g.
      *                  ClassCount, featureCount etc.
@@ -198,14 +208,14 @@ class RandomForest
      *                  Random forest. This parameter is not used anywhere
      *                  during prediction and thus is optional.
      *
-     * TODO:
-     * Note: This constructor may be replaced by a Constructor using
-     * NodeProxy iterators to encapsulate the underlying data type.
      */
-    template<class TreeIterator, class WeightIterator>
-    RandomForest(int                treeCount,
-                  TreeIterator          trees,
-                  WeightIterator        weights,
+     /* TODO: This constructor may be replaced by a Constructor using
+     * NodeProxy iterators to encapsulate the underlying data type.
+	 */
+    template<class TopologyIterator, class ParameterIterator>
+    RandomForest(int                	   treeCount,
+                  TopologyIterator         topology_begin,
+                  ParameterIterator        parameter_begin,
                   ProblemSpec_t const & problem_spec,
                   Options_t const &     options = Options_t())
     :
@@ -213,10 +223,10 @@ class RandomForest
         ext_param_(problem_spec),
         options_(options)
     {
-        for(unsigned int k=0; k<treeCount; ++k, ++trees, ++weights)
+        for(unsigned int k=0; k<treeCount; ++k, ++topology_begin, ++parameter_begin)
         {
-            trees_[k].topology_ = *trees;
-            trees_[k].parameters_ = *weights;
+            trees_[k].topology_ = *topology_begin;
+            trees_[k].parameters_ = *parameter_begin;
         }
     }
 
@@ -224,8 +234,7 @@ class RandomForest
 
 
     /** \name Data Access
-     * data access interface - usage of member objects is deprecated
-     * (I like the word deprecated)
+     * data access interface - usage of member variables is deprecated
      */
 
     /*\{*/
@@ -251,7 +260,6 @@ class RandomForest
      * either ignore filling values set this way or will throw an exception 
      * if values specified manually do not match the value calculated 
      & during the preparation step.
-     * \sa Option_t::presupplied_ext_param member for further details.
      */
     void set_ext_param(ProblemSpec_t const & in)
     {
@@ -295,16 +303,36 @@ class RandomForest
     }
 
     /*\}*/
+
+    /**\brief return number of features used while 
+	 * training.
+     */
+    int feature_count() const
+    {
+      return ext_param_.column_count_;
+    }
+    
+	
+	/**\brief return number of features used while 
+	 * training.
+	 *
+	 * deprecated. Use feature_count() instead.
+     */
     int column_count() const
     {
       return ext_param_.column_count_;
     }
 
+    /**\brief return number of classes used while 
+	 * training.
+     */
     int class_count() const
     {
       return ext_param_.class_count_;
     }
 
+	/**\brief return number of trees
+	 */
     int tree_count() const
     {
       return options_.tree_count_;
@@ -389,22 +417,21 @@ class RandomForest
      *                  The Preprocessor specified during construction
      *                  should be able to handle features and labels
      *                  features and the labels.
-     *  \sa     SplitFunctor, Preprocessing
+     *  				see also: SplitFunctor, Preprocessing
      *
      * \param visitor   visitor which is to be applied after each split,
-     *                  tree and at the end. Use RF_Default for using
-     *                  default value.
-     * \sa      visitor
+     *                  tree and at the end. Use rf_default for using
+     *                  default value. (No Visitors)
+     * 					see also: rf::visitors
      * \param split     split functor to be used to calculate each split
-     *                  use rf_default() for using default value.
+     *                  use rf_default() for using default value. (GiniSplit)
+	 * 					see also:  rf::split 
      * \param stop
      *                  predicate to be used to calculate each split
-     *                  use rf_default() for using default value.
+     *                  use rf_default() for using default value. (EarlyStoppStd)
      * \param random    RandomNumberGenerator to be used. Use
-     *                  rf_default() to use default value.
-     * \return          oob_error.
+     *                  rf_default() to use default value.(RandomMT19337)
      *
-     *\sa OOB_Visitor, VariableImportanceVisitor 
      *
      */
     template <class U, class C1,
@@ -479,7 +506,7 @@ class RandomForest
      *
      * learning is done with:
      *
-     * \sa GiniSplit, EarlyStoppingStd
+     * \sa rf::split, EarlyStoppStd
      *
      * - Randomly seeded random number generator
      * - default gini split functor as described by Breiman

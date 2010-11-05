@@ -148,6 +148,10 @@ enum RF_OptionTag   { RF_EQUAL,
                       RF_ALL};
 
 
+/** \addtogroup MachineLearning 
+**/
+//@{
+
 /**\brief Options object for the random forest
  *
  * usage:
@@ -804,6 +808,7 @@ public:
 };
 
 
+//@}
 
 
 

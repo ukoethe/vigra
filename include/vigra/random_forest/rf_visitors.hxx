@@ -47,11 +47,51 @@ namespace vigra
 {
 namespace rf
 {
+/** \addtogroup MachineLearning Machine Learning
+**/
+//@{
+
+/**
+  	This namespace contains all classes and methods related to extracting information during 
+	learning of the random forest. All Visitors share the same interface defined in 
+	visitors::VisitorBase. The member methods are invoked at certain points of the main code in 
+	the order they were supplied.
+   	
+	For the Random Forest the  Visitor concept is implemented as a statically linked list 
+	(Using templates). Each Visitor object is encapsulated in a detail::VisitorNode object. The 
+	VisitorNode object calls the Next Visitor after one of its visit() methods have terminated.
+	
+	To simplify usage create_visitor() factory methods are supplied.
+	Use the create_visitor() method to supply visitor objects to the RandomForest::learn() method.
+	It is possible to supply more than one visitor. They will then be invoked in serial order.
+	
+	While creating a new visitor the new class should therefore publicly inherit from this class 
+	(i.e.: see visitors::OOB_Error).
+
+	\code
+
+ 	  typedef xxx feature_t \\ replace xxx with whichever type
+ 	  typedef yyy label_t   \\ meme chose. 
+ 	  MultiArrayView<2, feature_t> f = get_some_features();
+ 	  MultiArrayView<2, label_t>   l = get_some_labels();
+ 	  RandomForest<> rf()
+	
+	  //calculate OOB Error
+	  visitors::OOB_Error oob_v;
+	  //calculate Variable Importance
+	  visitors::VariableImportanceVisitor varimp_v;
+
+ 	  double oob_error = rf.learn(f, l, visitors::create_visitor(oob_v, varimp_v);
+	  //the data can be found in the attributes of oob_v and varimp_v now
+      
+	\endcode
+*/
 namespace visitors
 {
     
     
-/** Base Class from which all Visitors derive
+/** Base Class from which all Visitors derive. Can be used as a template to create new 
+ * Visitors.
  */
 class VisitorBase
 {
@@ -281,6 +321,9 @@ class VisitorNode
 //////////////////////////////////////////////////////////////////////////////
 //  Visitor Factory function up to 10 visitors                              //
 //////////////////////////////////////////////////////////////////////////////
+
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A>
 detail::VisitorNode<A>
 create_visitor(A & a)
@@ -291,6 +334,8 @@ create_visitor(A & a)
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B>
 detail::VisitorNode<A, detail::VisitorNode<B> >
 create_visitor(A & a, B & b)
@@ -303,6 +348,8 @@ create_visitor(A & a, B & b)
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C> > >
 create_visitor(A & a, B & b, C & c)
@@ -317,6 +364,8 @@ create_visitor(A & a, B & b, C & c)
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
     detail::VisitorNode<D> > > >
@@ -334,6 +383,8 @@ create_visitor(A & a, B & b, C & c, D & d)
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
     detail::VisitorNode<D, detail::VisitorNode<E> > > > >
@@ -354,6 +405,8 @@ create_visitor(A & a, B & b, C & c,
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E,
          class F>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
@@ -377,6 +430,8 @@ create_visitor(A & a, B & b, C & c,
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E,
          class F, class G>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
@@ -403,6 +458,8 @@ create_visitor(A & a, B & b, C & c,
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
@@ -432,6 +489,8 @@ create_visitor(A & a, B & b, C & c,
 }
 
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
@@ -462,6 +521,8 @@ create_visitor(A & a, B & b, C & c,
    return _0;
 }
 
+/** factory method to to be used with RandomForest::learn()
+ */
 template<class A, class B, class C, class D, class E,
          class F, class G, class H, class I, class J>
 detail::VisitorNode<A, detail::VisitorNode<B, detail::VisitorNode<C, 
@@ -1320,4 +1381,6 @@ class RandomForestProgressVisitor : public VisitorBase {
 } // namespace visitors
 } // namespace rf
 } // namespace vigra
+
+//@}
 #endif // RF_VISITORS_HXX

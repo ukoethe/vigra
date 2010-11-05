@@ -599,6 +599,8 @@ struct LossTraits<LSQLoss, Datatype>
     typedef RegressionForestCounter<Datatype> type;
 };
 
+/** Given a column, choose a split that minimizes some loss
+ */
 template<class LineSearchLossTag>
 class BestGiniOfColumn
 {
@@ -725,6 +727,10 @@ public:
 
 };
 
+
+/** Chooses mtry columns ad applys ColumnDecisionFunctor to each of the
+ * columns. Then Chooses the column that is best
+ */
 template<class ColumnDecisionFunctor, class Tag = ClassificationTag>
 class ThresholdSplit: public SplitBase<Tag>
 {
@@ -875,9 +881,33 @@ typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         Regres
 
 namespace rf
 {
+
+/** This namespace contains additional Splitfunctors.
+ *
+ * The Split functor classes are designed in a modular fashion because new split functors may 
+ * share a lot of code with existing ones. 
+ * 
+ * ThresholdSplit implements the functionality needed for any split functor, that makes its 
+ * decision via one dimensional axis-parallel cuts. The Template parameter defines how the split
+ * along one dimension is chosen. 
+ *
+ * The BestGiniOfColumn class chooses a split that minimizes one of the Loss functions supplied
+ * (GiniCriterion for classification and LSQLoss for regression). Median chooses the Split in a 
+ * kD tree fashion. 
+ *
+ *
+ * Currently defined typedefs: 
+ * \code
+ * typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
+ * typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
+ * typedef  ThresholdSplit<Median> MedianSplit;
+ * \endcode
+ */
 namespace split
 {
 
+/** This Functor chooses the median value of a column
+ */
 class Median
 {
 public:
