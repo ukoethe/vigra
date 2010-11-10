@@ -40,104 +40,18 @@
 namespace vigra
 {
 
-// FORWARD DECLARATIONS
-// TODO : DECIDE WHETHER THIS IS A GOOD IDEA
-struct                  ClassificationTag{};
 
-struct                  RegressionTag{};
+struct ClassificationTag
+{};
 
-class GiniCriterion;
-
-template<class T>
-class BestGiniOfColumn;
-
-template<class T, class U = ClassificationTag>
-class ThresholdSplit;
-
-typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> > GiniSplit;
-
-namespace rf
-{
-    class                   StopVisiting;
-}
-
-class                   OOB_Visitor;
-class                   RandomForestOptions;
-
-template<class T= double>
-class                   ProblemSpec;
-
-template<class LabelT = double, class Tag = ClassificationTag>
-class               RandomForest;
-
-
-class                   EarlyStoppStd;
+struct RegressionTag
+{};
 
 namespace detail
 {
-    class               RF_DEFAULT;
-    class               DecisionTree;
+    class RF_DEFAULT;
 }
-
-detail::RF_DEFAULT&     rf_default();
-
-template <class T>
-class               DT_StackEntry;
-
-/**\brief Traits Class for the Random Forest
- *
- * refer to the typedefs in this class when using the default
- * objects as the names may change in future.
- */
-class RF_Traits
-{
-    public:
-    typedef RandomForestOptions     Options_t;
-    typedef detail::DecisionTree    DecisionTree_t;
-    typedef ClassificationTag       Preprocessor_t;
-    typedef GiniSplit               Default_Split_t;
-    typedef EarlyStoppStd           Default_Stop_t;
-    typedef rf::StopVisiting
-                                    Default_Visitor_t;
-    typedef rf::StopVisiting            StopVisiting_t;
-
-};
-
-
-/**\brief Standard early stopping criterion
- *
- * Stop if region.size() < min_split_node_size_;
- */
-class EarlyStoppStd
-{
-    public:
-    int min_split_node_size_;
-
-    template<class Opt>
-    EarlyStoppStd(Opt opt)
-    :   min_split_node_size_(opt.min_split_node_size_)
-    {}
-
-    template<class T>
-    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted */ = false)
-    {}
-
-    template<class Region>
-    bool operator()(Region& region)
-    {
-        return region.size() < min_split_node_size_;
-    }
-
-    template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
-    {
-        return false; 
-    }
-};
-
-
-
-
+detail::RF_DEFAULT& rf_default();
 namespace detail
 {
 
@@ -157,8 +71,6 @@ class RF_DEFAULT
         /** ok workaround for automatic choice of the decisiontree
          * stackentry.
          */
-        typedef DT_StackEntry<ArrayVectorView<Int32>::iterator>
-                    StackEntry_t;
 };
 
 /**\brief chooses between default type and type supplied
@@ -235,6 +147,10 @@ enum RF_OptionTag   { RF_EQUAL,
                       RF_CONST,
                       RF_ALL};
 
+
+/** \addtogroup MachineLearning 
+**/
+//@{
 
 /**\brief Options object for the random forest
  *
@@ -563,7 +479,7 @@ enum Problem_t{REGRESSION, CLASSIFICATION, CHECKLATER};
  * if needed usage is similar to that of RandomForestOptions
  */
 
-template<class LabelType>
+template<class LabelType = double>
 class ProblemSpec
 {
 
@@ -891,6 +807,41 @@ public:
     }
 };
 
+
+//@}
+
+
+
+/**\brief Standard early stopping criterion
+ *
+ * Stop if region.size() < min_split_node_size_;
+ */
+class EarlyStoppStd
+{
+    public:
+    int min_split_node_size_;
+
+    template<class Opt>
+    EarlyStoppStd(Opt opt)
+    :   min_split_node_size_(opt.min_split_node_size_)
+    {}
+
+    template<class T>
+    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted */ = false)
+    {}
+
+    template<class Region>
+    bool operator()(Region& region)
+    {
+        return region.size() < min_split_node_size_;
+    }
+
+    template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
+    {
+        return false; 
+    }
+};
 
 
 } // namespace vigra

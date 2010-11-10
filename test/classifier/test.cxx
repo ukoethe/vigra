@@ -280,12 +280,14 @@ struct ClassifierTest
                 double oob = 0.0;
                 for(int jj = 0; jj < 10; ++jj)
                 {
+                    rf::visitors::OOB_PerTreeError oob_v;
                     vigra::RandomForest<> RF2(vigra::RandomForestOptions()
 												 .tree_count(100));
 
-                     oob  += RF2.learn(  data.features(ii),
-                                            data.labels(ii));
-                    //std::cerr << oob <<" " <<  data.oobError(ii) <<std::endl;
+                     RF2.learn(  data.features(ii), 
+                                 data.labels(ii),
+                                 rf::visitors::create_visitor(oob_v));
+                     oob += oob_v.oobError;
                 }
                 oob = oob/10;
                 oob = oob - data.oobError(ii);
@@ -381,10 +383,11 @@ struct ClassifierTest
         std::for_each(features.begin(), features.end(),UnaryRandomFunctor());
         std::cerr << "RFnoiseTest(): Learning 100 Trees on Noise.";
         vigra::RandomForest<> RF2(vigra::RandomForestOptions().tree_count(100));
-        double oob = RF2.learn(features, labels);
+        rf::visitors::OOB_PerTreeError oob_v;
+        RF2.learn(features, labels,create_visitor(oob_v));
         std::cerr << "DONE!\n";
         std::cerr << "RFnoiseTest(): Comparing oob with 0.5:";
-        shouldEqualTolerance(oob, 0.5, 0.01);
+        shouldEqualTolerance(oob_v.oobError, 0.5, 0.01);
         std::cerr << "DONE!\n\n";
     }
 
@@ -407,7 +410,7 @@ struct ClassifierTest
 
 			int ii = data.size() - 3; // this is the pina_indians dataset
             {
-            	vigra::VariableImportanceVisitor var_imp;
+            	vigra::rf::visitors::VariableImportanceVisitor var_imp;
 
                 vigra::RandomForest<>
 					RF2(vigra::RandomForestOptions().tree_count(255));

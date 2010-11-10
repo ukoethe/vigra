@@ -422,7 +422,7 @@ void problemspec_export_HDF5(hid_t & group_id,
 }
 
 inline void dt_import_HDF5(	hid_t & group_id,
-			 				RF_Traits::DecisionTree_t & tree,
+			 	            detail::DecisionTree & tree,
 							std::string name)
 {
 	//check if ext_param was written and write it if not
@@ -448,7 +448,7 @@ inline void dt_import_HDF5(	hid_t & group_id,
 
 
 inline void dt_export_HDF5(	hid_t & group_id,
-							RF_Traits::DecisionTree_t const & tree,
+							detail::DecisionTree const & tree,
 							std::string name)
 {
 	//check if ext_param was written and write it if not
@@ -590,7 +590,7 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 	{
 		if((*iter)[0] != '_')
 		{
-			rf.trees_.push_back(RF_Traits::DecisionTree_t(rf.ext_param_));
+			rf.trees_.push_back(detail::DecisionTree(rf.ext_param_));
 			dt_import_HDF5(group_id, rf.trees_.back(), *iter); 
 		}
 	}
@@ -599,9 +599,9 @@ bool rf_import_HDF5(RandomForest<T> &rf,
 	if(pathname != "")
 		H5Gclose(group_id);
 	H5Fclose(file_id);
-    rf.tree_indices_.resize(rf.tree_count());
+    /*rf.tree_indices_.resize(rf.tree_count());
     for(int ii = 0; ii < rf.tree_count(); ++ii)
-        rf.tree_indices_[ii] = ii; 
+        rf.tree_indices_[ii] = ii; */
 	return 1;
 }
 } // namespace vigra

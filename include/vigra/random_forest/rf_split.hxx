@@ -44,7 +44,8 @@
 #include "../random.hxx"
 #include "../functorexpression.hxx"
 #include "rf_nodeproxy.hxx"
-#include "rf_sampling.hxx"
+//#include "rf_sampling.hxx"
+#include "rf_region.hxx"
 //#include "../hokashyap.hxx"
 //#include "vigra/rf_helpers.hxx"
 
@@ -598,6 +599,8 @@ struct LossTraits<LSQLoss, Datatype>
     typedef RegressionForestCounter<Datatype> type;
 };
 
+/** Given a column, choose a split that minimizes some loss
+ */
 template<class LineSearchLossTag>
 class BestGiniOfColumn
 {
@@ -682,7 +685,6 @@ public:
         
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
-        double loss;
         while( next  != end)
         {
 
@@ -702,7 +704,7 @@ public:
                 min_gini_       = loss; 
 #endif
                 min_index_      = next - begin +1 ;
-                min_threshold_  = (column(*next,g) + column(*(next +1), g))/2;
+                min_threshold_  = (double(column(*next,g)) + double(column(*(next +1), g)))/2.0;
             }
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);
@@ -724,7 +726,11 @@ public:
 
 };
 
-template<class ColumnDecisionFunctor, class Tag>
+
+/** Chooses mtry columns ad applys ColumnDecisionFunctor to each of the
+ * columns. Then Chooses the column that is best
+ */
+template<class ColumnDecisionFunctor, class Tag = ClassificationTag>
 class ThresholdSplit: public SplitBase<Tag>
 {
   public:
@@ -871,6 +877,136 @@ class ThresholdSplit: public SplitBase<Tag>
 
 typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
 typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
+
+namespace rf
+{
+
+/** This namespace contains additional Splitfunctors.
+ *
+ * The Split functor classes are designed in a modular fashion because new split functors may 
+ * share a lot of code with existing ones. 
+ * 
+ * ThresholdSplit implements the functionality needed for any split functor, that makes its 
+ * decision via one dimensional axis-parallel cuts. The Template parameter defines how the split
+ * along one dimension is chosen. 
+ *
+ * The BestGiniOfColumn class chooses a split that minimizes one of the Loss functions supplied
+ * (GiniCriterion for classification and LSQLoss for regression). Median chooses the Split in a 
+ * kD tree fashion. 
+ *
+ *
+ * Currently defined typedefs: 
+ * \code
+ * typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
+ * typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
+ * typedef  ThresholdSplit<Median> MedianSplit;
+ * \endcode
+ */
+namespace split
+{
+
+/** This Functor chooses the median value of a column
+ */
+class Median
+{
+public:
+
+    typedef GiniCriterion   LineSearchLossTag;
+    ArrayVector<double>     class_weights_;
+    ArrayVector<double>     bestCurrentCounts[2];
+    double                  min_gini_;
+    ptrdiff_t               min_index_;
+    double                  min_threshold_;
+    ProblemSpec<>           ext_param_;
+
+    Median()
+    {}
+
+    template<class T> 
+    Median(ProblemSpec<T> const & ext)
+    :
+        class_weights_(ext.class_weights_),
+        ext_param_(ext)
+    {
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
+  
+    template<class T> 
+    void set_external_parameters(ProblemSpec<T> const & ext)
+    {
+        class_weights_ = ext.class_weights_; 
+        ext_param_ = ext;
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
+     
+    template<   class DataSourceF_t,
+                class DataSource_t, 
+                class I_Iter, 
+                class Array>
+    void operator()(DataSourceF_t   const & column,
+                    DataSource_t    const & labels,
+                    I_Iter                & begin, 
+                    I_Iter                & end,
+                    Array           const & region_response)
+    {
+        std::sort(begin, end, 
+                  SortSamplesByDimensions<DataSourceF_t>(column, 0));
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss left(labels, ext_param_);
+        LineSearchLoss right(labels, ext_param_);
+        right.init(begin, end, region_response);
+
+        min_gini_ = NumericTraits<double>::max();
+        min_index_ = floor(double(end - begin)/2.0); 
+        min_threshold_ =  column[*(begin + min_index_)];
+        SortSamplesByDimensions<DataSourceF_t> 
+            sorter(column, 0, min_threshold_);
+        I_Iter part = std::partition(begin, end, sorter);
+        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
+        if(part == begin)
+        {
+            part= std::adjacent_find(part, end, comp)+1;
+            
+        }
+        if(part >= end)
+        {
+            return; 
+        }
+        else
+        {
+            min_threshold_ = column[*part];
+        }
+        min_gini_ = right.decrement(begin, part) 
+              +     left.increment(begin , part);
+
+        bestCurrentCounts[0] = left.response();
+        bestCurrentCounts[1] = right.response();
+        
+        min_index_      = part - begin;
+    }
+
+    template<class DataSource_t, class Iter, class Array>
+    double loss_of_region(DataSource_t const & labels,
+                          Iter & begin, 
+                          Iter & end, 
+                          Array const & region_response) const
+    {
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss region_loss(labels, ext_param_);
+        return 
+            region_loss.init(begin, end, region_response);
+    }
+
+};
+
+typedef  ThresholdSplit<Median> MedianSplit;
+}
+}
+
 
 } //namespace vigra
 #endif // VIGRA_RANDOM_FOREST_SPLIT_HXX

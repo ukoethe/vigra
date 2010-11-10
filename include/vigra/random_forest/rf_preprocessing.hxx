@@ -69,7 +69,7 @@ namespace detail
 	 * values needed for the current problem (data)
 	 */
 	template<class T>
-	void fill_external_parameters(RF_Traits::Options_t & options,
+	void fill_external_parameters(RandomForestOptions & options,
 								  ProblemSpec<T> & ext_param)
 	{
 	    // set correct value for mtry
@@ -143,7 +143,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 	template<class T>
     Processor(MultiArrayView<2, T1, C1>const & features,   
 			  MultiArrayView<2, T2, C2>const & response,
-              RF_Traits::Options_t &options,         
+              RandomForestOptions &options,         
 			  ProblemSpec<T> &ext_param)
     :
 		features_( features) // do not touch the features. 
@@ -209,9 +209,9 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 
 	/** Access processed strata
 	 */
-	MultiArrayView<2, LabelInt>&  strata()
+	ArrayVectorView < LabelInt>  strata()
 	{
-		return intLabels_;
+		return ArrayVectorView<LabelInt>(intLabels_.size(), intLabels_.data());
 	}
 
 	/** Access strata fraction sized - not used currently
@@ -234,7 +234,7 @@ public:
 	// only views are created - no data copied.
 	MultiArrayView<2, T1, C1> 	features_;
 	MultiArrayView<2, T2, C2> 	response_;
-	RF_Traits::Options_t const & options_;
+	RandomForestOptions const & options_;
 	ProblemSpec<LabelType> const &
 								ext_param_;
 	// will only be filled if needed
@@ -245,7 +245,7 @@ public:
 	template<class T>
 	Processor(	MultiArrayView<2, T1, C1> 	feats,
 				MultiArrayView<2, T2, C2> 	response,
-				RF_Traits::Options_t			options,
+				RandomForestOptions const &	options,
 				ProblemSpec<T>	ext_param)
 	:
 		features_(feats),

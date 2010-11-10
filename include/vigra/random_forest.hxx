@@ -55,7 +55,7 @@
 #include "random_forest/rf_decisionTree.hxx"
 #include "random_forest/rf_visitors.hxx"
 #include "random_forest/rf_region.hxx"
-#include "random_forest/rf_sampling.hxx"
+#include "sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
 #include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
@@ -66,46 +66,23 @@ namespace vigra
 
     This module provides classification algorithms that map 
     features to labels or label probablities.
+	Look at the RandomForest class first for a overview of most of the 
+	functionality provided as well as use cases. 
 **/
 //@{
 
 namespace detail
 {
 
-/* todo - remove and make the labels parameter in the sampling options
- * const*/
-class staticMultiArrayViewHelper
-{
-    public:
-        static vigra::MultiArrayView<2, Int32> array;
-    public:
-        friend RFSamplingOptions
-        createSamplingOptions(vigra::RandomForestOptions& RF_opt,
-                              vigra::MultiArrayView<2, int> & labels);
-};
 
 
 /* \brief sampling option factory function
  */
-RFSamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
-                                   MultiArrayView<2, Int32> & labels
-                                        = staticMultiArrayViewHelper::array)
+SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
 {
-    RFSamplingOptions return_opt;
-    return_opt.sample_with_replacement = RF_opt.sample_with_replacement_;
-    if(labels.data() != 0)
-    {
-        if(RF_opt.stratification_method_ == RF_EQUAL)
-            return_opt
-                .sampleClassesIndividually(
-                    ArrayVectorView<int>(labels.size(),
-                                         labels.data()));
-        else if(RF_opt.stratification_method_ == RF_PROPORTIONAL)
-            return_opt
-                .sampleStratified(
-                    ArrayVectorView<int>(labels.size(),
-                                         labels.data()));
-    }
+    SamplerOptions return_opt;
+    return_opt.withReplacement(RF_opt.sample_with_replacement_);
+    return_opt.stratified(RF_opt.stratification_method_ == RF_EQUAL);
     return return_opt;
 }
 }//namespace detail
@@ -117,23 +94,48 @@ RFSamplingOptions make_sampler_opt ( RF_Traits::Options_t     & RF_opt,
  *          ClassificationTag and RegressionTag. It is recommended to use
  *          Splitfunctor::Preprocessor_t while using custom splitfunctors
  *          as they may need the data to be in a different format. 
- *          \sa Preprocessor, How to make a Split Functor
+ *          \sa Preprocessor
+ * 	
+ * 	simple usage for classification (regression is not yet supported):
+ * 	look at RandomForest::learn() as well as RandomForestOptions() for additional
+ * 	options. 
  *
- * 
+ * 	\code
+ *  typedef xxx feature_t \\ replace xxx with whichever type
+ *  typedef yyy label_t   \\ meme chose. 
+ *  MultiArrayView<2, feature_t> f = get_some_features();
+ *  MultiArrayView<2, label_t>   l = get_some_labels();
+ *  RandomForest<> rf()
+ *  double oob_error = rf.learn(f, l);
+ *      
+ *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
+ *  MultiArrayView<2, label_t> prediction = allocate_space_for_response();
+ *  MultiArrayView<2, double> prob  = allocate_space_for_probability();
+ *      
+ *  rf.predict_labels(pf, prediction);
+ *  rf.predict_probabilities(pf, prob);
+ *
+ * 	\endcode
+ *
+ * 	Additional information such as OOB Error and Variable Importance measures are accessed
+ * 	via Visitors defined in rf::visitors. 
+ *  Have a look at rf::split for other splitting methods.
  *
 */
-template <class LabelType , class PreprocessorTag >
+template <class LabelType = double , class PreprocessorTag = ClassificationTag >
 class RandomForest
 {
 
   public:
     //public typedefs
-    typedef RF_Traits::Options_t            Options_t;
-    typedef RF_Traits::DecisionTree_t       DecisionTree_t;
-    typedef ProblemSpec<LabelType>      ProblemSpec_t;
-    typedef RF_Traits::Default_Split_t      Default_Split_t;
-    typedef RF_Traits::Default_Stop_t       Default_Stop_t;
-    typedef RF_Traits::Default_Visitor_t    Default_Visitor_t;
+    typedef RandomForestOptions             Options_t;
+    typedef detail::DecisionTree            DecisionTree_t;
+    typedef ProblemSpec<LabelType>          ProblemSpec_t;
+    typedef GiniSplit                       Default_Split_t;
+    typedef EarlyStoppStd                   Default_Stop_t;
+    typedef rf::visitors::StopVisiting      Default_Visitor_t;
+    typedef  DT_StackEntry<ArrayVectorView<Int32>::iterator>
+                    StackEntry_t;
     typedef LabelType                       LabelT; 
   protected:
 
@@ -144,15 +146,14 @@ class RandomForest
   public:
 
     //problem independent data.
-    Options_t                       options_;
+    Options_t                                   options_;
     //problem dependent data members - is only set if
     //a copy constructor, some sort of import
     //function or the learn function is called
-    ArrayVector<DecisionTree_t>
-                                    trees_;
-    ProblemSpec_t                   ext_param_;
-    mutable ArrayVector<int>                tree_indices_;
-    OnlineLearnVisitor              online_visitor_;
+    ArrayVector<DecisionTree_t>                 trees_;
+    ProblemSpec_t                               ext_param_;
+    /*mutable ArrayVector<int>                    tree_indices_;*/
+    rf::visitors::OnlineLearnVisitor            online_visitor_;
 
 
     void reset()
@@ -174,47 +175,31 @@ class RandomForest
      *                  Options_t
      * \param ext_param problem specific values that can be supplied 
      *                  additionally. (class weights , labels etc)
-     * \sa  ProblemSpec_t
+     * \sa  RandomForestOptions, ProblemSpec
      *
-     *
-     * simple usage for classification (regression is not yet supported):
-     * \code
-     *      typedef xxx feature_t \\ replace xxx with whichever type
-     *      typedef yyy label_t   \\ meme chose. 
-     *      MultiArrayView<2, feature_t> f = get_some_features();
-     *      MultiArrayView<2, label_t>   l = get_some_labels)(
-     *      RandomForest<> rf()
-     *      double oob_error = rf.learn(f, l);
-     *      
-     *      MultiArrayView<2, feature_t> pf = get_some_unknown_features();
-     *      MultiArrayView<2, label_t> prediction 
-     *                                      = allocate_space_for_response();
-     *      MultiArrayView<2, double> prob  = allocate_space_for_probability();
-     *      
-     *      rf.predict_labels(pf, prediction);
-     *      rf.predict_probabilities(pf, prob);
-     *
-     * \endcode
-     *
-     * - Default Response/Label type is double
      */
     RandomForest(Options_t const & options = Options_t(), 
                  ProblemSpec_t const & ext_param = ProblemSpec_t())
     :
         options_(options),
-        ext_param_(ext_param),
-        tree_indices_(options.tree_count_,0)
+        ext_param_(ext_param)/*,
+        tree_indices_(options.tree_count_,0)*/
     {
-        for(int ii = 0 ; ii < int(tree_indices_.size()); ++ii)
-            tree_indices_[ii] = ii;
+        /*for(int ii = 0 ; ii < int(tree_indices_.size()); ++ii)
+            tree_indices_[ii] = ii;*/
     }
 
     /**\brief Create RF from external source
      * \param treeCount Number of trees to add.
-     * \param trees     Iterator to a Container where the topology_ data
+     * \param topology_begin     
+	 * 					Iterator to a Container where the topology_ data
      *                  of the trees are stored.
-     * \param weights  iterator to a Container where the parameters_ data
-     *                  of the trees are stored.
+	 *                  Iterator should support at least treeCount forward 
+	 *                  iterations. (i.e. topology_end - topology_begin >= treeCount
+     * \param parameter_begin  
+	 * 					iterator to a Container where the parameters_ data
+     *                  of the trees are stored. Iterator should support at 
+	 *                  least treeCount forward iterations.
      * \param problem_spec 
      *                  Extrinsic parameters that specify the problem e.g.
      *                  ClassCount, featureCount etc.
@@ -222,14 +207,14 @@ class RandomForest
      *                  Random forest. This parameter is not used anywhere
      *                  during prediction and thus is optional.
      *
-     * TODO:
-     * Note: This constructor may be replaced by a Constructor using
-     * NodeProxy iterators to encapsulate the underlying data type.
      */
-    template<class TreeIterator, class WeightIterator>
-    RandomForest(int                treeCount,
-                  TreeIterator          trees,
-                  WeightIterator        weights,
+     /* TODO: This constructor may be replaced by a Constructor using
+     * NodeProxy iterators to encapsulate the underlying data type.
+	 */
+    template<class TopologyIterator, class ParameterIterator>
+    RandomForest(int                	   treeCount,
+                  TopologyIterator         topology_begin,
+                  ParameterIterator        parameter_begin,
                   ProblemSpec_t const & problem_spec,
                   Options_t const &     options = Options_t())
     :
@@ -237,10 +222,10 @@ class RandomForest
         ext_param_(problem_spec),
         options_(options)
     {
-        for(unsigned int k=0; k<treeCount; ++k, ++trees, ++weights)
+        for(unsigned int k=0; k<treeCount; ++k, ++topology_begin, ++parameter_begin)
         {
-            trees_[k].topology_ = *trees;
-            trees_[k].parameters_ = *weights;
+            trees_[k].topology_ = *topology_begin;
+            trees_[k].parameters_ = *parameter_begin;
         }
     }
 
@@ -248,8 +233,7 @@ class RandomForest
 
 
     /** \name Data Access
-     * data access interface - usage of member objects is deprecated
-     * (I like the word deprecated)
+     * data access interface - usage of member variables is deprecated
      */
 
     /*\{*/
@@ -275,7 +259,6 @@ class RandomForest
      * either ignore filling values set this way or will throw an exception 
      * if values specified manually do not match the value calculated 
      & during the preparation step.
-     * \sa Option_t::presupplied_ext_param member for further details.
      */
     void set_ext_param(ProblemSpec_t const & in)
     {
@@ -319,86 +302,41 @@ class RandomForest
     }
 
     /*\}*/
+
+    /**\brief return number of features used while 
+	 * training.
+     */
+    int feature_count() const
+    {
+      return ext_param_.column_count_;
+    }
+    
+	
+	/**\brief return number of features used while 
+	 * training.
+	 *
+	 * deprecated. Use feature_count() instead.
+     */
     int column_count() const
     {
       return ext_param_.column_count_;
     }
 
+    /**\brief return number of classes used while 
+	 * training.
+     */
     int class_count() const
     {
       return ext_param_.class_count_;
     }
 
+	/**\brief return number of trees
+	 */
     int tree_count() const
     {
       return options_.tree_count_;
     }
 
-    /**\name Learning
-     * Following functions differ in the degree of customization
-     * allowed
-     */
-    /*\{*/
-    /**\brief learn on data with custom config and random number generator
-     *
-     * \param features  a N x M matrix containing N samples with M
-     *                  features
-     * \param response  a N x D matrix containing the corresponding
-     *                  response. Current split functors assume D to
-     *                  be 1 and ignore any additional columns.
-     *                  This is not enforced to allow future support
-     *                  for uncertain labels, label independent strata etc.
-     *                  The Preprocessor specified during construction
-     *                  should be able to handle features and labels
-     *                  features and the labels.
-     *  \sa     SplitFunctor, Preprocessing
-     *
-     * \param visitor   visitor which is to be applied after each split,
-     *                  tree and at the end. Use RF_Default for using
-     *                  default value.
-     * \sa      visitor
-     * \param split     split functor to be used to calculate each split
-     *                  use rf_default() for using default value.
-     * \param stop
-     *                  predicate to be used to calculate each split
-     *                  use rf_default() for using default value.
-     * \param random    RandomNumberGenerator to be used. Use
-     *                  rf_default() to use default value.
-     * \return          oob_error.
-     *
-     *\sa OOB_Visitor, VariableImportanceVisitor 
-     *
-     */
-    template <class U, class C1,
-             class U2,class C2,
-             class Split_t,
-             class Stop_t,
-             class Visitor_t,
-             class Random_t>
-    double learn(       MultiArrayView<2, U, C1> const  &   features,
-                        MultiArrayView<2, U2,C2> const  &   response,
-                        Visitor_t                           visitor,
-                        Split_t                             split,
-                        Stop_t                              stop,
-                        Random_t                 const  &   random);
-
-    template <class U, class C1,
-             class U2,class C2,
-             class Split_t,
-             class Stop_t,
-             class Visitor_t>
-    double learn(       MultiArrayView<2, U, C1> const  &   features,
-                        MultiArrayView<2, U2,C2> const  &   response,
-                        Visitor_t                           visitor,
-                        Split_t                             split,
-                        Stop_t                              stop)
-
-    {
-		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
-        return learn(features, response,
-                     visitor, split, stop,
-                     rnd);
-    }
 
     
     template<class U,class C1,
@@ -407,28 +345,28 @@ class RandomForest
         class Stop_t,
         class Visitor_t,
         class Random_t>
-    double onlineLearn(MultiArrayView<2,U,C1> const & features,
-                       MultiArrayView<2,U2,C2> const & response,
-                       int new_start_index,
-                       Visitor_t visitor_,
-                       Split_t split_,
-                       Stop_t stop_,
-                       Random_t & random,
-                       bool adjust_thresholds=false);
+    void onlineLearn(   MultiArrayView<2,U,C1> const & features,
+                        MultiArrayView<2,U2,C2> const & response,
+                        int new_start_index,
+                        Visitor_t visitor_,
+                        Split_t split_,
+                        Stop_t stop_,
+                        Random_t & random,
+                        bool adjust_thresholds=false);
 
     template <class U, class C1, class U2,class C2>
-    double onlineLearn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
+    void onlineLearn(   MultiArrayView<2, U, C1> const  & features,
+                        MultiArrayView<2, U2,C2> const  & labels,int new_start_index,bool adjust_thresholds=false)
     {
-		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
-        return onlineLearn(features, 
-                     labels, 
-                     new_start_index,
-                     rf_default(), 
-                     rf_default(), 
-                     rf_default(),
-                     rnd,
-                     adjust_thresholds);
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        onlineLearn(features, 
+                    labels, 
+                    new_start_index,
+                    rf_default(), 
+                    rf_default(), 
+                    rf_default(),
+                    rnd,
+                    adjust_thresholds);
     }
 
     template<class U,class C1,
@@ -450,7 +388,7 @@ class RandomForest
                      MultiArrayView<2, U2, C2> const & labels,
                      int treeId)
     {
-		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         reLearnTree(features,
                     labels,
                     treeId,
@@ -461,31 +399,98 @@ class RandomForest
     }
 
 
+    /**\name Learning
+     * Following functions differ in the degree of customization
+     * allowed
+     */
+    /*\{*/
+    /**\brief learn on data with custom config and random number generator
+     *
+     * \param features  a N x M matrix containing N samples with M
+     *                  features
+     * \param response  a N x D matrix containing the corresponding
+     *                  response. Current split functors assume D to
+     *                  be 1 and ignore any additional columns.
+     *                  This is not enforced to allow future support
+     *                  for uncertain labels, label independent strata etc.
+     *                  The Preprocessor specified during construction
+     *                  should be able to handle features and labels
+     *                  features and the labels.
+     *  				see also: SplitFunctor, Preprocessing
+     *
+     * \param visitor   visitor which is to be applied after each split,
+     *                  tree and at the end. Use rf_default for using
+     *                  default value. (No Visitors)
+     * 					see also: rf::visitors
+     * \param split     split functor to be used to calculate each split
+     *                  use rf_default() for using default value. (GiniSplit)
+	 * 					see also:  rf::split 
+     * \param stop
+     *                  predicate to be used to calculate each split
+     *                  use rf_default() for using default value. (EarlyStoppStd)
+     * \param random    RandomNumberGenerator to be used. Use
+     *                  rf_default() to use default value.(RandomMT19337)
+     *
+     *
+     */
+    template <class U, class C1,
+             class U2,class C2,
+             class Split_t,
+             class Stop_t,
+             class Visitor_t,
+             class Random_t>
+    void learn( MultiArrayView<2, U, C1> const  &   features,
+                MultiArrayView<2, U2,C2> const  &   response,
+                Visitor_t                           visitor,
+                Split_t                             split,
+                Stop_t                              stop,
+                Random_t                 const  &   random);
+
+    template <class U, class C1,
+             class U2,class C2,
+             class Split_t,
+             class Stop_t,
+             class Visitor_t>
+    void learn( MultiArrayView<2, U, C1> const  &   features,
+                MultiArrayView<2, U2,C2> const  &   response,
+                Visitor_t                           visitor,
+                Split_t                             split,
+                Stop_t                              stop)
+
+    {
+		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        learn(  features, 
+                response,
+                visitor, 
+                split, 
+                stop,
+                rnd);
+    }
 
     template <class U, class C1, class U2,class C2, class Visitor_t>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,
-                    Visitor_t                         visitor)
+    void learn( MultiArrayView<2, U, C1> const  & features,
+                MultiArrayView<2, U2,C2> const  & labels,
+                Visitor_t                         visitor)
     {
-        return learn(features, 
-                     labels, 
-                     visitor, 
-                     rf_default(), 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                visitor, 
+                rf_default(), 
+                rf_default());
     }
 
     template <class U, class C1, class U2,class C2, 
               class Visitor_t, class Split_t>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
-                    MultiArrayView<2, U2,C2> const  & labels,
-                    Visitor_t                         visitor,
-                    Split_t                           split)
+    void learn(   MultiArrayView<2, U, C1> const  & features,
+                  MultiArrayView<2, U2,C2> const  & labels,
+                  Visitor_t                         visitor,
+                  Split_t                           split)
     {
-        return learn(features, 
-                     labels, 
-                     visitor, 
-                     split, 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                visitor, 
+                split, 
+                rf_default());
     }
 
     /**\brief learn on data with default configuration
@@ -497,26 +502,24 @@ class RandomForest
      *                  be 1 and ignore any additional columns.
      *                  this is not enforced to allow future support
      *                  for uncertain labels.
-     * \return          out of bag error estimate.
      *
      * learning is done with:
      *
-     * \sa GiniSplit, EarlyStoppingStd, OOB_Visitor
+     * \sa rf::split, EarlyStoppStd
      *
      * - Randomly seeded random number generator
      * - default gini split functor as described by Breiman
      * - default The standard early stopping criterion
-     * - the oob visitor, whose value is returned.
      */
     template <class U, class C1, class U2,class C2>
-    double learn(   MultiArrayView<2, U, C1> const  & features,
+    void learn(   MultiArrayView<2, U, C1> const  & features,
                     MultiArrayView<2, U2,C2> const  & labels)
     {
-        return learn(features, 
-                     labels, 
-                     rf_default(), 
-                     rf_default(), 
-                     rf_default());
+        learn(  features, 
+                labels, 
+                rf_default(), 
+                rf_default(), 
+                rf_default());
     }
     /*\}*/
 
@@ -624,7 +627,7 @@ template<class U,class C1,
     class Stop_t,
     class Visitor_t,
     class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1> const & features,
+void RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,C1> const & features,
                                                              MultiArrayView<2,U2,C2> const & response,
                                                              int new_start_index,
                                                              Visitor_t visitor_,
@@ -638,7 +641,6 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
 
     using namespace rf;
     //typedefs
-    typedef typename Split_t::StackEntry_t StackEntry_t;
     typedef Processor<PreprocessorTag,LabelType,U,C1,U2,C2> Preprocessor_t;
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
@@ -654,13 +656,13 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode
+                <rf::visitors::OnlineLearnVisitor, 
+                 typename RF_CHOOSER(Visitor_t)::type> 
+                                                        IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
 
     // Preprocess the data to get something the split functor can work
@@ -755,8 +757,6 @@ double RandomForest<LabelType, PreprocessorTag>::onlineLearn(MultiArrayView<2,U,
 
     //visitor.visit_at_end(*this, preprocessor);
     online_visitor_.deactivate();
-
-    return  visitor.return_val();
 }
 
 template<class LabelType, class PreprocessorTag>
@@ -775,8 +775,8 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                  Random_t & random)
 {
     using namespace rf;
-    //We store as a local variable, beacause there is no global interest ?!?
-    typedef typename Split_t::StackEntry_t          StackEntry_t;
+    
+    
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
 
@@ -796,13 +796,12 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode
+                <rf::visitors::OnlineLearnVisitor, 
+                typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
     vigra_precondition(options_.prepare_online_learning_,"reLearnTree: Re learning trees only makes sense, if online learning is enabled");
     online_visitor_.activate();
@@ -825,23 +824,22 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
      *          and is making code slower according to me.
      *          Comment from Nathan: This is copied from Rahul, so me=Rahul
      */
-    RFSampler<RandFunctor_t > sampler(ext_param().row_count_,
-                                    ext_param().actual_msample_,
-                                    detail::make_sampler_opt(options_,
-                                                     preprocessor.strata()),
-                                    randint);
-
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                               preprocessor.strata().end(),
+                               detail::make_sampler_opt(options_)
+                                        .sampleSize(ext_param().actual_msample_),
+                                    random);
     //initialize First region/node/stack entry
     sampler
         .sample();
 
     StackEntry_t
-        first_stack_entry(  sampler.used_indices().begin(),
-                            sampler.used_indices().end(),
+        first_stack_entry(  sampler.sampledIndices().begin(),
+                            sampler.sampledIndices().end(),
                             ext_param_.class_count_);
     first_stack_entry
-        .set_oob_range(     sampler.unused_indices().begin(),
-                            sampler.unused_indices().end());
+        .set_oob_range(     sampler.oobIndices().begin(),
+                            sampler.oobIndices().end());
     online_visitor_.reset_tree(treeId);
     online_visitor_.tree_id=treeId;
     trees_[treeId].reset();
@@ -870,7 +868,7 @@ template <class U, class C1,
          class Stop_t,
          class Visitor_t,
          class Random_t>
-double RandomForest<LabelType, PreprocessorTag>::
+void RandomForest<LabelType, PreprocessorTag>::
                      learn( MultiArrayView<2, U, C1> const  &   features,
                             MultiArrayView<2, U2,C2> const  &   response,
                             Visitor_t                           visitor_,
@@ -881,7 +879,6 @@ double RandomForest<LabelType, PreprocessorTag>::
     using namespace rf;
     //this->reset();
     //typedefs
-    typedef typename Split_t::StackEntry_t          StackEntry_t;
     typedef          UniformIntRandomFunctor<Random_t>
                                                     RandFunctor_t;
 
@@ -900,13 +897,12 @@ double RandomForest<LabelType, PreprocessorTag>::
     Default_Split_t default_split;
     typename RF_CHOOSER(Split_t)::type split 
             = RF_CHOOSER(Split_t)::choose(split_, default_split); 
-    StopVisiting stopvisiting;
-    OOB_Visitor  oob;
-    typedef  VisitorNode<OnlineLearnVisitor, typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
+    rf::visitors::StopVisiting stopvisiting;
+    typedef  rf::visitors::detail::VisitorNode<
+                rf::visitors::OnlineLearnVisitor, 
+                typename RF_CHOOSER(Visitor_t)::type> IntermedVis; 
     IntermedVis
-        inter(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
-    VisitorNode<OOB_Visitor, IntermedVis>
-        visitor(oob,inter);
+        visitor(online_visitor_, RF_CHOOSER(Visitor_t)::choose(visitor_, stopvisiting));
     #undef RF_CHOOSER
     if(options_.prepare_online_learning_)
         online_visitor_.activate();
@@ -933,14 +929,11 @@ double RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    /**\todo    replace this crappy class out. It uses function pointers.
-     *          and is making code slower according to me
-     */
-    RFSampler<RandFunctor_t > sampler(ext_param().actual_msample_,
-                                    ext_param().row_count_,
-                                    detail::make_sampler_opt(options_,
-                                                     preprocessor.strata()),
-                                    randint);
+    Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                               preprocessor.strata().end(),
+                               detail::make_sampler_opt(options_)
+                                        .sampleSize(ext_param().actual_msample_),
+                                    random);
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
@@ -951,12 +944,12 @@ double RandomForest<LabelType, PreprocessorTag>::
         sampler
             .sample();  
         StackEntry_t
-            first_stack_entry(  sampler.used_indices().begin(),
-                                sampler.used_indices().end(),
+            first_stack_entry(  sampler.sampledIndices().begin(),
+                                sampler.sampledIndices().end(),
                                 ext_param_.class_count_);
         first_stack_entry
-            .set_oob_range(     sampler.unused_indices().begin(),
-                                sampler.unused_indices().end());
+            .set_oob_range(     sampler.oobIndices().begin(),
+                                sampler.oobIndices().end());
         trees_[ii]
             .learn(             preprocessor.features(),
                                 preprocessor.response(),
@@ -974,9 +967,8 @@ double RandomForest<LabelType, PreprocessorTag>::
     }
 
     visitor.visit_at_end(*this, preprocessor);
+	// Only for online learning?
     online_visitor_.deactivate();
-
-    return  visitor.return_val();
 }
 
 
@@ -1197,11 +1189,14 @@ void RandomForest<LabelType, PreprocessorTag>
     #undef RF_CHOOSER 
     stop.set_external_parameters(ext_param_, tree_count());
     prob.init(NumericTraits<T>::zero());
+    /* This code was originally there for testing early stopping
+     * - we wanted the order of the trees to be randomized
     if(tree_indices_.size() != 0)
     {
        std::random_shuffle(tree_indices_.begin(),
                            tree_indices_.end()); 
     }
+    */
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
@@ -1214,7 +1209,7 @@ void RandomForest<LabelType, PreprocessorTag>
         for(int k=0; k<options_.tree_count_; ++k)
         {
             //get weights predicted by single tree
-            weights = trees_[tree_indices_[k]].predict(rowVector(features, row));
+            weights = trees_[k /*tree_indices_[k]*/].predict(rowVector(features, row));
 
             //update votecount.
             int weighted = options_.predict_weighted_;

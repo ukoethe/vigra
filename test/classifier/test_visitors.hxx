@@ -41,7 +41,7 @@
 namespace vigra
 {
 
-class TestVisitor: public VisitorBase
+class TestVisitor: public rf::visitors::VisitorBase
 {
 
     public:
@@ -96,7 +96,7 @@ class TestVisitor: public VisitorBase
     }
 };
 
-class SetTestVisitor: public VisitorBase
+class SetTestVisitor: public rf::visitors::VisitorBase
 {
     public:
     std::ostringstream sout;
@@ -154,7 +154,7 @@ class SetTestVisitor: public VisitorBase
 };
 
 template <class T1, class C1, class T2, class C2>
-class AllOutputVisitor: public VisitorBase
+class AllOutputVisitor: public rf::visitors::VisitorBase
 {
     MultiArrayView<2, T1, C1> * features;
     MultiArrayView<2, T2, C2> * labels;
