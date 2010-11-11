@@ -36,7 +36,7 @@
 #ifndef VIGRA_RF_PREPROCESSING_HXX
 #define VIGRA_RF_PREPROCESSING_HXX
 
-
+#include <limits>
 #include "rf_common.hxx"
 
 namespace vigra
@@ -120,6 +120,30 @@ namespace detail
 	    }
 
 	}
+	
+	/** Returns true if MultiArray contains NaNs
+	 */
+	template<unsigned int N, class T, class C>
+	bool contains_nan(MultiArrayView<N, T, C> const & in)
+	{
+		for(int ii = 0; ii < in.size(); ++ii)
+			if(in[ii] != in[ii])
+				return true;
+		return false; 
+	}
+	
+	/** Returns true if MultiArray contains Infs
+	 */
+	template<unsigned int N, class T, class C>
+	bool contains_inf(MultiArrayView<N, T, C> const & in)
+	{
+		 if(!std::numeric_limits<T>::has_infinity)
+			 return false;
+		 for(int ii = 0; ii < in.size(); ++ii)
+			if(in[ii] == std::numeric_limits<T>::infinity())
+				return true;
+		 return false;
+	}
 }
 
 
@@ -148,6 +172,14 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
     :
 		features_( features) // do not touch the features. 
     {
+		vigra_precondition(!detail::contains_nan(features), "Processor(): Feature Matrix "
+						   								   "Contains NaNs");
+		vigra_precondition(!detail::contains_nan(response), "Processor(): Response "
+						   								   "Contains NaNs");
+		vigra_precondition(!detail::contains_inf(features), "Processor(): Feature Matrix "
+						   								   "Contains inf");
+		vigra_precondition(!detail::contains_inf(response), "Processor(): Response "
+						   								   "Contains inf");
 		// set some of the problem specific parameters 
         ext_param.column_count_  = features.shape(1);
         ext_param.row_count_     = features.shape(0);
@@ -243,17 +275,25 @@ public:
 
 	// copy the views.
 	template<class T>
-	Processor(	MultiArrayView<2, T1, C1> 	feats,
+	Processor(	MultiArrayView<2, T1, C1> 	features,
 				MultiArrayView<2, T2, C2> 	response,
 				RandomForestOptions const &	options,
 				ProblemSpec<T>	ext_param)
 	:
-		features_(feats),
+		features_(features),
 		response_(response),
 		options_(options),
 		ext_param_(ext_param)
 	{
 		detail::fill_external_parameters(options, ext_param);
+		vigra_precondition(!detail::contains_nan(features), "Processor(): Feature Matrix "
+						   								   "Contains NaNs");
+		vigra_precondition(!detail::contains_nan(response), "Processor(): Response "
+						   								   "Contains NaNs");
+		vigra_precondition(!detail::contains_inf(features), "Processor(): Feature Matrix "
+						   								   "Contains inf");
+		vigra_precondition(!detail::contains_inf(response), "Processor(): Response "
+						   								   "Contains inf");
 		strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
 	}
 
@@ -271,7 +311,7 @@ public:
 		return response_;
 	}
 
-	/** acess strata - this is not used currently
+	/** access strata - this is not used currently
 	 */
 	MultiArrayView<2, int> & strata()
 	{

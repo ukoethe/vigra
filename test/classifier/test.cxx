@@ -48,6 +48,7 @@
 #include <vigra/random_forest_deprec.hxx>
 #include <unittest.hxx>
 #include <vector>
+#include <limits>
 //#include "data/RF_results.hxx"
 #include "data/RF_data.hxx"
 #include "test_visitors.hxx"
@@ -114,6 +115,181 @@ struct ClassifierTest
         //clean up garbage.
         std::ofstream newRFclear(newName.c_str());
         newRFclear.close();
+    }
+    
+/** Tests whether RF rejects Matrices containing Inf
+ */	
+	void RF_InfCheck()
+    {
+        //Create Test output by Random Forest
+		typedef MultiArrayShape<2>::type Shp_t;
+        {
+            std::cerr << "RF_InfCheck(): checking contains_inf() and RF precondition on Inf\n";
+			MultiArray<2, double> dfeatures(Shp_t(10, 5));
+			MultiArray<2, float>  ffeatures(Shp_t(10, 5));
+			
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = (ii*jj+jj)%97;
+					ffeatures(ii, jj) = (ii*jj+jj)%97;
+				}
+			}
+			shouldEqual(detail::contains_inf(dfeatures), false);
+			shouldEqual(detail::contains_inf(ffeatures), false);
+					
+			dfeatures(2, 3) = std::numeric_limits<double>::infinity();
+			ffeatures(2, 3) = std::numeric_limits<double>::infinity();
+			
+			shouldEqual(detail::contains_inf(dfeatures), true);
+			shouldEqual(detail::contains_inf(ffeatures), true);
+			
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = std::numeric_limits<double>::infinity();
+					ffeatures(ii, jj) = std::numeric_limits<double>::infinity();
+				}
+			}
+			
+			shouldEqual(detail::contains_inf(dfeatures), true);
+			shouldEqual(detail::contains_inf(ffeatures), true);
+        }
+		MultiArray<2, double> dfeatures(Shp_t(10, 5));
+		MultiArray<2, double> dlabels(Shp_t(10, 1));
+		for(int ii = 0; ii < 10; ++ii)
+		{
+			for(int jj = 0; jj < 5; ++jj)
+			{
+				dfeatures(ii, jj) = (ii*jj+jj)%97;
+			}
+			dlabels(ii, 0) = ii%2;
+		}
+		dlabels(9,0) = std::numeric_limits<double>::infinity();
+		RandomForest<> rf;
+		try
+		{
+			rf.learn(dfeatures, dlabels);
+			shouldEqual(0, 1);
+		}
+		catch( ... )
+		{
+		}
+		dfeatures(9,0) = dlabels(9,0);
+		dlabels(9,0) = 9%2;
+		try
+		{
+			rf.learn(dfeatures, dlabels);
+			shouldEqual(0, 1);
+		}
+		catch( ... )
+		{
+		}
+
+    }
+	
+	
+/** Tests whether RF rejects Matrices containing NaN
+ */	
+	void RF_NanCheck()
+    {
+        //Create Test output by Random Forest
+		typedef MultiArrayShape<2>::type Shp_t;
+        {
+            std::cerr << "RF_NanCheck(): checking contains_nan() and RF precondition on NaN\n";
+			MultiArray<2, double> dfeatures(Shp_t(10, 5));
+			MultiArray<2, float>  ffeatures(Shp_t(10, 5));
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = (ii*jj+jj)%97;
+					ffeatures(ii, jj) = (ii*jj+jj)%97;
+				}
+			}
+			shouldEqual(detail::contains_nan(dfeatures), false);
+			shouldEqual(detail::contains_nan(ffeatures), false);
+					
+			dfeatures(2, 3) = std::numeric_limits<double>::quiet_NaN();
+			ffeatures(2, 3) = std::numeric_limits<float>::quiet_NaN();
+			
+			shouldEqual(detail::contains_nan(dfeatures), true);
+			shouldEqual(detail::contains_nan(ffeatures), true);
+			
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = std::numeric_limits<double>::quiet_NaN();
+					ffeatures(ii, jj) = std::numeric_limits<double>::quiet_NaN();
+				}
+			}
+			
+			shouldEqual(detail::contains_nan(dfeatures), true);
+			shouldEqual(detail::contains_nan(ffeatures), true);
+			
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = (ii*jj+jj)%97;
+					ffeatures(ii, jj) = (ii*jj+jj)%97;
+				}
+			}
+			shouldEqual(detail::contains_nan(dfeatures), false);
+			shouldEqual(detail::contains_nan(ffeatures), false);
+					
+			dfeatures(2, 3) = std::numeric_limits<double>::signaling_NaN();
+			ffeatures(2, 3) = std::numeric_limits<double>::signaling_NaN();
+			
+			shouldEqual(detail::contains_nan(dfeatures), true);
+			shouldEqual(detail::contains_nan(ffeatures), true);
+			
+			for(int ii = 0; ii < 10; ++ii)
+			{
+				for(int jj = 0; jj < 5; ++jj)
+				{
+					dfeatures(ii, jj) = std::numeric_limits<double>::signaling_NaN();
+					ffeatures(ii, jj) = std::numeric_limits<double>::signaling_NaN();
+				}
+			}
+			
+			shouldEqual(detail::contains_nan(dfeatures), true);
+			shouldEqual(detail::contains_nan(ffeatures), true);
+        }
+		MultiArray<2, double> dfeatures(Shp_t(10, 5));
+		MultiArray<2, double> dlabels(Shp_t(10, 1));
+		for(int ii = 0; ii < 10; ++ii)
+		{
+			for(int jj = 0; jj < 5; ++jj)
+			{
+				dfeatures(ii, jj) = (ii*jj+jj)%97;
+			}
+			dlabels(ii, 0) = ii%2;
+		}
+		dlabels(9,0) = std::numeric_limits<double>::quiet_NaN();
+		RandomForest<> rf;
+		try
+		{
+			rf.learn(dfeatures, dlabels);
+			shouldEqual(0, 1);
+		}
+		catch( ... )
+		{
+		}
+		dfeatures(9,0) = dlabels(9,0);
+		dlabels(9,0) = 9%2;
+		try
+		{
+			rf.learn(dfeatures, dlabels);
+			shouldEqual(0, 1);
+		}
+		catch( ... )
+		{
+		}
+
     }
 /**
         ClassifierTest::RFdefaultTest():
@@ -525,7 +701,8 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFoobTest));
         add( testCase( &ClassifierTest::RFnoiseTest));
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
-        add( testCase( &ClassifierTest::RFwrongLabelTest));
+        add( testCase( &ClassifierTest::RF_NanCheck));
+        add( testCase( &ClassifierTest::RF_InfCheck));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
 #ifdef HasHDF5
