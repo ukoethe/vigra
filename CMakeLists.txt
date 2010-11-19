@@ -19,7 +19,7 @@ string(REGEX REPLACE "VIGRA_VERSION_PATCH[ \t\n]" "" VIGRA_VERSION_PATCH ${VIGRA
 
 SET(vigra_version_short ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR})
 SET(vigra_version ${VIGRA_VERSION_MAJOR}.${VIGRA_VERSION_MINOR}.${VIGRA_VERSION_PATCH})
-message("Configuring VIGRA version ${vigra_version}")
+message(STATUS "Configuring VIGRA version ${vigra_version}")
 
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
@@ -163,16 +163,23 @@ ENDIF(NOT WIN32)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigBuild.cmake.in
 		${PROJECT_BINARY_DIR}/VigraConfig.cmake
 		@ONLY IMMEDIATE)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
+		${PROJECT_BINARY_DIR}/VigraConfigVersion.cmake
+		@ONLY IMMEDIATE)
 
 # config file for CMake FIND_PACKAGE command
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
 		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+		@ONLY IMMEDIATE)
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
+		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
 		@ONLY IMMEDIATE)
 
 # export targets:
 INSTALL(EXPORT vigra-targets
 		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+			${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
 		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
