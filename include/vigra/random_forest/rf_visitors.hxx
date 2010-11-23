@@ -1224,10 +1224,15 @@ class VariableImportanceVisitor : public VisitorBase
         Int32                   column_count = rf.ext_param_.column_count_;
         Int32                   class_count  = rf.ext_param_.class_count_;  
         
+		/* This solution saves memory uptake but not multithreading
+		 * compatible
+		 */
         // remove the const cast on the features (yep , I know what I am 
         // doing here.) data is not destroyed.
-        typename PR::Feature_t & features 
-            = const_cast<typename PR::Feature_t &>(pr.features());
+        //typename PR::Feature_t & features 
+        //    = const_cast<typename PR::Feature_t &>(pr.features());
+
+		typename PR::FeatureWithMemory_t features = pr.features();
 
         //find the oob indices of current tree. 
         ArrayVector<Int32>      oob_indices;
