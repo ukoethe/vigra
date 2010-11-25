@@ -1243,4 +1243,5 @@ void RandomForest<LabelType, PreprocessorTag>
 
 } // namespace vigra
 
+#include "random_forest/rf_algorithm.hxx"
 #endif // VIGRA_RANDOM_FOREST_HXX
