@@ -37,6 +37,7 @@
 #include <algorithm>
 #include <map>
 #include <numeric>
+#include <math.h>
 #include "../mathutil.hxx"
 #include "../array_vector.hxx"
 #include "../sized_int.hxx"
@@ -344,6 +345,67 @@ namespace detail
 
 
 
+/** Functor to calculate the entropy based impurity
+ */
+class EntropyCriterion
+{
+public:
+    /**caculate the weighted gini impurity based on class histogram
+     * and class weights
+     */
+    template<class Array, class Array2>
+    double operator()        (Array     const & hist, 
+                              Array2    const & weights, 
+                              double            total = 1.0) const
+    {
+        return impurity(hist, weights, total);
+    }
+    
+    /** calculate the gini based impurity based on class histogram
+     */
+    template<class Array>
+    double operator()(Array const & hist, double total = 1.0) const
+    {
+        return impurity(hist, total);
+    }
+    
+    /** static version of operator(hist total)
+     */
+    template<class Array>
+    static double impurity(Array const & hist, double total)
+    {
+        return impurity(hist, detail::ConstArr<1>(), total);
+    }
+
+    /** static version of operator(hist, weights, total)
+     */
+    template<class Array, class Array2>
+    static double impurity   (Array     const & hist, 
+                              Array2    const & weights, 
+                              double            total)
+    {
+
+        int     class_count     = hist.size();
+        double  entropy            = 0.0;
+        if(class_count == 2)
+        {
+			double p0			= (hist[0]/total);
+			double p1			= (hist[1]/total);
+			entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+        }
+        else
+        {
+            for(int ii = 0; ii < class_count; ++ii)
+            {
+                double w        = weights[ii];
+				double pii		= hist[ii]/total;
+                entropy         -= w*( pii*std::log(pii));
+            }
+        }
+  		entropy 			= total * entropy;
+        return entropy; 
+    }
+};
 
 /** Functor to calculate the gini impurity
  */
@@ -591,6 +653,12 @@ template<class Datatype>
 struct LossTraits<GiniCriterion, Datatype>
 {
     typedef ImpurityLoss<Datatype, GiniCriterion> type;
+};
+
+template<class Datatype>
+struct LossTraits<EntropyCriterion, Datatype>
+{
+    typedef ImpurityLoss<Datatype, EntropyCriterion> type;
 };
 
 template<class Datatype>
@@ -876,8 +944,9 @@ class ThresholdSplit: public SplitBase<Tag>
     }
 };
 
-typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 GiniSplit;
-typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         RegressionSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 	 GiniSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<EntropyCriterion> >                 EntropySplit;
+typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         	 RegressionSplit;
 
 namespace rf
 {
@@ -1005,6 +1074,123 @@ public:
 };
 
 typedef  ThresholdSplit<Median> MedianSplit;
+
+
+/** This Functor chooses a random value of a column
+ */
+class RandomSplitOfColumn
+{
+public:
+
+    typedef GiniCriterion   LineSearchLossTag;
+    ArrayVector<double>     class_weights_;
+    ArrayVector<double>     bestCurrentCounts[2];
+    double                  min_gini_;
+    ptrdiff_t               min_index_;
+    double                  min_threshold_;
+    ProblemSpec<>           ext_param_;
+	typedef RandomMT19937	Random_t;
+	Random_t				random;
+
+    RandomSplitOfColumn()
+    {}
+
+    template<class T> 
+    RandomSplitOfColumn(ProblemSpec<T> const & ext)
+    :
+        class_weights_(ext.class_weights_),
+        ext_param_(ext),
+		random(RandomSeed)
+    {
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
+    
+	template<class T> 
+    RandomSplitOfColumn(ProblemSpec<T> const & ext, Random_t & random_)
+    :
+        class_weights_(ext.class_weights_),
+        ext_param_(ext),
+		random(random_)
+    {
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
+  
+    template<class T> 
+    void set_external_parameters(ProblemSpec<T> const & ext)
+    {
+        class_weights_ = ext.class_weights_; 
+        ext_param_ = ext;
+        bestCurrentCounts[0].resize(ext.class_count_);
+        bestCurrentCounts[1].resize(ext.class_count_);
+    }
+     
+    template<   class DataSourceF_t,
+                class DataSource_t, 
+                class I_Iter, 
+                class Array>
+    void operator()(DataSourceF_t   const & column,
+                    DataSource_t    const & labels,
+                    I_Iter                & begin, 
+                    I_Iter                & end,
+                    Array           const & region_response)
+    {
+        std::sort(begin, end, 
+                  SortSamplesByDimensions<DataSourceF_t>(column, 0));
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss left(labels, ext_param_);
+        LineSearchLoss right(labels, ext_param_);
+        right.init(begin, end, region_response);
+
+		
+		min_gini_ = NumericTraits<double>::max();
+        
+		min_index_ = begin + random.uniformInt(end -begin);
+        min_threshold_ =  column[*(begin + min_index_)];
+        SortSamplesByDimensions<DataSourceF_t> 
+            sorter(column, 0, min_threshold_);
+        I_Iter part = std::partition(begin, end, sorter);
+        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
+        if(part == begin)
+        {
+            part= std::adjacent_find(part, end, comp)+1;
+            
+        }
+        if(part >= end)
+        {
+            return; 
+        }
+        else
+        {
+            min_threshold_ = column[*part];
+        }
+        min_gini_ = right.decrement(begin, part) 
+              +     left.increment(begin , part);
+
+        bestCurrentCounts[0] = left.response();
+        bestCurrentCounts[1] = right.response();
+        
+        min_index_      = part - begin;
+    }
+
+    template<class DataSource_t, class Iter, class Array>
+    double loss_of_region(DataSource_t const & labels,
+                          Iter & begin, 
+                          Iter & end, 
+                          Array const & region_response) const
+    {
+        typedef typename 
+            LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
+        LineSearchLoss region_loss(labels, ext_param_);
+        return 
+            region_loss.init(begin, end, region_response);
+    }
+
+};
+
+typedef  ThresholdSplit<RandomSplitOfColumn> RandomSplit;
 }
 }
 
