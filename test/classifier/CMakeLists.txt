@@ -9,6 +9,7 @@ else()
 endif()
 
 VIGRA_ADD_TEST(classifier_speed_comparison speed_comparison.cxx)
+VIGRA_ADD_TEST(classifier_splices splice_test.cpp)
 
 
 add_subdirectory(data)

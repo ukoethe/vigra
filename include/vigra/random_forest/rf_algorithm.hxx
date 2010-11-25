@@ -64,7 +64,7 @@ namespace detail
 	{
 		int columnCount = std::distance(b, e);
 		int rowCount 	= in.shape(0);
-		out.resize(MultiArrayShape<2>::type(rowCount, columnCount));
+		out.reshape(MultiArrayShape<2>::type(rowCount, columnCount));
 		int ii = 0;
 		for(Iter iter = b; iter != e; ++iter, ++ii)
 		{
@@ -104,7 +104,7 @@ class RFErrorCallback
 		visitors::OOB_Error		oob;
 		rf.learn(features, 
 				 response, 
-				 visitors::create_visitor(oob));
+				 visitors::create_visitor(oob ));
 		return oob.oob_breiman;
 	}
 };
@@ -162,10 +162,10 @@ class VariableSelectionResult
 		bool ret_ = init(all_features, response, errorcallback); 
 		if(!ret_)
 			return false;
-		vigra_precondition(std::distance(b, e) == all_features.shape(1),
+		vigra_precondition(std::distance(b, e) == selected.size(),
 						   "Number of features in ranking != number of features matrix");
 		std::copy(b, e, selected.begin());
-
+		return true;
 	}
 	
 	template<class FeatureT, 
@@ -210,6 +210,9 @@ class VariableSelectionResult
 			return false;
 		}
 		// calculate error with all features
+		selected.resize(all_features.shape(1), 0);
+		for(int ii = 0; ii < selected.size(); ++ii)
+			selected[ii] = ii;
 		errors.resize(all_features.shape(1), -1);
 		errors.back() = errorcallback(all_features, response);
 
@@ -224,6 +227,7 @@ class VariableSelectionResult
 			{
 				res_map[response(ii, 0)] = counter;
 				++counter;
+				cts.push_back(0);
 			}
 			cts[res_map[response(ii,0)]] +=1;
 		}
@@ -307,7 +311,8 @@ void forward_selection(FeatureT 		 const & features,
 	
 
 	int not_selected_size = std::distance(pivot, selected.end());
-	while(not_selected_size > 0)
+	int ii = 0;
+	while(not_selected_size > 1)
 	{
 		std::vector<int> current_errors;
 		VariableSelectionResult::Pivot_t next = pivot;
@@ -393,7 +398,6 @@ void backward_elimination(FeatureT 		 	const & features,
 	VariableSelectionResult::ErrorList_t &	 errors		    = result.errors;
 	VariableSelectionResult::Pivot_t	   & pivot			= result.pivot;	
 	
-	
 	// initialize result struct if in use for the first time
 	if(!result.init(features, response, errorcallback))
 	{
@@ -404,9 +408,10 @@ void backward_elimination(FeatureT 		 	const & features,
 						   "matrix and number of features in previously used "
 						   "result struct mismatch!");
 	}
+	pivot = selected.end() - 1;	
 
 	int selected_size = std::distance(selected.begin(), pivot);
-	while(selected_size > 0)
+	while(selected_size > 1)
 	{
 		VariableSelectionResult::Pivot_t next = selected.begin();
 		std::vector<int> current_errors;
@@ -428,6 +433,7 @@ void backward_elimination(FeatureT 		 	const & features,
 		next = selected.begin();
 		std::advance(next, pos);
 		std::swap(*pivot, *next);
+		std::cerr << std::distance(selected.begin(), pivot) << " " << pos << " " << current_errors.size() << " " << errors.size() << std::endl;
 		errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
 		selected_size = std::distance(selected.begin(), pivot);
 		--pivot;
@@ -495,9 +501,11 @@ void rank_selection      (FeatureT 		 	const & features,
 						   "result struct mismatch!");
 	}
 	
-
+int ii = 0;
 	for(; iter != selected.end(); ++iter)
 	{
+		std::cerr << ii<< std::endl;
+		++ii;
 		MultiArray<2, double> cur_feats;
 		detail::choose( features, 
 						selected.begin(), 
@@ -542,7 +550,8 @@ class ClusterNode
                 :   BT(nCol + 5, 5,topology, split_param)
     {
         status() = 0; 
-        if(nCol == 1)
+		BT::column_data()[0] = nCol;
+		if(nCol == 1)
             BT::typeID() = c_Leaf;
         else
             BT::typeID() = c_Node;
@@ -690,18 +699,18 @@ public:
 	 */
     void save(std::string file, std::string prefix)
     {
-		/*
-        vigra::writeToHDF5File(file.c_str(), (prefix + "topology").c_str(), 
+		
+        vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
                                     topology_.data()));
-        vigra::writeToHDF5File(file.c_str(), (prefix + "parameters").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "parameters").c_str(), 
                                MultiArrayView<2, double>(
                                     Shp(parameters_.size(), 1),
                                     parameters_.data()));
-        vigra::writeToHDF5File(file.c_str(), (prefix + "begin_addr").c_str(), 
+        vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
-							   */
+							   
     }
 
 	/**Perform single linkage clustering
@@ -762,6 +771,7 @@ public:
             }
             int cur_addr = topology_.size();
             begin_addr = cur_addr;
+			std::cerr << col_size << std::endl;
             ClusterNode parent(col_size,
                                topology_,
                                parameters_); 
@@ -854,9 +864,9 @@ class PermuteCluster
 {
 public:
     typedef MultiArrayShape<2>::type Shp;
+    Matrix<double> tmp_mem_;
     MultiArrayView<2, double> perm_imp;
     MultiArrayView<2, double> orig_imp;
-    Matrix<double> tmp_mem_;
     Matrix<double> feats_;
     Matrix<int>    labels_;
     const int      nPerm;
@@ -874,10 +884,10 @@ public:
                    int np,
                    DT const  & dt_)
         :tmp_mem_(_spl(a, b).size(), feats.shape(1)),
-         feats_(_spl(a,b).size(), feats.shape(1)),
-         labels_(_spl(a,b).size(),1),
          perm_imp(p_imp),
          orig_imp(o_imp),
+         feats_(_spl(a,b).size(), feats.shape(1)),
+         labels_(_spl(a,b).size(),1),
          nPerm(np),
          dt(dt_),
          index(0),
@@ -1009,9 +1019,9 @@ public:
     std::ofstream graphviz;
 
 
-    Draw(MultiArrayView<2, T1, C1> const features, 
-                MultiArrayView<2, T2, C2> const labels,
-                std::string gz)
+    Draw(MultiArrayView<2, T1, C1> const & features, 
+         MultiArrayView<2, T2, C2> const& labels,
+         std::string const  gz)
         :features_(features), labels_(labels), 
         graphviz(gz.c_str(), std::ios::out)
     {
@@ -1201,7 +1211,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {
+    {	
             after_tree_ip_impl(rf, pr, sm, st, index);
     }
 
@@ -1272,14 +1282,14 @@ void cluster_permutation_importance(FeatureT 		 	const & features,
 
 
         // Produce linkage
-        linkage.cluster(missc.distance);
+        linkage.cluster(distance);
+		
         //linkage.save(exp_dir + dset.name() + "_result.h5", "_linkage_CC/");
-
         vigra::RandomForest<int> RF2(opt); 
 		ClusterImportanceVisitor          ci(linkage);
         RF2.learn(features, 
                   response,
-                  create_visitor(ci, progress));
+                  create_visitor(progress, ci));
         
 		
 		CorrectStatus cs;
@@ -1288,6 +1298,7 @@ void cluster_permutation_importance(FeatureT 		 	const & features,
         //ci.save(exp_dir + dset.name() + "_result.h5", dset.name());
         //Draw<double, int> draw(dset.features(), dset.response(), exp_dir+ dset.name() + ".graph");
         //linkage.breadth_first_traversal(draw);
+
 }
 
 	

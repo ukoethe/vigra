@@ -190,6 +190,57 @@ struct ClassifierTest
 
     }
 	
+	void RF_AlgorithmTest()
+    {
+		std::cerr << "RF_AlgorithmTest()....";
+		std::cerr << "WARNING: THIS TEST CURRENTLY ONLY CHECKS WHETHER ALGORITHMS COMPILE WITHOUT ERROR...\n";
+		int ii = data.size() - 3; // this is the pina_indians dataset
+		
+		rf::algorithms::HClustering				linkage;
+  		MultiArray<2, double>	distance;
+		std::cerr << "cluster_permutation_importance)....\n";
+  		cluster_permutation_importance(data.features(ii), data.labels(ii), linkage, distance);
+		rf::algorithms::VariableSelectionResult  result1;
+		std::cerr << "forward_selection()....\n";
+		rf::algorithms::forward_selection(data.features(ii), data.labels(ii), result1);
+		rf::algorithms::VariableSelectionResult  result;
+		std::vector<int> r;
+		r.push_back(0);
+		r.push_back(1);
+		r.push_back(2);
+		r.push_back(3);
+		r.push_back(4);
+		r.push_back(5);
+		r.push_back(6);
+		r.push_back(7);
+		result.init(data.features(ii), data.labels(ii), r.begin(), r.end());
+		std::cerr << "rank_selection()....\n";
+		rf::algorithms::rank_selection(data.features(ii), data.labels(ii), result);
+		
+		rf::algorithms::VariableSelectionResult  result2;
+		std::cerr << "backward_elimination()....\n";
+		rf::algorithms::backward_elimination(data.features(ii), data.labels(ii), result2);
+		std::cerr << "DONE\n";
+	}
+	void RF_SpliceTest()
+    {
+		std::cerr << "RF_SpliceTest()....";
+
+		MultiArray<2, double> a(MultiArrayShape<2>::type(20, 10), 1);
+		for(int ii = 0; ii< 20; ii+=2)
+		{
+			for(int jj = 0; jj< 10; jj+=2)
+			{
+				a(ii, jj) = 3;
+			}
+		}
+		MultiArray<2, double> b(_spl_shp(_spl(0,2,20),_spl(0,2,10)));
+		copy_splice(_spl(0,2,20), _spl(0,2,10), a, b);
+
+		MultiArray<2, double> c(b.shape(), 3);
+		shouldEqual(b, c);
+		std::cerr << "DONE\n";
+	}
 	
 /** Tests whether RF rejects Matrices containing NaN
  */	
@@ -703,6 +754,9 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFvariableImportanceTest));
         add( testCase( &ClassifierTest::RF_NanCheck));
         add( testCase( &ClassifierTest::RF_InfCheck));
+        add( testCase( &ClassifierTest::RF_SpliceTest));
+		
+        add( testCase( &ClassifierTest::RF_AlgorithmTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
 #ifdef HasHDF5

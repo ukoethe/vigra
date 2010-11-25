@@ -1584,7 +1584,6 @@ class CorrelationVisitor : public VisitorBase
         inspectMultiArray(srcMultiArrayRange(similarity), minmax2);
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = minmax2.max;
-        std::cerr << "minmax2.max " << minmax2.max << std::endl;
         distance.reshape(gini_missc.shape(), minmax2.max);
         distance -= similarity; 
     }
@@ -1620,6 +1619,7 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < features.shape(1); ++k)
             {
                 bgfunc(columnVector(features, k),
+					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1630,6 +1630,7 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise, k),
+					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1641,6 +1642,7 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise_l, k),
+					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1648,7 +1650,7 @@ class CorrelationVisitor : public VisitorBase
                 corr_l(n, k) 
                     += wgini;
             }
-            bgfunc(labels, tmp_labels, parent.begin(), parent.end(),tmp_cc);
+            bgfunc(labels,0,  tmp_labels, parent.begin(), parent.end(),tmp_cc);
             wgini = (region_gini - bgfunc.min_gini_);
             gini_missc(n, columnCount(gini_missc)-1) 
                 += wgini;
@@ -1663,6 +1665,7 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 split.bgfunc(columnVector(noise, k),
+							 0,
                              labels, 
                              parent.begin(), parent.end(), 
                              parent.classCounts());
