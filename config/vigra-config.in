@@ -41,13 +41,15 @@ import os.path
 # built-in):
 standardLibDirs = ["/lib", "/usr/lib", "/lib64", "/usr/lib64"]
 
+libExt = ".so" if not sys.platform == "darwin" else ".dylib"
+
 def filename2ldflags(libFilename):
 	dir, fn = os.path.split(libFilename)
-	if not (fn.startswith("lib") and fn.endswith(".so")):
+	if not (fn.startswith("lib") and fn.endswith(libExt)):
 		if libFilename:
 			sys.stderr.write("ERROR: don't know how to handle %r!\n" % libFilename)
 		return []
-	lib = fn[3:-3]
+	lib = fn[3:-len(libExt)]
 
 	result = []
 	if dir not in standardLibDirs:
@@ -73,7 +75,9 @@ if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
 	for flag in '@vigraimpex_LIB_DEPENDS@'.split(';'):
 		if flag == 'general':
 			continue
-		ldflags.extend(filename2ldflags(flag))
+		for fl in filename2ldflags(flag):
+			if fl not in ldflags:
+				ldflags.append(fl)
 
 	print " ".join(ldflags)
 
