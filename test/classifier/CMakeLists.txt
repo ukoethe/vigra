@@ -10,6 +10,5 @@ endif()
 
 VIGRA_ADD_TEST(classifier_speed_comparison speed_comparison.cxx)
 
-
 add_subdirectory(data)
 

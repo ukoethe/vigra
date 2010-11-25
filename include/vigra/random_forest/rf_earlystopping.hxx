@@ -19,6 +19,9 @@ namespace es_detail
     }
 }
 #endif
+
+/**Base class from which all EarlyStopping Functors derive.
+ */
 class StopBase
 {
 protected:
@@ -34,6 +37,16 @@ public:
         is_weighted_ = is_weighted;
         tree_count_ = tree_count;
     }
+    
+	/** called after the prediction of a tree was added to the total prediction
+	 * \param WeightIter Iterator to the weights delivered by current tree.
+	 * \param k			 after kth tree
+	 * \param prob		 Total probability array
+	 * \param totalCt	 sum of probability array. 
+	 */
+	template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
+    {return false;}
 };
 
 
@@ -47,7 +60,11 @@ public:
     typedef StopBase SB;
     
     ArrayVector<double> depths;
-    StopAfterTree(double max_tree)
+    
+	/** Constructor
+	 * \param max_tree number of trees to be used for prediction
+	 */
+	StopAfterTree(double max_tree)
     :
         max_tree_p(max_tree)
     {}
@@ -85,6 +102,10 @@ public:
     double proportion_;
     typedef StopBase SB;
     ArrayVector<double> depths;
+
+	/** Constructor
+	 * \param proportion specify proportion to be used.
+	 */
     StopAfterVoteCount(double proportion)
     :
         proportion_(proportion)
@@ -134,6 +155,10 @@ public:
     ArrayVector<double> depths;
     typedef StopBase SB;
 
+	/** Constructor
+	 * \param thresh: If the two norm of the probabilites changes less then thresh then stop
+	 * \param num   : look at atleast num trees before stopping
+	 */
     StopIfConverging(double thresh, int num = 10)
     :
         thresh_(thresh), 
@@ -194,6 +219,9 @@ public:
     typedef StopBase SB;
     ArrayVector<double> depths;
 
+	/** Constructor
+	 * \param proportion specify proportion to be used.
+	 */
     StopIfMargin(double proportion)
     :
         proportion_(proportion)
@@ -233,17 +261,34 @@ public:
     }
 };
 
+
+/**Probabilistic Stopping criterion (binomial test)
+ *
+ * Can only be used in a two class setting
+ *
+ * Stop if the Parameters estimated for the underlying binomial distribution
+ * can be estimated with certainty over 1-alpha.
+ * (Thesis, Rahul Nair Page 80 onwards: called the "binomial" criterion
+ */
 class StopIfBinTest : public StopBase  
 {
 public:
     double alpha_;  
     MultiArrayView<2, double> n_choose_k;
+	/** Constructor
+	 * \param proportion specify alpha value for binomial test.
+	 * \param nck_ Matrix with precomputed values for n choose k
+	 * nck_(n, k) is n choose k. 
+	 */
     StopIfBinTest(double alpha, MultiArrayView<2, double> nck_)
     :
         alpha_(alpha),
         n_choose_k(nck_)
     {}
     typedef StopBase SB;
+	
+	/**ArrayVector that will contain the fraction of trees that was visited before terminating
+	 */
     ArrayVector<double> depths;
 
     double binomial(int N, int k, double p)
@@ -296,18 +341,34 @@ public:
     }
 };
 
-
+/**Probabilistic Stopping criteria. (toChange)
+ *
+ * Can only be used in a two class setting
+ *
+ * Stop if the probability that the decision will change after seeing all trees falls under
+ * a specified value alpha.
+ * (Thesis, Rahul Nair Page 80 onwards: called the "toChange" criterion
+ */
 class StopIfProb : public StopBase  
 {
 public:
     double alpha_;  
     MultiArrayView<2, double> n_choose_k;
+	
+	
+	/** Constructor
+	 * \param proportion specify alpha value
+	 * \param nck_ Matrix with precomputed values for n choose k
+	 * nck_(n, k) is n choose k. 
+	 */
     StopIfProb(double alpha, MultiArrayView<2, double> nck_)
     :
         alpha_(alpha),
         n_choose_k(nck_)
     {}
     typedef StopBase SB;
+	/**ArrayVector that will contain the fraction of trees that was visited before terminating
+	 */
     ArrayVector<double> depths;
 
     double binomial(int N, int k, double p)
