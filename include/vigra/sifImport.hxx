@@ -61,20 +61,78 @@
 
 namespace vigra {
  
+ 
+ /** \addtogroup VigraSIFImport Import of Images from Andor Cameras
+
+    Read an Andor SIF file into a MultiArrayView.
+**/
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                   SIFImportInfo                      */
 /*                                                      */
 /********************************************************/
+/** \brief Extracts image properties from an Andor SIF file header.
+
+See \ref readSIF() for a usage example. This object must be
+used to read the image header of an Andor SIF file
+and enquire its properties.
+
+<b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+Namespace: vigra
+**/
 class SIFImportInfo
 {
 	public:
+        /** Construct SIFImportInfo object.
+
+            The header of the Andor SIF file \a filename is accessed to 
+            read the image properties. 
+            
+            \code
+            SIFImportInfo info(filename);
+            \endcode
+         **/
 		VIGRA_EXPORT SIFImportInfo(const char* filename);
+
+        /** Get the width in pixels.
+         **/
 		VIGRA_EXPORT const int width() const;
+
+        /** Get the height in pixels.
+         **/
 		VIGRA_EXPORT const int height() const;
+
+        /** Get the stacksize, that is the number of 
+         *  images contained in the dataset.
+         **/
 		VIGRA_EXPORT const int stacksize() const;
+
+        /** Get the offset to the beginning of the actual data.
+         *  Everything before this point belongs to the 
+         *  variable lenght header.
+         **/
 		VIGRA_EXPORT const ptrdiff_t getOffset() const;
+
+        /** Get the filename of this SIF object.
+         **/
 		VIGRA_EXPORT const char * getFileName() const;
+
+        /** Output all information such as shutter, Temperature etc. 
+           as human readable output.
+          
+		<b> Usage:</b>
+		
+		<b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/sifImport.hxx</a>\><br>
+		Namespace: vigra
+		
+		\code
+		SIFImportInfo info(filename);
+		std::cout << info << std::endl;	// print infos to the console
+
+		\endcode
+         **/
 		VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
 	private:
@@ -99,11 +157,41 @@ class SIFImportInfo
 
 
 
+    /** \brief Read the image data specified by the given \ref vigra::SIFImportInfo object
+                and write them into the given 'array'.
+                
+    The array must have the correct number of dimensions and shape for the dataset 
+    represented by 'info'. 
+    
+    <b> Declaration:</b>
+    
+    \code
+    namespace vigra {
+        void 
+        readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/sifImport.hxx</a>\><br>
+    Namespace: vigra
+    
+    \code
+	SIFImportInfo info(filename);
 
+	// create a 3D array of appropriate size
+	typedef MultiArray<3, float>::difference_type Shape;
+	MultiArray<3, float> in(Shape(info.width(), info.height(), info.stacksize()));
+
+	readSIF(info, in); 
+    \endcode
+*/
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
 
 VIGRA_EXPORT std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
+//@}
 
 } // namespace vigra
 
