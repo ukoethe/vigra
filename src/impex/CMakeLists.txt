@@ -35,6 +35,7 @@ ADD_LIBRARY(vigraimpex SHARED
     png.cxx
     pnm.cxx
     rgbe.c
+    sifImport.cxx
     sun.cxx
     tiff.cxx
     viff.cxx
