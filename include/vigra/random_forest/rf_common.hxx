@@ -286,6 +286,54 @@ class RandomForestOptions
         PUSH(predict_weighted_);
         #undef PUSH
     }
+    
+	void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+    {
+        typedef MultiArrayShape<2>::type Shp; 
+        #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
+        #define PULLBOOL(item_, type_) item_ = type_(in[#item_][0] > 0); 
+        PULL(training_set_proportion_,double);
+        PULL(training_set_size_, int);
+        PULL(mtry_, int);
+        PULL(tree_count_, int);
+        PULL(min_split_node_size_, int);
+        PULLBOOL(sample_with_replacement_, bool);
+        PULLBOOL(prepare_online_learning_, bool);
+		PULLBOOL(predict_weighted_, bool);
+        
+        PULL(training_set_calc_switch_, RF_OptionTag);
+        PULL(stratification_method_, RF_OptionTag);
+        PULL(mtry_switch_, RF_OptionTag);
+		
+		/*don't pull*/
+        //PULL(mtry_func_!=0, int);
+        //PULL(training_set_func,int);
+        #undef PULL
+		#undef PULLBOOL
+    }
+    void make_map(std::map<std::string, ArrayVector<double> > & in) const
+    {
+        typedef MultiArrayShape<2>::type Shp; 
+        #define PUSH(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_)); 
+        #define PUSHFUNC(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_!=0)); 
+        PUSH(training_set_proportion_,double);
+        PUSH(training_set_size_, int);
+        PUSH(mtry_, int);
+        PUSH(tree_count_, int);
+        PUSH(min_split_node_size_, int);
+        PUSH(sample_with_replacement_, bool);
+        PUSH(prepare_online_learning_, bool);
+		PUSH(predict_weighted_, bool);
+        
+        PUSH(training_set_calc_switch_, RF_OptionTag);
+        PUSH(stratification_method_, RF_OptionTag);
+        PUSH(mtry_switch_, RF_OptionTag);
+		
+        PUSHFUNC(mtry_func_, int);
+        PUSHFUNC(training_set_func_,int);
+        #undef PUSH
+        #undef PUSHFUNC
+    }
 
 
     /**\brief create a RandomForestOptions object with default initialisation.

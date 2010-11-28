@@ -433,7 +433,6 @@ void backward_elimination(FeatureT 		 	const & features,
 		next = selected.begin();
 		std::advance(next, pos);
 		std::swap(*pivot, *next);
-		std::cerr << std::distance(selected.begin(), pivot) << " " << pos << " " << current_errors.size() << " " << errors.size() << std::endl;
 		errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
 		selected_size = std::distance(selected.begin(), pivot);
 		--pivot;
@@ -504,7 +503,6 @@ void rank_selection      (FeatureT 		 	const & features,
 int ii = 0;
 	for(; iter != selected.end(); ++iter)
 	{
-		std::cerr << ii<< std::endl;
 		++ii;
 		MultiArray<2, double> cur_feats;
 		detail::choose( features, 
@@ -771,7 +769,6 @@ public:
             }
             int cur_addr = topology_.size();
             begin_addr = cur_addr;
-			std::cerr << col_size << std::endl;
             ClusterNode parent(col_size,
                                topology_,
                                parameters_); 
