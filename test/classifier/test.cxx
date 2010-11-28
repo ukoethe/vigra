@@ -192,9 +192,9 @@ struct ClassifierTest
 	
 	void RF_AlgorithmTest()
     {
-		std::cerr << "RF_AlgorithmTest()....";
 		std::cerr << "WARNING: THIS TEST CURRENTLY ONLY CHECKS WHETHER ALGORITHMS COMPILE AND RUN WITHOUT ERROR...\n";
 		int ii = data.size() - 3; // this is the pina_indians dataset
+		std::cerr << "RF_AlgorithmTest()....";
 		
 		rf::algorithms::HClustering				linkage;
   		MultiArray<2, double>	distance;
@@ -241,6 +241,21 @@ struct ClassifierTest
 		shouldEqual(b, c);
 		std::cerr << "DONE\n";
 	}
+
+	
+/** Check whether the ridge regression functor compiles and runs
+ */
+    void RFridgeRegressionTest()
+    {
+		std::cerr << "RF_ridgeRegressionTest()....";
+		std::cerr << "WARNING: THIS TEST CURRENTLY ONLY CHECKS WHETHER RIDGE REGRESSION COMPILES AND RUNS WITHOUT ERROR...";
+		int ii = data.size() - 3; // this is the pina_indians dataset
+	    //the ridge split class
+        vigra::RandomForest<> rf(vigra::RandomForestOptions().tree_count(1));
+		vigra::GiniRidgeSplit ridgeSplit;
+	    rf.learn(data.features(ii), data.labels(ii), rf_default(), ridgeSplit);
+		std::cerr << "DONE\n";
+    }
 	
 /** Tests whether RF rejects Matrices containing NaN
  */	
@@ -745,6 +760,7 @@ struct ClassifierTestSuite
     ClassifierTestSuite()
     : vigra::test_suite("ClassifierTestSuite")
     {
+	
         add( testCase( &ClassifierTest::RFdefaultTest));
 #ifndef FAST
         add( testCase( &ClassifierTest::RFsetTest));
@@ -755,10 +771,11 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RF_NanCheck));
         add( testCase( &ClassifierTest::RF_InfCheck));
         add( testCase( &ClassifierTest::RF_SpliceTest));
-		
         add( testCase( &ClassifierTest::RF_AlgorithmTest));
 #endif
         add( testCase( &ClassifierTest::RFresponseTest));
+		
+        add( testCase( &ClassifierTest::RFridgeRegressionTest));
 #ifdef HasHDF5
 		add( testCase( &ClassifierTest::HDF5ImpexTest));
 #endif

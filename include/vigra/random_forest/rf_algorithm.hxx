@@ -311,7 +311,6 @@ void forward_selection(FeatureT          const & features,
     
 
     int not_selected_size = std::distance(pivot, selected.end());
-    int ii = 0;
     while(not_selected_size > 1)
     {
         std::vector<int> current_errors;
@@ -322,7 +321,7 @@ void forward_selection(FeatureT          const & features,
             MultiArray<2, double> cur_feats;
             detail::choose( features, 
                             selected.begin(), 
-                            pivot, 
+                            pivot+1, 
                             cur_feats);
             double error = errorcallback(cur_feats, response);
             current_errors.push_back(error);
@@ -335,8 +334,8 @@ void forward_selection(FeatureT          const & features,
         std::advance(next, pos);
         std::swap(*pivot, *next);
         errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
-        not_selected_size = std::distance(pivot, selected.end());
         ++pivot;
+        not_selected_size = std::distance(pivot, selected.end());
     }
 }
 template<class FeatureT, class ResponseT>
