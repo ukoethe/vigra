@@ -45,7 +45,7 @@
 #include "../random.hxx"
 #include "../functorexpression.hxx"
 #include "rf_nodeproxy.hxx"
-#include "rf_sampling.hxx"
+//#include "rf_sampling.hxx"
 #include "rf_region.hxx"
 //#include "../hokashyap.hxx"
 //#include "vigra/rf_helpers.hxx"
@@ -753,7 +753,6 @@ public:
         
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
-        double loss;
         while( next  != end)
         {
 

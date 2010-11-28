@@ -1,36 +1,36 @@
 #######################################################################
-#                                                                      
-#         Copyright 2009-2010 by Ullrich Koethe                        
-#                                                                      
-#    This file is part of the VIGRA computer vision library.           
-#    The VIGRA Website is                                              
-#        http://hci.iwr.uni-heidelberg.de/vigra/                       
-#    Please direct questions, bug reports, and contributions to        
-#        ullrich.koethe@iwr.uni-heidelberg.de    or                    
-#        vigra@informatik.uni-hamburg.de                               
-#                                                                      
-#    Permission is hereby granted, free of charge, to any person       
-#    obtaining a copy of this software and associated documentation    
-#    files (the "Software"), to deal in the Software without           
-#    restriction, including without limitation the rights to use,      
-#    copy, modify, merge, publish, distribute, sublicense, and/or      
-#    sell copies of the Software, and to permit persons to whom the    
-#    Software is furnished to do so, subject to the following          
-#    conditions:                                                       
-#                                                                      
-#    The above copyright notice and this permission notice shall be    
-#    included in all copies or substantial portions of the             
-#    Software.                                                         
-#                                                                      
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    
-#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   
-#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          
-#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       
-#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      
-#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      
-#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     
-#    OTHER DEALINGS IN THE SOFTWARE.                                   
-#                                                                      
+#
+#         Copyright 2009-2010 by Ullrich Koethe
+#
+#    This file is part of the VIGRA computer vision library.
+#    The VIGRA Website is
+#        http://hci.iwr.uni-heidelberg.de/vigra/
+#    Please direct questions, bug reports, and contributions to
+#        ullrich.koethe@iwr.uni-heidelberg.de    or
+#        vigra@informatik.uni-hamburg.de
+#
+#    Permission is hereby granted, free of charge, to any person
+#    obtaining a copy of this software and associated documentation
+#    files (the "Software"), to deal in the Software without
+#    restriction, including without limitation the rights to use,
+#    copy, modify, merge, publish, distribute, sublicense, and/or
+#    sell copies of the Software, and to permit persons to whom the
+#    Software is furnished to do so, subject to the following
+#    conditions:
+#
+#    The above copyright notice and this permission notice shall be
+#    included in all copies or substantial portions of the
+#    Software.
+#
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND
+#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#    OTHER DEALINGS IN THE SOFTWARE.
+#
 #######################################################################
 
 import math, os, numpy, PyQt4
@@ -45,8 +45,8 @@ import vigra.ufunc
 try:
     from VigraQt import OverlayViewer, ImageCursor
 except:
-    vigra._fallbackModule('VigraQt', 
-    '''    It can be obtained at 
+    vigra._fallbackModule('VigraQt',
+    '''    It can be obtained at
     http://kogs-www.informatik.uni-hamburg.de/~meine/software/vigraqt/.''')
     from VigraQt import OverlayViewer, ImageCursor
 
@@ -109,6 +109,8 @@ class ImageViewer(OverlayViewer):
         self.popup.addAction(self.cursorAction)
     
     def setImage(self, image, normalize = True):
+        if not hasattr(image, "qimage"):
+            image = image.view(vigra.Image)
         self.image = image
         self._normalized = normalize
         OverlayViewer.setImage(self, image.qimage(normalize))
@@ -327,13 +329,13 @@ class ImageViewer(OverlayViewer):
 class CaptionImageViewer(qt.QFrame):
     def __init__(self, image, normalize = True, title = None, parent = None):
         qt.QFrame.__init__(self, parent)
-        self.viewer =ImageViewer(image, normalize, title, parent = self) 
+        self.viewer = ImageViewer(image, normalize, title, parent = self)
         self.setWindowTitle(self.viewer.windowTitle())
 
         self._captionCoords = 0,0
-        self._xplaces = int(math.log10(image.width) + 1.0)
-        self._yplaces = int(math.log10(image.height) + 1.0)
-        self._valueplaces = image.bands()*5
+        self._xplaces = int(math.log10(self.viewer.image.width) + 1.0)
+        self._yplaces = int(math.log10(self.viewer.image.height) + 1.0)
+        self._valueplaces = self.viewer.image.bands()*5
         
         self.label = qt.QLabel(self)
         font = qt.QFont()
@@ -425,10 +427,10 @@ class ImageWindow(qt.QFrame):
         self.layout = qt.QGridLayout(self)
         
     def setImage(self, image, x=0, y=0, normalize=True, title=None):
-        '''Place the given image at the given position of this window's grid layout.
+        """Place the given image at the given position of this window's grid layout.
 
            If an image already exists at this position, it is replaced.
-        '''
+        """
         if self.layout.itemAtPosition(y, x):
             self.layout.itemAtPosition(y, x).widget().setImage(image, normalize)
         else:

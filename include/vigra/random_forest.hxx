@@ -55,7 +55,7 @@
 #include "random_forest/rf_decisionTree.hxx"
 #include "random_forest/rf_visitors.hxx"
 #include "random_forest/rf_region.hxx"
-#include "index_sampling.hxx"
+#include "sampling.hxx"
 #include "random_forest/rf_preprocessing.hxx"
 #include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
@@ -104,13 +104,12 @@ SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *  typedef xxx feature_t \\ replace xxx with whichever type
  *  typedef yyy label_t   \\ meme chose. 
  *  MultiArrayView<2, feature_t> f = get_some_features();
- *  MultiArrayView<2, label_t>   l = get_some_labels)(
+ *  MultiArrayView<2, label_t>   l = get_some_labels();
  *  RandomForest<> rf()
  *  double oob_error = rf.learn(f, l);
  *      
  *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
- *  MultiArrayView<2, label_t> prediction 
- *          	                            = allocate_space_for_response();
+ *  MultiArrayView<2, label_t> prediction = allocate_space_for_response();
  *  MultiArrayView<2, double> prob  = allocate_space_for_probability();
  *      
  *  rf.predict_labels(pf, prediction);
@@ -968,6 +967,7 @@ void RandomForest<LabelType, PreprocessorTag>::
     }
 
     visitor.visit_at_end(*this, preprocessor);
+	// Only for online learning?
     online_visitor_.deactivate();
 }
 

@@ -74,7 +74,7 @@
         return ((toc.QuadPart - tic.QuadPart) * unit);
     }
 
-    inline std::string tic_toc_diff_string(timeval const & tic)
+    inline std::string tic_toc_diff_string(LARGE_INTEGER const & tic)
     {
         double diff = tic_toc_diff_num(tic); 
         std::stringstream s;
@@ -82,7 +82,7 @@
         return s.str();
     }
 
-    inline void tic_toc_diff(timeval const & tic)
+    inline void tic_toc_diff(LARGE_INTEGER const & tic)
     {
         std::cerr << tic_toc_diff_string(tic) <<std::endl;
     }

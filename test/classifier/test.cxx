@@ -193,12 +193,12 @@ struct ClassifierTest
 	void RF_AlgorithmTest()
     {
 		std::cerr << "RF_AlgorithmTest()....";
-		std::cerr << "WARNING: THIS TEST CURRENTLY ONLY CHECKS WHETHER ALGORITHMS COMPILE WITHOUT ERROR...\n";
+		std::cerr << "WARNING: THIS TEST CURRENTLY ONLY CHECKS WHETHER ALGORITHMS COMPILE AND RUN WITHOUT ERROR...\n";
 		int ii = data.size() - 3; // this is the pina_indians dataset
 		
 		rf::algorithms::HClustering				linkage;
   		MultiArray<2, double>	distance;
-		std::cerr << "cluster_permutation_importance)....\n";
+		std::cerr << "cluster_permutation_importance()....\n";
   		cluster_permutation_importance(data.features(ii), data.labels(ii), linkage, distance);
 		rf::algorithms::VariableSelectionResult  result1;
 		std::cerr << "forward_selection()....\n";

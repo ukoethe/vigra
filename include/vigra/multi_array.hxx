@@ -826,10 +826,15 @@ public:
         return bindInner(d);
     }
 
-        /** array access in scan-order sense.
+        /** Array access in scan-order sense.
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
             but works for any N. Use scanOrderIndexToCoordinate() and
             coordinateToScanOrderIndex() for conversion between indices and coordinates.
+            
+            <b>Note:</b> This function should not be used in the inner loop, because the
+            conversion of the scan order index into a memory address is expensive
+            (it must take into account that memory may not be consecutive for subarrays
+            and/or strided arrays). Always prefer operator() if possible.            
          */
     reference operator[](difference_type_1 d)
     {
@@ -837,11 +842,16 @@ public:
         return m_ptr [detail::ScanOrderToOffset<actual_dimension>::exec(d, m_shape, m_stride)];
     }
 
-        /** array access in scan-order sense.
+        /** Array access in scan-order sense.
             Mostly useful to support standard indexing for 1-dimensional multi-arrays,
             but works for any N. Use scanOrderIndexToCoordinate() and
             coordinateToScanOrderIndex() for conversion between indices and coordinates.
-         */
+             
+            <b>Note:</b> This function should not be used in the inner loop, because the
+            conversion of the scan order index into a memory address is expensive
+            (it must take into account that memory may not be consecutive for subarrays
+            and/or strided arrays). Always prefer operator() if possible.            
+        */
     const_reference operator[](difference_type_1 d) const
     {
         VIGRA_ASSERT_INSIDE(scanOrderIndexToCoordinate(d));

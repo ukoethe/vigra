@@ -351,7 +351,7 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
                                                                        info.shapeOfDimension(1), 
                                                                        info.shapeOfDimension(2)));
             readHDF5(info, res);
-            MultiArrayShape<3>::type permutation(1,2,0);
+            TinyVector<npy_intp, 3> permutation(1,2,0);
             PyArray_Dims permute = { permutation.begin(), 3 };
             python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
             pythonToCppException(array);
@@ -449,7 +449,7 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
                                                                    info.shapeOfDimension(2), 
                                                                    info.shapeOfDimension(3)));
         readHDF5(info, res);
-        MultiArrayShape<4>::type permutation(1,2,3,0);
+        TinyVector<npy_intp, 4> permutation(1,2,3,0);
         PyArray_Dims permute = { permutation.begin(), 4 };
         python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
         pythonToCppException(array);

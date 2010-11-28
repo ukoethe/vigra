@@ -33,8 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_INDEX_SAMPLING_HXX
-#define VIGRA_INDEX_SAMPLING_HXX
+#ifndef VIGRA_SAMPLING_HXX
+#define VIGRA_SAMPLING_HXX
 
 #include "array_vector.hxx"
 #include "random.hxx"
@@ -173,14 +173,14 @@ class SamplerOptions
     
     <b>Usage:</b>
     
-    <b>\#include</b> \<<a href="index__sampling_8hxx-source.html">vigra/index_sampling.hxx</a>\><br>
+    <b>\#include</b> \<<a href="sampling_8hxx-source.html">vigra/sampling.hxx</a>\><br>
     Namespace: vigra
     
-    \code
-    // Create aSampler with default options, i.e. sample as many indices as there 
-    // are data elements, with replacement.
-    // (on average, the sample will contain 0.63*totalCount distinct indices)
+    Create a Sampler with default options, i.e. sample as many indices as there 
+    are data elements, with replacement. On average, the sample will contain 
+    <tt>0.63*totalCount</tt> distinct indices.
     
+    \code
     int totalCount = 10000;   // total number of data elements
     int numberOfSamples = 20; // repeat experiment 20 times 
     Sampler<> sampler(totalCount);
@@ -195,11 +195,11 @@ class SamplerOptions
         // create next sample
         sampler.sample();
     }
+    \endcode
     
+    Create a Sampler for stratified sampling, without replacement.
     
-    ////////////////////////////////////////////////////////////////
-    // Create a Sampler for stratified sampling, without replacement.
-    
+    \code
     // prepare the strata (i.e. specify which stratum each element belongs to)
     int stratumSize1 = 2000, stratumSize2 = 8000,
         totalCount = stratumSize1 + stratumSize2;
@@ -500,9 +500,63 @@ void Sampler<Random>::sample()
     }
 }
 
+template<class Random =RandomTT800 >
+class PoissonSampler
+{
+public:
+    Random  randfloat;
+    typedef Int32                               IndexType;
+    typedef vigra::ArrayVector     <IndexType>  IndexArrayType;
+    IndexArrayType        used_indices_;
+    double lambda;
+    int minIndex;
+    int maxIndex;
+    
+    PoissonSampler(double lambda,IndexType minIndex,IndexType maxIndex)
+    : lambda(lambda),
+      minIndex(minIndex),
+      maxIndex(maxIndex)
+    {}
+
+    void sample(  )
+    {
+        used_indices_.clear();
+        IndexType i;
+        for(i=minIndex;i<maxIndex;++i)
+        {
+            //from http://en.wikipedia.org/wiki/Poisson_distribution
+            int k=0;
+            double p=1;
+            double L=exp(-lambda);
+            do
+            {
+                ++k;
+                p*=randfloat.uniform53();
+
+            }while(p>L);
+            --k;
+            //Insert i this many time
+            while(k>0)
+            {
+                used_indices_.push_back(i);
+                --k;
+            }
+        }
+    }
+
+    IndexType const & operator[](int in) const
+    {
+        return used_indices_[in];
+    }
+    
+    int numOfSamples() const
+    {
+        return used_indices_.size();
+    }
+};
 
 //@}
 
 } // namespace vigra
 
-#endif /*VIGRA_INDEX_SAMPLING_HXX*/
+#endif /*VIGRA_SAMPLING_HXX*/

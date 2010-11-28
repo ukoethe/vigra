@@ -54,23 +54,23 @@ namespace detail
     /** create a MultiArray containing only columns supplied between iterators
         b and e
     */
-	template<class OrigMultiArray,
-			 class Iter,
-			 class DestMultiArray>
-	void choose(OrigMultiArray 	const & in,
-				Iter		   	const & b,
-				Iter   			const & e,
-				DestMultiArray  	  & out)
-	{
-		int columnCount = std::distance(b, e);
-		int rowCount 	= in.shape(0);
-		out.reshape(MultiArrayShape<2>::type(rowCount, columnCount));
-		int ii = 0;
-		for(Iter iter = b; iter != e; ++iter, ++ii)
-		{
-			columnVector(out, ii) = columnVector(in, *iter);
-		}
-	}
+    template<class OrigMultiArray,
+             class Iter,
+             class DestMultiArray>
+    void choose(OrigMultiArray     const & in,
+                Iter               const & b,
+                Iter               const & e,
+                DestMultiArray        & out)
+    {
+        int columnCount = std::distance(b, e);
+        int rowCount     = in.shape(0);
+        out.reshape(MultiArrayShape<2>::type(rowCount, columnCount));
+        int ii = 0;
+        for(Iter iter = b; iter != e; ++iter, ++ii)
+        {
+            columnVector(out, ii) = columnVector(in, *iter);
+        }
+    }
 }
 
 
@@ -81,32 +81,32 @@ namespace detail
  */
 class RFErrorCallback
 {
-	RandomForestOptions options;
-	
-	public:
-	/** Default constructor
-	 *
-	 * optionally supply options to the random forest classifier
-	 * \sa RandomForestOptions
-	 */
-	RFErrorCallback(RandomForestOptions opt = RandomForestOptions())
-	: options(opt)
-	{}
+    RandomForestOptions options;
+    
+    public:
+    /** Default constructor
+     *
+     * optionally supply options to the random forest classifier
+     * \sa RandomForestOptions
+     */
+    RFErrorCallback(RandomForestOptions opt = RandomForestOptions())
+    : options(opt)
+    {}
 
-	/** returns the RF OOB error estimate given features and 
-	 * labels
-	 */
-	template<class Feature_t, class Response_t>
-	double operator() (Feature_t const & features,
-					   Response_t const & response)
-	{
-		RandomForest<> 			rf(options);
-		visitors::OOB_Error		oob;
-		rf.learn(features, 
-				 response, 
-				 visitors::create_visitor(oob ));
-		return oob.oob_breiman;
-	}
+    /** returns the RF OOB error estimate given features and 
+     * labels
+     */
+    template<class Feature_t, class Response_t>
+    double operator() (Feature_t const & features,
+                       Response_t const & response)
+    {
+        RandomForest<>             rf(options);
+        visitors::OOB_Error        oob;
+        rf.learn(features, 
+                 response, 
+                 visitors::create_visitor(oob ));
+        return oob.oob_breiman;
+    }
 };
 
 
@@ -114,353 +114,354 @@ class RFErrorCallback
  */
 class VariableSelectionResult
 {
-	bool initialized;
+    bool initialized;
 
   public:
-	VariableSelectionResult()
-	: initialized(false)
-	{}
+    VariableSelectionResult()
+    : initialized(false)
+    {}
 
-	typedef std::vector<int> FeatureList_t;
-	typedef std::vector<double> ErrorList_t;
-	typedef FeatureList_t::iterator Pivot_t;
+    typedef std::vector<int> FeatureList_t;
+    typedef std::vector<double> ErrorList_t;
+    typedef FeatureList_t::iterator Pivot_t;
 
-	Pivot_t pivot;
+    Pivot_t pivot;
 
-	/** list of features. 
-	 */
-	FeatureList_t selected;
-	
-	/** vector of size (number of features)
-	 *
-	 * the i-th entry encodes the error rate obtained
-	 * while using features [0 - i](including i) 
-	 *
-	 * if the i-th entry is -1 then no error rate was obtained
-	 * this may happen if more than one feature is added to the
-	 * selected list in one step of the algorithm.
-	 *
-	 * during initialisation error[m+n-1] is always filled
-	 */
-	ErrorList_t errors;
-	
+    /** list of features. 
+     */
+    FeatureList_t selected;
+    
+    /** vector of size (number of features)
+     *
+     * the i-th entry encodes the error rate obtained
+     * while using features [0 - i](including i) 
+     *
+     * if the i-th entry is -1 then no error rate was obtained
+     * this may happen if more than one feature is added to the
+     * selected list in one step of the algorithm.
+     *
+     * during initialisation error[m+n-1] is always filled
+     */
+    ErrorList_t errors;
+    
 
-	/** errorrate using no features
-	 */
-	double no_features;
+    /** errorrate using no features
+     */
+    double no_features;
 
-	template<class FeatureT, 
-			 class ResponseT, 
-			 class Iter,
-			 class ErrorRateCallBack>
-	bool init(FeatureT const & all_features,
-			  ResponseT const & response,
-			  Iter b,
-			  Iter e,
-			  ErrorRateCallBack errorcallback)
-	{
-		bool ret_ = init(all_features, response, errorcallback); 
-		if(!ret_)
-			return false;
-		vigra_precondition(std::distance(b, e) == selected.size(),
-						   "Number of features in ranking != number of features matrix");
-		std::copy(b, e, selected.begin());
-		return true;
-	}
-	
-	template<class FeatureT, 
-			 class ResponseT, 
-			 class Iter>
-	bool init(FeatureT const & all_features,
-			  ResponseT const & response,
-			  Iter b,
-			  Iter e)
-	{
-		RFErrorCallback ecallback;
-		return init(all_features, response, b, e, ecallback);
-	}
+    template<class FeatureT, 
+             class ResponseT, 
+             class Iter,
+             class ErrorRateCallBack>
+    bool init(FeatureT const & all_features,
+              ResponseT const & response,
+              Iter b,
+              Iter e,
+              ErrorRateCallBack errorcallback)
+    {
+        bool ret_ = init(all_features, response, errorcallback); 
+        if(!ret_)
+            return false;
+        vigra_precondition(std::distance(b, e) == selected.size(),
+                           "Number of features in ranking != number of features matrix");
+        std::copy(b, e, selected.begin());
+        return true;
+    }
+    
+    template<class FeatureT, 
+             class ResponseT, 
+             class Iter>
+    bool init(FeatureT const & all_features,
+              ResponseT const & response,
+              Iter b,
+              Iter e)
+    {
+        RFErrorCallback ecallback;
+        return init(all_features, response, b, e, ecallback);
+    }
 
 
-	template<class FeatureT, 
-			 class ResponseT>
-	bool init(FeatureT const & all_features,
-			  ResponseT const & response)
-	{
-		return init(all_features, response, RFErrorCallback());
-	}
-	/**initialization routine. Will be called only once in the lifetime
-	 * of a VariableSelectionResult. Subsequent calls will not reinitialize
-	 * member variables.
-	 *
-	 * This is intended, to allow continuing variable selection at a point 
-	 * stopped in an earlier iteration. 
-	 *
-	 * returns true if initialization was successful and false if 
-	 * the object was already initialized before.
-	 */
-	template<class FeatureT, 
-			 class ResponseT,
-			 class ErrorRateCallBack>
-	bool init(FeatureT const & all_features,
-			  ResponseT const & response,
-			  ErrorRateCallBack errorcallback)
-	{
-		if(initialized)
-		{
-			return false;
-		}
-		// calculate error with all features
-		selected.resize(all_features.shape(1), 0);
-		for(int ii = 0; ii < selected.size(); ++ii)
-			selected[ii] = ii;
-		errors.resize(all_features.shape(1), -1);
-		errors.back() = errorcallback(all_features, response);
+    template<class FeatureT, 
+             class ResponseT>
+    bool init(FeatureT const & all_features,
+              ResponseT const & response)
+    {
+        return init(all_features, response, RFErrorCallback());
+    }
+    /**initialization routine. Will be called only once in the lifetime
+     * of a VariableSelectionResult. Subsequent calls will not reinitialize
+     * member variables.
+     *
+     * This is intended, to allow continuing variable selection at a point 
+     * stopped in an earlier iteration. 
+     *
+     * returns true if initialization was successful and false if 
+     * the object was already initialized before.
+     */
+    template<class FeatureT, 
+             class ResponseT,
+             class ErrorRateCallBack>
+    bool init(FeatureT const & all_features,
+              ResponseT const & response,
+              ErrorRateCallBack errorcallback)
+    {
+        if(initialized)
+        {
+            return false;
+        }
+        // calculate error with all features
+        selected.resize(all_features.shape(1), 0);
+        for(int ii = 0; ii < selected.size(); ++ii)
+            selected[ii] = ii;
+        errors.resize(all_features.shape(1), -1);
+        errors.back() = errorcallback(all_features, response);
 
-		// calculate error rate if no features are chosen 
-		// corresponds to max(prior probability) of the classes
-		std::map<typename ResponseT::value_type, int> 	res_map;
-		std::vector<int> 								cts;
-		int 											counter = 0;
-		for(int ii = 0; ii < response.shape(0); ++ii)
-		{
-			if(res_map.find(response(ii, 0)) == res_map.end())
-			{
-				res_map[response(ii, 0)] = counter;
-				++counter;
-				cts.push_back(0);
-			}
-			cts[res_map[response(ii,0)]] +=1;
-		}
-		no_features = double(*(std::max_element(cts.begin(),
-												 cts.end())))
-					/ double(response.shape(0));
+        // calculate error rate if no features are chosen 
+        // corresponds to max(prior probability) of the classes
+        std::map<typename ResponseT::value_type, int>     res_map;
+        std::vector<int>                                 cts;
+        int                                             counter = 0;
+        for(int ii = 0; ii < response.shape(0); ++ii)
+        {
+            if(res_map.find(response(ii, 0)) == res_map.end())
+            {
+                res_map[response(ii, 0)] = counter;
+                ++counter;
+                cts.push_back(0);
+            }
+            cts[res_map[response(ii,0)]] +=1;
+        }
+        no_features = double(*(std::max_element(cts.begin(),
+                                                 cts.end())))
+                    / double(response.shape(0));
 
-		/*init not_selected vector;
-		not_selected.resize(all_features.shape(1), 0);
-		for(int ii = 0; ii < not_selected.size(); ++ii)
-		{
-			not_selected[ii] = ii;
-		}
-		initialized = true;
-		*/
-		pivot = selected.begin();
-		return true;
-	}
+        /*init not_selected vector;
+        not_selected.resize(all_features.shape(1), 0);
+        for(int ii = 0; ii < not_selected.size(); ++ii)
+        {
+            not_selected[ii] = ii;
+        }
+        initialized = true;
+        */
+        pivot = selected.begin();
+        return true;
+    }
 };
 
 
-	
+    
 /** Perform forward selection
  *
- * \param features	IN: 	n x p matrix containing n instances with p attributes/features
- * 							used in the variable selection algorithm
- * \param response  IN: 	n x 1 matrix containing the corresponding response
- * \param result	IN/OUT: VariableSelectionResult struct which will contain the results
- * 							of the algorithm. 
- * 							Features between result.selected.begin() and result.pivot will
- * 							be left untouched.
- * 							\sa VariableSelectionResult
+ * \param features    IN:     n x p matrix containing n instances with p attributes/features
+ *                             used in the variable selection algorithm
+ * \param response  IN:     n x 1 matrix containing the corresponding response
+ * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
+ *                             of the algorithm. 
+ *                             Features between result.selected.begin() and result.pivot will
+ *                             be left untouched.
+ *                             \sa VariableSelectionResult
  * \param errorcallback
- * 					IN, OPTIONAL: 
- * 							Functor that returns the error rate given a set of 
- * 							features and labels. Default is the RandomForest OOB Error.
+ *                     IN, OPTIONAL: 
+ *                             Functor that returns the error rate given a set of 
+ *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Forward selection subsequently chooses the next feature that decreases the Error rate most.
  *
  * usage:
  * \code
- * 		MultiArray<2, double> 	features = createSomeFeatures();
- * 		MultiArray<2, int>		labels   = createCorrespondingLabels();
- * 		VariableSelectionResult  result;
- * 		forward_selection(features, labels, result);
+ *         MultiArray<2, double>     features = createSomeFeatures();
+ *         MultiArray<2, int>        labels   = createCorrespondingLabels();
+ *         VariableSelectionResult  result;
+ *         forward_selection(features, labels, result);
  * \endcode
  * To use forward selection but ensure that a specific feature e.g. feature 5 is always 
  * included one would do the following
  *
  * \code
- * 		VariableSelectionResult result;
- * 		result.init(features, labels);
- * 		std::swap(result.selected[0], result.selected[5]);
- * 		result.setPivot(1);
- * 		forward_selection(features, labels, result);
+ *         VariableSelectionResult result;
+ *         result.init(features, labels);
+ *         std::swap(result.selected[0], result.selected[5]);
+ *         result.setPivot(1);
+ *         forward_selection(features, labels, result);
  * \endcode
  *
  * \sa VariableSelectionResult
  *
- */					
+ */                    
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
-void forward_selection(FeatureT 		 const & features,
-					   ResponseT 		 const & response,
-					   VariableSelectionResult & result,
-					   ErrorRateCallBack 		 errorcallback)
+void forward_selection(FeatureT          const & features,
+                       ResponseT          const & response,
+                       VariableSelectionResult & result,
+                       ErrorRateCallBack          errorcallback)
 {
-	VariableSelectionResult::FeatureList_t & selected 		= result.selected;
-	VariableSelectionResult::ErrorList_t &	 errors		    = result.errors;
-	VariableSelectionResult::Pivot_t	   & pivot			= result.pivot;	
-	int featureCount = features.shape(1);
-	// initialize result struct if in use for the first time
-	if(!result.init(features, response, errorcallback))
-	{
-		//result is being reused just ensure that the number of features is
-		//the same.
-		vigra_precondition(selected.size() == featureCount,
-						   "forward_selection(): Number of features in Feature "
-						   "matrix and number of features in previously used "
-						   "result struct mismatch!");
-	}
-	
+    VariableSelectionResult::FeatureList_t & selected         = result.selected;
+    VariableSelectionResult::ErrorList_t &     errors            = result.errors;
+    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;    
+    int featureCount = features.shape(1);
+    // initialize result struct if in use for the first time
+    if(!result.init(features, response, errorcallback))
+    {
+        //result is being reused just ensure that the number of features is
+        //the same.
+        vigra_precondition(selected.size() == featureCount,
+                           "forward_selection(): Number of features in Feature "
+                           "matrix and number of features in previously used "
+                           "result struct mismatch!");
+    }
+    
 
-	int not_selected_size = std::distance(pivot, selected.end());
-	int ii = 0;
-	while(not_selected_size > 1)
-	{
-		std::vector<int> current_errors;
-		VariableSelectionResult::Pivot_t next = pivot;
-		for(int ii = 0; ii < not_selected_size; ++ii, ++next)
-		{
-			std::swap(*pivot, *next);
-			MultiArray<2, double> cur_feats;
-			detail::choose( features, 
-							selected.begin(), 
-							pivot, 
-							cur_feats);
-			double error = errorcallback(cur_feats, response);
-			current_errors.push_back(error);
-			std::swap(*pivot, *next);
-		}
-		int pos = std::distance(current_errors.begin(),
-								std::min_element(current_errors.begin(),
-								  				 current_errors.end()));
-		next = pivot;
-		std::advance(next, pos);
-		std::swap(*pivot, *next);
-		errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
-		not_selected_size = std::distance(pivot, selected.end());
-		++pivot;
-	}
+    int not_selected_size = std::distance(pivot, selected.end());
+    int ii = 0;
+    while(not_selected_size > 1)
+    {
+        std::vector<int> current_errors;
+        VariableSelectionResult::Pivot_t next = pivot;
+        for(int ii = 0; ii < not_selected_size; ++ii, ++next)
+        {
+            std::swap(*pivot, *next);
+            MultiArray<2, double> cur_feats;
+            detail::choose( features, 
+                            selected.begin(), 
+                            pivot, 
+                            cur_feats);
+            double error = errorcallback(cur_feats, response);
+            current_errors.push_back(error);
+            std::swap(*pivot, *next);
+        }
+        int pos = std::distance(current_errors.begin(),
+                                std::min_element(current_errors.begin(),
+                                                   current_errors.end()));
+        next = pivot;
+        std::advance(next, pos);
+        std::swap(*pivot, *next);
+        errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
+        not_selected_size = std::distance(pivot, selected.end());
+        ++pivot;
+    }
 }
 template<class FeatureT, class ResponseT>
-void forward_selection(FeatureT 		 const & features,
-					   ResponseT 		 const & response,
-					   VariableSelectionResult & result)
+void forward_selection(FeatureT          const & features,
+                       ResponseT          const & response,
+                       VariableSelectionResult & result)
 {
-	forward_selection(features, response, result, RFErrorCallback());
+    forward_selection(features, response, result, RFErrorCallback());
 }
 
 
 /** Perform backward elimination
  *
- * \param features	IN: 	n x p matrix containing n instances with p attributes/features
- * 							used in the variable selection algorithm
- * \param response  IN: 	n x 1 matrix containing the corresponding response
- * \param result	IN/OUT: VariableSelectionResult struct which will contain the results
- * 							of the algorithm. 
- * 							Features between result.pivot and result.selected.end() will
- * 							be left untouched.
- * 							\sa VariableSelectionResult
+ * \param features    IN:     n x p matrix containing n instances with p attributes/features
+ *                             used in the variable selection algorithm
+ * \param response  IN:     n x 1 matrix containing the corresponding response
+ * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
+ *                             of the algorithm. 
+ *                             Features between result.pivot and result.selected.end() will
+ *                             be left untouched.
+ *                             \sa VariableSelectionResult
  * \param errorcallback
- * 					IN, OPTIONAL: 
- * 							Functor that returns the error rate given a set of 
- * 							features and labels. Default is the RandomForest OOB Error.
+ *                     IN, OPTIONAL: 
+ *                             Functor that returns the error rate given a set of 
+ *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Backward elimination subsequently eliminates features that have the least influence
  * on the error rate
  *
  * usage:
  * \code
- * 		MultiArray<2, double> 	features = createSomeFeatures();
- * 		MultiArray<2, int>		labels   = createCorrespondingLabels();
- * 		VariableSelectionResult  result;
- * 		backward_elimination(features, labels, result);
+ *         MultiArray<2, double>     features = createSomeFeatures();
+ *         MultiArray<2, int>        labels   = createCorrespondingLabels();
+ *         VariableSelectionResult  result;
+ *         backward_elimination(features, labels, result);
  * \endcode
  * To use backward elimination but ensure that a specific feature e.g. feature 5 is always 
  * excluded one would do the following:
  *
  * \code
- * 		VariableSelectionResult result;
- * 		result.init(features, labels);
- * 		std::swap(result.selected[result.selected.size()-1], result.selected[5]);
- * 		result.setPivot(result.selected.size()-1);
- * 		backward_elimination(features, labels, result);
+ *         VariableSelectionResult result;
+ *         result.init(features, labels);
+ *         std::swap(result.selected[result.selected.size()-1], result.selected[5]);
+ *         result.setPivot(result.selected.size()-1);
+ *         backward_elimination(features, labels, result);
  * \endcode
  *
  * \sa VariableSelectionResult
  *
- */					
+ */                    
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
-void backward_elimination(FeatureT 		 	const & features,
-					   	  ResponseT 		const & response,
-					      VariableSelectionResult & result,
-					      ErrorRateCallBack 		errorcallback)
+void backward_elimination(FeatureT              const & features,
+                             ResponseT         const & response,
+                          VariableSelectionResult & result,
+                          ErrorRateCallBack         errorcallback)
 {
-	int featureCount = features.shape(1);
-	VariableSelectionResult::FeatureList_t & selected 		= result.selected;
-	VariableSelectionResult::ErrorList_t &	 errors		    = result.errors;
-	VariableSelectionResult::Pivot_t	   & pivot			= result.pivot;	
-	
-	// initialize result struct if in use for the first time
-	if(!result.init(features, response, errorcallback))
-	{
-		//result is being reused just ensure that the number of features is
-		//the same.
-		vigra_precondition(selected.size() == featureCount,
-						   "backward_elimination(): Number of features in Feature "
-						   "matrix and number of features in previously used "
-						   "result struct mismatch!");
-	}
-	pivot = selected.end() - 1;	
+    int featureCount = features.shape(1);
+    VariableSelectionResult::FeatureList_t & selected         = result.selected;
+    VariableSelectionResult::ErrorList_t &     errors            = result.errors;
+    VariableSelectionResult::Pivot_t       & pivot            = result.pivot;    
+    
+    // initialize result struct if in use for the first time
+    if(!result.init(features, response, errorcallback))
+    {
+        //result is being reused just ensure that the number of features is
+        //the same.
+        vigra_precondition(selected.size() == featureCount,
+                           "backward_elimination(): Number of features in Feature "
+                           "matrix and number of features in previously used "
+                           "result struct mismatch!");
+    }
+    pivot = selected.end() - 1;    
 
-	int selected_size = std::distance(selected.begin(), pivot);
-	while(selected_size > 1)
-	{
-		VariableSelectionResult::Pivot_t next = selected.begin();
-		std::vector<int> current_errors;
-		for(int ii = 0; ii < selected_size; ++ii, ++next)
-		{
-			std::swap(*pivot, *next);
-			MultiArray<2, double> cur_feats;
-			detail::choose( features, 
-							selected.begin(), 
-							pivot, 
-							cur_feats);
-			double error = errorcallback(cur_feats, response);
-			current_errors.push_back(error);
-			std::swap(*pivot, *next);
-		}
-		int pos = std::distance(current_errors.begin(),
-								std::max_element(current_errors.begin(),
-								  				 current_errors.end()));
-		next = selected.begin();
-		std::advance(next, pos);
-		std::swap(*pivot, *next);
-		errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
-		selected_size = std::distance(selected.begin(), pivot);
-		--pivot;
-	}
+    int selected_size = std::distance(selected.begin(), pivot);
+    while(selected_size > 1)
+    {
+        VariableSelectionResult::Pivot_t next = selected.begin();
+        std::vector<int> current_errors;
+        for(int ii = 0; ii < selected_size; ++ii, ++next)
+        {
+            std::swap(*pivot, *next);
+            MultiArray<2, double> cur_feats;
+            detail::choose( features, 
+                            selected.begin(), 
+                            pivot, 
+                            cur_feats);
+            double error = errorcallback(cur_feats, response);
+            current_errors.push_back(error);
+            std::swap(*pivot, *next);
+        }
+        int pos = std::distance(current_errors.begin(),
+                                std::max_element(current_errors.begin(),
+                                                   current_errors.end()));
+        next = selected.begin();
+        std::advance(next, pos);
+        std::swap(*pivot, *next);
+//        std::cerr << std::distance(selected.begin(), pivot) << " " << pos << " " << current_errors.size() << " " << errors.size() << std::endl;
+        errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
+        selected_size = std::distance(selected.begin(), pivot);
+        --pivot;
+    }
 }
 
 template<class FeatureT, class ResponseT>
-void backward_elimination(FeatureT 		 	const & features,
-					   	  ResponseT 		const & response,
-					      VariableSelectionResult & result)
+void backward_elimination(FeatureT              const & features,
+                             ResponseT         const & response,
+                          VariableSelectionResult & result)
 {
-	backward_elimination(features, response, result, RFErrorCallback());
+    backward_elimination(features, response, result, RFErrorCallback());
 }
 
 /** Perform rank selection using a predefined ranking
  *
- * \param features	IN: 	n x p matrix containing n instances with p attributes/features
- * 							used in the variable selection algorithm
- * \param response  IN: 	n x 1 matrix containing the corresponding response
- * \param result	IN/OUT: VariableSelectionResult struct which will contain the results
- * 							of the algorithm. The struct should be initialized with the
- * 							predefined ranking.
- * 						
- * 							\sa VariableSelectionResult
+ * \param features    IN:     n x p matrix containing n instances with p attributes/features
+ *                             used in the variable selection algorithm
+ * \param response  IN:     n x 1 matrix containing the corresponding response
+ * \param result    IN/OUT: VariableSelectionResult struct which will contain the results
+ *                             of the algorithm. The struct should be initialized with the
+ *                             predefined ranking.
+ *                         
+ *                             \sa VariableSelectionResult
  * \param errorcallback
- * 					IN, OPTIONAL: 
- * 							Functor that returns the error rate given a set of 
- * 							features and labels. Default is the RandomForest OOB Error.
+ *                     IN, OPTIONAL: 
+ *                             Functor that returns the error rate given a set of 
+ *                             features and labels. Default is the RandomForest OOB Error.
  *
  * Often some variable importance, score measure is used to create the ordering in which
  * variables have to be selected. This method takes such a ranking and calculates the 
@@ -468,60 +469,60 @@ void backward_elimination(FeatureT 		 	const & features,
  *
  * usage:
  * \code
- * 		MultiArray<2, double> 	features = createSomeFeatures();
- * 		MultiArray<2, int>		labels   = createCorrespondingLabels();
- * 		std::vector<int>		ranking  = createRanking(features);
- * 		VariableSelectionResult  result;
- * 		result.init(features, labels, ranking.begin(), ranking.end());
- * 		backward_elimination(features, labels, result);
+ *         MultiArray<2, double>     features = createSomeFeatures();
+ *         MultiArray<2, int>        labels   = createCorrespondingLabels();
+ *         std::vector<int>        ranking  = createRanking(features);
+ *         VariableSelectionResult  result;
+ *         result.init(features, labels, ranking.begin(), ranking.end());
+ *         backward_elimination(features, labels, result);
  * \endcode
  *
  * \sa VariableSelectionResult
  *
- */					
+ */                    
 template<class FeatureT, class ResponseT, class ErrorRateCallBack>
-void rank_selection      (FeatureT 		 	const & features,
-					   	  ResponseT 		const & response,
-					      VariableSelectionResult & result,
-					      ErrorRateCallBack 		errorcallback)
+void rank_selection      (FeatureT              const & features,
+                             ResponseT         const & response,
+                          VariableSelectionResult & result,
+                          ErrorRateCallBack         errorcallback)
 {
-	VariableSelectionResult::FeatureList_t & selected 		= result.selected;
-	VariableSelectionResult::ErrorList_t &	 errors		    = result.errors;
-	VariableSelectionResult::Pivot_t	   & iter			= result.pivot;
-	int featureCount = features.shape(1);
-	// initialize result struct if in use for the first time
-	if(!result.init(features, response, errorcallback))
-	{
-		//result is being reused just ensure that the number of features is
-		//the same.
-		vigra_precondition(selected.size() == featureCount,
-						   "forward_selection(): Number of features in Feature "
-						   "matrix and number of features in previously used "
-						   "result struct mismatch!");
-	}
-	
-int ii = 0;
-	for(; iter != selected.end(); ++iter)
-	{
-		++ii;
-		MultiArray<2, double> cur_feats;
-		detail::choose( features, 
-						selected.begin(), 
-						iter, 
-						cur_feats);
-		double error = errorcallback(cur_feats, response);
-		errors[std::distance(selected.begin(), iter)] = error;
+    VariableSelectionResult::FeatureList_t & selected         = result.selected;
+    VariableSelectionResult::ErrorList_t &     errors            = result.errors;
+    VariableSelectionResult::Pivot_t       & iter            = result.pivot;
+    int featureCount = features.shape(1);
+    // initialize result struct if in use for the first time
+    if(!result.init(features, response, errorcallback))
+    {
+        //result is being reused just ensure that the number of features is
+        //the same.
+        vigra_precondition(selected.size() == featureCount,
+                           "forward_selection(): Number of features in Feature "
+                           "matrix and number of features in previously used "
+                           "result struct mismatch!");
+    }
+    
+	int ii = 0;
+    for(; iter != selected.end(); ++iter)
+    {
+//        std::cerr << ii<< std::endl;
+        ++ii;
+        MultiArray<2, double> cur_feats;
+        detail::choose( features, 
+                        selected.begin(), 
+                        iter, 
+                        cur_feats);
+        double error = errorcallback(cur_feats, response);
+        errors[std::distance(selected.begin(), iter)] = error;
 
-	}
-
+    }
 }
 
 template<class FeatureT, class ResponseT>
-void rank_selection      (FeatureT 		 	const & features,
-					   	  ResponseT 		const & response,
-					      VariableSelectionResult & result)
+void rank_selection      (FeatureT              const & features,
+                             ResponseT         const & response,
+                          VariableSelectionResult & result)
 {
-	rank_selection(features, response, result, RFErrorCallback());
+    rank_selection(features, response, result, RFErrorCallback());
 }
 
 
@@ -548,8 +549,8 @@ class ClusterNode
                 :   BT(nCol + 5, 5,topology, split_param)
     {
         status() = 0; 
-		BT::column_data()[0] = nCol;
-		if(nCol == 1)
+        BT::column_data()[0] = nCol;
+        if(nCol == 1)
             BT::typeID() = c_Leaf;
         else
             BT::typeID() = c_Node;
@@ -610,7 +611,7 @@ struct HC_Entry
 /** Hierarchical Clustering class. 
  * Performs single linkage clustering
  * \code
- * 		Matrix<double> distance = get_distance_matrix();
+ *         Matrix<double> distance = get_distance_matrix();
  *      linkage.cluster(distance);
  *      // Draw clustering tree.
  *      Draw<double, int> draw(features, labels, "linkagetree.graph");
@@ -630,15 +631,15 @@ public:
     ArrayVector<double>     parameters_;
     int                     begin_addr;
 
-	// Calculates the distance between two 
+    // Calculates the distance between two 
     double dist_func(double a, double b)
     {
         return std::min(a, b); 
     }
 
-	/** Visit each node with a Functor 
-	 * in creation order (should be depth first)
-	 */
+    /** Visit each node with a Functor 
+     * in creation order (should be depth first)
+     */
     template<class Functor>
     void iterate(Functor & tester)
     {
@@ -660,8 +661,8 @@ public:
         }
     }
 
-	/** Perform breadth first traversal of hierarchical cluster tree
-	 */
+    /** Perform breadth first traversal of hierarchical cluster tree
+     */
     template<class Functor>
     void breadth_first_traversal(Functor & tester)
     {
@@ -693,11 +694,11 @@ public:
             }
         }
     }
-	/**save to HDF5 - defunct - has to be updated to new HDF5 interface
-	 */
+    /**save to HDF5 - defunct - has to be updated to new HDF5 interface
+     */
     void save(std::string file, std::string prefix)
     {
-		
+        
         vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
@@ -708,12 +709,12 @@ public:
                                     parameters_.data()));
         vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
-							   
+                               
     }
 
-	/**Perform single linkage clustering
-	 * \param distance distance matrix used. \sa CorrelationVisitor
-	 */
+    /**Perform single linkage clustering
+     * \param distance distance matrix used. \sa CorrelationVisitor
+     */
     template<class T, class C>
     void cluster(MultiArrayView<2, T, C> distance)
     {
@@ -769,6 +770,7 @@ public:
             }
             int cur_addr = topology_.size();
             begin_addr = cur_addr;
+//            std::cerr << col_size << std::endl;
             ClusterNode parent(col_size,
                                topology_,
                                parameters_); 
@@ -836,9 +838,9 @@ class NormalizeStatus
 {
 public:
     double n;
-	/** Constructor
-	 * \param m normalize status() by m
-	 */
+    /** Constructor
+     * \param m normalize status() by m
+     */
     NormalizeStatus(double m)
         :n(m)
     {}
@@ -846,7 +848,7 @@ public:
     bool operator()(Node& node)
     {
         node.status()/=n;
-		return false;
+        return false;
     }
 };
 
@@ -951,9 +953,9 @@ public:
 class GetClusterVariables
 {
 public:
-	/** NumberOfClusters x NumberOfVariables MultiArrayView containing
-	 * in each row the variable belonging to a cluster
-	 */
+    /** NumberOfClusters x NumberOfVariables MultiArrayView containing
+     * in each row the variable belonging to a cluster
+     */
     MultiArrayView<2, int>    variables;
     int index;
     GetClusterVariables(MultiArrayView<2, int> vars)
@@ -997,7 +999,7 @@ public:
  * create a graphviz .dot file
  * usage:
  * \code
- * 		Matrix<double> distance = get_distance_matrix();
+ *         Matrix<double> distance = get_distance_matrix();
  *      linkage.cluster(distance);
  *      Draw<double, int> draw(features, labels, "linkagetree.graph");
  *      linkage.breadth_first_traversal(draw);
@@ -1054,14 +1056,14 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
 {
     public:
 
-	/** List of variables as produced by GetClusterVariables
-	 */
+    /** List of variables as produced by GetClusterVariables
+     */
     MultiArray<2, int>          variables;
-	/** Corresponding importance measures
-	 */
+    /** Corresponding importance measures
+     */
     MultiArray<2, double>       cluster_importance_;
-	/** Corresponding error
-	 */
+    /** Corresponding error
+     */
     MultiArray<2, double>       cluster_stdev_;
     int                         repetition_count_;
     bool                        in_place_;
@@ -1208,7 +1210,7 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
      */
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
-    {	
+    {    
             after_tree_ip_impl(rf, pr, sm, st, index);
     }
 
@@ -1225,11 +1227,11 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
 
 /** Perform hierarchical clustering of variables and assess importance of clusters
  *
- * \param features	IN: 	n x p matrix containing n instances with p attributes/features
- * 							used in the variable selection algorithm
- * \param response  IN: 	n x 1 matrix containing the corresponding response
- * \param linkage	OUT:    Hierarchical grouping of variables.
- * \param distance  OUT:	distance matrix used for creating the linkage
+ * \param features    IN:     n x p matrix containing n instances with p attributes/features
+ *                             used in the variable selection algorithm
+ * \param response  IN:     n x 1 matrix containing the corresponding response
+ * \param linkage    OUT:    Hierarchical grouping of variables.
+ * \param distance  OUT:    distance matrix used for creating the linkage
  *
  * Performs Hierarchical clustering of variables. And calculates the permutation importance 
  * measures of each of the clusters. Use the Draw functor to create human readable output
@@ -1240,12 +1242,12 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
  *
  * usage:
  * \code
- * 		MultiArray<2, double> 	features = createSomeFeatures();
- * 		MultiArray<2, int>		labels   = createCorrespondingLabels();
- * 		HClustering				linkage;
- * 		MultiArray<2, double>	distance;
- * 		cluster_permutation_importance(features, labels, linkage, distance)
- *		// create graphviz output
+ *         MultiArray<2, double>     features = createSomeFeatures();
+ *         MultiArray<2, int>        labels   = createCorrespondingLabels();
+ *         HClustering                linkage;
+ *         MultiArray<2, double>    distance;
+ *         cluster_permutation_importance(features, labels, linkage, distance)
+ *        // create graphviz output
  *
  *      Draw<double, int> draw(features, labels, "linkagetree.graph");
  *      linkage.breadth_first_traversal(draw);
@@ -1253,43 +1255,43 @@ class ClusterImportanceVisitor : public visitors::VisitorBase
  * \endcode
  *
  *
- */					
+ */                    
 template<class FeatureT, class ResponseT>
-void cluster_permutation_importance(FeatureT 		 	const & features,
-					   	  			ResponseT 		const &     response,
-									HClustering 			  & linkage,
-									MultiArray<2, double>      & distance)
+void cluster_permutation_importance(FeatureT              const & features,
+                                         ResponseT         const &     response,
+                                    HClustering               & linkage,
+                                    MultiArray<2, double>      & distance)
 {
 
-		RandomForestOptions opt;
+        RandomForestOptions opt;
         opt.tree_count(100);
         if(features.shape(0) > 40000)
-			opt.samples_per_tree(20000).use_stratification(RF_EQUAL);
+            opt.samples_per_tree(20000).use_stratification(RF_EQUAL);
 
 
-		vigra::RandomForest<int> RF(opt); 
-		visitors::RandomForestProgressVisitor 			progress;
-		visitors::CorrelationVisitor                 	missc;
-		RF.learn(features, response,
-				 create_visitor(missc, progress));
-		distance = missc.distance;
-		/*
-		   missc.save(exp_dir + dset.name() + "_result.h5", dset.name()+"MACH");
-		   */
+        vigra::RandomForest<int> RF(opt); 
+        visitors::RandomForestProgressVisitor             progress;
+        visitors::CorrelationVisitor                     missc;
+        RF.learn(features, response,
+                 create_visitor(missc, progress));
+        distance = missc.distance;
+        /*
+           missc.save(exp_dir + dset.name() + "_result.h5", dset.name()+"MACH");
+           */
 
 
         // Produce linkage
         linkage.cluster(distance);
-		
+        
         //linkage.save(exp_dir + dset.name() + "_result.h5", "_linkage_CC/");
         vigra::RandomForest<int> RF2(opt); 
-		ClusterImportanceVisitor          ci(linkage);
+        ClusterImportanceVisitor          ci(linkage);
         RF2.learn(features, 
                   response,
                   create_visitor(progress, ci));
         
-		
-		CorrectStatus cs;
+        
+        CorrectStatus cs;
         linkage.breadth_first_traversal(cs);
 
         //ci.save(exp_dir + dset.name() + "_result.h5", dset.name());
@@ -1298,14 +1300,14 @@ void cluster_permutation_importance(FeatureT 		 	const & features,
 
 }
 
-	
+    
 template<class FeatureT, class ResponseT>
-void cluster_permutation_importance(FeatureT 		 	const & features,
-					   	  			ResponseT 		const &     response,
-									HClustering 			  & linkage)
+void cluster_permutation_importance(FeatureT              const & features,
+                                         ResponseT         const &     response,
+                                    HClustering               & linkage)
 {
-	MultiArray<2, double> distance;
-	cluster_permutation_importance(features, response, linkage, distance);
+    MultiArray<2, double> distance;
+    cluster_permutation_importance(features, response, linkage, distance);
 }
 }//namespace algorithms
 }//namespace rf

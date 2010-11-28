@@ -1,36 +1,36 @@
 #######################################################################
-#                                                                      
-#         Copyright 2009-2010 by Ullrich Koethe                        
-#                                                                      
-#    This file is part of the VIGRA computer vision library.           
-#    The VIGRA Website is                                              
-#        http://hci.iwr.uni-heidelberg.de/vigra/                       
-#    Please direct questions, bug reports, and contributions to        
-#        ullrich.koethe@iwr.uni-heidelberg.de    or                    
-#        vigra@informatik.uni-hamburg.de                               
-#                                                                      
-#    Permission is hereby granted, free of charge, to any person       
-#    obtaining a copy of this software and associated documentation    
-#    files (the "Software"), to deal in the Software without           
-#    restriction, including without limitation the rights to use,      
-#    copy, modify, merge, publish, distribute, sublicense, and/or      
-#    sell copies of the Software, and to permit persons to whom the    
-#    Software is furnished to do so, subject to the following          
-#    conditions:                                                       
-#                                                                      
-#    The above copyright notice and this permission notice shall be    
-#    included in all copies or substantial portions of the             
-#    Software.                                                         
-#                                                                      
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    
-#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   
-#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          
-#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       
-#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      
-#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      
-#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     
-#    OTHER DEALINGS IN THE SOFTWARE.                                   
-#                                                                      
+#
+#         Copyright 2009-2010 by Ullrich Koethe
+#
+#    This file is part of the VIGRA computer vision library.
+#    The VIGRA Website is
+#        http://hci.iwr.uni-heidelberg.de/vigra/
+#    Please direct questions, bug reports, and contributions to
+#        ullrich.koethe@iwr.uni-heidelberg.de    or
+#        vigra@informatik.uni-hamburg.de
+#
+#    Permission is hereby granted, free of charge, to any person
+#    obtaining a copy of this software and associated documentation
+#    files (the "Software"), to deal in the Software without
+#    restriction, including without limitation the rights to use,
+#    copy, modify, merge, publish, distribute, sublicense, and/or
+#    sell copies of the Software, and to permit persons to whom the
+#    Software is furnished to do so, subject to the following
+#    conditions:
+#
+#    The above copyright notice and this permission notice shall be
+#    included in all copies or substantial portions of the
+#    Software.
+#
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND
+#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#    OTHER DEALINGS IN THE SOFTWARE.
+#
 #######################################################################
 
 import copy
@@ -45,8 +45,8 @@ try:
     import qimage2ndarray
 except:
     import vigra
-    vigra._fallbackModule('qimage2ndarray', 
-    '''    It can be obtained at 
+    vigra._fallbackModule('qimage2ndarray',
+    '''    It can be obtained at
     http://pypi.python.org/pypi/qimage2ndarray/.''')
     import qimage2ndarray
 
@@ -97,12 +97,12 @@ def _array_docstring_(name, shape, compat):
 
         * If obj is a vigra.%(name)s or a subclass, a copy of obj with the
           given dtype and order is created, and obj's class is transferred.
-        * If obj is another subtype of numpy.ndarray with compatible shape, 
-          a *transposed* copy of obj with the given dtype, order and class 
-          vigra.%(name)s is created. Transposition changes the order of the 
+        * If obj is another subtype of numpy.ndarray with compatible shape,
+          a *transposed* copy of obj with the given dtype, order and class
+          vigra.%(name)s is created. Transposition changes the order of the
           spatial dimensions (and therefore the index order for element access)
-          from [x,y] or [z,y,x] to the VIGRA convention [x,y] and [x,y,z] 
-          respectively. The channel dimension is assumed to be the last 
+          from [x,y] or [z,y,x] to the VIGRA convention [x,y] and [x,y,z]
+          respectively. The channel dimension is assumed to be the last
           dimension and remains in that position. (Use numpy.rollaxis()
           to adjust the input if necessary.)
         * If obj is a sequence, it is interpreted as a shape. When
@@ -129,8 +129,8 @@ def _array_docstring_(name, shape, compat):
             NumpyArray<2, RGBValue<UInt8>, UnstridedArrayTag>.
 
           'A' order:
-            defaults to 'V' when a new array is created, and means 
-            'preserve order' when an existing array is copied. 
+            defaults to 'V' when a new array is created, and means
+            'preserve order' when an existing array is copied.
     
         In particular, the following compatibility rules apply (Note that
         compatibility with 'UnstridedArrayTag' implies compatibility with
@@ -374,86 +374,60 @@ class Image(_VigraArray):
         '''
         Display this image in a vigra.pyqt.ImageWindow.
         
-	    The parameter `normalize` can be used to normalize an image's
-	    value range to 0..255:
+        The parameter `normalize` can be used to normalize an image's
+        value range to 0..255:
 
-	    `normalize` = (nmin, nmax):
-	      scale & clip image values from nmin..nmax to 0..255
+        `normalize` = (nmin, nmax):
+          scale & clip image values from nmin..nmax to 0..255
 
-	    `normalize` = nmax:
-	      lets nmin default to zero, i.e. scale & clip the range 0..nmax
-	      to 0..255
+        `normalize` = nmax:
+          lets nmin default to zero, i.e. scale & clip the range 0..nmax
+          to 0..255
 
-	    `normalize` = True: (default)
-	      scale the image's actual range min()..max() to 0..255
+        `normalize` = True: (default)
+          scale the image's actual range min()..max() to 0..255
 
-	    `normalize` = False:
-	      don't scale the image's values
+        `normalize` = False:
+          don't scale the image's values
            
         '''
         from pyqt.imagewindow import showImage
         return showImage(self, normalize)
 
     def qimage(self, normalize = True):
-        '''
+        """
         Convert this image to a Qt QImage (mainly for display purposes).
-        The present image must have 1 or 3 channels, and the resulting
-        QImage will have QImage.Format_Indexed8 or QImage.Format_RGB32
-        respectively.
+        The present image must have 1, 2, 3, or 4 channels, and the resulting
+        QImage will have QImage.Format_Indexed8 iff there was only one
+        channel and QImage.Format_[A]RGB32 otherwise (with the last of
+        2/4 channels being used as alpha channel).
         
-	    The parameter `normalize` can be used to normalize an image's
-	    value range to 0..255:
+        The parameter `normalize` can be used to normalize an image's
+        value range to 0..255:
 
-	    `normalize` = (nmin, nmax):
-	      scale & clip image values from nmin..nmax to 0..255
+        `normalize` = (nmin, nmax):
+          scale & clip image values from nmin..nmax to 0..255
 
-	    `normalize` = nmax:
-	      lets nmin default to zero, i.e. scale & clip the range 0..nmax
-	      to 0..255
+        `normalize` = nmax:
+          lets nmin default to zero, i.e. scale & clip the range 0..nmax
+          to 0..255
 
-	    `normalize` = True: (default)
-	      scale the image's actual range min()..max() to 0..255
+        `normalize` = True: (default)
+          scale the image's actual range min()..max() to 0..255
 
-	    `normalize` = False:
-	      don't scale the image's values
+        `normalize` = False:
+          don't scale the image's values
            
-        '''
-        import PyQt4.QtGui as qt
+        """
         import qimage2ndarray
 
-        if self.channels not in [1,3]:
-            raise RuntimeError("Image.qimage(): channels == 1 or channels == 3 required.")
-        
-        if normalize is None or normalize is False:
-            nmin, nmax = 0.0, 255.0
-        elif normalize is True:
-            nmin, nmax = float(self.min()), float(self.max())
-        else:
-            try:
-                nmax = float(normalize)
-                nmin = 0.0
-            except:
-                nmin, nmax = map(float, normalize)
-        if nmax < nmin:
-            raise RuntimeError("Image.qimage(): invalid normalization (nmax < nmin).")
-        
+        yxImage = self.swapaxes(0, 1)
+
         if self.channels == 1:
-            q = qt.QImage(self.width, self.height, qt.QImage.Format_Indexed8)
-            for i in range(256):
-                q.setColor(i, qt.QColor(i,i,i).rgba())
-            if nmax == nmin:
-                q.fill(0)
-            else:
-                # FIXME: use proper rounding
-                ufunc.multiply(self - nmin, 255.0 / (nmax - nmin),
-                               qimage2ndarray.byte_view(q).swapaxes(0,1).reshape(self.shape))
+            q = qimage2ndarray.gray2qimage(yxImage, normalize)
         else:
-            q = qt.QImage(self.width, self.height, qt.QImage.Format_RGB32)
-            if nmax == nmin:
-                q.fill(0)
-            else:
-                ufunc.multiply(self - nmin, 255.0 / (nmax - nmin),
-                               qimage2ndarray.rgb_view(q).swapaxes(0,1))
+            q = qimage2ndarray.array2qimage(yxImage, normalize)
+
         return q
         
     @property
@@ -473,17 +447,17 @@ class Image(_VigraArray):
 
 class ScalarImage(Image):
     __doc__ = _array_docstring_('ScalarImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 1).''', """
-          'C': 
+          'C':
              | NumpyArray<2, T, StridedArrayTag>,
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<2, Singleband<T>, StridedArrayTag>,
              | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<2, T, UnstridedArrayTag>,
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<2, Singleband<T>, UnstridedArrayTag>,
              | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | like 'F'""")
 
     channels = classproperty(lambda cls: 1, Image.bands)
@@ -492,16 +466,16 @@ class Vector2Image(Image):
     __doc__ = _array_docstring_('Vector2Image', '''
     A shape is compatible when it has two dimensions (width, height)
     or three dimensions (width, height, 2).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 2>, StridedArrayTag>,
              | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 2>, UnstridedArrayTag>,
@@ -513,16 +487,16 @@ class Vector3Image(Image):
     __doc__ = _array_docstring_('Vector3Image', '''
     A shape is compatible when it has two dimensions (width, height)
     or three dimensions (width, height, 3).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
              | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 3>, UnstridedArrayTag>,
@@ -534,16 +508,16 @@ class Vector4Image(Image):
     __doc__ = _array_docstring_('Vector4Image', '''
     A shape is compatible when it has two dimensions (width, height)
     or three dimensions (width, height, 4).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 4>, StridedArrayTag>,
              | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 4>, UnstridedArrayTag>,
@@ -553,17 +527,17 @@ class Vector4Image(Image):
 
 class RGBImage(Vector3Image):
     __doc__ = _array_docstring_('RGBImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 3).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, RGBValue<T>, StridedArrayTag>,
              | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
              | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<2, RGBValue<T>, UnstridedArrayTag>,
@@ -576,19 +550,19 @@ class Volume(_VigraArray):
     __doc__ = _array_docstring_('Volume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, channels).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag> (if channels=1),
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, M>, StridedArrayTag> (if channels=M),
              | NumpyArray<3, RGBValue<T>, StridedArrayTag> (if channels=3),
              | NumpyArray<3, Singleband<T>, StridedArrayTag> (if channels=1),
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag> (if channels=1),
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Singleband<T>, UnstridedArrayTag> (if channels=1),
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<3, T, UnstridedArrayTag> (if channels=1),
              | NumpyArray<4, T, UnstridedArrayTag> (if channels=1),
              || NumpyArray<4, T, StridedArrayTag> (if channels>1),
@@ -627,17 +601,17 @@ class ScalarVolume(Volume):
     __doc__ = _array_docstring_('ScalarVolume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 1).''', """
-          'C': 
+          'C':
              | NumpyArray<3, T, StridedArrayTag>,
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, Singleband<T>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<3, T, UnstridedArrayTag>,
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<3, Singleband<T>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | like 'F'""")
 
     channels = classproperty(lambda cls: 1, Volume.bands)
@@ -646,14 +620,14 @@ class Vector2Volume(Volume):
     __doc__ = _array_docstring_('Vector2Volume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 2).''', """
-          'C': 
+          'C':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 2>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 2>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
@@ -664,14 +638,14 @@ class Vector3Volume(Volume):
     __doc__ = _array_docstring_('Vector3Volume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 3).''', """
-          'C': 
+          'C':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
@@ -682,14 +656,14 @@ class Vector4Volume(Volume):
     __doc__ = _array_docstring_('Vector4Volume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 4).''', """
-          'C': 
+          'C':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 4>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 4>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
@@ -700,14 +674,14 @@ class Vector6Volume(Volume):
     __doc__ = _array_docstring_('Vector4Volume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 6).''', """
-          'C': 
+          'C':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 6>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 6>, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
@@ -718,15 +692,15 @@ class RGBVolume(Vector3Volume):
     __doc__ = _array_docstring_('RGBVolume', '''
     A shape is compatible when it has three dimensions (width, height,
     depth) or four dimensions (width, height, depth, 3).''', """
-          'C': 
+          'C':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, RGBValue<T>, StridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
              | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F': 
+          'F':
              | NumpyArray<4, T, UnstridedArrayTag>,
              | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V': 
+          'V':
              | NumpyArray<4, T, StridedArrayTag>,
              | NumpyArray<3, RGBValue<T>, UnstridedArrayTag>,
              | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
@@ -737,11 +711,11 @@ class RGBVolume(Vector3Volume):
 
 class ImagePyramid(list):
     def __init__(self, image, copyImagedestLevel = 0, lowestLevel = 0, highestLevel = 0):
-        ''' Create a new pyramid. 
+        ''' Create a new pyramid.
             The new pyramid levels range from 'lowestLevel' to 'highestLevel' (inclusive),
-            and the given 'image' is copied to 'copyImagedestLevel'. The images at other 
-            levels are filled with zeros and sized so that the shape is reduced by half 
-            when going up (to higher levels), and doubled when going down. 
+            and the given 'image' is copied to 'copyImagedestLevel'. The images at other
+            levels are filled with zeros and sized so that the shape is reduced by half
+            when going up (to higher levels), and doubled when going down.
         '''
         if lowestLevel > copyImagedestLevel or highestLevel < copyImagedestLevel:
             raise ValueError('ImagePyramid(): copyImagedestLevel must be between lowestLevel and highestLevel (inclusive)')
@@ -765,7 +739,7 @@ class ImagePyramid(list):
         return self._highestLevel
     
     def __getitem__(self, level):
-        '''Get the image at 'level'. 
+        '''Get the image at 'level'.
            Raises IndexError when the level does not exist.
         '''
         if level < self.lowestLevel or level > self.highestLevel:
@@ -773,8 +747,8 @@ class ImagePyramid(list):
         return list.__getitem__(self, level - self.lowestLevel)
     
     def __setitem__(self, level, image):
-        '''Copy the data of the given 'image' to the image at 'level'. 
-           Raises IndexError when the level does not exist. 
+        '''Copy the data of the given 'image' to the image at 'level'.
+           Raises IndexError when the level does not exist.
         '''
         self[level][...] = image[...]
         
@@ -880,7 +854,7 @@ class ImagePyramid(list):
 
     def createLevel(self, level):
         ''' Make sure that 'level' exists. If 'level' is outside the current range of levels,
-            empty images of the appropriate shape are inserted into the pyramid.        
+            empty images of the appropriate shape are inserted into the pyramid.
         '''
         if level > self.highestLevel:
             for i in range(self.highestLevel, level):

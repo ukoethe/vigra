@@ -1370,7 +1370,7 @@ class FunctorTraits<FindROISize<VALUETYPE> >
     // Diff2D is used as the iterator for the source image. This
     // simulates an image where each pixel value equals that pixel's
     // coordinates. Tha image 'mask' determines the ROI.
-    vigra::inspectImageIf(srcIterRange(Diff2D(0,0), img.size()),
+    vigra::inspectImageIf(srcIterRange(Diff2D(0,0), (Diff2D)img.size()),
                           srcImage(mask), roiRect);
 
     cout << "Upper left of ROI: " <<
