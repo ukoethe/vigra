@@ -33,6 +33,33 @@
 #
 #######################################################################
 
+"""
+Vigranumpy can work directly on numpy.ndarrays. However, plain ndarrays do not carry
+any information about the semantics of the different coordinate axes. For example,
+one cannot distinguish a 2-dimensional RGB image from a scalar volume data set that
+happens to contain only three slices. In order to distinguish between arrays that
+have the same structure but different interpretation, vigra.arraytypes provides the
+following array classes:
+
+    numpy.ndarray
+        Image
+            ScalarImage
+            Vector2Image
+            Vector3Image
+                RGBImage
+            Vector4Image
+        Volume
+            ScalarVolume
+            Vector2Volume
+            Vector3Volume
+                RGBVolume
+            Vector4Volume
+            Vector6Volume
+
+    list
+        ImagePyramid
+"""
+
 import copy
 import numpy
 import ufunc
