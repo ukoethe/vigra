@@ -42,6 +42,7 @@
 #include "vigra/tinyvector.hxx"
 #include "vigra/rgbvalue.hxx"
 #include "vigra/diff2d.hxx"
+#include "vigra/box.hxx"
 
 using namespace vigra;
 
@@ -127,10 +128,10 @@ struct TinyVectorTest
 
         should(!equalVector(bv3, fv3));
         should(!equalVector(iv3, fv3));
-        
+
         BV bv0((typename BV::value_type)0);
         shouldEqual(bv0, BV(0,0,0));
-        
+
         BV bv(fv3);
         should(equalIter(bv3.begin(), bv3.end(), bv.begin()));
         should(equalVector(bv3, bv));
@@ -140,7 +141,7 @@ struct TinyVectorTest
         should(equalVector(bv3, bv4));
 
         BV bv5(bv3.begin(), BV::ReverseCopy);
-        should(equalIter(bv3.begin(), bv3.end(), 
+        should(equalIter(bv3.begin(), bv3.end(),
                          std::reverse_iterator<typename BV::iterator>(bv5.end())));
 
         FV fv(iv3);
@@ -597,6 +598,162 @@ struct Rect2DTestSuite
     }
 };
 
+
+/********************************************************************/
+
+struct BoxTest
+{
+    typedef Box<int, 2> IBox;
+
+    IBox rect1_1;
+    IBox emptyRect;
+    IBox bigRect;
+
+    typedef IBox::Vector IPoint;
+
+    BoxTest()
+        : rect1_1(IPoint(1, 1), IPoint(2, 2)),
+          bigRect(IPoint(10, 10))
+    {
+    }
+
+    void testProperties()
+    {
+        shouldEqual(rect1_1.size()[0], 1);
+        shouldEqual(rect1_1.size()[1], 1);
+        should(!rect1_1.isEmpty());
+
+        shouldEqual(emptyRect.size()[0], 0);
+        shouldEqual(emptyRect.size()[1], 0);
+        should(emptyRect.isEmpty());
+
+        shouldEqual(bigRect.size()[0], 10);
+        shouldEqual(bigRect.size()[1], 10);
+        should(!bigRect.isEmpty());
+
+        should(rect1_1 != emptyRect);
+        should(bigRect != emptyRect);
+        should(bigRect != rect1_1);
+
+        bigRect = rect1_1;
+        should(bigRect == rect1_1);
+    }
+
+    void testContains()
+    {
+        should(!emptyRect.contains(IPoint(0, 0)));
+        should(!emptyRect.contains(IPoint(0, 1)));
+        should(!emptyRect.contains(IPoint(0, 2)));
+        should(!emptyRect.contains(IPoint(1, 0)));
+        should(!emptyRect.contains(IPoint(1, 1)));
+        should(!emptyRect.contains(IPoint(1, 2)));
+        should(!emptyRect.contains(IPoint(2, 0)));
+        should(!emptyRect.contains(IPoint(2, 1)));
+        should(!emptyRect.contains(IPoint(2, 2)));
+
+        should( emptyRect.contains(emptyRect));
+        should(!emptyRect.contains(rect1_1));
+        should(!emptyRect.contains(bigRect));
+
+        should(!rect1_1.contains(IPoint(0, 0)));
+        should(!rect1_1.contains(IPoint(0, 1)));
+        should(!rect1_1.contains(IPoint(0, 2)));
+        should(!rect1_1.contains(IPoint(1, 0)));
+        should( rect1_1.contains(IPoint(1, 1)));
+        should(!rect1_1.contains(IPoint(1, 2)));
+        should(!rect1_1.contains(IPoint(2, 0)));
+        should(!rect1_1.contains(IPoint(2, 1)));
+        should(!rect1_1.contains(IPoint(2, 2)));
+
+        should( rect1_1.contains(emptyRect));
+        should( rect1_1.contains(rect1_1));
+        should(!rect1_1.contains(bigRect));
+
+        should(bigRect.contains(IPoint(0, 0)));
+        should(bigRect.contains(IPoint(0, 1)));
+        should(bigRect.contains(IPoint(0, 2)));
+        should(bigRect.contains(IPoint(1, 0)));
+        should(bigRect.contains(IPoint(1, 1)));
+        should(bigRect.contains(IPoint(1, 2)));
+        should(bigRect.contains(IPoint(2, 0)));
+        should(bigRect.contains(IPoint(2, 1)));
+        should(bigRect.contains(IPoint(2, 2)));
+
+        should( bigRect.contains(emptyRect));
+        should( bigRect.contains(rect1_1));
+        should( bigRect.contains(bigRect));
+    }
+
+    void testIntersection()
+    {
+        should(!emptyRect.intersects(emptyRect));
+        should(!emptyRect.intersects(rect1_1));
+        should(!emptyRect.intersects(bigRect));
+        should(!rect1_1.intersects(emptyRect));
+        should( rect1_1.intersects(rect1_1));
+        should( rect1_1.intersects(bigRect));
+        should(!bigRect.intersects(emptyRect));
+        should( bigRect.intersects(rect1_1));
+        should( bigRect.intersects(bigRect));
+
+        should(!bigRect.intersects(IBox(IPoint(3, -3), IPoint(3, 3))));
+        should( bigRect.intersects(IBox(IPoint(3, -3), IPoint(4, 3))));
+        should( bigRect.intersects(IBox(IPoint(3, -3), IPoint(14, 3))));
+
+        should((rect1_1 & emptyRect).isEmpty());
+        should(!(rect1_1 & bigRect).isEmpty());
+        should((rect1_1 & bigRect) == rect1_1);
+    }
+
+    void testUnion()
+    {
+        should(!(rect1_1 | emptyRect).isEmpty());
+        should((rect1_1 | emptyRect) == rect1_1);
+        should((rect1_1 | bigRect) == bigRect);
+        rect1_1 |= IPoint(3, 3);
+        shouldEqual(rect1_1.begin(), IPoint(1, 1));
+        shouldEqual(rect1_1.end(), IPoint(4, 4));
+    }
+
+    void testSizes()
+    {
+        shouldEqual(rect1_1.size(), IPoint(1, 1));
+        shouldEqual(bigRect.size(), IPoint(10, 10));
+        emptyRect.setSize(IPoint(10, 10));
+        should(bigRect == emptyRect);
+        emptyRect.addSize(IPoint(-4, -7));
+        shouldEqual(emptyRect.size(), IPoint(6, 3));
+        emptyRect.setSize(bigRect.size());
+        should(bigRect == emptyRect);
+    }
+
+    void testScaling()
+    {
+        shouldEqual((rect1_1 * 4).size(), IPoint(4, 4));
+        shouldEqual((rect1_1 * 4).end(), IPoint(8, 8));
+        IBox r2(rect1_1);
+        r2 *= 5;
+        should(rect1_1 * 5 == r2);
+        r2 /= 5;
+        should(rect1_1 == r2);
+    }
+};
+
+struct BoxTestSuite
+: public test_suite
+{
+    BoxTestSuite()
+    : test_suite("BoxTestSuite")
+    {
+        add(testCase(&BoxTest::testProperties));
+        add(testCase(&BoxTest::testContains));
+        add(testCase(&BoxTest::testIntersection));
+        add(testCase(&BoxTest::testUnion));
+        add(testCase(&BoxTest::testSizes));
+        add(testCase(&BoxTest::testScaling));
+    }
+};
+
 /********************************************************************/
 
 int main(int argc, char ** argv)
@@ -612,6 +769,10 @@ int main(int argc, char ** argv)
     Rect2DTestSuite test3;
     failed += test3.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test3.report() << std::endl;
+
+    BoxTestSuite test4;
+    failed += test4.run(vigra::testsToBeExecuted(argc, argv));
+    std::cout << test4.report() << std::endl;
 
     return (failed != 0);
 }
