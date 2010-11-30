@@ -69,8 +69,8 @@ public:
 		char sifFile[] = "testSif_4_13_30000.sif";
 
 		const float reference_array[] = 
-			{0, 27, 61, 96, 132, 166, 200, 235, 
-			 0, 27, 62, 97, 131, 166, 200, 235};
+			{0.f, 27.f, 61.f, 96.f, 132.f, 166.f, 200.f, 235.f, 
+			 0.f, 27.f, 62.f, 97.f, 131.f, 166.f, 200.f, 235.f};
 		MultiArray<3, float> reference_data(MultiArrayShape<3>::type(8, 2, 1), reference_array);
 		
 
