@@ -896,7 +896,10 @@ class OOB_Error : public VisitorBase
         // go through the samples
         int total_oob =0;
         int wrong_oob =0;
-        if(rf.ext_param_.actual_msample_ < pr.features().shape(0)- 10000)
+        // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
+		//                            (i.e. the OOB sample ist very large)
+		//                     40000: use at most 40000 OOB samples per class for OOB error estimate 
+		if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
         {
             ArrayVector<int> oob_indices;
             ArrayVector<int> cts(class_count, 0);
@@ -909,7 +912,7 @@ class OOB_Error : public VisitorBase
                     ++cts[pr.response()(indices[ii], 0)];
                 }
             }
-            for(int ll = 0; ll < oob_indices.size(); ++ll)
+            for(unsigned int ll = 0; ll < oob_indices.size(); ++ll)
             {
                 // update number of trees in which current sample is oob
                 ++oobCount[oob_indices[ll]];

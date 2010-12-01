@@ -59,6 +59,7 @@
 #include "random_forest/rf_preprocessing.hxx"
 #include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
+#include "random_forest/rf_ridge_split.hxx"
 namespace vigra
 {
 

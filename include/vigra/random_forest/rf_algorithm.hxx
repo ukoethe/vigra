@@ -211,7 +211,7 @@ class VariableSelectionResult
         }
         // calculate error with all features
         selected.resize(all_features.shape(1), 0);
-        for(int ii = 0; ii < selected.size(); ++ii)
+        for(unsigned int ii = 0; ii < selected.size(); ++ii)
             selected[ii] = ii;
         errors.resize(all_features.shape(1), -1);
         errors.back() = errorcallback(all_features, response);
@@ -311,7 +311,6 @@ void forward_selection(FeatureT          const & features,
     
 
     int not_selected_size = std::distance(pivot, selected.end());
-    int ii = 0;
     while(not_selected_size > 1)
     {
         std::vector<int> current_errors;
@@ -322,7 +321,7 @@ void forward_selection(FeatureT          const & features,
             MultiArray<2, double> cur_feats;
             detail::choose( features, 
                             selected.begin(), 
-                            pivot, 
+                            pivot+1, 
                             cur_feats);
             double error = errorcallback(cur_feats, response);
             current_errors.push_back(error);
@@ -335,8 +334,8 @@ void forward_selection(FeatureT          const & features,
         std::advance(next, pos);
         std::swap(*pivot, *next);
         errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
-        not_selected_size = std::distance(pivot, selected.end());
         ++pivot;
+        not_selected_size = std::distance(pivot, selected.end());
     }
 }
 template<class FeatureT, class ResponseT>
@@ -738,9 +737,9 @@ public:
             int jj_min = 1;
             double min_dist = dist((addr.begin()+ii_min)->second, 
                               (addr.begin()+jj_min)->second);
-            for(int ii = 0; ii < addr.size(); ++ii)
+            for(unsigned int ii = 0; ii < addr.size(); ++ii)
             {
-                for(int jj = ii+1; jj < addr.size(); ++jj)
+                for(unsigned int jj = ii+1; jj < addr.size(); ++jj)
                 {
                     if(  dist((addr.begin()+ii_min)->second, 
                               (addr.begin()+jj_min)->second)
@@ -812,7 +811,7 @@ public:
             }
             //update distances;
             
-            for(int jj = 0 ; jj < addr.size(); ++jj)
+            for(unsigned int jj = 0 ; jj < addr.size(); ++jj)
             {
                 if(jj == ii_keep)
                     continue;
