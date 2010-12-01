@@ -296,7 +296,7 @@ class Box
          */
     bool intersects(Box const &r) const
     {
-        if(r.isEmpty())
+        if(r.isEmpty() || isEmpty())
             return false;
         for(unsigned int i = 0; i < DIMENSION; ++i)
             if(RangePolicy::isEmptyRange(r.begin_[i], end_[i]) ||

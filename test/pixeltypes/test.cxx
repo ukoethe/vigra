@@ -802,8 +802,9 @@ struct FBoxTest
         should( rect1_1.contains(FPoint(1, 2)));
         should(!rect1_1.contains(FPoint(1, 2.1)));
         should(!rect1_1.contains(FPoint(2, 0)));
-        should(!rect1_1.contains(FPoint(2, 1)));
-        should(!rect1_1.contains(FPoint(2, 2)));
+        should( rect1_1.contains(FPoint(2, 1)));
+        should(!rect1_1.contains(FPoint(2.1, 1)));
+        should( rect1_1.contains(FPoint(2, 2)));
 
         should( rect1_1.contains(emptyRect));
         should( rect1_1.contains(rect1_1));
@@ -836,7 +837,6 @@ struct FBoxTest
         should( bigRect.intersects(rect1_1));
         should( bigRect.intersects(bigRect));
 
-        should(!bigRect.intersects(FBox(FPoint(3, -3), FPoint(3, 3))));
         should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(4, 3))));
         should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(14, 3))));
 
