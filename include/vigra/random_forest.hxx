@@ -79,7 +79,7 @@ namespace detail
 
 /* \brief sampling option factory function
  */
-SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
+inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
 {
     SamplerOptions return_opt;
     return_opt.withReplacement(RF_opt.sample_with_replacement_);

@@ -51,7 +51,7 @@ namespace detail
 {
     class RF_DEFAULT;
 }
-detail::RF_DEFAULT& rf_default();
+inline detail::RF_DEFAULT& rf_default();
 namespace detail
 {
 
