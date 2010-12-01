@@ -103,7 +103,7 @@ namespace vigra {
     ... // use file_id in the same way as a plain hid_t object
     \endcode
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
     **/
 class HDF5Handle
@@ -260,7 +260,7 @@ See \ref readHDF5() for a usage example. This object must be
 used to read an image or array from a HDF5 file 
 and enquire about its properties.
 
-<b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+<b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
 Namespace: vigra
 **/
 class HDF5ImportInfo
@@ -420,7 +420,7 @@ file.read("dataset", in_multi_array);
 
 \endcode
 
-<b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+<b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
 Namespace: vigra
 **/
 class HDF5File
@@ -1496,7 +1496,7 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1827,7 +1827,7 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
     
     \code
@@ -1947,7 +1947,7 @@ struct MaxSizeFnc
 /** Write a numeric MultiArray as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
 */
 template<size_t N, class T, class C>
@@ -1983,7 +1983,7 @@ void writeHDF5Attr(hid_t loc,
 /** Write a string MultiArray as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
 */
 template<size_t N, class C>
@@ -2029,7 +2029,7 @@ void writeHDF5Attr(hid_t loc,
 /** Write a numeric ArrayVectorView as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx-source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
     Namespace: vigra
 */
 template<class T>
