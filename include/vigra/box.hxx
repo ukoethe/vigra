@@ -9,6 +9,7 @@ namespace vigra {
 
 namespace detail {
 
+// RangePolicy used for floating point coordinate types
 template<class VALUETYPE>
 struct EndInsidePolicy
 {
@@ -23,6 +24,7 @@ struct EndInsidePolicy
     }
 };
 
+// RangePolicy used for integer coordinate types
 template<class VALUETYPE>
 struct EndOutsidePolicy
 {
@@ -39,6 +41,13 @@ struct EndOutsidePolicy
 
 } // namespace vigra::detail
 
+    /**
+     * Represent an n-dimensional box as a (begin, end) pair.
+     * Depending on the value type, end() is considered to be
+     * outside the box (as in the STL, for integer types), or
+     * inside (for floating point types).  size() will always be
+     * end() - begin().
+     */
 template<class VALUETYPE, unsigned int DIMENSION>
 class Box
 {
@@ -67,14 +76,18 @@ class Box
                         detail::EndInsidePolicy<VALUETYPE> >::type RangePolicy;
 
   public:
-        /** Construct an empty box (isEmpty() will return true)
+        /** Construct an empty box (isEmpty() will return true).
+         * (Internally, this will initialize all dimensions with the
+         * empty range [1..0].)
          */
     Box()
+    : begin_(NumericTraits<Vector>::one())
     {}
 
-        /** Construct a box representing the given range
-         * (end is considered to be outside the box as
-         * usual in the VIGRA/STL) ###
+        /** Construct a box representing the given range.  Depending
+         * on the value type, end() is considered to be outside the
+         * box (as in the STL, for integer types), or inside (for
+         * floating point types).
          */
     Box(Vector const &begin, Vector const &end)
     : begin_(begin), end_(end)
@@ -230,12 +243,12 @@ class Box
     }
 
         /** Return whether this box is considered empty. It is
-         * non-empty if both coordinates of the lower right corner are
-         * greater than (or equal, for floating point valuetypes) the
-         * corresponding coordinate of the upper left corner. Uniting
-         * an empty box with something will return the bounding box of
-         * the 'something', intersecting with an empty box will yield
-         * again an empty box.
+         * non-empty if all end() coordinates are greater than (or
+         * equal, for floating point valuetypes) the corresponding
+         * begin() coordinates. Uniting an empty box with something
+         * will return the bounding box of the 'something', and
+         * intersecting any box with an empty box will again yield an
+         * empty box.
          */
     bool isEmpty() const
     {
@@ -245,10 +258,9 @@ class Box
         return false;
     }
 
-        /** Return whether this box contains the given point. That
-         * is, if the point lies within the valid range of an
-         * ImageIterator walking from begin() to end()
-         * (excluding the latter for integer valuetypes).
+        /** Return whether this box contains the given point.
+         * That is, if the point lies within the range [begin, end] in
+         * each dimension (excluding end() itself for integer valuetypes).
          */
     bool contains(Vector const &p) const
     {

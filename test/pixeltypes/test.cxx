@@ -601,7 +601,7 @@ struct Rect2DTestSuite
 
 /********************************************************************/
 
-struct BoxTest
+struct IBoxTest
 {
     typedef Box<int, 2> IBox;
 
@@ -611,7 +611,7 @@ struct BoxTest
 
     typedef IBox::Vector IPoint;
 
-    BoxTest()
+    IBoxTest()
         : rect1_1(IPoint(1, 1), IPoint(2, 2)),
           bigRect(IPoint(10, 10))
     {
@@ -623,8 +623,8 @@ struct BoxTest
         shouldEqual(rect1_1.size()[1], 1);
         should(!rect1_1.isEmpty());
 
-        shouldEqual(emptyRect.size()[0], 0);
-        shouldEqual(emptyRect.size()[1], 0);
+        should(emptyRect.size()[0] <= 0);
+        should(emptyRect.size()[1] <= 0);
         should(emptyRect.isEmpty());
 
         shouldEqual(bigRect.size()[0], 10);
@@ -719,6 +719,7 @@ struct BoxTest
     {
         shouldEqual(rect1_1.size(), IPoint(1, 1));
         shouldEqual(bigRect.size(), IPoint(10, 10));
+        emptyRect.setBegin(IPoint(0, 0));
         emptyRect.setSize(IPoint(10, 10));
         should(bigRect == emptyRect);
         emptyRect.addSize(IPoint(-4, -7));
@@ -739,18 +740,165 @@ struct BoxTest
     }
 };
 
+struct FBoxTest
+{
+    typedef Box<float, 2> FBox;
+
+    FBox rect1_1;
+    FBox emptyRect;
+    FBox bigRect;
+
+    typedef FBox::Vector FPoint;
+
+    FBoxTest()
+        : rect1_1(FPoint(1, 1), FPoint(2, 2)),
+          bigRect(FPoint(10, 10))
+    {
+    }
+
+    void testProperties()
+    {
+        shouldEqual(rect1_1.size()[0], 1);
+        shouldEqual(rect1_1.size()[1], 1);
+        should(!rect1_1.isEmpty());
+
+        should(emptyRect.size()[0] <= 0);
+        should(emptyRect.size()[1] <= 0);
+        should(emptyRect.isEmpty());
+
+        shouldEqual(bigRect.size()[0], 10);
+        shouldEqual(bigRect.size()[1], 10);
+        should(!bigRect.isEmpty());
+
+        should(rect1_1 != emptyRect);
+        should(bigRect != emptyRect);
+        should(bigRect != rect1_1);
+
+        bigRect = rect1_1;
+        should(bigRect == rect1_1);
+    }
+
+    void testContains()
+    {
+        should(!emptyRect.contains(FPoint(0, 0)));
+        should(!emptyRect.contains(FPoint(0, 1)));
+        should(!emptyRect.contains(FPoint(0, 2)));
+        should(!emptyRect.contains(FPoint(1, 0)));
+        should(!emptyRect.contains(FPoint(1, 1)));
+        should(!emptyRect.contains(FPoint(1, 2)));
+        should(!emptyRect.contains(FPoint(2, 0)));
+        should(!emptyRect.contains(FPoint(2, 1)));
+        should(!emptyRect.contains(FPoint(2, 2)));
+
+        should( emptyRect.contains(emptyRect));
+        should(!emptyRect.contains(rect1_1));
+        should(!emptyRect.contains(bigRect));
+
+        should(!rect1_1.contains(FPoint(0, 0)));
+        should(!rect1_1.contains(FPoint(0, 1)));
+        should(!rect1_1.contains(FPoint(0, 2)));
+        should(!rect1_1.contains(FPoint(1, 0)));
+        should( rect1_1.contains(FPoint(1, 1)));
+        should( rect1_1.contains(FPoint(1, 2)));
+        should(!rect1_1.contains(FPoint(1, 2.1)));
+        should(!rect1_1.contains(FPoint(2, 0)));
+        should(!rect1_1.contains(FPoint(2, 1)));
+        should(!rect1_1.contains(FPoint(2, 2)));
+
+        should( rect1_1.contains(emptyRect));
+        should( rect1_1.contains(rect1_1));
+        should(!rect1_1.contains(bigRect));
+
+        should(bigRect.contains(FPoint(0, 0)));
+        should(bigRect.contains(FPoint(0, 1)));
+        should(bigRect.contains(FPoint(0, 2)));
+        should(bigRect.contains(FPoint(1, 0)));
+        should(bigRect.contains(FPoint(1, 1)));
+        should(bigRect.contains(FPoint(1, 2)));
+        should(bigRect.contains(FPoint(2, 0)));
+        should(bigRect.contains(FPoint(2, 1)));
+        should(bigRect.contains(FPoint(2, 2)));
+
+        should( bigRect.contains(emptyRect));
+        should( bigRect.contains(rect1_1));
+        should( bigRect.contains(bigRect));
+    }
+
+    void testIntersection()
+    {
+        should(!emptyRect.intersects(emptyRect));
+        should(!emptyRect.intersects(rect1_1));
+        should(!emptyRect.intersects(bigRect));
+        should(!rect1_1.intersects(emptyRect));
+        should( rect1_1.intersects(rect1_1));
+        should( rect1_1.intersects(bigRect));
+        should(!bigRect.intersects(emptyRect));
+        should( bigRect.intersects(rect1_1));
+        should( bigRect.intersects(bigRect));
+
+        should(!bigRect.intersects(FBox(FPoint(3, -3), FPoint(3, 3))));
+        should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(4, 3))));
+        should( bigRect.intersects(FBox(FPoint(3, -3), FPoint(14, 3))));
+
+        should((rect1_1 & emptyRect).isEmpty());
+        should(!(rect1_1 & bigRect).isEmpty());
+        should((rect1_1 & bigRect) == rect1_1);
+    }
+
+    void testUnion()
+    {
+        should(!(rect1_1 | emptyRect).isEmpty());
+        should((rect1_1 | emptyRect) == rect1_1);
+        should((rect1_1 | bigRect) == bigRect);
+        rect1_1 |= FPoint(3, 3);
+        shouldEqual(rect1_1.begin(), FPoint(1, 1));
+        shouldEqual(rect1_1.end(), FPoint(3, 3));
+    }
+
+    void testSizes()
+    {
+        shouldEqual(rect1_1.size(), FPoint(1, 1));
+        shouldEqual(bigRect.size(), FPoint(10, 10));
+        emptyRect.setBegin(FPoint(0, 0));
+        emptyRect.setSize(FPoint(10, 10));
+        should(bigRect == emptyRect);
+        emptyRect.addSize(FPoint(-4, -7));
+        shouldEqual(emptyRect.size(), FPoint(6, 3));
+        emptyRect.setSize(bigRect.size());
+        should(bigRect == emptyRect);
+    }
+
+    void testScaling()
+    {
+        shouldEqual((rect1_1 * 4).size(), FPoint(4, 4));
+        shouldEqual((rect1_1 * 4).end(), FPoint(8, 8));
+        FBox r2(rect1_1);
+        r2 *= 5;
+        should(rect1_1 * 5 == r2);
+        r2 /= 5;
+        should(rect1_1 == r2);
+    }
+};
+
 struct BoxTestSuite
 : public test_suite
 {
     BoxTestSuite()
     : test_suite("BoxTestSuite")
     {
-        add(testCase(&BoxTest::testProperties));
-        add(testCase(&BoxTest::testContains));
-        add(testCase(&BoxTest::testIntersection));
-        add(testCase(&BoxTest::testUnion));
-        add(testCase(&BoxTest::testSizes));
-        add(testCase(&BoxTest::testScaling));
+        add(testCase(&IBoxTest::testProperties));
+        add(testCase(&IBoxTest::testContains));
+        add(testCase(&IBoxTest::testIntersection));
+        add(testCase(&IBoxTest::testUnion));
+        add(testCase(&IBoxTest::testSizes));
+        add(testCase(&IBoxTest::testScaling));
+
+        add(testCase(&FBoxTest::testProperties));
+        add(testCase(&FBoxTest::testContains));
+        add(testCase(&FBoxTest::testIntersection));
+        add(testCase(&FBoxTest::testUnion));
+        add(testCase(&FBoxTest::testSizes));
+        add(testCase(&FBoxTest::testScaling));
     }
 };
 
