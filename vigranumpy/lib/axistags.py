@@ -37,6 +37,9 @@ class InfoArray(np.ndarray):
         return self.transpose()
 
     def __getitem__(self, index):
+        # FIXME: also handle fancy indexing and newaxis/None (singleton axis insertion)
+        #        maybe use numpy.getitem implementation as a template?
+        #        (these are funtions array_item_nice and array_big_item)
         res = np.ndarray.__getitem__(self, index)
         if hasattr(res, 'axistags') and res.ndim != self.ndim:
             l1 = len(self.shape)
