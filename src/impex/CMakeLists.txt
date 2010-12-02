@@ -29,6 +29,7 @@ ADD_LIBRARY(vigraimpex SHARED
     gif.cxx
     hdr.cxx
     hdf5impex.cxx
+    hdf5_rf_impex.cxx
     iccjpeg.c
     imageinfo.cxx
     jpeg.cxx
