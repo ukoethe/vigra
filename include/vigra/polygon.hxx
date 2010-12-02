@@ -38,13 +38,15 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <iterator>
+#include <algorithm>
 #include "config.hxx"
 #include "error.hxx"
 #include "array_vector.hxx"
 
 namespace vigra {
 
-/** \addtogroup MathFunctionsons and functors.
+/** \addtogroup MathFunctions
 */
 //@{
 
@@ -66,13 +68,26 @@ struct CCWCompare
 
 } // namespace detail
 
+
+/** \brief Compute convex hull of a 2D polygon.
+
+    The input array \a points contains a (not necessarily ordered) set of 2D points
+    whose convex hull is to be computed. The array's <tt>value_type</tt> (i.e. the point type)
+    must be compatible with std::vector (in particular, it must support indexing, 
+    copying, and have <tt>size() == 2</tt>). The points of the convex hull will be appended
+    to the output array \a convex_hull (which must support <tt>std::back_inserter(convex_hull)</tt>). 
+    Since the convex hull is a closed polygon, the first and last point of the output will 
+    be the same (i.e. the first point will simply be inserted at the end again). The points
+    of the convex hull will be ordered counter-clockwise, starting with the leftmost point
+    of the imput.
+*/
 template<class PointArray>
 void convexHull(
-    const PointArray &poly, PointArray &chull)
+    const PointArray &points, PointArray &convex_hull)
 {
-    vigra_precondition(poly.size() >= 2,
+    vigra_precondition(points.size() >= 2,
                        "convexHull(): at least two input points are needed.");
-    vigra_precondition(poly[0].size() == 2,
+    vigra_precondition(points[0].size() == 2,
                        "convexHull(): 2-dimensional points required.");
 
     typedef typename PointArray::value_type Point;
@@ -80,23 +95,23 @@ void convexHull(
 
     // find extremal point (min. x, then min. y):
     unsigned int i0 = 0;
-    Point p0 = poly[0];
-    for(unsigned int i = 1; i < poly.size(); ++i)
+    Point p0 = points[0];
+    for(unsigned int i = 1; i < points.size(); ++i)
     {
-        Coordinate xDiff = poly[i][0] - p0[0];
-        if(xDiff < 0 || (xDiff == 0 && poly[i][1] < p0[1]))
+        Coordinate xDiff = points[i][0] - p0[0];
+        if(xDiff < 0 || (xDiff == 0 && points[i][1] < p0[1]))
         {
-            p0 = poly[i];
+            p0 = points[i];
             i0 = i;
         }
     }
 
     // sort other points by angle from p0:
-    ArrayVector<Point> other(poly.begin(), poly.begin() + i0);
-    other.insert(other.end(), poly.begin()+i0+1, poly.end());
+    ArrayVector<Point> other(points.begin(), points.begin() + i0);
+    other.insert(other.end(), points.begin()+i0+1, points.end());
     std::sort(other.begin(), other.end(), detail::CCWCompare<Point>(p0));
     
-    ArrayVector<Point> result(poly.size()+1);
+    ArrayVector<Point> result(points.size()+1);
     result[0] = p0;
     result[1] = other[0];
     typename ArrayVector<Point>::iterator currentEnd = result.begin() + 1;
@@ -138,7 +153,7 @@ void convexHull(
     // return closed Polygon:
     *(++currentEnd) = p0;
     ++currentEnd;
-    chull.insert(chull.end(), result.begin(), currentEnd);
+    std::copy(result.begin(), currentEnd, std::back_inserter(convex_hull));
 }
 
 //@}
