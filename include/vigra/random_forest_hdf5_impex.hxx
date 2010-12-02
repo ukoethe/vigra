@@ -322,7 +322,7 @@ inline MyT::type type_of_hid_t(hid_t group_id, std::string name)
 }
 
     
-void options_import_HDF5(hid_t & group_id, 
+inline void options_import_HDF5(hid_t & group_id, 
                         RandomForestOptions  & opt, 
                         std::string name)
 {
@@ -354,7 +354,7 @@ void options_import_HDF5(hid_t & group_id,
     H5Gclose(opt_id);
 }
 
-void options_export_HDF5(hid_t & group_id, 
+inline void options_export_HDF5(hid_t & group_id, 
                              RandomForestOptions const & opt, 
                              std::string name)
 {
