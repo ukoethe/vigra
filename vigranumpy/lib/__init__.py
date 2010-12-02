@@ -104,6 +104,7 @@ import analysis
 import learning
 import colors
 import noise
+import geometry
 
 try:
     import fourier
