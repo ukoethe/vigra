@@ -2234,6 +2234,13 @@ struct PolygonTest
         
         shouldEqual(7, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
+
+		hull.clear();
+
+		vigra::convexHull(reference, hull);
+        
+        shouldEqual(7, hull.size());
+        shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
         
         typedef Point P;
         P p[200] = { P(0.0, 0.0), P(42.0, 468.0), P(335.0, 501.0), P(170.0, 725.0), P(479.0, 359.0), 

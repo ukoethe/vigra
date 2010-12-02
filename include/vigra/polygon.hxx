@@ -81,16 +81,16 @@ struct CCWCompare
     of the convex hull will be ordered counter-clockwise, starting with the leftmost point
     of the imput.
 */
-template<class PointArray>
+template<class PointArray1, class PointArray2>
 void convexHull(
-    const PointArray &points, PointArray &convex_hull)
+    const PointArray1 &points, PointArray2 &convex_hull)
 {
     vigra_precondition(points.size() >= 2,
                        "convexHull(): at least two input points are needed.");
     vigra_precondition(points[0].size() == 2,
                        "convexHull(): 2-dimensional points required.");
 
-    typedef typename PointArray::value_type Point;
+    typedef typename PointArray1::value_type Point;
     typedef typename Point::value_type Coordinate;
 
     // find extremal point (min. x, then min. y):
@@ -109,11 +109,16 @@ void convexHull(
     // sort other points by angle from p0:
     ArrayVector<Point> other(points.begin(), points.begin() + i0);
     other.insert(other.end(), points.begin()+i0+1, points.end());
+    
+    // the current definition of CCWCompare ensures that points identical to p0
+    // end up at the end of the list => those duplicates will be removed during 
+    // Graham scan
     std::sort(other.begin(), other.end(), detail::CCWCompare<Point>(p0));
     
     ArrayVector<Point> result(points.size()+1);
     result[0] = p0;
     result[1] = other[0];
+
     typename ArrayVector<Point>::iterator currentEnd = result.begin() + 1;
 
     // Graham's scan:
@@ -121,6 +126,8 @@ void convexHull(
     Coordinate sa2;
     for(unsigned int i = 1; i < other.size(); ++i)
     {
+        if(other[i] == other[i-1] || other[i] == p0) // skip duplicate points
+            continue;
         do
         {
             Point diff = other[i] - currentEnd[-1];
