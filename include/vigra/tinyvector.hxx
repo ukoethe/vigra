@@ -596,6 +596,7 @@ class TinyVectorBase
 };
 
 /** \brief Class for fixed size vectors.
+    \ingroup RangesAndPoints
 
     This class contains an array of size SIZE of the specified VALUETYPE.
     The interface conforms to STL vector, except that there are no functions

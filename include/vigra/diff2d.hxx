@@ -132,9 +132,9 @@ class Diff2DConstColumnIteratorPolicy
         { d.y += n; }
 };
 
-/** \addtogroup RangesAndPoints Two-dimensional Ranges and Points
+/** \addtogroup RangesAndPoints Ranges and Points
 
-    Specify a 2D position, extent, or rectangle.
+    Specify 2-D and N-D positions, extents, and boxes.
 */
 //@{
 

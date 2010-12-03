@@ -87,11 +87,13 @@ VIGRA_AS_STRING(void *)
 
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref vigra::ArrayVector
-         <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector (always uses consecutive memory)</em>
     <LI> \ref RangesAndPoints
-         <BR>&nbsp;&nbsp;&nbsp;<em>2-dimensional positions, extents, and rectangles</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>2-D and N-D positions, extents, and boxes</em>
     <LI> \ref PixelNeighborhood
          <BR>&nbsp;&nbsp;&nbsp;<em>4- and 8-neighborhood definitions and circulators</em>
+    <LI> \ref VoxelNeighborhood
+         <BR>&nbsp;&nbsp;&nbsp;<em>6- and 26-neighborhood definitions and circulators</em>
     <LI> \ref vigra::IteratorAdaptor
          <BR>&nbsp;&nbsp;&nbsp;<em>Quickly create STL-compatible 1D iterator adaptors</em>
     <LI> \ref TupleTypes

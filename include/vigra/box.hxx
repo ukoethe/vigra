@@ -76,8 +76,9 @@ struct EndOutsidePolicy
 
 } // namespace vigra::detail
 
-   /** \addtogroup RangesAndPoints
-     * \brief Represent an n-dimensional box as a (begin, end) pair.
+/** \addtogroup RangesAndPoints */
+//@{
+   /** \brief Represent an n-dimensional box as a (begin, end) pair.
      * Depending on the value type, end() is considered to be
      * outside the box (as in the STL, for integer types), or
      * inside (for floating point types).  size() will always be
@@ -536,6 +537,8 @@ class Box
         return result;
     }
 };
+
+//@}
 
 } // namespace vigra
 
