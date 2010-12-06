@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpytest_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfourier_PyArray_API
 #include <Python.h>
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
