@@ -67,6 +67,8 @@
 #include "transformimage.hxx"
 #include "copyimage.hxx"
 #include "multi_array.hxx"
+#include <typeinfo>
+#include <iostream>
 
 // TODO
 // next refactoring: pluggable conversion algorithms
@@ -99,6 +101,7 @@ namespace vigra
     template< class ImageIterator, class Accessor, class SrcValueType >
     void read_bands( Decoder * dec, ImageIterator ys, Accessor a, SrcValueType )
     {
+        
         typedef unsigned int size_type;
         typedef typename ImageIterator::row_iterator DstRowIterator;
         typedef typename Accessor::value_type  AccessorValueType;
@@ -109,21 +112,23 @@ namespace vigra
         const size_type num_bands = dec->getNumBands();
 
         vigra_precondition(num_bands == (size_type)a.size(ys),
-           "importImage(): number of bands (color channels) in file and destination image differ.");
+            "importImage(): number of bands (color channels) in file and destination image differ.");
 
         SrcValueType const * scanline;
         // MIHAL no default constructor available for cachedfileimages.
         DstRowIterator xs = ys.rowIterator();
 
         // iterate
-		if (num_bands == 4) {
+        if (num_bands == 4) 
+        {
             // Speedup for this particular case
             unsigned int offset = dec->getOffset();
             SrcValueType const * scanline0;
             SrcValueType const * scanline1;
             SrcValueType const * scanline2;
             SrcValueType const * scanline3;
-            for( size_type y = 0; y < height; ++y, ++ys.y ) {
+            for( size_type y = 0; y < height; ++y, ++ys.y ) 
+            {
                 dec->nextScanline();
                 xs = ys.rowIterator();
                 scanline0 = static_cast< SrcValueType const * >
@@ -134,14 +139,9 @@ namespace vigra
                     (dec->currentScanlineOfBand(2));
                 scanline3 = static_cast< SrcValueType const * >
                     (dec->currentScanlineOfBand(3));
-                for( size_type x = 0; x < width; ++x, ++xs ) {
-/*
-                    a.template setComponent<SrcValueType, DstRowIterator, 0>( *scanline0, xs );
-                    a.template setComponent<SrcValueType, DstRowIterator, 1>( *scanline1, xs );
-                    a.template setComponent<SrcValueType, DstRowIterator, 2>( *scanline2, xs );
-                    a.template setComponent<SrcValueType, DstRowIterator, 3>( *scanline3, xs );
-*/
-					a.setComponent( *scanline0, xs, 0);
+                for( size_type x = 0; x < width; ++x, ++xs ) 
+                {
+                    a.setComponent( *scanline0, xs, 0);
                     a.setComponent( *scanline1, xs, 1);
                     a.setComponent( *scanline2, xs, 2);
                     a.setComponent( *scanline3, xs, 3);
@@ -152,21 +152,177 @@ namespace vigra
                 }
             }
         }
-        else {
-			// General case
-        for( size_type y = 0; y < height; ++y, ++ys.y ) {
-            dec->nextScanline();
-            for( size_type b = 0; b < num_bands; ++b ) {
-                xs = ys.rowIterator();
-                scanline = static_cast< SrcValueType const * >
-                    (dec->currentScanlineOfBand(b));
-                for( size_type x = 0; x < width; ++x, ++xs ) {
-                    a.setComponent( *scanline, xs, b );
-                    scanline += dec->getOffset();
+        else 
+        {
+            // General case
+            for( size_type y = 0; y < height; ++y, ++ys.y ) 
+            {
+                dec->nextScanline();
+                for( size_type b = 0; b < num_bands; ++b ) 
+                {
+                    xs = ys.rowIterator();
+                    scanline = static_cast< SrcValueType const * >
+                        (dec->currentScanlineOfBand(b));
+                    for( size_type x = 0; x < width; ++x, ++xs ) 
+                    {
+                        a.setComponent( *scanline, xs, b );
+                        scanline += dec->getOffset();
+                    }
                 }
             }
         }
-		}
+    } // read_bands()
+
+    
+    // specialization for speed-up (the standard version would also work, 
+    // but causes a stupid gcc waring)
+    template< class ImageIterator, class RGBType, 
+              class SrcValueType >
+    void read_bands( Decoder * dec, ImageIterator ys, 
+                     RGBAccessor<RGBType> a, SrcValueType )
+    {
+        typedef unsigned int size_type;
+        typedef typename ImageIterator::row_iterator DstRowIterator;
+        typedef RGBType  AccessorValueType;
+        typedef typename AccessorValueType::value_type DstValueType;
+
+        const size_type width = dec->getWidth();
+        const size_type height = dec->getHeight();
+        const size_type num_bands = dec->getNumBands();
+
+        vigra_precondition(num_bands == (size_type)a.size(ys),
+           "importImage(): number of bands (color channels) in file and destination image differ.");
+
+        // MIHAL no default constructor available for cachedfileimages.
+        DstRowIterator xs = ys.rowIterator();
+
+        // Speedup for this particular case
+        unsigned int offset = dec->getOffset();
+        SrcValueType const * scanline0;
+        SrcValueType const * scanline1;
+        SrcValueType const * scanline2;
+        for( size_type y = 0; y < height; ++y, ++ys.y ) 
+        {
+            dec->nextScanline();
+            xs = ys.rowIterator();
+            scanline0 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(0));
+            scanline1 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(1));
+            scanline2 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(2));
+            for( size_type x = 0; x < width; ++x, ++xs ) 
+            {
+                a.setComponent( *scanline0, xs, 0);
+                a.setComponent( *scanline1, xs, 1);
+                a.setComponent( *scanline2, xs, 2);
+                scanline0 += offset;
+                scanline1 += offset;
+                scanline2 += offset;
+            }
+        }
+    } // read_bands()
+
+    // specialization for speed-up (the standard version would also work, 
+    // but causes a stupid gcc waring)
+    template< class ImageIterator, class ComponentType, class SrcValueType >
+    void read_bands( Decoder * dec, ImageIterator ys, 
+                     VectorAccessor<TinyVector<ComponentType, 3> > a, SrcValueType )
+    {
+        typedef unsigned int size_type;
+        typedef typename ImageIterator::row_iterator DstRowIterator;
+        typedef TinyVector<ComponentType, 3>  AccessorValueType;
+        typedef typename AccessorValueType::value_type DstValueType;
+
+        const size_type width = dec->getWidth();
+        const size_type height = dec->getHeight();
+        const size_type num_bands = dec->getNumBands();
+
+        vigra_precondition(num_bands == (size_type)a.size(ys),
+           "importImage(): number of bands (color channels) in file and destination image differ.");
+
+        // MIHAL no default constructor available for cachedfileimages.
+        DstRowIterator xs = ys.rowIterator();
+
+        // Speedup for this particular case
+        unsigned int offset = dec->getOffset();
+        SrcValueType const * scanline0;
+        SrcValueType const * scanline1;
+        SrcValueType const * scanline2;
+        for( size_type y = 0; y < height; ++y, ++ys.y ) 
+        {
+            dec->nextScanline();
+            xs = ys.rowIterator();
+            scanline0 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(0));
+            scanline1 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(1));
+            scanline2 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(2));
+            for( size_type x = 0; x < width; ++x, ++xs ) 
+            {
+                a.setComponent( *scanline0, xs, 0);
+                a.setComponent( *scanline1, xs, 1);
+                a.setComponent( *scanline2, xs, 2);
+                scanline0 += offset;
+                scanline1 += offset;
+                scanline2 += offset;
+            }
+        }
+    } // read_bands()
+
+
+    // specialization for speed-up (the standard version would also work, 
+    // but causes a stupid gcc waring)
+    template< class ImageIterator, class ComponentType, class SrcValueType >
+    void read_bands( Decoder * dec, ImageIterator ys, 
+                     VectorAccessor<TinyVector<ComponentType, 4> > a, SrcValueType )
+    {
+        typedef unsigned int size_type;
+        typedef typename ImageIterator::row_iterator DstRowIterator;
+        typedef TinyVector<ComponentType, 4>  AccessorValueType;
+        typedef typename AccessorValueType::value_type DstValueType;
+
+        const size_type width = dec->getWidth();
+        const size_type height = dec->getHeight();
+        const size_type num_bands = dec->getNumBands();
+
+        vigra_precondition(num_bands == (size_type)a.size(ys),
+           "importImage(): number of bands (color channels) in file and destination image differ.");
+
+        // MIHAL no default constructor available for cachedfileimages.
+        DstRowIterator xs = ys.rowIterator();
+
+        // Speedup for this particular case
+        unsigned int offset = dec->getOffset();
+        SrcValueType const * scanline0;
+        SrcValueType const * scanline1;
+        SrcValueType const * scanline2;
+        SrcValueType const * scanline3;
+        for( size_type y = 0; y < height; ++y, ++ys.y ) 
+        {
+            dec->nextScanline();
+            xs = ys.rowIterator();
+            scanline0 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(0));
+            scanline1 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(1));
+            scanline2 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(2));
+            scanline3 = static_cast< SrcValueType const * >
+                (dec->currentScanlineOfBand(3));
+            for( size_type x = 0; x < width; ++x, ++xs ) 
+            {
+                a.setComponent( *scanline0, xs, 0);
+                a.setComponent( *scanline1, xs, 1);
+                a.setComponent( *scanline2, xs, 2);
+                a.setComponent( *scanline3, xs, 3);
+                scanline0 += offset;
+                scanline1 += offset;
+                scanline2 += offset;
+                scanline3 += offset;
+            }
+        }
     } // read_bands()
 
     /*!
@@ -468,10 +624,10 @@ doxygen_overloaded_function(template <...> void importImage)
         SrcRowIterator xs = ys.rowIterator();
 
             // Speedup for the common cases
-		switch (num_bands) 
-		{
-		  case 2:
-		  {
+        switch (num_bands) 
+        {
+          case 2:
+          {
             unsigned int offset = enc->getOffset();
             DstValueType * scanline0;
             DstValueType * scanline1;
@@ -551,7 +707,7 @@ doxygen_overloaded_function(template <...> void importImage)
           }
           default:
           {
-			// General case
+            // General case
             for( size_type y = 0; y < height; ++y, ++ys.y ) {
                 for( size_type b = 0; b < num_bands; ++b ) {
                     xs = ys.rowIterator();
@@ -565,7 +721,7 @@ doxygen_overloaded_function(template <...> void importImage)
                 enc->nextScanline();
             }
           }
-		}
+        }
     } // write_bands()
 
     template< class MArray, class DstValueType >
