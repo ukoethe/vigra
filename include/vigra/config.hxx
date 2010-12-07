@@ -129,6 +129,10 @@
         #define VIGRA_NO_WORKING_STRINGSTREAM
     #endif
     #define HAS_HASH_CONTAINERS
+    
+    // this warning produces too many false positives to be useful
+    #pragma GCC diagnostic ignored "-Wstrict-aliasing"  
+    
 #endif  // __GNUC__
 
 ///////////////////////////////////////////////////////////
