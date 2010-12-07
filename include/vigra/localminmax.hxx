@@ -64,6 +64,7 @@ void
 localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                 DestIterator dul, DestAccessor da,
                 DestValue marker, Neighborhood,
+                typename SrcAccessor::value_type threshold,
                 Compare compare)
 {
     int w = slr.x - sul.x - 2;
@@ -81,6 +82,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
         for(x=0; x<w; ++x, ++sx.x, ++dx.x)
         {
+			if(!compare(sa(sx), threshold)) continue;
             typename SrcAccessor::value_type v = sa(sx);
             NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
             for(i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
@@ -114,6 +116,8 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     A pixel at the image border will never be marked as minimum.
     Pass \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode
     to determine the neighborhood where pixel values are compared.
+    If a threshold is given, only pixels with values less than 
+    that threshold are marked.
     The function uses accessors.
 
     <b> Declarations:</b>
@@ -129,7 +133,8 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                     DestIterator dul, DestAccessor da,
                     DestValue marker = NumericTraits<DestValue>::one(),
-                    Neighborhood neighborhood = EightNeighborCode())
+                    Neighborhood neighborhood = EightNeighborCode(),
+                    SrcValue threshold = NumericTraits<SrcValue>::max())
     }
     \endcode
 
@@ -144,7 +149,8 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
                     DestValue marker = NumericTraits<DestValue>::one(),
-                    Neighborhood neighborhood = EightNeighborCode())
+                    Neighborhood neighborhood = EightNeighborCode(),
+                    SrcValue threshold = NumericTraits<SrcValue>::max())
     }
     \endcode
 
@@ -188,10 +194,24 @@ template <class SrcIterator, class SrcAccessor,
 inline void
 localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
-            DestValue marker, Neighborhood neighborhood)
+            DestValue marker, Neighborhood neighborhood,
+            typename SrcAccessor::value_type threshold)
 {
     detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
+					threshold,
                     std::less<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class DestValue, class Neighborhood>
+inline void
+localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+            DestIterator dul, DestAccessor da,
+            DestValue marker, Neighborhood neighborhood)
+{
+    localMinima(sul, slr, sa, dul, da, marker, neighborhood,
+				NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -201,7 +221,8 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
             DestValue marker)
 {
-    localMinima(sul, slr, sa, dul, da, marker, EightNeighborCode());
+    localMinima(sul, slr, sa, dul, da, marker, EightNeighborCode(),
+				NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -212,7 +233,21 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 {
     localMinima(sul, slr, sa, dul, da,
                 NumericTraits<typename DestAccessor::value_type>::one(),
-                EightNeighborCode());
+                EightNeighborCode(),
+                NumericTraits<typename SrcAccessor::value_type>::max());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class DestValue, class Neighborhood>
+inline void
+localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+            pair<DestIterator, DestAccessor> dest,
+            DestValue marker, Neighborhood neighborhood, 
+            typename SrcAccessor::value_type threshold)
+{
+    localMinima(src.first, src.second, src.third,
+                dest.first, dest.second, marker, neighborhood, threshold);
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -224,7 +259,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             DestValue marker, Neighborhood neighborhood)
 {
     localMinima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, neighborhood);
+                dest.first, dest.second, marker, neighborhood,
+                NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -235,7 +271,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             DestValue marker)
 {
     localMinima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, EightNeighborCode());
+                dest.first, dest.second, marker, EightNeighborCode(), 
+                NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -247,7 +284,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     localMinima(src.first, src.second, src.third,
                 dest.first, dest.second,
                 NumericTraits<typename DestAccessor::value_type>::one(),
-                EightNeighborCode());
+                EightNeighborCode(), 
+                NumericTraits<typename SrcAccessor::value_type>::max());
 }
 
 /********************************************************/
@@ -263,7 +301,9 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     marked in the destination image with the given marker value
     (default is 1), all other destination pixels remain unchanged.
     <TT>SrcAccessor::value_type</TT> must be less-comparable.
-    A pixel at the image border will never be marked as maximum.
+    A pixel at the image border will never be marked as maximum. 
+    If a threshold is given, only pixels with values greater than 
+    that threshold are marked.
     The function uses accessors.
 
     <b> Declarations:</b>
@@ -279,7 +319,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                     DestIterator dul, DestAccessor da,
                     DestValue marker = NumericTraits<DestValue>::one(),
-                    Neighborhood neighborhood = EightNeighborCode())
+                    Neighborhood neighborhood = EightNeighborCode(),
+                    SrcValue threshold = NumericTraits<SrcValue>::min())
     }
     \endcode
 
@@ -294,7 +335,8 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
                     DestValue marker = NumericTraits<DestValue>::one(),
-                    Neighborhood neighborhood = EightNeighborCode())
+                    Neighborhood neighborhood = EightNeighborCode(),
+                    SrcValue threshold = NumericTraits<SrcValue>::min())
     }
     \endcode
 
@@ -338,10 +380,23 @@ template <class SrcIterator, class SrcAccessor,
 inline void
 localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
+            DestValue marker, Neighborhood neighborhood,
+            typename SrcAccessor::value_type threshold)
+{
+    detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood, threshold,
+                    std::greater<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class DestValue, class Neighborhood>
+inline void
+localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+            DestIterator dul, DestAccessor da,
             DestValue marker, Neighborhood neighborhood)
 {
-    detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
-                    std::greater<typename SrcAccessor::value_type>());
+    localMaxima(sul, slr, sa, dul, da, marker, neighborhood, 
+				NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -351,7 +406,8 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestIterator dul, DestAccessor da,
             DestValue marker)
 {
-    localMaxima(sul, slr, sa, dul, da, marker, EightNeighborCode());
+    localMaxima(sul, slr, sa, dul, da, marker, EightNeighborCode(),
+				NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -362,7 +418,21 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 {
     localMaxima(sul, slr, sa, dul, da,
                 NumericTraits<typename DestAccessor::value_type>::one(),
-                EightNeighborCode());
+                EightNeighborCode(), 
+                NumericTraits<typename SrcAccessor::value_type>::min());
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class DestValue, class Neighborhood>
+inline void
+localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+            pair<DestIterator, DestAccessor> dest,
+            DestValue marker, Neighborhood neighborhood,
+            typename SrcAccessor::value_type threshold)
+{
+    localMaxima(src.first, src.second, src.third,
+                dest.first, dest.second, marker, neighborhood, threshold);
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -374,7 +444,8 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             DestValue marker, Neighborhood neighborhood)
 {
     localMaxima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, neighborhood);
+                dest.first, dest.second, marker, neighborhood, 
+                NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -385,7 +456,8 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
             DestValue marker)
 {
     localMaxima(src.first, src.second, src.third,
-                dest.first, dest.second, marker, EightNeighborCode());
+                dest.first, dest.second, marker, EightNeighborCode(),
+                NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -397,7 +469,8 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     localMaxima(src.first, src.second, src.third,
                 dest.first, dest.second,
                 NumericTraits<typename DestAccessor::value_type>::one(),
-                EightNeighborCode());
+                EightNeighborCode(), 
+                NumericTraits<typename SrcAccessor::value_type>::min());
 }
 
 namespace detail {

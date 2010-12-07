@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*              Copyright 2004-2010 by Ullrich Koethe                   */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -850,6 +850,27 @@ struct LocalMinMaxTest
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
+    void localMinimumTestThr()
+    {
+        Image res(img);
+        res.init(0);
+
+        localMinima(srcImageRange(img), destImage(res), 1.0, EightNeighborCode(), -1.0);
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
+
     void localMaximumTest()
     {
         Image res(img);
@@ -887,6 +908,27 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+
+        shouldEqualSequence(res.begin(), res.end(), desired);
+    }
+
+    void localMaximumTestThr()
+    {
+        Image res(img);
+        res.init(0);
+
+        localMaxima(srcImageRange(img), destImage(res), 1.0, EightNeighborCode(), 0.1);
+
+        static const double desired[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         shouldEqualSequence(res.begin(), res.end(), desired);
@@ -1711,8 +1753,10 @@ struct SimpleAnalysisTestSuite
         add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
         add( testCase( &LocalMinMaxTest::localMinimumTest));
         add( testCase( &LocalMinMaxTest::localMinimum4Test));
+        add( testCase( &LocalMinMaxTest::localMinimumTestThr));
         add( testCase( &LocalMinMaxTest::localMaximumTest));
         add( testCase( &LocalMinMaxTest::localMaximum4Test));
+        add( testCase( &LocalMinMaxTest::localMaximumTestThr));
         add( testCase( &LocalMinMaxTest::extendedLocalMinimumTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMinimum4Test));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
