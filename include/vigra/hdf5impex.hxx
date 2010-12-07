@@ -399,7 +399,7 @@ VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
 /** \brief Access to HDF5 files
 
-HDF5File proviedes a convenient way of accessing data in HDF5 files. vigra::MultiArray
+HDF5File provides a convenient way of accessing data in HDF5 files. vigra::MultiArray
 structures of any dimension can be stored to / loaded from HDF5 files. Typical
 HDF5 features like subvolume access, chunks and data compression are available,
 string attributes can be attached to any dataset or group. Group- or dataset-handles
@@ -718,7 +718,9 @@ class HDF5File
       Chunks can be activated by setting \code iChunkSize = size; //size > 0 \endcode .
       The chunks will be hypercubes with edge length size.
 
-      Compression can be activated by setting \code compression = parameter; // 0 < parameter <= 9 \endcode
+      Compression can be activated by setting 
+      \code compression = parameter; // 0 < parameter <= 9 
+      \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -738,7 +740,9 @@ class HDF5File
       Chunks can be activated by providing a MultiArrayShape as chunkSize.
       chunkSize must have equal dimension as array.
 
-      Compression can be activated by setting \code compression = parameter; // 0 < parameter <= 9 \endcode
+      Compression can be activated by setting 
+      \code compression = parameter; // 0 < parameter <= 9 
+      \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -756,7 +760,9 @@ class HDF5File
       Chunks can be activated by providing a MultiArrayShape as chunkSize.
       chunkSize must have equal dimension as array.
 
-      Compression can be activated by setting \code compression = parameter; // 0 < parameter <= 9 \endcode
+      Compression can be activated by setting 
+      \code compression = parameter; // 0 < parameter <= 9 
+      \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -915,7 +921,9 @@ class HDF5File
       Chunks can be activated by providing a MultiArrayShape as chunkSize.
       chunkSize must have equal dimension as array.
 
-      Compression can be activated by setting \code compression = parameter; // 0 < parameter <= 9 \endcode
+      Compression can be activated by setting 
+      \code compression = parameter; // 0 < parameter <= 9 
+      \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
