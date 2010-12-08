@@ -118,9 +118,10 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
     double oob;
-	Py_BEGIN_ALLOW_THREADS
-	rf.learn(trainData, trainLabels, visitors::create_visitor(var_imp, oob_v));
-	Py_END_ALLOW_THREADS
+	{
+        PyAllowThreads _pythread;
+        rf.learn(trainData, trainLabels, visitors::create_visitor(var_imp, oob_v));
+	}
     oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
 
@@ -140,16 +141,17 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels)
 {
-  using namespace rf;
-  double oob;
-  visitors::OOB_Error oob_v;
-  Py_BEGIN_ALLOW_THREADS
-  rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
-  Py_END_ALLOW_THREADS
-  oob = oob_v.oob_breiman;
-  
-  //std::cout << "out of bag: " << oob << std::endl;
-  return oob;
+    using namespace rf;
+    double oob;
+    visitors::OOB_Error oob_v;
+    {
+        PyAllowThreads _pythread;
+        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
+    }
+    oob = oob_v.oob_breiman;
+
+    //std::cout << "out of bag: " << oob << std::endl;
+    return oob;
 }
 
 template<class LabelType,class FeatureType>
@@ -160,9 +162,8 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     int startIndex,
                     bool adjust_thresholds)
 {
-    Py_BEGIN_ALLOW_THREADS
+    PyAllowThreads _pythread;
     rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
-    Py_END_ALLOW_THREADS
 }
 
 template<class LabelType,class FeatureType>
@@ -172,9 +173,8 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     NumpyArray<2,LabelType> trainLabels,
                     int treeId)
 {
-    Py_BEGIN_ALLOW_THREADS
+    PyAllowThreads _pythread;
     rf.reLearnTree(trainData,trainLabels,treeId);
-    Py_END_ALLOW_THREADS
 }
 
 template<class LabelType,class FeatureType>
@@ -199,9 +199,10 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "Output array has wrong dimensions.");
-	Py_BEGIN_ALLOW_THREADS
-    rf.predictProbabilities(testData,res);
-	Py_END_ALLOW_THREADS
+	{
+        PyAllowThreads _pythread;
+        rf.predictProbabilities(testData,res);
+	}
     return res;
 }
 
@@ -215,9 +216,10 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
                        "Output array has wrong dimenstions.");
     clock_t start=clock();
-	Py_BEGIN_ALLOW_THREADS
-    rf.predictProbabilities(predSet, res);
-    Py_END_ALLOW_THREADS
+	{ 
+		PyAllowThreads _pythread;
+		rf.predictProbabilities(predSet, res);
+	}
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;
     return res;
