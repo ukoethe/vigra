@@ -300,7 +300,7 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>\><br>
+    <b>\#include</b> \<vigra/seededregiongrowing.hxx\><br>
     Namespace: vigra
 
     Example: implementation of the voronoi tesselation
@@ -642,7 +642,7 @@ seededRegionGrowing(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> img1
     candidate and does not depend on properties of the region it is going to
     be merged with.
 
-    <b>\#include</b> \<<a href="seededregiongrowing_8hxx-source.html">vigra/seededregiongrowing.hxx</a>\><br>
+    <b>\#include</b> \<vigra/seededregiongrowing.hxx\><br>
     Namespace: vigra
 
 

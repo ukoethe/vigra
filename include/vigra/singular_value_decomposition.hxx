@@ -66,8 +66,8 @@ namespace linalg
 	(Adapted from JAMA, a Java Matrix Library, developed jointly
 	by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
 
-    <b>\#include</b> \<<a href="singular__value__decomposition_8hxx-source.html">vigra/singular_value_decomposition.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/singular_value_decomposition.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>

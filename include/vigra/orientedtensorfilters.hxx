@@ -109,7 +109,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="orientedtensorfilters_8hxx-source.html">vigra/orientedtensorfilters.hxx</a>\>
+    <b>\#include</b> \<vigra/orientedtensorfilters.hxx\>
 
     \code
     FImage img(w,h);

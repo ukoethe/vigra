@@ -230,7 +230,7 @@ public:
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -319,7 +319,7 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -398,7 +398,7 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -487,7 +487,7 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);

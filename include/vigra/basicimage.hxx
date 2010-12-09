@@ -117,7 +117,7 @@ class LineBasedColumnIteratorPolicy
 /** Implementation of the standard image iterator for \ref vigra::BasicImage.
     See \ref vigra::ImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class IMAGEITERATOR, class PIXELTYPE,
@@ -254,7 +254,7 @@ class BasicImageIteratorBase
 /** Implementation of the standard image iterator for \ref vigra::BasicImage.
     See \ref vigra::ImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class PIXELTYPE, class ITERATOR>
@@ -286,7 +286,7 @@ class BasicImageIterator
 /** Implementation of the standard const image iterator for \ref vigra::BasicImage.
     See \ref vigra::ConstImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class PIXELTYPE, class ITERATOR>
@@ -465,7 +465,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
     A customized memory allocator can be specified as a templated argument
     and passed in the constructor.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
 
     Namespace: vigra
 */

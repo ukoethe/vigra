@@ -94,7 +94,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
+        <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
     
     \code
@@ -626,7 +626,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="flatmorphology_8hxx-source.html">vigra/flatmorphology.hxx</a>\><br>
+    <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
     
     \code

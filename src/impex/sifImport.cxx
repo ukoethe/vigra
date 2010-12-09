@@ -54,6 +54,7 @@
 
 
 #include "vigra/sifImport.hxx"
+#include "vigra/utilities.hxx"
 #include "byteorder.hxx"
 
 namespace vigra {
@@ -96,13 +97,6 @@ inline int convertToInt(std::string const& s) {
    if (!(i >> x))
      throw BadConversion("convertToDouble(\"" + s + "\")");
    return x;
-} 
-
-inline std::string toString(double x) {
-   std::ostringstream o;
-   if (!(o << x))
-     throw BadConversion("tostd::string(double)");
-   return o.str();
 } 
 
 }// namespace helper
@@ -160,9 +154,9 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
 			}
 			if(temperature1 == -999) 
 				// If the temperature is unstable, temperature1 value is -999 and unstable temperature value is recored in temperature2
-				temperature = helper::toString(temperature2) + " (Unstable)";
+				temperature = asString(temperature2) + " (Unstable)";
 			else
-				temperature = helper::toString(temperature1);
+				temperature = asString(temperature1);
 		}
 		if(i==3) {
 			model = str; // Model of EMCCD camera

@@ -132,7 +132,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -411,7 +411,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -711,7 +711,7 @@ void differenceOfExponentialCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -844,7 +844,7 @@ void removeShortEdges(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1061,7 +1061,7 @@ void closeGapsInCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1329,7 +1329,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1454,7 +1454,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1692,7 +1692,7 @@ void cannyEdgeImageFromGrad(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1921,7 +1921,7 @@ inline void cannyEdgeImageFromGradWithThinning(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -2137,7 +2137,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="edgedetection_8hxx-source.html">vigra/edgedetection.hxx</a>\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code

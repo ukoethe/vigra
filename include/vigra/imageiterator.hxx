@@ -541,7 +541,7 @@ class LinearIteratorSelector<StridedArrayTag>
     It is usually not constructed directly, but via some derived class such as
     \ref ImageIterator or \ref StridedImageIterator.
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -841,7 +841,7 @@ class ImageIteratorBase
     <a href="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
     for a discussion of the concepts behind ImageIterators.
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -887,7 +887,7 @@ class ImageIterator
 
     Most functions are inherited from ImageIteratorBase.
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -961,7 +961,7 @@ class ConstImageIterator
     // the original resolution in either dimension
     \endcode
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -1022,7 +1022,7 @@ class StridedImageIterator
     // the original resolution in either dimension
     \endcode
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -1286,7 +1286,7 @@ class ConstValueIteratorPolicy
     This iterator can be used to simulate an image that
     does not actually exist.
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 
@@ -1558,7 +1558,7 @@ struct IteratorTraits<ConstValueIterator<T> >
                                 ", " << center.yCenter() << std::endl;
     \endcode
 
-    <b>\#include</b> \<<a href="imageiterator_8hxx-source.html">vigra/imageiterator.hxx</a>\>
+    <b>\#include</b> \<vigra/imageiterator.hxx\>
 
     Namespace: vigra
 */

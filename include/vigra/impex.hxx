@@ -82,7 +82,7 @@ namespace vigra
     /*!
       \brief used for reading bands after the source data type has been figured out.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -328,7 +328,7 @@ namespace vigra
     /*!
       \brief used for reading bands after the source data type has been figured out.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -369,7 +369,7 @@ namespace vigra
     /*!
       \brief used for reading images of vector type, such as integer of float rgb.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -423,7 +423,7 @@ doxygen_overloaded_function(template <...> void importVectorImage)
     /*!
       \brief used for reading images of  scalar type, such as integer and float grayscale.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -504,7 +504,7 @@ doxygen_overloaded_function(template <...> void importScalarImage)
 
         <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         \code
@@ -582,7 +582,7 @@ doxygen_overloaded_function(template <...> void importImage)
     /*!
       \brief used for writing bands after the source data type has been figured out.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -757,7 +757,7 @@ doxygen_overloaded_function(template <...> void importImage)
     /*!
       \brief used for writing bands after the source data type has been figured out.
 
-        <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+        <b>\#include</b> \<vigra/impex.hxx\><br>
         Namespace: vigra
 
         <b> Declaration:</b>
@@ -1091,7 +1091,7 @@ doxygen_overloaded_function(template <...> void exportIntegralScalarImage)
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="impex_8hxx-source.html">vigra/impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/impex.hxx\><br>
     Namespace: vigra
 
     \code

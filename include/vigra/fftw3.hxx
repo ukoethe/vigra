@@ -78,8 +78,8 @@ typedef double fftw_real;
         <li> \ref FFTWComplexAccessors
     </ul>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
 */
 class FFTWComplex
@@ -346,8 +346,8 @@ class FFTWComplex
     };
     \endcode
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
 
 */
@@ -477,8 +477,8 @@ struct CanSkipInitialization<FFTWComplex>
 
 /** \addtogroup FFTWComplexOperators Functions for FFTWComplex
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
 
     These functions fulfill the requirements of an Algebraic Field.
     Return types are determined according to \ref FFTWComplexTraits.
@@ -631,8 +631,8 @@ inline FFTWComplex::SquaredNormType squaredNorm(const FFTWComplex &a)
         FFTWRealImage uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-        <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+        <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+        <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
         Namespace: vigra
     */
 typedef BasicImage<fftw_real> FFTWRealImage;
@@ -689,8 +689,8 @@ struct IteratorTraits<
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-        <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+        <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+        <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
         Namespace: vigra
     */
 typedef BasicImage<FFTWComplex> FFTWComplexImage;
@@ -713,8 +713,8 @@ typedef BasicImage<FFTWComplex> FFTWComplexImage;
 //@{
     /** Encapsulate access to the the real part of a complex number.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
 class FFTWRealAccessor
@@ -763,8 +763,8 @@ class FFTWRealAccessor
 
     /** Encapsulate access to the the imaginary part of a complex number.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
 class FFTWImaginaryAccessor
@@ -813,8 +813,8 @@ class FFTWImaginaryAccessor
     /** Write a real number into a complex one. The imaginary part is set
         to 0.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
 class FFTWWriteRealAccessor: public FFTWRealAccessor
@@ -844,8 +844,8 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
 
     /** Calculate magnitude of complex number on the fly.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
 class FFTWMagnitudeAccessor
@@ -869,8 +869,8 @@ class FFTWMagnitudeAccessor
 
     /** Calculate phase of complex number on the fly.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
 class FFTWPhaseAccessor
@@ -955,7 +955,7 @@ class FFTWPhaseAccessor
     achieved by calling \ref moveDCToCenter(). The inverse
     transformation is done by \ref moveDCToUpperLeft().
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 */
 
@@ -1024,7 +1024,7 @@ class FFTWPhaseAccessor
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+        <b>\#include</b> \<vigra/fftw3.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1289,7 +1289,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1430,7 +1430,7 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1656,7 +1656,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1881,7 +1881,7 @@ void applyFourierFilterFamilyImpl(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+        <b>\#include</b> \<vigra/fftw3.hxx\><br>
         Namespace: vigra
 
     \code

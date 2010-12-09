@@ -45,7 +45,7 @@
 /*! \page ErrorReporting Error Reporting
     Exceptions and assertions provided by VIGRA
 
-    <b>\#include</b> \<<a href="error_8hxx-source.html">vigra/error.hxx</a>\>
+    <b>\#include</b> \<vigra/error.hxx\>
     
     VIGRA defines the following exception classes:
     
@@ -90,7 +90,7 @@
     <b> Usage:</b>
     
     Include-File:
-    \<<a href="error_8hxx-source.html">vigra/error.hxx</a>\>
+    \<vigra/error.hxx\>
     <p>
     Namespace: vigra (except for the macros, of course)
     

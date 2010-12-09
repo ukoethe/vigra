@@ -98,7 +98,7 @@ void quadprogDeleteConstraint(MultiArrayView<2, T, C1> & R, MultiArrayView<2, T,
      
      for the solution of (convex) quadratic programming problems by means of a primal-dual method.
          
-     <b>\#include</b> \<<a href="quadprog_8hxx-source.html">vigra/quadprog.hxx</a>\>
+     <b>\#include</b> \<vigra/quadprog.hxx\>
          Namespaces: vigra
 
      <b>Declaration:</b>

@@ -100,7 +100,7 @@ typedef TIFF TiffImage;
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     uint32 w, h;
@@ -189,7 +189,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     uint32 w, h;
@@ -549,7 +549,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     uint32 w, h;
@@ -1040,7 +1040,7 @@ struct CreateTiffImage;
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     vigra::BImage img(width, height);
@@ -1117,7 +1117,7 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     vigra::BImage img(width, height);
@@ -1526,7 +1526,7 @@ struct CreateTiffImage<double>
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tiff_8hxx-source.html">vigra/tiff.hxx</a>\>
+    <b>\#include</b> \<vigra/tiff.hxx\>
     
     \code
     vigra::BRGBImage img(width, height);

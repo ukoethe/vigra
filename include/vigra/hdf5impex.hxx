@@ -78,7 +78,7 @@ namespace vigra {
     Supports arrays with arbitrary element types and arbitrary many dimensions.
     See the <a href="http://www.hdfgroup.org/HDF5/">HDF5 Website</a> for more
     information on the HDF5 file format.
-**/
+*/
 //@{
 
     /** \brief Wrapper for hid_t objects.
@@ -103,9 +103,9 @@ namespace vigra {
     ... // use file_id in the same way as a plain hid_t object
     \endcode
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
-    **/
+    */
 class HDF5Handle
 {
 public:
@@ -143,7 +143,7 @@ public:
                            
         ... // use file_id in the same way
         \endcode
-        **/
+        */
     HDF5Handle(hid_t h, Destructor destructor, const char * error_message)
     : handle_( h ),
       destructor_(destructor)
@@ -154,7 +154,7 @@ public:
 
         /** \brief Copy constructor.
             Hands over ownership of the RHS handle (analogous to std::auto_ptr).
-        **/
+        */
     HDF5Handle(HDF5Handle const & h)
     : handle_( h.handle_ ),
       destructor_(h.destructor_)
@@ -165,7 +165,7 @@ public:
         /** \brief Assignment.
             Calls close() for the LHS handle and hands over ownership of the 
             RHS handle (analogous to std::auto_ptr).
-        **/
+        */
     HDF5Handle & operator=(HDF5Handle const & h)
     {
         if(h.handle_ != handle_)
@@ -180,7 +180,7 @@ public:
 
         /** \brief Destreuctor.
             Calls close() for the contained handle.
-        **/
+        */
     ~HDF5Handle()
     {
         close();
@@ -188,7 +188,7 @@ public:
     
         /** \brief Explicitly call the stored function (if one has been stored within
              this object) for the contained handle and set the handle to NULL.
-        **/
+        */
     herr_t close()
     {
         herr_t res = 1;
@@ -201,7 +201,7 @@ public:
         /** \brief Get a temporary hid_t object for the contained handle.
             Do not call a close function on the return value - a crash will be likely
             otherwise.
-        **/
+        */
     hid_t get() const
     {
         return handle_;
@@ -212,35 +212,35 @@ public:
         This function ensures that hid_t objects can be transparently replaced with 
         HDF5Handle objects in user code. Do not call a close function on the return 
         value - a crash will be likely otherwise.
-        **/
+        */
     operator hid_t() const
     {
         return handle_;
     }
 
         /** \brief Equality comparison of the contained handle.
-        **/
+        */
     bool operator==(HDF5Handle const & h) const
     {
         return handle_ == h.handle_;
     }
 
         /** \brief Equality comparison of the contained handle.
-        **/
+        */
     bool operator==(hid_t h) const
     {
         return handle_ == h;
     }
 
         /** \brief Unequality comparison of the contained handle.
-        **/
+        */
     bool operator!=(HDF5Handle const & h) const
     {
         return handle_ != h.handle_;
     }
 
         /** \brief Unequality comparison of the contained handle.
-        **/
+        */
     bool operator!=(hid_t h) const
     {
         return handle_ != h;
@@ -260,9 +260,9 @@ See \ref readHDF5() for a usage example. This object must be
 used to read an image or array from a HDF5 file 
 and enquire about its properties.
 
-<b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+<b>\#include</b> \<vigra/hdf5impex.hxx\><br>
 Namespace: vigra
-**/
+*/
 class HDF5ImportInfo
 {
   public:
@@ -279,40 +279,40 @@ class HDF5ImportInfo
             \code
             HDF5ImportInfo info(filename, "/group1/group2/my_dataset");
             \endcode
-         **/
+         */
     VIGRA_EXPORT HDF5ImportInfo( const char* filePath, const char* pathInFile );
 
     VIGRA_EXPORT ~HDF5ImportInfo();
 
         /** Get the filename of this HDF5 object.
-         **/
+         */
     VIGRA_EXPORT const std::string& getFilePath() const;
 
         /** Get the dataset's full name in the HDF5 file.
-         **/
+         */
     VIGRA_EXPORT const std::string& getPathInFile() const;
 
         /** Get a handle to the file represented by this info object.
-         **/
+         */
     VIGRA_EXPORT hid_t getH5FileHandle() const;
 
         /** Get a handle to the dataset represented by this info object.
-         **/
+         */
     VIGRA_EXPORT hid_t getDatasetHandle() const;
 
         /** Get the number of dimensions of the dataset represented by this info object.
-         **/
+         */
     VIGRA_EXPORT MultiArrayIndex numDimensions() const;
 
         /** Get the shape of the dataset represented by this info object.
-         **/
+         */
     VIGRA_EXPORT ArrayVector<hsize_t> const & shape() const
     {
         return m_dims;
     }
 
         /** Get the shape (length) of the dataset along dimension \a dim.
-         **/
+         */
     VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
         /** Query the pixel type of the dataset.
@@ -327,7 +327,7 @@ class HDF5ImportInfo
             <DT>"FLOAT"<DD> 32-bit floating point (float)
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
-         **/
+         */
     VIGRA_EXPORT const char * getPixelType() const;
 
         /** Query the pixel type of the dataset.
@@ -346,7 +346,7 @@ class HDF5ImportInfo
             <DT>FLOAT<DD> 32-bit floating point (float)
             <DT>DOUBLE<DD> 64-bit floating point (double)
             </DL>
-         **/
+         */
     VIGRA_EXPORT PixelType pixelType() const;
 
   private:
@@ -420,9 +420,9 @@ file.read("dataset", in_multi_array);
 
 \endcode
 
-<b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+<b>\#include</b> \<vigra/hdf5impex.hxx\><br>
 Namespace: vigra
-**/
+*/
 class HDF5File
 {
   private:
@@ -464,7 +464,7 @@ class HDF5File
 
       OpenMode::Open opens a file for reading/writing. The file will be created,
       if nescessary.
-    **/
+    */
     enum OpenMode {
         New,           // Create new empty file (existing file will be deleted).
         Open           // Open file. Create if not existing.
@@ -475,7 +475,7 @@ class HDF5File
 
     Creates or opens HDF5 file at position filename. The current group is set
     to "/".
-    **/
+    */
     HDF5File(std::string filename, OpenMode mode)
     {
         std::string errorMessage = "HDF5File: Could not create file '" + filename + "'.";
@@ -715,11 +715,14 @@ class HDF5File
     // Writing data
 
     /** \brief Write multi arrays.
-      Chunks can be activated by setting \code iChunkSize = size; //size > 0 \endcode .
+      
+      Chunks can be activated by setting 
+      \code iChunkSize = size; //size \> 0 
+      \endcode .
       The chunks will be hypercubes with edge length size.
 
       Compression can be activated by setting 
-      \code compression = parameter; // 0 < parameter <= 9 
+      \code compression = parameter; // 0 \< parameter \<= 9 
       \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
@@ -741,7 +744,7 @@ class HDF5File
       chunkSize must have equal dimension as array.
 
       Compression can be activated by setting 
-      \code compression = parameter; // 0 < parameter <= 9 
+      \code compression = parameter; // 0 \< parameter \<= 9 
       \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
@@ -761,7 +764,7 @@ class HDF5File
       chunkSize must have equal dimension as array.
 
       Compression can be activated by setting 
-      \code compression = parameter; // 0 < parameter <= 9 
+      \code compression = parameter; // 0 \< parameter \<= 9 
       \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
@@ -922,7 +925,7 @@ class HDF5File
       chunkSize must have equal dimension as array.
 
       Compression can be activated by setting 
-      \code compression = parameter; // 0 < parameter <= 9 
+      \code compression = parameter; // 0 \< parameter \<= 9 
       \endcode
       where 0 stands for no compression and 9 for maximum compression.
 
@@ -1483,7 +1486,7 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
 
 } // namespace detail
 
-    /** \brief Read the data specified by the given \ref vigra::HDF5ImportInfo object
+/** \brief Read the data specified by the given \ref vigra::HDF5ImportInfo object
                 and write the into the given 'array'.
                 
     The array must have the correct number of dimensions and shape for the dataset 
@@ -1504,7 +1507,7 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1812,7 +1815,7 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
 
 } // namespace detail
 
-    /** \brief Store array data in an HDF5 file.
+/** \brief Store array data in an HDF5 file.
                 
     The number of dimensions, shape and element type of the stored dataset is automatically 
     determined from the properties of the given \a array. Strided arrays are stored in an
@@ -1835,7 +1838,7 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1955,7 +1958,7 @@ struct MaxSizeFnc
 /** Write a numeric MultiArray as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
 */
 template<size_t N, class T, class C>
@@ -1991,7 +1994,7 @@ void writeHDF5Attr(hid_t loc,
 /** Write a string MultiArray as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
 */
 template<size_t N, class C>
@@ -2037,7 +2040,7 @@ void writeHDF5Attr(hid_t loc,
 /** Write a numeric ArrayVectorView as an attribute with name \a name 
     of the dataset specified by the handle \a loc. 
 
-    <b>\#include</b> \<<a href="hdf5impex_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+    <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
     Namespace: vigra
 */
 template<class T>
@@ -2051,12 +2054,12 @@ inline void writeHDF5Attr(  hid_t loc,
 }
 
 /** write an Attribute given a file and a path in the file.
- *  the path in the file should have the format 
- *  [attribute] or /[subgroups/]dataset.attribute or
- *  /[subgroups/]group.attribute.
- *  The attribute is written to the root group, a dataset or a subgroup
- *  respectively
- */
+    the path in the file should have the format 
+    [attribute] or /[subgroups/]dataset.attribute or
+    /[subgroups/]group.attribute.
+    The attribute is written to the root group, a dataset or a subgroup
+    respectively
+*/
 template<class Arr>
 inline void writeHDF5Attr(  std::string filePath,
                             std::string pathInFile,

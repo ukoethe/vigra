@@ -102,7 +102,7 @@ namespace vigra {
     <tt>std::list<int>::iterator</tt>, but is <tt>VigraTrueType</tt> 
     for most VIGRA iterators.
 
-    <b>\#include</b> \<<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>\>
+    <b>\#include</b> \<vigra/iteratortraits.hxx\>
     Namespace: vigra
 */
 template <class T>
@@ -422,7 +422,7 @@ struct IteratorTraitsBase
   \section MultiArrayBasedArgumentObjectFactories MultiArrayView Based Argument Object Factories
 
     <b>Include:</b> automatically included with 
-       \<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\><br>
+       \<vigra/multi_array.hxx\><br>
     Namespace: vigra
 
     These factories can be used to create argument objects when we
@@ -515,7 +515,7 @@ struct IteratorTraitsBase
 
   \section IteratorBasedArgumentObjectFactories Iterator Based Argument Object Factories
 
-    <b>\#include</b> \<<a href="iteratortraits_8hxx-source.html">vigra/iteratortraits.hxx</a>\>
+    <b>\#include</b> \<vigra/iteratortraits.hxx\>
     Namespace: vigra
 
     These factories can be used to create argument objects when we

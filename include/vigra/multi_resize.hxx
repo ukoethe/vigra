@@ -174,7 +174,7 @@ internalResizeMultiArrayOneDimension(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="multi__resize_8hxx-source.html">vigra/multi_resize.hxx</a>\><br>
+        <b>\#include</b> \<vigra/multi_resize.hxx\><br>
         Namespace: vigra
 
     \code

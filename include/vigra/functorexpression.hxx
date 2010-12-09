@@ -42,7 +42,7 @@
     Simple automatic functor creation by means of expression templates
     (also known as a "lambda library").    
 
-    <b>\#include</b> \<<a href="functorexpression_8hxx-source.html">vigra/functorexpression.hxx</a>\><br>
+    <b>\#include</b> \<vigra/functorexpression.hxx\><br>
     Namespace: vigra::functor
     
     <b> Motivation</b>

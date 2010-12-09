@@ -60,7 +60,7 @@
          <BR>&nbsp;&nbsp;&nbsp; <em>Point operators on multi-dimensional arrays</em>
     </UL>
     
-    <b>\#include</b> \<<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdimagefunctions.hxx\><br>
     Namespace: vigra
         
     see also: \ref FunctorExpressions "Automatic Functor Creation"

@@ -156,7 +156,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
+        <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code
@@ -342,7 +342,7 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
+        <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code
@@ -609,7 +609,7 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
+        <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code
@@ -828,7 +828,7 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="localminmax_8hxx-source.html">vigra/localminmax.hxx</a>\><br>
+        <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code

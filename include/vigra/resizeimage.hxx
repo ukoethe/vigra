@@ -72,7 +72,7 @@ namespace vigra {
     \ref resamplingConvolveImage() to create a differentiable interpolant
     of an image.
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
     \ingroup MathFunctions
@@ -145,9 +145,9 @@ class CoscotFunction
 
     See also: \ref resamplingConvolveImage(), \ref resampleImage(), \ref resizeMultiArraySplineInterpolation()
 
-    <b>\#include</b> \<<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdimagefunctions.hxx\><br>
     <b>or</b><br>
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
 */
 //@{
 
@@ -228,7 +228,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -413,7 +413,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -613,7 +613,7 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -884,7 +884,7 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     \endcode
 
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */
@@ -925,7 +925,7 @@ resizeImageCatmullRomInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor>
     The interpolated function has two continuous derivatives.
     (See \ref resizeImageSplineInterpolation() for more documentation)
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */
@@ -990,7 +990,7 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */

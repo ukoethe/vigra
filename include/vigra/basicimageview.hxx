@@ -67,7 +67,7 @@ namespace vigra {
     \ref vigra::MultiArrayView with the appropriate shape -- see
     \ref MultiArrayToImage.
 
-    <b>\#include</b> \<<a href="basicimageview_8hxx-source.html">vigra/basicimageview.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimageview.hxx\>
 
     Namespace: vigra
 */

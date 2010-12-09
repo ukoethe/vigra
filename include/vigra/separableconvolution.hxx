@@ -466,7 +466,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -658,7 +658,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -770,7 +770,7 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -866,7 +866,7 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/stdconvolution.hxx\>
 
     \code
     vigra::FImage src(w,h), dest(w,h);

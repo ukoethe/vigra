@@ -149,7 +149,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -271,7 +271,7 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -405,7 +405,7 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -544,7 +544,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -678,7 +678,7 @@ inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -821,7 +821,7 @@ class FunctorTraits<FindMinMax<VALUETYPE> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -924,7 +924,7 @@ class FindSum
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1072,7 +1072,7 @@ class FunctorTraits<FindAverage<VALUETYPE> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1249,7 +1249,7 @@ class FunctorTraits<FindAverageAndVariance<VALUETYPE> >
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1358,7 +1358,7 @@ class FunctorTraits<FindROISize<VALUETYPE> >
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1504,7 +1504,7 @@ class FunctorTraits<FindBoundingRectangle>
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1600,7 +1600,7 @@ class FunctorTraits<LastValueFunctor<VALUETYPE> >
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1734,7 +1734,7 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="inspectimage_8hxx-source.html">vigra/inspectimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/inspectimage.hxx\><br>
         Namespace: vigra
 
     \code

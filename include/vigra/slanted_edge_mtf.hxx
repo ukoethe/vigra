@@ -74,7 +74,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code
@@ -557,7 +557,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code
@@ -645,7 +645,7 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code

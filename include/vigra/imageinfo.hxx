@@ -72,7 +72,7 @@ namespace vigra
 
         <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+        <b>\#include</b> \<vigra/imageinfo.hxx\><br>
         Namespace: vigra
 
         \code
@@ -89,7 +89,7 @@ VIGRA_EXPORT std::string impexListFormats();
 
         <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+        <b>\#include</b> \<vigra/imageinfo.hxx\><br>
         Namespace: vigra
 
         \code
@@ -106,7 +106,7 @@ VIGRA_EXPORT std::string impexListExtensions();
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+    <b>\#include</b> \<vigra/imageinfo.hxx\><br>
     Namespace: vigra
 
     \code
@@ -127,7 +127,7 @@ VIGRA_EXPORT bool isImage(char const * filename);
     See \ref exportImage() for usage example. This object must be used
     to define the properties of an image to be written to disk.
 
-    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+    <b>\#include</b> \<vigra/imageinfo.hxx\><br>
     Namespace: vigra
 **/
 class ImageExportInfo
@@ -338,7 +338,7 @@ VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 See \ref importImage() for a usage example. This object must be
 used to read an image from disk and enquire about its properties.
 
-<b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+<b>\#include</b> \<vigra/imageinfo.hxx\><br>
 Namespace: vigra
 **/
 class ImageImportInfo

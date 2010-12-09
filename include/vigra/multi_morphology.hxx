@@ -190,7 +190,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -289,7 +289,7 @@ void multiBinaryErosion(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -384,7 +384,7 @@ void multiBinaryDilation(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -503,7 +503,7 @@ void multiGrayscaleErosion(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__morphology_8hxx-source.html">vigra/multi_morphology.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);

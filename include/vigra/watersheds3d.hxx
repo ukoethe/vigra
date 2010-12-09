@@ -319,7 +319,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="watersheds3D_8hxx-source.html">vigra/watersheds3D.hxx</a>\><br>
+    <b>\#include</b> \<vigra/watersheds3D.hxx\><br>
     Namespace: vigra
 
     Example: watersheds3D of the gradient magnitude.

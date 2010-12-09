@@ -86,7 +86,7 @@ namespace vigra
     std::cout << "Area of region " << *region_anchor << ": " << area << std::endl;
     \endcode
 
-    <b>\#include</b> \<<a href="contourcirculator_8hxx-source.html">vigra/contourcirculator.hxx</a>\><br>
+    <b>\#include</b> \<vigra/contourcirculator.hxx\><br>
     Namespace: vigra
 */
 template <class IMAGEITERATOR>

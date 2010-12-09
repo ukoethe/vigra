@@ -210,7 +210,7 @@ struct FPMulImplementation<true>
     <li> \ref FixedPointTraits
     </ul>
 
-    <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
     Namespace: vigra
 */
 template <unsigned IntBits, unsigned FractionalBits>
@@ -463,7 +463,7 @@ struct FixedPointCast<double>
 
 /** \addtogroup FixedPointOperations Functions for FixedPoint
 
-    \brief     <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    \brief     <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
 
     These functions fulfill the requirements of an \ref AlgebraicRing.
 
@@ -756,7 +756,7 @@ round(FixedPoint<IntBits, FracBits> v)
     };
     \endcode
 
-    <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
     Namespace: vigra
 
 */
@@ -867,7 +867,7 @@ class FixedPoint16;
     };
     \endcode
 
-    <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
     Namespace: vigra
 
 */
@@ -1167,7 +1167,7 @@ TARGET fixed_point_cast(FixedPoint16<IntBits, OverflowHandling> v);
     <li> \ref FixedPoint16Traits
     </ul>
 
-    <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
     Namespace: vigra
 */
 template <int IntBits, FPOverflowHandling OverflowHandling>
@@ -1435,7 +1435,7 @@ struct FixedPoint16Cast<double>
 
 /** \addtogroup FixedPoint16Operations Functions for FixedPoint16
 
-    \brief     <b>\#include</b> \<<a href="fixedpoint_8hxx-source.html">vigra/fixedpoint.hxx</a>\><br>
+    \brief     <b>\#include</b> \<vigra/fixedpoint.hxx\><br>
 
     These functions fulfill the requirements of an \ref AlgebraicRing.
 

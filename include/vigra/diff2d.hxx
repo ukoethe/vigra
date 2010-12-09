@@ -179,7 +179,7 @@ class Diff2DConstColumnIteratorPolicy
     Image new_image(old_image.size() - Diff2D(10,10));
     \endcode
 
-    <b>\#include</b> \<<a href="diff2d_8hxx-source.html">vigra/utilities.hxx</a>\><br>
+    <b>\#include</b> \<vigra/diff2d.hxx\><br>
     Namespace: vigra
 */
 class Diff2D
@@ -476,7 +476,7 @@ struct IteratorTraits<Diff2D >
     Image new_image(Size2D(10,10));
     \endcode
 
-    <b>\#include</b> \<<a href="diff2d_8hxx-source.html">vigra/utilities.hxx</a>\><br>
+    <b>\#include</b> \<vigra/diff2d.hxx\><br>
     Namespace: vigra
 */
 class Size2D : public Diff2D
@@ -586,7 +586,7 @@ public:
     value = image[Point2D(10, 20)];
     \endcode
 
-    <b>\#include</b> \<<a href="diff2d_8hxx-source.html">vigra/utilities.hxx</a>\><br>
+    <b>\#include</b> \<vigra/diff2d.hxx\><br>
     Namespace: vigra
 */
 class Point2D : public Diff2D
@@ -866,7 +866,7 @@ inline Size2D operator/(Size2D l, int r)
     assert(r3.contains(p));
     \endcode
 
-    <b>\#include</b> \<<a href="diff2d_8hxx-source.html">vigra/utilities.hxx</a>\><br>
+    <b>\#include</b> \<vigra/diff2d.hxx\><br>
     Namespace: vigra
 */
 class Rect2D

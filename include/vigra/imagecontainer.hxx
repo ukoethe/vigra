@@ -64,7 +64,7 @@ namespace vigra {
     A custimized allocator can be passed as a template argument and via the constructor.
     By default, the allocator of the <tt>ImageType</tt> is reused.
 
-    <b>\#include</b> \<<a href="imagecontainer_8hxx-source.html">vigra/imagecontainer.hxx</a>\>
+    <b>\#include</b> \<vigra/imagecontainer.hxx\>
 
     Namespace: vigra
 */
@@ -458,7 +458,7 @@ public:
     via the constructor.  By default, the allocator of the
     <tt>ImageType</tt> is reused.
 
-    <b>\#include</b> \<<a href="imagecontainer_8hxx-source.html">vigra/imagecontainer.hxx</a>\>
+    <b>\#include</b> \<vigra/imagecontainer.hxx\>
 
     Namespace: vigra
 */

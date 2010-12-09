@@ -751,7 +751,7 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 
      See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> \<<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>\>
+<b>\#include</b> \<vigra/multi_iterator.hxx\>
 
 Namespace: vigra
 */
@@ -1501,7 +1501,7 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 
      See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> \<<a href="multi__iterator_8hxx-source.html">vigra/multi_iterator.hxx</a>\>
+<b>\#include</b> \<vigra/multi_iterator.hxx\>
 
 Namespace: vigra
 */

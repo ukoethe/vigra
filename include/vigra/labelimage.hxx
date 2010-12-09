@@ -115,7 +115,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code
@@ -363,7 +363,7 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code
@@ -651,7 +651,7 @@ unsigned int labelImageWithBackground(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code
@@ -863,7 +863,7 @@ void regionImageToCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="labelimage_8hxx-source.html">vigra/labelimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code

@@ -52,7 +52,7 @@
 
     <TT>M_PI, M_SQRT2</TT>
 
-    <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\>
+    <b>\#include</b> \<vigra/mathutil.hxx\>
 
     Since <TT>M_PI</TT> and <TT>M_SQRT2</TT> are not officially standardized,
     we provide definitions here for those compilers that don't support them.
@@ -119,7 +119,7 @@ VIGRA_DEFINE_MISSING_ABS(signed short)
         Defined for all floating point types. Rounds towards the nearest integer 
         such that <tt>abs(round(t)) == round(abs(t))</tt> for all <tt>t</tt>.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline float round(float t)
@@ -149,7 +149,7 @@ inline long double round(long double t)
         Rounds to the nearest integer like round(), but casts the result to 
         <tt>int</tt> (this will be faster and is usually needed anyway).
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline int roundi(double t)
@@ -166,7 +166,7 @@ inline int roundi(double t)
          see http://www.hackersdelight.org/).
         If \a x > 2^31, the function will return 0 because integer arithmetic is defined modulo 2^32.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline UInt32 ceilPower2(UInt32 x) 
@@ -188,7 +188,7 @@ inline UInt32 ceilPower2(UInt32 x)
         (function flp2() from Henry Warren: "Hacker's Delight", Addison-Wesley, 2003,
          see http://www.hackersdelight.org/).
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline UInt32 floorPower2(UInt32 x) 
@@ -233,7 +233,7 @@ Int32 IntLog2<T>::table[64] = {
         in \a x (algorithm nlz10() at http://www.hackersdelight.org/). But note that the functions
         \ref floorPower2() or \ref ceilPower2() are more efficient and should be preferred when possible.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline Int32 log2i(UInt32 x) 
@@ -252,7 +252,7 @@ inline Int32 log2i(UInt32 x)
 
         <tt>sq(x) = x*x</tt> is needed so often that it makes sense to define it as a function.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -365,7 +365,7 @@ using VIGRA_CSTD::sqrt;
     
         Useful for fast fixed-point computations.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline Int32 sqrti(Int32 v)
@@ -379,7 +379,7 @@ inline Int32 sqrti(Int32 v)
 
         Useful for fast fixed-point computations.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline UInt32 sqrti(UInt32 v)
@@ -393,7 +393,7 @@ inline UInt32 sqrti(UInt32 v)
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
         It is implemented in a way that minimizes round-off error.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double hypot(double a, double b) 
@@ -417,7 +417,7 @@ using ::hypot;
 
         Returns 1, 0, or -1 depending on the sign of \a t, but with the same type as \a t.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -434,7 +434,7 @@ inline T sign(T t)
 
         Returns 1, 0, or -1 depending on the sign of \a t, converted to int.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -451,7 +451,7 @@ inline int signi(T t)
 
         Transfers the sign of \a t2 to \a t1.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T1, class T2>
@@ -505,7 +505,7 @@ NormTraits<T>::SquaredNormType squaredNorm(T const & t);
         For scalar types: implemented as <tt>abs(t)</tt><br>
         otherwise: implemented as <tt>sqrt(squaredNorm(t))</tt>.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -528,7 +528,7 @@ norm(T const & t)
         bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
         \endcode
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class Iterator>
@@ -560,7 +560,7 @@ Iterator argMin(Iterator first, Iterator last)
         bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
         \endcode
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class Iterator>
@@ -598,7 +598,7 @@ Iterator argMax(Iterator first, Iterator last)
         bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
         \endcode
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class Iterator, class UnaryFunctor>
@@ -636,7 +636,7 @@ Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
         bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
         \endcode
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class Iterator, class UnaryFunctor>
@@ -663,7 +663,7 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
            \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right)
         \f]
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -684,7 +684,7 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
         <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
 
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T>
@@ -786,7 +786,7 @@ T ellipticRF(T x, T y, T z)
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
         functions must be k^2 rather than k. Check the documentation when results disagree!
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double ellipticIntegralF(double x, double k)
@@ -810,7 +810,7 @@ inline double ellipticIntegralF(double x, double k)
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
         functions must be k^2 rather than k. Check the documentation when results disagree!
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double ellipticIntegralE(double x, double k)
@@ -853,7 +853,7 @@ double erfImpl(T x)
         
         according to the formula given in Press et al. "Numerical Recipes".
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double erf(double x)
@@ -973,7 +973,7 @@ std::pair<double, double> noncentralChi2CDF(unsigned int degreesOfFreedom, T non
         and tolerance \a accuracy at the given argument \a arg
         by calling <tt>noncentralChi2(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double chi2(unsigned int degreesOfFreedom, double arg, double accuracy = 1e-7)
@@ -988,7 +988,7 @@ inline double chi2(unsigned int degreesOfFreedom, double arg, double accuracy = 
         a random number drawn from the distribution is below \a arg
         by calling <tt>noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy)</tt>.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double chi2CDF(unsigned int degreesOfFreedom, double arg, double accuracy = 1e-7)
@@ -1004,7 +1004,7 @@ inline double chi2CDF(unsigned int degreesOfFreedom, double arg, double accuracy
         http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
         degrees of freedom.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double noncentralChi2(unsigned int degreesOfFreedom, 
@@ -1022,7 +1022,7 @@ inline double noncentralChi2(unsigned int degreesOfFreedom,
         http://lib.stat.cmu.edu/apstat/231). The algorithm has linear complexity in the number of
         degrees of freedom (see noncentralChi2CDFApprox() for a constant-time algorithm).
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double noncentralChi2CDF(unsigned int degreesOfFreedom, 
@@ -1042,7 +1042,7 @@ inline double noncentralChi2CDF(unsigned int degreesOfFreedom,
         when noncentralChi2CDF() is too slow, and approximate values are sufficient. The accuracy is only 
         about 0.1 for few degrees of freedom, but reaches about 0.001 above dof = 5.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 inline double noncentralChi2CDFApprox(unsigned int degreesOfFreedom, double noncentrality, double arg)
@@ -1076,7 +1076,7 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
         rarely exactly equal in practice. If the tolerance \a epsilon is not given,
         twice the machine epsilon is used.
 
-        <b>\#include</b> \<<a href="mathutil_8hxx-source.html">vigra/mathutil.hxx</a>\><br>
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
 template <class T1, class T2>

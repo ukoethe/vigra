@@ -126,7 +126,7 @@ namespace vigra{
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>\><br>
+    <b>\#include</b> \<vigra/labelvolume.hxx\><br>
     Namespace: vigra
 
     \code
@@ -400,7 +400,7 @@ unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="labelvolume_8hxx-source.html">vigra/labelvolume.hxx</a>\><br>
+    <b>\#include</b> \<vigra/labelvolume.hxx\><br>
     Namespace: vigra
 
     \code

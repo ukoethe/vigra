@@ -72,7 +72,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -990,7 +990,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1092,7 +1092,7 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1188,7 +1188,7 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1268,7 +1268,7 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1351,7 +1351,7 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1432,7 +1432,7 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1515,7 +1515,7 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="noise__normalization_8hxx-source.html">vigra/noise_normalization.hxx</a>\><br>
+        <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
     
     \code

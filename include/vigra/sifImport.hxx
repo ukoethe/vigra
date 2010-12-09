@@ -65,7 +65,7 @@ namespace vigra {
  /** \addtogroup VigraSIFImport Import of Images from Andor Cameras
 
     Read an Andor SIF file into a MultiArrayView.
-**/
+*/
 //@{
 
 /********************************************************/
@@ -79,9 +79,9 @@ See \ref readSIF() for a usage example. This object must be
 used to read the image header of an Andor SIF file
 and enquire its properties.
 
-<b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/hdf5impex.hxx</a>\><br>
+<b>\#include</b> \<vigra/sifImport.hxx\><br>
 Namespace: vigra
-**/
+*/
 class SIFImportInfo
 {
 	public:
@@ -93,30 +93,30 @@ class SIFImportInfo
             \code
             SIFImportInfo info(filename);
             \endcode
-         **/
+         */
 		VIGRA_EXPORT SIFImportInfo(const char* filename);
 
         /** Get the width in pixels.
-         **/
+         */
 		VIGRA_EXPORT const int width() const;
 
         /** Get the height in pixels.
-         **/
+         */
 		VIGRA_EXPORT const int height() const;
 
         /** Get the stacksize, that is the number of 
-         *  images contained in the dataset.
-         **/
+            images contained in the dataset.
+         */
 		VIGRA_EXPORT const int stacksize() const;
 
         /** Get the offset to the beginning of the actual data.
-         *  Everything before this point belongs to the 
-         *  variable lenght header.
-         **/
+            Everything before this point belongs to the 
+            variable lenght header.
+         */
 		VIGRA_EXPORT const ptrdiff_t getOffset() const;
 
         /** Get the filename of this SIF object.
-         **/
+         */
 		VIGRA_EXPORT const char * getFileName() const;
 
         /** Output all information such as shutter, Temperature etc. 
@@ -124,7 +124,7 @@ class SIFImportInfo
           
 		<b> Usage:</b>
 		
-		<b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/sifImport.hxx</a>\><br>
+		<b>\#include</b> \<vigra/sifImport.hxx\><br>
 		Namespace: vigra
 		
 		\code
@@ -132,7 +132,7 @@ class SIFImportInfo
 		std::cout << info << std::endl;	// print infos to the console
 
 		\endcode
-         **/
+         */
 		VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
 	private:
@@ -174,7 +174,7 @@ class SIFImportInfo
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="sifImport_8hxx_source.html">vigra/sifImport.hxx</a>\><br>
+    <b>\#include</b> \<vigra/sifImport.hxx\><br>
     Namespace: vigra
     
     \code

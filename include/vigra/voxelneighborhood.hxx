@@ -45,7 +45,7 @@ namespace vigra {
 
     6- and 26-neighborhood definitions and circulators.
 
-    <b>\#include</b> \<<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>\><br>
+    <b>\#include</b> \<vigra/voxelneighborhood.hxx\><br>
 
     <b>See also:</b> \ref vigra::NeighborhoodCirculator
  */
@@ -65,7 +65,7 @@ namespace vigra {
         //    This enum is used with \ref isAtVolumeBorder() and
         //    \ref vigra::RestrictedNeighborhoodCirculator.
 
-        //<b>\#include</b> \<<a href="voxelneighborhood_8hxx-source.html">vigra/voxelneighborhood.hxx</a>\><br>
+        //<b>\#include</b> \<vigra/voxelneighborhood.hxx\><br>
         //Namespace: vigra
 */
 

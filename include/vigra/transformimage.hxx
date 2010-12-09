@@ -130,7 +130,7 @@ transformLineIf(SrcIterator s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
     Namespace: vigra
 
     \code
@@ -247,7 +247,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -365,7 +365,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\>
+    <b>\#include</b> \<vigra/transformimage.hxx\>
 
 
     \code
@@ -642,7 +642,7 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -719,7 +719,7 @@ linearIntensityTransform(Multiplier scale)
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -808,7 +808,7 @@ linearRangeMapping(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -923,7 +923,7 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1190,7 +1190,7 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1426,7 +1426,7 @@ class GammaFunctor<RGBValue<unsigned char> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="transformimage_8hxx-source.html">vigra/transformimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/transformimage.hxx\><br>
         Namespace: vigra
 
     \code

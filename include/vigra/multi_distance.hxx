@@ -320,7 +320,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_distance.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -490,7 +490,7 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__distance_8hxx-source.html">vigra/multi_distance.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_distance.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);

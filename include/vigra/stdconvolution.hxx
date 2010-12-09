@@ -385,7 +385,7 @@ The functions need a suitable 2D kernel to operate.
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdconvolution.hxx\><br>
     Namespace: vigra
 
 
@@ -741,7 +741,7 @@ void convolveImage(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdconvolution.hxx\><br>
     Namespace: vigra
 
 
@@ -1061,7 +1061,7 @@ void convolveImageWithMask(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdconvolution.hxx\><br>
     Namespace: vigra
 
     \code

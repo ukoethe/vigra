@@ -48,7 +48,7 @@
 
     1D and 2D filters, including separable and recursive convolution, and non-linear diffusion
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/convolution.hxx\><br>
     Namespace: vigra
 
     <UL style="list-style-image:url(documents/bullet.gif)">
@@ -234,7 +234,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -340,7 +340,7 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -436,7 +436,7 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -543,7 +543,7 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -682,7 +682,7 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -799,7 +799,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -883,7 +883,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -1005,7 +1005,7 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code
@@ -1166,7 +1166,7 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="convolution_8hxx-source.html">vigra/convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/convolution.hxx\>
 
 
     \code

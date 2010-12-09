@@ -362,7 +362,7 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="watersheds_8hxx-source.html">vigra/watersheds.hxx</a>\><br>
+    <b>\#include</b> \<vigra/watersheds.hxx\><br>
     Namespace: vigra
 
     Example: watersheds of the gradient magnitude.

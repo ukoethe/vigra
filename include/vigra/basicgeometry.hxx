@@ -84,7 +84,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
         Namespace: vigra
     
     \code
@@ -237,7 +237,7 @@ enum Reflect{horizontal = 1, vertical = 2};
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
         Namespace: vigra
     
     \code
@@ -384,7 +384,7 @@ enum Transpose{major = 1, minor = 2};
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
         Namespace: vigra
     
     \code
@@ -632,7 +632,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="basicgeometry_8hxx-source.html">vigra/basicgeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
         Namespace: vigra
     
     \code

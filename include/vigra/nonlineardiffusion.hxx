@@ -272,7 +272,7 @@ void internalNonlinearDiffusionAOSStep(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="nonlineardiffusion_8hxx-source.html">vigra/nonlineardiffusion.hxx</a>\>
+    <b>\#include</b> \<vigra/nonlineardiffusion.hxx\>
     
     
     \code

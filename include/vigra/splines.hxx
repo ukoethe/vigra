@@ -50,7 +50,7 @@ namespace vigra {
 //@{
 /* B-Splines of arbitrary order and interpolating Catmull/Rom splines.
 
-    <b>\#include</b> \<<a href="splines_8hxx-source.html">vigra/splines.hxx</a>\><br>
+    <b>\#include</b> \<vigra/splines.hxx\><br>
     Namespace: vigra
 */
 #ifndef NO_PARTIAL_TEMPLATE_SPECIALIZATION
@@ -76,7 +76,7 @@ namespace vigra {
     and as arguments for \ref vigra::SplineImageView. Note that the spline order
     is given as a template argument.
 
-    <b>\#include</b> \<<a href="splines_8hxx-source.html">vigra/splines.hxx</a>\><br>
+    <b>\#include</b> \<vigra/splines.hxx\><br>
     Namespace: vigra
 */
 template <int ORDER, class T = double>
@@ -1153,7 +1153,7 @@ typedef BSpline<5, double> QuinticBSplineKernel;
     interpolant can be created with only slightly more effort by recursive
     prefiltering followed by convolution with a 3rd order B-spline.
 
-    <b>\#include</b> \<<a href="splines_8hxx-source.html">vigra/splines.hxx</a>\><br>
+    <b>\#include</b> \<vigra/splines.hxx\><br>
     Namespace: vigra
 */
 template <class T = double>

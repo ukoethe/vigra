@@ -397,7 +397,7 @@ class TinyVectorView;
     \ref TinyVector and \ref TinyVectorView, and enables these classes
     to be freely mixed within expressions. It is typically not used directly.
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
@@ -620,7 +620,7 @@ class TinyVectorBase
         <LI> \ref TinyVectorOperators
     </UL>
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -829,7 +829,7 @@ class TinyVector
         <li> \ref TinyVectorOperators
     </ul>
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -919,7 +919,7 @@ class TinyVectorView
     These functions fulfill the requirements of a Linear Space (vector space).
     Return types are determined according to \ref TinyVectorTraits.
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 */
 //@{
@@ -1004,7 +1004,7 @@ operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l
     };
     \endcode
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 
     On compilers that don't support pertial template specialization (e.g.
