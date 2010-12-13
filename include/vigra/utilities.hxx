@@ -88,6 +88,8 @@ VIGRA_AS_STRING(void *)
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref vigra::ArrayVector
          <BR>&nbsp;&nbsp;&nbsp;<em>replacement for std::vector (always uses consecutive memory)</em>
+    <LI> \ref vigra::BucketQueue and \ref vigra::MappedBucketQueue
+         <BR>&nbsp;&nbsp;&nbsp;<em>efficient priority queues for integer priorities</em>
     <LI> \ref RangesAndPoints
          <BR>&nbsp;&nbsp;&nbsp;<em>2-D and N-D positions, extents, and boxes</em>
     <LI> \ref PixelNeighborhood
