@@ -315,23 +315,48 @@ pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > image,
     return res;
 }
 
+namespace detail {
+
+template <class PixelType>
+struct IsBackgroundAccessor
+{
+    typedef bool value_type;
+    
+    template <class Iterator>
+    value_type operator()(Iterator const & i) const
+    {
+        return *i == NumericTraits<PixelType>::zero();
+    }
+};
+
+} // namespace detail
+
 template < class PixelType, typename DestPixelType >
 NumpyAnyArray 
 pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
-                          PixelType background, 
+                          bool background, 
                           int norm,
                           NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     res.reshapeIfEmpty(image.shape(), "distanceTransform2D(): Output array has wrong shape.");
     
-    distanceTransform(srcImageRange(image), destImage(res), background, norm);
+    if(background)
+    {
+        distanceTransform(srcImageRange(image), destImage(res), 
+                          NumericTraits<PixelType>::zero(), norm);
+    }
+    else
+    {
+        distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()), 
+                          destImage(res), false, norm);
+    }
     return res;
 }
 
 template < class VoxelType >
 NumpyAnyArray 
 pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
-                          VoxelType background,
+                          bool background, 
                           NumpyArray<3, Singleband<VoxelType> > res=python::object())
 {
     res.reshapeIfEmpty(volume.shape(), "distanceTransform3D(): Output array has wrong shape.");
@@ -616,16 +641,18 @@ void defineMorphology()
     def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<float, float>),
         (arg("image"), 
-         arg("background")=0, 
+         arg("background")=true, 
          arg("norm")=2,
          arg("out")=python::object()),
         "Compute the distance transform of a 2D scalar float image.\n"
-        "For all background pixels, calculate the distance to the nearest object or contour. "
-        "The label of the pixels to be considered background in the source image is passed "
-        "in the parameter 'background'. "
-        "Source pixels with other labels will be considered objects. "
-        "In the destination image, all pixels corresponding to background will hold "
-        "their distance value, all pixels corresponding to objects will be assigned 0.\n\n"
+        "All pixels with a value of 0.0 are considered to be background pixels,\n"
+        "while all pixels with a nonzero value are considered to be foreground pixels.\n"
+        "The parameter 'background' is a Boolean scalar that specifies whether to\n"
+        "compute the distance of all background pixels to the nearest foreground pixels\n"
+        "(if it is 'True', default) or vice versa (if it is 'False').\n"
+        "Hence in the destination image, for background==True all background pixels\n"
+        "will be assigned their distance value, while all foreground pixels will be assigned 0.\n"
+        "For background==False, it is exactly the other way around.\n\n"
         "The 'norm' parameter gives the distance norm to use\n"
         "(0: infinity norm, 1: L1 norm, 2: Euclidean norm).\n\n"
         "For details see distanceTransform_ in the vigra C++ documentation.\n");
@@ -633,21 +660,25 @@ void defineMorphology()
         def("distanceTransform2D",
         registerConverters(&pythonDistanceTransform2D<UInt8,float>),
         (arg("image"), 
-         arg("background")=0, 
+         arg("background")=true, 
          arg("norm")=2,
          arg("out")=python::object()),
         "Likewise for a 2D uint8 input array.\n");
 
     def("distanceTransform3D",
         registerConverters(&pythonDistanceTransform3D<float>),
-        (arg("array"), arg("background"), arg("out")=python::object()),
+        (arg("array"), 
+         arg("background") = true, 
+         arg("out")=python::object()),
         "Compute the Euclidean distance transform of a 3D scalar float volume.\n"
-        "For all background voxels, calculate the distance to the nearest object or contour."
-        "The label of the voxels to be considered background in the source volume is passed "
-        "in the parameter 'background'. "
-        "Source voxels with other labels will be considered objects. "
-        "In the destination volume, all voxels corresponding to background will be assigned "
-        "their distance value, all voxels corresponding to objects will be assigned 0.\n"
+        "All voxels with a value of 0.0 are considered to be background voxels,\n"
+        "while all voxels with a nonzero value are considered to be foreground voxels.\n"
+        "The parameter 'background' is a Boolean scalar that specifies whether to\n"
+        "compute the distance of all background voxels to the nearest foreground voxel\n"
+        "(if it is 'True', default) or vice versa (if it is 'False').\n"
+        "Hence in the destination volume, for background==True all background voxels\n"
+        "will be assigned their distance value, while all foreground voxels will be assigned 0.\n"
+        "For background==False, it is exactly the other way around.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 }
