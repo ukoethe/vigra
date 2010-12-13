@@ -319,6 +319,15 @@ struct BucketQueueTest
         for(unsigned int k=0; k<data.size(); ++k)
         {
 			shouldEqual(queue.top(), priority(bqueue.top()));
+			switch(k)
+			{
+			  case 1:
+				  shouldEqual(4.4, bqueue.top());
+				  break;
+			  case 2:
+				  shouldEqual(4.5, bqueue.top());
+				  break;
+			}
             queue.pop();
             bqueue.pop();
         }
@@ -345,6 +354,15 @@ struct BucketQueueTest
         for(unsigned int k=0; k<data.size(); ++k)
         {
 			shouldEqual(queue.top(), priority(bqueue.top()));
+			switch(k)
+			{
+			  case 3:
+				  shouldEqual(4.4, bqueue.top());
+				  break;
+			  case 4:
+				  shouldEqual(4.5, bqueue.top());
+				  break;
+			}
             queue.pop();
             bqueue.pop();
         }
