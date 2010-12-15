@@ -1913,7 +1913,6 @@ class ArrayOfRegionStatistics
     const_iterator end() const
         { return regions.end(); }
 
-  private:
     std::vector<RegionStatistics> regions;
 };
 
