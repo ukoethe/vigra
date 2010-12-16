@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2002 by Ullrich Koethe                  */
+/*               Copyright 1998-2010 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -358,7 +358,7 @@ extendedLocalMinMaxOld(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
     // use 4-neighborhood, allow minima at the image border, 
     // and discard those where the gray value is not below 5
-    vigra::localMinima(srcImageRange(src), destImage(minima)
+    vigra::localMinima(srcImageRange(src), destImage(minima),
                        vigra::LocalMinmaxOptions().neighborhood(4).allowAtBorder().threshold(5));
 
     \endcode
