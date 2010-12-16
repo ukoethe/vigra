@@ -42,6 +42,7 @@
 #include "iteratortraits.hxx"
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
+#include "inspectimage.hxx"
 
 namespace vigra {
 
@@ -704,13 +705,20 @@ linearIntensityTransform(Multiplier scale)
     and <tt>offset = dest_min / scale - src_min</tt>. As a result,
     the pixel values <tt>src_max</tt>, <tt>src_min</tt> in the source image
     are mapped onto <tt>dest_max</tt>, <tt>dest_min</tt> respectively.
-    This works for scalar as well as vector pixel types.
+    This works for scalar as well as vector pixel types. Instead of 
+    <tt>src_min</tt> and <tt>src_max</tt>, you may also pass a functor
+    \ref FindMinMax. 
 
     <b> Declaration:</b>
 
     \code
     namespace vigra {
         template <class SrcValueType, class DestValueType>
+        LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+        linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
+                           DestValueType dest_min, DestValueType dest_max );
+
+                           template <class SrcValueType, class DestValueType>
         LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
         linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                            DestValueType dest_min, DestValueType dest_max );
@@ -732,9 +740,16 @@ linearIntensityTransform(Multiplier scale)
 
     // transform to range 0...255
     vigra::transformImage(srcImageRange(src), destImage(dest),
-                          linearRangeTransform(
-                            minmax.min, minmax.max,               // src range
-                            (unsigned char)0, (unsigned char)255) // dest range
+                          linearRangeMapping(
+                            minmax.min, minmax.max,  // src range
+                            0, 255)                  // dest range
+                          );
+
+    // equivalent, but shorter
+    vigra::transformImage(srcImageRange(src), destImage(dest),
+                          linearRangeMapping(
+                            minmax,                 // src range
+                            0, 255)                 // dest range
                           );
     \endcode
 
@@ -749,6 +764,15 @@ linearRangeMapping(SrcValueType src_min, SrcValueType src_max,
                    DestValueType dest_min, DestValueType dest_max )
 {
     return linearRangeMapping(src_min, src_max, dest_min, dest_max,
+            typename NumericTraits<DestValueType>::isScalar());
+}
+
+template <class SrcValueType, class DestValueType>
+LinearIntensityTransform<DestValueType, typename NumericTraits<DestValueType>::RealPromote>
+linearRangeMapping(FindMinMax<SrcValueType> const & src,
+                   DestValueType dest_min, DestValueType dest_max )
+{
+    return linearRangeMapping(src.min, src.max, dest_min, dest_max,
             typename NumericTraits<DestValueType>::isScalar());
 }
 

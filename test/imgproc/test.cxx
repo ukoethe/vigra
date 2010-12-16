@@ -692,6 +692,19 @@ struct ImageFunctionsTest
 
         shouldEqualSequence(img1.begin(), img1.end(), res);
 
+		FindMinMax<double> minmax;
+		inspectImage(srcImageRange(img), minmax);
+        transformImage(srcImageRange(img), destImage(img1),
+					   linearRangeMapping(minmax, 0, 250));
+	
+        int res1[] = {0, 31, 62, 94, 125, 156, 187, 219, 250 };
+#if 0
+		for(int i=0; i<9; ++i)
+			std::cerr << (int)*(&img1(0,0)+i) << ", ";
+		std::cerr << "\n";
+#endif
+		shouldEqualSequence(img1.begin(), img1.end(), res1);
+
         BRGBImage img2(3,3);
 
         transformImage(srcImageRange(rgb), destImage(img2),
