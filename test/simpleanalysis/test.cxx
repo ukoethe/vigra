@@ -1174,14 +1174,14 @@ struct WatershedsTest
 
         for(; i != end; ++i, ++p)
         {
-            acc.set(*p, i);
+			// transform data to a range suitable for BucketQueue (in the turbo algorithm)
+            acc.set(*p*10.0 + 30.0, i);
         }
     }
 
     void watershedsTest()
     {
-        Image res(img);
-        res.init(0);
+        IImage res(img.size());
 
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  3.0,  3.0,  3.0,  3.0,  4.0,
@@ -1194,27 +1194,98 @@ struct WatershedsTest
             7.0,  5.0,  5.0,  5.0,  5.0,  6.0,  6.0,  6.0,  6.0,
             7.0,  7.0,  7.0,  5.0,  5.0,  5.0,  5.0,  5.0,  5.0};
 
-        int count = watersheds(srcImageRange(img), destImage(res));
+        int count = watershedsUnionFind(srcImageRange(img), destImage(res));
+        
+        shouldEqual(7, count);
+        shouldEqualSequence(res.begin(), res.end(), desired);
+
+		res.init(0);
+	    count = generateWatershedSeeds(srcImageRange(img), destImage(res),
+			                           SeedOptions().extendedMinima());
+
+		static const double desiredSeeds[] = {
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
+			0.0,  2.0,  0.0,  3.0,  0.0,  1.0,  0.0,  1.0,  1.0,  
+			0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
+			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
+			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+			0.0,  0.0,  4.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
+			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
+
+        shouldEqual(5, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
+
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
+
+		static const double desiredRG[] = {
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  3.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  1.0,  1.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0};
+
+        shouldEqual(5, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredRG);
+
+		res.init(0);
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+			                            WatershedOptions().keepContours()
+										  .seedOptions(SeedOptions().extendedMinima()));
+
+		static const double desiredRGC[] = {
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
+            0.0,  0.0,  0.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  0.0,  0.0,  0.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0};
+
+        shouldEqual(5, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredRGC);
+
+		res.init(0);
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+			                            WatershedOptions().turboAlgorithm()
+										  .seedOptions(SeedOptions().extendedMinima()));
+
+		static const double desiredTRG[] = {
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+			2.0,  2.0,  3.0,  3.0,  3.0,  5.0,  1.0,  1.0,  1.0,  
+			4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  1.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0};
+
+        shouldEqual(5, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredTRG);
 
 #if 0
         std::cerr << count << "\n";
         for(int y=0;y<9;++y)
         {
-            for(int x=0;x<9;++x)
-                std::cerr << res(x,y) << "     ";
-            std::cerr << "\n";
+			std::cerr << "            ";
+			for(int x=0;x<9;++x)
+                std::cerr << res(x,y) << ".0,  ";
+            std::cerr << "\n\n";
         }
 #endif /* #if 0 */
-        
-        should(7 == count);
-
-        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     void watersheds4Test()
     {
-        Image res(img);
-        res.init(0);
+        IImage res(img.size());
 
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  4.0,  4.0,  5.0,
@@ -1227,21 +1298,93 @@ struct WatershedsTest
            10.0, 10.0,  7.0,  7.0,  7.0,  7.0,  9.0,  9.0,  7.0,
            10.0, 10.0, 10.0,  7.0,  7.0,  7.0,  7.0,  7.0,  7.0};
 
-        int count = watersheds(srcImageRange(img), destImage(res), FourNeighborCode());
+        int count = watershedsUnionFind(srcImageRange(img), destImage(res), FourNeighborCode());
+
+		should(10 == count);
+        shouldEqualSequence(res.begin(), res.end(), desired);
+
+		res.init(0);
+	    count = generateWatershedSeeds(srcImageRange(img), destImage(res), FourNeighborCode(),
+			                           SeedOptions().extendedMinima());
+
+		static const double desiredSeeds[] = {
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
+            0.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
+            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  5.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  6.0,  6.0,  6.0,  0.0,  7.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
+
+        shouldEqual(7, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
+
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
+
+		static const double desiredRG[] = {
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  4.0,  4.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  2.0,  3.0,  5.0,  5.0,  1.0,  1.0,  1.0,  
+            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  1.0,  1.0,  
+            6.0,  6.0,  6.0,  6.0,  5.0,  5.0,  5.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0};
+
+        shouldEqual(7, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredRG);
+
+		res.init(0);
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+			                            WatershedOptions().keepContours()
+										  .seedOptions(SeedOptions().extendedMinima()));
+
+		static const double desiredRGC[] = {
+            2.0,  2.0,  2.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
+            2.0,  2.0,  0.0,  3.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  2.0,  0.0,  5.0,  5.0,  0.0,  1.0,  1.0,  
+            0.0,  0.0,  0.0,  0.0,  5.0,  5.0,  5.0,  0.0,  0.0,  
+            6.0,  6.0,  6.0,  6.0,  0.0,  5.0,  0.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0};
+
+        shouldEqual(7, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredRGC);
+
+		res.init(0);
+		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+			                            WatershedOptions().turboAlgorithm()
+										  .seedOptions(SeedOptions().extendedMinima()));
+
+		static const double desiredTRG[] = {
+            2.0,  2.0,  2.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  2.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  2.0,  3.0,  6.0,  5.0,  7.0,  1.0,  1.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  1.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  5.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
+            6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0};
+
+        shouldEqual(7, count);
+        shouldEqualSequence(res.begin(), res.end(), desiredTRG);
 
 #if 0
         std::cerr << count << "\n";
         for(int y=0;y<9;++y)
         {
-            for(int x=0;x<9;++x)
-                std::cerr << res(x,y) << "     ";
+			std::cerr << "            ";
+			for(int x=0;x<9;++x)
+                std::cerr << res(x,y) << ".0,  ";
             std::cerr << "\n";
         }
 #endif /* #if 0 */
-
-        should(10 == count);
-
-        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     Image img;
@@ -1323,6 +1466,14 @@ struct RegionGrowingTest
                     shouldEqual(dist, desired);
             }
         }
+
+		vigra::IImage wres(img.size());
+
+		watershedsRegionGrowing(srcImageRange(img), destImage(wres),
+			                    WatershedOptions().completeGrow()
+							     .seedOptions(SeedOptions().minima().threshold(1.0)));
+
+		shouldEqualSequence(res.begin(), res.end(), wres.begin());
     }
 
     void voronoiWithBorderTest()

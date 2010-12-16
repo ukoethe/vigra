@@ -367,12 +367,12 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         
         if(neighborhood == 4)
         {
-            maxRegionLabel = watersheds(srcImageRange(image), destImage(res),
+            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
                                         FourNeighborCode());
         }
         else
         {
-            maxRegionLabel = watersheds(srcImageRange(image), destImage(res),
+            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
                                         EightNeighborCode());
         }
     }
