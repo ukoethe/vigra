@@ -60,6 +60,7 @@
 #include "vigra/tinyvector.hxx"
 #include "vigra/polygon.hxx"
 #include "vigra/quaternion.hxx"
+#include "vigra/clebsch-gordan.hxx"
 
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
@@ -428,6 +429,23 @@ struct FunctionsTest
         shouldEqual(argMaxIf(data, end, Arg1() < Param(5.0)), data+5);
         shouldEqual(argMaxIf(data, end, Arg1() < Param(-2.0)), end);
     }
+
+    void testClebschGordan()
+    {
+		using vigra::ClebschGordan;
+
+		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, 0.5, 1.0, 1.0), std::sqrt(1.0), 1e-15);
+		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, -0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(ClebschGordan(0.5, -0.5, 0.5, 0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, -0.5, 0.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(ClebschGordan(0.5, -0.5, 0.5, 0.5, 0.0, 0.0), -std::sqrt(0.5), 1e-15);
+
+		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, 0.5, 2.5, 2.5), std::sqrt(1.0), 1e-15);
+		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, -0.5, 2.5, 1.5), std::sqrt(0.2), 1e-15);
+		shouldEqualTolerance(ClebschGordan(2.0, 1.0, 0.5, 0.5, 2.5, 1.5), std::sqrt(0.8), 1e-15);
+		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, -0.5, 1.5, 1.5), std::sqrt(0.8), 1e-15);
+		shouldEqualTolerance(ClebschGordan(2.0, 1.0, 0.5, 0.5, 1.5, 1.5), -std::sqrt(0.2), 1e-15);
+	}
 };
 
 struct RationalTest
@@ -2525,6 +2543,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::testSpecialFunctions));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
+        add( testCase(&FunctionsTest::testClebschGordan));
 
         add( testCase(&RationalTest::testGcdLcm));
         add( testCase(&RationalTest::testOStreamShifting));
