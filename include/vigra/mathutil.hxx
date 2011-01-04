@@ -111,7 +111,10 @@ VIGRA_DEFINE_UNSIGNED_ABS(unsigned long long)
 
 VIGRA_DEFINE_MISSING_ABS(signed char)
 VIGRA_DEFINE_MISSING_ABS(signed short)
+
+#ifdef _MSC_VER
 VIGRA_DEFINE_MISSING_ABS(signed long long)
+#endif
 
 #undef VIGRA_DEFINE_MISSING_ABS
 

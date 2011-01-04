@@ -140,6 +140,9 @@ class ContractViolation : public StdException
         (*this) << "\n" << prefix << "\n" << message << "\n";
     }
     
+    ~ContractViolation() throw()
+    {}
+    
     template<class T>
     ContractViolation & operator<<(T const & data)
     {
