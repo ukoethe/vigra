@@ -358,6 +358,17 @@ struct FunctionsTest
             shouldEqual(vigra::log2i((1 << k) + 1), k == 0 ? 1 : k);
             shouldEqual(vigra::log2i((1 << k) - 1), k-1);
         }
+
+		should(vigra::even(0));
+		should(!vigra::odd(0));
+		should(!vigra::even(1));
+		should(vigra::odd(1));
+		should(vigra::even(2));
+		should(!vigra::odd(2));
+		should(!vigra::even(-1));
+		should(vigra::odd(-1));
+		should(vigra::even(-2));
+		should(!vigra::odd(-2));
     }
 
 

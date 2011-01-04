@@ -111,6 +111,7 @@ VIGRA_DEFINE_UNSIGNED_ABS(unsigned long long)
 
 VIGRA_DEFINE_MISSING_ABS(signed char)
 VIGRA_DEFINE_MISSING_ABS(signed short)
+VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 #undef VIGRA_DEFINE_MISSING_ABS
 
@@ -462,6 +463,39 @@ inline T1 sign(T1 t1, T2 t2)
                : -abs(t1);
 }
 
+
+#ifdef DOXYGEN // only for documentation
+    /*! Check if an integer is even.
+
+        Defined for all integral types.
+    */
+bool even(int t);
+
+    /*! Check if an integer is odd.
+
+        Defined for all integral types.
+    */
+bool odd(int t);
+
+#endif
+
+#define VIGRA_DEFINE_ODD_EVEN(T) \
+    inline bool even(T t) { return (t&1) == 0; } \
+    inline bool odd(T t)  { return (t&1) == 1; }
+
+VIGRA_DEFINE_ODD_EVEN(char)
+VIGRA_DEFINE_ODD_EVEN(short)
+VIGRA_DEFINE_ODD_EVEN(int)
+VIGRA_DEFINE_ODD_EVEN(long)
+VIGRA_DEFINE_ODD_EVEN(long long)
+VIGRA_DEFINE_ODD_EVEN(unsigned char)
+VIGRA_DEFINE_ODD_EVEN(unsigned short)
+VIGRA_DEFINE_ODD_EVEN(unsigned int)
+VIGRA_DEFINE_ODD_EVEN(unsigned long)
+VIGRA_DEFINE_ODD_EVEN(unsigned long long)
+
+#undef VIGRA_DEFINE_ODD_EVEN
+
 #define VIGRA_DEFINE_NORM(T) \
     inline NormTraits<T>::SquaredNormType squaredNorm(T t) { return sq(t); } \
     inline NormTraits<T>::NormType norm(T t) { return abs(t); }
@@ -475,6 +509,8 @@ VIGRA_DEFINE_NORM(int)
 VIGRA_DEFINE_NORM(unsigned int)
 VIGRA_DEFINE_NORM(long)
 VIGRA_DEFINE_NORM(unsigned long)
+VIGRA_DEFINE_NORM(long long)
+VIGRA_DEFINE_NORM(unsigned long long)
 VIGRA_DEFINE_NORM(float)
 VIGRA_DEFINE_NORM(double)
 VIGRA_DEFINE_NORM(long double)
