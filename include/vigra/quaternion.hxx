@@ -40,6 +40,7 @@
 #include "numerictraits.hxx"
 #include "tinyvector.hxx"
 #include "matrix.hxx"
+#include "mathutil.hxx"
 #include <iosfwd>   // ostream
 
 
@@ -68,7 +69,7 @@ class Quaternion {
 
         /** the quaternion's norm type
         */
-    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult NormType;
+    typedef typename NormTraits<ValueType>::NormType NormType;
 
 
     Quaternion(ValueType w = 0, ValueType x = 0, ValueType y = 0, ValueType z = 0)
@@ -111,9 +112,9 @@ class Quaternion {
         // behavior around pi is too unexpected:
         if(angle > M_PI)
             angle -= 2.0*M_PI;
-        double t(VIGRA_CSTD::sin(angle/2));
-		double norm(rotationAxis.magnitude());
-        return Quaternion(VIGRA_CSTD::sqrt(1-t*t), t*rotationAxis/norm);
+        double t = VIGRA_CSTD::sin(angle/2.0);
+		double norm = rotationAxis.magnitude();
+        return Quaternion(VIGRA_CSTD::sqrt(1.0-t*t), t*rotationAxis/norm);
     }
 
         // rename to s
@@ -143,16 +144,12 @@ class Quaternion {
     
     value_type & operator[](int index)
     {
-        return index == 0
-                   ? w_
-                   : v_[index - 1];
+        return (&w_)[index];
     }
     
     value_type operator[](int index) const
     {
-        return index == 0
-                   ? w_
-                   : v_[index - 1];
+        return (&w_)[index];
     }
     
     NormType magnitude() const
@@ -191,6 +188,11 @@ class Quaternion {
         return *this;
     }
 
+    Quaternion operator+() const
+    {
+        return *this;
+    }
+
     Quaternion operator-() const
     {
         return Quaternion(-w_, -v_);
@@ -199,7 +201,7 @@ class Quaternion {
     Quaternion &operator*=(Quaternion const &other)
     {
         value_type newW = w_*other.w_ - dot(v_, other.v_);
-        v_              = w_ * other.v_ + other.w_ * v + cross(v_, other.v_);
+        v_              = w_ * other.v_ + other.w_ * v_ + cross(v_, other.v_);
         w_              = newW;
         return *this;
     }
@@ -222,13 +224,6 @@ class Quaternion {
         w_ /= scale;
         v_ /= scale;
         return *this;
-    }
-    
-    Quaternion operator/(double scale) const
-    {
-        Quaternion result(*this);
-        result /= scale;
-        return result;
     }
 
     bool operator==(Quaternion const &other) const
@@ -308,6 +303,14 @@ class Quaternion {
   protected:
     ValueType w_;
     Vector v_;
+};
+
+template<class T>
+struct NormTraits<Quaternion<T> >
+{
+    typedef Quaternion<T>                                                  Type;
+    typedef typename NumericTraits<T>::Promote                             SquaredNormType;
+    typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult   NormType;
 };
 
 template<class ValueType>
@@ -421,11 +424,22 @@ squaredNorm(Quaternion<Type> const & q)
     return q.squaredMagnitude();
 }
 
+    /// squared norm
+template<typename Type>
+inline
+typename Quaternion<Type>::NormType
+abs(Quaternion<Type> const & q)
+{
+    return norm(q);
+}
+
 } // namespace vigra
+
+namespace std {
 
 template<class ValueType>
 inline
-std::ostream & operator<<(std::ostream & os, vigra::Quaternion<ValueType> const & q)
+ostream & operator<<(ostream & os, vigra::Quaternion<ValueType> const & q)
 {
     os << q.w() << " " << q.x() << " " << q.y() << " " << q.z();
     return os;
@@ -433,7 +447,7 @@ std::ostream & operator<<(std::ostream & os, vigra::Quaternion<ValueType> const 
 
 template<class ValueType>
 inline
-std::istream & operator>>(std::istream & is, vigra::Quaternion<ValueType> & q)
+istream & operator>>(istream & is, vigra::Quaternion<ValueType> & q)
 {
     ValueType w, x, y, z;
     is >> w >> x >> y >> z;
@@ -443,5 +457,7 @@ std::istream & operator>>(std::istream & is, vigra::Quaternion<ValueType> & q)
     q.setZ(z);
     return is;
 }
+
+} // namespace std
 
 #endif // VIGRA_QUATERNION_HXX

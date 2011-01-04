@@ -59,6 +59,7 @@
 #include "vigra/random.hxx"
 #include "vigra/tinyvector.hxx"
 #include "vigra/polygon.hxx"
+#include "vigra/quaternion.hxx"
 
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
@@ -697,6 +698,152 @@ struct RationalTest
         try { R(0) / 0; failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
         try { 0 / R(0); failTest("No exception thrown"); } catch(vigra::bad_rational &) {}
     }
+};
+
+struct QuaternionTest
+{
+    typedef vigra::Quaternion<double> Q;
+	typedef Q::Vector V;
+
+    void testContents()
+    {
+        Q q(1.0, 2.0, 3.0, 4.0), q0, q1(-1.0), q2(q), q3(q.w(), q.v());
+
+		shouldEqual(q.w(), 1.0);
+		shouldEqual(q.v(), V(2.0, 3.0, 4.0));
+		shouldEqual(q0.w(), 0.0);
+		shouldEqual(q0.v(), V(0.0, 0.0, 0.0));
+		shouldEqual(q1.w(), -1.0);
+		shouldEqual(q1.v(), V(0.0, 0.0, 0.0));
+		shouldEqual(q2.w(), 1.0);
+		shouldEqual(q2.v(), V(2.0, 3.0, 4.0));
+		shouldEqual(q3.w(), 1.0);
+		shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
+
+		shouldEqual(q[0], 1.0);
+		shouldEqual(q[1], 2.0);
+		shouldEqual(q[2], 3.0);
+		shouldEqual(q[3], 4.0);
+		shouldEqual(q.x(), 2.0);
+		shouldEqual(q.y(), 3.0);
+		shouldEqual(q.z(), 4.0);
+
+		should(q == q2);
+		should(q1 != q2);
+
+		q2 = q1;
+		shouldEqual(q2.w(), -1.0);
+		shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
+
+		should(q != q2);
+		should(q1 == q2);
+
+		q3 = 10.0;
+		shouldEqual(q3.w(), 10.0);
+		shouldEqual(q3.v(), V(0.0, 0.0, 0.0));
+
+		q2.setW(-2.0);
+		shouldEqual(q2.w(), -2.0);
+		shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
+
+		q2.setV(V(5.0, 6.0, 7.0));
+		shouldEqual(q2.w(), -2.0);
+		shouldEqual(q2.v(), V(5.0, 6.0, 7.0));
+
+		q3.setV(5.0, 6.0, 7.0);
+		shouldEqual(q3.w(), 10.0);
+		shouldEqual(q3.v(), V(5.0, 6.0, 7.0));
+
+		q3.setX(2.0);
+		q3.setY(3.0);
+		q3.setZ(4.0);
+		shouldEqual(q3.w(), 10.0);
+		shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
+
+		shouldEqual(q.squaredMagnitude(), 30.0);
+		shouldEqual(squaredNorm(q), 30.0);
+		shouldEqualTolerance(q.magnitude(), std::sqrt(30.0), 1e-15);
+		shouldEqualTolerance(norm(q), std::sqrt(30.0), 1e-15);
+		shouldEqual(norm(q), abs(q));
+	}
+
+    void testStreamIO()
+    {
+        std::ostringstream out;
+		Q q(1.0, 2.0, 3.0, 4.0);
+
+        out << q;
+        shouldEqual(out.str(), "1 2 3 4");
+
+        std::istringstream in;
+		in.str("10 11 12 13");
+		in >> q;
+		shouldEqual(q, Q(10.0, 11.0, 12.0, 13.0));
+	}
+
+    void testOperators()
+    {
+		Q q(1.0, 2.0, 3.0, 4.0);
+
+		shouldEqual(+q, q);
+        shouldEqual(-q, Q(-1,-2,-3,-4));
+
+        shouldEqual(q+q, Q(2,4,6,8));
+        shouldEqual(q+2.0, Q(3,2,3,4));
+        shouldEqual(2.0+q, Q(3,2,3,4));
+
+        shouldEqual(Q(2,4,6,8) - q, q);
+        shouldEqual(q-2.0, Q(-1,2,3,4));
+        shouldEqual(2.0-q, Q(1,-2,-3,-4));
+
+		shouldEqual(Q(1,0,0,0)*Q(1,0,0,0), Q(1,0,0,0));
+		shouldEqual(Q(0,1,0,0)*Q(0,1,0,0), Q(-1,0,0,0));
+		shouldEqual(Q(0,0,1,0)*Q(0,0,1,0), Q(-1,0,0,0));
+		shouldEqual(Q(0,0,0,1)*Q(0,0,0,1), Q(-1,0,0,0));
+
+		shouldEqual(Q(0,1,0,0)*Q(0,0,1,0), Q(0,0,0,1));
+		shouldEqual(Q(0,0,1,0)*Q(0,1,0,0), Q(0,0,0,-1));
+		shouldEqual(Q(0,0,1,0)*Q(0,0,0,1), Q(0,1,0,0));
+		shouldEqual(Q(0,0,0,1)*Q(0,0,1,0), Q(0,-1,0,0));
+		shouldEqual(Q(0,0,0,1)*Q(0,1,0,0), Q(0,0,1,0));
+		shouldEqual(Q(0,1,0,0)*Q(0,0,0,1), Q(0,0,-1,0));
+
+        shouldEqual(q*q, Q(-28,4,6,8));
+		shouldEqual(q*2.0, Q(2,4,6,8));
+        shouldEqual(2.0*q, Q(2,4,6,8));
+
+        shouldEqual(q/q, Q(1,0,0,0));
+		shouldEqual(Q(2,4,6,8)/2.0, q);
+        shouldEqual(60.0/q, Q(2,-4,-6,-8));
+
+		shouldEqualTolerance(norm(q / norm(q)), 1.0, 1e-15);
+	}
+
+    void testRotation()
+    {
+		Q q(1.0, 2.0, 3.0, 4.0);
+		q /= norm(q);
+
+		double ref[3][3] = {{-2.0/3.0,  0.4/3.0, 2.2/3.0 }, 
+		                    { 2.0/3.0, -1.0/3.0, 2.0/3.0 },
+		                    { 1.0/3.0,  2.8/3.0, 0.4/3.0 } };
+
+		vigra::Matrix<double> m(3,3), mref(3,3, (double*)ref);
+		q.fillRotationMatrix(m);
+		shouldEqualSequenceTolerance(m.begin(), m.end(), mref.begin(), 1e-15);
+
+		double res[3][3];
+		q.fillRotationMatrix(res);
+		shouldEqualSequenceTolerance((double*)res, (double*)res+9, (double*)ref, 1e-15);
+
+		Q q1 = Q::createRotation(M_PI/2.0, V(1,0,0));
+		Q q2 = Q::createRotation(M_PI/2.0, V(0,1,0));
+		Q q3 = Q::createRotation(M_PI/2.0, V(0,0,1));
+		Q q4 = q3*(-q1)*q2*q1;
+
+		shouldEqualTolerance(norm(q4), 1.0, 1e-15);
+		shouldEqualTolerance(q4[0], 0.0, 1e-15);
+	}
 };
 
 struct FixedPointTest
@@ -2374,6 +2521,11 @@ struct MathTestSuite
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
         add( testCase(&RationalTest::testInf));
+
+        add( testCase(&QuaternionTest::testContents));
+        add( testCase(&QuaternionTest::testStreamIO));
+        add( testCase(&QuaternionTest::testOperators));
+        add( testCase(&QuaternionTest::testRotation));
 
         add( testCase(&LinalgTest::testOStreamShifting));
         add( testCase(&LinalgTest::testMatrix));
