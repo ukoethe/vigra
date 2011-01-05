@@ -45,6 +45,7 @@
 #include <vigra/inspectimage.hxx>
 #include <vigra/gaborfilter.hxx>
 #include <vigra/multi_fft.hxx>
+#include <vigra/multi_pointoperators.hxx>
 
 using namespace std;
 using namespace vigra;
@@ -152,11 +153,11 @@ struct FFTWComplexTest
         FFTWComplexImage::Iterator i = img.upperLeft();
 
         FFTWComplexImage::Accessor get = img.accessor();
-        FFTWRealAccessor real;
-        FFTWImaginaryAccessor imag;
-        FFTWMagnitudeAccessor mag;
-        FFTWPhaseAccessor phase;
-        FFTWWriteRealAccessor writeReal;
+        FFTWRealAccessor<> real;
+        FFTWImaginaryAccessor<> imag;
+        FFTWMagnitudeAccessor<> mag;
+        FFTWPhaseAccessor<> phase;
+        FFTWWriteRealAccessor<> writeReal;
 
         should(get(i) == clx3);
         should(get(i, Diff2D(1,1)) == clx2);
@@ -192,15 +193,15 @@ struct FFTWComplexTest
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
         vigra::FindAverage<FFTWComplex<>::value_type> average;
-        inspectImage(srcImageRange(out, vigra::FFTWImaginaryAccessor()), average);
+        inspectImage(srcImageRange(out, vigra::FFTWImaginaryAccessor<>()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
                          Compare1((double)w*h));
 
-        average = vigra::FindAverage<vigra::FFTWMagnitudeAccessor::value_type>();
-        inspectImage(srcImageRange(out, vigra::FFTWMagnitudeAccessor()), average);
+        average = vigra::FindAverage<vigra::FFTWMagnitudeAccessor<>::value_type>();
+        inspectImage(srcImageRange(out, vigra::FFTWMagnitudeAccessor<>()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
@@ -268,8 +269,10 @@ struct FFTWComplexTest
 
 struct MultiFFTTest
 {
-	typedef vigra::MultiArray<3, double> DArray3;
-	typedef vigra::MultiArray<3, FFTWComplex<double> > CArray3;
+	typedef double R;
+	typedef FFTWComplex<R> C;
+	typedef vigra::MultiArray<3, R> DArray3;
+	typedef vigra::MultiArray<3, C > CArray3;
 	typedef vigra::MultiArrayShape<3>::type Shape3;
 
 	void testFFTShift()
@@ -308,7 +311,7 @@ struct MultiFFTTest
 
 	void testFFT()
 	{
-        vigra::MultiArrayShape<2>::type s(256, 256);
+		vigra::MultiArrayShape<2>::type s(256, 256);
 
         vigra::FFTWComplexImage in(s[0], s[1]);
         for (int y=0; y<in.height(); y++)
@@ -318,45 +321,31 @@ struct MultiFFTTest
             }
 
         vigra::FFTWComplexImage out(in.size());
-		vigra::MultiArray<2, FFTWComplex<> > aout(s);
+		vigra::MultiArray<2, C> aout(s);
 
         fourierTransform(srcImageRange(in), destImage(out));
-		fourierTransform(vigra::MultiArrayView<2, FFTWComplex<> >(s, const_cast<FFTWComplex<>*>(in.data())), 
+		fourierTransform(vigra::MultiArrayView<2, C>(s, const_cast<C*>(in.data())), 
 			             aout);
 
 		shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
-#if 0
-		Shape3 s(5,5,5);
-		MultiArray<3, unsigned int> a(s);
 
-		for(int z=0; z<5; ++z)
-		{
-			for(int y=0; y<5; ++y)
-			{
-				for(int x=0; x<5; ++x)
-				{
-					unsigned int v = ((z > 2) ? 4 : 0) + ((y > 2) ? 2 : 0) + ((x > 2) ? 1 : 0);
-					a(x,y,z) = iref(x,y,z) = v;
-					v = ((z < 2) ? 4 : 0) + ((y < 2) ? 2 : 0) + ((x < 2) ? 1 : 0);
-					ref(x,y,z) = v;
-				}
-			}
-		}
+		vigra::MultiArray<2, R > rin(s);
+		copyImage(srcImageRange(in, FFTWRealAccessor<>()), destImage(rin));
 
-		fftShift(a);
-		should(a == ref);
-		ifftShift(a);
-		should(a == iref);
+		fourierTransform(rin, aout);
+		shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
 
-		MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
-		fftShift(b);
-		should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
-		ifftShift(b);
-		should(b == iref.subarray(Shape3(1,1,1), s));
-		fftShift(b);
-		fftShift(b);
-		should(b == iref.subarray(Shape3(1,1,1), s));
-#endif
+		Shape3 ss(64, 32, 96);
+		DArray3 a(ss), ra(ss);
+		initMultiArray(destMultiArrayRange(a), &rand);
+		a /= (double)RAND_MAX;
+
+		CArray3 r(ss), ir(ss);
+		fourierTransform(a, r);
+		fourierTransformInverse(r, ir);
+
+		copyMultiArray(srcMultiArrayRange(ir, FFTWRealAccessor<>()), destMultiArray(ra));
+		shouldEqualSequenceTolerance(a.data(), a.data()+a.size(), ra.data(), 1e-10);
 	}
 };
 
@@ -448,13 +437,13 @@ struct GaborTests
 		cout << "Applying filter...\n";
 		FFTWComplexImage result(w, h);
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(result));
-		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
+		checkImage(srcImageRange(result, FFTWMagnitudeAccessor<>()), "gaborresult.xv");
 
 		BasicImage<fftw_real> realPart(w, h);
 		applyFourierFilter(srcImageRange(image), srcImage(filter), destImage(realPart));
 
 		CompareFunctor cmp;
-		inspectTwoImages(srcImageRange(result, FFTWRealAccessor()),
+		inspectTwoImages(srcImageRange(result, FFTWRealAccessor<>()),
 						 srcImage(realPart), cmp);
 		cout << "difference between real parts: " << cmp() << endl;
 		shouldEqualTolerance(cmp(), 0.0, 1e-4);
@@ -464,7 +453,7 @@ struct GaborTests
 		applyFourierFilter(srcImageRange(image), srcImage(filter),
 						   destImage(vectorResult));
 		CompareFunctor iCmp;
-		inspectTwoImages(srcImageRange(result, FFTWImaginaryAccessor()),
+		inspectTwoImages(srcImageRange(result, FFTWImaginaryAccessor<>()),
 						 srcImage(vectorResult,
 								  VectorComponentAccessor<FVector2Image::PixelType>(1)),
 						 iCmp);
@@ -477,7 +466,7 @@ struct GaborTests
 		copyImage(srcImageRange(image), destIter(bigUL));
 		applyFourierFilter(srcIterRange(bigUL, bigUL + Diff2D(w, h)),
 						   srcImage(filter), destImage(result));
-		checkImage(srcImageRange(result, FFTWMagnitudeAccessor()), "gaborresult.xv");
+		checkImage(srcImageRange(result, FFTWMagnitudeAccessor<>()), "gaborresult.xv");
 #if 0
 		cout << "Creating plans with measurement...\n";
 		fftwnd_plan forwardPlan=
@@ -499,14 +488,14 @@ struct GaborTests
 		GaborFilterFamily<FImage> filters(w, h, 8, 2);
 		ImageArray<FFTWComplexImage> results((unsigned int)filters.size(), filters.imageSize());
 		applyFourierFilterFamily(srcImageRange(image), filters, results);
-		checkImage(srcImageRange(results[filters.filterIndex(1,1)], FFTWMagnitudeAccessor()),
+		checkImage(srcImageRange(results[filters.filterIndex(1,1)], FFTWMagnitudeAccessor<>()),
 				   "gaborresult.xv");
 
 		ImageArray<FImage> realParts((unsigned int)filters.size(), filters.imageSize());
 		applyFourierFilterFamily(srcImageRange(image), filters, realParts);
 
 		CompareFunctor cmp;
-		inspectTwoImages(srcImageRange(results[3], FFTWRealAccessor()),
+		inspectTwoImages(srcImageRange(results[3], FFTWRealAccessor<>()),
 						 srcImage(realParts[3]), cmp);
 		cout << "difference between real parts: " << cmp() << endl;
 		shouldEqualTolerance(cmp(), 0.0, 1e-4);

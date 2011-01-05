@@ -873,12 +873,13 @@ typedef BasicImage<FFTWComplex<> > FFTWComplexImage;
     <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWRealAccessor
 {
   public:
 
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read real part at iterator position.
     template <class ITERATOR>
@@ -923,11 +924,12 @@ class FFTWRealAccessor
     <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWImaginaryAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read imaginary part at iterator position.
     template <class ITERATOR>
@@ -973,11 +975,13 @@ class FFTWImaginaryAccessor
     <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
-class FFTWWriteRealAccessor: public FFTWRealAccessor
+template <class Real = double>
+class FFTWWriteRealAccessor
+: public FFTWRealAccessor<Real>
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /** Write real number at iterator position. Set imaginary part
             to 0.
@@ -1004,11 +1008,12 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
     <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWMagnitudeAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read magnitude at iterator position.
     template <class ITERATOR>
@@ -1029,11 +1034,12 @@ class FFTWMagnitudeAccessor
     <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWPhaseAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read phase at iterator position.
     template <class ITERATOR>
@@ -1453,7 +1459,7 @@ void fourierTransform(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     // ...and call the complex -> complex version of the algorithm
     FFTWComplexImage const & cworkImage = workImage;
@@ -1600,7 +1606,7 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     // ...and call the impl
     FFTWComplexImage const & cworkImage = workImage;
@@ -1825,7 +1831,7 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     FFTWComplexImage const & cworkImage = workImage;
     applyFourierFilterFamilyImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
