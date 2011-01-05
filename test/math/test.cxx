@@ -392,6 +392,27 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::noncentralChi2(3, 2.0, 2.0), 0.13846402271767755, 1e-7);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
+
+		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
+		for(int i=0; i<5; ++i)
+		{
+			double x = args[i], x2 = x*x;
+			shouldEqualTolerance(vigra::legendre(x, 0), 1.0, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 1), x, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2), 0.5*(3.0*x2-1.0), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 3), 0.5*x*(5.0*x2-3.0), 1e-15);
+
+			shouldEqualTolerance(vigra::legendre(x, 0, 0), 1.0, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 1, 0), x, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 1, 1), -std::sqrt(1.0-x2), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2, 0), 0.5*(3.0*x2-1.0), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2, 1), -3.0*x*std::sqrt(1.0-x2), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2, 2), 3.0*(1.0-x2), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 4, 2), 7.5*(7.0*x2-1.0)*(1.0-x2), 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 1, -1), -vigra::legendre(x, 1, 1) / 2.0, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2, -1), -vigra::legendre(x, 2, 1) / 6.0, 1e-15);
+			shouldEqualTolerance(vigra::legendre(x, 2, -2), vigra::legendre(x, 2, 2) / 24.0, 1e-15);
+		}
     }
 
     void closeAtToleranceTest()

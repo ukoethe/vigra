@@ -1089,7 +1089,83 @@ inline double noncentralChi2CDFApprox(unsigned int degreesOfFreedom, double nonc
     return detail::noncentralChi2CDFApprox(degreesOfFreedom, noncentrality, arg);
 }
 
+namespace detail  {
 
+// computes (l+m)! / (l-m)!
+// l and m must be positive
+template <class T>
+T facLM(T l, T m)
+{
+	T tmp = NumericTraits<T>::one();
+    for(T f = l-m+1; f <= l+m; ++f)
+        tmp *= f;
+    return tmp;
+}
+
+} // namespace detail
+
+    /*! Associated Legendre polynomial. 
+
+        Computes the value of the associated Legendre polynomial of order <tt>l, m</tt> 
+		for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, 
+		otherwise an exception is thrown. The standard Legendre polynomials are the 
+		special case <tt>m == 0</tt>.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class REAL>
+REAL legendre(REAL x, unsigned int l, int m)
+{
+	vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
+    if (m<0)
+    {
+		m = -m;
+		REAL s = odd(m)
+			       ? -1.0
+				   :  1.0;
+		return legendre(x,l,m) * s / detail::facLM<REAL>(l,m);
+    }
+    REAL result = 1.0;
+    if (m>0)
+    {
+		REAL r = std::sqrt( (1.0-x) * (1.0+x) );
+        REAL f = 1.0;
+        for (int i=1; i<=m; i++)
+        {
+            result *= (-f) * r;
+            f += 2.0;
+        }
+    }
+    if(l==m) 
+		return result;
+
+    REAL result_1 = x * (2.0 * m + 1.0) * result;
+    if(l==m+1) 
+		return result_1;
+    REAL other = 0.0;
+    for(unsigned int i=m+2; i<=l; ++i)
+    {
+        other = ( (2.0*i-1.0) * x * result_1 - (i+m-1.0)*result) / (i-m);
+        result = result_1;
+        result_1 = other;
+    }
+    return other;
+}
+
+    /*! Legendre polynomial. 
+
+        Computes the value of the Legendre polynomial of order <tt>l</tt> for argument <tt>x</tt>.
+		<tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, otherwise an exception is thrown.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class REAL>
+REAL legendre(REAL x, unsigned int l)
+{
+	return legendre(x, l, 0);
+}
 
 namespace detail {
 
