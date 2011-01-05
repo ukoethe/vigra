@@ -66,7 +66,7 @@ struct Compare1
 
 struct FFTWComplexTest
 {
-    FFTWComplex clx0, clx1, clx2, clx3;
+    FFTWComplex<> clx0, clx1, clx2, clx3;
 
     template <class VECTOR>
     void printVector(VECTOR const & v)
@@ -103,10 +103,10 @@ struct FFTWComplexTest
 
     void testComparison()
     {
-        should(clx0 == FFTWComplex(0.0, 0.0));
-        should(clx1 == FFTWComplex(2.0, 0.0));
-        should(clx2 == FFTWComplex(0.0, -2.0));
-        should(clx3 == FFTWComplex(2.0, -2.0));
+        should(clx0 == FFTWComplex<>(0.0, 0.0));
+        should(clx1 == FFTWComplex<>(2.0, 0.0));
+        should(clx2 == FFTWComplex<>(0.0, -2.0));
+        should(clx3 == FFTWComplex<>(2.0, -2.0));
         should(clx0 != clx1);
         should(clx0 != clx2);
         should(clx1 != clx2);
@@ -119,26 +119,26 @@ struct FFTWComplexTest
         shouldEqual(abs(clx1) , 2.0);
         shouldEqual(abs(clx2) , 2.0);
         shouldEqual(abs(clx3) , sqrt(8.0));
-        should(conj(clx3) == FFTWComplex(2.0, 2.0));
+        should(conj(clx3) == FFTWComplex<>(2.0, 2.0));
 
         shouldEqual(clx1.phase() , 0.0);
         shouldEqual(sin(clx2.phase()) , -1.0);
         shouldEqualTolerance(sin(clx3.phase()), -sqrt(2.0)/2.0, 1.0e-7);
 
-        should(FFTWComplex(2.0, -2.0) == clx1 + clx2);
+        should(FFTWComplex<>(2.0, -2.0) == clx1 + clx2);
 
         should(clx0 == clx1 - clx1);
         should(clx0 == clx2 - clx2);
-        should(FFTWComplex(2.0, 2.0) == clx1 - clx2);
+        should(FFTWComplex<>(2.0, 2.0) == clx1 - clx2);
 
-        should(2.0*clx1 == FFTWComplex(4.0, 0.0));
-        should(2.0*clx2 == FFTWComplex(0.0, -4.0));
-        should(clx1*clx2 == FFTWComplex(0.0, -4.0));
+        should(2.0*clx1 == FFTWComplex<>(4.0, 0.0));
+        should(2.0*clx2 == FFTWComplex<>(0.0, -4.0));
+        should(clx1*clx2 == FFTWComplex<>(0.0, -4.0));
         should(clx3*conj(clx3) == clx3.squaredMagnitude());
 
-        should(clx1/2.0 == FFTWComplex(1.0, 0.0));
-        should(clx2/2.0 == FFTWComplex(0.0, -1.0));
-        should(clx2/clx1 == FFTWComplex(0.0, -1.0));
+        should(clx1/2.0 == FFTWComplex<>(1.0, 0.0));
+        should(clx2/2.0 == FFTWComplex<>(0.0, -1.0));
+        should(clx2/clx1 == FFTWComplex<>(0.0, -1.0));
         should(clx3*conj(clx3) == clx3.squaredMagnitude());
 
     }
@@ -190,7 +190,7 @@ struct FFTWComplexTest
         fourierTransform(srcImageRange(in), destImage(out));
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
-        vigra::FindAverage<FFTWComplex::value_type> average;
+        vigra::FindAverage<FFTWComplex<>::value_type> average;
         inspectImage(srcImageRange(out, vigra::FFTWImaginaryAccessor()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
@@ -215,7 +215,7 @@ struct FFTWComplexTest
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
                          Compare1((double)w*h));
 
-        vigra::FindAverage<FFTWComplex> caverage;
+        vigra::FindAverage<FFTWComplex<> > caverage;
         inspectImage(srcImageRange(out), caverage);
 
         shouldEqualTolerance(caverage().magnitude(), 0.0, 1e-14);
