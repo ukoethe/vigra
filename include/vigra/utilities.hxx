@@ -79,8 +79,15 @@ VIGRA_AS_STRING(void *)
 
 #undef VIGRA_AS_STRING
 
+template <class T>
+std::string & operator<<(std::string & s, T const & t)
+{
+    std::stringstream ss;
+    ss << t; 
+    return s += ss.str();
+}
 
-} // namespace std
+} // namespace vigra
 
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.

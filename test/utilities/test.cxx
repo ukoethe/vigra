@@ -459,6 +459,17 @@ struct MetaprogrammingTest
     }
 };
 
+void stringTest()
+{
+	std::string s;
+	s << "Hallo " << 1 << " " << 2.0 << " " << false;
+	shouldEqual(s, std::string("Hallo 1 2 0"));
+
+	shouldEqual(asString(1), "1");
+	shouldEqual(asString(2.0), "2");
+	shouldEqual(asString(false), "0");
+}
+
 struct UtilitiesTestSuite
 : public vigra::test_suite
 {
@@ -476,6 +487,7 @@ struct UtilitiesTestSuite
         add( testCase( &MetaprogrammingTest::testInt));
         add( testCase( &MetaprogrammingTest::testLogic));
         add( testCase( &MetaprogrammingTest::testTypeTools));
+        add( testCase( &stringTest));
     }
 };
 
