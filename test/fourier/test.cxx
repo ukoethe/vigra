@@ -44,6 +44,7 @@
 #include <vigra/impex.hxx>
 #include <vigra/inspectimage.hxx>
 #include <vigra/gaborfilter.hxx>
+#include <vigra/multi_fft.hxx>
 
 using namespace std;
 using namespace vigra;
@@ -265,6 +266,100 @@ struct FFTWComplexTest
     }
 };
 
+struct MultiFFTTest
+{
+	typedef vigra::MultiArray<3, double> DArray3;
+	typedef vigra::MultiArray<3, FFTWComplex<double> > CArray3;
+	typedef vigra::MultiArrayShape<3>::type Shape3;
+
+	void testFFTShift()
+	{
+		Shape3 s(5,5,5);
+		vigra::MultiArray<3, unsigned int> a(s), ref(s), iref(s);
+
+		for(int z=0; z<5; ++z)
+		{
+			for(int y=0; y<5; ++y)
+			{
+				for(int x=0; x<5; ++x)
+				{
+					unsigned int v = ((z > 2) ? 4 : 0) + ((y > 2) ? 2 : 0) + ((x > 2) ? 1 : 0);
+					a(x,y,z) = iref(x,y,z) = v;
+					v = ((z < 2) ? 4 : 0) + ((y < 2) ? 2 : 0) + ((x < 2) ? 1 : 0);
+					ref(x,y,z) = v;
+				}
+			}
+		}
+
+		fftShift(a);
+		should(a == ref);
+		ifftShift(a);
+		should(a == iref);
+
+		vigra::MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
+		fftShift(b);
+		should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
+		ifftShift(b);
+		should(b == iref.subarray(Shape3(1,1,1), s));
+		fftShift(b);
+		fftShift(b);
+		should(b == iref.subarray(Shape3(1,1,1), s));
+	}
+
+	void testFFT()
+	{
+        vigra::MultiArrayShape<2>::type s(256, 256);
+
+        vigra::FFTWComplexImage in(s[0], s[1]);
+        for (int y=0; y<in.height(); y++)
+            for (int x=0; x<in.width(); x++)
+            {
+                in(x,y)= rand()/(double)RAND_MAX;
+            }
+
+        vigra::FFTWComplexImage out(in.size());
+		vigra::MultiArray<2, FFTWComplex<> > aout(s);
+
+        fourierTransform(srcImageRange(in), destImage(out));
+		fourierTransform(vigra::MultiArrayView<2, FFTWComplex<> >(s, const_cast<FFTWComplex<>*>(in.data())), 
+			             aout);
+
+		shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
+#if 0
+		Shape3 s(5,5,5);
+		MultiArray<3, unsigned int> a(s);
+
+		for(int z=0; z<5; ++z)
+		{
+			for(int y=0; y<5; ++y)
+			{
+				for(int x=0; x<5; ++x)
+				{
+					unsigned int v = ((z > 2) ? 4 : 0) + ((y > 2) ? 2 : 0) + ((x > 2) ? 1 : 0);
+					a(x,y,z) = iref(x,y,z) = v;
+					v = ((z < 2) ? 4 : 0) + ((y < 2) ? 2 : 0) + ((x < 2) ? 1 : 0);
+					ref(x,y,z) = v;
+				}
+			}
+		}
+
+		fftShift(a);
+		should(a == ref);
+		ifftShift(a);
+		should(a == iref);
+
+		MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
+		fftShift(b);
+		should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
+		ifftShift(b);
+		should(b == iref.subarray(Shape3(1,1,1), s));
+		fftShift(b);
+		fftShift(b);
+		should(b == iref.subarray(Shape3(1,1,1), s));
+#endif
+	}
+};
+
 struct FFTWTestSuite
 : public vigra::test_suite
 {
@@ -280,6 +375,8 @@ struct FFTWTestSuite
         add( testCase(&FFTWComplexTest::testForwardBackwardTrans));
         add( testCase(&FFTWComplexTest::testRearrangeQuadrants));
 
+        add( testCase(&MultiFFTTest::testFFTShift));
+        add( testCase(&MultiFFTTest::testFFT));
     }
 };
 

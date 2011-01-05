@@ -46,12 +46,12 @@
 namespace vigra {
 
 template <>
-struct NumpyArrayValuetypeTraits<FFTWComplex<fftwf_complex> >
+struct NumpyArrayValuetypeTraits<FFTWComplex<float> >
 {
     static bool isValuetypeCompatible(PyArrayObject const * obj) /* obj must not be NULL */
     {
         return PyArray_EquivTypenums(NPY_CFLOAT, PyArray_DESCR((PyObject *)obj)->type_num) &&
-               PyArray_ITEMSIZE((PyObject *)obj) == sizeof(FFTWComplex<fftwf_complex>);
+               PyArray_ITEMSIZE((PyObject *)obj) == sizeof(FFTWComplex<float>);
     }
 
     static NPY_TYPES const typeCode = NPY_CFLOAT;
@@ -87,16 +87,16 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
 
 template <unsigned int N, int SIGN>
 NumpyAnyArray
-pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<fftwf_complex> > > in, 
-					   NumpyArray<N, Multiband<FFTWComplex<fftwf_complex> > > res)
+pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
+					   NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 {
     res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
         "fourierTransform(): Output array must have the same shape and stride ordering as input array.", true);
 
     for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
     {
-        MultiArrayView<N-1, FFTWComplex<fftwf_complex> , StridedArrayTag> bin = in.bindOuter(k).permuteStridesDescending();
-        MultiArrayView<N-1, FFTWComplex<fftwf_complex> , StridedArrayTag> bres = res.bindOuter(k).permuteStridesDescending();
+        MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bin = in.bindOuter(k).permuteStridesDescending();
+        MultiArrayView<N-1, FFTWComplex<float> , StridedArrayTag> bres = res.bindOuter(k).permuteStridesDescending();
 
         TinyVector<int, N-1> bshape(bin.shape()), itotal(bin.shape()), ototal(bres.shape());
         float norm = (float)bshape[0];
@@ -118,7 +118,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<fftwf_complex> > > in
         fftwf_destroy_plan(plan);
         if(SIGN == FFTW_BACKWARD)
         {
-            bres *= FFTWComplex<fftwf_complex>(1.0f / norm);
+            bres *= FFTWComplex<float>(1.0f / norm);
         }
     }
     return res;
@@ -131,12 +131,12 @@ pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
     {
       case 2:
       {
-        NumpyArray<3, Multiband<FFTWComplex<fftwf_complex> > > inc(in, true), out(res, false);
+        NumpyArray<3, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
         return pythonFourierTransform<3, FFTW_FORWARD>(inc, out);
       }
       case 3:
       {
-        NumpyArray<4, Multiband<FFTWComplex<fftwf_complex> > > inc(in, true), out(res, false);
+        NumpyArray<4, Multiband<FFTWComplex<float> > > inc(in, true), out(res, false);
         return pythonFourierTransform<4, FFTW_FORWARD>(inc, out);
       }
       default:
