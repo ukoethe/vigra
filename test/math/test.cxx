@@ -539,10 +539,15 @@ struct FunctionsTest
 
 			for(int k=0; k<3; ++k)
 			{
+				double f = vigra::odd(n) ? -1.0 : 1.0;
 				shouldEqualTolerance(vigra::besselj((double)n, x[k]+n) - besseljref[k+3*n], 0.0, 1e-12);
+				shouldEqualTolerance(vigra::besselj(-(double)n, x[k]+n) - f*besseljref[k+3*n], 0.0, 1e-12);
 				shouldEqualTolerance(vigra::bessely((double)n, x[k]+n) - besselyref[k+3*n], 0.0, 1e-12);
+				shouldEqualTolerance(vigra::bessely((double)-n, x[k]+n) - f*besselyref[k+3*n], 0.0, 1e-12);
 				shouldEqualTolerance(vigra::besseli((double)n, x[k]+n), besseliref[k+3*n], 1e-12);
+				shouldEqualTolerance(vigra::besseli((double)-n, x[k]+n), besseliref[k+3*n], 1e-12);
 				shouldEqualTolerance(vigra::besselk((double)n, x[k]+n) - besselkref[k+3*n], 0.0, 1e-12);
+				shouldEqualTolerance(vigra::besselk((double)-n, x[k]+n) - besselkref[k+3*n], 0.0, 1e-12);
 			}
 		}
 	}
