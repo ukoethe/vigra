@@ -50,16 +50,25 @@
 
 /*! \page MathConstants Mathematical Constants
 
-    <TT>M_PI, M_SQRT2</TT>
+    <TT>M_PI, M_SQRT2 etc.</TT>
 
     <b>\#include</b> \<vigra/mathutil.hxx\>
 
-    Since <TT>M_PI</TT> and <TT>M_SQRT2</TT> are not officially standardized,
-    we provide definitions here for those compilers that don't support them.
+    Since mathematical constants sucha s <TT>M_PI</TT> and <TT>M_SQRT2</TT> 
+    are not officially standardized, we provide definitions here for those 
+    compilers that don't support them.
 
     \code
     #ifndef M_PI
     #    define M_PI     3.14159265358979323846
+    #endif
+
+    #ifndef M_SQRT2
+    #    define M_2_PI   0.63661977236758134308
+    #endif
+
+    #ifndef M_PI_2
+    #    define M_PI_2   1.57079632679489661923
     #endif
 
     #ifndef M_SQRT2
@@ -69,6 +78,14 @@
 */
 #ifndef M_PI
 #    define M_PI     3.14159265358979323846
+#endif
+
+#ifndef M_2_PI
+#    define M_2_PI   0.63661977236758134308
+#endif
+
+#ifndef M_PI_2
+#    define M_PI_2   1.57079632679489661923
 #endif
 
 #ifndef M_SQRT2
@@ -1167,6 +1184,59 @@ REAL legendre(REAL x, unsigned int l)
     return legendre(x, l, 0);
 }
 
+    /*! sin(pi*x). 
+
+        Essentially calls <tt>std::sin(M_PI*x)</tt> but uses a more accurate implementation
+        to make sure that <tt>sin_pi(1.0) == 0.0</tt> (which does not hold for
+        <tt>std::sin(M_PI)</tt> due to round-off error), and tt>sin_pi(0.5) == 1.0</tt>.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class REAL>
+REAL sin_pi(REAL x)
+{
+    if(x < 0.0)
+        return -sin_pi(-x);
+    if(x < 0.5)
+        return std::sin(M_PI * x);
+
+    bool invert = false;
+    if(x < 1.0)
+    {
+        invert = true;
+        x = -x;
+    }
+
+    REAL rem = std::floor(x);
+    if(odd((int)rem))
+        invert = !invert;
+    rem = x - rem;
+    if(rem > 0.5)
+        rem = 1.0 - rem;
+    if(rem == 0.5)
+        rem = NumericTraits<REAL>::one();
+    else
+        rem = std::sin(M_PI * rem);
+    return invert 
+              ? -rem 
+              : rem;
+}
+
+    /*! cos(pi*x). 
+
+        Essentially calls <tt>std::cos(M_PI*x)</tt> but uses a more accurate implementation
+        to make sure that <tt>cos_pi(1.0) == -1.0</tt> and tt>cos_pi(0.5) == 0.0</tt>.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <class REAL>
+REAL cos_pi(REAL x)
+{
+    return sin_pi(x+0.5);
+}
+
 namespace detail {
 
 template <class REAL>
@@ -1249,7 +1319,7 @@ REAL gammaImpl(REAL x)
             ga *= r;
             if (x < 0.0) 
             {
-                ga = -M_PI/(x*ga*std::sin(M_PI*x));
+                ga = -M_PI/(x*ga*sin_pi(x));
             }
         }
     }
