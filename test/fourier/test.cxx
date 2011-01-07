@@ -46,6 +46,7 @@
 #include <vigra/gaborfilter.hxx>
 #include <vigra/multi_fft.hxx>
 #include <vigra/multi_pointoperators.hxx>
+#include "test.hxx"
 
 using namespace std;
 using namespace vigra;
@@ -294,22 +295,22 @@ struct MultiFFTTest
 			}
 		}
 
-		fftShift(a);
+		moveDCToCenter(a);
 		should(a == ref);
-		ifftShift(a);
+		moveDCToUpperLeft(a);
 		should(a == iref);
 
 		vigra::MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
-		fftShift(b);
+		moveDCToCenter(b);
 		should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
-		ifftShift(b);
+		moveDCToUpperLeft(b);
 		should(b == iref.subarray(Shape3(1,1,1), s));
-		fftShift(b);
-		fftShift(b);
+		moveDCToCenter(b);
+		moveDCToCenter(b);
 		should(b == iref.subarray(Shape3(1,1,1), s));
 	}
 
-	void testFFT()
+	void testFFT2D()
 	{
 		vigra::MultiArrayShape<2>::type s(256, 256);
 
@@ -334,18 +335,32 @@ struct MultiFFTTest
 
 		fourierTransform(rin, aout);
 		shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
+	}
 
-		Shape3 ss(64, 32, 96);
-		DArray3 a(ss), ra(ss);
-		initMultiArray(destMultiArrayRange(a), &rand);
-		a /= (double)RAND_MAX;
+	void testFFT3D()
+	{
+		Shape3 s(32, 24, 16);
+		CArray3 r(s), ir(s);
 
-		CArray3 r(ss), ir(ss);
-		fourierTransform(a, r);
+		fourierTransform(MultiArrayView<3, double>(s, f3data), r);
+
+		DArray3 re(s);
+		copyMultiArray(srcMultiArrayRange(r, FFTWRealAccessor<>()), destMultiArray(re));
+		shouldEqualSequenceTolerance(re.data(), re.data()+re.size(), f3ref, 1e-10);
+
+		FindMinMax<double> minmax;
+		inspectMultiArray(srcMultiArrayRange(r, FFTWImaginaryAccessor<>()), minmax);
+		shouldEqualTolerance(minmax.min, 0.0, 1e-10);
+		shouldEqualTolerance(minmax.max, 0.0, 1e-10);
+
 		fourierTransformInverse(r, ir);
 
-		copyMultiArray(srcMultiArrayRange(ir, FFTWRealAccessor<>()), destMultiArray(ra));
-		shouldEqualSequenceTolerance(a.data(), a.data()+a.size(), ra.data(), 1e-10);
+		copyMultiArray(srcMultiArrayRange(ir, FFTWRealAccessor<>()), destMultiArray(re));
+		shouldEqualSequenceTolerance(re.data(), re.data()+re.size(), f3data, 1e-10);
+
+		inspectMultiArray(srcMultiArrayRange(ir, FFTWImaginaryAccessor<>()), minmax);
+		shouldEqualTolerance(minmax.min, 0.0, 1e-10);
+		shouldEqualTolerance(minmax.max, 0.0, 1e-10);
 	}
 };
 
@@ -365,7 +380,8 @@ struct FFTWTestSuite
         add( testCase(&FFTWComplexTest::testRearrangeQuadrants));
 
         add( testCase(&MultiFFTTest::testFFTShift));
-        add( testCase(&MultiFFTTest::testFFT));
+        add( testCase(&MultiFFTTest::testFFT2D));
+        add( testCase(&MultiFFTTest::testFFT3D));
     }
 };
 

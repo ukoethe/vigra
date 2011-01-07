@@ -194,7 +194,7 @@ namespace vigra {
     \endcode
 */
 template <unsigned int N, class T, class C>
-void fftShift(MultiArrayView<N, T, C> a)
+void moveDCToCenter(MultiArrayView<N, T, C> a)
 {
     typedef typename MultiArrayView<N, T, C>::traverser Traverser;
     typedef MultiArrayNavigator<Traverser, N> Navigator;
@@ -232,7 +232,7 @@ void fftShift(MultiArrayView<N, T, C> a)
 }
 
 template <unsigned int N, class T, class C>
-void ifftShift(MultiArrayView<N, T, C> a)
+void moveDCToUpperLeft(MultiArrayView<N, T, C> a)
 {
     typedef typename MultiArrayView<N, T, C>::traverser Traverser;
     typedef MultiArrayNavigator<Traverser, N> Navigator;
