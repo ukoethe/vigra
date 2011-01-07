@@ -393,6 +393,17 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
 
+		shouldEqual(vigra::gamma(4.0), 6.0);
+		shouldEqualTolerance(vigra::gamma(0.1), 9.5135076986687306, 1e-15);
+		shouldEqualTolerance(vigra::gamma(3.2), 2.4239654799353683, 1e-15);
+		shouldEqualTolerance(vigra::gamma(170.2), 1.1918411166366696e+305, 1e-15);
+		shouldEqualTolerance(vigra::gamma(-0.1), -10.686287021193193, 1e-14);
+		shouldEqualTolerance(vigra::gamma(-3.2), 0.689056412005979, 1e-14);
+		shouldEqualTolerance(vigra::gamma(-170.2), -2.6348340538196879e-307, 1e-14);
+		try { vigra::gamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+		try { vigra::gamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+
+
 		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
 		for(int i=0; i<5; ++i)
 		{

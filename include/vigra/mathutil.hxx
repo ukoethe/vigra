@@ -278,87 +278,87 @@ class IntSquareRoot
 
 template <class T>
 UInt32 IntSquareRoot<T>::sqq_table[] = {
-	       0,  16,  22,  27,  32,  35,  39,  42,  45,  48,  50,  53,  55,  57,
-	      59,  61,  64,  65,  67,  69,  71,  73,  75,  76,  78,  80,  81,  83,
-	      84,  86,  87,  89,  90,  91,  93,  94,  96,  97,  98,  99, 101, 102,
-	     103, 104, 106, 107, 108, 109, 110, 112, 113, 114, 115, 116, 117, 118,
-	     119, 120, 121, 122, 123, 124, 125, 126, 128, 128, 129, 130, 131, 132,
-	     133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 144, 145,
-	     146, 147, 148, 149, 150, 150, 151, 152, 153, 154, 155, 155, 156, 157,
-	     158, 159, 160, 160, 161, 162, 163, 163, 164, 165, 166, 167, 167, 168,
-	     169, 170, 170, 171, 172, 173, 173, 174, 175, 176, 176, 177, 178, 178,
-	     179, 180, 181, 181, 182, 183, 183, 184, 185, 185, 186, 187, 187, 188,
-	     189, 189, 190, 191, 192, 192, 193, 193, 194, 195, 195, 196, 197, 197,
-	     198, 199, 199, 200, 201, 201, 202, 203, 203, 204, 204, 205, 206, 206,
-	     207, 208, 208, 209, 209, 210, 211, 211, 212, 212, 213, 214, 214, 215,
-	     215, 216, 217, 217, 218, 218, 219, 219, 220, 221, 221, 222, 222, 223,
-	     224, 224, 225, 225, 226, 226, 227, 227, 228, 229, 229, 230, 230, 231,
-	     231, 232, 232, 233, 234, 234, 235, 235, 236, 236, 237, 237, 238, 238,
-	     239, 240, 240, 241, 241, 242, 242, 243, 243, 244, 244, 245, 245, 246,
-	     246, 247, 247, 248, 248, 249, 249, 250, 250, 251, 251, 252, 252, 253,
-	     253, 254, 254, 255
+           0,  16,  22,  27,  32,  35,  39,  42,  45,  48,  50,  53,  55,  57,
+          59,  61,  64,  65,  67,  69,  71,  73,  75,  76,  78,  80,  81,  83,
+          84,  86,  87,  89,  90,  91,  93,  94,  96,  97,  98,  99, 101, 102,
+         103, 104, 106, 107, 108, 109, 110, 112, 113, 114, 115, 116, 117, 118,
+         119, 120, 121, 122, 123, 124, 125, 126, 128, 128, 129, 130, 131, 132,
+         133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 144, 145,
+         146, 147, 148, 149, 150, 150, 151, 152, 153, 154, 155, 155, 156, 157,
+         158, 159, 160, 160, 161, 162, 163, 163, 164, 165, 166, 167, 167, 168,
+         169, 170, 170, 171, 172, 173, 173, 174, 175, 176, 176, 177, 178, 178,
+         179, 180, 181, 181, 182, 183, 183, 184, 185, 185, 186, 187, 187, 188,
+         189, 189, 190, 191, 192, 192, 193, 193, 194, 195, 195, 196, 197, 197,
+         198, 199, 199, 200, 201, 201, 202, 203, 203, 204, 204, 205, 206, 206,
+         207, 208, 208, 209, 209, 210, 211, 211, 212, 212, 213, 214, 214, 215,
+         215, 216, 217, 217, 218, 218, 219, 219, 220, 221, 221, 222, 222, 223,
+         224, 224, 225, 225, 226, 226, 227, 227, 228, 229, 229, 230, 230, 231,
+         231, 232, 232, 233, 234, 234, 235, 235, 236, 236, 237, 237, 238, 238,
+         239, 240, 240, 241, 241, 242, 242, 243, 243, 244, 244, 245, 245, 246,
+         246, 247, 247, 248, 248, 249, 249, 250, 250, 251, 251, 252, 252, 253,
+         253, 254, 254, 255
 };
 
 template <class T>
 UInt32 IntSquareRoot<T>::exec(UInt32 x) 
 {
     UInt32 xn;
-	if (x >= 0x10000)
-	    if (x >= 0x1000000)
-	        if (x >= 0x10000000)
-	            if (x >= 0x40000000) {
-	                if (x >= (UInt32)65535*(UInt32)65535)
-	                    return 65535;
-	                xn = sqq_table[x>>24] << 8;
-	            } else
-	                xn = sqq_table[x>>22] << 7;
-	        else
-	            if (x >= 0x4000000)
-	                xn = sqq_table[x>>20] << 6;
-	            else
-	                xn = sqq_table[x>>18] << 5;
-	    else {
-	        if (x >= 0x100000)
-	            if (x >= 0x400000)
-	                xn = sqq_table[x>>16] << 4;
-	            else
-	                xn = sqq_table[x>>14] << 3;
-	        else
-	            if (x >= 0x40000)
-	                xn = sqq_table[x>>12] << 2;
-	            else
-	                xn = sqq_table[x>>10] << 1;
+    if (x >= 0x10000)
+        if (x >= 0x1000000)
+            if (x >= 0x10000000)
+                if (x >= 0x40000000) {
+                    if (x >= (UInt32)65535*(UInt32)65535)
+                        return 65535;
+                    xn = sqq_table[x>>24] << 8;
+                } else
+                    xn = sqq_table[x>>22] << 7;
+            else
+                if (x >= 0x4000000)
+                    xn = sqq_table[x>>20] << 6;
+                else
+                    xn = sqq_table[x>>18] << 5;
+        else {
+            if (x >= 0x100000)
+                if (x >= 0x400000)
+                    xn = sqq_table[x>>16] << 4;
+                else
+                    xn = sqq_table[x>>14] << 3;
+            else
+                if (x >= 0x40000)
+                    xn = sqq_table[x>>12] << 2;
+                else
+                    xn = sqq_table[x>>10] << 1;
 
-	        goto nr1;
-	    }
-	else
-	    if (x >= 0x100) {
-	        if (x >= 0x1000)
-	            if (x >= 0x4000)
-	                xn = (sqq_table[x>>8] >> 0) + 1;
-	            else
-	                xn = (sqq_table[x>>6] >> 1) + 1;
-	        else
-	            if (x >= 0x400)
-	                xn = (sqq_table[x>>4] >> 2) + 1;
-	            else
-	                xn = (sqq_table[x>>2] >> 3) + 1;
+            goto nr1;
+        }
+    else
+        if (x >= 0x100) {
+            if (x >= 0x1000)
+                if (x >= 0x4000)
+                    xn = (sqq_table[x>>8] >> 0) + 1;
+                else
+                    xn = (sqq_table[x>>6] >> 1) + 1;
+            else
+                if (x >= 0x400)
+                    xn = (sqq_table[x>>4] >> 2) + 1;
+                else
+                    xn = (sqq_table[x>>2] >> 3) + 1;
 
-	        goto adj;
-	    } else
-	        return sqq_table[x] >> 4;
+            goto adj;
+        } else
+            return sqq_table[x] >> 4;
 
     /* Run two iterations of the standard convergence formula */
 
-	xn = (xn + 1 + x / xn) / 2;
+    xn = (xn + 1 + x / xn) / 2;
   nr1:
-	xn = (xn + 1 + x / xn) / 2;
+    xn = (xn + 1 + x / xn) / 2;
   adj:
 
-	if (xn * xn > x) /* Correct rounding if necessary */
-	    xn--;
+    if (xn * xn > x) /* Correct rounding if necessary */
+        xn--;
 
-	return xn;
+    return xn;
 }
 
 } // namespace detail
@@ -374,8 +374,8 @@ using VIGRA_CSTD::sqrt;
     */
 inline Int32 sqrti(Int32 v)
 {
-	if(v < 0)
-	    throw std::domain_error("sqrti(Int32): negative argument.");
+    if(v < 0)
+        throw std::domain_error("sqrti(Int32): negative argument.");
     return (Int32)detail::IntSquareRoot<UInt32>::exec((UInt32)v);
 }
 
@@ -1096,7 +1096,7 @@ namespace detail  {
 template <class T>
 T facLM(T l, T m)
 {
-	T tmp = NumericTraits<T>::one();
+    T tmp = NumericTraits<T>::one();
     for(T f = l-m+1; f <= l+m; ++f)
         tmp *= f;
     return tmp;
@@ -1107,9 +1107,9 @@ T facLM(T l, T m)
     /*! Associated Legendre polynomial. 
 
         Computes the value of the associated Legendre polynomial of order <tt>l, m</tt> 
-		for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, 
-		otherwise an exception is thrown. The standard Legendre polynomials are the 
-		special case <tt>m == 0</tt>.
+        for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, 
+        otherwise an exception is thrown. The standard Legendre polynomials are the 
+        special case <tt>m == 0</tt>.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
@@ -1117,19 +1117,19 @@ T facLM(T l, T m)
 template <class REAL>
 REAL legendre(REAL x, unsigned int l, int m)
 {
-	vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
+    vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
     if (m<0)
     {
-		m = -m;
-		REAL s = odd(m)
-			       ? -1.0
-				   :  1.0;
-		return legendre(x,l,m) * s / detail::facLM<REAL>(l,m);
+        m = -m;
+        REAL s = odd(m)
+                   ? -1.0
+                   :  1.0;
+        return legendre(x,l,m) * s / detail::facLM<REAL>(l,m);
     }
     REAL result = 1.0;
     if (m>0)
     {
-		REAL r = std::sqrt( (1.0-x) * (1.0+x) );
+        REAL r = std::sqrt( (1.0-x) * (1.0+x) );
         REAL f = 1.0;
         for (int i=1; i<=m; i++)
         {
@@ -1138,11 +1138,11 @@ REAL legendre(REAL x, unsigned int l, int m)
         }
     }
     if(l==m) 
-		return result;
+        return result;
 
     REAL result_1 = x * (2.0 * m + 1.0) * result;
     if(l==m+1) 
-		return result_1;
+        return result_1;
     REAL other = 0.0;
     for(unsigned int i=m+2; i<=l; ++i)
     {
@@ -1156,7 +1156,7 @@ REAL legendre(REAL x, unsigned int l, int m)
     /*! Legendre polynomial. 
 
         Computes the value of the Legendre polynomial of order <tt>l</tt> for argument <tt>x</tt>.
-		<tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, otherwise an exception is thrown.
+        <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, otherwise an exception is thrown.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
@@ -1164,8 +1164,116 @@ REAL legendre(REAL x, unsigned int l, int m)
 template <class REAL>
 REAL legendre(REAL x, unsigned int l)
 {
-	return legendre(x, l, 0);
+    return legendre(x, l, 0);
 }
+
+namespace detail {
+
+template <class REAL>
+REAL gammaImpl(REAL x)
+{
+    int i, k, m, ix = (int)x;
+    double ga = 0.0, gr = 0.0, r = 0.0, z = 0.0;
+
+    static double g[] = {
+        1.0,
+        0.5772156649015329,
+       -0.6558780715202538,
+       -0.420026350340952e-1,
+        0.1665386113822915,
+       -0.421977345555443e-1,
+       -0.9621971527877e-2,
+        0.7218943246663e-2,
+       -0.11651675918591e-2,
+       -0.2152416741149e-3,
+        0.1280502823882e-3,
+       -0.201348547807e-4,
+       -0.12504934821e-5,
+        0.1133027232e-5,
+       -0.2056338417e-6,
+        0.6116095e-8,
+        0.50020075e-8,
+       -0.11812746e-8,
+        0.1043427e-9,
+        0.77823e-11,
+       -0.36968e-11,
+        0.51e-12,
+       -0.206e-13,
+       -0.54e-14,
+        0.14e-14};
+
+    vigra_precondition(x <= 171.0,
+        "gamma(): argument cannot exceed 171.0.");
+
+    if (x == ix) 
+    {
+        if (ix > 0) 
+        {
+            ga = 1.0;               // use factorial
+            for (i=2; i<ix; ++i) 
+            {
+               ga *= i;
+            }
+        }
+        else
+        {
+            vigra_precondition(false,
+                 "gamma(): gamma function is undefined for 0 and negative integers.");
+        }
+     }
+     else 
+     {
+        if (abs(x) > 1.0) 
+        {
+            z = abs(x);
+            m = (int)z;
+            r = 1.0;
+            for (k=1; k<=m; ++k) 
+            {
+                r *= (z-k);
+            }
+            z -= m;
+        }
+        else
+        {
+            z = x;
+        }
+        gr = g[24];
+        for (k=23; k>=0; --k) 
+        {
+            gr = gr*z+g[k];
+        }
+        ga = 1.0/(gr*z);
+        if (abs(x) > 1.0) 
+        {
+            ga *= r;
+            if (x < 0.0) 
+            {
+                ga = -M_PI/(x*ga*std::sin(M_PI*x));
+            }
+        }
+    }
+    return ga;
+}
+
+} // namespace detail
+
+    /*! The gamma function.
+
+        This function implements the algorithm from<br>
+        Zhang and Jin: "Computation of Special Functions", John Wiley and Sons, 1996.
+        
+        The argument must be <= 171.0 and cannot be zero or a negative integer. An
+        exception is thrown when these conditions are violated.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+inline double gamma(double x)
+{
+    return detail::gammaImpl(x);
+}
+
 
 namespace detail {
 
