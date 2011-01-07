@@ -61,6 +61,7 @@
 #include "vigra/polygon.hxx"
 #include "vigra/quaternion.hxx"
 #include "vigra/clebsch-gordan.hxx"
+#include "vigra/bessel.hxx"
 
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
@@ -393,6 +394,30 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
 
+		for(double x = -4.0; x <= 4.0; x += 1.0)
+		{
+			shouldEqual(vigra::sin_pi(x), 0.0);
+			shouldEqual(vigra::cos_pi(x+0.5), 0.0);
+		}
+		
+		for(double x = -4.5; x <= 4.5; x += 2.0)
+		{
+			shouldEqual(vigra::sin_pi(x), -1.0);
+			shouldEqual(vigra::cos_pi(x+0.5), 1.0);
+		}
+		
+		for(double x = -3.5; x <= 4.5; x += 2.0)
+		{
+			shouldEqual(vigra::sin_pi(x), 1.0);
+			shouldEqual(vigra::cos_pi(x+0.5), -1.0);
+		}
+		
+		for(double x = -4.0; x <= 4.0; x += 0.0625)
+		{
+			shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI*x), 1e-14);
+			shouldEqualTolerance(vigra::cos_pi(x), std::cos(M_PI*x), 1e-14);
+		}
+
 		shouldEqual(vigra::gamma(4.0), 6.0);
 		shouldEqualTolerance(vigra::gamma(0.1), 9.5135076986687306, 1e-15);
 		shouldEqualTolerance(vigra::gamma(3.2), 2.4239654799353683, 1e-15);
@@ -402,7 +427,6 @@ struct FunctionsTest
 		shouldEqualTolerance(vigra::gamma(-170.2), -2.6348340538196879e-307, 1e-14);
 		try { vigra::gamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
 		try { vigra::gamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
-
 
 		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
 		for(int i=0; i<5; ++i)
@@ -424,7 +448,104 @@ struct FunctionsTest
 			shouldEqualTolerance(vigra::legendre(x, 2, -1), -vigra::legendre(x, 2, 1) / 6.0, 1e-15);
 			shouldEqualTolerance(vigra::legendre(x, 2, -2), vigra::legendre(x, 2, 2) / 24.0, 1e-15);
 		}
-    }
+	}
+
+	void testBessel()
+	{
+		double x[] = { 1.0, 4.0, 6.0 };
+		double besseljref[] = {
+			0.76519768655797, -0.39714980986385, 0.15064525725100, 
+			0.57672480775687, -0.32757913759147, -0.00468282348235, 
+			0.48609126058589, -0.24287320996019, -0.11299172042408, 
+			0.43017147387562, -0.16755558799533, -0.18093519033666, 
+			0.39123236045865, -0.10535743487539, -0.21960268610201, 
+			0.36208707488717, -0.05503885566951, -0.23828585178318, 
+			0.33919660498318, -0.01445884208479, -0.24372476722887, 
+			0.32058907797983, 0.01837603264786, -0.24057094958616, 
+			0.30506707225300, 0.04509532908046, -0.23197310306708, 
+			0.29185568526512, 0.06697619867367, -0.22004622511385, 
+			0.28042823052538, 0.08500670544606, -0.20620569442260, 
+			0.27041248255096, 0.09995047705030, -0.19139539469542, 
+			0.26153687541035, 0.11240023492611, -0.17624117645478, 
+			0.25359797330295, 0.12281915265294, -0.16115376768166, 
+			0.24643993656993, 0.13157198580937, -0.14639794400256		
+		};
+		double besselyref[] = {
+			0.08825696421568, -0.01694073932506, -0.28819468398158, 
+			-0.10703243154094, 0.14786314339123, -0.30266723702418, 
+			-0.16040039348492, 0.22985790254811, -0.26303660482038, 
+			-0.18202211595349, 0.26808060304232, -0.20509487811878, 
+			-0.19214228737369, 0.28294322431117, -0.14494951186809, 
+			-0.19706088806444, 0.28511777841104, -0.08925284143458, 
+			-0.19930679029227, 0.28035255955746, -0.04029725110340, 
+			-0.20006390460041, 0.27184139484931, 0.00156987954073, 
+			-0.19994686666043, 0.26140472921203, 0.03681573694075, 
+			-0.19929926580524, 0.25009898312669, 0.06619785889587, 
+			-0.19832403085029, 0.23854272714494, 0.09052660414392, 
+			-0.19714613354519, 0.22709735924007, 0.11056356972736, 
+			-0.19584504763523, 0.21597027298253, 0.12698414345087, 
+			-0.19447256680104, 0.20527533641239, 0.14036965442781, 
+			-0.19306306446008, 0.19506914688206, 0.15121244335756		
+		};
+		double besseliref[] = {
+			1.26606587775201, 11.30192195213633, 67.23440697647797, 
+			1.59063685463733, 24.33564214245053, 156.03909286995545, 
+			2.24521244092995, 46.78709471726457, 327.59583152616477, 
+			3.33727577842034, 85.17548684284387, 646.69419187160042, 
+			5.10823476364287, 150.53941576155648, 1226.49053775949160, 
+			7.96846774239626, 261.47931835665162, 2263.50773762952440, 
+			12.59591269675932, 449.30225135623164, 4097.57688420444260, 
+			20.10631647418887, 766.67904878531306, 7314.33910867802020, 
+			32.33717183246905, 1302.20190973851530, 12920.28326853169000, 
+			52.31929250356304, 2204.86373124920060, 22641.30019630465500, 
+			85.06014043462338, 3725.22638898497460, 39431.41215603880100, 
+			138.84616172051784, 6284.66679656271120, 68338.91269593971100, 
+			227.41016512686005, 10591.87102104884600, 117979.97047639643000, 
+			373.54180033239078, 17838.85142213319700, 203044.22031419250000, 
+			615.10742909482519, 30030.83594765643300, 348552.84887207532000		
+		};
+		double besselkref[] = {
+			0.42102443824071, 0.01115967608585, 0.00124399432801, 
+			0.13986588181652, 0.00404461344545, 0.00045418248688, 
+			0.06151045847174, 0.00169196756726, 0.00018531300817, 
+			0.02988492441676, 0.00077107515357, 0.00008154841635, 
+			0.01525906581050, 0.00037133229509, 0.00003786143716, 
+			0.00802371898013, 0.00018569620375, 0.00001828320835, 
+			0.00430148288814, 0.00009540328715, 0.00000909503275, 
+			0.00233765272422, 0.00005000685645, 0.00000462957546, 
+			0.00128330951017, 0.00002661714333, 0.00000239979366, 
+			0.00071000883381, 0.00001433925030, 0.00000126230701, 
+			0.00039525556857, 0.00000779986841, 0.00000067198227, 
+			0.00022114157284, 0.00000427634752, 0.00000036129776, 
+			0.00012424136759, 0.00000235992181, 0.00000019588235, 
+			0.00007004535896, 0.00000130950459, 0.00000010695468, 
+			0.00003960832777, 0.00000073003429, 0.00000005875417		
+		};
+
+		for(int n = 0; n < 15; ++n)
+		{
+			if(n == 0)
+			{
+				shouldEqual(vigra::besselj((double)n, 0.0), 1.0);
+				shouldEqual(vigra::besseli((double)n, 0.0), 1.0);
+			}
+			else
+			{
+				shouldEqual(vigra::besselj((double)n, 0.0), 0.0);
+				shouldEqual(vigra::besseli((double)n, 0.0), 0.0);
+			}
+			should(vigra::bessely((double)n, 0.0) == -std::numeric_limits<double>::infinity());
+			should(vigra::besselk((double)n, 0.0) == std::numeric_limits<double>::infinity());
+
+			for(int k=0; k<3; ++k)
+			{
+				shouldEqualTolerance(vigra::besselj((double)n, x[k]+n) - besseljref[k+3*n], 0.0, 1e-12);
+				shouldEqualTolerance(vigra::bessely((double)n, x[k]+n) - besselyref[k+3*n], 0.0, 1e-12);
+				shouldEqualTolerance(vigra::besseli((double)n, x[k]+n), besseliref[k+3*n], 1e-12);
+				shouldEqualTolerance(vigra::besselk((double)n, x[k]+n) - besselkref[k+3*n], 0.0, 1e-12);
+			}
+		}
+	}
 
     void closeAtToleranceTest()
     {
@@ -2573,6 +2694,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::testGaussians));
         add( testCase(&FunctionsTest::testSpecialIntegerFunctions));
         add( testCase(&FunctionsTest::testSpecialFunctions));
+        add( testCase(&FunctionsTest::testBessel));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
         add( testCase(&FunctionsTest::testClebschGordan));
