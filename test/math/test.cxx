@@ -548,19 +548,19 @@ struct FunctionsTest
 
     void testClebschGordan()
     {
-		using vigra::ClebschGordan;
+		using vigra::clebschGordan;
 
-		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, 0.5, 1.0, 1.0), std::sqrt(1.0), 1e-15);
-		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, -0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(ClebschGordan(0.5, -0.5, 0.5, 0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(ClebschGordan(0.5, 0.5, 0.5, -0.5, 0.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(ClebschGordan(0.5, -0.5, 0.5, 0.5, 0.0, 0.0), -std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, 0.5, 1.0, 1.0), std::sqrt(1.0), 1e-15);
+		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 0.0, 0.0), std::sqrt(0.5), 1e-15);
+		shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 0.0, 0.0), -std::sqrt(0.5), 1e-15);
 
-		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, 0.5, 2.5, 2.5), std::sqrt(1.0), 1e-15);
-		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, -0.5, 2.5, 1.5), std::sqrt(0.2), 1e-15);
-		shouldEqualTolerance(ClebschGordan(2.0, 1.0, 0.5, 0.5, 2.5, 1.5), std::sqrt(0.8), 1e-15);
-		shouldEqualTolerance(ClebschGordan(2.0, 2.0, 0.5, -0.5, 1.5, 1.5), std::sqrt(0.8), 1e-15);
-		shouldEqualTolerance(ClebschGordan(2.0, 1.0, 0.5, 0.5, 1.5, 1.5), -std::sqrt(0.2), 1e-15);
+		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, 0.5, 2.5, 2.5), std::sqrt(1.0), 1e-15);
+		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 2.5, 1.5), std::sqrt(0.2), 1e-15);
+		shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 2.5, 1.5), std::sqrt(0.8), 1e-15);
+		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 1.5, 1.5), std::sqrt(0.8), 1e-15);
+		shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 1.5, 1.5), -std::sqrt(0.2), 1e-15);
 	}
 };
 

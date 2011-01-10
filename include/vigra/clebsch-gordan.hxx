@@ -367,7 +367,7 @@ L250:
 } // anonymous namespace
 
 inline 
-double ClebschGordan (double l1, double m1, double l2, double m2, double l3, double m3)
+double clebschGordan (double l1, double m1, double l2, double m2, double l3, double m3)
 {
     const double err = 0.01;
     double CG = 0.0, m2min, m2max, *cofp;                               
@@ -383,7 +383,7 @@ double ClebschGordan (double l1, double m1, double l2, double m2, double l3, dou
     if ( abs(m1 + m2 - m3) > err) 
     {
         errflag = 7;
-        Err << " ClebschGordan: m1 + m2 - m3 is not zero.\n";
+        Err << " clebschGordan: m1 + m2 - m3 is not zero.\n";
         throw Err;
     }                                                                   
     // calculate minimum storage size needed for ThreeJSymbolM()
@@ -411,7 +411,7 @@ double ClebschGordan (double l1, double m1, double l2, double m2, double l3, dou
     }
     else
     {
-        Err << " ClebschGordan: 3jM-sym error.\n";
+        Err << " clebschGordan: 3jM-sym error.\n";
         throw Err;
     }
     return CG;                                                          
