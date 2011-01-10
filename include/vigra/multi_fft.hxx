@@ -269,128 +269,347 @@ void moveDCToUpperLeft(MultiArrayView<N, T, C> a)
     }
 }
 
-namespace detail {
-
-template <class T>
-void fourierTransformImpl(unsigned int N, int* shape, 
-						  fftw_complex * in,  int* instrides,  int instep,
-						  fftw_complex * out, int* outstrides, int outstep,
-						  T sign)
+class FFTWPlan
 {
-    fftw_plan plan = fftw_plan_many_dft(N, shape, 1,
-                                        in, instrides, instep, 0,
-                                        out, outstrides, outstep, 0,
-									    sign, FFTW_ESTIMATE);
-    vigra_postcondition(plan != 0, "fourierTransform(): Unable to create plan.");
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-}
+    enum PlanType { NONE, FLOAT, DOUBLE, LONGDOUBLE };
 
-template <class T>
-void fourierTransformImpl(unsigned int N, int* shape, 
-						  fftwf_complex * in,  int* instrides,  int instep,
-						  fftwf_complex * out, int* outstrides, int outstep,
-						  T sign)
-{
-    fftwf_plan plan = fftwf_plan_many_dft(N, shape, 1,
-                                          in, instrides, instep, 0,
-                                          out, outstrides, outstep, 0,
-									      sign, FFTW_ESTIMATE);
-    vigra_postcondition(plan != 0, "fourierTransform(): Unable to create plan.");
-    fftwf_execute(plan);
-    fftwf_destroy_plan(plan);
-}
+public:
+    typedef ArrayVector<int> Shape;
 
-template <class T>
-void fourierTransformImpl(unsigned int N, int* shape, 
-						  fftwl_complex * in,  int* instrides,  int instep,
-						  fftwl_complex * out, int* outstrides, int outstep,
-						  T sign)
-{
-    fftwl_plan plan = fftwl_plan_many_dft(N, shape, 1,
-                                          in, instrides, instep, 0,
-                                          out, outstrides, outstep, 0,
-									      sign, FFTW_ESTIMATE);
-    vigra_postcondition(plan != 0, "fourierTransform(): Unable to create plan.");
-    fftwl_execute(plan);
-    fftwl_destroy_plan(plan);
-}
+    void * plan;
+    PlanType plan_type;
+    Shape shape, instrides, outstrides;
+    
+    template <unsigned int N, class Real, class C1, class C2>
+    FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+             MultiArrayView<N, FFTWComplex<Real>, C2> out,
+             int SIGN, unsigned int planner_flags,
+             bool execute_immediately = false);
 
-} // namespace detail
+	template <class Real>
+	void destroy();
+    
+	template <>
+	void destroy<double>()
+	{
+		if(plan == 0)
+			return;
+		vigra_precondition(plan_type == DOUBLE,
+			"FFTWPlan::destroy<double>(): plan has wrong type.");
+		fftw_destroy_plan((fftw_plan)plan);
+		plan = 0;
+		plan_type = NONE;
+	}
+    
+	template <>
+	void destroy<float>()
+	{
+		if(plan == 0)
+			return;
+		vigra_precondition(plan_type == FLOAT,
+			"FFTWPlan::destroy<float>(): plan has wrong type.");
+		fftwf_destroy_plan((fftwf_plan)plan);
+		plan = 0;
+		plan_type = NONE;
+	}
+    
+	template <>
+	void destroy<long double>()
+	{
+		if(plan == 0)
+			return;
+		vigra_precondition(plan_type == LONGDOUBLE,
+			"FFTWPlan::destroy<long double>(): plan has wrong type.");
+		fftwl_destroy_plan((fftwl_plan)plan);
+		plan = 0;
+		plan_type = NONE;
+	}
+    
+    ~FFTWPlan()
+    {
+        switch(plan_type)
+        {
+            case DOUBLE:     fftw_destroy_plan((fftw_plan)plan);   break;
+//            case FLOAT:      fftwf_destroy_plan((fftwf_plan)plan); break;
+//            case LONGDOUBLE: fftwl_destroy_plan((fftwl_plan)plan); break;
+        }
+    }
+
+    template <unsigned int N, class Real, class C1, class C2>
+    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out) const;
+
+  private:
+  
+    FFTWPlan(FFTWPlan const &);
+    FFTWPlan & operator=(FFTWPlan const &);
+    
+    void createPlan(unsigned int N, int* shape, 
+                    fftw_complex * in,  int* instrides,  int instep,
+                    fftw_complex * out, int* outstrides, int outstep,
+                    int sign, unsigned int planner_flags)
+    {
+        plan = fftw_plan_many_dft(N, shape, 1,
+                                  in, instrides, instep, 0,
+                                  out, outstrides, outstep, 0,
+                                  sign, planner_flags);
+        vigra_postcondition(plan != 0,
+            "FFTWPlan: Unable to create plan.");
+        plan_type = DOUBLE;
+    }
+
+    void createPlan(unsigned int N, int* shape, 
+                    fftwf_complex * in,  int* instrides,  int instep,
+                    fftwf_complex * out, int* outstrides, int outstep,
+                    int sign, unsigned int planner_flags)
+    {
+        plan = fftwf_plan_many_dft(N, shape, 1,
+                                   in, instrides, instep, 0,
+                                   out, outstrides, outstep, 0,
+                                   sign, planner_flags);
+        vigra_postcondition(plan != 0,
+            "FFTWPlan: Unable to create plan.");
+        plan_type = FLOAT;
+    }
+
+    void createPlan(unsigned int N, int* shape, 
+                    fftwl_complex * in,  int* instrides,  int instep,
+                    fftwl_complex * out, int* outstrides, int outstep,
+                    int sign, unsigned int planner_flags)
+    {
+        plan = fftwl_plan_many_dft(N, shape, 1,
+                                   in, instrides, instep, 0,
+                                   out, outstrides, outstep, 0,
+                                   sign, planner_flags);
+        vigra_postcondition(plan != 0,
+            "FFTWPlan: Unable to create plan.");
+        plan_type = LONGDOUBLE;
+    }
+    
+    void executePlan(fftw_complex * in,  fftw_complex * out) const
+    {
+        vigra_precondition(plan_type == DOUBLE,
+            "FFTWPlan::execute(): type mismatch between plan and data.");
+        fftw_execute_dft((fftw_plan)plan, in, out);
+    }
+    
+    void executePlan(fftwf_complex * in,  fftwf_complex * out) const
+    {
+        vigra_precondition(plan_type == FLOAT,
+            "FFTWPlan::execute(): type mismatch between plan and data.");
+        fftwf_execute_dft((fftwf_plan)plan, in, out);
+    }
+    
+    void executePlan(fftwl_complex * in,  fftwl_complex * out) const
+    {
+        vigra_precondition(plan_type == LONGDOUBLE,
+            "FFTWPlan::execute(): type mismatch between plan and data.");
+        fftwl_execute_dft((fftwl_plan)plan, in, out);
+    }
+    
+    void executePlanImmediately(fftw_complex * in,  fftw_complex * out) const
+    {
+        fftw_execute((fftw_plan)plan);
+    }
+    
+    void executePlanImmediately(fftwf_complex * in,  fftwf_complex * out) const
+    {
+        fftwf_execute((fftwf_plan)plan);
+    }
+    
+    void executePlanImmediately(fftwl_complex * in,  fftwl_complex * out) const
+    {
+        fftwl_execute((fftwl_plan)plan);
+    }
+    
+  public:
+    static int bestPaddingSize(int s)
+    {
+        // numbers below 30000 whose prime decomposition only contains powers of 2, 3, 5, 7
+        static int goodSizes[482] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 15, 
+            16, 18, 20, 21, 24, 25, 27, 28, 30, 32, 35, 36, 40, 42, 45, 48, 49, 50, 
+            54, 56, 60, 63, 64, 70, 72, 75, 80, 81, 84, 90, 96, 98, 100, 105, 108, 
+            112, 120, 125, 126, 128, 135, 140, 144, 147, 150, 160, 162, 168, 175, 
+            180, 189, 192, 196, 200, 210, 216, 224, 225, 240, 243, 245, 250, 252, 
+            256, 270, 280, 288, 294, 300, 315, 320, 324, 336, 343, 350, 360, 375, 
+            378, 384, 392, 400, 405, 420, 432, 441, 448, 450, 480, 486, 490, 500, 
+            504, 512, 525, 540, 560, 567, 576, 588, 600, 625, 630, 640, 648, 672, 
+            675, 686, 700, 720, 729, 735, 750, 756, 768, 784, 800, 810, 840, 864, 
+            875, 882, 896, 900, 945, 960, 972, 980, 1000, 1008, 1024, 1029, 1050, 
+            1080, 1120, 1125, 1134, 1152, 1176, 1200, 1215, 1225, 1250, 1260, 1280, 
+            1296, 1323, 1344, 1350, 1372, 1400, 1440, 1458, 1470, 1500, 1512, 1536, 
+            1568, 1575, 1600, 1620, 1680, 1701, 1715, 1728, 1750, 1764, 1792, 1800, 
+            1875, 1890, 1920, 1944, 1960, 2000, 2016, 2025, 2048, 2058, 2100, 2160, 
+            2187, 2205, 2240, 2250, 2268, 2304, 2352, 2400, 2401, 2430, 2450, 2500, 
+            2520, 2560, 2592, 2625, 2646, 2688, 2700, 2744, 2800, 2835, 2880, 2916, 
+            2940, 3000, 3024, 3072, 3087, 3125, 3136, 3150, 3200, 3240, 3360, 3375, 
+            3402, 3430, 3456, 3500, 3528, 3584, 3600, 3645, 3675, 3750, 3780, 3840, 
+            3888, 3920, 3969, 4000, 4032, 4050, 4096, 4116, 4200, 4320, 4374, 4375, 
+            4410, 4480, 4500, 4536, 4608, 4704, 4725, 4800, 4802, 4860, 4900, 5000, 
+            5040, 5103, 5120, 5145, 5184, 5250, 5292, 5376, 5400, 5488, 5600, 5625, 
+            5670, 5760, 5832, 5880, 6000, 6048, 6075, 6125, 6144, 6174, 6250, 6272, 
+            6300, 6400, 6480, 6561, 6615, 6720, 6750, 6804, 6860, 6912, 7000, 7056, 
+            7168, 7200, 7203, 7290, 7350, 7500, 7560, 7680, 7776, 7840, 7875, 7938, 
+            8000, 8064, 8100, 8192, 8232, 8400, 8505, 8575, 8640, 8748, 8750, 8820, 
+            8960, 9000, 9072, 9216, 9261, 9375, 9408, 9450, 9600, 9604, 9720, 9800, 
+            10000, 10080, 10125, 10206, 10240, 10290, 10368, 10500, 10584, 10752, 
+            10800, 10935, 10976, 11025, 11200, 11250, 11340, 11520, 11664, 11760, 
+            11907, 12000, 12005, 12096, 12150, 12250, 12288, 12348, 12500, 12544, 
+            12600, 12800, 12960, 13122, 13125, 13230, 13440, 13500, 13608, 13720, 
+            13824, 14000, 14112, 14175, 14336, 14400, 14406, 14580, 14700, 15000, 
+            15120, 15309, 15360, 15435, 15552, 15625, 15680, 15750, 15876, 16000, 
+            16128, 16200, 16384, 16464, 16800, 16807, 16875, 17010, 17150, 17280, 
+            17496, 17500, 17640, 17920, 18000, 18144, 18225, 18375, 18432, 18522, 
+            18750, 18816, 18900, 19200, 19208, 19440, 19600, 19683, 19845, 20000, 
+            20160, 20250, 20412, 20480, 20580, 20736, 21000, 21168, 21504, 21600, 
+            21609, 21870, 21875, 21952, 22050, 22400, 22500, 22680, 23040, 23328, 
+            23520, 23625, 23814, 24000, 24010, 24192, 24300, 24500, 24576, 24696, 
+            25000, 25088, 25200, 25515, 25600, 25725, 25920, 26244, 26250, 26460, 
+            26880, 27000, 27216, 27440, 27648, 27783, 28000, 28125, 28224, 28350, 
+            28672, 28800, 28812, 29160, 29400 }; 
+
+
+        if(s <= 0 || s > 29400)
+            return s;
+        return *std::upper_bound(goodSizes, goodSizes+482, s, std::less_equal<int>());
+    }
+        
+};
 
 template <unsigned int N, class Real, class C1, class C2>
-void 
-fourierTransformImpl(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-					 MultiArrayView<N, FFTWComplex<Real>, C2> out,
-					 int SIGN)
+FFTWPlan::FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                   MultiArrayView<N, FFTWComplex<Real>, C2> out,
+                   int SIGN, unsigned int planner_flags,
+                   bool execute_immediately)
+: plan(0),
+  plan_type(NONE),
+  shape(N), instrides(N), outstrides(N)
 {
-	typedef typename FFTWComplex<Real>::complex_type Complex;
-	
-	vigra_precondition(in.shape() == out.shape(),
-		"fourierTransform(): input and output must have the same shape.");
-	vigra_precondition(in.strideOrdering() == out.strideOrdering(),
-		"fourierTransform(): input and output must have the same stride ordering.");
-	MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins  = in.permuteStridesDescending();
-	MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs = out.permuteStridesDescending();
-	
-    TinyVector<int, N> shape(ins.shape()), itotal(ins.shape()), ototal(ins.shape());
-    Real norm = (Real)shape[0];
+    typedef typename FFTWComplex<Real>::complex_type Complex;
+    
+    vigra_precondition(in.shape() == out.shape(),
+        "FFTWPlan: input and output must have the same shape.");
+    vigra_precondition(in.strideOrdering() == out.strideOrdering(),
+        "FFTWPlan: input and output must have the same stride ordering.");
+
+    MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins  = in.permuteStridesDescending();
+    MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs = out.permuteStridesDescending();
+    
+	std::copy(ins.shape().begin(), ins.shape().end(), shape.begin());
+	std::copy(ins.stride().begin(), ins.stride().end(), instrides.begin());
+	std::copy(outs.stride().begin(), outs.stride().end(), outstrides.begin());
+    
+    Shape itotal(ins.shape().begin(), ins.shape().end()), 
+		  ototal(ins.shape().begin(), ins.shape().end());
     for(int j=1; j<N; ++j)
     {
         itotal[j] = ins.stride(j-1) / ins.stride(j);
         ototal[j] = outs.stride(j-1) / outs.stride(j);
-        norm *= (Real)shape[j];
     }
+    
+    createPlan(N, shape.begin(), 
+               (Complex*)ins.data(), itotal.begin(), ins.stride(N-1),
+               (Complex*)outs.data(), ototal.begin(), outs.stride(N-1),
+               SIGN, planner_flags);
+    if(execute_immediately)
+        executePlanImmediately((Complex*)ins.data(), (Complex*)outs.data());
+}
 
-	detail::fourierTransformImpl(N, shape.begin(), 
-                                (Complex*)ins.data(), itotal.begin(), ins.stride(N-1),
-                                (Complex*)outs.data(), ototal.begin(), outs.stride(N-1),
-                                SIGN);
-    if(SIGN == FFTW_BACKWARD)
+template <unsigned int N, class Real, class C1, class C2>
+void FFTWPlan::execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                       MultiArrayView<N, FFTWComplex<Real>, C2> out) const
+{
+    typedef typename FFTWComplex<Real>::complex_type Complex;
+    
+    vigra_precondition(plan != 0, "FFTWPlan::execute(): plan is NULL.");
+    
+    vigra_precondition(shape.size() == N,
+        "FFTWPlan::execute(): dimension mismatch between plan and data.");
+
+    vigra_precondition(in.shape() == out.shape(),
+        "FFTWPlan::execute(): input and output must have the same shape.");
+
+    MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins  = in.permuteStridesDescending();
+    MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs = out.permuteStridesDescending();
+    
+	vigra_precondition((ins.shape() == TinyVectorView<int, N>(shape.data())),
+        "FFTWPlan::execute(): shape mismatch between plan and data.");
+    vigra_precondition((ins.stride() == TinyVectorView<int, N>(instrides.data())),
+        "FFTWPlan::execute(): strides mismatch between plan and input data.");
+    vigra_precondition((outs.stride() == TinyVectorView<int, N>(outstrides.data())),
+        "FFTWPlan::execute(): strides mismatch between plan and output data.");
+
+	executePlan((Complex*)ins.data(), (Complex*)outs.data());
+}
+
+class FourierOptions
+{
+  public:
+    
+    ArrayVector<MultiArrayIndex> padded_shape;
+    unsigned int planner_flags;
+    bool normalize_inverse;
+    
+    FourierOptions()
+    : planner_flags(FFTW_ESTIMATE),
+      normalize_inverse(true)
+    {}
+
+	FourierOptions & plannerFlags(unsigned int flags)
+	{
+		planner_flags = flags;
+		return *this;
+	}
+
+	FourierOptions & normalizeInverse(bool normalize = true)
+	{
+		normalize_inverse = normalize;
+		return *this;
+	}
+};
+
+template <unsigned int N, class Real, class C1, class C2>
+inline void 
+fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out,
+                 FourierOptions const & options = FourierOptions())
+{
+    FFTWPlan plan(in, out, FFTW_FORWARD, options.planner_flags, /*execute_immediately*/true);
+	plan.destroy<Real>();
+}
+
+template <unsigned int N, class Real, class C1, class C2>
+inline void 
+fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                        MultiArrayView<N, FFTWComplex<Real>, C2> out,
+                        FourierOptions const & options = FourierOptions())
+{
+    FFTWPlan plan(in, out, FFTW_BACKWARD, options.planner_flags, /*execute_immediately*/true);
+	plan.destroy<Real>();
+    if(options.normalize_inverse)
     {
+        Real norm = (Real)out.shape(0);
+        for(int j=1; j<N; ++j)
+        {
+            norm *= (Real)out.shape(j);
+        }
         out *= FFTWComplex<Real>(Real(1.0) / norm);
     }
 }
 
 template <unsigned int N, class Real, class C1, class C2>
 void 
-fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-				 MultiArrayView<N, FFTWComplex<Real>, C2> out)
+fourierTransform(MultiArrayView<N, Real, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out,
+                 FourierOptions const & options = FourierOptions())
 {
-	fourierTransformImpl(in, out, FFTW_FORWARD);
-}
-
-template <unsigned int N, class Real, class C1, class C2>
-void 
-fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-						MultiArrayView<N, FFTWComplex<Real>, C2> out)
-{
-	fourierTransformImpl(in, out, FFTW_BACKWARD);
-}
-
-template <unsigned int N, class Real, class C1, class C2>
-void 
-fourierTransform(MultiArrayView<N, Real, C1> in, MultiArrayView<N, FFTWComplex<Real>, C2> out)
-{
-	typedef typename FFTWComplex<Real>::complex_type Complex;
-
-	vigra_precondition(in.shape() == out.shape(),
-		"fourierTransform(): input and output must have the same shape.");
-	
-	// copy the input array into the output and then perform an in-place FFT
-	out = in;
-	MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs = out.permuteStridesDescending();
-	
-    TinyVector<int, N> shape(outs.shape()), total(outs.shape());
-    for(int j=1; j<N; ++j)
-    {
-        total[j] = outs.stride(j-1) / outs.stride(j);
-    }
-
-	detail::fourierTransformImpl(N, shape.begin(), 
-                                (Complex*)outs.data(), total.begin(), outs.stride(N-1),
-                                (Complex*)outs.data(), total.begin(), outs.stride(N-1),
-                                FFTW_FORWARD);
+    vigra_precondition(in.shape() == out.shape(),
+        "fourierTransform(): input and output must have the same shape.");
+    
+    // copy the input array into the output and then perform an in-place FFT
+    out = in;
+    FFTWPlan plan(out, out, FFTW_FORWARD, options.planner_flags, /*execute_immediately*/true);
+	plan.destroy<Real>();
 }
 
 #if 0
