@@ -71,8 +71,16 @@
     #    define M_PI_2   1.57079632679489661923
     #endif
 
+    #ifndef M_PI_4
+    #    define M_PI_4   0.78539816339744830962
+    #endif
+
     #ifndef M_SQRT2
     #    define M_SQRT2  1.41421356237309504880
+    #endif
+
+    #ifndef M_EULER_GAMMA
+    #    define M_EULER_GAMMA  0.5772156649015329
     #endif
     \endcode
 */
@@ -88,8 +96,16 @@
 #    define M_PI_2   1.57079632679489661923
 #endif
 
+#ifndef M_PI_4
+#    define M_PI_4   0.78539816339744830962
+#endif
+
 #ifndef M_SQRT2
 #    define M_SQRT2  1.41421356237309504880
+#endif
+
+#ifndef M_EULER_GAMMA
+#    define M_EULER_GAMMA  0.5772156649015329
 #endif
 
 namespace vigra {
@@ -143,6 +159,10 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
+#ifdef DOXYGEN // only for documentation
+REAL round(REAL v);
+#endif
+
 inline float round(float t)
 {
      return t >= 0.0
@@ -590,17 +610,12 @@ norm(T const & t)
 template <class Iterator>
 Iterator argMin(Iterator first, Iterator last)
 {
-    typedef typename std::iterator_traits<Iterator>::value_type Value;
-    Value vopt = NumericTraits<Value>::max();
-    Iterator best = last;
-    for(; first != last; ++first)
-    {
-        if(*first < vopt)
-        {
-            vopt = *first;
+    if(first == last)
+        return last;
+    Iterator best = first;
+    for(++first; first != last; ++first)
+        if(*first < *best)
             best = first;
-        }
-    }
     return best;
 }
 
@@ -622,17 +637,12 @@ Iterator argMin(Iterator first, Iterator last)
 template <class Iterator>
 Iterator argMax(Iterator first, Iterator last)
 {
-    typedef typename std::iterator_traits<Iterator>::value_type Value;
-    Value vopt = NumericTraits<Value>::min();
-    Iterator best = last;
-    for(; first != last; ++first)
-    {
-        if(vopt < *first)
-        {
-            vopt = *first;
+    if(first == last)
+        return last;
+    Iterator best = first;
+    for(++first; first != last; ++first)
+        if(*best < *first)
             best = first;
-        }
-    }
     return best;
 }
 
@@ -660,17 +670,15 @@ Iterator argMax(Iterator first, Iterator last)
 template <class Iterator, class UnaryFunctor>
 Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
 {
-    typedef typename std::iterator_traits<Iterator>::value_type Value;
-    Value vopt = NumericTraits<Value>::max();
-    Iterator best = last;
     for(; first != last; ++first)
-    {
-        if(condition(*first) && *first < vopt)
-        {
-            vopt = *first;
+        if(condition(*first))
+            break;
+    if(first == last)
+        return last;
+    Iterator best = first;
+    for(++first; first != last; ++first)
+        if(condition(*first) && *first < *best)
             best = first;
-        }
-    }
     return best;
 }
 
@@ -698,17 +706,15 @@ Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
 template <class Iterator, class UnaryFunctor>
 Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
 {
-    typedef typename std::iterator_traits<Iterator>::value_type Value;
-    Value vopt = NumericTraits<Value>::min();
-    Iterator best = last;
     for(; first != last; ++first)
-    {
-        if(condition(*first) && vopt < *first)
-        {
-            vopt = *first;
+        if(condition(*first))
+            break;
+    if(first == last)
+        return last;
+    Iterator best = first;
+    for(++first; first != last; ++first)
+        if(condition(*first) && *best < *first)
             best = first;
-        }
-    }
     return best;
 }
 
@@ -1132,7 +1138,7 @@ T facLM(T l, T m)
         Namespace: vigra
     */
 template <class REAL>
-REAL legendre(REAL x, unsigned int l, int m)
+REAL legendre(unsigned int l, int m, REAL x)
 {
     vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
     if (m<0)
@@ -1141,7 +1147,7 @@ REAL legendre(REAL x, unsigned int l, int m)
         REAL s = odd(m)
                    ? -1.0
                    :  1.0;
-        return legendre(x,l,m) * s / detail::facLM<REAL>(l,m);
+        return legendre(l,m,x) * s / detail::facLM<REAL>(l,m);
     }
     REAL result = 1.0;
     if (m>0)
@@ -1179,9 +1185,9 @@ REAL legendre(REAL x, unsigned int l, int m)
         Namespace: vigra
     */
 template <class REAL>
-REAL legendre(REAL x, unsigned int l)
+REAL legendre(unsigned int l, REAL x)
 {
-    return legendre(x, l, 0);
+    return legendre(l, 0, x);
 }
 
     /*! sin(pi*x). 
