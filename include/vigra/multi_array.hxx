@@ -1548,12 +1548,12 @@ typename MultiArrayView <N, T, C>::difference_type
 MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
 {
     difference_type permutation;
-    for(unsigned int k=0; k<N; ++k)
+    for(int k=0; k<(int)N; ++k)
         permutation[k] = k;
-    for(unsigned int k=0; k<N-1; ++k)
+    for(int k=0; k<(int)N-1; ++k)
     {
-        unsigned int smallest = k;
-        for(unsigned int j=k+1; j<N; ++j)
+        int smallest = k;
+        for(int j=k+1; j<(int)N; ++j)
         {
             if(stride[j] < stride[smallest])
                 smallest = j;
