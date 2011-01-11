@@ -78,18 +78,21 @@ template <>
 struct FFTWReal2Complex<double>
 {
     typedef fftw_complex type;
+    typedef fftw_plan plan_type;
 };
 
 template <>
 struct FFTWReal2Complex<float>
 {
     typedef fftwf_complex type;
+    typedef fftwf_plan plan_type;
 };
 
 template <>
 struct FFTWReal2Complex<long double>
 {
     typedef fftwl_complex type;
+    typedef fftwl_plan plan_type;
 };
 
 /********************************************************/
