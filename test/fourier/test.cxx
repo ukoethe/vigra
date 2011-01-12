@@ -46,6 +46,7 @@
 #include <vigra/gaborfilter.hxx>
 #include <vigra/multi_fft.hxx>
 #include <vigra/multi_pointoperators.hxx>
+#include <vigra/convolution.hxx>
 #include "test.hxx"
 
 using namespace std;
@@ -56,8 +57,8 @@ struct Compare1
 {
     double s;
 
-    typedef vigra::FFTWComplexImage::value_type value_type;
-    typedef vigra::FFTWComplexImage::value_type result_type;
+    typedef FFTWComplexImage::value_type value_type;
+    typedef FFTWComplexImage::value_type result_type;
 
     Compare1(double is)
     : s(is)
@@ -181,28 +182,28 @@ struct FFTWComplexTest
     {
         const int w=256, h=256;
 
-        vigra::FFTWComplexImage in(w, h);
+        FFTWComplexImage in(w, h);
         for (int y=0; y<in.height(); y++)
             for (int x=0; x<in.width(); x++)
             {
                 in(x,y)= rand()/(double)RAND_MAX;
             }
 
-        vigra::FFTWComplexImage out(w, h);
+        FFTWComplexImage out(w, h);
         
         fourierTransform(srcImageRange(in), destImage(out));
         fourierTransformInverse(srcImageRange(out), destImage(out));
 
-        vigra::FindAverage<FFTWComplex<>::value_type> average;
-        inspectImage(srcImageRange(out, vigra::FFTWImaginaryAccessor<>()), average);
+        FindAverage<FFTWComplex<>::value_type> average;
+        inspectImage(srcImageRange(out, FFTWImaginaryAccessor<>()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
                          Compare1((double)w*h));
 
-        average = vigra::FindAverage<vigra::FFTWMagnitudeAccessor<>::value_type>();
-        inspectImage(srcImageRange(out, vigra::FFTWMagnitudeAccessor<>()), average);
+        average = FindAverage<FFTWMagnitudeAccessor<>::value_type>();
+        inspectImage(srcImageRange(out, FFTWMagnitudeAccessor<>()), average);
 
         shouldEqualTolerance(average(), 0.0, 1e-14);
 
@@ -218,7 +219,7 @@ struct FFTWComplexTest
         combineTwoImages(srcImageRange(in), srcImage(out), destImage(out),
                          Compare1((double)w*h));
 
-        vigra::FindAverage<FFTWComplex<> > caverage;
+        FindAverage<FFTWComplex<> > caverage;
         inspectImage(srcImageRange(out), caverage);
 
         shouldEqualTolerance(caverage().magnitude(), 0.0, 1e-14);
@@ -272,14 +273,17 @@ struct MultiFFTTest
 {
 	typedef double R;
 	typedef FFTWComplex<R> C;
-	typedef vigra::MultiArray<3, R> DArray3;
-	typedef vigra::MultiArray<3, C > CArray3;
-	typedef vigra::MultiArrayShape<3>::type Shape3;
+	typedef MultiArray<2, R> DArray2;
+	typedef MultiArray<2, C > CArray2;
+	typedef MultiArrayShape<2>::type Shape2;
+	typedef MultiArray<3, R> DArray3;
+	typedef MultiArray<3, C > CArray3;
+	typedef MultiArrayShape<3>::type Shape3;
 
 	void testFFTShift()
 	{
 		Shape3 s(5,5,5);
-		vigra::MultiArray<3, unsigned int> a(s), ref(s), iref(s);
+		MultiArray<3, unsigned int> a(s), ref(s), iref(s);
 
 		for(int z=0; z<5; ++z)
 		{
@@ -300,7 +304,7 @@ struct MultiFFTTest
 		moveDCToUpperLeft(a);
 		should(a == iref);
 
-		vigra::MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
+		MultiArrayView<3, unsigned int> b = a.subarray(Shape3(1,1,1), s);
 		moveDCToCenter(b);
 		should(b == ref.subarray(Shape3(0,0,0), Shape3(4,4,4)));
 		moveDCToUpperLeft(b);
@@ -308,29 +312,107 @@ struct MultiFFTTest
 		moveDCToCenter(b);
 		moveDCToCenter(b);
 		should(b == iref.subarray(Shape3(1,1,1), s));
+
+		MultiArrayShape<1>::type s1_e(10), s1_5(5), s1_6(6);
+		MultiArray<1, double> e1(s1_e), k1_5(s1_5), k1_6(s1_6);
+
+		for(int k=0; k<k1_5.size(); ++k)
+			k1_5(k) = k+1;
+		detail::fftEmbedKernel(k1_5, e1);
+
+		double k1_5ref[] = {3, 4, 5, 0, 0, 0, 0, 0, 1, 2};
+		shouldEqualSequence(e1.data(), e1.data()+e1.size(), k1_5ref);
+
+		for(int k=0; k<k1_6.size(); ++k)
+			k1_6(k) = k+1;
+		detail::fftEmbedKernel(k1_6, e1);
+
+		double k1_6ref[] = {4, 5, 6, 0, 0, 0, 0, 1, 2, 3};
+		shouldEqualSequence(e1.data(), e1.data()+e1.size(), k1_6ref);
+
+		detail::fftEmbedArray(k1_5, e1);
+		double a1_5ref[] = {3, 2, 1, 2, 3, 4, 5, 4, 3, 2 };
+		shouldEqualSequence(e1.data(), e1.data()+e1.size(), a1_5ref);
+
+		detail::fftEmbedArray(k1_6, e1);
+		double a1_6ref[] = {3, 2, 1, 2, 3, 4, 5, 6, 5, 4 };
+		shouldEqualSequence(e1.data(), e1.data()+e1.size(), a1_6ref);
+
+		MultiArrayShape<2>::type s2_e(8, 8), s2_4(4, 4), s2_5(5, 5);
+		MultiArray<2, double> e2(s2_e), k2_4(s2_4), k2_5(s2_5);
+
+		for(int k=0; k<k2_4.size(); ++k)
+			k2_4(k) = k+1;
+		detail::fftEmbedKernel(k2_4, e2);
+
+		double k2_4ref[] = {11,12, 0, 0, 0, 0, 9,10,
+			                15,16, 0, 0, 0, 0,13,14,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 3, 4, 0, 0, 0, 0, 1, 2,
+		                     7, 8, 0, 0, 0, 0, 5, 6};
+		shouldEqualSequence(e2.data(), e2.data()+e2.size(), k2_4ref);
+
+		for(int k=0; k<k2_5.size(); ++k)
+			k2_5(k) = k+1;
+		detail::fftEmbedKernel(k2_5, e2);
+
+		double k2_5ref[] = {13,14,15, 0, 0, 0,11,12,
+			                18,19,20, 0, 0, 0,16,17,
+			                23,24,25, 0, 0, 0,21,22,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 0, 0, 0, 0, 0, 0, 0, 0,
+			                 3, 4, 5, 0, 0, 0, 1, 2,
+		                     8, 9,10, 0, 0, 0, 6, 7};
+		shouldEqualSequence(e2.data(), e2.data()+e2.size(), k2_5ref);
+
+		detail::fftEmbedArray(k2_4, e2);
+		double a2_4ref[] = {11,10, 9,10,11,12,11,10,
+			                 7, 6, 5, 6, 7, 8, 7, 6,
+			                 3, 2, 1, 2, 3, 4, 3, 2,
+			                 7, 6, 5, 6, 7, 8, 7, 6,
+			                11,10, 9,10,11,12,11,10,
+			                15,14,13,14,15,16,15,14,
+			                11,10, 9,10,11,12,11,10,
+		                     7, 6, 5, 6, 7, 8, 7, 6};
+		shouldEqualSequence(e2.data(), e2.data()+e2.size(), a2_4ref);
+
+		detail::fftEmbedArray(k2_5, e2);
+		double a2_5ref[] = { 7, 6, 7, 8, 9,10, 9, 8,
+			                 2, 1, 2, 3, 4, 5, 4, 3,
+			                 7, 6, 7, 8, 9,10, 9, 8,
+			                12,11,12,13,14,15,14,13,
+			                17,16,17,18,19,20,19,18,
+			                22,21,22,23,24,25,24,23,
+			                17,16,17,18,19,20,19,18,
+		                    12,11,12,13,14,15,14,13};
+		shouldEqualSequence(e2.data(), e2.data()+e2.size(), a2_5ref);
 	}
 
 	void testFFT2D()
 	{
-		vigra::MultiArrayShape<2>::type s(256, 256);
+		Shape2 s(256, 256);
 
-        vigra::FFTWComplexImage in(s[0], s[1]);
+		FFTWComplexImage in(s[0], s[1]);
         for (int y=0; y<in.height(); y++)
             for (int x=0; x<in.width(); x++)
             {
                 in(x,y)= rand()/(double)RAND_MAX;
             }
 
-        vigra::FFTWComplexImage out(in.size());
-		vigra::MultiArray<2, C> aout(s);
+        FFTWComplexImage out(in.size());
+		CArray2 aout(s);
 
         fourierTransform(srcImageRange(in), destImage(out));
-		fourierTransform(vigra::MultiArrayView<2, C>(s, const_cast<C*>(in.data())), 
+		fourierTransform(MultiArrayView<2, C>(s, const_cast<C*>(in.data())), 
 			             aout);
 
 		shouldEqualSequence(aout.data(), aout.data()+aout.size(), out.data());
 
-		vigra::MultiArray<2, R > rin(s);
+		DArray2 rin(s);
 		copyImage(srcImageRange(in, FFTWRealAccessor<>()), destImage(rin));
 
 		fourierTransform(rin, aout);
@@ -340,7 +422,7 @@ struct MultiFFTTest
 	void testFFT3D()
 	{
 		Shape3 s(32, 24, 16);
-		CArray3 r(s), ir(s);
+		CArray3 r(s), ir(s), irr(s);
 
 		fourierTransform(MultiArrayView<3, double>(s, f3data), r);
 
@@ -362,14 +444,56 @@ struct MultiFFTTest
 		shouldEqualTolerance(minmax.min, 0.0, 1e-10);
 		shouldEqualTolerance(minmax.max, 0.0, 1e-10);
 	}
+
+	void testPadding()
+	{
+		shouldEqual(0, detail::fftwPaddingSize(0));
+		shouldEqual(1, detail::fftwPaddingSize(1));
+		shouldEqual(3, detail::fftwPaddingSize(3));
+		shouldEqual(256, detail::fftwPaddingSize(255));
+		shouldEqual(256, detail::fftwPaddingSize(256));
+		shouldEqual(260, detail::fftwPaddingSize(257));
+		shouldEqual(0, detail::fftwEvenPaddingSize(0));
+		shouldEqual(2, detail::fftwEvenPaddingSize(1));
+		shouldEqual(4, detail::fftwEvenPaddingSize(3));
+		shouldEqual(256, detail::fftwEvenPaddingSize(255));
+		shouldEqual(256, detail::fftwEvenPaddingSize(256));
+		shouldEqual(260, detail::fftwEvenPaddingSize(257));
+
+		Shape3 s(113, 256, 257);
+		shouldEqual(Shape3(117, 256, 260), fftwBestPaddedShape(s));
+		shouldEqual(Shape3(120, 256, 260), fftwBestPaddedShapeR2C(s));
+	}
+
+	void testConvolveFFT()
+	{
+		ImageImportInfo info("ghouse.gif");
+		Shape2 s(info.width(), info.height());
+		DArray2 in(s), out(s), ref(s);
+		importImage(info, destImage(in));
+
+		double scale = 2.0;
+		gaussianSmoothing(srcImageRange(in), destImage(ref), scale);
+
+		Kernel2D<double> gauss;
+		gauss.initGaussian(scale);
+		MultiArrayView<2, double> kernel(Shape2(gauss.width(), gauss.height()), 
+			                             &gauss[gauss.upperLeft()]);
+		convolveFFT(in, kernel, out);
+
+		exportImage(srcImageRange(out), ImageExportInfo("fft.png"));
+
+		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+			                         ref.data(), 1e-10);
+	}
 };
 
 struct FFTWTestSuite
-: public vigra::test_suite
+: public test_suite
 {
 
     FFTWTestSuite()
-    : vigra::test_suite("FFTWTest")
+    : test_suite("FFTWTest")
     {
 
         add( testCase(&FFTWComplexTest::testConstruction));
@@ -382,6 +506,8 @@ struct FFTWTestSuite
         add( testCase(&MultiFFTTest::testFFTShift));
         add( testCase(&MultiFFTTest::testFFT2D));
         add( testCase(&MultiFFTTest::testFFT3D));
+        add( testCase(&MultiFFTTest::testPadding));
+        add( testCase(&MultiFFTTest::testConvolveFFT));
     }
 };
 
@@ -519,10 +645,10 @@ struct GaborTests
 };
 
 struct GaborTestSuite
-: public vigra::test_suite
+: public test_suite
 {
     GaborTestSuite()
-    : vigra::test_suite("FFTWWithGaborTest")
+    : test_suite("FFTWWithGaborTest")
     {
         add(testCase(&GaborTests::testImages));
         add(testCase(&GaborTests::testFamily));
@@ -536,13 +662,13 @@ int main(int argc, char **argv)
 
     FFTWTestSuite fftwTest;
 
-    int failed = fftwTest.run(vigra::testsToBeExecuted(argc, argv));
+    int failed = fftwTest.run(testsToBeExecuted(argc, argv));
 
     std::cout << fftwTest.report() << std::endl;
 
     GaborTestSuite gaborTest;
 
-    failed = failed || gaborTest.run(vigra::testsToBeExecuted(argc, argv));
+    failed = failed || gaborTest.run(testsToBeExecuted(argc, argv));
 
     std::cout << gaborTest.report() << std::endl;
 
