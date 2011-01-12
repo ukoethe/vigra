@@ -569,7 +569,141 @@ struct CanSkipInitialization<FFTWComplex<Real> >
     static const bool value = type::asBool;
 };
 
+template<class Ty>
+class FFTWAllocator
+{
+  public:
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef Ty *pointer;
+    typedef const Ty *const_pointer;
+    typedef Ty& reference;
+    typedef const Ty& const_reference;
+    typedef Ty value_type;
+    
+    pointer address(reference val) const
+        { return &val; }
+        
+    const_pointer address(const_reference val) const
+        { return &val; }
+        
+    template<class Other>
+    struct rebind
+    {
+        typedef FFTWAllocator<Other> other;
+    };
+    
+    FFTWAllocator() throw()
+    {}
+    
+    template<class Other>
+    FFTWAllocator(const FFTWAllocator<Other>& right) throw()
+    {}
+    
+    template<class Other>
+    FFTWAllocator& operator=(const FFTWAllocator<Other>& right)
+    {
+		return *this;
+	}
+    
+    pointer allocate(size_type count, void * = 0)
+    {
+        return (pointer)fftw_malloc(count * sizeof(Ty));
+    }
+    
+    void deallocate(pointer ptr, size_type count)
+    {
+        fftw_free(ptr);
+    }
+    
+    void construct(pointer ptr, const Ty& val)
+    {
+        new(ptr) Ty(val);
+        
+    }
+    
+    void destroy(pointer ptr)
+    {
+        ptr->~Ty();
+    }
+    
+    size_type max_size() const throw()
+    {
+        return NumericTraits<std::ptrdiff_t>::max() / sizeof(Ty);
+    }
+};
 
+} // namespace vigra
+
+namespace std {
+
+template<class Real>
+class allocator<vigra::FFTWComplex<Real> >
+{
+  public:
+    typedef vigra::FFTWComplex<Real> value_type;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+    typedef value_type *pointer;
+    typedef const value_type *const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+
+    pointer address(reference val) const
+        { return &val; }
+        
+    const_pointer address(const_reference val) const
+        { return &val; }
+        
+    template<class Other>
+    struct rebind
+    {
+        typedef allocator<Other> other;
+    };
+    
+    allocator() throw()
+    {}
+    
+    template<class Other>
+    allocator(const allocator<Other>& right) throw()
+    {}
+    
+    template<class Other>
+    allocator& operator=(const allocator<Other>& right)
+    {
+		return *this;
+	}
+    
+    pointer allocate(size_type count, void * = 0)
+    {
+        return (pointer)fftw_malloc(count * sizeof(value_type));
+    }
+    
+    void deallocate(pointer ptr, size_type count)
+    {
+        fftw_free(ptr);
+    }
+    
+    void construct(pointer ptr, const value_type& val)
+    {
+        new(ptr) value_type(val);
+        
+    }
+    
+    void destroy(pointer ptr)
+    {
+        ptr->~value_type();
+    }
+    
+    size_type max_size() const throw()
+    {
+        return vigra::NumericTraits<ptrdiff_t>::max() / sizeof(value_type);
+    }
+};
+
+} // namespace std
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */

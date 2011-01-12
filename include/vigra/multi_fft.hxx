@@ -1167,8 +1167,14 @@ convolveFFT(MultiArrayView<N, Real, C1> in,
           complexShape(paddedShape);
     complexShape[0] = complexShape[0] / 2 + 1;
     
-    MultiArray<N, Real> realArray(paddedShape);
-    MultiArray<N, FFTWComplex<Real> > fourierArray(complexShape), fourierKernel(complexShape);
+    int rsize = 1;
+    for(int k=0; k<N; ++k)
+        rsize *= paddedShape[k];
+    int csize = rsize / paddedShape[0] * complexShape[0];
+    
+    MultiArray<N, Real, FFTWAllocator<Real> > realArray(paddedShape);
+    MultiArray<N, FFTWComplex<Real>, FFTWAllocator<FFTWComplex<Real> > > 
+                    fourierArray(complexShape), fourierKernel(complexShape);
     
     FFTWConvolvePlan<Real> plan(realArray, fourierArray, options.planner_flags);
 
@@ -1176,8 +1182,7 @@ convolveFFT(MultiArrayView<N, Real, C1> in,
     plan.forward_plan.execute(realArray, fourierArray);
 
     detail::fftEmbedKernel(kernel, realArray, Real(1.0) / Real(realArray.size()));
-//    plan.forward_plan.execute(realArray, fourierKernel); // FIXME: why does this crash???
-    FFTWPlan<Real>(realArray, fourierKernel, options.planner_flags).execute();
+    plan.forward_plan.execute(realArray, fourierKernel);
     
     fourierArray *= fourierKernel;
     

@@ -484,7 +484,7 @@ struct MultiFFTTest
 		exportImage(srcImageRange(out), ImageExportInfo("fft.png"));
 
 		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
-			                         ref.data(), 1e-10);
+			                         ref.data(), 1e-14);
 	}
 };
 
