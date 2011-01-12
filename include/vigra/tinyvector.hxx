@@ -1361,6 +1361,18 @@ operator/(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
     return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(l) /= v;
 }
 
+    /// component-wise scalar division without type promotion
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<V, SIZE>
+div(TinyVectorBase<V, SIZE, D1, D2> const & l, V v)
+{
+    TinyVector<V, SIZE> result(l);
+    typedef typename detail::LoopType<SIZE>::type Loop;
+    Loop::divScalar(result.data(), v);
+    return result;
+}
+
 
     /** Unary negation (construct TinyVector with negative values)
     */
