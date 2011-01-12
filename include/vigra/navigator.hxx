@@ -120,6 +120,8 @@ class MultiArrayNavigator
     {
         if(inner_dimension != level)
             end_.template dim<level>() += shape[level];
+        else
+            end_.template dim<level>() += 1;
     }
 
         /** Advance to next starting location.
@@ -146,18 +148,18 @@ class MultiArrayNavigator
          */
     bool hasMore() const
     {
-        return this->inner_dimension_ == level ?
-                    base_type::hasMore() :
-                    i_ < end_;
+        return this->inner_dimension_ == level 
+                     ? base_type::hasMore() 
+                     : i_ < end_;
     }
 
         /** true if iterator is exhausted.
          */
     bool atEnd() const
     {
-        return this->inner_dimension_ == level ?
-                    base_type::atEnd() :
-	            !( i_ < end_);
+        return this->inner_dimension_ == level 
+                     ? base_type::atEnd()
+                     : !(i_ < end_);
     }
 
   protected:
@@ -166,6 +168,8 @@ class MultiArrayNavigator
         end_ = i_ = i;
         if(this->inner_dimension_ != level)
             end_.template dim<level>() += this->shape_[level];
+        else
+            end_.template dim<level>() += 1;
         base_type::reset(i);
     }
 
@@ -188,6 +192,8 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     {
         if(inner_dimension != level)
             end_.template dim<level>() += shape[level];
+        else
+            end_.template dim<level>() += 1;
     }
 
     void operator++()
@@ -217,7 +223,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
 
     bool atEnd() const
     {
-      return !( i_ < end_);
+      return !(i_ < end_);
     }
 
   protected:
@@ -226,7 +232,9 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         end_ = i_ = i;
         if(inner_dimension_ != level)
             end_.template dim<level>() += shape_[level];
-    }
+        else
+            end_.template dim<level>() += 1;
+   }
 
     shape_type shape_;
     unsigned int inner_dimension_;
