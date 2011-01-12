@@ -573,7 +573,9 @@ class MultiIterator<1, T, REFERENCE, POINTER>
 //
 template <class T, class REFERENCE, class POINTER>
 class MultiIterator<2, T, REFERENCE, POINTER>
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public MultiIterator<1, T, REFERENCE, POINTER>
+#endif
 {
   public:
 
@@ -757,7 +759,9 @@ Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
 class MultiIterator 
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public MultiIterator<N-1, T, REFERENCE, POINTER>
+#endif
 {
 public:
 
@@ -1323,7 +1327,9 @@ class StridedMultiIterator<1, T, REFERENCE, POINTER>
 //
 template <class T, class REFERENCE, class POINTER>
 class StridedMultiIterator<2, T, REFERENCE, POINTER>
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public StridedMultiIterator<1, T, REFERENCE, POINTER>
+#endif
 {
   public:
 
@@ -1507,7 +1513,9 @@ Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
 class StridedMultiIterator 
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : public StridedMultiIterator<N-1, T, REFERENCE, POINTER>
+#endif
 {
 public:
 
