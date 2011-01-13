@@ -715,339 +715,6 @@ int fftwEvenPaddingSize(int s)
     return *std::upper_bound(goodSizes, goodSizes+size, s, std::less_equal<int>());
 }
 
-} // namespace detail
-
-template <class Real>
-class FFTWPlan
-{
-    typedef ArrayVector<int> Shape;
-    typedef typename FFTWReal2Complex<Real>::plan_type PlanType;
-    typedef typename FFTWComplex<Real>::complex_type Complex;
-    
-    PlanType plan;
-    Shape shape, instrides, outstrides;
-    
-  public:
-    FFTWPlan()
-    : plan(0)
-    {}
-    
-    template <unsigned int N, class C1, class C2>
-    FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-             MultiArrayView<N, FFTWComplex<Real>, C2> out,
-             int SIGN, unsigned int planner_flags)
-    : plan(0)
-    {
-        init(in, out, SIGN, planner_flags);
-    }
-    
-    template <unsigned int N, class C1, class C2>
-    FFTWPlan(MultiArrayView<N, Real, C1> in, 
-             MultiArrayView<N, FFTWComplex<Real>, C2> out,
-             unsigned int planner_flags)
-    : plan(0)
-    {
-        init(in, out, planner_flags);
-    }
-
-    template <unsigned int N, class C1, class C2>
-    FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-             MultiArrayView<N, Real, C2> out,
-             unsigned int planner_flags)
-    : plan(0)
-    {
-        init(in, out, planner_flags);
-    }
-    
-    FFTWPlan(FFTWPlan const & other)
-    : plan(other.plan)
-    {
-        FFTWPlan & o = const_cast<FFTWPlan &>(other);
-		shape.swap(o.shape);
-        instrides.swap(o.instrides);
-        outstrides.swap(o.outstrides);
-        o.plan = 0; // act like std::auto_ptr
-    }
-    
-    FFTWPlan & operator=(FFTWPlan const & other)
-    {
-        if(this != &other)
-        {
-            FFTWPlan & o = const_cast<FFTWPlan &>(other);
-			plan = o.plan;
-            shape.swap(o.shape);
-            instrides.swap(o.instrides);
-            outstrides.swap(o.outstrides);
-            o.plan = 0; // act like std::auto_ptr
-        }
-        return *this;
-    }
-
-    ~FFTWPlan()
-    {
-        detail::fftwPlanDestroy(plan);
-    }
-
-    template <unsigned int N, class C1, class C2>
-    void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-              MultiArrayView<N, FFTWComplex<Real>, C2> out,
-              int SIGN, unsigned int planner_flags)
-    {
-        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
-            "FFTWPlan.init(): input and output must have the same stride ordering.");
-            
-        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
-                 SIGN, planner_flags);
-    }
-        
-    template <unsigned int N, class C1, class C2>
-    void init(MultiArrayView<N, Real, C1> in, 
-              MultiArrayView<N, FFTWComplex<Real>, C2> out,
-              unsigned int planner_flags)
-    {
-        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
-            "FFTWPlan.init(): input and output must have the same stride ordering.");
-
-        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
-                 FFTW_FORWARD, planner_flags);
-    }
-        
-    template <unsigned int N, class C1, class C2>
-    void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-              MultiArrayView<N, Real, C2> out,
-              unsigned int planner_flags)
-    {
-        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
-            "FFTWPlan.init(): input and output must have the same stride ordering.");
-
-        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
-                 FFTW_BACKWARD, planner_flags);
-    }
-    
-    template <unsigned int N, class C1, class C2>
-    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                 MultiArrayView<N, FFTWComplex<Real>, C2> out) const
-    {
-        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
-    }
-    
-    template <unsigned int N, class C1, class C2>
-    void execute(MultiArrayView<N, Real, C1> in, 
-                 MultiArrayView<N, FFTWComplex<Real>, C2> out) const
-    {
-        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
-    }
-    
-    template <unsigned int N, class C1, class C2>
-    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                 MultiArrayView<N, Real, C2> out) const
-    {
-        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), true);
-    }
-
-    void execute() const
-	{
-		vigra_precondition(plan != 0, "FFTWPlan::execute(): plan is NULL.");
-        detail::fftwPlanExecute(plan);
-	}
-    
-  private:
-    
-    template <class MI, class MO>
-    void initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flags);
-    
-    template <class MI, class MO>
-    void executeImpl(MI ins, MO outs, bool shapeFromOut = false) const;
-    
-    template <unsigned int N>
-    void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> in, 
-                     MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> out) const
-    {
-        vigra_precondition(in.shape() == out.shape(),
-            "FFTWPlan.init(): input and output must have the same shape.");
-    }
-    
-    template <unsigned int N>
-    void checkShapes(MultiArrayView<N, Real, StridedArrayTag> ins, 
-                     MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs) const
-    {
-        for(int k=0; k<(int)N-1; ++k)
-            vigra_precondition(ins.shape(k) == outs.shape(k),
-                "FFTWPlan.init(): input and output must have matching shapes.");
-        vigra_precondition(ins.shape(N-1) / 2 + 1 == outs.shape(N-1),
-            "FFTWPlan.init(): input and output must have matching shapes.");
-    }
-    
-    template <unsigned int N>
-    void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins, 
-                     MultiArrayView<N, Real, StridedArrayTag> outs) const
-    {
-        for(int k=0; k<(int)N-1; ++k)
-            vigra_precondition(ins.shape(k) == outs.shape(k),
-                "FFTWPlan.init(): input and output must have matching shapes.");
-        vigra_precondition(outs.shape(N-1) / 2 + 1 == ins.shape(N-1),
-            "FFTWPlan.init(): input and output must have matching shapes.");
-    }
-};
-
-template <class Real>
-template <class MI, class MO>
-void
-FFTWPlan<Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flags)
-{
-    static const unsigned int N = MI::actual_dimension;
-    
-    checkShapes(ins, outs);
-    
-    typename MultiArrayShape<N>::type lshape(SIGN == FFTW_FORWARD
-                                                ? ins.shape()
-                                                : outs.shape());
-                                           
-	Shape newShape(lshape.begin(), lshape.end()),
-          newIStrides(ins.stride().begin(), ins.stride().end()),
-          newOStrides(outs.stride().begin(), outs.stride().end()),
-          itotal(ins.shape().begin(), ins.shape().end()), 
-		  ototal(outs.shape().begin(), outs.shape().end());
-
-    for(int j=1; j<N; ++j)
-    {
-        itotal[j] = ins.stride(j-1) / ins.stride(j);
-        ototal[j] = outs.stride(j-1) / outs.stride(j);
-    }
-    
-    PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
-                                  ins.data(), itotal.begin(), ins.stride(N-1),
-                                  outs.data(), ototal.begin(), outs.stride(N-1),
-                                  SIGN, planner_flags);
-    detail::fftwPlanDestroy(plan);
-    plan = newPlan;
-    shape.swap(newShape);
-    instrides.swap(newIStrides);
-    outstrides.swap(newOStrides);
-}
-
-template <class Real>
-template <class MI, class MO>
-void FFTWPlan<Real>::executeImpl(MI ins, MO outs, bool shapeFromOut = false) const
-{
-    static const unsigned int N = MI::actual_dimension;
-    
-    vigra_precondition(plan != 0, "FFTWPlan::execute(): plan is NULL.");
-    
-    vigra_precondition(shape.size() == N,
-        "FFTWPlan::execute(): dimension mismatch between plan and data.");
-
-    typename MultiArrayShape<N>::type lshape(shapeFromOut
-                                                ? outs.shape()
-                                                : ins.shape());
-                                           
-	vigra_precondition((lshape == TinyVectorView<int, N>(shape.data())),
-        "FFTWPlan::execute(): shape mismatch between plan and data.");
-    vigra_precondition((ins.stride() == TinyVectorView<int, N>(instrides.data())),
-        "FFTWPlan::execute(): strides mismatch between plan and input data.");
-    vigra_precondition((outs.stride() == TinyVectorView<int, N>(outstrides.data())),
-        "FFTWPlan::execute(): strides mismatch between plan and output data.");
-
-	detail::fftwPlanExecute(plan, ins.data(), outs.data());
-}
-
-template <class Real>
-class FFTWConvolvePlan
-{
-  public:
-    
-    template <unsigned int N, class C1, class C2>
-    FFTWConvolvePlan(MultiArrayView<N, Real, C1> realArray, 
-                     MultiArrayView<N, FFTWComplex<Real>, C2> complexArray,
-                     unsigned int planner_flags)
-    : forward_plan(realArray, complexArray, planner_flags),
-      backward_plan(complexArray, realArray, planner_flags)
-    {}
-
-    FFTWPlan<Real> forward_plan, backward_plan;
-};
-
-template <class T, unsigned int N>
-TinyVector<T, N>
-fftwBestPaddedShape(TinyVector<T, N> shape)
-{
-    for(unsigned int k=0; k<N; ++k)
-        shape[k] = detail::fftwPaddingSize(shape[k]);
-    return shape;
-}
-
-template <class T, unsigned int N>
-TinyVector<T, N>
-fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
-{
-    shape[0] = detail::fftwEvenPaddingSize(shape[0]);
-    for(unsigned int k=1; k<N; ++k)
-        shape[k] = detail::fftwPaddingSize(shape[k]);
-    return shape;
-}
-
-class FourierOptions
-{
-  public:
-    
-    ArrayVector<MultiArrayIndex> padded_shape;
-    unsigned int planner_flags;
-    bool normalize_inverse;
-    
-    FourierOptions()
-    : planner_flags(FFTW_ESTIMATE),
-      normalize_inverse(true)
-    {}
-
-	FourierOptions & plannerFlags(unsigned int flags)
-	{
-		planner_flags = flags;
-		return *this;
-	}
-
-	FourierOptions & normalizeInverse(bool normalize = true)
-	{
-		normalize_inverse = normalize;
-		return *this;
-	}
-};
-
-template <unsigned int N, class Real, class C1, class C2>
-inline void 
-fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                 MultiArrayView<N, FFTWComplex<Real>, C2> out,
-                 FourierOptions const & options = FourierOptions())
-{
-	FFTWPlan<Real>(in, out, FFTW_FORWARD, options.planner_flags).execute();
-}
-
-template <unsigned int N, class Real, class C1, class C2>
-inline void 
-fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                        MultiArrayView<N, FFTWComplex<Real>, C2> out,
-                        FourierOptions const & options = FourierOptions())
-{
-	FFTWPlan<Real>(in, out, FFTW_BACKWARD, options.planner_flags).execute();
-    if(options.normalize_inverse)
-        out *= FFTWComplex<Real>(Real(1.0) / Real(out.size()));
-}
-
-template <unsigned int N, class Real, class C1, class C2>
-void 
-fourierTransform(MultiArrayView<N, Real, C1> in, 
-                 MultiArrayView<N, FFTWComplex<Real>, C2> out,
-                 FourierOptions const & options = FourierOptions())
-{
-    vigra_precondition(in.shape() == out.shape(),
-        "fourierTransform(): input and output must have the same shape.");
-    
-    // copy the input array into the output and then perform an in-place FFT
-    out = in;
-	FFTWPlan<Real>(out, out, FFTW_FORWARD, options.planner_flags).execute();
-}
-
-namespace detail {
-
 template <unsigned int N, class Real, class C, class Shape, int M>
 void 
 fftEmbedKernel(MultiArrayView<N, Real, C> & out, Shape const & kernelShape, 
@@ -1104,7 +771,8 @@ fftEmbedKernel(MultiArrayView<N, Real, C1> kernel,
     
     out.init(0.0);
     kout = kernel;
-    kout *= norm;
+    if (norm != 1.0)
+        kout *= norm;
     moveDCToUpperLeft(kout);
     
     Shape srcPoint(0), destPoint(0);
@@ -1148,91 +816,516 @@ fftEmbedArray(MultiArrayView<N, Real, C1> in,
 
 } // namespace detail
 
-template <unsigned int N, class Real, class C1, class C2, class C3>
-void 
-convolveFFT(MultiArrayView<N, Real, C1> in, 
-            MultiArrayView<N, Real, C2> kernel,
-            MultiArrayView<N, Real, C3> out,
-            FourierOptions const & options = FourierOptions())
+template <class T, unsigned int N>
+TinyVector<T, N>
+fftwBestPaddedShape(TinyVector<T, N> shape)
 {
-    typedef typename MultiArrayShape<N>::type Shape;
+    for(unsigned int k=0; k<N; ++k)
+        shape[k] = detail::fftwPaddingSize(shape[k]);
+    return shape;
+}
+
+template <class T, unsigned int N>
+TinyVector<T, N>
+fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
+{
+    shape[0] = detail::fftwEvenPaddingSize(shape[0]);
+    for(unsigned int k=1; k<N; ++k)
+        shape[k] = detail::fftwPaddingSize(shape[k]);
+    return shape;
+}
+
+template <unsigned int N, class Real = double>
+class FFTWPlan
+{
+    typedef ArrayVector<int> Shape;
+    typedef typename FFTWReal2Complex<Real>::plan_type PlanType;
+    typedef typename FFTWComplex<Real>::complex_type Complex;
     
+    PlanType plan;
+    Shape shape, instrides, outstrides;
+    int sign;
+    
+  public:
+    FFTWPlan()
+    : plan(0)
+    {}
+    
+    template <class C1, class C2>
+    FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+             MultiArrayView<N, FFTWComplex<Real>, C2> out,
+             int SIGN, unsigned int planner_flags = FFTW_ESTIMATE)
+    : plan(0)
+    {
+        init(in, out, SIGN, planner_flags);
+    }
+    
+    template <class C1, class C2>
+    FFTWPlan(MultiArrayView<N, Real, C1> in, 
+             MultiArrayView<N, FFTWComplex<Real>, C2> out,
+             unsigned int planner_flags = FFTW_ESTIMATE)
+    : plan(0)
+    {
+        init(in, out, planner_flags);
+    }
+
+    template <class C1, class C2>
+    FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+             MultiArrayView<N, Real, C2> out,
+             unsigned int planner_flags = FFTW_ESTIMATE)
+    : plan(0)
+    {
+        init(in, out, planner_flags);
+    }
+    
+    FFTWPlan(FFTWPlan const & other)
+    : plan(other.plan),
+      sign(other.sign)
+    {
+        FFTWPlan & o = const_cast<FFTWPlan &>(other);
+		shape.swap(o.shape);
+        instrides.swap(o.instrides);
+        outstrides.swap(o.outstrides);
+        o.plan = 0; // act like std::auto_ptr
+    }
+    
+    FFTWPlan & operator=(FFTWPlan const & other)
+    {
+        if(this != &other)
+        {
+            FFTWPlan & o = const_cast<FFTWPlan &>(other);
+			plan = o.plan;
+            shape.swap(o.shape);
+            instrides.swap(o.instrides);
+            outstrides.swap(o.outstrides);
+            sign = o.sign;
+            o.plan = 0; // act like std::auto_ptr
+        }
+        return *this;
+    }
+
+    ~FFTWPlan()
+    {
+        detail::fftwPlanDestroy(plan);
+    }
+
+    template <class C1, class C2>
+    void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+              MultiArrayView<N, FFTWComplex<Real>, C2> out,
+              int SIGN, unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
+            "FFTWPlan.init(): input and output must have the same stride ordering.");
+            
+        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
+                 SIGN, planner_flags);
+    }
+        
+    template <class C1, class C2>
+    void init(MultiArrayView<N, Real, C1> in, 
+              MultiArrayView<N, FFTWComplex<Real>, C2> out,
+              unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
+            "FFTWPlan.init(): input and output must have the same stride ordering.");
+
+        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
+                 FFTW_FORWARD, planner_flags);
+    }
+        
+    template <class C1, class C2>
+    void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+              MultiArrayView<N, Real, C2> out,
+              unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        vigra_precondition(in.strideOrdering() == out.strideOrdering(),
+            "FFTWPlan.init(): input and output must have the same stride ordering.");
+
+        initImpl(in.permuteStridesDescending(), out.permuteStridesDescending(), 
+                 FFTW_BACKWARD, planner_flags);
+    }
+    
+    template <class C1, class C2>
+    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out) const
+    {
+        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
+    }
+    
+    template <class C1, class C2>
+    void execute(MultiArrayView<N, Real, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out) const
+    {
+        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
+    }
+    
+    template <class C1, class C2>
+    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                 MultiArrayView<N, Real, C2> out) const
+    {
+        executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
+    }
+    
+  private:
+    
+    template <class MI, class MO>
+    void initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flags);
+    
+    template <class MI, class MO>
+    void executeImpl(MI ins, MO outs) const;
+    
+    template <unsigned int N>
+    void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> in, 
+                     MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> out) const
+    {
+        vigra_precondition(in.shape() == out.shape(),
+            "FFTWPlan.init(): input and output must have the same shape.");
+    }
+    
+    template <unsigned int N>
+    void checkShapes(MultiArrayView<N, Real, StridedArrayTag> ins, 
+                     MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs) const
+    {
+        for(int k=0; k<(int)N-1; ++k)
+            vigra_precondition(ins.shape(k) == outs.shape(k),
+                "FFTWPlan.init(): input and output must have matching shapes.");
+        vigra_precondition(ins.shape(N-1) / 2 + 1 == outs.shape(N-1),
+            "FFTWPlan.init(): input and output must have matching shapes.");
+    }
+    
+    template <unsigned int N>
+    void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins, 
+                     MultiArrayView<N, Real, StridedArrayTag> outs) const
+    {
+        for(int k=0; k<(int)N-1; ++k)
+            vigra_precondition(ins.shape(k) == outs.shape(k),
+                "FFTWPlan.init(): input and output must have matching shapes.");
+        vigra_precondition(outs.shape(N-1) / 2 + 1 == ins.shape(N-1),
+            "FFTWPlan.init(): input and output must have matching shapes.");
+    }
+};
+
+template <unsigned int N, class Real>
+template <class MI, class MO>
+void
+FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flags)
+{
+    checkShapes(ins, outs);
+    
+    typename MultiArrayShape<N>::type logicalShape(SIGN == FFTW_FORWARD
+                                                ? ins.shape()
+                                                : outs.shape());
+                                           
+	Shape newShape(logicalShape.begin(), logicalShape.end()),
+          newIStrides(ins.stride().begin(), ins.stride().end()),
+          newOStrides(outs.stride().begin(), outs.stride().end()),
+          itotal(ins.shape().begin(), ins.shape().end()), 
+		  ototal(outs.shape().begin(), outs.shape().end());
+
+    for(int j=1; j<N; ++j)
+    {
+        itotal[j] = ins.stride(j-1) / ins.stride(j);
+        ototal[j] = outs.stride(j-1) / outs.stride(j);
+    }
+    
+    PlanType newPlan = detail::fftwPlanCreate(N, newShape.begin(), 
+                                  ins.data(), itotal.begin(), ins.stride(N-1),
+                                  outs.data(), ototal.begin(), outs.stride(N-1),
+                                  SIGN, planner_flags);
+    detail::fftwPlanDestroy(plan);
+    plan = newPlan;
+    shape.swap(newShape);
+    instrides.swap(newIStrides);
+    outstrides.swap(newOStrides);
+    sign = SIGN;
+}
+
+template <unsigned int N, class Real>
+template <class MI, class MO>
+void FFTWPlan<N, Real>::executeImpl(MI ins, MO outs) const
+{
+    vigra_precondition(plan != 0, "FFTWPlan::execute(): plan is NULL.");
+
+    typename MultiArrayShape<N>::type lshape(sign == FFTW_FORWARD
+                                                ? ins.shape()
+                                                : outs.shape());
+                                           
+	vigra_precondition((lshape == TinyVectorView<int, N>(shape.data())),
+        "FFTWPlan::execute(): shape mismatch between plan and data.");
+    vigra_precondition((ins.stride() == TinyVectorView<int, N>(instrides.data())),
+        "FFTWPlan::execute(): strides mismatch between plan and input data.");
+    vigra_precondition((outs.stride() == TinyVectorView<int, N>(outstrides.data())),
+        "FFTWPlan::execute(): strides mismatch between plan and output data.");
+
+	detail::fftwPlanExecute(plan, ins.data(), outs.data());
+    
+    typedef typename MO::value_type V;
+    if(sign == FFTW_BACKWARD)
+        outs *= V(1.0) / Real(outs.size());
+}
+
+template <unsigned int N, class Real>
+class FFTWConvolvePlan
+{
+    typedef FFTWComplex<Real> Complex;
+    typedef MultiArray<N, Real, FFTWAllocator<Real> >       RArray;
+    typedef MultiArray<N, Complex, FFTWAllocator<Complex> > CArray;
+    
+    FFTWPlan<N, Real> forward_plan, backward_plan;
+    RArray realArray;
+    CArray fourierArray, fourierKernel;
+
+  public:
+  
+    typedef typename MultiArrayShape<N>::type Shape;
+
+	FFTWConvolvePlan()
+	{}
+    
+    template <class C1, class C2, class C3>
+    FFTWConvolvePlan(MultiArrayView<N, Real, C1> in, 
+                     MultiArrayView<N, Real, C2> kernel,
+                     MultiArrayView<N, Real, C3> out,
+                     unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        init(in.shape(), kernel.shape(), out.shape(), planner_flags);
+    }
+    
+    template <class C1, class C2, class C3>
+    FFTWConvolvePlan(Shape in, Shape kernel, Shape out,
+                     unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        init(in, kernel, out, planner_flags);
+    }
+    
+    template <class C1, class C2, class C3>
+    void init(MultiArrayView<N, Real, C1> in, 
+              MultiArrayView<N, Real, C2> kernel,
+              MultiArrayView<N, Real, C3> out,
+              unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        init(in.shape(), kernel.shape(), out.shape(), planner_flags);
+    }
+    
+    void init(Shape in, Shape kernel, Shape out,
+              unsigned int planner_flags = FFTW_ESTIMATE);
+    
+    template <class C1, class C2, class C3>
+    void initFourierKernel(MultiArrayView<N, Real, C1> in, 
+                           MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                           MultiArrayView<N, Real, C3> out,
+                           unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        initFourierKernel(in.shape(), kernel.shape(), out.shape(), planner_flags);
+    }
+    
+    void initFourierKernel(Shape in, Shape kernel, Shape out,
+                           unsigned int planner_flags = FFTW_ESTIMATE);
+    
+    template <class C1, class KernelIterator, class OutIterator>
+    void initMany(MultiArrayView<N, Real, C1> in, 
+                  KernelIterator kernels, KernelIterator kernelsEnd,
+                  OutIterator outs, unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        initMany(in.shape(), kernels, kernelsEnd, outs, planner_flags);
+    }
+     
+    template <class KernelIterator, class OutIterator>
+    void initMany(Shape in, 
+                  KernelIterator kernels, KernelIterator kernelsEnd,
+                  OutIterator outs, unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        init(in, checkShapes(in, kernels, kernelsEnd, outs), in, planner_flags);
+    }
+    
+    template <class C1, class C2, class C3>
+    void execute(MultiArrayView<N, Real, C1> in, 
+                 MultiArrayView<N, Real, C2> kernel,
+                 MultiArrayView<N, Real, C3> out);
+    
+    template <class C1, class C2, class C3>
+    void executeFourierKernel(MultiArrayView<N, Real, C1> in, 
+                              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                              MultiArrayView<N, Real, C3> out);
+
+    template <class C1, class KernelIterator, class OutIterator>
+    void 
+    executeMany(MultiArrayView<N, Real, C1> in, 
+                KernelIterator kernels, KernelIterator kernelsEnd,
+                OutIterator outs);
+     
+    template <class KernelIterator, class OutIterator>
+    Shape checkShapes(Shape in, 
+                      KernelIterator kernels, KernelIterator kernelsEnd,
+                      OutIterator outs)
+    {
+        vigra_precondition(kernels != kernelsEnd,
+            "FFTWConvolvePlan::checkShapes(): empty kernel sequence.");
+        Shape kernelMax(0);            
+        OutIterator o = outs;
+        for(KernelIterator k=kernels; k != kernelsEnd; ++k, ++o)
+        {
+            vigra_precondition(in == o->shape(),
+                "FFTWConvolvePlan::checkShapes(): shape mismatch between input and (one) output.");
+            kernelMax = max(kernelMax, k->shape());
+        }
+        vigra_precondition(prod(kernelMax) > 0,
+            "FFTWConvolvePlan::checkShapes(): all kernels have size 0.");
+        return kernelMax;
+    }
+};    
+    
+template <unsigned int N, class Real>
+void 
+FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel, Shape out,
+                                unsigned int planner_flags)
+{
+    vigra_precondition(in == out,
+        "FFTWConvolvePlan::init(): input and output must have the same shape.");
+    
+    Shape paddedShape = fftwBestPaddedShapeR2C(in + kernel - Shape(1)),
+          complexShape(paddedShape);
+    complexShape[0] = complexShape[0] / 2 + 1;
+    
+    RArray newRealArray(paddedShape);
+    CArray newFourierArray(complexShape), newFourierKernel(complexShape);
+    
+    FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
+    FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
+    
+    forward_plan = fplan;
+    backward_plan = bplan;
+    realArray.swap(newRealArray);
+    fourierArray.swap(newFourierArray);
+    fourierKernel.swap(newFourierKernel);
+}
+
+template <unsigned int N, class Real>
+void 
+FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel, Shape out,
+                                             unsigned int planner_flags)
+{
+    vigra_precondition(in == out,
+        "FFTWConvolvePlan::initFourierKernel(): input and output must have the same shape.");
+    
+    Shape complexShape(kernel),
+          paddedShape(complexShape);
+    paddedShape[0] = 2 * (paddedShape[0] - 1);
+    
+    for(int k=0; k<N; ++k)
+        vigra_precondition(in[k] <= paddedShape[k],
+             "FFTWConvolvePlan::initFourierKernel(): kernel array too small for given input.");
+    
+    RArray newRealArray(paddedShape);
+    CArray newFourierArray(complexShape), newFourierKernel;
+    
+    FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
+    FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
+    
+    forward_plan = fplan;
+    backward_plan = bplan;
+    realArray.swap(newRealArray);
+    fourierArray.swap(newFourierArray);
+    fourierKernel.swap(newFourierKernel);
+}
+
+template <unsigned int N, class Real>
+template <class C1, class C2, class C3>
+void 
+FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
+                                    MultiArrayView<N, Real, C2> kernel,
+                                    MultiArrayView<N, Real, C3> out)
+{
     vigra_precondition(in.shape() == out.shape(),
-        "convolveFFT(): input and output must have the same shape.");
+        "FFTWConvolvePlan::execute(): input and output must have the same shape.");
     
     Shape paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernel.shape() - Shape(1)),
           diff = paddedShape - in.shape(), 
           left = div(diff, 2),
-          right = in.shape() + left, 
-          complexShape(paddedShape);
-    complexShape[0] = complexShape[0] / 2 + 1;
-    
-    int rsize = 1;
-    for(int k=0; k<N; ++k)
-        rsize *= paddedShape[k];
-    int csize = rsize / paddedShape[0] * complexShape[0];
-    
-    MultiArray<N, Real, FFTWAllocator<Real> > realArray(paddedShape);
-    MultiArray<N, FFTWComplex<Real>, FFTWAllocator<FFTWComplex<Real> > > 
-                    fourierArray(complexShape), fourierKernel(complexShape);
-    
-    FFTWConvolvePlan<Real> plan(realArray, fourierArray, options.planner_flags);
+          right = in.shape() + left;
+          
+    vigra_precondition(paddedShape == realArray.shape(),
+       "FFTWConvolvePlan::execute(): shape mismatch between input and plan.");
 
     detail::fftEmbedArray(in, realArray);
-    plan.forward_plan.execute(realArray, fourierArray);
+    forward_plan.execute(realArray, fourierArray);
 
-    detail::fftEmbedKernel(kernel, realArray, Real(1.0) / Real(realArray.size()));
-    plan.forward_plan.execute(realArray, fourierKernel);
+    detail::fftEmbedKernel(kernel, realArray);
+    forward_plan.execute(realArray, fourierKernel);
     
     fourierArray *= fourierKernel;
     
-    plan.backward_plan.execute(fourierArray, realArray);
+    backward_plan.execute(fourierArray, realArray);
     
     out = realArray.subarray(left, right);
 }
 
-
-#if 0
-namespace detail {
-
-template <class T>
-void
-fourierTransformImpl(FFTWComplexImage::const_traverser sul,
-                     FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
-                     FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest, T sign)
+template <unsigned int N, class Real>
+template <class C1, class C2, class C3>
+void 
+FFTWConvolvePlan<N, Real>::executeFourierKernel(MultiArrayView<N, Real, C1> in, 
+                                    MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                                    MultiArrayView<N, Real, C3> out)
 {
-    int w = int(slr.x - sul.x);
-    int h = int(slr.y - sul.y);
+    vigra_precondition(kernel.shape() == fourierArray.shape(),
+       "FFTWConvolvePlan::executeFourierKernel(): shape mismatch between kernel and plan.");
 
-    FFTWComplexImage sworkImage, dworkImage;
+    vigra_precondition(Shape(0) == fourierKernel.shape(),
+       "FFTWConvolvePlan::executeFourierKernel(): plan was not generated with Fourier kernel.");
 
-    fftw_complex * srcPtr = (fftw_complex *)(&*sul);
-    fftw_complex * destPtr = (fftw_complex *)(&*dul);
+    vigra_precondition(in.shape() == out.shape(),
+        "FFTWConvolvePlan::executeFourierKernel(): input and output must have the same shape.");
+    
+    Shape paddedShape(kernel.shape());
+    paddedShape[0] = 2 * (paddedShape[0] - 1);
+    Shape diff = paddedShape - in.shape(), 
+          left = div(diff, 2),
+          right = in.shape() + left;
+          
+    vigra_precondition(paddedShape == realArray.shape(),
+       "FFTWConvolvePlan::executeFourierKernel(): shape mismatch between input and plan.");
 
-    // test for right memory layout (fftw expects a 2*width*height floats array)
-    if (h > 1 && &(*(sul + Diff2D(w, 0))) != &(*(sul + Diff2D(0, 1))))
-    {
-        sworkImage.resize(w, h);
-        copyImage(srcIterRange(sul, slr, src), destImage(sworkImage));
-        srcPtr = (fftw_complex *)(&(*sworkImage.upperLeft()));
-    }
-    if (h > 1 && &(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
-    {
-        dworkImage.resize(w, h);
-        destPtr = (fftw_complex *)(&(*dworkImage.upperLeft()));
-    }
+    detail::fftEmbedArray(in, realArray);
+    forward_plan.execute(realArray, fourierArray);
 
-    fftw_plan plan = fftw_plan_dft_2d(h, w, srcPtr, destPtr, sign, FFTW_ESTIMATE );
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-
-    if (h > 1 && &(*(dul + Diff2D(w, 0))) != &(*(dul + Diff2D(0, 1))))
-    {
-        copyImage(srcImageRange(dworkImage), destIter(dul, dest));
-    }
+    fourierArray *= kernel;
+    
+    backward_plan.execute(fourierArray, realArray);
+    
+    out = realArray.subarray(left, right);
 }
 
-} // namespace detail
+template <unsigned int N, class Real>
+template <class C1, class KernelIterator, class OutIterator>
+void 
+FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, Real, C1> in, 
+                                       KernelIterator kernels, KernelIterator kernelsEnd,
+                                       OutIterator outs)
+{
+    Shape kernelMax = checkShapes(in.shape(), kernels, kernelsEnd, outs),
+          paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernelMax - Shape(1)),
+          diff = paddedShape - in.shape(), 
+          left = div(diff, 2),
+          right = in.shape() + left;
+          
+    vigra_precondition(paddedShape == realArray.shape(),
+       "FFTWConvolvePlan::execute(): shape mismatch between input and plan.");
+
+    detail::fftEmbedArray(in, realArray);
+    forward_plan.execute(realArray, fourierArray);
+
+    for(; kernels != kernelsEnd; ++kernels, ++outs)
+    {
+        detail::fftEmbedKernel(*kernels, realArray);
+        forward_plan.execute(realArray, fourierKernel);
+        
+        fourierKernel *= fourierArray;
+        
+        backward_plan.execute(fourierKernel, realArray);
+        
+        *outs = realArray.subarray(left, right);
+    }
+}
 
 /********************************************************/
 /*                                                      */
@@ -1295,818 +1388,57 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     fourierTransform(srcImageRange(fourier), destImage(inverseFourier));
     \endcode
 */
-doxygen_overloaded_function(template <...> void fourierTransform)
+//doxygen_overloaded_function(template <...> void fourierTransform)
 
-inline void
-fourierTransform(FFTWComplexImage::const_traverser sul,
-                 FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
-                 FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
+template <unsigned int N, class Real, class C1, class C2>
+inline void 
+fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-    detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_FORWARD);
+	FFTWPlan<N, Real>(in, out, FFTW_FORWARD).execute(in, out);
 }
 
-template <class SrcImageIterator, class SrcAccessor>
-void fourierTransform(SrcImageIterator srcUpperLeft,
-                      SrcImageIterator srcLowerRight, SrcAccessor sa,
-                      FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor da)
+template <unsigned int N, class Real, class C1, class C2>
+inline void 
+fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                        MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-    // copy real input images into a complex one...
-    int w= srcLowerRight.x - srcUpperLeft.x;
-    int h= srcLowerRight.y - srcUpperLeft.y;
-
-    FFTWComplexImage workImage(w, h);
-    copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
-
-    // ...and call the complex -> complex version of the algorithm
-    FFTWComplexImage const & cworkImage = workImage;
-    fourierTransform(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
-                     destUpperLeft, da);
+	FFTWPlan<N, Real>(in, out, FFTW_BACKWARD).execute(in, out);
 }
 
-template <class SrcImageIterator, class SrcAccessor>
-inline
-void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                      pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest)
+template <unsigned int N, class Real, class C1, class C2>
+void 
+fourierTransform(MultiArrayView<N, Real, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-    fourierTransform(src.first, src.second, src.third, dest.first, dest.second);
+    vigra_precondition(in.shape() == out.shape(),
+        "fourierTransform(): input and output must have the same shape.");
+    
+    // copy the input array into the output and then perform an in-place FFT
+    out = in;
+	FFTWPlan<N, Real>(out, out, FFTW_FORWARD).execute(out, out);
 }
 
-/** \brief Compute inverse Fourier transforms.
-
-    See \ref fourierTransform() for details.
-*/
-inline void
-fourierTransformInverse(FFTWComplexImage::const_traverser sul,
-                        FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
-                        FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
+template <unsigned int N, class Real, class C1, class C2, class C3>
+void 
+convolveFFT(MultiArrayView<N, Real, C1> in, 
+            MultiArrayView<N, Real, C2> kernel,
+            MultiArrayView<N, Real, C3> out)
 {
-    detail::fourierTransformImpl(sul, slr, src, dul, dest, FFTW_BACKWARD);
+    FFTWConvolvePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
 }
 
-template <class DestImageIterator, class DestAccessor>
-void fourierTransformInverse(FFTWComplexImage::const_traverser sul,
-                             FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
-                             DestImageIterator dul, DestAccessor dest)
+template <unsigned int N, class Real, class C1, 
+          class KernelIterator, class OutIterator>
+void 
+convolveFFTMany(MultiArrayView<N, Real, C1> in, 
+                KernelIterator kernels, KernelIterator kernelsEnd,
+                OutIterator outs)
 {
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
-
-    FFTWComplexImage workImage(w, h);
-    fourierTransformInverse(sul, slr, src, workImage.upperLeft(), workImage.accessor());
-    copyImage(srcImageRange(workImage), destIter(dul, dest));
+    FFTWConvolvePlan<N, Real> plan;
+    plan.initMany(in, kernels, kernelsEnd, outs);
+    plan.executeMany(in, kernels, kernelsEnd, outs);
 }
-
-
-template <class DestImageIterator, class DestAccessor>
-inline void
-fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
-                               FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
-                        pair<DestImageIterator, DestAccessor> dest)
-{
-    fourierTransformInverse(src.first, src.second, src.third, dest.first, dest.second);
-}
-
-
-
-/********************************************************/
-/*                                                      */
-/*                   applyFourierFilter                 */
-/*                                                      */
-/********************************************************/
-
-/** \brief Apply a filter (defined in the frequency domain) to an image.
-
-    After transferring the image into the frequency domain, it is
-    multiplied pixel-wise with the filter and transformed back. The
-    result is put into the given destination image which must have the right size.
-    The result will be normalized to compensate for the two FFTs.
-
-    If the destination image is scalar, only the real part of the result image is
-    retained. In this case, you are responsible for choosing a filter image
-    which ensures a zero imaginary part of the result (e.g. use a real, even symmetric
-    filter image, or a purely imaginary, odd symmetric on).
-
-    The DC entry of the filter must be in the upper left, which is the
-    position where FFTW expects it (see \ref moveDCToUpperLeft()).
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class FilterImageIterator, class FilterAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void applyFourierFilter(SrcImageIterator srcUpperLeft,
-                                SrcImageIterator srcLowerRight, SrcAccessor sa,
-                                FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                                DestImageIterator destUpperLeft, DestAccessor da);
-    }
-    \endcode
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class FilterImageIterator, class FilterAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                                pair<FilterImageIterator, FilterAccessor> filter,
-                                pair<DestImageIterator, DestAccessor> dest);
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/fftw3.hxx\><br>
-    Namespace: vigra
-
-    \code
-    // create a Gaussian filter in Fourier space
-    vigra::FImage gaussFilter(w, h), filter(w, h);
-    for(int y=0; y<h; ++y)
-        for(int x=0; x<w; ++x)
-        {
-            xx = float(x - w / 2) / w;
-            yy = float(y - h / 2) / h;
-
-            gaussFilter(x,y) = std::exp(-(xx*xx + yy*yy) / 2.0 * scale);
-        }
-
-    // applyFourierFilter() expects the filter's DC in the upper left
-    moveDCToUpperLeft(srcImageRange(gaussFilter), destImage(filter));
-
-    vigra::FFTWComplexImage result(w, h);
-
-    vigra::applyFourierFilter(srcImageRange(image), srcImage(filter), result);
-    \endcode
-
-    For inspection of the result, \ref FFTWMagnitudeAccessor might be
-    useful. If you want to apply the same filter repeatedly, it may be more
-    efficient to use the FFTW functions directly with FFTW plans optimized
-    for good performance.
-*/
-doxygen_overloaded_function(template <...> void applyFourierFilter)
-
-template <class SrcImageIterator, class SrcAccessor,
-          class FilterImageIterator, class FilterAccessor,
-          class DestImageIterator, class DestAccessor>
-void applyFourierFilter(SrcImageIterator srcUpperLeft,
-                        SrcImageIterator srcLowerRight, SrcAccessor sa,
-                        FilterImageIterator filterUpperLeft, FilterAccessor fa,
-                        DestImageIterator destUpperLeft, DestAccessor da)
-{
-    // copy real input images into a complex one...
-    int w = int(srcLowerRight.x - srcUpperLeft.x);
-    int h = int(srcLowerRight.y - srcUpperLeft.y);
-
-    FFTWComplexImage workImage(w, h);
-    copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
-
-    // ...and call the impl
-    FFTWComplexImage const & cworkImage = workImage;
-    applyFourierFilterImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
-                           filterUpperLeft, fa,
-                           destUpperLeft, da);
-}
-
-template <class FilterImageIterator, class FilterAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void applyFourierFilter(
-    FFTWComplexImage::const_traverser srcUpperLeft,
-    FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor sa,
-    FilterImageIterator filterUpperLeft, FilterAccessor fa,
-    DestImageIterator destUpperLeft, DestAccessor da)
-{
-    int w = srcLowerRight.x - srcUpperLeft.x;
-    int h = srcLowerRight.y - srcUpperLeft.y;
-
-    // test for right memory layout (fftw expects a 2*width*height floats array)
-    if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))
-        applyFourierFilterImpl(srcUpperLeft, srcLowerRight, sa,
-                               filterUpperLeft, fa,
-                               destUpperLeft, da);
-    else
-    {
-        FFTWComplexImage workImage(w, h);
-        copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-                  destImage(workImage));
-
-        FFTWComplexImage const & cworkImage = workImage;
-        applyFourierFilterImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
-                               filterUpperLeft, fa,
-                               destUpperLeft, da);
-    }
-}
-
-template <class SrcImageIterator, class SrcAccessor,
-          class FilterImageIterator, class FilterAccessor,
-          class DestImageIterator, class DestAccessor>
-inline
-void applyFourierFilter(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                        pair<FilterImageIterator, FilterAccessor> filter,
-                        pair<DestImageIterator, DestAccessor> dest)
-{
-    applyFourierFilter(src.first, src.second, src.third,
-                       filter.first, filter.second,
-                       dest.first, dest.second);
-}
-
-template <class FilterImageIterator, class FilterAccessor,
-          class DestImageIterator, class DestAccessor>
-void applyFourierFilterImpl(
-    FFTWComplexImage::const_traverser srcUpperLeft,
-    FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor,
-    FilterImageIterator filterUpperLeft, FilterAccessor fa,
-    DestImageIterator destUpperLeft, DestAccessor da)
-{
-    int w = int(srcLowerRight.x - srcUpperLeft.x);
-    int h = int(srcLowerRight.y - srcUpperLeft.y);
-
-    FFTWComplexImage complexResultImg(srcLowerRight - srcUpperLeft);
-
-    // FFT from srcImage to complexResultImg
-    fftw_plan forwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft),
-                               (fftw_complex *)complexResultImg.begin(),
-                               FFTW_FORWARD, FFTW_ESTIMATE );
-    fftw_execute(forwardPlan);
-    fftw_destroy_plan(forwardPlan);
-
-    // convolve in freq. domain (in complexResultImg)
-    combineTwoImages(srcImageRange(complexResultImg), srcIter(filterUpperLeft, fa),
-                     destImage(complexResultImg), std::multiplies<FFTWComplex<> >());
-
-    // FFT back into spatial domain (inplace in complexResultImg)
-    fftw_plan backwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)complexResultImg.begin(),
-                               (fftw_complex *)complexResultImg.begin(),
-                               FFTW_BACKWARD, FFTW_ESTIMATE);
-    fftw_execute(backwardPlan);
-    fftw_destroy_plan(backwardPlan);
-
-    typedef typename
-        NumericTraits<typename DestAccessor::value_type>::isScalar
-        isScalarResult;
-
-    // normalization (after FFTs), maybe stripping imaginary part
-    applyFourierFilterImplNormalization(complexResultImg, destUpperLeft, da,
-                                        isScalarResult());
-}
-
-template <class DestImageIterator, class DestAccessor>
-void applyFourierFilterImplNormalization(FFTWComplexImage const &srcImage,
-                                         DestImageIterator destUpperLeft,
-                                         DestAccessor da,
-                                         VigraFalseType)
-{
-    double normFactor= 1.0/(srcImage.width() * srcImage.height());
-
-    for(int y=0; y<srcImage.height(); y++, destUpperLeft.y++)
-    {
-        DestImageIterator dIt= destUpperLeft;
-        for(int x= 0; x< srcImage.width(); x++, dIt.x++)
-        {
-            da.setComponent(srcImage(x, y).re()*normFactor, dIt, 0);
-            da.setComponent(srcImage(x, y).im()*normFactor, dIt, 1);
-        }
-    }
-}
-
-inline
-void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
-        FFTWComplexImage::traverser destUpperLeft,
-        FFTWComplexImage::Accessor da,
-        VigraFalseType)
-{
-    transformImage(srcImageRange(srcImage), destIter(destUpperLeft, da),
-                   linearIntensityTransform<FFTWComplex<> >(1.0/(srcImage.width() * srcImage.height())));
-}
-
-template <class DestImageIterator, class DestAccessor>
-void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
-                                         DestImageIterator destUpperLeft,
-                                         DestAccessor da,
-                                         VigraTrueType)
-{
-    double normFactor= 1.0/(srcImage.width() * srcImage.height());
-
-    for(int y=0; y<srcImage.height(); y++, destUpperLeft.y++)
-    {
-        DestImageIterator dIt= destUpperLeft;
-        for(int x= 0; x< srcImage.width(); x++, dIt.x++)
-            da.set(srcImage(x, y).re()*normFactor, dIt);
-    }
-}
-
-/**********************************************************/
-/*                                                        */
-/*                applyFourierFilterFamily                */
-/*                                                        */
-/**********************************************************/
-
-/** \brief Apply an array of filters (defined in the frequency domain) to an image.
-
-    This provides the same functionality as \ref applyFourierFilter(),
-    but applying several filters at once allows to avoid
-    repeated Fourier transforms of the source image.
-
-    Filters and result images must be stored in \ref vigra::ImageArray data
-    structures. In contrast to \ref applyFourierFilter(), this function adjusts
-    the size of the result images and the the length of the array.
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor, class FilterType>
-        void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
-                                      SrcImageIterator srcLowerRight, SrcAccessor sa,
-                                      const ImageArray<FilterType> &filters,
-                                      ImageArray<FFTWComplexImage> &results)
-    }
-    \endcode
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor, class FilterType>
-        void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                                      const ImageArray<FilterType> &filters,
-                                      ImageArray<FFTWComplexImage> &results)
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/fftw3.hxx\><br>
-    Namespace: vigra
-
-    \code
-    // assuming the presence of a real-valued image named "image" to
-    // be filtered in this example
-
-    vigra::ImageArray<vigra::FImage> filters(16, image.size());
-
-    for (int i=0; i<filters.size(); i++)
-         // create some meaningful filters here
-         createMyFilterOfScale(i, destImage(filters[i]));
-
-    vigra::ImageArray<vigra::FFTWComplexImage> results();
-
-    vigra::applyFourierFilterFamily(srcImageRange(image), filters, results);
-    \endcode
-*/
-doxygen_overloaded_function(template <...> void applyFourierFilterFamily)
-
-template <class SrcImageIterator, class SrcAccessor,
-          class FilterType, class DestImage>
-inline
-void applyFourierFilterFamily(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                              const ImageArray<FilterType> &filters,
-                              ImageArray<DestImage> &results)
-{
-    applyFourierFilterFamily(src.first, src.second, src.third,
-                             filters, results);
-}
-
-template <class SrcImageIterator, class SrcAccessor,
-          class FilterType, class DestImage>
-void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
-                              SrcImageIterator srcLowerRight, SrcAccessor sa,
-                              const ImageArray<FilterType> &filters,
-                              ImageArray<DestImage> &results)
-{
-    int w = int(srcLowerRight.x - srcUpperLeft.x);
-    int h = int(srcLowerRight.y - srcUpperLeft.y);
-
-    FFTWComplexImage workImage(w, h);
-    copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
-
-    FFTWComplexImage const & cworkImage = workImage;
-    applyFourierFilterFamilyImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
-                                 filters, results);
-}
-
-template <class FilterType, class DestImage>
-inline
-void applyFourierFilterFamily(
-    FFTWComplexImage::const_traverser srcUpperLeft,
-    FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor sa,
-    const ImageArray<FilterType> &filters,
-    ImageArray<DestImage> &results)
-{
-    int w= srcLowerRight.x - srcUpperLeft.x;
-
-    // test for right memory layout (fftw expects a 2*width*height floats array)
-    if (&(*(srcUpperLeft + Diff2D(w, 0))) == &(*(srcUpperLeft + Diff2D(0, 1))))
-        applyFourierFilterFamilyImpl(srcUpperLeft, srcLowerRight, sa,
-                                     filters, results);
-    else
-    {
-        int h = srcLowerRight.y - srcUpperLeft.y;
-        FFTWComplexImage workImage(w, h);
-        copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-                  destImage(workImage));
-
-        FFTWComplexImage const & cworkImage = workImage;
-        applyFourierFilterFamilyImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
-                                     filters, results);
-    }
-}
-
-template <class FilterType, class DestImage>
-void applyFourierFilterFamilyImpl(
-    FFTWComplexImage::const_traverser srcUpperLeft,
-    FFTWComplexImage::const_traverser srcLowerRight,
-    FFTWComplexImage::ConstAccessor sa,
-    const ImageArray<FilterType> &filters,
-    ImageArray<DestImage> &results)
-{
-    // FIXME: sa is not used
-    // (maybe check if StandardAccessor, else copy?)    
-
-    // make sure the filter images have the right dimensions
-    vigra_precondition((srcLowerRight - srcUpperLeft) == filters.imageSize(),
-                       "applyFourierFilterFamily called with src image size != filters.imageSize()!");
-
-    // make sure the result image array has the right dimensions
-    results.resize(filters.size());
-    results.resizeImages(filters.imageSize());
-
-    // FFT from srcImage to freqImage
-    int w = int(srcLowerRight.x - srcUpperLeft.x);
-    int h = int(srcLowerRight.y - srcUpperLeft.y);
-
-    FFTWComplexImage freqImage(w, h);
-    FFTWComplexImage result(w, h);
-
-    fftw_plan forwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)&(*srcUpperLeft),
-                               (fftw_complex *)freqImage.begin(),
-                               FFTW_FORWARD, FFTW_ESTIMATE );
-    fftw_execute(forwardPlan);
-    fftw_destroy_plan(forwardPlan);
-
-    fftw_plan backwardPlan=
-        fftw_plan_dft_2d(h, w, (fftw_complex *)result.begin(),
-                               (fftw_complex *)result.begin(),
-                               FFTW_BACKWARD, FFTW_ESTIMATE );
-    typedef typename
-        NumericTraits<typename DestImage::Accessor::value_type>::isScalar
-        isScalarResult;
-
-    // convolve with filters in freq. domain
-    for (unsigned int i= 0;  i < filters.size(); i++)
-    {
-        combineTwoImages(srcImageRange(freqImage), srcImage(filters[i]),
-                         destImage(result), std::multiplies<FFTWComplex<> >());
-
-        // FFT back into spatial domain (inplace in destImage)
-        fftw_execute(backwardPlan);
-
-        // normalization (after FFTs), maybe stripping imaginary part
-        applyFourierFilterImplNormalization(result,
-                                            results[i].upperLeft(), results[i].accessor(),
-                                            isScalarResult());
-    }
-    fftw_destroy_plan(backwardPlan);
-}
-
-/********************************************************/
-/*                                                      */
-/*                fourierTransformReal                  */
-/*                                                      */
-/********************************************************/
-
-/** \brief Real Fourier transforms for even and odd boundary conditions
-           (aka. cosine and sine transforms).
-
-
-    If the image is real and has even symmetry, its Fourier transform
-    is also real and has even symmetry. The Fourier transform of a real image with odd
-    symmetry is imaginary and has odd symmetry. In either case, only about a quarter
-    of the pixels need to be stored because the rest can be calculated from the symmetry
-    properties. This is especially useful, if the original image is implicitly assumed
-    to have reflective or anti-reflective boundary conditions. Then the "negative"
-    pixel locations are defined as
-
-    \code
-    even (reflective boundary conditions):      f[-x] = f[x]     (x = 1,...,N-1)
-    odd (anti-reflective boundary conditions):  f[-1] = 0
-                                                f[-x] = -f[x-2]  (x = 2,...,N-1)
-    \endcode
-
-    end similar at the other boundary (see the FFTW documentation for details).
-    This has the advantage that more efficient Fourier transforms that use only
-    real numbers can be implemented. These are also known as cosine and sine transforms
-    respectively.
-
-    If you use the odd transform it is important to note that in the Fourier domain,
-    the DC component is always zero and is therefore dropped from the data structure.
-    This means that index 0 in an odd symmetric Fourier domain image refers to
-    the <i>first</i> harmonic. This is especially important if an image is first
-    cosine transformed (even symmetry), then in the Fourier domain multiplied
-    with an odd symmetric filter (e.g. a first derivative) and finally transformed
-    back to the spatial domain with a sine transform (odd symmetric). For this to work
-    properly the image must be shifted left or up by one pixel (depending on whether
-    the x- or y-axis is odd symmetric) before the inverse transform can be applied.
-    (see example below).
-
-    The real Fourier transform functions are named <tt>fourierTransformReal??</tt>
-    where the questions marks stand for either <tt>E</tt> or <tt>O</tt> indicating
-    whether the x- and y-axis is to be transformed using even or odd symmetry.
-    The same functions can be used for both the forward and inverse transforms,
-    only the normalization changes. For signal processing, the following
-    normalization factors are most appropriate:
-
-    \code
-                          forward             inverse
-    ------------------------------------------------------------
-    X even, Y even           1.0         4.0 * (w-1) * (h-1)
-    X even, Y odd           -1.0        -4.0 * (w-1) * (h+1)
-    X odd,  Y even          -1.0        -4.0 * (w+1) * (h-1)
-    X odd,  Y odd            1.0         4.0 * (w+1) * (h+1)
-    \endcode
-
-    where <tt>w</tt> and <tt>h</tt> denote the image width and height.
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcTraverser, class SrcAccessor,
-                  class DestTraverser, class DestAccessor>
-        void
-        fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                               DestTraverser dul, DestAccessor dest, fftw_real norm);
-
-        fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
-    }
-    \endcode
-
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcTraverser, class SrcAccessor,
-                  class DestTraverser, class DestAccessor>
-        void
-        fourierTransformRealEE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
-                               pair<DestTraverser, DestAccessor> dest, fftw_real norm);
-
-        fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-        <b>\#include</b> \<vigra/fftw3.hxx\><br>
-        Namespace: vigra
-
-    \code
-    vigra::FImage spatial(width,height), fourier(width,height);
-    ... // fill image with data
-
-    // forward cosine transform == reflective boundary conditions
-    fourierTransformRealEE(srcImageRange(spatial), destImage(fourier), (fftw_real)1.0);
-
-    // multiply with a first derivative of Gaussian in x-direction
-    for(int y = 0; y < height; ++y)
-    {
-        for(int x = 1; x < width; ++x)
-        {
-            double dx = x * M_PI / (width - 1);
-            double dy = y * M_PI / (height - 1);
-            fourier(x-1, y) = fourier(x, y) * dx * std::exp(-(dx*dx + dy*dy) * scale*scale / 2.0);
-        }
-        fourier(width-1, y) = 0.0;
-    }
-
-    // inverse transform -- odd symmetry in x-direction, even in y,
-    //                      due to symmetry of the filter
-    fourierTransformRealOE(srcImageRange(fourier), destImage(spatial),
-                           (fftw_real)-4.0 * (width+1) * (height-1));
-    \endcode
-*/
-doxygen_overloaded_function(template <...> void fourierTransformReal)
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
-                               pair<DestTraverser, DestAccessor> dest, fftw_real norm)
-{
-    fourierTransformRealEE(src.first, src.second, src.third,
-                                   dest.first, dest.second, norm);
-}
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                               DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                      norm, FFTW_REDFT00, FFTW_REDFT00);
-}
-
-template <class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEE(
-         FFTWRealImage::const_traverser sul,
-         FFTWRealImage::const_traverser slr,
-         FFTWRealImage::Accessor src,
-         DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    int w = slr.x - sul.x;
-
-    // test for right memory layout (fftw expects a width*height fftw_real array)
-    if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        fourierTransformRealImpl(sul, slr, dul, dest,
-                                 norm, FFTW_REDFT00, FFTW_REDFT00);
-    else
-        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                 norm, FFTW_REDFT00, FFTW_REDFT00);
-}
-
-/********************************************************************/
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOE(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
-                               pair<DestTraverser, DestAccessor> dest, fftw_real norm)
-{
-    fourierTransformRealOE(src.first, src.second, src.third,
-                                   dest.first, dest.second, norm);
-}
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                               DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                      norm, FFTW_RODFT00, FFTW_REDFT00);
-}
-
-template <class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOE(
-         FFTWRealImage::const_traverser sul,
-         FFTWRealImage::const_traverser slr,
-         FFTWRealImage::Accessor src,
-         DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    int w = slr.x - sul.x;
-
-    // test for right memory layout (fftw expects a width*height fftw_real array)
-    if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        fourierTransformRealImpl(sul, slr, dul, dest,
-                                 norm, FFTW_RODFT00, FFTW_REDFT00);
-    else
-        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                 norm, FFTW_RODFT00, FFTW_REDFT00);
-}
-
-/********************************************************************/
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEO(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
-                               pair<DestTraverser, DestAccessor> dest, fftw_real norm)
-{
-    fourierTransformRealEO(src.first, src.second, src.third,
-                                   dest.first, dest.second, norm);
-}
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEO(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                               DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                      norm, FFTW_REDFT00, FFTW_RODFT00);
-}
-
-template <class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealEO(
-         FFTWRealImage::const_traverser sul,
-         FFTWRealImage::const_traverser slr,
-         FFTWRealImage::Accessor src,
-         DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    int w = slr.x - sul.x;
-
-    // test for right memory layout (fftw expects a width*height fftw_real array)
-    if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        fourierTransformRealImpl(sul, slr, dul, dest,
-                                 norm, FFTW_REDFT00, FFTW_RODFT00);
-    else
-        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                 norm, FFTW_REDFT00, FFTW_RODFT00);
-}
-
-/********************************************************************/
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOO(triple<SrcTraverser, SrcTraverser, SrcAccessor> src,
-                               pair<DestTraverser, DestAccessor> dest, fftw_real norm)
-{
-    fourierTransformRealOO(src.first, src.second, src.third,
-                                   dest.first, dest.second, norm);
-}
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOO(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                               DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                      norm, FFTW_RODFT00, FFTW_RODFT00);
-}
-
-template <class DestTraverser, class DestAccessor>
-inline void
-fourierTransformRealOO(
-         FFTWRealImage::const_traverser sul,
-         FFTWRealImage::const_traverser slr,
-         FFTWRealImage::Accessor src,
-         DestTraverser dul, DestAccessor dest, fftw_real norm)
-{
-    int w = slr.x - sul.x;
-
-    // test for right memory layout (fftw expects a width*height fftw_real array)
-    if (&(*(sul + Diff2D(w, 0))) == &(*(sul + Diff2D(0, 1))))
-        fourierTransformRealImpl(sul, slr, dul, dest,
-                                 norm, FFTW_RODFT00, FFTW_RODFT00);
-    else
-        fourierTransformRealWorkImageImpl(sul, slr, src, dul, dest,
-                                 norm, FFTW_RODFT00, FFTW_RODFT00);
-}
-
-/*******************************************************************/
-
-template <class SrcTraverser, class SrcAccessor,
-          class DestTraverser, class DestAccessor>
-void
-fourierTransformRealWorkImageImpl(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
-                                  DestTraverser dul, DestAccessor dest,
-                                  fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)
-{
-    FFTWRealImage workImage(slr - sul);
-    copyImage(srcIterRange(sul, slr, src), destImage(workImage));
-    FFTWRealImage const & cworkImage = workImage;
-    fourierTransformRealImpl(cworkImage.upperLeft(), cworkImage.lowerRight(),
-                             dul, dest, norm, kindx, kindy);
-}
-
-
-template <class DestTraverser, class DestAccessor>
-void
-fourierTransformRealImpl(
-         FFTWRealImage::const_traverser sul,
-         FFTWRealImage::const_traverser slr,
-         DestTraverser dul, DestAccessor dest,
-         fftw_real norm, fftw_r2r_kind kindx, fftw_r2r_kind kindy)
-{
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
-    BasicImage<fftw_real> res(w, h);
-
-    fftw_plan plan = fftw_plan_r2r_2d(h, w,
-                         (fftw_real *)&(*sul), (fftw_real *)res.begin(),
-                         kindy, kindx, FFTW_ESTIMATE);
-    fftw_execute(plan);
-    fftw_destroy_plan(plan);
-
-    if(norm != 1.0)
-        transformImage(srcImageRange(res), destIter(dul, dest),
-                       std::bind1st(std::multiplies<fftw_real>(), 1.0 / norm));
-    else
-        copyImage(srcImageRange(res), destIter(dul, dest));
-}
-
-
-//@}
-#endif
 
 } // namespace vigra
 

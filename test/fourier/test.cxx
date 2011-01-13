@@ -273,11 +273,11 @@ struct MultiFFTTest
 {
 	typedef double R;
 	typedef FFTWComplex<R> C;
-	typedef MultiArray<2, R> DArray2;
-	typedef MultiArray<2, C > CArray2;
+	typedef MultiArray<2, R, FFTWAllocator<R> > DArray2;
+	typedef MultiArray<2, C, FFTWAllocator<C> > CArray2;
 	typedef MultiArrayShape<2>::type Shape2;
-	typedef MultiArray<3, R> DArray3;
-	typedef MultiArray<3, C > CArray3;
+	typedef MultiArray<3, R, FFTWAllocator<R> > DArray3;
+	typedef MultiArray<3, C, FFTWAllocator<C> > CArray3;
 	typedef MultiArrayShape<3>::type Shape3;
 
 	void testFFTShift()
@@ -467,24 +467,105 @@ struct MultiFFTTest
 
 	void testConvolveFFT()
 	{
+		typedef MultiArrayView<2, double> MV;
 		ImageImportInfo info("ghouse.gif");
 		Shape2 s(info.width(), info.height());
-		DArray2 in(s), out(s), ref(s);
+		DArray2 in(s), out(s), ref(s), out2(s), ref2(s);
+		importImage(info, destImage(in));
+
+		double scale = 2.0;
+		gaussianSmoothing(srcImageRange(in), destImage(ref), scale);
+		gaussianSmoothing(srcImageRange(in), destImage(ref2), 2.0*scale);
+
+		Kernel2D<double> gauss;
+		gauss.initGaussian(scale);
+		MV kernel(Shape2(gauss.width(), gauss.height()), &gauss[gauss.upperLeft()]);
+		convolveFFT(in, kernel, out);
+
+		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+			                         ref.data(), 1e-14);
+		
+		Kernel2D<double> gauss2;
+		gauss2.initGaussian(2.0*scale);
+		MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
+
+		MV kernels[] = { kernel, kernel2 };
+		MV outs[] = { out, out2 };
+		convolveFFTMany(in, kernels, kernels+2, outs);
+
+		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+			                         ref.data(), 1e-14);
+		shouldEqualSequenceTolerance(out2.data(), out2.data()+out2.size(),
+			                         ref2.data(), 1e-14);
+	}
+
+	void testConvolveFourierKernel()
+	{
+		ImageImportInfo info("ghouse.gif");
+		Shape2 s(info.width(), info.height());
+		DArray2 in(s), out(s), ref(s), tmp(s);
 		importImage(info, destImage(in));
 
 		double scale = 2.0;
 		gaussianSmoothing(srcImageRange(in), destImage(ref), scale);
 
-		Kernel2D<double> gauss;
-		gauss.initGaussian(scale);
-		MultiArrayView<2, double> kernel(Shape2(gauss.width(), gauss.height()), 
-			                             &gauss[gauss.upperLeft()]);
-		convolveFFT(in, kernel, out);
+		Shape2 paddedShape = fftwBestPaddedShapeR2C(s + Shape2(16)),
+			   kernelShape(paddedShape),
+			   complexShape(paddedShape);
+		kernelShape[0] = kernelShape[0] / 2 + 1;
+		complexShape[0] += 1;
+		Shape2 center = div(complexShape, 2);
 
-		exportImage(srcImageRange(out), ImageExportInfo("fft.png"));
+		CArray2 kernel(complexShape);
+		for(int y=0; y<complexShape[1]; ++y)
+		{
+			for(int x=0; x<complexShape[0]; ++x)
+			{
+				double xx = 2.0 * M_PI * (x - center[0]) / complexShape[0];
+				double yy = 2.0 * M_PI * (y - center[1]) / complexShape[1];
+				double r2 = sq(xx) + sq(yy);
+				kernel(x,y) = std::exp(-0.5 * sq(scale) * r2);
+			}
+		}
+		moveDCToUpperLeft(kernel);
+
+		FFTWConvolvePlan<2, double> plan;
+		plan.initFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
+		plan.executeFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
 
 		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
-			                         ref.data(), 1e-14);
+			                         ref.data(), 1e-2);
+
+		Kernel1D<double> gauss, grad;
+		gauss.initGaussian(scale);
+		grad.initGaussianDerivative(scale, 1);
+
+		separableConvolveX(srcImageRange(in), destImage(tmp), kernel1d(grad));
+		separableConvolveY(srcImageRange(tmp), destImage(ref), kernel1d(gauss));
+
+		for(int y=0; y<complexShape[1]; ++y)
+		{
+			for(int x=0; x<complexShape[0]; ++x)
+			{
+				double xx = 2.0 * M_PI * (x - center[0]) / complexShape[0];
+				double yy = 2.0 * M_PI * (y - center[1]) / complexShape[1];
+				double r2 = sq(xx) + sq(yy);
+				kernel(x,y) = C(0, xx*std::exp(-0.5 * sq(scale) * r2));
+			}
+		}
+		moveDCToUpperLeft(kernel);
+
+		plan.executeFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
+
+		ref -= out;
+
+		FindMinMax<double> minmax;
+		FindAverage<double> average;
+		inspectImage(srcImageRange(ref), minmax);
+		inspectImage(srcImageRange(ref), average);
+		
+		should(std::max(minmax.max, -minmax.min) < 0.2);
+		should(average.average() < 0.001);
 	}
 };
 
@@ -508,6 +589,7 @@ struct FFTWTestSuite
         add( testCase(&MultiFFTTest::testFFT3D));
         add( testCase(&MultiFFTTest::testPadding));
         add( testCase(&MultiFFTTest::testConvolveFFT));
+        add( testCase(&MultiFFTTest::testConvolveFourierKernel));
     }
 };
 
