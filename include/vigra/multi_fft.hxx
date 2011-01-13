@@ -715,49 +715,57 @@ int fftwEvenPaddingSize(int s)
     return *std::upper_bound(goodSizes, goodSizes+size, s, std::less_equal<int>());
 }
 
-template <unsigned int N, class Real, class C, class Shape, int M>
-void 
-fftEmbedKernel(MultiArrayView<N, Real, C> & out, Shape const & kernelShape, 
-               Shape & srcPoint, Shape & destPoint, bool copyIt, MetaInt<M>)
+template <int M>
+struct FFTEmbedKernel
 {
-    for(srcPoint[M]=0; srcPoint[M]<kernelShape[M]; ++srcPoint[M])
+    template <unsigned int N, class Real, class C, class Shape>
+    static void 
+    exec(MultiArrayView<N, Real, C> & out, Shape const & kernelShape, 
+         Shape & srcPoint, Shape & destPoint, bool copyIt)
     {
-        if(srcPoint[M] < (kernelShape[M] + 1) / 2)
+        for(srcPoint[M]=0; srcPoint[M]<kernelShape[M]; ++srcPoint[M])
         {
-            destPoint[M] = srcPoint[M];
+            if(srcPoint[M] < (kernelShape[M] + 1) / 2)
+            {
+                destPoint[M] = srcPoint[M];
+            }
+            else
+            {
+                destPoint[M] = srcPoint[M] + out.shape(M) - kernelShape[M];
+                copyIt = true;
+            }
+            FFTEmbedKernel<M-1>::exec(out, kernelShape, srcPoint, destPoint, copyIt);
         }
-        else
-        {
-            destPoint[M] = srcPoint[M] + out.shape(M) - kernelShape[M];
-            copyIt = true;
-        }
-        fftEmbedKernel(out, kernelShape, srcPoint, destPoint, copyIt, MetaInt<M-1>());
     }
-}
+};
 
-template <unsigned int N, class Real, class C, class Shape>
-void 
-fftEmbedKernel(MultiArrayView<N, Real, C> & out, Shape const & kernelShape, 
-               Shape & srcPoint, Shape & destPoint, bool copyIt, MetaInt<0>)
+template <>
+struct FFTEmbedKernel<0>
 {
-    for(srcPoint[0]=0; srcPoint[0]<kernelShape[0]; ++srcPoint[0])
+    template <unsigned int N, class Real, class C, class Shape>
+    static void 
+    exec(MultiArrayView<N, Real, C> & out, Shape const & kernelShape, 
+         Shape & srcPoint, Shape & destPoint, bool copyIt)
     {
-        if(srcPoint[0] < (kernelShape[0] + 1) / 2)
+        for(srcPoint[0]=0; srcPoint[0]<kernelShape[0]; ++srcPoint[0])
         {
-            destPoint[0] = srcPoint[0];
-        }
-        else
-        {
-            destPoint[0] = srcPoint[0] + out.shape(0) - kernelShape[0];
-            copyIt = true;
-        }
-        if(copyIt)
-        {
-            out[destPoint] = out[srcPoint];
-            out[srcPoint] = 0.0;
+            if(srcPoint[0] < (kernelShape[0] + 1) / 2)
+            {
+                destPoint[0] = srcPoint[0];
+            }
+            else
+            {
+                destPoint[0] = srcPoint[0] + out.shape(0) - kernelShape[0];
+                copyIt = true;
+            }
+            if(copyIt)
+            {
+                out[destPoint] = out[srcPoint];
+                out[srcPoint] = 0.0;
+            }
         }
     }
-}
+};
 
 template <unsigned int N, class Real, class C1, class C2>
 void 
@@ -767,7 +775,7 @@ fftEmbedKernel(MultiArrayView<N, Real, C1> kernel,
 {
     typedef typename MultiArrayShape<N>::type Shape;
 
-    MultiArrayView<N, Real, C2> kout = out.subarray(Shape(0), kernel.shape());
+    MultiArrayView<N, Real, C2> kout = out.subarray(Shape(), kernel.shape());
     
     out.init(0.0);
     kout = kernel;
@@ -775,10 +783,10 @@ fftEmbedKernel(MultiArrayView<N, Real, C1> kernel,
         kout *= norm;
     moveDCToUpperLeft(kout);
     
-    Shape srcPoint(0), destPoint(0);
+    Shape srcPoint, destPoint;
     bool copyIt = true;
     
-    fftEmbedKernel(out, kernel.shape(), srcPoint, destPoint, false, MetaInt<N-1>());
+    FFTEmbedKernel<(int)N-1>::exec(out, kernel.shape(), srcPoint, destPoint, false);
 }
 
 template <unsigned int N, class Real, class C1, class C2>
@@ -789,7 +797,7 @@ fftEmbedArray(MultiArrayView<N, Real, C1> in,
     typedef typename MultiArrayShape<N>::type Shape;
     
     Shape diff = out.shape() - in.shape(), 
-          leftDiff = div(diff, 2),
+          leftDiff = div(diff, MultiArrayIndex(2)),
           rightDiff = diff - leftDiff,
           right = in.shape() + leftDiff; 
     
@@ -816,7 +824,7 @@ fftEmbedArray(MultiArrayView<N, Real, C1> in,
 
 } // namespace detail
 
-template <class T, unsigned int N>
+template <class T, int N>
 TinyVector<T, N>
 fftwBestPaddedShape(TinyVector<T, N> shape)
 {
@@ -825,7 +833,7 @@ fftwBestPaddedShape(TinyVector<T, N> shape)
     return shape;
 }
 
-template <class T, unsigned int N>
+template <class T, int N>
 TinyVector<T, N>
 fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
 {
@@ -974,7 +982,6 @@ class FFTWPlan
     template <class MI, class MO>
     void executeImpl(MI ins, MO outs) const;
     
-    template <unsigned int N>
     void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> in, 
                      MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> out) const
     {
@@ -982,7 +989,6 @@ class FFTWPlan
             "FFTWPlan.init(): input and output must have the same shape.");
     }
     
-    template <unsigned int N>
     void checkShapes(MultiArrayView<N, Real, StridedArrayTag> ins, 
                      MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> outs) const
     {
@@ -993,7 +999,6 @@ class FFTWPlan
             "FFTWPlan.init(): input and output must have matching shapes.");
     }
     
-    template <unsigned int N>
     void checkShapes(MultiArrayView<N, FFTWComplex<Real>, StridedArrayTag> ins, 
                      MultiArrayView<N, Real, StridedArrayTag> outs) const
     {
@@ -1161,7 +1166,7 @@ class FFTWConvolvePlan
     {
         vigra_precondition(kernels != kernelsEnd,
             "FFTWConvolvePlan::checkShapes(): empty kernel sequence.");
-        Shape kernelMax(0);            
+        Shape kernelMax;            
         OutIterator o = outs;
         for(KernelIterator k=kernels; k != kernelsEnd; ++k, ++o)
         {
@@ -1241,7 +1246,7 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     
     Shape paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernel.shape() - Shape(1)),
           diff = paddedShape - in.shape(), 
-          left = div(diff, 2),
+          left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
           
     vigra_precondition(paddedShape == realArray.shape(),
@@ -1270,7 +1275,7 @@ FFTWConvolvePlan<N, Real>::executeFourierKernel(MultiArrayView<N, Real, C1> in,
     vigra_precondition(kernel.shape() == fourierArray.shape(),
        "FFTWConvolvePlan::executeFourierKernel(): shape mismatch between kernel and plan.");
 
-    vigra_precondition(Shape(0) == fourierKernel.shape(),
+    vigra_precondition(Shape() == fourierKernel.shape(),
        "FFTWConvolvePlan::executeFourierKernel(): plan was not generated with Fourier kernel.");
 
     vigra_precondition(in.shape() == out.shape(),
@@ -1279,7 +1284,7 @@ FFTWConvolvePlan<N, Real>::executeFourierKernel(MultiArrayView<N, Real, C1> in,
     Shape paddedShape(kernel.shape());
     paddedShape[0] = 2 * (paddedShape[0] - 1);
     Shape diff = paddedShape - in.shape(), 
-          left = div(diff, 2),
+          left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
           
     vigra_precondition(paddedShape == realArray.shape(),
@@ -1305,7 +1310,7 @@ FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, Real, C1> in,
     Shape kernelMax = checkShapes(in.shape(), kernels, kernelsEnd, outs),
           paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernelMax - Shape(1)),
           diff = paddedShape - in.shape(), 
-          left = div(diff, 2),
+          left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
           
     vigra_precondition(paddedShape == realArray.shape(),

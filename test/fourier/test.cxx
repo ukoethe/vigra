@@ -514,7 +514,7 @@ struct MultiFFTTest
 			   complexShape(paddedShape);
 		kernelShape[0] = kernelShape[0] / 2 + 1;
 		complexShape[0] += 1;
-		Shape2 center = div(complexShape, 2);
+		Shape2 center = div(complexShape, Shape2::value_type(2));
 
 		CArray2 kernel(complexShape);
 		for(int y=0; y<complexShape[1]; ++y)
@@ -530,8 +530,8 @@ struct MultiFFTTest
 		moveDCToUpperLeft(kernel);
 
 		FFTWConvolvePlan<2, double> plan;
-		plan.initFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
-		plan.executeFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
+		plan.initFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
+		plan.executeFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
 
 		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
 			                         ref.data(), 1e-2);
@@ -555,7 +555,7 @@ struct MultiFFTTest
 		}
 		moveDCToUpperLeft(kernel);
 
-		plan.executeFourierKernel(in, kernel.subarray(Shape2(0), kernelShape), out);
+		plan.executeFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
 
 		ref -= out;
 

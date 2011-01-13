@@ -373,9 +373,10 @@ namespace vigra {
 
     void PngDecoderImpl::nextScanline()
     {
-        for (int i=0; i < n_interlace_passes; i++) {
         if (setjmp(png_jmpbuf(png)))
-                vigra_postcondition( false,png_error_message.insert(0, "error in png_read_row(): ").c_str());
+            vigra_postcondition( false,png_error_message.insert(0, "error in png_read_row(): ").c_str());        
+        for (int i=0; i < n_interlace_passes; i++) 
+        {
             png_read_row(png, row_data.begin(), NULL);
         }
     }
