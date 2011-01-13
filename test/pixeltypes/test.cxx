@@ -272,6 +272,21 @@ struct TinyVectorTest
         fvp = fv3 / 2.0;
         float fp1[] = {0.6f, 1.2f, 1.8f};
         should(equalIter(fvp.begin(), fvp.end(), fp1));
+
+		float minRef[] = { 1.0f, 2.0f, 3.6f };
+		shouldEqualSequence(minRef, minRef+3, min(iv3, fv3).begin());
+		float maxRef[] = { 1.2f, 2.4f, 4.0f };
+		shouldEqualSequence(maxRef, maxRef+3, max(iv3, fv3).begin());
+
+		shouldEqual(sum(iv3), 7);
+		shouldEqual(sum(fv3), 7.2f);
+		shouldEqual(prod(iv3), 8);
+		shouldEqual(prod(fv3), 10.368f);
+
+		float cumsumRef[] = {1.2f, 3.6f, 7.2f };
+		shouldEqualSequenceTolerance(cumsumRef, cumsumRef+3, cumsum(fv3).begin(), 1e-6);
+		float cumprodRef[] = {1.2f, 2.88f, 10.368f };
+		shouldEqualSequenceTolerance(cumprodRef, cumprodRef+3, cumprod(fv3).begin(), 1e-6);
     }
 
     void testOStreamShifting()

@@ -1450,6 +1450,81 @@ dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::dot(l.begin(), r.begin());
 }
 
+    /// sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<V>::Promote
+sum(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    typename NumericTraits<V>::Promote res = l[0];
+    for(int k=1; k<SIZE; ++k)
+        res += l[k];
+    return res;
+}
+
+    /// cumulative sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<typename NumericTraits<V>::Promote, SIZE>
+cumsum(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    TinyVector<typename NumericTraits<V>::Promote, SIZE> res(l);
+    for(int k=1; k<SIZE; ++k)
+        res[k] += res[k-1];
+    return res;
+}
+
+    /// product of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<V>::Promote
+prod(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    typename NumericTraits<V>::Promote res = l[0];
+    for(int k=1; k<SIZE; ++k)
+        res *= l[k];
+    return res;
+}
+
+    /// cumulative sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<typename NumericTraits<V>::Promote, SIZE>
+cumprod(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    TinyVector<typename NumericTraits<V>::Promote, SIZE> res(l);
+    for(int k=1; k<SIZE; ++k)
+        res[k] *= res[k-1];
+    return res;
+}
+
+    /// element-wise minimum
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
+min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(r[k] < res[k])
+            res[k] = r[k];
+    return res;
+}
+
+    /// element-wise maximum
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
+max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(res[k] < r[k])
+            res[k] = r[k];
+    return res;
+}
 
     /// squared norm
 template <class V1, int SIZE, class D1, class D2>
