@@ -46,278 +46,6 @@
 
 namespace vigra {
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class KernelIterator, class KernelAccessor,
-          class KSumType>
-void internalPixelEvaluationByClip(int x, int y, int w, int h, SrcIterator xs,
-                                   SrcAccessor src_acc, DestIterator xd, DestAccessor dest_acc,
-                                   KernelIterator ki, Diff2D kul, Diff2D klr, KernelAccessor ak,
-                                   KSumType norm)
-{
-    typedef typename
-        PromoteTraits<typename SrcAccessor::value_type,
-                      typename KernelAccessor::value_type>::Promote SumType;
-    typedef typename DestAccessor::value_type DestType;
-
-    // calculate width and height of the kernel
-    int kernel_width = klr.x - kul.x + 1;
-    int kernel_height = klr.y - kul.y + 1;
-
-    SumType sum = NumericTraits<SumType>::zero();
-    int xx, yy;
-    int x0, y0, x1, y1;
-
-    y0 = (y<klr.y) ?  -y : -klr.y;
-    y1 = (h-y-1<-kul.y) ? h-y-1 : -kul.y;
-
-    x0 = (x<klr.x) ? -x : -klr.x;
-    x1 = (w-x-1<-kul.x) ? w-x-1 : -kul.x;
-
-    SrcIterator yys = xs + Diff2D(x0, y0);
-    KernelIterator yk  = ki - Diff2D(x0, y0);
-
-    KSumType ksum = NumericTraits<KSumType>::zero();
-    kernel_width = x1 - x0 + 1;
-    kernel_height = y1 - y0 + 1;
-
-    //es wird zuerst abgeschnitten und dann gespigelt!
-
-    for(yy=0; yy<kernel_height; ++yy, ++yys.y, --yk.y)
-    {
-        SrcIterator xxs = yys;
-        KernelIterator xk  = yk;
-
-        for(xx=0; xx<kernel_width; ++xx, ++xxs.x, --xk.x)
-        {
-            sum += ak(xk) * src_acc(xxs);
-            ksum += ak(xk);
-        }
-    }
-
-    //                      store average in destination pixel
-    dest_acc.set(detail::RequiresExplicitCast<DestType>::cast((norm / ksum) * sum), xd);
-}
-
-
-#if 0
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class KernelIterator, class KernelAccessor>
-void internalPixelEvaluationByWrapReflectRepeat(int x, int y, int src_width, int src_height, SrcIterator xs,
-                                                SrcAccessor src_acc, DestIterator xd, DestAccessor dest_acc,
-                                                KernelIterator ki, Diff2D kul, Diff2D klr, KernelAccessor ak,
-                                                BorderTreatmentMode border)
-{
-
-    typedef typename
-        NumericTraits<typename SrcAccessor::value_type>::RealPromote SumType;
-    typedef
-        NumericTraits<typename DestAccessor::value_type> DestTraits;
-
-    SumType sum = NumericTraits<SumType>::zero();
-
-    SrcIterator src_ul = xs - Diff2D(x, y);
-    SrcIterator src_lr = src_ul + Diff2D(src_width, src_height);
-
-    SrcIterator yys = xs;
-    KernelIterator yk  = ki;
-
-    // calculate width and height of the kernel
-    int kernel_width = klr.x - kul.x + 1;
-    int kernel_height = klr.y - kul.y + 1;
-
-    // where the kernel is beyond the borders:
-    bool top_to_much = (y<klr.y) ? true : false;
-    bool down_to_much = (src_height-y-1<-kul.y)? true : false;
-    bool left_to_much = (x<klr.x)? true : false;
-    bool right_to_much = (src_width-x-1<-kul.x)? true : false;
-
-    // direction of iteration,
-    // e.g. (-1, +1) for ll->ur or (-1, -1) for lr->ul
-    Diff2D way_increment;
-
-    /* Iteration is always done from valid to invalid range.
-       The following tuple is composed as such:
-       - If an invalid range is reached while iterating in X,
-         a jump of border_increment.first is performed and
-         border_increment.third is used for further iterating.
-       - If an invalid range is reached while iterating in Y,
-         a jump of border_increment.second is performed and
-         border_increment.fourth is used for further iterating.
-    */
-    tuple4<int, int, int, int> border_increment;
-    if (border == BORDER_TREATMENT_REPEAT){
-        border_increment = tuple4<int, int, int, int>(1, 1, 0, 0);
-    }else if (border == BORDER_TREATMENT_REFLECT){
-        border_increment = tuple4<int, int, int, int>(2, 2, -1, -1);
-    }else{ // BORDER_TREATMENT_WRAP
-        border_increment = tuple4<int, int, int, int>(src_width, src_height, 1, 1);
-    }
-
-    pair<int, int> valid_step_count;
-
-    if(left_to_much && !top_to_much && !down_to_much)
-    {
-        yys += klr;
-        yk += kul;
-        way_increment = Diff2D(-1, -1);
-        border_increment.third = -border_increment.third;
-        border_increment.fourth = -border_increment.fourth;
-        valid_step_count = std::make_pair((yys - src_ul).x + 1, kernel_height);
-    }
-    else if(top_to_much && !left_to_much && !right_to_much)
-    {
-        yys += klr;
-        yk += kul;
-        way_increment = Diff2D(-1, -1);
-        border_increment.third = -border_increment.third;
-        border_increment.fourth = -border_increment.fourth;
-        valid_step_count = std::make_pair(kernel_width, (yys - src_ul).y + 1);
-    }
-    else if(right_to_much && !top_to_much && !down_to_much)
-    {
-        yys += kul;
-        yk += klr;
-        way_increment = Diff2D(1, 1);
-        border_increment.first = -border_increment.first;
-        border_increment.second = -border_increment.second;
-        valid_step_count = std::make_pair((src_lr - yys).x, kernel_height);
-    }
-    else if(down_to_much && !left_to_much && !right_to_much)
-    {
-        yys += kul;
-        yk += klr;
-        way_increment = Diff2D(1, 1);
-        border_increment.first = -border_increment.first;
-        border_increment.second = -border_increment.second;
-        valid_step_count = std::make_pair(kernel_width, (src_lr - yys).y);
-    }
-    else if(down_to_much && left_to_much)
-    {
-        yys += kul + Diff2D(kernel_width - 1, 0);
-        yk += kul + Diff2D(0, kernel_height - 1);
-        way_increment = Diff2D(-1, 1);
-        border_increment.second = -border_increment.second;
-        border_increment.third = -border_increment.third;
-        valid_step_count = std::make_pair((yys - src_ul).x + 1, (src_lr - yys).y);
-    }
-    else if(down_to_much && right_to_much)
-    {
-        yys += kul;
-        yk += klr;
-        way_increment = Diff2D(1, 1);
-        border_increment.first = -border_increment.first;
-        border_increment.second = -border_increment.second;
-        valid_step_count = std::make_pair((src_lr - yys).x, (src_lr - yys).y);
-    }
-    else if(top_to_much && left_to_much)
-    {
-        yys += klr;
-        yk += kul;
-        way_increment = Diff2D(-1, -1);
-        border_increment.third = -border_increment.third;
-        border_increment.fourth = -border_increment.fourth;
-        valid_step_count = std::make_pair((yys - src_ul).x + 1, (yys - src_ul).y + 1);
-    }
-    else
-    { //top_to_much && right_to_much
-        yys += kul + Diff2D(0, kernel_height - 1);
-        yk += kul + Diff2D(kernel_width - 1, 0);
-        way_increment = Diff2D(1, -1);
-        border_increment.first = -border_increment.first;
-        border_increment.fourth = -border_increment.fourth;
-        valid_step_count = std::make_pair((src_lr - yys).x, (yys - src_ul).y + 1);
-    }
-
-    int yy = 0, xx;
-
-    //laeuft den zulässigen Bereich in y-Richtung durch
-    for(; yy < valid_step_count.second; ++yy, yys.y += way_increment.y, yk.y -= way_increment.y )
-    {
-        SrcIterator xxs = yys;
-        KernelIterator xk  = yk;
-
-        //laeuft den zulässigen Bereich in x-Richtung durch
-        for(xx = 0; xx < valid_step_count.first; ++xx, xxs.x += way_increment.x, xk.x -= way_increment.x)
-        {
-            sum += ak(xk) * src_acc(xxs);
-        }
-
-        //Nächstes ++xxs.x wuerde in unzulässigen Bereich
-        //bringen => Sprung in zulaessigen Bereich
-        xxs.x += border_increment.first;
-
-        for( ; xx < kernel_width; ++xx, xxs.x += border_increment.third, xk.x -= way_increment.x )
-        {
-            sum += ak(xk) * src_acc(xxs);
-        }
-    }
-
-    //Nächstes ++yys.y wuerde in unzulässigen Bereich
-    //bringen => Sprung in zulaessigen Bereich
-    yys.y += border_increment.second;
-
-    for( ; yy < kernel_height; ++yy, yys.y += border_increment.third, yk.y -= way_increment.y)
-    {
-        SrcIterator xxs = yys;
-        KernelIterator xk  = yk;
-
-        for(xx=0; xx < valid_step_count.first; ++xx, xxs.x += way_increment.x, xk.x -= way_increment.x)
-        {
-            sum += ak(xk) * src_acc(xxs);
-        }
-
-        //Sprung in den zulaessigen Bereich
-        xxs.x += border_increment.first;
-
-        for( ; xx < kernel_width; ++xx, xxs.x += border_increment.third, xk.x -= way_increment.x )
-        {
-            sum += ak(xk) * src_acc(xxs);
-        }
-    }
-
-    // store average in destination pixel
-    dest_acc.set(DestTraits::fromRealPromote(sum), xd);
-
-}// end of internalPixelEvaluationByWrapReflectRepeat
-#endif /* #if 0 */
-
-
-template <class SrcIterator, class SrcAccessor,
-          class KernelIterator, class KernelAccessor,
-          class SumType>
-void
-internalPixelEvaluationByWrapReflectRepeat(SrcIterator xs, SrcAccessor src_acc,
-    KernelIterator xk, KernelAccessor ak,
-    int left, int right, int kleft, int kright,
-    int borderskipx, int borderinc, SumType & sum)
-{
-    SrcIterator xxs = xs + left;
-    KernelIterator xxk  = xk - left;
-
-    for(int xx = left; xx <= right; ++xx, ++xxs, --xxk)
-    {
-        sum += ak(xxk) * src_acc(xxs);
-    }
-
-    xxs = xs + left - borderskipx;
-    xxk = xk - left + 1;
-    for(int xx = left - 1; xx >= -kright; --xx, xxs -= borderinc, ++xxk)
-    {
-        sum += ak(xxk) * src_acc(xxs);
-    }
-
-    xxs = xs + right + borderskipx;
-    xxk = xk - right - 1;
-    for(int xx = right + 1; xx <= -kleft; ++xx, xxs += borderinc, --xxk)
-    {
-        sum += ak(xxk) * src_acc(xxs);
-    }
-}
-
-
 /** \addtogroup StandardConvolution Two-dimensional convolution functions
 
 Perform 2D non-separable convolution, with and without ROI mask.
@@ -514,143 +242,123 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
             "convolveImage(): Cannot use BORDER_TREATMENT_CLIP with a DC-free kernel");
     }
 
-    // create iterators for the interior part of the image (where the kernel always fits into the image)
-    DestIterator yd = dest_ul + Diff2D(klr.x, klr.y);
-    SrcIterator ys = src_ul + Diff2D(klr.x, klr.y);
-    SrcIterator send = src_lr + Diff2D(kul.x, kul.y);
+    DestIterator yd = dest_ul;
+    SrcIterator ys = src_ul;
+    SrcIterator send = src_lr;
 
     // iterate over the interior part
-    for(; ys.y < send.y; ++ys.y, ++yd.y)
+    for(int y=0; y<h; ++y, ++ys.y, ++yd.y)
     {
         // create x iterators
         DestIterator xd(yd);
         SrcIterator xs(ys);
 
-        for(; xs.x < send.x; ++xs.x, ++xd.x)
+        for(int x=0; x < w; ++x, ++xs.x, ++xd.x)
         {
             // init the sum
             SumType sum = NumericTraits<SumType>::zero();
-
-            SrcIterator yys = xs - klr;
-            SrcIterator yyend = xs - kul;
-            KernelIterator yk  = ki + klr;
-
-            for(; yys.y <= yyend.y; ++yys.y, --yk.y)
+            KernelIterator ykernel  = ki + klr;
+            
+            if(x >= klr.x && y >= klr.y && x < w + kul.x && y < h + kul.y)
             {
-                typename SrcIterator::row_iterator xxs = yys.rowIterator();
-                typename SrcIterator::row_iterator xxe = xxs + kernel_width;
-                typename KernelIterator::row_iterator xk  = yk.rowIterator();
+                // kernel is entirely inside the image
+                SrcIterator yys = xs - klr;
+                SrcIterator yyend = xs - kul;
 
-                for(; xxs < xxe; ++xxs, --xk)
+                for(; yys.y <= yyend.y; ++yys.y, --ykernel.y)
                 {
-                    sum += ak(xk) * src_acc(xxs);
+                    typename SrcIterator::row_iterator xxs = yys.rowIterator();
+                    typename SrcIterator::row_iterator xxe = xxs + kernel_width;
+                    typename KernelIterator::row_iterator xkernel= ykernel.rowIterator();
+
+                    for(; xxs < xxe; ++xxs, --xkernel)
+                    {
+                        sum += ak(xkernel) * src_acc(xxs);
+                    }
                 }
+            }
+            else if(border == BORDER_TREATMENT_REPEAT)
+            {
+                Diff2D diff;
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                {
+                    diff.y = std::min(std::max(y - yk, 0), h-1);
+                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    {
+                        diff.x = std::min(std::max(x - xk, 0), w-1);
+                        sum += ak(xkernel) * src_acc(src_ul, diff);
+                    }
+                }
+            }
+            else if(border == BORDER_TREATMENT_REFLECT)
+            {
+                Diff2D diff;
+                for(int yk = klr.y; yk >= kul.y; --yk , --ykernel.y)
+                {
+                    diff.y = abs(y - yk);
+                    if(diff.y >= h)
+                        diff.y = 2*h - 2 - diff.y;
+                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    {
+                        diff.x = abs(x - xk);
+                        if(diff.x >= w)
+                            diff.x = 2*w - 2 - diff.x;
+                        sum += ak(xkernel) * src_acc(src_ul, diff);
+                    }
+                }
+            }
+            else if(border == BORDER_TREATMENT_WRAP)
+            {
+                Diff2D diff;
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                {
+                    diff.y = (y - yk + h) % h;
+                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    {
+                        diff.x = (x - xk + w) % w;
+                        sum += ak(xkernel) * src_acc(src_ul, diff);
+                    }
+                }
+            }
+            else if(border == BORDER_TREATMENT_CLIP)
+            {
+                KernelSumType ksum = NumericTraits<KernelSumType>::zero();
+                Diff2D diff;
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                {
+                    diff.y = y - yk;
+                    if(diff.y < 0 || diff.y >= h)
+                        continue;
+                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    {
+                        diff.x = x - xk;
+                        if(diff.x < 0 || diff.x >= w)
+                            continue;
+                        ksum += ak(xkernel);
+                        sum += ak(xkernel) * src_acc(src_ul, diff);
+                    }
+                }
+                
+                sum *= norm / ksum;
+            }
+            else if(border == BORDER_TREATMENT_AVOID)
+            {
+                continue;
             }
 
             // store convolution result in destination pixel
             dest_acc.set(detail::RequiresExplicitCast<DestType>::cast(sum), xd);
         }
     }
-
-    if(border == BORDER_TREATMENT_AVOID)
-        return; // skip processing near the border
-
-    int interiorskip = w + kul.x - klr.x - 1;
-    int borderskipx = 0;
-    int borderskipy = 0;
-    int borderinc = 0;
-    if(border == BORDER_TREATMENT_REPEAT)
-    {
-        borderskipx = 0;
-        borderskipy = 0;
-        borderinc = 0;
-    }
-    else if(border == BORDER_TREATMENT_REFLECT)
-    {
-        borderskipx = -1;
-        borderskipy = -1;
-        borderinc = -1;
-    }
-    else if(border == BORDER_TREATMENT_WRAP)
-    {
-        borderskipx = -w+1;
-        borderskipy = -h+1;
-        borderinc = 1;
-    }
-
-    // create iterators for the entire image
-    yd = dest_ul;
-    ys = src_ul;
-
-    // work on entire image (but skip the already computed points in the loop)
-    for(int y = 0; y < h; ++y, ++ys.y, ++yd.y)
-    {
-        int top    = int(std::max(static_cast<IntBiggest>(-klr.y),
-                                  static_cast<IntBiggest>(src_ul.y - ys.y)));
-        int bottom = int(std::min(static_cast<IntBiggest>(-kul.y),
-                                  static_cast<IntBiggest>(src_lr.y - ys.y - 1)));
-
-        // create x iterators
-        DestIterator xd(yd);
-        SrcIterator xs(ys);
-
-        for(int x = 0; x < w; ++x, ++xs.x, ++xd.x)
-        {
-            // check if we are away from the border
-            if(y >= klr.y && y < h+kul.y && x == klr.x)
-            {
-                // yes => skip the already computed points
-                x += interiorskip;
-                xs.x += interiorskip;
-                xd.x += interiorskip;
-                continue;
-            }
-            if (border == BORDER_TREATMENT_CLIP)
-            {
-                internalPixelEvaluationByClip(x, y, w, h, xs, src_acc, xd, dest_acc, ki, kul, klr, ak, norm);
-            }
-            else
-            {
-                int left  = std::max(-klr.x, src_ul.x - xs.x);
-                int right = std::min(-kul.x, src_lr.x - xs.x - 1);
-
-                // init the sum
-                SumType sum = NumericTraits<SumType>::zero();
-
-                // create iterators for the part of the kernel that fits into the image
-                SrcIterator yys = xs + Size2D(0, top);
-                KernelIterator yk  = ki - Size2D(0, top);
-
-                int yy;
-                for(yy = top; yy <= bottom; ++yy, ++yys.y, --yk.y)
-                {
-                    internalPixelEvaluationByWrapReflectRepeat(yys.rowIterator(), src_acc, yk.rowIterator(), ak,
-                         left, right, kul.x, klr.x, borderskipx, borderinc, sum);
-                }
-                yys = xs + Size2D(0, top - borderskipy);
-                yk  = ki - Size2D(0, top - 1);
-                for(yy = top - 1; yy >= -klr.y; --yy, yys.y -= borderinc, ++yk.y)
-                {
-                    internalPixelEvaluationByWrapReflectRepeat(yys.rowIterator(), src_acc, yk.rowIterator(), ak,
-                         left, right, kul.x, klr.x, borderskipx, borderinc, sum);
-                }
-                yys = xs + Size2D(0, bottom + borderskipy);
-                yk  = ki - Size2D(0, bottom + 1);
-                for(yy = bottom + 1; yy <= -kul.y; ++yy, yys.y += borderinc, --yk.y)
-                {
-                    internalPixelEvaluationByWrapReflectRepeat(yys.rowIterator(), src_acc, yk.rowIterator(), ak,
-                         left, right, kul.x, klr.x, borderskipx, borderinc, sum);
-                }
-
-                // store convolution result in destination pixel
-                dest_acc.set(detail::RequiresExplicitCast<DestType>::cast(sum), xd);
-
-//                internalPixelEvaluationByWrapReflectRepeat(x, y, w, h, xs, src_acc, xd, dest_acc, ki, kul, klr, ak, border);
-            }
-        }
-    }
 }
-
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -1161,8 +869,8 @@ public:
         : kernel_(1, 1, one()),
           left_(0, 0),
           right_(0, 0),
-	  norm_(one()),
-          border_treatment_(BORDER_TREATMENT_CLIP)
+          norm_(one()),
+          border_treatment_(BORDER_TREATMENT_REFLECT)
     {}
 
         /** Copy constructor.
@@ -1181,11 +889,11 @@ public:
     {
         if(this != &k)
         {
-	    kernel_ = k.kernel_;
+        kernel_ = k.kernel_;
             left_ = k.left_;
             right_ = k.right_;
             norm_ = k.norm_;
-	    border_treatment_ = k.border_treatment_;
+        border_treatment_ = k.border_treatment_;
         }
         return *this;
     }
