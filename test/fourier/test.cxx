@@ -501,9 +501,10 @@ struct MultiFFTTest
 
 	void testConvolveFourierKernel()
 	{
+		typedef MultiArrayView<2, double> MV;
 		ImageImportInfo info("ghouse.gif");
 		Shape2 s(info.width(), info.height());
-		DArray2 in(s), out(s), ref(s), tmp(s);
+		DArray2 in(s), out(s), out2(s), out3(s), out4(s), ref(s), tmp(s);
 		importImage(info, destImage(in));
 
 		double scale = 2.0;
@@ -517,6 +518,9 @@ struct MultiFFTTest
 		Shape2 center = div(complexShape, Shape2::value_type(2));
 
 		CArray2 kernel(complexShape);
+
+		shouldEqual(fftwFourierKernelSubarray(kernel).shape(), kernelShape);
+
 		for(int y=0; y<complexShape[1]; ++y)
 		{
 			for(int x=0; x<complexShape[0]; ++x)
@@ -528,10 +532,7 @@ struct MultiFFTTest
 			}
 		}
 		moveDCToUpperLeft(kernel);
-
-		FFTWConvolvePlan<2, double> plan;
-		plan.initFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
-		plan.executeFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
+		convolveFFT(in, fftwFourierKernelSubarray(kernel), out);
 
 		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
 			                         ref.data(), 1e-2);
@@ -543,6 +544,7 @@ struct MultiFFTTest
 		separableConvolveX(srcImageRange(in), destImage(tmp), kernel1d(grad));
 		separableConvolveY(srcImageRange(tmp), destImage(ref), kernel1d(gauss));
 
+		CArray2 kernel2(complexShape);
 		for(int y=0; y<complexShape[1]; ++y)
 		{
 			for(int x=0; x<complexShape[0]; ++x)
@@ -550,14 +552,13 @@ struct MultiFFTTest
 				double xx = 2.0 * M_PI * (x - center[0]) / complexShape[0];
 				double yy = 2.0 * M_PI * (y - center[1]) / complexShape[1];
 				double r2 = sq(xx) + sq(yy);
-				kernel(x,y) = C(0, xx*std::exp(-0.5 * sq(scale) * r2));
+				kernel2(x,y) = C(0, xx*std::exp(-0.5 * sq(scale) * r2));
 			}
 		}
-		moveDCToUpperLeft(kernel);
+		moveDCToUpperLeft(kernel2);
+		convolveFFT(in, fftwFourierKernelSubarray(kernel2), out2);
 
-		plan.executeFourierKernel(in, kernel.subarray(Shape2(), kernelShape), out);
-
-		ref -= out;
+		ref -= out2;
 
 		FindMinMax<double> minmax;
 		FindAverage<double> average;
@@ -566,6 +567,16 @@ struct MultiFFTTest
 		
 		should(std::max(minmax.max, -minmax.min) < 0.2);
 		should(average.average() < 0.001);
+
+		MultiArrayView<2, C> kernels[] = { fftwFourierKernelSubarray(kernel), 
+			                               fftwFourierKernelSubarray(kernel2) };
+		MultiArrayView<2, R> outs[] = { out3, out4 };
+		convolveFFTMany(in, kernels, kernels+2, outs);
+
+		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+			                         out3.data(), 1e-15);
+		shouldEqualSequenceTolerance(out2.data(), out2.data()+out2.size(),
+			                         out4.data(), 1e-15);
 	}
 };
 

@@ -814,7 +814,7 @@ fftEmbedArray(MultiArrayView<N, Real, C1> in,
         for( ; nav.hasMore(); nav++ )
         {
             Iterator i = nav.begin();
-			for(int k=1; k<=leftDiff[d]; ++k)
+            for(int k=1; k<=leftDiff[d]; ++k)
                 i[leftDiff[d] - k] = i[leftDiff[d] + k];
             for(int k=0; k<rightDiff[d]; ++k)
                 i[right[d] + k] = i[right[d] - k - 2];
@@ -841,6 +841,37 @@ fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
     for(unsigned int k=1; k<N; ++k)
         shape[k] = detail::fftwPaddingSize(shape[k]);
     return shape;
+}
+
+template <class T, int N>
+TinyVector<T, N>
+fftwCorrespondingShapeR2C(TinyVector<T, N> shape)
+{
+    shape[0] = shape[0] / 2 + 1;
+    return shape;
+}
+
+template <class T, int N>
+TinyVector<T, N>
+fftwCorrespondingShapeC2R(TinyVector<T, N> shape)
+{
+    vigra_precondition(odd(shape[0]),
+        "fftwCorrespondingShapeC2R(): shape[0] must be odd.");
+    shape[0] = (shape[0] - 1) * 2;
+    return shape;
+}
+
+template <unsigned int N, class Real, class C>
+MultiArrayView<N, FFTWComplex<Real>, C>
+fftwFourierKernelSubarray(MultiArrayView<N, FFTWComplex<Real>, C> in)
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+
+    vigra_precondition(odd(in.shape(0)),
+        "fftwFourierKernelSubarray(): in.shape(0) must be odd.");
+    Shape newShape = in.shape();
+    newShape[0] = (newShape[0] + 1) / 2;
+    return in.subarray(Shape(), newShape);
 }
 
 template <unsigned int N, class Real = double>
@@ -891,7 +922,7 @@ class FFTWPlan
       sign(other.sign)
     {
         FFTWPlan & o = const_cast<FFTWPlan &>(other);
-		shape.swap(o.shape);
+        shape.swap(o.shape);
         instrides.swap(o.instrides);
         outstrides.swap(o.outstrides);
         o.plan = 0; // act like std::auto_ptr
@@ -902,7 +933,7 @@ class FFTWPlan
         if(this != &other)
         {
             FFTWPlan & o = const_cast<FFTWPlan &>(other);
-			plan = o.plan;
+            plan = o.plan;
             shape.swap(o.shape);
             instrides.swap(o.instrides);
             outstrides.swap(o.outstrides);
@@ -1021,11 +1052,11 @@ FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flag
                                                 ? ins.shape()
                                                 : outs.shape());
                                            
-	Shape newShape(logicalShape.begin(), logicalShape.end()),
+    Shape newShape(logicalShape.begin(), logicalShape.end()),
           newIStrides(ins.stride().begin(), ins.stride().end()),
           newOStrides(outs.stride().begin(), outs.stride().end()),
           itotal(ins.shape().begin(), ins.shape().end()), 
-		  ototal(outs.shape().begin(), outs.shape().end());
+          ototal(outs.shape().begin(), outs.shape().end());
 
     for(int j=1; j<N; ++j)
     {
@@ -1055,14 +1086,14 @@ void FFTWPlan<N, Real>::executeImpl(MI ins, MO outs) const
                                                 ? ins.shape()
                                                 : outs.shape());
                                            
-	vigra_precondition((lshape == TinyVectorView<int, N>(shape.data())),
+    vigra_precondition((lshape == TinyVectorView<int, N>(shape.data())),
         "FFTWPlan::execute(): shape mismatch between plan and data.");
     vigra_precondition((ins.stride() == TinyVectorView<int, N>(instrides.data())),
         "FFTWPlan::execute(): strides mismatch between plan and input data.");
     vigra_precondition((outs.stride() == TinyVectorView<int, N>(outstrides.data())),
         "FFTWPlan::execute(): strides mismatch between plan and output data.");
 
-	detail::fftwPlanExecute(plan, ins.data(), outs.data());
+    detail::fftwPlanExecute(plan, ins.data(), outs.data());
     
     typedef typename MO::value_type V;
     if(sign == FFTW_BACKWARD)
@@ -1079,28 +1110,44 @@ class FFTWConvolvePlan
     FFTWPlan<N, Real> forward_plan, backward_plan;
     RArray realArray;
     CArray fourierArray, fourierKernel;
+    bool useFourierKernel;
 
   public:
   
     typedef typename MultiArrayShape<N>::type Shape;
 
-	FFTWConvolvePlan()
-	{}
+    FFTWConvolvePlan()
+    : useFourierKernel(false)
+    {}
     
     template <class C1, class C2, class C3>
     FFTWConvolvePlan(MultiArrayView<N, Real, C1> in, 
                      MultiArrayView<N, Real, C2> kernel,
                      MultiArrayView<N, Real, C3> out,
                      unsigned int planner_flags = FFTW_ESTIMATE)
+    : useFourierKernel(false)
     {
-        init(in.shape(), kernel.shape(), out.shape(), planner_flags);
+        init(in, kernel, out, planner_flags);
     }
     
     template <class C1, class C2, class C3>
-    FFTWConvolvePlan(Shape in, Shape kernel, Shape out,
+    FFTWConvolvePlan(MultiArrayView<N, Real, C1> in, 
+                     MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                     MultiArrayView<N, Real, C3> out,
                      unsigned int planner_flags = FFTW_ESTIMATE)
+    : useFourierKernel(true)
     {
         init(in, kernel, out, planner_flags);
+    }
+    
+    template <class C1, class C2, class C3>
+    FFTWConvolvePlan(Shape inOut, Shape kernel, bool useFourierKernel = false,
+                     unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        if(useFourierKernel)
+            init(inOut, kernel, planner_flags);
+        else
+            initFourierKernel(inOut, kernel, planner_flags);
     }
     
     template <class C1, class C2, class C3>
@@ -1109,89 +1156,139 @@ class FFTWConvolvePlan
               MultiArrayView<N, Real, C3> out,
               unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        init(in.shape(), kernel.shape(), out.shape(), planner_flags);
+        vigra_precondition(in.shape() == out.shape(),
+            "FFTWConvolvePlan::init(): input and output must have the same shape.");
+        init(in.shape(), kernel.shape(), planner_flags);
     }
-    
-    void init(Shape in, Shape kernel, Shape out,
-              unsigned int planner_flags = FFTW_ESTIMATE);
     
     template <class C1, class C2, class C3>
-    void initFourierKernel(MultiArrayView<N, Real, C1> in, 
-                           MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                           MultiArrayView<N, Real, C3> out,
-                           unsigned int planner_flags = FFTW_ESTIMATE)
+    void init(MultiArrayView<N, Real, C1> in, 
+              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+              MultiArrayView<N, Real, C3> out,
+              unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        initFourierKernel(in.shape(), kernel.shape(), out.shape(), planner_flags);
+        vigra_precondition(in.shape() == out.shape(),
+            "FFTWConvolvePlan::init(): input and output must have the same shape.");
+        initFourierKernel(in.shape(), kernel.shape(), planner_flags);
     }
-    
-    void initFourierKernel(Shape in, Shape kernel, Shape out,
-                           unsigned int planner_flags = FFTW_ESTIMATE);
     
     template <class C1, class KernelIterator, class OutIterator>
     void initMany(MultiArrayView<N, Real, C1> in, 
                   KernelIterator kernels, KernelIterator kernelsEnd,
                   OutIterator outs, unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        initMany(in.shape(), kernels, kernelsEnd, outs, planner_flags);
+        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
+        typedef typename KernelArray::value_type KernelValue;
+        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
+        typedef typename OutArray::value_type OutValue;
+
+        bool realKernel = IsSameType<KernelValue, Real>::value;
+        bool fourierKernel = IsSameType<KernelValue, Complex>::value;
+
+        vigra_precondition(realKernel || fourierKernel,
+             "FFTWConvolvePlan::initMany(): kernels have unsuitable value_type.");
+        vigra_precondition((IsSameType<OutValue, Real>::value),
+             "FFTWConvolvePlan::initMany(): outputs have unsuitable value_type.");
+
+        if(realKernel)
+        {
+            initMany(in.shape(), checkShapes(in.shape(), kernels, kernelsEnd, outs),
+                     planner_flags);
+        }
+        else
+        {
+            initFourierKernelMany(in.shape(), 
+                                  checkShapesFourier(in.shape(), kernels, kernelsEnd, outs),
+                                  planner_flags);
+        }
     }
      
-    template <class KernelIterator, class OutIterator>
-    void initMany(Shape in, 
-                  KernelIterator kernels, KernelIterator kernelsEnd,
-                  OutIterator outs, unsigned int planner_flags = FFTW_ESTIMATE)
+    void init(Shape inOut, Shape kernel,
+              unsigned int planner_flags = FFTW_ESTIMATE);
+    
+    void initFourierKernel(Shape inOut, Shape kernel,
+                           unsigned int planner_flags = FFTW_ESTIMATE);
+    
+    void initMany(Shape inOut, Shape maxKernel,
+                  unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        init(in, checkShapes(in, kernels, kernelsEnd, outs), in, planner_flags);
+        init(inOut, maxKernel, planner_flags);
     }
     
+    void initFourierKernelMany(Shape inOut, Shape kernels,
+                               unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        CArray newFourierKernel(kernels);
+        initFourierKernel(inOut, kernels, planner_flags);
+        newFourierKernel.swap(fourierKernel);
+    }
+        
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, Real, C2> kernel,
                  MultiArrayView<N, Real, C3> out);
     
     template <class C1, class C2, class C3>
-    void executeFourierKernel(MultiArrayView<N, Real, C1> in, 
-                              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                              MultiArrayView<N, Real, C3> out);
+    void execute(MultiArrayView<N, Real, C1> in, 
+                 MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                 MultiArrayView<N, Real, C3> out);
 
     template <class C1, class KernelIterator, class OutIterator>
-    void 
-    executeMany(MultiArrayView<N, Real, C1> in, 
-                KernelIterator kernels, KernelIterator kernelsEnd,
-                OutIterator outs);
-     
+    void executeMany(MultiArrayView<N, Real, C1> in, 
+                     KernelIterator kernels, KernelIterator kernelsEnd,
+                     OutIterator outs)
+    {
+        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
+        typedef typename KernelArray::value_type KernelValue;
+        typedef typename IsSameType<KernelValue, Complex>::type UseFourierKernel;
+        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
+        typedef typename OutArray::value_type OutValue;
+
+        bool realKernel = IsSameType<KernelValue, Real>::value;
+        bool fourierKernel = IsSameType<KernelValue, Complex>::value;
+
+        vigra_precondition(realKernel || fourierKernel,
+             "FFTWConvolvePlan::executeMany(): kernels have unsuitable value_type.");
+        vigra_precondition((IsSameType<OutValue, Real>::value),
+             "FFTWConvolvePlan::executeMany(): outputs have unsuitable value_type.");
+
+        executeManyImpl(in, kernels, kernelsEnd, outs, UseFourierKernel());
+    }
+
+  private:
+  
     template <class KernelIterator, class OutIterator>
     Shape checkShapes(Shape in, 
                       KernelIterator kernels, KernelIterator kernelsEnd,
-                      OutIterator outs)
-    {
-        vigra_precondition(kernels != kernelsEnd,
-            "FFTWConvolvePlan::checkShapes(): empty kernel sequence.");
-        Shape kernelMax;            
-        OutIterator o = outs;
-        for(KernelIterator k=kernels; k != kernelsEnd; ++k, ++o)
-        {
-            vigra_precondition(in == o->shape(),
-                "FFTWConvolvePlan::checkShapes(): shape mismatch between input and (one) output.");
-            kernelMax = max(kernelMax, k->shape());
-        }
-        vigra_precondition(prod(kernelMax) > 0,
-            "FFTWConvolvePlan::checkShapes(): all kernels have size 0.");
-        return kernelMax;
-    }
+                      OutIterator outs);
+     
+    template <class KernelIterator, class OutIterator>
+    Shape checkShapesFourier(Shape in, 
+                             KernelIterator kernels, KernelIterator kernelsEnd,
+                             OutIterator outs);
+    
+    template <class C1, class KernelIterator, class OutIterator>
+    void 
+    executeManyImpl(MultiArrayView<N, Real, C1> in, 
+                    KernelIterator kernels, KernelIterator kernelsEnd,
+                    OutIterator outs, VigraFalseType /* useFourierKernel*/);
+    
+    template <class C1, class KernelIterator, class OutIterator>
+    void 
+    executeManyImpl(MultiArrayView<N, Real, C1> in, 
+                    KernelIterator kernels, KernelIterator kernelsEnd,
+                    OutIterator outs, VigraTrueType /* useFourierKernel*/);
+    
 };    
     
 template <unsigned int N, class Real>
 void 
-FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel, Shape out,
+FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel,
                                 unsigned int planner_flags)
 {
-    vigra_precondition(in == out,
-        "FFTWConvolvePlan::init(): input and output must have the same shape.");
-    
     Shape paddedShape = fftwBestPaddedShapeR2C(in + kernel - Shape(1)),
-          complexShape(paddedShape);
-    complexShape[0] = complexShape[0] / 2 + 1;
-    
+          complexShape = fftwCorrespondingShapeR2C(paddedShape);
+     
     RArray newRealArray(paddedShape);
     CArray newFourierArray(complexShape), newFourierKernel(complexShape);
     
@@ -1203,24 +1300,21 @@ FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel, Shape out,
     realArray.swap(newRealArray);
     fourierArray.swap(newFourierArray);
     fourierKernel.swap(newFourierKernel);
+    useFourierKernel = false;
 }
 
 template <unsigned int N, class Real>
 void 
-FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel, Shape out,
+FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel,
                                              unsigned int planner_flags)
 {
-    vigra_precondition(in == out,
-        "FFTWConvolvePlan::initFourierKernel(): input and output must have the same shape.");
-    
-    Shape complexShape(kernel),
-          paddedShape(complexShape);
-    paddedShape[0] = 2 * (paddedShape[0] - 1);
+    Shape complexShape = kernel,
+          paddedShape  = fftwCorrespondingShapeC2R(complexShape);
     
     for(int k=0; k<N; ++k)
         vigra_precondition(in[k] <= paddedShape[k],
-             "FFTWConvolvePlan::initFourierKernel(): kernel array too small for given input.");
-    
+             "FFTWConvolvePlan::init(): kernel too small for given input.");
+
     RArray newRealArray(paddedShape);
     CArray newFourierArray(complexShape), newFourierKernel;
     
@@ -1232,6 +1326,7 @@ FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel, Shape out,
     realArray.swap(newRealArray);
     fourierArray.swap(newFourierArray);
     fourierKernel.swap(newFourierKernel);
+    useFourierKernel = true;
 }
 
 template <unsigned int N, class Real>
@@ -1241,6 +1336,9 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
                                     MultiArrayView<N, Real, C2> kernel,
                                     MultiArrayView<N, Real, C3> out)
 {
+    vigra_precondition(!useFourierKernel,
+       "FFTWConvolvePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
+
     vigra_precondition(in.shape() == out.shape(),
         "FFTWConvolvePlan::execute(): input and output must have the same shape.");
     
@@ -1268,27 +1366,26 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
 template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
-FFTWConvolvePlan<N, Real>::executeFourierKernel(MultiArrayView<N, Real, C1> in, 
+FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
                                     MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
                                     MultiArrayView<N, Real, C3> out)
 {
-    vigra_precondition(kernel.shape() == fourierArray.shape(),
-       "FFTWConvolvePlan::executeFourierKernel(): shape mismatch between kernel and plan.");
-
-    vigra_precondition(Shape() == fourierKernel.shape(),
-       "FFTWConvolvePlan::executeFourierKernel(): plan was not generated with Fourier kernel.");
+    vigra_precondition(useFourierKernel,
+       "FFTWConvolvePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
 
     vigra_precondition(in.shape() == out.shape(),
-        "FFTWConvolvePlan::executeFourierKernel(): input and output must have the same shape.");
+        "FFTWConvolvePlan::execute(): input and output must have the same shape.");
     
-    Shape paddedShape(kernel.shape());
-    paddedShape[0] = 2 * (paddedShape[0] - 1);
-    Shape diff = paddedShape - in.shape(), 
+    vigra_precondition(kernel.shape() == fourierArray.shape(),
+       "FFTWConvolvePlan::execute(): shape mismatch between kernel and plan.");
+
+    Shape paddedShape = fftwCorrespondingShapeC2R(kernel.shape()),
+          diff = paddedShape - in.shape(), 
           left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
           
     vigra_precondition(paddedShape == realArray.shape(),
-       "FFTWConvolvePlan::executeFourierKernel(): shape mismatch between input and plan.");
+       "FFTWConvolvePlan::execute(): shape mismatch between input and plan.");
 
     detail::fftEmbedArray(in, realArray);
     forward_plan.execute(realArray, fourierArray);
@@ -1303,10 +1400,13 @@ FFTWConvolvePlan<N, Real>::executeFourierKernel(MultiArrayView<N, Real, C1> in,
 template <unsigned int N, class Real>
 template <class C1, class KernelIterator, class OutIterator>
 void 
-FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, Real, C1> in, 
-                                       KernelIterator kernels, KernelIterator kernelsEnd,
-                                       OutIterator outs)
+FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in, 
+                                           KernelIterator kernels, KernelIterator kernelsEnd,
+                                           OutIterator outs, VigraFalseType /*useFourierKernel*/)
 {
+    vigra_precondition(!useFourierKernel,
+       "FFTWConvolvePlan::execute(): plan was generated for Fourier kernel, got spatial kernel.");
+
     Shape kernelMax = checkShapes(in.shape(), kernels, kernelsEnd, outs),
           paddedShape = fftwBestPaddedShapeR2C(in.shape() + kernelMax - Shape(1)),
           diff = paddedShape - in.shape(), 
@@ -1314,7 +1414,7 @@ FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, Real, C1> in,
           right = in.shape() + left;
           
     vigra_precondition(paddedShape == realArray.shape(),
-       "FFTWConvolvePlan::execute(): shape mismatch between input and plan.");
+       "FFTWConvolvePlan::executeMany(): shape mismatch between input and plan.");
 
     detail::fftEmbedArray(in, realArray);
     forward_plan.execute(realArray, fourierArray);
@@ -1331,6 +1431,92 @@ FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, Real, C1> in,
         *outs = realArray.subarray(left, right);
     }
 }
+
+template <unsigned int N, class Real>
+template <class C1, class KernelIterator, class OutIterator>
+void 
+FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in, 
+                                           KernelIterator kernels, KernelIterator kernelsEnd,
+                                           OutIterator outs, VigraTrueType /*useFourierKernel*/)
+{
+    vigra_precondition(useFourierKernel,
+       "FFTWConvolvePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
+
+    Shape complexShape = checkShapesFourier(in.shape(), kernels, kernelsEnd, outs),
+          paddedShape = fftwCorrespondingShapeC2R(complexShape),
+          diff = paddedShape - in.shape(), 
+          left = div(diff, MultiArrayIndex(2)),
+          right = in.shape() + left;
+          
+    vigra_precondition(complexShape == fourierArray.shape(),
+       "FFTWConvolvePlan::executeFourierKernelMany(): shape mismatch between kernels and plan.");
+
+    vigra_precondition(paddedShape == realArray.shape(),
+       "FFTWConvolvePlan::executeFourierKernelMany(): shape mismatch between input and plan.");
+
+    detail::fftEmbedArray(in, realArray);
+    forward_plan.execute(realArray, fourierArray);
+
+    for(; kernels != kernelsEnd; ++kernels, ++outs)
+    {
+        fourierKernel = *kernels;
+        fourierKernel *= fourierArray;
+        
+        backward_plan.execute(fourierKernel, realArray);
+        
+        *outs = realArray.subarray(left, right);
+    }
+}
+
+template <unsigned int N, class Real>
+template <class KernelIterator, class OutIterator>
+typename FFTWConvolvePlan<N, Real>::Shape 
+FFTWConvolvePlan<N, Real>::checkShapes(Shape in, 
+                                       KernelIterator kernels, KernelIterator kernelsEnd,
+                                       OutIterator outs)
+{
+    vigra_precondition(kernels != kernelsEnd,
+        "FFTWConvolvePlan::checkShapes(): empty kernel sequence.");
+
+    Shape kernelMax;            
+    for(; kernels != kernelsEnd; ++kernels, ++outs)
+    {
+        vigra_precondition(in == outs->shape(),
+            "FFTWConvolvePlan::checkShapes(): shape mismatch between input and (one) output.");
+        kernelMax = max(kernelMax, kernels->shape());
+    }
+    vigra_precondition(prod(kernelMax) > 0,
+        "FFTWConvolvePlan::checkShapes(): all kernels have size 0.");
+    return kernelMax;
+}
+ 
+template <unsigned int N, class Real>
+template <class KernelIterator, class OutIterator>
+typename FFTWConvolvePlan<N, Real>::Shape 
+FFTWConvolvePlan<N, Real>::checkShapesFourier(Shape in, 
+                                               KernelIterator kernels, KernelIterator kernelsEnd,
+                                               OutIterator outs)
+{
+    vigra_precondition(kernels != kernelsEnd,
+        "FFTWConvolvePlan::checkShapesFourier(): empty kernel sequence.");
+
+    Shape complexShape = kernels->shape(),
+          paddedShape  = fftwCorrespondingShapeC2R(complexShape);
+
+    for(int k=0; k<N; ++k)
+        vigra_precondition(in[k] <= paddedShape[k],
+             "FFTWConvolvePlan::checkShapesFourier(): kernels too small for given input.");
+
+    for(; kernels != kernelsEnd; ++kernels, ++outs)
+    {
+        vigra_precondition(in == outs->shape(),
+            "FFTWConvolvePlan::checkShapesFourier(): shape mismatch between input and (one) output.");
+        vigra_precondition(complexShape == kernels->shape(),
+            "FFTWConvolvePlan::checkShapesFourier(): all kernels must have the same size.");
+    }
+    return complexShape;
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -1400,7 +1586,7 @@ inline void
 fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                  MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-	FFTWPlan<N, Real>(in, out, FFTW_FORWARD).execute(in, out);
+    FFTWPlan<N, Real>(in, out, FFTW_FORWARD).execute(in, out);
 }
 
 template <unsigned int N, class Real, class C1, class C2>
@@ -1408,7 +1594,7 @@ inline void
 fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                         MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-	FFTWPlan<N, Real>(in, out, FFTW_BACKWARD).execute(in, out);
+    FFTWPlan<N, Real>(in, out, FFTW_BACKWARD).execute(in, out);
 }
 
 template <unsigned int N, class Real, class C1, class C2>
@@ -1416,18 +1602,44 @@ void
 fourierTransform(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, FFTWComplex<Real>, C2> out)
 {
-    vigra_precondition(in.shape() == out.shape(),
-        "fourierTransform(): input and output must have the same shape.");
-    
-    // copy the input array into the output and then perform an in-place FFT
-    out = in;
-	FFTWPlan<N, Real>(out, out, FFTW_FORWARD).execute(out, out);
+    if(in.shape() == out.shape())
+    {
+        // copy the input array into the output and then perform an in-place FFT
+        out = in;
+        FFTWPlan<N, Real>(out, out, FFTW_FORWARD).execute(out, out);
+    }
+    else if(out.shape() == fftwCorrespondingShapeR2C(in.shape()))
+    {
+        FFTWPlan<N, Real>(in, out).execute(in, out);
+    }
+    else
+        vigra_precondition(false,
+            "fourierTransform(): shape mismatch between input and output.");
+}
+
+template <unsigned int N, class Real, class C1, class C2>
+void 
+fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                        MultiArrayView<N, Real, C2> out)
+{
+    vigra_precondition(in.shape() == fftwCorrespondingShapeR2C(out.shape()),
+        "fourierTransformInverse(): shape mismatch between input and output.");
+    FFTWPlan<N, Real>(in, out).execute(in, out);
 }
 
 template <unsigned int N, class Real, class C1, class C2, class C3>
 void 
 convolveFFT(MultiArrayView<N, Real, C1> in, 
             MultiArrayView<N, Real, C2> kernel,
+            MultiArrayView<N, Real, C3> out)
+{
+    FFTWConvolvePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
+}
+
+template <unsigned int N, class Real, class C1, class C2, class C3>
+void 
+convolveFFT(MultiArrayView<N, Real, C1> in, 
+            MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
             MultiArrayView<N, Real, C3> out)
 {
     FFTWConvolvePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
