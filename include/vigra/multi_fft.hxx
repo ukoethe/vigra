@@ -111,6 +111,86 @@ namespace vigra {
 */
 //@{
 
+namespace detail {
+
+template <unsigned int N, class T, class C>
+void moveDCToCenterImpl(MultiArrayView<N, T, C> a, unsigned int startDimension)
+{
+    typedef typename MultiArrayView<N, T, C>::traverser Traverser;
+    typedef MultiArrayNavigator<Traverser, N> Navigator;
+    typedef typename Navigator::iterator Iterator;
+    
+    for(unsigned int d = startDimension; d < N; ++d)
+    {
+        Navigator nav(a.traverser_begin(), a.shape(), d);
+
+        for( ; nav.hasMore(); nav++ )
+        {
+            Iterator i = nav.begin();
+            int s  = nav.end() - i;
+            int s2 = s/2;
+                
+            if(even(s))
+            {
+                for(int k=0; k<s2; ++k)
+                {
+                    std::swap(i[k], i[k+s2]);
+                }
+            }
+            else            
+            {
+                T v = i[0];
+                for(int k=0; k<s2; ++k)
+                {
+                    i[k] = i[k+s2+1];
+                    i[k+s2+1] = i[k+1];
+                }
+                i[s2] = v;
+            }
+        }
+    }
+}
+
+template <unsigned int N, class T, class C>
+void moveDCToUpperLeftImpl(MultiArrayView<N, T, C> a, unsigned int startDimension)
+{
+    typedef typename MultiArrayView<N, T, C>::traverser Traverser;
+    typedef MultiArrayNavigator<Traverser, N> Navigator;
+    typedef typename Navigator::iterator Iterator;
+    
+    for(unsigned int d = startDimension; d < N; ++d)
+    {
+        Navigator nav(a.traverser_begin(), a.shape(), d);
+
+        for( ; nav.hasMore(); nav++ )
+        {
+            Iterator i = nav.begin();
+            int s  = nav.end() - i;
+            int s2 = s/2;
+            
+            if(even(s))
+            {
+                for(int k=0; k<s2; ++k)
+                {
+                    std::swap(i[k], i[k+s2]);
+                }
+            }
+            else            
+            {
+                T v = i[s2];
+                for(int k=s2; k>0; --k)
+                {
+                    i[k] = i[k+s2];
+                    i[k+s2] = i[k-1];
+                }
+                i[0] = v;
+            }
+        }
+    }
+}
+
+} // namespace detail
+
 /********************************************************/
 /*                                                      */
 /*                     moveDCToCenter                   */
@@ -194,79 +274,27 @@ namespace vigra {
     \endcode
 */
 template <unsigned int N, class T, class C>
-void moveDCToCenter(MultiArrayView<N, T, C> a)
+inline void moveDCToCenter(MultiArrayView<N, T, C> a)
 {
-    typedef typename MultiArrayView<N, T, C>::traverser Traverser;
-    typedef MultiArrayNavigator<Traverser, N> Navigator;
-    typedef typename Navigator::iterator Iterator;
-    
-    for(unsigned int d = 0; d < N; ++d)
-    {
-        Navigator nav(a.traverser_begin(), a.shape(), d);
-
-        for( ; nav.hasMore(); nav++ )
-        {
-            Iterator i = nav.begin();
-            int s  = nav.end() - i;
-            int s2 = s/2;
-                
-            if(even(s))
-            {
-                for(int k=0; k<s2; ++k)
-                {
-                    std::swap(i[k], i[k+s2]);
-                }
-            }
-            else            
-            {
-                T v = i[0];
-                for(int k=0; k<s2; ++k)
-                {
-                    i[k] = i[k+s2+1];
-                    i[k+s2+1] = i[k+1];
-                }
-                i[s2] = v;
-            }
-        }
-    }
+    detail::moveDCToCenterImpl(a, 0);
 }
 
 template <unsigned int N, class T, class C>
-void moveDCToUpperLeft(MultiArrayView<N, T, C> a)
+inline void moveDCToUpperLeft(MultiArrayView<N, T, C> a)
 {
-    typedef typename MultiArrayView<N, T, C>::traverser Traverser;
-    typedef MultiArrayNavigator<Traverser, N> Navigator;
-    typedef typename Navigator::iterator Iterator;
-    
-    for(unsigned int d = 0; d < N; ++d)
-    {
-        Navigator nav(a.traverser_begin(), a.shape(), d);
+    detail::moveDCToUpperLeftImpl(a, 0);
+}
 
-        for( ; nav.hasMore(); nav++ )
-        {
-            Iterator i = nav.begin();
-            int s  = nav.end() - i;
-            int s2 = s/2;
-            
-            if(even(s))
-            {
-                for(int k=0; k<s2; ++k)
-                {
-                    std::swap(i[k], i[k+s2]);
-                }
-            }
-            else            
-            {
-                T v = i[s2];
-                for(int k=s2; k>0; --k)
-                {
-                    i[k] = i[k+s2];
-                    i[k+s2] = i[k-1];
-                }
-                i[0] = v;
-            }
-        }
-    }
+template <unsigned int N, class T, class C>
+inline void moveDCToHalfspaceCenter(MultiArrayView<N, T, C> a)
+{
+    detail::moveDCToCenterImpl(a, 1);
+}
+
+template <unsigned int N, class T, class C>
+inline void moveDCToHalfspaceUpperLeft(MultiArrayView<N, T, C> a)
+{
+    detail::moveDCToUpperLeftImpl(a, 1);
 }
 
 namespace detail
@@ -853,25 +881,12 @@ fftwCorrespondingShapeR2C(TinyVector<T, N> shape)
 
 template <class T, int N>
 TinyVector<T, N>
-fftwCorrespondingShapeC2R(TinyVector<T, N> shape)
+fftwCorrespondingShapeC2R(TinyVector<T, N> shape, bool oddDimension0 = false)
 {
-    vigra_precondition(odd(shape[0]),
-        "fftwCorrespondingShapeC2R(): shape[0] must be odd.");
-    shape[0] = (shape[0] - 1) * 2;
+    shape[0] = oddDimension0
+                  ? (shape[0] - 1) * 2 + 1
+                  : (shape[0] - 1) * 2;
     return shape;
-}
-
-template <unsigned int N, class Real, class C>
-MultiArrayView<N, FFTWComplex<Real>, C>
-fftwFourierKernelSubarray(MultiArrayView<N, FFTWComplex<Real>, C> in)
-{
-    typedef typename MultiArrayShape<N>::type Shape;
-
-    vigra_precondition(odd(in.shape(0)),
-        "fftwFourierKernelSubarray(): in.shape(0) must be odd.");
-    Shape newShape = in.shape();
-    newShape[0] = (newShape[0] + 1) / 2;
-    return in.subarray(Shape(), newShape);
 }
 
 template <unsigned int N, class Real = double>
@@ -1104,11 +1119,11 @@ template <unsigned int N, class Real>
 class FFTWConvolvePlan
 {
     typedef FFTWComplex<Real> Complex;
-    typedef MultiArray<N, Real, FFTWAllocator<Real> >       RArray;
+    typedef MultiArrayView<N, Real, UnstridedArrayTag >     RArray;
     typedef MultiArray<N, Complex, FFTWAllocator<Complex> > CArray;
     
     FFTWPlan<N, Real> forward_plan, backward_plan;
-    RArray realArray;
+    RArray realArray, realKernel;
     CArray fourierArray, fourierKernel;
     bool useFourierKernel;
 
@@ -1218,9 +1233,7 @@ class FFTWConvolvePlan
     void initFourierKernelMany(Shape inOut, Shape kernels,
                                unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        CArray newFourierKernel(kernels);
         initFourierKernel(inOut, kernels, planner_flags);
-        newFourierKernel.swap(fourierKernel);
     }
         
     template <class C1, class C2, class C3>
@@ -1289,15 +1302,20 @@ FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel,
     Shape paddedShape = fftwBestPaddedShapeR2C(in + kernel - Shape(1)),
           complexShape = fftwCorrespondingShapeR2C(paddedShape);
      
-    RArray newRealArray(paddedShape);
     CArray newFourierArray(complexShape), newFourierKernel(complexShape);
+    
+	Shape realStrides = 2*newFourierArray.stride();
+	realStrides[0] = 1;
+	RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
+    RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
     
     FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
     FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
     
     forward_plan = fplan;
     backward_plan = bplan;
-    realArray.swap(newRealArray);
+    realArray = newRealArray;
+    realKernel = newRealKernel;
     fourierArray.swap(newFourierArray);
     fourierKernel.swap(newFourierKernel);
     useFourierKernel = false;
@@ -1315,15 +1333,20 @@ FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel,
         vigra_precondition(in[k] <= paddedShape[k],
              "FFTWConvolvePlan::init(): kernel too small for given input.");
 
-    RArray newRealArray(paddedShape);
-    CArray newFourierArray(complexShape), newFourierKernel;
+    CArray newFourierArray(complexShape), newFourierKernel(complexShape);
+    
+	Shape realStrides = 2*newFourierArray.stride();
+	realStrides[0] = 1;
+	RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
+    RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
     
     FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
     FFTWPlan<N, Real> bplan(newFourierArray, newRealArray, planner_flags);
     
     forward_plan = fplan;
     backward_plan = bplan;
-    realArray.swap(newRealArray);
+    realArray = newRealArray;
+    realKernel = newRealKernel;
     fourierArray.swap(newFourierArray);
     fourierKernel.swap(newFourierKernel);
     useFourierKernel = true;
@@ -1353,8 +1376,8 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedArray(in, realArray);
     forward_plan.execute(realArray, fourierArray);
 
-    detail::fftEmbedKernel(kernel, realArray);
-    forward_plan.execute(realArray, fourierKernel);
+    detail::fftEmbedKernel(kernel, realKernel);
+    forward_plan.execute(realKernel, fourierKernel);
     
     fourierArray *= fourierKernel;
     
@@ -1379,7 +1402,7 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     vigra_precondition(kernel.shape() == fourierArray.shape(),
        "FFTWConvolvePlan::execute(): shape mismatch between kernel and plan.");
 
-    Shape paddedShape = fftwCorrespondingShapeC2R(kernel.shape()),
+    Shape paddedShape = fftwCorrespondingShapeC2R(kernel.shape(), odd(in.shape(0))),
           diff = paddedShape - in.shape(), 
           left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
@@ -1390,7 +1413,10 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
     detail::fftEmbedArray(in, realArray);
     forward_plan.execute(realArray, fourierArray);
 
-    fourierArray *= kernel;
+    fourierKernel = kernel;
+    moveDCToHalfspaceUpperLeft(fourierKernel);
+
+    fourierArray *= fourierKernel;
     
     backward_plan.execute(fourierArray, realArray);
     
@@ -1421,14 +1447,14 @@ FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
 
     for(; kernels != kernelsEnd; ++kernels, ++outs)
     {
-        detail::fftEmbedKernel(*kernels, realArray);
-        forward_plan.execute(realArray, fourierKernel);
+        detail::fftEmbedKernel(*kernels, realKernel);
+        forward_plan.execute(realKernel, fourierKernel);
         
         fourierKernel *= fourierArray;
         
-        backward_plan.execute(fourierKernel, realArray);
+        backward_plan.execute(fourierKernel, realKernel);
         
-        *outs = realArray.subarray(left, right);
+        *outs = realKernel.subarray(left, right);
     }
 }
 
@@ -1443,7 +1469,7 @@ FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
        "FFTWConvolvePlan::execute(): plan was generated for spatial kernel, got Fourier kernel.");
 
     Shape complexShape = checkShapesFourier(in.shape(), kernels, kernelsEnd, outs),
-          paddedShape = fftwCorrespondingShapeC2R(complexShape),
+          paddedShape = fftwCorrespondingShapeC2R(complexShape, odd(in.shape(0))),
           diff = paddedShape - in.shape(), 
           left = div(diff, MultiArrayIndex(2)),
           right = in.shape() + left;
@@ -1460,11 +1486,12 @@ FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
     for(; kernels != kernelsEnd; ++kernels, ++outs)
     {
         fourierKernel = *kernels;
+        moveDCToHalfspaceUpperLeft(fourierKernel);
         fourierKernel *= fourierArray;
         
-        backward_plan.execute(fourierKernel, realArray);
+        backward_plan.execute(fourierKernel, realKernel);
         
-        *outs = realArray.subarray(left, right);
+        *outs = realKernel.subarray(left, right);
     }
 }
 

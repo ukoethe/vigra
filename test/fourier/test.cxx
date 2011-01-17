@@ -511,28 +511,24 @@ struct MultiFFTTest
 		gaussianSmoothing(srcImageRange(in), destImage(ref), scale);
 
 		Shape2 paddedShape = fftwBestPaddedShapeR2C(s + Shape2(16)),
-			   kernelShape(paddedShape),
-			   complexShape(paddedShape);
+			   kernelShape(paddedShape);
 		kernelShape[0] = kernelShape[0] / 2 + 1;
-		complexShape[0] += 1;
-		Shape2 center = div(complexShape, Shape2::value_type(2));
+		Shape2 center = div(kernelShape, Shape2::value_type(2));
+		center[0] = 0;
 
-		CArray2 kernel(complexShape);
+		CArray2 kernel(kernelShape);
 
-		shouldEqual(fftwFourierKernelSubarray(kernel).shape(), kernelShape);
-
-		for(int y=0; y<complexShape[1]; ++y)
+		for(int y=0; y<kernelShape[1]; ++y)
 		{
-			for(int x=0; x<complexShape[0]; ++x)
+			for(int x=0; x<kernelShape[0]; ++x)
 			{
-				double xx = 2.0 * M_PI * (x - center[0]) / complexShape[0];
-				double yy = 2.0 * M_PI * (y - center[1]) / complexShape[1];
+				double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
+				double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
 				double r2 = sq(xx) + sq(yy);
 				kernel(x,y) = std::exp(-0.5 * sq(scale) * r2);
 			}
 		}
-		moveDCToUpperLeft(kernel);
-		convolveFFT(in, fftwFourierKernelSubarray(kernel), out);
+		convolveFFT(in, kernel, out);
 
 		shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
 			                         ref.data(), 1e-2);
@@ -544,19 +540,18 @@ struct MultiFFTTest
 		separableConvolveX(srcImageRange(in), destImage(tmp), kernel1d(grad));
 		separableConvolveY(srcImageRange(tmp), destImage(ref), kernel1d(gauss));
 
-		CArray2 kernel2(complexShape);
-		for(int y=0; y<complexShape[1]; ++y)
+		CArray2 kernel2(kernelShape);
+		for(int y=0; y<kernelShape[1]; ++y)
 		{
-			for(int x=0; x<complexShape[0]; ++x)
+			for(int x=0; x<kernelShape[0]; ++x)
 			{
-				double xx = 2.0 * M_PI * (x - center[0]) / complexShape[0];
-				double yy = 2.0 * M_PI * (y - center[1]) / complexShape[1];
+				double xx = 2.0 * M_PI * (x - center[0]) / paddedShape[0];
+				double yy = 2.0 * M_PI * (y - center[1]) / paddedShape[1];
 				double r2 = sq(xx) + sq(yy);
 				kernel2(x,y) = C(0, xx*std::exp(-0.5 * sq(scale) * r2));
 			}
 		}
-		moveDCToUpperLeft(kernel2);
-		convolveFFT(in, fftwFourierKernelSubarray(kernel2), out2);
+		convolveFFT(in, kernel2, out2);
 
 		ref -= out2;
 
@@ -568,8 +563,7 @@ struct MultiFFTTest
 		should(std::max(minmax.max, -minmax.min) < 0.2);
 		should(average.average() < 0.001);
 
-		MultiArrayView<2, C> kernels[] = { fftwFourierKernelSubarray(kernel), 
-			                               fftwFourierKernelSubarray(kernel2) };
+		MultiArrayView<2, C> kernels[] = { kernel, kernel2 };
 		MultiArrayView<2, R> outs[] = { out3, out4 };
 		convolveFFTMany(in, kernels, kernels+2, outs);
 
