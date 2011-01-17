@@ -1426,7 +1426,7 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView<N, T, C> const & rhs)
     if(this == &rhs)
         return *this;
     vigra_precondition(this->shape() == rhs.shape() || m_ptr == 0,
-        "MultiArrayView::operator=(MultiArrayView const &) size mismatch - use MultiArrayView::reset().");
+        "MultiArrayView::operator=(MultiArrayView const &) size mismatch.");
     if(m_ptr == 0)
     {
         m_shape  = rhs.m_shape;
