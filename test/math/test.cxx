@@ -361,16 +361,16 @@ struct FunctionsTest
             shouldEqual(vigra::log2i((1 << k) - 1), k-1);
         }
 
-		should(vigra::even(0));
-		should(!vigra::odd(0));
-		should(!vigra::even(1));
-		should(vigra::odd(1));
-		should(vigra::even(2));
-		should(!vigra::odd(2));
-		should(!vigra::even(-1));
-		should(vigra::odd(-1));
-		should(vigra::even(-2));
-		should(!vigra::odd(-2));
+        should(vigra::even(0));
+        should(!vigra::odd(0));
+        should(!vigra::even(1));
+        should(vigra::odd(1));
+        should(vigra::even(2));
+        should(!vigra::odd(2));
+        should(!vigra::even(-1));
+        should(vigra::odd(-1));
+        should(vigra::even(-2));
+        should(!vigra::odd(-2));
     }
 
 
@@ -394,121 +394,121 @@ struct FunctionsTest
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(2, 2.0, 2.0), 0.34574583872316456, 1e-1);
         shouldEqualTolerance(vigra::noncentralChi2CDFApprox(3, 2.0, 2.0), 0.22073308707450343, 1e-1);
 
-		for(double x = -4.0; x <= 4.0; x += 1.0)
-		{
-			shouldEqual(vigra::sin_pi(x), 0.0);
-			shouldEqual(vigra::cos_pi(x+0.5), 0.0);
-		}
-		
-		for(double x = -4.5; x <= 4.5; x += 2.0)
-		{
-			shouldEqual(vigra::sin_pi(x), -1.0);
-			shouldEqual(vigra::cos_pi(x+0.5), 1.0);
-		}
-		
-		for(double x = -3.5; x <= 4.5; x += 2.0)
-		{
-			shouldEqual(vigra::sin_pi(x), 1.0);
-			shouldEqual(vigra::cos_pi(x+0.5), -1.0);
-		}
-		
-		for(double x = -4.0; x <= 4.0; x += 0.0625)
-		{
-			shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI*x), 1e-14);
-			shouldEqualTolerance(vigra::cos_pi(x), std::cos(M_PI*x), 1e-14);
-		}
+        for(double x = -4.0; x <= 4.0; x += 1.0)
+        {
+            shouldEqual(vigra::sin_pi(x), 0.0);
+            shouldEqual(vigra::cos_pi(x+0.5), 0.0);
+        }
+        
+        for(double x = -4.5; x <= 4.5; x += 2.0)
+        {
+            shouldEqual(vigra::sin_pi(x), -1.0);
+            shouldEqual(vigra::cos_pi(x+0.5), 1.0);
+        }
+        
+        for(double x = -3.5; x <= 4.5; x += 2.0)
+        {
+            shouldEqual(vigra::sin_pi(x), 1.0);
+            shouldEqual(vigra::cos_pi(x+0.5), -1.0);
+        }
+        
+        for(double x = -4.0; x <= 4.0; x += 0.0625)
+        {
+            shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI*x), 1e-14);
+            shouldEqualTolerance(vigra::cos_pi(x), std::cos(M_PI*x), 1e-14);
+        }
 
-		shouldEqual(vigra::gamma(4.0), 6.0);
-		shouldEqualTolerance(vigra::gamma(0.1), 9.5135076986687306, 1e-15);
-		shouldEqualTolerance(vigra::gamma(3.2), 2.4239654799353683, 1e-15);
-		shouldEqualTolerance(vigra::gamma(170.2), 1.1918411166366696e+305, 1e-15);
-		shouldEqualTolerance(vigra::gamma(-0.1), -10.686287021193193, 1e-14);
-		shouldEqualTolerance(vigra::gamma(-3.2), 0.689056412005979, 1e-14);
-		shouldEqualTolerance(vigra::gamma(-170.2), -2.6348340538196879e-307, 1e-14);
-		try { vigra::gamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
-		try { vigra::gamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+        shouldEqual(vigra::gamma(4.0), 6.0);
+        shouldEqualTolerance(vigra::gamma(0.1), 9.5135076986687306, 1e-15);
+        shouldEqualTolerance(vigra::gamma(3.2), 2.4239654799353683, 1e-15);
+        shouldEqualTolerance(vigra::gamma(170.2), 1.1918411166366696e+305, 1e-15);
+        shouldEqualTolerance(vigra::gamma(-0.1), -10.686287021193193, 1e-14);
+        shouldEqualTolerance(vigra::gamma(-3.2), 0.689056412005979, 1e-14);
+        shouldEqualTolerance(vigra::gamma(-170.2), -2.6348340538196879e-307, 1e-14);
+        try { vigra::gamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+        try { vigra::gamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
 
-		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
-		for(int i=0; i<5; ++i)
-		{
-			double x = args[i], x2 = x*x;
-			shouldEqualTolerance(vigra::legendre(0, x), 1.0, 1e-15);
-			shouldEqualTolerance(vigra::legendre(1, x), x, 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, x), 0.5*(3.0*x2-1.0), 1e-15);
-			shouldEqualTolerance(vigra::legendre(3, x), 0.5*x*(5.0*x2-3.0), 1e-15);
+        double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
+        for(int i=0; i<5; ++i)
+        {
+            double x = args[i], x2 = x*x;
+            shouldEqualTolerance(vigra::legendre(0, x), 1.0, 1e-15);
+            shouldEqualTolerance(vigra::legendre(1, x), x, 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, x), 0.5*(3.0*x2-1.0), 1e-15);
+            shouldEqualTolerance(vigra::legendre(3, x), 0.5*x*(5.0*x2-3.0), 1e-15);
 
-			shouldEqualTolerance(vigra::legendre(0, 0, x), 1.0, 1e-15);
-			shouldEqualTolerance(vigra::legendre(1, 0, x), x, 1e-15);
-			shouldEqualTolerance(vigra::legendre(1, 1, x), -std::sqrt(1.0-x2), 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, 0, x), 0.5*(3.0*x2-1.0), 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, 1, x), -3.0*x*std::sqrt(1.0-x2), 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, 2, x), 3.0*(1.0-x2), 1e-15);
-			shouldEqualTolerance(vigra::legendre(4, 2, x), 7.5*(7.0*x2-1.0)*(1.0-x2), 1e-15);
-			shouldEqualTolerance(vigra::legendre(1, -1, x), -vigra::legendre(1, 1, x) / 2.0, 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, -1, x), -vigra::legendre(2, 1, x) / 6.0, 1e-15);
-			shouldEqualTolerance(vigra::legendre(2, -2, x), vigra::legendre(2, 2, x) / 24.0, 1e-15);
-		}
-	}
+            shouldEqualTolerance(vigra::legendre(0, 0, x), 1.0, 1e-15);
+            shouldEqualTolerance(vigra::legendre(1, 0, x), x, 1e-15);
+            shouldEqualTolerance(vigra::legendre(1, 1, x), -std::sqrt(1.0-x2), 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, 0, x), 0.5*(3.0*x2-1.0), 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, 1, x), -3.0*x*std::sqrt(1.0-x2), 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, 2, x), 3.0*(1.0-x2), 1e-15);
+            shouldEqualTolerance(vigra::legendre(4, 2, x), 7.5*(7.0*x2-1.0)*(1.0-x2), 1e-15);
+            shouldEqualTolerance(vigra::legendre(1, -1, x), -vigra::legendre(1, 1, x) / 2.0, 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, -1, x), -vigra::legendre(2, 1, x) / 6.0, 1e-15);
+            shouldEqualTolerance(vigra::legendre(2, -2, x), vigra::legendre(2, 2, x) / 24.0, 1e-15);
+        }
+    }
 
-	void testBessel()
-	{
-		// Reference values computed to 16 digits with Python.mpmath. 
-		// Casual comparison showed no difference to Mathematica's results.
-		double x[] = { 1.0, 4.0, 6.0 };
-		double besseljnref[] = {
-			7.6519768655796649e-01, -3.9714980986384740e-01, 1.5064525725099692e-01, 
-			5.7672480775687329e-01, -3.2757913759146523e-01, -4.6828234823458334e-03, 
-			4.8609126058589103e-01, -2.4287320996018547e-01, -1.1299172042407525e-01, 
-			4.3017147387562193e-01, -1.6755558799533424e-01, -1.8093519033665686e-01, 
-			3.9123236045864818e-01, -1.0535743487538894e-01, -2.1960268610200856e-01, 
-			3.6208707488717234e-01, -5.5038855669513713e-02, -2.3828585178317879e-01, 
-			3.3919660498317961e-01, -1.4458842084785106e-02, -2.4372476722886663e-01, 
-			3.2058907797982628e-01, 1.8376032647858614e-02, -2.4057094958616052e-01, 
-			3.0506707225300012e-01, 4.5095329080457235e-02, -2.3197310306707983e-01, 
-			2.9185568526512001e-01, 6.6976198673670620e-02, -2.2004622511384700e-01, 
-			2.8042823052537585e-01, 8.5006705446061023e-02, -2.0620569442259729e-01, 
-			2.7041248255096445e-01, 9.9950477050301592e-02, -1.9139539469541733e-01, 
-			2.6153687541034509e-01, 1.1240023492610679e-01, -1.7624117645477547e-01, 
-			2.5359797330294920e-01, 1.2281915265293869e-01, -1.6115376768165826e-01, 
-			2.4643993656993257e-01, 1.3157198580936999e-01, -1.4639794400255970e-01	
-		};
-		double besselynref[] = {
-			8.8256964215676956e-02, -1.6940739325064992e-02, -2.8819468398157916e-01, 
-			-1.0703243154093754e-01, 1.4786314339122683e-01, -3.0266723702418485e-01, 
-			-1.6040039348492374e-01, 2.2985790254811306e-01, -2.6303660482037811e-01, 
-			-1.8202211595348500e-01, 2.6808060304231507e-01, -2.0509487811877961e-01, 
-			-1.9214228737369318e-01, 2.8294322431117191e-01, -1.4494951186809379e-01, 
-			-1.9706088806443733e-01, 2.8511777841103764e-01, -8.9252841434580163e-02, 
-			-1.9930679029227036e-01, 2.8035255955745608e-01, -4.0297251103395833e-02, 
-			-2.0006390460040860e-01, 2.7184139484930947e-01, 1.5698795407253514e-03, 
-			-1.9994686666043449e-01, 2.6140472921203017e-01, 3.6815736940746704e-02, 
-			-1.9929926580524435e-01, 2.5009898312668521e-01, 6.6197858895869655e-02, 
-			-1.9832403085028555e-01, 2.3854272714494473e-01, 9.0526604143921052e-02, 
-			-1.9714613354518651e-01, 2.2709735924007149e-01, 1.1056356972736049e-01, 
-			-1.9584504763522584e-01, 2.1597027298252575e-01, 1.2698414345087472e-01, 
-			-1.9447256680104227e-01, 2.0527533641239212e-01, 1.4036965442780550e-01, 
-			-1.9306306446008192e-01, 1.9506914688206353e-01, 1.5121244335755843e-01		
-		};
+    void testBessel()
+    {
+        // Reference values computed to 16 digits with Python.mpmath. 
+        // Casual comparison showed no difference to Mathematica's results.
+        double x[] = { 1.0, 4.0, 6.0 };
+        double besseljnref[] = {
+            7.6519768655796649e-01, -3.9714980986384740e-01, 1.5064525725099692e-01, 
+            5.7672480775687329e-01, -3.2757913759146523e-01, -4.6828234823458334e-03, 
+            4.8609126058589103e-01, -2.4287320996018547e-01, -1.1299172042407525e-01, 
+            4.3017147387562193e-01, -1.6755558799533424e-01, -1.8093519033665686e-01, 
+            3.9123236045864818e-01, -1.0535743487538894e-01, -2.1960268610200856e-01, 
+            3.6208707488717234e-01, -5.5038855669513713e-02, -2.3828585178317879e-01, 
+            3.3919660498317961e-01, -1.4458842084785106e-02, -2.4372476722886663e-01, 
+            3.2058907797982628e-01, 1.8376032647858614e-02, -2.4057094958616052e-01, 
+            3.0506707225300012e-01, 4.5095329080457235e-02, -2.3197310306707983e-01, 
+            2.9185568526512001e-01, 6.6976198673670620e-02, -2.2004622511384700e-01, 
+            2.8042823052537585e-01, 8.5006705446061023e-02, -2.0620569442259729e-01, 
+            2.7041248255096445e-01, 9.9950477050301592e-02, -1.9139539469541733e-01, 
+            2.6153687541034509e-01, 1.1240023492610679e-01, -1.7624117645477547e-01, 
+            2.5359797330294920e-01, 1.2281915265293869e-01, -1.6115376768165826e-01, 
+            2.4643993656993257e-01, 1.3157198580936999e-01, -1.4639794400255970e-01    
+        };
+        double besselynref[] = {
+            8.8256964215676956e-02, -1.6940739325064992e-02, -2.8819468398157916e-01, 
+            -1.0703243154093754e-01, 1.4786314339122683e-01, -3.0266723702418485e-01, 
+            -1.6040039348492374e-01, 2.2985790254811306e-01, -2.6303660482037811e-01, 
+            -1.8202211595348500e-01, 2.6808060304231507e-01, -2.0509487811877961e-01, 
+            -1.9214228737369318e-01, 2.8294322431117191e-01, -1.4494951186809379e-01, 
+            -1.9706088806443733e-01, 2.8511777841103764e-01, -8.9252841434580163e-02, 
+            -1.9930679029227036e-01, 2.8035255955745608e-01, -4.0297251103395833e-02, 
+            -2.0006390460040860e-01, 2.7184139484930947e-01, 1.5698795407253514e-03, 
+            -1.9994686666043449e-01, 2.6140472921203017e-01, 3.6815736940746704e-02, 
+            -1.9929926580524435e-01, 2.5009898312668521e-01, 6.6197858895869655e-02, 
+            -1.9832403085028555e-01, 2.3854272714494473e-01, 9.0526604143921052e-02, 
+            -1.9714613354518651e-01, 2.2709735924007149e-01, 1.1056356972736049e-01, 
+            -1.9584504763522584e-01, 2.1597027298252575e-01, 1.2698414345087472e-01, 
+            -1.9447256680104227e-01, 2.0527533641239212e-01, 1.4036965442780550e-01, 
+            -1.9306306446008192e-01, 1.9506914688206353e-01, 1.5121244335755843e-01        
+        };
 
-		for(int n = 0; n < 15; ++n)
-		{
-			if(n == 0)
-				shouldEqual(vigra::besselJ(n, 0.0), 1.0);
-			else
-				shouldEqual(vigra::besselJ(n, 0.0), 0.0);
-			should(vigra::besselY(n, 0.0) == -std::numeric_limits<double>::infinity());
+        for(int n = 0; n < 15; ++n)
+        {
+            if(n == 0)
+                shouldEqual(vigra::besselJ(n, 0.0), 1.0);
+            else
+                shouldEqual(vigra::besselJ(n, 0.0), 0.0);
+            should(vigra::besselY(n, 0.0) == -std::numeric_limits<double>::infinity());
 
-			for(int k=0; k<3; ++k)
-			{
-				double f = vigra::odd(n) ? -1.0 : 1.0;
-				double eps = 1e-14;
-				shouldEqualTolerance(vigra::besselJ(n, x[k]+n) - besseljnref[k+3*n], 0.0, eps);
-				shouldEqualTolerance(vigra::besselJ(-n, x[k]+n) - f*besseljnref[k+3*n], 0.0, eps);
-				shouldEqualTolerance(vigra::besselY(n, x[k]+n) - besselynref[k+3*n], 0.0, eps);
-				shouldEqualTolerance(vigra::besselY(-n, x[k]+n) - f*besselynref[k+3*n], 0.0, eps);
-			}
-		}
-	}
+            for(int k=0; k<3; ++k)
+            {
+                double f = vigra::odd(n) ? -1.0 : 1.0;
+                double eps = 1e-14;
+                shouldEqualTolerance(vigra::besselJ(n, x[k]+n) - besseljnref[k+3*n], 0.0, eps);
+                shouldEqualTolerance(vigra::besselJ(-n, x[k]+n) - f*besseljnref[k+3*n], 0.0, eps);
+                shouldEqualTolerance(vigra::besselY(n, x[k]+n) - besselynref[k+3*n], 0.0, eps);
+                shouldEqualTolerance(vigra::besselY(-n, x[k]+n) - f*besselynref[k+3*n], 0.0, eps);
+            }
+        }
+    }
 
     void closeAtToleranceTest()
     {
@@ -548,20 +548,20 @@ struct FunctionsTest
 
     void testClebschGordan()
     {
-		using vigra::clebschGordan;
+        using vigra::clebschGordan;
 
-		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, 0.5, 1.0, 1.0), std::sqrt(1.0), 1e-15);
-		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 0.0, 0.0), std::sqrt(0.5), 1e-15);
-		shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 0.0, 0.0), -std::sqrt(0.5), 1e-15);
+        shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, 0.5, 1.0, 1.0), std::sqrt(1.0), 1e-15);
+        shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+        shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 1.0, 0.0), std::sqrt(0.5), 1e-15);
+        shouldEqualTolerance(clebschGordan(0.5, 0.5, 0.5, -0.5, 0.0, 0.0), std::sqrt(0.5), 1e-15);
+        shouldEqualTolerance(clebschGordan(0.5, -0.5, 0.5, 0.5, 0.0, 0.0), -std::sqrt(0.5), 1e-15);
 
-		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, 0.5, 2.5, 2.5), std::sqrt(1.0), 1e-15);
-		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 2.5, 1.5), std::sqrt(0.2), 1e-15);
-		shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 2.5, 1.5), std::sqrt(0.8), 1e-15);
-		shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 1.5, 1.5), std::sqrt(0.8), 1e-15);
-		shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 1.5, 1.5), -std::sqrt(0.2), 1e-15);
-	}
+        shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, 0.5, 2.5, 2.5), std::sqrt(1.0), 1e-15);
+        shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 2.5, 1.5), std::sqrt(0.2), 1e-15);
+        shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 2.5, 1.5), std::sqrt(0.8), 1e-15);
+        shouldEqualTolerance(clebschGordan(2.0, 2.0, 0.5, -0.5, 1.5, 1.5), std::sqrt(0.8), 1e-15);
+        shouldEqualTolerance(clebschGordan(2.0, 1.0, 0.5, 0.5, 1.5, 1.5), -std::sqrt(0.2), 1e-15);
+    }
 };
 
 struct RationalTest
@@ -848,89 +848,89 @@ struct RationalTest
 struct QuaternionTest
 {
     typedef vigra::Quaternion<double> Q;
-	typedef Q::Vector V;
+    typedef Q::Vector V;
 
     void testContents()
     {
         Q q(1.0, 2.0, 3.0, 4.0), q0, q1(-1.0), q2(q), q3(q.w(), q.v());
 
-		shouldEqual(q.w(), 1.0);
-		shouldEqual(q.v(), V(2.0, 3.0, 4.0));
-		shouldEqual(q0.w(), 0.0);
-		shouldEqual(q0.v(), V(0.0, 0.0, 0.0));
-		shouldEqual(q1.w(), -1.0);
-		shouldEqual(q1.v(), V(0.0, 0.0, 0.0));
-		shouldEqual(q2.w(), 1.0);
-		shouldEqual(q2.v(), V(2.0, 3.0, 4.0));
-		shouldEqual(q3.w(), 1.0);
-		shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
+        shouldEqual(q.w(), 1.0);
+        shouldEqual(q.v(), V(2.0, 3.0, 4.0));
+        shouldEqual(q0.w(), 0.0);
+        shouldEqual(q0.v(), V(0.0, 0.0, 0.0));
+        shouldEqual(q1.w(), -1.0);
+        shouldEqual(q1.v(), V(0.0, 0.0, 0.0));
+        shouldEqual(q2.w(), 1.0);
+        shouldEqual(q2.v(), V(2.0, 3.0, 4.0));
+        shouldEqual(q3.w(), 1.0);
+        shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
 
-		shouldEqual(q[0], 1.0);
-		shouldEqual(q[1], 2.0);
-		shouldEqual(q[2], 3.0);
-		shouldEqual(q[3], 4.0);
-		shouldEqual(q.x(), 2.0);
-		shouldEqual(q.y(), 3.0);
-		shouldEqual(q.z(), 4.0);
+        shouldEqual(q[0], 1.0);
+        shouldEqual(q[1], 2.0);
+        shouldEqual(q[2], 3.0);
+        shouldEqual(q[3], 4.0);
+        shouldEqual(q.x(), 2.0);
+        shouldEqual(q.y(), 3.0);
+        shouldEqual(q.z(), 4.0);
 
-		should(q == q2);
-		should(q1 != q2);
+        should(q == q2);
+        should(q1 != q2);
 
-		q2 = q1;
-		shouldEqual(q2.w(), -1.0);
-		shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
+        q2 = q1;
+        shouldEqual(q2.w(), -1.0);
+        shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
 
-		should(q != q2);
-		should(q1 == q2);
+        should(q != q2);
+        should(q1 == q2);
 
-		q3 = 10.0;
-		shouldEqual(q3.w(), 10.0);
-		shouldEqual(q3.v(), V(0.0, 0.0, 0.0));
+        q3 = 10.0;
+        shouldEqual(q3.w(), 10.0);
+        shouldEqual(q3.v(), V(0.0, 0.0, 0.0));
 
-		q2.setW(-2.0);
-		shouldEqual(q2.w(), -2.0);
-		shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
+        q2.setW(-2.0);
+        shouldEqual(q2.w(), -2.0);
+        shouldEqual(q2.v(), V(0.0, 0.0, 0.0));
 
-		q2.setV(V(5.0, 6.0, 7.0));
-		shouldEqual(q2.w(), -2.0);
-		shouldEqual(q2.v(), V(5.0, 6.0, 7.0));
+        q2.setV(V(5.0, 6.0, 7.0));
+        shouldEqual(q2.w(), -2.0);
+        shouldEqual(q2.v(), V(5.0, 6.0, 7.0));
 
-		q3.setV(5.0, 6.0, 7.0);
-		shouldEqual(q3.w(), 10.0);
-		shouldEqual(q3.v(), V(5.0, 6.0, 7.0));
+        q3.setV(5.0, 6.0, 7.0);
+        shouldEqual(q3.w(), 10.0);
+        shouldEqual(q3.v(), V(5.0, 6.0, 7.0));
 
-		q3.setX(2.0);
-		q3.setY(3.0);
-		q3.setZ(4.0);
-		shouldEqual(q3.w(), 10.0);
-		shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
+        q3.setX(2.0);
+        q3.setY(3.0);
+        q3.setZ(4.0);
+        shouldEqual(q3.w(), 10.0);
+        shouldEqual(q3.v(), V(2.0, 3.0, 4.0));
 
-		shouldEqual(q.squaredMagnitude(), 30.0);
-		shouldEqual(squaredNorm(q), 30.0);
-		shouldEqualTolerance(q.magnitude(), std::sqrt(30.0), 1e-15);
-		shouldEqualTolerance(norm(q), std::sqrt(30.0), 1e-15);
-		shouldEqual(norm(q), abs(q));
-	}
+        shouldEqual(q.squaredMagnitude(), 30.0);
+        shouldEqual(squaredNorm(q), 30.0);
+        shouldEqualTolerance(q.magnitude(), std::sqrt(30.0), 1e-15);
+        shouldEqualTolerance(norm(q), std::sqrt(30.0), 1e-15);
+        shouldEqual(norm(q), abs(q));
+    }
 
     void testStreamIO()
     {
         std::ostringstream out;
-		Q q(1.0, 2.0, 3.0, 4.0);
+        Q q(1.0, 2.0, 3.0, 4.0);
 
         out << q;
         shouldEqual(out.str(), "1 2 3 4");
 
         std::istringstream in;
-		in.str("10 11 12 13");
-		in >> q;
-		shouldEqual(q, Q(10.0, 11.0, 12.0, 13.0));
-	}
+        in.str("10 11 12 13");
+        in >> q;
+        shouldEqual(q, Q(10.0, 11.0, 12.0, 13.0));
+    }
 
     void testOperators()
     {
-		Q q(1.0, 2.0, 3.0, 4.0);
+        Q q(1.0, 2.0, 3.0, 4.0);
 
-		shouldEqual(+q, q);
+        shouldEqual(+q, q);
         shouldEqual(-q, Q(-1,-2,-3,-4));
 
         shouldEqual(q+q, Q(2,4,6,8));
@@ -941,54 +941,54 @@ struct QuaternionTest
         shouldEqual(q-2.0, Q(-1,2,3,4));
         shouldEqual(2.0-q, Q(1,-2,-3,-4));
 
-		shouldEqual(Q(1,0,0,0)*Q(1,0,0,0), Q(1,0,0,0));
-		shouldEqual(Q(0,1,0,0)*Q(0,1,0,0), Q(-1,0,0,0));
-		shouldEqual(Q(0,0,1,0)*Q(0,0,1,0), Q(-1,0,0,0));
-		shouldEqual(Q(0,0,0,1)*Q(0,0,0,1), Q(-1,0,0,0));
+        shouldEqual(Q(1,0,0,0)*Q(1,0,0,0), Q(1,0,0,0));
+        shouldEqual(Q(0,1,0,0)*Q(0,1,0,0), Q(-1,0,0,0));
+        shouldEqual(Q(0,0,1,0)*Q(0,0,1,0), Q(-1,0,0,0));
+        shouldEqual(Q(0,0,0,1)*Q(0,0,0,1), Q(-1,0,0,0));
 
-		shouldEqual(Q(0,1,0,0)*Q(0,0,1,0), Q(0,0,0,1));
-		shouldEqual(Q(0,0,1,0)*Q(0,1,0,0), Q(0,0,0,-1));
-		shouldEqual(Q(0,0,1,0)*Q(0,0,0,1), Q(0,1,0,0));
-		shouldEqual(Q(0,0,0,1)*Q(0,0,1,0), Q(0,-1,0,0));
-		shouldEqual(Q(0,0,0,1)*Q(0,1,0,0), Q(0,0,1,0));
-		shouldEqual(Q(0,1,0,0)*Q(0,0,0,1), Q(0,0,-1,0));
+        shouldEqual(Q(0,1,0,0)*Q(0,0,1,0), Q(0,0,0,1));
+        shouldEqual(Q(0,0,1,0)*Q(0,1,0,0), Q(0,0,0,-1));
+        shouldEqual(Q(0,0,1,0)*Q(0,0,0,1), Q(0,1,0,0));
+        shouldEqual(Q(0,0,0,1)*Q(0,0,1,0), Q(0,-1,0,0));
+        shouldEqual(Q(0,0,0,1)*Q(0,1,0,0), Q(0,0,1,0));
+        shouldEqual(Q(0,1,0,0)*Q(0,0,0,1), Q(0,0,-1,0));
 
         shouldEqual(q*q, Q(-28,4,6,8));
-		shouldEqual(q*2.0, Q(2,4,6,8));
+        shouldEqual(q*2.0, Q(2,4,6,8));
         shouldEqual(2.0*q, Q(2,4,6,8));
 
         shouldEqual(q/q, Q(1,0,0,0));
-		shouldEqual(Q(2,4,6,8)/2.0, q);
+        shouldEqual(Q(2,4,6,8)/2.0, q);
         shouldEqual(60.0/q, Q(2,-4,-6,-8));
 
-		shouldEqualTolerance(norm(q / norm(q)), 1.0, 1e-15);
-	}
+        shouldEqualTolerance(norm(q / norm(q)), 1.0, 1e-15);
+    }
 
     void testRotation()
     {
-		Q q(1.0, 2.0, 3.0, 4.0);
-		q /= norm(q);
+        Q q(1.0, 2.0, 3.0, 4.0);
+        q /= norm(q);
 
-		double ref[3][3] = {{-2.0/3.0,  0.4/3.0, 2.2/3.0 }, 
-		                    { 2.0/3.0, -1.0/3.0, 2.0/3.0 },
-		                    { 1.0/3.0,  2.8/3.0, 0.4/3.0 } };
+        double ref[3][3] = {{-2.0/3.0,  0.4/3.0, 2.2/3.0 }, 
+                            { 2.0/3.0, -1.0/3.0, 2.0/3.0 },
+                            { 1.0/3.0,  2.8/3.0, 0.4/3.0 } };
 
-		vigra::Matrix<double> m(3,3), mref(3,3, (double*)ref);
-		q.fillRotationMatrix(m);
-		shouldEqualSequenceTolerance(m.begin(), m.end(), mref.begin(), 1e-15);
+        vigra::Matrix<double> m(3,3), mref(3,3, (double*)ref);
+        q.fillRotationMatrix(m);
+        shouldEqualSequenceTolerance(m.begin(), m.end(), mref.begin(), 1e-15);
 
-		double res[3][3];
-		q.fillRotationMatrix(res);
-		shouldEqualSequenceTolerance((double*)res, (double*)res+9, (double*)ref, 1e-15);
+        double res[3][3];
+        q.fillRotationMatrix(res);
+        shouldEqualSequenceTolerance((double*)res, (double*)res+9, (double*)ref, 1e-15);
 
-		Q q1 = Q::createRotation(M_PI/2.0, V(1,0,0));
-		Q q2 = Q::createRotation(M_PI/2.0, V(0,1,0));
-		Q q3 = Q::createRotation(M_PI/2.0, V(0,0,1));
-		Q q4 = q3*(-q1)*q2*q1;
+        Q q1 = Q::createRotation(M_PI/2.0, V(1,0,0));
+        Q q2 = Q::createRotation(M_PI/2.0, V(0,1,0));
+        Q q3 = Q::createRotation(M_PI/2.0, V(0,0,1));
+        Q q4 = q3*(-q1)*q2*q1;
 
-		shouldEqualTolerance(norm(q4), 1.0, 1e-15);
-		shouldEqualTolerance(q4[0], 0.0, 1e-15);
-	}
+        shouldEqualTolerance(norm(q4), 1.0, 1e-15);
+        shouldEqualTolerance(q4[0], 0.0, 1e-15);
+    }
 };
 
 struct FixedPointTest
@@ -2501,7 +2501,7 @@ struct RandomTest
 
 struct PolygonTest
 {
-	typedef vigra::TinyVector<double, 2> Point;
+    typedef vigra::TinyVector<double, 2> Point;
     
     void testConvexHull()
     {
@@ -2527,9 +2527,9 @@ struct PolygonTest
         shouldEqual(7, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
 
-		hull.clear();
+        hull.clear();
 
-		vigra::convexHull(reference, hull);
+        vigra::convexHull(reference, hull);
         
         shouldEqual(7, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
