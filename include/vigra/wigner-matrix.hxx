@@ -64,6 +64,7 @@ class WignerMatrix
 {   
   public:
   
+    // FIXME: should we rather use FFTWComplex?
     typedef std::complex<Real> Complex;
     typedef ArrayVector<ArrayVector<ArrayVector<Complex> > > NestedArray;
     
@@ -103,8 +104,8 @@ class WignerMatrix
     {
         if (l>0)
         {
-            std::string message = std::string("WignerMatrix::get_d(): index out of bounds: l=")
-                                  <<l<<" l_max="<<D.size()<<" m="<<m<<" n="<<n<<"\n";
+            std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
+            message << l << " l_max=" << D.size() << " m=" << m << " n=" << n << "\n";
                                   
             vigra_precondition(l < D.size() && m+l <= 2*l+1 &&
                                n+l <= 2*l+1 && m+l >= 0 && n+l >= 0,
@@ -123,8 +124,8 @@ class WignerMatrix
           */
     Matrix<Complex> const & get_D(int l) const
 	{
-        std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=")
-                              <<l<<" l_max="<<l_max<<"\n";
+        std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
+        message << l << " l_max=" << l_max << "\n";
                               
         vigra_precondition(l > 0 && l <= l_max, message.c_str());
 	    return D[l];
@@ -306,7 +307,7 @@ WignerMatrix<Real>::rotatePH(NestedArray const & PH, Real phi, Real theta, Real 
                 Complex tmp = 0;
                 for (int h=-l; h<=l; h++)
                 {
-                    tmp += get_d(l,h,m) * PH[n][l][h+l];
+                    tmp += get_D(l,h,m) * PH[n][l][h+l];
                 }
 
                 PHresult[n][l][m+l] = tmp;

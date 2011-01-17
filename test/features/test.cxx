@@ -45,6 +45,24 @@
 
 using namespace vigra;
 
+template <class Real>
+struct ComplexRealFunctor
+{
+    Real operator()(std::complex<Real> const & c) const
+    {
+        return c.real();
+    }
+};
+
+template <class Real>
+struct ComplexImagFunctor
+{
+    Real operator()(std::complex<Real> const & c) const
+    {
+        return c.imag();
+    }
+};
+
 struct InvariantFeaturesTest
 {
 
@@ -84,10 +102,17 @@ struct InvariantFeaturesTest
             shouldEqual(wigner.get_D(l).shape(), Shape(2*l+1, 2*l+1));
             
             M diff(2*l+1, 2*l+1);
-			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
-				                destMultiArray(diff), &std::real<float>);
-			diff -= ref[l];
             FindMinMax<float> minmax;
+
+			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+				                destMultiArray(diff), ComplexImagFunctor<float>());
+            inspectMultiArray(srcMultiArrayRange(diff), minmax);
+            shouldEqual(minmax.min, 0.0f);
+            shouldEqual(minmax.max, 0.0f);
+
+			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+				                destMultiArray(diff), ComplexRealFunctor<float>());
+			diff -= ref[l];
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);
@@ -101,12 +126,18 @@ struct InvariantFeaturesTest
             shouldEqual(wigner2.get_D(l).shape(), Shape(2*l+1, 2*l+1));
             
             M diff(2*l+1, 2*l+1);
+            FindMinMax<float> minmax;
+
+			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+				                destMultiArray(diff), ComplexImagFunctor<float>());
+            inspectMultiArray(srcMultiArrayRange(diff), minmax);
+            shouldEqual(minmax.min, 0.0f);
+            shouldEqual(minmax.max, 0.0f);
             
             // FIXME: transpose() shouldn't be necessary below
 			transformMultiArray(srcMultiArrayRange(transpose(wigner2.get_D(l))),
-				                destMultiArray(diff), &std::real<float>);
+				                destMultiArray(diff), ComplexRealFunctor<float>());
 			diff -= ref[l];
-            FindMinMax<float> minmax;
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);
