@@ -2174,7 +2174,7 @@ struct LinalgTest
 
     void testInverse()
     {
-        double epsilon = 1e-11;
+		double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -2200,6 +2200,25 @@ struct LinalgTest
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
+
+		// test pseudo-inverse
+		double data2[] = { 0.,  1.,  0.,  0.,  0.,
+                           0.,  0.,  1.,  0.,  2.,
+						   2.,  0.,  0.,  3.,  0. };
+		double refdata[] = {  0.0, 0.0, 0.15384615384615388,
+			                  1.0, 0.0, 0.0,
+							  0.0, 0.2, 0.0,
+							  0.0, 0.0, 0.23076923076923081,
+							  0.0, 0.4, 0.0 };
+			
+		Matrix m(3, 5, data2), piref(5, 3, refdata), pitref(transpose(piref));
+		Matrix pi = inverse(m);
+		shouldEqual(pi.shape(), Shape(5, 3));
+		shouldEqualSequenceTolerance(piref.data(), piref.data()+15, pi.data(), 1e-15);
+
+		Matrix pit = inverse(transpose(m));
+		shouldEqual(pit.shape(), Shape(3, 5));
+		shouldEqualSequenceTolerance(pitref.data(), pitref.data()+15, pit.data(), 1e-15);
     }
 
     void testSymmetricEigensystem()
@@ -2704,7 +2723,7 @@ struct MathTestSuite
         add( testCase(&RandomTest::testRandomFunctors));
 
         add( testCase(&PolygonTest::testConvexHull));
-    }
+	}
 };
 
 int main(int argc, char ** argv)
