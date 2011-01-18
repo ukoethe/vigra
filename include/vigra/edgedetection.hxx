@@ -1215,14 +1215,17 @@ class Edgel
 };
 
 template <class SrcIterator, class SrcAccessor, 
-          class MagnitudeImage, class BackInsertable>
+          class MagnitudeImage, class BackInsertable, class GradValue>
 void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
                              MagnitudeImage const & magnitude,
-                             BackInsertable & edgels)
+                             BackInsertable & edgels, GradValue grad_thresh)
 {
     typedef typename SrcAccessor::value_type PixelType;
     typedef typename PixelType::value_type ValueType;
 
+    vigra_precondition(grad_thresh >= NumericTraits<GradValue>::zero(),
+         "cannyFindEdgels(): gradient threshold must not be negative.");
+    
     double t = 0.5 / VIGRA_CSTD::sin(M_PI/8.0);
 
     ul += Diff2D(1,1);
@@ -1232,7 +1235,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
         for(int x=1; x<magnitude.width()-1; ++x, ++ix.x)
         {
             double mag = magnitude(x, y);
-            if(mag == 0.0)
+            if(mag <= grad_thresh)
                    continue;
             ValueType gradx = grad.getComponent(ix, 0);
             ValueType grady = grad.getComponent(ix, 1);
@@ -1398,7 +1401,7 @@ cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
     transformImage(srcIterRange(ul, lr, src), destImage(magnitude), norm(Arg1()));
 
     // find edgels
-    internalCannyFindEdgels(ul, src, magnitude, edgels);
+    internalCannyFindEdgels(ul, src, magnitude, edgels, NumericTraits<TmpType>::zero());
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1407,6 +1410,145 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                BackInsertable & edgels)
 {
     cannyEdgelList(src.first, src.second, src.third, edgels);
+}
+
+/********************************************************/
+/*                                                      */
+/*              cannyEdgelListThreshold                 */
+/*                                                      */
+/********************************************************/
+
+/** \brief Canny's edge detector with thresholding.
+    
+    This function works exactly like \ref cannyEdgelList(), but 
+    you also pass a threshold for the minimal gradient magnitude, 
+    so that edgels whose strength is below the threshold are not 
+    inserted into the edgel list.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void 
+        cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                                BackInsertable & edgels, GradValue grad_threshold);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void 
+        cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                                BackInsertable & edgels, double scale, GradValue grad_threshold);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void
+        cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                BackInsertable & edgels, GradValue grad_threshold);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void
+        cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                BackInsertable & edgels, double scale, GradValue grad_threshold);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    Namespace: vigra
+
+    \code
+    vigra::BImage src(w,h);
+
+    // empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8, only considering gradient above 2.0
+    vigra::cannyEdgelListThreshold(srcImageRange(src), edgels, 0.8, 2.0);
+    \endcode
+
+    <b> Required Interface:</b>
+
+    \code
+    SrcImageIterator src_upperleft;
+    SrcAccessor src_accessor;
+
+    src_accessor(src_upperleft);
+
+    BackInsertable edgels;
+    edgels.push_back(Edgel());
+    \endcode
+
+    SrcAccessor::value_type must be a type convertible to float
+
+    <b> Preconditions:</b>
+
+    \code
+    scale > 0
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void cannyEdgelListThreshold)
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+void 
+cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                        BackInsertable & edgels, double scale, GradValue grad_threshold)
+{
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
+    gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
+
+    cannyEdgelListThreshold(srcImageRange(grad), edgels, grad_threshold);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+inline void
+cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & edgels, double scale, GradValue grad_threshold)
+{
+    cannyEdgelListThreshold(src.first, src.second, src.third, edgels, scale, grad_threshold);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+void 
+cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                        BackInsertable & edgels, GradValue grad_threshold)
+{
+    using namespace functor;
+    
+    typedef typename SrcAccessor::value_type SrcType;
+    typedef typename NumericTraits<typename SrcType::value_type>::RealPromote TmpType;
+    BasicImage<TmpType> magnitude(lr-ul);
+    transformImage(srcIterRange(ul, lr, src), destImage(magnitude), norm(Arg1()));
+
+    // find edgels
+    internalCannyFindEdgels(ul, src, magnitude, edgels, grad_threshold);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+inline void
+cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & edgels, GradValue grad_threshold)
+{
+    cannyEdgelListThreshold(src.first, src.second, src.third, edgels, grad_threshold);
 }
 
 
@@ -1500,22 +1642,19 @@ void cannyEdgeImage(
 {
     std::vector<Edgel> edgels;
 
-    cannyEdgelList(sul, slr, sa, edgels, scale);
+    cannyEdgelListThreshold(sul, slr, sa, edgels, scale, gradient_threshold);
     
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
 
     for(unsigned int i=0; i<edgels.size(); ++i)
     {
-        if(gradient_threshold < edgels[i].strength)
-        {
-            Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
-            
-            if(pix.x < 0 || pix.x >= w || pix.y < 0 || pix.y >= h)
-                continue;
+        Diff2D pix((int)(edgels[i].x + 0.5), (int)(edgels[i].y + 0.5));
+        
+        if(pix.x < 0 || pix.x >= w || pix.y < 0 || pix.y >= h)
+            continue;
 
-            da.set(edge_marker, dul, pix);
-        }
+        da.set(edge_marker, dul, pix);
     }
 }
 
@@ -2017,14 +2156,18 @@ inline void cannyEdgeImageWithThinning(
 /********************************************************/
 
 template <class SrcIterator, class SrcAccessor, 
-          class MaskImage, class BackInsertable>
+          class MaskImage, class BackInsertable, class GradValue>
 void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
                                 MaskImage const & mask,
-                                BackInsertable & edgels)
+                                BackInsertable & edgels,
+                                GradValue grad_thresh)
 {
     typedef typename SrcAccessor::value_type PixelType;
     typedef typename PixelType::value_type ValueType;
 
+    vigra_precondition(grad_thresh >= NumericTraits<GradValue>::zero(),
+         "cannyFindEdgels3x3(): gradient threshold must not be negative.");
+    
     ul += Diff2D(1,1);
     for(int y=1; y<mask.height()-1; ++y, ++ul.y)
     {
@@ -2037,7 +2180,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
             ValueType gradx = grad.getComponent(ix, 0);
             ValueType grady = grad.getComponent(ix, 1);
             double mag = hypot(gradx, grady);
-            if(mag == 0.0)
+            if(mag <= grad_thresh)
                    continue;
             double c = gradx / mag,
                    s = grady / mag;
@@ -2198,12 +2341,14 @@ void
 cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                   BackInsertable & edgels)
 {
+    typedef typename NormTraits<typename SrcAccessor::value_type>::NormType NormType;
+    
     UInt8Image edges(lr-ul);
     cannyEdgeImageFromGradWithThinning(srcIterRange(ul, lr, src), destImage(edges),
                                        0.0, 1, false);
 
     // find edgels
-    internalCannyFindEdgels3x3(ul, src, edges, edgels);
+    internalCannyFindEdgels3x3(ul, src, edges, edgels, NumericTraits<NormType>::zero());
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -2212,6 +2357,142 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   BackInsertable & edgels)
 {
     cannyEdgelList3x3(src.first, src.second, src.third, edgels);
+}
+
+/********************************************************/
+/*                                                      */
+/*             cannyEdgelList3x3Threshold               */
+/*                                                      */
+/********************************************************/
+
+/** \brief Improved implementation of Canny's edge detector with thresholding.
+
+    This function works exactly like \ref cannyEdgelList3x3(), but 
+    you also pass a threshold for the minimal gradient magnitude, 
+    so that edgels whose strength is below the threshold are not 
+    inserted into the edgel list.
+
+    <b> Declarations:</b>
+
+    pass arguments explicitly:
+    \code
+    namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void 
+        cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                                   BackInsertable & edgels, GradValue grad_thresh);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void 
+        cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                                   BackInsertable & edgels, double scale, GradValue grad_thresh);
+    }
+    \endcode
+
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        // compute edgels from a gradient image
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void
+        cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                   BackInsertable & edgels, GradValue grad_thresh);
+
+        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        template <class SrcIterator, class SrcAccessor, 
+                  class BackInsertable, class GradValue>
+        void
+        cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                   BackInsertable & edgels, double scale, GradValue grad_thresh);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    Namespace: vigra
+
+    \code
+    vigra::BImage src(w,h);
+
+    // empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8
+    vigra::cannyEdgelList3x3(srcImageRange(src), edgels, 0.8);
+    \endcode
+
+    <b> Required Interface:</b>
+
+    \code
+    SrcImageIterator src_upperleft;
+    SrcAccessor src_accessor;
+
+    src_accessor(src_upperleft);
+
+    BackInsertable edgels;
+    edgels.push_back(Edgel());
+    \endcode
+
+    SrcAccessor::value_type must be a type convertible to float
+
+    <b> Preconditions:</b>
+
+    \code
+    scale > 0
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void cannyEdgelList3x3Threshold)
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+void 
+cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                           BackInsertable & edgels, double scale, GradValue grad_thresh)
+{
+    typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
+    BasicImage<TinyVector<TmpType, 2> > grad(lr-ul);
+    gaussianGradient(srcIterRange(ul, lr, src), destImage(grad), scale);
+
+    cannyEdgelList3x3Threshold(srcImageRange(grad), edgels, grad_thresh);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+inline void
+cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           BackInsertable & edgels, double scale, GradValue grad_thresh)
+{
+    cannyEdgelList3x3Threshold(src.first, src.second, src.third, edgels, scale, grad_thresh);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+void 
+cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
+                           BackInsertable & edgels, GradValue grad_thresh)
+{
+    UInt8Image edges(lr-ul);
+    cannyEdgeImageFromGradWithThinning(srcIterRange(ul, lr, src), destImage(edges),
+                                       0.0, 1, false);
+
+    // find edgels
+    internalCannyFindEdgels3x3(ul, src, edges, edgels, grad_thresh);
+}
+
+template <class SrcIterator, class SrcAccessor, 
+          class BackInsertable, class GradValue>
+inline void
+cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           BackInsertable & edgels, GradValue grad_thresh)
+{
+    cannyEdgelList3x3Threshold(src.first, src.second, src.third, edgels, grad_thresh);
 }
 
 //@}

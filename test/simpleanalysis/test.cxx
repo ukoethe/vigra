@@ -596,7 +596,21 @@ struct EdgeDetectionTest
             should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
         }
         should(count == 75);
-    }
+
+		std::vector<vigra::Edgel> edgelsThresh;
+		double threshold = 1.25;
+        cannyEdgelListThreshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
+        count = 0;
+        for(unsigned int i=0; i<edgels.size(); ++i)
+        {
+            if (edgels[i].strength <= threshold)
+                continue;  // ignore edgels below threshold
+            should(edgels[i].x == edgelsThresh[count].x);
+            should(edgels[i].y == edgelsThresh[count].y);
+            ++count;
+        }
+		should(count == 38);
+	}
 
     void cannyEdgelList3x3Test()
     {
@@ -612,6 +626,20 @@ struct EdgeDetectionTest
             should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
         }
         should(count == 38);
+
+		std::vector<vigra::Edgel> edgelsThresh;
+		double threshold = 1.3;
+        cannyEdgelList3x3Threshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
+        count = 0;
+        for(unsigned int i=0; i<edgels.size(); ++i)
+        {
+            if (edgels[i].strength <= threshold)
+                continue;  // ignore edgels below threshold
+            should(edgels[i].x == edgelsThresh[count].x);
+            should(edgels[i].y == edgelsThresh[count].y);
+            ++count;
+        }
+		should(count == 36);
     }
 
     void cannyEdgeImageTest()
