@@ -105,7 +105,6 @@ ADD_CUSTOM_TARGET(experiments)
 #
 ##################################################
 
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
