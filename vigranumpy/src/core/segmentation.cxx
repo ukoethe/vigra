@@ -303,9 +303,10 @@ pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
 
 /*************************************************************************/
 
+#if 0
 template < class PixelType >
 python::tuple 
-pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
+pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
                    int neighborhood = 4,
                    NumpyArray<2, Singleband<npy_uint32> > seeds = python::object(),
                    std::string method = "RegionGrowing", 
@@ -365,6 +366,76 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
            
         res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
         
+        if(neighborhood == 4)
+        {
+            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
+                                        FourNeighborCode());
+        }
+        else
+        {
+            maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
+                                        EightNeighborCode());
+        }
+    }
+    else
+    {
+        vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
+    }
+
+    return python::make_tuple(res, maxRegionLabel);
+}
+#endif
+
+template < class PixelType >
+python::tuple 
+pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
+                   int neighborhood = 4,
+                   NumpyArray<2, Singleband<npy_uint32> > seeds = python::object(),
+                   std::string method = "RegionGrowing", 
+                   SRGType srgType = CompleteGrow, 
+                   PixelType max_cost = 0.0, 
+                   NumpyArray<2, Singleband<npy_uint32> > res = python::object())
+{
+    vigra_precondition(neighborhood == 4 || neighborhood == 8,
+           "watersheds2D(): neighborhood must be 4 or 8.");
+
+    for(unsigned int k=0; k<method.size(); ++k)
+        method[k] = (std::string::value_type)tolower(method[k]);
+    if(method == "")
+        method = "regiongrowing";
+        
+    res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
+    
+    if(seeds.hasData())
+    {
+        vigra_precondition(method != "unionfind",
+           "watersheds(): UnionFind does not support seed images.");
+        res = seeds;
+    }
+    
+    npy_uint32 maxRegionLabel = 0;
+	if(method == "regiongrowing")
+    {
+        if(neighborhood == 4)
+        {
+            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                    FourNeighborCode(),
+                                    WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
+                                                      .seedOptions(SeedOptions().minima()));
+        }
+        else
+        {
+            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                    EightNeighborCode(),
+                                    WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
+                                                      .seedOptions(SeedOptions().minima()));
+        }
+    }
+    else if(method == "unionfind")
+    {
+        vigra_precondition(srgType == CompleteGrow,
+           "watersheds(): UnionFind only supports 'CompleteGrow' mode.");
+           
         if(neighborhood == 4)
         {
             maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
