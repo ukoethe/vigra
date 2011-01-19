@@ -702,7 +702,7 @@ class WatershedOptions
   public:
     double max_cost, bias;
     SRGType terminate;
-    unsigned int max_region_label, biased_label, bucket_count;
+    unsigned int biased_label, bucket_count;
     SeedOptions seed_options;
     
         /** \brief Create options object with default settings.
@@ -715,7 +715,6 @@ class WatershedOptions
     : max_cost(0.0),
       bias(1.0),
       terminate(CompleteGrow),
-      max_region_label(0),
       biased_label(0),
       bucket_count(0),
       seed_options(SeedOptions().unspecified())
@@ -746,6 +745,16 @@ class WatershedOptions
         return *this;
     }
     
+        /** \brief Set \ref SRGType explicitly.
+        
+            Default: CompleteGrow
+        */
+    WatershedOptions & srgType(SRGType type)
+    {
+        terminate = type;
+        return *this;
+    }
+    
         /** \brief Stop region grwoing when the boundaryness exceeds the threshold.
         
             This option may be combined with completeGrow() and keepContours().
@@ -756,22 +765,6 @@ class WatershedOptions
     {
         terminate = SRGType(terminate | StopAtThreshold);
         max_cost = threshold;
-        return *this;
-    }
-    
-        /** \brief Specify highest label of the seeds.
-        
-            This option is useful when the destination image already contains
-            seeds. Without this options, the destination image has to be scanned 
-            to find the highest label, resulting in a small performance overhead.
-
-            Note that this option is ignored when seedOptions() are specified.
-        
-            Default: highest label is unknown
-        */
-    WatershedOptions & maxRegionLabel(unsigned int label)
-    {
-        max_region_label = label;
         return *this;
     }
     
@@ -824,6 +817,59 @@ class WatershedOptions
     }
 };
 
+namespace detail {
+
+template <class CostType, class LabelType>
+class WatershedStatistics
+{
+  public:
+  
+    typedef SeedRgDirectValueFunctor<CostType> value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    
+    typedef CostType  first_argument_type;
+    typedef LabelType second_argument_type;
+    typedef LabelType argument_type;
+    
+    WatershedStatistics()
+    {}
+
+    void resize(unsigned int)
+    {}
+
+    void reset()
+    {}
+
+        /** update regions statistics (do nothing in the watershed algorithm)
+        */
+    template <class T1, class T2>
+    void operator()(first_argument_type const &, second_argument_type const &) 
+    {}
+
+        /** ask for maximal index (label) allowed
+        */
+    LabelType maxRegionLabel() const
+        { return size() - 1; }
+
+        /** ask for array size (i.e. maxRegionLabel() + 1)
+        */
+    LabelType size() const
+        { return NumericTraits<LabelType>::max(); }
+
+        /** read the statistics functor for a region via its label
+        */
+    const_reference operator[](argument_type label) const
+        { return stats; }
+
+        /** access the statistics functor for a region via its label
+        */
+    reference operator[](argument_type label)
+        { return stats; }
+
+    value_type stats;
+};
+
 template <class Value>
 class SeedRgBiasedValueFunctor
 {
@@ -859,6 +905,70 @@ class SeedRgBiasedValueFunctor
     }
 };
 
+template <class CostType, class LabelType>
+class BiasedWatershedStatistics
+{
+  public:
+  
+    typedef SeedRgBiasedValueFunctor<CostType> value_type;
+    typedef value_type & reference;
+    typedef value_type const & const_reference;
+    
+    typedef CostType  first_argument_type;
+    typedef LabelType second_argument_type;
+    typedef LabelType argument_type;
+    
+    BiasedWatershedStatistics(LabelType biasedLabel, double bias)
+    : biased_label(biasedLabel),
+      biased_stats(bias)
+    {}
+
+    void resize(unsigned int)
+    {}
+
+    void reset()
+    {}
+
+        /** update regions statistics (do nothing in the watershed algorithm)
+        */
+    template <class T1, class T2>
+    void operator()(first_argument_type const &, second_argument_type const &) 
+    {}
+
+        /** ask for maximal index (label) allowed
+        */
+    LabelType maxRegionLabel() const
+        { return size() - 1; }
+
+        /** ask for array size (i.e. maxRegionLabel() + 1)
+        */
+    LabelType size() const
+        { return NumericTraits<LabelType>::max(); }
+
+        /** read the statistics functor for a region via its label
+        */
+    const_reference operator[](argument_type label) const
+    { 
+        return (label == biased_label)
+                    ? biased_stats
+                    : stats; 
+    }
+
+        /** access the statistics functor for a region via its label
+        */
+    reference operator[](argument_type label)
+    { 
+        return (label == biased_label)
+                    ? biased_stats
+                    : stats; 
+    }
+
+    LabelType biased_label;
+    value_type stats, biased_stats;
+};
+
+} // namespace detail
+
 /** \brief Region segmentation by means of a flooding-based watershed algorithm.
 
     This function implements variants of the watershed algorithm
@@ -875,9 +985,7 @@ class SeedRgBiasedValueFunctor
     
     By default, the destination image is assumed to hold seeds for a seeded watershed 
     transform. Seeds may, for example, be created by means of generateWatershedSeeds(). 
-    If you provide  seeds you may alse pass the highest seed label in the options obkect 
-    (see below) to avoid an explicit scan for the highest seed label. Note that the seeds
-    will be overridden with the final watershed segmentation.
+    Note that the seeds will be overridden with the final watershed segmentation.
     
     Alternatively, you may provide \ref SeedOptions in order to instruct 
     watershedsRegionGrowing() to generate its own seeds (it will call generateWatershedSeeds()
@@ -1045,6 +1153,9 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
                         Neighborhood neighborhood,
                         WatershedOptions const & options = WatershedOptions())
 {
+    typedef typename SrcAccessor::value_type ValueType; 
+    typedef typename DestAccessor::value_type LabelType; 
+    
     unsigned int max_region_label = 0;
     
     if(options.seed_options.mini != SeedOptions::Unspecified)
@@ -1055,29 +1166,17 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
                                    destIter(upperleftd, da),
                                    neighborhood, options.seed_options);
     }
-    else if(options.max_region_label == 0)
-    {
-        // we got seeds, but we don't know how many
-        FindMinMax<typename DestAccessor::value_type> minmax;
-
-        Diff2D shape = lowerrights - upperlefts;
-        inspectImage(srcIterRange(upperleftd, upperleftd + shape, da), minmax);
-        
-        max_region_label = (unsigned int)minmax.max;
-    }
     
-    if(options.biased_label != 0 && options.biased_label <= max_region_label)
+    if(options.biased_label != 0)
     {
-        // create a statistics functor for region growing
-        ArrayOfRegionStatistics<SeedRgBiasedValueFunctor<typename SrcAccessor::value_type> >
-                                              regionstats(max_region_label);
-
-        // bias one region (usually make it cheaper)
-        regionstats.regions[options.biased_label].bias = options.bias;
+        // create a statistics functor for biased region growing
+        detail::BiasedWatershedStatistics<ValueType, LabelType> 
+                                 regionstats(options.biased_label, options.bias);
 
         // perform region growing, starting from the seeds computed above
         if(options.bucket_count == 0)
         {
+            max_region_label = 
             seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
                                 srcIter(upperleftd, da),
                                 destIter(upperleftd, da), 
@@ -1085,6 +1184,7 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
         }
         else
         {
+            max_region_label = 
             fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
                                     destIter(upperleftd, da), 
                                     regionstats, options.terminate, 
@@ -1094,12 +1194,12 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
     else
     {
         // create a statistics functor for region growing
-        ArrayOfRegionStatistics<SeedRgDirectValueFunctor<typename SrcAccessor::value_type> >
-                                              regionstats(max_region_label);
+        detail::WatershedStatistics<ValueType, LabelType> regionstats;
 
         // perform region growing, starting from the seeds computed above
         if(options.bucket_count == 0)
         {
+            max_region_label = 
             seededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
                                 srcIter(upperleftd, da),
                                 destIter(upperleftd, da), 
@@ -1107,6 +1207,7 @@ watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcce
         }
         else
         {
+            max_region_label = 
             fastSeededRegionGrowing(srcIterRange(upperlefts, lowerrights, sa),
                                     destIter(upperleftd, da), 
                                     regionstats, options.terminate, 

@@ -189,6 +189,8 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
 
     The seed image is a partly segmented image which contains uniquely
     labeled regions (the seeds) and unlabeled pixels (the candidates, label 0).
+    The highest seed label found in the seed image is returned by the algorithm.
+    
     Seed regions can be as large as you wish and as small as one pixel. If
     there are no candidates, the algorithm will simply copy the seed image
     into the output image. Otherwise it will aggregate the candidates into
@@ -270,7 +272,7 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
                   class SeedImageIterator, class SeedAccessor,
                   class DestIterator, class DestAccessor,
                   class RegionStatisticsArray, class Neighborhood>
-        void 
+        typename SeedAccessor::value_type 
         seededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                             SeedImageIterator seedsul, SeedAccessor aseeds,
                             DestIterator destul, DestAccessor ad,
@@ -288,7 +290,7 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
                   class SeedImageIterator, class SeedAccessor,
                   class DestIterator, class DestAccessor,
                   class RegionStatisticsArray, class Neighborhood>
-        void
+        typename SeedAccessor::value_type
         seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<SeedImageIterator, SeedAccessor> seeds,
                             pair<DestIterator, DestAccessor> dest,
@@ -328,7 +330,7 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
                                               stats(max_region_label);
 
     // find voronoi region of each point
-   vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points),
+    vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points),
                                destImage(points), stats);
     \endcode
 
@@ -367,14 +369,15 @@ template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-void seededRegionGrowing(SrcIterator srcul,
-                         SrcIterator srclr, SrcAccessor as,
-                         SeedImageIterator seedsul, SeedAccessor aseeds,
-                         DestIterator destul, DestAccessor ad,
-                         RegionStatisticsArray & stats,
-                         SRGType srgType,
-                         Neighborhood,
-                         double max_cost)
+typename SeedAccessor::value_type
+seededRegionGrowing(SrcIterator srcul,
+                    SrcIterator srclr, SrcAccessor as,
+                    SeedImageIterator seedsul, SeedAccessor aseeds,
+                    DestIterator destul, DestAccessor ad,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType,
+                    Neighborhood,
+                    double max_cost)
 {
     int w = srclr.x - srcul.x;
     int h = srclr.y - srcul.y;
@@ -382,7 +385,8 @@ void seededRegionGrowing(SrcIterator srcul,
 
     SrcIterator isy = srcul, isx = srcul;  // iterators for the src image
 
-    typedef typename RegionStatisticsArray::value_type RegionStatistics;
+	typedef typename SeedAccessor::value_type LabelType;
+	typedef typename RegionStatisticsArray::value_type RegionStatistics;
     typedef typename RegionStatistics::cost_type CostType;
     typedef detail::SeedRgPixel<CostType> Pixel;
 
@@ -402,7 +406,7 @@ void seededRegionGrowing(SrcIterator srcul,
     // allocate and init memory for the results
 
     SeedRgPixelHeap pheap;
-    int cneighbor;
+    int cneighbor, maxRegionLabel = 0;
     
     typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
@@ -430,6 +434,13 @@ void seededRegionGrowing(SrcIterator srcul,
                         pheap.push(pixel);
                     }
                 }
+            }
+            else
+            {
+                vigra_precondition((LabelType)*irx <= stats.maxRegionLabel(),
+                    "seededRegionGrowing(): Largest label exceeds size of RegionStatisticsArray.");
+                if(maxRegionLabel < *irx)
+                    maxRegionLabel = *irx;
             }
         }
     }
@@ -502,13 +513,15 @@ void seededRegionGrowing(SrcIterator srcul,
     // write result
     transformImage(ir, ir+Point2D(w,h), regions.accessor(), destul, ad,
                    detail::UnlabelWatersheds());
+
+    return (LabelType)maxRegionLabel;
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
                     SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -517,10 +530,10 @@ seededRegionGrowing(SrcIterator srcul,
                     SRGType srgType,
                     Neighborhood n)
 {
-    seededRegionGrowing(srcul, srclr, as,
-                        seedsul, aseeds,
-                        destul, ad,
-                        stats, srgType, n, NumericTraits<double>::max());
+    return seededRegionGrowing(srcul, srclr, as,
+                                seedsul, aseeds,
+                                destul, ad,
+                                stats, srgType, n, NumericTraits<double>::max());
 }
 
 
@@ -529,7 +542,7 @@ template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
                     SeedImageIterator seedsul, SeedAccessor aseeds,
@@ -537,34 +550,34 @@ seededRegionGrowing(SrcIterator srcul,
                     RegionStatisticsArray & stats,
                     SRGType srgType)
 {
-    seededRegionGrowing(srcul, srclr, as,
-                        seedsul, aseeds,
-                        destul, ad,
-                        stats, srgType, FourNeighborCode());
+    return seededRegionGrowing(srcul, srclr, as,
+                                seedsul, aseeds,
+                                destul, ad,
+                                stats, srgType, FourNeighborCode());
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(SrcIterator srcul,
                     SrcIterator srclr, SrcAccessor as,
                     SeedImageIterator seedsul, SeedAccessor aseeds,
                     DestIterator destul, DestAccessor ad,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing(srcul, srclr, as,
-                        seedsul, aseeds,
-                        destul, ad,
-                        stats, CompleteGrow);
+    return seededRegionGrowing(srcul, srclr, as,
+                                seedsul, aseeds,
+                                destul, ad,
+                                stats, CompleteGrow);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestIterator, DestAccessor> img4,
@@ -573,17 +586,17 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     Neighborhood n,
                     double max_cost)
 {
-    seededRegionGrowing(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, srgType, n, max_cost);
+    return seededRegionGrowing(img1.first, img1.second, img1.third,
+                                img3.first, img3.second,
+                                img4.first, img4.second,
+                                stats, srgType, n, max_cost);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestIterator, DestAccessor> img4,
@@ -591,49 +604,49 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     SRGType srgType, 
                     Neighborhood n)
 {
-    seededRegionGrowing(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, srgType, n, NumericTraits<double>::max());
+    return seededRegionGrowing(img1.first, img1.second, img1.third,
+                                img3.first, img3.second,
+                                img4.first, img4.second,
+                                stats, srgType, n, NumericTraits<double>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats,
                     SRGType srgType)
 {
-    seededRegionGrowing(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, srgType, FourNeighborCode());
+    return seededRegionGrowing(img1.first, img1.second, img1.third,
+                                img3.first, img3.second,
+                                img4.first, img4.second,
+                                stats, srgType, FourNeighborCode());
 }
 
 template <class SrcIterator, class SrcAccessor,
           class SeedImageIterator, class SeedAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename SeedAccessor::value_type
 seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     pair<SeedImageIterator, SeedAccessor> img3,
                     pair<DestIterator, DestAccessor> img4,
                     RegionStatisticsArray & stats)
 {
-    seededRegionGrowing(img1.first, img1.second, img1.third,
-                        img3.first, img3.second,
-                        img4.first, img4.second,
-                        stats, CompleteGrow);
+    return seededRegionGrowing(img1.first, img1.second, img1.third,
+                            img3.first, img3.second,
+                            img4.first, img4.second,
+                            stats, CompleteGrow);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-void 
+typename DestAccessor::value_type 
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
@@ -642,7 +655,8 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)
 {
-    
+	typedef typename DestAccessor::value_type LabelType;
+
     vigra_precondition((srgType & KeepContours) == 0,
        "fastSeededRegionGrowing(): the turbo algorithm doesn't support 'KeepContours', sorry.");
     
@@ -653,15 +667,22 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
     DestIterator idy = destul, idx = destul;  // iterators for the dest image
 
     BucketQueue<Point2D, true> pqueue(bucket_count);
+    LabelType maxRegionLabel = 0;
     
     Point2D pos(0,0);
     for(isy=srcul, idy = destul, pos.y=0; pos.y<h; ++pos.y, ++isy.y, ++idy.y)
     {
         for(isx=isy, idx=idy, pos.x=0; pos.x<w; ++pos.x, ++isx.x, ++idx.x)
         {
-			std::ptrdiff_t label = ad(idx);
+			LabelType label = ad(idx);
             if(label != 0)
             {
+                vigra_precondition(label <= stats.maxRegionLabel(),
+                    "fastSeededRegionGrowing(): Largest label exceeds size of RegionStatisticsArray.");
+
+                if(maxRegionLabel < label)
+                    maxRegionLabel = label;
+                
                 AtImageBorder atBorder = isAtImageBorder(pos.x, pos.y, w, h);
                 if(atBorder == NotAtBorder)
                 {
@@ -747,54 +768,56 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
             while(++c != cend);
         }
     }
+    
+    return maxRegionLabel;
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline void
+inline typename DestAccessor::value_type 
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
                         SRGType srgType,
                         Neighborhood n)
 {
-    fastSeededRegionGrowing(srcul, srclr, as,
-                            destul, ad,
-                            stats, srgType, n, NumericTraits<double>::max(), 256);
+    return fastSeededRegionGrowing(srcul, srclr, as,
+                                    destul, ad,
+                                    stats, srgType, n, NumericTraits<double>::max(), 256);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename DestAccessor::value_type 
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats,
                         SRGType srgType)
 {
-    fastSeededRegionGrowing(srcul, srclr, as,
-                            destul, ad,
-                            stats, srgType, FourNeighborCode());
+    return fastSeededRegionGrowing(srcul, srclr, as,
+                                    destul, ad,
+                                    stats, srgType, FourNeighborCode());
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray>
-inline void
+inline typename DestAccessor::value_type 
 fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         DestIterator destul, DestAccessor ad,
                         RegionStatisticsArray & stats)
 {
-    fastSeededRegionGrowing(srcul, srclr, as,
-                            destul, ad,
-                            stats, CompleteGrow);
+    return fastSeededRegionGrowing(srcul, srclr, as,
+                                    destul, ad,
+                                    stats, CompleteGrow);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class RegionStatisticsArray, class Neighborhood>
-inline void
+inline typename DestAccessor::value_type 
 fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         pair<DestIterator, DestAccessor> dest,
                         RegionStatisticsArray & stats,
@@ -803,9 +826,9 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)
 {
-    fastSeededRegionGrowing(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            stats, srgType, n, max_cost, bucket_count);
+    return fastSeededRegionGrowing(src.first, src.second, src.third,
+                                    dest.first, dest.second,
+                                    stats, srgType, n, max_cost, bucket_count);
 }
 
 /********************************************************/
