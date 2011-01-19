@@ -214,7 +214,7 @@ struct ArrayVectorTest
         Accessor a;
         copyLine(data, data + 5, a, std::back_inserter(vector_), a);
         
-        shouldEqual(vector_.size(), 5);
+        shouldEqual(vector_.size(), 5u);
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
 
@@ -272,7 +272,7 @@ struct BucketQueueTest
             bqueue.pop();
         }
         
-        shouldEqual(0, bqueue.size());
+        shouldEqual(0u, bqueue.size());
         shouldEqual(true, bqueue.empty());        
     }
     

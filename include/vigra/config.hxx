@@ -130,8 +130,9 @@
     #endif
     #define HAS_HASH_CONTAINERS
     
-    // this warning produces too many false positives to be useful
+    // these warnings produce too many false positives to be useful
     #pragma GCC diagnostic ignored "-Wstrict-aliasing"  
+    #pragma GCC diagnostic ignored "-Wshadow"  
     
 #endif  // __GNUC__
 

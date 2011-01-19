@@ -1053,8 +1053,8 @@ void RandomForest<LabelType,PreprocessorTag>
         //Build a stack with all the ranges we have
         std::vector<std::pair<int,set_it> > stack;
         stack.clear();
-        set_it i;
-        for(i=predictionSet.ranges[set_id].begin();i!=predictionSet.ranges[set_id].end();++i)
+        for(set_it i=predictionSet.ranges[set_id].begin();
+             i!=predictionSet.ranges[set_id].end();++i)
             stack.push_back(std::pair<int,set_it>(2,i));
         //get weights predicted by single tree
         int num_decisions=0;

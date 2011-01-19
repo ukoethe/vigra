@@ -733,7 +733,7 @@ class HDF5File
     inline void write(std::string datasetName, const MultiArrayView<N, T, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
@@ -782,7 +782,7 @@ class HDF5File
     inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
@@ -805,7 +805,7 @@ class HDF5File
     inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
@@ -936,7 +936,7 @@ class HDF5File
     inline void createDataset(std::string datasetName, typename MultiArrayShape<N>::type shape, T init, int iChunkSize = 0, int compressionParameter = 0)
     {
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         createDataset<N,T>(datasetName, shape, init, chunkSize, compressionParameter);
@@ -974,9 +974,9 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             hsize_t cSize [N];
-            for(int i = 0; i<N; i++)
+            for(int i = 0; i<(int)N; i++)
             {
-                cSize[i] = chunkSize[N-1-i];
+                cSize[i] = chunkSize[(int)N-1-i];
             }
             H5Pset_chunk (plist, N, cSize);
         }
@@ -1231,8 +1231,8 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < N; i++){
-            shape[N-1-i] = array.shape(i); // reverse order
+        for(int i = 0; i < (int)N; i++){
+            shape[(int)N-1-i] = array.shape(i); // reverse order
         }
 
         if(numBandsOfType > 1)
@@ -1258,9 +1258,9 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             ArrayVector<hsize_t> cSize(N + (numBandsOfType > 1),0);
-            for(int i = 0; i<N; i++)
+            for(int i = 0; i<(int)N; i++)
             {
-                cSize[i] = chunkSize[N-1-i];
+                cSize[i] = chunkSize[(int)N-1-i];
             }
             if(numBandsOfType > 1)
                 cSize[N] = numBandsOfType;
@@ -1327,9 +1327,9 @@ class HDF5File
         hsize_t bshape [N];
         hsize_t bones [N];
 
-        for(int i = 0; i < N; i++){
-            boffset[i] = blockOffset[N-1-i];
-            bshape[i] = array.size(N-1-i);
+        for(int i = 0; i < (int)N; i++){
+            boffset[i] = blockOffset[(int)N-1-i];
+            bshape[i] = array.size((int)N-1-i);
             bones[i] = 1;
         }
 
@@ -1372,12 +1372,10 @@ class HDF5File
         hsize_t bshape [N];
         hsize_t bones [N];
 
-        for(int i = 0; i < N; i++){
+        for(int i = 0; i < (int)N; i++){
             // virgra and hdf5 use different indexing
-            boffset[i] = blockOffset[N-1-i];
-            //bshape[i] = blockShape[i];
-            bshape[i] = blockShape[N-1-i];
-            //boffset[i] = blockOffset[N-1-i];
+            boffset[i] = blockOffset[(int)N-1-i];
+            bshape[i] = blockShape[(int)N-1-i];
             bones[i] = 1;
         }
 

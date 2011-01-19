@@ -231,7 +231,7 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
                  edgeWidth = options.desired_edge_width, // 10
                  minimumEdgeWidth = options.minimum_edge_width; // 5
 
-    int y0, y1;
+    int y0 = 0, y1 = h;
     for(; edgeWidth >= minimumEdgeWidth; --edgeWidth)
     {
         y0 = int(VIGRA_CSTD::floor((edgeWidth - xc) / slope + yc + 0.5));

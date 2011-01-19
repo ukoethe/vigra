@@ -895,7 +895,6 @@ class OOB_Error : public VisitorBase
     {
         // go through the samples
         int total_oob =0;
-        int wrong_oob =0;
         // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
 		//                            (i.e. the OOB sample ist very large)
 		//                     40000: use at most 40000 OOB samples per class for OOB error estimate 
@@ -935,7 +934,8 @@ class OOB_Error : public VisitorBase
                         tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                 }
                 rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
-                int label = argMax(tmp_prob); 
+                // FIXME: what's the purpose of the next line?
+                // int label = argMax(tmp_prob); 
                 
             }
         }else
@@ -966,7 +966,8 @@ class OOB_Error : public VisitorBase
                             tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                     }
                     rowVector(prob_oob, ll) += tmp_prob;
-                    int label = argMax(tmp_prob); 
+                    // FIXME: what's the purpose of the next line?
+                    //int label = argMax(tmp_prob); 
                     
                 }
             }
@@ -1316,7 +1317,10 @@ class VariableImportanceVisitor : public VisitorBase
         //typename PR::Feature_t & features 
         //    = const_cast<typename PR::Feature_t &>(pr.features());
 
-		typename PR::FeatureWithMemory_t features = pr.features();
+		typedef typename PR::FeatureWithMemory_t FeatureArray;
+		typedef typename FeatureArray::value_type FeatureValue;
+
+		FeatureArray features = pr.features();
 
         //find the oob indices of current tree. 
         ArrayVector<Int32>      oob_indices;
@@ -1327,7 +1331,7 @@ class VariableImportanceVisitor : public VisitorBase
                 oob_indices.push_back(ii);
 
         //create space to back up a column      
-        std::vector<double>     backup_column;
+        ArrayVector<FeatureValue>     backup_column;
 
         // Random foo
 #ifdef CLASSIFIER_TEST

@@ -598,8 +598,8 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
             bool first = true;
             // init the sum
-            SumType sum;
-            KSumType ksum;
+            SumType sum = NumericTraits<SumType>::zero();
+            KSumType ksum = NumericTraits<KSumType>::zero();
 
             SrcIterator yys = xs + Diff2D(x0, y0);
             MaskIterator yym = xm + Diff2D(x0, y0);
@@ -633,8 +633,7 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
                 }
             }
             // store average in destination pixel
-            if(!first &&
-               ksum != NumericTraits<KSumType>::zero())
+            if(ksum != NumericTraits<KSumType>::zero())
             {
                 dest_acc.set(DestTraits::fromRealPromote(
                              detail::RequiresExplicitCast<SumType>::cast((norm / ksum) * sum)), xd);

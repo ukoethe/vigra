@@ -861,7 +861,7 @@ class ThresholdSplit: public SplitBase<Tag>
         // calculate things that haven't been calculated yet. 
         
         if(std::accumulate(region.classCounts().begin(),
-                           region.classCounts().end(), 0) != region.size())
+                           region.classCounts().end(), 0.0) != region.size())
         {
             RandomForestClassCounter<   MultiArrayView<2,T2, C2>, 
                                         ArrayVector<double> >

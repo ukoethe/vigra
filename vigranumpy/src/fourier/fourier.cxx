@@ -100,7 +100,7 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
 
         TinyVector<int, N-1> bshape(bin.shape()), itotal(bin.shape()), ototal(bres.shape());
         float norm = (float)bshape[0];
-        for(int j=1; j<N-1; ++j)
+        for(int j=1; j<(int)N-1; ++j)
         {
             itotal[j] = bin.stride(j-1) / bin.stride(j);
             ototal[j] = bres.stride(j-1) / bres.stride(j);

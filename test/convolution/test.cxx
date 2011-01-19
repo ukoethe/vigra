@@ -338,8 +338,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(sym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_CLIP));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -365,8 +363,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_WRAP));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -392,8 +388,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REFLECT));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -419,8 +413,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REPEAT));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel

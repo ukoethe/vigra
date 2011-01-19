@@ -117,7 +117,7 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
             Sampler<>::IndexArrayType usedIndices(sampler.sampledIndices());
             Sampler<>::IndexArrayType unusedIndices(sampler.oobIndices());
             
-            shouldEqual(usedIndices.size(), numOfSamples);
+            shouldEqual((int)usedIndices.size(), numOfSamples);
             if(withReplacement)
                 should(usedIndices.size()+unusedIndices.size() >= (unsigned int)totalDataCount);
             else
@@ -269,7 +269,6 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         sampler.sample();

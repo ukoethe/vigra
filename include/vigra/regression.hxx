@@ -717,7 +717,7 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
                                 : maxRank;
 
     bool needToRemoveColumn = false;
-    MultiArrayIndex columnToBeAdded, columnToBeRemoved;
+    MultiArrayIndex columnToBeAdded = 0, columnToBeRemoved = 0;
     MultiArrayIndex currentSolutionCount = 0;
     while(currentSolutionCount < maxSolutionCount)
     {

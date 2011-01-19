@@ -348,7 +348,7 @@ struct FunctionsTest
         vigra::UInt32 roundPower2[] = {0, 1, 2, 3, 4, 5, 7, 8, 9, 15, 16, 0xffff, 0x7fffffff, 0x80000000, 0x80000001, 0xffffffff};
         vigra::UInt32 floorResult[] = {0, 1, 2, 2, 4, 4, 4, 8, 8, 8, 16, 0x8000, 0x40000000, 0x80000000, 0x80000000, 0x80000000};
         vigra::UInt32 ceilResult[] = {0, 1, 2, 4, 4, 8, 8, 8, 16, 16, 16, 0x10000, 0x80000000, 0x80000000, 0, 0};
-        for(int i = 0; i < sizeof(roundPower2) / sizeof(vigra::UInt32); ++i)
+        for(unsigned int i = 0; i < sizeof(roundPower2) / sizeof(vigra::UInt32); ++i)
         {
             shouldEqual(vigra::floorPower2(roundPower2[i]), floorResult[i]);
             shouldEqual(vigra::ceilPower2(roundPower2[i]), ceilResult[i]);
@@ -2368,7 +2368,7 @@ struct RandomTest
             2950632840U, 2706386845U, 3294066568U, 3819538748U, 1902519841U };
 
         vigra::RandomTT800 random;
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(random(), iref[k]);
 
         double fref[n] = {
@@ -2383,7 +2383,7 @@ struct RandomTest
               0.438333,   0.380831,   0.208966,   0.752806,   0.087025,
               0.686998,   0.630130,   0.766960,   0.889306,   0.442965 };
         vigra::RandomTT800 randomf;
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             should(vigra::abs(randomf.uniform() - fref[k]) < 2e-6);
 
         vigra::RandomTT800 randomr(vigra::RandomSeed);
@@ -2404,22 +2404,22 @@ struct RandomTest
             2055641408U, 3695291669U, 2040276077U, 4118847636U, 3528766079U };
 
         vigra::RandomMT19937 random(0xDEADBEEF);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(random(), first[k]);
-        for(int k=0; k<skip; ++k)
+        for(unsigned int k=0; k<skip; ++k)
             random();
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(random(), last[k]);
 
-        for(int k=0; k<skip; ++k)
+        for(unsigned int k=0; k<skip; ++k)
             should(random.uniformInt(31) < 31);
 
         random.seed(0xDEADBEEF);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(random(), first[k]);
-        for(int k=0; k<skip; ++k)
+        for(unsigned int k=0; k<skip; ++k)
             random();
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(random(), last[k]);
 
         unsigned int firsta[n] = {
@@ -2435,11 +2435,11 @@ struct RandomTest
 
         unsigned int init[ilen] = {0x123, 0x234, 0x345, 0x456};
         vigra::RandomMT19937 randoma(init, ilen);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(randoma(), firsta[k]);
-        for(int k=0; k<skip; ++k)
+        for(unsigned int k=0; k<skip; ++k)
             randoma();
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(randoma(), lasta[k]);
 
         double ref53[n] = {
@@ -2447,15 +2447,15 @@ struct RandomTest
             0.92179002, 0.54534773, 0.38107717, 0.65286910, 0.22765212,
             0.74557914, 0.54708246, 0.42043117, 0.19189126, 0.70259889,
             0.77408120, 0.04605807, 0.69398269, 0.61711170, 0.10133577};
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             should(vigra::abs(randoma.uniform53()-ref53[k]) < 2e-8);
 
         randoma.seed(init, ilen);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(randoma(), firsta[k]);
-        for(int k=0; k<skip; ++k)
+        for(unsigned int k=0; k<skip; ++k)
             randoma();
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(randoma(), lasta[k]);
     }
 
@@ -2498,22 +2498,22 @@ struct RandomTest
 
         vigra::RandomTT800 random1;
         vigra::UniformRandomFunctor<> f1(random1);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             should(vigra::abs(f1() - fref[k]) < 2e-6);
 
         vigra::RandomTT800 random2;
         vigra::UniformIntRandomFunctor<> f2(4, 34, random2, true);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(f2(), iref[k] % 31 + 4);
 
         vigra::RandomTT800 random3;
         vigra::UniformIntRandomFunctor<> f3(random3);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqual(f3(32), iref[k] % 32);
 
         vigra::RandomTT800 random4;
         vigra::NormalRandomFunctor<> f4(random4);
-        for(int k=0; k<n; ++k)
+        for(unsigned int k=0; k<n; ++k)
             shouldEqualTolerance(f4(), nref[k], 1e-5);
     }
 };
@@ -2543,14 +2543,14 @@ struct PolygonTest
         
         vigra::convexHull(points, hull);
         
-        shouldEqual(7, hull.size());
+        shouldEqual(7u, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
 
         hull.clear();
 
         vigra::convexHull(reference, hull);
         
-        shouldEqual(7, hull.size());
+        shouldEqual(7u, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
         
         typedef Point P;

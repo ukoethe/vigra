@@ -811,9 +811,7 @@ fftEmbedKernel(MultiArrayView<N, Real, C1> kernel,
         kout *= norm;
     moveDCToUpperLeft(kout);
     
-    Shape srcPoint, destPoint;
-    bool copyIt = true;
-    
+    Shape srcPoint, destPoint;    
     FFTEmbedKernel<(int)N-1>::exec(out, kernel.shape(), srcPoint, destPoint, false);
 }
 
@@ -1073,7 +1071,7 @@ FFTWPlan<N, Real>::initImpl(MI ins, MO outs, int SIGN, unsigned int planner_flag
           itotal(ins.shape().begin(), ins.shape().end()), 
           ototal(outs.shape().begin(), outs.shape().end());
 
-    for(int j=1; j<N; ++j)
+    for(unsigned int j=1; j<N; ++j)
     {
         itotal[j] = ins.stride(j-1) / ins.stride(j);
         ototal[j] = outs.stride(j-1) / outs.stride(j);
@@ -1329,7 +1327,7 @@ FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel,
     Shape complexShape = kernel,
           paddedShape  = fftwCorrespondingShapeC2R(complexShape);
     
-    for(int k=0; k<N; ++k)
+    for(unsigned int k=0; k<N; ++k)
         vigra_precondition(in[k] <= paddedShape[k],
              "FFTWConvolvePlan::init(): kernel too small for given input.");
 
@@ -1530,7 +1528,7 @@ FFTWConvolvePlan<N, Real>::checkShapesFourier(Shape in,
     Shape complexShape = kernels->shape(),
           paddedShape  = fftwCorrespondingShapeC2R(complexShape);
 
-    for(int k=0; k<N; ++k)
+    for(unsigned int k=0; k<N; ++k)
         vigra_precondition(in[k] <= paddedShape[k],
              "FFTWConvolvePlan::checkShapesFourier(): kernels too small for given input.");
 

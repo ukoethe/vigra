@@ -1141,7 +1141,7 @@ template <class REAL>
 REAL legendre(unsigned int l, int m, REAL x)
 {
     vigra_precondition(abs(x) <= 1.0, "legendre(): x must be in [-1.0, 1.0].");
-    if (m<0)
+    if (m < 0)
     {
         m = -m;
         REAL s = odd(m)
@@ -1150,7 +1150,7 @@ REAL legendre(unsigned int l, int m, REAL x)
         return legendre(l,m,x) * s / detail::facLM<REAL>(l,m);
     }
     REAL result = 1.0;
-    if (m>0)
+    if (m > 0)
     {
         REAL r = std::sqrt( (1.0-x) * (1.0+x) );
         REAL f = 1.0;
@@ -1160,14 +1160,14 @@ REAL legendre(unsigned int l, int m, REAL x)
             f += 2.0;
         }
     }
-    if(l==m) 
+    if((int)l == m) 
         return result;
 
     REAL result_1 = x * (2.0 * m + 1.0) * result;
-    if(l==m+1) 
+    if((int)l == m+1) 
         return result_1;
     REAL other = 0.0;
-    for(unsigned int i=m+2; i<=l; ++i)
+    for(unsigned int i = m+2; i <= l; ++i)
     {
         other = ( (2.0*i-1.0) * x * result_1 - (i+m-1.0)*result) / (i-m);
         result = result_1;

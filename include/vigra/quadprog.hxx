@@ -204,7 +204,6 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
     T f_value = 0.5 * dot(g, x);
     
     T epsilonZ   = NumericTraits<T>::epsilon() * sq(J.norm(0)),
-      epsilonPsi = NumericTraits<T>::epsilon() * trace(G)*trace(J)*100.0,
       inf        = std::numeric_limits<T>::infinity();
     
     Matrix<T> R(n, n), r(constraintCount, 1), u(constraintCount,1);
@@ -240,7 +239,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
     for (int i = 0; i < mi; ++i)
         activeSet[i] = i;
 
-    int constraintToBeAdded;
+    int constraintToBeAdded = 0;
     T ss = 0.0;
     for (int i = activeConstraintCount-me; i < mi; ++i)
     {
@@ -276,7 +275,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         // determine maximum step length in dual space that doesn't violate dual feasibility
         // and the corresponding index
         T dualStep = inf; 
-        int constraintToBeRemoved;
+        int constraintToBeRemoved = 0;
         for (int k = me; k < activeConstraintCount; ++k)
         {
             if (r(k,0) > 0.0)

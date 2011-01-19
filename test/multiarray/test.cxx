@@ -188,9 +188,9 @@ public:
         // test swap
         array3.subarray(Shape(0,0,0), Shape(10,10,1)).swapData( 
              array3.subarray(Shape(0,0,1), Shape(10,10,2)));
-        for(unsigned int k=0; k<100; ++k)
+        for(int k=0; k<100; ++k)
             shouldEqual(array3[k], k+100);
-        for(unsigned int k=100; k<200; ++k)
+        for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
     }
         
@@ -441,7 +441,7 @@ public:
         iter3_t i3_l = a3.traverser_end ();
         array3_t::iterator seqi = a3.begin();
 
-        unsigned int countx = 0, county = 0, countz = 0;
+        int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
         for (int z=0; i3_f != i3_l; ++i3_f, ++z) 

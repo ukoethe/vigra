@@ -260,9 +260,9 @@ vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor sr
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(N == src.size(si),
+    vigra_precondition(N == (int)src.size(si),
         "vectorToTensorMultiArray(): Wrong number of channels in input array.");
-    vigra_precondition(M == dest.size(di),
+    vigra_precondition(M == (int)dest.size(di),
         "vectorToTensorMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 
@@ -428,9 +428,9 @@ tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == src.size(si),
+    vigra_precondition(M == (int)src.size(si),
         "tensorEigenvaluesMultiArray(): Wrong number of channels in input array.");
-    vigra_precondition(N == dest.size(di),
+    vigra_precondition(N == (int)dest.size(di),
         "tensorEigenvaluesMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 
@@ -516,7 +516,7 @@ tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == src.size(si),
+    vigra_precondition(M == (int)src.size(si),
         "tensorDeterminantMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 

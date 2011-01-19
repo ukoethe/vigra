@@ -590,9 +590,6 @@ struct ClassifierTest
         double features[] = {0, 0, 1, 1,
                          0, 1, 0, 1};
         int    labels[] = {1, 0, 0, 1};
-        double features2[] = {0.4, 0.4, 0.6, 0.6,
-                         0.4, 0.6, 0.4, 0.6};
-        int    labels2[] = {1, 0, 0, 1};
         std::cerr << "RFsetTest(): Learning 1200 Trees on online problem. ";
         {
             vigra::SetTestVisitor testVisitor;
