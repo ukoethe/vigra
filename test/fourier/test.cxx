@@ -157,6 +157,7 @@ struct FFTWComplexTest
         FFTWComplexImage::Accessor get = img.accessor();
         FFTWRealAccessor<> real;
         FFTWImaginaryAccessor<> imag;
+        FFTWSquaredMagnitudeAccessor<> smag;
         FFTWMagnitudeAccessor<> mag;
         FFTWPhaseAccessor<> phase;
         FFTWWriteRealAccessor<> writeReal;
@@ -167,6 +168,8 @@ struct FFTWComplexTest
         should(real(i, Diff2D(1,1)) == 0.0);
         should(imag(i) == -2.0);
         should(imag(i, Diff2D(1,1)) == -2.0);
+        shouldEqual(smag(i) , 8.0);
+        shouldEqual(smag(i, Diff2D(1,1)) , 4.0);
         shouldEqual(mag(i) , sqrt(8.0));
         shouldEqual(mag(i, Diff2D(1,1)) , 2.0);
         shouldEqualTolerance(sin(phase(i)), -sqrt(2.0)/2.0, 1.0e-7);

@@ -291,10 +291,22 @@ class FFTWComplex
     const_reference re() const
         { return data_[0]; }
 
+    reference real()
+        { return data_[0]; }
+
+    const_reference real() const
+        { return data_[0]; }
+
     reference im()
         { return data_[1]; }
 
     const_reference im() const
+        { return data_[1]; }
+
+    reference imag()
+        { return data_[1]; }
+
+    const_reference imag() const
         { return data_[1]; }
 
         /** Unary negation.
@@ -867,6 +879,20 @@ inline typename FFTWComplex<R>::NormType abs(const FFTWComplex<R> &a)
     return a.magnitude();
 }
 
+    /// real part
+template <class R>
+inline R real(const FFTWComplex<R> &a)
+{
+    return a.real();
+}
+
+    /// imaginary part
+template <class R>
+inline R imag(const FFTWComplex<R> &a)
+{
+    return a.imag();
+}
+
     /// complex conjugate
 template <class R>
 inline FFTWComplex<R> conj(const FFTWComplex<R> &a)
@@ -1136,6 +1162,31 @@ class FFTWWriteRealAccessor
     void set(value_type const & v, ITERATOR const & i, DIFFERENCE d) const {
         i[d].re()= v;
         i[d].im()= 0;
+    }
+};
+
+    /** Calculate squared magnitude of complex number on the fly.
+
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    Namespace: vigra
+    */
+template <class Real = double>
+class FFTWSquaredMagnitudeAccessor
+{
+  public:
+        /// The accessor's value type.
+    typedef Real value_type;
+
+        /// Read squared magnitude at iterator position.
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const {
+        return (*i).squaredMagnitude();
+    }
+
+        /// Read squared magnitude at offset from iterator position.
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
+        return (i[d]).squaredMagnitude();
     }
 };
 
