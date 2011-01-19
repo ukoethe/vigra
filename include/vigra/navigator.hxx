@@ -84,7 +84,7 @@ namespace vigra {
         {
             // inner loop: linear iteration over current subset
             //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
-             Navigator::iterator i = nav.begin(), end = nav.end();
+            Navigator::iterator i = nav.begin(), end = nav.end();
             for(; i != end; ++i)
                 // do something
         }
@@ -239,6 +239,193 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     shape_type shape_;
     unsigned int inner_dimension_;
     MULTI_ITERATOR i_, end_;
+};
+
+/********************************************************/
+/*                                                      */
+/*               MultiCoordinateNavigator               */
+/*                                                      */
+/********************************************************/
+
+/** \brief A navigator that provides acces to the 1D subranges of an
+    n-dimensional range given by an nD shape.
+
+    This class works similarly to \ref MultiArrayNavigator, but instead of a 
+    1-dimensional iterator pair, it returns a pair of shapes whose difference
+    specifies a 1-dimensional range along the desired dimension. That is, when
+    the navigator refers to dimension <tt>d</tt>, the difference between
+    <tt>end()</tt> and <tt>begin()</tt> is <tt>1</tt> along all dimensions
+    except <tt>d</tt>.
+
+    The template parameters specifies the dimension of the shape.
+
+    <b>Usage:</b>
+
+    <b>\#include</b> \<vigra/navigator.hxx\>
+
+    Namespace: vigra
+
+    \code
+    typedef vigra::MultiArrayShape<3>::type Shape;
+    typedef vigra::MultiArray<3, int>  Array;
+    typedef vigra::MultiCoordinateNavigator<3> Navigator;
+
+    Array a(Shape(X, Y, Z));
+
+    for(int d=0; d<3; ++d)
+    {
+        // create Navigator for dimension d
+        Navigator nav(a.shape(), d);
+
+        // outer loop: move navigator to all starting points
+        // of 1D subsets that run parallel to coordinate axis d
+        for(; nav.hasMore(); ++nav)
+        {
+            // inner loop: linear iteration over current subset
+            //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
+            Shape point = nav.begin(), end = nav.end();
+            for(; point[d] != end[d]; ++point[d])
+                a[point] = 5;
+        }
+    }
+    \endcode
+*/
+template <unsigned int Dimensions, unsigned int N = Dimensions>
+class MultiCoordinateNavigator
+#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
+: public MultiCoordinateNavigator<Dimensions, N-1>
+#endif
+{
+    typedef MultiCoordinateNavigator<Dimensions, N-1> base_type;
+
+  public:
+    enum { level = N-1 };
+
+        /** The shape type for the given iterator type.
+         */
+    typedef typename MultiArrayShape<Dimensions>::type value_type;
+
+
+        /** Construct navigator for multi-dimensional iterator <TT>i</TT>, array shape <TT>shape</TT>
+            and inner loop dimension <TT>inner_dimension</TT>.
+         */
+    MultiCoordinateNavigator(value_type const & shape, unsigned int inner_dimension)
+    : base_type(shape, inner_dimension)
+    {
+        this->end_[level] = (this->inner_dimension_ == level)
+                                 ? 1
+                                 : this->shape_[level];
+    }
+
+        /** Advance to next starting location.
+         */
+    void operator++()
+    {
+        base_type::operator++();
+        if(base_type::atEnd() && this->i_[level] < this->end_[level])
+        {
+            ++this->i_[level];
+            if(this->i_[level] < this->end_[level])
+                base_type::reset();
+        }
+    }
+
+        /** Advance to next starting location.
+         */
+    void operator++(int)
+    {
+        ++*this;
+    }
+
+        /** true if there are more elements.
+         */
+    bool hasMore() const
+    {
+        return this->inner_dimension_ == level 
+                     ? base_type::hasMore() 
+                     : this->i_[level] < this->end_[level];
+    }
+
+        /** true if iterator is exhausted.
+         */
+    bool atEnd() const
+    {
+        return !hasMore();
+        // return this->inner_dimension_ == level 
+                     // ? base_type::atEnd()
+                     // : !(this->i_[level] < this->end_[level]);
+    }
+
+  protected:
+    void reset()
+    {
+        this->i_[level] = 0;
+        this->end_[level] = (this->inner_dimension_ == level)
+                                 ? 1
+                                 : this->shape_[level];
+        base_type::reset();
+    }
+};
+
+template <unsigned int Dimensions>
+class MultiCoordinateNavigator<Dimensions, 1>
+{
+  public:
+    enum { level = 0 };
+    typedef typename MultiArrayShape<Dimensions>::type value_type;
+ 
+    MultiCoordinateNavigator(value_type const & shape, unsigned int inner_dimension)
+    : shape_(shape),
+      inner_dimension_(inner_dimension)
+    {
+        end_[level] = (inner_dimension_ == level)
+                         ? 1
+                         : shape_[level];
+    }
+
+    void operator++()
+    {
+        ++i_[level];
+    }
+
+    void operator++(int)
+    {
+        ++*this;
+    }
+
+    value_type const & begin() const
+    {
+        return i_;
+    }
+
+    value_type end() const
+    {
+        value_type res = i_ + value_type(MultiArrayIndex(1));
+        res[inner_dimension_] = shape_[inner_dimension_];
+        return res;
+    }
+
+    bool hasMore() const
+    {
+        return i_[level] < end_[level];
+    }
+
+    bool atEnd() const
+    {
+      return !hasMore();
+    }
+
+  protected:
+    void reset()
+    {
+        i_[level] = 0;
+        end_[level] = (inner_dimension_ == level)
+                         ? 1
+                         : shape_[level];
+    }
+
+    value_type shape_, i_, end_;
+    unsigned int inner_dimension_;
 };
 
 } // namespace vigra

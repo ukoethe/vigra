@@ -735,7 +735,6 @@ public:
             array3.data () [i] = i;
     }
 
-    // bindInner tests
     void testNavigator ()
     {
         int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
@@ -754,7 +753,25 @@ public:
             }
         }
     }
-    
+
+    void testCoordinateNavigator ()
+    {
+        int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+                            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+                            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        typedef MultiCoordinateNavigator<3> Navigator;
+        for(int d=0; d<3; ++d)
+        {
+            Navigator nav(array3.shape(), d);
+            int k = 0;
+            for(; nav.hasMore(); ++nav)
+            {
+				Navigator::value_type i = nav.begin(), end = nav.end();
+                for(; i[d] != end[d]; ++i[d], ++k)
+                    shouldEqual(array3[i], expected[d][k]);
+            }
+        }
+    }    
 };
 
 struct MultiImpexTest
@@ -1618,6 +1635,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
         add( testCase( &MultiArrayDataTest::testAssignmentAndReset ) );
         add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
+        add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
     }
 };
 
