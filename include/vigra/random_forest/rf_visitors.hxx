@@ -860,6 +860,7 @@ class OOB_Error : public VisitorBase
     ArrayVector< int>           indices; 
     OOB_Error() : VisitorBase(), oob_breiman(0.0) {}
 
+#if HasHDF5
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -871,6 +872,7 @@ class OOB_Error : public VisitorBase
     }
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
+#endif
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -1055,6 +1057,7 @@ class CompleteOOBInfo : public VisitorBase
     
     CompleteOOBInfo() : VisitorBase(), oob_mean(0), oob_std(0), oob_per_tree2(0)  {}
 
+#ifdef HasHDF5
 	/** save to HDF5 file
 	 */
     void save(std::string filen, std::string pathn)
@@ -1077,6 +1080,7 @@ class CompleteOOBInfo : public VisitorBase
     }
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
+#endif
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -1254,6 +1258,7 @@ class VariableImportanceVisitor : public VisitorBase
                         variable_importance_);
     }
 #endif
+
 	/** Constructor
 	 * \param rep_cnt (defautl: 10) how often should 
 	 * the permutation take place. Set to 1 to make calculation faster (but
