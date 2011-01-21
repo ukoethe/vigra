@@ -642,6 +642,14 @@ public:
          */
     typedef MultiArrayIndex difference_type_1;
 
+        /** scan-order iterator (StridedScanOrderIterator) type
+         */
+    typedef StridedScanOrderIterator<actual_dimension, T, T &, T *> iterator;
+
+        /** const scan-order iterator (StridedScanOrderIterator) type
+         */
+    typedef StridedScanOrderIterator<actual_dimension, T, T const &, T const *> const_iterator;
+
         /** traverser (MultiIterator) type
          */
     typedef typename vigra::detail::MultiIteratorChooser <
@@ -1371,6 +1379,38 @@ public:
     bool hasData () const
     {
         return m_ptr != 0;
+    }
+
+        /** returns a scan-order iterator pointing
+            to the first array element.
+        */
+    iterator begin()
+    {
+        return iterator(m_ptr, m_shape, m_stride);
+    }
+
+        /** returns a const scan-order iterator pointing
+            to the first array element.
+        */
+    const_iterator begin() const
+    {
+        return const_iterator(m_ptr, m_shape, m_stride);
+    }
+
+        /** returns a scan-order iterator pointing
+            beyond the last array element.
+        */
+    iterator end()
+    {
+        return begin().getEndIterator();
+    }
+
+        /** returns a const scan-order iterator pointing
+            beyond the last array element.
+        */
+    const_iterator end() const
+    {
+        return begin().getEndIterator();
     }
 
         /** returns the N-dimensional MultiIterator pointing
