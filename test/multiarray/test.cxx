@@ -490,8 +490,8 @@ public:
                     shouldEqual(i2.operator->(), &a3[p]);
                     shouldEqual(i1.point(), p);
                     shouldEqual(i2.point(), p);
-                    shouldEqual(i1.id(), count);
-                    shouldEqual(i2.id(), count);
+                    shouldEqual(i1.index(), count);
+                    shouldEqual(i2.index(), count);
 
 					should(i1 != iend);
 					should(!(i1 == iend));
@@ -546,7 +546,7 @@ public:
     {
 		typedef array_view3_t::const_iterator iterator;
 
-		// test scan-order navigation
+		// test const scan-order navigation
 		array_view3_t av = a3;
         iterator i1 = const_cast<array_view3_t const &>(av).begin();
         iterator i2 = const_cast<array_view3_t const &>(av).begin();
@@ -598,8 +598,8 @@ public:
                     shouldEqual(i2.operator->(), &a3[p]);
                     shouldEqual(i1.point(), p);
                     shouldEqual(i2.point(), p);
-                    shouldEqual(i1.id(), count);
-                    shouldEqual(i2.id(), count);
+                    shouldEqual(i1.index(), count);
+                    shouldEqual(i2.index(), count);
 
 					should(i1 != iend);
 					should(!(i1 == iend));

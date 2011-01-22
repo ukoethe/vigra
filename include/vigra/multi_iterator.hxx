@@ -1864,35 +1864,35 @@ public:
 namespace detail {
 
 template <unsigned int M>
-struct MoveToScanOrderId
+struct MoveToScanOrderIndex
 {
     template <class Shape, class Ptr>
     static void 
-    exec(MultiArrayIndex & newId, MultiArrayIndex shapeStride, Ptr & p,
+    exec(MultiArrayIndex & newIndex, MultiArrayIndex shapeStride, Ptr & p,
          Shape & point, Shape const & shape, Shape const & strides)
     {
         enum { N = Shape::static_size };
-        MoveToScanOrderId<M-1>::exec(newId, shapeStride*shape[N-1-M], p, point, shape, strides);
-        MultiArrayIndex newPos = newId / shapeStride;
+        MoveToScanOrderIndex<M-1>::exec(newIndex, shapeStride*shape[N-1-M], p, point, shape, strides);
+        MultiArrayIndex newPos = newIndex / shapeStride;
         p += (newPos - point[N-1-M]) * strides[N-1-M];
         point[N-1-M] = newPos;
-        newId %= shapeStride;
+        newIndex %= shapeStride;
     }
 };
 
 template <>
-struct MoveToScanOrderId<0>
+struct MoveToScanOrderIndex<0>
 {
     template <class Shape, class Ptr>
     static void 
-    exec(MultiArrayIndex & newId, MultiArrayIndex shapeStride, Ptr & p,
+    exec(MultiArrayIndex & newIndex, MultiArrayIndex shapeStride, Ptr & p,
          Shape & point, Shape const & shape, Shape const & strides)
     {
         enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = newId / shapeStride;
+        MultiArrayIndex newPos = newIndex / shapeStride;
         p += (newPos - point[N-1]) * strides[N-1];
         point[N-1] = newPos;
-        newId %= shapeStride;
+        newIndex %= shapeStride;
     }
 };
 
@@ -1920,6 +1920,9 @@ class StridedScanOrderIterator
     typedef StridedScanOrderIterator iterator;
     typedef std::random_access_iterator_tag iterator_category;
     
+    StridedScanOrderIterator()
+    {}
+    
     StridedScanOrderIterator(pointer i, 
                              shape_type const & shape, shape_type const & strides)
     : base_type(i, shape, strides)
@@ -1928,8 +1931,7 @@ class StridedScanOrderIterator
     StridedScanOrderIterator & operator++()
     {
         base_type::operator++();
-        if(this->point_[level-1] == this->shape_[level-1] && 
-           this->point_[level] < this->shape_[level]) 
+        if(this->point_[level-1] == this->shape_[level-1]) 
         {
             base_type::reset();
             this->i_ += this->strides_[level];
@@ -1949,14 +1951,14 @@ class StridedScanOrderIterator
 
     StridedScanOrderIterator & operator+=(MultiArrayIndex i)
     {
-        this->moveToScanOrderId(this->id_+i);
+        this->moveToScanOrderIndex(this->index_+i);
         return *this;
     }
 
     StridedScanOrderIterator & operator--()
     {
         base_type::operator--();
-        if(this->point_[level-1] == -1 && this->point_[level] > 0) 
+        if(this->point_[level-1] == -1) 
         {
             base_type::inverseReset();
             this->i_ -= this->strides_[level];
@@ -1982,7 +1984,7 @@ class StridedScanOrderIterator
     StridedScanOrderIterator getEndIterator() const
     {
         StridedScanOrderIterator res(*this);
-        res.makeEndIterator();
+        res.moveToScanOrderIndex(prod(this->shape_));
         return res;
     }
 
@@ -1992,7 +1994,8 @@ class StridedScanOrderIterator
     }
     
     using base_type::point;
-    using base_type::id;
+    using base_type::shape;
+    using base_type::index;
     using base_type::operator*;
     using base_type::operator->;
     using base_type::operator[];
@@ -2030,7 +2033,7 @@ inline MultiArrayIndex
 operator-(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
            StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() - r.id();
+    return l.index() - r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2038,7 +2041,7 @@ inline bool
 operator==(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
             StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() == r.id();
+    return l.index() == r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2046,7 +2049,7 @@ inline bool
 operator!=(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
             StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() != r.id();
+    return l.index() != r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2054,7 +2057,7 @@ inline bool
 operator<(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
             StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() < r.id();
+    return l.index() < r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2062,7 +2065,7 @@ inline bool
 operator<=(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
             StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() <= r.id();
+    return l.index() <= r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2070,7 +2073,7 @@ inline bool
 operator>(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
            StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() > r.id();
+    return l.index() > r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M>
@@ -2078,7 +2081,7 @@ inline bool
 operator>=(StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & l, 
            StridedScanOrderIterator<N, T, REFERENCE, POINTER, M> const & r)
 {
-    return l.id() >= r.id();
+    return l.index() >= r.index();
 }
 
 template <unsigned int N, class T, class REFERENCE, class POINTER>
@@ -2098,19 +2101,24 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     typedef StridedScanOrderIterator iterator;
     typedef std::random_access_iterator_tag iterator_category;
 
+    StridedScanOrderIterator()
+    : i_((pointer)0),
+      index_(0)
+    {}
+    
     StridedScanOrderIterator(pointer i, 
                              shape_type const & shape, shape_type const & strides)
     : i_(i),
       shape_(shape),
       strides_(strides),
-      id_(0)
+      index_(0)
     {}
 
     StridedScanOrderIterator & operator++()
     {
         i_ += strides_[level];
         ++point_[level];
-        ++id_;
+        ++index_;
         return *this;
     }
 
@@ -2123,7 +2131,7 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
 
     StridedScanOrderIterator & operator+=(MultiArrayIndex i)
     {
-        this->moveToScanOrderId(id_+i);
+        this->moveToScanOrderIndex(index_+i);
         return *this;
     }
     
@@ -2131,7 +2139,7 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     {
         i_ -= strides_[level];
         --point_[level];
-        --id_;
+        --index_;
         return *this;
     }
 
@@ -2170,14 +2178,14 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     reference operator[](MultiArrayIndex i)
     {
         StridedScanOrderIterator t(*this);
-        t.moveToScanOrderId(id_+i);
+        t.moveToScanOrderIndex(index_+i);
         return *t;
     }
 
     const_reference operator[](MultiArrayIndex i) const
     {
         StridedScanOrderIterator t(*this);
-        t.moveToScanOrderId(id_+i);
+        t.moveToScanOrderIndex(index_+i);
         return *t;
     }
 
@@ -2186,9 +2194,9 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return point_[level] == 0 || point_[level] == shape_[level] - 1;
     }
     
-    MultiArrayIndex id() const
+    MultiArrayIndex index() const
     {
-        return id_;
+        return index_;
     }
     
     shape_type const & point() const
@@ -2196,10 +2204,15 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return point_;
     }
     
+    shape_type const & shape() const
+    {
+        return shape_;
+    }
+    
     StridedScanOrderIterator getEndIterator() const
     {
         StridedScanOrderIterator res(*this);
-        res.makeEndIterator();
+        res.moveToScanOrderIndex(prod(shape_));
         return res;
     }
 
@@ -2216,20 +2229,15 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         point_[level] = shape_[level] - 1;
     }
     
-    void makeEndIterator()
+    void moveToScanOrderIndex(MultiArrayIndex newIndex)
     {
-        moveToScanOrderId(prod(shape_));
-    }
-    
-    void moveToScanOrderId(MultiArrayIndex newId)
-    {
-        id_ = newId;
-        detail::MoveToScanOrderId<N-1>::exec(newId, 1, i_, point_, shape_, strides_);
+        index_ = newIndex;
+        detail::MoveToScanOrderIndex<N-1>::exec(newIndex, 1, i_, point_, shape_, strides_);
     }
 
     pointer i_;
     shape_type point_, shape_, strides_;
-    MultiArrayIndex id_;
+    MultiArrayIndex index_;
 };
 
 
