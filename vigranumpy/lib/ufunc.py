@@ -208,6 +208,8 @@ class Function(object):
         pshape       = [p.shape[j] for j in permutation]
         return permutation, inversePermutation, pshape
 
+# FIXME: if a and out have axistags, the permutation should create matching tags
+#        the same applies to the other function classes
 class UnaryFunction(Function):
     def __call__(self, a, out = None):
         if not isinstance(a, numpy.ndarray):
@@ -226,6 +228,8 @@ class UnaryFunction(Function):
         self.function(a, o)
 
         if out is None:
+            if hasattr(a, 'axistags'):
+                o.axistags = a.axistags.__class__(a.axistags)
             out = o.transpose(inversePermutation) 
         return out
 
@@ -249,8 +253,12 @@ class UnaryFunctionOut2(Function):
         self.function(a, o1, o2)
 
         if out1 is None:
+            if hasattr(a, 'axistags'):
+                o1.axistags = a.axistags.__class__(a.axistags)
             out1 = o1.transpose(inversePermutation) 
         if out2 is None:
+            if hasattr(a, 'axistags'):
+                o2.axistags = a.axistags.__class__(a.axistags)
             out2 = o2.transpose(inversePermutation) 
         return out1, out2
 
@@ -294,6 +302,8 @@ class BinaryFunction(Function):
         self.function(a, b, o)
 
         if out is None:
+            if hasattr(a, 'axistags'):
+                o.axistags = a.axistags.__class__(a.axistags)
             out = o.transpose(inversePermutation) 
         return out
 

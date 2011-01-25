@@ -65,8 +65,11 @@ import numpy
 import ufunc
 import sys
 
+import numpy
 from numpy import int8, uint8, int16, uint16, int32, uint32, int64, uint64
 from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
+
+from vigranumpycore import AxisType, AxisInfo, AxisTags
 
 try:
     import qimage2ndarray
@@ -95,7 +98,7 @@ def qimage2array(q):
     if q.format() == qt.QImage.Format_ARGB32:
         return qimage2ndarray.byte_view(q, 'big').swapaxes(0,1).view(Vector4Image)
     raise RuntimeError("qimage2array(): q.format() must be Format_Indexed8, Format_RGB32, or Format_ARGB32")
-
+    
 class classproperty(object):
     def __get__(self, instance, cls):
             if self.__instance_method is not None and instance is not None:
@@ -105,6 +108,28 @@ class classproperty(object):
     def __init__(self, class_method, instance_method = None):
             self.__class_method = class_method
             self.__instance_method = instance_method
+
+class StandardTags(object):
+    @classproperty
+    def x(cls):
+        return AxisInfo('x', AxisType.Space)
+    
+    @classproperty
+    def y(cls):
+        return AxisInfo('y', AxisType.Space)
+    
+    @classproperty
+    def z(cls):
+        return AxisInfo('z', AxisType.Space)
+    
+    @classproperty
+    def t(cls):
+        return AxisInfo('t', AxisType.Time)
+    
+    @classproperty
+    def c(cls):
+        return AxisInfo('c', AxisType.Channels)
+
 
 def _array_docstring_(name, shape, compat):
     return '''
@@ -184,10 +209,21 @@ this class via its subclasses!
         if value is not None:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
             res[...] = value
-            return res
         else:
-            return constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
+            res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
+        if cls.spatialDimensions == 2:
+            axistags = [StandardTags.x, StandardTags.y]
+        elif cls.spatialDimensions == 3:
+            axistags = [StandardTags.x, StandardTags.y, StandardTags.z]
+        if res.ndim > cls.spatialDimensions:
+            axistags.append(StandardTags.c)
+        res.axistags = AxisTags(axistags)
+        return res
     
+    def __array_finalize__(self, obj):
+        if hasattr(obj, 'axistags'):
+            self.axistags = obj.axistags
+
     @property
     def order(self):
         if self.flags.c_contiguous:
@@ -213,9 +249,6 @@ this class via its subclasses!
         memo[id(self)] = result
         result.__dict__ = copy.deepcopy(self.__dict__, memo)
         return result
-    
-    def flatten(self, order = 'C'):
-        return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flatten(order)
     
     def __str__(self, separator = ' ', precision=2, suppress_small=True):
         return numpy.array2string(self.T, separator = separator, precision=precision, suppress_small=suppress_small)
@@ -355,6 +388,202 @@ this class via its subclasses!
     
     def __xor__(self, other):
         return ufunc.bitwise_xor(self, other)
+
+    def all(self, axis=None, out=None):
+        res = numpy.ndarray.all(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def any(self, axis=None, out=None):
+        res = numpy.ndarray.any(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def argmax(self, axis=None, out=None):
+        res = numpy.ndarray.argmax(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+        
+    def argmin(self, axis=None, out=None):
+        res = numpy.ndarray.argmin(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def cumsum(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.cumsum(self, axis, dtype, out)
+        if res.ndim != self.ndim:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def cumprod(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.cumprod(self, axis, dtype, out)
+        if res.ndim != self.ndim:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def flatten(self, order='C'):
+        res = numpy.ndarray.flatten(self.swapaxes(0, self.spatialDimensions-1), order)
+        res.axistags = AxisTags(1)
+        return res        
+
+    def max(self, axis=None, out=None):
+        res = numpy.ndarray.max(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def mean(self, axis=None, out=None):
+        res = numpy.ndarray.mean(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def min(self, axis=None, out=None):
+        res = numpy.ndarray.min(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def nonzero(self):
+        res = numpy.ndarray.nonzero(self)
+        for k in xrange(len(res)):
+            res[k].axistags = AxisTags(self.axistags[k])
+        return res
+
+    def prod(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.prod(self, axis, dtype, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def ptp(self, axis=None, out=None):
+        res = numpy.ndarray.ptp(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def ravel(self, order='C'):
+        res = numpy.ndarray.ravel(self, order)
+        res.axistags = AxisTags(1)
+        return res        
+
+    def repeat(self, repeats, axis=None):
+        res = numpy.ndarray.repeat(self, repeats, axis)
+        if axis is None:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def reshape(self, shape, order='C'):
+        res = numpy.ndarray.reshape(self, shape, order)
+        res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def resize(self, new_shape, refcheck=True, order=False):
+        res = numpy.ndarray.reshape(self, new_shape, refcheck, order)
+        res.axistags = AxisTags(res.ndim)
+        return res        
+            
+    def squeeze(self):
+        res = numpy.ndarray.squeeze(self)
+        if self.ndim != res.ndim:
+            res.axistags = AxisTags(res.axistags)
+            for k in xrange(self.ndim-1, -1, -1):
+                if self.shape[k] == 1:
+                    del res.axistags[k]
+        return res        
+
+    def std(self, axis=None, dtype=None, out=None, ddof=0):
+        res = numpy.ndarray.std(self, axis, dtype, out, ddof)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        if len(res.shape) == 0:
+            res = res.item()
+        return res
+
+    def sum(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.sum(self, axis, dtype, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+            
+    def swapaxes(self, i, j):
+        res = numpy.ndarray.swapaxes(self, i, j)
+        axistags = [k for k in res.axistags]
+        axistags[i], axistags[j] = axistags[j], axistags[i]
+        res.axistags = AxisTags(axistags)
+        return res        
+ 
+    def take(self, indices, axis=None, out=None, mode='raise'):
+        res = numpy.ndarray.take(self, indices, axis, out, mode)
+        if axis is None:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+           
+    def transpose(self, *axes):
+        res = numpy.ndarray.transpose(self, *axes)
+        if len(axes) == 1:
+            axes = axes[0]
+        if not axes:
+            axistags = [k for k in res.axistags]
+            axistags.reverse()
+            res.axistags = AxisTags(axistags)
+        else:
+            res.axistags = AxisTags([self.axistags[k] for k in axes])
+        return res
+
+    def var(self, axis=None, dtype=None, out=None, ddof=0):
+        res = numpy.ndarray.var(self, axis, dtype, out, ddof)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        if len(res.shape) == 0:
+            res = res.item()
+        return res
+    
+    @property
+    def T(self):
+        return self.transpose()
+
+    def __getitem__(self, index):
+        '''x.__getitem__(y) <==> x[y]
+         
+           In addition to the usual indexing functionality, this function
+           also updates the axistags of the result array. There are three cases:
+             * getitem creates a value => no axistags are required
+             * getitem creates an arrayview => axistags are transferred from the
+                                             corresponding axes of the base array,
+                                             axes resulting from 'newaxis' get tag 'None'
+             * getitem creates a copy of an array (fancy indexing) => all axistags are 'None'
+        '''
+        res = numpy.ndarray.__getitem__(self, index)
+        if res is not self and hasattr(res, 'axistags'):
+            if(res.base is self):
+                res.axistags = res.axistags.transform(index, res.ndim)
+            else:
+                res.axistags = AxisTags(res.ndim)
+        return res
+
+    for k in ['all', 'any', 'argmax', 'argmin', 'cumsum', 'cumprod', 'flatten', 
+               'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat', 
+               'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take', 
+               'transpose', 'var']:
+        exec k + '.__doc__ = numpy.ndarray.' + k + '.__doc__'
+
 
 ##################################################################
 
