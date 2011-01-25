@@ -470,6 +470,8 @@ struct UnaryFunctor<ArgumentFunctor1>
     UnaryFunctor & operator=(UnaryFunctor const &); // not implemented
 };
 
+typedef UnaryFunctor<ArgumentFunctor1> Identity;
+
 template <>
 struct ResultTraits0<UnaryFunctor<ArgumentFunctor1> >
 {
