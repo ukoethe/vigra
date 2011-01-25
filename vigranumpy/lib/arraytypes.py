@@ -130,6 +130,36 @@ class StandardTags(object):
     def c(cls):
         return AxisInfo('c', AxisType.Channels)
 
+def AxisInfo_copy(axisinfo):
+    return AxisInfo(axisinfo)
+
+def AxisInfo_deepcopy(axisinfo, memo):
+    result = AxisInfo(axisinfo)
+    memo[id(axisinfo)] = result
+    return result
+
+AxisInfo.__copy__ = AxisInfo_copy
+AxisInfo.__deepcopy__ = AxisInfo_deepcopy
+
+del AxisInfo_copy
+del AxisInfo_deepcopy
+
+def AxisTags_copy(axistags):
+    return AxisTags(axistags)
+
+def AxisTags_deepcopy(axistags, memo):
+    taglist = [k for k in axistags]
+    taglist = copy.deepcopy(taglist, memo)
+    result = AxisTags(taglist)
+    memo[id(axistags)] = result
+    return result
+
+AxisTags.__copy__ = AxisTags_copy
+AxisTags.__deepcopy__ = AxisTags_deepcopy
+
+del AxisTags_copy
+del AxisTags_deepcopy
+
 
 def _array_docstring_(name, shape, compat):
     return '''
@@ -536,6 +566,8 @@ this class via its subclasses!
            
     def transpose(self, *axes):
         res = numpy.ndarray.transpose(self, *axes)
+        if not hasattr(res, 'axistags'):
+            return res
         if len(axes) == 1:
             axes = axes[0]
         if not axes:
