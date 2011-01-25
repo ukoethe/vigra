@@ -655,7 +655,7 @@ class allocator<vigra::FFTWComplex<Real> >
   public:
     typedef vigra::FFTWComplex<Real> value_type;
     typedef size_t size_type;
-    typedef ptrdiff_t difference_type;
+    typedef std::ptrdiff_t difference_type;
     typedef value_type *pointer;
     typedef const value_type *const_pointer;
     typedef value_type& reference;
@@ -709,7 +709,7 @@ class allocator<vigra::FFTWComplex<Real> >
     
     size_type max_size() const throw()
     {
-        return vigra::NumericTraits<ptrdiff_t>::max() / sizeof(value_type);
+        return vigra::NumericTraits<std::ptrdiff_t>::max() / sizeof(value_type);
     }
 };
 

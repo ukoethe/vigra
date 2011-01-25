@@ -111,7 +111,7 @@ inline int convertToInt(std::string const& s) {
 const int SIFImportInfo::width() const {    return m_width; }
 const int SIFImportInfo::height() const {    return m_height; }
 const int SIFImportInfo::stacksize() const {    return m_stacksize; }
-const ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
+const std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
 const char * SIFImportInfo::getFileName() const  {    return m_filename;    }    
 
 
@@ -253,7 +253,7 @@ void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayT
 
     byteorder bo = byteorder("little endian");  // SIF file is little-endian
 
-    ptrdiff_t pos = file.tellg();        // pointer to beginning of the file
+    std::ptrdiff_t pos = file.tellg();        // pointer to beginning of the file
     file.seekg(pos+info.getOffset());
     read_array( file, bo, memblock, info.width()*info.height()*info.stacksize() );
     file.close();

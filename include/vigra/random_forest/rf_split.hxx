@@ -676,7 +676,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t               min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 
@@ -811,7 +811,7 @@ class ThresholdSplit: public SplitBase<Tag>
 
     double                      region_gini_;
     ArrayVector<double>         min_gini_;
-    ArrayVector<ptrdiff_t>      min_indices_;
+    ArrayVector<std::ptrdiff_t>      min_indices_;
     ArrayVector<double>         min_thresholds_;
 
     int                         bestSplitIndex;
@@ -984,7 +984,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t               min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 
@@ -1085,7 +1085,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t               min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 	typedef RandomMT19937	Random_t;

@@ -220,8 +220,8 @@ struct ArrayVectorTest
 
     void testAmbiguousConstructor()
     {
-        ArrayVector<ptrdiff_t> a(2, ptrdiff_t(1));
-        ArrayVector<ptrdiff_t> b(a.begin(), a.end());
+        ArrayVector<std::ptrdiff_t> a(2, std::ptrdiff_t(1));
+        ArrayVector<std::ptrdiff_t> b(a.begin(), a.end());
     }
 };
 
