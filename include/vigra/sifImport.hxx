@@ -113,7 +113,7 @@ class SIFImportInfo
             Everything before this point belongs to the 
             variable lenght header.
          */
-		VIGRA_EXPORT const ptrdiff_t getOffset() const;
+		VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
 
         /** Get the filename of this SIF object.
          */
@@ -140,7 +140,7 @@ class SIFImportInfo
 		int m_width;
 		int m_height;
 		int m_stacksize;
-		ptrdiff_t m_offset;
+		std::ptrdiff_t m_offset;
 		int mod;
 		int left, right, bottom, top;
 		int xbin, ybin, xres, yres;
