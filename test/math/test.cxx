@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*               Copyright 2004-2011 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -46,6 +46,7 @@
 #include <cstdlib>
 #include "unittest.hxx"
 #include "vigra/mathutil.hxx"
+#include "vigra/algorithm.hxx"
 #include "vigra/functorexpression.hxx"
 #include "vigra/polynomial.hxx"
 #include "vigra/array_vector.hxx"
@@ -544,6 +545,45 @@ struct FunctionsTest
         shouldEqual(argMinIf(data, end, Arg1() > Param(5.0)), end);
         shouldEqual(argMaxIf(data, end, Arg1() < Param(5.0)), data+5);
         shouldEqual(argMaxIf(data, end, Arg1() < Param(-2.0)), end);
+    }
+
+    void testAlgorithms()
+    {
+		static const int size = 6;
+		int index[size];
+
+		vigra::linspace(index, index+size);
+		int indexref[size] = {0, 1, 2, 3, 4, 5};
+		shouldEqualSequence(index, index+size, indexref);
+
+		vigra::linspace(index, index+size, 5, 5);
+		int indexref2[size] = {5, 10, 15, 20, 25, 30};
+		shouldEqualSequence(index, index+size, indexref2);
+
+        double data[size] = {1.0, 5.0,
+                         3.0, 2.0,
+                        -2.0, 4.0};
+
+		vigra::argSort(data, data+size, index, std::greater<double>());
+		int sortref[size] = {1, 5, 2, 3, 0, 4};
+		shouldEqualSequence(index, index+size, sortref);
+
+		vigra::argSort(data, data+size, index);
+		int sortref2[size] = {4, 0, 3, 2, 5, 1};
+		shouldEqualSequence(index, index+size, sortref2);
+
+		double res[size];
+		vigra::applyPermutation(index, index+size, data, res);
+		double ref[size] = {-2.0, 1.0, 2.0, 3.0, 4.0, 5.0 };
+		shouldEqualSequence(res, res+size, ref);
+
+		int inverse[size];
+		vigra::inversePermutation(index, index+size, inverse);
+		int inverseref[size] = {1, 5, 3, 2, 0, 4};
+		shouldEqualSequence(inverse, inverse+size, inverseref);
+
+		vigra::applyPermutation(inverse, inverse+size, ref, res);
+		shouldEqualSequence(res, res+size, data);
     }
 
     void testClebschGordan()
@@ -2679,6 +2719,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::testBessel));
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
+        add( testCase(&FunctionsTest::testAlgorithms));
         add( testCase(&FunctionsTest::testClebschGordan));
 
         add( testCase(&RationalTest::testGcdLcm));

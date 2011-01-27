@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2005 by Ullrich Koethe                  */
+/*               Copyright 1998-2011 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -47,6 +47,7 @@
 #include "tuple.hxx"
 #include "sized_int.hxx"
 #include "numerictraits.hxx"
+#include "algorithm.hxx"
 
 /*! \page MathConstants Mathematical Constants
 
@@ -590,132 +591,6 @@ norm(T const & t)
 {
     typedef typename NormTraits<T>::SquaredNormType SNT;
     return sqrt(static_cast<typename SquareRootTraits<SNT>::SquareRootArgument>(squaredNorm(t)));
-}
-
-    /*! Find the minimum element in a sequence.
-    
-        The function returns the iterator refering to the minimum element.
-        
-        <b>Required Interface:</b>
-        
-        \code
-        Iterator is a standard forward iterator.
-        
-        bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
-        \endcode
-
-        <b>\#include</b> \<vigra/mathutil.hxx\><br>
-        Namespace: vigra
-    */
-template <class Iterator>
-Iterator argMin(Iterator first, Iterator last)
-{
-    if(first == last)
-        return last;
-    Iterator best = first;
-    for(++first; first != last; ++first)
-        if(*first < *best)
-            best = first;
-    return best;
-}
-
-    /*! Find the maximum element in a sequence.
-    
-        The function returns the iterator refering to the maximum element.
-        
-        <b>Required Interface:</b>
-        
-        \code
-        Iterator is a standard forward iterator.
-        
-        bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
-        \endcode
-
-        <b>\#include</b> \<vigra/mathutil.hxx\><br>
-        Namespace: vigra
-    */
-template <class Iterator>
-Iterator argMax(Iterator first, Iterator last)
-{
-    if(first == last)
-        return last;
-    Iterator best = first;
-    for(++first; first != last; ++first)
-        if(*best < *first)
-            best = first;
-    return best;
-}
-
-    /*! Find the minimum element in a sequence conforming to a condition.
-    
-        The function returns the iterator refering to the minimum element,
-        where only elements conforming to the condition (i.e. where 
-        <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
-        If no element conforms to the condition, or the sequence is empty,
-        the end iterator \a last is returned.
-        
-        <b>Required Interface:</b>
-        
-        \code
-        Iterator is a standard forward iterator.
-        
-        bool c = condition(*first);
-        
-        bool f = *first < NumericTraits<typename std::iterator_traits<Iterator>::value_type>::max();
-        \endcode
-
-        <b>\#include</b> \<vigra/mathutil.hxx\><br>
-        Namespace: vigra
-    */
-template <class Iterator, class UnaryFunctor>
-Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
-{
-    for(; first != last; ++first)
-        if(condition(*first))
-            break;
-    if(first == last)
-        return last;
-    Iterator best = first;
-    for(++first; first != last; ++first)
-        if(condition(*first) && *first < *best)
-            best = first;
-    return best;
-}
-
-    /*! Find the maximum element in a sequence conforming to a condition.
-    
-        The function returns the iterator refering to the maximum element,
-        where only elements conforming to the condition (i.e. where 
-        <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
-        If no element conforms to the condition, or the sequence is empty,
-        the end iterator \a last is returned.
-        
-        <b>Required Interface:</b>
-        
-        \code
-        Iterator is a standard forward iterator.
-        
-        bool c = condition(*first);
-        
-        bool f = NumericTraits<typename std::iterator_traits<Iterator>::value_type>::min() < *first;
-        \endcode
-
-        <b>\#include</b> \<vigra/mathutil.hxx\><br>
-        Namespace: vigra
-    */
-template <class Iterator, class UnaryFunctor>
-Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
-{
-    for(; first != last; ++first)
-        if(condition(*first))
-            break;
-    if(first == last)
-        return last;
-    Iterator best = first;
-    for(++first; first != last; ++first)
-        if(condition(*first) && *best < *first)
-            best = first;
-    return best;
 }
 
     /*! Compute the eigenvalues of a 2x2 real symmetric matrix.
