@@ -27,6 +27,13 @@ include(VigraSetDefaults)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
+IF(VIGRA_STATIC_LIB)
+    SET(LIBTYPE STATIC)
+    ADD_DEFINITIONS(-DVIGRA_STATIC_LIB)
+ELSE(VIGRA_STATIC_LIB)
+    SET(LIBTYPE SHARED)
+ENDIF(VIGRA_STATIC_LIB)
+
 IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
@@ -232,11 +239,19 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
+
+IF(VIGRA_STATIC_LIB)
+    MESSAGE( STATUS "  building static lib" )
+ELSE()
+    MESSAGE( STATUS "  building shared lib" )
+ENDIF()
+
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
-	MESSAGE( STATUS "---------------------------------------------------------" )
+
+MESSAGE( STATUS "---------------------------------------------------------" )
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
 MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib${LIBDIR_SUFFIX}")

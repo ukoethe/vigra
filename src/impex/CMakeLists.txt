@@ -19,10 +19,12 @@ IF(HDF5_FOUND)
 ENDIF(HDF5_FOUND)
 
 IF (MSVC OR MINGW)
-  ADD_DEFINITIONS(-DVIGRA_DLL)
+    IF(NOT VIGRA_STATIC_LIB)
+        ADD_DEFINITIONS(-DVIGRA_DLL)
+    ENDIF()
 ENDIF ()
 
-ADD_LIBRARY(vigraimpex SHARED
+ADD_LIBRARY(vigraimpex ${LIBTYPE}
     bmp.cxx
     byteorder.cxx
     codecmanager.cxx

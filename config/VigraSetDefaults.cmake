@@ -77,6 +77,13 @@ SET(AUTOBUILD_TESTS ${AUTOBUILD_TESTS}
     CACHE BOOL "Compile tests as part of target 'all' (resp. 'ALL_BUILD') ?"
     FORCE)
 
+IF(NOT DEFINED VIGRA_STATIC_LIB)
+    SET(VIGRA_STATIC_LIB "OFF")
+ENDIF()    
+SET(VIGRA_STATIC_LIB ${VIGRA_STATIC_LIB}
+    CACHE BOOL "Whether to build vigra as a static library ?"
+    FORCE)
+
 # This is only executed once on the first cmake run.
 IF(NOT VIGRA_DEFAULTS_INIT)
     SET(VIGRA_DEFAULTS_INIT TRUE CACHE INTERNAL "initial flags set")
