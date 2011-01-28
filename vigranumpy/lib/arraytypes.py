@@ -109,27 +109,6 @@ class classproperty(object):
             self.__class_method = class_method
             self.__instance_method = instance_method
 
-class StandardTags(object):
-    @classproperty
-    def x(cls):
-        return AxisInfo('x', AxisType.Space)
-    
-    @classproperty
-    def y(cls):
-        return AxisInfo('y', AxisType.Space)
-    
-    @classproperty
-    def z(cls):
-        return AxisInfo('z', AxisType.Space)
-    
-    @classproperty
-    def t(cls):
-        return AxisInfo('t', AxisType.Time)
-    
-    @classproperty
-    def c(cls):
-        return AxisInfo('c', AxisType.Channels)
-
 def AxisInfo_copy(axisinfo):
     return AxisInfo(axisinfo)
 
@@ -232,21 +211,42 @@ compatible with the memory layout requirements of
 VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     """
-    def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None):
+    def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None, axistags = None):
         from vigranumpycore import constructNumpyArray
+        # FIXME: we can get axistags in 3 different ways: from 'obj', implicitly from 'order',
+        #        and explicitly from 'axistags'
+        #        this is not yet consistent
         if isinstance(obj, numpy.ndarray) and not isinstance(obj, _VigraArray):
             obj = obj.swapaxes(0, cls.spatialDimensions-1)
+        # FIXME: constructNumpyArray() must be rewritten
+        #        in particular, it should allocate in C-order by default
+        #        and the relationship between memory order and axistags must be well-defined
         if value is not None:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
             res[...] = value
         else:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
-        if cls.spatialDimensions == 2:
-            axistags = [StandardTags.x, StandardTags.y]
-        elif cls.spatialDimensions == 3:
-            axistags = [StandardTags.x, StandardTags.y, StandardTags.z]
-        if res.ndim > cls.spatialDimensions:
-            axistags.append(StandardTags.c)
+        # FIXME: this should work for arbitrary many dimensions
+        if axistags is None:
+            if order == 'A' and not isinstance(obj, numpy.ndarray):
+                order = 'V'
+            if hasattr(obj, 'axistags'):
+                axistags = obj.axistags
+            elif order == 'V' or order == 'F':
+                axistags = [AxisInfo.x, AxisInfo.y, AxisInfo.z][:cls.spatialDimensions]
+            elif order == 'C':
+                axistags = [AxisInfo.z, AxisInfo.y, AxisInfo.x][-cls.spatialDimensions:]
+            elif order == 'A':
+                strideOrder = [int(k) for k in numpy.array(res.strides).argsort()]
+                strideOrder.reverse()
+                strideOrder = strideOrder[:cls.spatialDimensions]
+                strideOrder = [int(k) for k in numpy.array(strideOrder).argsort()]
+                axistags = [AxisInfo.z, AxisInfo.y, AxisInfo.x][-cls.spatialDimensions:]
+                axistags = [axistags[k] for k in strideOrder]
+            if res.ndim > len(axistags):
+                axistags.append(AxisInfo.c)
+        elif hasattr(obj, 'axistags'):
+            pass # FIXME: need to check consistency here
         res.axistags = AxisTags(axistags)
         return res
     
@@ -553,9 +553,10 @@ this class via its subclasses!
             
     def swapaxes(self, i, j):
         res = numpy.ndarray.swapaxes(self, i, j)
-        axistags = [k for k in res.axistags]
-        axistags[i], axistags[j] = axistags[j], axistags[i]
-        res.axistags = AxisTags(axistags)
+        if not hasattr(res, 'axistags'):
+            return res
+        res.axistags = AxisTags(res.axistags)
+        res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
         return res        
  
     def take(self, indices, axis=None, out=None, mode='raise'):
@@ -568,14 +569,13 @@ this class via its subclasses!
         res = numpy.ndarray.transpose(self, *axes)
         if not hasattr(res, 'axistags'):
             return res
+        res.axistags = AxisTags(res.axistags)
         if len(axes) == 1:
             axes = axes[0]
         if not axes:
-            axistags = [k for k in res.axistags]
-            axistags.reverse()
-            res.axistags = AxisTags(axistags)
+            res.axistags.transpose()
         else:
-            res.axistags = AxisTags([self.axistags[k] for k in axes])
+            res.axistags.transpose(axes)
         return res
 
     def var(self, axis=None, dtype=None, out=None, ddof=0):
@@ -586,6 +586,16 @@ this class via its subclasses!
         if len(res.shape) == 0:
             res = res.item()
         return res
+
+    def vigraAxisOrdering(self):
+        if not hasattr(self, 'axistags'):
+            return self
+        return self.transpose(self.axistags.canonicalOrdering())
+
+    def numpyAxisOrdering(self):
+        strideOrder = [int(k) for k in numpy.array(self.strides).argsort()]
+        strideOrder.reverse()
+        return self.transpose(strideOrder)
     
     @property
     def T(self):

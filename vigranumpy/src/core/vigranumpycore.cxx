@@ -41,6 +41,7 @@
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/functorexpression.hxx>
+#include <vigra/mathutil.hxx>
 #include <vector>
 
 NUMPY_ARRAY_INITIALIZE_REGISTRY
@@ -49,18 +50,21 @@ namespace python = boost::python;
 
 namespace vigra {
 
-enum AxisType { Unknown = 0, Space = 1, Time = 2, Channels = 4, Frequency = 8, Angle = 16 };
+// this particular assignment of bits to types is crucial for 
+// canonical axis ordering
+enum AxisType { Space = 1, Angle = 2, Time = 4, Frequency = 8, 
+                UnknownAxisType = 16, Channels = 32 };
 
 class AxisInfo
 {
   public:
   
-    AxisInfo(std::string key = "?", AxisType flags = Unknown, 
+    AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType, 
              double resolution = 0.0, std::string description = "")
     : key_(key),
       description_(description),
       resolution_(resolution),
-      flags_(flags)
+      flags_(typeFlags)
     {}
     
     std::string key() const
@@ -73,19 +77,29 @@ class AxisInfo
         return description_;
     }
     
+    void setDescription(std::string const & description)
+    {
+        description_ = description;
+    }
+    
     double resolution() const
     {
         return resolution_;
     }
     
-    AxisType flags() const
+    void setResolution(double resolution)
+    {
+        resolution_ = resolution;
+    }
+    
+    AxisType typeFlags() const
     {
         return flags_;
     }
     
     bool isUnknown() const
     {
-        return flags_ == Unknown;
+        return (flags_ == UnknownAxisType) || (flags_ == 0);
     }
     
     bool isSpatial() const
@@ -117,22 +131,22 @@ class AxisInfo
     {
         std::string res("AxisInfo: '");
         res += key_ + "' (type:";
-        if(flags_ == Unknown)
+        if(isUnknown())
         {
             res += " none";
         }
         else
         {
+            if(isChannel())
+                res += " Channels";
             if(isSpatial())
                 res += " Space";
             if(isTemporal())
                 res += " Time";
-            if(isChannel())
-                res += " Channels";
-            if(isFrequency())
-                res += " Frequency";
             if(isAngular())
                 res += " Angle";
+            if(isFrequency())
+                res += " Frequency";
         }
         if(resolution_ > 0.0)
         {
@@ -148,9 +162,166 @@ class AxisInfo
 		return res;
     }
     
+    AxisInfo toFrequencyDomain(unsigned int size = 0) const
+    {
+        vigra_precondition(!isFrequency(),
+            "AxisInfo::toFrequencyDomain(): axis is already in the Fourier domain.");
+        AxisInfo res(std::string("f")+key(), AxisType(Frequency | flags_), 0.0, description_);
+        if(resolution_ > 0.0 && size > 0)
+            res.resolution_ = 1.0 / (resolution_ * size);
+        return res;
+    }
+    
+    AxisInfo fromFrequencyDomain(unsigned int size = 0) const
+    {
+        vigra_precondition(isFrequency(),
+            "AxisInfo::fromFrequencyDomain(): axis is not in the Fourier domain.");
+        std::string newKey = key();
+        if(newKey[0] == 'f')
+            newKey.erase(0,1);
+        AxisInfo res(newKey, AxisType(~Frequency & flags_), 0.0, description_);
+        if(resolution_ > 0.0 && size > 0)
+            res.resolution_ = 1.0 / (resolution_ * size);
+        return res;
+    }
+
+	bool operator==(AxisInfo const & other) const
+	{
+		if(isUnknown() || other.isUnknown())
+            return true;
+        return key() == other.key() && typeFlags() == other.typeFlags() && 
+			   (resolution() == 0.0 || other.resolution() == 0.0 || 
+                resolution() == other.resolution());
+	}
+
+	bool operator!=(AxisInfo const & other) const
+	{
+		return !operator==(other);
+	}
+    
+    // factory functions for standard tags
+    static AxisInfo x(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("x", Space, resolution, description);
+    }
+    
+    static AxisInfo y(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("y", Space, resolution, description);
+    }
+    
+    static AxisInfo z(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("z", Space, resolution, description);
+    }
+    
+    static AxisInfo t(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("t", Time, resolution, description);
+    }
+    
+    static AxisInfo fx(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("fx", AxisType(Space | Frequency), resolution, description);
+    }
+    
+    static AxisInfo fy(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("fy", AxisType(Space | Frequency), resolution, description);
+    }
+    
+    static AxisInfo fz(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("fz", AxisType(Space | Frequency), resolution, description);
+    }
+    
+    static AxisInfo ft(double resolution = 0.0, std::string const & description = "")
+    {
+        return AxisInfo("ft", AxisType(Time | Frequency), resolution, description);
+    }
+    
+    static AxisInfo c(std::string const & description = "")
+    {
+        return AxisInfo("c", Channels, 0.0, description);
+    }
+    
     std::string key_, description_;
     double resolution_;
     AxisType flags_;
+};
+
+AxisInfo AxisInfo__call__(AxisInfo const & i, double resolution, std::string const & description)
+{
+    return AxisInfo(i.key(), i.typeFlags(), resolution, description);
+}
+
+AxisInfo AxisInfo_x()
+{
+	return AxisInfo::x();
+}
+
+AxisInfo AxisInfo_y()
+{
+    return AxisInfo::y();
+}
+
+AxisInfo AxisInfo_z()
+{
+    return AxisInfo::z();
+}
+
+AxisInfo AxisInfo_t()
+{
+    return AxisInfo::t();
+}
+
+AxisInfo AxisInfo_fx()
+{
+    return AxisInfo::fx();
+}
+
+AxisInfo AxisInfo_fy()
+{
+    return AxisInfo::fy();
+}
+
+AxisInfo AxisInfo_fz()
+{
+    return AxisInfo::fz();
+}
+
+AxisInfo AxisInfo_ft()
+{
+    return AxisInfo::ft();
+}
+
+AxisInfo AxisInfo_c()
+{
+    return AxisInfo::c();
+}
+
+// the primary ordering is according to axis type:
+//     Space < Angle < Time < Frequency < Unknown < Channels
+// the secondary ordering is the lexicographic ordering of the keys
+//     "x" < "y" < "z"
+template <class GetFunctor>
+struct AxisInfoSorter
+{
+    GetFunctor get;
+    
+    template <class T>
+    bool operator()(T const & l, T const & r) const
+    {
+		UInt32 lAxisType = get(l).typeFlags();
+        if(lAxisType == 0)
+            lAxisType = UnknownAxisType;
+        UInt32 rAxisType = get(r).typeFlags();
+        if(rAxisType == 0)
+            rAxisType = UnknownAxisType;
+		return (lAxisType == rAxisType)
+			        ? get(l).key() < get(r).key()
+					: lAxisType < rAxisType;
+    }
 };
 
 // split up AxisTags into a purely C++ part and a Python-dependent part (PyAxisTags below)
@@ -213,9 +384,9 @@ class AxisTags
     {
         vigra_precondition(checkIndex(k),
            "AxisTags::get(): Invalid index or key.");
-        return k < 0
-                  ? getFunctor(axes_[size()+k])
-                  : getFunctor(axes_[k]);
+        if(k < 0)
+            k += size();
+        return getFunctor(axes_[k]);
     }
 
     AxisInfo const & get(std::string const & key) const
@@ -277,6 +448,59 @@ class AxisTags
         return (int)size();
     }
     
+    std::vector<UInt32> matchOrdering(AxisTags const & other)
+    {
+        vigra_precondition(size() == other.size(),
+            "AxisTags::matchOrdering(): size mismatch.");
+        
+        std::vector<UInt32> permutation(size());
+        for(unsigned int k = 0; k<size(); ++k)
+        {
+            std::string key = other.get(k).key();
+            unsigned int l=0;
+            for(; l<size(); ++l)
+            {
+                if(key == get(l).key())
+                    break;
+            }
+            vigra_precondition(l < size(),
+                "AxisTags::matchOrdering(): key mismatch.");
+            permutation[k] = l;
+        }
+        return permutation;
+    }
+    
+    std::vector<UInt32> canonicalOrdering()
+    {
+        std::vector<UInt32> permutation(size());
+        indexSort(axes_.begin(), axes_.end(), permutation.begin(), AxisInfoSorter<GetFunctor>());
+        return permutation;
+    }
+    
+    void transpose(std::vector<UInt32> const & permutation)
+    {
+        vigra_precondition(permutation.size() == size(),
+            "AxisTags::transpose(): Permutation has wrong size.");
+        std::vector<T> newAxes(size());
+        applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
+        axes_.swap(newAxes);
+    }
+    
+    void transpose()
+    {
+        std::reverse(axes_.begin(), axes_.end());
+    }
+
+	bool operator==(AxisTags const & other) const
+	{
+		return std::equal(axes_.begin(), axes_.end(), other.axes_.begin());
+	}
+
+	bool operator!=(AxisTags const & other) const
+	{
+		return !operator==(other);
+	}
+    
   protected:
 	std::vector<T> axes_;
     GetFunctor getFunctor;
@@ -293,6 +517,7 @@ struct PyGetFunctor
 class PyAxisTags
 : public AxisTags<python::object, PyGetFunctor>
 {
+    typedef AxisTags<python::object, PyGetFunctor> BaseType;
   public:
     PyAxisTags()
 	{}
@@ -335,21 +560,79 @@ class PyAxisTags
 			PyErr_SetString(PyExc_IndexError, "AxisInfo::getitem(): Invalid index or key.");
 			python::throw_error_already_set();
 		}
-		return k < 0 
-			      ? this->axes_[size()+k]
-				  : this->axes_[k];
+        if(k < 0)
+            k += this->size();
+		return this->axes_[k];
     }
     
     python::object getitem(std::string const & key)
     {
-        return getitem(findKey(key));
+        return getitem(this->findKey(key));
     }
+
+    void setitem(int k, python::object i)
+    {
+        if(!this->checkIndex(k))
+		{
+			PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
+			python::throw_error_already_set();
+		}
+        if(!python::extract<AxisInfo const &>(i).check())
+		{
+			PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
+			python::throw_error_already_set();
+		}
+        
+        if(k < 0)
+            k += this->size();
+		this->axes_[k] = i;
+    }
+    
+    void setitem(std::string const & key, python::object i)
+    {
+        setitem(this->findKey(key), i);
+    }
+
+    void append(python::object i)
+    {
+        insert(size(), i);
+    }
+
+    void insert(int k, python::object i)
+    {
+        if(k < 0)
+            k += this->size();
+        if(k < 0)
+            k = 0;
+        if(k > (int)this->size())
+            k = this->size();
+        if(!python::extract<AxisInfo const &>(i).check())
+		{
+			PyErr_SetString(PyExc_TypeError, "AxisInfo::insert(): Item type must be AxisInfo.");
+			python::throw_error_already_set();
+		}
+		this->axes_.insert(this->axes_.begin()+k, i);
+    }
+    
+    void insert(std::string const & key, python::object i)
+    {
+        insert(this->findKey(key), i);
+    }
+
+	python::list axesByFlag(AxisType typeFlags) const
+	{
+		python::list res;
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).typeFlags() == typeFlags)
+				res.append(k);
+		return res;
+	}
 
 	python::list spatialAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isSpatial())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isSpatial())
 				res.append(k);
 		return res;
 	}
@@ -357,8 +640,8 @@ class PyAxisTags
 	python::list temporalAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isTemporal())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isTemporal())
 				res.append(k);
 		return res;
 	}
@@ -366,8 +649,8 @@ class PyAxisTags
 	python::list channelAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isChannel())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isChannel())
 				res.append(k);
 		return res;
 	}
@@ -375,8 +658,8 @@ class PyAxisTags
 	python::list frequencyAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isFrequency())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isFrequency())
 				res.append(k);
 		return res;
 	}
@@ -384,8 +667,8 @@ class PyAxisTags
 	python::list angularAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isAngular())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isAngular())
 				res.append(k);
 		return res;
 	}
@@ -393,10 +676,45 @@ class PyAxisTags
 	python::list untaggedAxes() const
 	{
 		python::list res;
-		for(unsigned int k=0; k<size(); ++k)
-			if(get(k).isUnknown())
+		for(unsigned int k=0; k<this->size(); ++k)
+			if(this->get(k).isUnknown())
 				res.append(k);
 		return res;
+	}
+
+	template <class U>
+    python::list vectorToPython(std::vector<U> const & v) const
+	{
+		python::list res;
+        for(unsigned int k=0; k<v.size(); ++k)
+			res.append(v[k]);
+		return res;
+	}
+
+	python::list canonicalOrdering()
+	{
+		return vectorToPython(BaseType::canonicalOrdering());
+	}
+
+	python::list matchOrdering(PyAxisTags const & other)
+	{
+		return vectorToPython(BaseType::matchOrdering(other));
+	}
+
+	void transpose(python::object const & o)
+	{
+		unsigned int osize = len(o);
+        std::vector<UInt32> permutation(osize);
+        
+        for(unsigned int k=0; k<this->size(); ++k)
+			permutation[k] = python::extract<UInt32>(o[k])();
+            
+		BaseType::transpose(permutation);
+	}
+
+	void transpose()
+	{
+		BaseType::transpose();
 	}
     
     PyAxisTags transform(python::object index, int lnew) const;
@@ -407,7 +725,7 @@ PyAxisTags::transform(python::object index, int lnew) const
 {
     PyAxisTags newTags;
 	python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
-	int lold = axes_.size();
+	int lold = this->size();
     if(!PySequence_Check(index.ptr()))
     {
         index = make_tuple(index);
@@ -472,7 +790,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
     registerNumpyArrayConverters();
 
     enum_<AxisType>("AxisType")
-        .value("Unknown", Unknown)
+        .value("UnknownAxisType", UnknownAxisType)
         .value("Space", Space)
         .value("Time", Time)
         .value("Channels", Channels)
@@ -482,19 +800,33 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 
     class_<AxisInfo>("AxisInfo", no_init)
         .def(init<std::string, AxisType, double, std::string>(
-             (arg("name")="?", arg("flags")=Unknown, 
+             (arg("name")="?", arg("typeFlags")=UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
 		.def_readonly("key", &AxisInfo::key_)
 		.def_readwrite("description", &AxisInfo::description_)
 		.def_readwrite("resolution", &AxisInfo::resolution_)
-		.def_readonly("flags", &AxisInfo::flags_)
+		.def_readonly("typeFlags", &AxisInfo::flags_)
+		.def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
+		.def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
 		.def("isSpatial", &AxisInfo::isSpatial)
 		.def("isTemporal", &AxisInfo::isTemporal)
 		.def("isChannel", &AxisInfo::isChannel)
 		.def("isFrequency", &AxisInfo::isFrequency)
 		.def("isAngular", &AxisInfo::isAngular)
+		.def(self == self)
+		.def(self != self)
 		.def("__repr__", &AxisInfo::repr)
+		.def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
+        .add_static_property("x", &AxisInfo_x)
+        .add_static_property("y", &AxisInfo_y)
+        .add_static_property("z", &AxisInfo_z)
+        .add_static_property("t", &AxisInfo_t)
+        .add_static_property("fx", &AxisInfo_fx)
+        .add_static_property("fy", &AxisInfo_fy)
+        .add_static_property("fz", &AxisInfo_fz)
+        .add_static_property("ft", &AxisInfo_ft)
+        .add_static_property("c", &AxisInfo_c)
     ;
 
 	class_<PyAxisTags>("AxisTags", no_init)
@@ -505,15 +837,27 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 		.def("__repr__", &PyAxisTags::repr)
 		.def("__getitem__", (object (PyAxisTags::*)(int))&PyAxisTags::getitem)
 		.def("__getitem__", (object (PyAxisTags::*)(std::string const &))&PyAxisTags::getitem)
+		.def("__setitem__", (void (PyAxisTags::*)(int, object))&PyAxisTags::setitem)
+		.def("__setitem__", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::setitem)
+		.def("insert", (void (PyAxisTags::*)(int, object))&PyAxisTags::insert)
+		.def("insert", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::insert)
+		.def("append", &PyAxisTags::append)
 		.def("__delitem__", (void (PyAxisTags::*)(int))&PyAxisTags::dropAxis)
 		.def("__delitem__", (void (PyAxisTags::*)(std::string const &))&PyAxisTags::dropAxis)
 		.def("__len__", &PyAxisTags::size)
+		.def(self == self)
+		.def(self != self)
+		.def("axesByFlag", &PyAxisTags::axesByFlag)
 		.def("spatialAxes", &PyAxisTags::spatialAxes)
 		.def("temporalAxes", &PyAxisTags::temporalAxes)
 		.def("channelAxes", &PyAxisTags::channelAxes)
 		.def("frequencyAxes", &PyAxisTags::frequencyAxes)
 		.def("angularAxes", &PyAxisTags::angularAxes)
 		.def("untaggedAxes", &PyAxisTags::untaggedAxes)
+		.def("canonicalOrdering", &PyAxisTags::canonicalOrdering)
+		.def("matchOrdering", &PyAxisTags::matchOrdering)
+		.def("transpose", (void (PyAxisTags::*)(object const &))&PyAxisTags::transpose)
+		.def("transpose", (void (PyAxisTags::*)())&PyAxisTags::transpose)
 		.def("transform", &PyAxisTags::transform)
     ;
 }
