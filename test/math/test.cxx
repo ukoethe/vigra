@@ -552,11 +552,11 @@ struct FunctionsTest
 		static const int size = 6;
 		int index[size];
 
-		vigra::linspace(index, index+size);
+		vigra::linearSequence(index, index+size);
 		int indexref[size] = {0, 1, 2, 3, 4, 5};
 		shouldEqualSequence(index, index+size, indexref);
 
-		vigra::linspace(index, index+size, 5, 5);
+		vigra::linearSequence(index, index+size, 5, 5);
 		int indexref2[size] = {5, 10, 15, 20, 25, 30};
 		shouldEqualSequence(index, index+size, indexref2);
 
@@ -564,11 +564,11 @@ struct FunctionsTest
                          3.0, 2.0,
                         -2.0, 4.0};
 
-		vigra::argSort(data, data+size, index, std::greater<double>());
+		vigra::indexSort(data, data+size, index, std::greater<double>());
 		int sortref[size] = {1, 5, 2, 3, 0, 4};
 		shouldEqualSequence(index, index+size, sortref);
 
-		vigra::argSort(data, data+size, index);
+		vigra::indexSort(data, data+size, index);
 		int sortref2[size] = {4, 0, 3, 2, 5, 1};
 		shouldEqualSequence(index, index+size, sortref2);
 

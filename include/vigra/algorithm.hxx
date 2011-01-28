@@ -49,6 +49,7 @@ namespace vigra {
     /*! Find the minimum element in a sequence.
     
         The function returns the iterator refering to the minimum element.
+        This is identical to the function <tt>std::min_element()</tt>.
         
         <b>Required Interface:</b>
         
@@ -76,6 +77,7 @@ Iterator argMin(Iterator first, Iterator last)
     /*! Find the maximum element in a sequence.
     
         The function returns the iterator refering to the maximum element.
+        This is identical to the function <tt>std::max_element()</tt>.
         
         <b>Required Interface:</b>
         
@@ -182,7 +184,7 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
         \code
         namespace vigra {
             template <class Iterator, class Value>
-            void linspace(Iterator first, Iterator last, 
+            void linearSequence(Iterator first, Iterator last, 
                           Value const & start = 0, Value const & step = 1);
         }
         \endcode
@@ -200,25 +202,25 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
         Namespace: vigra
     */
 template <class Iterator, class Value>
-void linspace(Iterator first, Iterator last, Value start, Value step)
+void linearSequence(Iterator first, Iterator last, Value start, Value step)
 {
     for(; first != last; ++first, start += step)
         *first = start;
 }
 
 template <class Iterator, class Value>
-void linspace(Iterator first, Iterator last, Value start)
+void linearSequence(Iterator first, Iterator last, Value start)
 {
     for(; first != last; ++first, ++start)
         *first = start;
 }
 
 template <class Iterator>
-void linspace(Iterator first, Iterator last)
+void linearSequence(Iterator first, Iterator last)
 {
     typedef typename std::iterator_traits<Iterator>::value_type Value;
     
-    linspace(first, last, NumericTraits<Value>::zero());
+    linearSequence(first, last, NumericTraits<Value>::zero());
 }
 
 namespace detail {
@@ -254,11 +256,11 @@ struct IndexCompare
         namespace vigra {
             // compare using std::less
             template <class Iterator, class IndexIterator>
-            void argSort(Iterator first, Iterator last, IndexIterator index_first);
+            void indexSort(Iterator first, Iterator last, IndexIterator index_first);
 
             // compare using functor Compare
             template <class Iterator, class IndexIterator, class Compare>
-            void argSort(Iterator first, Iterator last, IndexIterator index_first, Compare compare);
+            void indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare compare);
         }
         \endcode
         
@@ -274,19 +276,19 @@ struct IndexCompare
         Namespace: vigra
     */
 template <class Iterator, class IndexIterator, class Compare>
-void argSort(Iterator first, Iterator last, IndexIterator index_first, Compare c)
+void indexSort(Iterator first, Iterator last, IndexIterator index_first, Compare c)
 {
     int size = last - first;
-    linspace(index_first, index_first+size);
+    linearSequence(index_first, index_first+size);
     std::sort(index_first, index_first+size, 
               detail::IndexCompare<Iterator, Compare>(first, c));
 }
 
 template <class Iterator, class IndexIterator>
-void argSort(Iterator first, Iterator last, IndexIterator index_first)
+void indexSort(Iterator first, Iterator last, IndexIterator index_first)
 {
     typedef typename std::iterator_traits<Iterator>::value_type Value;
-    argSort(first, last, index_first, std::less<Value>());
+    indexSort(first, last, index_first, std::less<Value>());
 }
 
     /*! Sort an array according to the given index permutation.
@@ -327,7 +329,7 @@ void applyPermutation(IndexIterator index_first, IndexIterator index_last,
 
     /*! Compute the inverse of a given permutation.
     
-        This is just another name for \ref argSort(), referring to
+        This is just another name for \ref indexSort(), referring to
         another semantics.
         
         <b> Declaration:</b>
@@ -355,7 +357,7 @@ template <class InIterator, class OutIterator>
 void inversePermutation(InIterator first, InIterator last, 
                         OutIterator out)
 {
-    argSort(first, last, out);
+    indexSort(first, last, out);
 }
 
 //@}
