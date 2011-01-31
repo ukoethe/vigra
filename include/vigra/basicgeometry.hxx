@@ -683,10 +683,10 @@ resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     
     vigra_precondition((width_old > 1) && (height_old > 1),
                  "resampleImage(): "
-                 "Source image to small.\n");
+                 "Source image too small.\n");
     vigra_precondition((width_new > 1) && (height_new > 1),
                  "resampleImage(): "
-                 "Destination image to small.\n");
+                 "Destination image too small.\n");
         
     typedef typename SrcAccessor::value_type SRCVT;
     typedef BasicImage<SRCVT> TmpImage;
