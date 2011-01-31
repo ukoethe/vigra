@@ -700,18 +700,26 @@ ArrayVector<T, Alloc>::insert(iterator p, size_type n, value_type const & v)
 {
     difference_type pos = p - this->begin();
     size_type new_size = this->size() + n;
-    if(new_size >= capacity_)
+    if(new_size > capacity_)
     {
         size_type new_capacity = std::max(new_size, resizeFactor*capacity_);
         pointer new_data = reserve_raw(new_capacity);
-        std::uninitialized_copy(this->begin(), p, new_data);
-        std::uninitialized_fill(new_data + pos, new_data + pos + n, v);
-        std::uninitialized_copy(p, this->end(), new_data + pos + n);
+        try
+        {
+            std::uninitialized_copy(this->begin(), p, new_data);
+            std::uninitialized_fill(new_data + pos, new_data + pos + n, v);
+            std::uninitialized_copy(p, this->end(), new_data + pos + n);
+        }
+        catch(...)
+        {
+            alloc_.deallocate(new_data, new_capacity);
+            throw;
+        }
         deallocate(this->data_, this->size_);
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
-    else if(pos + n >= this->size_)
+    else if(pos + n > this->size_)
     {
         size_type diff = pos + n - this->size_;
         std::uninitialized_copy(p, this->end(), this->end() + diff);
@@ -734,26 +742,36 @@ template <class InputIterator>
 typename ArrayVector<T, Alloc>::iterator
 ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
 {
-    size_type n = iend - i;
+    size_type n = std::distance(i, iend);
     size_type pos = p - this->begin();
     size_type new_size = this->size() + n;
-    if(new_size >= capacity_)
+    if(new_size > capacity_)
     {
         size_type new_capacity = std::max(new_size, resizeFactor*capacity_);
         pointer new_data = reserve_raw(new_capacity);
-        std::uninitialized_copy(this->begin(), p, new_data);
-        std::uninitialized_copy(i, iend, new_data + pos);
-        std::uninitialized_copy(p, this->end(), new_data + pos + n);
+        try
+        {
+            std::uninitialized_copy(this->begin(), p, new_data);
+            std::uninitialized_copy(i, iend, new_data + pos);
+            std::uninitialized_copy(p, this->end(), new_data + pos + n);
+        }
+        catch(...)
+        {
+            alloc_.deallocate(new_data, new_capacity);
+            throw;
+        }
         deallocate(this->data_, this->size_);
         capacity_ = new_capacity;
         this->data_ = new_data;
     }
-    else if(pos + n >= this->size_)
+    else if(pos + n > this->size_)
     {
         size_type diff = pos + n - this->size_;
         std::uninitialized_copy(p, this->end(), this->end() + diff);
-        std::uninitialized_copy(iend - diff, iend, this->end());
-        std::copy(i, iend - diff, p);
+        InputIterator split = i;
+		std::advance(split, n - diff);
+        std::uninitialized_copy(split, iend, this->end());
+        std::copy(i, split, p);
     }
     else
     {

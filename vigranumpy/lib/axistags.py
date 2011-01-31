@@ -1,6 +1,6 @@
 import numpy as np
 
-class InfoArray(np.ndarray):
+class TaggedArray(np.ndarray):
 
     def __new__(subtype, shape, dtype=float, buffer=None, offset=0,
           strides=None, order=None, axistags=None):
@@ -224,8 +224,7 @@ class InfoArray(np.ndarray):
                         else:
                             kindex += 1
         return res
-
-
+    
     for k in ['all', 'any', 'argmax', 'argmin', 'cumsum', 'cumprod', 'flatten', 
                'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat', 
                'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take', 
@@ -241,11 +240,11 @@ def benchmark(expression):
     reload(axistags)
     repetitions = 100000
     t1 = timeit.Timer(expression, 
-         "import numpy, axistags\na = axistags.InfoArray((2,3,4), axistags='zyx', dtype=numpy.uint8)")
+         "import numpy, axistags\na = axistags.TaggedArray((2,3,4), axistags='zyx', dtype=numpy.uint8)")
     t2 = timeit.Timer(expression, 
          "import numpy, axistags\na = numpy.ndarray((2,3,4), dtype=numpy.uint8)")
     t3 = timeit.Timer(expression, 
-         "import numpy, axistags\na = axistags.InfoArray((2,3,4), axistags='zyx', dtype=numpy.uint8).view(numpy.ndarray)")
-    print "InfoArray:", t1.timeit(repetitions)/repetitions*1e6,"musec"
+         "import numpy, axistags\na = axistags.TaggedArray((2,3,4), axistags='zyx', dtype=numpy.uint8).view(numpy.ndarray)")
+    print "TaggedArray:", t1.timeit(repetitions)/repetitions*1e6,"musec"
     print "ndarray:", t2.timeit(repetitions)/repetitions*1e6,"musec"
-    print "InfoArray as ndarray:", t3.timeit(repetitions)/repetitions*1e6,"musec"
+    print "TaggedArray as ndarray:", t3.timeit(repetitions)/repetitions*1e6,"musec"
