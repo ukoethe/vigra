@@ -297,7 +297,7 @@ struct BucketQueueTest
             bqueue.pop();
         }
         
-        shouldEqual(0, bqueue.size());
+        shouldEqual(0u, bqueue.size());
         shouldEqual(true, bqueue.empty());        
     }
     
@@ -332,7 +332,7 @@ struct BucketQueueTest
             bqueue.pop();
         }
         
-        shouldEqual(0, bqueue.size());
+        shouldEqual(0u, bqueue.size());
         shouldEqual(true, bqueue.empty());        
     }
     
@@ -367,7 +367,7 @@ struct BucketQueueTest
             bqueue.pop();
         }
         
-        shouldEqual(0, bqueue.size());
+        shouldEqual(0u, bqueue.size());
         shouldEqual(true, bqueue.empty());        
     }
 };
@@ -376,14 +376,14 @@ struct SizedIntTest
 {
     void testSizedInt()
     {
-        shouldEqual(sizeof(Int8), 1);
-        shouldEqual(sizeof(Int16), 2);
-        shouldEqual(sizeof(Int32), 4);
-        shouldEqual(sizeof(UInt8), 1);
-        shouldEqual(sizeof(UInt16), 2);
-        shouldEqual(sizeof(UInt32), 4);
-        should(sizeof(IntBiggest) >= 4);
-        should(sizeof(UIntBiggest) >= 4);
+        shouldEqual(sizeof(Int8), 1u);
+        shouldEqual(sizeof(Int16), 2u);
+        shouldEqual(sizeof(Int32), 4u);
+        shouldEqual(sizeof(UInt8), 1u);
+        shouldEqual(sizeof(UInt16), 2u);
+        shouldEqual(sizeof(UInt32), 4u);
+        should(sizeof(IntBiggest) >= 4u);
+        should(sizeof(UIntBiggest) >= 4u);
     }
 };
 

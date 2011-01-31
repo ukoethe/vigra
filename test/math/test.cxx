@@ -200,7 +200,7 @@ struct HighOrderPolynomialTest
         }
         vigra::ArrayVector<double> rroots;
         should(polynomialRealRootsEigenvalueMethod(p, rroots));
-        shouldEqual(rroots.size(), 2);
+        shouldEqual(rroots.size(), 2u);
         shouldEqualTolerance(rroots[0], -1.0, epsilon);
         shouldEqualTolerance(rroots[1], 1.0, epsilon);
     }
@@ -2057,7 +2057,7 @@ struct LinalgTest
 
             Matrix m(3,3,mdata), rhs(3,1,rhsdata), xx(3,1);
 
-            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqual(linearSolveQR(m, rhs, xx), 2u);
             shouldEqualSequenceTolerance(refdata, refdata+3, xx.data(), 1e-3);
         }
         {
@@ -2653,7 +2653,7 @@ struct PolygonTest
         
         vigra::convexHull(points, hull);
         
-        shouldEqual(10, hull.size());
+        shouldEqual(10u, hull.size());
         shouldEqualSequence(ref, ref+10, hull.begin());
     }
 };

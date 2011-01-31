@@ -742,9 +742,9 @@ public:
             ++countz;
         }
 
-        shouldEqual (countx, 30);
-        shouldEqual (county, 15);
-        shouldEqual (countz, 5);
+        shouldEqual (countx, 30u);
+        shouldEqual (county, 15u);
+        shouldEqual (countz, 5u);
         
         // test direct navigation
         traverser i3 = const_cast<array3_t const &>(a3).traverser_begin();

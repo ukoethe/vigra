@@ -167,7 +167,7 @@ class AxisInfo
         vigra_precondition(!isFrequency(),
             "AxisInfo::toFrequencyDomain(): axis is already in the Fourier domain.");
         AxisInfo res(std::string("f")+key(), AxisType(Frequency | flags_), 0.0, description_);
-        if(resolution_ > 0.0 && size > 0)
+        if(resolution_ > 0.0 && size > 0u)
             res.resolution_ = 1.0 / (resolution_ * size);
         return res;
     }
@@ -180,7 +180,7 @@ class AxisInfo
         if(newKey[0] == 'f')
             newKey.erase(0,1);
         AxisInfo res(newKey, AxisType(~Frequency & flags_), 0.0, description_);
-        if(resolution_ > 0.0 && size > 0)
+        if(resolution_ > 0.0 && size > 0u)
             res.resolution_ = 1.0 / (resolution_ * size);
         return res;
     }

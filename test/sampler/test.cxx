@@ -121,7 +121,7 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
             if(withReplacement)
                 should(usedIndices.size()+unusedIndices.size() >= (unsigned int)totalDataCount);
             else
-                shouldEqual(usedIndices.size()+unusedIndices.size(), totalDataCount);
+                shouldEqual(usedIndices.size()+unusedIndices.size(), (unsigned int)totalDataCount);
                 
             for(unsigned int ii = 0; ii < usedIndices.size(); ++ii)
             {
