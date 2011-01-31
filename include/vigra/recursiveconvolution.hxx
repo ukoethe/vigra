@@ -224,7 +224,10 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         old = NumericTraits<TempType>::zero();
     }
     else
+    {
         vigra_fail("recursiveFilterLine(): Unknown border treatment mode.\n");
+        old = NumericTraits<TempType>::zero(); // fix a stupid warning
+    }
 
     // left side of filter
     for(x=0, is = istart; x < w; ++x, ++is)
