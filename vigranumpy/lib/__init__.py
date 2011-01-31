@@ -92,6 +92,7 @@ The following sub-modules group related functionality:
 * analysis
 * learning
 * noise
+* unsupervised
 ''' % _vigra_doc_path
  
 from __version__ import version
@@ -105,6 +106,7 @@ import learning
 import colors
 import noise
 import geometry
+import unsupervised
 
 try:
     import fourier

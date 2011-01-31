@@ -1813,7 +1813,21 @@ struct LinalgTest
                 for(unsigned int j=0; j<c; ++j)
                     for(unsigned int i=0; i<r; ++i)
                         shouldEqual(rep(k*r+i, l*c+j), a(i,j));
-    }
+
+        double columnSum[] = {8.0, 14.0};
+        double rowSum[] = {6.0, 5.0, 11.0};
+		Matrix matColumnSum = Matrix(1, 2, columnSum);
+		Matrix matRowSum = Matrix(3, 1, rowSum);
+		shouldEqualSequence(matColumnSum.data(), matColumnSum.data()+2, a.sum(0).data());
+		shouldEqualSequence(matRowSum.data(), matRowSum.data()+3, a.sum(1).data());
+
+        double columnMean[] = {8/3.0, 14/3.0};
+        double rowMean[] = {3.0, 2.5, 5.5};
+		Matrix matColumnMean = Matrix(1, 2, columnMean);
+		Matrix matRowMean = Matrix(3, 1, rowMean);
+		shouldEqualSequence(matColumnMean.data(), matColumnMean.data()+2, a.mean(0).data());
+		shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());	
+	}
 
     void testArgMinMax()
     {

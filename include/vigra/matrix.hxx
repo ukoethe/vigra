@@ -43,6 +43,7 @@
 #include "multi_array.hxx"
 #include "mathutil.hxx"
 #include "numerictraits.hxx"
+#include "multi_pointoperators.hxx"
 
 
 namespace vigra
@@ -77,7 +78,7 @@ template <class T, class C>
 inline MultiArrayView <2, T, C>
 columnVector(MultiArrayView<2, T, C> const & m, MultiArrayIndex d);
 
-template <class T, class ALLOC>
+template <class T, class ALLOC = std::allocator<T> >
 class TemporaryMatrix;
 
 template <class T, class C1, class C2>
@@ -379,6 +380,53 @@ class Matrix
         return vigra::linalg::isSymmetric(*this);
     }
 
+        /** sums over the matrix.
+        */
+	TemporaryMatrix<T> sum() const
+    {
+		TemporaryMatrix<T> result(1, 1);
+		vigra::transformMultiArray(srcMultiArrayRange(*this),
+                               destMultiArrayRange(result),
+                               vigra::FindSum<T>() );
+		return result;
+    }
+	
+		/** sums over dimension \a d of the matrix.
+        */
+	TemporaryMatrix<T> sum(difference_type_1 d) const
+    {
+		difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
+		TemporaryMatrix<T> result(shape);
+		vigra::transformMultiArray(srcMultiArrayRange(*this),
+                               destMultiArrayRange(result),
+                               vigra::FindSum<T>() );
+		return result;
+    }
+
+        /** sums over the matrix.
+        */
+	TemporaryMatrix<T> mean() const
+    {
+		TemporaryMatrix<T> result(1, 1);
+		vigra::transformMultiArray(srcMultiArrayRange(*this),
+                               destMultiArrayRange(result),
+                               vigra::FindAverage<T>() );
+		return result;
+    }
+	
+        /** calculates mean over dimension \a d of the matrix.
+        */
+	TemporaryMatrix<T> mean(difference_type_1 d) const
+    {
+		difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
+		TemporaryMatrix<T> result(shape);
+		vigra::transformMultiArray(srcMultiArrayRange(*this),
+                               destMultiArrayRange(result),
+                               vigra::FindAverage<T>() );
+		return result;
+    }
+
+
 #ifdef DOXYGEN
 // repeat the following functions for documentation. In real code, they are inherited.
 
@@ -486,7 +534,7 @@ class Matrix
 // use TemporaryMatrix to make explicit that it was allocated as a temporary data structure.
 // Functions receiving a TemporaryMatrix can thus often avoid to allocate new temporary
 // memory.
-template <class T, class ALLOC = std::allocator<T> >
+template <class T, class ALLOC>  // default ALLOC already declared above
 class TemporaryMatrix
 : public Matrix<T, ALLOC>
 {
