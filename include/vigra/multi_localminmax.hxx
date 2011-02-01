@@ -41,7 +41,7 @@
 #include <functional>
 #include "multi_array.hxx"
 #include "localminmax.hxx"
-
+#if 0
 namespace vigra {
 
 namespace detail {
@@ -496,5 +496,7 @@ extendedLocalMaxima(MultiArrayView<3, T1, C1> src,
 }
 
 } // namespace vigra
+
+#endif
 
 #endif // VIGRA_MULTI_LOCALMINMAX_HXX
