@@ -777,6 +777,12 @@ PyAxisTags::transform(python::object index, int lnew) const
     return newTags;
 }
 
+UInt32 pychecksum(python::str const & s)
+{
+    unsigned int size = len(s);
+    return checksum(PyString_AsString(s.ptr()), size);
+}
+
 void registerNumpyArrayConverters();
 
 } // namespace vigra
@@ -860,4 +866,6 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
 		.def("transpose", (void (PyAxisTags::*)())&PyAxisTags::transpose)
 		.def("transform", &PyAxisTags::transform)
     ;
+    
+    def("checksum", &pychecksum, args("data"));
 }

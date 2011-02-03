@@ -63,6 +63,7 @@
 #include "vigra/quaternion.hxx"
 #include "vigra/clebsch-gordan.hxx"
 #include "vigra/bessel.hxx"
+#include "vigra/timing.hxx"
 
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
@@ -584,6 +585,48 @@ struct FunctionsTest
 
 		vigra::applyPermutation(inverse, inverse+size, ref, res);
 		shouldEqualSequence(res, res+size, data);
+    }
+
+    void testChecksum()
+    {
+		std::string s("");
+		vigra::UInt32 crc = vigra::checksum(s.c_str(), s.size());
+		shouldEqual(crc, 0);
+
+		s = "hello world";
+		crc = vigra::checksum(s.c_str(), s.size());
+		shouldEqual(crc, 222957957);
+
+		s = "hallo world";
+		crc = vigra::checksum(s.c_str(), s.size());
+		shouldEqual(crc, 77705727);
+
+		int split = 5;
+		std::string s1 = s.substr(0, split), s2 = s.substr(split);
+		crc = vigra::checksum(s1.c_str(), s1.size());
+		crc = vigra::concatenateChecksum(crc, s2.c_str(), s2.size());
+		shouldEqual(crc, 77705727);
+
+		const int size = 446;
+		char t[size+1] =  
+			"Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
+			"sed do eiusmod tempor incididunt ut labore et dolore magna "
+			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+			"ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+			"Duis aute irure dolor in reprehenderit in voluptate velit "
+			"esse cillum dolore eu fugiat nulla pariatur. Excepteur "
+			"sint occaecat cupidatat non proident, sunt in culpa qui "
+			"officia deserunt mollit anim id est laborum.";
+
+		crc = vigra::checksum(t, size);
+		shouldEqual(crc, 2408722991);
+
+		for(split = 64; split < 80; ++split) // check alignment
+		{
+			crc = vigra::checksum(t, split);
+			crc = vigra::concatenateChecksum(crc, t+split, size-split);
+			shouldEqual(crc, 2408722991);
+		}
     }
 
     void testClebschGordan()
@@ -2720,6 +2763,7 @@ struct MathTestSuite
         add( testCase(&FunctionsTest::closeAtToleranceTest));
         add( testCase(&FunctionsTest::testArgMinMax));
         add( testCase(&FunctionsTest::testAlgorithms));
+        add( testCase(&FunctionsTest::testChecksum));
         add( testCase(&FunctionsTest::testClebschGordan));
 
         add( testCase(&RationalTest::testGcdLcm));
