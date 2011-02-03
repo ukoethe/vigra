@@ -415,7 +415,7 @@ class AxisTags
     void push_back(T const & i)
     {
         std::string key = getFunctor(i).key();
-        vigra_precondition(key == "?" || findKey(key) == size(), 
+        vigra_precondition(key == "?" || findKey(key) == (int)size(), 
             std::string("AxisTags::push_back(): duplicate key '" + key + "'."));
         axes_.push_back(i);
     }

@@ -250,8 +250,8 @@ struct SplineTest
 
         if(n == 0)
         {
-            shouldEqual(ps.size(), 0);
-            shouldEqual(psb.size(), 0);
+            shouldEqual(ps.size(), 0u);
+            shouldEqual(psb.size(), 0u);
         }
         else
         {
@@ -591,21 +591,21 @@ struct FunctionsTest
     {
 		std::string s("");
 		vigra::UInt32 crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 0);
+		shouldEqual(crc, 0u);
 
 		s = "hello world";
 		crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 222957957);
+		shouldEqual(crc, 222957957u);
 
 		s = "hallo world";
 		crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 77705727);
+		shouldEqual(crc, 77705727u);
 
 		int split = 5;
 		std::string s1 = s.substr(0, split), s2 = s.substr(split);
 		crc = vigra::checksum(s1.c_str(), s1.size());
 		crc = vigra::concatenateChecksum(crc, s2.c_str(), s2.size());
-		shouldEqual(crc, 77705727);
+		shouldEqual(crc, 77705727u);
 
 		const int size = 446;
 		char t[size+1] =  
@@ -619,13 +619,13 @@ struct FunctionsTest
 			"officia deserunt mollit anim id est laborum.";
 
 		crc = vigra::checksum(t, size);
-		shouldEqual(crc, 2408722991);
+		shouldEqual(crc, 2408722991u);
 
 		for(split = 64; split < 80; ++split) // check alignment
 		{
 			crc = vigra::checksum(t, split);
 			crc = vigra::concatenateChecksum(crc, t+split, size-split);
-			shouldEqual(crc, 2408722991);
+			shouldEqual(crc, 2408722991u);
 		}
     }
 
@@ -2113,7 +2113,7 @@ struct LinalgTest
 
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
 
-            shouldEqual(linearSolveQR(m, rhs, xx), 3);
+            shouldEqual(linearSolveQR(m, rhs, xx), 3u);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-12);
         }
         {
@@ -2126,7 +2126,7 @@ struct LinalgTest
 
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
 
-            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqual(linearSolveQR(m, rhs, xx), 2u);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-5);
         }
         {
@@ -2139,7 +2139,7 @@ struct LinalgTest
 
             Matrix m(3,4,mdata), rhs(3,1,rhsdata), xx(4,1);
 
-            shouldEqual(linearSolveQR(m, rhs, xx), 2);
+            shouldEqual(linearSolveQR(m, rhs, xx), 2u);
             shouldEqualSequenceTolerance(refdata, refdata+4, xx.data(), 1e-3);
         }
     }

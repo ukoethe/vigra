@@ -184,7 +184,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
     
     {
-        int  totalDataCount = strata.size();
+        unsigned int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         shouldEqual(sampler.totalCount(), totalDataCount);
@@ -194,7 +194,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         shouldEqual(sampler.withReplacement(), withReplacement);
         sampler.sample();
         if(withReplacement)
-            should(sampler.sampledIndices().size()+sampler.oobIndices().size() >= (unsigned int)totalDataCount);
+            should(sampler.sampledIndices().size()+sampler.oobIndices().size() >= totalDataCount);
         else
             shouldEqual(sampler.sampledIndices().size()+sampler.oobIndices().size(), totalDataCount);
             
@@ -207,7 +207,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
             shouldEqual(strata[index], 1);
             wasPicked[index] = true;
         }
-        for(int ii = 5; ii < 10; ++ii)
+        for(unsigned int ii = 5; ii < 10u; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
@@ -220,7 +220,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
             should(index >= 0 && index < int(totalDataCount));
             wasPicked[index] = true;
         }
-        for(int ii = 0; ii < totalDataCount; ++ii)
+        for(unsigned int ii = 0; ii < totalDataCount; ++ii)
         {
             should(wasPicked[ii]);
         }
@@ -230,21 +230,21 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        int  totalDataCount = strata.size();
+        unsigned int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
         sampler.sample();
         shouldEqual(sampler.sampleSize(), 9);
 
         ArrayVector<bool> wasPicked(totalDataCount, false);
-        for(int ii = 0; ii < 4; ++ii)
+        for(unsigned int ii = 0; ii < 4u; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
             shouldEqual(strata[index], 1);
             wasPicked[index] = true;
         }
-        for(int ii = 4; ii < 9; ++ii)
+        for(unsigned int ii = 4; ii < 9u; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
@@ -257,7 +257,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
             should(index >= 0 && index < int(totalDataCount));
             wasPicked[index] = true;
         }
-        for(int ii = 0; ii < totalDataCount; ++ii)
+        for(unsigned int ii = 0; ii < totalDataCount; ++ii)
         {
             should(wasPicked[ii]);
         }

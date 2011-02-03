@@ -894,9 +894,9 @@ public:
             ++countz;
         }
 
-        shouldEqual (countx, 336);
-        shouldEqual (county, 56);
-        shouldEqual (countz, 8);
+        shouldEqual (countx, 336u);
+        shouldEqual (county, 56u);
+        shouldEqual (countz, 8u);
   
         // test direct navigation
         strided_array_t::traverser i = st.traverser_begin();        
