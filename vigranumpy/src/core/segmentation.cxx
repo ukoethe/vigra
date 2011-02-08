@@ -406,11 +406,25 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         
     res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
     
+    WatershedOptions options;
+    options.srgType(srgType);
+    
+    if(max_cost > 0.0)
+    {
+        vigra_precondition(method != "unionfind",
+           "watersheds(): UnionFind does not support a cost threshold.");
+        options.stopAtThreshold(max_cost);
+    }
+    
     if(seeds.hasData())
     {
         vigra_precondition(method != "unionfind",
            "watersheds(): UnionFind does not support seed images.");
         res = seeds;
+    }
+    else
+    {
+        options.seedOptions(SeedOptions().minima());
     }
     
     npy_uint32 maxRegionLabel = 0;
@@ -418,35 +432,13 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     {
         if(neighborhood == 4)
         {
-            if(seeds.hasData())
-            {
-                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                        FourNeighborCode(),
-                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost));
-            }
-            else
-            {
-                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                        FourNeighborCode(),
-                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
-                                                          .seedOptions(SeedOptions().minima()));
-            }
+            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                    FourNeighborCode(), options);
         }
         else
         {
-            if(seeds.hasData())
-            {
-                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                        EightNeighborCode(),
-                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost));
-            }
-            else
-            {
-                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                        EightNeighborCode(),
-                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
-                                                          .seedOptions(SeedOptions().minima()));
-            }
+            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                    EightNeighborCode(), options);
         }
     }
     else if(method == "unionfind")
