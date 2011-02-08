@@ -418,17 +418,35 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     {
         if(neighborhood == 4)
         {
-            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                    FourNeighborCode(),
-                                    WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
-                                                      .seedOptions(SeedOptions().minima()));
+            if(seeds.hasData())
+            {
+                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                        FourNeighborCode(),
+                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost));
+            }
+            else
+            {
+                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                        FourNeighborCode(),
+                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
+                                                          .seedOptions(SeedOptions().minima()));
+            }
         }
         else
         {
-            maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
-                                    EightNeighborCode(),
-                                    WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
-                                                      .seedOptions(SeedOptions().minima()));
+            if(seeds.hasData())
+            {
+                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                        EightNeighborCode(),
+                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost));
+            }
+            else
+            {
+                maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
+                                        EightNeighborCode(),
+                                        WatershedOptions().srgType(srgType).stopAtThreshold(max_cost)
+                                                          .seedOptions(SeedOptions().minima()));
+            }
         }
     }
     else if(method == "unionfind")
