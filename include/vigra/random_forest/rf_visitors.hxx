@@ -41,6 +41,8 @@
 #include <vigra/windows.h>
 #include <iostream>
 #include <iomanip>
+
+#include <vigra/multi_pointoperators.hxx>
 #include <vigra/timing.hxx>
 
 namespace vigra
@@ -1579,7 +1581,7 @@ class CorrelationVisitor : public VisitorBase
         }
         rowVector(similarity, rC -  1) -= mean_noise(rC-1, 0);
         similarity = abs(similarity);
-        FindMinMax<double> minmax;
+	vigra::FindMinMax<double> minmax;
         inspectMultiArray(srcMultiArrayRange(similarity), minmax);
         
         for(int jj = 0; jj < rC; ++jj)
@@ -1592,7 +1594,7 @@ class CorrelationVisitor : public VisitorBase
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = 0;
         
-        FindMinMax<double> minmax2;
+	vigra::FindMinMax<double> minmax2;
         inspectMultiArray(srcMultiArrayRange(similarity), minmax2);
         for(int jj = 0; jj < rC; ++jj)
             similarity(jj, jj) = minmax2.max;
