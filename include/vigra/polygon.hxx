@@ -77,7 +77,7 @@ bool orderedClockwise(const Point &O, const Point &A, const Point &B)
     Since the convex hull is a closed polygon, the first and last point of the output will 
     be the same (i.e. the first point will simply be inserted at the end again). The points
     of the convex hull will be ordered counter-clockwise, starting with the leftmost point
-    of the imput.
+    of the input. The function implements Andrew's Monotone Chain algorithm.
 */
 template<class PointArray1, class PointArray2>
 void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
@@ -92,7 +92,7 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     ArrayVector<Point> ordered(points.begin(), points.end());
     std::sort(ordered.begin(), ordered.end(), detail::sortPoints<Point>);
     
-    ArrayVector<Point> H(points.size()*2);
+    ArrayVector<Point> H;
     
     int n = points.size(), k=0;
     
@@ -101,9 +101,11 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     {
         while (k >= 2 && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
         {
-            k--;
+            H.pop_back();
+            --k;
         }
-        H[k++] = ordered[i];
+        H.push_back(ordered[i]);
+        ++k;
     }
     
     // Build upper hull
@@ -111,16 +113,14 @@ void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
     {
         while (k >= t && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
         {
-            k--;
+            H.pop_back();
+            --k;
         }
-        H[k++] = ordered[i];
+        H.push_back(ordered[i]);
+        ++k;
     }
     
-    convex_hull.resize(k);
-    for (int i = 0; i < k; ++i) 
-    {
-        convex_hull[i] = H[i];
-    }
+    std::copy(H.begin(), H.begin()+k, std::back_inserter(convex_hull));
 }
 
 //@}
