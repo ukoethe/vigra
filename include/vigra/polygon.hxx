@@ -52,19 +52,17 @@ namespace vigra {
 
 namespace detail {
 
-template<class Point>
-struct CCWCompare
+template < class Point >    
+bool sortPoints(Point const & p1, Point const & p2) 
 {
-    Point p0_;
-    CCWCompare(const Point &p0)
-    : p0_(p0)
-    {}
+    return (p1[0]<p2[0]) || (p1[0] == p2[0] && p1[1] < p2[1]);
+}
 
-    bool operator()(const Point &a, const Point &b) const
-    {
-        return (a[1]-p0_[1])*(b[0]-p0_[0]) - (a[0]-p0_[0])*(b[1]-p0_[1]) < 0;
-    }
-};
+template < class Point >    
+bool orderedClockwise(const Point &O, const Point &A, const Point &B)
+{
+    return (A[0] - O[0]) * (B[1] - O[1]) - (A[1] - O[1]) * (B[0] - O[0]) <= 0;
+}
 
 } // namespace detail
 
@@ -82,85 +80,47 @@ struct CCWCompare
     of the imput.
 */
 template<class PointArray1, class PointArray2>
-void convexHull(
-    const PointArray1 &points, PointArray2 &convex_hull)
+void convexHull(const PointArray1 &points, PointArray2 & convex_hull)
 {
     vigra_precondition(points.size() >= 2,
                        "convexHull(): at least two input points are needed.");
     vigra_precondition(points[0].size() == 2,
                        "convexHull(): 2-dimensional points required.");
-
+    
     typedef typename PointArray1::value_type Point;
-    typedef typename Point::value_type Coordinate;
-
-    // find extremal point (min. x, then min. y):
-    unsigned int i0 = 0;
-    Point p0 = points[0];
-    for(unsigned int i = 1; i < points.size(); ++i)
-    {
-        Coordinate xDiff = points[i][0] - p0[0];
-        if(xDiff < 0 || (xDiff == 0 && points[i][1] < p0[1]))
-        {
-            p0 = points[i];
-            i0 = i;
-        }
-    }
-
-    // sort other points by angle from p0:
-    ArrayVector<Point> other(points.begin(), points.begin() + i0);
-    other.insert(other.end(), points.begin()+i0+1, points.end());
     
-    // the current definition of CCWCompare ensures that points identical to p0
-    // end up at the end of the list => those duplicates will be removed during 
-    // Graham scan
-    std::sort(other.begin(), other.end(), detail::CCWCompare<Point>(p0));
+    ArrayVector<Point> ordered(points.begin(), points.end());
+    std::sort(ordered.begin(), ordered.end(), detail::sortPoints<Point>);
     
-    ArrayVector<Point> result(points.size()+1);
-    result[0] = p0;
-    result[1] = other[0];
-
-    typename ArrayVector<Point>::iterator currentEnd = result.begin() + 1;
-
-    // Graham's scan:
-    Point endSegment = *currentEnd - currentEnd[-1];
-    Coordinate sa2;
-    for(unsigned int i = 1; i < other.size(); ++i)
+    ArrayVector<Point> H(points.size()*2);
+    
+    int n = points.size(), k=0;
+    
+    // Build lower hull
+    for (int i = 0; i < n; i++) 
     {
-        if(other[i] == other[i-1] || other[i] == p0) // skip duplicate points
-            continue;
-        do
+        while (k >= 2 && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
         {
-            Point diff = other[i] - currentEnd[-1];
-            sa2 = diff[0]*endSegment[1] - endSegment[0]*diff[1];
-            if(sa2 < 0)
-            {
-                // point is to the left, add to convex hull:
-                *(++currentEnd) = other[i];
-                endSegment = other[i] - currentEnd[-1];
-            }
-            else if(sa2 == 0)
-            {
-                // points are collinear, keep far one:
-                if(diff.squaredMagnitude() > endSegment.squaredMagnitude())
-                {
-                    *currentEnd = other[i];
-                    endSegment = diff;
-                }
-            }
-            else
-            {
-                // point is to the right, backtracking needed:
-                --currentEnd;
-                endSegment = *currentEnd - currentEnd[-1];
-            }
+            k--;
         }
-        while(sa2 > 0);
+        H[k++] = ordered[i];
     }
-
-    // return closed Polygon:
-    *(++currentEnd) = p0;
-    ++currentEnd;
-    std::copy(result.begin(), currentEnd, std::back_inserter(convex_hull));
+    
+    // Build upper hull
+    for (int i = n-2, t = k+1; i >= 0; i--) 
+    {
+        while (k >= t && detail::orderedClockwise(H[k-2], H[k-1], ordered[i])) 
+        {
+            k--;
+        }
+        H[k++] = ordered[i];
+    }
+    
+    convex_hull.resize(k);
+    for (int i = 0; i < k; ++i) 
+    {
+        convex_hull[i] = H[i];
+    }
 }
 
 //@}

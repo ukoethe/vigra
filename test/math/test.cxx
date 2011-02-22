@@ -64,6 +64,7 @@
 #include "vigra/clebsch-gordan.hxx"
 #include "vigra/bessel.hxx"
 #include "vigra/timing.hxx"
+#include "convex_hull_test.hxx"
 
 #define VIGRA_TOLERANCE_MESSAGE "If this test fails, please adjust the tolerance threshold and report\n" \
                        "your findings (including compiler information etc.) to the VIGRA mailing list:"
@@ -2412,10 +2413,10 @@ struct LinalgTest
 
     void testSVD()
     {
-        int m = 6, n = 4;
+        unsigned int m = 6, n = 4;
         Matrix a(m, n);
-        for(int i1= 0; i1 < m; i1++)
-            for(int i2= 0; i2 < n; i2++)
+        for(unsigned int i1= 0; i1 < m; i1++)
+            for(unsigned int i2= 0; i2 < n; i2++)
                 a(i1, i2)= random_double();
         Matrix u(m, n);
         Matrix v(n, n);
@@ -2625,7 +2626,7 @@ struct PolygonTest
         reference.push_back(Point(-2.0, -1.0));
         
         vigra::convexHull(points, hull);
-        
+
         shouldEqual(7u, hull.size());
         shouldEqualSequence(reference.begin(), reference.end(), hull.begin());
 
@@ -2698,6 +2699,15 @@ struct PolygonTest
         
         shouldEqual(10u, hull.size());
         shouldEqualSequence(ref, ref+10, hull.begin());
+
+		int size = sizeof(convexHullInputs) / sizeof(Point);
+		points = vigra::ArrayVector<Point>(convexHullInputs, convexHullInputs+size);
+        hull.clear();
+        
+        vigra::convexHull(points, hull);
+        
+        shouldEqual(17u, hull.size());
+        shouldEqualSequence(convexHullReference, convexHullReference+17, hull.begin());
     }
 };
 
