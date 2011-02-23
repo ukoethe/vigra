@@ -202,6 +202,73 @@ def _array_docstring_(name, shape, compat):
 %(compat)s
     ''' % {'name': name, 'shape': shape, 'compat': compat}
 
+def constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init):
+    if isinstance(obj, numpy.ndarray):
+        shape = list(obj.shape)
+        strideOrdering = list(numpy.array(obj.strides).argsort().argsort())
+    else:
+        shape = list(obj)
+        strideOrdering = None
+    if channels == 0: # if the requested number of channels is not given ...
+        # ... deduce it
+        if len(shape) == spatialDimensions:
+            channels = 1
+        else:
+            channels = shape[-1]
+
+    # if we have only one channel, no explicit channel dimension should be in the shape
+    shapeSize = spatialDimensions if channels == 1 else spatialDimensions + 1
+    shape.append(0)
+
+    # create the shape object with optional channel dimension
+    pshape = shape[:shapeSize]
+    if shapeSize > spatialDimensions:
+        pshape[-1] = channels
+
+    # order "A" means "preserve order" when an array is copied, and
+    # defaults to "V" when a new array is created without explicit strideOrdering
+    if order == "A":
+        if strideOrdering is None:
+            order = "V"
+        elif len(strideOrdering) > shapeSize:
+            # make sure that strideOrdering length matches shape length
+            pstride = strideOrdering[:shapeSize]
+
+            # adjust the ordering when the channel dimension has been dropped because channel == 1
+            if strideOrdering[shapeSize] == 0:
+                pstride = [k-1 for k in pstride]
+            strideOrdering = pstride
+        elif len(strideOrdering) < shapeSize:
+            # make sure that strideOrdering length matches shape length
+            # adjust the ordering when the channel dimension has been dropped because channel == 1
+            strideOrdering = [k+1 for k in strideOrdering]
+            strideOrdering.append(0)
+
+    # create the appropriate strideOrdering objects for the other memory orders
+    # (when strideOrdering already contained data, it is ignored because order != "A")
+    if order == "C":
+        strideOrdering = range(len(pshape)-1, -1, -1)
+    elif order == "F" or (order == "V" and channels == 1):
+        strideOrdering = range(len(pshape))
+    elif order == "V":
+        strideOrdering = range(1, len(pshape)+1)
+        strideOrdering[-1] = 0
+        
+    ppshape = [0]*len(pshape)
+    for k in xrange(len(pshape)):
+        ppshape[strideOrdering[k]] = pshape[k]
+    
+    res = numpy.ndarray.__new__(cls, ppshape, dtype, order='F')
+    res = res.transpose(strideOrdering)
+
+    if init:
+        if isinstance(obj, numpy.ndarray):
+            res[...] = obj
+        else:
+            res[...] = 0
+    return res
+        
+
 ##################################################################
 
 class _VigraArray(numpy.ndarray):
@@ -212,7 +279,6 @@ VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     """
     def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None, axistags = None):
-        from vigranumpycore import constructNumpyArray
         # FIXME: we can get axistags in 3 different ways: from 'obj', implicitly from 'order',
         #        and explicitly from 'axistags'
         #        this is not yet consistent
