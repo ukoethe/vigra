@@ -47,6 +47,7 @@
 #include <vigra/array_vector.hxx>
 #include <vigra/sized_int.hxx>
 #include <vigra/python_utility.hxx>
+#include <vigra/algorithm.hxx>
 #include <numpy/arrayobject.h>
 
 int _import_array();
@@ -357,9 +358,9 @@ python_ptr constructNumpyArrayImpl(
 
 // strideOrdering will be ignored unless order == "A"
 // TODO: this function should receive some refactoring in order to make
-//       the rules clear from the code rather than from comments
+      // the rules clear from the code rather than from comments
 inline python_ptr
-constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape,
+constructNumpyArrayImplOld(PyTypeObject * type, ArrayVector<npy_intp> const & shape,
                        unsigned int spatialDimensions, unsigned int channels,
                        NPY_TYPES typeCode, std::string order, bool init,
                        ArrayVector<npy_intp> strideOrdering = ArrayVector<npy_intp>())
@@ -458,6 +459,50 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> const & shape
 
     return constructNumpyArrayImpl(type, pshape, strideOrdering.begin(), typeCode, init);
 }
+
+inline python_ptr
+constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> shape,
+                       unsigned int spatialDimensions, unsigned int channels,
+                       NPY_TYPES typeCode, std::string order, bool init,
+                       ArrayVector<npy_intp> strideOrdering = ArrayVector<npy_intp>())
+{
+    // shape must have at least length spatialDimensions, but can also have a channel dimension
+    vigra_precondition(shape.size() == spatialDimensions || shape.size() == spatialDimensions + 1,
+           "constructNumpyArray(type, shape, ...): shape has wrong length.");
+
+    // if strideOrdering is given, it must have at length (spatialDimensions + 1),
+    // including the channel dimension
+    vigra_precondition(strideOrdering.size() == 0 || strideOrdering.size() == spatialDimensions + 1,
+           "constructNumpyArray(type, ..., strideOrdering): strideOrdering has wrong length.");
+
+    if(shape.size() == spatialDimensions)
+        shape.push_back(channels == 0 ? 1 : channels);
+    if(strideOrdering.size() == 0)
+    {
+        if(order == "A")
+            order = "V";
+        strideOrdering.resize(shape.size());
+    }
+
+    // create the appropriate strideOrdering objects
+    if(order == "C")
+    {
+        linearSequence(strideOrdering.begin(), strideOrdering.end(), int(shape.size())-1, -1);
+    }
+    else if(order == "F")
+    {
+        linearSequence(strideOrdering.begin(), strideOrdering.end());
+    }
+    else if(order == "V")
+    {
+        linearSequence(strideOrdering.begin(), strideOrdering.end(), 1);
+        strideOrdering.back() = 0;
+    }
+    
+    // if order == "A", strideOrdering was already given, so do nothing
+    
+    return constructNumpyArrayImpl(type, shape, strideOrdering.begin(), typeCode, init);
+}        
 
 template <class TINY_VECTOR>
 inline
@@ -1455,6 +1500,12 @@ class NumpyArray
     {
         ArrayVector<npy_intp> pshape(shape.begin(), shape.end()),
                               pstrideOrdering(strideOrdering.begin(), strideOrdering.end());
+        if(pstrideOrdering.size() == ArrayTraits::spatialDimensions)
+        {
+            for(unsigned int k=0; k < pstrideOrdering.size(); ++k)
+                pstrideOrdering[k] += 1;
+            pstrideOrdering.push_back(0);
+        }
         return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
                        ArrayTraits::spatialDimensions, ArrayTraits::channels,
                        typeCode, "A", init, pstrideOrdering);

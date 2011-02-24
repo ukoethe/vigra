@@ -61,13 +61,18 @@ vol_rgb_i = at.RGBVolume(np.random.rand(100,200,60,3)*255,dtype=np.int32)
 vol_scalar_i = at.ScalarVolume(np.random.rand(100,200,50)*255,dtype=np.int32)
 vol_multi_i = at.Vector6Volume(np.random.rand(100,200,50,6)*255,dtype=np.int32)
 
-def checkShape(i1,i2):
-    assert(i1.shape==i2.shape)
+def checkShape(shape1, shape2):
+    if isinstance(shape1, np.ndarray):
+        shape1 = shape1.shape
+    if isinstance(shape2, np.ndarray):
+        shape2 = shape2.shape
+    assert_equal(shape1, shape2)
+
 def checkType(i,type):
-    assert(i.dtype == type)
+    assert_equal(i.dtype, type)
 
 def checkAboutSame(i1,i2):
-    assert(i1.shape==i2.shape)
+    compare_shapes(i1.shape, i2.shape)
     difference=np.sum(np.abs(i1-i2))/float(np.size(i1))
     assert(difference<5)
     
@@ -128,8 +133,8 @@ def test_MinimaMaxima():
 
 def test_Region2Crack():
     res = regionImageToCrackEdgeImage(img_scalar_i)
-    assert(img_scalar_f.shape[0]*2-1 == res.shape[0])
-    assert(img_scalar_f.shape[1]*2-1 == res.shape[1])
+    assert_equal(img_scalar_f.shape[0]*2-1, res.shape[0])
+    assert_equal(img_scalar_f.shape[1]*2-1, res.shape[1])
     checkType(res,res.dtype)
 
     regionImageToCrackEdgeImage(img_scalar_i64[0:100,0:100], 1, img_scalar_i64)
@@ -183,8 +188,8 @@ def test_edges():
     checkType(res, np.uint8)
     
     res = shenCastanCrackEdgeImage(img_scalar_f, 1,128,255)
-    assert(img_scalar_f.shape[0]*2-1 == res.shape[0])
-    assert(img_scalar_f.shape[1]*2-1 == res.shape[1])
+    assert_equal(img_scalar_f.shape[0]*2-1, res.shape[0])
+    assert_equal(img_scalar_f.shape[1]*2-1, res.shape[1])
     
     res1 = beautifyCrackEdgeImage(res,  1, 0)
     checkShape(res1, res)
@@ -199,29 +204,29 @@ def test_edges():
     checkType(res, np.uint8)
     
     res = boundaryTensor2D(img_scalar_f, 1)
-    assert(img_scalar_f.shape[0]== res.shape[0])
-    assert(img_scalar_f.shape[1] == res.shape[1])
-    assert(res.shape[2] == 3)    
+    assert_equal(img_scalar_f.shape[0], res.shape[0])
+    assert_equal(img_scalar_f.shape[1], res.shape[1])
+    assert_equal(res.shape[2], 3)    
     checkType(res, np.float32)
     
     res = hourGlassFilter2D(img_multi_f, 1, 2)
-    assert(img_multi_f.shape[0]== res.shape[0])
-    assert(img_multi_f.shape[1] == res.shape[1])
+    assert_equal(img_multi_f.shape[0], res.shape[0])
+    assert_equal(img_multi_f.shape[1], res.shape[1])
     checkType(res, np.float32)
     
     res = tensorEigenRepresentation2D(img_multi_f)
-    assert(img_multi_f.shape[0]== res.shape[0])
-    assert(img_multi_f.shape[1] == res.shape[1])
+    assert_equal(img_multi_f.shape[0], res.shape[0])
+    assert_equal(img_multi_f.shape[1], res.shape[1])
     checkType(res, np.float32)
     
     res = tensorTrace(img_multi_f)
-    assert(img_multi_f.shape[0]== res.shape[0])
-    assert(img_multi_f.shape[1] == res.shape[1])
+    assert_equal(img_multi_f.shape[0], res.shape[0])
+    assert_equal(img_multi_f.shape[1], res.shape[1])
     checkType(res, np.float32)
     
     res = rieszTransformOfLOG2D(img_scalar_f, 1, 1, 1)
-    assert(img_multi_f.shape[0]== res.shape[0])
-    assert(img_multi_f.shape[1] == res.shape[1])
+    assert_equal(img_multi_f.shape[0], res.shape[0])
+    assert_equal(img_multi_f.shape[1], res.shape[1])
     checkType(res, np.float32)
     
     

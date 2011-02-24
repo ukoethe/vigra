@@ -50,11 +50,11 @@ volume256=at.Volume(np.random.rand(8,9,10)*255,dtype=np.uint8)
 volumeFloat=at.Volume(np.random.rand(3,4,5,6)*100,dtype=np.float32)
 
 def checkEqualData(i1,i2):
-    assert(i1.shape==i2.shape)
+    assert_equal(i1.shape, i2.shape)
     assert(np.all(i1==i2))
 
 def checkUnequalData(i1,i2):
-    assert(i1.shape==i2.shape)
+    assert_equal(i1.shape, i2.shape)
     assert(np.any(i1!=i2))
 
 def test_writeAndReadImageHDF5():
