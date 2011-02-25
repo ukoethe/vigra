@@ -46,6 +46,8 @@ import numpy, copy
 import vigranumpytest as vt
 from nose.tools import assert_equal, raises
 
+from vigra.arraytypes import AxisTags, AxisInfo
+
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
 try:
@@ -100,6 +102,9 @@ def checkArray(cls, channels, dim):
             bfstrides = (1, shape[0], shape[0]*shape[1], shape[0]*shape[1]*shape[2])[:d]
             fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
             bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
+            caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
+            faxistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim+1])
+            vaxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
         else:
             d = dim
             rshape = shape[:d]
@@ -138,6 +143,10 @@ def checkArray(cls, channels, dim):
         assert not img.flags.c_contiguous
 #        assert_equal(img.flags.f_contiguous, True if channels == 1 else False)
         assert_equal(img.flags.f_contiguous, False)
+        
+        # test axistags
+        assert_equal(img.axistags, vaxistags)
+        # FIXME: add more tests
 
         # test initialization and assignment
         assert_equal(img.min(), 0.0)
@@ -151,10 +160,13 @@ def checkArray(cls, channels, dim):
         testCopy(img)
         assert_equal(img.shape, (-img).shape)
         assert_equal(img.strides, (-img).strides)
+        assert_equal(img.axistags, (-img).axistags)
         assert_equal(img.shape, (img+img).shape)
         assert_equal(img.strides, (img+img).strides)
+        assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.shape, (img*2).shape)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (img*2).axistags)
         
         if cls.channels > 0 or channels == 1:
             img = cls(shape + (channels,))
@@ -166,6 +178,7 @@ def checkArray(cls, channels, dim):
         assert_equal(sys.getrefcount(img), 2)
         checkShape(img.shape, rshape)
         checkStride(img.strides, ffstrides)
+        assert_equal(img.axistags, faxistags)
         assert_equal(img.order, "F")
         assert not img.flags.c_contiguous
         assert img.flags.f_contiguous
@@ -174,6 +187,9 @@ def checkArray(cls, channels, dim):
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
 
         # test shape, strides, and copy for 'A' order (should be equal to 'V' order)
         img = cls(shape, order='A')
@@ -182,6 +198,7 @@ def checkArray(cls, channels, dim):
         checkStride(img.strides, fvstrides)
 #        assert_equal(img.order, "F" if channels == 1 else "V")
         assert_equal(img.order, "V")
+        assert_equal(img.axistags, vaxistags)
         assert not img.flags.c_contiguous
 #        assert_equal(img.flags.f_contiguous, True if channels == 1 else False)
         assert_equal(img.flags.f_contiguous, False)
@@ -190,12 +207,16 @@ def checkArray(cls, channels, dim):
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
 
         # test shape, strides, and copy for 'C' order
         img = cls(shape, order='C')
         assert_equal(sys.getrefcount(img), 2)
         checkShape(img.shape, rshape)
         checkStride(img.strides, fcstrides)
+        assert_equal(img.axistags, caxistags)
         assert_equal(img.order, "C")
         assert img.flags.c_contiguous
         assert not img.flags.f_contiguous
@@ -204,6 +225,9 @@ def checkArray(cls, channels, dim):
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
 
         value = 10 if channels == 1 else range(10,channels+10)
         zero = 0 if channels == 1 else (0,)*channels
@@ -216,6 +240,7 @@ def checkArray(cls, channels, dim):
         checkStride(b.strides, bvstrides)
 #        assert_equal(b.order, "F" if channels == 1 else "V")
         assert_equal(b.order, "V")
+        assert_equal(b.axistags, img.axistags)
         assert not b.flags.c_contiguous
 #        assert_equal(b.flags.f_contiguous, True if channels == 1 else False)
         assert_equal(b.flags.f_contiguous, False)
@@ -226,11 +251,15 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
 
         b = cls(img, dtype=numpy.uint8, order='C')
         assert_equal(sys.getrefcount(b), 2)
         checkShape(b.shape, rshape)
         checkStride(b.strides, bcstrides)
+        assert_equal(b.axistags, img.axistags)
         assert_equal(b.order, "C")
         assert b.flags.c_contiguous
         assert not b.flags.f_contiguous
@@ -238,11 +267,15 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
         
         b = cls(img, dtype=numpy.uint8, order='F')
         assert_equal(sys.getrefcount(b), 2)
         checkShape(b.shape, rshape)
         checkStride(b.strides, bfstrides)
+        assert_equal(b.axistags, img.axistags)
         assert_equal(b.order, "F")
         assert not b.flags.c_contiguous
         assert b.flags.f_contiguous
@@ -250,6 +283,9 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
         
         value = 100 if channels == 1 else range(100,channels+100)
 
