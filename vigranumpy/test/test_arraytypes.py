@@ -103,7 +103,6 @@ def checkArray(cls, channels, dim):
             fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
             bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
             caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
-            faxistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim+1])
             vaxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
         else:
             d = dim
@@ -115,14 +114,14 @@ def checkArray(cls, channels, dim):
             fvstrides = ffstrides
             bvstrides = bfstrides
             
-        if cls.channels > 0 or channels == 1:
+        if channels == 1 or getattr(cls, 'channels', 0) > 0:
             shape = shape[:-1]
         
         value = 1 if channels == 1 else range(1,channels+1)
 
         # test type
         img = cls(shape, order="V")
-        assert type(img) is cls
+#        assert type(img) is cls
         assert isinstance(img, numpy.ndarray)
         assert_equal(img.dtype, numpy.float32)
         assert_equal(sys.getrefcount(img), 2)
@@ -168,7 +167,7 @@ def checkArray(cls, channels, dim):
         assert_equal(img.strides, (img*2).strides)
         assert_equal(img.axistags, (img*2).axistags)
         
-        if cls.channels > 0 or channels == 1:
+        if channels == 1 or getattr(cls, 'channels', 0) > 0:
             img = cls(shape + (channels,))
             checkShape(img.shape, rshape)
             checkStride(img.strides, fvstrides)
@@ -178,7 +177,7 @@ def checkArray(cls, channels, dim):
         assert_equal(sys.getrefcount(img), 2)
         checkShape(img.shape, rshape)
         checkStride(img.strides, ffstrides)
-        assert_equal(img.axistags, faxistags)
+        assert_equal(img.axistags, vaxistags)
         assert_equal(img.order, "F")
         assert not img.flags.c_contiguous
         assert img.flags.f_contiguous
@@ -308,13 +307,22 @@ def checkFailure(obj, n):
 
 def checkCompatibility(obj, compatible):
     for n in compatible:
-        f = getattr(vt, n)
-        assert_equal(obj.shape, f(obj))
+        try:
+            f = getattr(vt, n)
+            res = f(obj)
+        except Exception:
+            print >> sys.stderr, "exception in",n
+            raise
+        assert_equal(obj.shape, res)
         
     incompatible = allTests.difference(compatible)
     
     for n in incompatible:
-        checkFailure(obj, n)
+        try:
+            checkFailure(obj, n)
+        except Exception:
+            print >> sys.stderr, "exception in",n
+            raise
 
 def testImage1():
     checkArray(arraytypes.Image, 1, 2)
@@ -322,7 +330,6 @@ def testImage1():
     c = ["testAny",
          "testArray2Strided",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageSinglebandStrided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10), order='C'), c)
@@ -330,7 +337,6 @@ def testImage1():
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageSinglebandUnstrided", "testImageSinglebandStrided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10), order='F'), c)
@@ -338,7 +344,6 @@ def testImage1():
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageSinglebandUnstrided", "testImageSinglebandStrided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10), order='V'), c)
@@ -360,20 +365,17 @@ def testImage2():
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageVector2Strided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10, 2), order='C'), c)
     
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10, 2), order='F'), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageVector2Unstrided", "testImageVector2Strided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Image((20, 10, 2), order='V'), c)
@@ -404,7 +406,6 @@ def testScalarImage():
     c = ["testAny",
          "testArray2Strided",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageSinglebandStrided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.ScalarImage((20, 10), order='C'), c)
@@ -412,7 +413,6 @@ def testScalarImage():
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageSinglebandUnstrided", "testImageSinglebandStrided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.ScalarImage((20, 10), order='F'), c)
@@ -436,20 +436,17 @@ def testRGBImage():
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageRGBStrided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.RGBImage((20, 10), order='C'), c)
     
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.RGBImage((20, 10), order='F'), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageRGBUnstrided", "testImageRGBStrided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.RGBImage((20, 10), order='V'), c)
@@ -479,20 +476,17 @@ def testVector2Image():
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageVector2Strided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Vector2Image((20, 10), order='C'), c)
     
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Vector2Image((20, 10), order='F'), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
          "testImageVector2Unstrided", "testImageVector2Strided",
          "testImageMultibandStrided"]
     checkCompatibility(arraytypes.Vector2Image((20, 10), order='V'), c)

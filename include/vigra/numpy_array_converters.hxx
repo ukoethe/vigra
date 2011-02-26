@@ -36,8 +36,8 @@
 #ifndef VIGRA_NUMPY_ARRAY_CONVERTERS_HXX
 #define VIGRA_NUMPY_ARRAY_CONVERTERS_HXX
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/metaprogramming.hxx>
+#include "numpy_array.hxx"
+#include "metaprogramming.hxx"
 #include <boost/python.hpp>
 #include <boost/python/to_python_converter.hpp>
 #include <set>
@@ -86,13 +86,11 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 {
     using namespace boost::python;
     
-    if(exportedArrayKeys().find(ArrayTraits::typeKeyFull()) == exportedArrayKeys().end())
+    converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
+    
+    if(!reg || !reg->rvalue_chain || reg->rvalue_chain->convertible != &convertible) 
     {
-        exportedArrayKeys().insert(ArrayTraits::typeKey());
-        exportedArrayKeys().insert(ArrayTraits::typeKeyFull());
-        
         to_python_converter<ArrayType, NumpyArrayConverter>();
-
         converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
 }
@@ -100,7 +98,8 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 template <unsigned int N, class T, class Stride>
 void * NumpyArrayConverter<NumpyArray<N, T, Stride> >::convertible(PyObject* obj)
 {
-    return obj == Py_None || ArrayType::isStrictlyCompatible(obj)
+    bool isCompatible = obj == Py_None || ArrayType::isStrictlyCompatible(obj);
+    return isCompatible
              ? obj
              : 0;
 }
@@ -134,8 +133,6 @@ struct NumpyArrayConverter<MultiArrayView<N, T, Stride> >
                                     type_id<ArrayType>());
     }
 };
-
-
 
 template <class Iter, class End>
 struct RegisterNumpyArrayConverters

@@ -43,11 +43,12 @@
 #include <string>
 #include <sstream>
 #include <map>
-#include <vigra/multi_array.hxx>
-#include <vigra/array_vector.hxx>
-#include <vigra/sized_int.hxx>
-#include <vigra/python_utility.hxx>
-#include <vigra/algorithm.hxx>
+#include "multi_array.hxx"
+#include "array_vector.hxx"
+#include "sized_int.hxx"
+#include "python_utility.hxx"
+#include "algorithm.hxx"
+#include "axistags.hxx"
 #include <numpy/arrayobject.h>
 
 int _import_array();
@@ -685,17 +686,43 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         return ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    static bool isShapeCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-        return PyArray_NDIM((PyObject *)obj) == N-1 ||
-               PyArray_NDIM((PyObject *)obj) == N ||
-               (PyArray_NDIM((PyObject *)obj) == N+1 && PyArray_DIM((PyObject *)obj, N) == 1);
+        PyObject * obj = (PyObject *)array;
+        unsigned int ndim = PyArray_NDIM(obj);
+        // std::cerr << "traits class " << typeid(NumpyArrayTraits<N, T, StridedArrayTag>).name() << "\n";
+        if(PyObject_HasAttrString(obj, "axistags"))
+        {
+            PyAxisTags const & tags = python::extract<PyAxisTags const &>(
+                    python::object(python::detail::new_reference(PyObject_GetAttrString(obj, "axistags"))))();
+            unsigned int channelIndex = tags.findKey("c");
+#if 0
+            std::cerr << tags.repr() << " N = " << N << " ndim = " << ndim << " key c at " << channelIndex << " shape (";
+            for(unsigned int k=0; k<ndim; ++k)
+                std::cerr << PyArray_DIM(obj, k) << " ";
+            std::cerr << ")\n";
+            std::cerr << "check 1: " << (ndim == N) << " ";
+            std::cerr << "check 2: " << (ndim == N+1 && channelIndex < tags.size() && PyArray_DIM(obj, channelIndex) == 1) << "\n";
+#endif
+            // return (ndim == N-1 && channelIndex == tags.size()) ||
+                    // ndim == N ||
+                    // (ndim == N+1 && channelIndex < tags.size() && PyArray_DIM(obj, channelIndex) == 1);
+            return ndim == N ||
+                    (ndim == N+1 && channelIndex < tags.size() && PyArray_DIM(obj, channelIndex) == 1);
+        }
+        else
+        {
+            // return ndim == N-1 || ndim == N ||
+                   // (ndim == N+1 && PyArray_DIM(obj, N) == 1);
+            // std::cerr << "without array tags\n";
+            return ndim == N ||
+                   (ndim == N+1 && PyArray_DIM(obj, N) == 1);
+        }
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return ValuetypeTraits::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -737,8 +764,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return BaseType::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -769,6 +795,40 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     static bool isClassCompatible(PyObject * obj)
     {
         return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
+    }
+
+    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
+    {
+        PyObject * obj = (PyObject *)array;
+        unsigned int ndim = PyArray_NDIM(obj);
+        // std::cerr << "traits class " << typeid(NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>).name() << "\n";
+        if(PyObject_HasAttrString(obj, "axistags"))
+        {
+            PyAxisTags const & tags = python::extract<PyAxisTags const &>(
+                    python::object(python::detail::new_reference(PyObject_GetAttrString(obj, "axistags"))))();
+            unsigned int channelIndex = tags.findKey("c");
+#if 0
+            std::cerr << tags.repr() << " ndim = " << ndim << " key c at " << channelIndex << " shape (";
+            for(unsigned int k=0; k<ndim; ++k)
+                std::cerr << PyArray_DIM(obj, k) << " ";
+            std::cerr << ")\n";
+            std::cerr << "check 1: " << (ndim == N && channelIndex == tags.size()) << " ";
+            std::cerr << "check 2: " << (ndim == N+1 && channelIndex < tags.size() && PyArray_DIM(obj, channelIndex) == 1) << "\n";
+#endif
+            return (ndim == N && channelIndex == tags.size()) ||
+                   (ndim == N+1 && channelIndex < tags.size() && PyArray_DIM(obj, channelIndex) == 1);
+        }
+        else
+        {
+            // std::cerr << "without array tags\n";
+            return ndim == N-1 || ndim == N ||
+                   (ndim == N+1 && PyArray_DIM(obj, N) == 1);
+        }
+    }
+
+    static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    {
+        return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -805,12 +865,13 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
 
     static bool isShapeCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return UnstridedTraits::isShapeCompatible(obj);
+        return BaseType::isShapeCompatible(obj) &&
+               PyArray_STRIDES((PyObject *)obj)[0] == PyArray_ITEMSIZE((PyObject *)obj);
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return UnstridedTraits::isPropertyCompatible(obj);
+        return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -845,15 +906,37 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
     }
 
-    static bool isShapeCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-        return PyArray_NDIM(obj) == N || PyArray_NDIM(obj) == N-1;
+        PyObject * obj = (PyObject *)array;
+        unsigned int ndim = PyArray_NDIM(obj);
+        // std::cerr << "traits class " << typeid(NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>).name() << "\n";
+        if(PyObject_HasAttrString(obj, "axistags"))
+        {
+            PyAxisTags const & tags = python::extract<PyAxisTags const &>(
+                    python::object(python::detail::new_reference(PyObject_GetAttrString(obj, "axistags"))))();
+            unsigned int channelIndex = tags.findKey("c");
+#if 0
+            std::cerr << tags.repr() << " N = " << N << " ndim = " << ndim << " key c at " << channelIndex << " shape (";
+            for(unsigned int k=0; k<ndim; ++k)
+                std::cerr << PyArray_DIM(obj, k) << " ";
+            std::cerr << ")\n";
+            std::cerr << "check 1: " << (ndim == N-1 && channelIndex == tags.size()) << " ";
+            std::cerr << "check 3: " << (ndim == N && channelIndex < tags.size()) << "\n";
+#endif
+            return (ndim == N-1 && channelIndex == tags.size()) ||
+                    (ndim == N && channelIndex < tags.size());
+        }
+        else
+        {
+            // std::cerr << "without array tags\n";
+            return PyArray_NDIM(obj) == N || PyArray_NDIM(obj) == N-1;
+        }
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return ValuetypeTraits::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -895,8 +978,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return BaseType::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -942,17 +1024,41 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         return ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
-    static bool isShapeCompatible(PyArrayObject * obj) /* obj must not be NULL */
+    static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-        return PyArray_NDIM((PyObject *)obj) == N+1 &&
-               PyArray_DIM((PyObject *)obj, N) == M &&
-               PyArray_STRIDES((PyObject *)obj)[N] == PyArray_ITEMSIZE((PyObject *)obj);
+        PyObject * obj = (PyObject *)array;
+        unsigned int ndim = PyArray_NDIM(obj);
+        // std::cerr << "traits class " << typeid(NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>).name() << "\n";
+        if(PyObject_HasAttrString(obj, "axistags"))
+        {
+            PyAxisTags const & tags = python::extract<PyAxisTags const &>(
+                    python::object(python::detail::new_reference(PyObject_GetAttrString(obj, "axistags"))))();
+            unsigned int channelIndex = tags.findKey("c");
+#if 0
+            std::cerr << tags.repr() << " ndim = " << ndim << " key c at " << channelIndex << " shape (";
+            for(unsigned int k=0; k<ndim; ++k)
+                std::cerr << PyArray_DIM(obj, k) << " ";
+            std::cerr << ")\n";
+            std::cerr << "check 1: " << (ndim == N-1 && tags.findKey("c") == tags.size()) << " ";
+            std::cerr << "check 2: " << (ndim == N) << " ";
+            std::cerr << "check 3: " << (ndim == N+1 && PyArray_DIM(obj, tags.findKey("c")) == 1) << "\n";
+#endif
+            return ndim == N+1 && channelIndex < tags.size() &&
+                   PyArray_DIM((PyObject *)obj, channelIndex) == M &&
+                   PyArray_STRIDES((PyObject *)obj)[channelIndex] == PyArray_ITEMSIZE((PyObject *)obj);
+        }
+        else
+        {
+            // std::cerr << "without array tags\n";
+            return ndim == N+1 &&
+                   PyArray_DIM((PyObject *)obj, N) == M &&
+                   PyArray_STRIDES((PyObject *)obj)[N] == PyArray_ITEMSIZE((PyObject *)obj);
+        }
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return ValuetypeTraits::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -1006,8 +1112,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
-        return BaseType::isValuetypeCompatible(obj) &&
-               isShapeCompatible(obj);
+        return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
     template <class U>
@@ -1325,6 +1430,15 @@ class NumpyAnyArray
         return -1;
     }
 
+        // /**
+         // * Return the AxisTags of this array or empty AxisTags when the attribute
+           // 'axistags' is missing in the Python object.
+         // */
+    // PyAxisTags const & axistags() const
+    // {
+        // return getattr(python::detail::borrowed_reference(pyObject()), "axistags", PyAxisTags()));
+    // }
+
         /**
          * Return a borrowed reference to the internal PyArrayObject.
          */
@@ -1600,7 +1714,7 @@ class NumpyArray
          * Constructor from NumpyAnyArray.
          * Equivalent to NumpyArray(other.pyObject())
          */
-    NumpyArray(const NumpyAnyArray &other, bool createCopy = false)
+    explicit NumpyArray(const NumpyAnyArray &other, bool createCopy = false)
     {
         if(!other.hasData())
             return;
@@ -1688,15 +1802,17 @@ class NumpyArray
          */
     static bool isStrictlyCompatible(PyObject *obj)
     {
+        bool isClassCompatible = ArrayTraits::isClassCompatible(obj);
+        bool isPropertyCompatible = ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
+        
 #if VIGRA_CONVERTER_DEBUG
         std::cerr << "class " << typeid(NumpyArray).name() << " got " << obj->ob_type->tp_name << "\n";
-        bool isClassCompatible=ArrayTraits::isClassCompatible(obj);
-        bool isPropertyCompatible((PyArrayObject *)obj);
-        std::cerr<<"isClassCompatible: "<<isClassCompatible<<std::endl;
-        std::cerr<<"isPropertyCompatible: "<<isPropertyCompatible<<std::endl;
+        std::cerr << "using traits " << typeid(ArrayTraits).name() << "\n";
+        std::cerr<<"isClassCompatible: "<< isClassCompatible<<std::endl;
+        std::cerr<<"isPropertyCompatible: "<< isPropertyCompatible<<std::endl;
 #endif
-        return ArrayTraits::isClassCompatible(obj) &&
-               ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
+
+        return isClassCompatible &&isPropertyCompatible;
     }
 
         /**
@@ -1896,6 +2012,16 @@ inline void import_vigranumpy()
         pythonToCppException(0);
     python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
     pythonToCppException(module);
+}
+
+#ifdef import_array
+#undef import_array
+#endif
+
+inline void import_array()
+{
+    if(_import_array() < 0)
+        pythonToCppException(0);
 }
 
 /********************************************************/

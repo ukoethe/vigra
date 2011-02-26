@@ -273,10 +273,10 @@ def constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, ini
         shape = list(obj.shape)
     else:
         shape = list(obj)
-        if len(shape) == spatialDimensions:
-            shape.append(1 if channels == 0 else channels)
         if order == 'A':
             order = 'V'
+        if len(shape) == spatialDimensions:
+            shape.append(1 if channels == 0 else channels)
 
     # create the appropriate strideOrdering objects
     if order == "C":
@@ -562,9 +562,7 @@ class Image(VigraArray):
         if axistags is None and not hasattr(obj, 'axistags'):
             if order == 'C':
                 axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order == 'F':
-                axistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y])
-            elif order in ['A', 'V']:
+            elif order in ['F', 'A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.c])
         return VigraArray.__new__(cls, obj, dtype, order, init, value, axistags)
     
@@ -653,107 +651,142 @@ class Image(VigraArray):
         "number of spatial dimensions (useful for distinguishing RGBImage and ScalarVolume)"
         return 2
 
-class ScalarImage(Image):
-    __doc__ = _array_docstring_('ScalarImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 1).''', """
-          'C':
-             | NumpyArray<2, T, StridedArrayTag>,
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<2, Singleband<T>, StridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<2, T, UnstridedArrayTag>,
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<2, Singleband<T>, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | like 'F'""")
+# class ScalarImage(Image):
+    # __doc__ = _array_docstring_('ScalarImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 1).''', """
+          # 'C':
+             # | NumpyArray<2, T, StridedArrayTag>,
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<2, Singleband<T>, StridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<2, T, UnstridedArrayTag>,
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<2, Singleband<T>, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | like 'F'""")
 
-    channels = classproperty(lambda cls: 1, Image.bands)
+    # channels = classproperty(lambda cls: 1, Image.bands)
         
-# def ScalarImage(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-    # return Image(obj, dtype, order, init, value, axistags)
+def ScalarImage(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 2 and obj.ndim != 3:
+            raise RuntimeError("ScalarImage(): shape mismatch")
+    return Image(obj, dtype, order, init, value, axistags)
         
-class Vector2Image(Image):
-    __doc__ = _array_docstring_('Vector2Image', '''
-    A shape is compatible when it has two dimensions (width, height)
-    or three dimensions (width, height, 2).''', """
-          'C':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 2>, StridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 2>, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+# class Vector2Image(Image):
+    # __doc__ = _array_docstring_('Vector2Image', '''
+    # A shape is compatible when it has two dimensions (width, height)
+    # or three dimensions (width, height, 2).''', """
+          # 'C':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 2>, StridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 2>, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
 
-    channels = classproperty(lambda cls: 2, Image.bands)
+    # channels = classproperty(lambda cls: 2, Image.bands)
 
-class Vector3Image(Image):
-    __doc__ = _array_docstring_('Vector3Image', '''
-    A shape is compatible when it has two dimensions (width, height)
-    or three dimensions (width, height, 3).''', """
-          'C':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 3>, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+def Vector2Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 3:
+            raise RuntimeError("Vector2Image(): shape mismatch")
+    elif len(obj) == 2:
+        obj += (2,)
+    return Image(obj, dtype, order, init, value, axistags)
 
-    channels = classproperty(lambda cls: 3, Image.bands)
+# class Vector3Image(Image):
+    # __doc__ = _array_docstring_('Vector3Image', '''
+    # A shape is compatible when it has two dimensions (width, height)
+    # or three dimensions (width, height, 3).''', """
+          # 'C':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 3>, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
 
-class Vector4Image(Image):
-    __doc__ = _array_docstring_('Vector4Image', '''
-    A shape is compatible when it has two dimensions (width, height)
-    or three dimensions (width, height, 4).''', """
-          'C':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 4>, StridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 4>, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+    # channels = classproperty(lambda cls: 3, Image.bands)
 
-    channels = classproperty(lambda cls: 4, Image.bands)
+def Vector3Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 3:
+            raise RuntimeError("Vector3Image(): shape mismatch")
+    elif len(obj) == 2:
+        obj += (3,)
+    return Image(obj, dtype, order, init, value, axistags)
 
-class RGBImage(Vector3Image):
-    __doc__ = _array_docstring_('RGBImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 3).''', """
-          'C':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, RGBValue<T>, StridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<2, RGBValue<T>, UnstridedArrayTag>,
-             | NumpyArray<2, TinyVector<T, 3>, UnstridedArrayTag>,
-             | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+# class Vector4Image(Image):
+    # __doc__ = _array_docstring_('Vector4Image', '''
+    # A shape is compatible when it has two dimensions (width, height)
+    # or three dimensions (width, height, 4).''', """
+          # 'C':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 4>, StridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 4>, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+
+    # channels = classproperty(lambda cls: 4, Image.bands)
+
+def Vector4Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 3:
+            raise RuntimeError("Vector4Image(): shape mismatch")
+    elif len(obj) == 2:
+        obj += (4,)
+    return Image(obj, dtype, order, init, value, axistags)
+
+# class RGBImage(Vector3Image):
+    # __doc__ = _array_docstring_('RGBImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 3).''', """
+          # 'C':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, RGBValue<T>, StridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 3>, StridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<2, RGBValue<T>, UnstridedArrayTag>,
+             # | NumpyArray<2, TinyVector<T, 3>, UnstridedArrayTag>,
+             # | NumpyArray<3, Multiband<T>, StridedArrayTag>""")
+
+def RGBImage(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 3:
+            raise RuntimeError("RGBImage(): shape mismatch")
+    elif len(obj) == 2:
+        obj += (3,)
+    return Image(obj, dtype, order, init, value, axistags)
 
 #################################################################
 
@@ -787,9 +820,7 @@ class Volume(VigraArray):
         if axistags is None and not hasattr(obj, 'axistags'):
             if order == 'C':
                 axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order == 'F':
-                axistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z])
-            elif order in ['A', 'V']:
+            elif order in ['F', 'A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.c])
         return VigraArray.__new__(cls, obj, dtype, order, init, value, axistags)
     
@@ -818,115 +849,158 @@ class Volume(VigraArray):
     def depth(self):
         return self.shape[2]
 
-class ScalarVolume(Volume):
-    __doc__ = _array_docstring_('ScalarVolume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 1).''', """
-          'C':
-             | NumpyArray<3, T, StridedArrayTag>,
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, Singleband<T>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<3, T, UnstridedArrayTag>,
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<3, Singleband<T>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | like 'F'""")
+# class ScalarVolume(Volume):
+    # __doc__ = _array_docstring_('ScalarVolume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 1).''', """
+          # 'C':
+             # | NumpyArray<3, T, StridedArrayTag>,
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, Singleband<T>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<3, T, UnstridedArrayTag>,
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<3, Singleband<T>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | like 'F'""")
 
-    channels = classproperty(lambda cls: 1, Volume.bands)
+    # channels = classproperty(lambda cls: 1, Volume.bands)
 
-class Vector2Volume(Volume):
-    __doc__ = _array_docstring_('Vector2Volume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 2).''', """
-          'C':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 2>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 2>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+def ScalarVolume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    return Volume(obj, dtype, order, init, value, axistags)
 
-    channels = classproperty(lambda cls: 2, Volume.bands)
+# class Vector2Volume(Volume):
+    # __doc__ = _array_docstring_('Vector2Volume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 2).''', """
+          # 'C':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 2>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 2>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
 
-class Vector3Volume(Volume):
-    __doc__ = _array_docstring_('Vector3Volume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 3).''', """
-          'C':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+    # channels = classproperty(lambda cls: 2, Volume.bands)
 
-    channels = classproperty(lambda cls: 3, Volume.bands)
+def Vector2Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 4:
+            raise RuntimeError("Vector2Volume(): shape mismatch")
+    elif len(obj) == 3:
+        obj += (2,)
+    return Volume(obj, dtype, order, init, value, axistags)
 
-class Vector4Volume(Volume):
-    __doc__ = _array_docstring_('Vector4Volume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 4).''', """
-          'C':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 4>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 4>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+# class Vector3Volume(Volume):
+    # __doc__ = _array_docstring_('Vector3Volume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 3).''', """
+          # 'C':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
 
-    channels = classproperty(lambda cls: 4, Volume.bands)
+    # channels = classproperty(lambda cls: 3, Volume.bands)
+
+def Vector3Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 4:
+            raise RuntimeError("Vector3Volume(): shape mismatch")
+    elif len(obj) == 3:
+        obj += (3,)
+    return Volume(obj, dtype, order, init, value, axistags)
+
+# class Vector4Volume(Volume):
+    # __doc__ = _array_docstring_('Vector4Volume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 4).''', """
+          # 'C':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 4>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 4>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+
+    # channels = classproperty(lambda cls: 4, Volume.bands)
     
-class Vector6Volume(Volume):
-    __doc__ = _array_docstring_('Vector4Volume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 6).''', """
-          'C':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 6>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 6>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+def Vector4Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 4:
+            raise RuntimeError("Vector4Volume(): shape mismatch")
+    elif len(obj) == 3:
+        obj += (4,)
+    return Volume(obj, dtype, order, init, value, axistags)
 
-    channels = classproperty(lambda cls: 6, Volume.bands)
+# class Vector6Volume(Volume):
+    # __doc__ = _array_docstring_('Vector4Volume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 6).''', """
+          # 'C':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 6>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 6>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+
+    # channels = classproperty(lambda cls: 6, Volume.bands)
     
-class RGBVolume(Vector3Volume):
-    __doc__ = _array_docstring_('RGBVolume', '''
-    A shape is compatible when it has three dimensions (width, height,
-    depth) or four dimensions (width, height, depth, 3).''', """
-          'C':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, RGBValue<T>, StridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>
-          'F':
-             | NumpyArray<4, T, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
-          'V':
-             | NumpyArray<4, T, StridedArrayTag>,
-             | NumpyArray<3, RGBValue<T>, UnstridedArrayTag>,
-             | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
-             | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+def Vector6Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 4:
+            raise RuntimeError("Vector6Volume(): shape mismatch")
+    elif len(obj) == 3:
+        obj += (6,)
+    return Volume(obj, dtype, order, init, value, axistags)
 
+# class RGBVolume(Vector3Volume):
+    # __doc__ = _array_docstring_('RGBVolume', '''
+    # A shape is compatible when it has three dimensions (width, height,
+    # depth) or four dimensions (width, height, depth, 3).''', """
+          # 'C':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, RGBValue<T>, StridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 3>, StridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>
+          # 'F':
+             # | NumpyArray<4, T, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, UnstridedArrayTag>
+          # 'V':
+             # | NumpyArray<4, T, StridedArrayTag>,
+             # | NumpyArray<3, RGBValue<T>, UnstridedArrayTag>,
+             # | NumpyArray<3, TinyVector<T, 3>, UnstridedArrayTag>,
+             # | NumpyArray<4, Multiband<T>, StridedArrayTag>""")
+
+
+def RGBVolume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 4:
+            raise RuntimeError("RGBVolume(): shape mismatch")
+    elif len(obj) == 3:
+        obj += (3,)
+    return Volume(obj, dtype, order, init, value, axistags)
 
 #################################################################
 
@@ -1092,27 +1166,27 @@ class ImagePyramid(list):
              
 #################################################################
 
-def _registerArrayTypes():
-    from vigranumpycore import registerPythonArrayType
+# def _registerArrayTypes():
+    # from vigranumpycore import registerPythonArrayType
     
-    def checkImage(obj):
-        return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 2)
-    def checkVolume(obj):
-        return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 3)
+    # def checkImage(obj):
+        # return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 2)
+    # def checkVolume(obj):
+        # return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 3)
 
-    registerPythonArrayType("NumpyArray<2, Singleband<*> >", ScalarImage, checkImage)
-    registerPythonArrayType("NumpyArray<2, RGBValue<*> >", RGBImage, checkImage)
-    registerPythonArrayType("NumpyArray<2, TinyVector<*, 2> >", Vector2Image, checkImage)
-    registerPythonArrayType("NumpyArray<2, TinyVector<*, 3> >", Vector3Image, checkImage)
-    registerPythonArrayType("NumpyArray<2, TinyVector<*, 4> >", Vector4Image, checkImage)
-    registerPythonArrayType("NumpyArray<3, Multiband<*> >", Image, checkImage)
-    registerPythonArrayType("NumpyArray<3, Singleband<*> >", ScalarVolume, checkVolume)
-    registerPythonArrayType("NumpyArray<3, RGBValue<*> >", RGBVolume, checkVolume)
-    registerPythonArrayType("NumpyArray<3, TinyVector<*, 2> >", Vector2Volume, checkVolume)
-    registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Vector3Volume, checkVolume)
-    registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Vector4Volume, checkVolume)
-    registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Vector6Volume, checkVolume)
-    registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
+    # registerPythonArrayType("NumpyArray<2, Singleband<*> >", ScalarImage, checkImage)
+    # registerPythonArrayType("NumpyArray<2, RGBValue<*> >", RGBImage, checkImage)
+    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 2> >", Vector2Image, checkImage)
+    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 3> >", Vector3Image, checkImage)
+    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 4> >", Vector4Image, checkImage)
+    # registerPythonArrayType("NumpyArray<3, Multiband<*> >", Image, checkImage)
+    # registerPythonArrayType("NumpyArray<3, Singleband<*> >", ScalarVolume, checkVolume)
+    # registerPythonArrayType("NumpyArray<3, RGBValue<*> >", RGBVolume, checkVolume)
+    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 2> >", Vector2Volume, checkVolume)
+    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Vector3Volume, checkVolume)
+    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Vector4Volume, checkVolume)
+    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Vector6Volume, checkVolume)
+#    registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
 
-_registerArrayTypes()
-del _registerArrayTypes
+#_registerArrayTypes()
+# del _registerArrayTypes
