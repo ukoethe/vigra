@@ -114,8 +114,8 @@ def checkArray(cls, channels, dim):
             fvstrides = ffstrides
             bvstrides = bfstrides
             
-        if channels == 1 or getattr(cls, 'channels', 0) > 0:
-            shape = shape[:-1]
+        # if channels == 0 or getattr(cls, 'channels', 0) > 0:
+            # shape = shape[:-1]
         
         value = 1 if channels == 1 else range(1,channels+1)
 
@@ -168,7 +168,7 @@ def checkArray(cls, channels, dim):
         assert_equal(img.axistags, (img*2).axistags)
         
         if channels == 1 or getattr(cls, 'channels', 0) > 0:
-            img = cls(shape + (channels,))
+            img = cls(shape)
             checkShape(img.shape, rshape)
             checkStride(img.strides, fvstrides)
 

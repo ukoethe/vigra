@@ -102,27 +102,32 @@ class AxisInfo
     
     bool isSpatial() const
     {
-        return (flags_ & Space) != 0;
+        return isType(Space);
     }
     
     bool isTemporal() const
     {
-        return (flags_ & Time) != 0;
+        return isType(Time);
     }
     
     bool isChannel() const
     {
-        return (flags_ & Channels) != 0;
+        return isType(Channels);
     }
     
     bool isFrequency() const
     {
-        return (flags_ & Frequency) != 0;
+        return isType(Frequency);
     }
     
     bool isAngular() const
     {
-        return (flags_ & Angle) != 0;
+        return isType(Angle);
+    }
+    
+    bool isType(AxisType type) const
+    {
+        return (flags_ & type) != 0;
     }
     
     std::string repr() const
@@ -346,6 +351,15 @@ class AxisTags
 	{
 		return axes_.size();
 	}
+    
+    int axisTypeCount(AxisType type) const
+    {
+        int res = 0;
+        for(unsigned int k=0; k<size(); ++k)
+            if(getFunctor(axes_[k]).isType(type))
+                ++res;
+        return res;
+    }
     
     std::string repr() const
     {

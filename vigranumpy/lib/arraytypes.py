@@ -135,6 +135,39 @@ AxisTags.__deepcopy__ = AxisTags_deepcopy
 del AxisTags_copy
 del AxisTags_deepcopy
 
+def makeImageAxisTags(obj, order, axistags):
+    if axistags is None:
+        try:
+            axistags = obj.axistags
+        except:
+            if order == 'C':
+                axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            elif order in ['F', 'A', 'V']:
+                axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.c])
+    if len(axistags) > 3:
+        raise RuntimeError("makeImageAxisTags(): len(axistags) must not exceed 3.")        
+    if axistags.axisTypeCount(AxisType.Space) != 2:
+        raise RuntimeError("makeImageAxisTags(): axistags must have 2 spatial dimensions.")
+    if len(axistags) == 3 and axistags.axisTypeCount(AxisType.Channels) != 1:
+        raise RuntimeError("makeImageAxisTags(): axistags can have at most 1 channel axis.")
+    return axistags
+
+def makeVolumeAxisTags(obj, order, axistags):
+    if axistags is None:
+        try:
+            axistags = obj.axistags
+        except:
+            if order == 'C':
+                axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            elif order in ['F', 'A', 'V']:
+                axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.c])
+    if len(axistags) > 4:
+        raise RuntimeError("makeVolumeAxisTags(): len(axistags) must not exceed 4.")        
+    if axistags.axisTypeCount(AxisType.Space) != 3:
+        raise RuntimeError("makeVolumeAxisTags(): axistags must have 3 spatial dimensions.")
+    if len(axistags) == 4 and axistags.axisTypeCount(AxisType.Channels) != 1:
+        raise RuntimeError("makeVolumeAxisTags(): axistags can have at most 1 channel axis.")
+    return axistags
 
 def _array_docstring_(name, shape, compat):
     return '''
@@ -320,19 +353,26 @@ VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     """
     def __new__(cls, obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-        # FIXME: we can get axistags in 3 different ways: from 'obj', implicitly from 'order',
-        #        and explicitly from 'axistags'
-        #        this is not yet consistent
-        if isinstance(obj, numpy.ndarray) and not isinstance(obj, VigraArray):
-            obj = obj.swapaxes(0, cls.spatialDimensions-1)
-        if value is not None:
-            res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
-            res[...] = value
-        else:
-            res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
-        # FIXME: this should work for arbitrary many dimensions
         if axistags is None and hasattr(obj, 'axistags'):
             axistags = obj.axistags
+        if axistags is None:
+            channels = 0
+            try:
+                spatialDimensions = obj.ndim
+            except:
+                spatialDimensions = len(obj)
+        else:
+            channels = axistags.axisTypeCount(AxisType.Channels)
+            spatialDimensions = axistags.axisTypeCount(AxisType.Space)
+        if isinstance(obj, numpy.ndarray) and not isinstance(obj, VigraArray):
+            obj = obj.swapaxes(0, spatialDimensions-1)
+        if value is not None:
+            res = constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, False)
+            res[...] = value
+        else:
+            res = constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init)
+        if len(axistags) != res.ndim:
+            raise RuntimeError("VigraArray(): len(axistags) must match ndim.")
         if axistags is not None:
             res.axistags = copy.copy(axistags)
         return res
@@ -345,11 +385,49 @@ this class via its subclasses!
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
     
-    def bands(self):
-        if len(self.shape) == self.spatialDimensions:
-            return 1
+    @property
+    def channels(self):
+        i = self.axistags.index('c')
+        if i < self.ndim:
+            return self.shape[i]
         else:
-            return self.shape[-1]
+            return 1
+            
+    @property
+    def width(self):
+        i = self.axistags.index('x')
+        if i < self.ndim:
+            return self.shape[i]
+        else:
+            raise RuntimeError("VigraArray.width(): axistag 'x' does not exist.")
+    
+    @property
+    def height(self):
+        i = self.axistags.index('y')
+        if i < self.ndim:
+            return self.shape[i]
+        else:
+            raise RuntimeError("VigraArray.height(): axistag 'y' does not exist.")
+    
+    @property
+    def depth(self):
+        i = self.axistags.index('z')
+        if i < self.ndim:
+            return self.shape[i]
+        else:
+            raise RuntimeError("VigraArray.depth(): axistag 'z' does not exist.")
+    
+    @property
+    def timeSteps(self):
+        i = self.axistags.index('t')
+        if i < self.ndim:
+            return self.shape[i]
+        else:
+            raise RuntimeError("VigraArray.timeSteps(): axistag 't' does not exist.")
+            
+    @property
+    def spatialDimensions(self):
+        return self.axistags.axisTypeCount(AxisType.Space)
 
     def default_axistags(self):
         '''Create an axistags object with non-informative entries.
@@ -368,12 +446,11 @@ this class via its subclasses!
             return 'C'
         elif self.flags.f_contiguous:
             return 'F'
+        # FIXME: this should use axistags
         elif self.itemsize == self.strides[-1] and \
              reduce(lambda x, y: y if y >= x and x >= 0 else -1, self.strides[:-1], 0) >= 0:
             return 'V'
         return 'A'
-    
-    channels = classproperty(lambda cls: 0, bands)
     
     @property
     # FIXME: this should depend on axistags
@@ -559,11 +636,7 @@ class Image(VigraArray):
 """)
             
     def __new__(cls, obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-        if axistags is None and not hasattr(obj, 'axistags'):
-            if order == 'C':
-                axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order in ['F', 'A', 'V']:
-                axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.c])
+        axistags = makeImageAxisTags(obj, order, axistags)
         return VigraArray.__new__(cls, obj, dtype, order, init, value, axistags)
     
     def write(self, filename, dtype = '', compression = ''):
@@ -636,20 +709,20 @@ class Image(VigraArray):
 
         return q
         
-    @property
-    def width(self):
-        """the image's width"""
-        return self.shape[0]
+    # @property
+    # def width(self):
+        # """the image's width"""
+        # return self.shape[0]
     
-    @property
-    def height(self):
-        "the image's height"
-        return self.shape[1]
+    # @property
+    # def height(self):
+        # "the image's height"
+        # return self.shape[1]
 
-    @classproperty
-    def spatialDimensions(cls):
-        "number of spatial dimensions (useful for distinguishing RGBImage and ScalarVolume)"
-        return 2
+    # @classproperty
+    # def spatialDimensions(cls):
+        # "number of spatial dimensions (useful for distinguishing RGBImage and ScalarVolume)"
+        # return 2
 
 # class ScalarImage(Image):
     # __doc__ = _array_docstring_('ScalarImage', '''A shape is compatible when it has two dimensions (width, height) or three dimensions (width, height, 1).''', """
@@ -817,11 +890,7 @@ class Volume(VigraArray):
              | NumpyArray<4, Multiband<T>, StridedArrayTag> (if channels>1)""")
             
     def __new__(cls, obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-        if axistags is None and not hasattr(obj, 'axistags'):
-            if order == 'C':
-                axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order in ['F', 'A', 'V']:
-                axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.c])
+        axistags = makeVolumeAxisTags(obj, order, axistags)
         return VigraArray.__new__(cls, obj, dtype, order, init, value, axistags)
     
     def write(self, filename_base, filename_ext, dtype = '', compression = ''):
@@ -834,20 +903,20 @@ class Volume(VigraArray):
         import vigra.impex
         vigra.impex.writeVolumeToHDF5(self, filename, pathInFile, dtype)
     
-    @classproperty
-    def spatialDimensions(cls): return 3
+    # @classproperty
+    # def spatialDimensions(cls): return 3
         
-    @property
-    def width(self):
-        return self.shape[0]
+    # @property
+    # def width(self):
+        # return self.shape[0]
     
-    @property
-    def height(self):
-        return self.shape[1]
+    # @property
+    # def height(self):
+        # return self.shape[1]
     
-    @property
-    def depth(self):
-        return self.shape[2]
+    # @property
+    # def depth(self):
+        # return self.shape[2]
 
 # class ScalarVolume(Volume):
     # __doc__ = _array_docstring_('ScalarVolume', '''
@@ -942,11 +1011,12 @@ def Vector3Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, ax
     # channels = classproperty(lambda cls: 4, Volume.bands)
     
 def Vector4Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
+    try:
         if obj.ndim != 4:
             raise RuntimeError("Vector4Volume(): shape mismatch")
-    elif len(obj) == 3:
-        obj += (4,)
+    except:
+        if len(obj) == 3:
+            obj += (4,)
     return Volume(obj, dtype, order, init, value, axistags)
 
 # class Vector6Volume(Volume):
