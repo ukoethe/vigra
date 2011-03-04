@@ -140,9 +140,9 @@ def makeImageAxisTags(obj, order, axistags):
         try:
             axistags = obj.axistags
         except:
-            if order == 'C':
-                axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order in ['F', 'A', 'V']:
+            # if order == 'C':
+                # axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            # elif order in ['F', 'A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.c])
     if len(axistags) > 3:
         raise RuntimeError("makeImageAxisTags(): len(axistags) must not exceed 3.")        
@@ -157,9 +157,9 @@ def makeVolumeAxisTags(obj, order, axistags):
         try:
             axistags = obj.axistags
         except:
-            if order == 'C':
-                axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            elif order in ['F', 'A', 'V']:
+            # if order == 'C':
+                # axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            # elif order in ['F', 'A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.c])
     if len(axistags) > 4:
         raise RuntimeError("makeVolumeAxisTags(): len(axistags) must not exceed 4.")        
@@ -356,16 +356,15 @@ this class via its subclasses!
         if axistags is None and hasattr(obj, 'axistags'):
             axistags = obj.axistags
         if axistags is None:
-            channels = 0
             try:
                 spatialDimensions = obj.ndim
             except:
                 spatialDimensions = len(obj)
         else:
-            channels = axistags.axisTypeCount(AxisType.Channels)
             spatialDimensions = axistags.axisTypeCount(AxisType.Space)
         if isinstance(obj, numpy.ndarray) and not isinstance(obj, VigraArray):
             obj = obj.swapaxes(0, spatialDimensions-1)
+        channels = 0
         if value is not None:
             res = constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, False)
             res[...] = value
@@ -386,8 +385,23 @@ this class via its subclasses!
         return self.__class__(self, dtype=self.dtype, order=order)
     
     @property
+    def channelIndex(self):
+        return self.axistags.index('c')
+    
+    @property
+    def majorNonchannelIndex(self):
+        # FIXME: this must be generalized to the case when 'x' is not present.
+        return self.axistags.index('x')
+    
+    @property
+    def canonicalOrdering(self):
+        # FIXME: this must be generalized to arbitrary axistags.
+        #        (implement as a method in AxisTags)
+        return list(numpy.array(map(lambda x: ord(x.key[-1]), self.axistags)).argsort())
+    
+    @property
     def channels(self):
-        i = self.axistags.index('c')
+        i = self.channelIndex
         if i < self.ndim:
             return self.shape[i]
         else:
@@ -1256,7 +1270,32 @@ class ImagePyramid(list):
     # registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Vector3Volume, checkVolume)
     # registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Vector4Volume, checkVolume)
     # registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Vector6Volume, checkVolume)
-#    registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
+    # registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
 
-#_registerArrayTypes()
+# _registerArrayTypes()
 # del _registerArrayTypes
+
+def _registerArrayTypes():
+    from vigranumpycore import registerPythonArrayType
+    
+    def checkImage(obj):
+        return True
+    def checkVolume(obj):
+        return True
+
+    registerPythonArrayType("NumpyArray<2, Singleband<*> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<2, RGBValue<*> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<2, TinyVector<*, 2> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<2, TinyVector<*, 3> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<2, TinyVector<*, 4> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<3, Multiband<*> >", Image, checkImage)
+    registerPythonArrayType("NumpyArray<3, Singleband<*> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<3, RGBValue<*> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<3, TinyVector<*, 2> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Volume, checkVolume)
+    registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
+
+_registerArrayTypes()
+del _registerArrayTypes

@@ -92,30 +92,17 @@ def checkArray(cls, channels, dim):
         shape = (20, 10, 5, channels)[-(dim+1):]
         
         # figure out expected strides for various memory layouts
-#        if channels > 1:
-        if channels > 0:
-            d = dim+1
-            rshape = shape[:d]
-            fcstrides = (200*channels, 20*channels, 4*channels, 4)[-d:]
-            bcstrides = (50*channels, 5*channels, channels, 1)[-d:]
-            ffstrides = (4, shape[0]*4, shape[0]*shape[1]*4, shape[0]*shape[1]*shape[2]*4)[:d]
-            bfstrides = (1, shape[0], shape[0]*shape[1], shape[0]*shape[1]*shape[2])[:d]
-            fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
-            bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
-            caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
-            vaxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
-        else:
-            d = dim
-            rshape = shape[:d]
-            fcstrides = (200, 20, 4)[-d:]
-            bcstrides = (50, 5, 1)[-d:]
-            ffstrides = (4, shape[0]*4, shape[0]*shape[1]*4)[:d]
-            bfstrides = (1, shape[0], shape[0]*shape[1])[:d]
-            fvstrides = ffstrides
-            bvstrides = bfstrides
-            
-        # if channels == 0 or getattr(cls, 'channels', 0) > 0:
-            # shape = shape[:-1]
+        d = dim+1
+        rshape = shape[:d]
+        fcstrides = (200*channels, 20*channels, 4*channels, 4)[-d:]
+        bcstrides = (50*channels, 5*channels, channels, 1)[-d:]
+        ffstrides = (4, shape[0]*4, shape[0]*shape[1]*4, shape[0]*shape[1]*shape[2]*4)[:d]
+        bfstrides = (1, shape[0], shape[0]*shape[1], shape[0]*shape[1]*shape[2])[:d]
+        fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
+        bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
+#        caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
+        caxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
+        vaxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
         
         value = 1 if channels == 1 else range(1,channels+1)
 
@@ -303,17 +290,18 @@ def checkFailure(obj, n):
         f(obj)
     except ArgumentError:
         return
-    raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s and stride %s" % (n, type(obj), str(obj.shape), str(obj.strides))
+    raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s, stride %s, axistags '%s'" % (n, type(obj), str(obj.shape), str(obj.strides), str(obj.axistags))
 
 def checkCompatibility(obj, compatible):
     for n in compatible:
         try:
             f = getattr(vt, n)
             res = f(obj)
+            assert_equal(obj.shape, res)
         except Exception:
-            print >> sys.stderr, "exception in",n
+            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, obj.axistags)
             raise
-        assert_equal(obj.shape, res)
+        
         
     incompatible = allTests.difference(compatible)
     
@@ -321,7 +309,7 @@ def checkCompatibility(obj, compatible):
         try:
             checkFailure(obj, n)
         except Exception:
-            print >> sys.stderr, "exception in",n
+            print "exception in",n
             raise
 
 def testImage1():

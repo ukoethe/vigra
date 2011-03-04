@@ -44,7 +44,8 @@
 #include <vigra/mathutil.hxx>
 #include <vector>
 
-NUMPY_ARRAY_DUMMY_REGISTRY
+//NUMPY_ARRAY_DUMMY_REGISTRY
+NUMPY_ARRAY_INITIALIZE_REGISTRY
 
 namespace python = boost::python;
 
