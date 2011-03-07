@@ -729,19 +729,33 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     {
 		PyObject * obj = (PyObject *)array;
 		int ndim = PyArray_NDIM(obj);
-        
-        // Since this type has no special requirements on axis layout and shape,
-        // everything is ok when ndim is right.
-        if(ndim == N)
-            return true;
-            
-        long channelIndex = detail::channelIndex(array, N);
-        
-        // When we have one extra axis, we allow dropping it, provided it is
-        // a channel axis and the number of channels is 1.
-        // When no explicit channel axis is known, we use the last axis by
-        // default (we automaticaly get 'channelIndex == N' in this case).
-        return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1;
+        long channelIndex = detail::channelIndex(array, ndim);
+        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+
+        if(channelIndex < ndim)
+        {
+            // When we have a channel axis, there are two cases:
+            // 1. ndim is right: everything is ok
+            // 2. ndim == N+1: we drop the channel axis when it is a singleton
+            return (ndim == N) ||
+                    (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1);
+        }
+        else if(majorIndex < ndim)
+        {
+            // We have axistags, but no channel axis. There are again two cases:
+            // 1. ndim is right: everything is ok
+            // 2. ndim == N-1: we add a singleton channel axis later
+            return ndim == N-1 || ndim == N;
+        }
+        else
+        {
+            // We have no axistags. 
+            // When ndim == N or ndim == N-1, everything is ok
+            // When ndim == N+1, we assume that channelIndex == ndim-1, and we may drop the
+            // channel axis when it is a singleton.
+            return ndim == N-1 || ndim == N ||
+                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1);
+        }
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -793,7 +807,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         {
             // When we have a channel axis, there are two cases:
             // 1. ndim is right: the channel axis is the major axis and must be unstrided
-            // 2. ndim == N+1: we drop the channel axis when it is a singleton, and reuire the
+            // 2. ndim == N+1: we drop the channel axis when it is a singleton, and require the
             //                 major non-channel axis to be unstrided
             return (ndim == N && strides[channelIndex] == itemsize) ||
                     (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && strides[majorIndex] == itemsize);
@@ -1932,6 +1946,13 @@ class NumpyArray
          */
     static bool isCopyCompatible(PyObject *obj)
     {
+#if VIGRA_CONVERTER_DEBUG
+        std::cerr << "class " << typeid(NumpyArray).name() << " got " << obj->ob_type->tp_name << "\n";
+        std::cerr << "using traits " << typeid(ArrayTraits).name() << "\n";
+        std::cerr<<"isArray: "<< ArrayTraits::isArray(obj)<<std::endl;
+        std::cerr<<"isShapeCompatible: "<< ArrayTraits::isShapeCompatible((PyArrayObject *)obj)<<std::endl;
+#endif
+
         return ArrayTraits::isArray(obj) &&
                ArrayTraits::isShapeCompatible((PyArrayObject *)obj);
     }
@@ -1958,17 +1979,15 @@ class NumpyArray
          */
     static bool isStrictlyCompatible(PyObject *obj)
     {
-        bool isClassCompatible = ArrayTraits::isClassCompatible(obj);
-        bool isPropertyCompatible = ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
-        
 #if VIGRA_CONVERTER_DEBUG
         std::cerr << "class " << typeid(NumpyArray).name() << " got " << obj->ob_type->tp_name << "\n";
         std::cerr << "using traits " << typeid(ArrayTraits).name() << "\n";
-        std::cerr<<"isClassCompatible: "<< isClassCompatible<<std::endl;
-        std::cerr<<"isPropertyCompatible: "<< isPropertyCompatible<<std::endl;
+        std::cerr<<"isClassCompatible: "<< ArrayTraits::isClassCompatible(obj)<<std::endl;
+        std::cerr<<"isPropertyCompatible: "<< ArrayTraits::isPropertyCompatible((PyArrayObject *)obj)<<std::endl;
 #endif
 
-        return isClassCompatible &&isPropertyCompatible;
+        return ArrayTraits::isClassCompatible(obj) &&
+                ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
     }
 
         /**
