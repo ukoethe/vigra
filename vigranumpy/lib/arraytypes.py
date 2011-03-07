@@ -63,6 +63,8 @@ following array classes:
 import copy
 import numpy
 import ufunc
+import vigranumpycore
+
 from tagged_array import TaggedArray
 
 from vigranumpycore import AxisType, AxisInfo, AxisTags
@@ -140,9 +142,11 @@ def makeImageAxisTags(obj, order, axistags):
         try:
             axistags = obj.axistags
         except:
-            # if order == 'C':
-                # axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            # elif order in ['F', 'A', 'V']:
+            if order == 'C':
+                axistags = AxisTags([AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            elif order == 'F':
+                axistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y])
+            elif order in ['A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.c])
     if len(axistags) > 3:
         raise RuntimeError("makeImageAxisTags(): len(axistags) must not exceed 3.")        
@@ -157,9 +161,11 @@ def makeVolumeAxisTags(obj, order, axistags):
         try:
             axistags = obj.axistags
         except:
-            # if order == 'C':
-                # axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
-            # elif order in ['F', 'A', 'V']:
+            if order == 'C':
+                axistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c])
+            elif order == 'F':
+                axistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z])
+            elif order in ['A', 'V']:
                 axistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.c])
     if len(axistags) > 4:
         raise RuntimeError("makeVolumeAxisTags(): len(axistags) must not exceed 4.")        
@@ -302,14 +308,20 @@ def constructNumpyArrayOld(cls, obj, spatialDimensions, channels, dtype, order, 
 def constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim == spatialDimensions:
-            obj = obj[..., numpy.newaxis]
+            if order == 'F':
+                obj = obj[numpy.newaxis, ...]
+            else:
+                obj = obj[..., numpy.newaxis]
         shape = list(obj.shape)
     else:
         shape = list(obj)
         if order == 'A':
             order = 'V'
         if len(shape) == spatialDimensions:
-            shape.append(1 if channels == 0 else channels)
+            if order == 'F':
+                shape.insert(0, 1 if channels == 0 else channels)
+            else:
+                shape.append(1 if channels == 0 else channels)
 
     # create the appropriate strideOrdering objects
     if order == "C":
@@ -370,6 +382,14 @@ this class via its subclasses!
             res[...] = value
         else:
             res = constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init)
+        # FIXME: vigranumpycore.constructNumpyArray() should lead to the same results and should
+        #        be preferred for the sake of consistence (currently, we get different strides for 
+        #        singleton axes)
+        # if value is not None:
+            # res = vigranumpycore.constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, False)
+            # res[...] = value
+        # else:
+            # res = vigranumpycore.constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init)
         if len(axistags) != res.ndim:
             raise RuntimeError("VigraArray(): len(axistags) must match ndim.")
         if axistags is not None:
@@ -759,7 +779,14 @@ def ScalarImage(obj, dtype=numpy.float32, order='V', init=True, value=None, axis
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 2 and obj.ndim != 3:
             raise RuntimeError("ScalarImage(): shape mismatch")
-    return Image(obj, dtype, order, init, value, axistags)
+    res = Image(obj, dtype, order, init, value, axistags)
+    # FIXME: activate this after test refactoring
+    # if res.ndim == 3:
+        # if order == 'F':
+            # res = res[0, ...]
+        # else:
+            # res = res[..., 0]
+    return res
         
 # class Vector2Image(Image):
     # __doc__ = _array_docstring_('Vector2Image', '''
@@ -787,7 +814,10 @@ def Vector2Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axi
         if obj.ndim != 3:
             raise RuntimeError("Vector2Image(): shape mismatch")
     elif len(obj) == 2:
-        obj += (2,)
+        if order == 'F':
+            obj = (2,) + obj
+        else:
+            obj += (2,)
     return Image(obj, dtype, order, init, value, axistags)
 
 # class Vector3Image(Image):
@@ -816,7 +846,10 @@ def Vector3Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axi
         if obj.ndim != 3:
             raise RuntimeError("Vector3Image(): shape mismatch")
     elif len(obj) == 2:
-        obj += (3,)
+        if order == 'F':
+            obj = (3,) + obj
+        else:
+            obj += (3,)
     return Image(obj, dtype, order, init, value, axistags)
 
 # class Vector4Image(Image):
@@ -845,7 +878,10 @@ def Vector4Image(obj, dtype=numpy.float32, order='V', init=True, value=None, axi
         if obj.ndim != 3:
             raise RuntimeError("Vector4Image(): shape mismatch")
     elif len(obj) == 2:
-        obj += (4,)
+        if order == 'F':
+            obj = (4,) + obj
+        else:
+            obj += (4,)
     return Image(obj, dtype, order, init, value, axistags)
 
 # class RGBImage(Vector3Image):
@@ -872,7 +908,10 @@ def RGBImage(obj, dtype=numpy.float32, order='V', init=True, value=None, axistag
         if obj.ndim != 3:
             raise RuntimeError("RGBImage(): shape mismatch")
     elif len(obj) == 2:
-        obj += (3,)
+        if order == 'F':
+            obj = (3,) + obj
+        else:
+            obj += (3,)
     return Image(obj, dtype, order, init, value, axistags)
 
 #################################################################
@@ -952,7 +991,17 @@ class Volume(VigraArray):
     # channels = classproperty(lambda cls: 1, Volume.bands)
 
 def ScalarVolume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-    return Volume(obj, dtype, order, init, value, axistags)
+    if isinstance(obj, numpy.ndarray):
+        if obj.ndim != 3 and obj.ndim != 4:
+            raise RuntimeError("ScalarVolume(): shape mismatch")
+    res = Volume(obj, dtype, order, init, value, axistags)
+    # FIXME: activate this after test refactoring
+    # if res.ndim == 4:
+        # if order == 'F':
+            # res = res[0, ...]
+        # else:
+            # res = res[..., 0]
+    return res
 
 # class Vector2Volume(Volume):
     # __doc__ = _array_docstring_('Vector2Volume', '''
@@ -977,7 +1026,10 @@ def Vector2Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, ax
         if obj.ndim != 4:
             raise RuntimeError("Vector2Volume(): shape mismatch")
     elif len(obj) == 3:
-        obj += (2,)
+        if order == 'F':
+            obj = (2,) + obj
+        else:
+            obj += (2,)
     return Volume(obj, dtype, order, init, value, axistags)
 
 # class Vector3Volume(Volume):
@@ -1003,7 +1055,10 @@ def Vector3Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, ax
         if obj.ndim != 4:
             raise RuntimeError("Vector3Volume(): shape mismatch")
     elif len(obj) == 3:
-        obj += (3,)
+        if order == 'F':
+            obj = (3,) + obj
+        else:
+            obj += (3,)
     return Volume(obj, dtype, order, init, value, axistags)
 
 # class Vector4Volume(Volume):
@@ -1025,13 +1080,16 @@ def Vector3Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, ax
     # channels = classproperty(lambda cls: 4, Volume.bands)
     
 def Vector4Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, axistags=None):
-    try:
+    if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
             raise RuntimeError("Vector4Volume(): shape mismatch")
-    except:
-        if len(obj) == 3:
+    elif len(obj) == 3:
+        if order == 'F':
+            obj = (4,) + obj
+        else:
             obj += (4,)
     return Volume(obj, dtype, order, init, value, axistags)
+
 
 # class Vector6Volume(Volume):
     # __doc__ = _array_docstring_('Vector4Volume', '''
@@ -1056,7 +1114,10 @@ def Vector6Volume(obj, dtype=numpy.float32, order='V', init=True, value=None, ax
         if obj.ndim != 4:
             raise RuntimeError("Vector6Volume(): shape mismatch")
     elif len(obj) == 3:
-        obj += (6,)
+        if order == 'F':
+            obj = (6,) + obj
+        else:
+            obj += (6,)
     return Volume(obj, dtype, order, init, value, axistags)
 
 # class RGBVolume(Vector3Volume):
@@ -1083,7 +1144,10 @@ def RGBVolume(obj, dtype=numpy.float32, order='V', init=True, value=None, axista
         if obj.ndim != 4:
             raise RuntimeError("RGBVolume(): shape mismatch")
     elif len(obj) == 3:
-        obj += (3,)
+        if order == 'F':
+            obj = (3,) + obj
+        else:
+            obj += (3,)
     return Volume(obj, dtype, order, init, value, axistags)
 
 #################################################################

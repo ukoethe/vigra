@@ -507,7 +507,12 @@ constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> shape,
            "constructNumpyArray(type, ..., strideOrdering): strideOrdering has wrong length.");
 
     if(shape.size() == spatialDimensions)
-        shape.push_back(channels == 0 ? 1 : channels);
+    {
+        if(order == "F")
+            shape.insert(shape.begin(), channels == 0 ? 1 : channels);
+        else
+            shape.push_back(channels == 0 ? 1 : channels);
+    }
     if(strideOrdering.size() == 0)
     {
         if(order == "A")
@@ -693,7 +698,7 @@ struct NumpyArrayTraits;
 
 /********************************************************/
 
-#define OLD_SEMANTICS
+//#define OLD_SEMANTICS
 
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, T, StridedArrayTag>
@@ -780,51 +785,50 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
         long channelIndex = detail::channelIndex(array, ndim);
+        long majorIndex = detail::majorNonchannelIndex(array, ndim);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
-#ifndef OLD_SEMANTICS
         if(channelIndex < ndim)
         {
-            // When we have a channel axis, and ndim is right,
-            // the channel axis is the major axis and must be unstrided
-            if(ndim == N)  
-                return strides[channelIndex] == itemsize;
-            
-            if(ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1)
-            {
-                // If ndim == N+1, and the channel axis is a singleton, we will later drop it.
-                // The major axis among the remaining ones must now be unstrided.
-                long majorIndex = detail::majorNonchannelIndex(array, ndim);
-                return strides[majorIndex] == itemsize;
-            }
-            else
-            {
-                return false;
-            }
+            // When we have a channel axis, there are two cases:
+            // 1. ndim is right: the channel axis is the major axis and must be unstrided
+            // 2. ndim == N+1: we drop the channel axis when it is a singleton, and reuire the
+            //                 major non-channel axis to be unstrided
+            return (ndim == N && strides[channelIndex] == itemsize) ||
+                    (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && strides[majorIndex] == itemsize);
+        }
+        else if(majorIndex < ndim)
+        {
+#ifndef OLD_SEMANTICS
+            // We have axistags, but no channel axis. There are again two cases:
+            // 1. ndim is right: the major axis must be unstrided
+            // 2. ndim == N-1: we add a singleton channel axis later, which is automatically unstrided,
+            //                 so there is no explicit stride requirement
+            return ndim == N-1 || (ndim == N && strides[majorIndex] == itemsize);
+#else
+            return (ndim == N || ndim == N-1) && strides[majorIndex] == itemsize;
+#endif
         }
         else
         {
-            // When we have no explicit channel axis, we assume
-            //   channelIndex == ndim-1
-            //   majorIndex == ndim-2
-            // and proceed as above.
-            
-            if(ndim == N)
-                return strides[ndim-1] == itemsize;
-                
-            if(ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1)
-            {
-                return strides[ndim-2] == itemsize;
-            }
-            else
-            {
-                return false;
-            }
-        }
+#ifndef OLD_SEMANTICS
+            // We have no axistags. 
+            // When ndim == N or ndim == N+1, we assume that
+            //     channelIndex == ndim-1
+            //     majorIndex == ndim-2
+            // When ndim == N-1, we assume
+            //     there is no channel axis
+            //     majorIndex == ndim-1
+            // and proceed as above
+            return ndim == N-1 ||
+                    (ndim == N && strides[ndim-1] == itemsize)  ||
+                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
 #else
-        return (ndim == N || (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1)) && strides[0] == itemsize;
+            return ((ndim == N || ndim == N-1) && strides[ndim-1] == itemsize)  ||
+                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
 #endif
+        }
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -1060,7 +1064,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         {
             // When we have a channel axis, ndim must be right, and the major non-channel
             // axis must be unstrided.
-            return ndim == N && strides[majorIndex] == itemsize;
+            return ndim == N && strides[majorIndex] == itemsize*PyArray_DIM(obj, channelIndex);
         }
         else if(majorIndex < ndim)
         {
@@ -1077,7 +1081,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
             // When ndim == N-1, we assume
             //     there is no channel axis
             //     majorIndex == ndim-1
-            return (ndim == N && strides[ndim-2] == itemsize)  ||
+            return (ndim == N && strides[ndim-2] == itemsize*PyArray_DIM(obj, ndim-1))  ||
                     (ndim == N-1 && strides[ndim-1] == itemsize);
 #else
             return (ndim == N || ndim == N-1) && strides[0] == itemsize;
@@ -2185,6 +2189,14 @@ void NumpyArray<N, T, Stride>::setupArrayView()
                 this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
                 this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
             }
+            else if(typeid(T) == typeid(value_type))
+            {
+                for(int k=0; k<actual_dimension; ++k)
+                {
+                    this->m_shape[k] = pyArray()->dimensions[k];
+                    this->m_stride[k] = pyArray()->strides[k];
+                }
+            }
             else
             {
                 for(int k=0; k<actual_dimension; ++k)
@@ -2197,11 +2209,30 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         }
         else if(actual_dimension == pyArray()->nd - 1)
         {
+#ifndef OLD_SEMANTICS
             for(int k=0; k<actual_dimension; ++k)
             {
                 this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
                 this->m_stride[k] = pyArray()->strides[ordering[k+1]];
             }
+#else
+            if(typeid(T) == typeid(value_type))
+            {
+                for(int k=0; k<actual_dimension; ++k)
+                {
+                    this->m_shape[k] = pyArray()->dimensions[k];
+                    this->m_stride[k] = pyArray()->strides[k];
+                }
+            }
+            else
+            {
+                for(int k=0; k<actual_dimension; ++k)
+                {
+                    this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
+                    this->m_stride[k] = pyArray()->strides[ordering[k+1]];
+                }
+            }
+#endif
         }
         else if(actual_dimension == pyArray()->nd + 1)
         {

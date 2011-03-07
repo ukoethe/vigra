@@ -70,6 +70,7 @@ def checkArray(cls, channels, dim):
         def testCopy(img):
             b = cls(img, order='A')
             assert_equal(sys.getrefcount(b), 2)
+            assert b.__class__ is img.__class__
             assert_equal(b.shape, img.shape)
             # print b.shape, img.shape, b.strides, img.strides
             # assert False
@@ -100,9 +101,10 @@ def checkArray(cls, channels, dim):
         bfstrides = (1, shape[0], shape[0]*shape[1], shape[0]*shape[1]*shape[2])[:d]
         fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
         bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
-#        caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
-        caxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
+        caxistags = AxisTags([AxisInfo.z, AxisInfo.y, AxisInfo.x][3-dim:] + [AxisInfo.c])
+#        caxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
         vaxistags = AxisTags([AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim] + [AxisInfo.c])
+        faxistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:dim+1])
         
         value = 1 if channels == 1 else range(1,channels+1)
 
@@ -164,7 +166,7 @@ def checkArray(cls, channels, dim):
         assert_equal(sys.getrefcount(img), 2)
         checkShape(img.shape, rshape)
         checkStride(img.strides, ffstrides)
-        assert_equal(img.axistags, vaxistags)
+        assert_equal(img.axistags, faxistags)
         assert_equal(img.order, "F")
         assert not img.flags.c_contiguous
         assert img.flags.f_contiguous
@@ -299,7 +301,8 @@ def checkCompatibility(obj, compatible):
             res = f(obj)
             assert_equal(obj.shape, res)
         except Exception:
-            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, obj.axistags)
+            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
+                                            getattr(obj, "axistags", "none"))
             raise
         
         
@@ -315,188 +318,180 @@ def checkCompatibility(obj, compatible):
 def testImage1():
     checkArray(arraytypes.Image, 1, 2)
     
-    c = ["testAny",
-         "testArray2Strided",
-         "testArray3Strided",
-         "testImageSinglebandStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='C'), c)
-    
+    shape = (20, 10)
+    rshape = (10, 20)
+
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",
          "testArray3Unstrided", "testArray3Strided",
          "testImageSinglebandUnstrided", "testImageSinglebandStrided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='F'), c)
+
+    checkCompatibility(arraytypes.Image(rshape, order='C'), c)
     
-    c = ["testAny",
-         "testArray2Unstrided", "testArray2Strided",
-         "testArray3Unstrided", "testArray3Strided",
-         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='V'), c)
+    # FIXME: this should behave almost like a C-order array
+#    checkCompatibility(numpy.ndarray(rshape), c)
     
-    img = arraytypes.Image((20, 10), order='F')
-    checkShape(vt.viewArray2Unstrided(img), img.shape[:-1])
+    checkCompatibility(arraytypes.Image(shape, order='V'), c)
+
+    checkCompatibility(arraytypes.Image(shape, order='F'), c)
+    
+    img = arraytypes.Image(rshape, order='C')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.Image((20, 10), order='V')
-    checkShape(vt.viewArray2Unstrided(img), img.shape[:-1])
+    img = arraytypes.Image(shape, order='V')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.Image((20, 10), order='C')
-    checkShape(vt.viewArray2Strided(img), img.shape[:-1])
-    assert_equal(img[0,0], 1)
+    img = arraytypes.Image(shape, order='F')
+    checkShape(vt.viewArray2Unstrided(img), shape)
+    assert_equal(img[:,0,0], 1)
  
 def testImage2():
     checkArray(arraytypes.Image, 2, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='C'), c)
+    shape = (10, 20, 2)
+    cshape = (20, 10, 2)
+    fshape = (2, 10, 20)
     
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='F'), c)
-    
-    c = ["testAny",
-         "testArray3Strided",
          "testImageVector2Unstrided", "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='V'), c)
+         "testImageMultibandUnstrided", "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Image(cshape, order='C'), c)
     
-    img = arraytypes.Image((20, 10, 2), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+    checkCompatibility(arraytypes.Image(shape, order='V'), c)
+    
+    checkCompatibility(arraytypes.Image(fshape, order='F'), c)
+    
+    img = arraytypes.Image(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), fshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.Image(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), fshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0)).all()
+    img = arraytypes.Image(fshape, order='F')
+    assert_equal(vt.viewArray3Strided(img), fshape)
+    assert (img[:,0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='V')
-    assert_equal(vt.viewImageVector2Unstrided(img), (20, 10))
+    img = arraytypes.Image(cshape, order='C')
+    assert_equal(vt.viewImageVector2Strided(img), shape[:-1])
     assert (img[0,0]==(1,1)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='C')
-    assert_equal(vt.viewImageVector2Strided(img), (20,10))
+    img = arraytypes.Image(shape, order='V')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape[:-1])
     assert (img[0,0]==(1,1)).all()
  
 def testScalarImage():
     checkArray(arraytypes.ScalarImage, 1, 2)
     
-    c = ["testAny",
-         "testArray2Strided",
-         "testArray3Strided",
-         "testImageSinglebandStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='C'), c)
-    
+    cshape = (10, 20)
+    shape = (20, 10)
+
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",
          "testArray3Unstrided", "testArray3Strided",
          "testImageSinglebandUnstrided", "testImageSinglebandStrided",
          "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='F'), c)
+         
+    checkCompatibility(arraytypes.ScalarImage(cshape, order='C'), c)
     
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='V'), c)
+    checkCompatibility(arraytypes.ScalarImage(shape, order='V'), c)
     
-    img = arraytypes.ScalarImage((20, 10), order='F')
-    checkShape(vt.viewArray2Unstrided(img), img.shape[:-1])
+    checkCompatibility(arraytypes.ScalarImage(shape, order='F'), c)
+    
+    img = arraytypes.ScalarImage(cshape, order='C')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.ScalarImage((20, 10), order='V')
-    checkShape(vt.viewArray2Unstrided(img), img.shape[:-1])
+    img = arraytypes.ScalarImage(shape, order='V')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.ScalarImage((20, 10), order='C')
-    checkShape(vt.viewArray2Strided(img), img.shape[:-1])
-    assert_equal(img[0,0], 1)
+    img = arraytypes.ScalarImage(shape, order='F')
+    checkShape(vt.viewArray2Strided(img), shape)
+    # FIXME: remove third index (strip it in the ScalarImage factory function, and change
+    #        checkArray() accordingly)
+    assert_equal(img[0,0,0], 1)
  
 def testRGBImage():
     checkArray(arraytypes.RGBImage, 3, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testImageRGBStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='C'), c)
-    
+    cshape = (10, 20)
+    shape = (20, 10)
+    rshape = (3, 20, 10)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='F'), c)
-    
-    c = ["testAny",
-         "testArray3Strided",
          "testImageRGBUnstrided", "testImageRGBStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='V'), c)
+         "testImageMultibandUnstrided", "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.RGBImage(cshape, order='C'), c)
     
-    img = arraytypes.RGBImage((20, 10), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+    checkCompatibility(arraytypes.RGBImage(shape, order='V'), c)
+
+    checkCompatibility(arraytypes.RGBImage(shape, order='F'), c)
+    
+    img = arraytypes.RGBImage(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.RGBImage(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0,0)).all()
+    img = arraytypes.RGBImage(shape, order='F')
+    assert_equal(vt.viewArray3Strided(img), rshape)
+    assert (img[:,0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='V')
-    assert_equal(vt.viewImageRGBUnstrided(img), (20, 10))
+    img = arraytypes.RGBImage(cshape, order='C')
+    assert_equal(vt.viewImageRGBUnstrided(img), shape)
     assert (img[0,0]==(1,1,1)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='C')
-    assert_equal(vt.viewImageRGBStrided(img), (20,10))
+    img = arraytypes.RGBImage(shape, order='V')
+    assert_equal(vt.viewImageRGBStrided(img), shape)
     assert (img[0,0]==(1,1,1)).all()
  
 def testVector2Image():
     checkArray(arraytypes.Vector2Image, 2, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='C'), c)
-    
+    cshape = (10, 20)
+    shape = (20, 10)
+    rshape = (2, 20, 10)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='F'), c)
-    
-    c = ["testAny",
-         "testArray3Strided",
          "testImageVector2Unstrided", "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='V'), c)
+         "testImageMultibandUnstrided", "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Vector2Image(cshape, order='C'), c)
     
-    img = arraytypes.Vector2Image((20, 10), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+    checkCompatibility(arraytypes.Vector2Image(shape, order='V'), c)
+    
+    checkCompatibility(arraytypes.Vector2Image(shape, order='F'), c)
+    
+    img = arraytypes.Vector2Image(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.Vector2Image(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0)).all()
+    img = arraytypes.Vector2Image(shape, order='F')
+    assert_equal(vt.viewArray3Strided(img), rshape)
+    assert (img[:,0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='V')
-    assert_equal(vt.viewImageVector2Unstrided(img), (20, 10))
+    img = arraytypes.Vector2Image(cshape, order='C')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape)
     assert (img[0,0]==(1,1)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='C')
-    assert_equal(vt.viewImageVector2Strided(img), (20,10))
+    img = arraytypes.Vector2Image(shape, order='V')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape)
     assert (img[0,0]==(1,1)).all()
  
 def testVector3Image():
@@ -508,183 +503,170 @@ def testVector4Image():
 def testVolume1():
     checkArray(arraytypes.Volume, 1, 3)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testArray4Strided",
-         "testVolumeSinglebandStrided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='C'), c)
-    
+    shape = (20, 10, 5)
+    rshape = (5, 10, 20)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
          "testArray4Unstrided", "testArray4Strided",
          "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
          "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='F'), c)
+         
+    checkCompatibility(arraytypes.Volume(rshape, order='C'), c)
     
-    c = ["testAny",
-         "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='V'), c)
+    checkCompatibility(arraytypes.Volume(shape, order='V'), c)
     
-    vol = arraytypes.Volume((20, 10, 5), order='V')
-    checkShape(vt.viewArray3Unstrided(vol), vol.shape[:-1])
+    checkCompatibility(arraytypes.Volume(shape, order='F'), c)
+    
+    vol = arraytypes.Volume(rshape, order='C')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
     
-    vol = arraytypes.Volume((20, 10, 5), order='C')
-    checkShape(vt.viewArray3Strided(vol), vol.shape[:-1])
+    vol = arraytypes.Volume(shape, order='V')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
+    
+    vol = arraytypes.Volume(shape, order='F')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
+    assert_equal(vol[:,0,0,0], 1)
  
 def testVolume2():
     checkArray(arraytypes.Volume, 2, 3)
     
+    shape = (5, 10, 20, 2)
+    cshape = (20, 10, 5, 2)
+    fshape = (2, 5, 10, 20)
+        
     c = ["testAny",
-         "testArray4Strided",
-         "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='C'), c)
+         "testArray4Unstrided", "testArray4Strided",
+         "testVolumeVector2Unstrided", "testVolumeVector2Strided",
+         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Volume(cshape, order='C'), c)
     
-    c = ["testAny",
-         "testArray4Unstrided", 
-		 "testArray4Strided",
-         "testVolumeMultibandUnstrided", 
-		 "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='F'), c)
+    checkCompatibility(arraytypes.Volume(shape, order='V'), c)
     
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeVector2Unstrided", 
-		 "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='V'), c)
+    checkCompatibility(arraytypes.Volume(fshape, order='F'), c)
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='F')
-    assert_equal(vt.viewArray4Unstrided(vol), vol.shape)
+    vol = arraytypes.Volume(cshape, order='C')
+    assert_equal(vt.viewArray4Unstrided(vol), fshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='V')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.Volume(shape, order='V')
+    assert_equal(vt.viewArray4Unstrided(vol), fshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='C')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0)).all()
+    vol = arraytypes.Volume(fshape, order='F')
+    assert_equal(vt.viewArray4Strided(vol), fshape)
+    assert (vol[:,0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='V')
-    assert_equal(vt.viewVolumeVector2Unstrided(vol), (20, 10, 5))
+    vol = arraytypes.Volume(cshape, order='C')
+    assert_equal(vt.viewVolumeVector2Unstrided(vol), shape[:-1])
     assert (vol[0,0,0]==(1,1)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='C')
-    assert_equal(vt.viewVolumeVector2Strided(vol), (20, 10, 5))
+    vol = arraytypes.Volume(shape, order='V')
+    assert_equal(vt.viewVolumeVector2Unstrided(vol), shape[:-1])
     assert (vol[0,0,0]==(1,1)).all()
  
 def testScalarVolume():
     checkArray(arraytypes.ScalarVolume, 1, 3)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testArray4Strided",
-         "testVolumeSinglebandStrided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='C'), c)
-    
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
          "testArray4Unstrided", "testArray4Strided",
          "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
          "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='F'), c)
+         
+    checkCompatibility(arraytypes.ScalarVolume(cshape, order='C'), c)
     
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='V'), c)
+    checkCompatibility(arraytypes.ScalarVolume(shape, order='V'), c)
     
-    vol = arraytypes.ScalarVolume((20, 10, 5), order='V')
-    checkShape(vt.viewArray3Unstrided(vol), vol.shape[:-1])
+    checkCompatibility(arraytypes.ScalarVolume(shape, order='F'), c)
+    
+    vol = arraytypes.ScalarVolume(cshape, order='C')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
     
-    vol = arraytypes.ScalarVolume((20, 10, 5), order='C')
-    checkShape(vt.viewArray3Strided(vol), vol.shape[:-1])
+    vol = arraytypes.ScalarVolume(shape, order='V')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
  
 def testRGBVolume():
     checkArray(arraytypes.RGBVolume, 3, 3)
     
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeRGBStrided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='C'), c)
-    
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+    rshape = (3, 5, 10, 20)
+
     c = ["testAny",
          "testArray4Unstrided", "testArray4Strided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='F'), c)
-    
-    c = ["testAny",
-         "testArray4Strided",
          "testVolumeRGBUnstrided", "testVolumeRGBStrided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='V'), c)
+         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
+    checkCompatibility(arraytypes.RGBVolume(cshape, order='C'), c)
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='F')
-    checkShape(vt.viewArray4Unstrided(vol), vol.shape)
+    checkCompatibility(arraytypes.RGBVolume(shape, order='V'), c)
+    
+    checkCompatibility(arraytypes.RGBVolume(shape, order='F'), c)
+    
+    vol = arraytypes.RGBVolume(cshape, order='C')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='V')
-    checkShape(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.RGBVolume(shape, order='V')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='C')
-    checkShape(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0,0)).all()
+    vol = arraytypes.RGBVolume(shape, order='F')
+    checkShape(vt.viewArray4Strided(vol), rshape)
+    assert (vol[:,0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='V')
-    checkShape(vt.viewVolumeRGBUnstrided(vol), (20, 10, 5))
+    vol = arraytypes.RGBVolume(cshape, order='C')
+    checkShape(vt.viewVolumeRGBUnstrided(vol), shape)
     assert (vol[0,0,0]==(1,1,1)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='C')
-    checkShape(vt.viewVolumeRGBStrided(vol), (20, 10, 5))
+    vol = arraytypes.RGBVolume(shape, order='V')
+    checkShape(vt.viewVolumeRGBUnstrided(vol), shape)
     assert (vol[0,0,0]==(1,1,1)).all()
  
 def testVector2Volume():
     checkArray(arraytypes.Vector2Volume, 2, 3)
     
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='C'), c)
-    
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+    rshape = (2, 5, 10, 20)
+
     c = ["testAny",
          "testArray4Unstrided", "testArray4Strided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='F'), c)
-    
-    c = ["testAny",
-         "testArray4Strided",
          "testVolumeVector2Unstrided", "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='V'), c)
+         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Vector2Volume(cshape, order='C'), c)
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='F')
-    checkShape(vt.viewArray4Unstrided(vol), vol.shape)
+    checkCompatibility(arraytypes.Vector2Volume(shape, order='V'), c)
+    
+    checkCompatibility(arraytypes.Vector2Volume(shape, order='F'), c)
+    
+    vol = arraytypes.Vector2Volume(cshape, order='C')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='V')
-    checkShape(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.Vector2Volume(shape, order='V')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='C')
-    checkShape(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0)).all()
+    vol = arraytypes.Vector2Volume(shape, order='F')
+    checkShape(vt.viewArray4Strided(vol), rshape)
+    assert (vol[:,0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='V')
-    checkShape(vt.viewVolumeVector2Unstrided(vol), (20, 10, 5))
+    vol = arraytypes.Vector2Volume(cshape, order='C')
+    checkShape(vt.viewVolumeVector2Unstrided(vol), shape)
     assert (vol[0,0,0]==(1,1)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='C')
-    checkShape(vt.viewVolumeVector2Strided(vol), (20, 10, 5))
+    vol = arraytypes.Vector2Volume(shape, order='V')
+    checkShape(vt.viewVolumeVector2Unstrided(vol), shape)
     assert (vol[0,0,0]==(1,1)).all()
  
 def testVector3Volume():

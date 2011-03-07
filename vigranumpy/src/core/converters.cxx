@@ -405,8 +405,8 @@ void registerNumpyArrayConverters()
         "types.  This provides status information for :func:`~vigra.registerPythonArrayType`.\n\n");
     
     doc_options.disable_all();
-    // python::def("constructNumpyArray", &constructNumpyArrayFromShape);
-    // python::def("constructNumpyArray", &constructNumpyArrayFromArray);
+    python::def("constructNumpyArray", &constructNumpyArrayFromShape);
+    python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }
 
 } // namespace vigra
