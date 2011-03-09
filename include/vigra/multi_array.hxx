@@ -1461,7 +1461,7 @@ public:
 
 template <unsigned int N, class T, class C>
 MultiArrayView<N, T, C> &
-MultiArrayView <N, T, C>::operator=(MultiArrayView<N, T, C> const & rhs)
+MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
 {
     if(this == &rhs)
         return *this;
@@ -2306,7 +2306,7 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
 
 template <unsigned int N, class T, class A>
 inline void
-MultiArray <N, T, A>::swap (MultiArray <N, T, A> & other)
+MultiArray <N, T, A>::swap (MultiArray & other)
 {
     if (this == &other)
         return;

@@ -186,7 +186,7 @@ class VisitorBase
      * \param tr        reference to the tree object that called this visitor
      * \param index     index in the topology_ array we currently are at
      * \param node_t    type of node we have (will be e_.... - )
-     * \param weight    Node weight of current node. 
+     * \param features  ???
      * \sa  NodeTags;
      *
      * you can create the node by using a switch on node_tag and using the 

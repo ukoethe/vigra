@@ -818,11 +818,11 @@ class BasicImage
     }
 
         /** resize image to given size and initialize by copying data
-            from the C-style arra \a data.
+            from the C-style array \a data.
         */
     void resizeCopy(int width, int height, const_pointer data);
 
-        /** resize image to size of other image and copy it's data
+        /** resize image to size of other image and copy its data
         */
     void resizeCopy(const BasicImage & rhs)
     {
@@ -1090,7 +1090,7 @@ class BasicImage
 
 template <class PIXELTYPE, class Alloc>
 BasicImage<PIXELTYPE, Alloc> &
-BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage<PIXELTYPE, Alloc> & rhs)
+BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage & rhs)
 {
     if(this != &rhs)
     {
@@ -1230,7 +1230,7 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer da
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::swap( BasicImage<PIXELTYPE, Alloc>& rhs )
+BasicImage<PIXELTYPE, Alloc>::swap( BasicImage & rhs )
 {
   if (&rhs!=this)
   {

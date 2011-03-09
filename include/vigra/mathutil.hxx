@@ -1069,7 +1069,7 @@ REAL legendre(unsigned int l, REAL x)
 
         Essentially calls <tt>std::sin(M_PI*x)</tt> but uses a more accurate implementation
         to make sure that <tt>sin_pi(1.0) == 0.0</tt> (which does not hold for
-        <tt>std::sin(M_PI)</tt> due to round-off error), and tt>sin_pi(0.5) == 1.0</tt>.
+        <tt>std::sin(M_PI)</tt> due to round-off error), and <tt>sin_pi(0.5) == 1.0</tt>.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
@@ -1107,7 +1107,7 @@ REAL sin_pi(REAL x)
     /*! cos(pi*x). 
 
         Essentially calls <tt>std::cos(M_PI*x)</tt> but uses a more accurate implementation
-        to make sure that <tt>cos_pi(1.0) == -1.0</tt> and tt>cos_pi(0.5) == 0.0</tt>.
+        to make sure that <tt>cos_pi(1.0) == -1.0</tt> and <tt>cos_pi(0.5) == 0.0</tt>.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra

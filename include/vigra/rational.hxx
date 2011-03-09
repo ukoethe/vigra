@@ -276,25 +276,25 @@ public:
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator+= (const Rational& r);
+    Rational& operator+= (const Rational<IntType>& r);
 
         /** Subtract-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator-= (const Rational& r);
+    Rational& operator-= (const Rational<IntType>& r);
 
         /** Multiply-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator*= (const Rational& r);
+    Rational& operator*= (const Rational<IntType>& r);
 
         /** Divide-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator/= (const Rational& r);
+    Rational& operator/= (const Rational<IntType>& r);
 
         /** Add-assignment from <tt>IntType</tt>
 
