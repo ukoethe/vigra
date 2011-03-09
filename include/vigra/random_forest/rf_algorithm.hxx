@@ -37,6 +37,7 @@
 #include <vector>
 #include "splices.hxx"
 #include <queue>
+#include <fstream>
 namespace vigra
 {
  
@@ -695,9 +696,10 @@ public:
     }
     /**save to HDF5 - defunct - has to be updated to new HDF5 interface
      */
+#if HasHDF5        
     void save(std::string file, std::string prefix)
     {
-        
+
         vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
@@ -708,8 +710,9 @@ public:
                                     parameters_.data()));
         vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
-                               
+
     }
+#endif                               
 
     /**Perform single linkage clustering
      * \param distance distance matrix used. \sa CorrelationVisitor
@@ -960,11 +963,13 @@ public:
     GetClusterVariables(MultiArrayView<2, int> vars)
         :variables(vars), index(0)
     {}
+#if HasHDF5
     void save(std::string file, std::string prefix)
     {
         vigra::writeHDF5(file.c_str(), (prefix + "_variables").c_str(), 
                                variables);
     }
+#endif
 
     template<class Node>
     bool operator()(Node& node)
