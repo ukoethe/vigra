@@ -160,32 +160,32 @@ defaultOrder = 'V'
 # * permute the array by the inverse normalization
 # * copy original data and axistags
 
-def normalizeShape(shape, order):
+def defaultAxistags(ndim, order=defaultOrder):
     if order == 'F':
-        norm_shape = shape
-        inverse_permutation = range(len(shape))
+        tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:ndim]
     elif order == 'C':
-        norm_shape = tuple(reversed(shape))
-        inverse_permutation = range(len(shape)-1, -1, -1)
+        tags = [AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
     else: # order in ['A', 'V']:
-        norm_shape = (shape[-1],) + shape[:-1]
-        inverse_permutation = range(1, len(shape)) + [0]
-    return norm_shape, inverse_permutation
+        tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z][:ndim-1] + [AxisInfo.c]
+    return AxisTags(tags)
+    
+def defaultAxisPermutation(ndim, order=defaultOrder):
+    return canonicalAxisPermutation(defaultAxistags(ndim, order))
+    
+def canonicalAxisPermutation(axistags):
+    # FIXME: this must be generalized to arbitrary axistags.
+    #        (implement as a method in AxisTags ?)
+    return [int(k) for k in numpy.array(map(lambda x: ord(x.key[-1]), axistags)).argsort()]
     
 def constructArrayFromOrder(cls, shape, dtype, order, init):
-    norm_shape, inverse_permutation = normalizeShape(shape, order)
-    
-    axistags = AxisTags([AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:len(shape)])    
-    array = TaggedArray.__new__(cls, norm_shape, dtype, order='F', axistags=axistags)
-    if init:
-        array.fill(0)
-    return array.transpose(inverse_permutation)
+    axistags = defaultAxistags(len(shape), order)
+    return constructArrayFromAxistags(cls, shape, dtype, axistags, init)
     
 def constructArrayFromAxistags(cls, shape, dtype, axistags, init):
-    permutation = list(numpy.array(map(lambda x: ord(x.key[-1]), axistags)).argsort())
+    permutation = canonicalAxisPermutation(axistags)
     norm_shape = tuple(numpy.array(shape)[permutation])
     inverse_permutation = list(numpy.array(permutation).argsort())
-
+    
     array = numpy.ndarray.__new__(cls, norm_shape, dtype, order='F')
     array = array.transpose(inverse_permutation)
     if init:
@@ -218,8 +218,11 @@ def constructArrayFromArray(cls, obj, dtype, order, init):
         
     if init:
         array[...] = obj
-    if hasattr(obj, 'axistags') and cls is not numpy.ndarray:
-        array.axistags = copy.copy(obj.axistags)
+    if cls is not numpy.ndarray:
+        if hasattr(obj, 'axistags'):
+            array.axistags = copy.copy(obj.axistags)
+        elif hasattr(array, 'axistags'):
+            del array.axistags
     return array
     
 def dropChannelDimension(array):
@@ -512,9 +515,7 @@ this class via its subclasses!
     
     @property
     def canonicalOrdering(self):
-        # FIXME: this must be generalized to arbitrary axistags.
-        #        (implement as a method in AxisTags)
-        return list(numpy.array(map(lambda x: ord(x.key[-1]), self.axistags)).argsort())
+        return canonicalAxisPermutation(self.axistags)
     
     @property
     def channels(self):
