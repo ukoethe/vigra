@@ -68,12 +68,13 @@ of 'numpy.ndarray'.
     '''
     def __new__(subtype, shape, dtype=float, buffer=None, offset=0, strides=None, order=None, axistags=None):
         res = numpy.ndarray.__new__(subtype, shape, dtype, buffer, offset, strides, order)
-        if axistags is None:
-            res.axistags = res.default_axistags()
-        else:
-            if len(axistags) != res.ndim:
-                raise RuntimeError('TaggedArray(): len(axistags) must match ndim')
-            res.axistags = copy.copy(axistags)
+        if subtype is not numpy.ndarray:
+            if axistags is None:
+                res.axistags = res.default_axistags()
+            else:
+                if len(axistags) != res.ndim:
+                    raise RuntimeError('TaggedArray(): len(axistags) must match ndim')
+                res.axistags = copy.copy(axistags)
         return res
         
     def default_axistags(self):
