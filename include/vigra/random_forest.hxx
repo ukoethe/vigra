@@ -615,6 +615,10 @@ class RandomForest
         predictProbabilities(features, prob, rf_default()); 
     }   
 
+    template <class U, class C1, class T, class C2>
+    void predictRaw(MultiArrayView<2, U, C1>const &   features,
+                    MultiArrayView<2, T, C2> &        prob)  const;
+
 
     /*\}*/
 
@@ -1237,6 +1241,69 @@ void RandomForest<LabelType, PreprocessorTag>
             prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
         }
     }
+
+}
+
+template <class LabelType, class PreprocessorTag>
+template <class U, class C1, class T, class C2>
+void RandomForest<LabelType, PreprocessorTag>
+    ::predictRaw(MultiArrayView<2, U, C1>const &  features,
+                           MultiArrayView<2, T, C2> &       prob) const
+{
+    //Features are n xp
+    //prob is n x NumOfLabel probability for each feature in each class
+
+    vigra_precondition(rowCount(features) == rowCount(prob),
+      "RandomForestn::predictProbabilities():"
+        " Feature matrix and probability matrix size mismatch.");
+
+    // num of features must be bigger than num of features in Random forest training
+    // but why bigger?
+    vigra_precondition( columnCount(features) >= ext_param_.column_count_,
+      "RandomForestn::predictProbabilities():"
+        " Too few columns in feature matrix.");
+    vigra_precondition( columnCount(prob)
+                        == (MultiArrayIndex)ext_param_.class_count_,
+      "RandomForestn::predictProbabilities():"
+      " Probability matrix must have as many columns as there are classes.");
+
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    prob.init(NumericTraits<T>::zero());
+    /* This code was originally there for testing early stopping
+     * - we wanted the order of the trees to be randomized
+    if(tree_indices_.size() != 0)
+    {
+       std::random_shuffle(tree_indices_.begin(),
+                           tree_indices_.end()); 
+    }
+    */
+    //Classify for each row.
+    for(int row=0; row < rowCount(features); ++row)
+    {
+        ArrayVector<double>::const_iterator weights;
+
+        //totalWeight == totalVoteCount!
+        double totalWeight = 0.0;
+
+        //Let each tree classify...
+        for(int k=0; k<options_.tree_count_; ++k)
+        {
+            //get weights predicted by single tree
+            weights = trees_[k /*tree_indices_[k]*/].predict(rowVector(features, row));
+
+            //update votecount.
+            int weighted = options_.predict_weighted_;
+            for(int l=0; l<ext_param_.class_count_; ++l)
+            {
+                double cur_w = weights[l] * (weighted * (*(weights-1))
+                                           + (1-weighted));
+                prob(row, l) += (T)cur_w;
+                //every weight in totalWeight.
+                totalWeight += cur_w;
+            }
+        }
+    }
+	prob/= options_.tree_count_;
 
 }
 

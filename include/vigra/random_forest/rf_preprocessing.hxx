@@ -69,7 +69,7 @@ namespace detail
 	 * values needed for the current problem (data)
 	 */
 	template<class T>
-	void fill_external_parameters(RandomForestOptions & options,
+	void fill_external_parameters(RandomForestOptions const  & options,
 								  ProblemSpec<T> & ext_param)
 	{
 	    // set correct value for mtry
@@ -279,13 +279,18 @@ public:
 	Processor(	MultiArrayView<2, T1, C1> 	features,
 				MultiArrayView<2, T2, C2> 	response,
 				RandomForestOptions const &	options,
-				ProblemSpec<T>	ext_param)
+				ProblemSpec<T>&	ext_param)
 	:
 		features_(features),
 		response_(response),
 		options_(options),
 		ext_param_(ext_param)
 	{
+		// set some of the problem specific parameters 
+        ext_param.column_count_  = features.shape(1);
+        ext_param.row_count_     = features.shape(0);
+        ext_param.problem_type_  = REGRESSION;
+        ext_param.used_          = true;
 		detail::fill_external_parameters(options, ext_param);
 		vigra_precondition(!detail::contains_nan(features), "Processor(): Feature Matrix "
 						   								   "Contains NaNs");
@@ -296,6 +301,10 @@ public:
 		vigra_precondition(!detail::contains_inf(response), "Processor(): Response "
 						   								   "Contains inf");
 		strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
+		ext_param.response_size_ = response.shape(1);
+		ext_param.class_count_ = 0;
+        std::vector<T2> tmp_(1, 0);
+            ext_param.classes_(tmp_.begin(), tmp_.end());
 	}
 
 	/** access preprocessed features
@@ -314,7 +323,7 @@ public:
 
 	/** access strata - this is not used currently
 	 */
-	MultiArrayView<2, int> & strata()
+	MultiArray<2, int> & strata()
 	{
 		return strata_;
 	}

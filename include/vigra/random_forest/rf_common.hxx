@@ -553,7 +553,7 @@ public:
     ArrayVector<double>     class_weights_;
     int                     is_weighted;
     double                  precision_;
-    
+   	int						response_size_; 
         
     template<class T> 
     void to_classlabel(int index, T & out) const
@@ -578,7 +578,8 @@ public:
         EQUALS(used_),
         EQUALS(class_weights_),
         EQUALS(is_weighted),
-        EQUALS(precision_)
+        EQUALS(precision_),
+		EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -598,7 +599,8 @@ public:
         EQUALS(used_),
         EQUALS(class_weights_),
         EQUALS(is_weighted),
-        EQUALS(precision_)
+        EQUALS(precision_),
+		EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -620,6 +622,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+		EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -643,6 +646,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted);
         EQUALS(precision_);
+		EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -671,6 +675,7 @@ public:
         COMPARE(used_);
         COMPARE(class_weights_);
         COMPARE(classes);
+		COMPARE(response_size_)
         #undef COMPARE
         return result;
     }
@@ -707,6 +712,7 @@ public:
         PULL(is_weighted, int);
         PULL(used_, int);
         PULL(precision_, double);
+        PULL(response_size_, int);
         if(is_weighted)
         {
             vigra_precondition(end - begin == 9 + 2*class_count_, 
@@ -738,6 +744,7 @@ public:
         PUSH(is_weighted);
         PUSH(used_);
         PUSH(precision_);
+		PUSH(response_size_);
         if(is_weighted)
         {
             std::copy(class_weights_.begin(),
@@ -764,6 +771,7 @@ public:
         PULL(is_weighted, int);
         PULL(used_, int);
         PULL(precision_, double);
+        PULL(response_size_, int);
         class_weights_ = in["class_weights_"];
         #undef PUSH
     }
@@ -780,6 +788,7 @@ public:
         PUSH(is_weighted);
         PUSH(used_);
         PUSH(precision_);
+        PUSH(response_size_);
         in["class_weights_"] = class_weights_;
         #undef PUSH
     }
@@ -795,7 +804,8 @@ public:
         problem_type_(CHECKLATER),
         used_(false),
         is_weighted(false),
-        precision_(0.0)
+        precision_(0.0),
+		response_size_(1)
     {}
 
 
@@ -846,6 +856,7 @@ public:
         problem_type_ = CHECKLATER;
         is_weighted = false;
         precision_   = 0.0;
+		response_size_ = 0;
 
     }
 
