@@ -2151,7 +2151,7 @@ public:
          */
     void reshape (const difference_type &shape)
     {
-        reshape (shape, NumericTraits <T>::zero ());
+        reshape (shape, T());
     }
 
         /** Allocate new memory with the given shape and initialize it
@@ -2217,7 +2217,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());
+    allocate (this->m_ptr, this->elementCount (), T());
 }
 
 template <unsigned int N, class T, class A>
