@@ -447,6 +447,36 @@ public:
         should (atomicuint == 42);
         should (atomicdouble == 3.1);
 
+        // readAndReshape
+        MultiArray<2,int> in_re_data_1;
+        file.readAndReshape("dataset",in_re_data_1);
+
+        MultiArray<4,double> in_re_data_2;
+        file.readAndReshape("/group/dataset",in_re_data_2);
+
+        MultiArray< 2, TinyVector<double, 4> > in_re_data_3;
+        file.readAndReshape("/group/subgroup1/dataset",in_re_data_3);
+
+        MultiArray< 2, RGBValue<double> > in_re_data_4;
+        file.readAndReshape("/dataset_rgb", in_re_data_4);
+
+        MultiArray< 3, unsigned char > in_re_data_5 ;
+        file.readAndReshape("/newset",in_re_data_5);
+
+        // compare content
+        // ...data 1
+        should (in_re_data_1 == out_data_1);
+        // ...data 2
+        should (in_re_data_2 == out_data_2);
+        // ...data 3
+        should (in_re_data_3 == out_data_3);
+        // ...data 4
+        should (in_re_data_4 == out_data_4);
+        // ...data 5
+        should (in_re_data_5(1,2,3) == init);
+
+
+
         // overwrite existing dataset
         file.write("/dataset",out_data_2);
         file.flushToDisk();
@@ -455,9 +485,111 @@ public:
         file.read("/dataset",in_data_overwrite);
 
         should(in_data_overwrite == out_data_2);
-
     }
 
+    // reading and writing attributes. get handles of groups, datasets and attributes
+    void testHDF5FileAttributes()
+    {
+        std::string file_name( "testfile_HDF5File_data_access.hdf5");
+
+        // double data in 4 dimensions (partly negative)
+        MultiArray<4,double> out_data_1(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 240; ++i)
+            out_data_1.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+        // variable length string MultiArrays
+        MultiArray<2,const char* > out_data_2(MultiArrayShape<2>::type(2, 2));
+        // ...initialize the array to the test data
+        out_data_2(0,0) = "Brot";
+        out_data_2(0,1) = "Huette";
+        out_data_2(1,0) = "Kamuffel";
+        out_data_2(1,1) = "Gorch Frog";
+
+        //create a file
+        HDF5File file (file_name, HDF5File::New);
+
+        //write one dataset in each group level
+        file.write("/double/dataset",out_data_1);
+        file.write("/string/dataset",out_data_2);
+
+        // check if data is really written
+        MultiArray< 2, const char* > in_data_2(MultiArrayShape<2>::type(2, 2));
+        file.read("/string/dataset",in_data_2);
+
+        should(std::string(in_data_2(0,0)) == std::string("Brot"));
+        should(std::string(in_data_2(0,1)) == std::string("Huette"));
+        should(std::string(in_data_2(1,0)) == std::string("Kamuffel"));
+        should(std::string(in_data_2(1,1)) == std::string("Gorch Frog"));
+
+        // write Attributes
+
+        // integer attribute
+        MultiArray<2,int> out_attr_1(MultiArrayShape<2>::type(2,3));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 6; ++i)
+            out_attr_1.data() [i] = i;
+
+        // variable length string attribute
+        MultiArray<1,const char*> out_attr_2(MultiArrayShape<1>::type(4));
+        // ...initialize the array to the test data
+        out_attr_2(3) = "Brot";
+        out_attr_2(2) = "Huette";
+        out_attr_2(1) = "Kamuffel";
+        out_attr_2(0) = "Gorch Frog";
+
+        // tiny vector multi array
+        MultiArray<2, TinyVector<double, 3> > out_attr_3(MultiArrayShape<2>::type(2,1));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 2; ++i)
+            out_attr_3.data () [i] = TinyVector<double, 3>(i + 0.1, i + 0.2, i + 0.3);
+
+        // data 4: RGB values
+        MultiArray< 2, RGBValue<double> > out_attr_4(MultiArrayShape<2>::type(2,3));
+        // ...initialize the array to the test data
+        for (int i = 0; i < 6; ++i)
+            out_attr_4.data () [i] = RGBValue<double>(i + 0.1, i + 0.2, i + 0.3);
+
+        file.writeAttribute("/double/dataset","int attribute", out_attr_1);
+        file.writeAttribute("/double/dataset","string attribute", out_attr_2);
+        file.writeAttribute("/string/dataset","tinyvector attribute", out_attr_3);
+        file.writeAttribute("/string/dataset","rgb attribute", out_attr_4);
+
+
+        // read attributes
+        MultiArray<2,int> in_attr_1(MultiArrayShape<2>::type(2,3));
+        MultiArray<1,const char*> in_attr_2(MultiArrayShape<1>::type(4));
+        MultiArray<2, TinyVector<double, 3> > in_attr_3(MultiArrayShape<2>::type(2,1));
+        MultiArray< 2, RGBValue<double> > in_attr_4(MultiArrayShape<2>::type(2,3));
+
+        file.readAttribute("/double/dataset","int attribute", in_attr_1);
+        file.readAttribute("/double/dataset","string attribute", in_attr_2);
+        file.readAttribute("/string/dataset","tinyvector attribute", in_attr_3);
+        file.readAttribute("/string/dataset","rgb attribute", in_attr_4);
+
+        should(in_attr_1 == out_attr_1);
+        should(std::string(in_attr_2(0)) == std::string(out_attr_2(0)));
+        should(std::string(in_attr_2(1)) == std::string(out_attr_2(1)));
+        should(std::string(in_attr_2(2)) == std::string(out_attr_2(2)));
+        should(std::string(in_attr_2(3)) == std::string(out_attr_2(3)));
+        should(in_attr_3 == out_attr_3);
+        should(in_attr_4 == out_attr_4);
+
+
+        // get handles
+        hid_t group_handle = file.getGroupHandle("/string");
+        hid_t dataset_handle = file.getDatasetHandle("/string/dataset");
+        hid_t attribute_handle = file.getAttributeHandle("/string/dataset","rgb attribute");
+
+        should(group_handle > 0);
+        should(dataset_handle > 0);
+        should(attribute_handle > 0);
+
+        should(H5Gclose(group_handle) >= 0);
+        should(H5Dclose(dataset_handle) >= 0);
+        should(H5Aclose(attribute_handle) >= 0);
+
+    }
 
     void testHDF5FileBlockAccess()
     {
@@ -744,9 +876,117 @@ public:
         should(entries.size() == 2);
         should(entries[0] == "group1/");
         should(entries[1] == "group2/");
+
+        //enhanced navigation with .. and .
+        file.cd("/group1/");
+        should(file.pwd() == "/group1");
+        file.cd("../not/existing/../../group2/././subgroup/");
+        should(file.pwd() == "/group2/subgroup");
     }
 
+    void testHDF5FileTutorial()
+    {
+        // First create a new HDF5 file
+        HDF5File file ("tutorial_HDF5File.h5", HDF5File::New);
 
+        // we should be in root group in the beginning
+        should(file.pwd() == "/" );
+
+        // create the group "/group1/subgroup1" using absolute paths
+        file.mkdir("/group1/subgroup1");
+
+        // create the group "group2/subgroup2" using relative paths
+        file.mkdir("group2");
+        file.cd("group2");
+        file.cd_mk("subgroup2"); //cd_mk first creates group and then opens it
+
+        should(file.pwd() == "/group2/subgroup2" );
+
+
+        // Writing Data
+
+        // Create a new dataset with shape (10,10,10) of int, initialized with 42.
+        MultiArrayShape<3>::type shape (10,10,10);
+        file.createDataset<3,int>("new_dataset",shape,42);
+
+        // Create a new large dataset (20,20,20) with anisotropic (5,10,10) chunks and compression level 5.
+        shape = MultiArrayShape<3>::type(20,20,20);
+        MultiArrayShape<3>::type chunks (5,10,10);
+        file.createDataset<3,int>("new_dataset_chunks",shape, 42, chunks, 5);
+
+        // Create a double MultiArray
+        MultiArray<4,double> out_data(MultiArrayShape<4>::type(10, 2, 3, 4));
+        // ...initialize the array with some data
+        for (int i = 0; i < 240; ++i)
+            out_data.data () [i] = i + (std::rand() / (double)RAND_MAX) - 120;
+
+        // Write double MultiArray to "/group2". Use relative paths and ".." notation.
+        file.write("../double_array",out_data);
+
+        // Create a large MultiArray
+        MultiArray<3,float> out_data_float (shape, 42.);
+
+        // write with isotropic chunks (10,10,10) and compression 5.
+        file.write("../float_array",out_data_float,10,5);
+
+        // Write a (10,10,10) Block of data into the center of "/group2/float_array"
+        MultiArray<3,float> float_block (MultiArrayShape<3>::type(10,10,10), 42.);
+        MultiArrayShape<3>::type block_offset (5,5,5);
+
+        file.writeBlock("/group2/float_array",block_offset,float_block);
+
+        // Write a single long integer value in the root group
+        file.writeAtomic("/single_value",(long int)23);
+
+        // Attach simple string attribute to dataset in root group
+        file.setAttribute("/single_value","some_attribute_name","This is a simple string attribute");
+
+        // Attach a MultiArray attribute
+        MultiArray<1,double> attr_data (MultiArrayShape<1>::type(3));
+        attr_data(0) = 10; attr_data(1) = 100; attr_data(2) = 1000;
+
+        file.writeAttribute("/group2/float_array","float_array_attribute",attr_data);
+
+        file.flushToDisk();
+
+
+        // Reading Data
+
+        // it is possible to access one file with two different HDF5File instances.
+        HDF5File file_open ("tutorial_HDF5File.h5", HDF5File::Open);
+
+        file_open.cd("/");
+
+        // read "/group2/subgroup2/new_dataset_chunks", prepare array with correct shape
+        MultiArrayShape<3>::type read_shape (20,20,20);
+        MultiArray<3,int> read_chunks (read_shape);
+
+        file_open.read("/group2/subgroup2/new_dataset_chunks",read_chunks);
+
+        // read "/group2/subgroup2/new_dataset", reshape MultiArray automatically
+        MultiArray<3,int> read_reshape;
+
+        file_open.readAndReshape("/group2/subgroup2/new_dataset",read_reshape);
+
+        // read a block of data from "/group2/float_array"
+        block_offset = MultiArrayShape<3>::type(0,0,0);
+        MultiArrayShape<3>::type block_shape (15,15,15);
+        MultiArray<3,float> read_block (block_shape);
+
+        file_open.readBlock("/group2/float_array",block_offset,block_shape,read_block);
+
+        // read the long int value from "/single_value"
+        long int single_value;
+        file_open.readAtomic("/single_value",single_value);
+
+        // read the attribute of "/single_value"
+        std::string attribute_string = file_open.getAttribute("/single_value","some_attribute_name");
+
+        // read the MultiArray Attribute of "/group2/float_array"
+        MultiArray<1,double> read_attr (MultiArrayShape<1>::type(3));
+        file_open.readAttribute("/group2/float_array","float_array_attribute",read_attr);
+
+    }
 
 
 };
@@ -783,7 +1023,9 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
         add(testCase(&HDF5ExportImportTest::testHDF5FileChunks));
         add(testCase(&HDF5ExportImportTest::testHDF5FileCompression));
         add(testCase(&HDF5ExportImportTest::testHDF5FileBrowsing));
- 
+        add(testCase(&HDF5ExportImportTest::testHDF5FileAttributes));
+        add(testCase(&HDF5ExportImportTest::testHDF5FileTutorial));
+
 	}
 };
 

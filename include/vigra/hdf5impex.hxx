@@ -70,6 +70,8 @@
 #include "impex.hxx"
 #include "multi_array.hxx"
 #include "multi_impex.hxx"
+#include "utilities.hxx"
+#include "error.hxx"
 
 namespace vigra {
 
@@ -370,6 +372,7 @@ inline hid_t getH5DataType()
 template<> \
 inline hid_t getH5DataType<type>() \
 { return h5type;}
+
 VIGRA_H5_DATATYPE(char, H5T_NATIVE_CHAR)
 VIGRA_H5_DATATYPE(Int8, H5T_NATIVE_INT8)
 VIGRA_H5_DATATYPE(Int16, H5T_NATIVE_INT16)
@@ -383,6 +386,21 @@ VIGRA_H5_DATATYPE(float, H5T_NATIVE_FLOAT)
 VIGRA_H5_DATATYPE(double, H5T_NATIVE_DOUBLE)
 VIGRA_H5_DATATYPE(long double, H5T_NATIVE_LDOUBLE)
 
+// char arrays with flexible length require 'handcrafted' H5 datatype
+template<>
+inline hid_t getH5DataType<char*>()
+{
+    hid_t stringtype = H5Tcopy (H5T_C_S1);
+    H5Tset_size(stringtype, H5T_VARIABLE);
+    return stringtype;
+}
+template<>
+inline hid_t getH5DataType<const char*>()
+{
+    hid_t stringtype = H5Tcopy (H5T_C_S1);
+    H5Tset_size(stringtype, H5T_VARIABLE);
+    return stringtype;
+}
 #undef VIGRA_H5_DATATYPE
 
 } // namespace detail
@@ -503,40 +521,26 @@ class HDF5File
 
 
     /** \brief Change the current group.
-      If the first character is a "/", the path will be interpreted as absolute path,
-      otherwise it will be interpreted as path relative to the current group.
+      Both absolute and relative group names are allowed.
      */
     void cd(std::string groupName)
     {
         std::string message = "HDF5File::cd(): Could not open group '" + groupName + "'.\n";
-        if(groupName == "/")
-        {
+
+        // make groupName clean
+        groupName = get_absolute_path(groupName);
+
+        if(groupName == "/"){
             cGroupHandle_ = HDF5Handle(openCreateGroup_("/"),&H5Gclose,message.c_str());
             return;
         }
-        else if(groupName =="..")
-        {
-            cd_up();
-        }
         else{
-            if(relativePath_(groupName))
+            if (H5Lexists(fileHandle_, groupName.c_str(), H5P_DEFAULT) == 0)
             {
-                if (H5Lexists(cGroupHandle_, groupName.c_str(), H5P_DEFAULT) == 0)
-                {
-                    std::cerr << message;
-                    return;
-                }
-                cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName),&H5Gclose,message.c_str());
+                std::cerr << message;
+                return;
             }
-            else
-            {
-                if (H5Lexists(fileHandle_, groupName.c_str(), H5P_DEFAULT) == 0)
-                {
-                    std::cerr << message;
-                    return;
-                }
-                cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName),&H5Gclose,message.c_str());
-            }
+            cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName),&H5Gclose,message.c_str());
         }
     }
 
@@ -573,6 +577,9 @@ class HDF5File
      */
     void mkdir(std::string groupName)
     {
+        // make groupName clean
+        groupName = get_absolute_path(groupName);
+
         hid_t handle = openCreateGroup_(groupName.c_str());
         if (handle != cGroupHandle_){
             H5Gclose(handle);
@@ -585,6 +592,9 @@ class HDF5File
      */
     void cd_mk(std::string groupName)
     {
+        // make groupName clean
+        groupName = get_absolute_path(groupName);
+
         std::string  message = "HDF5File::cd_mk(): Could not create group '" + groupName + "'.";
         cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName.c_str()),&H5Gclose,message.c_str());
     }
@@ -625,6 +635,9 @@ class HDF5File
      */
     hssize_t getDatasetDimensions(std::string datasetName)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         //Open dataset and dataspace
         std::string errorMessage = "HDF5File::getDatasetDimensions(): Unable to open dataset '" + datasetName + "'.";
         HDF5Handle datasetHandle = HDF5Handle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
@@ -644,6 +657,9 @@ class HDF5File
      */
     ArrayVector<hsize_t> getDatasetShape(std::string datasetName)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         //Open dataset and dataspace
         std::string errorMessage = "HDF5File::getDatasetShape(): Unable to open dataset '" + datasetName + "'.";
         HDF5Handle datasetHandle = HDF5Handle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
@@ -658,7 +674,6 @@ class HDF5File
         ArrayVector<hsize_t> maxdims(dimensions);
         H5Sget_simple_extent_dims(dataspaceHandle, shape.data(), maxdims.data());
 
-
         // invert the dimensions to guarantee c-order
         ArrayVector<hsize_t> shape_inv(dimensions);
         for(ArrayVector<hsize_t>::size_type i=0; i<shape.size(); i++) {
@@ -668,25 +683,62 @@ class HDF5File
         return shape_inv;
     }
 
+    /** \brief Obtain the HDF5 handle of a dataset.
+     */
+    hid_t getDatasetHandle(std::string dataset_name)
+    {
+        return getDatasetHandle_(dataset_name);
+    }
+
+    /** \brief Obtain the HDF5 handle of a group.
+     */
+    hid_t getGroupHandle(std::string group_name)
+    {
+        // make group_name clean
+        group_name = get_absolute_path(group_name);
+
+        // group must exist
+        vigra_precondition((H5Lexists(fileHandle_, group_name.c_str(), H5P_DEFAULT) == 1), "Error: Group '" + group_name + "' does not exist.");
+
+        //open group and return group handle
+        return openCreateGroup_( group_name);
+    }
+
+    /** \brief Obtain the HDF5 handle of a attribute.
+     */
+    hid_t getAttributeHandle(std::string dataset_name, std::string attribute_name)
+    {
+        HDF5Handle dset (getDatasetHandle_(dataset_name),&H5Dclose,std::string("Error: Dataset '"+dataset_name+"' not found.").c_str());
+
+        return H5Aopen(dset, attribute_name.c_str(),H5P_DEFAULT);
+    }
+
+
     /** \brief Attach a string attribute to an existing object.
       The attribute can be attached to datasets and groups. The string may have arbitrary length.
      */
     void setAttribute(std::string datasetName, std::string attributeName, std::string text)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        std::string errorMessage ("HDF5File::setAttribute(): Unable to open group '" + groupname + "'.");
-        HDF5Handle groupHandle (openCreateGroup_(groupname), &H5Gclose, errorMessage.c_str());
+        hid_t grouphandle = openCreateGroup_(groupname);
+        H5LTset_attribute_string(grouphandle,setname.c_str(), attributeName.c_str(),text.c_str());
 
-        H5LTset_attribute_string(groupHandle,setname.c_str(), attributeName.c_str(),text.c_str());
+        if(grouphandle != cGroupHandle_)
+            H5Gclose(grouphandle);
     }
-
 
     /** \brief Get an attribute string of an object.
      */
     std::string getAttribute(std::string datasetName, std::string attributeName)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typedef ArrayVector<char>::size_type SizeType;
 		if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) == 0)
         {
@@ -712,6 +764,72 @@ class HDF5File
     }
 
 
+    // Writing Attributes
+    /** \brief Write MultiArray Attributes.
+      * In contrast to datasets, subarray access, chunks and compression are not available.
+      */
+    template<unsigned int N, class T>
+    inline void writeAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
+    }
+
+    template<unsigned int N, class T, int SIZE>
+    inline void writeAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), SIZE);
+    }
+
+    template<unsigned int N, class T>
+    inline void writeAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 3);
+    }
+
+
+    // Reading Attributes
+    /** \brief Read MultiArray Attributes.
+      * In contrast to datasets, subarray access is not available.
+      */
+    template<unsigned int N, class T>
+    inline void readAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
+    }
+
+    template<unsigned int N, class T, int SIZE>
+    inline void readAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), SIZE);
+    }
+
+    template<unsigned int N, class T>
+    inline void readAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 3);
+    }
+
+
+
+
     // Writing data
 
     /** \brief Write multi arrays.
@@ -732,8 +850,11 @@ class HDF5File
     template<unsigned int N, class T>
     inline void write(std::string datasetName, const MultiArrayView<N, T, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned int i = 0; i < N; i++){
+        for(int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
@@ -754,6 +875,9 @@ class HDF5File
     template<unsigned int N, class T>
     inline void write(std::string datasetName, const MultiArrayView<N, T, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
     }
 
@@ -774,6 +898,9 @@ class HDF5File
     template<unsigned int N, class T>
     inline void writeBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, const MultiArrayView<N, T, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), 1);
     }
 
@@ -781,8 +908,11 @@ class HDF5File
     template<unsigned int N, class T, int SIZE>
     inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned int i = 0; i < N; i++){
+        for(int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
@@ -791,12 +921,18 @@ class HDF5File
     template<unsigned int N, class T, int SIZE>
     inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
     }
 
     template<unsigned int N, class T, int SIZE>
     inline void writeBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), SIZE);
     }
 
@@ -804,8 +940,11 @@ class HDF5File
     template<unsigned int N, class T>
     inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned int i = 0; i < N; i++){
+        for(int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
@@ -814,12 +953,18 @@ class HDF5File
     template<unsigned int N, class T>
     inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
     }
 
     template<unsigned int N, class T>
     inline void writeBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         writeBlock_(datasetName, blockOffset, array, detail::getH5DataType<T>(), 3);
     }
 
@@ -834,6 +979,9 @@ class HDF5File
    template<class T>
     inline void writeAtomic(std::string datasetName, const T data)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typename MultiArrayShape<1>::type chunkSize;
         chunkSize[0] = 0;
         MultiArray<1,T> array(MultiArrayShape<1>::type(1));
@@ -849,8 +997,40 @@ class HDF5File
       otherwise it will be interpreted as path relative to the current group.
      */
     template<unsigned int N, class T>
-    inline void read(std::string datasetName, MultiArrayView<N, T, UnstridedArrayTag> array)
+    inline void read(std::string datasetName, MultiArrayView<N, T, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        read_(datasetName, array, detail::getH5DataType<T>(), 1);
+    }
+
+    /** \brief Read data into a MultiArray. Reshape MultiArray to the correct size.
+      If the first character of datasetName is a "/", the path will be interpreted as absolute path,
+      otherwise it will be interpreted as path relative to the current group.
+     */
+    template<unsigned int N, class T>
+    inline void readAndReshape(std::string datasetName, MultiArray<N, T> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        // get dataset dimension
+        ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
+        hssize_t dimensions = getDatasetDimensions(datasetName);
+
+        // check if dimensions are correct
+        vigra_precondition((N   ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
+            "HDF5File::readAndReshape(): Array dimension disagrees with dataset dimension.");
+        typename MultiArrayShape<N>::type shape;
+
+        for(int k=0; k< MultiArrayIndex(dimensions); ++k) {
+            shape[k] = MultiArrayIndex(dimshape[k]);
+        }
+
+        // reshape target MultiArray
+        array.reshape(shape);
+
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
     }
 
@@ -865,34 +1045,103 @@ class HDF5File
       otherwise it will be interpreted as path relative to the current group.
      */
     template<unsigned int N, class T>
-    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, T, UnstridedArrayTag> array)
+    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, T, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), 1);
     }
 
-    // non-scalar (TinyVector) and unstrided target multi array
+    // non-scalar (TinyVector) and unstrided target MultiArrayView
     template<unsigned int N, class T, int SIZE>
-    inline void read(std::string datasetName, MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> array)
+    inline void read(std::string datasetName, MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
     }
 
+
+    // non-scalar (TinyVector) MultiArray
     template<unsigned int N, class T, int SIZE>
-    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> array)
+    inline void readAndReshape(std::string datasetName, MultiArray<N, TinyVector<T, SIZE> > & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        // get dataset dimension
+        ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
+        hssize_t dimensions = getDatasetDimensions(datasetName);
+
+        // check if dimensions are correct
+        vigra_precondition(((N+1) ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
+            "HDF5File::readAndReshape(): Array dimension disagrees with dataset dimension.");
+        typename MultiArrayShape<N>::type shape;
+
+        for(int k=1; k< MultiArrayIndex(dimensions); ++k) {
+            shape[k-1] = MultiArrayIndex(dimshape[k]);
+        }
+
+        // reshape target MultiArray
+        array.reshape(shape);
+
+        read_(datasetName, array, detail::getH5DataType<T>(), SIZE);
+    }
+
+
+    template<unsigned int N, class T, int SIZE>
+    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), SIZE);
     }
 
-    // non-scalar (RGBValue) and unstrided target multi array
+    // non-scalar (RGBValue) and unstrided target MultiArrayView
     template<unsigned int N, class T>
-    inline void read(std::string datasetName, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> array)
+    inline void read(std::string datasetName, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        read_(datasetName, array, detail::getH5DataType<T>(), 3);
+    }
+
+    // non-scalar (RGBValue) MultiArray
+    template<unsigned int N, class T>
+    inline void readAndReshape(std::string datasetName, MultiArray<N, RGBValue<T> > & array)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
+        // get dataset dimension
+        ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
+        hssize_t dimensions = getDatasetDimensions(datasetName);
+
+        // check if dimensions are correct
+        vigra_precondition(((N+1) ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
+            "HDF5File::readAndReshape(): Array dimension disagrees with dataset dimension.");
+        typename MultiArrayShape<N>::type shape;
+
+        for(int k=1; k< MultiArrayIndex(dimensions); ++k) {
+            shape[k-1] = MultiArrayIndex(dimshape[k]);
+        }
+
+        // reshape target MultiArray
+        array.reshape(shape);
+
         read_(datasetName, array, detail::getH5DataType<T>(), 3);
     }
 
     template<unsigned int N, class T>
-    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> array)
+    inline void readBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, typename MultiArrayShape<N>::type blockShape, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         readBlock_(datasetName, blockOffset, blockShape, array, detail::getH5DataType<T>(), 3);
     }
 
@@ -907,6 +1156,9 @@ class HDF5File
     template<class T>
     inline void readAtomic(std::string datasetName, T & data)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         MultiArray<1,T> array(MultiArrayShape<1>::type(1));
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
         data = array[0];
@@ -933,10 +1185,13 @@ class HDF5File
       otherwise it will be interpreted as path relative to the current group.
      */
     template<unsigned int N, class T>
-    inline void createDataset(std::string datasetName, typename MultiArrayShape<N>::type shape, T init, int iChunkSize = 0, int compressionParameter = 0)
+    inline void createDataset(std::string datasetName, typename MultiArrayShape<N>::type shape, T init = T(), int iChunkSize = 0, int compressionParameter = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         typename MultiArrayShape<N>::type chunkSize;
-        for(unsigned int i = 0; i < N; i++){
+        for(int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         createDataset<N,T>(datasetName, shape, init, chunkSize, compressionParameter);
@@ -945,6 +1200,9 @@ class HDF5File
     template<unsigned int N, class T>
     inline void createDataset(std::string datasetName, typename MultiArrayShape<N>::type shape, T init, typename MultiArrayShape<N>::type chunkSize, int compressionParameter = 0)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
@@ -974,9 +1232,9 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             hsize_t cSize [N];
-            for(int i = 0; i<(int)N; i++)
+            for(int i = 0; i<N; i++)
             {
-                cSize[i] = chunkSize[(int)N-1-i];
+                cSize[i] = chunkSize[N-1-i];
             }
             H5Pset_chunk (plist, N, cSize);
         }
@@ -1001,6 +1259,67 @@ class HDF5File
         H5Fflush(fileHandle_, H5F_SCOPE_GLOBAL);
     }
 
+
+    std::string get_absolute_path(std::string path) {
+        // check for empty input or "." and return the current folder
+        if(path.length() == 0 || path == "."){
+            return currentGroupName_();
+        }
+
+        std::string str;
+        // convert to absolute path
+        if(relativePath_(path)){
+            std::string cname = currentGroupName_();
+            if (cname == "/")
+                str = currentGroupName_()+path;
+            else
+                str = currentGroupName_()+"/"+path;
+        }else{
+            str = path;
+        }
+
+        // cut out "./"
+        std::string::size_type startpos = 0;
+        while(str.find(std::string("./"), startpos) != std::string::npos){
+            std::string::size_type pos = str.find(std::string("./"), startpos);
+            startpos = pos+1;
+            // only cut if "./" is not part of "../" (see below)
+            if(str.substr(pos-1,3) != "../"){
+                // cut out part of the string
+                str = str.substr(0,pos) + str.substr(pos+2,str.length()-pos-2);
+                startpos = pos;
+            }
+        }
+
+        // cut out pairs of "bla/../"
+        while(str.find(std::string("..")) != std::string::npos){
+            std::string::size_type pos = str.find(std::string(".."));
+
+            // find first slash after ".."
+            std::string::size_type end = str.find("/",pos);
+            if(end != std::string::npos){
+                // also include slash
+                end++;
+            }else{
+                // no "/" after ".." --> this is a group, add a "/"
+                str = str + "/";
+                end = str.length();
+            }
+
+            // find first slash before ".."
+            std::string::size_type prev_slash = str.rfind("/",pos);
+            // if the root slash is the first before ".." --> Error
+            vigra_invariant(prev_slash != 0 && prev_slash != std::string::npos,
+                            "Error parsing path: "+str);
+            // find second slash before ".."
+            std::string::size_type begin = str.rfind("/",prev_slash-1);
+
+            // cut out part of the string
+            str = str.substr(0,begin+1) + str.substr(end,str.length()-end);
+        }
+
+        return str;
+    }
 
   private:
 
@@ -1095,34 +1414,26 @@ class HDF5File
     // open a group and subgroups. Create if nescessary.
     inline hid_t openCreateGroup_(std::string groupName)
     {
-        // check if groupName is absolute or relative
-        hid_t parent;
-        if(relativePath_(groupName))
-        {
-            parent = cGroupHandle_;
-        }
-        else
-        {
-            // open root group
-            parent = H5Gopen(fileHandle_, "/", H5P_DEFAULT);
-            if(groupName == "/")
-            {
-                return parent;
-            }
+        // make groupName clean
+        groupName = get_absolute_path(groupName);
 
-            // remove leading /
-            groupName = std::string(groupName.begin()+1, groupName.end());
+        // open root group
+        hid_t parent = H5Gopen(fileHandle_, "/", H5P_DEFAULT);
+        if(groupName == "/")
+        {
+            return parent;
         }
 
+        // remove leading /
+        groupName = std::string(groupName.begin()+1, groupName.end());
 
-        // check if the groupName has the right format
+        // check if the groupName has finishing slash
         if( groupName.size() != 0 && *groupName.rbegin() != '/')
         {
             groupName = groupName + '/';
         }
 
-
-        //create subgroups one by one
+        //open or create subgroups one by one
         std::string::size_type begin = 0, end = groupName.find('/');
         int ii =  0;
         while (end != std::string::npos)
@@ -1150,7 +1461,6 @@ class HDF5File
             end = groupName.find('/', begin);
         }
 
-
         return parent;
     }
 
@@ -1160,7 +1470,7 @@ class HDF5File
         // delete existing data and create new dataset
         if(H5LTfind_dataset(parent, datasetName.c_str()))
         {
-            //std::cout << "dataset already exists" << std::endl;
+
     #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
             if(H5Gunlink(parent, datasetName.c_str()) < 0)
             {
@@ -1177,48 +1487,103 @@ class HDF5File
 
     hid_t getDatasetHandle_(std::string datasetName)
     {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        if(relativePath_(datasetName))
+        if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
         {
-            if (H5Lexists(cGroupHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
-            {
-                std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
-                return -1;
-            }
-            //Open parent group
-            hid_t groupHandle = openCreateGroup_(groupname);
-
-            hid_t datasetHandle = H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
-
-            if(groupHandle != cGroupHandle_){
-                H5Gclose(groupHandle);
-            }
-
-            //return dataset handle
-            return datasetHandle;
+            std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
+            return -1;
         }
-        else
-        {
-            if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
-            {
-                std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
-                return -1;
-            }
 
-            //Open parent group
-            hid_t groupHandle = openCreateGroup_(groupname);
+        //Open parent group
+        hid_t groupHandle = openCreateGroup_(groupname);
 
-            hid_t datasetHandle = H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
+        hid_t datasetHandle = H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
 
-            if(groupHandle != cGroupHandle_){
-                H5Gclose(groupHandle);
-            }
-
-            //return dataset handle
-            return datasetHandle;
+        if(groupHandle != cGroupHandle_){
+            H5Gclose(groupHandle);
         }
+
+        //return dataset handle
+        return datasetHandle;
+
+    }
+
+
+    // unstrided multi array attributes
+    template<unsigned int N, class T>
+    void write_attribute_(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
+    {
+
+        // shape of the array. Add one dimension, if array contains non-scalars.
+        ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
+        for(int i = 0; i < N; i++){
+            shape[N-1-i] = array.shape(i); // reverse order
+        }
+
+        if(numBandsOfType > 1)
+            shape[N] = numBandsOfType;
+
+        HDF5Handle dataspace ( H5Screate_simple(N + (numBandsOfType > 1), shape.begin(), NULL), &H5Sclose, "HDF5File::writeAttribute(): Can not create dataspace.");
+
+        // create and open group:
+        std::string errorMessage ("HDF5File::writeAttribute(): can not find dataset '" + datasetName + "'.");
+
+        // get parent dataset handle
+        HDF5Handle datasetHandle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
+
+        // create attribute
+        HDF5Handle attributeHandle (H5Acreate(datasetHandle, attributeName.c_str(), datatype, dataspace,H5P_DEFAULT, H5P_DEFAULT), &H5Aclose, "HDF5File::write(): Can not create attribute.");
+
+        // Write the data to the HDF5 dataset as is
+        H5Awrite(attributeHandle, datatype, array.data());
+    }
+
+
+
+    // unstrided target multi array attributes
+    template<unsigned int N, class T>
+    void read_attribute_(std::string datasetName, std::string attributeName, MultiArrayView<N, T, UnstridedArrayTag> array, const hid_t datatype, const int numBandsOfType)
+    {
+        std::string dataset_path = get_absolute_path(datasetName);
+        // open Attribute handle
+        std::string message = "Error: could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+        HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
+
+        // get Attribute dataspace
+        message = "Error: could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+        HDF5Handle attr_dataspace_handle (H5Aget_space(attr_handle),&H5Sclose,message.c_str());
+
+        // obtain Attribute shape
+        int dims = H5Sget_simple_extent_ndims(attr_dataspace_handle);
+        ArrayVector<hsize_t> shape_inv(dims);
+        H5Sget_simple_extent_dims(attr_dataspace_handle, shape_inv.data(), NULL);
+
+        // invert the dimensions to guarantee c-order
+        ArrayVector<hsize_t> dimshape(dims);
+        for(ArrayVector<hsize_t>::size_type i=0; i<shape_inv.size(); i++) {
+            dimshape[i] = shape_inv[dims-1-i];
+        }
+
+        int offset = (numBandsOfType > 1);
+        message = "Error: Array dimension disagrees with dataset dimension.";
+        // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
+        vigra_precondition( ( (N + offset ) ==  MultiArrayIndex(dims)), message);
+
+        typename MultiArrayShape<N>::type shape;
+        for(int k=offset; k< MultiArrayIndex(dims); ++k) {
+            shape[k-offset] = MultiArrayIndex(dimshape[k]);
+        }
+
+        message = "Error: Array shape disagrees with dataset shape";
+        vigra_precondition(shape == array.shape(),message);
+
+        // simply read in the data as is
+        H5Aread( attr_handle, datatype, array.data());
     }
 
 
@@ -1231,8 +1596,8 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < (int)N; i++){
-            shape[(int)N-1-i] = array.shape(i); // reverse order
+        for(int i = 0; i < N; i++){
+            shape[N-1-i] = array.shape(i); // reverse order
         }
 
         if(numBandsOfType > 1)
@@ -1258,9 +1623,9 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             ArrayVector<hsize_t> cSize(N + (numBandsOfType > 1),0);
-            for(int i = 0; i<(int)N; i++)
+            for(int i = 0; i<N; i++)
             {
-                cSize[i] = chunkSize[(int)N-1-i];
+                cSize[i] = chunkSize[N-1-i];
             }
             if(numBandsOfType > 1)
                 cSize[N] = numBandsOfType;
@@ -1286,7 +1651,8 @@ class HDF5File
         }
     }
 
-    // unstrided target multi array
+
+    // unstrided target multi array view
     template<unsigned int N, class T>
     void read_(std::string datasetName, MultiArrayView<N, T, UnstridedArrayTag> array, const hid_t datatype, const int numBandsOfType)
     {
@@ -1314,6 +1680,8 @@ class HDF5File
         H5Dread( datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() ); // .data() possible since void pointer!
     }
 
+
+
     template<unsigned int N, class T>
     void writeBlock_(std::string datasetName, typename MultiArrayShape<N>::type &blockOffset, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
     {
@@ -1327,9 +1695,9 @@ class HDF5File
         hsize_t bshape [N];
         hsize_t bones [N];
 
-        for(int i = 0; i < (int)N; i++){
-            boffset[i] = blockOffset[(int)N-1-i];
-            bshape[i] = array.size((int)N-1-i);
+        for(int i = 0; i < N; i++){
+            boffset[i] = blockOffset[N-1-i];
+            bshape[i] = array.size(N-1-i);
             bones[i] = 1;
         }
 
@@ -1372,10 +1740,12 @@ class HDF5File
         hsize_t bshape [N];
         hsize_t bones [N];
 
-        for(int i = 0; i < (int)N; i++){
+        for(int i = 0; i < N; i++){
             // virgra and hdf5 use different indexing
-            boffset[i] = blockOffset[(int)N-1-i];
-            bshape[i] = blockShape[(int)N-1-i];
+            boffset[i] = blockOffset[N-1-i];
+            //bshape[i] = blockShape[i];
+            bshape[i] = blockShape[N-1-i];
+            //boffset[i] = blockOffset[N-1-i];
             bones[i] = 1;
         }
 
