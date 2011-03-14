@@ -220,7 +220,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     int kernel_width  = klr.x - kul.x + 1;
     int kernel_height = klr.y - kul.y + 1;
 
-    vigra_precondition(w >= kernel_width && h >= kernel_height,
+    vigra_precondition(w >= std::max(klr.x, -kul.x) + 1 && h >= std::max(klr.y, -kul.y) + 1,
                        "convolveImage(): kernel larger than image.");
 
     KernelSumType norm = NumericTraits<KernelSumType>::zero();

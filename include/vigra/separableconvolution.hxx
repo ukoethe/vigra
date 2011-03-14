@@ -552,7 +552,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    vigra_precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= std::max(kright, -kleft) + 1,
                  "convolveLine(): kernel longer than line\n");
 
     switch(border)
@@ -695,7 +695,7 @@ void separableConvolveX(SrcIterator supperleft,
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
 
-    vigra_precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= std::max(kright, -kleft) + 1,
                  "separableConvolveX(): kernel longer than line\n");
 
     int y;
@@ -807,7 +807,7 @@ void separableConvolveY(SrcIterator supperleft,
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
 
-    vigra_precondition(h >= kright - kleft + 1,
+    vigra_precondition(h >= std::max(kright, -kleft) + 1,
                  "separableConvolveY(): kernel longer than line\n");
 
     int x;
