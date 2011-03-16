@@ -328,7 +328,10 @@ of 'numpy.ndarray'.
     def swapaxes(self, i, j):
         res = numpy.ndarray.swapaxes(self, i, j)
         res.axistags = res.copy_axistags()
-        res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
+        try:
+            res.axistags.swapaxes(i, j)
+        except:
+            res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
         return res        
  
     @preserve_doc

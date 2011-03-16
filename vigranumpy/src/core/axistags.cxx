@@ -150,7 +150,111 @@ PyAxisTags_transform(PyAxisTags const & oldTags, python::object index, int lnew)
     return newTags;
 }
 
+AxisTags<> *
+AxisTags_create(python::object i1, python::object i2,
+                python::object i3, python::object i4, python::object i5)
+{
+    std::auto_ptr<AxisTags<> > res(new AxisTags<>());
+    
+    python::extract<AxisTags<> const &> tags(i1);
+    if(tags.check())
+    {
+        res = std::auto_ptr<AxisTags<> >(new AxisTags<>(tags()));
+    }
+    else if(PySequence_Check(i1.ptr()))
+    {
+        int size = len(i1);
+        for(int k=0; k<size; ++k)
+        {
+            python::extract<AxisInfo const &> info(i1[k]);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+    }
+    else if(PyInt_Check(i1.ptr()))
+    {
+        int size = python::extract<int>(i1)();
+        for(int k=0; k<size; ++k)
+            res->push_back(AxisInfo());
+    }
+    else
+    {
+        if(i1 != python::object())
+        {
+            python::extract<AxisInfo const &> info(i1);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+        if(i2 != python::object())
+        {
+            python::extract<AxisInfo const &> info(i2);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+        if(i3 != python::object())
+        {
+            python::extract<AxisInfo const &> info(i3);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+        if(i4 != python::object())
+        {
+            python::extract<AxisInfo const &> info(i4);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+        if(i5 != python::object())
+        {
+            python::extract<AxisInfo const &> info(i5);
+            if(!info.check())
+            {
+                PyErr_SetString(PyExc_TypeError, "AxisTags(): Argument must be a sequence of AxisInfo objects.");
+                python::throw_error_already_set();
+            }
+            res->push_back(info());
+        }
+    }
+    
+    return res.release();
+}
 
+void AxisTags_setitem(AxisTags<> & tags, int k, AxisInfo const & i)
+{
+    if(!tags.checkIndex(k))
+    {
+        PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
+        python::throw_error_already_set();
+    }
+    
+    if(k < 0)
+        k += tags.size();
+    tags[k] = i;
+}
+
+void AxisTags_setitem_key(AxisTags<> & tags, std::string const & key, AxisInfo const & i)
+{
+    AxisTags_setitem(tags, tags.findKey(key), i);
+}
 
 void printAxistags(NumpyAnyArray a)
 {
@@ -200,6 +304,7 @@ void defineAxisTags()
 		.def("isChannel", &AxisInfo::isChannel)
 		.def("isFrequency", &AxisInfo::isFrequency)
 		.def("isAngular", &AxisInfo::isAngular)
+		.def("isType", &AxisInfo::isType)
 		.def(self == self)
 		.def(self != self)
 		.def("__repr__", &AxisInfo::repr)
@@ -215,7 +320,43 @@ void defineAxisTags()
         .add_static_property("c", &AxisInfo_c)
     ;
 
-	class_<PyAxisTags>("AxisTags", no_init)
+	class_<AxisTags<> >("AxisTags", no_init)
+		.def("__init__", make_constructor(&AxisTags_create,
+            default_call_policies(),
+            (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
+                   arg("i4")=object(), arg("i5")=object())))
+		.def("__repr__", &AxisTags<>::repr)
+		.def("__getitem__", (AxisInfo const & (AxisTags<>::*)(int) const)&AxisTags<>::operator[],
+                             return_value_policy<copy_const_reference>())
+		.def("__getitem__", (AxisInfo const & (AxisTags<>::*)(std::string const &) const)&AxisTags<>::get,
+                             return_value_policy<copy_const_reference>())
+		.def("__setitem__", &AxisTags_setitem)
+		.def("__setitem__", &AxisTags_setitem_key)
+		// .def("insert", (void (PyAxisTags::*)(int, object))&PyAxisTags::insert)
+		// .def("insert", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::insert)
+		// .def("index", (int (PyAxisTags::*)(std::string const &) const)&PyAxisTags::findKey)
+		// .def("append", &PyAxisTags::append)
+		// .def("__delitem__", (void (PyAxisTags::*)(int))&PyAxisTags::dropAxis)
+		// .def("__delitem__", (void (PyAxisTags::*)(std::string const &))&PyAxisTags::dropAxis)
+		// .def("__len__", &PyAxisTags::size)
+		// .def(self == self)
+		// .def(self != self)
+		// .def("axisTypeCount", &PyAxisTags::axisTypeCount)
+		// .def("axesByFlag", &PyAxisTags::axesByFlag)
+		// .def("spatialAxes", &PyAxisTags::spatialAxes)
+		// .def("temporalAxes", &PyAxisTags::temporalAxes)
+		// .def("channelAxes", &PyAxisTags::channelAxes)
+		// .def("frequencyAxes", &PyAxisTags::frequencyAxes)
+		// .def("angularAxes", &PyAxisTags::angularAxes)
+		// .def("untaggedAxes", &PyAxisTags::untaggedAxes)
+		// .def("canonicalOrdering", &PyAxisTags::canonicalOrdering)
+		// .def("matchOrdering", &PyAxisTags::matchOrdering)
+		// .def("transpose", (void (PyAxisTags::*)(object const &))&PyAxisTags::transpose)
+		// .def("transpose", (void (PyAxisTags::*)())&PyAxisTags::transpose)
+		// .def("transform", &PyAxisTags_transform)
+    ;
+
+	class_<PyAxisTags>("PyAxisTags", no_init)
         .def(init<object const &, object const &, object const &, 
                   object const &, object const &>(
                   (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 

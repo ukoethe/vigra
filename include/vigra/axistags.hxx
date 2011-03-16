@@ -277,6 +277,9 @@ struct AxisInfoSorter
     }
 };
 
+
+// FIXME: check for doublicate keys in all setter functions.
+
 // split up AxisTags into a purely C++ part and a Python-dependent part (PyAxisTags below)
 template <class T = AxisInfo, class GetFunctor = functor::Identity>
 class AxisTags
@@ -679,6 +682,81 @@ class PyAxisTags
 		BaseType::transpose();
 	}
 };
+
+#if 0
+class TaggedShape
+{
+  public:
+
+    ArrayVector<npy_intp> shape;
+    python_ptr axistags;
+    npy_intp channelCount;
+    std::string channelDescription;
+    
+    TaggedShape(MultiArrayIndex size)
+    : shape(size)
+    {}
+    
+    template <int N>
+    TaggedShape(typename MultiArrayShape<N>::type const & sh)
+    : shape(sh.begin(), sh.end())
+    {}
+    
+    npy_intp & operator[](int i)
+    {
+        // rotate indices so that channels are located at index 0
+        return shape[(i+1) % shape.size()];
+    }
+    
+    npy_intp operator[](int i) const
+    {
+        return shape[(i+1) % shape.size()];
+    }
+    
+    unsigned int size() const
+    {
+        return shape.size();
+    }
+    
+    // void setChannelDescription(std::string const & description)
+    // {
+        // if(axistags)
+        // {
+            // python_ptr func(PyString_FromString("setChannelDescription"), 
+                                         // python_ptr::keep_count);
+            // pythonToCppException(res);
+            
+            // python_ptr d(PyString_FromString(d.c_str()), python_ptr::keep_count);
+            // pythonToCppException(d);
+            
+            // python_ptr res(PyObject_CallMethodObjArgs(axistags, func, d.get(), NULL),
+                           // python_ptr::keep_count);
+            // pythonToCppException(res);
+        // }
+    // }
+    
+    // void setChannelCount(int channelCount)
+    // {
+        // shape[0] = channelCount;
+    // }
+    
+    void setChannelDescription(std::string const & description)
+    {
+        channelDescription = description;
+    }
+    
+    void setChannelCount(int count)
+    {
+        channelCount = count;
+    }
+    
+    void setChannelConfig(int channelCount, std::string const & description)
+    {
+        setChannelCount(channelCount);
+        setChannelDescription(description);
+    }
+};
+#endif
 
 } // namespace vigra
 

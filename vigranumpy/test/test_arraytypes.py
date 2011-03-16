@@ -40,6 +40,7 @@ import sys
 print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
+import vigra
 import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
 import numpy, copy
@@ -298,8 +299,38 @@ def checkCompatibility(obj, compatible):
     for n in compatible:
         try:
             f = getattr(vt, n)
-            res = f(obj)
-            assert_equal(obj.shape, res)
+            shape, acopy, same_size = f(obj)
+            
+            assert_equal(obj.shape, shape)
+            
+            assert_equal(obj.__class__, acopy.__class__)
+            assert_equal(obj.shape, acopy.shape)
+            if hasattr(obj, 'axistags'):
+                assert_equal(obj.axistags, acopy.axistags)
+                
+            if same_size is not None:
+                assert_equal(arraytypes.VigraArray, same_size.__class__)
+                assert_equal(arraytypes.defaultAxistags(same_size.ndim), same_size.axistags)
+
+                if hasattr(obj, 'axistags'):
+                    cobj = obj.transpose(obj.canonicalOrdering)
+                    cdefault = same_size.transpose(same_size.canonicalOrdering)
+                    
+                    if cobj.ndim > cdefault.ndim and cobj.shape[0] == 1:
+                        assert_equal(cobj.shape[1:], cdefault.shape)
+                    else:
+                        assert_equal(cobj.shape, cdefault.shape)
+                else:
+                    permutation = same_size.canonicalOrdering
+                    permutation.reverse()
+                    cdefault = same_size.transpose(permutation)
+                    
+                    if obj.ndim > cdefault.ndim and obj.shape[-1] == 1:
+                        assert_equal(obj.shape[:-1], cdefault.shape)
+                    elif obj.ndim < cdefault.ndim and cdefault.shape[-1] == 1:
+                        assert_equal(obj.shape, cdefault.shape[:-1])
+                    else:
+                        assert_equal(obj.shape, cdefault.shape)
         except Exception:
             print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
                                             getattr(obj, "axistags", "none"))

@@ -42,6 +42,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/functorexpression.hxx>
 #include <vigra/mathutil.hxx>
+#include <vigra/utilities.hxx>
 #include <vector>
 
 //NUMPY_ARRAY_DUMMY_REGISTRY
@@ -62,6 +63,63 @@ python::object arraytype(std::string const & cmd)
     return python::eval(cmd.c_str());
 }
 
+std::string simple(std::string const & cmd)
+{
+    std::string defaultValue("C");
+    
+    PyObject *g = PyEval_GetGlobals();
+    python_ptr pres(PyRun_String(cmd.c_str(), Py_eval_input, g, g), python_ptr::keep_count);
+    if(pres)
+        return PyString_Check(pres)
+                     ? std::string(PyString_AsString(pres))
+                     : defaultValue;
+    PyErr_Clear();
+    return defaultValue;
+    
+}
+
+python::list defaultAxisPermutation(int ndim)
+{
+    PyObject *g = PyEval_GetGlobals();
+    std::string command = std::string("vigra.arraytypes.defaultAxisPermutation(") + asString(ndim) + ")";
+    python_ptr pres(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                    python_ptr::keep_count);
+    python::list res;
+    if(pres && PySequence_Check(pres))
+    {
+        for(int k=0; k<ndim; ++k)
+        {
+            python_ptr i(PySequence_GetItem(pres, k), python_ptr::keep_count);
+            res.append(PyInt_AsLong(i));
+        }
+    }
+    else
+    {
+        for(int k=0; k<ndim; ++k)
+            res.append(k);
+    }
+    return res;
+}
+
+PyObject * defaultAxistags(int ndim)
+{
+    PyObject *g = PyEval_GetGlobals();
+    std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+    python_ptr pres(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                    python_ptr::keep_count);
+    return pres.release();
+}
+
+void setChannelDescription(PyObject * axistags, std::string const & d)
+{
+    python_ptr pyd(PyString_FromString(d.c_str()), python_ptr::keep_count);
+    python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
+//    std::cerr << "is function: " << PyCallable_Check(func) << "\n";
+    if(!PyObject_CallMethodObjArgs(axistags, func.get(), pyd.get(), NULL))
+        python::throw_error_already_set();
+}
+
+
 void registerNumpyArrayConverters();
 void defineAxisTags();
 
@@ -78,4 +136,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
     
     def("checksum", &pychecksum, args("data"));
     def("arraytype", &arraytype, (arg("cmd")="vigra.tagged_array.TaggedArray"));
+    def("defaultAxisPermutation", &defaultAxisPermutation);
+    def("defaultAxistags", &defaultAxistags);
+    def("setChannelDescription", &setChannelDescription);
 }

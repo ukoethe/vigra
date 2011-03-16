@@ -244,6 +244,19 @@ inline long majorNonchannelIndex(PyArrayObject * array, long defaultVal)
     return getAttrLong((PyObject*)array, key, defaultVal);
 }
 
+inline std::string defaultOrder(std::string defaultValue = "C")
+{
+    PyObject *g = PyEval_GetGlobals();
+    python_ptr pres(PyRun_String("vigra.arraytypes.defaultOrder", Py_eval_input, g, g), 
+                    python_ptr::keep_count);
+    if(pres)
+        return PyString_Check(pres)
+                     ? std::string(PyString_AsString(pres))
+                     : defaultValue;
+    PyErr_Clear();
+    return defaultValue;
+}
+
 /*
  * The registry is used to optionally map specific C++ types to
  * specific python sub-classes of numpy.ndarray (for example,
@@ -680,6 +693,258 @@ VIGRA_NUMPY_VALUETYPE_TRAITS(std::complex<npy_longdouble>, NPY_CLONGDOUBLE, clon
 
 /********************************************************/
 /*                                                      */
+/*                     TaggedShape                      */
+/*                                                      */
+/********************************************************/
+
+class TaggedShape
+{
+  public:
+
+    ArrayVector<npy_intp> shape;
+    python_ptr axistags;
+    MultiArrayIndex offset;
+    std::string channelDescription;
+    
+    TaggedShape(MultiArrayIndex size)
+    : shape(size),
+      offset(0)
+    {}
+    
+    template <class U, int N>
+    TaggedShape(TinyVector<U, N> const & sh, python_ptr tags = python_ptr())
+    : shape(sh.begin(), sh.end()),
+      axistags(tags),
+      offset(0)
+    {}
+    
+    template <class T>
+    TaggedShape(ArrayVector<T> const & sh, python_ptr tags = python_ptr())
+    : shape(sh.begin(), sh.end()),
+      axistags(tags),
+      offset(0)
+    {}
+    
+    npy_intp & operator[](int i)
+    {
+        // rotate indices so that channels are located at index 0
+        return shape[(i+offset) % shape.size()];
+    }
+    
+    npy_intp operator[](int i) const
+    {
+        return shape[(i+offset) % shape.size()];
+    }
+    
+    unsigned int size() const
+    {
+        return shape.size();
+    }
+    
+    // void setChannelDescription(std::string const & description)
+    // {
+        // if(axistags)
+        // {
+            // python_ptr func(PyString_FromString("setChannelDescription"), 
+                                         // python_ptr::keep_count);
+            // pythonToCppException(res);
+            
+            // python_ptr d(PyString_FromString(d.c_str()), python_ptr::keep_count);
+            // pythonToCppException(d);
+            
+            // python_ptr res(PyObject_CallMethodObjArgs(axistags, func, d.get(), NULL),
+                           // python_ptr::keep_count);
+            // pythonToCppException(res);
+        // }
+    // }
+    
+    // void setChannelCount(int channelCount)
+    // {
+        // shape[0] = channelCount;
+    // }
+    
+    void setChannelDescription(std::string const & description)
+    {
+        channelDescription = description;
+    }
+    
+    void setChannelCount(int count)
+    {
+        shape[0] = count;
+    }
+    
+    void insertChannelAxis(int channelCount = 1)
+    {
+        shape.insert(shape.begin(), channelCount);
+        offset = 1;
+    }
+    
+    void shiftShape()
+    {
+        npy_intp channelCount = shape.back();
+        for(int k=shape.size()-1; k>0; --k)
+            shape[k] = shape[k-1];
+        shape[0] = channelCount;
+        offset = 1;
+    }
+    
+    void setChannelConfig(int channelCount, std::string const & description)
+    {
+        setChannelCount(channelCount);
+        setChannelDescription(description);
+    }
+};
+
+// We assume that the shape is given in canonical order (currently: F-order).
+// The axistags determine the axis ordering in Python.
+// If no axistags are given, we assume that the Python array should have C-order.
+inline // FIXME
+PyObject * 
+constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeCode, bool init)
+{
+    if(axistags == Py_None)
+        axistags.reset(0);
+        
+    int ndim = (int)shape.size();
+    python_ptr array;
+
+    PyObject *g = PyEval_GetGlobals();
+    python_ptr arraytype(PyRun_String("vigra.arraytypes.VigraArray", Py_eval_input, g, g), 
+                         python_ptr::keep_count);
+
+    if(!arraytype)
+        PyErr_Clear(); // if VigraArray is not present, use ndarray as default 
+    if(!axistags)
+        arraytype.reset(0); // use plain ndarray if there are no axistags
+    
+    ArrayVector<npy_intp> inverse_permutation(ndim);
+    
+    if(axistags) // FIXME: is if(arraytype && axistags) better?
+    {
+        if(!PySequence_Check(axistags))
+        {
+            PyErr_SetString(PyExc_TypeError, "constructArray(): axistags have wrong type.");
+            pythonToCppException(false);
+        }
+        
+        int ntags = PySequence_Length(axistags);
+        if(ndim == ntags + 1)
+        {
+            // We allow the tags to have no channel axis. If this is the case,
+            // we delete the channel axis from the shape, provided it is a singleton.
+            static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
+			long channelIndex = detail::getAttrLong(axistags, key, ntags);
+            if(channelIndex == ntags && shape[0] == 1)
+            {
+                ndim -= 1;
+                shape.erase(shape.begin());
+            }
+        }
+        
+        vigra_precondition(ndim == ntags,
+             "constructArray(): size mismatch between shape and axistags.");
+        
+        python_ptr func(PyString_FromString("permutation"), python_ptr::keep_count);
+        python_ptr permutation(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
+                               python_ptr::keep_count);
+        pythonToCppException(permutation);
+
+        if(!PySequence_Check(permutation) || PySequence_Length(permutation) != ndim)
+        {
+            PyErr_SetString(PyExc_ValueError, "axistags.permutation() did not return a sequence of appropriate length.");
+            pythonToCppException(false);
+        }
+            
+        for(int k=0; k<ndim; ++k)
+        {
+            python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
+            if(!PyInt_Check(i))
+            {
+                PyErr_SetString(PyExc_ValueError, "axistags.permutation() must return a sequence of int.");
+                pythonToCppException(false);
+            }
+            inverse_permutation[k] = PyInt_AsLong(i);
+        }
+    }
+    else
+    {
+        for(int k=0; k<ndim; ++k)
+        {
+            inverse_permutation[k] = ndim - k - 1;
+        }
+    }
+    
+    PyTypeObject * type = arraytype
+                               ? (PyTypeObject *)arraytype.get()
+                               : &PyArray_Type;
+    array = python_ptr(PyArray_New(type, ndim, shape.begin(), 
+                                   typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
+                       python_ptr::keep_count);
+    pythonToCppException(array);
+
+    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
+    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
+                       python_ptr::keep_count);
+    pythonToCppException(array);
+    
+    if(arraytype && axistags)
+        pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags));
+    
+    if(init)
+        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
+   
+    return array.release();
+}
+
+inline // FIXME
+PyObject * 
+constructArray2(ArrayVector<npy_intp> shape, PyObject * axistags, NPY_TYPES typeCode, bool init)
+{
+    return constructArray(shape, python_ptr(axistags), typeCode, init);
+}
+
+inline // FIXME
+PyObject * 
+constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
+{
+    python_ptr axistags;
+    
+    if(tagged_shape.axistags)
+    {
+        // if we got axistags, create a copy
+        python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+        axistags = python_ptr(PyObject_CallMethodObjArgs(tagged_shape.axistags, func.get(), NULL), 
+                              python_ptr::keep_count);
+    }
+    else
+    {
+        // otherwise, create default axistags
+        PyObject *g = PyEval_GetGlobals();
+
+        int ndim = (int)tagged_shape.size();
+        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+        axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                              python_ptr::keep_count);
+    }
+    
+    if(!axistags)
+    {
+        PyErr_Clear(); // ignore missing axistags
+    }
+    else if(tagged_shape.channelDescription != "")
+    {
+        python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
+        python_ptr arg(PyString_FromString(tagged_shape.channelDescription.c_str()), 
+                       python_ptr::keep_count);
+        pythonToCppException(PyObject_CallMethodObjArgs(axistags, func.get(), arg.get(), NULL));
+    }
+    
+    return constructArray(tagged_shape.shape, axistags, typeCode, init);
+}
+
+
+/********************************************************/
+/*                                                      */
 /*                  NumpyArrayTraits                    */
 /*                                                      */
 /********************************************************/
@@ -761,6 +1026,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && isValuetypeCompatible(obj);
+    }
+    
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
+                                   python_ptr axistags = python_ptr())
+    {
+        return TaggedShape(shape, axistags);
     }
 
     template <class U>
@@ -903,6 +1175,15 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     }
 
     template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
+                                   python_ptr axistags = python_ptr())
+    {
+        TaggedShape res(shape, axistags);
+        res.insertChannelAxis();
+        return res;
+    }
+
+    template <class U>
     static python_ptr constructor(TinyVector<U, N> const & shape,
                                   T *data, TinyVector<U, N> const & stride)
     {
@@ -1032,6 +1313,15 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
+                                   python_ptr axistags = python_ptr())
+    {
+        TaggedShape res(shape, axistags);
+        res.shiftShape();
+        return res;
     }
 
     template <class U>
@@ -1168,6 +1458,15 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && ValuetypeTraits::isValuetypeCompatible(obj);
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
+                                   python_ptr axistags = python_ptr())
+    {
+        TaggedShape res(shape, axistags);
+        res.insertChannelAxis(M);
+        return res;
     }
 
     template <class U>
@@ -1559,8 +1858,9 @@ class NumpyAnyArray
     }
 
         /**
-         Returns the shape of this array. The size of
-         the returned shape equals ndim().
+         Returns the the permutation that will transpose this array into 
+         canonical ordering (currently: F-order). The size of
+         the returned permutation equals ndim().
          */
     difference_type canonicalOrdering() const
     {
@@ -1772,16 +2072,23 @@ class NumpyArray
         return type;
     }
 
+    // static python_ptr init(difference_type const & shape, bool init = true)
+    // {
+        // ArrayVector<npy_intp> pshape(shape.begin(), shape.end());
+        // return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
+                       // ArrayTraits::spatialDimensions, ArrayTraits::channels,
+                       // typeCode, "V", init);
+    // }
+
     static python_ptr init(difference_type const & shape, bool init = true)
     {
-        ArrayVector<npy_intp> pshape(shape.begin(), shape.end());
-        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
-                       ArrayTraits::spatialDimensions, ArrayTraits::channels,
-                       typeCode, "V", init);
+		return python_ptr(constructArray(ArrayTraits::taggedShape(shape), typeCode, init), 
+                           python_ptr::keep_count);
     }
 
     static python_ptr init(difference_type const & shape, difference_type const & strideOrdering, bool init = true)
     {
+        // FIXME: what to do with this function?
         ArrayVector<npy_intp> pshape(shape.begin(), shape.end()),
                               pstrideOrdering(strideOrdering.begin(), strideOrdering.end());
         if(pstrideOrdering.size() == ArrayTraits::spatialDimensions)
@@ -1830,9 +2137,10 @@ class NumpyArray
          * (If the source object has no data, this one will have
          * no data, too.)
          */
-    NumpyArray(const NumpyArray &other, bool createCopy = false) :
-            MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>(other),
-            NumpyAnyArray(other, createCopy)
+    NumpyArray(const NumpyArray &other, bool createCopy = false) 
+    // :
+            // MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>(other),
+            // NumpyAnyArray(other, createCopy)
     {
         if(!other.hasData())
             return;
@@ -2023,6 +2331,7 @@ class NumpyArray
          */
     bool makeReference(PyObject *obj, bool strict = true)
     {
+        strict = false; // FIXME
         if(strict)
         {
             if(!isStrictlyCompatible(obj))
@@ -2154,6 +2463,15 @@ class NumpyArray
             reshape(shape, strideOrdering);
         }
     }
+    
+    TaggedShape taggedShape() const
+    {
+        static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
+        python_ptr axistags(PyObject_GetAttr(this->pyObject(), key), python_ptr::keep_count);
+        if(!axistags)
+            PyErr_Clear();
+        return ArrayTraits::taggedShape(this->shape(), axistags);
+    }
 };
 
     // // this function assumes that pyArray_ has already been set, and compatibility been checked
@@ -2192,10 +2510,23 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         if(actual_dimension == pyArray()->nd)
         {
 #ifndef OLD_SEMANTICS
-            for(int k=0; k<actual_dimension; ++k)
+            if(typeid(T) == typeid(Multiband<value_type>))
             {
-                this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                this->m_stride[k] = pyArray()->strides[ordering[k]];
+                for(int k=1; k<actual_dimension; ++k)
+                {
+                    this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
+                    this->m_stride[k-1] = pyArray()->strides[ordering[k]];
+                }
+                this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
+                this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
+            }
+            else
+            {
+                for(int k=0; k<actual_dimension; ++k)
+                {
+                    this->m_shape[k] = pyArray()->dimensions[ordering[k]];
+                    this->m_stride[k] = pyArray()->strides[ordering[k]];
+                }
             }
 #else
             if(typeid(T) == typeid(Multiband<value_type>))
@@ -2256,13 +2587,26 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         else if(actual_dimension == pyArray()->nd + 1)
         {
 #ifndef OLD_SEMANTICS
-            for(int k=0; k<actual_dimension-1; ++k)
+            if(typeid(T) == typeid(Multiband<value_type>))
             {
-                this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
-                this->m_stride[k+1] = pyArray()->strides[ordering[k]];
+                for(int k=0; k<actual_dimension-1; ++k)
+                {
+                    this->m_shape[k] = pyArray()->dimensions[ordering[k]];
+                    this->m_stride[k] = pyArray()->strides[ordering[k]];
+                }
+                this->m_shape[actual_dimension-1] = 1;
+                this->m_stride[actual_dimension-1] = sizeof(value_type);
             }
-            this->m_shape[0] = 1;
-            this->m_stride[0] = sizeof(value_type);
+            else
+            {
+                for(int k=0; k<actual_dimension-1; ++k)
+                {
+                    this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
+                    this->m_stride[k+1] = pyArray()->strides[ordering[k]];
+                }
+                this->m_shape[0] = 1;
+                this->m_stride[0] = sizeof(value_type);
+            }
 #else
             for(int k=0; k<actual_dimension-1; ++k)
             {

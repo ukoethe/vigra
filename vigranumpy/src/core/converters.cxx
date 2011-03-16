@@ -357,81 +357,28 @@ constructNumpyArrayFromArray(python::object type, NumpyAnyArray array,
     return res;
 }
 
+// PyObject * 
+// constructDefaultArraytype(ArrayVector<npy_intp> shape, NPY_TYPES typeCode, bool init)
+// {
+    // PyObject *g = PyEval_GetGlobals();
+
+    // int ndim = (int)shape.size();
+	// std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+    // python_ptr axistags(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                        // python_ptr::keep_count);
+    // if(!axistags)
+        // PyErr_Clear(); // ignore missing axistags
+        
+    // return constructArray(shape, axistags, typeCode, init);
+// }
+
 PyObject * 
 constructDefaultArraytype(ArrayVector<npy_intp> shape, NPY_TYPES typeCode, bool init)
 {
-    int ndim = (int)shape.size();
-
-    PyObject *g = PyEval_GetGlobals();
-    python_ptr arraytype(PyRun_String("vigra.arraytypes.VigraArray", Py_eval_input, g, g), 
-                         python_ptr::keep_count);
-    
-    python_ptr array;
-
-    if(!arraytype)
-    {
-        PyErr_Clear();
-        array = python_ptr(PyArray_New(&PyArray_Type, ndim, shape.begin(), 
-                                       typeCode, 0, 0, 0, 0 /* C order */, 0),
-                           python_ptr::keep_count);
-        pythonToCppException(array);
-        return array;
-    }
-    else
-    {
-        std::string command = std::string("vigra.arraytypes.defaultAxisPermutation(") + asString(ndim) + ")";
-        python_ptr ppermutation(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                python_ptr::keep_count);
-        pythonToCppException(ppermutation);
+    TaggedShape tagged_shape(shape);
+    tagged_shape.setChannelDescription("constructDefaultArraytype");
         
-        ArrayVector<npy_intp> permutation(ndim), normalized_shape(ndim), inverse_permutation(ndim);
-        if(ppermutation)
-        {
-            vigra_precondition(PySequence_Check(ppermutation) && PySequence_Length(ppermutation) == ndim,
-                "vigra.arraytypes.defaultAxisPermutation() did not return a sequence of appropriate length.");
-            
-            for(int k=0; k<ndim; ++k)
-            {
-                python_ptr i(PySequence_GetItem(ppermutation, k), python_ptr::keep_count);
-                vigra_precondition(PyInt_Check(i),
-                         "vigra.arraytypes.defaultAxisPermutation() must return a sequence of int.");
-                permutation[k] = PyInt_AsLong(i);
-
-            }
-        }
-        else
-        {
-            for(int k=0; k<ndim; ++k)
-                permutation[k] = k;
-        }
-        
-        for(int k=0; k<ndim; ++k)
-        {
-            inverse_permutation[permutation[k]] = k;
-            normalized_shape[k] = shape[permutation[k]];
-        }
-        
-        array = python_ptr(PyArray_New((PyTypeObject *)arraytype.get(), ndim, normalized_shape.begin(), 
-                                        typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                           python_ptr::keep_count);
-        pythonToCppException(array);
-
-        PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-        array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), python_ptr::keep_count);
-        
-        command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        python_ptr axistags(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                            python_ptr::keep_count);
-        if(axistags)
-            PyObject_SetAttrString(array, "axistags", axistags);
-        else
-            PyErr_Clear();
-    }
-    
-    if(init)
-        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-   
-    return array.release();
+    return constructArray(tagged_shape, typeCode, init);
 }
 
 void registerNumpyArrayConverters()
@@ -485,6 +432,7 @@ void registerNumpyArrayConverters()
     python::def("constructNumpyArray", &constructNumpyArrayFromShape);
     python::def("constructNumpyArray", &constructNumpyArrayFromArray);
     python::def("constructDefaultArraytype", &constructDefaultArraytype);
+    python::def("constructArray2", &constructArray2);
 }
 
 } // namespace vigra

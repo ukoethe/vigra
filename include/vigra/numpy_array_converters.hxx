@@ -99,6 +99,7 @@ template <unsigned int N, class T, class Stride>
 void * NumpyArrayConverter<NumpyArray<N, T, Stride> >::convertible(PyObject* obj)
 {
     bool isCompatible = obj == Py_None || ArrayType::isStrictlyCompatible(obj);
+    // std::cerr << "compatible for " << typeid(NumpyArray<N, T, Stride>).name() << ": " << isCompatible << "\n";
     return isCompatible
              ? obj
              : 0;
