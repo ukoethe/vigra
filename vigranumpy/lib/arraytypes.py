@@ -60,6 +60,7 @@ following array classes:
         ImagePyramid
 """
 
+import sys
 import copy
 import numpy
 import ufunc
@@ -197,7 +198,7 @@ class AxisTags(object):
    
     @property
     def channelIndex(self):
-        return index('c')
+        return self.index('c')
    
     def axisTypeCount(self, axistype):
         count = 0
@@ -322,11 +323,11 @@ defaultOrder = 'V'
 
 def defaultAxistags(ndim, order=defaultOrder):
     if order == 'F':
-        tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z][:ndim]
+        tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim]
     elif order == 'C':
-        tags = [AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
+        tags = [AxisInfo(), AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
     else: # order in ['A', 'V']:
-        tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z][:ndim-1] + [AxisInfo.c]
+        tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim-1] + [AxisInfo.c]
     return AxisTags(tags)
     
 def defaultAxisPermutation(ndim, order=defaultOrder):

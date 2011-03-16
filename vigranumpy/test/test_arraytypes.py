@@ -310,7 +310,13 @@ def checkCompatibility(obj, compatible):
                 
             if default_ordering is not None:
                 assert_equal(arraytypes.VigraArray, default_ordering.__class__)
-                assert_equal(arraytypes.defaultAxistags(default_ordering.ndim), default_ordering.axistags)
+                
+                if default_ordering.axistags.channelIndex == default_ordering.ndim:
+                    tags = arraytypes.defaultAxistags(default_ordering.ndim+1)
+                    tags.dropChannelDimension()
+                else:
+                    tags = arraytypes.defaultAxistags(default_ordering.ndim)
+                assert_equal(tags, default_ordering.axistags)
 
                 if hasattr(obj, 'axistags'):
                     cobj = obj.transpose(obj.canonicalOrdering)
@@ -450,8 +456,8 @@ def testImage2():
 def testScalarImage():
     checkArray(arraytypes.ScalarImage, 1, 2)
     
-    cshape = (10, 20)
-    shape = (20, 10)
+    shape = (10, 20)
+    cshape = (20, 10)
 
     c = ["testAny",
          "testArray2Unstrided", "testArray2Strided",

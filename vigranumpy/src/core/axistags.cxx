@@ -320,18 +320,18 @@ void defineAxisTags()
         .add_static_property("c", &AxisInfo_c)
     ;
 
-	class_<AxisTags<> >("AxisTags", no_init)
-		.def("__init__", make_constructor(&AxisTags_create,
-            default_call_policies(),
-            (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
-                   arg("i4")=object(), arg("i5")=object())))
-		.def("__repr__", &AxisTags<>::repr)
-		.def("__getitem__", (AxisInfo const & (AxisTags<>::*)(int) const)&AxisTags<>::operator[],
-                             return_value_policy<copy_const_reference>())
-		.def("__getitem__", (AxisInfo const & (AxisTags<>::*)(std::string const &) const)&AxisTags<>::get,
-                             return_value_policy<copy_const_reference>())
-		.def("__setitem__", &AxisTags_setitem)
-		.def("__setitem__", &AxisTags_setitem_key)
+	// class_<AxisTags<> >("AxisTags", no_init)
+		// .def("__init__", make_constructor(&AxisTags_create,
+            // default_call_policies(),
+            // (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
+                   // arg("i4")=object(), arg("i5")=object())))
+		// .def("__repr__", &AxisTags<>::repr)
+		// .def("__getitem__", (AxisInfo const & (AxisTags<>::*)(int) const)&AxisTags<>::operator[],
+                             // return_value_policy<copy_const_reference>())
+		// .def("__getitem__", (AxisInfo const & (AxisTags<>::*)(std::string const &) const)&AxisTags<>::get,
+                             // return_value_policy<copy_const_reference>())
+		// .def("__setitem__", &AxisTags_setitem)
+		// .def("__setitem__", &AxisTags_setitem_key)
 		// .def("insert", (void (PyAxisTags::*)(int, object))&PyAxisTags::insert)
 		// .def("insert", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::insert)
 		// .def("index", (int (PyAxisTags::*)(std::string const &) const)&PyAxisTags::findKey)

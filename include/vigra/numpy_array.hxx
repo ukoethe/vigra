@@ -801,7 +801,7 @@ constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeC
     if(!axistags)
         arraytype.reset(0); // use plain ndarray if there are no axistags
     
-    ArrayVector<npy_intp> inverse_permutation(ndim);
+    ArrayVector<npy_intp> inverse_permutation;
     
     if(axistags) // FIXME: is if(arraytype && axistags) better?
     {
@@ -812,11 +812,21 @@ constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeC
         }
         
         int ntags = PySequence_Length(axistags);
+        // std::cerr << "ndim: " << ndim << ", ntags: " << ntags << "\n";
+        // std::cerr << "shape: " << shape << "\n";
+        // static python_ptr rf(PyString_FromString("__repr__"), python_ptr::keep_count);
+        // python_ptr repr(PyObject_CallMethodObjArgs(axistags, rf.get(), NULL), 
+                               // python_ptr::keep_count);
+        // pythonToCppException(repr);
+        // std::cerr << "axistags: " << PyString_AsString(repr) << " " << axistags->ob_type->tp_name << "\n";
+        
+        static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
+        // long channelIndex = detail::getAttrLong(axistags, key, ntags);
+        // std::cerr << "channelIndex: " << channelIndex << "\n";
         if(ndim == ntags + 1)
         {
             // We allow the tags to have no channel axis. If this is the case,
             // we delete the channel axis from the shape, provided it is a singleton.
-            static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
 			long channelIndex = detail::getAttrLong(axistags, key, ntags);
             if(channelIndex == ntags && shape[0] == 1)
             {
@@ -826,13 +836,13 @@ constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeC
         }
         else if(ndim == ntags - 1)
         {
-            // We allow the channel axis to be dropped. 
-            // FIXME: are there cases where this gives wrong results?
-            static python_ptr func(PyString_FromString("dropChannelDimension"), 
-                                   python_ptr::keep_count);
-			pythonToCppException(python_ptr(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                                            python_ptr::keep_count));
-            ntags -= 1;
+            // When the tags have a channel axis, we add a singleton axis to the shape.
+			long channelIndex = detail::getAttrLong(axistags, key, ntags);
+            if(channelIndex < ntags)
+            {
+                ndim += 1;
+                shape.insert(shape.begin(), 1);
+            }
         }
         
         vigra_precondition(ndim == ntags,
@@ -849,6 +859,7 @@ constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeC
             pythonToCppException(false);
         }
             
+        inverse_permutation.resize(ndim);
         for(int k=0; k<ndim; ++k)
         {
             python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
@@ -862,6 +873,7 @@ constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeC
     }
     else
     {
+        inverse_permutation.resize(ndim);
         for(int k=0; k<ndim; ++k)
         {
             inverse_permutation[k] = ndim - k - 1;
@@ -1019,10 +1031,37 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     }
     
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
-                                   python_ptr axistags = python_ptr())
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
         return TaggedShape(shape, axistags);
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    {
+        TaggedShape tagged_shape(shape);
+        
+        // create default axistags
+        PyObject *g = PyEval_GetGlobals();
+        
+        // FIXME: this is a hack
+        int ndim = (int)tagged_shape.size() + 1;
+        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                                           python_ptr::keep_count);
+        if(!tagged_shape.axistags)
+        {
+            PyErr_Clear();
+        }
+        else
+        {
+            static python_ptr func(PyString_FromString("dropChannelDimension"), 
+                                   python_ptr::keep_count);
+			python_ptr res(PyObject_CallMethodObjArgs(tagged_shape.axistags, func.get(), NULL), 
+                           python_ptr::keep_count);
+            pythonToCppException(res);
+        }
+        return tagged_shape;
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1171,10 +1210,28 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
-                                   python_ptr axistags = python_ptr())
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
         return TaggedShape(shape, axistags).insertChannelAxis();
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    {
+        TaggedShape tagged_shape(shape);
+        tagged_shape.insertChannelAxis();
+        
+        // create default axistags
+        PyObject *g = PyEval_GetGlobals();
+        int ndim = (int)tagged_shape.size();
+        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                                           python_ptr::keep_count);
+        if(!tagged_shape.axistags)
+        {
+            PyErr_Clear();
+        }
+        return tagged_shape;
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1321,10 +1378,28 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
-                                   python_ptr axistags = python_ptr())
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
         return TaggedShape(shape, axistags).shiftShape();
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    {
+        TaggedShape tagged_shape(shape);
+        tagged_shape.shiftShape();
+        
+        // create default axistags
+        PyObject *g = PyEval_GetGlobals();
+        int ndim = (int)tagged_shape.size();
+        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                                           python_ptr::keep_count);
+        if(!tagged_shape.axistags)
+        {
+            PyErr_Clear();
+        }
+        return tagged_shape;
     }
 
     template <class U>
@@ -1464,10 +1539,28 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, 
-                                   python_ptr axistags = python_ptr())
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
         return TaggedShape(shape, axistags).insertChannelAxis(M);
+    }
+
+    template <class U>
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    {
+        TaggedShape tagged_shape(shape);
+        tagged_shape.insertChannelAxis(M);
+        
+        // create default axistags
+        PyObject *g = PyEval_GetGlobals();
+        int ndim = (int)tagged_shape.size();
+        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                                           python_ptr::keep_count);
+        if(!tagged_shape.axistags)
+        {
+            PyErr_Clear();
+        }
+        return tagged_shape;
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -2094,17 +2187,7 @@ class NumpyArray
 
     static python_ptr init(difference_type const & shape, bool init = true)
     {
-        TaggedShape tagged_shape = ArrayTraits::taggedShape(shape);
-        
-        // create default axistags
-        PyObject *g = PyEval_GetGlobals();
-        int ndim = (int)tagged_shape.size();
-        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                           python_ptr::keep_count);
-        if(!tagged_shape.axistags)
-            PyErr_Clear();
-        return python_ptr(constructArray(tagged_shape, typeCode, init), 
+        return python_ptr(constructArray(ArrayTraits::taggedShape(shape), typeCode, init), 
                           python_ptr::keep_count);
     }
 
