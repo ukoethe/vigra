@@ -53,6 +53,9 @@ public:
     HDF5ExportImportTest()
     {}
 
+
+
+
 	void testScalarUnstridedHDF5ExportImport()
 	{
 		// export and import data from and to scalar unstrided array
@@ -80,6 +83,7 @@ public:
 		// compare content
 		should (in_data_1 == out_data_1);
 	}
+
 
 
 	void testScalarStridedHDF5ExportImport()
@@ -115,6 +119,8 @@ public:
 	}
 
 
+
+
 	void testRGBValueUnstridedHDF5ExportImport()
 	{
 		// export and import data from and to scalar unstrided array
@@ -142,6 +148,8 @@ public:
 		// compare content
 		should (in_data_1 == out_data_1);
 	}
+
+
 
 
 	void testRGBValueStridedHDF5ExportImport()
@@ -177,6 +185,9 @@ public:
 		should (in_data_2 == out_data_2);
 	}
 
+
+
+
 	void testTinyVectorUnstridedHDF5ExportImport()
 	{
 		// export and import data from and to scalar unstrided array
@@ -204,6 +215,8 @@ public:
 		// compare content
 		should (in_data_1 == out_data_1);
 	}
+
+
 
 
 	void testTinyVectorStridedHDF5ExportImport()
@@ -239,6 +252,8 @@ public:
 	}
 
 
+
+
 	void testScalarToRGBValueUnstridedHDF5ExportImport()
 	{
 		// export scalar 3D array and import as RGB image (unstrided)
@@ -267,6 +282,8 @@ public:
 		for (int j=0; j<120; ++i, j+=3)
 			should (in_data_1.data () [i] == RGBValue<double>((double)out_data_1.data () [j], (double)out_data_1.data () [j+1], (double)out_data_1.data () [j+2]) );
 	}
+
+
 
 
 	void testOverwriteExistingDataInHDF5()
@@ -302,6 +319,9 @@ public:
 		// compare content
 		should (in_data_2 == out_data_2);
 	}
+
+
+
 
 	void testAppendNewDataToHDF5()
 	{
@@ -348,6 +368,9 @@ public:
 		should (in_data_2 == out_data_2);
 	}
 
+
+
+
     void testHDF5FileDataAccess()
     {
         //write some data and read it again. Only spot test general functionality.
@@ -390,9 +413,9 @@ public:
         file.write("subgroup1/dataset",out_data_3);
         file.cd("..");
         file.write("/dataset_rgb",out_data_4);
-        file.writeAtomic("/atomicint", (int)-42);
-        file.writeAtomic("/atomicuint", (unsigned int)42);
-        file.writeAtomic("/atomicdouble", (double)3.1);
+        file.write("/atomicint", (int)-42);
+        file.write("/atomicuint", (unsigned int)42);
+        file.write("/atomicdouble", (double)3.1);
 
 
         //create a new dataset
@@ -419,16 +442,13 @@ public:
         file.read("/newset",in_data_5);
 
         int atomicint;
-        file.readAtomic("/atomicint",atomicint);
+        file.read("/atomicint",atomicint);
         int atomicuint;
-        file.readAtomic("/atomicuint",atomicuint);
+        file.read("/atomicuint",atomicuint);
         double atomicdouble;
-        file.readAtomic("/atomicdouble",atomicdouble);
+        file.read("/atomicdouble",atomicdouble);
 
-        file.setAttribute("/newset", "attribute", "This is a string attribute!");
         file.flushToDisk();
-
-        should(file.getAttribute("/newset",  "attribute") == "This is a string attribute!");
 
         // compare content
         // ...data 1
@@ -447,21 +467,21 @@ public:
         should (atomicuint == 42);
         should (atomicdouble == 3.1);
 
-        // readAndReshape
+        // readAndResize
         MultiArray<2,int> in_re_data_1;
-        file.readAndReshape("dataset",in_re_data_1);
+        file.readAndResize("dataset",in_re_data_1);
 
         MultiArray<4,double> in_re_data_2;
-        file.readAndReshape("/group/dataset",in_re_data_2);
+        file.readAndResize("/group/dataset",in_re_data_2);
 
         MultiArray< 2, TinyVector<double, 4> > in_re_data_3;
-        file.readAndReshape("/group/subgroup1/dataset",in_re_data_3);
+        file.readAndResize("/group/subgroup1/dataset",in_re_data_3);
 
         MultiArray< 2, RGBValue<double> > in_re_data_4;
-        file.readAndReshape("/dataset_rgb", in_re_data_4);
+        file.readAndResize("/dataset_rgb", in_re_data_4);
 
         MultiArray< 3, unsigned char > in_re_data_5 ;
-        file.readAndReshape("/newset",in_re_data_5);
+        file.readAndResize("/newset",in_re_data_5);
 
         // compare content
         // ...data 1
@@ -485,12 +505,90 @@ public:
         file.read("/dataset",in_data_overwrite);
 
         should(in_data_overwrite == out_data_2);
+        
+        file.cd("/");
+        
+        // writing and reading single values
+
+        file.write("set_char",'A');
+        file.write("set_int8",(Int8)8);
+        file.write("set_int16",(Int16)16);
+        file.write("set_int32",(Int32)32);
+        file.write("set_int64",(Int64)64);
+        file.write("set_uint8",(UInt8)8);
+        file.write("set_uint16",(UInt16)16);
+        file.write("set_uint32",(UInt32)32);
+        file.write("set_uint64",(UInt64)64);
+        file.write("set_float",(float)1.);
+        file.write("set_double",(double)2.);
+        file.write("set_longdouble",(long double)3.);
+        file.write("set_string",std::string("abc").c_str());
+        file.write("set_string2",std::string("abcdef"));
+        
+        char read_char = 0;
+        file.read("set_char",read_char);
+        should(read_char=='A');
+        
+        Int8 read_int8 = 0;
+        file.read("set_int8",read_int8);
+        should(read_int8==8);
+        
+        Int16 read_int16 = 0;
+        file.read("set_int16",read_int16);
+        should(read_int16 == 16);
+        
+        Int32 read_int32 = 0;
+        file.read("set_int32",read_int32);
+        should(read_int32 == 32);
+        
+        Int64 read_int64 = 0;
+        file.read("set_int64",read_int64);
+        should(read_int64 == 64);
+        
+        UInt8 read_uint8 = 0;
+        file.read("set_uint8",read_uint8);
+        should(read_uint8 == 8);
+        
+        UInt16 read_uint16 = 0;
+        file.read("set_uint16",read_uint16);
+        should(read_uint16 == 16);
+        
+        UInt32 read_uint32 = 0;
+        file.read("set_uint32",read_uint32);
+        should(read_uint32 == 32);
+        
+        UInt64 read_uint64 = 0;
+        file.read("set_uint64",read_uint64);
+        should(read_uint64 == 64);
+        
+        float read_float = 0;
+        file.read("set_float",read_float);
+        should(read_float == 1.);
+        
+        double read_double = 0;
+        file.read("set_double",read_double);
+        should(read_double == 2.);
+        
+        long double read_longdouble = 0;
+        file.read("set_longdouble",read_longdouble);
+        should(read_longdouble == 3.);
+        
+        std::string read_string = "";
+        file.read("set_string",read_string);  
+        should(read_string == "abc");
+
+        std::string read_string2 = "";
+        file.read("set_string2",read_string2);
+        should(read_string2 == "abcdef");
     }
+
+
+
 
     // reading and writing attributes. get handles of groups, datasets and attributes
     void testHDF5FileAttributes()
     {
-        std::string file_name( "testfile_HDF5File_data_access.hdf5");
+        std::string file_name( "testfile_HDF5File_data_attributes.hdf5");
 
         // double data in 4 dimensions (partly negative)
         MultiArray<4,double> out_data_1(MultiArrayShape<4>::type(10, 2, 3, 4));
@@ -576,6 +674,83 @@ public:
         should(in_attr_4 == out_attr_4);
 
 
+
+        // write and read attributes
+
+        file.cd("/");
+        file.write("attrset",std::string("Dataset with many attributes").c_str());
+
+        file.writeAttribute("attrset","set_char",'A');
+        file.writeAttribute("attrset","set_int8",(Int8)8);
+        file.writeAttribute("attrset","set_int16",(Int16)16);
+        file.writeAttribute("attrset","set_int32",(Int32)32);
+        file.writeAttribute("attrset","set_int64",(Int64)64);
+        file.writeAttribute("attrset","set_uint8",(UInt8)8);
+        file.writeAttribute("attrset","set_uint16",(UInt16)16);
+        file.writeAttribute("attrset","set_uint32",(UInt32)32);
+        file.writeAttribute("attrset","set_uint64",(UInt64)64);
+        file.writeAttribute("attrset","set_float",(float)1.);
+        file.writeAttribute("attrset","set_double",(double)2.);
+        file.writeAttribute("attrset","set_longdouble",(long double)3.);
+        file.writeAttribute("attrset","set_string",std::string("abc").c_str());
+        file.writeAttribute("attrset","set_string2",std::string("abcdef"));
+
+        char read_char = 0;
+        file.readAttribute("attrset","set_char",read_char);
+        should(read_char=='A');
+
+        Int8 read_int8 = 0;
+        file.readAttribute("attrset","set_int8",read_int8);
+        should(read_int8==8);
+
+        Int16 read_int16 = 0;
+        file.readAttribute("attrset","set_int16",read_int16);
+        should(read_int16 == 16);
+
+        Int32 read_int32 = 0;
+        file.readAttribute("attrset","set_int32",read_int32);
+        should(read_int32 == 32);
+
+        Int64 read_int64 = 0;
+        file.readAttribute("attrset","set_int64",read_int64);
+        should(read_int64 == 64);
+
+        UInt8 read_uint8 = 0;
+        file.readAttribute("attrset","set_uint8",read_uint8);
+        should(read_uint8 == 8);
+
+        UInt16 read_uint16 = 0;
+        file.readAttribute("attrset","set_uint16",read_uint16);
+        should(read_uint16 == 16);
+
+        UInt32 read_uint32 = 0;
+        file.readAttribute("attrset","set_uint32",read_uint32);
+        should(read_uint32 == 32);
+
+        UInt64 read_uint64 = 0;
+        file.readAttribute("attrset","set_uint64",read_uint64);
+        should(read_uint64 == 64);
+
+        float read_float = 0;
+        file.readAttribute("attrset","set_float",read_float);
+        should(read_float == 1.);
+
+        double read_double = 0;
+        file.readAttribute("attrset","set_double",read_double);
+        should(read_double == 2.);
+
+        long double read_longdouble = 0;
+        file.readAttribute("attrset","set_longdouble",read_longdouble);
+        should(read_longdouble == 3.);
+
+        std::string read_string = "";
+        file.readAttribute("attrset","set_string",read_string);
+        should(read_string == "abc");
+
+        std::string read_string2 = "";
+        file.readAttribute("attrset","set_string2",read_string2);
+        should(read_string2 == "abcdef");
+
         // get handles
         hid_t group_handle = file.getGroupHandle("/string");
         hid_t dataset_handle = file.getDatasetHandle("/string/dataset");
@@ -590,6 +765,9 @@ public:
         should(H5Aclose(attribute_handle) >= 0);
 
     }
+
+
+
 
     void testHDF5FileBlockAccess()
     {
@@ -653,6 +831,8 @@ public:
         should(in_data_2 == in_data_3);
 
     }
+
+
 
 
     void testHDF5FileChunks()
@@ -732,6 +912,8 @@ public:
         should (in_data_5(1,2,3) == init);
 
     }
+
+
 
 
     void testHDF5FileCompression()
@@ -823,6 +1005,8 @@ public:
     }
 
 
+
+
     void testHDF5FileBrowsing()
     {
         //create groups, change current group, ...
@@ -884,6 +1068,9 @@ public:
         should(file.pwd() == "/group2/subgroup");
     }
 
+
+
+
     void testHDF5FileTutorial()
     {
         // First create a new HDF5 file
@@ -936,10 +1123,10 @@ public:
         file.writeBlock("/group2/float_array",block_offset,float_block);
 
         // Write a single long integer value in the root group
-        file.writeAtomic("/single_value",(long int)23);
+        file.write("/single_value",(long int)23);
 
         // Attach simple string attribute to dataset in root group
-        file.setAttribute("/single_value","some_attribute_name","This is a simple string attribute");
+        file.writeAttribute("/single_value","some_attribute_name","This is a simple string attribute");
 
         // Attach a MultiArray attribute
         MultiArray<1,double> attr_data (MultiArrayShape<1>::type(3));
@@ -966,7 +1153,7 @@ public:
         // read "/group2/subgroup2/new_dataset", reshape MultiArray automatically
         MultiArray<3,int> read_reshape;
 
-        file_open.readAndReshape("/group2/subgroup2/new_dataset",read_reshape);
+        file_open.readAndResize("/group2/subgroup2/new_dataset",read_reshape);
 
         // read a block of data from "/group2/float_array"
         block_offset = MultiArrayShape<3>::type(0,0,0);
@@ -977,17 +1164,16 @@ public:
 
         // read the long int value from "/single_value"
         long int single_value;
-        file_open.readAtomic("/single_value",single_value);
+        file_open.read("/single_value",single_value);
 
         // read the attribute of "/single_value"
-        std::string attribute_string = file_open.getAttribute("/single_value","some_attribute_name");
+        std::string attribute_string;
+        file_open.readAttribute("/single_value","some_attribute_name", attribute_string);
 
         // read the MultiArray Attribute of "/group2/float_array"
         MultiArray<1,double> read_attr (MultiArrayShape<1>::type(3));
         file_open.readAttribute("/group2/float_array","float_array_attribute",read_attr);
-
     }
-
 
 };
 
