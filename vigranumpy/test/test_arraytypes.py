@@ -299,7 +299,7 @@ def checkCompatibility(obj, compatible):
     for n in compatible:
         try:
             f = getattr(vt, n)
-            shape, acopy, same_size = f(obj)
+            shape, acopy, default_ordering, same_ordering = f(obj)
             
             assert_equal(obj.shape, shape)
             
@@ -308,22 +308,22 @@ def checkCompatibility(obj, compatible):
             if hasattr(obj, 'axistags'):
                 assert_equal(obj.axistags, acopy.axistags)
                 
-            if same_size is not None:
-                assert_equal(arraytypes.VigraArray, same_size.__class__)
-                assert_equal(arraytypes.defaultAxistags(same_size.ndim), same_size.axistags)
+            if default_ordering is not None:
+                assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                assert_equal(arraytypes.defaultAxistags(default_ordering.ndim), default_ordering.axistags)
 
                 if hasattr(obj, 'axistags'):
                     cobj = obj.transpose(obj.canonicalOrdering)
-                    cdefault = same_size.transpose(same_size.canonicalOrdering)
+                    cdefault = default_ordering.transpose(default_ordering.canonicalOrdering)
                     
                     if cobj.ndim > cdefault.ndim and cobj.shape[0] == 1:
                         assert_equal(cobj.shape[1:], cdefault.shape)
                     else:
                         assert_equal(cobj.shape, cdefault.shape)
                 else:
-                    permutation = same_size.canonicalOrdering
+                    permutation = default_ordering.canonicalOrdering
                     permutation.reverse()
-                    cdefault = same_size.transpose(permutation)
+                    cdefault = default_ordering.transpose(permutation)
                     
                     if obj.ndim > cdefault.ndim and obj.shape[-1] == 1:
                         assert_equal(obj.shape[:-1], cdefault.shape)
@@ -331,6 +331,31 @@ def checkCompatibility(obj, compatible):
                         assert_equal(obj.shape, cdefault.shape[:-1])
                     else:
                         assert_equal(obj.shape, cdefault.shape)
+                
+            if same_ordering is not None:
+                # FIXME: this should become
+                #    assert_equal(obj.__class__, same_ordering.__class__)
+                # when arraytypes.Image and arraytypes.Volume are removed
+                if obj.__class__ is numpy.ndarray:
+                    assert_equal(obj.__class__, same_ordering.__class__)
+                else:
+                    assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                    
+                cobj = obj
+                cdefault = same_ordering
+                if hasattr(obj, 'axistags'):
+                    if cobj.ndim > cdefault.ndim:
+                        cobj = arraytypes.dropChannelDimension(cobj)
+                    elif cobj.ndim < cdefault.ndim:
+                        cdefault = arraytypes.dropChannelDimension(cdefault)
+                    assert_equal(cobj.axistags, cdefault.axistags)
+                else:
+                    if cobj.ndim > cdefault.ndim:
+                        cobj = cobj[...,0]
+                    elif cobj.ndim < cdefault.ndim:
+                        cdefault = cdefault[...,0]
+                
+                assert_equal(cobj.shape, cdefault.shape)
         except Exception:
             print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
                                             getattr(obj, "axistags", "none"))

@@ -46,7 +46,7 @@ namespace vigra {
 python::tuple testAny(NumpyAnyArray array)
 {
     NumpyAnyArray copy(array, true);
-    return python::make_tuple(array.shape(), copy, python::object());
+    return python::make_tuple(array.shape(), copy, python::object(), python::object());
 }
 
 template <unsigned int N, class T, class Stride>
@@ -56,7 +56,10 @@ python::tuple test(NumpyArray<N, T, Stride> const & array)
     vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
           "freshly created NumpyArray<N, T> has reference count > 1.");
     NumpyArray<N, T> same_shape(array.shape());
-    return python::make_tuple(((NumpyAnyArray const &)array).shape(), copy, same_shape);
+    NumpyArray<N, T> same_shape_and_tags;
+    same_shape_and_tags.reshapeIfEmpty(array.taggedShape());
+    return python::make_tuple(((NumpyAnyArray const &)array).shape(), copy, 
+                               same_shape, same_shape_and_tags);
 }
 
 template <unsigned int N, class T, class Stride>

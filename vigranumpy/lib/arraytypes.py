@@ -213,10 +213,14 @@ class AxisTags(object):
         return [int(k) for k in numpy.array(map(lambda x: ord(x.key[-1]), self.tags)).argsort().argsort()]
     
     def setChannelDescription(self, description):
-        print "setChannelDescription()"
         index = self.index('c')
         if index < len(self):
             self.tags[index].description = description
+    
+    def dropChannelDimension(self):
+        index = self.index('c')
+        if index < len(self):
+            del self.tags[index]
     
     def swapaxes(self, i1, i2):
         self.tags[i1], self.tags[i2] = self.tags[i2], self.tags[i1]
