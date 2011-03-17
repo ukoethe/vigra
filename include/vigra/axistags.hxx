@@ -50,8 +50,8 @@ namespace vigra {
 
 // this particular assignment of bits to types is crucial for 
 // canonical axis ordering
-enum AxisType { Space = 1, Angle = 2, Time = 4, Frequency = 8, 
-                UnknownAxisType = 16, Channels = 32 };
+enum AxisType { Channels = 1, Space = 2, Angle = 4, Time = 8, Frequency = 16, 
+                UnknownAxisType = 32 };
 
 class AxisInfo
 {
@@ -254,34 +254,30 @@ class AxisInfo
 };
 
 // the primary ordering is according to axis type:
-//     Space < Angle < Time < Frequency < Unknown < Channels
+//     Channels < Space < Angle < Time < Frequency < Unknown
 // the secondary ordering is the lexicographic ordering of the keys
 //     "x" < "y" < "z"
-template <class GetFunctor>
 struct AxisInfoSorter
 {
-    GetFunctor get;
-    
     template <class T>
     bool operator()(T const & l, T const & r) const
     {
-		UInt32 lAxisType = get(l).typeFlags();
+		UInt32 lAxisType = l.typeFlags();
         if(lAxisType == 0)
             lAxisType = UnknownAxisType;
-        UInt32 rAxisType = get(r).typeFlags();
+        UInt32 rAxisType = r.typeFlags();
         if(rAxisType == 0)
             rAxisType = UnknownAxisType;
 		return (lAxisType == rAxisType)
-			        ? get(l).key() < get(r).key()
+			        ? l.key() < r.key()
 					: lAxisType < rAxisType;
     }
 };
 
 
-// FIXME: check for doublicate keys in all setter functions.
+// FIXME: check for duplicate keys in all setter functions.
 
 // split up AxisTags into a purely C++ part and a Python-dependent part (PyAxisTags below)
-template <class T = AxisInfo, class GetFunctor = functor::Identity>
 class AxisTags
 {
   public:
@@ -326,28 +322,27 @@ class AxisTags
         push_back(i5);
     }
     
-    T & operator[](int k)
-    {
-        return axes_[k];
-    }
-    
-    T const & operator[](int k) const
-    {
-        return axes_[k];
-    }
-    
-    AxisInfo const & get(int k) const
+    AxisInfo & operator[](int k)
     {
         vigra_precondition(checkIndex(k),
-           "AxisTags::get(): Invalid index or key.");
+            "AxisTags[index]: unknown index or key.");
         if(k < 0)
             k += size();
-        return getFunctor(axes_[k]);
+        return axes_[k];
     }
-
-    AxisInfo const & get(std::string const & key) const
+    
+    AxisInfo const & operator[](int k) const
     {
-        return get(findKey(key));
+        vigra_precondition(checkIndex(k),
+            "AxisTags[index]: unknown index or key.");
+        if(k < 0)
+            k += size();
+        return axes_[k];
+    }
+    
+    AxisInfo const & operator[](std::string const & key) const
+    {
+        return operator[](index(key));
     }
 
 	unsigned int size() const
@@ -359,7 +354,7 @@ class AxisTags
     {
         int res = 0;
         for(unsigned int k=0; k<size(); ++k)
-            if(getFunctor(axes_[k]).isType(type))
+            if(axes_[k].isType(type))
                 ++res;
         return res;
     }
@@ -368,19 +363,19 @@ class AxisTags
     {
         std::string res;
         if(size() > 0)
-            res += get(0).key();
+            res += axes_[0].key();
         for(unsigned int k=1; k<size(); ++k)
         {
             res += " ";
-            res += get(k).key();
+            res += axes_[k].key();
         }
 		return res;
     }
     
-    void push_back(T const & i)
+    void push_back(AxisInfo const & i)
     {
-        std::string key = getFunctor(i).key();
-        vigra_precondition(key == "?" || findKey(key) == (int)size(), 
+        std::string key = i.key();
+        vigra_precondition(key == "?" || index(key) == (int)size(), 
             std::string("AxisTags::push_back(): duplicate key '" + key + "'."));
         axes_.push_back(i);
     }
@@ -389,7 +384,7 @@ class AxisTags
     {
         vigra_precondition(checkIndex(k),
            "AxisTags::dropAxis(): Invalid index or key.");
-        typename ArrayVector<T>::iterator i = k < 0
+        ArrayVector<AxisInfo>::iterator i = k < 0
                                                  ? axes_.end() + k
                                                  : axes_.begin() + k;
         axes_.erase(i, i+1);
@@ -397,7 +392,7 @@ class AxisTags
     
     void dropAxis(std::string const & key)
     {
-        dropAxis(findKey(key));
+        dropAxis(index(key));
     }
     
     bool checkIndex(int k) const
@@ -405,56 +400,58 @@ class AxisTags
         return k < (int)size() && k >= -(int)size();
     }
     
-    int findKey(std::string const & key) const
+    int index(std::string const & key) const
     {
         for(unsigned int k=0; k<size(); ++k)
-            if(get(k).key() == key)
+            if(axes_[k].key() == key)
                 return k;
         return (int)size();
     }
     
-    ArrayVector<UInt32> matchOrdering(AxisTags const & other)
-    {
-        vigra_precondition(size() == other.size(),
-            "AxisTags::matchOrdering(): size mismatch.");
+// #if 0
+    // ArrayVector<UInt32> matchOrdering(AxisTags const & other)
+    // {
+        // vigra_precondition(size() == other.size(),
+            // "AxisTags::matchOrdering(): size mismatch.");
         
-        ArrayVector<UInt32> permutation(size());
-        for(unsigned int k = 0; k<size(); ++k)
-        {
-            std::string key = other.get(k).key();
-            unsigned int l=0;
-            for(; l<size(); ++l)
-            {
-                if(key == get(l).key())
-                    break;
-            }
-            vigra_precondition(l < size(),
-                "AxisTags::matchOrdering(): key mismatch.");
-            permutation[k] = l;
-        }
-        return permutation;
-    }
+        // ArrayVector<UInt32> permutation(size());
+        // for(unsigned int k = 0; k<size(); ++k)
+        // {
+            // std::string key = other.get(k).key();
+            // unsigned int l=0;
+            // for(; l<size(); ++l)
+            // {
+                // if(key == get(l).key())
+                    // break;
+            // }
+            // vigra_precondition(l < size(),
+                // "AxisTags::matchOrdering(): key mismatch.");
+            // permutation[k] = l;
+        // }
+        // return permutation;
+    // }
     
-    ArrayVector<UInt32> canonicalOrdering()
-    {
-        ArrayVector<UInt32> permutation(size());
-        indexSort(axes_.begin(), axes_.end(), permutation.begin(), AxisInfoSorter<GetFunctor>());
-        return permutation;
-    }
+    // ArrayVector<UInt32> canonicalOrdering()
+    // {
+        // ArrayVector<UInt32> permutation(size());
+        // indexSort(axes_.begin(), axes_.end(), permutation.begin(), AxisInfoSorter<GetFunctor>());
+        // return permutation;
+    // }
     
-    void transpose(ArrayVector<UInt32> const & permutation)
-    {
-        vigra_precondition(permutation.size() == size(),
-            "AxisTags::transpose(): Permutation has wrong size.");
-        ArrayVector<T> newAxes(size());
-        applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
-        axes_.swap(newAxes);
-    }
+    // void transpose(ArrayVector<UInt32> const & permutation)
+    // {
+        // vigra_precondition(permutation.size() == size(),
+            // "AxisTags::transpose(): Permutation has wrong size.");
+        // ArrayVector<T> newAxes(size());
+        // applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
+        // axes_.swap(newAxes);
+    // }
     
-    void transpose()
-    {
-        std::reverse(axes_.begin(), axes_.end());
-    }
+    // void transpose()
+    // {
+        // std::reverse(axes_.begin(), axes_.end());
+    // }
+// #endif
 
 	bool operator==(AxisTags const & other) const
 	{
@@ -467,296 +464,295 @@ class AxisTags
 	}
     
   protected:
-	ArrayVector<T> axes_;
-    GetFunctor getFunctor;
+	ArrayVector<AxisInfo> axes_;
 };
 
-struct PyGetFunctor
-{
-	AxisInfo const & operator()(python::object const & o) const
-	{
-		return python::extract<AxisInfo const &>(o)();
-	}
-};
+// #if 0
+// struct PyGetFunctor
+// {
+	// AxisInfo const & operator()(python::object const & o) const
+	// {
+		// return python::extract<AxisInfo const &>(o)();
+	// }
+// };
 
-class PyAxisTags
-: public AxisTags<python::object, PyGetFunctor>
-{
-    typedef AxisTags<python::object, PyGetFunctor> BaseType;
-  public:
-    PyAxisTags()
-	{}
+// class PyAxisTags
+// : public AxisTags<python::object, PyGetFunctor>
+// {
+    // typedef AxisTags<python::object, PyGetFunctor> BaseType;
+  // public:
+    // PyAxisTags()
+	// {}
 
-    PyAxisTags(python::object i1, python::object i2,
-             python::object i3, python::object i4, python::object i5)
-    {
-        if(PySequence_Check(i1.ptr()))
-        {
-			int size = len(i1);
-            for(int k=0; k<size; ++k)
-                if(python::extract<AxisInfo const &>(i1[k]).check())
-                    push_back(i1[k]);
-        }
-        else if(PyInt_Check(i1.ptr()))
-        {
-            int size = python::extract<int>(i1)();
-            for(int k=0; k<size; ++k)
-                push_back(python::object(AxisInfo()));
-        }
-        else
-        {
-            if(python::extract<AxisInfo const &>(i1).check())
-                push_back(i1);
-            if(python::extract<AxisInfo const &>(i2).check())
-                push_back(i2);
-            if(python::extract<AxisInfo const &>(i3).check())
-                push_back(i3);
-            if(python::extract<AxisInfo const &>(i4).check())
-                push_back(i4);
-            if(python::extract<AxisInfo const &>(i5).check())
-                push_back(i5);
-        }
-    }
-    
-    python::object getitem(int k)
-    {
-        if(!checkIndex(k))
-		{
-			PyErr_SetString(PyExc_IndexError, "AxisInfo::getitem(): Invalid index or key.");
-			python::throw_error_already_set();
-		}
-        if(k < 0)
-            k += this->size();
-		return this->axes_[k];
-    }
-    
-    python::object getitem(std::string const & key)
-    {
-        return getitem(this->findKey(key));
-    }
-
-    void setitem(int k, python::object i)
-    {
-        if(!this->checkIndex(k))
-		{
-			PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
-			python::throw_error_already_set();
-		}
-        if(!python::extract<AxisInfo const &>(i).check())
-		{
-			PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
-			python::throw_error_already_set();
-		}
-        
-        if(k < 0)
-            k += this->size();
-		this->axes_[k] = i;
-    }
-    
-    void setitem(std::string const & key, python::object i)
-    {
-        setitem(this->findKey(key), i);
-    }
-
-    void append(python::object i)
-    {
-        insert(size(), i);
-    }
-
-    void insert(int k, python::object i)
-    {
-        if(k < 0)
-            k += this->size();
-        if(k < 0)
-            k = 0;
-        if(k > (int)this->size())
-            k = this->size();
-        if(!python::extract<AxisInfo const &>(i).check())
-		{
-			PyErr_SetString(PyExc_TypeError, "AxisInfo::insert(): Item type must be AxisInfo.");
-			python::throw_error_already_set();
-		}
-		this->axes_.insert(this->axes_.begin()+k, i);
-    }
-    
-    void insert(std::string const & key, python::object i)
-    {
-        insert(this->findKey(key), i);
-    }
-
-	python::list axesByFlag(AxisType typeFlags) const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).typeFlags() == typeFlags)
-				res.append(k);
-		return res;
-	}
-
-	python::list spatialAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isSpatial())
-				res.append(k);
-		return res;
-	}
-
-	python::list temporalAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isTemporal())
-				res.append(k);
-		return res;
-	}
-
-	python::list channelAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isChannel())
-				res.append(k);
-		return res;
-	}
-
-	python::list frequencyAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isFrequency())
-				res.append(k);
-		return res;
-	}
-
-	python::list angularAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isAngular())
-				res.append(k);
-		return res;
-	}
-
-	python::list untaggedAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isUnknown())
-				res.append(k);
-		return res;
-	}
-
-	template <class U>
-    python::list vectorToPython(ArrayVector<U> const & v) const
-	{
-		python::list res;
-        for(unsigned int k=0; k<v.size(); ++k)
-			res.append(v[k]);
-		return res;
-	}
-
-	python::list canonicalOrdering()
-	{
-		return vectorToPython(BaseType::canonicalOrdering());
-	}
-
-	python::list matchOrdering(PyAxisTags const & other)
-	{
-		return vectorToPython(BaseType::matchOrdering(other));
-	}
-
-	void transpose(python::object const & o)
-	{
-		unsigned int osize = len(o);
-        ArrayVector<UInt32> permutation(osize);
-        
-        for(unsigned int k=0; k<this->size(); ++k)
-			permutation[k] = python::extract<UInt32>(o[k])();
-            
-		BaseType::transpose(permutation);
-	}
-
-	void transpose()
-	{
-		BaseType::transpose();
-	}
-};
-
-#if 0
-class TaggedShape
-{
-  public:
-
-    ArrayVector<npy_intp> shape;
-    python_ptr axistags;
-    npy_intp channelCount;
-    std::string channelDescription;
-    
-    TaggedShape(MultiArrayIndex size)
-    : shape(size)
-    {}
-    
-    template <int N>
-    TaggedShape(typename MultiArrayShape<N>::type const & sh)
-    : shape(sh.begin(), sh.end())
-    {}
-    
-    npy_intp & operator[](int i)
-    {
-        // rotate indices so that channels are located at index 0
-        return shape[(i+1) % shape.size()];
-    }
-    
-    npy_intp operator[](int i) const
-    {
-        return shape[(i+1) % shape.size()];
-    }
-    
-    unsigned int size() const
-    {
-        return shape.size();
-    }
-    
-    // void setChannelDescription(std::string const & description)
+    // PyAxisTags(python::object i1, python::object i2,
+             // python::object i3, python::object i4, python::object i5)
     // {
-        // if(axistags)
+        // if(PySequence_Check(i1.ptr()))
         // {
-            // python_ptr func(PyString_FromString("setChannelDescription"), 
-                                         // python_ptr::keep_count);
-            // pythonToCppException(res);
-            
-            // python_ptr d(PyString_FromString(d.c_str()), python_ptr::keep_count);
-            // pythonToCppException(d);
-            
-            // python_ptr res(PyObject_CallMethodObjArgs(axistags, func, d.get(), NULL),
-                           // python_ptr::keep_count);
-            // pythonToCppException(res);
+			// int size = len(i1);
+            // for(int k=0; k<size; ++k)
+                // if(python::extract<AxisInfo const &>(i1[k]).check())
+                    // push_back(i1[k]);
+        // }
+        // else if(PyInt_Check(i1.ptr()))
+        // {
+            // int size = python::extract<int>(i1)();
+            // for(int k=0; k<size; ++k)
+                // push_back(python::object(AxisInfo()));
+        // }
+        // else
+        // {
+            // if(python::extract<AxisInfo const &>(i1).check())
+                // push_back(i1);
+            // if(python::extract<AxisInfo const &>(i2).check())
+                // push_back(i2);
+            // if(python::extract<AxisInfo const &>(i3).check())
+                // push_back(i3);
+            // if(python::extract<AxisInfo const &>(i4).check())
+                // push_back(i4);
+            // if(python::extract<AxisInfo const &>(i5).check())
+                // push_back(i5);
         // }
     // }
     
-    // void setChannelCount(int channelCount)
+    // python::object getitem(int k)
     // {
-        // shape[0] = channelCount;
+        // if(!checkIndex(k))
+		// {
+			// PyErr_SetString(PyExc_IndexError, "AxisInfo::getitem(): Invalid index or key.");
+			// python::throw_error_already_set();
+		// }
+        // if(k < 0)
+            // k += this->size();
+		// return this->axes_[k];
     // }
     
-    void setChannelDescription(std::string const & description)
-    {
-        channelDescription = description;
-    }
+    // python::object getitem(std::string const & key)
+    // {
+        // return getitem(this->findKey(key));
+    // }
+
+    // void setitem(int k, python::object i)
+    // {
+        // if(!this->checkIndex(k))
+		// {
+			// PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
+			// python::throw_error_already_set();
+		// }
+        // if(!python::extract<AxisInfo const &>(i).check())
+		// {
+			// PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
+			// python::throw_error_already_set();
+		// }
+        
+        // if(k < 0)
+            // k += this->size();
+		// this->axes_[k] = i;
+    // }
     
-    void setChannelCount(int count)
-    {
-        channelCount = count;
-    }
+    // void setitem(std::string const & key, python::object i)
+    // {
+        // setitem(this->findKey(key), i);
+    // }
+
+    // void append(python::object i)
+    // {
+        // insert(size(), i);
+    // }
+
+    // void insert(int k, python::object i)
+    // {
+        // if(k < 0)
+            // k += this->size();
+        // if(k < 0)
+            // k = 0;
+        // if(k > (int)this->size())
+            // k = this->size();
+        // if(!python::extract<AxisInfo const &>(i).check())
+		// {
+			// PyErr_SetString(PyExc_TypeError, "AxisInfo::insert(): Item type must be AxisInfo.");
+			// python::throw_error_already_set();
+		// }
+		// this->axes_.insert(this->axes_.begin()+k, i);
+    // }
     
-    void setChannelConfig(int channelCount, std::string const & description)
-    {
-        setChannelCount(channelCount);
-        setChannelDescription(description);
-    }
-};
-#endif
+    // void insert(std::string const & key, python::object i)
+    // {
+        // insert(this->findKey(key), i);
+    // }
+
+	// python::list axesByFlag(AxisType typeFlags) const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).typeFlags() == typeFlags)
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list spatialAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isSpatial())
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list temporalAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isTemporal())
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list channelAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isChannel())
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list frequencyAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isFrequency())
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list angularAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isAngular())
+				// res.append(k);
+		// return res;
+	// }
+
+	// python::list untaggedAxes() const
+	// {
+		// python::list res;
+		// for(unsigned int k=0; k<this->size(); ++k)
+			// if(this->get(k).isUnknown())
+				// res.append(k);
+		// return res;
+	// }
+
+	// template <class U>
+    // python::list vectorToPython(ArrayVector<U> const & v) const
+	// {
+		// python::list res;
+        // for(unsigned int k=0; k<v.size(); ++k)
+			// res.append(v[k]);
+		// return res;
+	// }
+
+	// python::list canonicalOrdering()
+	// {
+		// return vectorToPython(BaseType::canonicalOrdering());
+	// }
+
+	// python::list matchOrdering(PyAxisTags const & other)
+	// {
+		// return vectorToPython(BaseType::matchOrdering(other));
+	// }
+
+	// void transpose(python::object const & o)
+	// {
+		// unsigned int osize = len(o);
+        // ArrayVector<UInt32> permutation(osize);
+        
+        // for(unsigned int k=0; k<this->size(); ++k)
+			// permutation[k] = python::extract<UInt32>(o[k])();
+            
+		// BaseType::transpose(permutation);
+	// }
+
+	// void transpose()
+	// {
+		// BaseType::transpose();
+	// }
+// };
+
+// class TaggedShape
+// {
+  // public:
+
+    // ArrayVector<npy_intp> shape;
+    // python_ptr axistags;
+    // npy_intp channelCount;
+    // std::string channelDescription;
+    
+    // TaggedShape(MultiArrayIndex size)
+    // : shape(size)
+    // {}
+    
+    // template <int N>
+    // TaggedShape(typename MultiArrayShape<N>::type const & sh)
+    // : shape(sh.begin(), sh.end())
+    // {}
+    
+    // npy_intp & operator[](int i)
+    // {
+        // // rotate indices so that channels are located at index 0
+        // return shape[(i+1) % shape.size()];
+    // }
+    
+    // npy_intp operator[](int i) const
+    // {
+        // return shape[(i+1) % shape.size()];
+    // }
+    
+    // unsigned int size() const
+    // {
+        // return shape.size();
+    // }
+    
+    // // void setChannelDescription(std::string const & description)
+    // // {
+        // // if(axistags)
+        // // {
+            // // python_ptr func(PyString_FromString("setChannelDescription"), 
+                                         // // python_ptr::keep_count);
+            // // pythonToCppException(res);
+            
+            // // python_ptr d(PyString_FromString(d.c_str()), python_ptr::keep_count);
+            // // pythonToCppException(d);
+            
+            // // python_ptr res(PyObject_CallMethodObjArgs(axistags, func, d.get(), NULL),
+                           // // python_ptr::keep_count);
+            // // pythonToCppException(res);
+        // // }
+    // // }
+    
+    // // void setChannelCount(int channelCount)
+    // // {
+        // // shape[0] = channelCount;
+    // // }
+    
+    // void setChannelDescription(std::string const & description)
+    // {
+        // channelDescription = description;
+    // }
+    
+    // void setChannelCount(int count)
+    // {
+        // channelCount = count;
+    // }
+    
+    // void setChannelConfig(int channelCount, std::string const & description)
+    // {
+        // setChannelCount(channelCount);
+        // setChannelDescription(description);
+    // }
+// };
+// #endif
 
 } // namespace vigra
 

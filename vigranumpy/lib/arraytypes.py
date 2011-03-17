@@ -111,19 +111,19 @@ class classproperty(object):
 
 # class AxisInfo(object):
 
-def AxisInfo_copy(axisinfo):
-    return AxisInfo(axisinfo)
+# def AxisInfo_copy(axisinfo):
+    # return AxisInfo(axisinfo)
 
-def AxisInfo_deepcopy(axisinfo, memo):
-    result = AxisInfo(axisinfo)
-    memo[id(axisinfo)] = result
-    return result
+# def AxisInfo_deepcopy(axisinfo, memo):
+    # result = AxisInfo(axisinfo)
+    # memo[id(axisinfo)] = result
+    # return result
 
-AxisInfo.__copy__ = AxisInfo_copy
-AxisInfo.__deepcopy__ = AxisInfo_deepcopy
+# AxisInfo.__copy__ = AxisInfo_copy
+# AxisInfo.__deepcopy__ = AxisInfo_deepcopy
 
-del AxisInfo_copy
-del AxisInfo_deepcopy
+# del AxisInfo_copy
+# del AxisInfo_deepcopy
                        
 class AxisTags(object):
     def __init__(self, *args):
