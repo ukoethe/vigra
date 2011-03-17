@@ -223,6 +223,15 @@ class AxisTags(object):
         if index < len(self):
             del self.tags[index]
     
+    def insertChannelDimension(self):
+        index = self.index('c')
+        if index < len(self):
+            raise RuntimeError("AxisTags.insertChannelDimension(): already have a channel dimension.")
+        if defaultOrder == 'F':
+            self.tags.insert(0, AxisInfo.c)
+        else:
+            self.tags.append(AxisInfo.c)
+    
     def swapaxes(self, i1, i2):
         self.tags[i1], self.tags[i2] = self.tags[i2], self.tags[i1]
     

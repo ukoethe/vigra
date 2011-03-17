@@ -700,45 +700,100 @@ VIGRA_NUMPY_VALUETYPE_TRAITS(std::complex<npy_longdouble>, NPY_CLONGDOUBLE, clon
 class TaggedShape
 {
   public:
-
+    enum ChannelAxis { first, last, none };
+    
     ArrayVector<npy_intp> shape;
     python_ptr axistags;
-    MultiArrayIndex offset;
+    ChannelAxis channelAxis;
     std::string channelDescription;
     
     TaggedShape(MultiArrayIndex size)
     : shape(size),
-      offset(0)
+      channelAxis(none)
     {}
     
     template <class U, int N>
     TaggedShape(TinyVector<U, N> const & sh, python_ptr tags = python_ptr())
     : shape(sh.begin(), sh.end()),
       axistags(tags),
-      offset(0)
+      channelAxis(none)
     {}
     
     template <class T>
     TaggedShape(ArrayVector<T> const & sh, python_ptr tags = python_ptr())
     : shape(sh.begin(), sh.end()),
       axistags(tags),
-      offset(0)
+      channelAxis(none)
     {}
+    
+    template <class U, int N>
+    TaggedShape & operator=(TinyVector<U, N> const & sh)
+    {
+        int start = channelAxis == first
+                        ? 1
+                        : 0, 
+            stop = channelAxis == last
+                        ? (int)size()-1
+                        : (int)size();
+                        
+        vigra_precondition(N == stop - start || size() == 0,
+             "TaggedShape.operator=(): size mismatch.");
+             
+        if(size() == 0)
+            shape.resize(N);
+        
+        for(int k=; k<N; ++k)
+            shape[k+start] = sh[k];
+            
+        return *this;
+    }
     
     npy_intp & operator[](int i)
     {
-        // rotate indices so that channels are located at index 0
-        return shape[(i+offset) % shape.size()];
+        return shape[i];
     }
     
     npy_intp operator[](int i) const
     {
-        return shape[(i+offset) % shape.size()];
+        return shape[i];
     }
     
     unsigned int size() const
     {
         return shape.size();
+    }
+    
+    TaggedShape & operator+=(int v)
+    {
+        int start = channelAxis == first
+                        ? 1
+                        : 0, 
+            stop = channelAxis == last
+                        ? (int)size()-1
+                        : (int)size();
+        for(int k=start; k<stop; ++k)
+            shape[k] += v;
+            
+        return *this;
+    }
+    
+    TaggedShape & operator-=(int v)
+    {
+        return operator+=(-v);
+    }
+    
+    TaggedShape & operator*=(int factor)
+    {
+        int start = channelAxis == first
+                        ? 1
+                        : 0, 
+            stop = channelAxis == last
+                        ? (int)size()-1
+                        : (int)size();
+        for(int k=start; k<stop; ++k)
+            shape[k] *= factor;
+            
+        return *this;
     }
     
     TaggedShape & setChannelDescription(std::string const & description)
@@ -749,33 +804,29 @@ class TaggedShape
         return *this;
     }
     
+    TaggedShape & setChannelIndexLast()
+    {
+        // FIXME: add some checks?
+        channelAxis = last;
+        return *this;
+    }
+    
     TaggedShape & setChannelCount(int count)
     {
-        shape[0] = count;
+        switch(channelAxis)
+        {
+          case first:
+            shape[0] = count;
+            break;
+          case last:
+            shape[size()-1] = count;
+            break;
+          case none:
+            shape.push_back(count);
+            channelAxis = last;
+            break;
+        }
         return *this;
-    }
-    
-    TaggedShape & insertChannelAxis(int channelCount = 1)
-    {
-        shape.insert(shape.begin(), channelCount);
-        offset = 1;
-        return *this;
-    }
-    
-    TaggedShape & shiftShape()
-    {
-        npy_intp channelCount = shape.back();
-        for(int k=shape.size()-1; k>0; --k)
-            shape[k] = shape[k-1];
-        shape[0] = channelCount;
-        offset = 1;
-        return *this;
-    }
-    
-    TaggedShape & setChannelConfig(int channelCount, std::string const & description)
-    {
-        setChannelCount(channelCount);
-        return setChannelDescription(description);
     }
 };
 
@@ -913,35 +964,103 @@ inline // FIXME
 PyObject * 
 constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
 {
-    python_ptr axistags = tagged_shape.axistags;
+    int ndim = (int)tagged_shape.size();
+    ArrayVector<npy_intp> shape(tagged_shape.shape);
+    python_ptr axistags(tagged_shape.axistags);
     
-    // if(tagged_shape.axistags)
-    // {
-        // // if we got axistags, create a copy
-        // python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
-        // axistags = python_ptr(PyObject_CallMethodObjArgs(tagged_shape.axistags, func.get(), NULL), 
-                              // python_ptr::keep_count);
-    // }
-    // else
-    // {
-        // // otherwise, create default axistags
-        // PyObject *g = PyEval_GetGlobals();
-
-        // int ndim = (int)tagged_shape.size();
-        // std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        // axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                              // python_ptr::keep_count);
-    // }
-    
-    if(axistags && tagged_shape.channelDescription != "")
+    if(tagged_shape.channelAxis == TaggedShape::last)
     {
-        python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
-        python_ptr arg(PyString_FromString(tagged_shape.channelDescription.c_str()), 
-                       python_ptr::keep_count);
-        pythonToCppException(PyObject_CallMethodObjArgs(axistags, func.get(), arg.get(), NULL));
+        for(int k=0; k<ndim; ++k)
+            shape[k] = tagged_shape[(k-1+ndim)%ndim]; // rotate to canonical order
     }
     
-    return constructArray(tagged_shape.shape, axistags, typeCode, init);
+    
+    // we assume at this point that the axistags belong to the array to be created
+    // so that we can freely edit the tag object
+    // FIXME: should we rather create a copy first, even if this results in some 
+    //        unnecessary copies?
+    if(axistags)
+    {
+        if(!PySequence_Check(axistags))
+        {
+            PyErr_SetString(PyExc_TypeError, "constructArray(): axistags have wrong type.");
+            pythonToCppException(false);
+        }
+        
+        int ntags = PySequence_Length(axistags);
+        static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
+        long channelIndex = detail::getAttrLong(axistags, key, ntags);
+
+        if(tagged_shape.channelAxis == TaggedShape::none)
+        {
+            // shape has no channel axis
+            if(channelIndex == ntags)
+            {
+                // axistags have no channel axis either => sizes should match
+                vigra_precondition(ndim == ntags,
+                     "constructArray(): size mismatch between shape and axistags.");
+            }
+            else
+            {
+                if(ndim+1 == ntags)
+                {
+                    // axistags have have one additional element => drop the channel tag
+                    // FIXME: would it be cleaner to make this an error ?
+                    static python_ptr func(PyString_FromString("dropChannelDimension"), 
+                                           python_ptr::keep_count);
+                    python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
+                                   python_ptr::keep_count);
+                    pythonToCppException(res);
+                }
+                else
+                    vigra_precondition(ndim == ntags,
+                         "constructArray(): size mismatch between shape and axistags.");
+                
+            }
+        }
+        else
+        {
+            // shape has a channel axis
+            if(channelIndex == ntags)
+            {
+                // axistags have no channel axis => should be one element shorter
+                vigra_precondition(ndim == ntags+1,
+                     "constructArray(): size mismatch between shape and axistags.");
+                     
+                if(shape[0] == 1)
+                {
+                    // we have a singleband image => drop the channel axis
+                    shape.erase(shape.begin());
+                    ndim -= 1;
+                }
+                else
+                {
+                    // we have a multiband image => add a channel tag
+                    static python_ptr func(PyString_FromString("insertChannelDimension"), 
+                                           python_ptr::keep_count);
+                    python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
+                                   python_ptr::keep_count);
+                    pythonToCppException(res);
+                }
+            }
+            else
+            {
+                // axistags have channel axis => sizes should match
+                vigra_precondition(ndim == ntags,
+                     "constructArray(): size mismatch between shape and axistags.");
+            }
+        }
+            
+        if(tagged_shape.channelDescription != "")
+        {
+            python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
+            python_ptr arg(PyString_FromString(tagged_shape.channelDescription.c_str()), 
+                           python_ptr::keep_count);
+            pythonToCppException(PyObject_CallMethodObjArgs(axistags, func.get(), arg.get(), NULL));
+        }
+    }
+    
+    return constructArray(shape, axistags, typeCode, init);
 }
 
 
@@ -1050,17 +1169,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
                                            python_ptr::keep_count);
         if(!tagged_shape.axistags)
-        {
             PyErr_Clear();
-        }
-        else
-        {
-            static python_ptr func(PyString_FromString("dropChannelDimension"), 
-                                   python_ptr::keep_count);
-			python_ptr res(PyObject_CallMethodObjArgs(tagged_shape.axistags, func.get(), NULL), 
-                           python_ptr::keep_count);
-            pythonToCppException(res);
-        }
+
         return tagged_shape;
     }
 
@@ -1212,14 +1322,14 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
-        return TaggedShape(shape, axistags).insertChannelAxis();
+        return TaggedShape(shape, axistags).setChannelCount(1);
     }
 
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
         TaggedShape tagged_shape(shape);
-        tagged_shape.insertChannelAxis();
+        tagged_shape.setChannelCount(1);
         
         // create default axistags
         PyObject *g = PyEval_GetGlobals();
@@ -1236,13 +1346,9 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
-        if(tagged_shape.size() == N+1)
-            tagged_shape.setChannelCount(1);
-        else if(tagged_shape.size() == N)
-            tagged_shape.insertChannelAxis(1);
-        else
-            vigra_precondition(false,
-                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+        tagged_shape.setChannelCount(1);
+        vigra_precondition(tagged_shape.size() == N+1,
+              "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
     template <class U>
@@ -1380,14 +1486,14 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
-        return TaggedShape(shape, axistags).shiftShape();
+        return TaggedShape(shape, axistags).setChannelIndexLast();
     }
 
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
         TaggedShape tagged_shape(shape);
-        tagged_shape.shiftShape();
+        tagged_shape.setChannelIndexLast();
         
         // create default axistags
         PyObject *g = PyEval_GetGlobals();
@@ -1396,9 +1502,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
                                            python_ptr::keep_count);
         if(!tagged_shape.axistags)
-        {
             PyErr_Clear();
-        }
+
         return tagged_shape;
     }
 
@@ -1541,14 +1646,14 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
     {
-        return TaggedShape(shape, axistags).insertChannelAxis(M);
+        return TaggedShape(shape, axistags).setChannelCount(M);
     }
 
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
         TaggedShape tagged_shape(shape);
-        tagged_shape.insertChannelAxis(M);
+        tagged_shape.setChannelCount(M);
         
         // create default axistags
         PyObject *g = PyEval_GetGlobals();
@@ -1557,21 +1662,16 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
                                            python_ptr::keep_count);
         if(!tagged_shape.axistags)
-        {
             PyErr_Clear();
-        }
+
         return tagged_shape;
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
-        if(tagged_shape.size() == N+1)
-            tagged_shape.setChannelCount(M);
-        else if(tagged_shape.size() == N)
-            tagged_shape.insertChannelAxis(M);
-        else
-            vigra_precondition(false,
-                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+        tagged_shape.setChannelCount(M);
+        vigra_precondition(tagged_shape.size() == N+1,
+              "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
     template <class U>
