@@ -313,21 +313,7 @@ void registerNumpyShapeConvertersAllTypes()
         MultiArrayShapeConverter<0, npy_intp>();
 }
 
-std::set<std::string> & exportedArrayKeys()
-{
-    static std::set<std::string> keys;
-    return keys;
-}
-
-python::list listExportedArrayKeys()
-{
-    python::list res;
-    std::set<std::string>::iterator i = exportedArrayKeys().begin();
-    for(; i != exportedArrayKeys().end(); ++i)
-        res.append(*i);
-    return res;
-}
-
+#if 0 // FIXME: reimplement to replace the Python versions for consistence?
 PyObject * 
 constructNumpyArrayFromShape(python::object type, ArrayVector<npy_intp> const & shape, 
                        unsigned int spatialDimensions, unsigned int channels,
@@ -356,30 +342,7 @@ constructNumpyArrayFromArray(python::object type, NumpyAnyArray array,
     }
     return res;
 }
-
-// PyObject * 
-// constructDefaultArraytype(ArrayVector<npy_intp> shape, NPY_TYPES typeCode, bool init)
-// {
-    // PyObject *g = PyEval_GetGlobals();
-
-    // int ndim = (int)shape.size();
-	// std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-    // python_ptr axistags(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                        // python_ptr::keep_count);
-    // if(!axistags)
-        // PyErr_Clear(); // ignore missing axistags
-        
-    // return constructArray(shape, axistags, typeCode, init);
-// }
-
-PyObject * 
-constructDefaultArraytype(ArrayVector<npy_intp> shape, NPY_TYPES typeCode, bool init)
-{
-    TaggedShape tagged_shape(shape);
-    tagged_shape.setChannelDescription("constructDefaultArraytype");
-        
-    return constructArray(tagged_shape, typeCode, init);
-}
+#endif
 
 void registerNumpyArrayConverters()
 {
@@ -389,50 +352,11 @@ void registerNumpyArrayConverters()
     NumpyAnyArrayConverter();
     
     python::docstring_options doc_options(true, true, false);
-    
-    python::def("registerPythonArrayType", &detail::registerPythonArrayType, 
-             (python::arg("key"), python::arg("typeobj"), python::arg("typecheck") = python::object()), 
-             "registerPythonArrayType(key, typeobj, typecheck = None)\n\n"
-             "Register a mapping from a C++ type (identified by its string 'key') to a\n"
-             "Python-defined array type 'typeobj'. This mapping is applied whenever an\n"
-             "object of this C++ type is contructed or returned to Python. The registered\n"
-             "'typeobj' must be a subclass of numpy.ndarray.\n\n"
-             "'key' can be a fully qualified type (e.g. 'NumpyArray<2, RGBValue<float32> >'),\n"
-             "or it can contain '*' as a placeholder for the value type (e.g.\n"
-             "'NumpyArray<2, RGBValue<*> >'). The fully qualified key takes precedence over\n"
-             "the placeholder key when both have been registered. If no key was registered\n"
-             "for a particular C++ type, it is always handled as a plain numpy ndarray. Call\n"
-             "'listExportedArrayKeys()' for the list of recognized keys.\n\n"
-             "Optionally, you can pass a 'typecheck' function. This function is executed when\n"
-             "an instance of 'typeobj' is passed to C++ in order to find out whether\n"
-             "conversion into the C++ type identified by 'key' is allowed. The function must\n"
-             "return 'True' or 'False'. This functionality is useful to distinguish object\n"
-             "(e.g. during overload resolution) that have identical memory layout, but\n"
-             "different semantics, such as a multiband image (two spatial dimensions and\n"
-             "one spectral dimension) vs. a singleband volume (three spatial dimensions).\n\n"
-             "Usage (see vigra/arraytypes.py for a more realistic example)::\n"
-             "\n"
-             "   class Image(numpy.ndarray):\n"
-             "      spatialDimensions = 2\n"
-             "   class Volume(numpy.ndarray):\n"
-             "      spatialDimensions = 3\n\n"
-             "   def checkImage(obj):\n"
-             "      return obj.spatialDimensions == 2\n"
-             "   def checkVolume(obj):\n"
-             "      return obj.spatialDimensions == 3\n\n"
-             "   registerPythonArrayType('NumpyArray<2, RGBValue<*> >', Image, checkImage)\n"
-             "   registerPythonArrayType('NumpyArray<3, Singleband<*> >', Volume, checkVolume)\n"
-             "\n"
-             "The current mapping configuration can be obtained by calling :func:`~vigra.listExportedArrayKeys`.\n\n");
-    python::def("listExportedArrayKeys", &listExportedArrayKeys,
-        "List the currently active type mappings between C++ NumpyArray and Python array "
-        "types.  This provides status information for :func:`~vigra.registerPythonArrayType`.\n\n");
-    
+        
     doc_options.disable_all();
-    python::def("constructNumpyArray", &constructNumpyArrayFromShape);
-    python::def("constructNumpyArray", &constructNumpyArrayFromArray);
-    python::def("constructDefaultArraytype", &constructDefaultArraytype);
-    python::def("constructArray2", &constructArray2);
+    // FIXME: replace the Python versions for consistence?
+    // python::def("constructNumpyArray", &constructNumpyArrayFromShape);
+    // python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }
 
 } // namespace vigra

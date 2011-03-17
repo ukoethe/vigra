@@ -200,6 +200,11 @@ class AxisTags(object):
     def channelIndex(self):
         return self.index('c')
    
+    @property
+    def majorNonchannelIndex(self):
+        # FIXME: this must be generalized to the case when 'x' is not present.
+        return self.index('x')
+    
     def axisTypeCount(self, axistype):
         count = 0
         for k in self.tags:
@@ -207,10 +212,10 @@ class AxisTags(object):
                 count += 1
         return count
     
-    def canonicalPermutation(self):
+    def permutationToNormalOrder(self):
         return canonicalAxisPermutation(self.tags)
     
-    def permutation(self):
+    def permutationFromNormalOrder(self):
         return [int(k) for k in numpy.array(map(lambda x: ord(x.key[-1]), self.tags)).argsort().argsort()]
     
     def setChannelDescription(self, description):
@@ -676,16 +681,11 @@ this class via its subclasses!
     
     @property
     def channelIndex(self):
-        return self.axistags.index('c')
+        return self.axistags.channelIndex
     
     @property
     def majorNonchannelIndex(self):
-        # FIXME: this must be generalized to the case when 'x' is not present.
-        return self.axistags.index('x')
-    
-    @property
-    def canonicalOrdering(self):
-        return canonicalAxisPermutation(self.axistags)
+        return self.axistags.majorNonchannelIndex
     
     @property
     def channels(self):
@@ -748,6 +748,9 @@ this class via its subclasses!
         else:
             return self.default_axistags()
 
+    def permutationToNormalOrder(self):
+        return self.axistags.permutationToNormalOrder()
+    
     @property
     def order(self):
         if self.flags.c_contiguous:
@@ -786,7 +789,7 @@ this class via its subclasses!
             permutation.reverse()
         elif order == 'V':
             if hasattr(self, 'axistags'):
-                permutation = self.axistags.canonicalOrdering()
+                permutation = self.axistags.permutationToNormalOrder()
             else:
                 permutation.reverse()
                 d = self.spatialDimensions - 1
@@ -1607,54 +1610,3 @@ class ImagePyramid(list):
                 self.insert(0, image.__class__(newShape, dtype=image.dtype))
             self._lowestLevel = level
              
-#################################################################
-
-# def _registerArrayTypes():
-    # from vigranumpycore import registerPythonArrayType
-    
-    # def checkImage(obj):
-        # return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 2)
-    # def checkVolume(obj):
-        # return (type(obj) is numpy.ndarray) or (obj.spatialDimensions == 3)
-
-    # registerPythonArrayType("NumpyArray<2, Singleband<*> >", ScalarImage, checkImage)
-    # registerPythonArrayType("NumpyArray<2, RGBValue<*> >", RGBImage, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 2> >", Vector2Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 3> >", Vector3Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 4> >", Vector4Image, checkImage)
-    # registerPythonArrayType("NumpyArray<3, Multiband<*> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<3, Singleband<*> >", ScalarVolume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, RGBValue<*> >", RGBVolume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 2> >", Vector2Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Vector3Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Vector4Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Vector6Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
-
-# _registerArrayTypes()
-# del _registerArrayTypes
-
-# def _registerArrayTypes():
-    # from vigranumpycore import registerPythonArrayType
-    
-    # def checkImage(obj):
-        # return True
-    # def checkVolume(obj):
-        # return True
-
-    # registerPythonArrayType("NumpyArray<2, Singleband<*> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, RGBValue<*> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 2> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 3> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<2, TinyVector<*, 4> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<3, Multiband<*> >", Image, checkImage)
-    # registerPythonArrayType("NumpyArray<3, Singleband<*> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, RGBValue<*> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 2> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 3> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 4> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<3, TinyVector<*, 6> >", Volume, checkVolume)
-    # registerPythonArrayType("NumpyArray<4, Multiband<*> >", Volume, checkVolume)
-
-# _registerArrayTypes()
-# del _registerArrayTypes

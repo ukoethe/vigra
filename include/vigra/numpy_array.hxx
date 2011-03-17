@@ -64,27 +64,17 @@ namespace vigra {
 typedef float NumpyValueType;
 
 template <class T>
-struct NoChannelAxis  // the resulting NumpyArray has no explicit channel axis 
-                      // (i.e. the number of channels is implicitly one)
+struct Singleband  // the resulting NumpyArray has no explicit channel axis 
+                   // (i.e. the number of channels is implicitly one)
 {
     typedef T value_type;
 };
 
 template <class T>
-struct Singleband     // deprecated, use NoChannelAxis directly
-: public NoChannelAxis<T>
-{};
-
-template <int M, class T>
-struct RequireChannelAxis  // axis M is explicitly designated as channel axis
+struct Multiband  // the last axis is explicitly designated as channel axis
 {
     typedef T value_type;
 };
-
-template <class T>
-struct Multiband  // deprecated, use RequireChannelAxis directly
-: public RequireChannelAxis<-1, T>
-{};
 
 template<class T>
 struct NumericTraits<Singleband<T> >
@@ -257,302 +247,110 @@ inline std::string defaultOrder(std::string defaultValue = "C")
     return defaultValue;
 }
 
-/*
- * The registry is used to optionally map specific C++ types to
- * specific python sub-classes of numpy.ndarray (for example,
- * MultiArray<2, Singleband<int> > to a user-defined Python class 'ScalarImage').
- *
- * One needs to use NUMPY_ARRAY_INITIALIZE_REGISTRY once in a python
- * extension module using this technique, in order to actually provide
- * the registry (this is done by vigranumpycmodule and will then be
- * available for other modules, too).  Alternatively,
- * NUMPY_ARRAY_DUMMY_REGISTRY may be used to disable this feature
- * completely.  In both cases, the macro must not be enclosed by any
- * namespace, so it is best put right at the beginning of the file
- * (e.g. below the #includes).
- */
-
-typedef std::map<std::string, std::pair<python_ptr, python_ptr> > ArrayTypeMap;
-
-VIGRA_EXPORT ArrayTypeMap * getArrayTypeMap();
-
-#define NUMPY_ARRAY_INITIALIZE_REGISTRY                                 \
-    namespace vigra { namespace detail {                                \
-    ArrayTypeMap * getArrayTypeMap()                                    \
-    {                                                                   \
-        static ArrayTypeMap arrayTypeMap;                               \
-        return &arrayTypeMap;                                           \
-    }                                                                   \
-    }} // namespace vigra::detail
-
-#define NUMPY_ARRAY_DUMMY_REGISTRY                      \
-    namespace vigra { namespace detail {                \
-    ArrayTypeMap * getArrayTypeMap()                    \
-    {                                                   \
-        return NULL;                                    \
-    }                                                   \
-    }} // namespace vigra::detail
-
-inline
-void registerPythonArrayType(std::string const & name, PyObject * obj, PyObject * typecheck)
+inline 
+python_ptr defaultAxistags(int ndim)
 {
-    ArrayTypeMap *types = getArrayTypeMap();
-    vigra_precondition(
-        types != NULL,
-        "registerPythonArrayType(): module was compiled without array type registry.");
-    vigra_precondition(
-        obj && PyType_Check(obj) && PyType_IsSubtype((PyTypeObject *)obj, &PyArray_Type),
-        "registerPythonArrayType(obj): obj is not a subtype of numpy.ndarray.");
-    if(typecheck && PyCallable_Check(typecheck))
-        (*types)[name] = std::make_pair(python_ptr(obj), python_ptr(typecheck));
-    else
-        (*types)[name] = std::make_pair(python_ptr(obj), python_ptr());
-//    std::cerr << "Registering " << ((PyTypeObject *)obj)->tp_name << " for " << name << "\n";
+    PyObject *g = PyEval_GetGlobals();
+    std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+    python_ptr axistags(PyRun_String(command.c_str(), Py_eval_input, g, g), 
+                        python_ptr::keep_count);
+    if(!axistags)
+        PyErr_Clear(); // if no axistags are found, resume without
+    
+    return axistags;
 }
 
-inline
-python_ptr getArrayTypeObject(std::string const & name, PyTypeObject * def = 0)
+inline 
+python_ptr copyAxistags(python_ptr axistags)
 {
-    ArrayTypeMap *types = getArrayTypeMap();
-    if(!types)
-        // dummy registry -> handle like empty registry
-        return python_ptr((PyObject *)def);
-
-    python_ptr res;
-    ArrayTypeMap::iterator i = types->find(name);
-    if(i != types->end())
-        res = i->second.first;
-    else
-        res = python_ptr((PyObject *)def);
-//    std::cerr << "Requested " << name << ", got " << ((PyTypeObject *)res.get())->tp_name << "\n";
-    return res;
-}
-
-// there are two cases for the return:
-// * if a typecheck function was registered, it is returned
-// * a null pointer is returned if nothing was registered for either key, or if
-//   a type was registered without typecheck function
-inline python_ptr
-getArrayTypecheckFunction(std::string const & keyFull, std::string const & key)
-{
-    python_ptr res;
-    ArrayTypeMap *types = getArrayTypeMap();
-    if(types)
+    if(axistags)
     {
-        ArrayTypeMap::iterator i = types->find(keyFull);
-        if(i == types->end())
-            i = types->find(key);
-        if(i != types->end())
-            res = i->second.second;
+        python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+        axistags = python_ptr(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
+                              python_ptr::keep_count);
     }
-    return res;
+    return axistags;
 }
 
-inline bool
-performCustomizedArrayTypecheck(PyObject * obj, std::string const & keyFull, std::string const & key)
+inline void setChannelDescription(python_ptr axistags, std::string const & d)
 {
-    if(obj == 0 || !PyArray_Check(obj))
-        return false;
-    python_ptr typecheck = getArrayTypecheckFunction(keyFull, key);
-    if(typecheck == 0)
-        return true; // no custom test registered
-    python_ptr args(PyTuple_Pack(1, obj), python_ptr::keep_count);
-    pythonToCppException(args);
-    python_ptr res(PyObject_Call(typecheck.get(), args.get(), 0), python_ptr::keep_count);
+    python_ptr pyd(PyString_FromString(d.c_str()), python_ptr::keep_count);
+    python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
+    python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), pyd.get(), NULL), 
+                   python_ptr::keep_count);
     pythonToCppException(res);
-    vigra_precondition(PyBool_Check(res),
-           "NumpyArray conversion: registered typecheck function did not return a boolean.");
-    return (void*)res.get() == (void*)Py_True;
+}
+
+inline 
+ArrayVector<npy_intp> 
+getAxisPermutationImpl(python_ptr object, const char * name, bool ignoreErrors)
+{
+    python_ptr func(PyString_FromString(name), python_ptr::keep_count);
+    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), NULL), 
+                           python_ptr::keep_count);
+    if(!permutation && ignoreErrors)
+    {
+        PyErr_Clear();
+        return ArrayVector<npy_intp>();
+    }
+    pythonToCppException(permutation);
+    
+    
+    if(!PySequence_Check(permutation))
+    {
+        if(ignoreErrors)
+            return ArrayVector<npy_intp>();
+        std::string message = std::string(name) + "() did not return a sequence.";
+        PyErr_SetString(PyExc_ValueError, message.c_str());
+        pythonToCppException(false);
+    }
+        
+    ArrayVector<npy_intp> res(PySequence_Length(permutation));
+    for(int k=0; k<(int)res.size(); ++k)
+    {
+        python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
+        if(!PyInt_Check(i))
+        {
+            if(ignoreErrors)
+                return ArrayVector<npy_intp>();
+            std::string message = std::string(name) + "() did not return a sequence of int.";
+            PyErr_SetString(PyExc_ValueError, message.c_str());
+            pythonToCppException(false);
+        }
+        res[k] = PyInt_AsLong(i);
+    }
+    return res;
+}
+
+inline 
+ArrayVector<npy_intp> permutationToNormalOrder(python_ptr object, bool ignoreErrors = false)
+{
+    return getAxisPermutationImpl(object, "permutationToNormalOrder", ignoreErrors);
+}
+
+inline 
+ArrayVector<npy_intp> permutationFromNormalOrder(python_ptr object, bool ignoreErrors = false)
+{
+    return getAxisPermutationImpl(object, "permutationFromNormalOrder", ignoreErrors);
 }
 
 inline
-python_ptr constructNumpyArrayImpl(
-    PyTypeObject * type,
-    ArrayVector<npy_intp> const & shape, npy_intp *strides,
-    NPY_TYPES typeCode, bool init)
+python_ptr getArrayTypeObject()
 {
-    python_ptr array;
-    
-    if(strides == 0)
+    PyObject *g = PyEval_GetGlobals();
+    python_ptr arraytype(PyRun_String("vigra.arraytypes.VigraArray", Py_eval_input, g, g), 
+                         python_ptr::keep_count);
+    if(!arraytype)
     {
-        array = python_ptr(PyArray_New(type, shape.size(), (npy_intp *)shape.begin(), typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                           python_ptr::keep_count);
+        PyErr_Clear();
+        arraytype = (PyObject*)&PyArray_Type;
     }
-    else
-    {
-        int N = shape.size();
-        ArrayVector<npy_intp> pshape(N);
-        for(int k=0; k<N; ++k)
-            pshape[strides[k]] = shape[k];
-
-        array = python_ptr(PyArray_New(type, N, pshape.begin(), typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                           python_ptr::keep_count);
-        pythonToCppException(array);
-
-        PyArray_Dims permute = { strides, N };
-        array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), python_ptr::keep_count);
-    }
-    pythonToCppException(array);
-
-    if(init)
-        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-
-    return array;
+    return arraytype;
 }
 
-// strideOrdering will be ignored unless order == "A"
-// TODO: this function should receive some refactoring in order to make
-      // the rules clear from the code rather than from comments
-inline python_ptr
-constructNumpyArrayImplOld(PyTypeObject * type, ArrayVector<npy_intp> const & shape,
-                       unsigned int spatialDimensions, unsigned int channels,
-                       NPY_TYPES typeCode, std::string order, bool init,
-                       ArrayVector<npy_intp> strideOrdering = ArrayVector<npy_intp>())
-{
-    // shape must have at least length spatialDimensions, but can also have a channel dimension
-    vigra_precondition(shape.size() == spatialDimensions || shape.size() == spatialDimensions + 1,
-           "constructNumpyArray(type, shape, ...): shape has wrong length.");
+#if 0
 
-    // if strideOrdering is given, it must have at least length spatialDimensions,
-    // but can also have a channel dimension
-    vigra_precondition(strideOrdering.size() == 0 || strideOrdering.size() == spatialDimensions ||
-                       strideOrdering.size() == spatialDimensions + 1,
-           "constructNumpyArray(type, ..., strideOrdering): strideOrdering has wrong length.");
-
-    if(channels == 0) // if the requested number of channels is not given ...
-    {
-        // ... deduce it
-        if(shape.size() == spatialDimensions)
-            channels = 1;
-        else
-            channels = shape.back();
-    }
-    else
-    {
-        // otherwise, if the shape object also contains a channel dimension, they must be consistent
-        if(shape.size() > spatialDimensions)
-            vigra_precondition(channels == (unsigned int)shape[spatialDimensions],
-                   "constructNumpyArray(type, ...): shape contradicts requested number of channels.");
-    }
-
-    // if we have only one channel, no explicit channel dimension should be in the shape
-    unsigned int shapeSize = channels == 1
-                                  ? spatialDimensions
-                                  : spatialDimensions + 1;
-
-    // create the shape object with optional channel dimension
-    ArrayVector<npy_intp> pshape(shapeSize);
-    std::copy(shape.begin(), shape.begin()+std::min(shape.size(), pshape.size()), pshape.begin());
-    if(shapeSize > spatialDimensions)
-        pshape[spatialDimensions] = channels;
-
-    // order "A" means "preserve order" when an array is copied, and
-    // defaults to "V" when a new array is created without explicit strideOrdering
-    //
-    if(order == "A")
-    {
-        if(strideOrdering.size() == 0)
-        {
-            order = "V";
-        }
-        else if(strideOrdering.size() > shapeSize)
-        {
-            // make sure that strideOrdering length matches shape length
-            ArrayVector<npy_intp> pstride(strideOrdering.begin(), strideOrdering.begin()+shapeSize);
-
-            // adjust the ordering when the channel dimension has been dropped because channel == 1
-            if(strideOrdering[shapeSize] == 0)
-                for(unsigned int k=0; k<shapeSize; ++k)
-                    pstride[k] -= 1;
-            pstride.swap(strideOrdering);
-        }
-        else if(strideOrdering.size() < shapeSize)
-        {
-            // make sure that strideOrdering length matches shape length
-            ArrayVector<npy_intp> pstride(shapeSize);
-
-            // adjust the ordering when the channel dimension has been dropped because channel == 1
-            for(unsigned int k=0; k<shapeSize-1; ++k)
-                pstride[k] = strideOrdering[k] + 1;
-            pstride[shapeSize-1] = 0;
-            pstride.swap(strideOrdering);
-        }
-    }
-
-    // create the appropriate strideOrdering objects for the other memory orders
-    // (when strideOrdering already contained data, it is ignored because order != "A")
-    if(order == "C")
-    {
-        strideOrdering.resize(shapeSize);
-        for(unsigned int k=0; k<shapeSize; ++k)
-            strideOrdering[k] = shapeSize-1-k;
-    }
-    else if(order == "F" || (order == "V" && channels == 1))
-    {
-        strideOrdering.resize(shapeSize);
-        for(unsigned int k=0; k<shapeSize; ++k)
-            strideOrdering[k] = k;
-    }
-    else if(order == "V")
-    {
-        strideOrdering.resize(shapeSize);
-        for(unsigned int k=0; k<shapeSize-1; ++k)
-            strideOrdering[k] = k+1;
-        strideOrdering[shapeSize-1] = 0;
-    }
-
-    return constructNumpyArrayImpl(type, pshape, strideOrdering.begin(), typeCode, init);
-}
-
-inline python_ptr
-constructNumpyArrayImpl(PyTypeObject * type, ArrayVector<npy_intp> shape,
-                       unsigned int spatialDimensions, unsigned int channels,
-                       NPY_TYPES typeCode, std::string order, bool init,
-                       ArrayVector<npy_intp> strideOrdering = ArrayVector<npy_intp>())
-{
-    // shape must have at least length spatialDimensions, but can also have a channel dimension
-    vigra_precondition(shape.size() == spatialDimensions || shape.size() == spatialDimensions + 1,
-           "constructNumpyArray(type, shape, ...): shape has wrong length.");
-
-    // if strideOrdering is given, it must have at length (spatialDimensions + 1),
-    // including the channel dimension
-    vigra_precondition(strideOrdering.size() == 0 || strideOrdering.size() == spatialDimensions + 1,
-           "constructNumpyArray(type, ..., strideOrdering): strideOrdering has wrong length.");
-
-    if(shape.size() == spatialDimensions)
-    {
-        if(order == "F")
-            shape.insert(shape.begin(), channels == 0 ? 1 : channels);
-        else
-            shape.push_back(channels == 0 ? 1 : channels);
-    }
-    if(strideOrdering.size() == 0)
-    {
-        if(order == "A")
-            order = "V";
-        strideOrdering.resize(shape.size());
-    }
-
-    // create the appropriate strideOrdering objects
-    if(order == "C")
-    {
-        linearSequence(strideOrdering.begin(), strideOrdering.end(), int(shape.size())-1, -1);
-    }
-    else if(order == "F")
-    {
-        linearSequence(strideOrdering.begin(), strideOrdering.end());
-    }
-    else if(order == "V")
-    {
-        linearSequence(strideOrdering.begin(), strideOrdering.end(), 1);
-        strideOrdering.back() = 0;
-    }
-    
-    // if order == "A", strideOrdering was already given, so do nothing
-    
-    return constructNumpyArrayImpl(type, shape, strideOrdering.begin(), typeCode, init);
-}        
-
+// FIXME: reimplement in terms of TaggedShape?
 template <class TINY_VECTOR>
 inline
 python_ptr constructNumpyArrayFromData(
@@ -574,6 +372,7 @@ python_ptr constructNumpyArrayFromData(
     return array;
 }
 
+#endif
 
 } // namespace detail
 
@@ -830,135 +629,11 @@ class TaggedShape
     }
 };
 
-// We assume that the shape is given in canonical order (currently: F-order).
-// The axistags determine the axis ordering in Python.
-// If no axistags are given, we assume that the Python array should have C-order.
-inline // FIXME
-PyObject * 
-constructArray(ArrayVector<npy_intp> shape, python_ptr axistags, NPY_TYPES typeCode, bool init)
-{
-    if(axistags == Py_None)
-        axistags.reset(0);
-        
-    int ndim = (int)shape.size();
-    python_ptr array;
-
-    PyObject *g = PyEval_GetGlobals();
-    python_ptr arraytype(PyRun_String("vigra.arraytypes.VigraArray", Py_eval_input, g, g), 
-                         python_ptr::keep_count);
-
-    if(!arraytype)
-        PyErr_Clear(); // if VigraArray is not present, use ndarray as default 
-    if(!axistags)
-        arraytype.reset(0); // use plain ndarray if there are no axistags
-    
-    ArrayVector<npy_intp> inverse_permutation;
-    
-    if(axistags) // FIXME: is if(arraytype && axistags) better?
-    {
-        if(!PySequence_Check(axistags))
-        {
-            PyErr_SetString(PyExc_TypeError, "constructArray(): axistags have wrong type.");
-            pythonToCppException(false);
-        }
-        
-        int ntags = PySequence_Length(axistags);
-        // std::cerr << "ndim: " << ndim << ", ntags: " << ntags << "\n";
-        // std::cerr << "shape: " << shape << "\n";
-        // static python_ptr rf(PyString_FromString("__repr__"), python_ptr::keep_count);
-        // python_ptr repr(PyObject_CallMethodObjArgs(axistags, rf.get(), NULL), 
-                               // python_ptr::keep_count);
-        // pythonToCppException(repr);
-        // std::cerr << "axistags: " << PyString_AsString(repr) << " " << axistags->ob_type->tp_name << "\n";
-        
-        static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
-        // long channelIndex = detail::getAttrLong(axistags, key, ntags);
-        // std::cerr << "channelIndex: " << channelIndex << "\n";
-        if(ndim == ntags + 1)
-        {
-            // We allow the tags to have no channel axis. If this is the case,
-            // we delete the channel axis from the shape, provided it is a singleton.
-			long channelIndex = detail::getAttrLong(axistags, key, ntags);
-            if(channelIndex == ntags && shape[0] == 1)
-            {
-                ndim -= 1;
-                shape.erase(shape.begin());
-            }
-        }
-        else if(ndim == ntags - 1)
-        {
-            // When the tags have a channel axis, we add a singleton axis to the shape.
-			long channelIndex = detail::getAttrLong(axistags, key, ntags);
-            if(channelIndex < ntags)
-            {
-                ndim += 1;
-                shape.insert(shape.begin(), 1);
-            }
-        }
-        
-        vigra_precondition(ndim == ntags,
-             "constructArray(): size mismatch between shape and axistags.");
-        
-        python_ptr func(PyString_FromString("permutation"), python_ptr::keep_count);
-        python_ptr permutation(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                               python_ptr::keep_count);
-        pythonToCppException(permutation);
-
-        if(!PySequence_Check(permutation) || PySequence_Length(permutation) != ndim)
-        {
-            PyErr_SetString(PyExc_ValueError, "axistags.permutation() did not return a sequence of appropriate length.");
-            pythonToCppException(false);
-        }
-            
-        inverse_permutation.resize(ndim);
-        for(int k=0; k<ndim; ++k)
-        {
-            python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
-            if(!PyInt_Check(i))
-            {
-                PyErr_SetString(PyExc_ValueError, "axistags.permutation() must return a sequence of int.");
-                pythonToCppException(false);
-            }
-            inverse_permutation[k] = PyInt_AsLong(i);
-        }
-    }
-    else
-    {
-        inverse_permutation.resize(ndim);
-        for(int k=0; k<ndim; ++k)
-        {
-            inverse_permutation[k] = ndim - k - 1;
-        }
-    }
-    
-    PyTypeObject * type = arraytype
-                               ? (PyTypeObject *)arraytype.get()
-                               : &PyArray_Type;
-    array = python_ptr(PyArray_New(type, ndim, shape.begin(), 
-                                   typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                       python_ptr::keep_count);
-    pythonToCppException(array);
-
-    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
-                       python_ptr::keep_count);
-    pythonToCppException(array);
-    
-    if(arraytype && axistags)
-        pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags));
-    
-    if(init)
-        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-   
-    return array.release();
-}
-
-inline // FIXME
-PyObject * 
-constructArray2(ArrayVector<npy_intp> shape, PyObject * axistags, NPY_TYPES typeCode, bool init)
-{
-    return constructArray(shape, python_ptr(axistags), typeCode, init);
-}
+/********************************************************/
+/*                                                      */
+/*                    constructArray                    */
+/*                                                      */
+/********************************************************/
 
 inline // FIXME
 PyObject * 
@@ -971,12 +646,13 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
     if(tagged_shape.channelAxis == TaggedShape::last)
     {
         for(int k=0; k<ndim; ++k)
-            shape[k] = tagged_shape[(k-1+ndim)%ndim]; // rotate to canonical order
+            shape[k] = tagged_shape[(k-1+ndim)%ndim]; // rotate to normal order
     }
     
+    ArrayVector<npy_intp> inverse_permutation;
     
-    // we assume at this point that the axistags belong to the array to be created
-    // so that we can freely edit the tag object
+    // we assume here that the axistag object belongs to the array to be created
+    // so that we can freely edit it
     // FIXME: should we rather create a copy first, even if this results in some 
     //        unnecessary copies?
     if(axistags)
@@ -990,6 +666,16 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
         int ntags = PySequence_Length(axistags);
         static python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
         long channelIndex = detail::getAttrLong(axistags, key, ntags);
+
+#if 0 // debug only
+        std::cerr << "ndim: " << ndim << ", ntags: " << ntags << ", channelIndex: " << channelIndex << "\n";
+        static python_ptr func(PyString_FromString("__repr__"), 
+                               python_ptr::keep_count);
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
+                       python_ptr::keep_count);
+        pythonToCppException(res);
+        std::cerr << "axistags: " << PyString_AsString(res) << "\n";
+#endif
 
         if(tagged_shape.channelAxis == TaggedShape::none)
         {
@@ -1052,17 +738,40 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
         }
             
         if(tagged_shape.channelDescription != "")
-        {
-            python_ptr func(PyString_FromString("setChannelDescription"), python_ptr::keep_count);
-            python_ptr arg(PyString_FromString(tagged_shape.channelDescription.c_str()), 
-                           python_ptr::keep_count);
-            pythonToCppException(PyObject_CallMethodObjArgs(axistags, func.get(), arg.get(), NULL));
-        }
+            detail::setChannelDescription(axistags, tagged_shape.channelDescription);
+        
+        inverse_permutation = detail::permutationFromNormalOrder(axistags);
+        vigra_precondition(ndim == (int)inverse_permutation.size(),
+                     "axistags.permutationFromNormalOrder(): permutation has wrong size.");
+    }
+    else
+    {
+        inverse_permutation.resize(ndim);
+        linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
     }
     
-    return constructArray(shape, axistags, typeCode, init);
-}
+    python_ptr arraytype = axistags
+                             ? detail::getArrayTypeObject()
+                             : python_ptr((PyObject*)&PyArray_Type);
 
+    python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
+                                  typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
+                     python_ptr::keep_count);
+    pythonToCppException(array);
+
+    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
+    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
+                       python_ptr::keep_count);
+    pythonToCppException(array);
+    
+    if(arraytype != (PyObject*)&PyArray_Type && axistags)
+        pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags));
+    
+    if(init)
+        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
+   
+    return array.release();
+}
 
 /********************************************************/
 /*                                                      */
@@ -1084,8 +793,6 @@ struct NumpyArrayTraits;
 
 /********************************************************/
 
-//#define OLD_SEMANTICS
-
 template<unsigned int N, class T>
 struct NumpyArrayTraits<N, T, StridedArrayTag>
 {
@@ -1099,11 +806,6 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     static bool isArray(PyObject * obj)
     {
         return obj && PyArray_Check(obj);
-    }
-
-    static bool isClassCompatible(PyObject * obj)
-    {
-        return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
     }
 
     static bool isValuetypeCompatible(PyArrayObject * obj)  /* obj must not be NULL */
@@ -1136,7 +838,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         else
         {
             // We have no axistags. 
-            // When ndim == N or ndim == N-1, everything is ok
+            // When ndim == N, everything is ok
+            // When ndim == N-1, we add a singleton axis later
             // When ndim == N+1, we assume that channelIndex == ndim-1, and we may drop the
             // channel axis when it is a singleton.
             return ndim == N-1 || ndim == N ||
@@ -1158,20 +861,9 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
-        TaggedShape tagged_shape(shape);
-        
-        // create default axistags
-        PyObject *g = PyEval_GetGlobals();
-        
-        // FIXME: this is a hack
-        int ndim = (int)tagged_shape.size() + 1;
-        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                           python_ptr::keep_count);
-        if(!tagged_shape.axistags)
-            PyErr_Clear();
-
-        return tagged_shape;
+        // FIXME: we construct axistags with one entry too many, so that the channel axis
+        //        can be dropped in constructArray(). This is a HACK.
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1));
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1180,26 +872,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
                   "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKey()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", *>";
-        return key;
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", " +
-                                 ValuetypeTraits::typeName() + ", StridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1231,19 +910,14 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         }
         else if(majorIndex < ndim)
         {
-#ifndef OLD_SEMANTICS
             // We have axistags, but no channel axis. There are again two cases:
             // 1. ndim is right: the major axis must be unstrided
             // 2. ndim == N-1: we add a singleton channel axis later, which is automatically unstrided,
             //                 so there is no explicit stride requirement
             return ndim == N-1 || (ndim == N && strides[majorIndex] == itemsize);
-#else
-            return (ndim == N || ndim == N-1) && strides[majorIndex] == itemsize;
-#endif
         }
         else
         {
-#ifndef OLD_SEMANTICS
             // We have no axistags. 
             // When ndim == N or ndim == N+1, we assume that
             //     channelIndex == ndim-1
@@ -1255,10 +929,6 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
             return ndim == N-1 ||
                     (ndim == N && strides[ndim-1] == itemsize)  ||
                     (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
-#else
-            return ((ndim == N || ndim == N-1) && strides[ndim-1] == itemsize)  ||
-                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
-#endif
         }
     }
 
@@ -1267,20 +937,13 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", " +
-                                 ValuetypeTraits::typeName() + ", UnstridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1291,11 +954,6 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
-
-    static bool isClassCompatible(PyObject * obj)
-    {
-        return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
-    }
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
@@ -1328,20 +986,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
-        TaggedShape tagged_shape(shape);
-        tagged_shape.setChannelCount(1);
-        
-        // create default axistags
-        PyObject *g = PyEval_GetGlobals();
-        int ndim = (int)tagged_shape.size();
-        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                           python_ptr::keep_count);
-        if(!tagged_shape.axistags)
-        {
-            PyErr_Clear();
-        }
-        return tagged_shape;
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1)).setChannelCount(1);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1351,26 +996,13 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
               "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKey()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Singleband<*> >";
-        return key;
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Singleband<" +
-                                 ValuetypeTraits::typeName() + ">, StridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1407,7 +1039,6 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
         }
         else
         {
-#ifndef OLD_SEMANTICS
             // We have no axistags. When ndim == N, we assume that
             //     there is no channel index and
             //     majorIndex == ndim-1
@@ -1417,10 +1048,6 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
             // and require the channel axis to be a singleton.
             return (ndim == N && strides[ndim-1] == itemsize)  ||
                     (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
-#else
-            return (ndim == N && strides[0] == itemsize)  ||
-                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[0] == itemsize);
-#endif
         }
     }
 
@@ -1429,20 +1056,13 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Singleband<" +
-                                 ValuetypeTraits::typeName() + ">, UnstridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1455,11 +1075,6 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
 
     enum { spatialDimensions = N-1, channels = 0 };
-
-    static bool isClassCompatible(PyObject * obj)
-    {
-        return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
-    }
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
@@ -1492,41 +1107,16 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
-        TaggedShape tagged_shape(shape);
-        tagged_shape.setChannelIndexLast();
-        
-        // create default axistags
-        PyObject *g = PyEval_GetGlobals();
-        int ndim = (int)tagged_shape.size();
-        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                           python_ptr::keep_count);
-        if(!tagged_shape.axistags)
-            PyErr_Clear();
-
-        return tagged_shape;
+        return TaggedShape(shape, detail::defaultAxistags(shape.size())).setChannelIndexLast();
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKey()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Multiband<*> >";
-        return key;
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Multiband<" +
-                                 ValuetypeTraits::typeName() + ">, StridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1561,7 +1151,6 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         }
         else
         {
-#ifndef OLD_SEMANTICS
             // We have no axistags. When ndim == N, we assume that
             //     channelIndex == ndim-1
             //     majorIndex == ndim-2
@@ -1570,9 +1159,6 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
             //     majorIndex == ndim-1
             return (ndim == N && strides[ndim-2] == itemsize*PyArray_DIM(obj, ndim-1))  ||
                     (ndim == N-1 && strides[ndim-1] == itemsize);
-#else
-            return (ndim == N || ndim == N-1) && strides[0] == itemsize;
-#endif
         }
     }
 
@@ -1581,20 +1167,13 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", Multiband<" +
-                                 ValuetypeTraits::typeName() + ">, UnstridedArrayTag>";
-        return key;
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1612,11 +1191,6 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     static bool isArray(PyObject * obj)
     {
         return obj && PyArray_Check(obj);
-    }
-
-    static bool isClassCompatible(PyObject * obj)
-    {
-        return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
     }
 
     static bool isValuetypeCompatible(PyArrayObject * obj)  /* obj must not be NULL */
@@ -1652,19 +1226,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape)
     {
-        TaggedShape tagged_shape(shape);
-        tagged_shape.setChannelCount(M);
-        
-        // create default axistags
-        PyObject *g = PyEval_GetGlobals();
-        int ndim = (int)tagged_shape.size();
-        std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
-        tagged_shape.axistags = python_ptr(PyRun_String(command.c_str(), Py_eval_input, g, g), 
-                                           python_ptr::keep_count);
-        if(!tagged_shape.axistags)
-            PyErr_Clear();
-
-        return tagged_shape;
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1)).setChannelCount(M);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1674,37 +1236,24 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
               "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N+1> npyShape;
-        std::copy(shape.begin(), shape.end(), npyShape.begin());
-        npyShape[N] = M;
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N+1> npyShape;
+        // std::copy(shape.begin(), shape.end(), npyShape.begin());
+        // npyShape[N] = M;
 
-        TinyVector<npy_intp, N+1> npyStride;
-        std::transform(
-            stride.begin(), stride.end(), npyStride.begin(),
-            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        npyStride[N] = sizeof(T);
+        // TinyVector<npy_intp, N+1> npyStride;
+        // std::transform(
+            // stride.begin(), stride.end(), npyStride.begin(),
+            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+        // npyStride[N] = sizeof(T);
 
-        return detail::constructNumpyArrayFromData(
-            typeKeyFull(), typeKey(), npyShape,
-            npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKey()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", TinyVector<*, " + asString(M) + "> >";
-        return key;
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) +
-                      ", TinyVector<" + ValuetypeTraits::typeName() + ", " + asString(M) + ">, StridedArrayTag>";
-        return key;
-    }
+        // return detail::constructNumpyArrayFromData(
+            // typeKeyFull(), typeKey(), npyShape,
+            // npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1735,15 +1284,9 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
             if(majorIndex != ndim) // we have axis tags, but no channel axis 
                 return false;     // => cannot be a vector image
                 
-#ifndef OLD_SEMANTICS
             return PyArray_DIM(obj, N) == M && 
                    strides[N] == itemsize &&
                    strides[N-1] == sizeof(TinyVector<T, M>);
-#else
-            return PyArray_DIM(obj, N) == M && 
-                   strides[N] == itemsize &&
-                   strides[0] == sizeof(TinyVector<T, M>);
-#endif
         }
         else
         {
@@ -1758,31 +1301,24 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N+1> npyShape;
-        std::copy(shape.begin(), shape.end(), npyShape.begin());
-        npyShape[N] = M;
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N+1> npyShape;
+        // std::copy(shape.begin(), shape.end(), npyShape.begin());
+        // npyShape[N] = M;
 
-        TinyVector<npy_intp, N+1> npyStride;
-        std::transform(
-            stride.begin(), stride.end(), npyStride.begin(),
-            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        npyStride[N] = sizeof(T);
+        // TinyVector<npy_intp, N+1> npyStride;
+        // std::transform(
+            // stride.begin(), stride.end(), npyStride.begin(),
+            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+        // npyStride[N] = sizeof(T);
 
-        return detail::constructNumpyArrayFromData(
-            typeKeyFull(), BaseType::typeKey(), npyShape,
-            npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) +
-                      ", TinyVector<" + ValuetypeTraits::typeName() + ", " + asString(M) + ">, UnstridedArrayTag>";
-        return key;
-    }
+        // return detail::constructNumpyArrayFromData(
+            // typeKeyFull(), BaseType::typeKey(), npyShape,
+            // npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1795,42 +1331,24 @@ struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
     typedef RGBValue<T> value_type;
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
 
-    static bool isClassCompatible(PyObject * obj)
-    {
-        return detail::performCustomizedArrayTypecheck(obj, typeKeyFull(), typeKey());
-    }
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N+1> npyShape;
+        // std::copy(shape.begin(), shape.end(), npyShape.begin());
+        // npyShape[N] = 3;
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N+1> npyShape;
-        std::copy(shape.begin(), shape.end(), npyShape.begin());
-        npyShape[N] = 3;
+        // TinyVector<npy_intp, N+1> npyStride;
+        // std::transform(
+            // stride.begin(), stride.end(), npyStride.begin(),
+            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+        // npyStride[N] = sizeof(T);
 
-        TinyVector<npy_intp, N+1> npyStride;
-        std::transform(
-            stride.begin(), stride.end(), npyStride.begin(),
-            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        npyStride[N] = sizeof(T);
-
-        return detail::constructNumpyArrayFromData(
-            typeKeyFull(), typeKey(), npyShape,
-            npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKey()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) + ", RGBValue<*> >";
-        return key;
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) +
-                      ", RGBValue<" + ValuetypeTraits::typeName() + ">, StridedArrayTag>";
-        return key;
-    }
+        // return detail::constructNumpyArrayFromData(
+            // typeKeyFull(), typeKey(), npyShape,
+            // npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -1854,31 +1372,24 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
         return UnstridedTraits::isPropertyCompatible(obj);
     }
 
-    template <class U>
-    static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  T *data, TinyVector<U, N> const & stride)
-    {
-        TinyVector<npy_intp, N+1> npyShape;
-        std::copy(shape.begin(), shape.end(), npyShape.begin());
-        npyShape[N] = 3;
+    // template <class U>
+    // static python_ptr constructor(TinyVector<U, N> const & shape,
+                                  // T *data, TinyVector<U, N> const & stride)
+    // {
+        // TinyVector<npy_intp, N+1> npyShape;
+        // std::copy(shape.begin(), shape.end(), npyShape.begin());
+        // npyShape[N] = 3;
 
-        TinyVector<npy_intp, N+1> npyStride;
-        std::transform(
-            stride.begin(), stride.end(), npyStride.begin(),
-            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        npyStride[N] = sizeof(T);
+        // TinyVector<npy_intp, N+1> npyStride;
+        // std::transform(
+            // stride.begin(), stride.end(), npyStride.begin(),
+            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+        // npyStride[N] = sizeof(T);
 
-        return detail::constructNumpyArrayFromData(
-            typeKeyFull(), BaseType::typeKey(), npyShape,
-            npyStride.begin(), ValuetypeTraits::typeCode, data);
-    }
-
-    static std::string typeKeyFull()
-    {
-        static std::string key = std::string("NumpyArray<") + asString(N) +
-                      ", RGBValue<" + ValuetypeTraits::typeName() + ">, UnstridedArrayTag>";
-        return key;
-    }
+        // return detail::constructNumpyArrayFromData(
+            // typeKeyFull(), BaseType::typeKey(), npyShape,
+            // npyStride.begin(), ValuetypeTraits::typeCode, data);
+    // }
 };
 
 /********************************************************/
@@ -2067,28 +1578,15 @@ class NumpyAnyArray
          canonical ordering (currently: F-order). The size of
          the returned permutation equals ndim().
          */
-    difference_type canonicalOrdering() const
+    difference_type permutationToNormalOrder() const
     {
-        static python_ptr key(PyString_FromString("canonicalOrdering"), python_ptr::keep_count);
-
 		if(!hasData())
             return difference_type();
-        
-        python_ptr pres(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
-        difference_type res(ndim());
-        if(pres)
+            
+        difference_type res(detail::permutationToNormalOrder(pyArray_, true));
+        if(res.size() == 0)
         {
-			vigra_precondition(PySequence_Length(pres) == ndim(),
-				"NumpyAnyArray::canonicalOrdering(): got sequence of wrong length.");
-            for(MultiArrayIndex k=0; k<ndim(); ++k)
-            {
-                python_ptr item(PySequence_GetItem(pres, k), python_ptr::keep_count);
-                res[k] = PyInt_AsLong(item);
-            }
-        }
-        else
-        {
-            PyErr_Clear();
+            res.resize(ndim());
             linearSequence(res.begin(), res.end(), ndim()-1, MultiArrayIndex(-1));
         }
         return res;
@@ -2105,14 +1603,18 @@ class NumpyAnyArray
         return -1;
     }
 
-        // /**
-         // * Return the AxisTags of this array or empty AxisTags when the attribute
-           // 'axistags' is missing in the Python object.
-         // */
-    // PyAxisTags const & axistags() const
-    // {
-        // return getattr(python::detail::borrowed_reference(pyObject()), "axistags", PyAxisTags()));
-    // }
+        /**
+         * Return the AxisTags of this array or a NULL pointer when the attribute
+           'axistags' is missing in the Python object.
+         */
+    python_ptr axistags() const
+    {
+        static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
+        python_ptr axistags(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
+        if(!axistags)
+            PyErr_Clear();
+        return axistags;
+    }
 
         /**
          * Return a borrowed reference to the internal PyArrayObject.
@@ -2271,19 +1773,8 @@ class NumpyArray
 
     static python_ptr getArrayTypeObject()
     {
-        python_ptr type = detail::getArrayTypeObject(ArrayTraits::typeKeyFull());
-        if(type == 0)
-            type = detail::getArrayTypeObject(ArrayTraits::typeKey(), &PyArray_Type);
-        return type;
+        return detail::getArrayTypeObject();
     }
-
-    // static python_ptr init(difference_type const & shape, bool init = true)
-    // {
-        // ArrayVector<npy_intp> pshape(shape.begin(), shape.end());
-        // return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
-                       // ArrayTraits::spatialDimensions, ArrayTraits::channels,
-                       // typeCode, "V", init);
-    // }
 
     static python_ptr init(difference_type const & shape, bool init = true)
     {
@@ -2291,6 +1782,7 @@ class NumpyArray
                           python_ptr::keep_count);
     }
 
+#if 0 // FIXME: not sure if this is still needed when we have axistags
     static python_ptr init(difference_type const & shape, difference_type const & strideOrdering, bool init = true)
     {
         // FIXME: what to do with this function?
@@ -2306,6 +1798,7 @@ class NumpyArray
                        ArrayTraits::spatialDimensions, ArrayTraits::channels,
                        typeCode, "A", init, pstrideOrdering);
     }
+#endif
 
   public:
 
@@ -2343,9 +1836,6 @@ class NumpyArray
          * no data, too.)
          */
     NumpyArray(const NumpyArray &other, bool createCopy = false) 
-    // :
-            // MultiArrayView<N, typename NumpyArrayTraits<N, T, Stride>::value_type, Stride>(other),
-            // NumpyAnyArray(other, createCopy)
     {
         if(!other.hasData())
             return;
@@ -2380,6 +1870,7 @@ class NumpyArray
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
     }
 
+#if 0
         /**
          * Construct a new array object, allocating an internal python
          * ndarray of the given shape and given stride ordering, initialized
@@ -2392,6 +1883,7 @@ class NumpyArray
         vigra_postcondition(makeReference(init(shape, strideOrdering)),
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
     }
+#endif
 
         /**
          * Constructor from NumpyAnyArray.
@@ -2483,24 +1975,11 @@ class NumpyArray
     }
 
         /**
-         * Like isReferenceCompatible(obj), but also executes a customized type compatibility
-         * check when such a check has been registered for this class via
-         * registerPythonArrayType().
-         *
-         * This facilitates proper overload resolution between
-         * NumpyArray<3, Multiband<T> > (a multiband image) and NumpyArray<3, Singleband<T> > (a scalar volume).
+         * Deprecated, use isReferenceCompatible(obj) instead.
          */
     static bool isStrictlyCompatible(PyObject *obj)
     {
-#if VIGRA_CONVERTER_DEBUG
-        std::cerr << "class " << typeid(NumpyArray).name() << " got " << obj->ob_type->tp_name << "\n";
-        std::cerr << "using traits " << typeid(ArrayTraits).name() << "\n";
-        std::cerr<<"isClassCompatible: "<< ArrayTraits::isClassCompatible(obj)<<std::endl;
-        std::cerr<<"isPropertyCompatible: "<< ArrayTraits::isPropertyCompatible((PyArrayObject *)obj)<<std::endl;
-#endif
-
-        return ArrayTraits::isClassCompatible(obj) &&
-                ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
+        return isReferenceCompatible(obj);
     }
 
         /**
@@ -2530,23 +2009,14 @@ class NumpyArray
         /**
          * Try to set up a view referencing the given PyObject.
          * Returns false if the python object is not a compatible
-         * numpy array (see isReferenceCompatible() or
-         * isStrictlyCompatible(), according to the parameter \a
-         * strict).
+         * numpy array (see isReferenceCompatible()).
+         *
+         * The parameter \a strict is deprecated and will be ignored
          */
-    bool makeReference(PyObject *obj, bool strict = true)
+    bool makeReference(PyObject *obj, bool strict = false)
     {
-        strict = false; // FIXME
-        if(strict)
-        {
-            if(!isStrictlyCompatible(obj))
-                return false;
-        }
-        else
-        {
-            if(!isReferenceCompatible(obj))
-                return false;
-        }
+        if(!isReferenceCompatible(obj))
+            return false;
         makeReferenceUnchecked(obj);
         return true;
     }
@@ -2554,14 +2024,16 @@ class NumpyArray
         /**
          * Try to set up a view referencing the same data as the given
          * NumpyAnyArray.  This overloaded variant simply calls
-         * makeReference() on array.pyObject().
+         * makeReference() on array.pyObject(). The parameter \a strict
+         * is deprecated and will be ignored.
          */
-    bool makeReference(const NumpyAnyArray &array, bool strict = true)
+    bool makeReference(const NumpyAnyArray &array, bool strict = false)
     {
         return makeReference(array.pyObject(), strict);
     }
 
-        /**
+#if 0 // FIXME: implement this in a different way
+	    /**
          * Set up an unsafe reference to the given MultiArrayView.
          * ATTENTION: This creates a numpy.ndarray that points to the
          * same data, but does not own it, so it must be ensured by
@@ -2581,39 +2053,24 @@ class NumpyArray
         view_type::operator=(multiArrayView);
         pyArray_ = array;
     }
+#endif
 
         /**
          Try to create a copy of the given PyObject.
          Raises an exception when obj is not a compatible array
-         (see isCopyCompatible() or isStrictlyCompatible(), according to the
+         (see isCopyCompatible() or isReferenceCompatible(), according to the
          parameter \a strict) or the Python constructor call failed.
          */
-    // void makeCopy(PyObject *obj, bool strict = false)
-    // {
-        // vigra_precondition(strict ? isStrictlyCompatible(obj) : isCopyCompatible(obj),
-                     // "NumpyArray::makeCopy(obj): Cannot copy an incompatible array.");
-
-        // int M = PyArray_NDIM(obj);
-        // TinyVector<npy_intp, N> shape;
-        // std::copy(PyArray_DIMS(obj), PyArray_DIMS(obj)+M, shape.begin());
-        // if(M == N-1)
-            // shape[M] = 1;
-        // vigra_postcondition(makeReference(init(shape, false)),
-                     // "NumpyArray::makeCopy(obj): Copy created an incompatible array.");
-        // NumpyAnyArray::operator=(NumpyAnyArray(obj));
-// //        if(PyArray_CopyInto(pyArray(), (PyArrayObject*)obj) == -1)
-// //            pythonToCppException(0);
-    // }
-
     void makeCopy(PyObject *obj, bool strict = false)
     {
-        vigra_precondition(strict ? isStrictlyCompatible(obj) : isCopyCompatible(obj),
+        vigra_precondition(strict ? isReferenceCompatible(obj) : isCopyCompatible(obj),
                      "NumpyArray::makeCopy(obj): Cannot copy an incompatible array.");
 
         NumpyAnyArray copy(obj, true);
         makeReferenceUnchecked(copy.pyObject());
     }
 
+#if 0
         /**
             Allocate new memory with the given shape and initialize with zeros.<br>
             If a stride ordering is given, the resulting array will have this stride
@@ -2627,6 +2084,22 @@ class NumpyArray
     {
         vigra_postcondition(makeReference(init(shape, strideOrdering)),
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
+    }
+#endif
+
+        /**
+            Allocate new memory with the given shape and initialize with zeros.<br>
+            If a stride ordering is given, the resulting array will have this stride
+            ordering, when it is compatible with the array's memory layout (unstrided
+            arrays only permit the standard ascending stride ordering).
+
+            <em>Note:</em> this operation invalidates dependent objects
+            (MultiArrayViews and iterators)
+         */
+    void reshape(difference_type const & shape)
+    {
+        vigra_postcondition(makeReference(init(shape)),
+                "NumpyArray.reshape(shape): Python constructor did not produce a compatible array.");
     }
 
         /**
@@ -2652,15 +2125,9 @@ class NumpyArray
         }
         else
         {
-            if(tagged_shape.axistags)
-            {
-                // if we got axistags, copy them
-                python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
-                tagged_shape.axistags = 
-                    python_ptr(PyObject_CallMethodObjArgs(tagged_shape.axistags, func.get(), NULL), 
-                               python_ptr::keep_count);
-            }
+            tagged_shape.axistags = detail::copyAxistags(tagged_shape.axistags);
             ArrayTraits::finalizeTaggedShape(tagged_shape);
+
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
                              python_ptr::keep_count);
             vigra_postcondition(makeReference(NumpyAnyArray(array.get())),
@@ -2668,6 +2135,7 @@ class NumpyArray
         }
     }
 
+#if 0
         /**
             When this array has no data, allocate new memory with the given \a shape and
             initialize with zeros. Otherwise, check if the new shape matches the old shape
@@ -2697,55 +2165,29 @@ class NumpyArray
             reshape(shape, strideOrdering);
         }
     }
+#endif
     
     TaggedShape taggedShape() const
     {
-        static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-        python_ptr axistags(PyObject_GetAttr(this->pyObject(), key), python_ptr::keep_count);
-        if(!axistags)
-            PyErr_Clear();
-        return ArrayTraits::taggedShape(this->shape(), axistags);
+        return ArrayTraits::taggedShape(this->shape(), this->axistags());
     }
 };
-
-    // // this function assumes that pyArray_ has already been set, and compatibility been checked
-// template <unsigned int N, class T, class Stride>
-// void NumpyArray<N, T, Stride>::setupArrayView()
-// {
-    // if(NumpyAnyArray::hasData())
-    // {
-        // unsigned int dimension = std::min<unsigned int>(actual_dimension, pyArray()->nd);
-        // std::copy(pyArray()->dimensions, pyArray()->dimensions + dimension, this->m_shape.begin());
-        // std::copy(pyArray()->strides, pyArray()->strides + dimension, this->m_stride.begin());
-        // if(pyArray()->nd < actual_dimension)
-        // {
-            // this->m_shape[dimension] = 1;
-            // this->m_stride[dimension] = sizeof(value_type);
-        // }
-        // this->m_stride /= sizeof(value_type);
-        // this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
-    // }
-    // else
-    // {
-        // this->m_ptr = 0;
-    // }
-// }
 
     // this function assumes that pyArray_ has already been set, and compatibility been checked
 template <unsigned int N, class T, class Stride>
 void NumpyArray<N, T, Stride>::setupArrayView()
 {
-    // FIXME: Correct handling of Multiband and Singleband is not implemented.
+    bool channelDimensionMustBeLast = typeid(T) == typeid(Multiband<value_type>);
                         
     if(NumpyAnyArray::hasData())
     {
-        NumpyAnyArray::difference_type ordering = canonicalOrdering();
+        NumpyAnyArray::difference_type ordering = permutationToNormalOrder();
         
         if(actual_dimension == pyArray()->nd)
         {
-#ifndef OLD_SEMANTICS
-            if(typeid(T) == typeid(Multiband<value_type>))
+            if(channelDimensionMustBeLast)
             {
+                // rotate the channel axis to last position
                 for(int k=1; k<actual_dimension; ++k)
                 {
                     this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
@@ -2762,67 +2204,21 @@ void NumpyArray<N, T, Stride>::setupArrayView()
                     this->m_stride[k] = pyArray()->strides[ordering[k]];
                 }
             }
-#else
-            if(typeid(T) == typeid(Multiband<value_type>))
-            {
-                for(int k=1; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k-1] = pyArray()->strides[ordering[k]];
-                }
-                this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
-                this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
-            }
-            else if(typeid(T) == typeid(value_type))
-            {
-                for(int k=0; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[k];
-                    this->m_stride[k] = pyArray()->strides[k];
-                }
-            }
-            else
-            {
-                for(int k=0; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k] = pyArray()->strides[ordering[k]];
-                }
-            }
-#endif
         }
         else if(actual_dimension == pyArray()->nd - 1)
         {
-#ifndef OLD_SEMANTICS
+            // skip the channel axis
             for(int k=0; k<actual_dimension; ++k)
             {
                 this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
                 this->m_stride[k] = pyArray()->strides[ordering[k+1]];
             }
-#else
-            if(typeid(T) == typeid(value_type))
-            {
-                for(int k=0; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[k];
-                    this->m_stride[k] = pyArray()->strides[k];
-                }
-            }
-            else
-            {
-                for(int k=0; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
-                    this->m_stride[k] = pyArray()->strides[ordering[k+1]];
-                }
-            }
-#endif
         }
         else if(actual_dimension == pyArray()->nd + 1)
         {
-#ifndef OLD_SEMANTICS
-            if(typeid(T) == typeid(Multiband<value_type>))
+            if(channelDimensionMustBeLast)
             {
+                // insert a singleton channel at the last position
                 for(int k=0; k<actual_dimension-1; ++k)
                 {
                     this->m_shape[k] = pyArray()->dimensions[ordering[k]];
@@ -2833,6 +2229,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
             }
             else
             {
+                // insert a singleton channel at the first position
                 for(int k=0; k<actual_dimension-1; ++k)
                 {
                     this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
@@ -2841,15 +2238,6 @@ void NumpyArray<N, T, Stride>::setupArrayView()
                 this->m_shape[0] = 1;
                 this->m_stride[0] = sizeof(value_type);
             }
-#else
-            for(int k=0; k<actual_dimension-1; ++k)
-            {
-                this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                this->m_stride[k] = pyArray()->strides[ordering[k]];
-            }
-            this->m_shape[actual_dimension-1] = 1;
-            this->m_stride[actual_dimension-1] = sizeof(value_type);
-#endif
         }
         else
         {

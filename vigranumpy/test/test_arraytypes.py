@@ -319,15 +319,15 @@ def checkCompatibility(obj, compatible):
                 assert_equal(tags, default_ordering.axistags)
 
                 if hasattr(obj, 'axistags'):
-                    cobj = obj.transpose(obj.canonicalOrdering)
-                    cdefault = default_ordering.transpose(default_ordering.canonicalOrdering)
+                    cobj = obj.transpose(obj.permutationToNormalOrder())
+                    cdefault = default_ordering.transpose(default_ordering.permutationToNormalOrder())
                     
                     if cobj.ndim > cdefault.ndim and cobj.shape[0] == 1:
                         assert_equal(cobj.shape[1:], cdefault.shape)
                     else:
                         assert_equal(cobj.shape, cdefault.shape)
                 else:
-                    permutation = default_ordering.canonicalOrdering
+                    permutation = default_ordering.permutationToNormalOrder()
                     permutation.reverse()
                     cdefault = default_ordering.transpose(permutation)
                     

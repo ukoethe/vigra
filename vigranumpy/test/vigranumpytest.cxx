@@ -70,6 +70,7 @@ testView(MultiArrayView<N, T, Stride> array)
     return array.shape();
 }
 
+#if 0 // FIXME: temporarily disabled
 // (right now, a compile-only test:)
 void testMakeReference()
 {
@@ -78,6 +79,7 @@ void testMakeReference()
     NumpyArray<2, npy_uint8, vigra::UnstridedArrayTag> python_view;
     python_view.makeReference(cpp_memory);
 }
+#endif
 
 } // namespace vigra
 

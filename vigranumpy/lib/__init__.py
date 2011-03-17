@@ -114,7 +114,6 @@ import arraytypes
     # import fourier
 
 # import most frequently used functions
-from vigranumpycore import registerPythonArrayType, listExportedArrayKeys
 from arraytypes import *
 # from filters import convolve, gaussianSmoothing
 # from sampling import resize
