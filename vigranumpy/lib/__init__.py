@@ -115,6 +115,8 @@ import arraytypes
 
 # import most frequently used functions
 from arraytypes import *
+defaultArrayType = VigraArray 
+
 # from filters import convolve, gaussianSmoothing
 # from sampling import resize
 # from impex import readImage, readVolume

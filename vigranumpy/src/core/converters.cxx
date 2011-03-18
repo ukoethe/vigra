@@ -353,6 +353,21 @@ constructNumpyArrayFromArray(python::object type, NumpyAnyArray array,
 }
 #endif
 
+PyObject * 
+constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & shape, 
+                           NPY_TYPES typeCode, AxisTags const & axistags, bool init)
+{
+    python_ptr pyaxistags(python::object(axistags).ptr());
+    
+    ArrayVector<npy_intp> permutation(detail::permutationToNormalOrder(pyaxistags));
+    ArrayVector<npy_intp> norm_shape(shape.size());
+    applyPermutation(permutation.begin(), permutation.end(), shape.begin(), norm_shape.begin());
+
+    TaggedShape tagged_shape(norm_shape, pyaxistags);
+    // FIXME: check that type is an array class?
+    return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
+}
+
 void registerNumpyArrayConverters()
 {
     NumpyTypenumConverter();
@@ -364,7 +379,7 @@ void registerNumpyArrayConverters()
         
     doc_options.disable_all();
     // FIXME: replace the Python versions for consistence?
-    // python::def("constructNumpyArray", &constructNumpyArrayFromShape);
+    python::def("constructArrayFromAxistags", &constructArrayFromAxistags);
     // python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }
 

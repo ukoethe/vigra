@@ -234,14 +234,28 @@ inline long majorNonchannelIndex(PyArrayObject * array, long defaultVal)
     return getAttrLong((PyObject*)array, key, defaultVal);
 }
 
-inline std::string defaultOrder(std::string defaultValue = "C")
+inline
+python_ptr getArrayTypeObject()
 {
     PyObject *g = PyEval_GetGlobals();
-    python_ptr pres(PyRun_String("vigra.arraytypes.defaultOrder", Py_eval_input, g, g), 
-                    python_ptr::keep_count);
+    python_ptr arraytype(PyRun_String("vigra.defaultArrayType", Py_eval_input, g, g), 
+                         python_ptr::keep_count);
+    if(!arraytype)
+    {
+        PyErr_Clear();
+        arraytype = (PyObject*)&PyArray_Type;
+    }
+    return arraytype;
+}
+
+inline std::string defaultOrder(std::string defaultValue = "C")
+{
+    python_ptr arraytype = getArrayTypeObject();
+    static python_ptr key(PyString_FromString("defaultOrder"), python_ptr::keep_count);
+    python_ptr pres(PyObject_GetAttr(arraytype, key), python_ptr::keep_count);
     if(pres)
         return PyString_Check(pres)
-                     ? std::string(PyString_AsString(pres))
+                     ? PyString_AsString(pres)
                      : defaultValue;
     PyErr_Clear();
     return defaultValue;
@@ -332,20 +346,6 @@ inline
 ArrayVector<npy_intp> permutationFromNormalOrder(python_ptr object, bool ignoreErrors = false)
 {
     return getAxisPermutationImpl(object, "permutationFromNormalOrder", ignoreErrors);
-}
-
-inline
-python_ptr getArrayTypeObject()
-{
-    PyObject *g = PyEval_GetGlobals();
-    python_ptr arraytype(PyRun_String("vigra.arraytypes.VigraArray", Py_eval_input, g, g), 
-                         python_ptr::keep_count);
-    if(!arraytype)
-    {
-        PyErr_Clear();
-        arraytype = (PyObject*)&PyArray_Type;
-    }
-    return arraytype;
 }
 
 #if 0
@@ -637,7 +637,8 @@ class TaggedShape
 
 inline // FIXME
 PyObject * 
-constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
+constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init,
+               python_ptr arraytype = python_ptr())
 {
     int ndim = (int)tagged_shape.size();
     ArrayVector<npy_intp> shape(tagged_shape.shape);
@@ -750,10 +751,16 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
         linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
     }
     
-    python_ptr arraytype = axistags
-                             ? detail::getArrayTypeObject()
-                             : python_ptr((PyObject*)&PyArray_Type);
-
+    if(axistags)
+    {
+        if(!arraytype)
+            arraytype = detail::getArrayTypeObject();
+    }
+    else
+    {
+        arraytype = python_ptr((PyObject*)&PyArray_Type);
+    }
+    
     python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
                                   typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
                      python_ptr::keep_count);
