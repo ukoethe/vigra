@@ -88,7 +88,7 @@ using namespace vigra;
 
 BOOST_PYTHON_MODULE_INIT(vigranumpytest)
 {
-    import_array();
+    import_vigranumpy();
     
     def("testAny", &testAny);
 

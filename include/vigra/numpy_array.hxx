@@ -234,18 +234,33 @@ inline long majorNonchannelIndex(PyArrayObject * array, long defaultVal)
     return getAttrLong((PyObject*)array, key, defaultVal);
 }
 
+// inline
+// python_ptr getArrayTypeObject()
+// {
+    // PyObject *g = PyEval_GetGlobals();
+    // python_ptr arraytype(PyRun_String("vigra.defaultArrayType", Py_eval_input, g, g), 
+                         // python_ptr::keep_count);
+    // if(!arraytype)
+    // {
+        // PyErr_Clear();
+        // arraytype = (PyObject*)&PyArray_Type;
+    // }
+    // return arraytype;
+// }
+
 inline
 python_ptr getArrayTypeObject()
 {
-    PyObject *g = PyEval_GetGlobals();
-    python_ptr arraytype(PyRun_String("vigra.defaultArrayType", Py_eval_input, g, g), 
-                         python_ptr::keep_count);
-    if(!arraytype)
+    python_ptr vigra(PyImport_ImportModule("vigra"));
+    if(vigra)
     {
-        PyErr_Clear();
-        arraytype = (PyObject*)&PyArray_Type;
+        static python_ptr key(PyString_FromString("defaultArrayType"), python_ptr::keep_count);
+        python_ptr arraytype(PyObject_GetAttr(vigra, key), python_ptr::keep_count);
+        if(arraytype)
+            return arraytype;
     }
-    return arraytype;
+    PyErr_Clear();
+    return python_ptr((PyObject*)&PyArray_Type);
 }
 
 inline std::string defaultOrder(std::string defaultValue = "C")
@@ -262,10 +277,13 @@ inline std::string defaultOrder(std::string defaultValue = "C")
 }
 
 inline 
-python_ptr defaultAxistags(int ndim)
+python_ptr defaultAxistags(int ndim, std::string order = "")
 {
+    if(order == "")
+        order = defaultOrder();
     PyObject *g = PyEval_GetGlobals();
-    std::string command = std::string("vigra.arraytypes.defaultAxistags(") + asString(ndim) + ")";
+    std::string command = std::string("vigra.arraytypes.defaultAxistags(") + 
+                           asString(ndim) + ", '" + order + "')";
     python_ptr axistags(PyRun_String(command.c_str(), Py_eval_input, g, g), 
                         python_ptr::keep_count);
     if(!axistags)
@@ -541,7 +559,7 @@ class TaggedShape
         if(size() == 0)
             shape.resize(N);
         
-        for(int k=; k<N; ++k)
+        for(int k=0; k<N; ++k)
             shape[k+start] = sh[k];
             
         return *this;
@@ -866,11 +884,11 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
         // FIXME: we construct axistags with one entry too many, so that the channel axis
         //        can be dropped in constructArray(). This is a HACK.
-        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1));
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1, order));
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -991,9 +1009,9 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1)).setChannelCount(1);
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1, order)).setChannelCount(1);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1112,9 +1130,9 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, detail::defaultAxistags(shape.size())).setChannelIndexLast();
+        return TaggedShape(shape, detail::defaultAxistags(shape.size(), order)).setChannelIndexLast();
     }
 
     // template <class U>
@@ -1231,9 +1249,9 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1)).setChannelCount(M);
+        return TaggedShape(shape, detail::defaultAxistags(shape.size()+1, order)).setChannelCount(M);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -1783,9 +1801,10 @@ class NumpyArray
         return detail::getArrayTypeObject();
     }
 
-    static python_ptr init(difference_type const & shape, bool init = true)
+    static python_ptr init(difference_type const & shape, bool init = true, 
+                           std::string const & order = "")
     {
-        return python_ptr(constructArray(ArrayTraits::taggedShape(shape), typeCode, init), 
+        return python_ptr(constructArray(ArrayTraits::taggedShape(shape, order), typeCode, init), 
                           python_ptr::keep_count);
     }
 
@@ -1871,9 +1890,9 @@ class NumpyArray
          *
          * An exception is thrown when construction fails.
          */
-    explicit NumpyArray(difference_type const & shape)
+    explicit NumpyArray(difference_type const & shape, std::string const & order = "")
     {
-        vigra_postcondition(makeReference(init(shape)),
+        vigra_postcondition(makeReference(init(shape, true, order)),
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
     }
 
@@ -2128,11 +2147,11 @@ class NumpyArray
     {
         if(hasData())
         {
+            // FIXME: implement
             vigra_fail("reshapeIfEmpty(): already has data, but shape check is not implemented yet, sorry.");
         }
         else
         {
-            tagged_shape.axistags = detail::copyAxistags(tagged_shape.axistags);
             ArrayTraits::finalizeTaggedShape(tagged_shape);
 
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
@@ -2176,7 +2195,8 @@ class NumpyArray
     
     TaggedShape taggedShape() const
     {
-        return ArrayTraits::taggedShape(this->shape(), this->axistags());
+        return ArrayTraits::taggedShape(this->shape(), 
+                                         detail::copyAxistags(this->axistags()));
     }
 };
 
@@ -2277,16 +2297,6 @@ inline void import_vigranumpy()
         pythonToCppException(0);
     python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
     pythonToCppException(module);
-}
-
-#ifdef import_array
-#undef import_array
-#endif
-
-inline void import_array()
-{
-    if(_import_array() < 0)
-        pythonToCppException(0);
 }
 
 /********************************************************/

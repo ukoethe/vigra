@@ -68,7 +68,14 @@ NumpyAnyArray pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, do
         width = (int) std::ceil(factor * image.shape(0));
         height= (int) std::ceil(factor * image.shape(1));
     }
-    res.reshapeIfEmpty(MultiArrayShape<3>::type(width,height,image.shape(2)),"resampleImage(): Output images has wrong dimensions");
+    // res.reshapeIfEmpty(MultiArrayShape<3>::type(width,height,image.shape(2)),
+                          // "resampleImage(): Output images has wrong dimensions");
+
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = width;
+    newShape[1] = height;
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty(newShape,"resampleImage(): Output images has wrong dimensions");
 
     for(int k=0;k<image.shape(2);++k)
     {
@@ -103,11 +110,21 @@ NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
         degree=180;
         break;
     }
-    //make the output
+    
+    TaggedShape newShape(image.taggedShape());
     if(degree % 180 == 0)
-        res.reshapeIfEmpty(image.shape(),"rotateImageSimple(): Output images has wrong dimensions");
+    {
+        // res.reshapeIfEmpty(image.shape(),"rotateImageSimple(): Output images has wrong dimensions");
+        res.reshapeIfEmpty(newShape,"rotateImageSimple(): Output images has wrong dimensions");
+    }
     else
-        res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(1),image.shape(0),image.shape(2)),"rotateImage(): Output image has wrong dimensions");
+    {
+        //FIXME: adjust axistags ? 
+        // res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(1),image.shape(0),image.shape(2)),"rotateImage(): Output image has wrong dimensions");
+        newShape[0] = image.shape(1);
+        newShape[1] = image.shape(0);
+        res.reshapeIfEmpty(newShape,"rotateImage(): Output image has wrong dimensions");
+    }
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -127,8 +144,11 @@ template < class PixelType>
 NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image, double radiant, RotationDirection dir, int splineOrder,NumpyArray<3,Multiband<PixelType> > res)
 {
     //reshape, if empty. Otherwise accept res dimensions
+    // if(!res.hasData())
+        // res.reshapeIfEmpty(image.shape(),"rotateImageRadiant(): Output images has wrong dimensions");
     if(!res.hasData())
-        res.reshapeIfEmpty(image.shape(),"");
+        res.reshapeIfEmpty(image.taggedShape(),"rotateImageRadiant(): Output images has wrong dimensions");
+
     vigra_precondition(res.shape(2)==image.shape(2),"rotateImageRadiant(): number of channels of image and result have to be equal");
     //res.init(NumericTraits< PixelType>::zero());
     if(dir==ROTATE_CW)
@@ -210,8 +230,13 @@ NumpyAnyArray pythonResizeImageNoInterpolation(NumpyArray<3, Multiband<PixelType
         size[1]=res.shape(1);
     }
     
-    res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
-                        "Output image has wrong dimensions");
+    // res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
+                        // "Output image has wrong dimensions");
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = size[0];
+    newShape[1] = size[1];
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "Output image has wrong dimensions");
 
     for(int k=0;k<image.shape(2);++k)
     {
@@ -233,6 +258,7 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
 
     vigra_precondition((destSize!=python::object() && !res.hasData()) || (destSize==python::object() && res.hasData()),
                        "destSize or out has to be given, but only one of them");
+
     MultiArrayShape<2>::type size;
     if(!res.hasData())
     {
@@ -244,8 +270,13 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
         size[1]=res.shape(1);
     }
     
-    res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
-                        "Output image has wrong dimensions");
+    // res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
+                        // "Output image has wrong dimensions");
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = size[0];
+    newShape[1] = size[1];
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "Output image has wrong dimensions");
 
     for(int k=0;k<image.shape(2);++k)
     {
@@ -267,23 +298,39 @@ NumpyAnyArray pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<Pix
     vigra_precondition((destSize!=python::object() && !res.hasData()) || (destSize==python::object() && res.hasData()),
                        "destSize or out has to be given, but only one of them");
 
-    TinyVector<UInt32,dim> out_shape;
+    // TinyVector<UInt32,dim> out_shape;
+    // if(!res.hasData())
+    // {
+        // typedef typename MultiArrayShape<dim-1>::type shape;
+        // shape size;
+        // size=python::extract<shape>(destSize)();
+        // for(int ii=0;ii<dim-1;++ii)
+            // out_shape[ii]=size[ii];
+        // out_shape[dim-1]=image.shape(dim-1);
+    // }
+    // else
+    // {
+        // for(int ii=0;ii<dim;++ii)
+            // out_shape[ii]=res.shape(ii);
+    // }
+    // res.reshapeIfEmpty(out_shape, "Output image has wrong dimensions");
+    
+    typedef typename MultiArrayShape<dim-1>::type OutShape;
+    OutShape out_shape;
     if(!res.hasData())
     {
-        typedef typename MultiArrayShape<dim-1>::type shape;
-        shape size;
-        size=python::extract<shape>(destSize)();
-        for(int ii=0;ii<dim-1;++ii)
-            out_shape[ii]=size[ii];
-        out_shape[dim-1]=image.shape(dim-1);
+        out_shape=python::extract<OutShape>(destSize)();
     }
     else
     {
-        for(int ii=0;ii<dim;++ii)
-            out_shape[ii]=res.shape(ii);
+        for(int k=0; k<dim-1; ++k)
+            out_shape[k] = res.shape(k);
     }
     
-    res.reshapeIfEmpty(out_shape, "Output image has wrong dimensions");
+    TaggedShape newShape(image.taggedShape());
+    newShape = out_shape;
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "Output image has wrong dimensions");
 
     for(int k=0;k<image.shape(dim-1);++k)
     {
@@ -292,46 +339,46 @@ NumpyAnyArray pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<Pix
         MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
         switch (splineOrder)
         {
-        case 1:
-        {
-            BSpline< 1, double > spline;
-            resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                           destMultiArrayRange(bres), spline);
-            break;
-        }
-        case 2:
-        {
-            BSpline< 2, double > spline;
-            resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                destMultiArrayRange(bres), spline);
-            break;
-        }
-        case 3:
-        {
-            BSpline< 3, double > spline;
-            resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                destMultiArrayRange(bres), spline);
-            break;
-        }
-        case 4:
-        {
-            BSpline< 4, double > spline;
-            resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                destMultiArrayRange(bres), spline);
-            break;
-        }
-        case 5:
-        {
-            BSpline< 5, double > spline;
-            resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                destMultiArrayRange(bres), spline);
-            break;
-        }
-        default:
-        {
-            PyErr_SetString(PyExc_ValueError, "Spline order not supported.");
-            python::throw_error_already_set();
-        }
+            case 1:
+            {
+                BSpline< 1, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                               destMultiArrayRange(bres), spline);
+                break;
+            }
+            case 2:
+            {
+                BSpline< 2, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                    destMultiArrayRange(bres), spline);
+                break;
+            }
+            case 3:
+            {
+                BSpline< 3, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                    destMultiArrayRange(bres), spline);
+                break;
+            }
+            case 4:
+            {
+                BSpline< 4, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                    destMultiArrayRange(bres), spline);
+                break;
+            }
+            case 5:
+            {
+                BSpline< 5, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                    destMultiArrayRange(bres), spline);
+                break;
+            }
+            default:
+            {
+                PyErr_SetString(PyExc_ValueError, "Spline order not supported.");
+                python::throw_error_already_set();
+            }
         }
     }
     return res;
@@ -359,8 +406,13 @@ NumpyAnyArray pythonResizeImageCatmullRomInterpolation(NumpyArray<3, Multiband<P
     
     vigra_precondition((size[0] > 1) && (size[1] > 1),
         "The destination image must have a size of at least 2x2.");
-    res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
-                        "Output image has wrong dimensions");
+    // res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
+                        // "Output image has wrong dimensions");
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = size[0];
+    newShape[1] = size[1];
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "Output image has wrong dimensions");
 
     for(int k=0;k<image.shape(2);++k)
     {
@@ -395,8 +447,13 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
     
     vigra_precondition((size[0] > 1) && (size[1] > 1),
         "The destination image must have a size of at least 2x2.");
-    res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
-                        "Output image has wrong dimensions");
+    // res.reshapeIfEmpty( MultiArrayShape<3>::type(size[0],size[1],image.shape(2)),
+                        // "Output image has wrong dimensions");
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = size[0];
+    newShape[1] = size[1];
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "Output image has wrong dimensions");
 
     for(int k=0;k<image.shape(2);++k)
     {
@@ -423,10 +480,15 @@ NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
     Gaussian< double > smoothx(sigmax, derivativeOrderX);
     Gaussian< double > smoothy(sigmay, derivativeOrderY);
 
-	res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), 
-                                                rational_cast< int >(image.shape(1)*yratio), 
-	                                            image.shape(2)), 
-                       "resamplingGaussian2D(): Output array has wrong shape.");
+	// res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), 
+                                                // rational_cast< int >(image.shape(1)*yratio), 
+	                                            // image.shape(2)), 
+                       // "resamplingGaussian2D(): Output array has wrong shape.");
+    TaggedShape newShape(image.taggedShape());
+    newShape[0] = rational_cast< int >(image.shape(0)*xratio);
+    newShape[1] = rational_cast< int >(image.shape(1)*yratio);
+    //FIXME: adjust axistag resolution
+    res.reshapeIfEmpty( newShape, "resamplingGaussian2D(): Output array has wrong shape.");
 
 	for(int k=0; k<image.shape(2); ++k)
 	{

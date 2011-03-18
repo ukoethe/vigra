@@ -347,15 +347,12 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
         }
         else
         {
-            NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
-                                                                       info.shapeOfDimension(1), 
-                                                                       info.shapeOfDimension(2)));
-            readHDF5(info, res);
-            TinyVector<npy_intp, 3> permutation(1,2,0);
-            PyArray_Dims permute = { permutation.begin(), 3 };
-            python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
-            pythonToCppException(array);
-            return NumpyAnyArray(array.ptr());
+            NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(1), 
+                                                                       info.shapeOfDimension(2), 
+                                                                       info.shapeOfDimension(0)));
+            MultiArrayShape<3>::type permute(2,0,1);
+            readHDF5(info, res.permuteDimensions(permute));
+            return res;
         }
       }
       default:
@@ -444,16 +441,13 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
       }
       case 4:
       {
-        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0), 
-                                                                   info.shapeOfDimension(1), 
+        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(1), 
                                                                    info.shapeOfDimension(2), 
-                                                                   info.shapeOfDimension(3)));
-        readHDF5(info, res);
-        TinyVector<npy_intp, 4> permutation(1,2,3,0);
-        PyArray_Dims permute = { permutation.begin(), 4 };
-        python_ptr array(PyArray_Transpose(res.pyArray(), &permute), python_ptr::keep_count);
-        pythonToCppException(array);
-        return NumpyAnyArray(array.ptr());
+                                                                   info.shapeOfDimension(3), 
+                                                                   info.shapeOfDimension(0)));
+        MultiArrayShape<4>::type permute(3, 0, 1, 2);
+        readHDF5(info, res.permuteDimensions(permute));
+        return res;
       }
       default:
       {
@@ -530,6 +524,7 @@ void defineImpexFunctions()
     
     docstring_options doc_options(true, true, false);
     
+    // FIXME: add an order parameter to the import functions
     def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
         "Read a 3D volume from a directory::\n\n"
         "   readVolume(filename, dtype = 'FLOAT') -> Volume\n\n"
@@ -693,7 +688,7 @@ void defineImpexFunctions()
         "   image = vigra.readImage(filename)\n"
         "   vigra.writeImageToHDF5(image, 'vigra_export.h5', 'MyImage')\n"
         "   h5py_file = h5py.File('h5py_export.h5', 'w')\n"
-        "   h5py_file.create_dataset('MyImage', data=image.swapaxes(0, 1))\n"
+        "   h5py_file.create_dataset('MyImage', data=image.transposeToNumpyOrder())\n"
         "   h5py_file.close()\n"
         "\n"
         "(note the axes transposition which accounts for the VIGRA indexing convention).\n\n");
@@ -708,7 +703,7 @@ void defineImpexFunctions()
         "   volume = vigra.readVolume(filename)\n"
         "   vigra.writeVolumeToHDF5(volume, 'vigra_export.h5', 'MyVolume')\n"
         "   h5py_file = h5py.File('h5py_export.h5', 'w')\n"
-        "   h5py_file.create_dataset('MyVolume', data=volume.swapaxes(0, 2))\n"
+        "   h5py_file.create_dataset('MyVolume', data=volume.transposeToNumpyOrder())\n"
         "   h5py_file.close()\n"
         "\n"
         "(note the axes transposition which accounts for the VIGRA indexing convention).\n\n");

@@ -97,9 +97,9 @@ The following sub-modules group related functionality:
 from __version__ import version
 import vigranumpycore
 import arraytypes
-# import impex
+import impex
 # import filters
-# import sampling
+import sampling
 # import analysis
 # import learning
 # import colors
@@ -115,15 +115,16 @@ import arraytypes
 
 # import most frequently used functions
 from arraytypes import *
-defaultArrayType = VigraArray 
+defaultArrayType = arraytypes.VigraArray 
 
-# from filters import convolve, gaussianSmoothing
-# from sampling import resize
-# from impex import readImage, readVolume
+from impex import readImage, readVolume
 # try:
     # from impex import readImageFromHDF5, readVolumeFromHDF5
 # except:
     # pass
+
+# from filters import convolve, gaussianSmoothing
+# from sampling import resize
 
 # # import enums
 # CLOCKWISE = sampling.RotationDirection.CLOCKWISE

@@ -335,7 +335,7 @@ class CaptionImageViewer(qt.QFrame):
         self._captionCoords = 0,0
         self._xplaces = int(math.log10(self.viewer.image.width) + 1.0)
         self._yplaces = int(math.log10(self.viewer.image.height) + 1.0)
-        self._valueplaces = self.viewer.image.bands()*5
+        self._valueplaces = self.viewer.image.channels*5
         
         self.label = qt.QLabel(self)
         font = qt.QFont()

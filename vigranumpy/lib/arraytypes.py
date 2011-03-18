@@ -360,7 +360,7 @@ def _array_docstring_(name, shape, compat):
     return '''
     Constructor:
     
-    .. method:: %(name)s(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, init = True, value = None)
+    .. method:: %(name)s(obj, dtype=numpy.float32, order=None, init = True, value = None)
 
         :param obj: a data or shape object (see below)
         :param dtype: desired element type
@@ -445,7 +445,7 @@ this class via its subclasses!
             res = _constructArrayFromArray(cls, obj, dtype, order, init, axistags)
         else:
             if order is None and axistags is None:
-                order = defaultOrder
+                order = VigraArray.defaultOrder
             if axistags is not None and len(axistags) != len(obj):
                 raise RuntimeError("VigraArray(): axistags have wrong length.")
             if order is not None:
@@ -592,6 +592,9 @@ this class via its subclasses!
                 permutation = permutation[1:] + [permutation[0]]
         return self.transpose(permutation)
     
+    def transposeToDefaultOrder(self):
+        return self.transposeToOrder(self.defaultOrder)
+
     def transposeToVigraOrder(self):
         return self.transposeToOrder('V')
 
@@ -825,7 +828,7 @@ this class via its subclasses!
         yxImage = self.transposeToNumpyOrder()
 
         if self.channels == 1:
-            q = qimage2ndarray.gray2qimage(yxImage, normalize)
+            q = qimage2ndarray.gray2qimage(yxImage.dropChannelAxis(), normalize)
         else:
             q = qimage2ndarray.array2qimage(yxImage, normalize)
 
@@ -845,7 +848,7 @@ def _adjustShape(shape, order, spatialDimensions, channelCount, name):
 
 # FIXME: we must also check axistags and obj if it is an array
 #        (maybe part of it is better done in VigraArray)
-def Image(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Image(obj, dtype=numpy.float32, order=None, 
           init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 2 and obj.ndim != 3:
@@ -854,57 +857,57 @@ def Image(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 2, 1, "vigra.Image()")
     return VigraArray(obj, dtype, order, init, value, axistags)
         
-def ScalarImage(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def ScalarImage(obj, dtype=numpy.float32, order=None, 
                 init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 2 and obj.ndim != 3:
             raise RuntimeError("ScalarImage(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 1, "vigra.ScalarImage()")
-    res = VigraArray(obj, dtype, order, init, value)
+    res = VigraArray(obj, dtype, order, init, value, axistags)
     # FIXME: activate this after test refactoring
     # res = dropChannelAxis(res)
     return res
         
-def Vector2Image(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector2Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3:
             raise RuntimeError("Vector2Image(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 2, "vigra.Vector2Image()")
-    return VigraArray(obj, dtype, order, init, value)
+    return VigraArray(obj, dtype, order, init, value, axistags)
 
-def Vector3Image(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector3Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3:
             raise RuntimeError("Vector3Image(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 3, "vigra.Vector3Image()")
-    return VigraArray(obj, dtype, order, init, value)
+    return VigraArray(obj, dtype, order, init, value, axistags)
 
-def Vector4Image(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector4Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3:
             raise RuntimeError("Vector4Image(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 4, "vigra.Vector4Image()")
-    return VigraArray(obj, dtype, order, init, value)
+    return VigraArray(obj, dtype, order, init, value, axistags)
 
-def RGBImage(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def RGBImage(obj, dtype=numpy.float32, order=None, 
              init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3:
             raise RuntimeError("RGBImage(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 3, "vigra.RGBImage()")
-    return VigraArray(obj, dtype, order, init, value)
+    return VigraArray(obj, dtype, order, init, value, axistags)
 
 #################################################################
 
-def Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Volume(obj, dtype=numpy.float32, order=None, 
            init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3 and obj.ndim != 4:
@@ -913,19 +916,19 @@ def Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 3, 1, "vigra.Volume()")
     return VigraArray(obj, dtype, order, init, value, axistags)
 
-def ScalarVolume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def ScalarVolume(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 3 and obj.ndim != 4:
             raise RuntimeError("ScalarVolume(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 3, 1, "vigra.ScalarVolume()")
-    res = VigraArray(obj, dtype, order, init, value)
+    res = VigraArray(obj, dtype, order, init, value, axistags)
     # FIXME: activate this after test refactoring
     # res = dropChannelDimension(res)
     return res
 
-def Vector2Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector2Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
@@ -934,7 +937,7 @@ def Vector2Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 3, 2, "vigra.Vector2Volume()")
     return VigraArray(obj, dtype, order, init, value, axistags)
 
-def Vector3Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector3Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
@@ -943,7 +946,7 @@ def Vector3Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 3, 3, "vigra.Vector3Volume()")
     return VigraArray(obj, dtype, order, init, value, axistags)
 
-def Vector4Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector4Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
@@ -952,7 +955,7 @@ def Vector4Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 3, 4, "vigra.Vector4Volume()")
     return VigraArray(obj, dtype, order, init, value, axistags)
 
-def Vector6Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def Vector6Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
@@ -961,7 +964,7 @@ def Vector6Volume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder,
         obj = _adjustShape(obj, order, 3, 6, "vigra.Vector6Volume()")
     return VigraArray(obj, dtype, order, init, value, axistags)
 
-def RGBVolume(obj, dtype=numpy.float32, order=VigraArray.defaultOrder, 
+def RGBVolume(obj, dtype=numpy.float32, order=None, 
               init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
         if obj.ndim != 4:
