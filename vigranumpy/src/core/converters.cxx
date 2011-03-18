@@ -178,9 +178,11 @@ struct MultiArrayShapeConverterTraits
 {
     typedef TinyVector<T, N> ShapeType;
 
-    static ShapeType * construct(void* const storage, PyObject *)
+    static void construct(void* const storage, PyObject * obj)
     {
-        return new (storage) ShapeType();
+        ShapeType * shape = new (storage) ShapeType();
+        for(int i=0; i<PySequence_Length(obj); ++i)
+            (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
     }
 };
 
@@ -189,9 +191,14 @@ struct MultiArrayShapeConverterTraits<0, T>
 {
     typedef ArrayVector<T> ShapeType;
 
-    static ShapeType * construct(void* const storage, PyObject * obj)
+    static void construct(void* const storage, PyObject * obj)
     {
-        return new (storage) ShapeType(PySequence_Length(obj));
+        int len = (obj == Py_None)
+                           ? 0
+                           : PySequence_Length(obj);
+        ShapeType * shape = new (storage) ShapeType(len);
+        for(int i=0; i<len; ++i)
+            (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
     }
 };
 
@@ -213,7 +220,11 @@ struct MultiArrayShapeConverter
         
     static void* convertible(PyObject* obj)
     {
-        if(obj == 0 || !PySequence_Check(obj) || (M != 0 && PySequence_Length(obj) != M))
+        if(obj == 0)
+            return 0;
+        if(M == 0 && obj == Py_None)
+            return obj;
+        if(!PySequence_Check(obj) || (M != 0 && PySequence_Length(obj) != M))
             return 0;
         for(int i=0; i<PySequence_Length(obj); ++i)
             if(!PyNumber_Check(PySequence_ITEM(obj, i)))
@@ -228,9 +239,7 @@ struct MultiArrayShapeConverter
         void* const storage =   
             ((python::converter::rvalue_from_python_storage<ShapeType>* ) data)->storage.bytes;
 
-        ShapeType * shape = detail::MultiArrayShapeConverterTraits<M, T>::construct(storage, obj);
-        for(int i=0; i<PySequence_Length(obj); ++i)
-            (*shape)[i] = python::extract<T>(PySequence_ITEM(obj, i));
+        detail::MultiArrayShapeConverterTraits<M, T>::construct(storage, obj);
         data->convertible = storage;
     }
 

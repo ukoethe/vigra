@@ -68,8 +68,7 @@ import vigranumpycore
 
 from tagged_array import TaggedArray
 
-#from vigranumpycore import AxisType, AxisInfo, AxisTags
-from vigranumpycore import AxisType, AxisInfo
+from vigranumpycore import AxisType, AxisInfo, AxisTags
 
 try:
     import qimage2ndarray
@@ -125,7 +124,7 @@ class classproperty(object):
 # del AxisInfo_copy
 # del AxisInfo_deepcopy
                        
-class AxisTags(object):
+class PyAxisTags(object):
     def __init__(self, *args):
         if len(args) == 0:
             self.tags = []
@@ -223,12 +222,12 @@ class AxisTags(object):
         if index < len(self):
             self.tags[index].description = description
     
-    def dropChannelDimension(self):
+    def dropChannelAxis(self):
         index = self.index('c')
         if index < len(self):
             del self.tags[index]
     
-    def insertChannelDimension(self):
+    def insertChannelAxis(self):
         index = self.index('c')
         if index < len(self):
             raise RuntimeError("AxisTags.insertChannelDimension(): already have a channel dimension.")
@@ -357,10 +356,10 @@ def constructArrayFromOrder(cls, shape, dtype, order, init):
     return constructArrayFromAxistags(cls, shape, dtype, axistags, init)
     
 def constructArrayFromAxistags(cls, shape, dtype, axistags, init):
-    permutation = canonicalAxisPermutation(axistags)
+    permutation = list(axistags.permutationToNormalOrder())
+    inverse_permutation = axistags.permutationFromNormalOrder()
     norm_shape = tuple(numpy.array(shape)[permutation])
-    inverse_permutation = list(numpy.array(permutation).argsort())
-    
+
     array = numpy.ndarray.__new__(cls, norm_shape, dtype, order='F')
     array = array.transpose(inverse_permutation)
     if init:
@@ -400,7 +399,7 @@ def constructArrayFromArray(cls, obj, dtype, order, init):
             del array.axistags
     return array
     
-def dropChannelDimension(array):
+def dropChannelAxis(array):
     try:
         channelIndex = array.axistags.index('c')
     except:
@@ -413,7 +412,7 @@ def dropChannelDimension(array):
     else:
         return array
         
-def addChannelDimension(shape, channels, order):
+def addChannelAxis(shape, channels, order):
     if order == 'F':
         return (channels,) + shape
     else:
@@ -738,7 +737,9 @@ this class via its subclasses!
     
     def transpose_axistags(self, permutation = None):
         if hasattr(self, 'axistags'):
-            return self.axistags.transpose(permutation)
+            res = copy.copy(self.axistags)
+            res.transpose(permutation)
+            return res
         else:
             return self.default_axistags()
 

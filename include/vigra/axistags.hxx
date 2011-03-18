@@ -92,12 +92,14 @@ class AxisInfo
     
     AxisType typeFlags() const
     {
-        return flags_;
+        return flags_ == 0
+                  ? UnknownAxisType
+                  : flags_;
     }
     
     bool isUnknown() const
     {
-        return (flags_ == UnknownAxisType) || (flags_ == 0);
+        return isType(UnknownAxisType);
     }
     
     bool isSpatial() const
@@ -127,7 +129,7 @@ class AxisInfo
     
     bool isType(AxisType type) const
     {
-        return (flags_ & type) != 0;
+        return (typeFlags() & type) != 0;
     }
     
     std::string repr() const
@@ -190,16 +192,37 @@ class AxisInfo
 
 	bool operator==(AxisInfo const & other) const
 	{
-		if(isUnknown() || other.isUnknown())
-            return true;
-        return key() == other.key() && typeFlags() == other.typeFlags() && 
-			   (resolution() == 0.0 || other.resolution() == 0.0 || 
-                resolution() == other.resolution());
+        return typeFlags() == other.typeFlags() && key() == other.key();
 	}
 
 	bool operator!=(AxisInfo const & other) const
 	{
 		return !operator==(other);
+	}
+    
+    // the primary ordering is according to axis type:
+    //     Channels < Space < Angle < Time < Frequency < Unknown
+    // the secondary ordering is the lexicographic ordering of the keys
+    //     "x" < "y" < "z"
+	bool operator<(AxisInfo const & other) const
+	{
+		return (typeFlags() < other.typeFlags()) || 
+                (typeFlags() == other.typeFlags() && key() < other.key());
+	}
+
+	bool operator<=(AxisInfo const & other) const
+	{
+		return !(other < *this);
+	}
+    
+	bool operator>(AxisInfo const & other) const
+	{
+		return other < *this;
+	}
+    
+	bool operator>=(AxisInfo const & other) const
+	{
+		return !(*this < other);
 	}
     
     // factory functions for standard tags
@@ -253,31 +276,7 @@ class AxisInfo
     AxisType flags_;
 };
 
-// the primary ordering is according to axis type:
-//     Channels < Space < Angle < Time < Frequency < Unknown
-// the secondary ordering is the lexicographic ordering of the keys
-//     "x" < "y" < "z"
-struct AxisInfoSorter
-{
-    template <class T>
-    bool operator()(T const & l, T const & r) const
-    {
-		UInt32 lAxisType = l.typeFlags();
-        if(lAxisType == 0)
-            lAxisType = UnknownAxisType;
-        UInt32 rAxisType = r.typeFlags();
-        if(rAxisType == 0)
-            rAxisType = UnknownAxisType;
-		return (lAxisType == rAxisType)
-			        ? l.key() < r.key()
-					: lAxisType < rAxisType;
-    }
-};
-
-
 // FIXME: check for duplicate keys in all setter functions.
-
-// split up AxisTags into a purely C++ part and a Python-dependent part (PyAxisTags below)
 class AxisTags
 {
   public:
@@ -322,29 +321,6 @@ class AxisTags
         push_back(i5);
     }
     
-    AxisInfo & operator[](int k)
-    {
-        vigra_precondition(checkIndex(k),
-            "AxisTags[index]: unknown index or key.");
-        if(k < 0)
-            k += size();
-        return axes_[k];
-    }
-    
-    AxisInfo const & operator[](int k) const
-    {
-        vigra_precondition(checkIndex(k),
-            "AxisTags[index]: unknown index or key.");
-        if(k < 0)
-            k += size();
-        return axes_[k];
-    }
-    
-    AxisInfo const & operator[](std::string const & key) const
-    {
-        return operator[](index(key));
-    }
-
 	unsigned int size() const
 	{
 		return axes_.size();
@@ -372,18 +348,65 @@ class AxisTags
 		return res;
     }
     
+    void setChannelDescription(std::string const & description)
+    {
+        int k = channelIndex();
+        if(k < (int)size())
+            axes_[k].setDescription(description);
+    }
+    
+    AxisInfo const & get(int k) const
+    {
+        checkIndex(k);
+        if(k < 0)
+            k += size();
+        return axes_[k];
+    }
+    
+    AxisInfo const & get(std::string const & key) const
+    {
+        return get(index(key));
+    }
+    
+    void set(int k, AxisInfo const & info)
+    {
+        checkIndex(k);
+        if(k < 0)
+            k += size();
+        checkDuplicates(k, info);
+        axes_[k] = info;
+    }
+
+    void set(std::string const & key, AxisInfo const & info)
+    {
+        set(index(key), info);
+    }
+
+    void insert(int k, AxisInfo const & i)
+    {
+        if(k == (int)size())
+        {
+            push_back(i);
+        }
+        else
+        {
+            checkIndex(k);
+            if(k < 0)
+                k += size();
+            checkDuplicates(size(), i);
+            axes_.insert(axes_.begin()+k, i);
+        }
+    }
+
     void push_back(AxisInfo const & i)
     {
-        std::string key = i.key();
-        vigra_precondition(key == "?" || index(key) == (int)size(), 
-            std::string("AxisTags::push_back(): duplicate key '" + key + "'."));
+        checkDuplicates(size(), i);
         axes_.push_back(i);
     }
     
     void dropAxis(int k)
     {
-        vigra_precondition(checkIndex(k),
-           "AxisTags::dropAxis(): Invalid index or key.");
+        checkIndex(k);
         ArrayVector<AxisInfo>::iterator i = k < 0
                                                  ? axes_.end() + k
                                                  : axes_.begin() + k;
@@ -395,9 +418,11 @@ class AxisTags
         dropAxis(index(key));
     }
     
-    bool checkIndex(int k) const
+    void dropChannelAxis()
     {
-        return k < (int)size() && k >= -(int)size();
+        int k = channelIndex();
+        if(k < (int)size())
+            axes_.erase(axes_.begin() + k, axes_.begin() + k + 1);
     }
     
     int index(std::string const & key) const
@@ -408,50 +433,103 @@ class AxisTags
         return (int)size();
     }
     
-// #if 0
-    // ArrayVector<UInt32> matchOrdering(AxisTags const & other)
-    // {
-        // vigra_precondition(size() == other.size(),
-            // "AxisTags::matchOrdering(): size mismatch.");
+    // FIXME: cache the results of these functions?
+    int channelIndex() const
+    {
+        for(unsigned int k=0; k<size(); ++k)
+            if(axes_[k].isChannel())
+                return k;
+        return (int)size();
+    }
+    
+    int majorNonchannelIndex() const
+    {
+        int k = 0;
+        for(; k<(int)size(); ++k)
+            if(!axes_[k].isChannel())
+                break;
+        for(int i=k+1; i<(int)size(); ++i)
+        {
+            if(axes_[i].isChannel())
+                continue;
+            if(axes_[i] < axes_[k])
+                k = i;
+        }
+        return k;
+    }
+    
+    void swapaxes(int i1, int i2)
+    {
+        checkIndex(i1);
+        checkIndex(i2);
+        if(i1 < 0)
+            i1 += size();
+        if(i2 < 0)
+            i2 += size();
+        std::swap(axes_[i1], axes_[i2]);
+    }
+    
+    template <class T>
+    void transpose(ArrayVector<T> const & permutation)
+    {
+        if(permutation.size() == 0)
+        {
+            transpose();
+        }
+        else
+        {
+            vigra_precondition(permutation.size() == size(),
+                "AxisTags::transpose(): Permutation has wrong size.");
+            ArrayVector<AxisInfo> newAxes(size());
+            applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
+            axes_.swap(newAxes);
+        }
+    }
+    
+    void transpose()
+    {
+        std::reverse(axes_.begin(), axes_.end());
+    }
+    
+    template <class T>
+    void permutationToNormalOrder(ArrayVector<T> & permutation)
+    {
+        permutation.resize(size());
+        indexSort(axes_.begin(), axes_.end(), permutation.begin());
+    }
+    
+    template <class T>
+    void permutationFromNormalOrder(ArrayVector<T> & inverse_permutation)
+    {
+        ArrayVector<T> permuation(size());
+        permutationToNormalOrder(permuation);
+        inverse_permutation.resize(size());
+        indexSort(permuation.begin(), permuation.end(), inverse_permutation.begin());
+    }   
+    
+#if 0
+    ArrayVector<UInt32> matchOrdering(AxisTags const & other)
+    {
+        vigra_precondition(size() == other.size(),
+            "AxisTags::matchOrdering(): size mismatch.");
         
-        // ArrayVector<UInt32> permutation(size());
-        // for(unsigned int k = 0; k<size(); ++k)
-        // {
-            // std::string key = other.get(k).key();
-            // unsigned int l=0;
-            // for(; l<size(); ++l)
-            // {
-                // if(key == get(l).key())
-                    // break;
-            // }
-            // vigra_precondition(l < size(),
-                // "AxisTags::matchOrdering(): key mismatch.");
-            // permutation[k] = l;
-        // }
-        // return permutation;
-    // }
-    
-    // ArrayVector<UInt32> canonicalOrdering()
-    // {
-        // ArrayVector<UInt32> permutation(size());
-        // indexSort(axes_.begin(), axes_.end(), permutation.begin(), AxisInfoSorter<GetFunctor>());
-        // return permutation;
-    // }
-    
-    // void transpose(ArrayVector<UInt32> const & permutation)
-    // {
-        // vigra_precondition(permutation.size() == size(),
-            // "AxisTags::transpose(): Permutation has wrong size.");
-        // ArrayVector<T> newAxes(size());
-        // applyPermutation(permutation.begin(), permutation.end(), axes_.begin(), newAxes.begin());
-        // axes_.swap(newAxes);
-    // }
-    
-    // void transpose()
-    // {
-        // std::reverse(axes_.begin(), axes_.end());
-    // }
-// #endif
+        ArrayVector<UInt32> permutation(size());
+        for(unsigned int k = 0; k<size(); ++k)
+        {
+            std::string key = other.get(k).key();
+            unsigned int l=0;
+            for(; l<size(); ++l)
+            {
+                if(key == get(l).key())
+                    break;
+            }
+            vigra_precondition(l < size(),
+                "AxisTags::matchOrdering(): key mismatch.");
+            permutation[k] = l;
+        }
+        return permutation;
+    }    
+#endif
 
 	bool operator==(AxisTags const & other) const
 	{
@@ -464,6 +542,34 @@ class AxisTags
 	}
     
   protected:
+    
+    void checkIndex(int k) const
+    {
+        vigra_precondition(k < (int)size() && k >= -(int)size(),
+            "AxisTags::checkIndex(): index out of range.");
+    }
+
+    void checkDuplicates(int i, AxisInfo const & info)
+    {
+        if(info.isChannel())
+        {  
+            for(int k=0; k<(int)size(); ++k)
+            {
+                vigra_precondition(k == i || !axes_[k].isChannel(),
+                     "AxisTags::checkDuplicates(): can only have one channel axis.");
+            }
+        }
+        else if(!info.isUnknown())
+        {
+            for(int k=0; k<(int)size(); ++k)
+            {
+                vigra_precondition(k == i || axes_[k].key() != info.key(),
+                     std::string("AxisTags::checkDuplicates(): axis key '" + 
+                                  info.key() + "' already exists."));
+            }
+        }
+    }
+
 	ArrayVector<AxisInfo> axes_;
 };
 

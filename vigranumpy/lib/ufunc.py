@@ -34,6 +34,7 @@
 #######################################################################
 
 import numpy
+import copy
 
 class Function(object):
     test_types = numpy.typecodes['AllInteger'][:-2] + numpy.typecodes['AllFloat']+'O'
@@ -229,7 +230,7 @@ class UnaryFunction(Function):
         else:
             o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
             if hasattr(a, 'axistags'):
-                o.axistags = a.axistags.__class__(a.axistags)
+                o.axistags = copy.copy(a.axistags)
         self.function(a, o)
 
         if out is None:
@@ -259,13 +260,13 @@ class UnaryFunctionOut2(Function):
         else:
             o1 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
             if hasattr(a, 'axistags'):
-                o1.axistags = a.axistags.__class__(a.axistags)
+                o1.axistags = copy.copy(a.axistags)
         if hasattr(out2, 'transpose'):
             o2 = out2.transpose(permutation)
         else:
             o2 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
             if hasattr(a, 'axistags'):
-                o2.axistags = a.axistags.__class__(a.axistags)
+                o2.axistags = copy.copy(a.axistags)
         self.function(a, o1, o2)
 
         if out1 is None:
@@ -318,7 +319,7 @@ class BinaryFunction(Function):
         else:
             o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
             if hasattr(a, 'axistags'):
-                o.axistags = a.axistags.__class__(a.axistags)
+                o.axistags = copy.copy(a.axistags)
         
         self.function(a, b, o)
 

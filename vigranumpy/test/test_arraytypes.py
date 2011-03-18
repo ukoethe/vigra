@@ -313,7 +313,7 @@ def checkCompatibility(obj, compatible):
                 
                 if default_ordering.axistags.channelIndex == default_ordering.ndim:
                     tags = arraytypes.defaultAxistags(default_ordering.ndim+1)
-                    tags.dropChannelDimension()
+                    tags.dropChannelAxis()
                 else:
                     tags = arraytypes.defaultAxistags(default_ordering.ndim)
                 assert_equal(tags, default_ordering.axistags)
@@ -327,7 +327,8 @@ def checkCompatibility(obj, compatible):
                     else:
                         assert_equal(cobj.shape, cdefault.shape)
                 else:
-                    permutation = default_ordering.permutationToNormalOrder()
+                    # FIXME: should permutationToNormalOrder() return a list?
+                    permutation = list(default_ordering.permutationToNormalOrder())
                     permutation.reverse()
                     cdefault = default_ordering.transpose(permutation)
                     
@@ -351,9 +352,9 @@ def checkCompatibility(obj, compatible):
                 cdefault = same_ordering
                 if hasattr(obj, 'axistags'):
                     if cobj.ndim > cdefault.ndim:
-                        cobj = arraytypes.dropChannelDimension(cobj)
+                        cobj = arraytypes.dropChannelAxis(cobj)
                     elif cobj.ndim < cdefault.ndim:
-                        cdefault = arraytypes.dropChannelDimension(cdefault)
+                        cdefault = arraytypes.dropChannelAxis(cdefault)
                     assert_equal(cobj.axistags, cdefault.axistags)
                 else:
                     if cobj.ndim > cdefault.ndim:

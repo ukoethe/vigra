@@ -692,7 +692,7 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
                 {
                     // axistags have have one additional element => drop the channel tag
                     // FIXME: would it be cleaner to make this an error ?
-                    static python_ptr func(PyString_FromString("dropChannelDimension"), 
+                    static python_ptr func(PyString_FromString("dropChannelAxis"), 
                                            python_ptr::keep_count);
                     python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
                                    python_ptr::keep_count);
@@ -722,7 +722,7 @@ constructArray(TaggedShape const & tagged_shape, NPY_TYPES typeCode, bool init)
                 else
                 {
                     // we have a multiband image => add a channel tag
-                    static python_ptr func(PyString_FromString("insertChannelDimension"), 
+                    static python_ptr func(PyString_FromString("insertChannelAxis"), 
                                            python_ptr::keep_count);
                     python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
                                    python_ptr::keep_count);
