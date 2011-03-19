@@ -1954,7 +1954,9 @@ class NumpyArray
          * (If the source object has no data, this one will have
          * no data, too.)
          */
-    NumpyArray(const NumpyArray &other, bool createCopy = false) 
+    NumpyArray(const NumpyArray &other, bool createCopy = false)
+    : view_type(),
+      NumpyAnyArray()
     {
         if(!other.hasData())
             return;
