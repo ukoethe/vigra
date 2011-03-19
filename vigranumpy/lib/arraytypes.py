@@ -108,17 +108,6 @@ class classproperty(object):
 
 from vigranumpycore import AxisType, AxisInfo, AxisTags
 
-def defaultAxistags(ndim, order=None):
-    if order is None:
-        order = VigraArray.defaultOrder
-    if order == 'F':
-        tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim]
-    elif order == 'C':
-        tags = [AxisInfo(), AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
-    else: # order in ['A', 'V']:
-        tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim-1] + [AxisInfo.c]
-    return AxisTags(tags)
-
 def dropChannelAxis(array):
     try:
         return array.dropChannelAxis()
@@ -322,7 +311,7 @@ class _PyAxisTags(object):
 _constructArrayFromAxistags = vigranumpycore.constructArrayFromAxistags 
     
 def _constructArrayFromOrder(cls, shape, dtype, order, init):
-    axistags = defaultAxistags(len(shape), order)
+    axistags = VigraArray.defaultAxistags(len(shape), order)
     return _constructArrayFromAxistags(cls, shape, dtype, axistags, init)
     
 def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
@@ -432,6 +421,18 @@ this class via its subclasses!
     def defaultOrder(cls):
         return 'V'
 
+    @staticmethod
+    def defaultAxistags(ndim, order=None):
+        if order is None:
+            order = VigraArray.defaultOrder
+        if order == 'F':
+            tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim]
+        elif order == 'C':
+            tags = [AxisInfo(), AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
+        else: # order in ['A', 'V']:
+            tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim-1] + [AxisInfo.c]
+        return AxisTags(tags)
+
     def __new__(cls, obj, dtype=numpy.float32, order=None, init=True, value=None, axistags=None):
         if value is not None:
             init = False
@@ -518,7 +519,7 @@ this class via its subclasses!
     def spatialDimensions(self):
         return self.axistags.axisTypeCount(AxisType.Space)
     
-    def default_axistags(self):
+    def empty_axistags(self):
         '''Create an axistags object with non-informative entries.
         '''
         return AxisTags(self.ndim)
@@ -529,13 +530,13 @@ this class via its subclasses!
             res.transpose(permutation)
             return res
         else:
-            return self.default_axistags()
+            return self.empty_axistags()
 
     def transform_axistags(self, index):
         if hasattr(self, 'axistags'):
             return self.axistags.transform(index, self.ndim)
         else:
-            return self.default_axistags()
+            return self.empty_axistags()
 
     def permutationToNormalOrder(self):
         return list(self.axistags.permutationToNormalOrder())

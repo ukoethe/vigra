@@ -253,7 +253,7 @@ AxisTags_permutationFromNormalOrder(AxisTags & axistags)
 AxisTags *
 AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 {
-    std::auto_ptr<AxisTags> newTags(new AxisTags());
+    std::auto_ptr<AxisTags> newTags(new AxisTags(lnew));
 	python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
 	int lold = oldTags.size();
     if(!PySequence_Check(index.ptr()))
@@ -288,20 +288,18 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
         }
         else 
         {
-            if(item == python::object())
+            if(item != python::object())
             {
-                newTags->push_back(AxisInfo());
-            }
-            else
-            {
-                newTags->push_back(oldTags.get(kold));
+                newTags->get(knew) = oldTags.get(kold);
                 // adjust the resolution if item has a valid 'step' member
                 python::extract<python::slice> slice(item);
                 if(slice.check())
                 {
-                    python::extract<int> stop(slice().stop());
-                    if(stop.check())
-                        const_cast<AxisInfo &>(newTags->get(-1)).resolution_ *= stop();
+                    python::extract<int> step(slice().step());
+                    if(step.check())
+                    {
+                        newTags->get(knew).resolution_ *= step();
+                    }
                 }
                 ++kold;
             }
@@ -394,10 +392,12 @@ void defineAxisTags()
 		.def("__len__", &AxisTags::size)
 		.def("__getitem__", (AxisInfo const & (AxisTags::*)(int) const)&AxisTags::get,
                              return_value_policy<copy_const_reference>())
-		.def("__getitem__", (AxisInfo const & (AxisTags::*)(std::string const &) const)&AxisTags::get,
+		.def("__getitem__", 
+            (AxisInfo const & (AxisTags::*)(std::string const &) const)&AxisTags::get,
                              return_value_policy<copy_const_reference>())
 		.def("__setitem__", (void (AxisTags::*)(int, AxisInfo const &))&AxisTags::set)
-		.def("__setitem__", (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
+		.def("__setitem__", 
+            (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
 		.def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
 		.def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
 		.def("insert", &AxisTags::insert)
@@ -408,6 +408,9 @@ void defineAxisTags()
 		.def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
 		.def("transpose", (void (AxisTags::*)(ArrayVector<npy_intp> const &))&AxisTags::transpose)
 		.def("index", &AxisTags::index)
+		.def("scaleAxisResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleAxisResolution)
+		.def("scaleAxisResolution", 
+               (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleAxisResolution)
 		.add_property("channelIndex", &AxisTags::channelIndex)
 		.add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
 		.def("axisTypeCount", &AxisTags::axisTypeCount)

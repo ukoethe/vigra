@@ -98,8 +98,8 @@ from __version__ import version
 import vigranumpycore
 import arraytypes
 import impex
-# import filters
 import sampling
+# import filters
 # import analysis
 # import learning
 # import colors
@@ -115,9 +115,9 @@ import sampling
 
 # import most frequently used functions
 from arraytypes import *
-defaultArrayType = arraytypes.VigraArray 
+standardArrayType = arraytypes.VigraArray 
 
-from impex import readImage, readVolume
+# from impex import readImage, readVolume
 # try:
     # from impex import readImageFromHDF5, readVolumeFromHDF5
 # except:

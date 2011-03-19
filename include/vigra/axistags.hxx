@@ -276,12 +276,15 @@ class AxisInfo
     AxisType flags_;
 };
 
-// FIXME: check for duplicate keys in all setter functions.
 class AxisTags
 {
   public:
    
     AxisTags()
+    {}
+    
+    AxisTags(int size)
+    : axes_(size)
     {}
     
     AxisTags(AxisInfo const & i1)
@@ -353,6 +356,19 @@ class AxisTags
         int k = channelIndex();
         if(k < (int)size())
             axes_[k].setDescription(description);
+    }
+    
+    AxisInfo & get(int k)
+    {
+        checkIndex(k);
+        if(k < 0)
+            k += size();
+        return axes_[k];
+    }
+    
+    AxisInfo & get(std::string const & key)
+    {
+        return get(index(key));
     }
     
     AxisInfo const & get(int k) const
@@ -431,6 +447,16 @@ class AxisTags
             if(axes_[k].key() == key)
                 return k;
         return (int)size();
+    }
+    
+    void scaleAxisResolution(int k, double factor)
+    {
+        get(k).resolution_ *= factor;
+    }
+    
+    void scaleAxisResolution(std::string const & key, double factor)
+    {
+        get(key).resolution_ *= factor;
     }
     
     // FIXME: cache the results of these functions?

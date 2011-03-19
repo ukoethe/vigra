@@ -40,7 +40,7 @@ import sys
 print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
-import vigra
+# import vigra  # FIXME: without this line, C++ constructors don't find VigraArray
 import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
 import numpy, copy
@@ -312,10 +312,10 @@ def checkCompatibility(obj, compatible):
                 assert_equal(arraytypes.VigraArray, default_ordering.__class__)
                 
                 if default_ordering.axistags.channelIndex == default_ordering.ndim:
-                    tags = arraytypes.defaultAxistags(default_ordering.ndim+1)
+                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim+1)
                     tags.dropChannelAxis()
                 else:
-                    tags = arraytypes.defaultAxistags(default_ordering.ndim)
+                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim)
                 assert_equal(tags, default_ordering.axistags)
 
                 if hasattr(obj, 'axistags'):

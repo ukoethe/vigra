@@ -46,13 +46,13 @@ import vigra.arraytypes as at
 #in the hope, that functions are tested in C++, we basicly test return types
 
 image=at.RGBImage(np.random.rand(10,10,3)*255,dtype=np.float32, 
-                  axistags=at.defaultAxistags(3, 'V'))
+                  axistags=at.VigraArray.defaultAxistags(3, 'V'))
 scalar_image=at.ScalarImage(np.random.rand(10,10)*255,dtype=np.float32, 
                   axistags=at.AxisTags(at.AxisInfo.x, at.AxisInfo.y))
 volume256=at.Volume(np.random.rand(8,9,10)*255,dtype=np.uint8, 
                   axistags=at.AxisTags(at.AxisInfo.x, at.AxisInfo.y, at.AxisInfo.z))
 volumeFloat=at.Volume(np.random.rand(3,4,5,6)*100,dtype=np.float32, 
-                  axistags=at.defaultAxistags(4, 'C'))
+                  axistags=at.VigraArray.defaultAxistags(4, 'C'))
 
 def checkEqualData(i1,i2):
     assert_equal(i1.shape, i2.shape)
