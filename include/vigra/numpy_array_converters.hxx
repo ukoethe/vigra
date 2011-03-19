@@ -88,11 +88,13 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
     
     converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
     
-    if(!reg || !reg->rvalue_chain || reg->rvalue_chain->convertible != &convertible) 
+    // register the to_python_converter only once
+    // FIXME: I'm not sure if this is correct.
+    if(!reg || !reg->rvalue_chain)
     {
         to_python_converter<ArrayType, NumpyArrayConverter>();
-        converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
+    converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
 }
     
 template <unsigned int N, class T, class Stride>

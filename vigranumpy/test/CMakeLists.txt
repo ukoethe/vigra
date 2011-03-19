@@ -32,7 +32,6 @@ IF(NOT TESTSUCCESS_FOUND)
 ENDIF()
 
 # setup the test target
-
 IF(AUTOBUILD_TESTS)
   ADD_LIBRARY(vigranumpytest SHARED 
                vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
