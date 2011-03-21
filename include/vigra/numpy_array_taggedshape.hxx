@@ -122,6 +122,35 @@ class PyAxisTags
         pythonToCppException(res);
     }
 
+    double resolution(long index)
+    {
+        if(!axistags)
+            return 0.0;
+        python_ptr func(PyString_FromString("resolution"), python_ptr::keep_count);
+        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), NULL), 
+                       python_ptr::keep_count);
+        pythonToCppException(res);
+        if(!PyFloat_Check(res))
+        {
+            PyErr_SetString(PyExc_TypeError, "AxisTags.resolution() did not return float.");
+            pythonToCppException(false);
+        }
+        return PyFloat_AsDouble(res);
+    }
+ 
+    void setResolution(long index, double resolution)
+    {
+        if(!axistags)
+            return;
+        python_ptr func(PyString_FromString("setResolution"), python_ptr::keep_count);
+        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+        python_ptr r(PyFloat_FromDouble(resolution), python_ptr::keep_count);
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), r.get(), NULL), 
+                       python_ptr::keep_count);
+        pythonToCppException(res);
+    }
+ 
     void scaleAxisResolution(long index, double factor)
     {
         if(!axistags)
@@ -132,6 +161,26 @@ class PyAxisTags
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), f.get(), NULL), 
                        python_ptr::keep_count);
         pythonToCppException(res);
+    }
+ 
+    void toFrequencyDomain(long index, int size, int sign = 1)
+    {
+        if(!axistags)
+            return;
+        python_ptr func(sign == 1
+                           ? PyString_FromString("toFrequencyDomain")
+                           : PyString_FromString("fromFrequencyDomain"), 
+                        python_ptr::keep_count);
+        python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
+        python_ptr s(PyInt_FromLong(size), python_ptr::keep_count);
+        python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), s.get(), NULL), 
+                       python_ptr::keep_count);
+        pythonToCppException(res);
+    }
+ 
+    void fromFrequencyDomain(long index, int size)
+    {
+        toFrequencyDomain(index, size, -1);
     }
  
     ArrayVector<npy_intp> 
@@ -276,7 +325,7 @@ class TaggedShape
     {}
     
     template <class T>
-    TaggedShape(ArrayVector<T> const & sh, python_ptr tags)
+    TaggedShape(ArrayVector<T> const & sh)
     : shape(sh.begin(), sh.end()),
       original_shape(sh.begin(), sh.end()),
       axistags(sh.size()),
@@ -294,7 +343,7 @@ class TaggedShape
                         : (int)size();
                         
         vigra_precondition(N == stop - start || size() == 0,
-             "TaggedShape.operator=(): size mismatch.");
+             "TaggedShape.resize(): size mismatch.");
              
         if(size() == 0)
             shape.resize(N);
@@ -409,6 +458,63 @@ class TaggedShape
         return *this;
     }
     
+    // transposeShape() means: only shape and resolution are transposed, not the axis keys
+    template <class U, int N>
+    TaggedShape & transposeShape(TinyVector<U, N> const & p)
+    {
+        int ntags = axistags.size();
+        ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
+        
+        int tstart = (axistags.channelIndex(ntags) < ntags)
+                        ? 1
+                        : 0;
+        int sstart = (channelAxis == first)
+                        ? 1
+                        : 0;
+        int ndim = ntags - tstart;
+
+        vigra_precondition(N == ndim,
+             "TaggedShape.transposeShape(): size mismatch.");
+             
+        PyAxisTags newAxistags(axistags.axistags); // force copy
+        for(int k=0; k<ndim; ++k)
+        {
+            original_shape[k+sstart] = shape[p[k]+sstart];
+            newAxistags.setResolution(permute[k+tstart], axistags.resolution(permute[p[k]+tstart]));
+        }
+        shape = original_shape;
+        axistags = newAxistags;
+        
+        return *this;
+    }
+
+    TaggedShape & toFrequencyDomain(int sign = 1)
+    {
+        int ntags = axistags.size();
+        
+        ArrayVector<npy_intp> permute = axistags.permutationToNormalOrder();
+        
+        int tstart = (axistags.channelIndex(ntags) < ntags)
+                        ? 1
+                        : 0;
+        int sstart = (channelAxis == first)
+                        ? 1
+                        : 0;
+        int size = (int)this->size() - sstart;
+        
+        for(int k=0; k<size; ++k)
+        {
+            axistags.toFrequencyDomain(permute[k+tstart], shape[k+sstart], sign);
+        }
+        
+        return *this;
+    }
+
+    TaggedShape & fromFrequencyDomain()
+    {
+        return toFrequencyDomain(-1);
+    }
+    
     TaggedShape & setChannelCount(int count)
     {
         switch(channelAxis)
@@ -484,6 +590,7 @@ void scaleAxisResolution(TaggedShape & tagged_shape)
         tagged_shape.axistags.scaleAxisResolution(permute[k+tstart], factor);
     }
 }
+
 
 // inline 
 // ArrayVector<npy_intp> unifyTaggedShapeSize(TaggedShape & tagged_shape)

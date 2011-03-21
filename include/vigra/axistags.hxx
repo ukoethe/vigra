@@ -167,11 +167,22 @@ class AxisInfo
 		return res;
     }
     
-    AxisInfo toFrequencyDomain(unsigned int size = 0) const
+    AxisInfo toFrequencyDomain(unsigned int size = 0, int sign = 1) const
     {
-        vigra_precondition(!isFrequency(),
-            "AxisInfo::toFrequencyDomain(): axis is already in the Fourier domain.");
-        AxisInfo res(std::string("f")+key(), AxisType(Frequency | flags_), 0.0, description_);
+        AxisType type;
+        if(sign == 1)
+        {
+            vigra_precondition(!isFrequency(),
+                "AxisInfo::toFrequencyDomain(): axis is already in the Fourier domain.");
+            type = AxisType(Frequency | flags_);
+        }
+        else
+        {
+            vigra_precondition(!isFrequency(),
+                "AxisInfo::fromFrequencyDomain(): axis is not in the Fourier domain.");
+            type = AxisType(~Frequency & flags_);
+        }
+        AxisInfo res(key(), type, 0.0, description_);
         if(resolution_ > 0.0 && size > 0u)
             res.resolution_ = 1.0 / (resolution_ * size);
         return res;
@@ -179,15 +190,7 @@ class AxisInfo
     
     AxisInfo fromFrequencyDomain(unsigned int size = 0) const
     {
-        vigra_precondition(isFrequency(),
-            "AxisInfo::fromFrequencyDomain(): axis is not in the Fourier domain.");
-        std::string newKey = key();
-        if(newKey[0] == 'f')
-            newKey.erase(0,1);
-        AxisInfo res(newKey, AxisType(~Frequency & flags_), 0.0, description_);
-        if(resolution_ > 0.0 && size > 0u)
-            res.resolution_ = 1.0 / (resolution_ * size);
-        return res;
+        return toFrequencyDomain(size, -1);
     }
 
 	bool operator==(AxisInfo const & other) const
@@ -248,22 +251,22 @@ class AxisInfo
     
     static AxisInfo fx(double resolution = 0.0, std::string const & description = "")
     {
-        return AxisInfo("fx", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("x", AxisType(Space | Frequency), resolution, description);
     }
     
     static AxisInfo fy(double resolution = 0.0, std::string const & description = "")
     {
-        return AxisInfo("fy", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("y", AxisType(Space | Frequency), resolution, description);
     }
     
     static AxisInfo fz(double resolution = 0.0, std::string const & description = "")
     {
-        return AxisInfo("fz", AxisType(Space | Frequency), resolution, description);
+        return AxisInfo("z", AxisType(Space | Frequency), resolution, description);
     }
     
     static AxisInfo ft(double resolution = 0.0, std::string const & description = "")
     {
-        return AxisInfo("ft", AxisType(Time | Frequency), resolution, description);
+        return AxisInfo("t", AxisType(Time | Frequency), resolution, description);
     }
     
     static AxisInfo c(std::string const & description = "")
@@ -449,6 +452,26 @@ class AxisTags
         return (int)size();
     }
     
+    double resolution(int k) const
+    {
+        return get(k).resolution_;
+    }
+    
+    double resolution(std::string const & key) const
+    {
+        return resolution(index(key));
+    }
+    
+    void setResolution(int k, double r) 
+    {
+        get(k).resolution_ = r;
+    }
+    
+    void setResolution(std::string const & key, double r) 
+    {
+        setResolution(index(key), r);
+    }
+    
     void scaleAxisResolution(int k, double factor)
     {
         get(k).resolution_ *= factor;
@@ -457,6 +480,26 @@ class AxisTags
     void scaleAxisResolution(std::string const & key, double factor)
     {
         get(key).resolution_ *= factor;
+    }
+    
+    void toFrequencyDomain(int k, int size = 0, int sign = 1)
+    {
+        get(k) = get(k).toFrequencyDomain(size, sign);
+    }
+    
+    void toFrequencyDomain(std::string const & key, int size = 0, int sign = 1)
+    {
+        toFrequencyDomain(index(key), size, sign);
+    }
+    
+    void fromFrequencyDomain(int k, int size = 0)
+    {
+        toFrequencyDomain(k, size, -1);
+    }
+    
+    void fromFrequencyDomain(std::string const & key, int size = 0)
+    {
+        toFrequencyDomain(key, size, -1);
     }
     
     // FIXME: cache the results of these functions?

@@ -116,11 +116,10 @@ NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
     }
     else
     {
-        //FIXME: this wrongly resizes the tags
         // res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(1),image.shape(0),image.shape(2)),"rotateImage(): Output image has wrong dimensions");
-        newShape[0] = image.shape(1);
-        newShape[1] = image.shape(0);
-        res.reshapeIfEmpty(newShape,"rotateImage(): Output image has wrong dimensions");
+        MultiArrayShape<2>::type permute(1, 0);
+        res.reshapeIfEmpty(image.taggedShape().transposeShape(permute),
+                     "rotateImage(): Output image has wrong dimensions");
     }
     for(int k=0;k<image.shape(2);++k)
     {

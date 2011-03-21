@@ -408,9 +408,24 @@ void defineAxisTags()
 		.def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
 		.def("transpose", (void (AxisTags::*)(ArrayVector<npy_intp> const &))&AxisTags::transpose)
 		.def("index", &AxisTags::index)
+		.def("resolution", (double (AxisTags::*)(int) const)&AxisTags::resolution)
+		.def("resolution", (double (AxisTags::*)(std::string const &) const)&AxisTags::resolution)
+		.def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
+		.def("setResolution", 
+            (void (AxisTags::*)(std::string const &, double))&AxisTags::setResolution)
 		.def("scaleAxisResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleAxisResolution)
 		.def("scaleAxisResolution", 
                (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleAxisResolution)
+		.def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
+                (arg("index"), arg("size")=0, arg("sign")=1))
+		.def("toFrequencyDomain", 
+               (void (AxisTags::*)(std::string const &, int, int))&AxisTags::toFrequencyDomain,
+               (arg("key"), arg("size")=0, arg("sign")=1))
+		.def("fromFrequencyDomain", (void (AxisTags::*)(int, int))&AxisTags::fromFrequencyDomain,
+                (arg("index"), arg("size")=0))
+		.def("fromFrequencyDomain", 
+               (void (AxisTags::*)(std::string const &, int))&AxisTags::fromFrequencyDomain,
+               (arg("key"), arg("size")=0))
 		.add_property("channelIndex", &AxisTags::channelIndex)
 		.add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
 		.def("axisTypeCount", &AxisTags::axisTypeCount)
