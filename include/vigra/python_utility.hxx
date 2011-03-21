@@ -204,7 +204,7 @@ inline void swap(python_ptr & a, python_ptr & b)
 }
 
 inline python_ptr 
-getPythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
+makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
                     char const * k2 = 0, PyObject * a2 = 0,
                     char const * k3 = 0, PyObject * a3 = 0)
 {
