@@ -36,7 +36,6 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpysampling_PyArray_API
 //#define NO_IMPORT_ARRAY
 
-#include <iostream>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/affinegeometry.hxx>
@@ -209,12 +208,12 @@ NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > 
     return res;
 }
 
-template <class PixelType, int dim>
+template <class PixelType, unsigned int dim>
 void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const & image, 
                                     python::object destSize,
                                     NumpyArray<dim, Multiband<PixelType> > & res)
 {
-    for(int k=0; k<dim-1; ++k)
+    for(unsigned int k=0; k<dim-1; ++k)
         vigra_precondition(image.shape(k),
             "resizeImage(): Each input axis must have length > 1.");
         
@@ -230,20 +229,20 @@ void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const
                   detail::permutationToNormalOrder(python_ptr(image.pyObject()), true);
         if(permute.size() == dim - 1)  // without explicit channel axis
         {
-            for(int k=0; k<dim-1; ++k)
+            for(unsigned int k=0; k<dim-1; ++k)
                 shape[k] = pyshape[permute[k]];
         }
         else if(permute.size() == dim) // skip explicit channel axis
         {
-            for(int k=1; k<dim; ++k)
+            for(unsigned int k=1; k<dim; ++k)
                 if(permute[k] > permute[0])
                     --permute[k];
-            for(int k=0; k<dim-1; ++k)
+            for(unsigned int k=0; k<dim-1; ++k)
                 shape[k] = pyshape[permute[k+1]];
         }
         else                            // without axistags, assume C-order
         {
-            for(int k=0; k<dim-1; ++k)
+            for(unsigned int k=0; k<dim-1; ++k)
                 shape[k] = pyshape[dim-2-k];
         }
         res.reshapeIfEmpty(image.taggedShape().resize(shape), 
