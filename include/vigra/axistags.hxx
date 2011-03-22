@@ -354,13 +354,6 @@ class AxisTags
 		return res;
     }
     
-    void setChannelDescription(std::string const & description)
-    {
-        int k = channelIndex();
-        if(k < (int)size())
-            axes_[k].setDescription(description);
-    }
-    
     AxisInfo & get(int k)
     {
         checkIndex(k);
@@ -472,14 +465,41 @@ class AxisTags
         setResolution(index(key), r);
     }
     
-    void scaleAxisResolution(int k, double factor)
+    void scaleResolution(int k, double factor)
     {
         get(k).resolution_ *= factor;
     }
     
-    void scaleAxisResolution(std::string const & key, double factor)
+    void scaleResolution(std::string const & key, double factor)
     {
         get(key).resolution_ *= factor;
+    }
+    
+    std::string description(int k) const
+    {
+        return get(k).description_;
+    }
+    
+    std::string description(std::string const & key) const
+    {
+        return description(index(key));
+    }
+    
+    void setDescription(int k, std::string const & d) 
+    {
+        get(k).setDescription(d);
+    }
+    
+    void setDescription(std::string const & key, std::string const & d) 
+    {
+        setDescription(index(key), d);
+    }
+    
+    void setChannelDescription(std::string const & description)
+    {
+        int k = channelIndex();
+        if(k < (int)size())
+            axes_[k].setDescription(description);
     }
     
     void toFrequencyDomain(int k, int size = 0, int sign = 1)
@@ -500,6 +520,11 @@ class AxisTags
     void fromFrequencyDomain(std::string const & key, int size = 0)
     {
         toFrequencyDomain(key, size, -1);
+    }
+    
+    bool hasChannelAxis() const
+    {
+        return channelIndex() != (int)size();
     }
     
     // FIXME: cache the results of these functions?

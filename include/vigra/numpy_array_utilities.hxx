@@ -191,7 +191,6 @@ getAxisPermutationImpl(python_ptr object, const char * name, bool ignoreErrors)
     }
     pythonToCppException(permutation);
     
-    
     if(!PySequence_Check(permutation))
     {
         if(ignoreErrors)

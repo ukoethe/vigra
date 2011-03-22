@@ -413,9 +413,17 @@ void defineAxisTags()
 		.def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
 		.def("setResolution", 
             (void (AxisTags::*)(std::string const &, double))&AxisTags::setResolution)
-		.def("scaleAxisResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleAxisResolution)
-		.def("scaleAxisResolution", 
-               (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleAxisResolution)
+		.def("scaleResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleResolution)
+		.def("scaleResolution", 
+            (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleResolution)
+		.def("description", (std::string (AxisTags::*)(int) const)&AxisTags::description)
+		.def("description", 
+             (std::string (AxisTags::*)(std::string const &) const)&AxisTags::description)
+		.def("setDescription", 
+            (void (AxisTags::*)(int, std::string const &))&AxisTags::setDescription)
+		.def("setDescription", 
+            (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setDescription)
+		.def("setChannelDescription", &AxisTags::setChannelDescription)
 		.def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
                 (arg("index"), arg("size")=0, arg("sign")=1))
 		.def("toFrequencyDomain", 
@@ -429,7 +437,6 @@ void defineAxisTags()
 		.add_property("channelIndex", &AxisTags::channelIndex)
 		.add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
 		.def("axisTypeCount", &AxisTags::axisTypeCount)
-		.def("setChannelDescription", &AxisTags::setChannelDescription)
 		.def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
 		.def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
 		.def("transform", &AxisTags_transform,

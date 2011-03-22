@@ -670,8 +670,6 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         return TaggedShape(shape, PyAxisTags(axistags)).setChannelCount(M);
     }
 
-    // CONTINUE HERE: can I just remove the detail::defaultAxistags(shape.size()+1, order)
-    //                call and rely on the constructor of 
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {

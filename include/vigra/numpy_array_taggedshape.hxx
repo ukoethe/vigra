@@ -151,11 +151,11 @@ class PyAxisTags
         pythonToCppException(res);
     }
  
-    void scaleAxisResolution(long index, double factor)
+    void scaleResolution(long index, double factor)
     {
         if(!axistags)
             return;
-        python_ptr func(PyString_FromString("scaleAxisResolution"), python_ptr::keep_count);
+        python_ptr func(PyString_FromString("scaleResolution"), python_ptr::keep_count);
         python_ptr i(PyInt_FromLong(index), python_ptr::keep_count);
         python_ptr f(PyFloat_FromDouble(factor), python_ptr::keep_count);
         python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), i.get(), f.get(), NULL), 
@@ -587,7 +587,7 @@ void scaleAxisResolution(TaggedShape & tagged_shape)
         if(tagged_shape.shape[sk] == tagged_shape.original_shape[sk])
             continue;
         double factor = (tagged_shape.original_shape[sk] - 1.0) / (tagged_shape.shape[sk] - 1.0);
-        tagged_shape.axistags.scaleAxisResolution(permute[k+tstart], factor);
+        tagged_shape.axistags.scaleResolution(permute[k+tstart], factor);
     }
 }
 
