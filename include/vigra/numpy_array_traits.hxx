@@ -38,7 +38,6 @@
 
 #include "numerictraits.hxx"
 #include "multi_array.hxx"
-#include "numpy_array_utilities.hxx"
 #include "numpy_array_taggedshape.hxx"
 
 namespace vigra {
@@ -264,8 +263,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     {
 		PyObject * obj = (PyObject *)array;
 		int ndim = PyArray_NDIM(obj);
-        long channelIndex = detail::channelIndex(array, ndim);
-        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
 
         if(channelIndex < ndim)
         {
@@ -300,9 +299,9 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     }
     
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
     {
-        return TaggedShape(shape, PyAxisTags(axistags));
+        return TaggedShape(shape, axistags);
     }
 
     template <class U>
@@ -341,8 +340,8 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
     {
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
-        long channelIndex = detail::channelIndex(array, ndim);
-        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
@@ -406,7 +405,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     {
         PyObject * obj = (PyObject *)array;
 		int ndim = PyArray_NDIM(obj);
-        long channelIndex = detail::channelIndex(array, N);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", N);
         
         // When ndim is right, this array must not have an explicit channel axis.
         if(ndim == N)
@@ -425,9 +424,9 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
     {
-        return TaggedShape(shape, PyAxisTags(axistags)).setChannelCount(1);
+        return TaggedShape(shape, axistags).setChannelCount(1);
     }
 
     template <class U>
@@ -466,8 +465,8 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
     {
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
-        long channelIndex = detail::channelIndex(array, ndim);
-        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
@@ -525,8 +524,9 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-        int ndim = PyArray_NDIM((PyObject *)array);
-        long channelIndex = detail::channelIndex(array, ndim);
+        PyObject * obj = (PyObject*)array;
+		int ndim = PyArray_NDIM(obj);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         
         if(channelIndex < ndim)
         {
@@ -546,9 +546,9 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
     {
-        return TaggedShape(shape, PyAxisTags(axistags)).setChannelIndexLast();
+        return TaggedShape(shape, axistags).setChannelIndexLast();
     }
 
     template <class U>
@@ -579,8 +579,8 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
     {
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
-        long channelIndex = detail::channelIndex(array, ndim);
-        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
 
@@ -652,7 +652,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         if(PyArray_NDIM(obj) != N+1) // We need an extra channel axis.
             return false;
             
-        long channelIndex = detail::channelIndex(array, N);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", N);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
@@ -665,9 +665,9 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     }
 
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, python_ptr axistags)
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
     {
-        return TaggedShape(shape, PyAxisTags(axistags)).setChannelCount(M);
+        return TaggedShape(shape, axistags).setChannelCount(M);
     }
 
     template <class U>
@@ -721,8 +721,8 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         if(PyArray_NDIM(obj) != N+1) // We need an extra channel axis.
             return false;
             
-        long channelIndex = detail::channelIndex(array, ndim);
-        long majorIndex = detail::majorNonchannelIndex(array, ndim);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
         int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         

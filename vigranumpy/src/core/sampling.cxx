@@ -223,10 +223,10 @@ void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const
         vigra_precondition(!res.hasData(),
                "resizeImage(): you cannot provide both 'shape' and 'out'.");
                        
+        // FIXME: there must be a simpler way to do this
         Shape shape,
               pyshape = python::extract<Shape>(destSize)();
-        ArrayVector<npy_intp> permute = 
-                  detail::permutationToNormalOrder(python_ptr(image.pyObject()), true);
+        ArrayVector<npy_intp> permute = image.permutationToNormalOrder();
         if(permute.size() == dim - 1)  // without explicit channel axis
         {
             for(unsigned int k=0; k<dim-1; ++k)

@@ -37,10 +37,89 @@
 #define VIGRA_NUMPY_ARRAY_TAGGEDSHAPE_HXX
 
 #include <string>
-#include "numpy_array_utilities.hxx"
+#include "array_vector.hxx"
+#include "python_utility.hxx"
 #include "axistags.hxx"
 
 namespace vigra {
+
+namespace detail {
+
+inline
+python_ptr getArrayTypeObject()
+{
+    python_ptr arraytype((PyObject*)&PyArray_Type);
+    python_ptr vigra(PyImport_ImportModule("vigra"));
+    if(!vigra)
+        PyErr_Clear();
+    return pythonGetAttr(vigra, "standardArrayType", arraytype);
+}
+
+inline 
+std::string defaultOrder(std::string defaultValue = "C")
+{
+    python_ptr arraytype = getArrayTypeObject();
+    return pythonGetAttr(arraytype, "defaultOrder", defaultValue);
+}
+
+inline 
+python_ptr defaultAxistags(int ndim, std::string order = "")
+{
+    if(order == "")
+        order = defaultOrder();
+    python_ptr arraytype = getArrayTypeObject();
+    python_ptr func(PyString_FromString("defaultAxistags"), python_ptr::keep_count);
+    python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
+    python_ptr o(PyString_FromString(order.c_str()), python_ptr::keep_count);
+    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), o.get(), NULL),
+                        python_ptr::keep_count);
+    if(axistags)
+        return axistags;
+    PyErr_Clear();
+    return python_ptr();
+}
+
+inline 
+ArrayVector<npy_intp> 
+getAxisPermutationImpl(python_ptr object, const char * name, bool ignoreErrors)
+{
+    python_ptr func(PyString_FromString(name), python_ptr::keep_count);
+    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), NULL), 
+                           python_ptr::keep_count);
+    if(!permutation && ignoreErrors)
+    {
+        PyErr_Clear();
+        return ArrayVector<npy_intp>();
+    }
+    pythonToCppException(permutation);
+    
+    if(!PySequence_Check(permutation))
+    {
+        if(ignoreErrors)
+            return ArrayVector<npy_intp>();
+        std::string message = std::string(name) + "() did not return a sequence.";
+        PyErr_SetString(PyExc_ValueError, message.c_str());
+        pythonToCppException(false);
+    }
+        
+    ArrayVector<npy_intp> res(PySequence_Length(permutation));
+    for(int k=0; k<(int)res.size(); ++k)
+    {
+        python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
+        if(!PyInt_Check(i))
+        {
+            if(ignoreErrors)
+                return ArrayVector<npy_intp>();
+            std::string message = std::string(name) + "() did not return a sequence of int.";
+            PyErr_SetString(PyExc_ValueError, message.c_str());
+            pythonToCppException(false);
+        }
+        res[k] = PyInt_AsLong(i);
+    }
+    return res;
+}
+
+} // namespace detail
 
 /********************************************************/
 /*                                                      */
@@ -60,8 +139,7 @@ class PyAxisTags
     
     python_ptr axistags;
     
-    // FIXME: is it OK to always create a copy of the tags?
-    PyAxisTags(python_ptr tags)
+    PyAxisTags(python_ptr tags, bool createCopy = false)
     {
         if(!tags)
             return;
@@ -72,9 +150,32 @@ class PyAxisTags
                            "PyAxisTags(tags): tags argument must have type 'AxisTags'.");
             pythonToCppException(false);
         }
-        python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
-        axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL), 
-                              python_ptr::keep_count);
+        if(createCopy)
+        {
+            python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+            axistags = python_ptr(PyObject_CallMethodObjArgs(tags, func.get(), NULL), 
+                                  python_ptr::keep_count);
+        }
+        else
+        {
+            axistags = tags;
+        }
+    }
+    
+    PyAxisTags(PyAxisTags const & other, bool createCopy = false)
+    {
+        if(!other.axistags)
+            return;
+        if(createCopy)
+        {
+            python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
+            axistags = python_ptr(PyObject_CallMethodObjArgs(other.axistags, func.get(), NULL), 
+                                  python_ptr::keep_count);
+        }
+        else
+        {
+            axistags = other.axistags;
+        }
     }
     
     PyAxisTags(int ndim, std::string const & order = "")
@@ -91,8 +192,7 @@ class PyAxisTags
     
     long channelIndex(long defaultVal) const
     {
-        python_ptr key(PyString_FromString("channelIndex"), python_ptr::keep_count);
-        return detail::getAttrLong(axistags, key, defaultVal);
+        return pythonGetAttr(axistags, "channelIndex", defaultVal);
     }
 
     long channelIndex() const
@@ -102,8 +202,7 @@ class PyAxisTags
 
     long majorNonchannelIndex(long defaultVal) const
     {
-        static python_ptr key(PyString_FromString("majorNonchannelIndex"), python_ptr::keep_count);
-        return detail::getAttrLong(axistags, key, defaultVal);
+        return pythonGetAttr(axistags, "majorNonchannelIndex", defaultVal);
     }
 
     long majorNonchannelIndex() const
@@ -186,17 +285,13 @@ class PyAxisTags
     ArrayVector<npy_intp> 
     permutationToNormalOrder(bool ignoreErrors = false) const
     {
-        ArrayVector<npy_intp> res;
-        getAxisPermutationImpl(res, "permutationToNormalOrder", ignoreErrors);
-        return res;
+        return detail::getAxisPermutationImpl(axistags, "permutationToNormalOrder", ignoreErrors);
     }
 
     ArrayVector<npy_intp> 
     permutationFromNormalOrder(bool ignoreErrors = false) const
     {
-        ArrayVector<npy_intp> res;
-        getAxisPermutationImpl(res, "permutationFromNormalOrder", ignoreErrors);
-        return res;
+        return detail::getAxisPermutationImpl(axistags, "permutationFromNormalOrder", ignoreErrors);
     }
     
     void dropChannelAxis()

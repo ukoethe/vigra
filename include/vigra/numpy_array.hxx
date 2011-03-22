@@ -42,11 +42,20 @@
 #include "multi_array.hxx"
 #include "array_vector.hxx"
 #include "python_utility.hxx"
-#include "numpy_array_utilities.hxx"
 #include "numpy_array_traits.hxx"
 #include "numpy_array_taggedshape.hxx"
 
+int _import_array();
+
 namespace vigra {
+
+inline void import_vigranumpy()
+{
+    if(_import_array() < 0)
+        pythonToCppException(0);
+    python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
+    pythonToCppException(module);
+}
 
 /********************************************************/
 /*                                                      */
@@ -180,50 +189,8 @@ template <class TYPECODE> // pseudo-template to avoid inline expansion of the fu
                           // will always be NPY_TYPES
 PyObject * 
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
-               python_ptr arraytype = python_ptr())
-{
-    ArrayVector<npy_intp> shape = finalizeTaggedShape(tagged_shape);
-    PyAxisTags axistags(tagged_shape.axistags);
-    
-    int ndim = (int)shape.size();
-    ArrayVector<npy_intp> inverse_permutation;
-    
-    if(axistags)
-    {
-        if(!arraytype)
-            arraytype = detail::getArrayTypeObject();
-
-        inverse_permutation = axistags.permutationFromNormalOrder();
-        vigra_precondition(ndim == (int)inverse_permutation.size(),
-                     "axistags.permutationFromNormalOrder(): permutation has wrong size.");
-    }
-    else
-    {
-        arraytype = python_ptr((PyObject*)&PyArray_Type);
-
-        inverse_permutation.resize(ndim);
-        linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
-    }
-    
-    python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
-                                  typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                     python_ptr::keep_count);
-    pythonToCppException(array);
-
-    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
-                       python_ptr::keep_count);
-    pythonToCppException(array);
-    
-    if(arraytype != (PyObject*)&PyArray_Type && axistags)
-        pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags.axistags) != -1);
-    
-    if(init)
-        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-   
-    return array.release();
-}
-
+               python_ptr arraytype = python_ptr());
+               
 /********************************************************/
 /*                                                      */
 /*                    NumpyAnyArray                     */
@@ -270,6 +237,21 @@ class NumpyAnyArray
 
         /// difference type
     typedef ArrayVector<npy_intp> difference_type;
+    
+    static python_ptr getArrayTypeObject()
+    {
+        return detail::getArrayTypeObject();
+    }
+    
+    static std::string defaultOrder(std::string defaultValue = "C")
+    {
+        return detail::defaultOrder(defaultValue);
+    }
+
+    static python_ptr defaultAxistags(int ndim, std::string order = "")
+    {
+        return detail::defaultAxistags(ndim, order);
+    }
 
         /**
          Construct from a Python object. If \a obj is NULL, or is not a subclass
@@ -355,10 +337,28 @@ class NumpyAnyArray
     {
         if(!hasData())
             return 0;
-        MultiArrayIndex s = detail::spatialDimensions(pyObject());
-        if(s == -1)
-            s = ndim();
-        return s;
+        return pythonGetAttr(pyObject(), "spatialDimensions", ndim());
+    }
+
+    bool hasChannelAxis() const
+    {
+        if(!hasData())
+            return false;
+        return channelIndex() == ndim();
+    }
+
+    MultiArrayIndex channelIndex() const
+    {
+        if(!hasData())
+            return 0;
+        return pythonGetAttr(pyObject(), "channelIndex", ndim());
+    }
+
+    MultiArrayIndex majorNonchannelIndex() const
+    {
+        if(!hasData())
+            return 0;
+        return pythonGetAttr(pyObject(), "majorNonchannelIndex", ndim());
     }
 
         /**
@@ -415,7 +415,8 @@ class NumpyAnyArray
 		if(!hasData())
             return difference_type();
             
-        difference_type res(detail::permutationToNormalOrder(pyArray_, true));
+        difference_type res(detail::getAxisPermutationImpl(pyArray_, 
+                                               "permutationToNormalOrder", true));
         if(res.size() == 0)
         {
             res.resize(ndim());
@@ -515,6 +516,81 @@ class NumpyAnyArray
 };
 
 /********************************************************/
+
+template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
+                          // will always be NPY_TYPES
+PyObject * 
+constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_ptr arraytype)
+{
+    ArrayVector<npy_intp> shape = finalizeTaggedShape(tagged_shape);
+    PyAxisTags axistags(tagged_shape.axistags);
+    
+    int ndim = (int)shape.size();
+    ArrayVector<npy_intp> inverse_permutation;
+    
+    if(axistags)
+    {
+        if(!arraytype)
+            arraytype = NumpyAnyArray::getArrayTypeObject();
+
+        inverse_permutation = axistags.permutationFromNormalOrder();
+        vigra_precondition(ndim == (int)inverse_permutation.size(),
+                     "axistags.permutationFromNormalOrder(): permutation has wrong size.");
+    }
+    else
+    {
+        arraytype = python_ptr((PyObject*)&PyArray_Type);
+
+        inverse_permutation.resize(ndim);
+        linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
+    }
+    
+    python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
+                                  typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
+                     python_ptr::keep_count);
+    pythonToCppException(array);
+
+    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
+    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
+                       python_ptr::keep_count);
+    pythonToCppException(array);
+    
+    if(arraytype != (PyObject*)&PyArray_Type && axistags)
+        pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags.axistags) != -1);
+    
+    if(init)
+        PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
+   
+    return array.release();
+}
+
+#if 0
+
+// FIXME: reimplement in terms of TaggedShape?
+template <class TINY_VECTOR>
+inline
+python_ptr constructNumpyArrayFromData(
+    std::string const & typeKeyFull,
+    std::string const & typeKey,
+    TINY_VECTOR const & shape, npy_intp *strides,
+    NPY_TYPES typeCode, void *data)
+{
+    ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
+
+    python_ptr type = detail::getArrayTypeObject(typeKeyFull);
+    if(type == 0)
+        type = detail::getArrayTypeObject(typeKey, &PyArray_Type);
+
+    python_ptr array(PyArray_New((PyTypeObject *)type.ptr(), shape.size(), pyShape.begin(), typeCode, strides, data, 0, NPY_WRITEABLE, 0),
+                     python_ptr::keep_count);
+    pythonToCppException(array);
+
+    return array;
+}
+
+#endif
+
+/********************************************************/
 /*                                                      */
 /*                     NumpyArray                       */
 /*                                                      */
@@ -602,11 +678,6 @@ class NumpyArray
 
     // this function assumes that pyArray_ has already been set, and compatibility been checked
     void setupArrayView();
-
-    static python_ptr getArrayTypeObject()
-    {
-        return detail::getArrayTypeObject();
-    }
 
     static python_ptr init(difference_type const & shape, bool init = true, 
                            std::string const & order = "")
@@ -1005,15 +1076,9 @@ class NumpyArray
     }
 #endif
     
-    // TaggedShape taggedShape() const
-    // {
-        // return ArrayTraits::taggedShape(this->shape(), 
-                                         // detail::copyAxistags(this->axistags()));
-    // }
-    
     TaggedShape taggedShape() const
     {
-        return ArrayTraits::taggedShape(this->shape(), this->axistags());
+        return ArrayTraits::taggedShape(this->shape(), PyAxisTags(this->axistags(), true));
     }
 };
 
