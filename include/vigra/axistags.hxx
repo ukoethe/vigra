@@ -48,15 +48,21 @@ namespace python = boost::python;
 
 namespace vigra {
 
-// this particular assignment of bits to types is crucial for 
-// canonical axis ordering
-enum AxisType { Channels = 1, Space = 2, Angle = 4, Time = 8, Frequency = 16, 
-                UnknownAxisType = 32 };
-
 class AxisInfo
 {
   public:
   
+    // this particular assignment of bits to types is crucial for 
+    // canonical axis ordering
+    enum AxisType { Channels = 1, 
+                    Space = 2, 
+                    Angle = 4, 
+                    Time = 8, 
+                    Frequency = 16, 
+                    UnknownAxisType = 32, 
+                    NonChannel = Space | Angle | Time | UnknownAxisType,
+                    AllAxes = 2*UnknownAxisType-1 };
+
     AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType, 
              double resolution = 0.0, std::string description = "")
     : key_(key),
@@ -332,7 +338,7 @@ class AxisTags
 		return axes_.size();
 	}
     
-    int axisTypeCount(AxisType type) const
+    int axisTypeCount(AxisInfo::AxisType type) const
     {
         int res = 0;
         for(unsigned int k=0; k<size(); ++k)
@@ -593,11 +599,31 @@ class AxisTags
     }
     
     template <class T>
+    void permutationToNormalOrder(ArrayVector<T> & permutation, AxisInfo::AxisType types)
+    {
+        ArrayVector<AxisInfo> matchingAxes;
+        for(int k=0; k<(int)size(); ++k)
+            if(axes_[k].isType(types))
+                matchingAxes.push_back(axes_[k]);
+        permutation.resize(matchingAxes.size());
+        indexSort(matchingAxes.begin(), matchingAxes.end(), permutation.begin());
+    }
+    
+    template <class T>
     void permutationFromNormalOrder(ArrayVector<T> & inverse_permutation)
     {
-        ArrayVector<T> permuation(size());
+        ArrayVector<T> permuation;
         permutationToNormalOrder(permuation);
-        inverse_permutation.resize(size());
+        inverse_permutation.resize(permuation.size());
+        indexSort(permuation.begin(), permuation.end(), inverse_permutation.begin());
+    }   
+    
+    template <class T>
+    void permutationFromNormalOrder(ArrayVector<T> & inverse_permutation, AxisInfo::AxisType types)
+    {
+        ArrayVector<T> permuation;
+        permutationToNormalOrder(permuation, types);
+        inverse_permutation.resize(permuation.size());
         indexSort(permuation.begin(), permuation.end(), inverse_permutation.begin());
     }   
     

@@ -80,23 +80,26 @@ python_ptr defaultAxistags(int ndim, std::string order = "")
 }
 
 inline 
-ArrayVector<npy_intp> 
-getAxisPermutationImpl(python_ptr object, const char * name, bool ignoreErrors)
+void
+getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
+                       python_ptr object, const char * name, 
+                       AxisInfo::AxisType type, bool ignoreErrors)
 {
     python_ptr func(PyString_FromString(name), python_ptr::keep_count);
-    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), NULL), 
+    python_ptr t(PyInt_FromLong((long)type), python_ptr::keep_count);
+    python_ptr permutation(PyObject_CallMethodObjArgs(object, func.get(), t.get(), NULL), 
                            python_ptr::keep_count);
     if(!permutation && ignoreErrors)
     {
         PyErr_Clear();
-        return ArrayVector<npy_intp>();
+        return;
     }
     pythonToCppException(permutation);
     
     if(!PySequence_Check(permutation))
     {
         if(ignoreErrors)
-            return ArrayVector<npy_intp>();
+            return;
         std::string message = std::string(name) + "() did not return a sequence.";
         PyErr_SetString(PyExc_ValueError, message.c_str());
         pythonToCppException(false);
@@ -109,14 +112,22 @@ getAxisPermutationImpl(python_ptr object, const char * name, bool ignoreErrors)
         if(!PyInt_Check(i))
         {
             if(ignoreErrors)
-                return ArrayVector<npy_intp>();
+                return;
             std::string message = std::string(name) + "() did not return a sequence of int.";
             PyErr_SetString(PyExc_ValueError, message.c_str());
             pythonToCppException(false);
         }
         res[k] = PyInt_AsLong(i);
     }
-    return res;
+    res.swap(permute);
+}
+
+inline 
+void
+getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
+                       python_ptr object, const char * name, bool ignoreErrors)
+{
+    getAxisPermutationImpl(permute, object, name, AxisInfo::AllAxes, ignoreErrors);
 }
 
 } // namespace detail
@@ -285,13 +296,36 @@ class PyAxisTags
     ArrayVector<npy_intp> 
     permutationToNormalOrder(bool ignoreErrors = false) const
     {
-        return detail::getAxisPermutationImpl(axistags, "permutationToNormalOrder", ignoreErrors);
+        ArrayVector<npy_intp> permute;
+        detail::getAxisPermutationImpl(permute, axistags, "permutationToNormalOrder", ignoreErrors);
+        return permute;
+    }
+
+    ArrayVector<npy_intp> 
+    permutationToNormalOrder(AxisInfo::AxisType types, bool ignoreErrors = false) const
+    {
+        ArrayVector<npy_intp> permute;
+        detail::getAxisPermutationImpl(permute, axistags, 
+                                            "permutationToNormalOrder", types, ignoreErrors);
+        return permute;
     }
 
     ArrayVector<npy_intp> 
     permutationFromNormalOrder(bool ignoreErrors = false) const
     {
-        return detail::getAxisPermutationImpl(axistags, "permutationFromNormalOrder", ignoreErrors);
+        ArrayVector<npy_intp> permute;
+        detail::getAxisPermutationImpl(permute, axistags, 
+                                       "permutationFromNormalOrder", ignoreErrors);
+        return permute;
+    }
+    
+    ArrayVector<npy_intp> 
+    permutationFromNormalOrder(AxisInfo::AxisType types, bool ignoreErrors = false) const
+    {
+        ArrayVector<npy_intp> permute;
+        detail::getAxisPermutationImpl(permute, axistags, 
+                                       "permutationFromNormalOrder", types, ignoreErrors);
+        return permute;
     }
     
     void dropChannelAxis()
@@ -324,52 +358,6 @@ class PyAxisTags
     bool operator!() const
     {
         return !axistags;
-    }
-
-  private:
-
-    void 
-    getAxisPermutationImpl(ArrayVector<npy_intp> & res, const char * name, bool ignoreErrors) const
-    {
-        if(!axistags)
-            return;
-        
-        python_ptr func(PyString_FromString(name), python_ptr::keep_count);
-        python_ptr permutation(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                               python_ptr::keep_count);
-        if(!permutation && ignoreErrors)
-        {
-            PyErr_Clear();
-            return;
-        }
-        pythonToCppException(permutation);
-        
-        if(!PySequence_Check(permutation) || PySequence_Length(permutation) != size())
-        {
-            if(ignoreErrors)
-                return;
-            std::string message = std::string(name) + "() did not return a sequence, or a sequence of wrong length.";
-            PyErr_SetString(PyExc_ValueError, message.c_str());
-            pythonToCppException(false);
-        }
-            
-        res.resize(size());
-        for(int k=0; k<size(); ++k)
-        {
-            python_ptr i(PySequence_GetItem(permutation, k), python_ptr::keep_count);
-            if(!PyInt_Check(i))
-            {
-                if(ignoreErrors)
-                {
-                    res.clear();
-                    return;
-                }
-                std::string message = std::string(name) + "() did not return a sequence of int.";
-                PyErr_SetString(PyExc_ValueError, message.c_str());
-                pythonToCppException(false);
-            }
-            res[k] = PyInt_AsLong(i);
-        }
     }
 };
 

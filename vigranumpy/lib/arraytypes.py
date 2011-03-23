@@ -538,8 +538,8 @@ this class via its subclasses!
         else:
             return self.empty_axistags()
 
-    def permutationToNormalOrder(self):
-        return list(self.axistags.permutationToNormalOrder())
+    def permutationToNormalOrder(self, types=AxisType.AllAxes):
+        return list(self.axistags.permutationToNormalOrder(types))
     
     def permutationFromNormalOrder(self):
         return list(self.axistags.permutationFromNormalOrder())

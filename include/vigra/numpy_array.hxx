@@ -415,8 +415,10 @@ class NumpyAnyArray
 		if(!hasData())
             return difference_type();
             
-        difference_type res(detail::getAxisPermutationImpl(pyArray_, 
-                                               "permutationToNormalOrder", true));
+        // difference_type res(detail::getAxisPermutationImpl(pyArray_, 
+                                               // "permutationToNormalOrder", true));
+        difference_type res;
+        detail::getAxisPermutationImpl(res, pyArray_, "permutationToNormalOrder", true);
         if(res.size() == 0)
         {
             res.resize(ndim());
@@ -853,6 +855,40 @@ class NumpyArray
     }
 
         /**
+         Returns the the permutation that will transpose this array into 
+         canonical ordering (currently: F-order). The size of
+         the returned permutation equals N, unless \a types is given and
+         causes some axes to be dropped.
+         */
+    ArrayVector<npy_intp> 
+    permutationToNormalOrder(AxisInfo::AxisType types = AxisInfo::AllAxes) const
+    {
+        ArrayVector<npy_intp> permute;
+		if(hasData())
+        {
+            detail::getAxisPermutationImpl(permute, pyArray_, 
+                                           "permutationToNormalOrder", types, true);
+
+            if(permute.size() == 0)
+            {
+                if(typeid(T) == typeid(Multiband<value_type>))
+                {
+                    permute.resize(N-1);
+                    linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+                    if((types & AxisInfo::Channels) != 0)
+                        permute.push_back(N-1);
+                }
+                else
+                {
+                    permute.resize(N);
+                    linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+                }
+            }
+        }
+        return permute;
+    }
+
+        /**
          * Test whether a given python object is a numpy array that can be
          * converted (copied) into an array compatible to this NumpyArray type.
          * This means that the array's shape conforms to the requirements of
@@ -1090,7 +1126,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
                         
     if(NumpyAnyArray::hasData())
     {
-        NumpyAnyArray::difference_type ordering = permutationToNormalOrder();
+        NumpyAnyArray::difference_type ordering = NumpyAnyArray::permutationToNormalOrder();
         
         if(actual_dimension == pyArray()->nd)
         {

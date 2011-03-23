@@ -223,28 +223,15 @@ void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const
         vigra_precondition(!res.hasData(),
                "resizeImage(): you cannot provide both 'shape' and 'out'.");
                        
-        // FIXME: there must be a simpler way to do this
         Shape shape,
               pyshape = python::extract<Shape>(destSize)();
-        ArrayVector<npy_intp> permute = image.permutationToNormalOrder();
-        if(permute.size() == dim - 1)  // without explicit channel axis
-        {
-            for(unsigned int k=0; k<dim-1; ++k)
-                shape[k] = pyshape[permute[k]];
-        }
-        else if(permute.size() == dim) // skip explicit channel axis
-        {
-            for(unsigned int k=1; k<dim; ++k)
-                if(permute[k] > permute[0])
-                    --permute[k];
-            for(unsigned int k=0; k<dim-1; ++k)
-                shape[k] = pyshape[permute[k+1]];
-        }
-        else                            // without axistags, assume C-order
-        {
-            for(unsigned int k=0; k<dim-1; ++k)
-                shape[k] = pyshape[dim-2-k];
-        }
+              
+        ArrayVector<npy_intp> permute = image.permutationToNormalOrder(AxisInfo::NonChannel);
+        vigra_precondition(permute.size() == dim-1,
+                           "resizeImage(): 'shape' has wrong length.");
+        for(unsigned int k=0; k<dim-1; ++k)
+            shape[k] = pyshape[permute[k]];
+            
         res.reshapeIfEmpty(image.taggedShape().resize(shape), 
                            "resizeImage(): Output image has wrong dimensions");
     }

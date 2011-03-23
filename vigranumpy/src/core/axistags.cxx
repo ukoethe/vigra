@@ -243,10 +243,26 @@ AxisTags_permutationToNormalOrder(AxisTags & axistags)
 }
 
 python::object
+AxisTags_permutationToNormalOrder2(AxisTags & axistags, unsigned int types)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationToNormalOrder(permutation, (AxisInfo::AxisType)types);
+    return python::object(permutation);
+}
+
+python::object
 AxisTags_permutationFromNormalOrder(AxisTags & axistags)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationFromNormalOrder(permutation);
+    return python::object(permutation);
+}
+
+python::object
+AxisTags_permutationFromNormalOrder2(AxisTags & axistags, unsigned int types)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationFromNormalOrder(permutation, (AxisInfo::AxisType)types);
     return python::object(permutation);
 }
 
@@ -338,18 +354,20 @@ void defineAxisTags()
 {
     using namespace boost::python;
 
-    enum_<AxisType>("AxisType")
-        .value("UnknownAxisType", UnknownAxisType)
-        .value("Space", Space)
-        .value("Time", Time)
-        .value("Channels", Channels)
-        .value("Frequency", Frequency)
-        .value("Angle", Angle)
+    enum_<AxisInfo::AxisType>("AxisType")
+        .value("UnknownAxisType", AxisInfo::UnknownAxisType)
+        .value("Space", AxisInfo::Space)
+        .value("Time", AxisInfo::Time)
+        .value("Channels", AxisInfo::Channels)
+        .value("Frequency", AxisInfo::Frequency)
+        .value("Angle", AxisInfo::Angle)
+        .value("NonChannel", AxisInfo::NonChannel)
+        .value("AllAxes", AxisInfo::AllAxes)
     ;
 
     class_<AxisInfo>("AxisInfo", no_init)
-        .def(init<std::string, AxisType, double, std::string>(
-             (arg("name")="?", arg("typeFlags")=UnknownAxisType, 
+        .def(init<std::string, AxisInfo::AxisType, double, std::string>(
+             (arg("name")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
 		.def_readonly("key", &AxisInfo::key_)
@@ -438,7 +456,9 @@ void defineAxisTags()
 		.add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
 		.def("axisTypeCount", &AxisTags::axisTypeCount)
 		.def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
+		.def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)
 		.def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
+		.def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder2)
 		.def("transform", &AxisTags_transform,
                              return_value_policy<manage_new_object>())
 		.def(self == self)
