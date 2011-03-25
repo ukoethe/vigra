@@ -264,7 +264,6 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 		PyObject * obj = (PyObject *)array;
 		int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
 
         if(channelIndex < ndim)
         {
@@ -274,23 +273,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
             return (ndim == N) ||
                     (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1);
         }
-        else if(majorIndex < ndim)
-        {
-            // We have axistags, but no channel axis. There are again two cases:
-            // 1. ndim is right: everything is ok
-            // 2. ndim == N-1: we add a singleton channel axis later
-            return ndim == N-1 || ndim == N;
-        }
-        else
-        {
-            // We have no axistags. 
-            // When ndim == N, everything is ok
-            // When ndim == N-1, we add a singleton axis later
-            // When ndim == N+1, we assume that channelIndex == ndim-1, and we may drop the
-            // channel axis when it is a singleton.
-            return ndim == N-1 || ndim == N ||
-                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1);
-        }
+        else 
+            return ndim == N;
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -307,9 +291,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        // FIXME: we construct axistags with one entry too many, so that the channel axis
-        //        can be dropped in constructArray(). This is a HACK.
-        return TaggedShape(shape, PyAxisTags(shape.size()+1, order));
+        return TaggedShape(shape, PyAxisTags(detail::emptyAxistags(shape.size())));
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -356,25 +338,15 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         }
         else if(majorIndex < ndim)
         {
-            // We have axistags, but no channel axis. There are again two cases:
-            // 1. ndim is right: the major axis must be unstrided
-            // 2. ndim == N-1: we add a singleton channel axis later, which is automatically unstrided,
-            //                 so there is no explicit stride requirement
-            return ndim == N-1 || (ndim == N && strides[majorIndex] == itemsize);
+            // We have axistags, but no channel axis. Then, ndim must be right,
+            // and the major axis must be unstrided
+            return (ndim == N && strides[majorIndex] == itemsize);
         }
         else
         {
-            // We have no axistags. 
-            // When ndim == N or ndim == N+1, we assume that
-            //     channelIndex == ndim-1
-            //     majorIndex == ndim-2
-            // When ndim == N-1, we assume
-            //     there is no channel axis
-            //     majorIndex == ndim-1
-            // and proceed as above
-            return ndim == N-1 ||
-                    (ndim == N && strides[ndim-1] == itemsize)  ||
-                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
+            // We have no axistags. Then, ndim must be right and the last axis 
+            // must be unstrided.
+            return (ndim == N && strides[ndim-1] == itemsize);
         }
     }
 
@@ -432,7 +404,8 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, PyAxisTags(shape.size()+1, order)).setChannelCount(1);
+        return TaggedShape(shape, 
+                  PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(1);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
@@ -554,7 +527,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, PyAxisTags(shape.size(), order)).setChannelIndexLast();
+        return TaggedShape(shape, 
+                    PyAxisTags(detail::defaultAxistags(shape.size(), order))).setChannelIndexLast();
     }
 
     // template <class U>
@@ -673,7 +647,8 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        return TaggedShape(shape, PyAxisTags(shape.size()+1, order)).setChannelCount(M);
+        return TaggedShape(shape, 
+                     PyAxisTags(detail::defaultAxistags(shape.size()+1, order))).setChannelCount(M);
     }
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)

@@ -70,29 +70,30 @@ of 'numpy.ndarray'.
         res = numpy.ndarray.__new__(subtype, shape, dtype, buffer, offset, strides, order)
         if subtype is not numpy.ndarray:
             if axistags is None:
-                res.axistags = res.empty_axistags()
+                res.axistags = res.empty_axistags(res.ndim)
             else:
                 if len(axistags) != res.ndim:
                     raise RuntimeError('TaggedArray(): len(axistags) must match ndim')
                 res.axistags = copy.copy(axistags)
         return res
         
-    def empty_axistags(self):
-        '''Create an axistags object with non-informative entries.
+    @staticmethod
+    def empty_axistags(ndim):
+        '''Create an axistags object of the given length with non-informative entries.
         '''
-        return [None]*self.ndim
+        return [None]*ndim
     
     def copy_axistags(self):
         '''Create a copy of 'self.axistags'. If the array doesn't have axistags, empty_axistags() 
            will be returned.
         '''
-        return copy.copy(getattr(self, 'axistags', self.empty_axistags()))
+        return copy.copy(getattr(self, 'axistags', self.empty_axistags(self.ndim)))
         
     def transpose_axistags(self, axes=None):
         '''Create a copy of 'self.axistags' according to the given axes permutation 
            (internally called in transpose()).
         '''
-        axistags = self.empty_axistags()
+        axistags = self.empty_axistags(self.ndim)
         if hasattr(self, 'axistags'):
             if axes is None:
                 axes = range(self.ndim-1, -1, -1)
@@ -107,7 +108,7 @@ of 'numpy.ndarray'.
         # we assume that self.ndim is already set to its new value, whereas
         # self.axistags has just been copied by __array_finalize__
         
-        new_axistags = self.empty_axistags()
+        new_axistags = self.empty_axistags(self.ndim)
         
         if hasattr(self, 'axistags'):
             old_axistags = self.axistags
@@ -206,14 +207,14 @@ of 'numpy.ndarray'.
     def cumsum(self, axis=None, dtype=None, out=None):
         res = numpy.ndarray.cumsum(self, axis, dtype, out)
         if res.ndim != self.ndim:
-            res.axistags = res.empty_axistags()
+            res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     @preserve_doc
     def cumprod(self, axis=None, dtype=None, out=None):
         res = numpy.ndarray.cumprod(self, axis, dtype, out)
         if res.ndim != self.ndim:
-            res.axistags = res.empty_axistags()
+            res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     # FIXME: we should also provide a possibility to determine flattening order by axistags
@@ -221,7 +222,7 @@ of 'numpy.ndarray'.
     @preserve_doc
     def flatten(self, order='C'):
         res = numpy.ndarray.flatten(self, order)
-        res.axistags = res.empty_axistags()
+        res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     @preserve_doc
@@ -274,26 +275,26 @@ of 'numpy.ndarray'.
     @preserve_doc
     def ravel(self, order='C'):
         res = numpy.ndarray.ravel(self, order)
-        res.axistags = res.empty_axistags()
+        res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     @preserve_doc
     def repeat(self, repeats, axis=None):
         res = numpy.ndarray.repeat(self, repeats, axis)
         if axis is None:
-            res.axistags = res.empty_axistags()
+            res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     @preserve_doc
     def reshape(self, shape, order='C'):
         res = numpy.ndarray.reshape(self, shape, order)
-        res.axistags = res.empty_axistags()
+        res.axistags = res.empty_axistags(res.ndim)
         return res        
 
     @preserve_doc
     def resize(self, new_shape, refcheck=True, order=False):
         res = numpy.ndarray.reshape(self, new_shape, refcheck, order)
-        res.axistags = res.empty_axistags()
+        res.axistags = res.empty_axistags(res.ndim)
         return res        
             
     @preserve_doc
@@ -338,7 +339,7 @@ of 'numpy.ndarray'.
     def take(self, indices, axis=None, out=None, mode='raise'):
         res = numpy.ndarray.take(self, indices, axis, out, mode)
         if axis is None:
-            res.axistags = res.empty_axistags()
+            res.axistags = res.empty_axistags(res.ndim)
         return res        
            
     @preserve_doc
@@ -377,5 +378,5 @@ of 'numpy.ndarray'.
             if res.base is self:
                 res.axistags = res.transform_axistags(index)
             else:
-                res.axistags = res.empty_axistags()
+                res.axistags = res.empty_axistags(res.ndim)
         return res

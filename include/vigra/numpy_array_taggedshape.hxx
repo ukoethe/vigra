@@ -80,6 +80,20 @@ python_ptr defaultAxistags(int ndim, std::string order = "")
 }
 
 inline 
+python_ptr emptyAxistags(int ndim)
+{
+    python_ptr arraytype = getArrayTypeObject();
+    python_ptr func(PyString_FromString("empty_axistags"), python_ptr::keep_count);
+    python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
+    python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
+                        python_ptr::keep_count);
+    if(axistags)
+        return axistags;
+    PyErr_Clear();
+    return python_ptr();
+}
+
+inline 
 void
 getAxisPermutationImpl(ArrayVector<npy_intp> & permute,
                        python_ptr object, const char * name, 
@@ -191,7 +205,10 @@ class PyAxisTags
     
     PyAxisTags(int ndim, std::string const & order = "")
     {
-        axistags = detail::defaultAxistags(ndim, order);
+        if(order != "")
+            axistags = detail::defaultAxistags(ndim, order);
+        else
+            axistags = detail::emptyAxistags(ndim);
     }
     
     long size() const

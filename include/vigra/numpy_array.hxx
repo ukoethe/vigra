@@ -1119,6 +1119,86 @@ class NumpyArray
 };
 
     // this function assumes that pyArray_ has already been set, and compatibility been checked
+// template <unsigned int N, class T, class Stride>
+// void NumpyArray<N, T, Stride>::setupArrayView()
+// {
+    // bool channelDimensionMustBeLast = typeid(T) == typeid(Multiband<value_type>);
+                        
+    // if(NumpyAnyArray::hasData())
+    // {
+        // NumpyAnyArray::difference_type ordering = NumpyAnyArray::permutationToNormalOrder();
+        
+        // if(actual_dimension == pyArray()->nd)
+        // {
+            // if(channelDimensionMustBeLast)
+            // {
+                // // rotate the channel axis to last position
+                // for(int k=1; k<actual_dimension; ++k)
+                // {
+                    // this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
+                    // this->m_stride[k-1] = pyArray()->strides[ordering[k]];
+                // }
+                // this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
+                // this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
+            // }
+            // else
+            // {
+                // for(int k=0; k<actual_dimension; ++k)
+                // {
+                    // this->m_shape[k] = pyArray()->dimensions[ordering[k]];
+                    // this->m_stride[k] = pyArray()->strides[ordering[k]];
+                // }
+            // }
+        // }
+        // else if(actual_dimension == pyArray()->nd - 1)
+        // {
+            // // skip the channel axis
+            // for(int k=0; k<actual_dimension; ++k)
+            // {
+                // this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
+                // this->m_stride[k] = pyArray()->strides[ordering[k+1]];
+            // }
+        // }
+        // else if(actual_dimension == pyArray()->nd + 1)
+        // {
+            // if(channelDimensionMustBeLast)
+            // {
+                // // insert a singleton channel at the last position
+                // for(int k=0; k<actual_dimension-1; ++k)
+                // {
+                    // this->m_shape[k] = pyArray()->dimensions[ordering[k]];
+                    // this->m_stride[k] = pyArray()->strides[ordering[k]];
+                // }
+                // this->m_shape[actual_dimension-1] = 1;
+                // this->m_stride[actual_dimension-1] = sizeof(value_type);
+            // }
+            // else
+            // {
+                // vigra_fail("this should never happen.\n");
+                // // insert a singleton channel at the first position
+                // for(int k=0; k<actual_dimension-1; ++k)
+                // {
+                    // this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
+                    // this->m_stride[k+1] = pyArray()->strides[ordering[k]];
+                // }
+                // this->m_shape[0] = 1;
+                // this->m_stride[0] = sizeof(value_type);
+            // }
+        // }
+        // else
+        // {
+            // vigra_precondition(false,
+              // "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
+        // }
+        // this->m_stride /= sizeof(value_type);
+        // this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
+    // }
+    // else
+    // {
+        // this->m_ptr = 0;
+    // }
+// }
+
 template <unsigned int N, class T, class Stride>
 void NumpyArray<N, T, Stride>::setupArrayView()
 {
@@ -1174,6 +1254,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
             }
             else
             {
+                vigra_fail("this should never happen.\n");
                 // insert a singleton channel at the first position
                 for(int k=0; k<actual_dimension-1; ++k)
                 {

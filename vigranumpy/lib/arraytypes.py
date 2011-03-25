@@ -519,10 +519,11 @@ this class via its subclasses!
     def spatialDimensions(self):
         return self.axistags.axisTypeCount(AxisType.Space)
     
-    def empty_axistags(self):
+    @staticmethod
+    def empty_axistags(ndim):
         '''Create an axistags object with non-informative entries.
         '''
-        return AxisTags(self.ndim)
+        return AxisTags(ndim)
     
     def transpose_axistags(self, permutation = None):
         if hasattr(self, 'axistags'):
@@ -530,13 +531,13 @@ this class via its subclasses!
             res.transpose(permutation)
             return res
         else:
-            return self.empty_axistags()
+            return self.empty_axistags(self.ndim)
 
     def transform_axistags(self, index):
         if hasattr(self, 'axistags'):
             return self.axistags.transform(index, self.ndim)
         else:
-            return self.empty_axistags()
+            return self.empty_axistags(self.ndim)
 
     def permutationToNormalOrder(self, types=AxisType.AllAxes):
         return list(self.axistags.permutationToNormalOrder(types))
