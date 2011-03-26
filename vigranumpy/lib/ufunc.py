@@ -210,123 +210,70 @@ class Function(object):
         return permutation, inversePermutation, pshape
 
 class UnaryFunction(Function):
-    def __call__(self, a, out = None):
-        if not isinstance(a, numpy.ndarray):
-            return self.function(a, out)
-        p = self.priorities(a, out)
-        if p is None:
-            return self.function(a, out)
-
-        if hasattr(a, 'axistags') and hasattr(out, 'axistags') and a.axistags != out.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        permutation, inversePermutation, pshape = self.permutation(p)
+    def __call__(self, arg, out = None):
+        a = arg.transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out)
-
-        a = a.transpose(permutation)
-        a = numpy.require(a, dtype)
-        if hasattr(out, 'transpose'):
-            o = out.transpose(permutation)
-        else:
-            o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o.axistags = copy.copy(a.axistags)
-        self.function(a, o)
-
         if out is None:
-            out = o.transpose(inversePermutation) 
-        return out
+            out = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
+        o = out.transposeToNumpyOrder()
+        if a.axistags != o.axistags:
+            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+        a = numpy.require(a, dtype).view(numpy.ndarray)
+        self.function(a, o)
+        return out            
 
 class UnaryFunctionOut2(Function):
     def __call__(self, a, out1 = None, out2 = None):
-        if not isinstance(a, numpy.ndarray):
-            return self.function(a, out1, out2)
-        p = self.priorities(a, out1, out2)
-        if p is None:
-            return self.function(a, out1, out2)
-
-        permutation, inversePermutation, pshape = self.permutation(p)
+        a = arg.transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out1, out2)
 
-        if hasattr(a, 'axistags') and hasattr(out1, 'axistags') and a.axistags != out1.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-        if hasattr(a, 'axistags') and hasattr(out2, 'axistags') and a.axistags != out2.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        a = a.transpose(permutation)
-        a = numpy.require(a, dtype)
-        if hasattr(out1, 'transpose'):
-            o1 = out1.transpose(permutation)
-        else:
-            o1 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o1.axistags = copy.copy(a.axistags)
-        if hasattr(out2, 'transpose'):
-            o2 = out2.transpose(permutation)
-        else:
-            o2 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o2.axistags = copy.copy(a.axistags)
-        self.function(a, o1, o2)
-
         if out1 is None:
-            out1 = o1.transpose(inversePermutation) 
+            out1 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
+        o1 = out1.transposeToNumpyOrder()
+
         if out2 is None:
-            out2 = o2.transpose(inversePermutation) 
+            out2 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)            
+        o2 = out2.transposeToNumpyOrder()
+            
+        if a.axistags != o1.axistags or a.axistags != o2.axistags:
+            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            
+        a = numpy.require(a, dtype).view(numpy.ndarray)
+        self.function(a, o1, o2)
         return out1, out2
+            
 
 class BinaryFunction(Function):
-    def __call__(self, a, b, out = None):
-        a_isarray, b_isarray = isinstance(a, numpy.ndarray), isinstance(b, numpy.ndarray)
-        if not a_isarray and not b_isarray:
-            return self.function(a, b, out)
-        p = self.priorities(a, b, out)
-        if p is None:
-            return self.function(a, b, out)
-
-        if hasattr(a, 'axistags') and hasattr(b, 'axistags') and a.axistags != b.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-        if hasattr(a, 'axistags') and hasattr(out, 'axistags') and a.axistags != out.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        ndim = p.ndim
-        permutation, inversePermutation, pshape = self.permutation(p)
-        dtype, out_dtype = self.common_type(a, b, out)
-
-        if a_isarray:
-            if a.ndim < ndim:
-                a = a.reshape(((1,)*ndim + a.shape)[-ndim:])
-            a = a.transpose(permutation)
-        if b_isarray:
-            if b.ndim < ndim:
-                b = b.reshape(((1,)*ndim + b.shape)[-ndim:])
-            b = b.transpose(permutation)
-
-        # make sure that at least one input array has type dtype
-        if a_isarray and b_isarray:
-            if a.dtype != dtype and b.dtype != dtype:
-                if b.size < a.size:
-                    b = numpy.require(b, dtype)
-                else:
-                    a = numpy.require(a, dtype)
-        elif a_isarray and a.dtype != dtype:
-            a = numpy.require(a, dtype)
-        elif b_isarray and b.dtype != dtype:
-            b = numpy.require(b, dtype)
-
-        if hasattr(out, 'transpose'):
-            o = out.transpose(permutation)
-        else:
-            o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o.axistags = copy.copy(a.axistags)
+    def __call__(self, arg1, arg2, out = None):
+        a1_isarray, a2_isarray = isinstance(arg1, numpy.ndarray), isinstance(arg2, numpy.ndarray)
+        p = self.priorities(arg1, arg2)
+        axistags = p.transposeToNumpyOrder().axistags
+        dtype, out_dtype = self.common_type(arg1, arg2, out)
         
-        self.function(a, b, o)
+        if a1_isarray:
+            a1 = arg1.transposeToNumpyOrder()
+            if a1.axistags != axistags:
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            a1 = numpy.require(a1, dtype).view(numpy.ndarray)
+        else:
+            a1 = arg1
 
+        if a2_isarray:
+            a2 = arg2.transposeToNumpyOrder()
+            if a2.axistags != axistags:
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            a2 = numpy.require(a2, dtype).view(numpy.ndarray)
+        else:
+            a2 = arg2
+            
         if out is None:
-            out = o.transpose(inversePermutation) 
-        return out
+            out = p.__class__(p, dtype=out_dtype, order='A', init=False)
+        o = out.transposeToNumpyOrder()
+        if o.axistags != axistags:
+            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
 
+        self.function(a1, a2, o)
+        return out
         
 __all__ = []
 

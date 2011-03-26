@@ -263,18 +263,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     {
 		PyObject * obj = (PyObject *)array;
 		int ndim = PyArray_NDIM(obj);
-        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
 
-        if(channelIndex < ndim)
-        {
-            // When we have a channel axis, there are two cases:
-            // 1. ndim is right: everything is ok
-            // 2. ndim == N+1: we drop the channel axis when it is a singleton
-            return (ndim == N) ||
-                    (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1);
-        }
-        else 
-            return ndim == N;
+        return ndim == N;
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -298,6 +288,33 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     {
         vigra_precondition(tagged_shape.size() == N,
                   "reshapeIfEmpty(): tagged_shape has wrong size.");
+    }
+    
+    template <class U>
+    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
+                                         ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       types, true);
+
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
+    }
+    
+    template <class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AllAxes, true);
+
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
     }
 
     // template <class U>
@@ -329,23 +346,14 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         
         if(channelIndex < ndim)
         {
-            // When we have a channel axis, there are two cases:
-            // 1. ndim is right: the channel axis is the major axis and must be unstrided
-            // 2. ndim == N+1: we drop the channel axis when it is a singleton, and require the
-            //                 major non-channel axis to be unstrided
-            return (ndim == N && strides[channelIndex] == itemsize) ||
-                    (ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && strides[majorIndex] == itemsize);
+            return (ndim == N && strides[channelIndex] == itemsize);
         }
         else if(majorIndex < ndim)
         {
-            // We have axistags, but no channel axis. Then, ndim must be right,
-            // and the major axis must be unstrided
             return (ndim == N && strides[majorIndex] == itemsize);
         }
         else
         {
-            // We have no axistags. Then, ndim must be right and the last axis 
-            // must be unstrided.
             return (ndim == N && strides[ndim-1] == itemsize);
         }
     }
@@ -414,7 +422,37 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         vigra_precondition(tagged_shape.size() == N+1,
               "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
+    
+    template <class U>
+    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
+                                         ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AxisType(types & ~AxisInfo::Channels), true);
 
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
+    }
+    
+    template <class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AllAxes, true);
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
+        else if(permute.size() == N+1)
+        {
+            permute.erase(permute.begin());
+        }
+    }
+    
     // template <class U>
     // static python_ptr constructor(TinyVector<U, N> const & shape,
                                   // T *data, TinyVector<U, N> const & stride)
@@ -498,17 +536,23 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
         PyObject * obj = (PyObject*)array;
-		int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
         
         if(channelIndex < ndim)
         {
             // When we have a channel axis, ndim must be right.
             return ndim == N;
         }
+        else if(majorIndex < ndim)
+        {
+            // When we have axistags, but no channel axis, we must add a singleton axis.
+            return ndim == N-1;
+        }
         else
         {
-            // Otherwise, we may add a singleton channel axis, if necessary.
+            // Otherwise, we may or may not add a singleton channel axis.
             return ndim == N || ndim == N-1;
         }
     }
@@ -531,6 +575,54 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
                     PyAxisTags(detail::defaultAxistags(shape.size(), order))).setChannelIndexLast();
     }
 
+    template <class U>
+    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
+                                         ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       types, true);
+
+        if(permute.size() == 0)
+        {
+            permute.resize(N-1);
+            linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+            if((types & AxisInfo::Channels) != 0)
+                permute.push_back(N-1);
+        }
+        else if((types & AxisInfo::Channels) != 0)
+        {
+            // if permutation with channels is requested, 
+            //   rotate the channel axis to last position
+            int channelIndex = permute[0];
+            for(int k=1; k<N; ++k)
+                permute[k-1] = permute[k];
+            permute[N-1] = channelIndex;
+        }
+    }
+    
+    template <class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AllAxes, true);
+
+        if(permute.size() == 0)
+        {
+            permute.resize(N-1);
+            linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+            if(PyArray_NDIM((PyArrayObject*)array.get()) == N)
+                permute.push_back(N-1);
+        }
+        else if(permute.size() == N)
+        {
+            // if we have a channel axis, rotate it to last position
+            int channelIndex = permute[0];
+            for(int k=1; k<N; ++k)
+                permute[k-1] = permute[k];
+            permute[N-1] = channelIndex;
+        }
+    }
+    
     // template <class U>
     // static python_ptr constructor(TinyVector<U, N> const & shape,
                                   // T *data, TinyVector<U, N> const & stride)
@@ -658,6 +750,36 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
               "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
+    template <class U>
+    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
+                                         ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AxisType(types & ~AxisInfo::Channels), true);
+
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
+    }
+    
+    template <class U>
+    static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
+    {
+        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                       AxisInfo::AllAxes, true);
+        if(permute.size() == 0)
+        {
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+        }
+        else if(permute.size() == N+1)
+        {
+            permute.erase(permute.begin());
+        }
+    }
+    
     // template <class U>
     // static python_ptr constructor(TinyVector<U, N> const & shape,
                                   // T *data, TinyVector<U, N> const & stride)

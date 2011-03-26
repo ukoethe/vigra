@@ -107,7 +107,7 @@ def test_writeAndReadImageHDF5():
     im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
     h5py_file = h5py.File('hdf5test.hd5', 'r')
     image_imp4 = h5py_file['/group/subgroup/imgdata']
-    checkEqualData(image.transposeToNumpyOrder(), image_imp4.value)
+    checkEqualData(image.transposeToNumpyOrder().view(np.ndarray), image_imp4.value)
 
 def test_writeAndReadVolumeHDF5():
     if not hasattr(im, 'writeVolumeToHDF5'):
@@ -158,4 +158,4 @@ def test_writeAndReadVolumeHDF5():
     im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
     h5py_file = h5py.File('hdf5test.hd5', 'r')
     volumeFloat_imp2 = h5py_file['/group/subgroup/voldata']
-    checkEqualData(volumeFloat.transposeToNumpyOrder(), volumeFloat_imp2.value)
+    checkEqualData(volumeFloat.transposeToNumpyOrder().view(np.ndarray), volumeFloat_imp2.value)

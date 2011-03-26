@@ -55,9 +55,12 @@ python::tuple test(NumpyArray<N, T, Stride> const & array)
     NumpyArray<N, T> copy(array, true);
     vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
           "freshly created NumpyArray<N, T> has reference count > 1.");
+
     NumpyArray<N, T> same_shape(array.shape());
+
     NumpyArray<N, T> same_shape_and_tags;
     same_shape_and_tags.reshapeIfEmpty(array.taggedShape());
+
     return python::make_tuple(((NumpyAnyArray const &)array).shape(), copy, 
                                same_shape, same_shape_and_tags);
 }

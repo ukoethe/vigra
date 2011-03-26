@@ -441,7 +441,9 @@ this class via its subclasses!
                 order = 'A'
             if axistags is None and hasattr(obj, 'axistags'):
                 axistags = copy.copy(obj.axistags)
-            if axistags is not None and obj.ndim != len(axistags):
+            if axistags is None:
+                raise RuntimeError("VigraArray(): axistags must be given when constructing from plain array.")
+            if obj.ndim != len(axistags):
                 raise RuntimeError("VigraArray(): axistags have wrong length.")
             res = _constructArrayFromArray(cls, obj, dtype, order, init, axistags)
         else:
@@ -542,6 +544,9 @@ this class via its subclasses!
     def permutationToNormalOrder(self, types=AxisType.AllAxes):
         return list(self.axistags.permutationToNormalOrder(types))
     
+    def permutationToNumpyOrder(self):
+        return list(reversed(self.axistags.permutationToNormalOrder(AxisType.AllAxes)))
+    
     def permutationFromNormalOrder(self):
         return list(self.axistags.permutationFromNormalOrder())
     
@@ -582,6 +587,19 @@ this class via its subclasses!
         if self.shape[ci] != 1:
             raise RuntimeError("dropChannelAxis(): only allowed when there is a single channel.")
         return self[(slice(None),)*ci + (0,) + (slice(None),)*(self.ndim-ci-1)]
+    
+    def insertChannelAxis(self, order=None):
+        ci = self.channelIndex
+        if ci != self.ndim:
+            return self
+        
+        if order == 'F':
+            res = self[numpy.newaxis,...]
+            res.axistags[0] = AxisInfo.c
+        else:
+            res = self[..., numpy.newaxis]
+            res.axistags[-1] = AxisInfo.c
+        return res
     
     def transposeToOrder(self, order):
         if order == 'A':
@@ -862,13 +880,15 @@ def Image(obj, dtype=numpy.float32, order=None,
 def ScalarImage(obj, dtype=numpy.float32, order=None, 
                 init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 2 and obj.ndim != 3:
+        if hasattr(obj, 'axistags'):
+            obj = obj.insertChannelAxis(order)
+            if obj.ndim != 3:
+                raise RuntimeError("ScalarImage(): shape mismatch")
+        elif obj.ndim != 2 and obj.ndim != 3:
             raise RuntimeError("ScalarImage(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 2, 1, "vigra.ScalarImage()")
-    res = VigraArray(obj, dtype, order, init, value, axistags)
-    # FIXME: activate this after test refactoring
-    # res = dropChannelAxis(res)
+    res = VigraArray(obj, dtype, order, init, value, axistags).dropChannelAxis()
     return res
         
 def Vector2Image(obj, dtype=numpy.float32, order=None, 
@@ -921,13 +941,15 @@ def Volume(obj, dtype=numpy.float32, order=None,
 def ScalarVolume(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
     if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3 and obj.ndim != 4:
+        if hasattr(obj, 'axistags'):
+            obj = obj.insertChannelAxis(order)
+            if obj.ndim != 4:
+                raise RuntimeError("ScalarVolume(): shape mismatch")
+        elif obj.ndim != 3 and obj.ndim != 4:
             raise RuntimeError("ScalarVolume(): shape mismatch")
     else:
         obj = _adjustShape(obj, order, 3, 1, "vigra.ScalarVolume()")
-    res = VigraArray(obj, dtype, order, init, value, axistags)
-    # FIXME: activate this after test refactoring
-    # res = dropChannelDimension(res)
+    res = VigraArray(obj, dtype, order, init, value, axistags).dropChannelAxis()
     return res
 
 def Vector2Volume(obj, dtype=numpy.float32, order=None, 

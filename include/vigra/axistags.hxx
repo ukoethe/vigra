@@ -60,7 +60,7 @@ class AxisInfo
                     Time = 8, 
                     Frequency = 16, 
                     UnknownAxisType = 32, 
-                    NonChannel = Space | Angle | Time | UnknownAxisType,
+                    NonChannel = Space | Angle | Time | Frequency | UnknownAxisType,
                     AllAxes = 2*UnknownAxisType-1 };
 
     AxisInfo(std::string key = "?", AxisType typeFlags = UnknownAxisType, 

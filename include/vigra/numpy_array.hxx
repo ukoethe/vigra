@@ -38,6 +38,7 @@
 
 #include <Python.h>
 #include <string>
+#include <iostream>
 #include <numpy/arrayobject.h>
 #include "multi_array.hxx"
 #include "array_vector.hxx"
@@ -405,27 +406,27 @@ class NumpyAnyArray
         return ordering;
     }
 
-        /**
-         Returns the the permutation that will transpose this array into 
-         canonical ordering (currently: F-order). The size of
-         the returned permutation equals ndim().
-         */
-    difference_type permutationToNormalOrder() const
-    {
-		if(!hasData())
-            return difference_type();
+        // /**
+         // Returns the the permutation that will transpose this array into 
+         // canonical ordering (currently: F-order). The size of
+         // the returned permutation equals ndim().
+         // */
+    // difference_type permutationToNormalOrder() const
+    // {
+		// if(!hasData())
+            // return difference_type();
             
-        // difference_type res(detail::getAxisPermutationImpl(pyArray_, 
-                                               // "permutationToNormalOrder", true));
-        difference_type res;
-        detail::getAxisPermutationImpl(res, pyArray_, "permutationToNormalOrder", true);
-        if(res.size() == 0)
-        {
-            res.resize(ndim());
-            linearSequence(res.begin(), res.end(), ndim()-1, MultiArrayIndex(-1));
-        }
-        return res;
-    }
+        // // difference_type res(detail::getAxisPermutationImpl(pyArray_, 
+                                               // // "permutationToNormalOrder", true));
+        // difference_type res;
+        // detail::getAxisPermutationImpl(res, pyArray_, "permutationToNormalOrder", true);
+        // if(res.size() == 0)
+        // {
+            // res.resize(ndim());
+            // linearSequence(res.begin(), res.end(), ndim()-1, MultiArrayIndex(-1));
+        // }
+        // return res;
+    // }
 
         /**
          Returns the value type of the elements in this array, or -1
@@ -656,6 +657,10 @@ class NumpyArray
          */
     typedef typename view_type::difference_type_1 difference_type_1;
 
+        /** type of an array specifying an axis parmutation
+         */
+    typedef typename NumpyAnyArray::difference_type permutation_type;
+
         /** traverser type
          */
     typedef typename view_type::traverser traverser;
@@ -860,31 +865,46 @@ class NumpyArray
          the returned permutation equals N, unless \a types is given and
          causes some axes to be dropped.
          */
-    ArrayVector<npy_intp> 
+    // permutation_type 
+    // permutationToNormalOrder(AxisInfo::AxisType types = AxisInfo::AllAxes) const
+    // {
+        // permutation_type permute;
+		// if(hasData())
+        // {
+            // detail::getAxisPermutationImpl(permute, pyArray_, 
+                                           // "permutationToNormalOrder", types, true);
+
+            // if(permute.size() == 0)
+            // {
+                // if(typeid(T) == typeid(Multiband<value_type>))
+                // {
+                    // permute.resize(N-1);
+                    // linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+                    // if((types & AxisInfo::Channels) != 0)
+                        // permute.push_back(N-1);
+                // }
+                // else
+                // {
+                    // permute.resize(N);
+                    // linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+                // }
+            // }
+        // }
+        // return permute;
+    // }
+
+    permutation_type 
     permutationToNormalOrder(AxisInfo::AxisType types = AxisInfo::AllAxes) const
     {
-        ArrayVector<npy_intp> permute;
-		if(hasData())
-        {
-            detail::getAxisPermutationImpl(permute, pyArray_, 
-                                           "permutationToNormalOrder", types, true);
-
-            if(permute.size() == 0)
-            {
-                if(typeid(T) == typeid(Multiband<value_type>))
-                {
-                    permute.resize(N-1);
-                    linearSequence(permute.begin(), permute.end(), int(N-2), -1);
-                    if((types & AxisInfo::Channels) != 0)
-                        permute.push_back(N-1);
-                }
-                else
-                {
-                    permute.resize(N);
-                    linearSequence(permute.begin(), permute.end(), int(N-1), -1);
-                }
-            }
-        }
+        permutation_type permute;
+        
+		if(this->pyArray_)
+            ArrayTraits::permutationToNormalOrder(this->pyArray_, types, permute);
+        
+        std::cerr << "permutationToNormalOrder: " << typeid(ArrayTraits).name() << 
+                      " " << hasData() << " " << permute.size() << 
+                      " " << types << "\n";
+        
         return permute;
     }
 
@@ -1119,157 +1139,28 @@ class NumpyArray
 };
 
     // this function assumes that pyArray_ has already been set, and compatibility been checked
-// template <unsigned int N, class T, class Stride>
-// void NumpyArray<N, T, Stride>::setupArrayView()
-// {
-    // bool channelDimensionMustBeLast = typeid(T) == typeid(Multiband<value_type>);
-                        
-    // if(NumpyAnyArray::hasData())
-    // {
-        // NumpyAnyArray::difference_type ordering = NumpyAnyArray::permutationToNormalOrder();
-        
-        // if(actual_dimension == pyArray()->nd)
-        // {
-            // if(channelDimensionMustBeLast)
-            // {
-                // // rotate the channel axis to last position
-                // for(int k=1; k<actual_dimension; ++k)
-                // {
-                    // this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
-                    // this->m_stride[k-1] = pyArray()->strides[ordering[k]];
-                // }
-                // this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
-                // this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
-            // }
-            // else
-            // {
-                // for(int k=0; k<actual_dimension; ++k)
-                // {
-                    // this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                    // this->m_stride[k] = pyArray()->strides[ordering[k]];
-                // }
-            // }
-        // }
-        // else if(actual_dimension == pyArray()->nd - 1)
-        // {
-            // // skip the channel axis
-            // for(int k=0; k<actual_dimension; ++k)
-            // {
-                // this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
-                // this->m_stride[k] = pyArray()->strides[ordering[k+1]];
-            // }
-        // }
-        // else if(actual_dimension == pyArray()->nd + 1)
-        // {
-            // if(channelDimensionMustBeLast)
-            // {
-                // // insert a singleton channel at the last position
-                // for(int k=0; k<actual_dimension-1; ++k)
-                // {
-                    // this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                    // this->m_stride[k] = pyArray()->strides[ordering[k]];
-                // }
-                // this->m_shape[actual_dimension-1] = 1;
-                // this->m_stride[actual_dimension-1] = sizeof(value_type);
-            // }
-            // else
-            // {
-                // vigra_fail("this should never happen.\n");
-                // // insert a singleton channel at the first position
-                // for(int k=0; k<actual_dimension-1; ++k)
-                // {
-                    // this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
-                    // this->m_stride[k+1] = pyArray()->strides[ordering[k]];
-                // }
-                // this->m_shape[0] = 1;
-                // this->m_stride[0] = sizeof(value_type);
-            // }
-        // }
-        // else
-        // {
-            // vigra_precondition(false,
-              // "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
-        // }
-        // this->m_stride /= sizeof(value_type);
-        // this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
-    // }
-    // else
-    // {
-        // this->m_ptr = 0;
-    // }
-// }
-
 template <unsigned int N, class T, class Stride>
 void NumpyArray<N, T, Stride>::setupArrayView()
 {
-    bool channelDimensionMustBeLast = typeid(T) == typeid(Multiband<value_type>);
-                        
     if(NumpyAnyArray::hasData())
     {
-        NumpyAnyArray::difference_type ordering = NumpyAnyArray::permutationToNormalOrder();
+        permutation_type permute;
+        ArrayTraits::permutationToSetupOrder(this->pyArray_, permute);
         
-        if(actual_dimension == pyArray()->nd)
+        vigra_precondition(abs((int)permute.size() - actual_dimension) <= 1,
+            "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
+            
+        applyPermutation(permute.begin(), permute.end(), 
+                         pyArray()->dimensions, this->m_shape.begin());
+        applyPermutation(permute.begin(), permute.end(), 
+                         pyArray()->strides, this->m_stride.begin());
+
+        if((int)permute.size() == actual_dimension - 1)
         {
-            if(channelDimensionMustBeLast)
-            {
-                // rotate the channel axis to last position
-                for(int k=1; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k-1] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k-1] = pyArray()->strides[ordering[k]];
-                }
-                this->m_shape[actual_dimension-1] = pyArray()->dimensions[ordering[0]];
-                this->m_stride[actual_dimension-1] = pyArray()->strides[ordering[0]];
-            }
-            else
-            {
-                for(int k=0; k<actual_dimension; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k] = pyArray()->strides[ordering[k]];
-                }
-            }
+            this->m_shape[actual_dimension-1] = 1;
+            this->m_stride[actual_dimension-1] = sizeof(value_type);
         }
-        else if(actual_dimension == pyArray()->nd - 1)
-        {
-            // skip the channel axis
-            for(int k=0; k<actual_dimension; ++k)
-            {
-                this->m_shape[k] = pyArray()->dimensions[ordering[k+1]];
-                this->m_stride[k] = pyArray()->strides[ordering[k+1]];
-            }
-        }
-        else if(actual_dimension == pyArray()->nd + 1)
-        {
-            if(channelDimensionMustBeLast)
-            {
-                // insert a singleton channel at the last position
-                for(int k=0; k<actual_dimension-1; ++k)
-                {
-                    this->m_shape[k] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k] = pyArray()->strides[ordering[k]];
-                }
-                this->m_shape[actual_dimension-1] = 1;
-                this->m_stride[actual_dimension-1] = sizeof(value_type);
-            }
-            else
-            {
-                vigra_fail("this should never happen.\n");
-                // insert a singleton channel at the first position
-                for(int k=0; k<actual_dimension-1; ++k)
-                {
-                    this->m_shape[k+1] = pyArray()->dimensions[ordering[k]];
-                    this->m_stride[k+1] = pyArray()->strides[ordering[k]];
-                }
-                this->m_shape[0] = 1;
-                this->m_stride[0] = sizeof(value_type);
-            }
-        }
-        else
-        {
-            vigra_precondition(false,
-              "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
-        }
+
         this->m_stride /= sizeof(value_type);
         this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
     }
