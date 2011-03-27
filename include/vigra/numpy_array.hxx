@@ -133,58 +133,6 @@ class MultibandVectorAccessor
 };
 
 /********************************************************/
-/*                                                      */
-/*                    constructArray                    */
-/*                                                      */
-/********************************************************/
-
-// template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
-                          // // will always be NPY_TYPES
-// PyObject * 
-// constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
-               // python_ptr arraytype = python_ptr())
-// {
-    // ArrayVector<npy_intp> shape = finalizeTaggedShape(tagged_shape);
-    // python_ptr axistags(tagged_shape.axistags);
-    
-    // int ndim = (int)shape.size();
-    // ArrayVector<npy_intp> inverse_permutation;
-    
-    // if(axistags)
-    // {
-        // if(!arraytype)
-            // arraytype = detail::getArrayTypeObject();
-
-        // inverse_permutation = detail::permutationFromNormalOrder(axistags);
-        // vigra_precondition(ndim == (int)inverse_permutation.size(),
-                     // "axistags.permutationFromNormalOrder(): permutation has wrong size.");
-    // }
-    // else
-    // {
-        // arraytype = python_ptr((PyObject*)&PyArray_Type);
-
-        // inverse_permutation.resize(ndim);
-        // linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
-    // }
-    
-    // python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
-                                  // typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
-                     // python_ptr::keep_count);
-    // pythonToCppException(array);
-
-    // PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-    // array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
-                       // python_ptr::keep_count);
-    // pythonToCppException(array);
-    
-    // if(arraytype != (PyObject*)&PyArray_Type && axistags)
-        // pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags) != -1);
-    
-    // if(init)
-        // PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-   
-    // return array.release();
-// }
 
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
@@ -214,26 +162,6 @@ class NumpyAnyArray
   protected:
     python_ptr pyArray_;
 
-    // We want to apply broadcasting to the channel dimension.
-    // Since only leading dimensions can be added during numpy
-    // broadcasting, we permute the array accordingly.
-    NumpyAnyArray permuteChannelsToFront() const
-    {
-        MultiArrayIndex M = ndim();
-        ArrayVector<npy_intp> permutation(M);
-        for(int k=0; k<M; ++k)
-            permutation[k] = M-1-k;
-        // explicit cast to int is neede here to avoid gcc c++0x compilation
-        // error: narrowing conversion of ‘M’ from ‘vigra::MultiArrayIndex’
-        //        to ‘int’ inside { }
-        // int overflow should not occur here because PyArray_NDIM returns
-        // an integer which is converted to long in NumpyAnyArray::ndim()
-        PyArray_Dims permute = { permutation.begin(), (int) M };
-        python_ptr array(PyArray_Transpose(pyArray(), &permute), python_ptr::keep_count);
-        pythonToCppException(array);
-        return NumpyAnyArray(array.ptr());
-    }
-
   public:
 
         /// difference type
@@ -252,6 +180,11 @@ class NumpyAnyArray
     static python_ptr defaultAxistags(int ndim, std::string order = "")
     {
         return detail::defaultAxistags(ndim, order);
+    }
+
+    static python_ptr emptyAxistags(int ndim)
+    {
+        return detail::emptyAxistags(ndim);
     }
 
         /**
@@ -308,8 +241,25 @@ class NumpyAnyArray
         {
             vigra_precondition(other.hasData(),
                 "NumpyArray::operator=(): Cannot assign from empty array.");
-            if(PyArray_CopyInto(permuteChannelsToFront().pyArray(), other.permuteChannelsToFront().pyArray()) == -1)
-                pythonToCppException(0);
+                
+            python_ptr arraytype = getArrayTypeObject();
+            python_ptr f(PyString_FromString("copyValuesImpl"), python_ptr::keep_count);
+            if(PyObject_HasAttr(arraytype, f))
+            {
+                python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(), 
+                                                          pyArray_.get(), other.pyArray_.get(), NULL),
+                               python_ptr::keep_count);
+                vigra_postcondition(res,
+                       "NumpyArray::operator=(): VigraArray.copyValuesImpl() failed.");
+            }
+            else
+            {
+                PyArrayObject * sarray = (PyArrayObject *)pyArray_.get();
+                PyArrayObject * tarray = (PyArrayObject *)other.pyArray_.get();
+
+                if(PyArray_CopyInto(tarray, sarray) == -1)
+                    pythonToCppException(0);
+            }
         }
         else
         {
@@ -519,6 +469,10 @@ class NumpyAnyArray
 };
 
 /********************************************************/
+/*                                                      */
+/*                    constructArray                    */
+/*                                                      */
+/********************************************************/
 
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
@@ -727,7 +681,7 @@ class NumpyArray
          * new reference to the given Python object, unless
          * copying is forced by setting \a createCopy to true.
          * If either of this fails, the function throws an exception.
-         * This will not happen if isStrictlyCompatible(obj) (in case
+         * This will not happen if isReferenceCompatible(obj) (in case
          * of creating a new reference) or isCopyCompatible(obj)
          * (in case of copying) have returned true beforehand.
          */
@@ -847,7 +801,7 @@ class NumpyArray
         {
             NumpyAnyArray::operator=(other);
         }
-        else if(isStrictlyCompatible(other.pyObject()))
+        else if(isReferenceCompatible(other.pyObject()))
         {
             makeReferenceUnchecked(other.pyObject());
         }

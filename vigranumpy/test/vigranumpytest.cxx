@@ -52,16 +52,20 @@ python::tuple testAny(NumpyAnyArray array)
 template <unsigned int N, class T, class Stride>
 python::tuple test(NumpyArray<N, T, Stride> const & array)
 {
+    NumpyAnyArray anyarray(array);
+    
     NumpyArray<N, T> copy(array, true);
     vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
           "freshly created NumpyArray<N, T> has reference count > 1.");
 
     NumpyArray<N, T> same_shape(array.shape());
+    same_shape = array;
 
     NumpyArray<N, T> same_shape_and_tags;
     same_shape_and_tags.reshapeIfEmpty(array.taggedShape());
+    same_shape_and_tags = anyarray;
 
-    return python::make_tuple(((NumpyAnyArray const &)array).shape(), copy, 
+    return python::make_tuple(anyarray.shape(), copy, 
                                same_shape, same_shape_and_tags);
 }
 

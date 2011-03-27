@@ -418,9 +418,18 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
-        tagged_shape.setChannelCount(1);
-        vigra_precondition(tagged_shape.size() == N+1,
-              "reshapeIfEmpty(): tagged_shape has wrong size.");
+        if(tagged_shape.axistags.hasChannelAxis())
+        {
+            tagged_shape.setChannelCount(1);
+            vigra_precondition(tagged_shape.size() == N+1,
+                     "reshapeIfEmpty(): tagged_shape has wrong size.");
+        }
+        else
+        {
+            tagged_shape.setChannelCount(0);
+            vigra_precondition(tagged_shape.size() == N,
+                     "reshapeIfEmpty(): tagged_shape has wrong size.");
+        }
     }
     
     template <class U>
@@ -573,6 +582,21 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     {
         return TaggedShape(shape, 
                     PyAxisTags(detail::defaultAxistags(shape.size(), order))).setChannelIndexLast();
+    }
+
+    static void finalizeTaggedShape(TaggedShape & tagged_shape)
+    {
+        if(!tagged_shape.axistags.hasChannelAxis() && tagged_shape.channelCount() == 1)
+        {
+            tagged_shape.setChannelCount(0);
+            vigra_precondition(tagged_shape.size() == N-1,
+                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+        }
+        else
+        {
+            vigra_precondition(tagged_shape.size() == N,
+                  "reshapeIfEmpty(): tagged_shape has wrong size.");
+        }
     }
 
     template <class U>

@@ -228,6 +228,11 @@ class PyAxisTags
         return channelIndex(size());
     }
 
+    bool hasChannelAxis() const
+    {
+        return channelIndex() != size();
+    }
+    
     long majorNonchannelIndex(long defaultVal) const
     {
         return pythonGetAttr(axistags, "majorNonchannelIndex", defaultVal);
@@ -620,18 +625,52 @@ class TaggedShape
         switch(channelAxis)
         {
           case first:
-            shape[0] = count;
+            if(count > 0)
+            {
+                shape[0] = count;
+            }
+            else
+            {
+                shape.erase(shape.begin());
+                original_shape.erase(original_shape.begin());
+                channelAxis = none;
+            }
             break;
           case last:
-            shape[size()-1] = count;
+            if(count > 0)
+            {
+                shape[size()-1] = count;
+            }
+            else
+            {
+                shape.pop_back();
+                original_shape.pop_back();
+                channelAxis = none;
+            }
             break;
           case none:
-            shape.push_back(count);
-            original_shape.push_back(count);
-            channelAxis = last;
+            if(count > 0)
+            {
+                shape.push_back(count);
+                original_shape.push_back(count);
+                channelAxis = last;
+            }
             break;
         }
         return *this;
+    }
+    
+    int channelCount() const
+    {
+        switch(channelAxis)
+        {
+          case first:
+            return shape[0];
+          case last:
+            return shape[size()-1];
+          default:
+            return 1;
+        }
     }
 };
 

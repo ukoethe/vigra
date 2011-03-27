@@ -97,8 +97,8 @@ The following sub-modules group related functionality:
 from __version__ import version
 import vigranumpycore
 import arraytypes
-import impex
-import sampling
+# import impex
+# import sampling
 # import filters
 # import analysis
 # import learning

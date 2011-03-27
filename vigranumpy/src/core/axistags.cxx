@@ -92,7 +92,7 @@ AxisInfo AxisInfo__call__(AxisInfo const & i, double resolution, std::string con
 
 AxisInfo AxisInfo_x()
 {
-	return AxisInfo::x();
+    return AxisInfo::x();
 }
 
 AxisInfo AxisInfo_y()
@@ -270,8 +270,8 @@ AxisTags *
 AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 {
     std::auto_ptr<AxisTags> newTags(new AxisTags(lnew));
-	python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
-	int lold = oldTags.size();
+    python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
+    int lold = oldTags.size();
     if(!PySequence_Check(index.ptr()))
     {
         index = python::make_tuple(index);
@@ -334,19 +334,19 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 // {
     // python::object array(python::detail::borrowed_reference(a.pyObject()));
     // python::object tags(getattr(array, "axistags", PyAxisTags()));
-	// std::cerr << "Axistags via boost::python:\n";
+    // std::cerr << "Axistags via boost::python:\n";
     // std::cerr << python::extract<PyAxisTags const &>(tags)().repr();
 
-	// std::cerr << "Axistags via C-API:\n";
-	// if(PyObject_HasAttrString(a.pyObject(), "axistags"))
-	// {
-		// python::object tags(python::detail::new_reference(PyObject_GetAttrString(a.pyObject(), "axistags")));
-		// std::cerr << python::extract<PyAxisTags const &>(tags)().repr();
-	// }
-	// else
-	// {
-		// std::cerr << "attribute 'axistags' missing\n";
-	// }
+    // std::cerr << "Axistags via C-API:\n";
+    // if(PyObject_HasAttrString(a.pyObject(), "axistags"))
+    // {
+        // python::object tags(python::detail::new_reference(PyObject_GetAttrString(a.pyObject(), "axistags")));
+        // std::cerr << python::extract<PyAxisTags const &>(tags)().repr();
+    // }
+    // else
+    // {
+        // std::cerr << "attribute 'axistags' missing\n";
+    // }
 // }
 // #endif
 
@@ -370,24 +370,25 @@ void defineAxisTags()
              (arg("name")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
-		.def_readonly("key", &AxisInfo::key_)
-		.def_readwrite("description", &AxisInfo::description_)
-		.def_readwrite("resolution", &AxisInfo::resolution_)
-		.def_readonly("typeFlags", &AxisInfo::flags_)
-		.def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
-		.def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
-		.def("isSpatial", &AxisInfo::isSpatial)
-		.def("isTemporal", &AxisInfo::isTemporal)
-		.def("isChannel", &AxisInfo::isChannel)
-		.def("isFrequency", &AxisInfo::isFrequency)
-		.def("isAngular", &AxisInfo::isAngular)
-		.def("isType", &AxisInfo::isType)
-		.def(self == self)
-		.def(self != self)
-		.def("__copy__", &generic__copy__<AxisInfo>)
-		.def("__deepcopy__", &generic__deepcopy__<AxisInfo>)
-		.def("__repr__", &AxisInfo::repr)
-		.def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
+        .def_readonly("key", &AxisInfo::key_)
+        .def_readwrite("description", &AxisInfo::description_)
+        .def_readwrite("resolution", &AxisInfo::resolution_)
+        .def_readonly("typeFlags", &AxisInfo::flags_)
+        .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
+        .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
+        .def("isSpatial", &AxisInfo::isSpatial)
+        .def("isTemporal", &AxisInfo::isTemporal)
+        .def("isChannel", &AxisInfo::isChannel)
+        .def("isFrequency", &AxisInfo::isFrequency)
+        .def("isAngular", &AxisInfo::isAngular)
+        .def("isType", &AxisInfo::isType)
+        .def("compatible", &AxisInfo::compatible)
+        .def(self == self)
+        .def(self != self)
+        .def("__copy__", &generic__copy__<AxisInfo>)
+        .def("__deepcopy__", &generic__deepcopy__<AxisInfo>)
+        .def("__repr__", &AxisInfo::repr)
+        .def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
         .add_static_property("x", &AxisInfo_x)
         .add_static_property("y", &AxisInfo_y)
         .add_static_property("z", &AxisInfo_z)
@@ -399,70 +400,71 @@ void defineAxisTags()
         .add_static_property("c", &AxisInfo_c)
     ;
 
-	class_<AxisTags >("AxisTags", no_init)
-		.def("__init__", make_constructor(&AxisTags_create,
+    class_<AxisTags >("AxisTags", no_init)
+        .def("__init__", make_constructor(&AxisTags_create,
             default_call_policies(),
             (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
              arg("i4")=object(), arg("i5")=object())))
-		.def("__repr__", &AxisTags::repr)
-		.def("__copy__", &generic__copy__<AxisTags>)
-		.def("__deepcopy__", &generic__deepcopy__<AxisTags>)
-		.def("__len__", &AxisTags::size)
-		.def("__getitem__", (AxisInfo const & (AxisTags::*)(int) const)&AxisTags::get,
+        .def("__repr__", &AxisTags::repr)
+        .def("__copy__", &generic__copy__<AxisTags>)
+        .def("__deepcopy__", &generic__deepcopy__<AxisTags>)
+        .def("__len__", &AxisTags::size)
+        .def("__getitem__", (AxisInfo const & (AxisTags::*)(int) const)&AxisTags::get,
                              return_value_policy<copy_const_reference>())
-		.def("__getitem__", 
+        .def("__getitem__", 
             (AxisInfo const & (AxisTags::*)(std::string const &) const)&AxisTags::get,
                              return_value_policy<copy_const_reference>())
-		.def("__setitem__", (void (AxisTags::*)(int, AxisInfo const &))&AxisTags::set)
-		.def("__setitem__", 
+        .def("__setitem__", (void (AxisTags::*)(int, AxisInfo const &))&AxisTags::set)
+        .def("__setitem__", 
             (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
-		.def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
-		.def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
-		.def("insert", &AxisTags::insert)
-		.def("append", &AxisTags::push_back)
-		.def("dropChannelAxis", &AxisTags::dropChannelAxis)
-		.def("insertChannelAxis", &AxisTags_insertChannelAxis)
-		.def("swapaxes", &AxisTags::swapaxes)
-		.def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
-		.def("transpose", (void (AxisTags::*)(ArrayVector<npy_intp> const &))&AxisTags::transpose)
-		.def("index", &AxisTags::index)
-		.def("resolution", (double (AxisTags::*)(int) const)&AxisTags::resolution)
-		.def("resolution", (double (AxisTags::*)(std::string const &) const)&AxisTags::resolution)
-		.def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
-		.def("setResolution", 
+        .def("__delitem__", (void (AxisTags::*)(int))&AxisTags::dropAxis)
+        .def("__delitem__", (void (AxisTags::*)(std::string const &))&AxisTags::dropAxis)
+        .def("insert", &AxisTags::insert)
+        .def("append", &AxisTags::push_back)
+        .def("dropChannelAxis", &AxisTags::dropChannelAxis)
+        .def("insertChannelAxis", &AxisTags_insertChannelAxis)
+        .def("swapaxes", &AxisTags::swapaxes)
+        .def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
+        .def("transpose", (void (AxisTags::*)(ArrayVector<npy_intp> const &))&AxisTags::transpose)
+        .def("index", &AxisTags::index)
+        .def("resolution", (double (AxisTags::*)(int) const)&AxisTags::resolution)
+        .def("resolution", (double (AxisTags::*)(std::string const &) const)&AxisTags::resolution)
+        .def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
+        .def("setResolution", 
             (void (AxisTags::*)(std::string const &, double))&AxisTags::setResolution)
-		.def("scaleResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleResolution)
-		.def("scaleResolution", 
+        .def("scaleResolution", (void (AxisTags::*)(int, double))&AxisTags::scaleResolution)
+        .def("scaleResolution", 
             (void (AxisTags::*)(std::string const &, double))&AxisTags::scaleResolution)
-		.def("description", (std::string (AxisTags::*)(int) const)&AxisTags::description)
-		.def("description", 
+        .def("description", (std::string (AxisTags::*)(int) const)&AxisTags::description)
+        .def("description", 
              (std::string (AxisTags::*)(std::string const &) const)&AxisTags::description)
-		.def("setDescription", 
+        .def("setDescription", 
             (void (AxisTags::*)(int, std::string const &))&AxisTags::setDescription)
-		.def("setDescription", 
+        .def("setDescription", 
             (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setDescription)
-		.def("setChannelDescription", &AxisTags::setChannelDescription)
-		.def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
+        .def("setChannelDescription", &AxisTags::setChannelDescription)
+        .def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
                 (arg("index"), arg("size")=0, arg("sign")=1))
-		.def("toFrequencyDomain", 
+        .def("toFrequencyDomain", 
                (void (AxisTags::*)(std::string const &, int, int))&AxisTags::toFrequencyDomain,
                (arg("key"), arg("size")=0, arg("sign")=1))
-		.def("fromFrequencyDomain", (void (AxisTags::*)(int, int))&AxisTags::fromFrequencyDomain,
+        .def("fromFrequencyDomain", (void (AxisTags::*)(int, int))&AxisTags::fromFrequencyDomain,
                 (arg("index"), arg("size")=0))
-		.def("fromFrequencyDomain", 
+        .def("fromFrequencyDomain", 
                (void (AxisTags::*)(std::string const &, int))&AxisTags::fromFrequencyDomain,
                (arg("key"), arg("size")=0))
-		.add_property("channelIndex", &AxisTags::channelIndex)
-		.add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
-		.def("axisTypeCount", &AxisTags::axisTypeCount)
-		.def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
-		.def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)
-		.def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
-		.def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder2)
-		.def("transform", &AxisTags_transform,
+        .add_property("channelIndex", &AxisTags::channelIndex)
+        .add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
+        .def("axisTypeCount", &AxisTags::axisTypeCount)
+        .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
+        .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)
+        .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
+        .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder2)
+        .def("transform", &AxisTags_transform,
                              return_value_policy<manage_new_object>())
-		.def(self == self)
-		.def(self != self)
+        .def("compatible", &AxisTags::compatible)
+        .def(self == self)
+        .def(self != self)
     ;
 }
 

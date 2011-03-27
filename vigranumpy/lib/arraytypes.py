@@ -417,10 +417,12 @@ VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     """
     
+    # IMPORTANT: do not remove this function, it is called from C++
     @classproperty
     def defaultOrder(cls):
         return 'V'
 
+    # IMPORTANT: do not remove this function, it is called from C++
     @staticmethod
     def defaultAxistags(ndim, order=None):
         if order is None:
@@ -433,6 +435,33 @@ this class via its subclasses!
             tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim-1] + [AxisInfo.c]
         return AxisTags(tags)
 
+    # IMPORTANT: do not remove this function, it is called from C++
+    @staticmethod
+    def copyValuesImpl(target, source):
+        try:
+            target = target.transposeToNumpyOrder()
+            if target.ndim > source.ndim:
+                target = target.dropChannelAxis()
+        except:
+            pass
+
+        try:
+            source = source.transposeToNumpyOrder()
+            if target.ndim < source.ndim:
+                source = source.dropChannelAxis()
+        except:
+            pass
+        
+        try:
+            compatible = source.axistags.compatible(target.axistags)
+        except:
+            compatible = True
+
+        if not compatible:
+            raise RuntimeError("VigraArray.copyValuesImpl(): incompatible axistags")
+
+        target[...] = source
+    
     def __new__(cls, obj, dtype=numpy.float32, order=None, init=True, value=None, axistags=None):
         if value is not None:
             init = False
@@ -468,6 +497,9 @@ this class via its subclasses!
     
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
+    
+    def copyValues(self, other):
+        self.copyValuesImpl(self, other)
     
     @property
     def channelIndex(self):
@@ -578,6 +610,11 @@ this class via its subclasses!
     # def __str__(self):
     
     # def __repr__(self):
+    
+    def bindAxis(self, which, value=0):
+        if type(which) == str:
+            which = self.axistags.index(which)
+        return self[(slice(None),)*which + (value,) + (slice(None),)*(self.ndim-which-1)]
     
     def dropChannelAxis(self):
         ci = self.channelIndex

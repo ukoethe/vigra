@@ -8,17 +8,17 @@ VIGRA_ADD_NUMPY_MODULE(core
     axistags.cxx
   VIGRANUMPY)
 
-VIGRA_ADD_NUMPY_MODULE(impex 
-  SOURCES
-    impex.cxx
-  LIBRARIES   
-    ${VIGRANUMPY_IMPEX_LIBRARIES}
-  VIGRANUMPY)   
+# VIGRA_ADD_NUMPY_MODULE(impex 
+  # SOURCES
+    # impex.cxx
+  # LIBRARIES   
+    # ${VIGRANUMPY_IMPEX_LIBRARIES}
+  # VIGRANUMPY)   
      
-VIGRA_ADD_NUMPY_MODULE(sampling 
-  SOURCES
-    sampling.cxx
-  VIGRANUMPY)
+# VIGRA_ADD_NUMPY_MODULE(sampling 
+  # SOURCES
+    # sampling.cxx
+  # VIGRANUMPY)
    
 # VIGRA_ADD_NUMPY_MODULE(filters SOURCES
     # kernel.cxx
