@@ -620,6 +620,34 @@ class TaggedShape
         return toFrequencyDomain(-1);
     }
     
+    bool compatible(TaggedShape const & other) const
+    {
+        if(channelCount() != other.channelCount())
+            return false;
+            
+        int start = channelAxis == first
+                        ? 1
+                        : 0, 
+            stop = channelAxis == last
+                        ? (int)size()-1
+                        : (int)size();
+        int ostart = other.channelAxis == first
+                        ? 1
+                        : 0, 
+            ostop = other.channelAxis == last
+                        ? (int)other.size()-1
+                        : (int)other.size();
+                        
+        int len = stop - start;
+        if(len != ostop - ostart)
+            return false;
+        
+        for(int k=0; k<len; ++k)
+            if(shape[k+start] != other.shape[k+ostart])
+                return false;
+        return true;
+    }
+    
     TaggedShape & setChannelCount(int count)
     {
         switch(channelAxis)

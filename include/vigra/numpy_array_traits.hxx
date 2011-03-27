@@ -290,18 +290,23 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
                   "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
     
-    template <class U>
-    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
-                                         ArrayVector<U> & permute)
+    template <class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
     {
+        vigra_precondition((int)data.size() == N,
+            "NumpyArray::permuteLikewise(): size mismatch.");
+        
+        ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
-                                       types, true);
+                                       AxisInfo::AllAxes, true);
 
         if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end(), int(N-1), -1);
         }
+        
+        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
     
     template <class U>
@@ -432,18 +437,23 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         }
     }
     
-    template <class U>
-    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
-                                         ArrayVector<U> & permute)
+    template <class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
     {
+        vigra_precondition((int)data.size() == N,
+            "NumpyArray::permuteLikewise(): size mismatch.");
+        
+        ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
-                                       AxisInfo::AxisType(types & ~AxisInfo::Channels), true);
+                                       AxisInfo::NonChannel, true);
 
         if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end(), int(N-1), -1);
         }
+        
+        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
     
     template <class U>
@@ -599,29 +609,50 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         }
     }
 
-    template <class U>
-    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
-                                         ArrayVector<U> & permute)
+    template <class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
     {
-        detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
-                                       types, true);
+        ArrayVector<npy_intp> permute;
+        
+        if((int)data.size() == N)
+        {
+            vigra_precondition(PyArray_NDIM((PyArrayObject*)array.get()) == N,
+                "NumpyArray::permuteLikewise(): input array has no channel axis.");
 
-        if(permute.size() == 0)
-        {
-            permute.resize(N-1);
-            linearSequence(permute.begin(), permute.end(), int(N-2), -1);
-            if((types & AxisInfo::Channels) != 0)
+            detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                           AxisInfo::AllAxes, true);
+
+            if(permute.size() == 0)
+            {
+                permute.resize(N-1);
+                linearSequence(permute.begin(), permute.end(), int(N-2), -1);
                 permute.push_back(N-1);
+            }
+            else
+            {
+                // rotate channel axis to last position
+                int channelIndex = permute[0];
+                for(int k=1; k<N; ++k)
+                    permute[k-1] = permute[k];
+                permute[N-1] = channelIndex;
+            }
         }
-        else if((types & AxisInfo::Channels) != 0)
+        else
         {
-            // if permutation with channels is requested, 
-            //   rotate the channel axis to last position
-            int channelIndex = permute[0];
-            for(int k=1; k<N; ++k)
-                permute[k-1] = permute[k];
-            permute[N-1] = channelIndex;
+            vigra_precondition((int)data.size() == N-1,
+                "NumpyArray::permuteLikewise(): size mismatch.");
+
+            detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
+                                           AxisInfo::NonChannel, true);
+
+            if(permute.size() == 0)
+            {
+                permute.resize(N-1);
+                linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+            }
         }
+        
+        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
     
     template <class U>
@@ -774,18 +805,23 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
               "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
 
-    template <class U>
-    static void permutationToNormalOrder(python_ptr array, AxisInfo::AxisType types, 
-                                         ArrayVector<U> & permute)
+    template <class ARRAY>
+    static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
     {
+        vigra_precondition((int)data.size() == N,
+            "NumpyArray::permuteLikewise(): size mismatch.");
+        
+        ArrayVector<npy_intp> permute;
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
-                                       AxisInfo::AxisType(types & ~AxisInfo::Channels), true);
+                                       AxisInfo::NonChannel, true);
 
         if(permute.size() == 0)
         {
             permute.resize(N);
             linearSequence(permute.begin(), permute.end(), int(N-1), -1);
         }
+        
+        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
     
     template <class U>

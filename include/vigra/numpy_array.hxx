@@ -814,52 +814,35 @@ class NumpyArray
     }
 
         /**
-         Returns the the permutation that will transpose this array into 
-         canonical ordering (currently: F-order). The size of
-         the returned permutation equals N, unless \a types is given and
-         causes some axes to be dropped.
+         Permute the entries of the given array \a data exactly like the axes of this NumpyArray 
+         were permuted upon conversion from numpy.
          */
-    // permutation_type 
-    // permutationToNormalOrder(AxisInfo::AxisType types = AxisInfo::AllAxes) const
-    // {
-        // permutation_type permute;
-		// if(hasData())
-        // {
-            // detail::getAxisPermutationImpl(permute, pyArray_, 
-                                           // "permutationToNormalOrder", types, true);
-
-            // if(permute.size() == 0)
-            // {
-                // if(typeid(T) == typeid(Multiband<value_type>))
-                // {
-                    // permute.resize(N-1);
-                    // linearSequence(permute.begin(), permute.end(), int(N-2), -1);
-                    // if((types & AxisInfo::Channels) != 0)
-                        // permute.push_back(N-1);
-                // }
-                // else
-                // {
-                    // permute.resize(N);
-                    // linearSequence(permute.begin(), permute.end(), int(N-1), -1);
-                // }
-            // }
-        // }
-        // return permute;
-    // }
-
-    permutation_type 
-    permutationToNormalOrder(AxisInfo::AxisType types = AxisInfo::AllAxes) const
+    template<class U>
+    ArrayVector<U>
+    permuteLikewise(ArrayVector<U> const & data) const
     {
-        permutation_type permute;
-        
-		if(this->pyArray_)
-            ArrayTraits::permutationToNormalOrder(this->pyArray_, types, permute);
-        
-        std::cerr << "permutationToNormalOrder: " << typeid(ArrayTraits).name() << 
-                      " " << hasData() << " " << permute.size() << 
-                      " " << types << "\n";
-        
-        return permute;
+		vigra_precondition(hasData(),
+            "NumpyArray::permuteLikewise(): array has no data.");
+
+        ArrayVector<U> res(data.size());
+        ArrayTraits::permuteLikewise(this->pyArray_, data, res);
+        return res;
+    }
+
+        /**
+         Permute the entries of the given array \a data exactly like the axes of this NumpyArray 
+         were permuted upon conversion from numpy.
+         */
+    template<class U, int K>
+    TinyVector<U, K>
+    permuteLikewise(TinyVector<U, K> const & data) const
+    {
+		vigra_precondition(hasData(),
+            "NumpyArray::permuteLikewise(): array has no data.");
+            
+        TinyVector<U, K> res;
+        ArrayTraits::permuteLikewise(this->pyArray_, data, res);
+        return res;
     }
 
         /**
@@ -1038,14 +1021,14 @@ class NumpyArray
          */
     void reshapeIfEmpty(TaggedShape tagged_shape, std::string message = "")
     {
+        ArrayTraits::finalizeTaggedShape(tagged_shape);
+        
         if(hasData())
         {
-            // FIXME: implement
-            vigra_fail("reshapeIfEmpty(): already has data, but shape check is not implemented yet, sorry.");
+            vigra_precondition(tagged_shape.compatible(taggedShape()), message.c_str());
         }
         else
         {
-            ArrayTraits::finalizeTaggedShape(tagged_shape);
 
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
                              python_ptr::keep_count);

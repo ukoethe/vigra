@@ -68,8 +68,6 @@ NumpyAnyArray pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, do
         width = (int) std::ceil(factor * image.shape(0));
         height= (int) std::ceil(factor * image.shape(1));
     }
-    // res.reshapeIfEmpty(MultiArrayShape<3>::type(width,height,image.shape(2)),
-                          // "resampleImage(): Output images has wrong dimensions");
 
     res.reshapeIfEmpty(image.taggedShape().resize(width, height),
                        "resampleImage(): Output images has wrong dimensions");
@@ -111,12 +109,10 @@ NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
     TaggedShape newShape(image.taggedShape());
     if(degree % 180 == 0)
     {
-        // res.reshapeIfEmpty(image.shape(),"rotateImageSimple(): Output images has wrong dimensions");
         res.reshapeIfEmpty(newShape,"rotateImageSimple(): Output images has wrong dimensions");
     }
     else
     {
-        // res.reshapeIfEmpty(MultiArrayShape<3>::type(image.shape(1),image.shape(0),image.shape(2)),"rotateImage(): Output image has wrong dimensions");
         MultiArrayShape<2>::type permute(1, 0);
         res.reshapeIfEmpty(image.taggedShape().transposeShape(permute),
                      "rotateImage(): Output image has wrong dimensions");
@@ -139,23 +135,21 @@ NumpyAnyArray pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > i
 template < class PixelType>
 NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image, double radiant, RotationDirection dir, int splineOrder,NumpyArray<3,Multiband<PixelType> > res)
 {
-    //reshape, if empty. Otherwise accept res dimensions
-    // if(!res.hasData())
-        // res.reshapeIfEmpty(image.shape(),"rotateImageRadiant(): Output images has wrong dimensions");
     if(!res.hasData())
         res.reshapeIfEmpty(image.taggedShape(),
                            "rotateImageRadiant(): Output images has wrong dimensions");
 
     vigra_precondition(res.shape(2)==image.shape(2),
-                  "rotateImageRadiant(): number of channels of image and result have to be equal");
+                  "rotateImageRadiant(): number of channels of image and result must be equal.");
 
     if(dir==ROTATE_CW)
         radiant=-radiant;
 
     //Define the transformation
-    linalg::TemporaryMatrix< double >  transform=translationMatrix2D(TinyVector<double,2>(res.shape(0)/2.0,res.shape(1)/2.0))*
-        rotationMatrix2DRadians(radiant,TinyVector<double,2>(0.0,0.0))*
-        translationMatrix2D(TinyVector<double,2>(-image.shape(0)/2.0,-image.shape(1)/2.0));
+    linalg::Matrix< double >  transform =
+        translationMatrix2D(TinyVector<double,2>(res.shape(0)/2.0, res.shape(1)/2.0))*
+        rotationMatrix2DRadians(radiant, TinyVector<double,2>(0.0,0.0))*
+        translationMatrix2D(TinyVector<double,2>(-image.shape(0)/2.0, -image.shape(1)/2.0));
 
     
     for(int k=0;k<image.shape(2);++k)
@@ -223,21 +217,18 @@ void pythonResizeImagePrepareOutput(NumpyArray<dim, Multiband<PixelType> > const
         vigra_precondition(!res.hasData(),
                "resizeImage(): you cannot provide both 'shape' and 'out'.");
                        
-        Shape shape,
-              pyshape = python::extract<Shape>(destSize)();
+        Shape shape = image.permuteLikewise(python::extract<Shape>(destSize)());
               
-        ArrayVector<npy_intp> permute = image.permutationToNormalOrder(AxisInfo::NonChannel);
-        vigra_precondition(permute.size() == dim-1,
-                           "resizeImage(): 'shape' has wrong length.");
-        for(unsigned int k=0; k<dim-1; ++k)
-            shape[k] = pyshape[permute[k]];
-            
         res.reshapeIfEmpty(image.taggedShape().resize(shape), 
                            "resizeImage(): Output image has wrong dimensions");
     }
     else
+    {
         vigra_precondition(res.hasData(),
                "resizeImage(): you must proved either 'shape' or 'out'.");
+        vigra_precondition(res.shape(dim-1) == image.shape(dim-1),
+               "resizeImage(): number of channels of image and result must be equal.");
+    }
 }
 
 template < class PixelType>
