@@ -556,9 +556,115 @@ class ImpurityLoss
         return counts_;
     }
 };
+	
+	
+	
+	template <class DataSource>
+	class RegressionForestCounter
+	{
+	public:
+		typedef MultiArrayShape<2>::type Shp;
+		DataSource const &      labels_;
+		ArrayVector <double>    mean_;
+		ArrayVector <double>    variance_;
+		ArrayVector <double>    tmp_;
+		size_t                  count_;
+		int*					end_;
+		
+		template<class T>
+		RegressionForestCounter(DataSource const & labels, 
+								ProblemSpec<T> const & ext_)
+		:
+        labels_(labels),
+        mean_(ext_.response_size_, 0.0),
+        variance_(ext_.response_size_, 0.0),
+        tmp_(ext_.response_size_),
+        count_(0)
+		{}
+		
+		template<class Iter>
+		double increment (Iter begin, Iter end)
+		{
+			for(Iter iter = begin; iter != end; ++iter)
+			{
+				++count_;
+				for(int ii = 0; ii < mean_.size(); ++ii)
+					tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+				double f  = 1.0 / count_,
+				f1 = 1.0 - f;
+				for(int ii = 0; ii < mean_.size(); ++ii)
+					mean_[ii] += f*tmp_[ii]; 
+				for(int ii = 0; ii < mean_.size(); ++ii)
+					variance_[ii] += f1*sq(tmp_[ii]);
+			}
+			double res = std::accumulate(variance_.begin(), 
+										 variance_.end(),
+										 0.0,
+										 std::plus<double>());
+			//std::cerr << res << "  ) = ";
+			return res;
+		}
+		
+		template<class Iter>      //This is BROKEN
+		double decrement (Iter begin, Iter end)
+		{
+			for(Iter iter = begin; iter != end; ++iter)
+			{
+				--count_;
+			}
 
+			begin = end;
+			end   = end + count_;
+			
+
+			for(int ii = 0; ii < mean_.size(); ++ii)
+			{
+				mean_[ii] = 0;		
+				for(Iter iter = begin; iter != end; ++iter)
+				{
+					mean_[ii] += labels_(*iter, ii);
+				}
+				mean_[ii] /= count_;
+			    variance_[ii] = 0;
+				for(Iter iter = begin; iter != end; ++iter)
+				{
+					variance_[ii] += (labels_(*iter, ii) - mean_[ii])*(labels_(*iter, ii) - mean_[ii]);
+				}
+			}
+			double res = std::accumulate(variance_.begin(), 
+										 variance_.end(),
+										 0.0,
+										 std::plus<double>());
+			//std::cerr << res << "  ) = ";
+			return res;
+		}
+
+		
+		template<class Iter, class Resp_t>
+		double init (Iter begin, Iter end, Resp_t resp)
+		{
+			reset();
+			return this->increment(begin, end);
+			
+		}
+		
+		
+		ArrayVector<double> const & response()
+		{
+			return mean_;
+		}
+		
+		void reset()
+		{
+			mean_.init(0.0);
+			variance_.init(0.0);
+			count_ = 0; 
+		}
+	};
+	
+	
 template <class DataSource>
-class RegressionForestCounter
+class RegressionForestCounter2
 {
 public:
     typedef MultiArrayShape<2>::type Shp;
@@ -569,7 +675,7 @@ public:
     size_t                  count_;
 
     template<class T>
-    RegressionForestCounter(DataSource const & labels, 
+    RegressionForestCounter2(DataSource const & labels, 
                             ProblemSpec<T> const & ext_)
     :
         labels_(labels),
@@ -603,7 +709,7 @@ public:
 		return res;
     }
 
-    template<class Iter>
+    template<class Iter>      //This is BROKEN
     double decrement (Iter begin, Iter end)
     {
         for(Iter iter = begin; iter != end; ++iter)
@@ -674,23 +780,7 @@ public:
     double init (Iter begin, Iter end, Resp_t resp)
     {
         reset();
-        for(Iter iter = begin; iter != end; ++iter)
-        {
-            ++count_;
-            for(int ii = 0; ii < mean_.size(); ++ii)
-                tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
-            double f  = 1.0 / count_,
-                   f1 = 1.0 - f;
-            for(int ii = 0; ii < mean_.size(); ++ii)
-                mean_[ii] += f*tmp_[ii]; 
-            for(int ii = 0; ii < mean_.size(); ++ii)
-                variance_[ii] += f1*sq(tmp_[ii]);
-        }
-        return std::accumulate(variance_.begin(), 
-                               variance_.end(),
-                               0.0,
-                               std::plus<double>())
-                /((count_ == 1)? 1:(count_ -1));
+        return this->increment(begin, end, resp);
     }
     
 
@@ -805,14 +895,14 @@ public:
                   SortSamplesByDimensions<DataSourceF_t>(column, g));
         typedef typename 
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
-        LineSearchLoss left(labels, ext_param_);
+        LineSearchLoss left(labels, ext_param_); //initialize left and right region
         LineSearchLoss right(labels, ext_param_);
 
         
 
-        min_gini_ = right.init(begin, end, region_response);
+        min_gini_ = right.init(begin, end, region_response);  
         min_threshold_ = *begin;
-        min_index_     = 0;
+        min_index_     = 0;  //the starting point where to split 
         DimensionNotEqual<DataSourceF_t> comp(column, g); 
         
         I_Iter iter = begin;

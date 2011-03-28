@@ -79,7 +79,7 @@ namespace detail
 
 /* \brief sampling option factory function
  */
-SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
+inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
 {
     SamplerOptions return_opt;
     return_opt.withReplacement(RF_opt.sample_with_replacement_);
@@ -107,7 +107,7 @@ SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *  MultiArrayView<2, feature_t> f = get_some_features();
  *  MultiArrayView<2, label_t>   l = get_some_labels();
  *  RandomForest<> rf()
- *  double oob_error = rf.learn(f, l);
+ *  rf.learn(f, l);
  *      
  *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
  *  MultiArrayView<2, label_t> prediction = allocate_space_for_response();
@@ -1057,8 +1057,8 @@ void RandomForest<LabelType,PreprocessorTag>
         //Build a stack with all the ranges we have
         std::vector<std::pair<int,set_it> > stack;
         stack.clear();
-        set_it i;
-        for(i=predictionSet.ranges[set_id].begin();i!=predictionSet.ranges[set_id].end();++i)
+        for(set_it i=predictionSet.ranges[set_id].begin();
+             i!=predictionSet.ranges[set_id].end();++i)
             stack.push_back(std::pair<int,set_it>(2,i));
         //get weights predicted by single tree
         int num_decisions=0;

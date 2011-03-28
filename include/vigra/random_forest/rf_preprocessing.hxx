@@ -302,8 +302,8 @@ public:
 						   								   "Contains inf");
 		strata_ = MultiArray<2, int> (MultiArrayShape<2>::type(response_.shape(0), 1));
 		ext_param.response_size_ = response.shape(1);
-		ext_param.class_count_ = 0;
-        std::vector<T2> tmp_(1, 0);
+		ext_param.class_count_ = response_.shape(1);
+        std::vector<T2> tmp_(ext_param.class_count_, 0);
             ext_param.classes_(tmp_.begin(), tmp_.end());
 	}
 
