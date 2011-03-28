@@ -580,6 +580,10 @@ public:
     //Need to now the label for interior node visiting
     vigra::Int32 current_label;
     //marginal distribution for interior nodes
+	//
+	OnlineLearnVisitor():
+		adjust_thresholds(false), tree_id(0), last_node_id(0), current_label(0)
+	{}
     struct MarginalDistribution
     {
         ArrayVector<Int32> leftCounts;
