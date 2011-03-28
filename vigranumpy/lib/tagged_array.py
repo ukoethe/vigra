@@ -380,3 +380,178 @@ of 'numpy.ndarray'.
             else:
                 res.axistags = res.empty_axistags(res.ndim)
         return res
+
+##################################################################
+
+# Python implementation of a more powerful AxisTags object (instead of the dault list)
+# We don't need it, because vigranumpycore defines an even better C++ implementation.
+class _PyAxisTags(object):
+    def __init__(self, *args):
+        if len(args) == 0:
+            self.tags = []
+        elif hasattr(args[0], 'tags'):
+            self.tags = copy.copy(args[0].tags)
+        elif hasattr(args[0], '__len__'):
+            self.tags = list(args[0])
+        else:
+            try:
+                self.tags = [AxisInfo() for k in xrange(args[0])]
+            except:
+                self.tags = list(args)
+    
+    def __copy__(self):
+        return AxisTags(self)
+    
+    def __deepcopy__(self, memo):
+        result = AxisTags()
+        result.tags = copy.deepcopy(self.tags, memo)
+        memo[id(self)] = result
+        return result
+    
+    def __repr__(self):
+        return ' '.join(map(lambda x: x.key, self.tags))
+        
+    def __eq__(self, other):
+        return self.tags == other.tags
+    
+    def __ne__(self, other):
+        return self.tags != other.tags
+    
+    def __len__(self):
+        return len(self.tags)
+    
+    def __getitem__(self, index):
+        if type(index) is str:
+            index = self.index(index)
+        return self.tags[index]
+    
+    def __setitem__(self, index, value):
+        if type(index) is str:
+            index = self.index(index)
+        existing_index = self.index(value.key)
+        if existing_index < len(self) and existing_index != index:
+            raise RuntimeError("AxisTags.__setitem__(): axis key already exists.")
+        self.tags[index] = value
+    
+    def __delitem__(self, index):
+        if type(index) is str:
+            index = self.index(index)
+        del self.tags[index]
+    
+    def insert(self, index, value):
+        if type(index) is str:
+            index = self.index(index)
+        if self.index(value.key) < len(self):
+            raise RuntimeError("AxisTags.insert(): axis key already exists.")
+        self.tags.insert(index, value)
+    
+    def append(self, value):
+        if self.index(value.key) < len(self):
+            raise RuntimeError("AxisTags.append(): axis key already exists.")
+        self.tags.append(value)
+    
+    def index(self, key):
+        for k in xrange(len(self.tags)):
+            if self.tags[k].key == key:
+                return k
+        return len(self.tags)
+   
+    @property
+    def channelIndex(self):
+        return self.index('c')
+   
+    @property
+    def majorNonchannelIndex(self):
+        # FIXME: this must be generalized to the case when 'x' is not present.
+        return self.index('x')
+    
+    def axisTypeCount(self, axistype):
+        count = 0
+        for k in self.tags:
+            if k.isType(axistype):
+                count += 1
+        return count
+    
+    def permutationToNormalOrder(self):
+        return canonicalAxisPermutation(self.tags)
+    
+    def permutationFromNormalOrder(self):
+        return [int(k) for k in numpy.array(map(lambda x: ord(x.key[-1]), self.tags)).argsort().argsort()]
+    
+    def setChannelDescription(self, description):
+        index = self.index('c')
+        if index < len(self):
+            self.tags[index].description = description
+    
+    def dropChannelAxis(self):
+        index = self.index('c')
+        if index < len(self):
+            del self.tags[index]
+    
+    def insertChannelAxis(self):
+        index = self.index('c')
+        if index < len(self):
+            raise RuntimeError("AxisTags.insertChannelDimension(): already have a channel dimension.")
+        if defaultOrder == 'F':
+            self.tags.insert(0, AxisInfo.c)
+        else:
+            self.tags.append(AxisInfo.c)
+    
+    def swapaxes(self, i1, i2):
+        self.tags[i1], self.tags[i2] = self.tags[i2], self.tags[i1]
+    
+    def transpose(self, permutation = None):
+        l = len(self)
+        if permutation is None:
+                permutation = range(l-1, -1, -1)
+        result = AxisTags([None]*l)
+        for k in xrange(l):
+            result.tags[k] = self.tags[permutation[k]]
+        return result
+    
+    def transform(self, index, new_ndim):
+        new_axistags = [AxisInfo() for k in xrange(new_ndim)]
+        old_axistags = self.tags
+        old_ndim = len(old_axistags)
+
+        try:
+            # make sure that 'index' is a tuple
+            len_index = len(index)
+        except:
+            index = (index,)
+            len_index = 1
+        len_index -= index.count(numpy.newaxis)
+        if len_index < old_ndim and index.count(Ellipsis) == 0:
+            index += (Ellipsis,)
+            len_index += 1
+        
+        # how many missing axes are represented by an Ellipsis ?
+        len_ellipsis = old_ndim - len_index
+        
+        knew, kold, kindex = 0, 0, 0
+        while knew < new_ndim:
+            try:
+                # if index[kindex] is int, the dimension is bound => drop this axis
+                int(index[kindex]) 
+                kold += 1
+                kindex += 1
+            except:
+                if index[kindex] is not numpy.newaxis:
+                    # copy the tag
+                    new_axistags[knew] = copy.copy(old_axistags[kold])
+                    
+                    # adjust the resolution for a possible step in the slice
+                    try:
+                        new_axistags[knew].resolution *= index[kindex].step
+                    except:
+                        pass
+                        
+                    kold += 1
+                knew += 1
+                # the first ellipsis represents all missing axes
+                if len_ellipsis > 0 and index[kindex] is Ellipsis:
+                    len_ellipsis -= 1
+                else:
+                    kindex += 1
+        
+        return _PyAxisTags(new_axistags)

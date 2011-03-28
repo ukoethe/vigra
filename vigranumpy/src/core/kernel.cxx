@@ -147,14 +147,31 @@ void pythonInitExplicitlyKernel2D(Kernel2D<T> &k,
     Point2D ul(upperleft[0], upperleft[1]), lr(lowerright[0], lowerright[1]);
     
     k.initExplicitly(ul, lr);
-    for(int y = ul.y; y <= lr.y; ++y)
+
+    if(contents.axistags())
     {
-	    for(int x = ul.x; x <= lr.x; ++x)
-	    {
-		    k(x,y) = (contents.size() == 1)
-		                   ? contents(0)
-		                   : contents(x-ul.x, y-ul.y);
-	    }
+        for(int y = ul.y; y <= lr.y; ++y)
+        {
+            for(int x = ul.x; x <= lr.x; ++x)
+            {
+                k(x,y) = (contents.size() == 1)
+                               ? contents(0)
+                               : contents(x-ul.x, y-ul.y);
+            }
+        }
+    }
+    else
+    {
+        // we must transpose contents() when there are not axistags
+        for(int y = ul.y; y <= lr.y; ++y)
+        {
+            for(int x = ul.x; x <= lr.x; ++x)
+            {
+                k(x,y) = (contents.size() == 1)
+                               ? contents(0)
+                               : contents(y-ul.y, x-ul.x);
+            }
+        }
     }
 }
 

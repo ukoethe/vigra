@@ -393,7 +393,6 @@ void registerNumpyArrayConverters()
     python::docstring_options doc_options(true, true, false);
         
     doc_options.disable_all();
-    // FIXME: replace the Python versions for consistence?
     python::def("constructArrayFromAxistags", &constructArrayFromAxistags);
     // python::def("constructNumpyArray", &constructNumpyArrayFromArray);
 }

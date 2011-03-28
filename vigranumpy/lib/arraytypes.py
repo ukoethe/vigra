@@ -66,7 +66,7 @@ import numpy
 import ufunc
 import vigranumpycore
 
-from tagged_array import TaggedArray
+from tagged_array import TaggedArray, preserve_doc
 
 try:
     import qimage2ndarray
@@ -114,179 +114,6 @@ def dropChannelAxis(array):
     except:
         return array
                 
-# Python implementation may be used when vigranumycore.AxisTags is unavailable
-# FIXME: move this inot tagged_array.py ?
-class _PyAxisTags(object):
-    def __init__(self, *args):
-        if len(args) == 0:
-            self.tags = []
-        elif hasattr(args[0], 'tags'):
-            self.tags = copy.copy(args[0].tags)
-        elif hasattr(args[0], '__len__'):
-            self.tags = list(args[0])
-        else:
-            try:
-                self.tags = [AxisInfo() for k in xrange(args[0])]
-            except:
-                self.tags = list(args)
-    
-    def __copy__(self):
-        return AxisTags(self)
-    
-    def __deepcopy__(self, memo):
-        result = AxisTags()
-        result.tags = copy.deepcopy(self.tags, memo)
-        memo[id(self)] = result
-        return result
-    
-    def __repr__(self):
-        return ' '.join(map(lambda x: x.key, self.tags))
-        
-    def __eq__(self, other):
-        return self.tags == other.tags
-    
-    def __ne__(self, other):
-        return self.tags != other.tags
-    
-    def __len__(self):
-        return len(self.tags)
-    
-    def __getitem__(self, index):
-        if type(index) is str:
-            index = self.index(index)
-        return self.tags[index]
-    
-    def __setitem__(self, index, value):
-        if type(index) is str:
-            index = self.index(index)
-        existing_index = self.index(value.key)
-        if existing_index < len(self) and existing_index != index:
-            raise RuntimeError("AxisTags.__setitem__(): axis key already exists.")
-        self.tags[index] = value
-    
-    def __delitem__(self, index):
-        if type(index) is str:
-            index = self.index(index)
-        del self.tags[index]
-    
-    def insert(self, index, value):
-        if type(index) is str:
-            index = self.index(index)
-        if self.index(value.key) < len(self):
-            raise RuntimeError("AxisTags.insert(): axis key already exists.")
-        self.tags.insert(index, value)
-    
-    def append(self, value):
-        if self.index(value.key) < len(self):
-            raise RuntimeError("AxisTags.append(): axis key already exists.")
-        self.tags.append(value)
-    
-    def index(self, key):
-        for k in xrange(len(self.tags)):
-            if self.tags[k].key == key:
-                return k
-        return len(self.tags)
-   
-    @property
-    def channelIndex(self):
-        return self.index('c')
-   
-    @property
-    def majorNonchannelIndex(self):
-        # FIXME: this must be generalized to the case when 'x' is not present.
-        return self.index('x')
-    
-    def axisTypeCount(self, axistype):
-        count = 0
-        for k in self.tags:
-            if k.isType(axistype):
-                count += 1
-        return count
-    
-    def permutationToNormalOrder(self):
-        return canonicalAxisPermutation(self.tags)
-    
-    def permutationFromNormalOrder(self):
-        return [int(k) for k in numpy.array(map(lambda x: ord(x.key[-1]), self.tags)).argsort().argsort()]
-    
-    def setChannelDescription(self, description):
-        index = self.index('c')
-        if index < len(self):
-            self.tags[index].description = description
-    
-    def dropChannelAxis(self):
-        index = self.index('c')
-        if index < len(self):
-            del self.tags[index]
-    
-    def insertChannelAxis(self):
-        index = self.index('c')
-        if index < len(self):
-            raise RuntimeError("AxisTags.insertChannelDimension(): already have a channel dimension.")
-        if defaultOrder == 'F':
-            self.tags.insert(0, AxisInfo.c)
-        else:
-            self.tags.append(AxisInfo.c)
-    
-    def swapaxes(self, i1, i2):
-        self.tags[i1], self.tags[i2] = self.tags[i2], self.tags[i1]
-    
-    def transpose(self, permutation = None):
-        l = len(self)
-        if permutation is None:
-                permutation = range(l-1, -1, -1)
-        result = AxisTags([None]*l)
-        for k in xrange(l):
-            result.tags[k] = self.tags[permutation[k]]
-        return result
-    
-    def transform(self, index, new_ndim):
-        new_axistags = [AxisInfo() for k in xrange(new_ndim)]
-        old_axistags = self.tags
-        old_ndim = len(old_axistags)
-
-        try:
-            # make sure that 'index' is a tuple
-            len_index = len(index)
-        except:
-            index = (index,)
-            len_index = 1
-        len_index -= index.count(numpy.newaxis)
-        if len_index < old_ndim and index.count(Ellipsis) == 0:
-            index += (Ellipsis,)
-            len_index += 1
-        
-        # how many missing axes are represented by an Ellipsis ?
-        len_ellipsis = old_ndim - len_index
-        
-        knew, kold, kindex = 0, 0, 0
-        while knew < new_ndim:
-            try:
-                # if index[kindex] is int, the dimension is bound => drop this axis
-                int(index[kindex]) 
-                kold += 1
-                kindex += 1
-            except:
-                if index[kindex] is not numpy.newaxis:
-                    # copy the tag
-                    new_axistags[knew] = copy.copy(old_axistags[kold])
-                    
-                    # adjust the resolution for a possible step in the slice
-                    try:
-                        new_axistags[knew].resolution *= index[kindex].step
-                    except:
-                        pass
-                        
-                    kold += 1
-                knew += 1
-                # the first ellipsis represents all missing axes
-                if len_ellipsis > 0 and index[kindex] is Ellipsis:
-                    len_ellipsis -= 1
-                else:
-                    kindex += 1
-        
-        return AxisTags(new_axistags)
-
 # How to construct a VigraArray
 #
 # case 1: from shape and order or axistags
@@ -315,6 +142,8 @@ def _constructArrayFromOrder(cls, shape, dtype, order, init):
     return _constructArrayFromAxistags(cls, shape, dtype, axistags, init)
     
 def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
+    if order is None:
+        order = 'A'
     if order == 'A':
         # we cannot use ndarray.copy('A') here, because this only preserves 'C' and 'F'
         # order, whereas any other order is silently transformed into 'C'
@@ -466,26 +295,31 @@ this class via its subclasses!
         if value is not None:
             init = False
         if isinstance(obj, numpy.ndarray):
-            if order is None:
-                order = 'A'
-            if axistags is None and hasattr(obj, 'axistags'):
-                axistags = copy.copy(obj.axistags)
             if axistags is None:
-                raise RuntimeError("VigraArray(): axistags must be given when constructing from plain array.")
-            if obj.ndim != len(axistags):
+                if hasattr(obj, 'axistags'):
+                    axistags = copy.copy(obj.axistags)
+                else:
+                    raise RuntimeError("VigraArray(): axistags must be given when constructing from plain array.")
+            elif obj.ndim != len(axistags):
                 raise RuntimeError("VigraArray(): axistags have wrong length.")
-            res = _constructArrayFromArray(cls, obj, dtype, order, init, axistags)
+            if order is None:
+                res = _constructArrayFromAxistags(cls, obj.shape, dtype, axistags, init)
+                if init:
+                    res[...] = obj
+            else:
+                res = _constructArrayFromArray(cls, obj, dtype, order, init, axistags)
         else:
-            if order is None and axistags is None:
-                order = VigraArray.defaultOrder
-            if axistags is not None and len(axistags) != len(obj):
+            if axistags is None:
+                if order is None:
+                    order = VigraArray.defaultOrder
+            elif len(axistags) != len(obj):
                 raise RuntimeError("VigraArray(): axistags have wrong length.")
-            if order is not None:
+            if order is None:
+                res = _constructArrayFromAxistags(cls, obj, dtype, axistags, init)
+            else:
                 res = _constructArrayFromOrder(cls, obj, dtype, order, init)
                 if cls is not numpy.ndarray and axistags is not None:
                     res.axistags = axistags
-            else:
-                res = _constructArrayFromAxistags(cls, obj, dtype, axistags, init)
         if value is not None:
             res.fill(value)
         return res
@@ -494,6 +328,13 @@ this class via its subclasses!
 
     def __copy__(self, order='A'):
         return self.copy(order)
+        
+    @preserve_doc
+    def __deepcopy__(self, memo):
+        result = self.__copy__('A')
+        memo[id(self)] = result
+        result.__dict__ = copy.deepcopy(self.__dict__, memo)
+        return result
     
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
@@ -542,12 +383,12 @@ this class via its subclasses!
             raise RuntimeError("VigraArray.depth(): axistag 'z' does not exist.")
     
     @property
-    def timeSteps(self):
+    def duration(self):
         i = self.axistags.index('t')
         if i < self.ndim:
             return self.shape[i]
         else:
-            raise RuntimeError("VigraArray.timeSteps(): axistag 't' does not exist.")
+            raise RuntimeError("VigraArray.duration(): axistag 't' does not exist.")
             
     @property
     def spatialDimensions(self):
@@ -594,22 +435,17 @@ this class via its subclasses!
         return 'A'
     
     @property
-    # FIXME: this should depend on axistags
     def flat(self):
-        return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flat
+        return self.transposeToNumpyOrder().view(numpy.ndarray).flat
     
-    # FIXME: this should depend on axistags
     def flatten(self, order='C'):
-        return self.view(TaggedArray).swapaxes(0, self.spatialDimensions-1).flatten(order)        
+        return self.transposeToNumpyOrder().view(numpy.ndarray).flatten(order)        
 
-    # FIXME: this should depend on axistags
     def ravel(self, order='C'):
-        return self.view(TaggedArray).swapaxes(0, self.spatialDimensions-1).ravel(order)        
+        return self.transposeToNumpyOrder().view(numpy.ndarray).ravel(order)        
 
-    # FIXME: to be implemented
-    # def __str__(self):
-    
-    # def __repr__(self):
+    def __str__(self):
+        return str(self.transposeToVigraOrder().transpose().view(numpy.ndarray))
     
     def bindAxis(self, which, value=0):
         if type(which) == str:
@@ -659,7 +495,6 @@ this class via its subclasses!
         return self.transposeToOrder('C')
     
     # we reimplement the numerical operators in order to make sure that array order is preserved
-    # FIXME: vigra.ufunc needs some refactoring
     def __abs__(self):
         return ufunc.absolute(self)
     
@@ -893,146 +728,151 @@ this class via its subclasses!
 
 ##################################################################
 
-def _adjustShape(shape, order, spatialDimensions, channelCount, name):
+# channelCount == None: array must not have channels
+# channelCount == 0:    array can have arbitrary number of channels (including None)
+def _adjustShape(shape, order, spatialDimensions, channelCount, axistags, name):
+    if order is None:
+        order = VigraArray.defaultOrder
     if len(shape) == spatialDimensions:
-        if order == 'F':
-            shape = (channelCount,) + shape
-        else:
-            shape = shape + (channelCount,)
-    if len(shape) != spatialDimensions + 1:
-        raise RuntimeError("%s: shape has wrong length." % name)
-    return shape
+        if channelCount is not None and channelCount == 0:
+            channelCount = 1
+        if channelCount:
+            if order == 'F':
+                shape = (channelCount,) + shape
+            else:
+                shape = shape + (channelCount,)
+    else:        
+        if channelCount is None or len(shape) != spatialDimensions + 1:
+            raise RuntimeError("%s: input shape has wrong length." % name)
+        if channelCount > 0:
+            if order == 'F':
+                if shape[0] != channelCount:
+                    raise RuntimeError("%s: input shape has wrong number of channels." % name)
+            else:
+                if shape[-1] != channelCount:
+                    raise RuntimeError("%s: input shape has wrong number of channels." % name)
+    if axistags is None:
+        axistags = VigraArray.defaultAxistags(spatialDimensions+1, order)
+    if len(shape) == spatialDimensions:
+        axistags.dropChannelAxis()
+    if len(shape) != len(axistags):
+        raise RuntimeError("%s: size mismatch between shape and axistags." % name)
+    return shape, axistags
 
-# FIXME: we must also check axistags and obj if it is an array
-#        (maybe part of it is better done in VigraArray)
+def _adjustArray(array, order, spatialDimensions, channelCount, axistags, name):
+    if order is None:
+        order = VigraArray.defaultOrder
+    if array.ndim == spatialDimensions:
+        if channelCount is not None and channelCount > 1:
+            raise RuntimeError("%s: input array has too few dimensions." % name)
+        if hasattr(array, 'axistags'):
+            if array.channelIndex != array.ndim:
+                raise RuntimeError("%s: input array has too few non-channel axes." % name)
+        if channelCount:
+            if hasattr(array, 'axistags'):
+                array = array.insertChannelAxis(order)
+            elif order == 'F':
+                array = array[numpy.newaxis,...]
+            else:
+                array = array[...,numpy.newaxis]
+    else:
+        if channelCount is None or array.ndim != spatialDimensions+1:
+            raise RuntimeError("%s: input array has wrong number of dimensions." % name)
+        if hasattr(array, 'axistags'):
+            channelIndex = array.channelIndex
+            if channelIndex == array.ndim:
+                raise RuntimeError("%s: input array has no channel axis." % name)
+            if channelCount > 0 and array.shape[channelIndex] != channelCount:
+                raise RuntimeError("%s: input array has wrong number of channels." % name)
+    if axistags is None:
+        if hasattr(array, 'axistags'):
+            axistags = copy.copy(array.axistags)
+        else:
+            axistags = VigraArray.defaultAxistags(spatialDimensions+1, order)
+    if array.ndim == spatialDimensions:
+        axistags.dropChannelAxis()
+    if array.ndim != len(axistags):
+        raise RuntimeError("%s: axistags have wrong number of axes." % name)
+    return array, axistags
+
+def _adjustInput(obj, order, spatialDimensions, channelCount, axistags, name):
+    if isinstance(obj, numpy.ndarray):
+        return _adjustArray(obj, order, spatialDimensions, channelCount, axistags, name)
+    else:
+        return _adjustShape(obj, order, spatialDimensions, channelCount, axistags, name)
+
+#################################################################
+
 def Image(obj, dtype=numpy.float32, order=None, 
           init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 2 and obj.ndim != 3:
-            raise RuntimeError("Image(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 1, "vigra.Image()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 2, 0, axistags, "vigra.Image()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
         
 def ScalarImage(obj, dtype=numpy.float32, order=None, 
                 init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if hasattr(obj, 'axistags'):
-            obj = obj.insertChannelAxis(order)
-            if obj.ndim != 3:
-                raise RuntimeError("ScalarImage(): shape mismatch")
-        elif obj.ndim != 2 and obj.ndim != 3:
-            raise RuntimeError("ScalarImage(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 1, "vigra.ScalarImage()")
-    res = VigraArray(obj, dtype, order, init, value, axistags).dropChannelAxis()
-    return res
+    obj, axistags = _adjustInput(obj, order, 2, None, axistags, "vigra.ScalarImage()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
         
 def Vector2Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3:
-            raise RuntimeError("Vector2Image(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 2, "vigra.Vector2Image()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 2, 2, axistags, "vigra.Vector2Image()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector3Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3:
-            raise RuntimeError("Vector3Image(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 3, "vigra.Vector3Image()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 2, 3, axistags, "vigra.Vector3Image()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector4Image(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3:
-            raise RuntimeError("Vector4Image(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 4, "vigra.Vector4Image()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 2, 4, axistags, "vigra.Vector4Image()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def RGBImage(obj, dtype=numpy.float32, order=None, 
              init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3:
-            raise RuntimeError("RGBImage(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 2, 3, "vigra.RGBImage()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 2, 3, axistags, "vigra.RGBImage()")
+    res = VigraArray(obj, dtype, None, init, value, axistags)
+    res.axistags.setChannelDescription('RGB')
+    return res
 
 #################################################################
 
 def Volume(obj, dtype=numpy.float32, order=None, 
            init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 3 and obj.ndim != 4:
-            raise RuntimeError("Volume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 1, "vigra.Volume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 0, axistags, "vigra.Volume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def ScalarVolume(obj, dtype=numpy.float32, order=None, 
                  init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if hasattr(obj, 'axistags'):
-            obj = obj.insertChannelAxis(order)
-            if obj.ndim != 4:
-                raise RuntimeError("ScalarVolume(): shape mismatch")
-        elif obj.ndim != 3 and obj.ndim != 4:
-            raise RuntimeError("ScalarVolume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 1, "vigra.ScalarVolume()")
-    res = VigraArray(obj, dtype, order, init, value, axistags).dropChannelAxis()
-    return res
+    obj, axistags = _adjustInput(obj, order, 3, None, axistags, "vigra.ScalarVolume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector2Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 4:
-            raise RuntimeError("Vector2Volume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 2, "vigra.Vector2Volume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 2, axistags, "vigra.Vector2Volume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector3Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 4:
-            raise RuntimeError("Vector3Volume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 3, "vigra.Vector3Volume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 3, axistags, "vigra.Vector3Volume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector4Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 4:
-            raise RuntimeError("Vector4Volume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 4, "vigra.Vector4Volume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 4, axistags, "vigra.Vector4Volume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def Vector6Volume(obj, dtype=numpy.float32, order=None, 
                   init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 4:
-            raise RuntimeError("Vector6Volume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 6, "vigra.Vector6Volume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 6, axistags, "vigra.Vector6Volume()")
+    return VigraArray(obj, dtype, None, init, value, axistags)
 
 def RGBVolume(obj, dtype=numpy.float32, order=None, 
               init=True, value=None, axistags=None):
-    if isinstance(obj, numpy.ndarray):
-        if obj.ndim != 4:
-            raise RuntimeError("RGBVolume(): shape mismatch")
-    else:
-        obj = _adjustShape(obj, order, 3, 3, "vigra.RGBVolume()")
-    return VigraArray(obj, dtype, order, init, value, axistags)
+    obj, axistags = _adjustInput(obj, order, 3, 3, axistags, "vigra.RGBVolume()")
+    res = VigraArray(obj, dtype, None, init, value, axistags)
+    res.axistags.setChannelDescription('RGB')
+    return res
 
 #################################################################
 
