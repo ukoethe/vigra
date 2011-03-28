@@ -590,9 +590,6 @@ struct ClassifierTest
         double features[] = {0, 0, 1, 1,
                          0, 1, 0, 1};
         int    labels[] = {1, 0, 0, 1};
-        double features2[] = {0.4, 0.4, 0.6, 0.6,
-                         0.4, 0.6, 0.4, 0.6};
-        int    labels2[] = {1, 0, 0, 1};
         std::cerr << "RFsetTest(): Learning 1200 Trees on online problem. ";
         {
             vigra::SetTestVisitor testVisitor;
@@ -751,7 +748,135 @@ struct ClassifierTest
             std::cerr << "done!\n";
     }
 #endif
+//};
+
+
+/** checks Regression RF
+ */
+
+	
+void RFRegressionTest()
+{
+	std::cerr << "RFRegressionTest().....\n";
+	typedef MultiArrayShape<2>::type Shp;
+	MultiArray<2, double> features(Shp(100,1));
+	MultiArray<2, double> response(Shp(100,1));
+	//MultiArray<2, double> response(Shp(100,1));
+	
+	//Populate the matrix with one coordinate
+	double x0= -50;
+	double dx=1;
+	for (int i=0;i<features.shape(0);++i){
+		features(i,0)=x0;
+		x0=x0+dx;
+	}
+	
+	//Popolate the matrix of labels (should not be called labels)
+	// linear function
+	
+	double a= 1;
+	double q= 0.0;
+	
+	for (int i=0;i<response.shape(0);++i){
+			response(i,0)=features(i,0)*a+q;
+			x0=x0+dx;
+	
+	}
+
+	
+	
+	vigra::RegressionSplit regsplit;
+	
+	//split class
+	vigra::RandomForest<double, RegressionTag> rf(vigra::RandomForestOptions().tree_count(1000));
+	//vigra::RandomForest<double, RegressionTag > rf(vigra::RandomForestOptions().tree_count(10));
+	vigra::RegressionSplit rsplit;
+	//vigra::GiniRidgeSplit rsplit;
+	rf.learn(features, response, rf_default(),rsplit);
+	
+	MultiArray<2, double> predicted(Shp(100,1));
+	
+	
+	rf.predictRaw(features,predicted);
+	//std::cerr << "DONE\n";
+	
+
+	for (int i=0; i<predicted.shape(0); ++i) {
+		shouldEqualTolerance(response(i, 0), predicted(i, 0), 1.0);
+	}
+		
+	std::cerr << "done!\n";
+		
+}
+
+	
+	void MultidimensionalRFRegressionTest()
+	{
+		std::cerr << "MultidimensioalRFRegressionTest().....\n";
+		typedef MultiArrayShape<2>::type Shp;
+		MultiArray<2, double> features(Shp(100,5));
+		MultiArray<2, double> response(Shp(100,5));
+		//MultiArray<2, double> response(Shp(100,1));
+		
+		//Populate the matrix with one coordinate
+		double x0= -50;
+		double dx=1;
+		for(int j = 0; j < 5; ++ j)
+		for (int i=0;i<features.shape(0);++i){
+			features(i,j)=x0;
+			x0=x0+dx;
+		}
+		
+		//Popolate the matrix of labels (should not be called labels)
+		// linear function
+		
+		double a= 1;
+		double q= 0.0;
+		
+		for(int j = 0; j < 5; ++ j)
+		for (int i=0;i<response.shape(0);++i){
+			response(i,j)=features(i,j)*a+q;
+			x0=x0+dx;
+			
+		}
+		
+		
+		
+		vigra::RegressionSplit regsplit;
+		
+		//split class
+		vigra::RandomForest<double, RegressionTag> rf(vigra::RandomForestOptions().tree_count(1000));
+		//vigra::RandomForest<double, RegressionTag > rf(vigra::RandomForestOptions().tree_count(10));
+		vigra::RegressionSplit rsplit;
+		//vigra::GiniRidgeSplit rsplit;
+		rf.learn(features, response, rf_default(),rsplit);
+		
+		MultiArray<2, double> predicted(Shp(100,5));
+		
+		
+		rf.predictRaw(features,predicted);
+		//std::cerr << "DONE\n";
+		//
+		for(int j = 0; j < 5; ++ j)
+		for (int i=0; i<predicted.shape(0); ++i) {
+			//std::cout << predicted(i, j) << std::endl;
+			shouldEqualTolerance(response(i, j), predicted(i, j), 1.0);
+		}
+		
+		std::cerr << "done!\n";
+		
+	}
+	
+	
+	
+	
+	
 };
+
+
+
+
+
 
 
 struct ClassifierTestSuite
@@ -760,8 +885,9 @@ struct ClassifierTestSuite
     ClassifierTestSuite()
     : vigra::test_suite("ClassifierTestSuite")
     {
-	
         add( testCase( &ClassifierTest::RFdefaultTest));
+		add( testCase( &ClassifierTest::RFRegressionTest));
+		add( testCase( &ClassifierTest::MultidimensionalRFRegressionTest));
 #ifndef FAST
         add( testCase( &ClassifierTest::RFsetTest));
         add( testCase( &ClassifierTest::RFonlineTest));
@@ -779,6 +905,7 @@ struct ClassifierTestSuite
 #ifdef HasHDF5
 		add( testCase( &ClassifierTest::HDF5ImpexTest));
 #endif
+		 
     }
 };
 
