@@ -64,8 +64,13 @@ pythonLabelImage(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "labelImage(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "labelImage(): Output array has wrong shape.");
+    std::string description("connected components, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "labelImage(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -95,8 +100,13 @@ pythonLabelImageWithBackground(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "labelImageWithBackground(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "labelImageWithBackground(): Output array has wrong shape.");
+    std::string description("connected components with background, neighborhood=");
+    description += asString(neighborhood)+ ", bglabel=" + asString(background_value);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+        "labelImageWithBackground(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -126,8 +136,13 @@ pythonLabelVolume(NumpyArray<3, Singleband<VoxelType> > volume,
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
         "labelVolume(): neighborhood must be 6 or 26.");
     
-    res.reshapeIfEmpty(volume.shape(), "labelVolume(): Output array has wrong shape.");
+    std::string description("connected components, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
+            "labelVolume(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 6:
@@ -158,7 +173,13 @@ pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<VoxelType> > volume,
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
         "labelVolumeWithBackground(): neighborhood must be 6 or 26.");
     
-    res.reshapeIfEmpty(volume.shape(), "labelVolumeWithBackground(): Output array has wrong shape.");
+    std::string description("connected components with background, neighborhood=");
+    description += asString(neighborhood)+ ", bglabel=" + asString(background_value);
+    
+    res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
+        "labelVolumeWithBackground(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 6:
@@ -193,7 +214,13 @@ pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "localMinima(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "localMinima(): Output array has wrong shape.");
+    std::string description("local minima, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "localMinima(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -223,7 +250,13 @@ pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "extendedLocalMinima(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "extendedLocalMinima(): Output array has wrong shape.");
+    std::string description("extended local minima, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+        "extendedLocalMinima(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -252,7 +285,13 @@ pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "localMaxima(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "localMaxima(): Output array has wrong shape.");
+    std::string description("local maxima, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "localMaxima(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -282,7 +321,13 @@ pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "extendedLocalMaxima(): neighborhood must be 4 or 8.");
 
-    res.reshapeIfEmpty(image.shape(), "extendedLocalMaxima(): Output array has wrong shape.");
+    std::string description("extended local maxima, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "extendedLocalMaxima(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     switch (neighborhood)
     {
         case 4:
@@ -328,7 +373,8 @@ pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
     
     if(method == "regiongrowing")
     {
-        seeds.reshapeIfEmpty(image.shape(), "watersheds(): Seed array has wrong shape.");
+        seeds.reshapeIfEmpty(image.shape(), 
+                "watersheds(): Seed array has wrong shape.");
         
         if(!haveSeeds)
         {
@@ -404,7 +450,11 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     if(method == "")
         method = "regiongrowing";
         
-    res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
+    std::string description("watershed labeling, neighborhood=");
+    description += asString(neighborhood);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "watersheds(): Output array has wrong shape.");
     
     WatershedOptions options;
     options.srgType(srgType);
@@ -430,6 +480,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     npy_uint32 maxRegionLabel = 0;
 	if(method == "regiongrowing")
     {
+        PyAllowThreads _pythread;
         if(neighborhood == 4)
         {
             maxRegionLabel = watershedsRegionGrowing(srcImageRange(image), destImage(res), 
@@ -446,6 +497,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         vigra_precondition(srgType == CompleteGrow,
            "watersheds(): UnionFind only supports 'CompleteGrow' mode.");
            
+        PyAllowThreads _pythread;
         if(neighborhood == 4)
         {
             maxRegionLabel = watershedsUnionFind(srcImageRange(image), destImage(res),
@@ -491,10 +543,14 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
     
     if(method == "regiongrowing")
     {
-        seeds.reshapeIfEmpty(image.shape(), "watersheds(): Seed array has wrong shape.");
+        std::string description("watershed seeds");
+        
+        seeds.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+                "watersheds(): Seed array has wrong shape.");
         
         if(!haveSeeds)
         {
+            PyAllowThreads _pythread;
             maxRegionLabel = 0;
             
             // determine seeds
@@ -544,22 +600,30 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
         }
         else
         {
+            PyAllowThreads _pythread;
             FindMinMax< npy_uint32 > minmax;
             inspectMultiArray(srcMultiArrayRange(seeds), minmax);
             maxRegionLabel = minmax.max;
         }
            
-        res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
+        description = "watershed labeling, neighborhood=";
+        description += asString(neighborhood);
+        
+        res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+                "watersheds(): Output array has wrong shape.");
 
+        PyAllowThreads _pythread;
         ArrayOfRegionStatistics< SeedRgDirectValueFunctor< PixelType > > stats(maxRegionLabel);
         if(neighborhood == 6)
         {
-            seededRegionGrowing3D(srcMultiArrayRange(image), srcMultiArray(seeds), destMultiArray(res), 
+            seededRegionGrowing3D(srcMultiArrayRange(image), srcMultiArray(seeds), 
+                                  destMultiArray(res), 
                                   stats, srgType, NeighborCode3DSix(), max_cost);
         }
         else
         {
-            seededRegionGrowing3D(srcMultiArrayRange(image), srcMultiArray(seeds), destMultiArray(res), 
+            seededRegionGrowing3D(srcMultiArrayRange(image), srcMultiArray(seeds), 
+                                  destMultiArray(res), 
                                   stats, srgType, NeighborCode3DTwentySix(), max_cost);
         }
     }
@@ -570,8 +634,13 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
         vigra_precondition(srgType == CompleteGrow,
            "watersheds(): UnionFind only supports 'CompleteGrow' mode.");
            
-        res.reshapeIfEmpty(image.shape(), "watersheds(): Output array has wrong shape.");
+        std::string description("watershed labeling, neighborhood=");
+        description += asString(neighborhood);
         
+        res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+                "watersheds(): Output array has wrong shape.");
+        
+        PyAllowThreads _pythread;
         if(neighborhood == 6)
         {
             maxRegionLabel = watersheds3DSix(srcMultiArrayRange(image), destMultiArray(res));

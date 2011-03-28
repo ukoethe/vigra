@@ -88,6 +88,33 @@ void testMakeReference()
 }
 #endif
 
+template <unsigned int N, class T>
+python::tuple 
+checkTaggedShape(NumpyArray<N, T> in)
+{
+    NumpyArray<3, Multiband<float> > res1(in);
+    
+    NumpyArray<3, Multiband<float> > res2;
+    res2.reshapeIfEmpty(in.taggedShape().setChannelDescription("res2"), "res2 failed");
+    
+    NumpyArray<3, Multiband<float> > res3;
+    res3.reshapeIfEmpty(in.taggedShape().setChannelCount(1).setChannelDescription("res3"), 
+                        "res3 failed");
+    
+    NumpyArray<3, Multiband<float> > res4;
+    res4.reshapeIfEmpty(in.taggedShape().setChannelCount(3).setChannelDescription("res4"), 
+                        "res4 failed");
+    
+    NumpyArray<2, Singleband<float> > res5;
+    res5.reshapeIfEmpty(in.taggedShape().setChannelDescription("res5"), "res5 failed");
+    
+    NumpyArray<2, RGBValue<float> > res6;
+    res6.reshapeIfEmpty(in.taggedShape().setChannelDescription("res6"), 
+                        "res6 failed");
+    
+    return python::make_tuple(res1, res2, res3, res4, res5, res6); 
+}
+
 } // namespace vigra
 
 using namespace boost::python;
@@ -144,4 +171,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpytest)
 
     def("viewArray4Strided", registerConverters(&testView<4, float, StridedArrayTag>));
     def("viewArray4Unstrided", registerConverters(&testView<4, float, UnstridedArrayTag>));
+    
+    def("checkTaggedShapeMultiband", registerConverters(&checkTaggedShape<3, Multiband<float> >));
+    def("checkTaggedShapeSingleband", registerConverters(&checkTaggedShape<2, Singleband<float> >));
 }

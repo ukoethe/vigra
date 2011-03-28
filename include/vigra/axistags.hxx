@@ -184,7 +184,7 @@ class AxisInfo
         }
         else
         {
-            vigra_precondition(!isFrequency(),
+            vigra_precondition(isFrequency(),
                 "AxisInfo::fromFrequencyDomain(): axis is not in the Fourier domain.");
             type = AxisType(~Frequency & flags_);
         }

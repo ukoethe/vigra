@@ -164,7 +164,7 @@ class PyAxisTags
     
     python_ptr axistags;
     
-    PyAxisTags(python_ptr tags, bool createCopy = false)
+    PyAxisTags(python_ptr tags = python_ptr(), bool createCopy = false)
     {
         if(!tags)
             return;
@@ -425,7 +425,6 @@ class TaggedShape
     TaggedShape(TinyVector<U, N> const & sh)
     : shape(sh.begin(), sh.end()),
       original_shape(sh.begin(), sh.end()),
-      axistags(sh.size()),
       channelAxis(none)
     {}
     
@@ -433,7 +432,6 @@ class TaggedShape
     TaggedShape(ArrayVector<T> const & sh)
     : shape(sh.begin(), sh.end()),
       original_shape(sh.begin(), sh.end()),
-      axistags(sh.size()),
       channelAxis(none)
     {}
     
@@ -605,7 +603,10 @@ class TaggedShape
         int sstart = (channelAxis == first)
                         ? 1
                         : 0;
-        int size = (int)this->size() - sstart;
+        int send  = (channelAxis == last)
+                        ? (int)size()-1
+                        : (int)size();
+        int size = send - sstart;
         
         for(int k=0; k<size; ++k)
         {
@@ -702,34 +703,6 @@ class TaggedShape
     }
 };
 
-// inline 
-// void scaleAxisResolution(TaggedShape & tagged_shape)
-// {
-    // if(tagged_shape.size() != tagged_shape.original_shape.size())
-        // return;
-    
-    // int ntags = PySequence_Length(tagged_shape.axistags);
-    
-    // ArrayVector<npy_intp> permute = detail::permutationToNormalOrder(tagged_shape.axistags);
-    
-    // int tstart = (detail::channelIndex(tagged_shape.axistags, ntags) < ntags)
-                    // ? 1
-                    // : 0;
-    // int sstart = (tagged_shape.channelAxis == TaggedShape::first)
-                    // ? 1
-                    // : 0;
-    // int size = (int)tagged_shape.size() - sstart;
-    
-    // for(int k=0; k<size; ++k)
-    // {
-        // int sk = k + sstart;
-        // if(tagged_shape.shape[sk] == tagged_shape.original_shape[sk])
-            // continue;
-        // double factor = (tagged_shape.original_shape[sk] - 1.0) / (tagged_shape.shape[sk] - 1.0);
-        // detail::scaleAxisResolution(tagged_shape.axistags, permute[k+tstart], factor);
-    // }
-// }
-
 inline 
 void scaleAxisResolution(TaggedShape & tagged_shape)
 {
@@ -758,102 +731,11 @@ void scaleAxisResolution(TaggedShape & tagged_shape)
     }
 }
 
-
-// inline 
-// ArrayVector<npy_intp> unifyTaggedShapeSize(TaggedShape & tagged_shape)
-// {
-    // python_ptr axistags = tagged_shape.axistags;
-    // ArrayVector<npy_intp> shape = tagged_shape.shape;
-
-    // if(!PySequence_Check(axistags))
-    // {
-        // PyErr_SetString(PyExc_TypeError, "constructArray(): axistags have wrong type.");
-        // pythonToCppException(false);
-    // }
-    
-    // int ndim = (int)shape.size();
-    // int ntags = PySequence_Length(axistags);
-    
-    // long channelIndex = detail::channelIndex(axistags, ntags);
-
-// #if 0 // debug only
-    // std::cerr << "ndim: " << ndim << ", ntags: " << ntags << ", channelIndex: " << channelIndex << "\n";
-    // static python_ptr func(PyString_FromString("__repr__"), 
-                           // python_ptr::keep_count);
-    // python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                   // python_ptr::keep_count);
-    // pythonToCppException(res);
-    // std::cerr << "axistags: " << PyString_AsString(res) << "\n";
-// #endif
-
-    // if(tagged_shape.channelAxis == TaggedShape::none)
-    // {
-        // // shape has no channel axis
-        // if(channelIndex == ntags)
-        // {
-            // // axistags have no channel axis either => sizes should match
-            // vigra_precondition(ndim == ntags,
-                 // "constructArray(): size mismatch between shape and axistags.");
-        // }
-        // else
-        // {
-            // if(ndim+1 == ntags)
-            // {
-                // // axistags have have one additional element => drop the channel tag
-                // // FIXME: would it be cleaner to make this an error ?
-                // static python_ptr func(PyString_FromString("dropChannelAxis"), 
-                                       // python_ptr::keep_count);
-                // python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                               // python_ptr::keep_count);
-                // pythonToCppException(res);
-            // }
-            // else
-                // vigra_precondition(ndim == ntags,
-                     // "constructArray(): size mismatch between shape and axistags.");
-            
-        // }
-    // }
-    // else
-    // {
-        // // shape has a channel axis
-        // if(channelIndex == ntags)
-        // {
-            // // axistags have no channel axis => should be one element shorter
-            // vigra_precondition(ndim == ntags+1,
-                 // "constructArray(): size mismatch between shape and axistags.");
-                 
-            // if(shape[0] == 1)
-            // {
-                // // we have a singleband image => drop the channel axis
-                // shape.erase(shape.begin());
-                // ndim -= 1;
-            // }
-            // else
-            // {
-                // // we have a multiband image => add a channel tag
-                // static python_ptr func(PyString_FromString("insertChannelAxis"), 
-                                       // python_ptr::keep_count);
-                // python_ptr res(PyObject_CallMethodObjArgs(axistags, func.get(), NULL), 
-                               // python_ptr::keep_count);
-                // pythonToCppException(res);
-            // }
-        // }
-        // else
-        // {
-            // // axistags have channel axis => sizes should match
-            // vigra_precondition(ndim == ntags,
-                 // "constructArray(): size mismatch between shape and axistags.");
-        // }
-    // }
-    
-    // return shape;
-// }
-
 inline 
-ArrayVector<npy_intp> unifyTaggedShapeSize(TaggedShape & tagged_shape)
+void unifyTaggedShapeSize(TaggedShape & tagged_shape)
 {
     PyAxisTags axistags = tagged_shape.axistags;
-    ArrayVector<npy_intp> shape = tagged_shape.shape;
+    ArrayVector<npy_intp> & shape = tagged_shape.shape;
 
     int ndim = (int)shape.size();
     int ntags = axistags.size();
@@ -865,20 +747,26 @@ ArrayVector<npy_intp> unifyTaggedShapeSize(TaggedShape & tagged_shape)
         // shape has no channel axis
         if(channelIndex == ntags)
         {
+            // std::cerr << "branch (shape, axitags) 0 0\n";
             // axistags have no channel axis either => sizes should match
             vigra_precondition(ndim == ntags,
                  "constructArray(): size mismatch between shape and axistags.");
         }
         else
         {
+            // std::cerr << "branch (shape, axitags) 0 1\n";
             if(ndim+1 == ntags)
-                // axistags have have one additional element => drop the channel tag
+            {
+                // std::cerr << "   drop channel axis\n";
+                // axistags have one additional element => drop the channel tag
                 // FIXME: would it be cleaner to make this an error ?
                 axistags.dropChannelAxis();
+            }
             else
+            {
                 vigra_precondition(ndim == ntags,
                      "constructArray(): size mismatch between shape and axistags.");
-            
+            }
         }
     }
     else
@@ -886,31 +774,33 @@ ArrayVector<npy_intp> unifyTaggedShapeSize(TaggedShape & tagged_shape)
         // shape has a channel axis
         if(channelIndex == ntags)
         {
+            // std::cerr << "branch (shape, axitags) 1 0\n";
             // axistags have no channel axis => should be one element shorter
             vigra_precondition(ndim == ntags+1,
                  "constructArray(): size mismatch between shape and axistags.");
                  
             if(shape[0] == 1)
             {
+                // std::cerr << "   drop channel axis\n";
                 // we have a singleband image => drop the channel axis
                 shape.erase(shape.begin());
                 ndim -= 1;
             }
             else
             {
+                // std::cerr << "   insert channel axis\n";
                 // we have a multiband image => add a channel tag
                 axistags.insertChannelAxis();
             }
         }
         else
         {
+            // std::cerr << "branch (shape, axitags) 1 1\n";
             // axistags have channel axis => sizes should match
             vigra_precondition(ndim == ntags,
                  "constructArray(): size mismatch between shape and axistags.");
         }
     }
-    
-    return shape;
 }
 
 inline // FIXME
@@ -923,17 +813,15 @@ ArrayVector<npy_intp> finalizeTaggedShape(TaggedShape & tagged_shape)
         // we assume here that the axistag object belongs to the array to be created
         // so that we can freely edit it
         scaleAxisResolution(tagged_shape);
+            
+        // this must be after scaleAxisResolution(), because the latter requires 
+        // shape and original_shape to be still in sync
+        unifyTaggedShapeSize(tagged_shape);
                 
         if(tagged_shape.channelDescription != "")
             tagged_shape.axistags.setChannelDescription(tagged_shape.channelDescription);
-            
-        // this must be last, as it may destroy snyc between shape and original_shape
-        return unifyTaggedShapeSize(tagged_shape);
     }
-    else
-    {
-        return tagged_shape.shape;
-    }
+    return tagged_shape.shape;
 }
 
 } // namespace vigra

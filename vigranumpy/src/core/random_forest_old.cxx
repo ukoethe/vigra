@@ -52,7 +52,8 @@ namespace vigra
 
 template<class LabelType,class FeatureType>
 RandomForest<LabelType>*
-pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,LabelType> trainLabels,
+pythonConstructRandomForest(NumpyArray<2, FeatureType> trainData,
+                            NumpyArray<1, LabelType> trainLabels,
                             int treeCount,
                             int mtry,
                             int min_split_node_size,
@@ -63,17 +64,25 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
 
 {
     RandomForestOptions options;
-    options.featuresPerNode(mtry).sampleWithReplacement(sample_with_replacement).setTreeCount(treeCount)
-        .trainingSetSizeProportional(training_set_proportions).trainingSetSizeAbsolute(training_set_size)
-        .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
-    std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
+    options
+        .featuresPerNode(mtry)
+        .sampleWithReplacement(sample_with_replacement)
+        .setTreeCount(treeCount)
+        .trainingSetSizeProportional(training_set_proportions)
+        .trainingSetSizeAbsolute(training_set_size)
+        .sampleClassesIndividually(sample_classes_individually)
+        .minSplitNodeSize(min_split_node_size);
+        
+    std::set<LabelType> uniqueLabels(trainLabels.data(), trainLabels.data()+trainLabels.size());
 
-	RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+	RandomForest<LabelType>* rf = 
+        new RandomForest<LabelType>(uniqueLabels.begin(), uniqueLabels.end(),
+                                    treeCount, options);
 	double oob;
 
 	{
         PyAllowThreads _pythread;
-        oob = rf->learn(trainData, trainLabels);
+        oob = rf->learn(trainData.transpose(), trainLabels.transpose());
 	}
 	
 	std::cout << "Out-of-bag error " << oob << std::endl;
@@ -86,9 +95,14 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),"Output array has wrong dimensions.");
-    rf.predictLabels(testData,res);
+    // FIXME: We construct the result with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(1, testData.shape(1)),
+            "Output array has wrong dimensions.");
+    
+    PyAllowThreads _pythread;
+    rf.predictLabels(testData.transpose(), res.transpose());
     return res;
 }
 
@@ -98,12 +112,14 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
                              NumpyArray<2,FeatureType> testData,
                              NumpyArray<2,float> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf.labelCount()),
-                                                "Output array has wrong dimensions.");
+    // FIXME: We construct the result with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.labelCount(), testData.shape(1)),
+            "Output array has wrong dimensions.");
 	{
         PyAllowThreads _pythread;
-        rf.predictProbabilities(testData,res);
+        rf.predictProbabilities(testData.transpose(), res.transpose());
 	}
     return res;
 }

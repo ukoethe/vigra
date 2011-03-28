@@ -52,9 +52,12 @@ namespace vigra
 {
 
 template<class FeatureType>
-OnlinePredictionSet<FeatureType>* pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features,int num_sets)
+OnlinePredictionSet<FeatureType>* 
+pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features, int num_sets)
 {
-    return new OnlinePredictionSet<FeatureType>(features,num_sets);
+    // FIXME: We construct OnlinePredictionSet with transposed features.
+    //        This should be cleanly solved with axistags.
+    return new OnlinePredictionSet<FeatureType>(features.transpose(), num_sets);
 }
 
 template<class LabelType, class FeatureType>
@@ -117,20 +120,25 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     using namespace rf;
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
-    double oob;
+    
 	{
         PyAllowThreads _pythread;
-        rf.learn(trainData, trainLabels, visitors::create_visitor(var_imp, oob_v));
+        rf.learn(trainData.transpose(), trainLabels.transpose(), 
+                 visitors::create_visitor(var_imp, oob_v));
 	}
-    oob = oob_v.oob_breiman;
+    
+    double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
 
-    NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(0),
-                                                           var_imp.variable_importance_.shape(1))); 
+    // FIXME: We construct varImp with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(1),
+                                                           var_imp.variable_importance_.shape(0))); 
 
-    for (int x=0;x<varImp.shape(0);x++)
-        for (int y=0;y<varImp.shape(1);y++)
-            varImp(x,y)= var_imp.variable_importance_(x,y);
+    for (int y=0; y<varImp.shape(1); ++y)
+        for (int x=0; x<varImp.shape(0); ++x)
+            varImp(x,y)= var_imp.variable_importance_(y,x);
 
     return python::make_tuple(oob, varImp);
 }
@@ -142,13 +150,13 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,LabelType> trainLabels)
 {
     using namespace rf;
-    double oob;
     visitors::OOB_Error oob_v;
+
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
+        rf.learn(trainData.transpose(), trainLabels.transpose(), visitors::create_visitor(oob_v));
     }
-    oob = oob_v.oob_breiman;
+    double oob = oob_v.oob_breiman;
 
     //std::cout << "out of bag: " << oob << std::endl;
     return oob;
@@ -163,7 +171,7 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     bool adjust_thresholds)
 {
     PyAllowThreads _pythread;
-    rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
+    rf.onlineLearn(trainData.transpose(), trainLabels.transpose(), startIndex, adjust_thresholds);
 }
 
 template<class LabelType,class FeatureType>
@@ -174,7 +182,7 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     int treeId)
 {
     PyAllowThreads _pythread;
-    rf.reLearnTree(trainData,trainLabels,treeId);
+    rf.reLearnTree(trainData.transpose(), trainLabels.transpose(), treeId);
 }
 
 template<class LabelType,class FeatureType>
@@ -183,10 +191,12 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),
+    // FIXME: We construct the result with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(1, testData.shape(1)),
                        "Output array has wrong dimensions.");
-    rf.predictLabels(testData,res);
+    rf.predictLabels(testData.transpose(), res.transpose());
     return res;
 }
 
@@ -196,12 +206,14 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
                              NumpyArray<2,FeatureType> testData, 
                              NumpyArray<2,float> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
+    // FIXME: We construct the result with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.ext_param_.class_count_, testData.shape(1)),
                        "Output array has wrong dimensions.");
 	{
         PyAllowThreads _pythread;
-        rf.predictProbabilities(testData,res);
+        rf.predictProbabilities(testData.transpose(), res.transpose());
 	}
     return res;
 }
@@ -212,13 +224,16 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
                                           OnlinePredictionSet<FeatureType> & predSet,
                                           NumpyArray<2,float> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
+    // FIXME: We construct the result with transposed shape, so that
+    //        it arrives in Python with the correct shape.
+    //        This should be cleanly solved with axistags.
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.ext_param_.class_count_, 
+                                                 predSet.features.shape(0)),
                        "Output array has wrong dimenstions.");
     clock_t start=clock();
 	{ 
 		PyAllowThreads _pythread;
-		rf.predictProbabilities(predSet, res);
+		rf.predictProbabilities(predSet, res.transpose());
 	}
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;

@@ -99,19 +99,18 @@ import vigranumpycore
 import arraytypes
 import impex
 import sampling
-# import filters
-# import analysis
-# import learning
-# import colors
-# import noise
-# import geometry
+import filters
+import analysis
+import learning
+import colors
+import noise
+import geometry
 
-# try:
-    # import fourier
-# except:
-    # print "WARNING: Unable to load module 'vigra.fourier'"
-    # _fallbackModule('vigra.fourier', "   Probably, the fftw3 libraries could not be found during compilation or import.")
-    # import fourier
+try:
+    import fourier
+except:
+    _fallbackModule('vigra.fourier', "   Probably, the fftw3 libraries could not be found during compilation or import.")
+    import fourier
 
 # import most frequently used functions
 from arraytypes import *

@@ -53,7 +53,10 @@ namespace vigra
 {
     
 template < class PixelType >
-NumpyAnyArray pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, double factor, NumpyArray<3, Multiband<PixelType> > res)
+NumpyAnyArray 
+pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, 
+                    double factor, 
+                    NumpyArray<3, Multiband<PixelType> > res)
 {
     vigra_precondition((image.shape(0) > 1) && (image.shape(1) > 1),
         "The input image must have a size of at least 2x2.");
@@ -72,6 +75,7 @@ NumpyAnyArray pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image, do
     res.reshapeIfEmpty(image.taggedShape().resize(width, height),
                        "resampleImage(): Output images has wrong dimensions");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -90,7 +94,10 @@ enum RotationDirection
 };
 
 template < class PixelType>
-NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image, RotationDirection dir, NumpyArray<3,Multiband<PixelType> > res)
+NumpyAnyArray 
+pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image, 
+                       RotationDirection dir, 
+                       NumpyArray<3,Multiband<PixelType> > res)
 {
     int degree=0;
     switch(dir)
@@ -117,6 +124,8 @@ NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
         res.reshapeIfEmpty(image.taggedShape().transposeShape(permute),
                      "rotateImage(): Output image has wrong dimensions");
     }
+    
+    PyAllowThreads _pythread;    
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -127,14 +136,26 @@ NumpyAnyArray pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template < class PixelType>
-NumpyAnyArray pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > image, double degree,RotationDirection dir, int splineOrder,NumpyArray<3,Multiband<PixelType> > res)
+NumpyAnyArray 
+pythonFreeRotateImageDegree(NumpyArray<3, Multiband<PixelType> > image, 
+                            double degree,RotationDirection dir, int splineOrder,
+                            NumpyArray<3,Multiband<PixelType> > res)
 {
     return pythonFreeRotateImageRadiant(image,degree*M_PI/180.0,dir,splineOrder,res);
 }
 
 template < class PixelType>
-NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image, double radiant, RotationDirection dir, int splineOrder,NumpyArray<3,Multiband<PixelType> > res)
+NumpyAnyArray 
+pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image, 
+                             double radiant, RotationDirection dir, int splineOrder,
+                             NumpyArray<3,Multiband<PixelType> > res)
 {
+    if(splineOrder < 0 || splineOrder > 5)
+    {
+        PyErr_SetString(PyExc_ValueError, "rotateImageRadiant(): Spline order not supported.");
+        python::throw_error_already_set();
+    }
+
     if(!res.hasData())
         res.reshapeIfEmpty(image.taggedShape(),
                            "rotateImageRadiant(): Output images has wrong dimensions");
@@ -151,7 +172,7 @@ NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > 
         rotationMatrix2DRadians(radiant, TinyVector<double,2>(0.0,0.0))*
         translationMatrix2D(TinyVector<double,2>(-image.shape(0)/2.0, -image.shape(1)/2.0));
 
-    
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -194,9 +215,6 @@ NumpyAnyArray pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > 
                 affineWarpImage(spline,destImageRange(bres),transform);
                 break;
             }
-        default:
-            PyErr_SetString(PyExc_ValueError, "Spline order not supported.");
-            python::throw_error_already_set();
         }
     }
     return res;
@@ -238,9 +256,9 @@ NumpyAnyArray pythonResizeImageNoInterpolation(NumpyArray<3, Multiband<PixelType
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
-        
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
         MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
         resizeImageNoInterpolation(srcImageRange(bimage),destImageRange(bres));
@@ -255,9 +273,9 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
-        
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
         MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
         resizeImageLinearInterpolation(srcImageRange(bimage), destImageRange(bres));
@@ -272,8 +290,15 @@ pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<PixelType> > imag
                                      int splineOrder=3, 
                                      NumpyArray<dim, Multiband<PixelType> > res=python::object())
 {
+    if(splineOrder < 0 || splineOrder > 5)
+    {
+        PyErr_SetString(PyExc_ValueError, "resize(): Spline order not supported.");
+        python::throw_error_already_set();
+    }
+    
     pythonResizeImagePrepareOutput(image, destSize, res);
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(dim-1);++k)
     {
         
@@ -281,45 +306,47 @@ pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<PixelType> > imag
         MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
         switch (splineOrder)
         {
+            case 0:
+            {
+                BSpline< 0, double > spline;
+                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                    destMultiArrayRange(bres), spline);
+                break;
+            }
             case 1:
             {
                 BSpline< 1, double > spline;
                 resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                               destMultiArrayRange(bres), spline);
+                                                    destMultiArrayRange(bres), spline);
                 break;
             }
             case 2:
             {
                 BSpline< 2, double > spline;
                 resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                    destMultiArrayRange(bres), spline);
+                                                    destMultiArrayRange(bres), spline);
                 break;
             }
             case 3:
             {
                 BSpline< 3, double > spline;
                 resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                    destMultiArrayRange(bres), spline);
+                                                    destMultiArrayRange(bres), spline);
                 break;
             }
             case 4:
             {
                 BSpline< 4, double > spline;
                 resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                    destMultiArrayRange(bres), spline);
+                                                    destMultiArrayRange(bres), spline);
                 break;
             }
             case 5:
             {
                 BSpline< 5, double > spline;
                 resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                    destMultiArrayRange(bres), spline);
+                                                    destMultiArrayRange(bres), spline);
                 break;
-            }
-            default:
-            {
-                PyErr_SetString(PyExc_ValueError, "Spline order not supported.");
-                python::throw_error_already_set();
             }
         }
     }
@@ -333,6 +360,7 @@ NumpyAnyArray pythonResizeImageCatmullRomInterpolation(NumpyArray<3, Multiband<P
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         
@@ -351,6 +379,7 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         
@@ -362,7 +391,8 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
 }
 
 template <class PixelType>
-NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image, 
+NumpyAnyArray 
+resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image, 
     double sigmax, unsigned int derivativeOrderX, double samplingRatioX, double offsetX,
     double sigmay, unsigned int derivativeOrderY, double samplingRatioY, double offsetY, 
     NumpyArray<3, Multiband<PixelType> > res = python::object())
@@ -382,6 +412,7 @@ NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().resize(width, height), 
              "resamplingGaussian2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
 	for(int k=0; k<image.shape(2); ++k)
 	{
 	    MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -414,9 +445,14 @@ SplineView_interpolatedImage(SplineView const & self, double xfactor, double yfa
 {
     vigra_precondition(xfactor > 0.0 && yfactor > 0.0,
         "SplineImageView.interpolatedImage(xfactor, yfactor): factors must be positive.");
+        
     int wn = int((self.width() - 1.0) * xfactor + 1.5);
     int hn = int((self.height() - 1.0) * yfactor + 1.5);
-    NumpyArray<2, Singleband<typename SplineView::value_type> > res(MultiArrayShape<2>::type(wn, hn));
+    
+    NumpyArray<2, Singleband<typename SplineView::value_type> > 
+                                res(MultiArrayShape<2>::type(wn, hn));
+
+    PyAllowThreads _pythread;
     for(int yn = 0; yn < hn; ++yn)
     {
         double yo = yn / yfactor;

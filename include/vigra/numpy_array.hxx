@@ -1011,7 +1011,9 @@ class NumpyArray
          */
     void reshapeIfEmpty(difference_type const & shape, std::string message = "")
     {
-        reshapeIfEmpty(shape, standardStrideOrdering(), message);
+        // FIXME: is this really a good replacement?
+		// reshapeIfEmpty(shape, standardStrideOrdering(), message);
+		reshapeIfEmpty(TaggedShape(shape), message);
     }
 
         /**

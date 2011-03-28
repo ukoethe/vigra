@@ -88,6 +88,7 @@ python::list
 pythonFindEdgelsFromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
                          double threshold) 
 {
+    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
     cannyEdgelList(srcImageRange(grad), edgels);
 
@@ -105,6 +106,7 @@ python::list
 pythonFindEdgels(NumpyArray<2, PixelType> image,
                  double scale, double threshold)
 {
+    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
     cannyEdgelList(srcImageRange(image), edgels, scale);
 
@@ -122,6 +124,7 @@ python::list
 pythonFindEdgels3x3FromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
                             double threshold) 
 {
+    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
     cannyEdgelList3x3(srcImageRange(grad), edgels);
 
@@ -139,6 +142,7 @@ python::list
 pythonFindEdgels3x3(NumpyArray<2, PixelType> image,
                     double scale, double threshold)
 {
+    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
     cannyEdgelList3x3(srcImageRange(image), edgels, scale);
 
@@ -157,8 +161,13 @@ pythonCannyEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
                      double scale, double threshold, DestPixelType edgeMarker, 
                      NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "cannyEdgeImage(): Output array has wrong shape.");    
+    std::string description("Canny edges, scale=");
+    description += asString(scale) + ", threshold=" + asString(threshold);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "cannyEdgeImage(): Output array has wrong shape.");    
     
+    PyAllowThreads _pythread;
     cannyEdgeImage(srcImageRange(image), destImage(res), 
                    scale, threshold, edgeMarker);
      
@@ -168,11 +177,17 @@ pythonCannyEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
 template < class SrcPixelType, typename DestPixelType >
 NumpyAnyArray 
 pythonCannyEdgeImageWithThinning(NumpyArray<2, Singleband<SrcPixelType> > image,
-                                 double scale, double threshold, DestPixelType edgeMarker, bool addBorder = true,
+                                 double scale, double threshold, 
+                                 DestPixelType edgeMarker, bool addBorder = true,
                                  NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "cannyEdgeImageWithThinning(): Output array has wrong shape.");    
+    std::string description("Canny edges with thinning, scale=");
+    description += asString(scale) + ", threshold=" + asString(threshold);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "cannyEdgeImageWithThinning(): Output array has wrong shape.");    
     
+    PyAllowThreads _pythread;
     cannyEdgeImageWithThinning(srcImageRange(image), destImage(res),
                                scale, threshold, edgeMarker, addBorder);
      
@@ -185,8 +200,13 @@ pythonShenCastanEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
                           double scale, double threshold, DestPixelType edgeMarker, 
                           NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "shenCastanEdgeImage(): Output array has wrong shape.");    
+    std::string description("Shen/Castan edges, scale=");
+    description += asString(scale) + ", threshold=" + asString(threshold);
+
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "shenCastanEdgeImage(): Output array has wrong shape.");    
     
+    PyAllowThreads _pythread;
     differenceOfExponentialEdgeImage(srcImageRange(image), destImage(res), 
                                      scale, threshold, edgeMarker);
      
@@ -199,9 +219,14 @@ pythonShenCastanCrackEdgeImage(NumpyArray<2, Singleband<SrcPixelType> > image,
                                double scale, double threshold, DestPixelType edgeMarker, 
                                NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(2*image.shape() - MultiArrayShape<2>::type(1,1), 
-                       "shenCastanCrackEdgeImage(): Output array has wrong shape.");    
+    std::string description("Shen/Castan crack edges, scale=");
+    description += asString(scale) + ", threshold=" + asString(threshold);
+
+    MultiArrayShape<2>::type newShape = 2*image.shape() - MultiArrayShape<2>::type(1,1);
+    res.reshapeIfEmpty(image.taggedShape().resize(newShape).setChannelDescription(description), 
+                       "shenCastanCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 - 1.");    
     
+    PyAllowThreads _pythread;
     differenceOfExponentialCrackEdgeImage(srcImageRange(image), destImage(res), 
                                           scale, threshold, edgeMarker);
      
@@ -214,8 +239,10 @@ pythonRemoveShortEdges(NumpyArray<2, Singleband<PixelType> > image,
                        int minEdgeLength, PixelType nonEdgeMarker, 
                        NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "removeShortEdges(): Output array has wrong shape.");    
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "removeShortEdges(): Output array has wrong shape.");    
     
+    PyAllowThreads _pythread;
     copyImage(srcImageRange(image), destImage(res));
     removeShortEdges(destImageRange(res), minEdgeLength, nonEdgeMarker);
      
@@ -229,8 +256,10 @@ pythonBeautifyCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                              PixelType backgroundMarker,
                              NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "beautifyCrackEdgeImage(): Output array has wrong shape.");    
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "beautifyCrackEdgeImage(): Output array has wrong shape.");    
     
+    PyAllowThreads _pythread;
     copyImage(srcImageRange(image), destImage(res));
     beautifyCrackEdgeImage(destImageRange(res), edgeMarker, backgroundMarker);
      
@@ -243,8 +272,10 @@ pythonCloseGapsInCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                                 PixelType edgeMarker,
                                 NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "closeGapsInCrackEdgeImage(): Output array has wrong shape.");    
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "closeGapsInCrackEdgeImage(): Output array has wrong shape.");
     
+    PyAllowThreads _pythread;
     copyImage(srcImageRange(image), destImage(res));
     closeGapsInCrackEdgeImage(destImageRange(res), edgeMarker);
      
@@ -257,9 +288,11 @@ pythonRegionImageToCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                                   PixelType edgeLabel = 0,
                                   NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(2*image.shape() - MultiArrayShape<2>::type(1,1), 
-                 "regionImageToCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 -1");
+    MultiArrayShape<2>::type newShape = 2*image.shape() - MultiArrayShape<2>::type(1,1);
+    res.reshapeIfEmpty(image.taggedShape().resize(newShape), 
+            "regionImageToCrackEdgeImage(): Output array has wrong shape. Needs to be (w,h)*2 - 1.");
 
+    PyAllowThreads _pythread;
     regionImageToCrackEdgeImage(srcImageRange(image), destImage(res), edgeLabel);
     return res;
 }
@@ -270,8 +303,10 @@ pythonRegionImageToEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
                              PixelType edgeLabel = 0,
                              NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "regionImageToEdgeImage2D(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "regionImageToEdgeImage2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     regionImageToEdgeImage(srcImageRange(image), destImage(res), edgeLabel);
     return res;
 }

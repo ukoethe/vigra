@@ -818,6 +818,147 @@ def testVector3Volume():
  
 def testVector4Volume():
     checkArray(arraytypes.Vector4Volume, 4, 3)
+
+def testTaggedShape():
+
+    a = arraytypes.Image((20,10))
+    a.axistags.setChannelDescription("in")
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10,1))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,1))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    res = vt.checkTaggedShapeSingleband(a)
+    
+    assert_equal(res[0].shape, (20,10,1))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,1))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    a = arraytypes.Image((20,10,2))
+    a.axistags.setChannelDescription("in")
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10,2))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,2))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    a = arraytypes.ScalarImage((20,10))
+    a.axistags.setChannelDescription("in")
+    resaxistags = copy.copy(a.axistags)
+    resaxistags.insertChannelAxis()
+    
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(len(res[0].axistags), 2)
+    
+    assert_equal(res[1].shape, (20,10))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[2].shape, (20,10))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, resaxistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(len(res[4].axistags), 2)
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, resaxistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+    
+    res = vt.checkTaggedShapeSingleband(a)
+    
+    assert_equal(res[0].shape, (20,10))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(len(res[0].axistags), 2)
+    
+    assert_equal(res[1].shape, (20,10))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[2].shape, (20,10))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, resaxistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(len(res[4].axistags), 2)
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, resaxistags)
+    assert_equal(res[5].axistags[2].description, "res6")
  
 def testDeepcopy():
         a = arraytypes.ScalarImage(numpy.random.random((10, 4)), order='C', 

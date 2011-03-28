@@ -234,6 +234,20 @@ void AxisTags_insertChannelAxis(AxisTags & axistags)
         axistags.push_back(AxisInfo::c());
 }
 
+AxisInfo const & AxisTags_getitem(AxisTags & axistags, int index)
+{
+    if(index < 0)
+        index += axistags.size();
+        
+    if(index >= (int)axistags.size())
+    {
+        PyErr_SetString(PyExc_IndexError, "AxisTags.__getitem__(): Invalid index or key.");
+        python::throw_error_already_set();
+    }
+    
+    return axistags.get(index);
+}
+
 python::object
 AxisTags_permutationToNormalOrder(AxisTags & axistags)
 {
@@ -374,7 +388,7 @@ void defineAxisTags()
         .def_readwrite("description", &AxisInfo::description_)
         .def_readwrite("resolution", &AxisInfo::resolution_)
         .def_readonly("typeFlags", &AxisInfo::flags_)
-        .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
+        .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0, arg("sign") = 1))
         .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
         .def("isSpatial", &AxisInfo::isSpatial)
         .def("isTemporal", &AxisInfo::isTemporal)
@@ -409,7 +423,7 @@ void defineAxisTags()
         .def("__copy__", &generic__copy__<AxisTags>)
         .def("__deepcopy__", &generic__deepcopy__<AxisTags>)
         .def("__len__", &AxisTags::size)
-        .def("__getitem__", (AxisInfo const & (AxisTags::*)(int) const)&AxisTags::get,
+        .def("__getitem__", &AxisTags_getitem,
                              return_value_policy<copy_const_reference>())
         .def("__getitem__", 
             (AxisInfo const & (AxisTags::*)(std::string const &) const)&AxisTags::get,
