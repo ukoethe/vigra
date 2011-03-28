@@ -102,7 +102,8 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
             "Output array has wrong dimensions.");
     
     PyAllowThreads _pythread;
-    rf.predictLabels(testData.transpose(), res.transpose());
+    MultiArrayView<2, LabelType, StridedArrayTag> tres = res.transpose();
+    rf.predictLabels(testData.transpose(), tres);
     return res;
 }
 
@@ -117,10 +118,11 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
     //        This should be cleanly solved with axistags.
     res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.labelCount(), testData.shape(1)),
             "Output array has wrong dimensions.");
-	{
+    {
         PyAllowThreads _pythread;
-        rf.predictProbabilities(testData.transpose(), res.transpose());
-	}
+        MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
+        rf.predictProbabilities(testData.transpose(), tres);
+    }
     return res;
 }
 

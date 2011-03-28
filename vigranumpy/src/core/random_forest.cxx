@@ -57,7 +57,8 @@ pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features, int num_se
 {
     // FIXME: We construct OnlinePredictionSet with transposed features.
     //        This should be cleanly solved with axistags.
-    return new OnlinePredictionSet<FeatureType>(features.transpose(), num_sets);
+    MultiArrayView<2, FeatureType, StridedArrayTag> tfeat = features.transpose();
+    return new OnlinePredictionSet<FeatureType>(tfeat, num_sets);
 }
 
 template<class LabelType, class FeatureType>
@@ -121,11 +122,11 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
     
-	{
+    {
         PyAllowThreads _pythread;
         rf.learn(trainData.transpose(), trainLabels.transpose(), 
                  visitors::create_visitor(var_imp, oob_v));
-	}
+    }
     
     double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
@@ -196,7 +197,9 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
     //        This should be cleanly solved with axistags.
     res.reshapeIfEmpty(MultiArrayShape<2>::type(1, testData.shape(1)),
                        "Output array has wrong dimensions.");
-    rf.predictLabels(testData.transpose(), res.transpose());
+    PyAllowThreads _pythread;
+    MultiArrayView<2, LabelType, StridedArrayTag> tres = res.transpose();
+    rf.predictLabels(testData.transpose(), tres);
     return res;
 }
 
@@ -211,10 +214,11 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     //        This should be cleanly solved with axistags.
     res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.ext_param_.class_count_, testData.shape(1)),
                        "Output array has wrong dimensions.");
-	{
-        PyAllowThreads _pythread;
-        rf.predictProbabilities(testData.transpose(), res.transpose());
-	}
+    
+    PyAllowThreads _pythread;
+    MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
+    rf.predictProbabilities(testData.transpose(), tres);
+
     return res;
 }
 
@@ -231,10 +235,11 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
                                                  predSet.features.shape(0)),
                        "Output array has wrong dimenstions.");
     clock_t start=clock();
-	{ 
-		PyAllowThreads _pythread;
-		rf.predictProbabilities(predSet, res.transpose());
-	}
+    {
+        PyAllowThreads _pythread;
+        MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
+        rf.predictProbabilities(predSet, tres);
+    }
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;
     return res;
