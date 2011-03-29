@@ -396,6 +396,38 @@ this class via its subclasses!
     @property
     def spatialDimensions(self):
         return self.axistags.axisTypeCount(AxisType.Space)
+            
+    def iterImpl(self, type):
+        import itertools
+        axes = [k for k in xrange(self.ndim) if self.axistags[k].isType(type)]
+        if axes:
+            axes.sort(key=lambda x: self.axistags[x], reverse=True)
+            slices = [slice(None)]*self.ndim
+            for point in itertools.product(*(xrange(self.shape[k]) for k in axes)):
+                for j in xrange(len(point)):
+                    slices[axes[j]] = point[j]
+                yield self[tuple(slices)]
+        else:
+            yield self
+            
+    def channelIter(self):
+        return self.iterImpl(AxisType.Channels)
+            
+    def spaceIter(self):
+        return self.iterImpl(AxisType.Space)
+        
+    def timeIter(self):
+        return self.iterImpl(AxisType.Time)
+        
+    def sliceIter(self, key='z'):
+        i = self.axistags.index(key)
+        if i < self.ndim:
+            if not self.axistags[i].isSpatial():
+                raise RuntimeError("VigraArray.sliceIter(): %s is not a spatial axis." % key)
+            for k in xrange(self.shape[i]):
+                yield self.bindAxis(i, k)
+        else:
+            yield self
     
     @staticmethod
     def empty_axistags(ndim):
