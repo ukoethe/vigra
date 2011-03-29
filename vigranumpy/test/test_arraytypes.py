@@ -961,30 +961,48 @@ def testTaggedShape():
     assert_equal(res[5].axistags[2].description, "res6")
  
 def testDeepcopy():
-        a = arraytypes.ScalarImage(numpy.random.random((10, 4)), order='C', 
-                                   axistags=arraytypes.AxisTags(AxisInfo.x, AxisInfo.y))
-        b = copy.deepcopy(a)
-        assert numpy.all(a == b)
-        assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
-        assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
-        a[0,0] = 42
-        assert b[0,0] != 42
+    a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
+
+    a = arraytypes.RGBImage(numpy.random.random((4, 10, 3)), order='V')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
+
+    a = arraytypes.RGBImage(numpy.random.random((3, 4, 10)), order='F')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
 
 def testDeepcopyWithAttributes():
-        a = arraytypes.Image((320, 200), order='C')
-        a.myCustomAttribute = 42
-        b = copy.deepcopy(a)
-        assert hasattr(b, "myCustomAttribute")
-        assert_equal(b.myCustomAttribute, 42)
+    a = arraytypes.Image((320, 200), order='C')
+    a.myCustomAttribute = 42
+    b = copy.deepcopy(a)
+    assert hasattr(b, "myCustomAttribute")
+    assert_equal(b.myCustomAttribute, 42)
 
 def testDeepcopyWithCyclicReference():
-        a = arraytypes.Image((320, 200), order='C')
-        b = arraytypes.Image((320, 200), order='C')
-        a.myCustomAttribute = b
-        b.backLink = a
-        c = copy.deepcopy(a)
-        assert hasattr(c, "myCustomAttribute")
-        assert c.myCustomAttribute.backLink is c
+    a = arraytypes.Image((320, 200), order='C')
+    b = arraytypes.Image((320, 200), order='C')
+    a.myCustomAttribute = b
+    b.backLink = a
+    c = copy.deepcopy(a)
+    assert hasattr(c, "myCustomAttribute")
+    assert c.myCustomAttribute.backLink is c
 
 def testUfuncs():
     from numpy import bool, int8, uint8, int16, uint16, int32, uint32, int64, uint64

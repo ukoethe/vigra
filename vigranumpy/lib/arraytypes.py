@@ -331,7 +331,10 @@ this class via its subclasses!
         
     @preserve_doc
     def __deepcopy__(self, memo):
-        result = self.__copy__('A')
+        # numpy.ndarray.__deepcopy__ always creates C-order arrays =>
+        #   transpose self accordingly, and transpose back after the copy
+        result = numpy.ndarray.__deepcopy__(self.transposeToNumpyOrder(), memo)
+        result = result.transpose(self.permutationFromNumpyOrder())
         memo[id(self)] = result
         result.__dict__ = copy.deepcopy(self.__dict__, memo)
         return result
@@ -418,10 +421,13 @@ this class via its subclasses!
         return list(self.axistags.permutationToNormalOrder(types))
     
     def permutationToNumpyOrder(self):
-        return list(reversed(self.axistags.permutationToNormalOrder(AxisType.AllAxes)))
+        return list(reversed(self.axistags.permutationToNormalOrder()))
     
     def permutationFromNormalOrder(self):
         return list(self.axistags.permutationFromNormalOrder())
+    
+    def permutationFromNumpyOrder(self):
+        return map(lambda x: self.ndim-1-x, self.axistags.permutationFromNormalOrder())
     
     @property
     def order(self):
@@ -459,7 +465,7 @@ this class via its subclasses!
         
         if self.shape[ci] != 1:
             raise RuntimeError("dropChannelAxis(): only allowed when there is a single channel.")
-        return self[(slice(None),)*ci + (0,) + (slice(None),)*(self.ndim-ci-1)]
+        return self.bindAxis(ci, 0)
     
     def insertChannelAxis(self, order=None):
         ci = self.channelIndex
@@ -637,7 +643,7 @@ this class via its subclasses!
         vigra.impex.writeVolume(self, filename_base, filename_ext, dtype, compression)
             
     def writeHDF5(self, filename, pathInFile, dtype = ''):
-        "Write an image to a HDF5 file. Consult :func:`vigra.impex.writeImageToHDF5` and :func:`vigra.impex.writeVolumeToHDF5` for detailed documentation"
+        "Write an image or volume to a HDF5 file. Consult :func:`vigra.impex.writeImageToHDF5` and :func:`vigra.impex.writeVolumeToHDF5` for detailed documentation"
         import vigra.impex
 
         ndim = self.ndim
