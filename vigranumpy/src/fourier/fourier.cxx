@@ -173,6 +173,8 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
 // }
 
 // FIXME: implement the correct R2C transform (is already provided in multi_fft.hxx)
+// FIXME: numpy arrays are not allocated with fftw_malloc() - will this cause alignment
+//        problems (sudden crashes)?
 template <unsigned int N>
 NumpyAnyArray
 pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in, 
