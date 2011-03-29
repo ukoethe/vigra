@@ -728,7 +728,7 @@ PyAxisTags::transform(python::object index, int lnew) const
 	int lold = this->size();
     if(!PySequence_Check(index.ptr()))
     {
-        index = make_tuple(index);
+        index = python::make_tuple(index);
     }
     int lindex = len(index);
     int lnone = 0, lellipsis = 0;
@@ -743,7 +743,7 @@ PyAxisTags::transform(python::object index, int lnew) const
     lindex -= lnone;
     if(lindex < lold && lellipsis == 0)
     {
-        index += make_tuple(ellipsis);
+        index += python::make_tuple(ellipsis);
         ++lindex;
     }
     lellipsis = lold - lindex;
