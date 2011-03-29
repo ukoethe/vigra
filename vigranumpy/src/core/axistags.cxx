@@ -234,7 +234,7 @@ void AxisTags_insertChannelAxis(AxisTags & axistags)
         axistags.push_back(AxisInfo::c());
 }
 
-AxisInfo const & AxisTags_getitem(AxisTags & axistags, int index)
+AxisInfo const & AxisTags_getitem(AxisTags const & axistags, int index)
 {
     if(index < 0)
         index += axistags.size();
@@ -246,6 +246,14 @@ AxisInfo const & AxisTags_getitem(AxisTags & axistags, int index)
     }
     
     return axistags.get(index);
+}
+
+std::string AxisTags_str(AxisTags const & axistags)
+{
+    std::string res;
+    for(unsigned int k=0; k<axistags.size(); ++k)
+        res += axistags.get(k).repr() + "\n";
+    return res;
 }
 
 python::object
@@ -420,6 +428,7 @@ void defineAxisTags()
             (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
              arg("i4")=object(), arg("i5")=object())))
         .def("__repr__", &AxisTags::repr)
+        .def("__str__", &AxisTags_str)
         .def("__copy__", &generic__copy__<AxisTags>)
         .def("__deepcopy__", &generic__deepcopy__<AxisTags>)
         .def("__len__", &AxisTags::size)

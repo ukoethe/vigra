@@ -169,7 +169,7 @@ of 'numpy.ndarray'.
     
     def __repr__(self):
         return "%s(shape=%s, axistags=%s, dtype=%s, data=\n%s)" % \
-          (self.__class__.__name__, str(self.shape), str(self.axistags), str(self.dtype), str(self))
+          (self.__class__.__name__, str(self.shape), repr(self.axistags), str(self.dtype), str(self))
           
     @preserve_doc
     def all(self, axis=None, out=None):
