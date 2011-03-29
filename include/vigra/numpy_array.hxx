@@ -790,6 +790,34 @@ class NumpyArray
         /**
          * Assignment operator. If this is already a view with data
          * (i.e. hasData() is true) and the shapes match, the RHS
+         * array contents are copied.  If this is an empty view,
+         * assignment is identical to makeReferenceUnchecked(other.pyObject()).
+         * See MultiArrayView::operator= for further information on
+         * semantics.
+         */
+    template <class U, class S>
+    NumpyArray &operator=(const NumpyArray<N, U, S> &other)
+    {
+        if(hasData())
+        {
+            vigra_precondition(shape() == other.shape(),
+                "NumpyArray::operator=(): shape mismatch.");
+            view_type::operator=(other);
+        }
+        else if(other.hasData())
+        {
+            NumpyArray copy;
+            copy.reshapeIfEmpty(other.taggedShape(), 
+                "NumpyArray::operator=(): reshape failed unexpectedly.");
+            copy = other;
+            makeReferenceUnchecked(copy.pyObject());
+        }
+        return *this;
+    }
+
+        /**
+         * Assignment operator. If this is already a view with data
+         * (i.e. hasData() is true) and the shapes match, the RHS
          * array contents are copied.
          * If this is an empty view, assignment is identical to
          * makeReference(other.pyObject()).

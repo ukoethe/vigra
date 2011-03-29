@@ -184,8 +184,9 @@ pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in,
             "fourierTransformR2C(): Output has wrong shape.");
         
     PyAllowThreads _pythread;
-    static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
-        static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
+    // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
+        // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
+    res = in;
     FFTWPlan<N-1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
     
     for(MultiArrayIndex k=0; k<res.shape(N-1); ++k)
