@@ -44,14 +44,28 @@
 #ifdef MULTI_TICTOC
     #include <vector>
 #endif
+
 // usage:
 // void time_it()
 // {
 //     USETICTOC;
 //     TIC;
-//      ...
-//     std::cerr << TOC << " for time_it\n";
+//      ... // code to be timed
+//     TOC;
+//      ... // untimed code
+//     TIC;
+//      ... // other code to be timed
+//     TOC;
 // }
+//
+// Intead of TOC which outputs the time difference to std::cerr, 
+// you may use TOCN (the time difference in msec as a double)
+// or TOCS (the time difference as a std::string). If MULTI_TICTOC
+// is defined, TIC/TOC pairs can be nested.
+//
+// Timings below 1 msec are generally subject to round-off errors. Under
+// LINUX, you can #define VIGRA_HIRES_TIMING to get better
+// accuracy, but this requires linking against librt.
 
 #ifdef WIN32
 
@@ -124,7 +138,7 @@
                   (tic.tv_sec*1000.0 + tic.tv_nsec/1000000.0));
         }
 
-        inline std::string tic_toc_diff_string(timeval const & tic)
+        inline std::string tic_toc_diff_string(timespec const & tic)
         {
             double diff = tic_toc_diff_num(tic); 
             std::stringstream s;
@@ -132,10 +146,11 @@
             return s.str();
         }
 
-        inline void tic_toc_diff(timeval const & tic)
+        inline void tic_toc_diff(timespec const & tic)
         {
             std::cerr << tic_toc_diff_string(tic) << std::endl;
         }
+        
         } // unnamed namespace
 
 #ifndef MULTI_TICTOC
