@@ -201,67 +201,86 @@ class Function(object):
             return (highestArrayType[-1], scalarType[-1])        
         
 class UnaryFunction(Function):
-    def __call__(self, arg, out = None):
+    def __call__(self, arg, out=None):
         a = arg.transposeToNumpyOrder().squeeze()
         dtype, out_dtype = self.common_type(a, out)
+        
         if out is None:
             out = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
-        o = out.transposeToNumpyOrder().squeeze()
-        if not a.axistags.compatible(o.axistags):
-            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            o = out.transposeToNumpyOrder().squeeze()
+        else:
+            o = out.transposeToNumpyOrder().squeeze()
+            if not a.axistags.compatible(o.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+        
         a = numpy.require(a, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
         self.function(a, o)
         return out            
 
 class UnaryFunctionOut2(Function):
-    def __call__(self, a, out1 = None, out2 = None):
+    def __call__(self, a, out1=None, out2=None):
         a = arg.transposeToNumpyOrder().squeeze()
         dtype, out_dtype = self.common_type(a, out1, out2)
 
         if out1 is None:
             out1 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
-        o1 = out1.transposeToNumpyOrder().squeeze()
+            o1 = out1.transposeToNumpyOrder().squeeze()
+        else:
+            o1 = out1.transposeToNumpyOrder().squeeze()
+            if not a.axistags.compatible(o1.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
 
         if out2 is None:
             out2 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)            
-        o2 = out2.transposeToNumpyOrder().squeeze()
-            
-        if not a.axistags.compatible(o1.axistags) or not a.axistags.compatible(o2.axistags):
-            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            o2 = out2.transposeToNumpyOrder().squeeze()
+        else:
+            o2 = out2.transposeToNumpyOrder().squeeze()
+            if not a.axistags.compatible(o2.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
             
         a = numpy.require(a, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
         self.function(a, o1, o2)
         return out1, out2
-            
-
+                
 class BinaryFunction(Function):
-    def __call__(self, arg1, arg2, out = None):
-        a1_isarray, a2_isarray = isinstance(arg1, numpy.ndarray), isinstance(arg2, numpy.ndarray)
-        p = self.priorities(arg1, arg2)
-        axistags = p.transposeToNumpyOrder().squeeze().axistags
+    def __call__(self, arg1, arg2, out=None):
+        axistags = None
         dtype, out_dtype = self.common_type(arg1, arg2, out)
         
-        if a1_isarray:
+        if isinstance(arg1, numpy.ndarray):
             a1 = arg1.transposeToNumpyOrder().squeeze()
-            if not axistags.compatible(a1.axistags):
-                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            axistags = a1.axistags
+            maxInput = arg1
             a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
         else:
             a1 = arg1
 
-        if a2_isarray:
+        if isinstance(arg2, numpy.ndarray):
             a2 = arg2.transposeToNumpyOrder().squeeze()
-            if not axistags.compatible(a2.axistags):
-                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            if axistags:
+                if not axistags.compatible(a2.axistags):
+                    raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+                if maxInput.size < arg2.size:
+                    maxInput = arg2
+            else:
+                axistags = a2.axistags
+                maxInput = arg2
             a2 = numpy.require(a2, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
         else:
             a2 = arg2
             
         if out is None:
-            out = p.__class__(p, dtype=out_dtype, order='A', init=False)
-        o = out.transposeToNumpyOrder().squeeze()
-        if not axistags.compatible(o.axistags):
-            raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            if (getattr(arg1, '__array_priority__', -1.0) <
+                 getattr(arg2, '__array_priority__', -1.0)):
+                outclass = arg2.__class__
+            else:
+                outclass = arg1.__class__
+            out = outclass(maxInput, dtype=out_dtype, order='A', init=False)
+            o = out.transposeToNumpyOrder().squeeze()
+        else:
+            o = out.transposeToNumpyOrder().squeeze()
+            if not axistags.compatible(o.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
 
         self.function(a1, a2, o)
         return out
