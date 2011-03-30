@@ -48,6 +48,8 @@ class Function(object):
         self.is_bool = function.__name__ in self.boolFunctions
         self.is_abs  = function.__name__ == "absolute"
         self.__doc__ = function.__doc__
+        self.nin = function.nin
+        self.nout = function.nout
         
     def __getattr__(self, name):
         return getattr(self.function, name)
@@ -202,14 +204,14 @@ class Function(object):
         
 class UnaryFunction(Function):
     def __call__(self, arg, out=None):
-        a = arg.transposeToNumpyOrder().squeeze()
+        a = arg.squeeze().transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out)
         
         if out is None:
             out = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
-            o = out.transposeToNumpyOrder().squeeze()
+            o = out.squeeze().transposeToNumpyOrder()
         else:
-            o = out.transposeToNumpyOrder().squeeze()
+            o = out.squeeze().transposeToNumpyOrder()
             if not a.axistags.compatible(o.axistags):
                 raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
         
@@ -218,23 +220,23 @@ class UnaryFunction(Function):
         return out            
 
 class UnaryFunctionOut2(Function):
-    def __call__(self, a, out1=None, out2=None):
-        a = arg.transposeToNumpyOrder().squeeze()
+    def __call__(self, arg, out1=None, out2=None):
+        a = arg.squeeze().transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out1, out2)
 
         if out1 is None:
             out1 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
-            o1 = out1.transposeToNumpyOrder().squeeze()
+            o1 = out1.squeeze().transposeToNumpyOrder()
         else:
-            o1 = out1.transposeToNumpyOrder().squeeze()
+            o1 = out1.squeeze().transposeToNumpyOrder()
             if not a.axistags.compatible(o1.axistags):
                 raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
 
         if out2 is None:
             out2 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)            
-            o2 = out2.transposeToNumpyOrder().squeeze()
+            o2 = out2.squeeze().transposeToNumpyOrder()
         else:
-            o2 = out2.transposeToNumpyOrder().squeeze()
+            o2 = out2.squeeze().transposeToNumpyOrder()
             if not a.axistags.compatible(o2.axistags):
                 raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
             
@@ -248,7 +250,7 @@ class BinaryFunction(Function):
         dtype, out_dtype = self.common_type(arg1, arg2, out)
         
         if isinstance(arg1, numpy.ndarray):
-            a1 = arg1.transposeToNumpyOrder().squeeze()
+            a1 = arg1.squeeze().transposeToNumpyOrder()
             axistags = a1.axistags
             maxInput = arg1
             a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
@@ -256,7 +258,7 @@ class BinaryFunction(Function):
             a1 = arg1
 
         if isinstance(arg2, numpy.ndarray):
-            a2 = arg2.transposeToNumpyOrder().squeeze()
+            a2 = arg2.squeeze().transposeToNumpyOrder()
             if axistags:
                 if not axistags.compatible(a2.axistags):
                     raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
@@ -276,9 +278,9 @@ class BinaryFunction(Function):
             else:
                 outclass = arg1.__class__
             out = outclass(maxInput, dtype=out_dtype, order='A', init=False)
-            o = out.transposeToNumpyOrder().squeeze()
+            o = out.squeeze().transposeToNumpyOrder()
         else:
-            o = out.transposeToNumpyOrder().squeeze()
+            o = out.squeeze().transposeToNumpyOrder()
             if not axistags.compatible(o.axistags):
                 raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
 

@@ -1019,27 +1019,34 @@ def testUfuncs():
     for t, a in arrays.iteritems():
         b = -a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         if not numpyHasComplexNegateBug or t is not clongdouble:
             assert (b == -t(2)).all()
         b = a + a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(4)).all()
         b = a == a
         assert_equal(bool, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == True).all()
         b = ones[t] + a
         assert_equal(a.shape, b.shape)
+        assert_equal(a.axistags, b.axistags)
         assert_equal(t, b.dtype)
         assert (b == t(3)).all()
         b = a + ones[t]
         assert_equal(a.shape, b.shape)
+        assert_equal(a.axistags, b.axistags)
         assert_equal(t, b.dtype)
         assert (b == t(3)).all()
         b = 3 + a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(5)).all()
         b = a + 3
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(5)).all()
     for i in integers:
         a1 = arrays[i]
@@ -1052,28 +1059,36 @@ def testUfuncs():
                 assert_equal(int32, b.dtype)
             else:
                 assert_equal(int64, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 <= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
         for j in floats + compl:
             a2 = arrays[j]
             b = a1 * a2
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a2 * a1
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
         b = a1 + 1
         assert (b == 3).all()
         assert_equal(a1.dtype, b.dtype)
+        assert_equal(a1.axistags, b.axistags)
         b = a1 + 1.0
+        assert_equal(a1.axistags, b.axistags)
         assert (b == 3.0).all()
         if a1.dtype.itemsize < 8:
             assert_equal(float32, b.dtype)
@@ -1087,19 +1102,33 @@ def testUfuncs():
             a2 = arrays[j]
             b = a1 * a2
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a2 * a1
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
-        b = a1 + 1.0
-        assert (b == 3.0).all()
+        b = a1 + 0.5
+        assert (b == 2.5).all()
         assert_equal(a1.dtype, b.dtype)
+        assert_equal(a1.axistags, b.axistags)
+        
+        fractional, integral = ufunc.modf(b)
+        assert (fractional == 0.5).all()
+        assert (integral == 2.0).all()
+        assert_equal(a1.dtype, fractional.dtype)
+        assert_equal(a1.axistags, fractional.axistags)
+        assert_equal(a1.dtype, integral.dtype)
+        assert_equal(a1.axistags, integral.axistags)
+        
     assert_equal(float64, (arrays[float32]+arrays[float64]).dtype)
     assert_equal(float64, (arrays[float64]+arrays[float32]).dtype)
     assert_equal(longdouble, (arrays[float32]+arrays[longdouble]).dtype)
@@ -1117,12 +1146,15 @@ def testUfuncs():
     b = abs(arrays[complex64])
     assert (b == 2.0).all()
     assert_equal(float32, b.dtype)
+    assert_equal(arrays[complex64].axistags, b.axistags)
     b = abs(arrays[complex128])
     assert (b == 2.0).all()
     assert_equal(float64, b.dtype)
+    assert_equal(arrays[complex128].axistags, b.axistags)
     b = abs(arrays[clongdouble])
     assert (b == 2.0).all()
     assert_equal(longdouble, b.dtype)
+    assert_equal(arrays[clongdouble].axistags, b.axistags)
 
     a = arraytypes.ScalarImage((2,2), uint8, value=255)
     b = a + a
@@ -1131,12 +1163,16 @@ def testUfuncs():
     assert (b == 254).all()
     b = 255 + a
     assert (b == 254).all()
+    
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(a, a, b)
+    bb = ufunc.add(a, a, b)
+    assert bb is b
     assert (b == 510).all()
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(a, 255, b)
+    bb = ufunc.add(a, 255, b)
+    assert bb is b
     assert (b == 510).all()
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(255, a, b)
+    bb = ufunc.add(255, a, b)
+    assert bb is b
     assert (b == 510).all()
