@@ -36,6 +36,72 @@
 import numpy
 import copy
 
+vigraTypecastingRules = '''
+The ideas behind the vigranumpy typcasting rules are (i) to represent
+data with at most 32 bits, when possible, (ii) to reduce the number of
+types that occur as results of mixed expressions, and (iii) to minimize 
+the chance of bad surprises. Default output types are thus determined 
+according to the following rules:
+   
+   1. The output type does not depend on the order of the arguments::
+   
+         a + b results in the same type as b + a
+   
+   2.a) With exception of logical functions and abs(), the output type 
+        does not depend on the function to be executed. 
+     b) The output type of logical functions is bool. 
+     c) The output type of abs() follows general rules unless the 
+        input contains complex numbers, in which case the output type 
+        is the corresponding float number type.
+      
+         a + b results in the same type as a / b
+         a == b => bool
+         abs(complex128) => float64
+         
+   3. If the inputs have the same type, the type is preserved::
+   
+         uint8 + uint8 => uint8
+   
+   4. If (and only if) one of the inputs has at least 64 bits, the output 
+      will also have at least 64 bits::
+      
+         int64 + uint32 => int64
+         int64 + 1.0    => float64
+         
+   5. If an array is combined with a scalar of the same kind (integer,
+      float, or complex), the array type is preserved. If an integer 
+      array with at most 32 bits is combined with a float scalar, the 
+      result is float32 (and rule 4 kicks in if the array has 64 bits)::
+      
+         uint8   + 1   => uint8
+         uint8   + 1.0 => float32
+         float32 + 1.0 => float32
+         float64 + 1.0 => float64
+         
+   6. Integer expressions with mixed types always produce signed results.
+      If the arguments have at most 32 bits, the result will be int32, 
+      otherwise it will be int64 (cf. rule 4)::
+      
+         int8  + uint8  => int32
+         int32 + uint8  => int32
+         int32 + uint32 => int32
+         int32 + int64  => int64
+         int64 + uint64 => int64
+         
+   7. In all other cases, the output type is equal to the highest input 
+      type::
+      
+         int32   + float32    => float32
+         float32 + complex128 => complex128
+         
+   8. All defaults can be overridden by providing an explicit output array::
+   
+         ufunc.add(uint8, uint8, uint16) => uint16
+         
+      In order to prevent overflow, necessary upcasting is performed before 
+      the function is executed.
+'''
+
 class Function(object):
     test_types = numpy.typecodes['AllInteger'][:-2] + numpy.typecodes['AllFloat']+'O'
     len_test_types = len(test_types)
@@ -105,70 +171,9 @@ class Function(object):
            vigranumpy typecasting rules. in_dtype is the type into which 
            the arguments will be casted before performing the operation
            (to prevent possible overflow), out_type is the type the output
-           array will have (unless an explicit out-argument is provided). 
+           array will have (unless an explicit out-argument is provided).
            
-           The ideas behind the vigranumpy typcasting rules are (i) to represent
-           data with at most 32 bit, when possible, (ii) to reduce the number of
-           types that occur as results of mixed expressions, and (iii) to minimize 
-           the chance of bad surprises. Default output types are thus determined 
-           according to the following rules:
-           
-           1. The output type does not depend on the order of the arguments::
-           
-                 a + b results in the same type as b + a
-           
-           2. With exception of logical functions and abs(), the output type 
-              does not depend on the function to be executed. The output type 
-              of logical functions is bool. The output type of abs() follows
-              general rules unless the input is complex, in which case the
-              output type is the corresponding float type::
-              
-                 a + b results in the same type as a / b
-                 a == b => bool
-                 abs(complex128) => float64
-                 
-           3. If the inputs have the same type, the type is preserved::
-           
-                 uint8 + uint8 => uint8
-           
-           4. If (and only if) one of the inputs has at least 64 bits, the output 
-              will also have at least 64 bits::
-              
-                 int64 + uint32 => int64
-                 int64 + 1.0    => float64
-                 
-           5. If an array is combined with a scalar of the same kind (integer,
-              float, or complex), the array type is preserved. If an integer 
-              array with at most 32 bits is combined with a float scalar, the 
-              result is float32 (and rule 4 kicks in if the array has 64 bits)::
-              
-                 uint8   + 1   => uint8
-                 uint8   + 1.0 => float32
-                 float32 + 1.0 => float32
-                 float64 + 1.0 => float64
-                 
-           6. Integer expressions with mixed types always produce signed results.
-              If the arguments have at most 32 bits, the result will be int32, 
-              otherwise it will be int64 (cf. rule 4)::
-              
-                 int8  + uint8  => int32
-                 int32 + uint8  => int32
-                 int32 + uint32 => int32
-                 int32 + int64  => int64
-                 int64 + uint64 => int64
-                 
-           7. In all other cases, the output type is equal to the highest input 
-              type::
-              
-                 int32   + float32    => float32
-                 float32 + complex128 => complex128
-                 
-           8. All defaults can be overridden by providing an explicit output array::
-           
-                 ufunc.add(uint8, uint8, uint16) => uint16
-                 
-              In order to prevent overflow, necessary upcasting is performed before 
-              the function is executed.
+           See ufunc.vigraTypecastingRules for detailed information on coercion rules.
         '''
         if self.is_abs and args[0].dtype.kind == "c" and args[1] is None:
             dtype = args[0].dtype
@@ -289,31 +294,56 @@ class BinaryFunction(Function):
         
 __all__ = []
 
-for k in numpy.__dict__.itervalues():
-     if type(k) == numpy.ufunc:
-        if k.nin == 1 and k.nout == 1:
-            exec k.__name__ + " = UnaryFunction(k)"
-        if k.nin == 1 and k.nout == 2:
-            exec k.__name__ + " = UnaryFunctionOut2(k)"
-        if k.nin == 2:
-            exec k.__name__ + " = BinaryFunction(k)"
-        __all__.append(k.__name__)
+for _k in numpy.__dict__.itervalues():
+     if type(_k) == numpy.ufunc:
+        if _k.nin == 1 and _k.nout == 1:
+            exec _k.__name__ + " = UnaryFunction(_k)"
+        if _k.nin == 1 and _k.nout == 2:
+            exec _k.__name__ + " = UnaryFunctionOut2(_k)"
+        if _k.nin == 2:
+            exec _k.__name__ + " = BinaryFunction(_k)"
+        __all__.append(_k.__name__)
 
 __all__.sort()
 
-__doc__ = '\nThe following mathematical functions are available in this module::\n\n'
-
-for k in range(0, len(__all__), 7):
-    __doc__ += '        ' + '   '.join(__all__[k:k+7]) + '\n'
-
-__doc__ += '''
-Some of these functions are also provided as member functions of the vigra array types::
-
-        __abs__   __add__   __and__   __div__   __divmod__   __eq__   __floordiv__
-        __ge__   __gt__   __invert__   __le__   __lshift__   __lt__   __mod__
-        __mul__   __ne__   __neg__   __or__   __pos__   __pow__   __radd__
-        __radd__   __rand__   __rdiv__   __rdivmod__   __rfloordiv__   __rlshift__
-        __rmod__   __rmul__   __ror__   __rpow__   __rrshift__   __rshift__
-        __rsub__   __rtruediv__   __rxor__   __sub__   __truediv__   __xor__
-
+def _prepareDoc():
+    doc = '''
+The following mathematical functions are available in this module
+(refer to numpy for detailed documentation)::
+    
 '''
+
+    k = 0    
+    while k < len(__all__):
+        t = 8
+        while True:
+            d = '    ' + '   '.join(__all__[k:k+t]) + '\n'
+            if len(d) <= 80:
+                break
+            t -= 1
+        doc += d
+        k += t
+
+    return doc + '''
+Some of these functions are also provided as member functions of 
+VigraArray::
+
+    __abs__   __add__   __and__   __div__   __divmod__   __eq__
+    __floordiv__   __ge__   __gt__   __invert__   __le__   __lshift__
+    __lt__   __mod__   __mul__   __ne__   __neg__   __or__   __pos__
+    __pow__   __radd__   __radd__   __rand__   __rdiv__   __rdivmod__
+    __rfloordiv__   __rlshift__   __rmod__   __rmul__   __ror__   __rpow__
+    __rrshift__   __rshift__   __rsub__   __rtruediv__   __rxor__   __sub__
+    __truediv__   __xor__
+
+vigranumpy re-implements these functions for two reasons::
+
+    * Axistag consistency is checked, and the order of axes and strides is 
+      preserved in the result array. (In contrast, plain numpy functions 
+      always create C-order arrays, disregarding the stride order of the 
+      inputs.)
+    * Typecasting rules are changed to be more suitable for image analysis. 
+
+''' + vigraTypecastingRules
+
+__doc__ = _prepareDoc()
