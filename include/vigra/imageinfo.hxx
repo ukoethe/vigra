@@ -61,7 +61,7 @@ namespace vigra
 {
 /** \addtogroup VigraImpex Image Import/Export Facilities
 
-    supports GIF, TIFF, JPEG, BMP, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
+    supports GIF, TIFF, JPEG, BMP, EXR, HDR, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
 **/
 //@{
 
@@ -137,11 +137,11 @@ class ImageExportInfo
 
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo( const char * );
     VIGRA_EXPORT ~ImageExportInfo();
@@ -149,11 +149,11 @@ class ImageExportInfo
         /** Set image file name.
         
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo & setFileName(const char * filename);
     VIGRA_EXPORT const char * getFileName() const;
@@ -165,7 +165,10 @@ class ImageExportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
             <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
             compressed 24-bit color (only available if libjpeg is installed).
             <DT>"PNG"<DD> Portable Network Graphic
@@ -365,10 +368,13 @@ class ImageImportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format
-            (only available if libjpeg is installed).
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-            <DT>"PNG"<DD> Portable Network Graphics
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
             (only available if libpng is installed).
             <DT>"PBM"<DD> Portable bitmap format (black and white).
             <DT>"PGM"<DD> Portable graymap format (gray scale).
