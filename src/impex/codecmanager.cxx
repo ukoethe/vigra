@@ -54,6 +54,7 @@
 #include "bmp.hxx"
 #include "gif.hxx"
 #include "hdr.hxx"
+#include "exr.hxx"
 
 namespace vigra
 {
@@ -74,6 +75,9 @@ namespace vigra
 #endif
 #ifdef HasTIFF
         import( new TIFFCodecFactory() );
+#endif
+#ifdef HasEXR
+        import( new ExrCodecFactory() );
 #endif
         import( new SunCodecFactory() );
         import( new PnmCodecFactory() );

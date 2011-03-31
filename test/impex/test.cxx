@@ -911,6 +911,34 @@ public:
 #endif
     }
 
+    void testEXR ()
+    {
+#if !defined(HasEXR)
+        failCodec(img, vigra::ImageExportInfo ("res.exr"));
+#else
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.exr"));
+
+        vigra::ImageImportInfo info ("res.exr");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.isColor ());
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqual (acc (i), acc (i1));
+#endif
+    }
+
     void testBMP ()
     {
         exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.bmp"));

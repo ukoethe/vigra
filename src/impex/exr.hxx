@@ -1,13 +1,14 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2001 by Gunnar Kedenburg                */
+/*               Copyright 2007 by Pablo d'Angelo                       */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
+/*    ( Version 1.5.0, Dec 07 2006 )                                    */
 /*    The VIGRA Website is                                              */
-/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*        http://kogs-www.informatik.uni-hamburg.de/~koethe/vigra/      */
 /*    Please direct questions, bug reports, and contributions to        */
-/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
-/*        vigra@informatik.uni-hamburg.de                               */
+/*        koethe@informatik.uni-hamburg.de          or                  */
+/*        vigra@kogs1.informatik.uni-hamburg.de                         */
 /*                                                                      */
 /*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
@@ -32,105 +33,91 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-/* Modifications by Pablo d'Angelo
- * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
- *  - Added support for obtaining extra bands beyond RGB.
- *  - Added support for a position field that indicates the start of this
- *    image relative to some global origin.
- *  - Added support for x and y resolution fields.
- * Modifications by Andrew Mihal, as of 16 October 2004
- *  - Added include for vigra/diff2d.hxx
- *  - Added support for ICC profiles
- */
 
-#ifndef VIGRA_IMPEX_TIFF_HXX
-#define VIGRA_IMPEX_TIFF_HXX
+#ifndef VIGRA_IMPEX_EXR_HXX
+#define VIGRA_IMPEX_EXR_HXX
 
-#include <vector>
-#include "vigra/diff2d.hxx"
 #include "vigra/codec.hxx"
+
+// EXR - OpenEXR
 
 namespace vigra {
 
-    struct TIFFCodecFactory : public CodecFactory
+    struct ExrDecoderImpl;
+    struct ExrEncoderImpl;
+
+    struct ExrCodecFactory : public CodecFactory
     {
         CodecDesc getCodecDesc() const;
         std::auto_ptr<Decoder> getDecoder() const;
         std::auto_ptr<Encoder> getEncoder() const;
     };
 
-    class TIFFDecoderImpl;
-    class TIFFEncoderImpl;
-
-    class TIFFDecoder : public Decoder
+    class ExrDecoder : public Decoder
     {
-        TIFFDecoderImpl * pimpl;
+        ExrDecoderImpl * pimpl;
 
     public:
 
-        TIFFDecoder() : pimpl(0) {}
+        ExrDecoder() : pimpl(0) {}
 
-        ~TIFFDecoder();
-
-        std::string getFileType() const;
-        unsigned int getWidth() const;
-        unsigned int getHeight() const;
-        unsigned int getNumBands() const;
-
-        unsigned int getNumExtraBands() const;
-        Diff2D getPosition() const;
-        Size2D getCanvasSize() const;
-        float getXResolution() const;
-        float getYResolution() const;
-
-        const void * currentScanlineOfBand( unsigned int ) const;
-        void nextScanline();
-
-        std::string getPixelType() const;
-        unsigned int getOffset() const;
+        ~ExrDecoder();
 
         void init( const std::string & );
         void close();
         void abort();
+
+        std::string getFileType() const;
+        std::string getPixelType() const;
+
+        unsigned int getWidth() const;
+        unsigned int getHeight() const;
+        unsigned int getNumBands() const;
+        unsigned int getNumExtraBands() const;
+        float getXResolution() const;
+        float getYResolution() const;
+        Diff2D getPosition() const;
+        Size2D getCanvasSize() const;
+
+        unsigned int getOffset() const;
+
+        const void * currentScanlineOfBand( unsigned int ) const;
+        void nextScanline();
     };
 
-    class TIFFEncoder : public Encoder
+    class ExrEncoder : public Encoder
     {
-        TIFFEncoderImpl * pimpl;
+        ExrEncoderImpl * pimpl;
 
     public:
 
-        TIFFEncoder() : pimpl(0) {}
+        ExrEncoder() : pimpl(0) {}
 
-        ~TIFFEncoder();
+        ~ExrEncoder();
+
+        void init( const std::string & );
+        void close();
+        void abort();
 
         std::string getFileType() const;
+        unsigned int getOffset() const;
+
         void setWidth( unsigned int );
         void setHeight( unsigned int );
         void setNumBands( unsigned int );
-
         void setCompressionType( const std::string &, int = -1 );
         void setPixelType( const std::string & );
 
-        void setPosition( const vigra::Diff2D & pos );
+        void setPosition( const Diff2D & pos );
         void setCanvasSize( const Size2D & pos );
         void setXResolution( float xres );
         void setYResolution( float yres );
-
-        unsigned int getOffset() const;
 
         void finalizeSettings();
 
         void * currentScanlineOfBand( unsigned int );
         void nextScanline();
-
-        void setICCProfile(const ICCProfile & data);
-
-        void init( const std::string & );
-        void close();
-        void abort();
     };
 }
 
-#endif // VIGRA_IMPEX_TIFF_HXX
+#endif // VIGRA_IMPEX_EXR_HXX
