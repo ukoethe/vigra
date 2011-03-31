@@ -83,7 +83,11 @@ public:
         const std::string formats = impexListFormats();
         const std::string extensions = impexListExtensions();
 
-        const char * refFormats = "BMP GIF HDR "
+        const char * refFormats = "BMP "
+#if defined(HasEXR)
+        "EXR "
+#endif
+        "GIF HDR "
 #if defined(HasJPEG)
         "JPEG "
 #endif
@@ -97,7 +101,11 @@ public:
         "VIFF";
         shouldEqual(formats, refFormats);
 
-        const char * refExtensions = "bmp gif hdr "
+        const char * refExtensions = "bmp "
+#if defined(HasEXR)
+        "exr "
+#endif
+        "gif hdr "
 #if defined(HasJPEG)
         "jpeg jpg "
 #endif
@@ -911,34 +919,6 @@ public:
 #endif
     }
 
-    void testEXR ()
-    {
-#if !defined(HasEXR)
-        failCodec(img, vigra::ImageExportInfo ("res.exr"));
-#else
-        exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.exr"));
-
-        vigra::ImageImportInfo info ("res.exr");
-
-        should (info.width () == img.width ());
-        should (info.height () == img.height ());
-        should (info.isColor ());
-        should (info.getPixelType () == std::string ("FLOAT"));
-
-        Image res (info.width (), info.height ());
-
-        importImage (info, destImage (res));
-
-        Image::ScanOrderIterator i = img.begin ();
-        Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
-
-        for (; i != img.end (); ++i, ++i1)
-            shouldEqual (acc (i), acc (i1));
-#endif
-    }
-
     void testBMP ()
     {
         exportImage (srcImageRange (img), vigra::ImageExportInfo ("res.bmp"));
@@ -1169,6 +1149,34 @@ public:
 #endif
     }
 
+    void testEXR ()
+    {
+#if !defined(HasEXR)
+        failCodec(img, vigra::ImageExportInfo ("res.exr"));
+#else
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res.exr"));
+
+        vigra::ImageImportInfo info ("res.exr");
+
+        should (info.width () == img.width ());
+        should (info.height () == img.height ());
+        should (info.isColor ());
+        should (info.getPixelType () == std::string ("FLOAT"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = img.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = img.accessor ();
+
+        for (; i != img.end (); ++i, ++i1)
+            shouldEqual (acc (i), acc (i1));
+#endif
+    }
+
     void testPNG ()
     {
 #if !defined(HasPNG)
@@ -1251,6 +1259,17 @@ public:
     void testTIFFImport()
     {
         testImport("tiff");
+    }
+
+    // exr
+
+    void testEXRExport()
+    {
+#if !defined(HasEXR)
+        testExport("exr", "did not find a matching codec for the given file extension");
+#else
+        testExport("exr");
+#endif
     }
 
     // viff
@@ -1421,6 +1440,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&Vector4ExportImportTest::testSUN));
         add(testCase(&Vector4ExportImportTest::testVIFF));
         add(testCase(&Vector4ExportImportTest::testTIFF));
+        add(testCase(&Vector4ExportImportTest::testEXR));
         add(testCase(&Vector4ExportImportTest::testPNG));
 
         // rgb float images
