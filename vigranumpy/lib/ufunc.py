@@ -194,7 +194,7 @@ class Function(object):
             highestArrayType = arrayTypes[-1]
             
         if self.is_bool:
-            return (highestArrayType[-1], numpy.bool)
+            return (highestArrayType[-1], numpy.bool8)
 
         scalarType = [numpy.dtype(type(x)) for x in args if numpy.isscalar(x)]
         if not scalarType:
@@ -251,44 +251,83 @@ class UnaryFunctionOut2(Function):
                 
 class BinaryFunction(Function):
     def __call__(self, arg1, arg2, out=None):
-        axistags = None
         dtype, out_dtype = self.common_type(arg1, arg2, out)
         
+        # FIXME: this does not yet support proper broadcasting
+        
+        # if isinstance(arg1, numpy.ndarray):
+            # a1 = arg1.transposeToNumpyOrder()
+            # axistags = a1.axistags
+            # maxShape = a1.shape
+            # a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
+        # else:
+            # a1 = arg1
+
+        # if isinstance(arg2, numpy.ndarray):
+            # a2 = arg2.transposeToNumpyOrder()
+            # if axistags:
+                # if not axistags.compatible(a2.axistags):
+                    # raise RuntimeError("%s(): axistag mismatch %r vs. %r" % (self.function.__name__, axistags, a2.axistags))
+                # maxShape = tuple(max(k) for k in zip(a2.shape, maxShape))
+            # else:
+                # axistags = a2.axistags
+                # maxShape = a2.shape
+            # a2 = numpy.require(a2, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
+        # else:
+            # a2 = arg2
+            
         if isinstance(arg1, numpy.ndarray):
-            a1 = arg1.squeeze().transposeToNumpyOrder()
-            axistags = a1.axistags
-            maxInput = arg1
+            a1 = arg1.transposeToNumpyOrder()
+            if isinstance(arg2, numpy.ndarray):
+                a2 = arg2.transposeToNumpyOrder()
+                
+                if arg1.__array_priority__ == arg2.__array_priority__:
+                    priorityArg = arg2 if arg1.ndim < arg2.ndim else arg1
+                else:
+                    priorityArg = arg2 if arg1.__array_priority__ < arg2.__array_priority__ else arg1
+                
+                if a1.ndim < a2.ndim:
+                    a1 = a1.insertChannelAxis(order='C')
+                elif a1.ndim > a2.ndim:
+                    a2 = a2.insertChannelAxis(order='C')
+                    
+                axistags = a1.axistags
+                
+                if not axistags.compatible(a2.axistags):
+                    raise RuntimeError("%s(): input axistag mismatch %r vs. %r" % 
+                                         (self.function.__name__, axistags, a2.axistags))
+                shape = tuple(max(k) for k in zip(a1.shape, a2.shape))
+                a2 = numpy.require(a2, dtype).view(numpy.ndarray)
+            else:
+                priorityArg = arg1
+                axistags = a1.axistags
+                shape = a1.shape
+                a2 = arg2
             a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
         else:
             a1 = arg1
-
-        if isinstance(arg2, numpy.ndarray):
-            a2 = arg2.squeeze().transposeToNumpyOrder()
-            if axistags:
-                if not axistags.compatible(a2.axistags):
-                    raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
-                if maxInput.size < arg2.size:
-                    maxInput = arg2
-            else:
-                axistags = a2.axistags
-                maxInput = arg2
-            a2 = numpy.require(a2, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
-        else:
-            a2 = arg2
+            a2 = arg2.transposeToNumpyOrder()
+            axistags = a2.axistags
+            shape = a2.shape
+            priorityArg = arg2
+            a2 = numpy.require(a2, dtype).view(numpy.ndarray)
             
         if out is None:
-            if (getattr(arg1, '__array_priority__', -1.0) <
-                 getattr(arg2, '__array_priority__', -1.0)):
-                outclass = arg2.__class__
+            outClass = priorityArg.__class__
+            inversePermutation = priorityArg.permutationFromNumpyOrder()
+            # print arg1, arg2, shape, axistags, outClass, out_dtype
+            o = outClass(shape, dtype=out_dtype, order='C', axistags=axistags, init=False)
+            if priorityArg.ndim < o.ndim:
+                out = o.dropChannelAxis().transpose(inversePermutation)
             else:
-                outclass = arg1.__class__
-            out = outclass(maxInput, dtype=out_dtype, order='A', init=False)
-            o = out.squeeze().transposeToNumpyOrder()
+                out = o.transpose(inversePermutation)
         else:
-            o = out.squeeze().transposeToNumpyOrder()
+            o = out.transposeToNumpyOrder()
+            if o.ndim < len(shape):
+                o = o.insertChannelAxis(order='C')
             if not axistags.compatible(o.axistags):
-                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
-
+                raise RuntimeError("%s(): output axistag mismatch %r vs. %r" % 
+                                         (self.function.__name__, axistags, o.axistags))
         self.function(a1, a2, o)
         return out
         
