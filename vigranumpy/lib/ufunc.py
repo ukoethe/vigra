@@ -253,29 +253,6 @@ class BinaryFunction(Function):
     def __call__(self, arg1, arg2, out=None):
         dtype, out_dtype = self.common_type(arg1, arg2, out)
         
-        # FIXME: this does not yet support proper broadcasting
-        
-        # if isinstance(arg1, numpy.ndarray):
-            # a1 = arg1.transposeToNumpyOrder()
-            # axistags = a1.axistags
-            # maxShape = a1.shape
-            # a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
-        # else:
-            # a1 = arg1
-
-        # if isinstance(arg2, numpy.ndarray):
-            # a2 = arg2.transposeToNumpyOrder()
-            # if axistags:
-                # if not axistags.compatible(a2.axistags):
-                    # raise RuntimeError("%s(): axistag mismatch %r vs. %r" % (self.function.__name__, axistags, a2.axistags))
-                # maxShape = tuple(max(k) for k in zip(a2.shape, maxShape))
-            # else:
-                # axistags = a2.axistags
-                # maxShape = a2.shape
-            # a2 = numpy.require(a2, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
-        # else:
-            # a2 = arg2
-            
         if isinstance(arg1, numpy.ndarray):
             a1 = arg1.transposeToNumpyOrder()
             if isinstance(arg2, numpy.ndarray):
@@ -315,7 +292,6 @@ class BinaryFunction(Function):
         if out is None:
             outClass = priorityArg.__class__
             inversePermutation = priorityArg.permutationFromNumpyOrder()
-            # print arg1, arg2, shape, axistags, outClass, out_dtype
             o = outClass(shape, dtype=out_dtype, order='C', axistags=axistags, init=False)
             if priorityArg.ndim < o.ndim:
                 out = o.dropChannelAxis().transpose(inversePermutation)
