@@ -167,21 +167,24 @@ def imshow(image):
         
 # auto-generate code for additional Kernel generators:
 def _genKernelFactories(name):
-   for oldName in dir(eval('filters.'+name)):
-      if not oldName.startswith('init'):
-        continue
-      #remove init from beginning and start with lower case character
-      newName = oldName[4].lower() + oldName[5:] + 'Kernel'
-      if name == 'Kernel2D':
-        newName += '2D'
-      code = '''def %(newName)s(*args):
-      k = filters.%(name)s()
-      k.%(oldName)s(*args)
-      return k
+    for oldName in dir(eval('filters.'+name)):
+        if not oldName.startswith('init'):
+            continue
+        #remove init from beginning and start with lower case character
+        newPrefix = oldName[4].lower() + oldName[5:]
+        if newPrefix == "explicitly":
+            newPrefix = "explict"
+        newName = newPrefix + 'Kernel'
+        if name == 'Kernel2D':
+            newName += '2D'
+        code = '''def %(newName)s(*args):
+        k = filters.%(name)s()
+        k.%(oldName)s(*args)
+        return k
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName, 'name': name}
-      exec code
+        exec code
 
 _genKernelFactories('Kernel1D')
 _genKernelFactories('Kernel2D')

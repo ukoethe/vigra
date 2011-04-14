@@ -149,10 +149,10 @@ def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
         # order, whereas any other order is silently transformed into 'C'
         
         # we must also make sure that a singleton channel index has the smallest stride
-        # (otherwise, strides may not exactly match in the copy)
+        # (otherwise, strides in the copy may not exactly match those in obj)
         strides = list(obj.strides)
         try:
-            channelIndex = obj.axistags.index('c')
+            channelIndex = obj.channelIndex
             if channelIndex < obj.ndim and obj.shape[channelIndex] == 1:
                 strides[channelIndex] = 0
         except:
@@ -268,16 +268,14 @@ this class via its subclasses!
     @staticmethod
     def copyValuesImpl(target, source):
         try:
+            target = target.squeeze()
             target = target.transposeToNumpyOrder()
-            if target.ndim > source.ndim:
-                target = target.dropChannelAxis()
         except:
             pass
 
         try:
+            source = source.squeeze()
             source = source.transposeToNumpyOrder()
-            if target.ndim < source.ndim:
-                source = source.dropChannelAxis()
         except:
             pass
         
@@ -490,12 +488,14 @@ this class via its subclasses!
             which = self.axistags.index(which)
         return self[(slice(None),)*which + (value,) + (slice(None),)*(self.ndim-which-1)]
     
-    def dropChannelAxis(self):
+    def dropChannelAxis(self, ignoreMultiChannel=False):
         ci = self.channelIndex
         if ci == self.ndim:
             return self
         
         if self.shape[ci] != 1:
+            if ignoreMultiChannel:
+                return self
             raise RuntimeError("dropChannelAxis(): only allowed when there is a single channel.")
         return self.bindAxis(ci, 0)
     
@@ -915,19 +915,23 @@ def RGBVolume(obj, dtype=numpy.float32, order=None,
 #################################################################
 
 class ImagePyramid(list):
-    def __init__(self, image, copyImagedestLevel = 0, lowestLevel = 0, highestLevel = 0):
+    def __init__(self, image, copyImageToLevel = 0, lowestLevel = 0, highestLevel = 0):
         ''' Create a new pyramid.
             The new pyramid levels range from 'lowestLevel' to 'highestLevel' (inclusive),
-            and the given 'image' is copied to 'copyImagedestLevel'. The images at other
+            and the given 'image' is copied to 'copyImageToLevel'. The images at other
             levels are filled with zeros and sized so that the shape is reduced by half
             when going up (to higher levels), and doubled when going down.
+            
+            This class can handle multi-channel images, but only when image.channelIndex
+            exists and returns image.ndim-1 (i.e. the image must have axistags, and the 
+            channel axis must correspond to the last index, as in C- or V-order).
         '''
-        if lowestLevel > copyImagedestLevel or highestLevel < copyImagedestLevel:
-            raise ValueError('ImagePyramid(): copyImagedestLevel must be between lowestLevel and highestLevel (inclusive)')
+        if lowestLevel > copyImageToLevel or highestLevel < copyImageToLevel:
+            raise ValueError('ImagePyramid(): copyImageToLevel must be between lowestLevel and highestLevel (inclusive)')
         
         list.__init__(self, [image.__class__(image, dtype=image.dtype)])
-        self._lowestLevel = copyImagedestLevel
-        self._highestLevel = copyImagedestLevel
+        self._lowestLevel = copyImageToLevel
+        self._highestLevel = copyImageToLevel
         self.createLevel(lowestLevel)
         self.createLevel(highestLevel)
 
@@ -963,8 +967,8 @@ class ImagePyramid(list):
         ss, ds = src.shape, dest.shape
         s = [ss[k] if 2*ss[k] == ds[k] else -1 for k in range(len(ss))]
     
-        smooth1 = filters.explicitlyKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
-        smooth2 = filters.explicitlyKernel(-1, 0, numpy.array([0.5, 0.5]));
+        smooth1 = filters.explictKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
+        smooth2 = filters.explictKernel(-1, 0, numpy.array([0.5, 0.5]));
 
         filters.convolve(src, (smooth1, smooth1), out=dest[::2,::2])
         filters.convolve(src[:,:s[1]], (smooth1, smooth2), out=dest[::2,1::2])
@@ -1050,8 +1054,8 @@ class ImagePyramid(list):
             raise RuntimeError("ImagePyramid::expandLaplacian(): srcLevel does not exist.")
         self.createLevel(destLevel)
 
-        smooth1 = filters.explicitlyKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
-        smooth2 = filters.explicitlyKernel(-1, 0, numpy.array([0.5, 0.5]));
+        smooth1 = filters.explictKernel(-1, 1, numpy.array([0.5 - centerValue, 2.0*centerValue, 0.5 - centerValue]))
+        smooth2 = filters.explictKernel(-1, 0, numpy.array([0.5, 0.5]));
         for k in range(srcLevel, destLevel, -1):
             i = self[k-1].__class__(self[k-1].shape, dtype = self[k-1].dtype)
             self.expandImpl(self[k], i, centerValue)
@@ -1065,12 +1069,18 @@ class ImagePyramid(list):
             for i in range(self.highestLevel, level):
                 image = list.__getitem__(self, -1)
                 newShape = [int((k + 1) / 2) for k in image.shape]
+                channelIndex = getattr(image, 'channelIndex', image.ndim)
+                if channelIndex < image.ndim:
+                    newShape[channelIndex] = image.shape[channelIndex]
                 self.append(image.__class__(newShape, dtype=image.dtype))
             self._highestLevel = level
         elif level < self.lowestLevel:
             image = list.__getitem__(self, 0)
             for i in range(self.lowestLevel, level, -1):
                 newShape = [2*k-1 for k in image.shape]
+                channelIndex = getattr(image, 'channelIndex', image.ndim)
+                if channelIndex < image.ndim:
+                    newShape[channelIndex] = image.shape[channelIndex]
                 self.insert(0, image.__class__(newShape, dtype=image.dtype))
             self._lowestLevel = level
              
