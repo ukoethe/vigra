@@ -449,14 +449,14 @@ this class via its subclasses!
     def permutationToNormalOrder(self, types=AxisType.AllAxes):
         return list(self.axistags.permutationToNormalOrder(types))
     
-    def permutationToNumpyOrder(self):
-        return list(reversed(self.axistags.permutationToNormalOrder()))
-    
     def permutationFromNormalOrder(self):
         return list(self.axistags.permutationFromNormalOrder())
     
+    def permutationToNumpyOrder(self):
+        return list(self.axistags.permutationToNumpyOrder())
+    
     def permutationFromNumpyOrder(self):
-        return map(lambda x: self.ndim-1-x, self.axistags.permutationFromNormalOrder())
+        return list(self.axistags.permutationFromNumpyOrder())
     
     @property
     def order(self):
@@ -524,6 +524,9 @@ this class via its subclasses!
     
     def transposeToDefaultOrder(self):
         return self.transposeToOrder(self.defaultOrder)
+
+    def transposeToNormalOrder(self):
+        return self.transposeToOrder('F')
 
     def transposeToVigraOrder(self):
         return self.transposeToOrder('V')

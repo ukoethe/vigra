@@ -288,6 +288,22 @@ AxisTags_permutationFromNormalOrder2(AxisTags & axistags, unsigned int types)
     return python::object(permutation);
 }
 
+python::object
+AxisTags_permutationToNumpyOrder(AxisTags & axistags)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationToNumpyOrder(permutation);
+    return python::object(permutation);
+}
+
+python::object
+AxisTags_permutationFromNumpyOrder(AxisTags & axistags)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationFromNumpyOrder(permutation);
+    return python::object(permutation);
+}
+
 AxisTags *
 AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 {
@@ -487,6 +503,8 @@ void defineAxisTags()
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)
         .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
         .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder2)
+        .def("permutationToNumpyOrder", &AxisTags_permutationToNumpyOrder)
+        .def("permutationFromNumpyOrder", &AxisTags_permutationFromNumpyOrder)
         .def("transform", &AxisTags_transform,
                              return_value_policy<manage_new_object>())
         .def("compatible", &AxisTags::compatible)
