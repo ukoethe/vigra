@@ -553,6 +553,29 @@ ByteRGBImageExportImportTest::testFile (const char *fileName)
         should (acc (i) == acc (i1));
 }
 
+class CanvasSizeTest
+{
+  public:
+    void testTIFFCanvasSize ()
+    {
+        vigra::ImageExportInfo exportinfo ("res.tif");
+#if !defined(HasTIFF)
+        failCodec(img, exportinfo);
+#else
+        FRGBImage img(1, 1);
+        img(0,0) = 1;
+        exportinfo.setCompression ("LZW");
+        Size2D canvasSize(3, 8);
+        exportinfo.setCanvasSize (canvasSize);
+        exportImage (srcImageRange (img), exportinfo);
+
+        vigra::ImageImportInfo info ("res.tif");
+
+        should (info.getCanvasSize () == canvasSize);
+#endif
+    }
+};
+
 class PNGInt16Test
 {
   public:
@@ -652,6 +675,36 @@ public:
                      vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
 
         vigra::ImageImportInfo info ("res.jpg");
+
+        should (info.width () == reread.width ());
+        should (info.height () == reread.height ());
+        should (info.isGrayscale ());
+        should (info.getPixelType () == std::string ("UINT8"));
+
+        Image res (info.width (), info.height ());
+
+        importImage (info, destImage (res));
+
+        Image::ScanOrderIterator i = reread.begin ();
+        Image::ScanOrderIterator i1 = res.begin ();
+        Image::Accessor acc = reread.accessor ();
+
+        double sum = 0.0;
+        for (; i != reread.end (); ++i, ++i1)
+            sum += std::abs (acc (i) - acc (i1));
+        should (sum / (info.width () * info.height ()) < 0.1);
+#endif
+    }
+
+    void testPNG ()
+    {
+#if !defined(HasPNG)
+        failCodec(img, vigra::ImageExportInfo ("res.png"));
+#else
+        exportImage (srcImageRange (img),
+                     vigra::ImageExportInfo ("res_.png"));
+
+        vigra::ImageImportInfo info ("res_.png");
 
         should (info.width () == reread.width ());
         should (info.height () == reread.height ());
@@ -1423,9 +1476,12 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&PNGInt16Test::testByteOrder));
 #endif
 
+        add(testCase(&CanvasSizeTest::testTIFFCanvasSize));
+
         // grayscale float images
         add(testCase(&FloatImageExportImportTest::testGIF));
         add(testCase(&FloatImageExportImportTest::testJPEG));
+        add(testCase(&FloatImageExportImportTest::testPNG));
         add(testCase(&FloatImageExportImportTest::testTIFF));
         add(testCase(&FloatImageExportImportTest::testTIFFForcedRange));
         add(testCase(&FloatImageExportImportTest::testBMP));
