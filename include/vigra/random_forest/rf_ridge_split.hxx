@@ -315,7 +315,6 @@ class RidgeSplit: public SplitBase<Tag>
 		{
 		  //calculate gini index
 		  bgfunc(dDistanceFromHyperplane,
-				 0,
 			  labels, 
 			  region.oob_begin(), region.oob_end(), 
 			  region.classCounts());
@@ -389,7 +388,6 @@ class RidgeSplit: public SplitBase<Tag>
 		
 	//calculate gini index
 	    bgfunc(dDistanceFromHyperplane,
-			   0,
 		    labels, 
 		    region.begin(), region.end(), 
 		    region.classCounts());

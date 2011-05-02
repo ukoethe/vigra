@@ -357,6 +357,39 @@ struct ClassifierTest
 		}
 
     }
+    
+	
+	void RFSplitFunctorTest()
+    {
+        //Create Test output by Random Forest
+        {
+            vigra::TestVisitor testVisitor;
+            std::cerr << "RFSplitFunctorTest(): Learning on Datasets (Warning this checks whether Median and RandomSplit functors compile and run"
+												"if you plan to use it, please improve the test\n";
+            for(int ii = 0; ii < data.size() ; ii++)
+            {
+                vigra::RandomForest<>
+					RF2(vigra::RandomForestOptions().tree_count(32));
+                vigra::RandomForest<int>
+                    RF3(vigra::RandomForestOptions().tree_count(5), vigra::ProblemSpec<int>().classes_(data.ClassIter(ii).begin(), data.ClassIter(ii).end()));
+
+                RF3.learn(  data.features(ii),
+                            data.labels(ii),
+						   	rf_default(),
+							rf::split::MedianSplit(),
+							rf_default(),
+                            vigra::RandomMT19937(1));
+
+                RF2.learn(  data.features(ii),
+                            data.labels(ii),
+						   	rf_default(),
+							rf::split::RandomSplit(),
+							rf_default(),
+                            vigra::RandomMT19937(1));
+            }
+        }
+        std::cerr << "DONE!\n\n";
+    }
 /**
         ClassifierTest::RFdefaultTest():
     Learns The Refactored Random Forest with a fixed Random Seed and default sampling Options on
@@ -902,6 +935,7 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFresponseTest));
 		
         add( testCase( &ClassifierTest::RFridgeRegressionTest));
+        add( testCase( &ClassifierTest::RFSplitFunctorTest));
 #ifdef HasHDF5
 		add( testCase( &ClassifierTest::HDF5ImpexTest));
 #endif

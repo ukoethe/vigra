@@ -885,14 +885,13 @@ public:
                 class I_Iter, 
                 class Array>
     void operator()(DataSourceF_t   const & column,
-                    int                     g,
                     DataSource_t    const & labels,
                     I_Iter                & begin, 
                     I_Iter                & end,
                     Array           const & region_response)
     {
         std::sort(begin, end, 
-                  SortSamplesByDimensions<DataSourceF_t>(column, g));
+                  SortSamplesByDimensions<DataSourceF_t>(column, 0));
         typedef typename 
             LossTraits<LineSearchLossTag, DataSource_t>::type LineSearchLoss;
         LineSearchLoss left(labels, ext_param_); //initialize left and right region
@@ -903,7 +902,7 @@ public:
         min_gini_ = right.init(begin, end, region_response);  
         min_threshold_ = *begin;
         min_index_     = 0;  //the starting point where to split 
-        DimensionNotEqual<DataSourceF_t> comp(column, g); 
+        DimensionNotEqual<DataSourceF_t> comp(column, 0); 
         
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
@@ -928,7 +927,7 @@ public:
                 min_gini_       = loss; 
 #endif
                 min_index_      = next - begin +1 ;
-                min_threshold_  = (double(column(*next,g)) + double(column(*(next +1), g)))/2.0;
+                min_threshold_  = (double(column(*next,0)) + double(column(*(next +1), 0)))/2.0;
             }
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);
@@ -1069,8 +1068,7 @@ class ThresholdSplit: public SplitBase<Tag>
         for(int k=0; k<num2try; ++k)
         {
             //this functor does all the work
-            bgfunc(features,
-                   splitColumns[k],
+            bgfunc(columnVector(features, splitColumns[k]),
                    labels, 
                    region.begin(), region.end(), 
                    region.classCounts());
@@ -1324,8 +1322,8 @@ public:
 
 		
 		min_gini_ = NumericTraits<double>::max();
-        
-		min_index_ = begin + random.uniformInt(end -begin);
+        int tmp_pt = random.uniformInt(std::distance(begin, end));
+		min_index_ = tmp_pt;
         min_threshold_ =  column[*(begin + min_index_)];
         SortSamplesByDimensions<DataSourceF_t> 
             sorter(column, 0, min_threshold_);

@@ -1623,7 +1623,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < features.shape(1); ++k)
             {
                 bgfunc(columnVector(features, k),
-					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1634,7 +1633,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise, k),
-					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1646,7 +1644,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise_l, k),
-					   0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1654,7 +1651,7 @@ class CorrelationVisitor : public VisitorBase
                 corr_l(n, k) 
                     += wgini;
             }
-            bgfunc(labels,0,  tmp_labels, parent.begin(), parent.end(),tmp_cc);
+            bgfunc(labels, tmp_labels, parent.begin(), parent.end(),tmp_cc);
             wgini = (region_gini - bgfunc.min_gini_);
             gini_missc(n, columnCount(gini_missc)-1) 
                 += wgini;
@@ -1669,7 +1666,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 split.bgfunc(columnVector(noise, k),
-							 0,
                              labels, 
                              parent.begin(), parent.end(), 
                              parent.classCounts());
