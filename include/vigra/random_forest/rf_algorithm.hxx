@@ -707,6 +707,7 @@ public:
     }
     /**save to HDF5 - defunct - has to be updated to new HDF5 interface
      */
+#ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
         
@@ -722,6 +723,7 @@ public:
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
                                
     }
+#endif
 
     /**Perform single linkage clustering
      * \param distance distance matrix used. \sa CorrelationVisitor
@@ -972,11 +974,13 @@ public:
     GetClusterVariables(MultiArrayView<2, int> vars)
         :variables(vars), index(0)
     {}
+#ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
         vigra::writeHDF5(file.c_str(), (prefix + "_variables").c_str(), 
                                variables);
     }
+#endif
 
     template<class Node>
     bool operator()(Node& node)

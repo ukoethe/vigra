@@ -863,7 +863,7 @@ class OOB_Error : public VisitorBase
     MultiArray<2, double>       oobCount;
     ArrayVector< int>           indices; 
     OOB_Error() : VisitorBase(), oob_breiman(0.0) {}
-
+#ifdef HasHDF5
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -873,6 +873,7 @@ class OOB_Error : public VisitorBase
         temp[0] = oob_breiman;
         writeHDF5(filename, (pathn + "breiman_error").c_str(), temp);
     }
+#endif
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
 
@@ -1057,6 +1058,7 @@ class CompleteOOBInfo : public VisitorBase
 
 	/** save to HDF5 file
 	 */
+#ifdef HasHDF5
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -1075,6 +1077,7 @@ class CompleteOOBInfo : public VisitorBase
         temp[0] = oob_per_tree2;
         writeHDF5(filename, (pathn + "ulli_error").c_str(), temp);
     }
+#endif
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
 
