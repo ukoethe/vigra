@@ -9,7 +9,8 @@
 //#include <vigra/random_forest_hdf5_impex.hxx>
 
 #include <vigra/timing.hxx>
-
+namespace visitors
+{
 class RandomForestProgressVisitor : public vigra::VisitorBase {
     public:
     RandomForestProgressVisitor() : VisitorBase() {}
@@ -29,5 +30,5 @@ class RandomForestProgressVisitor : public vigra::VisitorBase {
         mexPrintf("growing random forest, which will have %d trees\n", rf.options().tree_count_);
     }
 };
-
+}
 #endif //RANDOMFORESTPROGRESSVISITOR_HXX

@@ -40,7 +40,8 @@
 
 using namespace vigra;
 using namespace matlab;
-
+using namespace rf;
+using namespace visitors;
 
 
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){

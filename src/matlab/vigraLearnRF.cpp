@@ -45,6 +45,8 @@
 
 using namespace vigra;
 using namespace matlab;
+using namespace rf;
+using namespace visitors;
 
 
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
@@ -110,7 +112,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     double var_imp_rep
 		= inputs.getScalar<double>("importance_repetition",v_default(10));
 	
-	VariableImportanceVisitor var_imp(var_imp_rep);
+	VariableImportanceVisitor	var_imp(var_imp_rep);
+	OOB_Error					oob_err;
     RandomForestProgressVisitor progress;
 	if(!outputs.isValid(2))
 		var_imp.deactivate();
@@ -121,13 +124,11 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
 
     RandomForest<inputLType> rf(options, ext_param);    
-    double oobError = rf.learn(features, 
-							   labels,
-							   vigra::create_visitor(var_imp, progress));
+    rf.learn(features, labels, vigra::create_visitor(var_imp, progress, oob_err));
 
     matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 
-    outputs.createScalar<double> (1, v_optional(), oobError);
+    outputs.createScalar<double> (1, v_optional(), oob_error.oob_breiman);
 	MultiArrayView<2, double> vari 
 		= outputs.createMultiArray<2, double>(2, v_optional(), 
 							MultiArrayShape<2>::type(var_imp
