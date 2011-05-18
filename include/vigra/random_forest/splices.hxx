@@ -76,7 +76,7 @@ class Splice<int>
     : begin_(begin), 
       interval_(interval),
       end_(end),
-      size_(std::floor((double(end) -double(begin))/interval))
+      size_(int(std::floor((double(end) -double(begin))/interval)))
     {}
     
     int operator[](int index)

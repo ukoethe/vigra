@@ -43,6 +43,8 @@
 
 using namespace vigra;
 using namespace matlab;
+using namespace rf;
+using namespace visitors;
 
 
 

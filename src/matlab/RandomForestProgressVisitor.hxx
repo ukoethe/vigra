@@ -9,11 +9,15 @@
 //#include <vigra/random_forest_hdf5_impex.hxx>
 
 #include <vigra/timing.hxx>
+namespace vigra
+{
+namespace rf
+{
 namespace visitors
 {
-class RandomForestProgressVisitor : public vigra::VisitorBase {
+class MatlabRandomForestProgressVisitor : public VisitorBase {
     public:
-    RandomForestProgressVisitor() : VisitorBase() {}
+    MatlabRandomForestProgressVisitor() : VisitorBase() {}
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index){
@@ -30,5 +34,7 @@ class RandomForestProgressVisitor : public vigra::VisitorBase {
         mexPrintf("growing random forest, which will have %d trees\n", rf.options().tree_count_);
     }
 };
+}
+}
 }
 #endif //RANDOMFORESTPROGRESSVISITOR_HXX

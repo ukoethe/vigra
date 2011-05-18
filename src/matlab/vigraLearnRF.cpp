@@ -45,16 +45,17 @@
 
 using namespace vigra;
 using namespace matlab;
-using namespace rf;
-using namespace visitors;
+using namespace vigra::rf;
+using namespace vigra::rf::visitors;
 
+typedef double inputType;   // input feature type
+typedef double inputLType;  // input label type
 
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /***************************************************************************************************
     **              INIT PART                                                                         **
     ****************************************************************************************************/
-    typedef double inputType;
-    typedef double inputLType;
+
 	vigra::RandomForestOptions 	options;
 	vigra::ProblemSpec<inputLType>	ext_param;
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
@@ -62,13 +63,12 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 	
     if(inputs.getBool("sample_classes_individually", v_default(false)))
 		options.use_stratification(vigra::RF_EQUAL);
-    options.min_split_node_size(inputs
+    options.min_split_node_size(static_cast<int>(inputs
 			.getScalarMinMax<double>("min_split_node_size",
 									 v_default(1.0), 
-									 0.0, "inf"));
-	options.tree_count(inputs
-		 	.getScalarMinMax<double>(2,v_default(255.0), 0.0, "inf"));
-
+									 0.0, "inf")));
+	options.tree_count(static_cast<int>(inputs
+		 	.getScalarMinMax<double>(2,v_default(255.0), 0.0, "inf")));
 	if(inputs.hasData("mtry"))
 	{
 		if(inputs.typeOf("mtry") == mxCHAR_CLASS)
@@ -98,7 +98,6 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 			.getScalarMinMax<double>("training_set_proportion",
 									 v_default(1.0), 0.0, 1.0));
 	}
-
     MultiArrayView<2, inputLType>  labels 
 		= inputs.getMultiArray<2, inputLType>(1, v_required());
     MultiArrayView<2, inputType>  features 
@@ -112,9 +111,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     double var_imp_rep
 		= inputs.getScalar<double>("importance_repetition",v_default(10));
 	
-	VariableImportanceVisitor	var_imp(var_imp_rep);
+	VariableImportanceVisitor	var_imp(static_cast<int>(var_imp_rep));
 	OOB_Error					oob_err;
-    RandomForestProgressVisitor progress;
+    MatlabRandomForestProgressVisitor progress;
 	if(!outputs.isValid(2))
 		var_imp.deactivate();
 
@@ -124,11 +123,11 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
 
     RandomForest<inputLType> rf(options, ext_param);    
-    rf.learn(features, labels, vigra::create_visitor(var_imp, progress, oob_err));
+    rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
 
     matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 
-    outputs.createScalar<double> (1, v_optional(), oob_error.oob_breiman);
+    outputs.createScalar<double> (1, v_optional(), oob_err.oob_breiman);
 	MultiArrayView<2, double> vari 
 		= outputs.createMultiArray<2, double>(2, v_optional(), 
 							MultiArrayShape<2>::type(var_imp

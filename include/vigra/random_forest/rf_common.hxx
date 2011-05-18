@@ -301,9 +301,10 @@ class RandomForestOptions
         PULLBOOL(prepare_online_learning_, bool);
 		PULLBOOL(predict_weighted_, bool);
         
-        PULL(training_set_calc_switch_, RF_OptionTag);
-        PULL(stratification_method_, RF_OptionTag);
-        PULL(mtry_switch_, RF_OptionTag);
+        PULL(training_set_calc_switch_, (RF_OptionTag)(int));
+
+        PULL(stratification_method_, (RF_OptionTag)(int));
+        PULL(mtry_switch_, (RF_OptionTag)(int));
 		
 		/*don't pull*/
         //PULL(mtry_func_!=0, int);
