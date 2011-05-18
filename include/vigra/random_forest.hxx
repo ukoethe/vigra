@@ -102,23 +102,39 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  * 	options. 
  *
  * 	\code
- *  typedef xxx feature_t \\ replace xxx with whichever type
- *  typedef yyy label_t   \\ meme chose. 
- *  MultiArrayView<2, feature_t> f = get_some_features();
- *  MultiArrayView<2, label_t>   l = get_some_labels();
- *  RandomForest<> rf()
- *  rf.learn(f, l);
+ *  using namespace vigra;
+ *  using namespace rf;
+ *  typedef xxx feature_t; \\ replace xxx with whichever type
+ *  typedef yyy label_t;   \\ likewise 
+ *  
+ *  // allocate the training data
+ *  MultiArrayView<2, feature_t> f = get_training_features();
+ *  MultiArrayView<2, label_t>   l = get_training_labels();
+ *  
+ *  RandomForest<> rf;
+ *
+ *  // construct visitor to calculate out-of-bag error
+ *  visitors::OOB_Error oob_v;
+ *
+ *  // perform training
+ *  rf.learn(f, l, visitors::create_visitor(oob_v));
+ *
+ *  std::cout << "the out-of-bag error is: " << oob_v.oob_breiman << "\n";
  *      
- *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
- *  MultiArrayView<2, label_t> prediction = allocate_space_for_response();
- *  MultiArrayView<2, double> prob  = allocate_space_for_probability();
+ *  // get features for new data to be used for prediction
+ *  MultiArrayView<2, feature_t> pf = get_features();
+ *
+ *  // allocate space for the response (pf.shape(0) is the number of samples)
+ *  MultiArrayView<2, label_t> prediction(pf.shape(0), 1);
+ *  MultiArrayView<2, double> prob(pf.shape(0), rf.class_count());
  *      
+ *  // perform prediction on new data
  *  rf.predict_labels(pf, prediction);
  *  rf.predict_probabilities(pf, prob);
  *
  * 	\endcode
  *
- * 	Additional information such as OOB Error and Variable Importance measures are accessed
+ * 	Additional information such as Variable Importance measures are accessed
  * 	via Visitors defined in rf::visitors. 
  *  Have a look at rf::split for other splitting methods.
  *
