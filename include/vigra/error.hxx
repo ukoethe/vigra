@@ -38,14 +38,14 @@
 #define VIGRA_ERROR_HXX
 
 #include <stdexcept>
-#include <stdio.h>
+#include <sstream>
 #include <string>
 #include "config.hxx"
           
 /*! \page ErrorReporting Error Reporting
     Exceptions and assertions provided by VIGRA
 
-    <b>\#include</b> \<<a href="error_8hxx-source.html">vigra/error.hxx</a>\>
+    <b>\#include</b> \<vigra/error.hxx\>
     
     VIGRA defines the following exception classes:
     
@@ -90,7 +90,7 @@
     <b> Usage:</b>
     
     Include-File:
-    \<<a href="error_8hxx-source.html">vigra/error.hxx</a>\>
+    \<vigra/error.hxx\>
     <p>
     Namespace: vigra (except for the macros, of course)
     
@@ -125,25 +125,47 @@ namespace vigra {
 class ContractViolation : public StdException
 {
   public:
+    ContractViolation()
+    {}
+    
     ContractViolation(char const * prefix, char const * message, 
                       char const * file, int line)
     {
-        sprintf(what_, "\n%.30s\n%.900s\n(%.100s:%d)\n", prefix, message, file, line);
+        (*this) << "\n" << prefix << "\n" << message << "\n("
+                 << file << ":" << line << ")\n";
     }
     
     ContractViolation(char const * prefix, char const * message)
     {
-        sprintf(what_, "\n%.30s\n%.900s\n", prefix, message);
+        (*this) << "\n" << prefix << "\n" << message << "\n";
     }
     
+    ~ContractViolation() throw()
+    {}
+    
+    template<class T>
+    ContractViolation & operator<<(T const & data)
+    {
+        std::ostringstream what;
+        what << data;
+        what_ += what.str();
+        return *this;
+    }
+
     virtual const char * what() const throw()
     {
-        return what_;
+        try
+        {
+            return what_.c_str();
+        }
+        catch(...)
+        {
+            return "vigra::ContractViolation: error message was lost, sorry.";
+        }
     }
   
   private:
-    enum { bufsize_ = 1100 };
-    char what_[bufsize_];
+    std::string what_;
 };
 
 class PreconditionViolation : public ContractViolation
@@ -229,17 +251,17 @@ void throw_postcondition_error(bool predicate, std::string message, char const *
 inline
 void throw_runtime_error(char const * message, char const * file, int line)
 {
-    char what_[1100];
-    sprintf(what_, "\n%.900s\n(%.100s:%d)\n", message, file, line);
-    throw std::runtime_error(what_); 
+    std::ostringstream what;
+    what << "\n" << message << "\n(" << file << ":" << line << ")\n";
+    throw std::runtime_error(what.str()); 
 }
 
 inline
 void throw_runtime_error(std::string message, char const * file, int line)
 {
-    char what_[1100];
-    sprintf(what_, "\n%.900s\n(%.100s:%d)\n", message.c_str(), file, line);
-    throw std::runtime_error(what_); 
+    std::ostringstream what;
+    what << "\n" << message << "\n(" << file << ":" << line << ")\n";
+    throw std::runtime_error(what.str()); 
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE, __FILE__, __LINE__)

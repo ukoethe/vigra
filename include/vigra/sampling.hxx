@@ -173,7 +173,7 @@ class SamplerOptions
     
     <b>Usage:</b>
     
-    <b>\#include</b> \<<a href="sampling_8hxx-source.html">vigra/sampling.hxx</a>\><br>
+    <b>\#include</b> \<vigra/sampling.hxx\><br>
     Namespace: vigra
     
     Create a Sampler with default options, i.e. sample as many indices as there 

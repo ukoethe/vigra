@@ -466,7 +466,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -552,7 +552,7 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     //    int w = iend - is;
     int w = std::distance( is, iend );
 
-    vigra_precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= std::max(kright, -kleft) + 1,
                  "convolveLine(): kernel longer than line\n");
 
     switch(border)
@@ -658,7 +658,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -695,7 +695,7 @@ void separableConvolveX(SrcIterator supperleft,
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
 
-    vigra_precondition(w >= kright - kleft + 1,
+    vigra_precondition(w >= std::max(kright, -kleft) + 1,
                  "separableConvolveX(): kernel longer than line\n");
 
     int y;
@@ -770,7 +770,7 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="separableconvolution_8hxx-source.html">vigra/separableconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\>
 
 
     \code
@@ -807,7 +807,7 @@ void separableConvolveY(SrcIterator supperleft,
     int w = slowerright.x - supperleft.x;
     int h = slowerright.y - supperleft.y;
 
-    vigra_precondition(h >= kright - kleft + 1,
+    vigra_precondition(h >= std::max(kright, -kleft) + 1,
                  "separableConvolveY(): kernel longer than line\n");
 
     int x;
@@ -866,7 +866,7 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="stdconvolution_8hxx-source.html">vigra/stdconvolution.hxx</a>\>
+    <b>\#include</b> \<vigra/stdconvolution.hxx\>
 
     \code
     vigra::FImage src(w,h), dest(w,h);

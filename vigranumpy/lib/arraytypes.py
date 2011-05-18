@@ -33,13 +33,43 @@
 #
 #######################################################################
 
+"""
+Vigranumpy can work directly on numpy.ndarrays. However, plain ndarrays do not carry
+any information about the semantics of the different coordinate axes. For example,
+one cannot distinguish a 2-dimensional RGB image from a scalar volume data set that
+happens to contain only three slices. In order to distinguish between arrays that
+have the same structure but different interpretation, vigra.arraytypes provides the
+following array classes:
+
+    numpy.ndarray
+        Image
+            ScalarImage
+            Vector2Image
+            Vector3Image
+                RGBImage
+            Vector4Image
+        Volume
+            ScalarVolume
+            Vector2Volume
+            Vector3Volume
+                RGBVolume
+            Vector4Volume
+            Vector6Volume
+
+    list
+        ImagePyramid
+"""
+
 import copy
 import numpy
 import ufunc
 import sys
 
+import numpy
 from numpy import int8, uint8, int16, uint16, int32, uint32, int64, uint64
 from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
+
+from vigranumpycore import AxisType, AxisInfo, AxisTags
 
 try:
     import qimage2ndarray
@@ -68,7 +98,7 @@ def qimage2array(q):
     if q.format() == qt.QImage.Format_ARGB32:
         return qimage2ndarray.byte_view(q, 'big').swapaxes(0,1).view(Vector4Image)
     raise RuntimeError("qimage2array(): q.format() must be Format_Indexed8, Format_RGB32, or Format_ARGB32")
-
+    
 class classproperty(object):
     def __get__(self, instance, cls):
             if self.__instance_method is not None and instance is not None:
@@ -78,6 +108,37 @@ class classproperty(object):
     def __init__(self, class_method, instance_method = None):
             self.__class_method = class_method
             self.__instance_method = instance_method
+
+def AxisInfo_copy(axisinfo):
+    return AxisInfo(axisinfo)
+
+def AxisInfo_deepcopy(axisinfo, memo):
+    result = AxisInfo(axisinfo)
+    memo[id(axisinfo)] = result
+    return result
+
+AxisInfo.__copy__ = AxisInfo_copy
+AxisInfo.__deepcopy__ = AxisInfo_deepcopy
+
+del AxisInfo_copy
+del AxisInfo_deepcopy
+
+def AxisTags_copy(axistags):
+    return AxisTags(axistags)
+
+def AxisTags_deepcopy(axistags, memo):
+    taglist = [k for k in axistags]
+    taglist = copy.deepcopy(taglist, memo)
+    result = AxisTags(taglist)
+    memo[id(axistags)] = result
+    return result
+
+AxisTags.__copy__ = AxisTags_copy
+AxisTags.__deepcopy__ = AxisTags_deepcopy
+
+del AxisTags_copy
+del AxisTags_deepcopy
+
 
 def _array_docstring_(name, shape, compat):
     return '''
@@ -141,6 +202,73 @@ def _array_docstring_(name, shape, compat):
 %(compat)s
     ''' % {'name': name, 'shape': shape, 'compat': compat}
 
+def constructNumpyArray(cls, obj, spatialDimensions, channels, dtype, order, init):
+    if isinstance(obj, numpy.ndarray):
+        shape = list(obj.shape)
+        strideOrdering = list(numpy.array(obj.strides).argsort().argsort())
+    else:
+        shape = list(obj)
+        strideOrdering = None
+    if channels == 0: # if the requested number of channels is not given ...
+        # ... deduce it
+        if len(shape) == spatialDimensions:
+            channels = 1
+        else:
+            channels = shape[-1]
+
+    # if we have only one channel, no explicit channel dimension should be in the shape
+    shapeSize = spatialDimensions if channels == 1 else spatialDimensions + 1
+    shape.append(0)
+
+    # create the shape object with optional channel dimension
+    pshape = shape[:shapeSize]
+    if shapeSize > spatialDimensions:
+        pshape[-1] = channels
+
+    # order "A" means "preserve order" when an array is copied, and
+    # defaults to "V" when a new array is created without explicit strideOrdering
+    if order == "A":
+        if strideOrdering is None:
+            order = "V"
+        elif len(strideOrdering) > shapeSize:
+            # make sure that strideOrdering length matches shape length
+            pstride = strideOrdering[:shapeSize]
+
+            # adjust the ordering when the channel dimension has been dropped because channel == 1
+            if strideOrdering[shapeSize] == 0:
+                pstride = [k-1 for k in pstride]
+            strideOrdering = pstride
+        elif len(strideOrdering) < shapeSize:
+            # make sure that strideOrdering length matches shape length
+            # adjust the ordering when the channel dimension has been dropped because channel == 1
+            strideOrdering = [k+1 for k in strideOrdering]
+            strideOrdering.append(0)
+
+    # create the appropriate strideOrdering objects for the other memory orders
+    # (when strideOrdering already contained data, it is ignored because order != "A")
+    if order == "C":
+        strideOrdering = range(len(pshape)-1, -1, -1)
+    elif order == "F" or (order == "V" and channels == 1):
+        strideOrdering = range(len(pshape))
+    elif order == "V":
+        strideOrdering = range(1, len(pshape)+1)
+        strideOrdering[-1] = 0
+        
+    ppshape = [0]*len(pshape)
+    for k in xrange(len(pshape)):
+        ppshape[strideOrdering[k]] = pshape[k]
+    
+    res = numpy.ndarray.__new__(cls, ppshape, dtype, order='F')
+    res = res.transpose(strideOrdering)
+
+    if init:
+        if isinstance(obj, numpy.ndarray):
+            res[...] = obj
+        else:
+            res[...] = 0
+    return res
+        
+
 ##################################################################
 
 class _VigraArray(numpy.ndarray):
@@ -150,17 +278,47 @@ compatible with the memory layout requirements of
 VIGRA's NumpyArray family of C++ views. Do always use
 this class via its subclasses!
     """
-    def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None):
-        from vigranumpycore import constructNumpyArray
+    def __new__(cls, obj, dtype=numpy.float32, order='V', init = True, value = None, axistags = None):
+        # FIXME: we can get axistags in 3 different ways: from 'obj', implicitly from 'order',
+        #        and explicitly from 'axistags'
+        #        this is not yet consistent
         if isinstance(obj, numpy.ndarray) and not isinstance(obj, _VigraArray):
             obj = obj.swapaxes(0, cls.spatialDimensions-1)
+        # FIXME: constructNumpyArray() must be replaced by ndarray.__new__ in order
+        #        to eliminate the link dependency on vigranumpycore.so
         if value is not None:
             res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, False)
             res[...] = value
-            return res
         else:
-            return constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
+            res = constructNumpyArray(cls, obj, cls.spatialDimensions, cls.channels, dtype, order, init)
+        # FIXME: this should work for arbitrary many dimensions
+        if axistags is None:
+            if order == 'A' and not isinstance(obj, numpy.ndarray):
+                order = 'V'
+            if hasattr(obj, 'axistags'):
+                axistags = obj.axistags
+            elif order == 'V' or order == 'F':
+                axistags = [AxisInfo.x, AxisInfo.y, AxisInfo.z][:cls.spatialDimensions]
+            elif order == 'C':
+                axistags = [AxisInfo.z, AxisInfo.y, AxisInfo.x][-cls.spatialDimensions:]
+            elif order == 'A':
+                strideOrder = [int(k) for k in numpy.array(res.strides).argsort()]
+                strideOrder.reverse()
+                strideOrder = strideOrder[:cls.spatialDimensions]
+                strideOrder = [int(k) for k in numpy.array(strideOrder).argsort()]
+                axistags = [AxisInfo.z, AxisInfo.y, AxisInfo.x][-cls.spatialDimensions:]
+                axistags = [axistags[k] for k in strideOrder]
+            if res.ndim > len(axistags):
+                axistags.append(AxisInfo.c)
+        elif hasattr(obj, 'axistags'):
+            pass # FIXME: need to check consistency here
+        res.axistags = AxisTags(axistags)
+        return res
     
+    def __array_finalize__(self, obj):
+        if hasattr(obj, 'axistags'):
+            self.axistags = obj.axistags
+
     @property
     def order(self):
         if self.flags.c_contiguous:
@@ -187,9 +345,7 @@ this class via its subclasses!
         result.__dict__ = copy.deepcopy(self.__dict__, memo)
         return result
     
-    def flatten(self, order = 'C'):
-        return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flatten(order)
-    
+    # FIXME: this should depend on axistags
     def __str__(self, separator = ' ', precision=2, suppress_small=True):
         return numpy.array2string(self.T, separator = separator, precision=precision, suppress_small=suppress_small)
     
@@ -206,6 +362,7 @@ this class via its subclasses!
     channels = classproperty(lambda cls: 0, bands)
     
     @property
+    # FIXME: this should depend on axistags
     def flat(self):
         return self.view(numpy.ndarray).swapaxes(0, self.spatialDimensions-1).flat
     
@@ -328,6 +485,227 @@ this class via its subclasses!
     
     def __xor__(self, other):
         return ufunc.bitwise_xor(self, other)
+
+    def all(self, axis=None, out=None):
+        res = numpy.ndarray.all(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def any(self, axis=None, out=None):
+        res = numpy.ndarray.any(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def argmax(self, axis=None, out=None):
+        res = numpy.ndarray.argmax(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+        
+    def argmin(self, axis=None, out=None):
+        res = numpy.ndarray.argmin(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def cumsum(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.cumsum(self, axis, dtype, out)
+        if res.ndim != self.ndim:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def cumprod(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.cumprod(self, axis, dtype, out)
+        if res.ndim != self.ndim:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    # FIXME: this should depend on axistags
+    def flatten(self, order='C'):
+        res = numpy.ndarray.flatten(self.swapaxes(0, self.spatialDimensions-1), order)
+        res.axistags = AxisTags(1)
+        return res        
+
+    def max(self, axis=None, out=None):
+        res = numpy.ndarray.max(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def mean(self, axis=None, out=None):
+        res = numpy.ndarray.mean(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def min(self, axis=None, out=None):
+        res = numpy.ndarray.min(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+    
+    def nonzero(self):
+        res = numpy.ndarray.nonzero(self)
+        for k in xrange(len(res)):
+            res[k].axistags = AxisTags(self.axistags[k])
+        return res
+
+    def prod(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.prod(self, axis, dtype, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    def ptp(self, axis=None, out=None):
+        res = numpy.ndarray.ptp(self, axis, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+
+    # FIXME: this should depend on axistags
+    def ravel(self, order='C'):
+        res = numpy.ndarray.ravel(self, order)
+        res.axistags = AxisTags(1)
+        return res        
+
+    def repeat(self, repeats, axis=None):
+        res = numpy.ndarray.repeat(self, repeats, axis)
+        if axis is None:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def reshape(self, shape, order='C'):
+        res = numpy.ndarray.reshape(self, shape, order)
+        res.axistags = AxisTags(res.ndim)
+        return res        
+
+    def resize(self, new_shape, refcheck=True, order=False):
+        res = numpy.ndarray.reshape(self, new_shape, refcheck, order)
+        res.axistags = AxisTags(res.ndim)
+        return res        
+            
+    def squeeze(self):
+        res = numpy.ndarray.squeeze(self)
+        if self.ndim != res.ndim:
+            res.axistags = AxisTags(res.axistags)
+            for k in xrange(self.ndim-1, -1, -1):
+                if self.shape[k] == 1:
+                    del res.axistags[k]
+        return res        
+
+    def std(self, axis=None, dtype=None, out=None, ddof=0):
+        res = numpy.ndarray.std(self, axis, dtype, out, ddof)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        if len(res.shape) == 0:
+            res = res.item()
+        return res
+
+    def sum(self, axis=None, dtype=None, out=None):
+        res = numpy.ndarray.sum(self, axis, dtype, out)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        return res
+            
+    def swapaxes(self, i, j):
+        res = numpy.ndarray.swapaxes(self, i, j)
+        if not hasattr(res, 'axistags'):
+            return res
+        res.axistags = AxisTags(res.axistags)
+        res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
+        return res        
+ 
+    def take(self, indices, axis=None, out=None, mode='raise'):
+        res = numpy.ndarray.take(self, indices, axis, out, mode)
+        if axis is None:
+            res.axistags = AxisTags(res.ndim)
+        return res        
+           
+    def transpose(self, *axes):
+        res = numpy.ndarray.transpose(self, *axes)
+        if not hasattr(res, 'axistags'):
+            return res
+        res.axistags = AxisTags(res.axistags)
+        if len(axes) == 1:
+            axes = axes[0]
+        if not axes:
+            res.axistags.transpose()
+        else:
+            res.axistags.transpose(axes)
+        return res
+
+    def var(self, axis=None, dtype=None, out=None, ddof=0):
+        res = numpy.ndarray.var(self, axis, dtype, out, ddof)
+        if axis is not None:
+            res.axistags = AxisTags(res.axistags)
+            del res.axistags[axis]
+        if len(res.shape) == 0:
+            res = res.item()
+        return res
+
+    def transposeToOrder(self, order = 'C'):
+        if order == 'A':
+            return self
+        permutation = [int(k) for k in numpy.array(self.strides).argsort()]
+        if order == 'C':
+            permutation.reverse()
+        elif order == 'V':
+            if hasattr(self, 'axistags'):
+                permutation = self.axistags.canonicalOrdering()
+            else:
+                permutation.reverse()
+                d = self.spatialDimensions - 1
+                permutation[0], permutation[d] = permutation[d], permutation[0]
+        return self.transpose(permutation)
+    
+    def transposeToVigraOrder(self):
+        return self.transposeToOrder('V')
+
+    def transposeToNumpyOrder(self):
+        return self.transposeToOrder('C')
+    
+    @property
+    def T(self):
+        return self.transpose()
+
+    def __getitem__(self, index):
+        '''x.__getitem__(y) <==> x[y]
+         
+           In addition to the usual indexing functionality, this function
+           also updates the axistags of the result array. There are three cases:
+             * getitem creates a value => no axistags are required
+             * getitem creates an arrayview => axistags are transferred from the
+                                             corresponding axes of the base array,
+                                             axes resulting from 'newaxis' get tag 'None'
+             * getitem creates a copy of an array (fancy indexing) => all axistags are 'None'
+        '''
+        res = numpy.ndarray.__getitem__(self, index)
+        if res is not self and hasattr(res, 'axistags'):
+            if(res.base is self):
+                res.axistags = res.axistags.transform(index, res.ndim)
+            else:
+                res.axistags = AxisTags(res.ndim)
+        return res
+
+    for k in ['all', 'any', 'argmax', 'argmin', 'cumsum', 'cumprod', 'flatten', 
+               'max', 'mean', 'min', 'nonzero', 'prod', 'ptp', 'ravel', 'repeat', 
+               'reshape', 'resize', 'squeeze', 'std', 'sum', 'swapaxes', 'take', 
+               'transpose', 'var']:
+        exec k + '.__doc__ = numpy.ndarray.' + k + '.__doc__'
+
 
 ##################################################################
 

@@ -230,7 +230,7 @@ public:
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -260,9 +260,9 @@ vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor sr
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(N == src.size(si),
+    vigra_precondition(N == (int)src.size(si),
         "vectorToTensorMultiArray(): Wrong number of channels in input array.");
-    vigra_precondition(M == dest.size(di),
+    vigra_precondition(M == (int)dest.size(di),
         "vectorToTensorMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 
@@ -319,7 +319,7 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -398,7 +398,7 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -428,9 +428,9 @@ tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == src.size(si),
+    vigra_precondition(M == (int)src.size(si),
         "tensorEigenvaluesMultiArray(): Wrong number of channels in input array.");
-    vigra_precondition(N == dest.size(di),
+    vigra_precondition(N == (int)dest.size(di),
         "tensorEigenvaluesMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 
@@ -487,7 +487,7 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__tensorutilities_8hxx-source.html">vigra/multi_tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
     \code
     MultiArray<3, float> vol(shape);
@@ -516,7 +516,7 @@ tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == src.size(si),
+    vigra_precondition(M == (int)src.size(si),
         "tensorDeterminantMultiArray(): Wrong number of channels in output array.");
 
     transformMultiArray(si, shape, src, di, dest, 

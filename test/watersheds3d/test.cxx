@@ -128,7 +128,7 @@ struct Watersheds3dTest
 
             int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(volume),
                                                         vigra::destMultiArray(labelVolume));
-            should(max_region_label == (*list_iter).size());
+            should(max_region_label == (int)(*list_iter).size());
         }
     }
 
@@ -154,7 +154,7 @@ struct Watersheds3dTest
 
             int max_region_label = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(volume),
                                                                 vigra::destMultiArray(labelVolume));
-            should(max_region_label == (*list_iter).size());
+            should(max_region_label == (int)(*list_iter).size());
         }
     }
 
@@ -214,11 +214,14 @@ struct Watersheds3dTest
 
         int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
                                                        vigra::destMultiArray(labelVolume));
-				//int c=1;
-				//for(IntVolume::iterator iter=labelVolume.begin(); iter!=labelVolume.end(); ++iter, ++c){
-				//		std::cerr << *iter << ", ";
-				//		if(c%4==0) std::cerr << std::endl;
-				//		if(c%16==0) std::cerr << std::endl;
+		
+        shouldEqual(max_region_label, 2);
+        
+        //int c=1;
+        //for(IntVolume::iterator iter=labelVolume.begin(); iter!=labelVolume.end(); ++iter, ++c){
+            //std::cerr << *iter << ", ";
+            //if(c%4==0) std::cerr << std::endl;
+            //if(c%16==0) std::cerr << std::endl;
         //}
 
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
@@ -265,6 +268,7 @@ struct Watersheds3dTest
         int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
                                                        vigra::destMultiArray(labelVolume));
 
+        shouldEqual(max_region_label, 3);
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
     }
 

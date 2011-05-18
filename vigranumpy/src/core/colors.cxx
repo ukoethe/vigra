@@ -52,10 +52,10 @@ template<class ValueType>
 struct BrightnessFunctor
 {
     double factor, min, max, diff;
-    
+
     typedef ValueType argument_type;
     typedef ValueType result_type;
-    
+
     BrightnessFunctor(double f, double mi, double ma)
     : factor(0.0), min(mi), max(ma), diff(ma-mi)
     {
@@ -65,11 +65,11 @@ struct BrightnessFunctor
             "brightness(): Range upper bound must be greater than lower bound.");
         factor = 0.25 * diff * std::log(f);
     }
-    
+
     result_type operator()(argument_type v) const
     {
         double r = v + factor;
-        
+
         return detail::RequiresExplicitCast<result_type>::cast(
                    r < min
                        ? min
@@ -83,10 +83,10 @@ template<class ValueType>
 struct ContrastFunctor
 {
     double factor, min, max, diff, offset;
-    
+
     typedef ValueType argument_type;
     typedef ValueType result_type;
-    
+
     ContrastFunctor(double f, double mi, double ma)
     : factor(f), min(mi), max(ma), diff(0.5*(ma-mi)), offset(diff*(1.0-f))
     {
@@ -95,11 +95,11 @@ struct ContrastFunctor
         vigra_precondition(diff > 0.0,
             "contrast(): Range upper bound must be greater than lower bound.");
     }
-   
+
     result_type operator()(argument_type v) const
     {
         double r = v * factor + offset;
-        
+
         return detail::RequiresExplicitCast<result_type>::cast(
                    r < min
                        ? min
@@ -142,7 +142,7 @@ bool parseRange(python::object range, double * min, double * max,
 }
 
 template < class PixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType> > image,
                           double factor,
                           python::object range,
@@ -156,19 +156,19 @@ pythonBrightnessTransform(NumpyArray<N, Multiband<PixelType> > image,
         min = minmax.min;
         max = minmax.max;
     }
-    
+
     vigra_precondition(min < max,
           "brightness(): Range upper bound must be greater than lower bound.");
-    
+
     res.reshapeIfEmpty(image.shape(),"brightness(): Output images has wrong dimensions");
 
-    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), 
+    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res),
                         BrightnessFunctor<PixelType>(factor, min, max));
     return res;
 }
 
 template < class PixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonContrastTransform(NumpyArray<N, Multiband<PixelType> > image,
                         double factor,
                         python::object range,
@@ -184,17 +184,17 @@ pythonContrastTransform(NumpyArray<N, Multiband<PixelType> > image,
         min = minmax.min;
         max = minmax.max;
     }
-    
+
     vigra_precondition(min < max,
           "contrast(): Range upper bound must be greater than lower bound.");
-    
-    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), 
+
+    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res),
                         ContrastFunctor<PixelType>(factor, min, max));
     return res;
 }
 
 template < class PixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonGammaTransform(NumpyArray<N, Multiband<PixelType> > image,
                      double gamma,
                      python::object range,
@@ -210,17 +210,17 @@ pythonGammaTransform(NumpyArray<N, Multiband<PixelType> > image,
         min = minmax.min;
         max = minmax.max;
     }
-    
+
     vigra_precondition(min < max,
           "gamma_correction(): Range upper bound must be greater than lower bound.");
-    
-    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), 
+
+    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res),
                         GammaFunctor<PixelType>(1.0 / gamma, PixelType(min), PixelType(max)));
     return res;
 }
 
 template < class SrcPixelType, class DestPixelType, unsigned int N>
-NumpyAnyArray 
+NumpyAnyArray
 pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
                          python::object oldRange,
                          python::object newRange,
@@ -242,18 +242,18 @@ pythonLinearRangeMapping(NumpyArray<N, Multiband<SrcPixelType> > image,
         newMin = 0.0;
         newMax = 255.0;
     }
-    
+
     vigra_precondition(oldMin < oldMax && newMin < newMax,
           "linearRangeMapping(): Range upper bound must be greater than lower bound.");
-    
-    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), 
+
+    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res),
                         linearRangeMapping(oldMin, oldMax, newMin, newMax));
     return res;
 }
 
 
 template < class PixelType, unsigned int N, class Functor >
-NumpyAnyArray 
+NumpyAnyArray
 pythonColorTransform(NumpyArray<N, TinyVector<PixelType, 3> > image,
                      NumpyArray<N, TinyVector<PixelType, 3> > res)
 {
@@ -275,10 +275,10 @@ def("transform_" #name, registerConverters(&pythonColorTransform<float, 2, name#
 void defineColors()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
-    
-    def("brightness", 
+
+    def("brightness",
          registerConverters(&pythonBrightnessTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust the brightness of a 2D scalar or multiband image. The function applies the formula::\n"
@@ -292,12 +292,12 @@ void defineColors()
         "\n"
         "   range = image.min(), image.max()\n\n");
 
-    def("brightness", 
+    def("brightness",
          registerConverters(&pythonBrightnessTransform<float, 4>),
          (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
-         
-    def("contrast", 
+
+    def("contrast",
          registerConverters(&pythonContrastTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust the contrast of an image or volume. The function applies the formula::\n"
@@ -311,32 +311,32 @@ void defineColors()
         "\n"
         "   range = image.min(), image.max()\n\n");
 
-    def("contrast", 
+    def("contrast",
          registerConverters(&pythonContrastTransform<float, 4>),
          (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
-          
-    def("gammaCorrection", 
+
+    def("gammaCorrection",
          registerConverters(&pythonGammaTransform<float, 3>),
-         (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
+         (arg("image"), arg("gamma"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Adjust gamma correction to an image or volume. The function applies the formula::\n"
         "\n"
         "    diff = range[1] - range[0]\n"
         "    out = pow((image - range[0]) / diff, 1.0 / gamma) * diff + range[0]\n"
         "\n"
-        "to each element of the array. 'factor' and 'range[1] - range[0]' must be "
+        "to each element of the array. 'gamma' and 'range[1] - range[0]' must be "
         "positive. Elements outside the given range are clipped at the range borders. "
         "If 'range' is None or \"\" or \"auto\", the range is set to the actual range "
         "of 'image'::\n"
         "\n"
         "   range = image.min(), image.max()\n\n");
 
-    def("gammaCorrection", 
+    def("gammaCorrection",
          registerConverters(&pythonGammaTransform<float, 4>),
-         (arg("volume"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
+         (arg("volume"), arg("gamma"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume.\n");
-          
-    def("linearRangeMapping", 
+
+    def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, UInt8, 3>),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
         "Convert the intensity range of a 2D scalar or multiband image. The function applies a linear transformation "
@@ -348,28 +348,28 @@ void defineColors()
         "    out = (image - oldRange[0]) / oldDiff * newDiff + newRange[0]\n"
         "\n"
         "to each element of the array. 'oldDiff' and 'newDiff' must be "
-        "positive. If 'oldRange' is None or \"\" or \"auto\" (the default), the range is set to " 
+        "positive. If 'oldRange' is None or \"\" or \"auto\" (the default), the range is set to "
         "the actual range of 'image'::\n"
         "\n"
         "   range = image.min(), image.max()\n\n"
         "If 'newRange' is None or \"\" or \"auto\", it is set to (0, 255.0). "
         "If 'out' is explicitly passed, it must be a uin8 image.\n");
 
-    def("linearRangeMapping", 
+    def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, float, 3>),
          (arg("image"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise, but 'out' is a float32 image.\n");
-          
-    def("linearRangeMapping", 
+
+    def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, UInt8, 4>),
          (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise for a 3D scalar or multiband volume, when 'out' is a unit8 volume.\n");
-          
-    def("linearRangeMapping", 
+
+    def("linearRangeMapping",
          registerConverters(&pythonLinearRangeMapping<float, float, 4>),
          (arg("volume"), arg("oldRange")="auto", arg("newRange")=make_tuple(0.0, 255.0), arg("out")=object()),
          "Likewise, but 'out' is a float32 volume.\n");
-          
+
 
     exportColorTransform(RGB2sRGB);
     exportColorTransform(sRGB2RGB);

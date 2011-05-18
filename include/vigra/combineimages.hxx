@@ -156,7 +156,7 @@ combineThreeLines(SrcIterator1 s1,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
+        <b>\#include</b> \<vigra/combineimages.hxx\><br>
         Namespace: vigra
     
     \code
@@ -297,7 +297,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
+        <b>\#include</b> \<vigra/combineimages.hxx\><br>
         Namespace: vigra
     
     \code
@@ -445,7 +445,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="combineimages_8hxx-source.html">vigra/combineimages.hxx</a>\><br>
+        <b>\#include</b> \<vigra/combineimages.hxx\><br>
         Namespace: vigra
     
     \code

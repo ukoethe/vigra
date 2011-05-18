@@ -35,11 +35,14 @@
 
 #include <iostream>
 #include <iterator>
+#include <algorithm>
+#include <queue>
 #include "unittest.hxx"
 #include "vigra/accessor.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"
 #include "vigra/sized_int.hxx"
+#include "vigra/bucket_queue.hxx"
 
 using namespace vigra;
 
@@ -211,14 +214,161 @@ struct ArrayVectorTest
         Accessor a;
         copyLine(data, data + 5, a, std::back_inserter(vector_), a);
         
-        shouldEqual(vector_.size(), 5);
+        shouldEqual(vector_.size(), 5u);
         shouldEqualSequence(vector_.begin(), vector_.end(), data);
     }
 
     void testAmbiguousConstructor()
     {
-        ArrayVector<ptrdiff_t> a(2, ptrdiff_t(1));
-        ArrayVector<ptrdiff_t> b(a.begin(), a.end());
+        ArrayVector<std::ptrdiff_t> a(2, std::ptrdiff_t(1));
+        ArrayVector<std::ptrdiff_t> b(a.begin(), a.end());
+    }
+};
+
+struct BucketQueueTest
+{
+    struct Priority
+    {
+        int operator()(double v) const
+        {
+            return (int)v;
+        }
+    };
+    
+    ArrayVector<double> data;
+    ArrayVector<int> idata;
+    
+    BucketQueueTest()
+    {
+        data.push_back(1.1);
+        data.push_back(4.4);
+        data.push_back(12.2);
+        data.push_back(2.2);
+        data.push_back(3.6);
+        data.push_back(4.5);
+        
+        idata.resize(data.size());
+        std::transform(data.begin(), data.end(), idata.begin(), Priority());
+    }
+    
+    void testDescending()
+    {
+        std::priority_queue<int> queue;
+        BucketQueue<int> bqueue;
+        
+        for(unsigned int k=0; k<idata.size(); ++k)
+        {
+            queue.push(idata[k]);
+            bqueue.push(idata[k], idata[k]);
+        }
+        
+        shouldEqual(idata.size(), bqueue.size());
+        shouldEqual(false, bqueue.empty());
+        
+        for(unsigned int k=0; k<idata.size(); ++k)
+        {
+			shouldEqual(queue.top(), bqueue.top());
+            queue.pop();
+            bqueue.pop();
+        }
+        
+        shouldEqual(0u, bqueue.size());
+        shouldEqual(true, bqueue.empty());        
+    }
+    
+    void testAscending()
+    {
+		std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
+        BucketQueue<int, true> bqueue;
+        
+        for(unsigned int k=0; k<idata.size(); ++k)
+        {
+            queue.push(idata[k]);
+            bqueue.push(idata[k], idata[k]);
+        }
+        
+        shouldEqual(idata.size(), bqueue.size());
+        shouldEqual(false, bqueue.empty());
+        
+        for(unsigned int k=0; k<idata.size(); ++k)
+        {
+			shouldEqual(queue.top(), bqueue.top());
+            queue.pop();
+            bqueue.pop();
+        }
+        
+        shouldEqual(0u, bqueue.size());
+        shouldEqual(true, bqueue.empty());        
+    }
+    
+    void testDescendingMapped()
+    {
+        Priority priority;
+        std::priority_queue<int> queue;
+        MappedBucketQueue<double, Priority> bqueue;
+        
+        for(unsigned int k=0; k<data.size(); ++k)
+        {
+            queue.push(idata[k]);
+            bqueue.push(data[k]);
+        }
+        
+        shouldEqual(data.size(), bqueue.size());
+        shouldEqual(false, bqueue.empty());
+        
+        for(unsigned int k=0; k<data.size(); ++k)
+        {
+			shouldEqual(queue.top(), priority(bqueue.top()));
+			switch(k)
+			{
+			  case 1:
+				  shouldEqual(4.4, bqueue.top());
+				  break;
+			  case 2:
+				  shouldEqual(4.5, bqueue.top());
+				  break;
+			}
+            queue.pop();
+            bqueue.pop();
+        }
+        
+        shouldEqual(0u, bqueue.size());
+        shouldEqual(true, bqueue.empty());        
+    }
+    
+    void testAscendingMapped()
+    {
+        Priority priority;
+        std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
+        MappedBucketQueue<double, Priority, true> bqueue;
+        
+        for(unsigned int k=0; k<data.size(); ++k)
+        {
+            queue.push(idata[k]);
+            bqueue.push(data[k]);
+        }
+        
+        shouldEqual(data.size(), bqueue.size());
+        shouldEqual(false, bqueue.empty());
+        
+        for(unsigned int k=0; k<data.size(); ++k)
+        {
+			shouldEqual(queue.top(), priority(bqueue.top()));
+			switch(k)
+			{
+			  case 3:
+				  shouldEqual(4.4, bqueue.top());
+				  break;
+			  case 4:
+				  shouldEqual(4.5, bqueue.top());
+				  break;
+			}
+            queue.pop();
+            bqueue.pop();
+        }
+        
+        shouldEqual(0u, bqueue.size());
+        shouldEqual(true, bqueue.empty());        
     }
 };
 
@@ -226,14 +376,14 @@ struct SizedIntTest
 {
     void testSizedInt()
     {
-        shouldEqual(sizeof(Int8), 1);
-        shouldEqual(sizeof(Int16), 2);
-        shouldEqual(sizeof(Int32), 4);
-        shouldEqual(sizeof(UInt8), 1);
-        shouldEqual(sizeof(UInt16), 2);
-        shouldEqual(sizeof(UInt32), 4);
-        should(sizeof(IntBiggest) >= 4);
-        should(sizeof(UIntBiggest) >= 4);
+        shouldEqual(sizeof(Int8), 1u);
+        shouldEqual(sizeof(Int16), 2u);
+        shouldEqual(sizeof(Int32), 4u);
+        shouldEqual(sizeof(UInt8), 1u);
+        shouldEqual(sizeof(UInt16), 2u);
+        shouldEqual(sizeof(UInt32), 4u);
+        should(sizeof(IntBiggest) >= 4u);
+        should(sizeof(UIntBiggest) >= 4u);
     }
 };
 
@@ -309,6 +459,17 @@ struct MetaprogrammingTest
     }
 };
 
+void stringTest()
+{
+	std::string s;
+	s << "Hallo " << 1 << " " << 2.0 << " " << false;
+	shouldEqual(s, std::string("Hallo 1 2 0"));
+
+	shouldEqual(asString(1), "1");
+	shouldEqual(asString(2.0), "2");
+	shouldEqual(asString(false), "0");
+}
+
 struct UtilitiesTestSuite
 : public vigra::test_suite
 {
@@ -318,10 +479,15 @@ struct UtilitiesTestSuite
         add( testCase( &ArrayVectorTest::testAccessor));
         add( testCase( &ArrayVectorTest::testBackInsertion));
         add( testCase( &ArrayVectorTest::testAmbiguousConstructor));
+        add( testCase( &BucketQueueTest::testDescending));
+        add( testCase( &BucketQueueTest::testAscending));
+        add( testCase( &BucketQueueTest::testDescendingMapped));
+        add( testCase( &BucketQueueTest::testAscendingMapped));
         add( testCase( &SizedIntTest::testSizedInt));
         add( testCase( &MetaprogrammingTest::testInt));
         add( testCase( &MetaprogrammingTest::testLogic));
         add( testCase( &MetaprogrammingTest::testTypeTools));
+        add( testCase( &stringTest));
     }
 };
 

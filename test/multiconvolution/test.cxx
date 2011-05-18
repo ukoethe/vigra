@@ -134,8 +134,6 @@ struct MultiArraySeparableConvolutionTest
         Image3D dn( src.shape() );
         Image3D dest3( src.shape() );
 
-        int depth = src.shape()[2];
-
         for( int d = 0; d < 3; ++d ) 
         {
             std::vector<vigra::Kernel1D<float> > kernels( 3 );

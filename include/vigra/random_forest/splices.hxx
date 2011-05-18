@@ -102,7 +102,7 @@ Splice<T> _spl(T b, int size, T e)
     return Splice<T>(b, size, e);
 }
 
-Splice<int> _spl(int size)
+inline Splice<int> _spl(int size)
 {
     return Splice<int>(0, size);
 }

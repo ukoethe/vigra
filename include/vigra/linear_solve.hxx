@@ -704,30 +704,46 @@ unsigned int linearSolveQR(MultiArrayView<2, T, C1> const & A, MultiArrayView<2,
     /** Create the inverse or pseudo-inverse of matrix \a v.
 
         If the matrix \a v is square, \a res must have the same shape and will contain the
-        inverse of \a v. If \a v is rectangular, it must have more rows than columns, and \a res
-        must have the transposed shape of \a v. The inverse is then computed in the least-squares 
+        inverse of \a v. If \a v is rectangular, \a res must have the transposed shape 
+        of \a v. The inverse is then computed in the least-squares 
         sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
         The function returns <tt>true</tt> upon success, and <tt>false</tt> if \a v 
         is not invertible (has not full rank). The inverse is computed by means of QR 
         decomposition. This function can be applied in-place.
         
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
 bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
 {
+    typedef typename MultiArrayShape<2>::type Shape;
+    
     const MultiArrayIndex n = columnCount(v);
-    vigra_precondition(n <= rowCount(v),
-       "inverse(): input matrix must have at least as many rows as columns.");
-    vigra_precondition(n == rowCount(res) && rowCount(v) == columnCount(res),
+    const MultiArrayIndex m = rowCount(v);
+    vigra_precondition(n == rowCount(res) && m == columnCount(res),
        "inverse(): shape of output matrix must be the transpose of the input matrix' shape.");
-
-    Matrix<T> r(v.shape()), q(n, n);
-    if(!qrDecomposition(v, q, r))
-        return false; // a didn't have full rank
-    linearSolveUpperTriangular(r, transpose(q), res); 
+    
+    if(m < n)
+    {
+        MultiArrayView<2, T, StridedArrayTag> vt = transpose(v);
+        Matrix<T> r(vt.shape()), q(n, n);
+        if(!qrDecomposition(vt, q, r))
+            return false; // a didn't have full rank
+        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(m,m)), 
+                                   transpose(q).subarray(Shape(0,0), Shape(m,n)), 
+                                   transpose(res)); 
+    }
+    else
+    {
+        Matrix<T> r(v.shape()), q(m, m);
+        if(!qrDecomposition(v, q, r))
+            return false; // a didn't have full rank
+        linearSolveUpperTriangular(r.subarray(Shape(0,0), Shape(n,n)), 
+                                   transpose(q).subarray(Shape(0,0), Shape(n,m)), 
+                                   res); 
+    }
     return true;
 }
 
@@ -735,8 +751,8 @@ bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
 
         The result is returned as a temporary matrix. If the matrix \a v is square, 
         the result will have the same shape and contains the inverse of \a v. 
-        If \a v is rectangular, it must have more rows than columns, and the result will
-        have the transposed shape of \a v. The inverse is then computed in the least-squares 
+        If \a v is rectangular, the result will have the transposed shape of \a v. 
+        The inverse is then computed in the least-squares 
         sense, i.e. \a res will be the pseudo-inverse (Moore-Penrose inverse).
         The inverse is computed by means of QR decomposition. If \a v
         is not invertible, <tt>vigra::PreconditionViolation</tt> exception is thrown.
@@ -749,8 +765,8 @@ bool inverse(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &res)
         vigra::Matrix<double> m = inverse(v);
         \endcode
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -792,8 +808,8 @@ TemporaryMatrix<T> inverse(const TemporaryMatrix<T> &v)
         <DT>"LU"<DD> (default) Compute the solution by means of LU decomposition.
         </DL>
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1>
@@ -836,8 +852,8 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
         This is useful to avoid multiplication of very large numbers in big matrices.
         It is implemented by means of Cholesky decomposition.
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1>
@@ -884,8 +900,8 @@ T logDeterminant(MultiArrayView<2, T, C1> const & a)
         If \a A is not symmetric, a <tt>ContractViolation</tt> exception is thrown. If it
         is not positive definite, the function returns <tt>false</tt>.
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -939,8 +955,8 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         The decomposition is computed by householder transformations. It can be applied in-place,
         i.e. <tt>&a == &q</tt> or <tt>&a == &r</tt> are allowed.
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -991,8 +1007,8 @@ bool reverseElimination(const MultiArrayView<2, T, C1> &r, const MultiArrayView<
         columnCount(b) == columnCount(x);
         \endcode
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1042,8 +1058,8 @@ bool linearSolveUpperTriangular(const MultiArrayView<2, T, C1> &r, const MultiAr
         columnCount(b) == columnCount(x);
         \endcode
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1091,8 +1107,8 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
         columnCount(b) == columnCount(x);
         \endcode
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1150,8 +1166,8 @@ void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const 
         columnCount(b) == columnCount(x);
         \endcode
 
-    <b>\#include</b> \<<a href="linear__solve_8hxx-source.html">vigra/linear_solve.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/linear_solve.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>

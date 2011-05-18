@@ -323,7 +323,7 @@ struct ConvolutionTest
         for(int y = 0; i_dest != i_dest_end; y++){
             for(int x = 0; x < dest.size().x; x++, ++i_dest){
                 if(x == 0 || y == 0 || x == 9 || y == 9){
-                    should(acc(i_dest) == 42.1);
+                    shouldEqual(acc(i_dest), 42.1);
                 }
             }
         }
@@ -338,8 +338,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(sym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_CLIP));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -365,8 +363,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_WRAP));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -392,8 +388,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REFLECT));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -419,8 +413,6 @@ struct ConvolutionTest
         convolveImage(srcImageRange(unsym_image), destImage(dest), kernel2d(unsym_kernel, BORDER_TREATMENT_REPEAT));
 
         Image::Iterator i_dest_2D = dest.upperLeft();
-        Image::ScanOrderIterator i_dest = dest.begin();
-        Image::ScanOrderIterator i_dest_end = dest.end();
         Image::Accessor acc = dest.accessor();
 
         //Kontrollierung der Randbehandlung und ein paar Pixel
@@ -886,6 +878,19 @@ struct ConvolutionTest
 
             shouldEqualTolerance(grad-acc(i), 0.0, 1e-12);
         }
+
+		// compare with 2D convolution
+		vigra::Kernel2D<double> gradx;
+		gradx.initSeparable(grad, gauss);
+		Image nsgrad(lenna.size());
+		convolveImage(srcImageRange(lenna), destImage(nsgrad), kernel2d(gradx));
+
+		using namespace vigra::functor;
+
+		combineTwoImages(srcImageRange(nsgrad), srcImage(tmp1), destImage(nsgrad), Arg1() - Arg2());
+		Image zero(lenna.size(), 0.0);
+		shouldEqualSequenceTolerance(nsgrad.data(), nsgrad.data()+nsgrad.width()*nsgrad.height(), 
+			                         zero.data(), 1e-12);
     }
     
     void gradientTest()

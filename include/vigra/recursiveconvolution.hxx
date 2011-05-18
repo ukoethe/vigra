@@ -116,7 +116,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     
@@ -224,7 +224,10 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         old = NumericTraits<TempType>::zero();
     }
     else
+    {
         vigra_fail("recursiveFilterLine(): Unknown border treatment mode.\n");
+        old = NumericTraits<TempType>::zero(); // fix a stupid warning
+    }
 
     // left side of filter
     for(x=0, is = istart; x < w; ++x, ++is)
@@ -395,7 +398,7 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     
@@ -540,7 +543,7 @@ recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     
@@ -628,7 +631,7 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     
@@ -749,7 +752,7 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     
@@ -902,7 +905,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1036,7 +1039,7 @@ inline void recursiveFilterX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1126,7 +1129,7 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1233,7 +1236,7 @@ inline void recursiveSmoothX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1365,7 +1368,7 @@ inline void recursiveFilterY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1455,7 +1458,7 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1545,7 +1548,7 @@ inline void recursiveSmoothY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1635,7 +1638,7 @@ inline void recursiveFirstDerivativeX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1725,7 +1728,7 @@ inline void recursiveFirstDerivativeY(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1815,7 +1818,7 @@ inline void recursiveSecondDerivativeX(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="recursiveconvolution_8hxx-source.html">vigra/recursiveconvolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
     
     \code

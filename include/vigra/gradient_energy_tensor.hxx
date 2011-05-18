@@ -105,7 +105,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="gradient__energy__tensor_8hxx-source.html">vigra/gradient_energy_tensor.hxx</a>\>
+    <b>\#include</b> \<vigra/gradient_energy_tensor.hxx\>
 
     \code
     FImage img(w,h);

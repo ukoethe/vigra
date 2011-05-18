@@ -277,6 +277,24 @@ python_ptr shapeToPythonTuple(ArrayVectorView<T> const & shape)
     return tuple;
 }
 
+class PyAllowThreads
+{
+    PyThreadState * save_;
+    
+    // make it non-copyable
+    PyAllowThreads(PyAllowThreads const &);
+    PyAllowThreads & operator=(PyAllowThreads const &);
+  
+  public:
+    PyAllowThreads()
+    : save_(PyEval_SaveThread())
+    {}
+    
+    ~PyAllowThreads()
+    {
+        PyEval_RestoreThread(save_);
+    }
+};
 
 } // namespace vigra
 

@@ -202,7 +202,7 @@ internalSeparableConvolveMultiArrayTmp(
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -326,7 +326,7 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -435,7 +435,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -521,7 +521,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -561,7 +561,7 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(N == dest.size(di),
+    vigra_precondition(N == (int)dest.size(di),
         "gaussianGradientMultiArray(): Wrong number of channels in output array.");
 
     vigra_precondition(sigma > 0.0, "gaussianGradientMultiArray(): Scale must be positive.");
@@ -632,7 +632,7 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -672,7 +672,7 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(N == dest.size(di),
+    vigra_precondition(N == (int)dest.size(di),
         "symmetricGradientMultiArray(): Wrong number of channels in output array.");
 
     Kernel1D<KernelType> filter;
@@ -743,7 +743,7 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, float> source(shape);
@@ -862,7 +862,7 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, float> source(shape);
@@ -902,7 +902,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == dest.size(di),
+    vigra_precondition(M == (int)dest.size(di),
         "hessianOfGaussianMultiArray(): Wrong number of channels in output array.");
 
     vigra_precondition(sigma > 0.0, "hessianOfGaussianMultiArray(): Scale must be positive.");
@@ -1015,7 +1015,7 @@ struct StructurTensorFunctor
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__convolution_8hxx-source.html">vigra/multi_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, RGBValue<float> > source(shape);
@@ -1058,7 +1058,7 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
         if(shape[k] <=0)
             return;
 
-    vigra_precondition(M == dest.size(di),
+    vigra_precondition(M == (int)dest.size(di),
         "structureTensorMultiArray(): Wrong number of channels in output array.");
 
     vigra_precondition(innerScale > 0.0 && outerScale >= 0.0,

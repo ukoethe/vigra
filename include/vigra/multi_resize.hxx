@@ -152,7 +152,7 @@ internalResizeMultiArrayOneDimension(
     IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
     pp. 834-848 (part II), 1993.
 
-    to obtain optimal interpolation quality and speed. You may pass the funcion
+    to obtain optimal interpolation quality and speed. You may pass the function
     a spline of arbitrary order (e.g. <TT>BSpline<ORDER, double></tt> or
     <TT>CatmullRomSpline<double></tt>). The default is a third order spline
     which gives a twice continuously differentiable interpolant.
@@ -174,7 +174,7 @@ internalResizeMultiArrayOneDimension(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="multi__resize_8hxx-source.html">vigra/multi_resize.hxx</a>\><br>
+        <b>\#include</b> \<vigra/multi_resize.hxx\><br>
         Namespace: vigra
 
     \code

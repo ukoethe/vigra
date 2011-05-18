@@ -115,11 +115,18 @@
              <BR>&nbsp;&nbsp;&nbsp;<em>Meta-information about arithmetic types</em>
         <LI> \ref MathConstants
              <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
-        <LI> Grid Neighborhood Specification
-             <BR>&nbsp;&nbsp;&nbsp;\ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood) and
-                                   \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
-        <LI> \ref vigra::Rational, \ref vigra::TinyVector, \ref vigra::FFTWComplex, \ref vigra::FixedPoint16
-                <BR>&nbsp;&nbsp;&nbsp;<em>Number types</em>
+        <LI> <b>Grid Neighborhood Specification</b>
+             <UL style="list-style-image:url(documents/bullet.gif)">
+             <LI> \ref PixelNeighborhood "2-dimensional" (4- and 8-neighborhood)
+             <LI> \ref VoxelNeighborhood "3-dimensional" (6- and 26-neighborhood)
+             </UL>
+        <LI> <b>Number Types</b>
+            <UL style="list-style-image:url(documents/bullet.gif)">
+            <LI> \ref vigra::Rational
+            <LI> \ref vigra::TinyVector
+            <LI> \ref vigra::FFTWComplex
+            <LI>\ref vigra::FixedPoint16
+            </UL>
         <LI> \ref RandomNumberGeneration
              <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
         <LI> \ref Polynomials

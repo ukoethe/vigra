@@ -247,7 +247,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 
     <b> Declaration:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
 
     \code
     namespace vigra {
@@ -422,7 +422,7 @@ createResamplingKernels(Kernel const & kernel,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
 
 
     \code
@@ -561,7 +561,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
 
 
     \code
@@ -687,7 +687,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
 
 
     \code
@@ -757,7 +757,7 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
     pass arguments explicitly:
@@ -880,7 +880,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
     pass arguments explicitly:
@@ -1004,7 +1004,7 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
 
     Sorry, no \ref detailedDocumentation() available yet.
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
 template <class Image, class Alloc>
@@ -1028,7 +1028,7 @@ void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLe
 
     Sorry, no \ref detailedDocumentation() available yet.
 
-    <b>\#include</b> \<<a href="resampling__convolution_8hxx-source.html">vigra/resampling_convolution.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 */
 template <class Image, class Alloc>

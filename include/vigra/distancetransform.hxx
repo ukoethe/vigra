@@ -332,7 +332,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="distancetransform_8hxx-source.html">vigra/distancetransform.hxx</a>\><br>
+    <b>\#include</b> \<vigra/distancetransform.hxx\><br>
     Namespace: vigra
     
     

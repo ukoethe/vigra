@@ -117,7 +117,7 @@ class LineBasedColumnIteratorPolicy
 /** Implementation of the standard image iterator for \ref vigra::BasicImage.
     See \ref vigra::ImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class IMAGEITERATOR, class PIXELTYPE,
@@ -254,7 +254,7 @@ class BasicImageIteratorBase
 /** Implementation of the standard image iterator for \ref vigra::BasicImage.
     See \ref vigra::ImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class PIXELTYPE, class ITERATOR>
@@ -286,7 +286,7 @@ class BasicImageIterator
 /** Implementation of the standard const image iterator for \ref vigra::BasicImage.
     See \ref vigra::ConstImageIterator for documentation.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
     Namespace: vigra
 */
 template <class PIXELTYPE, class ITERATOR>
@@ -465,7 +465,7 @@ VIGRA_DEFINE_ITERATORTRAITS(VIGRA_PIXELTYPE)
     A customized memory allocator can be specified as a templated argument
     and passed in the constructor.
 
-    <b>\#include</b> \<<a href="basicimage_8hxx-source.html">vigra/basicimage.hxx</a>\>
+    <b>\#include</b> \<vigra/basicimage.hxx\>
 
     Namespace: vigra
 */
@@ -818,11 +818,11 @@ class BasicImage
     }
 
         /** resize image to given size and initialize by copying data
-            from the C-style arra \a data.
+            from the C-style array \a data.
         */
     void resizeCopy(int width, int height, const_pointer data);
 
-        /** resize image to size of other image and copy it's data
+        /** resize image to size of other image and copy its data
         */
     void resizeCopy(const BasicImage & rhs)
     {
@@ -1090,7 +1090,7 @@ class BasicImage
 
 template <class PIXELTYPE, class Alloc>
 BasicImage<PIXELTYPE, Alloc> &
-BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage<PIXELTYPE, Alloc> & rhs)
+BasicImage<PIXELTYPE, Alloc>::operator=(const BasicImage & rhs)
 {
     if(this != &rhs)
     {
@@ -1230,7 +1230,7 @@ BasicImage<PIXELTYPE, Alloc>::resizeCopy(int width, int height, const_pointer da
 
 template <class PIXELTYPE, class Alloc>
 void
-BasicImage<PIXELTYPE, Alloc>::swap( BasicImage<PIXELTYPE, Alloc>& rhs )
+BasicImage<PIXELTYPE, Alloc>::swap( BasicImage & rhs )
 {
   if (&rhs!=this)
   {

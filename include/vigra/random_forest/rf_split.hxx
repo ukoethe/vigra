@@ -830,7 +830,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t               min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 
@@ -855,15 +855,17 @@ public:
         bestCurrentCounts[1].resize(ext.class_count_);
     }
     /** calculate the best gini split along a Feature Column
-     * \param column, the feature vector - has to support the [] operator
-     * \param labels, the label vector 
+     * \param column  the feature vector - has to support the [] operator
+     * \param g       ???
+     * \param labels  the label vector 
      * \param begin 
      * \param end     (in and out)
      *                begin and end iterators to the indices of the
      *                samples in the current region. 
      *                the range begin - end is sorted by the column supplied
      *                during function execution.
-     * \param class_counts
+     * \param region_response
+     *                ???
      *                class histogram of the range. 
      *
      *  precondition: begin, end valid range, 
@@ -997,7 +999,7 @@ class ThresholdSplit: public SplitBase<Tag>
 
     double                      region_gini_;
     ArrayVector<double>         min_gini_;
-    ArrayVector<ptrdiff_t>      min_indices_;
+    ArrayVector<std::ptrdiff_t>      min_indices_;
     ArrayVector<double>         min_thresholds_;
 
     int                         bestSplitIndex;
@@ -1161,7 +1163,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 
@@ -1262,7 +1264,7 @@ public:
     ArrayVector<double>     class_weights_;
     ArrayVector<double>     bestCurrentCounts[2];
     double                  min_gini_;
-    ptrdiff_t               min_index_;
+    std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
 	typedef RandomMT19937	Random_t;

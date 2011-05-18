@@ -668,7 +668,7 @@ class FFTWPhaseAccessor
     achieved by calling \ref moveDCToCenter(). The inverse
     transformation is done by \ref moveDCToUpperLeft().
 
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw.hxx\><br>
     Namespace: vigra
 */
 

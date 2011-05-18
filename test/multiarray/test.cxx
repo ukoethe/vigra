@@ -188,9 +188,9 @@ public:
         // test swap
         array3.subarray(Shape(0,0,0), Shape(10,10,1)).swapData( 
              array3.subarray(Shape(0,0,1), Shape(10,10,2)));
-        for(unsigned int k=0; k<100; ++k)
+        for(int k=0; k<100; ++k)
             shouldEqual(array3[k], k+100);
-        for(unsigned int k=100; k<200; ++k)
+        for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
     }
         
@@ -369,9 +369,11 @@ public:
     typedef array1_t::difference_type shape1_t;
     typedef MultiArray <3, unsigned char> array3_t;
     typedef array3_t::difference_type shape3_t;
-    typedef array3_t::traverser iter3_t;
-    typedef iter3_t::next_type iter2_t;
-    typedef iter2_t::next_type iter1_t;
+    typedef array3_t::traverser traverser3_t;
+    typedef traverser3_t::next_type traverser2_t;
+    typedef traverser2_t::next_type traverser1_t;
+	typedef MultiArrayView<3, unsigned char> array_view3_t;
+	typedef array_view3_t::iterator iterator3_t;
     
     shape3_t s;
     array3_t a3;
@@ -434,25 +436,239 @@ public:
         should(!a3.isInside(shape3_t(1,23,3)));
     }
 
-    void test_iter ()
+    void test_iterator ()
+    {
+		// test scan-order navigation
+		array_view3_t av = a3;
+        iterator3_t i1 = av.begin();
+        iterator3_t i2 = av.begin();
+        iterator3_t iend = av.end();
+
+        shouldEqual(&i1[0], &a3(0,0,0));
+        shouldEqual(&i1[1], &a3(1,0,0));
+        shouldEqual(&i1[2], &a3(0,1,0));
+        shouldEqual(&i1[3], &a3(1,1,0));
+        shouldEqual(&i1[6], &a3(0,0,1));
+        shouldEqual(&i1[7], &a3(1,0,1));
+        shouldEqual(&i1[9], &a3(1,1,1));
+
+        shouldEqual(&*(i1+0), &a3(0,0,0));
+        shouldEqual(&*(i1+1), &a3(1,0,0));
+        shouldEqual(&*(i1+2), &a3(0,1,0));
+        shouldEqual(&*(i1+3), &a3(1,1,0));
+        shouldEqual(&*(i1+6), &a3(0,0,1));
+        shouldEqual(&*(i1+7), &a3(1,0,1));
+        shouldEqual(&*(i1+9), &a3(1,1,1));
+
+		shouldEqual(&*(iend-1), &a3(1,2,4));
+        shouldEqual(&*(iend-2), &a3(0,2,4));
+        shouldEqual(&*(iend-3), &a3(1,1,4));
+        shouldEqual(&*(iend-7), &a3(1,2,3));
+        shouldEqual(&*(iend-8), &a3(0,2,3));
+        shouldEqual(&*(iend-10), &a3(0,1,3));
+
+		shouldEqual(&iend[-1], &a3(1,2,4));
+        shouldEqual(&iend[-2], &a3(0,2,4));
+        shouldEqual(&iend[-3], &a3(1,1,4));
+        shouldEqual(&iend[-7], &a3(1,2,3));
+        shouldEqual(&iend[-8], &a3(0,2,3));
+        shouldEqual(&iend[-10], &a3(0,1,3));
+
+        unsigned int count = 0;
+		shape3_t p;
+
+		// iterate over the third dimension
+        for (p[2]=0; p[2] != s[2]; ++p[2]) 
+        {
+            for (p[1]=0; p[1] != s[1]; ++p[1]) 
+            {
+                for (p[0]=0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
+                {
+                    shouldEqual(&*i1, &a3[p]);
+                    shouldEqual(&*i2, &a3[p]);
+                    shouldEqual(i1.operator->(), &a3[p]);
+                    shouldEqual(i2.operator->(), &a3[p]);
+                    shouldEqual(i1.point(), p);
+                    shouldEqual(i2.point(), p);
+                    shouldEqual(i1.index(), count);
+                    shouldEqual(i2.index(), count);
+
+					should(i1 != iend);
+					should(!(i1 == iend));
+					should(i1 < iend);
+					should(i1 <= iend);
+					should(!(i1 > iend));
+					should(!(i1 >= iend));
+
+					shouldEqual(iend - i1, av.size() - count);
+
+					bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
+						            p[2] == 0 || p[2] == s[2]-1;
+					if(!atBorder)
+					{
+						should(!i1.atBorder());
+						should(!i2.atBorder());
+					}
+					else
+					{
+						should(i1.atBorder());
+						should(i2.atBorder());
+					}
+                }
+            }
+        }
+
+		should(i1 == iend);
+		should(!(i1 != iend));
+		should(!(i1 < iend));
+		should(i1 <= iend);
+		should(!(i1 > iend));
+		should(i1 >= iend);
+
+		should(i2 == iend);
+		should(!(i2 != iend));
+		should(!(i2 < iend));
+		should(i2 <= iend);
+		should(!(i2 > iend));
+		should(i2 >= iend);
+
+		shouldEqual(iend - i1, 0);
+		shouldEqual(iend - i2, 0);
+        shouldEqual (count, av.size());
+
+		--i1;
+		i2 -= 1;
+        shouldEqual(&*i1, &a3(1,2,4));
+        shouldEqual(&*i2, &a3(1,2,4));
+    }
+
+    void test_const_iterator()
+    {
+		typedef array_view3_t::const_iterator iterator;
+
+		// test const scan-order navigation
+		array_view3_t av = a3;
+        iterator i1 = const_cast<array_view3_t const &>(av).begin();
+        iterator i2 = const_cast<array_view3_t const &>(av).begin();
+        iterator iend = const_cast<array_view3_t const &>(av).end();
+
+        shouldEqual(&i1[0], &a3(0,0,0));
+        shouldEqual(&i1[1], &a3(1,0,0));
+        shouldEqual(&i1[2], &a3(0,1,0));
+        shouldEqual(&i1[3], &a3(1,1,0));
+        shouldEqual(&i1[6], &a3(0,0,1));
+        shouldEqual(&i1[7], &a3(1,0,1));
+        shouldEqual(&i1[9], &a3(1,1,1));
+
+        shouldEqual(&*(i1+0), &a3(0,0,0));
+        shouldEqual(&*(i1+1), &a3(1,0,0));
+        shouldEqual(&*(i1+2), &a3(0,1,0));
+        shouldEqual(&*(i1+3), &a3(1,1,0));
+        shouldEqual(&*(i1+6), &a3(0,0,1));
+        shouldEqual(&*(i1+7), &a3(1,0,1));
+        shouldEqual(&*(i1+9), &a3(1,1,1));
+
+		shouldEqual(&*(iend-1), &a3(1,2,4));
+        shouldEqual(&*(iend-2), &a3(0,2,4));
+        shouldEqual(&*(iend-3), &a3(1,1,4));
+        shouldEqual(&*(iend-7), &a3(1,2,3));
+        shouldEqual(&*(iend-8), &a3(0,2,3));
+        shouldEqual(&*(iend-10), &a3(0,1,3));
+
+		shouldEqual(&iend[-1], &a3(1,2,4));
+        shouldEqual(&iend[-2], &a3(0,2,4));
+        shouldEqual(&iend[-3], &a3(1,1,4));
+        shouldEqual(&iend[-7], &a3(1,2,3));
+        shouldEqual(&iend[-8], &a3(0,2,3));
+        shouldEqual(&iend[-10], &a3(0,1,3));
+
+        unsigned int count = 0;
+		shape3_t p;
+
+		// iterate over the third dimension
+        for (p[2]=0; p[2] != s[2]; ++p[2]) 
+        {
+            for (p[1]=0; p[1] != s[1]; ++p[1]) 
+            {
+                for (p[0]=0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
+                {
+                    shouldEqual(&*i1, &a3[p]);
+                    shouldEqual(&*i2, &a3[p]);
+                    shouldEqual(i1.operator->(), &a3[p]);
+                    shouldEqual(i2.operator->(), &a3[p]);
+                    shouldEqual(i1.point(), p);
+                    shouldEqual(i2.point(), p);
+                    shouldEqual(i1.index(), count);
+                    shouldEqual(i2.index(), count);
+
+					should(i1 != iend);
+					should(!(i1 == iend));
+					should(i1 < iend);
+					should(i1 <= iend);
+					should(!(i1 > iend));
+					should(!(i1 >= iend));
+
+					shouldEqual(iend - i1, av.size() - count);
+
+					bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
+						            p[2] == 0 || p[2] == s[2]-1;
+					if(!atBorder)
+					{
+						should(!i1.atBorder());
+						should(!i2.atBorder());
+					}
+					else
+					{
+						should(i1.atBorder());
+						should(i2.atBorder());
+					}
+                }
+            }
+        }
+
+		should(i1 == iend);
+		should(!(i1 != iend));
+		should(!(i1 < iend));
+		should(i1 <= iend);
+		should(!(i1 > iend));
+		should(i1 >= iend);
+
+		should(i2 == iend);
+		should(!(i2 != iend));
+		should(!(i2 < iend));
+		should(i2 <= iend);
+		should(!(i2 > iend));
+		should(i2 >= iend);
+
+		shouldEqual(iend - i1, 0);
+		shouldEqual(iend - i2, 0);
+        shouldEqual (count, av.size());
+
+		--i1;
+		i2 -= 1;
+        shouldEqual(&*i1, &a3(1,2,4));
+        shouldEqual(&*i2, &a3(1,2,4));
+	}
+
+    void test_traverser ()
     {
         // test hierarchical navigation and 
-        iter3_t i3_f = a3.traverser_begin ();
-        iter3_t i3_l = a3.traverser_end ();
+        traverser3_t i3_f = a3.traverser_begin ();
+        traverser3_t i3_l = a3.traverser_end ();
         array3_t::iterator seqi = a3.begin();
 
-        unsigned int countx = 0, county = 0, countz = 0;
+        int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
         for (int z=0; i3_f != i3_l; ++i3_f, ++z) 
         {
-            iter2_t i2_f = i3_f.begin ();
-            iter2_t i2_l = i3_f.end ();
+            traverser2_t i2_f = i3_f.begin ();
+            traverser2_t i2_l = i3_f.end ();
             // iterate over the second dimension
             for (int y=0; i2_f != i2_l; ++i2_f, ++y) 
             {
-                iter1_t i1_f = i2_f.begin ();
-                iter1_t i1_l = i2_f.end ();
+                traverser1_t i1_f = i2_f.begin ();
+                traverser1_t i1_l = i2_f.end ();
                 // iterate over the first dimension
                 for (int x=0; i1_f != i1_l; ++i1_f, ++x, ++seqi)
                 {
@@ -471,7 +687,7 @@ public:
         shouldEqual (seqi, a3.end());
         
         // test direct navigation
-        iter3_t i3 = a3.traverser_begin();
+        traverser3_t i3 = a3.traverser_begin();
         shouldEqual(&*i3, &a3[shape3_t(0,0,0)]);
 
         i3.dim<2>()++;
@@ -500,22 +716,24 @@ public:
         shouldEqual(&*(i3+shape3_t(2,3,4)), &i3[shape3_t(2,3,4)]);
     }
 
-    void test_const_iter ()
+    void test_const_traverser ()
     {
+		typedef array3_t::const_traverser traverser;
+
         // test hierarchical navigation
-        iter3_t i3_f = a3.traverser_begin ();
-        iter3_t i3_l = a3.traverser_end ();
+		traverser i3_f = const_cast<array3_t const &>(a3).traverser_begin ();
+		traverser i3_l = const_cast<array3_t const &>(a3).traverser_end ();
 
         unsigned int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
         for (; i3_f != i3_l; ++i3_f) {
-            iter2_t i2_f = i3_f.begin ();
-            iter2_t i2_l = i3_f.end ();
+			traverser::next_type i2_f = i3_f.begin ();
+            traverser::next_type i2_l = i3_f.end ();
             // iterate over the second dimension
             for (; i2_f != i2_l; ++i2_f) {
-                iter1_t i1_f = i2_f.begin ();
-                iter1_t i1_l = i2_f.end ();
+				traverser::next_type::next_type i1_f = i2_f.begin ();
+                traverser::next_type::next_type i1_l = i2_f.end ();
                 // iterate over the first dimension
                 for (; i1_f != i1_l; ++i1_f)
                     ++countx;
@@ -524,12 +742,12 @@ public:
             ++countz;
         }
 
-        shouldEqual (countx, 30);
-        shouldEqual (county, 15);
-        shouldEqual (countz, 5);
+        shouldEqual (countx, 30u);
+        shouldEqual (county, 15u);
+        shouldEqual (countz, 5u);
         
         // test direct navigation
-        iter3_t i3 = a3.traverser_begin();
+        traverser i3 = const_cast<array3_t const &>(a3).traverser_begin();
         shouldEqual(&*i3, &a3[shape3_t(0,0,0)]);
 
         i3.dim<2>()++;
@@ -676,9 +894,9 @@ public:
             ++countz;
         }
 
-        shouldEqual (countx, 336);
-        shouldEqual (county, 56);
-        shouldEqual (countz, 8);
+        shouldEqual (countx, 336u);
+        shouldEqual (county, 56u);
+        shouldEqual (countz, 8u);
   
         // test direct navigation
         strided_array_t::traverser i = st.traverser_begin();        
@@ -735,12 +953,12 @@ public:
             array3.data () [i] = i;
     }
 
-    // bindInner tests
     void testNavigator ()
     {
-        int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
-                            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
-                            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        unsigned char expected[][24] = 
+		    {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
         typedef MultiArrayNavigator<array3_type::traverser, 3> Navigator;
         for(int d=0; d<3; ++d)
         {
@@ -754,7 +972,26 @@ public:
             }
         }
     }
-    
+
+    void testCoordinateNavigator ()
+    {
+        unsigned char expected[][24] = 
+		    {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        typedef MultiCoordinateNavigator<3> Navigator;
+        for(int d=0; d<3; ++d)
+        {
+            Navigator nav(array3.shape(), d);
+            int k = 0;
+            for(; nav.hasMore(); ++nav)
+            {
+				Navigator::value_type i = nav.begin(), end = nav.end();
+                for(; i[d] != end[d]; ++i[d], ++k)
+                    shouldEqual(array3[i], expected[d][k]);
+            }
+        }
+    }    
 };
 
 struct MultiImpexTest
@@ -1581,8 +1818,10 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_assignment ) );
         add( testCase( &MultiArrayTest::test_copy_construction ) );
         add( testCase( &MultiArrayTest::testShape ) );
-        add( testCase( &MultiArrayTest::test_iter ) );
-        add( testCase( &MultiArrayTest::test_const_iter ) );
+        add( testCase( &MultiArrayTest::test_iterator ) );
+        add( testCase( &MultiArrayTest::test_const_iterator ) );
+        add( testCase( &MultiArrayTest::test_traverser ) );
+        add( testCase( &MultiArrayTest::test_const_traverser ) );
         add( testCase( &MultiArrayTest::test_bindOuter ) );
         add( testCase( &MultiArrayTest::test_bindInner ) );
         add( testCase( &MultiArrayTest::test_bindInnerAll ) );
@@ -1618,6 +1857,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
         add( testCase( &MultiArrayDataTest::testAssignmentAndReset ) );
         add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
+        add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
     }
 };
 

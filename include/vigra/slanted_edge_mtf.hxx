@@ -74,7 +74,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code
@@ -231,7 +231,7 @@ prepareSlantedEdgeInput(SrcIterator sul, SrcIterator slr, SrcAccessor src, DestI
                  edgeWidth = options.desired_edge_width, // 10
                  minimumEdgeWidth = options.minimum_edge_width; // 5
 
-    int y0, y1;
+    int y0 = 0, y1 = h;
     for(; edgeWidth >= minimumEdgeWidth; --edgeWidth)
     {
         y0 = int(VIGRA_CSTD::floor((edgeWidth - xc) / slope + yc + 0.5));
@@ -557,7 +557,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code
@@ -645,7 +645,7 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="slanted__edge__mtf_8hxx-source.html">vigra/slanted_edge_mtf.hxx</a>\><br>
+        <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
     
     \code

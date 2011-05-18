@@ -41,6 +41,8 @@
 #include <vigra/windows.h>
 #include <iostream>
 #include <iomanip>
+
+#include <vigra/multi_pointoperators.hxx>
 #include <vigra/timing.hxx>
 
 namespace vigra
@@ -184,7 +186,7 @@ class VisitorBase
      * \param tr        reference to the tree object that called this visitor
      * \param index     index in the topology_ array we currently are at
      * \param node_t    type of node we have (will be e_.... - )
-     * \param weight    Node weight of current node. 
+     * \param features  feature matrix
      * \sa  NodeTags;
      *
      * you can create the node by using a switch on node_tag and using the 
@@ -900,8 +902,10 @@ class OOB_Error : public VisitorBase
     {
         // go through the samples
         int total_oob =0;
-        int wrong_oob =0;
-        if(rf.ext_param_.actual_msample_ < pr.features().shape(0)- 10000)
+        // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
+		//                            (i.e. the OOB sample ist very large)
+		//                     40000: use at most 40000 OOB samples per class for OOB error estimate 
+		if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
         {
             ArrayVector<int> oob_indices;
             ArrayVector<int> cts(class_count, 0);
@@ -914,7 +918,7 @@ class OOB_Error : public VisitorBase
                     ++cts[pr.response()(indices[ii], 0)];
                 }
             }
-            for(int ll = 0; ll < oob_indices.size(); ++ll)
+            for(unsigned int ll = 0; ll < oob_indices.size(); ++ll)
             {
                 // update number of trees in which current sample is oob
                 ++oobCount[oob_indices[ll]];
@@ -937,7 +941,6 @@ class OOB_Error : public VisitorBase
                         tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                 }
                 rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
-                int label = argMax(tmp_prob); 
                 
             }
         }else
@@ -968,8 +971,6 @@ class OOB_Error : public VisitorBase
                             tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                     }
                     rowVector(prob_oob, ll) += tmp_prob;
-                    int label = argMax(tmp_prob); 
-                    
                 }
             }
         }
@@ -1056,9 +1057,9 @@ class CompleteOOBInfo : public VisitorBase
     
     CompleteOOBInfo() : VisitorBase(), oob_mean(0), oob_std(0), oob_per_tree2(0)  {}
 
+#ifdef HasHDF5
 	/** save to HDF5 file
 	 */
-#ifdef HasHDF5
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -1257,6 +1258,7 @@ class VariableImportanceVisitor : public VisitorBase
                         variable_importance_);
     }
 #endif
+
 	/** Constructor
 	 * \param rep_cnt (defautl: 10) how often should 
 	 * the permutation take place. Set to 1 to make calculation faster (but
@@ -1320,7 +1322,10 @@ class VariableImportanceVisitor : public VisitorBase
         //typename PR::Feature_t & features 
         //    = const_cast<typename PR::Feature_t &>(pr.features());
 
-		typename PR::FeatureWithMemory_t features = pr.features();
+		typedef typename PR::FeatureWithMemory_t FeatureArray;
+		typedef typename FeatureArray::value_type FeatureValue;
+
+		FeatureArray features = pr.features();
 
         //find the oob indices of current tree. 
         ArrayVector<Int32>      oob_indices;
@@ -1331,7 +1336,7 @@ class VariableImportanceVisitor : public VisitorBase
                 oob_indices.push_back(ii);
 
         //create space to back up a column      
-        std::vector<double>     backup_column;
+        ArrayVector<FeatureValue>     backup_column;
 
         // Random foo
 #ifdef CLASSIFIER_TEST

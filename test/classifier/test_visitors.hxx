@@ -41,6 +41,7 @@
 namespace vigra
 {
 
+	// create log output (as a text file) for debugging/testing
 class TestVisitor: public rf::visitors::VisitorBase
 {
 
@@ -96,6 +97,7 @@ class TestVisitor: public rf::visitors::VisitorBase
     }
 };
 
+	// test that all possible trees are created when there are only 4 samples
 class SetTestVisitor: public rf::visitors::VisitorBase
 {
     public:
@@ -153,6 +155,7 @@ class SetTestVisitor: public rf::visitors::VisitorBase
 	}
 };
 
+	// comprehensive debug output
 template <class T1, class C1, class T2, class C2>
 class AllOutputVisitor: public rf::visitors::VisitorBase
 {

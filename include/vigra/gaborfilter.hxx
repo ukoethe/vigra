@@ -99,7 +99,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>\><br>
+    <b>\#include</b> \<vigra/gaborfilter.hxx\><br>
 
     Namespace: vigra
 
@@ -280,7 +280,7 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
 
     The template parameter ImageType should be a scalar image type suitable for filling in
 
-    <b>\#include</b> \<<a href="gaborfilter_8hxx-source.html">vigra/gaborfilter.hxx</a>\>
+    <b>\#include</b> \<vigra/gaborfilter.hxx\>
 
     Namespace: vigra
 */

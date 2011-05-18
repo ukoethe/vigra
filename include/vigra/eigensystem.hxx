@@ -158,36 +158,36 @@ housholderTridiagonalization(MultiArrayView<2, T, C1> &a, MultiArrayView<2, T, C
 
     // Accumulate transformations.
 
-    for(unsigned int i = 0; i < n-1; ++i)
+    for(MultiArrayIndex i = 0; i < n-1; ++i)
     {
         a(n-1, i) = a(i, i);
         a(i, i) = 1.0;
         T h = d(i+1);
         if(h != 0.0)
         {
-            for(unsigned int k = 0; k <= i; ++k)
+            for(MultiArrayIndex k = 0; k <= i; ++k)
             {
                 d(k) = a(k, i+1) / h;
             }
-            for(unsigned int j = 0; j <= i; ++j)
+            for(MultiArrayIndex j = 0; j <= i; ++j)
             {
                 T g = 0.0;
-                for(unsigned int k = 0; k <= i; ++k)
+                for(MultiArrayIndex k = 0; k <= i; ++k)
                 {
                     g += a(k, i+1) * a(k, j);
                 }
-                for(unsigned int k = 0; k <= i; ++k)
+                for(MultiArrayIndex k = 0; k <= i; ++k)
                 {
                     a(k, j) -= g * d(k);
                 }
             }
         }
-        for(unsigned int k = 0; k <= i; ++k)
+        for(MultiArrayIndex k = 0; k <= i; ++k)
         {
             a(k, i+1) = 0.0;
         }
     }
-    for(unsigned int j = 0; j < n; ++j)
+    for(MultiArrayIndex j = 0; j < n; ++j)
     {
         d(j) = a(n-1, j);
         a(n-1, j) = 0.0;
@@ -224,7 +224,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
         // Find small subdiagonalMatrix element
 
         tst1 = std::max(tst1, abs(d(l)) + abs(e(l)));
-        unsigned int m = l;
+        MultiArrayIndex m = l;
 
         // Original while-loop from Java code
         while(m < n)
@@ -258,7 +258,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
                 d(l+1) = e(l) * (p + r);
                 T dl1 = d(l+1);
                 T h = g - d(l);
-                for(unsigned int i = l+2; i < n; ++i)
+                for(MultiArrayIndex i = l+2; i < n; ++i)
                 {
                    d(i) -= h;
                 }
@@ -289,7 +289,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
 
                     // Accumulate transformation.
 
-                    for(unsigned int k = 0; k < n; ++k)
+                    for(MultiArrayIndex k = 0; k < n; ++k)
                     {
                          h = z(k, i+1);
                          z(k, i+1) = s * z(k, i) + c * h;
@@ -310,11 +310,11 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
 
     // Sort eigenvalues and corresponding vectors.
 
-    for(unsigned int i = 0; i < n-1; ++i)
+    for(MultiArrayIndex i = 0; i < n-1; ++i)
     {
-        unsigned int k = i;
+        MultiArrayIndex k = i;
         T p = d(i);
-        for(unsigned int j = i+1; j < n; ++j)
+        for(MultiArrayIndex j = i+1; j < n; ++j)
         {
             T p1 = d(j);
             if(p < p1)
@@ -326,7 +326,7 @@ tridiagonalMatrixEigensystem(MultiArrayView<2, T, C1> &de, MultiArrayView<2, T, 
         if(k != i)
         {
             std::swap(d(k), d(i));
-            for(unsigned int j = 0; j < n; ++j)
+            for(MultiArrayIndex j = 0; j < n; ++j)
             {
                 std::swap(z(j, i), z(j, k));
             }
@@ -999,8 +999,8 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1036,8 +1036,8 @@ symmetricEigensystem(MultiArrayView<2, T, C1> const & a,
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
-    <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+    <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1074,8 +1074,8 @@ nonsymmetricEigensystem(MultiArrayView<2, T, C1> const & a,
         companion matrix yielding the roots as eigenvalues. It returns <tt>false</tt> if
         it fails to converge.
 
-        <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
-        <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
 
         \see polynomialRoots(), vigra::Polynomial
@@ -1129,8 +1129,8 @@ bool polynomialRootsEigenvalueMethod(POLYNOMIAL const & poly, VECTOR & roots)
         with polynomialRealRoots()).
         
 
-        <b>\#include</b> \<<a href="eigensystem_8hxx-source.html">vigra/eigensystem.hxx</a>\> or<br>
-        <b>\#include</b> \<<a href="linear__algebra_8hxx-source.html">vigra/linear_algebra.hxx</a>\><br>
+        <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
 
         \see polynomialRealRoots(), vigra::Polynomial

@@ -262,6 +262,15 @@ corner detection, localization of maxima and minima etc.
 .. automodule:: vigra.analysis
    :members:
 
+   
+Geometry
+--------
+
+The module vigra.geometry contains geometric primitives (such as polygons) and related algorithms.
+
+.. automodule:: vigra.geometry
+   :members:
+
 
 Machine Learning
 ----------------

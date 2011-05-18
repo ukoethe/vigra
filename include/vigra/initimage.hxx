@@ -185,7 +185,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/initimage.hxx\><br>
         Namespace: vigra
     
     Initialize with a constant:
@@ -287,7 +287,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/initimage.hxx\><br>
         Namespace: vigra
     
     \code
@@ -401,7 +401,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/initimage.hxx\><br>
         Namespace: vigra
     
     \code
@@ -510,7 +510,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="initimage_8hxx-source.html">vigra/initimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/initimage.hxx\><br>
         Namespace: vigra
     
     \code

@@ -163,7 +163,6 @@ public:
 } // namespace detail
 
 /** \addtogroup SeededRegionGrowing
-    Region segmentation and voronoi tesselation
 */
 //@{
 

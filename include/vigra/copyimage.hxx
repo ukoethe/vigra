@@ -131,7 +131,7 @@ swapLine(SrcIterator s,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/copyimage.hxx\><br>
         Namespace: vigra
     
     \code
@@ -258,7 +258,7 @@ swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="copyimage_8hxx-source.html">vigra/copyimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/copyimage.hxx\><br>
         Namespace: vigra
     
     \code

@@ -397,7 +397,7 @@ class TinyVectorView;
     \ref TinyVector and \ref TinyVectorView, and enables these classes
     to be freely mixed within expressions. It is typically not used directly.
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class VALUETYPE, int SIZE, class DATA, class DERIVED>
@@ -596,6 +596,7 @@ class TinyVectorBase
 };
 
 /** \brief Class for fixed size vectors.
+    \ingroup RangesAndPoints
 
     This class contains an array of size SIZE of the specified VALUETYPE.
     The interface conforms to STL vector, except that there are no functions
@@ -619,7 +620,7 @@ class TinyVectorBase
         <LI> \ref TinyVectorOperators
     </UL>
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -828,7 +829,7 @@ class TinyVector
         <li> \ref TinyVectorOperators
     </ul>
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 **/
 template <class T, int SIZE>
@@ -918,7 +919,7 @@ class TinyVectorView
     These functions fulfill the requirements of a Linear Space (vector space).
     Return types are determined according to \ref TinyVectorTraits.
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 */
 //@{
@@ -1003,7 +1004,7 @@ operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l
     };
     \endcode
 
-    <b>\#include</b> \<<a href="tinyvector_8hxx-source.html">vigra/tinyvector.hxx</a>\><br>
+    <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 
     On compilers that don't support pertial template specialization (e.g.
@@ -1360,6 +1361,18 @@ operator/(TinyVectorBase<V, SIZE, D1, D2> const & l, double v)
     return typename NumericTraits<TinyVector<V, SIZE> >::RealPromote(l) /= v;
 }
 
+    /// component-wise scalar division without type promotion
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<V, SIZE>
+div(TinyVectorBase<V, SIZE, D1, D2> const & l, V v)
+{
+    TinyVector<V, SIZE> result(l);
+    typedef typename detail::LoopType<SIZE>::type Loop;
+    Loop::divScalar(result.data(), v);
+    return result;
+}
+
 
     /** Unary negation (construct TinyVector with negative values)
     */
@@ -1437,6 +1450,81 @@ dot(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::dot(l.begin(), r.begin());
 }
 
+    /// sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<V>::Promote
+sum(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    typename NumericTraits<V>::Promote res = l[0];
+    for(int k=1; k<SIZE; ++k)
+        res += l[k];
+    return res;
+}
+
+    /// cumulative sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<typename NumericTraits<V>::Promote, SIZE>
+cumsum(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    TinyVector<typename NumericTraits<V>::Promote, SIZE> res(l);
+    for(int k=1; k<SIZE; ++k)
+        res[k] += res[k-1];
+    return res;
+}
+
+    /// product of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+typename NumericTraits<V>::Promote
+prod(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    typename NumericTraits<V>::Promote res = l[0];
+    for(int k=1; k<SIZE; ++k)
+        res *= l[k];
+    return res;
+}
+
+    /// cumulative sum of the vector's elements
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<typename NumericTraits<V>::Promote, SIZE>
+cumprod(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    TinyVector<typename NumericTraits<V>::Promote, SIZE> res(l);
+    for(int k=1; k<SIZE; ++k)
+        res[k] *= res[k-1];
+    return res;
+}
+
+    /// element-wise minimum
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
+min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(r[k] < res[k])
+            res[k] = r[k];
+    return res;
+}
+
+    /// element-wise maximum
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
+max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(res[k] < r[k])
+            res[k] = r[k];
+    return res;
+}
 
     /// squared norm
 template <class V1, int SIZE, class D1, class D2>

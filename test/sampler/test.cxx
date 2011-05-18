@@ -117,11 +117,11 @@ void SamplerTests::testSamplingImpl(bool withReplacement)
             Sampler<>::IndexArrayType usedIndices(sampler.sampledIndices());
             Sampler<>::IndexArrayType unusedIndices(sampler.oobIndices());
             
-            shouldEqual(usedIndices.size(), numOfSamples);
+            shouldEqual((int)usedIndices.size(), numOfSamples);
             if(withReplacement)
                 should(usedIndices.size()+unusedIndices.size() >= (unsigned int)totalDataCount);
             else
-                shouldEqual(usedIndices.size()+unusedIndices.size(), totalDataCount);
+                shouldEqual(usedIndices.size()+unusedIndices.size(), (unsigned int)totalDataCount);
                 
             for(unsigned int ii = 0; ii < usedIndices.size(); ++ii)
             {
@@ -194,9 +194,9 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         shouldEqual(sampler.withReplacement(), withReplacement);
         sampler.sample();
         if(withReplacement)
-            should(sampler.sampledIndices().size()+sampler.oobIndices().size() >= (unsigned int)totalDataCount);
+            should(int(sampler.sampledIndices().size()+sampler.oobIndices().size()) >= totalDataCount);
         else
-            shouldEqual(sampler.sampledIndices().size()+sampler.oobIndices().size(), totalDataCount);
+            shouldEqual(int(sampler.sampledIndices().size()+sampler.oobIndices().size()), totalDataCount);
             
         ArrayVector<bool> wasPicked(totalDataCount, false);
 
@@ -210,14 +210,14 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         for(int ii = 5; ii < 10; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
-            should(index >= 0 && index < int(totalDataCount));
+            should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 2);
             wasPicked[index] = true;
         }
-        for(unsigned int ii = 0; ii < sampler.oobIndices().size(); ++ii)
+        for(int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
         {
             int index = sampler.oobIndices()[ii];
-            should(index >= 0 && index < int(totalDataCount));
+            should(index >= 0 && index < totalDataCount);
             wasPicked[index] = true;
         }
         for(int ii = 0; ii < totalDataCount; ++ii)
@@ -230,7 +230,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        int  totalDataCount = strata.size();
+        int totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
         sampler.sample();
@@ -240,18 +240,18 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
         for(int ii = 0; ii < 4; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
-            should(index >= 0 && index < int(totalDataCount));
+            should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 1);
             wasPicked[index] = true;
         }
         for(int ii = 4; ii < 9; ++ii)
         {
             int index = sampler.sampledIndices()[ii];
-            should(index >= 0 && index < int(totalDataCount));
+            should(index >= 0 && index < totalDataCount);
             shouldEqual(strata[index], 2);
             wasPicked[index] = true;
         }
-        for(unsigned int ii = 0; ii < sampler.oobIndices().size(); ++ii)
+        for(int ii = 0; ii < (int)sampler.oobIndices().size(); ++ii)
         {
             int index = sampler.oobIndices()[ii];
             should(index >= 0 && index < int(totalDataCount));
@@ -269,7 +269,6 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        int  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         sampler.sample();
@@ -328,7 +327,7 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
     }
     
     // check that all 120 permutations occured after 1000 trials
-    shouldEqual(wierdmap.size(), nclasses);
+    shouldEqual((int)wierdmap.size(), nclasses);
     
     for(int ii = 0; ii < nsamples; ++ii)
     {

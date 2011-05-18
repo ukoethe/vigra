@@ -100,10 +100,6 @@ class NodeBase
     mutable Parameter_type                      parameters_;
     int                                         parameter_size_ ;
 
-    /** if numColumns = 0 then xrange is used as split axis
-    **/
-    static T_Container_type                     xrange;
-
         // Tree Parameters
     int                                         featureCount_;
     int                                         classCount_;
@@ -382,9 +378,6 @@ class NodeBase
         parameters_          =   parameter.begin()+ parameter_addr();
     }
 };
-
- NodeBase::T_Container_type NodeBase::xrange;
-
 
 
 template<NodeTags NodeType>

@@ -73,7 +73,7 @@ namespace vigra {
 
     <b>Usage:</b>
 
-    <b>\#include</b> \<<a href="splineimageview_8hxx-source.html">vigra/splineimageview.hxx</a>\><br>
+    <b>\#include</b> \<vigra/splineimageview.hxx\><br>
     Namespace: vigra
 
     \code

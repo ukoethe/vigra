@@ -57,7 +57,7 @@ namespace vigra
     specified by a pair: an iterator referring to the first point of the array 
     and a shape object specifying the size of the (rectangular) ROI.
 
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\>
 */
 //@{
 
@@ -135,7 +135,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     \code
@@ -306,7 +306,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     <b> Declarations:</b>
     
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -607,7 +607,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -1028,7 +1028,7 @@ combineTwoMultiArraysImpl(
     
     <b> Declarations:</b>
     
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     pass arguments explicitly:
@@ -1366,7 +1366,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     \code
@@ -1479,7 +1479,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1596,7 +1596,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="multi__pointoperators_8hxx-source.html">vigra/multi_pointoperators.hxx</a>\><br>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
 
     \code

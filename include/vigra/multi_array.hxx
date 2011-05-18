@@ -215,7 +215,7 @@ struct CoordinatesToOffest<UnstridedArrayTag>
     unstrided.
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra::detail
 */
@@ -241,7 +241,7 @@ struct MaybeStrided <0>
     MultiArrays that were indexed at the zero'th dimension as strided.
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra::detail
 */
@@ -266,7 +266,7 @@ struct MultiIteratorChooser
 /* specialization of the MultiIteratorChooser for strided arrays.
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra::detail
 */
@@ -289,7 +289,7 @@ struct MultiIteratorChooser <StridedArrayTag>
 /* specialization of the MultiIteratorChooser for unstrided arrays.
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra::detail
 */
@@ -592,7 +592,7 @@ The template parameter are as follows
 \endcode
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra
 */
@@ -641,6 +641,14 @@ public:
         /** difference and index type for a single dimension
          */
     typedef MultiArrayIndex difference_type_1;
+
+        /** scan-order iterator (StridedScanOrderIterator) type
+         */
+    typedef StridedScanOrderIterator<actual_dimension, T, T &, T *> iterator;
+
+        /** const scan-order iterator (StridedScanOrderIterator) type
+         */
+    typedef StridedScanOrderIterator<actual_dimension, T, T const &, T const *> const_iterator;
 
         /** traverser (MultiIterator) type
          */
@@ -1373,6 +1381,38 @@ public:
         return m_ptr != 0;
     }
 
+        /** returns a scan-order iterator pointing
+            to the first array element.
+        */
+    iterator begin()
+    {
+        return iterator(m_ptr, m_shape, m_stride);
+    }
+
+        /** returns a const scan-order iterator pointing
+            to the first array element.
+        */
+    const_iterator begin() const
+    {
+        return const_iterator(m_ptr, m_shape, m_stride);
+    }
+
+        /** returns a scan-order iterator pointing
+            beyond the last array element.
+        */
+    iterator end()
+    {
+        return begin().getEndIterator();
+    }
+
+        /** returns a const scan-order iterator pointing
+            beyond the last array element.
+        */
+    const_iterator end() const
+    {
+        return begin().getEndIterator();
+    }
+
         /** returns the N-dimensional MultiIterator pointing
             to the first element in every dimension.
         */
@@ -1421,12 +1461,12 @@ public:
 
 template <unsigned int N, class T, class C>
 MultiArrayView<N, T, C> &
-MultiArrayView <N, T, C>::operator=(MultiArrayView<N, T, C> const & rhs)
+MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
 {
     if(this == &rhs)
         return *this;
     vigra_precondition(this->shape() == rhs.shape() || m_ptr == 0,
-        "MultiArrayView::operator=(MultiArrayView const &) size mismatch - use MultiArrayView::reset().");
+        "MultiArrayView::operator=(MultiArrayView const &) size mismatch.");
     if(m_ptr == 0)
     {
         m_shape  = rhs.m_shape;
@@ -1548,12 +1588,12 @@ typename MultiArrayView <N, T, C>::difference_type
 MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
 {
     difference_type permutation;
-    for(unsigned int k=0; k<N; ++k)
+    for(int k=0; k<(int)N; ++k)
         permutation[k] = k;
-    for(unsigned int k=0; k<N-1; ++k)
+    for(int k=0; k<(int)N-1; ++k)
     {
-        unsigned int smallest = k;
-        for(unsigned int j=k+1; j<N; ++j)
+        int smallest = k;
+        for(int j=k+1; j<(int)N; ++j)
         {
             if(stride[j] < stride[smallest])
                 smallest = j;
@@ -1840,7 +1880,7 @@ The template parameters are as follows
 \endcode
 
 <b>\#include</b>
-\<<a href="multi__array_8hxx-source.html">vigra/multi_array.hxx</a>\>
+\<vigra/multi_array.hxx\>
 
 Namespace: vigra
 */
@@ -2111,7 +2151,7 @@ public:
          */
     void reshape (const difference_type &shape)
     {
-        reshape (shape, NumericTraits <T>::zero ());
+        reshape (shape, T());
     }
 
         /** Allocate new memory with the given shape and initialize it
@@ -2177,7 +2217,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());
+    allocate (this->m_ptr, this->elementCount (), T());
 }
 
 template <unsigned int N, class T, class A>
@@ -2266,7 +2306,7 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
 
 template <unsigned int N, class T, class A>
 inline void
-MultiArray <N, T, A>::swap (MultiArray <N, T, A> & other)
+MultiArray <N, T, A>::swap (MultiArray & other)
 {
     if (this == &other)
         return;

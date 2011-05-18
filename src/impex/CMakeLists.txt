@@ -13,28 +13,38 @@ IF(TIFF_FOUND)
   INCLUDE_DIRECTORIES(${TIFF_INCLUDE_DIR})
 ENDIF(TIFF_FOUND)
 
+IF(OPENEXR_FOUND)
+  ADD_DEFINITIONS(-DHasEXR)
+  INCLUDE_DIRECTORIES(${OPENEXR_INCLUDE_DIR})
+ENDIF(OPENEXR_FOUND)
+
 IF(HDF5_FOUND)
   ADD_DEFINITIONS(-DHasHDF5 ${HDF5_CPPFLAGS})
   INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
 ENDIF(HDF5_FOUND)
 
 IF (MSVC OR MINGW)
-  ADD_DEFINITIONS(-DVIGRA_DLL)
+    IF(NOT VIGRA_STATIC_LIB)
+        ADD_DEFINITIONS(-DVIGRA_DLL)
+    ENDIF()
 ENDIF ()
 
-ADD_LIBRARY(vigraimpex SHARED
+ADD_LIBRARY(vigraimpex ${LIBTYPE}
     bmp.cxx
     byteorder.cxx
     codecmanager.cxx
+    exr.cxx
     gif.cxx
     hdr.cxx
     hdf5impex.cxx
+    hdf5_rf_impex.cxx
     iccjpeg.c
     imageinfo.cxx
     jpeg.cxx
     png.cxx
     pnm.cxx
     rgbe.c
+    sifImport.cxx
     sun.cxx
     tiff.cxx
     viff.cxx
@@ -54,6 +64,10 @@ ENDIF(PNG_FOUND)
 IF(TIFF_FOUND)
   TARGET_LINK_LIBRARIES(vigraimpex ${TIFF_LIBRARIES})
 ENDIF(TIFF_FOUND)
+
+IF(OPENEXR_FOUND)
+  TARGET_LINK_LIBRARIES(vigraimpex ${OPENEXR_LIBRARIES})
+ENDIF(OPENEXR_FOUND)
 
 IF(HDF5_FOUND)
   TARGET_LINK_LIBRARIES(vigraimpex ${HDF5_LIBRARIES})

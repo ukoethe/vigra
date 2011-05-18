@@ -92,7 +92,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\>
 
     \code
     FImage img(w,h);
@@ -215,7 +215,7 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\>
 
     \code
     FVector3Image tensor(w,h);
@@ -314,7 +314,7 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\>
 
     \code
     FVector3Image tensor(w,h);
@@ -403,7 +403,7 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="tensorutilities_8hxx-source.html">vigra/tensorutilities.hxx</a>\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\>
 
     \code
     FVector3Image tensor(w,h);

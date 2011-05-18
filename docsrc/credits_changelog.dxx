@@ -52,6 +52,40 @@
 Many thanks to all!
 <p>
 
+<b> Changes from Version 1.7.0 to 1.7.1</b>
+
+<UL>  
+      <li> Fixed the build process for MacOS X.
+      
+      <li> Re-activeted <tt>vigra-config</tt> (script to query VIGRA installation information) 
+           and added <tt>VigraConfig.cmake</tt> (query VIGRA installation information from
+           within cmake).
+      
+      <li> Added CDash support (nightly builds and tests).
+      
+      <li> Added \ref convexHull().
+      
+      <li> Added \ref vigra::Box.
+      
+      <li> Added \ref vigra::Sampler class to sample given data in various ways.
+      
+      <li> Added much new functionality to the \ref vigra::RandomForest class 
+           (e.g. more split strategies, variable importance measures, feature selection)
+      
+      <li> Added readSIF() (reader for the Andor SIF file format).
+      
+      <li> Added \ref vigra::HDF5File for easier navigation in HDF5 files.
+      
+      <li> Added recursive approximation of the Gaussian filter (\ref recursiveGaussianFilterX(), 
+           \ref recursiveGaussianFilterY())
+           
+      <li> vigranumpy: added Gabor filtering.
+      
+      <li> Fixed multi-threading bugs at various places.
+     
+      <li> Minor improvements and bug fixes in the code and documentation. 
+ </UL>
+
 <b> Changes from Version 1.6.0 to 1.7.0</b>
 
 <UL>  

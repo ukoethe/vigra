@@ -51,7 +51,7 @@ namespace detail
 {
     class RF_DEFAULT;
 }
-detail::RF_DEFAULT& rf_default();
+inline detail::RF_DEFAULT& rf_default();
 namespace detail
 {
 
@@ -541,19 +541,19 @@ public:
     typedef LabelType       Label_t;
     ArrayVector<Label_t>    classes;
 
-    int                     column_count_;
-    int                     class_count_;
-    int                     row_count_;
+    int                     column_count_;    // number of features
+    int                     class_count_;     // number of classes
+    int                     row_count_;       // number of samples
 
-    int                     actual_mtry_;
-    int                     actual_msample_;
+    int                     actual_mtry_;     // mtry used in training
+    int                     actual_msample_;  // number if in-bag samples per tree
 
-    Problem_t               problem_type_;
+    Problem_t               problem_type_;    // classification or regression
     
-    int used_;
-    ArrayVector<double>     class_weights_;
-    int                     is_weighted;
-    double                  precision_;
+    int used_;                                // this ProblemSpec is valid
+    ArrayVector<double>     class_weights_;   // if classes have different importance
+    int                     is_weighted_;     // class_weights_ are used
+    double                  precision_;       // termination criterion for regression loss
    	int						response_size_; 
         
     template<class T> 
@@ -578,7 +578,7 @@ public:
         EQUALS(problem_type_),
         EQUALS(used_),
         EQUALS(class_weights_),
-        EQUALS(is_weighted),
+        EQUALS(is_weighted_),
         EQUALS(precision_),
 		EQUALS(response_size_)
     {
@@ -599,7 +599,7 @@ public:
         EQUALS(problem_type_),
         EQUALS(used_),
         EQUALS(class_weights_),
-        EQUALS(is_weighted),
+        EQUALS(is_weighted_),
         EQUALS(precision_),
 		EQUALS(response_size_)
     {
@@ -621,7 +621,7 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(is_weighted);
+        EQUALS(is_weighted_);
         EQUALS(precision_);
 		EQUALS(response_size_)
         class_weights_.clear();
@@ -645,7 +645,7 @@ public:
         EQUALS(actual_msample_);
         EQUALS(problem_type_);
         EQUALS(used_);
-        EQUALS(is_weighted);
+        EQUALS(is_weighted_);
         EQUALS(precision_);
 		EQUALS(response_size_)
         class_weights_.clear();
@@ -671,7 +671,7 @@ public:
         COMPARE(actual_mtry_);
         COMPARE(actual_msample_);
         COMPARE(problem_type_);
-        COMPARE(is_weighted);
+        COMPARE(is_weighted_);
         COMPARE(precision_);
         COMPARE(used_);
         COMPARE(class_weights_);
@@ -689,7 +689,7 @@ public:
 
     size_t serialized_size() const
     {
-        return 9 + class_count_ *int(is_weighted+1);
+        return 9 + class_count_ *int(is_weighted_+1);
     }
 
 
@@ -710,11 +710,11 @@ public:
         PULL(actual_mtry_,int);
         PULL(actual_msample_, int);
         PULL(problem_type_, Problem_t);
-        PULL(is_weighted, int);
+        PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
         PULL(response_size_, int);
-        if(is_weighted)
+        if(is_weighted_)
         {
             vigra_precondition(end - begin == 9 + 2*class_count_, 
                                "ProblemSpec::unserialize(): 2");
@@ -742,11 +742,11 @@ public:
         PUSH(actual_mtry_);
         PUSH(actual_msample_);
         PUSH(problem_type_);
-        PUSH(is_weighted);
+        PUSH(is_weighted_);
         PUSH(used_);
         PUSH(precision_);
 		PUSH(response_size_);
-        if(is_weighted)
+        if(is_weighted_)
         {
             std::copy(class_weights_.begin(),
                       class_weights_.end(),
@@ -769,7 +769,7 @@ public:
         PULL(actual_mtry_,int);
         PULL(actual_msample_, int);
         PULL(problem_type_, (Problem_t)int);
-        PULL(is_weighted, int);
+        PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
         PULL(response_size_, int);
@@ -786,7 +786,7 @@ public:
         PUSH(actual_mtry_);
         PUSH(actual_msample_);
         PUSH(problem_type_);
-        PUSH(is_weighted);
+        PUSH(is_weighted_);
         PUSH(used_);
         PUSH(precision_);
         PUSH(response_size_);
@@ -804,7 +804,7 @@ public:
         actual_msample_(0),
         problem_type_(CHECKLATER),
         used_(false),
-        is_weighted(false),
+        is_weighted_(false),
         precision_(0.0),
 		response_size_(1)
     {}
@@ -839,7 +839,7 @@ public:
     ProblemSpec & class_weights(W_Iter begin, W_Iter end)
     {
         class_weights_.insert(class_weights_.end(), begin, end);
-        is_weighted = true;
+        is_weighted_ = true;
         return *this;
     }
 
@@ -855,7 +855,7 @@ public:
         actual_mtry_ = 0;
         actual_msample_ = 0;
         problem_type_ = CHECKLATER;
-        is_weighted = false;
+        is_weighted_ = false;
         precision_   = 0.0;
 		response_size_ = 0;
 
@@ -887,7 +887,7 @@ class EarlyStoppStd
     {}
 
     template<class T>
-    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted */ = false)
+    void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
     {}
 
     template<class Region>

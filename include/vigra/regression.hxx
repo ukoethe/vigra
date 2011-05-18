@@ -72,7 +72,7 @@ namespace linalg
        <tt>false</tt> when the rank of \a A is less than <tt>n</tt>.
        See \ref linearSolve() for more documentation.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -114,7 +114,7 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -174,7 +174,7 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -247,7 +247,7 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -301,7 +301,7 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class Array>
@@ -345,7 +345,7 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 
 /** \brief Pass options to leastAngleRegression().
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
 */
 class LeastAngleRegressionOptions
@@ -516,7 +516,7 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
                                 : maxRank;
 
     bool needToRemoveColumn = false;
-    MultiArrayIndex columnToBeAdded, columnToBeRemoved;
+    MultiArrayIndex columnToBeAdded = 0, columnToBeRemoved = 0;
     MultiArrayIndex currentSolutionCount = 0;
     while(currentSolutionCount < maxSolutionCount)
     {
@@ -686,211 +686,6 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     return (unsigned int)currentSolutionCount;
 }
 
-#if 0
-// old version, keep it until we are sure that the new version works
-template <class T, class C1, class C2, class Array1, class Array2>
-unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
-                  Array1 & activeSets, Array2 * lars_solutions, Array2 * lsq_solutions,
-                  LeastAngleRegressionOptions const & options)
-{
-    using namespace vigra::functor;
-
-    typedef typename MultiArrayShape<2>::type Shape;
-    typedef typename Matrix<T>::view_type Subarray;
-    typedef ArrayVector<MultiArrayIndex> Permutation;
-    typedef typename Permutation::view_type ColumnSet;
-
-    vigra_precondition(d.activeSetSize > 0,
-       "leastAngleRegressionMainLoop() must not be called with empty active set.");
-
-    bool enforce_positive = (options.mode == LeastAngleRegressionOptions::NNLASSO);
-    bool lasso_modification = (options.mode != LeastAngleRegressionOptions::LARS);
-
-    const MultiArrayIndex rows = rowCount(d.R);
-    const MultiArrayIndex cols = columnCount(d.R);
-    const MultiArrayIndex maxRank = std::min(rows, cols);
-
-    MultiArrayIndex maxSolutionCount = options.max_solution_count;
-    if(maxSolutionCount == 0)
-        maxSolutionCount = lasso_modification
-                                ? 10*maxRank
-                                : maxRank;
-
-    bool needToRemoveColumn = false;
-    MultiArrayIndex columnToBeAdded, columnToBeRemoved;
-    MultiArrayIndex currentSolutionCount = 0;
-    while(currentSolutionCount < maxSolutionCount)
-    {
-        ColumnSet activeSet = d.columnPermutation.subarray(0, (unsigned int)d.activeSetSize);
-        ColumnSet inactiveSet = d.columnPermutation.subarray((unsigned int)d.activeSetSize, (unsigned int)cols);
-
-        // find next dimension to be activated
-        Matrix<T> lars_residual = d.b - d.lars_prediction;
-        Matrix<T> lsq_residual  = lars_residual - d.searchVector;
-        Matrix<T> c = transpose(d.A) * lars_residual;
-
-        // In theory, all vecors in the active set should have the same correlation C, and
-        // the correlation of all others should not exceed this. In practice, we may find the
-        // maximum correlation in any variable due to tiny numerical inaccuracies. Therefore, we
-        // determine C from the entire set of variables.
-        MultiArrayIndex cmaxIndex = enforce_positive
-                                      ? argMax(c)
-                                      : argMax(abs(c));
-        T C = abs(c(cmaxIndex, 0));
-
-        Matrix<T> ac(cols - d.activeSetSize, 1);
-        for(MultiArrayIndex k = 0; k<cols-d.activeSetSize; ++k)
-        {
-            T a   = dot(columnVector(d.A, inactiveSet[k]), d.searchVector),
-              a1  = (C - c(inactiveSet[k], 0)) / (C - a),
-              a2  = (C + c(inactiveSet[k], 0)) / (C + a);
-
-            if(enforce_positive)
-                ac(k, 0) = a1;
-            else if(std::min(a1, a2) < 0.0)
-                ac(k, 0) = std::max(a1, a2);
-            else
-                ac(k, 0) = std::min(a1, a2);
-        }
-
-        // in the non-negative case: make sure that a column just removed cannot re-enter right away
-        // (in standard LASSO, this is allowed, because the variable may re-enter with opposite sign)
-        if(enforce_positive && needToRemoveColumn)
-                ac(columnToBeRemoved-d.activeSetSize,0) = -1.0;
-
-        // find candidate
-        // Note: R uses Arg1() > epsilon, but this is only possible because it allows several variables to
-        //       join the active set simultaneously, so that gamma = 0 cannot occur.
-        columnToBeAdded = argMinIf(ac, Arg1() < Param(1.0) && Arg1() >= Param(NumericTraits<T>::zero()));
-
-        // if no new column can be added, we do a full step gamma = 1.0 and then stop, unless a column is removed below
-        T gamma = (columnToBeAdded == -1 || d.activeSetSize == maxRank)
-                     ? 1.0
-                     : ac(columnToBeAdded, 0);
-
-        // adjust columnToBeAdded: we skipped the active set
-        if(columnToBeAdded >= 0)
-            columnToBeAdded += d.activeSetSize;
-
-        // check whether we have to remove a column from the active set
-        needToRemoveColumn = false;
-        if(lasso_modification)
-        {
-            // find dimensions whose weight changes sign below gamma*searchDirection
-            Matrix<T> s(Shape(d.activeSetSize, 1), NumericTraits<T>::max());
-            for(MultiArrayIndex k=0; k<d.activeSetSize; ++k)
-            {
-                if(( enforce_positive && d.next_lsq_solution(k,0) < 0.0) ||
-                   (!enforce_positive && sign(d.lars_solution(k,0))*sign(d.next_lsq_solution(k,0)) == -1.0))
-                        s(k,0) = d.lars_solution(k,0) / (d.lars_solution(k,0) - d.next_lsq_solution(k,0));
-            }
-
-            columnToBeRemoved = argMinIf(s, Arg1() < Param(gamma) && Arg1() >= Param(NumericTraits<T>::zero()));
-            if(columnToBeRemoved >= 0)
-            {
-                needToRemoveColumn = true; // remove takes precedence over add
-                gamma = s(columnToBeRemoved, 0);
-            }
-        }
-
-        // compute the current solutions
-        d.lars_prediction += gamma * d.searchVector;
-        d.lars_solution    = gamma * d.next_lsq_solution + (1.0 - gamma) * d.lars_solution;
-        if(needToRemoveColumn)
-            d.lars_solution(columnToBeRemoved, 0) = 0.0;  // turn possible epsilon into an exact zero
-
-        // write the current solution
-        ++currentSolutionCount;
-        activeSets.push_back(typename Array1::value_type(d.columnPermutation.begin(), d.columnPermutation.begin()+d.activeSetSize));
-
-        if(lsq_solutions != 0)
-        {
-            if(enforce_positive)
-            {
-                ArrayVector<Matrix<T> > nnresults;
-	            ArrayVector<ArrayVector<MultiArrayIndex> > nnactiveSets;
-	            LarsData<T, C1, C2> nnd(d, d.activeSetSize);
-
-                leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, (Array2*)0,
-                                             LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
-                Matrix<T> nnlsq_solution(d.activeSetSize, 1);
-                for(unsigned int k=0; k<nnactiveSets.back().size(); ++k)
-                {
-                    nnlsq_solution(nnactiveSets.back()[k],0) = nnresults.back()[k];
-                }
-                lsq_solutions->push_back(nnlsq_solution);
-            }
-            else
-            {
-                lsq_solutions->push_back(d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
-            }
-        }
-        if(lars_solutions != 0)
-        {
-            lars_solutions->push_back(d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
-        }
-
-        // no further solutions possible
-        if(gamma == 1.0)
-            break;
-
-        if(needToRemoveColumn)
-        {
-            --d.activeSetSize;
-            if(columnToBeRemoved != d.activeSetSize)
-            {
-                // remove column 'columnToBeRemoved' and restore triangular form of R
-                // note: columnPermutation is automatically swapped here
-                detail::upperTriangularSwapColumns(columnToBeRemoved, d.activeSetSize, d.R, d.qtb, d.columnPermutation);
-
-                // swap solution entries
-                std::swap(d.lars_solution(columnToBeRemoved, 0), d.lars_solution(d.activeSetSize,0));
-                std::swap(d.next_lsq_solution(columnToBeRemoved, 0), d.next_lsq_solution(d.activeSetSize,0));
-                columnToBeRemoved = d.activeSetSize; // keep track of removed column
-            }
-            d.lars_solution(d.activeSetSize,0) = 0.0;
-            d.next_lsq_solution(d.activeSetSize,0) = 0.0;
-        }
-        else
-        {
-            vigra_invariant(columnToBeAdded >= 0,
-                "leastAngleRegression(): internal error (columnToBeAdded < 0)");
-            // add column 'columnToBeAdded'
-            if(d.activeSetSize != columnToBeAdded)
-            {
-                std::swap(d.columnPermutation[d.activeSetSize], d.columnPermutation[columnToBeAdded]);
-                columnVector(d.R, d.activeSetSize).swapData(columnVector(d.R, columnToBeAdded));
-                columnToBeAdded = d.activeSetSize; // keep track of added column
-            }
-
-            // zero the corresponding entries of the solutions
-            d.next_lsq_solution(d.activeSetSize,0) = 0.0;
-            d.lars_solution(d.activeSetSize,0) = 0.0;
-
-            // reduce R (i.e. its newly added column) to triangular form
-            detail::qrColumnHouseholderStep(d.activeSetSize, d.R, d.qtb);
-            ++d.activeSetSize;
-        }
-
-        // compute the LSQ solution of the new active set
-        Subarray Ractive = d.R.subarray(Shape(0,0), Shape(d.activeSetSize, d.activeSetSize));
-        Subarray qtbactive = d.qtb.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
-        Subarray next_lsq_solution_view = d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
-        linearSolveUpperTriangular(Ractive, qtbactive, next_lsq_solution_view);
-
-        // compute the LSQ prediction of the new active set
-        Matrix<T> lsq_prediction(rows, 1);
-        for(MultiArrayIndex k=0; k<d.activeSetSize; ++k)
-            lsq_prediction += next_lsq_solution_view(k,0)*columnVector(d.A, d.columnPermutation[k]);
-
-        // finally, the new search direction
-        d.searchVector = lsq_prediction - d.lars_prediction;
-    }
-
-    return (unsigned int)currentSolutionCount;
-}
-#endif
-
 template <class T, class C1, class C2, class Array1, class Array2>
 unsigned int
 leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
@@ -931,7 +726,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
    /** Least Angle Regression.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
 
    <b> Declarations:</b>
@@ -1110,7 +905,7 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
        Note that all matrices must already have the correct shape. The solution is computed by means
        of \ref leastAngleRegression() with non-negativity constraint.
 
-    <b>\#include</b> \<<a href="regression_8hxx-source.html">vigra/regression.hxx</a>\>
+    <b>\#include</b> \<vigra/regression.hxx\>
         Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>

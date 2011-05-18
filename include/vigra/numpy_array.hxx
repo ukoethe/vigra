@@ -1102,7 +1102,7 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
     as a smart pointer to these arrays, but some basic access and conversion functions
     are also provided.
 
-    <b>\#include</b> \<<a href="numpy__array_8hxx-source.html">vigra/numpy_array.hxx</a>\><br>
+    <b>\#include</b> \<vigra/numpy_array.hxx\><br>
     Namespace: vigra
 */
 class NumpyAnyArray
@@ -1357,7 +1357,7 @@ class NumpyAnyArray
     This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray
     in order to support easy and save application of VIGRA functions to Python arrays.
 
-    <b>\#include</b> \<<a href="numpy__array_8hxx-source.html">vigra/numpy_array.hxx</a>\><br>
+    <b>\#include</b> \<vigra/numpy_array.hxx\><br>
     Namespace: vigra
 */
 template <unsigned int N, class T, class Stride = StridedArrayTag>

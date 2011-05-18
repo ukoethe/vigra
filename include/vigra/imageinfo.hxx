@@ -61,7 +61,7 @@ namespace vigra
 {
 /** \addtogroup VigraImpex Image Import/Export Facilities
 
-    supports GIF, TIFF, JPEG, BMP, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
+    supports GIF, TIFF, JPEG, BMP, EXR, HDR, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
 **/
 //@{
 
@@ -72,7 +72,7 @@ namespace vigra
 
         <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+        <b>\#include</b> \<vigra/imageinfo.hxx\><br>
         Namespace: vigra
 
         \code
@@ -89,7 +89,7 @@ VIGRA_EXPORT std::string impexListFormats();
 
         <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+        <b>\#include</b> \<vigra/imageinfo.hxx\><br>
         Namespace: vigra
 
         \code
@@ -106,7 +106,7 @@ VIGRA_EXPORT std::string impexListExtensions();
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+    <b>\#include</b> \<vigra/imageinfo.hxx\><br>
     Namespace: vigra
 
     \code
@@ -127,7 +127,7 @@ VIGRA_EXPORT bool isImage(char const * filename);
     See \ref exportImage() for usage example. This object must be used
     to define the properties of an image to be written to disk.
 
-    <b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+    <b>\#include</b> \<vigra/imageinfo.hxx\><br>
     Namespace: vigra
 **/
 class ImageExportInfo
@@ -137,11 +137,11 @@ class ImageExportInfo
 
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo( const char * );
     VIGRA_EXPORT ~ImageExportInfo();
@@ -149,11 +149,11 @@ class ImageExportInfo
         /** Set image file name.
         
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo & setFileName(const char * filename);
     VIGRA_EXPORT const char * getFileName() const;
@@ -165,7 +165,10 @@ class ImageExportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
             <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
             compressed 24-bit color (only available if libjpeg is installed).
             <DT>"PNG"<DD> Portable Network Graphic
@@ -286,7 +289,7 @@ class ImageExportInfo
         /** Set the position of the upper Left corner on a global
             canvas.
 
-            Currently only supported by TIFF and PNG files.
+            Currently only supported by TIFF, PNG and OpenEXR files.
 
             The offset is encoded in the XPosition and YPosition TIFF tags.
 
@@ -299,6 +302,16 @@ class ImageExportInfo
             a global canvas.
          **/
     VIGRA_EXPORT Diff2D getPosition() const;
+
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT Size2D getCanvasSize() const;
+
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT ImageExportInfo & setCanvasSize(const Size2D & size);
 
         /**
           ICC profiles (handled as raw data so far).
@@ -321,6 +334,7 @@ class ImageExportInfo
     float m_x_res, m_y_res;
     Diff2D m_pos;
     ICCProfile m_icc_profile;
+    Size2D m_canvas_size;
     double fromMin_, fromMax_, toMin_, toMax_;
 };
 
@@ -338,7 +352,7 @@ VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
 See \ref importImage() for a usage example. This object must be
 used to read an image from disk and enquire about its properties.
 
-<b>\#include</b> \<<a href="imageinfo_8hxx-source.html">vigra/imageinfo.hxx</a>\><br>
+<b>\#include</b> \<vigra/imageinfo.hxx\><br>
 Namespace: vigra
 **/
 class ImageImportInfo
@@ -354,10 +368,13 @@ class ImageImportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format
-            (only available if libjpeg is installed).
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-            <DT>"PNG"<DD> Portable Network Graphics
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
             (only available if libpng is installed).
             <DT>"PBM"<DD> Portable bitmap format (black and white).
             <DT>"PGM"<DD> Portable graymap format (gray scale).
@@ -458,6 +475,11 @@ class ImageImportInfo
          **/
     VIGRA_EXPORT Diff2D getPosition() const;
 
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT Size2D getCanvasSize() const;
+
         /** Returns the image resolution in horizontal direction
          **/
     VIGRA_EXPORT float getXResolution() const;
@@ -484,6 +506,7 @@ class ImageImportInfo
     int m_width, m_height, m_num_bands, m_num_extra_bands;
     float m_x_res, m_y_res;
     Diff2D m_pos;
+    Size2D m_canvas_size;
     ICCProfile m_icc_profile;
 };
 

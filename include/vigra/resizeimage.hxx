@@ -72,7 +72,7 @@ namespace vigra {
     \ref resamplingConvolveImage() to create a differentiable interpolant
     of an image.
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
     \ingroup MathFunctions
@@ -145,9 +145,9 @@ class CoscotFunction
 
     See also: \ref resamplingConvolveImage(), \ref resampleImage(), \ref resizeMultiArraySplineInterpolation()
 
-    <b>\#include</b> \<<a href="stdimagefunctions_8hxx-source.html">vigra/stdimagefunctions.hxx</a>\><br>
+    <b>\#include</b> \<vigra/stdimagefunctions.hxx\><br>
     <b>or</b><br>
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
 */
 //@{
 
@@ -228,7 +228,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -277,10 +277,10 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     vigra_precondition((w > 1) && (h > 1),
                  "resizeImageNoInterpolation(): "
-                 "Source image to small.\n");
+                 "Source image too small.\n");
     vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageNoInterpolation(): "
-                 "Destination image to small.\n");
+                 "Destination image too small.\n");
 
     typedef BasicImage<typename SrcAccessor::value_type> TmpImage;
     typedef typename TmpImage::traverser TmpImageIterator;
@@ -413,7 +413,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -472,10 +472,10 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     vigra_precondition((w > 1) && (h > 1),
                  "resizeImageLinearInterpolation(): "
-                 "Source image to small.\n");
+                 "Source image too small.\n");
     vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageLinearInterpolation(): "
-                 "Destination image to small.\n");
+                 "Destination image too small.\n");
 
     double const scale = 2.0;
 
@@ -560,7 +560,7 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     IEEE Transactions on Signal Processing, vol. 41, no. 2, pp. 821-833 (part I),
     pp. 834-848 (part II), 1993.
 
-    to obtain optimal interpolation quality and speed. You may pass the funcion
+    to obtain optimal interpolation quality and speed. You may pass the function
     a spline of arbitrary order (e.g. <TT>BSpline<ORDER, double></tt> or
     <TT>CatmullRomSpline<double></tt>). The default is a third order spline
     which gives a twice continuously differentiable interpolant.
@@ -613,7 +613,7 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
         Namespace: vigra
 
     \code
@@ -680,11 +680,11 @@ resizeImageSplineInterpolation(
 
     vigra_precondition((width_old > 1) && (height_old > 1),
                  "resizeImageSplineInterpolation(): "
-                 "Source image to small.\n");
+                 "Source image too small.\n");
 
     vigra_precondition((width_new > 1) && (height_new > 1),
                  "resizeImageSplineInterpolation(): "
-                 "Destination image to small.\n");
+                 "Destination image too small.\n");
 
     Rational<int> xratio(width_new - 1, width_old - 1);
     Rational<int> yratio(height_new - 1, height_old - 1);
@@ -884,7 +884,7 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     \endcode
 
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */
@@ -925,7 +925,7 @@ resizeImageCatmullRomInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor>
     The interpolated function has two continuous derivatives.
     (See \ref resizeImageSplineInterpolation() for more documentation)
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */
@@ -990,7 +990,7 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
 
 
-    <b>\#include</b> \<<a href="resizeimage_8hxx-source.html">vigra/resizeimage.hxx</a>\><br>
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
 
 */
@@ -1340,10 +1340,10 @@ resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     vigra_precondition((w > 3) && (h > 3),
                  "resizeImageSplineInterpolation(): "
-                 "Source image to small.\n");
+                 "Source image too small.\n");
     vigra_precondition((wnew > 1) && (hnew > 1),
                  "resizeImageSplineInterpolation(): "
-                 "Destination image to small.\n");
+                 "Destination image too small.\n");
 
     double scale = 2.0;
 

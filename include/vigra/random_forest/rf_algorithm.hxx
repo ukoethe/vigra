@@ -37,6 +37,7 @@
 #include <vector>
 #include "splices.hxx"
 #include <queue>
+#include <fstream>
 namespace vigra
 {
  
@@ -162,7 +163,7 @@ class VariableSelectionResult
         bool ret_ = init(all_features, response, errorcallback); 
         if(!ret_)
             return false;
-        vigra_precondition(std::distance(b, e) == selected.size(),
+        vigra_precondition(std::distance(b, e) == (std::ptrdiff_t)selected.size(),
                            "Number of features in ranking != number of features matrix");
         std::copy(b, e, selected.begin());
         return true;
@@ -212,7 +213,7 @@ class VariableSelectionResult
 		initialized = true;
         // calculate error with all features
         selected.resize(all_features.shape(1), 0);
-        for(int ii = 0; ii < selected.size(); ++ii)
+        for(unsigned int ii = 0; ii < selected.size(); ++ii)
             selected[ii] = ii;
         errors.resize(all_features.shape(1), -1);
         errors.back() = errorcallback(all_features, response);
@@ -304,7 +305,7 @@ void forward_selection(FeatureT          const & features,
     {
         //result is being reused just ensure that the number of features is
         //the same.
-        vigra_precondition(selected.size() == featureCount,
+        vigra_precondition((int)selected.size() == featureCount,
                            "forward_selection(): Number of features in Feature "
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
@@ -407,7 +408,7 @@ void backward_elimination(FeatureT              const & features,
     {
         //result is being reused just ensure that the number of features is
         //the same.
-        vigra_precondition(selected.size() == featureCount,
+        vigra_precondition((int)selected.size() == featureCount,
                            "backward_elimination(): Number of features in Feature "
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
@@ -503,7 +504,7 @@ void rank_selection      (FeatureT              const & features,
     {
         //result is being reused just ensure that the number of features is
         //the same.
-        vigra_precondition(selected.size() == featureCount,
+        vigra_precondition((int)selected.size() == featureCount,
                            "forward_selection(): Number of features in Feature "
                            "matrix and number of features in previously used "
                            "result struct mismatch!");
@@ -710,7 +711,7 @@ public:
 #ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
-        
+
         vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
@@ -721,7 +722,7 @@ public:
                                     parameters_.data()));
         vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
-                               
+
     }
 #endif
 
@@ -751,9 +752,9 @@ public:
             int jj_min = 1;
             double min_dist = dist((addr.begin()+ii_min)->second, 
                               (addr.begin()+jj_min)->second);
-            for(int ii = 0; ii < addr.size(); ++ii)
+            for(unsigned int ii = 0; ii < addr.size(); ++ii)
             {
-                for(int jj = ii+1; jj < addr.size(); ++jj)
+                for(unsigned int jj = ii+1; jj < addr.size(); ++jj)
                 {
                     if(  dist((addr.begin()+ii_min)->second, 
                               (addr.begin()+jj_min)->second)
@@ -825,7 +826,7 @@ public:
             }
             //update distances;
             
-            for(int jj = 0 ; jj < addr.size(); ++jj)
+            for(int jj = 0 ; jj < (int)addr.size(); ++jj)
             {
                 if(jj == ii_keep)
                     continue;

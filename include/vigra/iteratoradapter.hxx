@@ -140,7 +140,7 @@ namespace vigra {
     it can be any type that contains the information necessary for the
     adaptor to do it's work.
 
-    <b>\#include</b> \<<a href="iteratoradapter_8hxx-source.html">vigra/iteratoradapter.hxx</a>\><br>
+    <b>\#include</b> \<vigra/iteratoradapter.hxx\><br>
     Namespace: vigra
 
 */

@@ -40,10 +40,7 @@
 #include "diff2d.hxx"
 
 namespace vigra{
-/** \addtogroup RangesAndPoints Two-dimensional Ranges and Points
-
-    Specify a 2D position, extent, or rectangle.
-*/
+/** \addtogroup RangesAndPoints */
 //@{
 
 /********************************************************/

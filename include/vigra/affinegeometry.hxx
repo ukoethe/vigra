@@ -210,7 +210,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="affinegeometry_8hxx-source.html">vigra/affinegeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/affinegeometry.hxx\><br>
         Namespace: vigra
     
     \code
@@ -362,7 +362,7 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<<a href="affinegeometry_8hxx-source.html">vigra/affinegeometry.hxx</a>\><br>
+        <b>\#include</b> \<vigra/affinegeometry.hxx\><br>
         Namespace: vigra
     
     \code

@@ -397,7 +397,7 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
     pass arguments explicitly:
@@ -494,7 +494,7 @@ estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
     pass arguments explicitly:
@@ -591,7 +591,7 @@ estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<<a href="affine__registration_8hxx-source.html">vigra/affine_registration.hxx</a>\><br>
+    <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
     pass arguments explicitly:

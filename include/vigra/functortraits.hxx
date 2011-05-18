@@ -150,7 +150,7 @@ class FunctorTraitsBase
     types fixed in this case because they are computed (via a template meta-program)
     from the argument types.
 
-    <b>\#include</b> \<<a href="functortraits_8hxx-source.html">vigra/functortraits.hxx</a>\>
+    <b>\#include</b> \<vigra/functortraits.hxx\>
     Namespace: vigra
 */
 template <class T>

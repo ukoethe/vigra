@@ -50,22 +50,66 @@ namespace vigra {
 
 typedef double fftw_real;
 
+template <class T>
+struct FFTWReal;
+
+template <>
+struct FFTWReal<fftw_complex>
+{
+    typedef double type;
+};
+
+template <>
+struct FFTWReal<fftwf_complex>
+{
+    typedef float type;
+};
+
+template <>
+struct FFTWReal<fftwl_complex>
+{
+    typedef long double type;
+};
+
+template <class T>
+struct FFTWReal2Complex;
+
+template <>
+struct FFTWReal2Complex<double>
+{
+    typedef fftw_complex type;
+    typedef fftw_plan plan_type;
+};
+
+template <>
+struct FFTWReal2Complex<float>
+{
+    typedef fftwf_complex type;
+    typedef fftwf_plan plan_type;
+};
+
+template <>
+struct FFTWReal2Complex<long double>
+{
+    typedef fftwl_complex type;
+    typedef fftwl_plan plan_type;
+};
+
 /********************************************************/
 /*                                                      */
 /*                    FFTWComplex                       */
 /*                                                      */
 /********************************************************/
 
-/** \brief Wrapper class for the FFTW type '<TT>fftw_complex</TT>'.
+/** \brief Wrapper class for the FFTW complex types '<TT>fftw_complex</TT>'.
 
-    This class provides constructors and other member functions
-    for the C struct '<TT>fftw_complex</TT>'. This struct is the basic
-    pixel type of the <a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a>
-    library. It inherits the data members '<TT>re</TT>' and '<TT>im</TT>'
-    that denote the real and imaginary part of the number. In addition it
-    defines transformations to polar coordinates,
-    as well as \ref FFTWComplexOperators "arithmetic operators" and
-    \ref FFTWComplexAccessors "accessors".
+    This class encapsulates the low-level complex number types provided by the 
+	<a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a> library (i.e. 
+	'<TT>fftw_complex</TT>', '<TT>fftwf_complex</TT>', '<TT>fftwl_complex</TT>'). 
+	In particular, it provides constructors, member functions and 
+	\ref FFTWComplexOperators "arithmetic operators" that make FFTW complex numbers
+	compatible with <tt>std::complex</tt>. In addition, the class defines 
+	transformations to polar coordinates and \ref FFTWComplexAccessors "accessors".
 
     FFTWComplex implements the concepts \ref AlgebraicField and
     \ref DivisionAlgebra. The standard image types <tt>FFTWRealImage</tt>
@@ -78,42 +122,45 @@ typedef double fftw_real;
         <li> \ref FFTWComplexAccessors
     </ul>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
 */
+template <class Real = double>
 class FFTWComplex
 {
-    fftw_complex data_;
-
   public:
+        /** The wrapped complex type
+        */
+	  typedef typename FFTWReal2Complex<Real>::type complex_type;
+
         /** The complex' component type, as defined in '<TT>fftw3.h</TT>'
         */
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /** reference type (result of operator[])
         */
-    typedef fftw_real & reference;
+    typedef value_type & reference;
 
         /** const reference type (result of operator[] const)
         */
-    typedef fftw_real const & const_reference;
+    typedef value_type const & const_reference;
 
         /** iterator type (result of begin() )
         */
-    typedef fftw_real * iterator;
+    typedef value_type * iterator;
 
         /** const iterator type (result of begin() const)
         */
-    typedef fftw_real const * const_iterator;
+    typedef value_type const * const_iterator;
 
         /** The norm type (result of magnitde())
         */
-    typedef fftw_real NormType;
+    typedef value_type NormType;
 
         /** The squared norm type (result of squaredMagnitde())
         */
-    typedef fftw_real SquaredNormType;
+    typedef value_type SquaredNormType;
 
         /** Construct from real and imaginary part.
             Default: 0.
@@ -135,6 +182,22 @@ class FFTWComplex
         /** Construct from plain <TT>fftw_complex</TT>.
         */
     FFTWComplex(fftw_complex const & o)
+    {
+        data_[0] = o[0];
+        data_[1] = o[1];
+    }
+
+        /** Construct from plain <TT>fftwf_complex</TT>.
+        */
+    FFTWComplex(fftwf_complex const & o)
+    {
+        data_[0] = o[0];
+        data_[1] = o[1];
+    }
+
+        /** Construct from plain <TT>fftwl_complex</TT>.
+        */
+    FFTWComplex(fftwl_complex const & o)
     {
         data_[0] = o[0];
         data_[1] = o[1];
@@ -169,7 +232,43 @@ class FFTWComplex
 
         /** Assignment.
         */
-    FFTWComplex& operator=(fftw_real const & o)
+    FFTWComplex& operator=(fftwf_complex const & o)
+    {
+        data_[0] = o[0];
+        data_[1] = o[1];
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    FFTWComplex& operator=(fftwl_complex const & o)
+    {
+        data_[0] = o[0];
+        data_[1] = o[1];
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    FFTWComplex& operator=(double o)
+    {
+        data_[0] = o;
+        data_[1] = 0.0;
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    FFTWComplex& operator=(float o)
+    {
+        data_[0] = o;
+        data_[1] = 0.0;
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    FFTWComplex& operator=(long double o)
     {
         data_[0] = o;
         data_[1] = 0.0;
@@ -192,10 +291,22 @@ class FFTWComplex
     const_reference re() const
         { return data_[0]; }
 
+    reference real()
+        { return data_[0]; }
+
+    const_reference real() const
+        { return data_[0]; }
+
     reference im()
         { return data_[1]; }
 
     const_reference im() const
+        { return data_[1]; }
+
+    reference imag()
+        { return data_[1]; }
+
+    const_reference imag() const
         { return data_[1]; }
 
         /** Unary negation.
@@ -244,6 +355,9 @@ class FFTWComplex
 
     const_iterator end() const
         { return data_ + 2; }
+
+  private:
+    complex_type data_;
 };
 
 /********************************************************/
@@ -277,13 +391,13 @@ class FFTWComplex
         // etc.
     };
 
-    template<>
-    struct NumericTraits<FFTWComplex>
+    template<class Real>
+    struct NumericTraits<FFTWComplex<Real> >
     {
-        typedef FFTWComplex Promote;
-        typedef FFTWComplex RealPromote;
-        typedef FFTWComplex ComplexPromote;
-        typedef fftw_real   ValueType;
+        typedef FFTWComplex<Real> Promote;
+        typedef FFTWComplex<Real> RealPromote;
+        typedef FFTWComplex<Real> ComplexPromote;
+        typedef Real              ValueType;
 
         typedef VigraFalseType isIntegral;
         typedef VigraFalseType isScalar;
@@ -301,7 +415,7 @@ class FFTWComplex
         typedef fftw_real    NormType;
     };
 
-    template<>
+    template<class Real>
     struct NormTraits<FFTWComplex>
     {
         typedef FFTWComplex Type;
@@ -327,27 +441,27 @@ class FFTWComplex
         typedef fftw_complex Promote;
     };
 
-    template <>
-    struct PromoteTraits<FFTWComplex, FFTWComplex>
+    template <class Real>
+    struct PromoteTraits<FFTWComplex<Real>, FFTWComplex<Real> >
     {
-        typedef FFTWComplex Promote;
+        typedef FFTWComplex<Real> Promote;
     };
 
-    template <>
-    struct PromoteTraits<FFTWComplex, double>
+    template <class Real>
+    struct PromoteTraits<FFTWComplex<Real>, double>
     {
-        typedef FFTWComplex Promote;
+        typedef FFTWComplex<Real> Promote;
     };
 
-    template <>
-    struct PromoteTraits<double, FFTWComplex>
+    template <class Real>
+    struct PromoteTraits<double, FFTWComplex<Real> >
     {
-        typedef FFTWComplex Promote;
+        typedef FFTWComplex<Real> Promote;
     };
     \endcode
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
 
 */
@@ -366,9 +480,9 @@ struct NumericTraits<fftw_complex>
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType  isComplex;
 
-    static FFTWComplex zero() { return FFTWComplex(0.0, 0.0); }
-    static FFTWComplex one() { return FFTWComplex(1.0, 0.0); }
-    static FFTWComplex nonZero() { return one(); }
+    static FFTWComplex<> zero() { return FFTWComplex<>(0.0, 0.0); }
+    static FFTWComplex<> one() { return FFTWComplex<>(1.0, 0.0); }
+    static FFTWComplex<> nonZero() { return one(); }
 
     static const Promote & toPromote(const Type & v) { return v; }
     static const RealPromote & toRealPromote(const Type & v) { return v; }
@@ -376,24 +490,24 @@ struct NumericTraits<fftw_complex>
     static const Type & fromRealPromote(const RealPromote & v) { return v; }
 };
 
-template<>
-struct NumericTraits<FFTWComplex>
+template<class Real>
+struct NumericTraits<FFTWComplex<Real> >
 {
-    typedef FFTWComplex Type;
-    typedef FFTWComplex Promote;
-    typedef FFTWComplex RealPromote;
-    typedef FFTWComplex ComplexPromote;
-    typedef fftw_real   ValueType;
+    typedef FFTWComplex<Real> Type;
+    typedef FFTWComplex<Real> Promote;
+    typedef FFTWComplex<Real> RealPromote;
+    typedef FFTWComplex<Real> ComplexPromote;
+    typedef typename Type::value_type ValueType;
 
     typedef VigraFalseType isIntegral;
     typedef VigraFalseType isScalar;
-    typedef NumericTraits<fftw_real>::isSigned isSigned;
+    typedef typename NumericTraits<ValueType>::isSigned isSigned;
     typedef VigraFalseType isOrdered;
     typedef VigraTrueType  isComplex;
 
-    static FFTWComplex zero() { return FFTWComplex(0.0, 0.0); }
-    static FFTWComplex one() { return FFTWComplex(1.0, 0.0); }
-    static FFTWComplex nonZero() { return one(); }
+    static Type zero() { return Type(0.0, 0.0); }
+    static Type one() { return Type(1.0, 0.0); }
+    static Type nonZero() { return one(); }
 
     static const Promote & toPromote(const Type & v) { return v; }
     static const RealPromote & toRealPromote(const Type & v) { return v; }
@@ -409,12 +523,12 @@ struct NormTraits<fftw_complex>
     typedef fftw_real    NormType;
 };
 
-template<>
-struct NormTraits<FFTWComplex>
+template<class Real>
+struct NormTraits<FFTWComplex<Real> >
 {
-    typedef FFTWComplex Type;
-    typedef fftw_real   SquaredNormType;
-    typedef fftw_real   NormType;
+    typedef FFTWComplex<Real>  Type;
+    typedef typename Type::SquaredNormType   SquaredNormType;
+    typedef typename Type::NormType   NormType;
 };
 
 template <>
@@ -435,22 +549,22 @@ struct PromoteTraits<double, fftw_complex>
     typedef fftw_complex Promote;
 };
 
-template <>
-struct PromoteTraits<FFTWComplex, FFTWComplex>
+template <class Real>
+struct PromoteTraits<FFTWComplex<Real>, FFTWComplex<Real> >
 {
-    typedef FFTWComplex Promote;
+    typedef FFTWComplex<Real> Promote;
 };
 
-template <>
-struct PromoteTraits<FFTWComplex, double>
+template <class Real>
+struct PromoteTraits<FFTWComplex<Real>, double>
 {
-    typedef FFTWComplex Promote;
+    typedef FFTWComplex<Real> Promote;
 };
 
-template <>
-struct PromoteTraits<double, FFTWComplex>
+template <class Real>
+struct PromoteTraits<double, FFTWComplex<Real> >
 {
-    typedef FFTWComplex Promote;
+    typedef FFTWComplex<Real> Promote;
 };
 
 template<class T>
@@ -460,14 +574,148 @@ struct CanSkipInitialization<std::complex<T> >
     static const bool value = type::asBool;
 };
 
-template<>
-struct CanSkipInitialization<FFTWComplex>
+template<class Real>
+struct CanSkipInitialization<FFTWComplex<Real> >
 {
-    typedef CanSkipInitialization<fftw_real>::type type;
+    typedef typename CanSkipInitialization<Real>::type type;
     static const bool value = type::asBool;
 };
 
+template<class Ty>
+class FFTWAllocator
+{
+  public:
+    typedef std::size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef Ty *pointer;
+    typedef const Ty *const_pointer;
+    typedef Ty& reference;
+    typedef const Ty& const_reference;
+    typedef Ty value_type;
+    
+    pointer address(reference val) const
+        { return &val; }
+        
+    const_pointer address(const_reference val) const
+        { return &val; }
+        
+    template<class Other>
+    struct rebind
+    {
+        typedef FFTWAllocator<Other> other;
+    };
+    
+    FFTWAllocator() throw()
+    {}
+    
+    template<class Other>
+    FFTWAllocator(const FFTWAllocator<Other>& right) throw()
+    {}
+    
+    template<class Other>
+    FFTWAllocator& operator=(const FFTWAllocator<Other>& right)
+    {
+		return *this;
+	}
+    
+    pointer allocate(size_type count, void * = 0)
+    {
+        return (pointer)fftw_malloc(count * sizeof(Ty));
+    }
+    
+    void deallocate(pointer ptr, size_type count)
+    {
+        fftw_free(ptr);
+    }
+    
+    void construct(pointer ptr, const Ty& val)
+    {
+        new(ptr) Ty(val);
+        
+    }
+    
+    void destroy(pointer ptr)
+    {
+        ptr->~Ty();
+    }
+    
+    size_type max_size() const throw()
+    {
+        return NumericTraits<std::ptrdiff_t>::max() / sizeof(Ty);
+    }
+};
 
+} // namespace vigra
+
+namespace std {
+
+template<class Real>
+class allocator<vigra::FFTWComplex<Real> >
+{
+  public:
+    typedef vigra::FFTWComplex<Real> value_type;
+    typedef size_t size_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef value_type *pointer;
+    typedef const value_type *const_pointer;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+
+    pointer address(reference val) const
+        { return &val; }
+        
+    const_pointer address(const_reference val) const
+        { return &val; }
+        
+    template<class Other>
+    struct rebind
+    {
+        typedef allocator<Other> other;
+    };
+    
+    allocator() throw()
+    {}
+    
+    template<class Other>
+    allocator(const allocator<Other>& right) throw()
+    {}
+    
+    template<class Other>
+    allocator& operator=(const allocator<Other>& right)
+    {
+		return *this;
+	}
+    
+    pointer allocate(size_type count, void * = 0)
+    {
+        return (pointer)fftw_malloc(count * sizeof(value_type));
+    }
+    
+    void deallocate(pointer ptr, size_type count)
+    {
+        fftw_free(ptr);
+    }
+    
+    void construct(pointer ptr, const value_type& val)
+    {
+        new(ptr) value_type(val);
+        
+    }
+    
+    void destroy(pointer ptr)
+    {
+        ptr->~value_type();
+    }
+    
+    size_type max_size() const throw()
+    {
+        return vigra::NumericTraits<std::ptrdiff_t>::max() / sizeof(value_type);
+    }
+};
+
+} // namespace std
+
+namespace vigra {
 
 /********************************************************/
 /*                                                      */
@@ -477,8 +725,8 @@ struct CanSkipInitialization<FFTWComplex>
 
 /** \addtogroup FFTWComplexOperators Functions for FFTWComplex
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
 
     These functions fulfill the requirements of an Algebraic Field.
     Return types are determined according to \ref FFTWComplexTraits.
@@ -489,98 +737,135 @@ struct CanSkipInitialization<FFTWComplex>
  */
 //@{
     /// equal
-inline bool operator ==(FFTWComplex const &a, const FFTWComplex &b) {
+template <class R>
+inline bool operator ==(FFTWComplex<R> const &a, const FFTWComplex<R> &b) {
     return a.re() == b.re() && a.im() == b.im();
 }
 
+template <class R>
+inline bool operator ==(FFTWComplex<R> const &a,  double b) {
+    return a.re() == b && a.im() == 0.0;
+}
+
+template <class R>
+inline bool operator ==(double a, const FFTWComplex<R> &b) {
+    return a == b.re() && 0.0 == b.im();
+}
+
     /// not equal
-inline bool operator !=(FFTWComplex const &a, const FFTWComplex &b) {
+template <class R>
+inline bool operator !=(FFTWComplex<R> const &a, const FFTWComplex<R> &b) {
     return a.re() != b.re() || a.im() != b.im();
 }
 
+    /// not equal
+template <class R>
+inline bool operator !=(FFTWComplex<R> const &a,  double b) {
+    return a.re() != b || a.im() != 0.0;
+}
+
+    /// not equal
+template <class R>
+inline bool operator !=(double a, const FFTWComplex<R> &b) {
+    return a != b.re() || 0.0 != b.im();
+}
+
     /// add-assignment
-inline FFTWComplex &operator +=(FFTWComplex &a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> & operator +=(FFTWComplex<R> &a, const FFTWComplex<R> &b) {
     a.re() += b.re();
     a.im() += b.im();
     return a;
 }
 
     /// subtract-assignment
-inline FFTWComplex &operator -=(FFTWComplex &a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> & operator -=(FFTWComplex<R> &a, const FFTWComplex<R> &b) {
     a.re() -= b.re();
     a.im() -= b.im();
     return a;
 }
 
     /// multiply-assignment
-inline FFTWComplex &operator *=(FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex::value_type t = a.re()*b.re()-a.im()*b.im();
+template <class R>
+inline FFTWComplex<R> & operator *=(FFTWComplex<R> &a, const FFTWComplex<R> &b) {
+    typename FFTWComplex<R>::value_type t = a.re()*b.re()-a.im()*b.im();
     a.im() = a.re()*b.im()+a.im()*b.re();
     a.re() = t;
     return a;
 }
 
     /// divide-assignment
-inline FFTWComplex &operator /=(FFTWComplex &a, const FFTWComplex &b) {
-    FFTWComplex::value_type sm = b.squaredMagnitude();
-    FFTWComplex::value_type t = (a.re()*b.re()+a.im()*b.im())/sm;
+template <class R>
+inline FFTWComplex<R> & operator /=(FFTWComplex<R> &a, const FFTWComplex<R> &b) {
+    typename FFTWComplex<R>::value_type sm = b.squaredMagnitude();
+    typename FFTWComplex<R>::value_type t = (a.re()*b.re()+a.im()*b.im())/sm;
     a.im() = (b.re()*a.im()-a.re()*b.im())/sm;
     a.re() = t;
     return a;
 }
 
     /// multiply-assignment with scalar double
-inline FFTWComplex &operator *=(FFTWComplex &a, const double &b) {
+template <class R>
+inline FFTWComplex<R> & operator *=(FFTWComplex<R> &a, const double &b) {
     a.re() *= b;
     a.im() *= b;
     return a;
 }
 
     /// divide-assignment with scalar double
-inline FFTWComplex &operator /=(FFTWComplex &a, const double &b) {
+template <class R>
+inline FFTWComplex<R> & operator /=(FFTWComplex<R> &a, const double &b) {
     a.re() /= b;
     a.im() /= b;
     return a;
 }
 
     /// addition
-inline FFTWComplex operator +(FFTWComplex a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> operator +(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     a += b;
     return a;
 }
 
     /// subtraction
-inline FFTWComplex operator -(FFTWComplex a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> operator -(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     a -= b;
     return a;
 }
 
     /// multiplication
-inline FFTWComplex operator *(FFTWComplex a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> operator *(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     a *= b;
     return a;
 }
 
     /// right multiplication with scalar double
-inline FFTWComplex operator *(FFTWComplex a, const double &b) {
+template <class R>
+inline FFTWComplex<R> operator *(FFTWComplex<R> a, const double &b) {
     a *= b;
     return a;
 }
 
     /// left multiplication with scalar double
-inline FFTWComplex operator *(const double &a, FFTWComplex b) {
+template <class R>
+inline FFTWComplex<R> operator *(const double &a, FFTWComplex<R> b) {
     b *= a;
     return b;
 }
 
     /// division
-inline FFTWComplex operator /(FFTWComplex a, const FFTWComplex &b) {
+template <class R>
+inline FFTWComplex<R> operator /(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     a /= b;
     return a;
 }
 
     /// right division with scalar double
-inline FFTWComplex operator /(FFTWComplex a, const double &b) {
+template <class R>
+inline FFTWComplex<R> operator /(FFTWComplex<R> a, const double &b) {
     a /= b;
     return a;
 }
@@ -588,31 +873,63 @@ inline FFTWComplex operator /(FFTWComplex a, const double &b) {
 using VIGRA_CSTD::abs;
 
     /// absolute value (= magnitude)
-inline FFTWComplex::value_type abs(const FFTWComplex &a)
+template <class R>
+inline typename FFTWComplex<R>::NormType abs(const FFTWComplex<R> &a)
 {
     return a.magnitude();
 }
 
-    /// complex conjugate
-inline FFTWComplex conj(const FFTWComplex &a)
+    /// real part
+template <class R>
+inline R real(const FFTWComplex<R> &a)
 {
-    return FFTWComplex(a.re(), -a.im());
+    return a.real();
+}
+
+    /// imaginary part
+template <class R>
+inline R imag(const FFTWComplex<R> &a)
+{
+    return a.imag();
+}
+
+    /// complex conjugate
+template <class R>
+inline FFTWComplex<R> conj(const FFTWComplex<R> &a)
+{
+    return FFTWComplex<R>(a.re(), -a.im());
 }
 
     /// norm (= magnitude)
-inline FFTWComplex::NormType norm(const FFTWComplex &a)
+template <class R>
+inline typename FFTWComplex<R>::NormType norm(const FFTWComplex<R> &a)
 {
     return a.magnitude();
 }
 
     /// squared norm (= squared magnitude)
-inline FFTWComplex::SquaredNormType squaredNorm(const FFTWComplex &a)
+template <class R>
+inline typename FFTWComplex<R>::SquaredNormType squaredNorm(const FFTWComplex<R> &a)
 {
     return a.squaredMagnitude();
 }
 
 //@}
 
+} // namespace vigra
+
+namespace std {
+
+template <class Real>
+ostream & operator<<(ostream & s, vigra::FFTWComplex<Real> const & v)
+{
+	s << std::complex<Real>(v.re(), v.im());
+	return s;
+}
+
+} // namespace std
+
+namespace vigra {
 
 /** \addtogroup StandardImageTypes
 */
@@ -631,8 +948,8 @@ inline FFTWComplex::SquaredNormType squaredNorm(const FFTWComplex &a)
         FFTWRealImage uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-        <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+        <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+        <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
         Namespace: vigra
     */
 typedef BasicImage<fftw_real> FFTWRealImage;
@@ -643,57 +960,59 @@ typedef BasicImage<fftw_real> FFTWRealImage;
 /*                                                      */
 /********************************************************/
 
-template<>
+template<class R>
 struct IteratorTraits<
-        BasicImageIterator<FFTWComplex, FFTWComplex **> >
+        BasicImageIterator<FFTWComplex<R>, FFTWComplex<R> **> >
 {
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>  Iterator;
-    typedef Iterator                             iterator;
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>         mutable_iterator;
-    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    const_iterator;
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
-    typedef VectorAccessor<FFTWComplex>          default_accessor;
-    typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
-    typedef VigraTrueType                        hasConstantStrides;
+    typedef FFTWComplex<R> Type;
+    typedef BasicImageIterator<Type, Type **>       Iterator;
+    typedef Iterator                                iterator;
+    typedef BasicImageIterator<Type, Type **>       mutable_iterator;
+    typedef ConstBasicImageIterator<Type, Type **>  const_iterator;
+    typedef typename iterator::iterator_category    iterator_category;
+    typedef typename iterator::value_type           value_type;
+    typedef typename iterator::reference            reference;
+    typedef typename iterator::index_reference      index_reference;
+    typedef typename iterator::pointer              pointer;
+    typedef typename iterator::difference_type      difference_type;
+    typedef typename iterator::row_iterator         row_iterator;
+    typedef typename iterator::column_iterator      column_iterator;
+    typedef VectorAccessor<Type>                    default_accessor;
+    typedef VectorAccessor<Type>                    DefaultAccessor;
+    typedef VigraTrueType                           hasConstantStrides;
 };
 
-template<>
+template<class R>
 struct IteratorTraits<
-        ConstBasicImageIterator<FFTWComplex, FFTWComplex **> >
+        ConstBasicImageIterator<FFTWComplex<R>, FFTWComplex<R> **> >
 {
-    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    Iterator;
-    typedef Iterator                             iterator;
-    typedef BasicImageIterator<FFTWComplex, FFTWComplex **>         mutable_iterator;
-    typedef ConstBasicImageIterator<FFTWComplex, FFTWComplex **>    const_iterator;
-    typedef iterator::iterator_category          iterator_category;
-    typedef iterator::value_type                 value_type;
-    typedef iterator::reference                  reference;
-    typedef iterator::index_reference            index_reference;
-    typedef iterator::pointer                    pointer;
-    typedef iterator::difference_type            difference_type;
-    typedef iterator::row_iterator               row_iterator;
-    typedef iterator::column_iterator            column_iterator;
-    typedef VectorAccessor<FFTWComplex>          default_accessor;
-    typedef VectorAccessor<FFTWComplex>          DefaultAccessor;
-    typedef VigraTrueType                        hasConstantStrides;
+    typedef FFTWComplex<R> Type;
+    typedef ConstBasicImageIterator<Type, Type **> Iterator;
+    typedef Iterator                               iterator;
+    typedef BasicImageIterator<Type, Type **>      mutable_iterator;
+    typedef ConstBasicImageIterator<Type, Type **> const_iterator;
+    typedef typename iterator::iterator_category   iterator_category;
+    typedef typename iterator::value_type          value_type;
+    typedef typename iterator::reference           reference;
+    typedef typename iterator::index_reference     index_reference;
+    typedef typename iterator::pointer             pointer;
+    typedef typename iterator::difference_type     difference_type;
+    typedef typename iterator::row_iterator        row_iterator;
+    typedef typename iterator::column_iterator     column_iterator;
+    typedef VectorAccessor<Type>                   default_accessor;
+    typedef VectorAccessor<Type>                   DefaultAccessor;
+    typedef VigraTrueType                          hasConstantStrides;
 };
 
     /** Complex (FFTWComplex) image.
         It uses \ref vigra::BasicImageIterator and \ref vigra::StandardAccessor and
         their const counterparts to access the data.
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-        <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+        <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+        <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
         Namespace: vigra
     */
-typedef BasicImage<FFTWComplex> FFTWComplexImage;
+typedef BasicImage<FFTWComplex<> > FFTWComplexImage;
 
 //@}
 
@@ -713,16 +1032,17 @@ typedef BasicImage<FFTWComplex> FFTWComplexImage;
 //@{
     /** Encapsulate access to the the real part of a complex number.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWRealAccessor
 {
   public:
 
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read real part at iterator position.
     template <class ITERATOR>
@@ -749,29 +1069,30 @@ class FFTWRealAccessor
     }
 
         /// Write real part at iterator position into a scalar.
-    template <class ITERATOR>
-    void set(FFTWComplex const & v, ITERATOR const & i) const {
+    template <class R, class ITERATOR>
+    void set(FFTWComplex<R> const & v, ITERATOR const & i) const {
         *i = v.re();
     }
 
         /// Write real part at offset from iterator position into a scalar.
-    template <class ITERATOR, class DIFFERENCE>
-    void set(FFTWComplex const & v, ITERATOR const & i, DIFFERENCE d) const {
+    template <class R, class ITERATOR, class DIFFERENCE>
+    void set(FFTWComplex<R> const & v, ITERATOR const & i, DIFFERENCE d) const {
         i[d] = v.re();
     }
 };
 
     /** Encapsulate access to the the imaginary part of a complex number.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWImaginaryAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read imaginary part at iterator position.
     template <class ITERATOR>
@@ -798,14 +1119,14 @@ class FFTWImaginaryAccessor
     }
 
         /// Write imaginary part at iterator position into a scalar.
-    template <class ITERATOR>
-    void set(FFTWComplex const & v, ITERATOR const & i) const {
+    template <class R, class ITERATOR>
+    void set(FFTWComplex<R> const & v, ITERATOR const & i) const {
         *i = v.im();
     }
 
         /// Write imaginary part at offset from iterator position into a scalar.
-    template <class ITERATOR, class DIFFERENCE>
-    void set(FFTWComplex const & v, ITERATOR const & i, DIFFERENCE d) const {
+    template <class R, class ITERATOR, class DIFFERENCE>
+    void set(FFTWComplex<R> const & v, ITERATOR const & i, DIFFERENCE d) const {
         i[d] = v.im();
     }
 };
@@ -813,15 +1134,17 @@ class FFTWImaginaryAccessor
     /** Write a real number into a complex one. The imaginary part is set
         to 0.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
-class FFTWWriteRealAccessor: public FFTWRealAccessor
+template <class Real = double>
+class FFTWWriteRealAccessor
+: public FFTWRealAccessor<Real>
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /** Write real number at iterator position. Set imaginary part
             to 0.
@@ -842,17 +1165,43 @@ class FFTWWriteRealAccessor: public FFTWRealAccessor
     }
 };
 
-    /** Calculate magnitude of complex number on the fly.
+    /** Calculate squared magnitude of complex number on the fly.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
     Namespace: vigra
     */
+template <class Real = double>
+class FFTWSquaredMagnitudeAccessor
+{
+  public:
+        /// The accessor's value type.
+    typedef Real value_type;
+
+        /// Read squared magnitude at iterator position.
+    template <class ITERATOR>
+    value_type operator()(ITERATOR const & i) const {
+        return (*i).squaredMagnitude();
+    }
+
+        /// Read squared magnitude at offset from iterator position.
+    template <class ITERATOR, class DIFFERENCE>
+    value_type operator()(ITERATOR const & i, DIFFERENCE d) const {
+        return (i[d]).squaredMagnitude();
+    }
+};
+
+    /** Calculate magnitude of complex number on the fly.
+
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
+    Namespace: vigra
+    */
+template <class Real = double>
 class FFTWMagnitudeAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read magnitude at iterator position.
     template <class ITERATOR>
@@ -869,15 +1218,16 @@ class FFTWMagnitudeAccessor
 
     /** Calculate phase of complex number on the fly.
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\> (for FFTW 3) or<br>
-    <b>\#include</b> \<<a href="fftw_8hxx-source.html">vigra/fftw.hxx</a>\> (for deprecated FFTW 2)<br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for FFTW 3) or<br>
+    <b>\#include</b> \<vigra/fftw.hxx\> (for deprecated FFTW 2)<br>
     Namespace: vigra
     */
+template <class Real = double>
 class FFTWPhaseAccessor
 {
   public:
         /// The accessor's value type.
-    typedef fftw_real value_type;
+    typedef Real value_type;
 
         /// Read phase at iterator position.
     template <class ITERATOR>
@@ -955,7 +1305,7 @@ class FFTWPhaseAccessor
     achieved by calling \ref moveDCToCenter(). The inverse
     transformation is done by \ref moveDCToUpperLeft().
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 */
 
@@ -1024,7 +1374,7 @@ class FFTWPhaseAccessor
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+        <b>\#include</b> \<vigra/fftw3.hxx\><br>
         Namespace: vigra
 
     \code
@@ -1174,36 +1524,6 @@ inline void moveDCToUpperLeft(
                                           dest.first, dest.second);
 }
 
-template <class DestImageIterator, class DestAccessor>
-void fftShift(DestImageIterator upperleft,
-              DestImageIterator lowerright, DestAccessor da)
-{
-    int w = int(lowerright.x - upperleft.x);
-    int h = int(lowerright.y - upperleft.y);
-    int w2 = w/2;
-    int h2 = h/2;
-    int w1 = (w+1)/2;
-    int h1 = (h+1)/2;
-
-    // 2. Quadrant  zum 4.
-    swapImageData(destIterRange(upperleft,
-                                upperleft  + Diff2D(w2, h2), da),
-                  destIter     (upperleft + Diff2D(w1, h1), da));
-
-    // 1. Quadrant zum 3.
-    swapImageData(destIterRange(upperleft  + Diff2D(w2, 0),
-                                upperleft  + Diff2D(w,  h2), da),
-                  destIter     (upperleft + Diff2D(0,  h1), da));
-}
-
-template <class DestImageIterator, class DestAccessor>
-inline void fftShift(
-    triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
-{
-    fftShift(dest.first, dest.second, dest.third);
-}
-
-
 namespace detail {
 
 template <class T>
@@ -1289,7 +1609,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1327,7 +1647,7 @@ void fourierTransform(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     // ...and call the complex -> complex version of the algorithm
     FFTWComplexImage const & cworkImage = workImage;
@@ -1430,7 +1750,7 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1474,7 +1794,7 @@ void applyFourierFilter(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     // ...and call the impl
     FFTWComplexImage const & cworkImage = workImage;
@@ -1551,7 +1871,7 @@ void applyFourierFilterImpl(
 
     // convolve in freq. domain (in complexResultImg)
     combineTwoImages(srcImageRange(complexResultImg), srcIter(filterUpperLeft, fa),
-                     destImage(complexResultImg), std::multiplies<FFTWComplex>());
+                     destImage(complexResultImg), std::multiplies<FFTWComplex<> >());
 
     // FFT back into spatial domain (inplace in complexResultImg)
     fftw_plan backwardPlan=
@@ -1596,7 +1916,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
         VigraFalseType)
 {
     transformImage(srcImageRange(srcImage), destIter(destUpperLeft, da),
-                   linearIntensityTransform<FFTWComplex>(1.0/(srcImage.width() * srcImage.height())));
+                   linearIntensityTransform<FFTWComplex<> >(1.0/(srcImage.width() * srcImage.height())));
 }
 
 template <class DestImageIterator, class DestAccessor>
@@ -1656,7 +1976,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1699,7 +2019,7 @@ void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
 
     FFTWComplexImage workImage(w, h);
     copyImage(srcIterRange(srcUpperLeft, srcLowerRight, sa),
-              destImage(workImage, FFTWWriteRealAccessor()));
+              destImage(workImage, FFTWWriteRealAccessor<>()));
 
     FFTWComplexImage const & cworkImage = workImage;
     applyFourierFilterFamilyImpl(cworkImage.upperLeft(), cworkImage.lowerRight(), cworkImage.accessor(),
@@ -1779,7 +2099,7 @@ void applyFourierFilterFamilyImpl(
     for (unsigned int i= 0;  i < filters.size(); i++)
     {
         combineTwoImages(srcImageRange(freqImage), srcImage(filters[i]),
-                         destImage(result), std::multiplies<FFTWComplex>());
+                         destImage(result), std::multiplies<FFTWComplex<> >());
 
         // FFT back into spatial domain (inplace in destImage)
         fftw_execute(backwardPlan);
@@ -1881,7 +2201,7 @@ void applyFourierFilterFamilyImpl(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<<a href="fftw3_8hxx-source.html">vigra/fftw3.hxx</a>\><br>
+        <b>\#include</b> \<vigra/fftw3.hxx\><br>
         Namespace: vigra
 
     \code

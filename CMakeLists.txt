@@ -27,8 +27,15 @@ include(VigraSetDefaults)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 
+IF(VIGRA_STATIC_LIB)
+    SET(LIBTYPE STATIC)
+    ADD_DEFINITIONS(-DVIGRA_STATIC_LIB)
+ELSE(VIGRA_STATIC_LIB)
+    SET(LIBTYPE SHARED)
+ENDIF(VIGRA_STATIC_LIB)
+
 IF (MSVC)
-    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SECURE_SCL=0 -D_SCL_SECURE_NO_DEPRECATE)
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
 ##################################################
@@ -41,7 +48,9 @@ INCLUDE(VigraFindPackage)
 VIGRA_FIND_PACKAGE(TIFF NAMES libtiff)
 VIGRA_FIND_PACKAGE(JPEG NAMES libjpeg)
 VIGRA_FIND_PACKAGE(PNG)
+VIGRA_FIND_PACKAGE(OpenEXR)
 VIGRA_FIND_PACKAGE(FFTW3 NAMES libfftw3-3)
+VIGRA_FIND_PACKAGE(FFTW3F NAMES libfftw3f-3)
 IF(WITH_HDF5)
     VIGRA_FIND_PACKAGE(HDF5)
 ENDIF()
@@ -104,7 +113,6 @@ ADD_CUSTOM_TARGET(experiments)
 #
 ##################################################
 
-INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
 ADD_SUBDIRECTORY(docsrc)
@@ -211,6 +219,12 @@ ELSE()
     MESSAGE( STATUS "  PNG libraries not found (PNG support disabled)" )
 ENDIF()
 
+IF(OPENEXR_FOUND)
+    MESSAGE( STATUS "  Using OpenEXR  libraries: ${OPENEXR_LIBRARIES}" )
+ELSE()
+    MESSAGE( STATUS "  OpenEXR libraries not found (OpenEXR support disabled)" )
+ENDIF()
+
 IF(FFTW3_FOUND)
     MESSAGE( STATUS "  Using FFTW libraries: ${FFTW3_LIBRARIES}" )
 ELSE()
@@ -232,11 +246,19 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )
+
+IF(VIGRA_STATIC_LIB)
+    MESSAGE( STATUS "  building static lib" )
+ELSE()
+    MESSAGE( STATUS "  building shared lib" )
+ENDIF()
+
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
-	MESSAGE( STATUS "---------------------------------------------------------" )
+
+MESSAGE( STATUS "---------------------------------------------------------" )
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
 MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib${LIBDIR_SUFFIX}")

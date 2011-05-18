@@ -320,7 +320,11 @@ namespace vigra {
 #if (PNG_LIBPNG_VER > 10008) && defined(PNG_READ_iCCP_SUPPORTED)
         char * dummyName;
         int dummyCompType;
+#if (PNG_LIBPNG_VER < 10500)
         char * profilePtr;
+#else
+        png_byte * profilePtr;
+#endif
         png_uint_32 profileLen;
         if (png_get_valid( png, info, PNG_INFO_iCCP )) {
             png_get_iCCP(png, info, &dummyName, &dummyCompType, &profilePtr, &profileLen) ;
@@ -373,9 +377,10 @@ namespace vigra {
 
     void PngDecoderImpl::nextScanline()
     {
-        for (int i=0; i < n_interlace_passes; i++) {
         if (setjmp(png_jmpbuf(png)))
-                vigra_postcondition( false,png_error_message.insert(0, "error in png_read_row(): ").c_str());
+            vigra_postcondition( false,png_error_message.insert(0, "error in png_read_row(): ").c_str());        
+        for (int i=0; i < n_interlace_passes; i++) 
+        {
             png_read_row(png, row_data.begin(), NULL);
         }
     }
@@ -592,7 +597,11 @@ namespace vigra {
         // set icc profile
         if (iccProfile.size() > 0) {
             png_set_iCCP(png, info, (png_charp)("icc"), 0,
+#if (PNG_LIBPNG_VER < 10500)
                          (png_charp)iccProfile.begin(), (png_uint_32)iccProfile.size());
+#else
+                         (png_byte*)iccProfile.begin(), (png_uint_32)iccProfile.size());
+#endif
         }
 #endif
 

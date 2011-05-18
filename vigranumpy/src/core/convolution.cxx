@@ -185,14 +185,15 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > volume,
     
     res.reshapeIfEmpty(volume.shape(), "gaussianSmoothing(): Output array has wrong shape.");
 
-	Py_BEGIN_ALLOW_THREADS
-    for(int k=0;k<volume.shape(ndim-1);++k)
-    {
-    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
-    	MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-    	separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernels.begin());
-    }
-	Py_END_ALLOW_THREADS
+	{
+        PyAllowThreads _pythread;
+        for(int k=0;k<volume.shape(ndim-1);++k)
+        {
+            MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+            MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+            separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernels.begin());
+        }
+	}
     return res;
 
 }
@@ -304,14 +305,15 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > image,
 {
 	res.reshapeIfEmpty(image.shape(), "laplacianOfGaussian(): Output array has wrong shape.");
     
-	Py_BEGIN_ALLOW_THREADS
-	for(int k=0; k<image.shape(N-1); ++k)
 	{
-	    MultiArrayView<N-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-	    MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-	    laplacianOfGaussianMultiArray(srcMultiArrayRange(bimage), destMultiArray(bres), scale);
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(N-1); ++k)
+        {
+            MultiArrayView<N-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            laplacianOfGaussianMultiArray(srcMultiArrayRange(bimage), destMultiArray(bres), scale);
+        }
 	}
-	Py_END_ALLOW_THREADS
     return res;
 }
 

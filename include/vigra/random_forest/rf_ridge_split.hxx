@@ -80,7 +80,7 @@ class RidgeSplit: public SplitBase<Tag>
 
 	double                      region_gini_;
 	ArrayVector<double>         min_gini_;
-	ArrayVector<ptrdiff_t>      min_indices_;
+        ArrayVector<std::ptrdiff_t> min_indices_;
 	ArrayVector<double>         min_thresholds_;
 
 	int                         bestSplitIndex;

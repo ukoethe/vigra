@@ -100,7 +100,10 @@ class BindFeatureColumn : public FeatureBase
     }
     
     BindFeatureColumn(FeaetureBase & in, int index_)
-        : index(index_), underlying(in);
+        : index(index_), underlying(in) 
+    {
+		;
+	}
 };
 
 FeatureBase columnVector(FeatureBase & in, int ii)
