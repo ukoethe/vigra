@@ -146,7 +146,7 @@ VIGRA_DEFINE_UNSIGNED_ABS(unsigned long long)
 VIGRA_DEFINE_MISSING_ABS(signed char)
 VIGRA_DEFINE_MISSING_ABS(signed short)
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && _MSC_VER < 1600
 VIGRA_DEFINE_MISSING_ABS(signed long long)
 #endif
 
