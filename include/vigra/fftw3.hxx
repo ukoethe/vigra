@@ -183,24 +183,24 @@ class FFTWComplex
         */
     FFTWComplex(fftw_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
     }
 
         /** Construct from plain <TT>fftwf_complex</TT>.
         */
     FFTWComplex(fftwf_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
     }
 
         /** Construct from plain <TT>fftwl_complex</TT>.
         */
     FFTWComplex(fftwl_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
     }
 
         /** Construct from TinyVector.
@@ -208,8 +208,8 @@ class FFTWComplex
     template <class T>
     FFTWComplex(TinyVector<T, 2> const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
     }
 
         /** Assignment.
@@ -225,8 +225,8 @@ class FFTWComplex
         */
     FFTWComplex& operator=(fftw_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
         return *this;
     }
 
@@ -234,8 +234,8 @@ class FFTWComplex
         */
     FFTWComplex& operator=(fftwf_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
         return *this;
     }
 
@@ -243,8 +243,8 @@ class FFTWComplex
         */
     FFTWComplex& operator=(fftwl_complex const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
         return *this;
     }
 
@@ -252,7 +252,7 @@ class FFTWComplex
         */
     FFTWComplex& operator=(double o)
     {
-        data_[0] = o;
+        data_[0] = (Real)o;
         data_[1] = 0.0;
         return *this;
     }
@@ -261,7 +261,7 @@ class FFTWComplex
         */
     FFTWComplex& operator=(float o)
     {
-        data_[0] = o;
+        data_[0] = (Real)o;
         data_[1] = 0.0;
         return *this;
     }
@@ -270,7 +270,7 @@ class FFTWComplex
         */
     FFTWComplex& operator=(long double o)
     {
-        data_[0] = o;
+        data_[0] = (Real)o;
         data_[1] = 0.0;
         return *this;
     }
@@ -280,8 +280,8 @@ class FFTWComplex
     template <class T>
     FFTWComplex& operator=(TinyVector<T, 2> const & o)
     {
-        data_[0] = o[0];
-        data_[1] = o[1];
+        data_[0] = (Real)o[0];
+        data_[1] = (Real)o[1];
         return *this;
     }
 
@@ -805,19 +805,33 @@ inline FFTWComplex<R> & operator /=(FFTWComplex<R> &a, const FFTWComplex<R> &b) 
     return a;
 }
 
+    /// add-assignment with scalar double
+template <class R>
+inline FFTWComplex<R> & operator +=(FFTWComplex<R> &a, double b) {
+    a.re() += (R)b;
+    return a;
+}
+
+    /// subtract-assignment with scalar double
+template <class R>
+inline FFTWComplex<R> & operator -=(FFTWComplex<R> &a, double b) {
+    a.re() -= (R)b;
+    return a;
+}
+
     /// multiply-assignment with scalar double
 template <class R>
-inline FFTWComplex<R> & operator *=(FFTWComplex<R> &a, const double &b) {
-    a.re() *= b;
-    a.im() *= b;
+inline FFTWComplex<R> & operator *=(FFTWComplex<R> &a, double b) {
+    a.re() *= (R)b;
+    a.im() *= (R)b;
     return a;
 }
 
     /// divide-assignment with scalar double
 template <class R>
-inline FFTWComplex<R> & operator /=(FFTWComplex<R> &a, const double &b) {
-    a.re() /= b;
-    a.im() /= b;
+inline FFTWComplex<R> & operator /=(FFTWComplex<R> &a, double b) {
+    a.re() /= (R)b;
+    a.im() /= (R)b;
     return a;
 }
 
@@ -828,11 +842,38 @@ inline FFTWComplex<R> operator +(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     return a;
 }
 
+    /// right addition with scalar double
+template <class R>
+inline FFTWComplex<R> operator +(FFTWComplex<R> a, double b) {
+    a += b;
+    return a;
+}
+
+    /// left addition with scalar double
+template <class R>
+inline FFTWComplex<R> operator +(double a, FFTWComplex<R> b) {
+    b += a;
+    return b;
+}
+
     /// subtraction
 template <class R>
 inline FFTWComplex<R> operator -(FFTWComplex<R> a, const FFTWComplex<R> &b) {
     a -= b;
     return a;
+}
+
+    /// right subtraction with scalar double
+template <class R>
+inline FFTWComplex<R> operator -(FFTWComplex<R> a, double b) {
+    a -= b;
+    return a;
+}
+
+    /// left subtraction with scalar double
+template <class R>
+inline FFTWComplex<R> operator -(double a, FFTWComplex<R> const & b) {
+    return (-b) += a;
 }
 
     /// multiplication
@@ -844,14 +885,14 @@ inline FFTWComplex<R> operator *(FFTWComplex<R> a, const FFTWComplex<R> &b) {
 
     /// right multiplication with scalar double
 template <class R>
-inline FFTWComplex<R> operator *(FFTWComplex<R> a, const double &b) {
+inline FFTWComplex<R> operator *(FFTWComplex<R> a, double b) {
     a *= b;
     return a;
 }
 
     /// left multiplication with scalar double
 template <class R>
-inline FFTWComplex<R> operator *(const double &a, FFTWComplex<R> b) {
+inline FFTWComplex<R> operator *(double a, FFTWComplex<R> b) {
     b *= a;
     return b;
 }
@@ -865,7 +906,7 @@ inline FFTWComplex<R> operator /(FFTWComplex<R> a, const FFTWComplex<R> &b) {
 
     /// right division with scalar double
 template <class R>
-inline FFTWComplex<R> operator /(FFTWComplex<R> a, const double &b) {
+inline FFTWComplex<R> operator /(FFTWComplex<R> a, double b) {
     a /= b;
     return a;
 }
