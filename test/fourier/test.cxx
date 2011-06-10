@@ -515,9 +515,7 @@ struct MultiFFTTest
         double scale = 2.0;
         Kernel2D<double> gauss, gauss2;
         gauss.initGaussian(scale);
-		gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
         gauss2.initGaussian(2.0*scale);
-		gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
 
 		convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
 		convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
@@ -525,7 +523,7 @@ struct MultiFFTTest
         MV kernel(Shape2(gauss.width(), gauss.height()), &gauss[gauss.upperLeft()]);
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
 
-		//test complex double 2D convolution
+		//test complex double 2D convolution with spatial domain kernels
         
         MultiArray<2, FFTWComplex<double> > inc(in);
         MultiArray<2, FFTWComplex<double> > outc(inc.shape()), outc2(inc.shape());
@@ -542,6 +540,45 @@ struct MultiFFTTest
 		MVC kernels[] = { kernelc, kernelc2 };
         MVC outs[] = { outc, outc2 };
         convolveFFTComplexMany(inc, kernels, kernels+2, outs, false);
+
+		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+                                     ref.data(), 1e-14);
+		copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
+        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+                                     ref2.data(), 1e-14);
+
+		//test complex double 2D convolution with Fourier domain kernels
+        
+		gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
+		gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
+
+		convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
+		convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
+
+        MultiArray<2, FFTWComplex<double> > kernelf(in.shape()), kernelf2(in.shape());
+
+		detail::fftEmbedKernel(kernelc, kernelf);
+		fourierTransform(kernelf, kernelf);
+		moveDCToCenter(kernelf);
+
+		detail::fftEmbedKernel(kernelc2, kernelf2);
+		fourierTransform(kernelf2, kernelf2);
+		moveDCToCenter(kernelf2);
+
+		outc.init(0.0);
+        convolveFFTComplex(inc, kernelf, outc, true);
+
+		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+
+        shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
+                                     ref.data(), 1e-14);
+
+		outc.init(0.0);
+		outc2.init(0.0);
+		
+		MVC kernelsf[] = { kernelf, kernelf2 };
+        convolveFFTComplexMany(inc, kernelsf, kernelsf+2, outs, true);
 
 		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),

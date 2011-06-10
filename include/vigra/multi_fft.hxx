@@ -1443,7 +1443,7 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
     }
     else
     {
-        paddedShape  = fftwBestPaddedShape(max(in, kernel));
+        paddedShape  = fftwBestPaddedShape(in + kernel - Shape(1));
     }
     
     CArray newFourierArray(paddedShape), newFourierKernel(paddedShape);
@@ -1771,7 +1771,7 @@ FFTWConvolvePlan<N, Real>::checkShapesComplex(Shape in,
     }
     else
     {
-        return fftwBestPaddedShape(max(in, kernelShape));
+        return fftwBestPaddedShape(in + kernelShape - Shape(1));
     }
 }
  
