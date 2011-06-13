@@ -211,6 +211,26 @@ public:
         shouldEqual (array (1,1,1), 222);
     }
 
+	void testIsUnstrided()
+	{
+        typedef difference3_type Shape;
+
+		should(array3.isUnstrided());
+		should(array3.isUnstrided(0));
+		should(array3.isUnstrided(1));
+		should(array3.isUnstrided(2));
+		should(array3.bindOuter(0).isUnstrided());
+		should(!array3.bindInner(0).isUnstrided());
+		should(!array3.bindAt(1, 0).isUnstrided());
+		should(array3.bindAt(1, 0).isUnstrided(0));
+		should(!array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided());
+		should(!array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided(1));
+		should(array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided(0));
+		should(!array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided());
+		should(array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided(1));
+		should(array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided(0));
+	}
+
     // permute and transpose tests
     void testPermute ()
     {   
@@ -1851,6 +1871,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::test_bindAt ) );
         add( testCase( &MultiArrayDataTest::test_bind ) );
         add( testCase( &MultiArrayDataTest::test_bind0 ) );
+		add( testCase( &MultiArrayDataTest::testIsUnstrided ) );
         add( testCase( &MultiArrayDataTest::test_singletonDimension ) );
         add( testCase( &MultiArrayDataTest::testPermute ) );
         add( testCase( &MultiArrayDataTest::testNorm ) );

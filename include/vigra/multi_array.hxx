@@ -1012,6 +1012,20 @@ public:
     {
         swapDataImpl(rhs);
     }
+    
+        /** check whether the array is unstrided (i.e. has consecutive memory) up 
+            to the given dimension.
+
+            \a dimension can range from 0 ... N-1. If a certain dimension is unstrided, 
+            all lower dimensions are also unstrided.
+        */
+    bool isUnstrided(unsigned int dimension = N-1) const
+    {
+        difference_type p = shape() - difference_type(1);
+        for(unsigned int k = dimension+1; k < N; ++k)
+            p[k] = 0;
+        return (&operator[](p) - m_ptr) == coordinateToScanOrderIndex(p);
+    }
 
         /** bind the M outmost dimensions to certain indices.
             this reduces the dimensionality of the image to
