@@ -175,7 +175,7 @@ template < class VoxelType, unsigned int N >
 NumpyAnyArray 
 pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > array,
                           double sigma,
-                          NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object())
+                          NumpyArray<N, TinyVector<VoxelType, int(N*(N+1)/2)> > res=python::object())
 {
     std::string description("Hessian of Gaussian (flattened upper triangular matrix), scale=");
     description += asString(sigma);
@@ -459,12 +459,17 @@ void defineTensor()
         "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
     def("hessianOfGaussian",
-    	registerConverters(&pythonHessianOfGaussianND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
+    	registerConverters(&pythonHessianOfGaussianND<float,2>),
+    	(arg("image"), arg("sigma"), arg("out")=python::object()),
+        "Calculate the Hessian matrix by means of a derivative of "
+        "Gaussian filters at the given scale for a 2D scalar image.\n"
+        "\n"
+        "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
 
     def("hessianOfGaussian",
     	registerConverters(&pythonHessianOfGaussianND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object()));
+    	(arg("volume"), arg("sigma"), arg("out")=python::object()),
+        "Likewise for a 3D scalar or multiband volume.\n");
 
     def("structureTensor",
     	registerConverters(&pythonStructureTensor<float,3>),
