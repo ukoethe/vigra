@@ -542,11 +542,52 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolumeToHDF5, writeVolumeToHDF5)
 
 #endif // HasHDF5
 
+NPY_TYPES
+impexTypeNameToNumpyTypeId(const std::string& typeName)
+{
+    if (typeName=="UINT8") return NPY_UINT8;
+    else if (typeName=="INT8") return NPY_INT8;
+    else if (typeName=="INT16") return NPY_INT16;
+    else if (typeName=="UINT16") return NPY_UINT16;
+    else if (typeName=="INT32") return NPY_INT32;
+    else if (typeName=="UINT32") return NPY_UINT32;
+    else if (typeName=="DOUBLE") return NPY_FLOAT64;
+    else if (typeName=="FLOAT") return NPY_FLOAT32;
+    else throw std::runtime_error("ImageInfo::getDtype(): unknown pixel type.");
+}
+
+NPY_TYPES
+pythonGetPixelType(const ImageImportInfo& info)
+{
+    return impexTypeNameToNumpyTypeId(info.getPixelType());
+}
+
+python::tuple
+pythonGetShape(const ImageImportInfo& info)
+{
+    return python::make_tuple(info.width(),info.height(),info.numBands());
+}
+
+AxisTags
+pythonGetAxisTags(const ImageImportInfo& info)
+{
+    return AxisTags(AxisInfo::x(), AxisInfo::y(), AxisInfo::c());
+}
+
+/***************************************************************************/
+
 void defineImpexFunctions()
 {
     using namespace python;
     
     docstring_options doc_options(true, true, false);
+    
+    class_<ImageImportInfo>("ImageInfo", python::no_init)
+        .def(init<char const *>(args("filename"), "Extract header info from given file.\n\n"))
+        .def("getDtype", &pythonGetPixelType, "Get dtype of pixels in the file.")
+        .def("getShape", &pythonGetShape, "Get shape of image in the file.")
+        .def("getAxisTags", &pythonGetAxisTags, "Get axistags of image in the file.")
+    ;
     
     // FIXME: add an order parameter to the import functions
     def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT", arg("order") = ""),
