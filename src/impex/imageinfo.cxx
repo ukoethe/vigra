@@ -486,16 +486,30 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
     std::string comp = info.getCompression();
     if ( comp != "" ) {
 
-        // check for JPEG compression
+        // check for quality parameter of JPEG compression
         int quality = -1;
-        std::istringstream compstream(comp.c_str());
+        
+        // possibility 1: quality specified as "JPEG QUALITY=N" or "JPEG-ARITH QUALITY=N"
+        // possibility 2 (deprecated): quality specified as just a number "10"
+        std::string sq(" QUALITY="), parsed_comp;
+        std::string::size_type pos = comp.rfind(sq), start = 0;
+        
+        if(pos != std::string::npos)
+        {
+            start = pos + sq.size();
+            parsed_comp = comp.substr(0, pos);
+        }
+        
+        std::istringstream compstream(comp.substr(start));
         compstream >> quality;
-
-        // FIXME: dangelo: This code might lead to strange effects (setting an invalid compression mode),
-        // if other formats also support a numerical compression parameter.
-        if ( quality != -1 ) {
-            enc->setCompressionType( "JPEG", quality );
-        } else {
+        if ( quality != -1 ) 
+        {
+            if(parsed_comp == "")
+                parsed_comp = "JPEG";
+             enc->setCompressionType( parsed_comp, quality );
+        } 
+        else 
+        {
             // leave any other compression type to the codec
             enc->setCompressionType(comp);
         }

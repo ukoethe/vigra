@@ -384,7 +384,7 @@ namespace vigra {
            exrcomp = NO_COMPRESSION;
        else if (comp == "ZIP")
            exrcomp = ZIP_COMPRESSION;
-       else if (comp == "RLE")
+       else if (comp == "RLE" || comp == "RunLength")
            exrcomp = RLE_COMPRESSION;
        else if (comp == "PIZ")
            exrcomp = PIZ_COMPRESSION;

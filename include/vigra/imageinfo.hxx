@@ -212,23 +212,45 @@ class ImageExportInfo
     VIGRA_EXPORT ImageExportInfo & setFileType( const char * );
     VIGRA_EXPORT const char * getFileType() const;
 
-        /** Set compression type.
+        /** Set compression type and quality.
 
-            Recognized strings: "" (no compression), "LZW",
-            "RunLength", "1" ... "100". A number is interpreted as the
-            compression quality for JPEG compression. JPEG compression is
-            supported by the JPEG and TIFF formats. "LZW" is only available
-            if libtiff was installed with LZW enabled. By default, libtiff came
-            with LZW disabled due to Unisys patent enforcement. In this case,
-            VIGRA stores the image uncompressed.
+            This option is ignored when the target file format doesn't recognize
+            the compression type. Valid arguments:
+            
+            <DL>
+            <DT>"NONE"<DD> (recognized by EXR and TIFF): do not compress (many other formats don't
+                           compress either, but it is not an option for them).
+            <DT>"JPEG"<DD> (recognized by JPEG and TIFF): use JPEG compression. 
+                           You can also specify a compression quality parameter by 
+                           passing "JPEG QUALITY=N", where "N" must be an integer between 1 and 100 
+                           (e.g. "JPEG QUALITY=70").
+            <DT>"JPEG-ARITH"<DD> (recognized by new versions of JPEG): use arithmetic coding as a back-end
+                           after JPEG compression (by default, the back-end is Huffman coding). 
+                           You can also specify a compression quality parameter by 
+                           passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100 
+                           (e.g. "JPEG-ARITH QUALITY=70").
+            <DT>"RLE", "RunLength"<DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
+                          uses run-length encoding, but there it is not an option).
+            <DT>"PACKBITS"<DD> (recognized by TIFF): use packbits encoding (a variant of RLE).
+            <DT>"DEFLATE"<DD> (recognized by TIFF): use deflate encoding, as defined in zlib (PNG also
+                           uses deflate, but there it is not an option).
+            <DT>"LZW"<DD> (recognized by TIFF): use Lempel-Ziv-Welch encoding.
+            <DT>"ZIP"<DD> (recognized by EXR): use zip-style encoding.
+            <DT>"PIZ"<DD> (recognized by EXR): use wavelet encoding.
+            <DT>"PXR24"<DD> (recognized by EXR): reduce to 24-bit, then use zip-style encoding.
+            <DT>"B44", "B44A"<DD> (recognized by EXR): see OpenEXR documentation.
+            <DT>"ASCII"<DD> (recognized by PNM): store pixels as ASCII (human readable numbers).
+            <DT>"RAW"<DD> (recognized by PNM): store pixels as uncompressed binary data.
+            <DT>"BILEVEL"<DD> (recognized by PNM): store as one bit per pixel.
+            <DT>"1" ... "100"<DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt> 
+                             where the number denotes the desired quality).
+            </DL>
 
-                Valid Compression for TIFF files:
-                  JPEG    jpeg compression, call setQuality as well!
-                  RLE     runlength compression
-                  LZW     lzw compression
-                  DEFLATE deflate compression
+            Some of these options (e.g. "JPEG-ARITH", "LZW", "B44", "B44A") may only be available when
+            they have been enabled in the corresponding third-party library.
          **/
-    VIGRA_EXPORT ImageExportInfo & setCompression( const char * );
+    VIGRA_EXPORT ImageExportInfo & setCompression( const char * type);
+    
     VIGRA_EXPORT const char * getCompression() const;
 
         /** Set the pixel type of the image file. Possible values are:

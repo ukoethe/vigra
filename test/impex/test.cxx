@@ -162,7 +162,7 @@ public:
 #if !defined(HasJPEG)
         failCodec(img, exportinfo);
 #else
-        exportinfo.setCompression ("100");
+        exportinfo.setCompression ("JPEG QUALITY=100");
         exportImage (srcImageRange (img), exportinfo);
 
         vigra::ImageImportInfo info ("res.jpg");
@@ -381,10 +381,10 @@ public:
     void testJPEG ()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 #else
         exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 
         vigra::ImageImportInfo info ("res.jpg");
 
@@ -669,10 +669,10 @@ public:
     void testJPEG ()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 #else
         exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 
         vigra::ImageImportInfo info ("res.jpg");
 
@@ -885,10 +885,10 @@ public:
     void testJPEG ()
     {
 #if !defined(HasJPEG)
-        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+        failCodec(img, vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 #else
         exportImage (srcImageRange (img),
-                     vigra::ImageExportInfo ("res.jpg").setCompression ("100"));
+                     vigra::ImageExportInfo ("res.jpg").setCompression ("JPEG QUALITY=100"));
 
         vigra::ImageImportInfo info ("res.jpg");
 

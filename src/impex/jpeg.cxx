@@ -412,9 +412,6 @@ namespace vigra
             info.comp_info[i].h_samp_factor = 1;
             info.comp_info[i].v_samp_factor = 1;
         }
-#ifdef C_ARITH_CODING_SUPPORTED
-        info.arith_code = TRUE;
-#endif
 #ifdef ENTROPY_OPT_SUPPORTED
         info.optimize_coding = TRUE;
 #endif
@@ -468,8 +465,13 @@ namespace vigra
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
         if ( comp == "LOSSLESS" )
-            vigra_fail( "lossless encoding is not supported by"
-                        " the jpeg implementation impex uses." );
+            vigra_fail( "lossless encoding is not supported by your jpeg library." );
+        if ( comp == "JPEG_ARITH" )
+#ifdef C_ARITH_CODING_SUPPORTED
+            info.arith_code = TRUE;
+#else
+            vigra_fail( "arithmetic encoding is not supported by your jpeg library." );
+#endif
         pimpl->quality = quality;
     }
 

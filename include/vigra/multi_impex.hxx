@@ -282,23 +282,11 @@ class VolumeExportInfo
     VIGRA_EXPORT VolumeExportInfo & setFileType( const char * );
     VIGRA_EXPORT const char * getFileType() const;
 
-        /** Set compression type.
+        /** Set compression type and quality.
 
-            Recognized strings: "" (no compression), "LZW",
-            "RunLength", "1" ... "100". A number is interpreted as the
-            compression quality for JPEG compression. JPEG compression is
-            supported by the JPEG and TIFF formats. "LZW" is only available
-            if libtiff was installed with LZW enabled. By default, libtiff came
-            with LZW disabled due to Unisys patent enforcement. In this case,
-            VIGRA stores the image uncompressed.
-
-                Valid Compression for TIFF files:
-                  JPEG    jpeg compression, call setQuality as well!
-                  RLE     runlength compression
-                  LZW     lzw compression
-                  DEFLATE deflate compression
+            See \ref ImageExportInfo::setCompression() for details.
          **/
-    VIGRA_EXPORT VolumeExportInfo & setCompression( const char * );
+    VIGRA_EXPORT VolumeExportInfo & setCompression( const char * type);
     VIGRA_EXPORT const char * getCompression() const;
 
         /** Set the pixel type of the volume file(s). Possible values are:
