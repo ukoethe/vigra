@@ -1207,6 +1207,199 @@ REAL gammaImpl(REAL x)
     return ga;
 }
 
+/*
+ * the following code is derived from lgamma_r() by Sun
+ * 
+ * ====================================================
+ * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+ *
+ * Developed at SunPro, a Sun Microsystems, Inc. business.
+ * Permission to use, copy, modify, and distribute this
+ * software is freely granted, provided that this notice 
+ * is preserved.
+ * ====================================================
+ *
+ */
+template <class REAL>
+REAL loggammaImpl(REAL x)
+{
+    vigra_precondition(x > 0.0,
+        "loggamma(): argument must be positive.");
+    
+    vigra_precondition(x <= 1.0e307,
+        "loggamma(): argument must not exceed 1e307.");
+
+    double res;
+    
+    if (x < 4.2351647362715017e-22)
+    {
+        res = -std::log(x);
+    }
+    else if ((x == 2.0) || (x == 1.0))
+    {
+        res = 0.0;
+    }
+    else if (x < 2.0)
+    {
+        static const double a[] =  { 7.72156649015328655494e-02,
+                               3.22467033424113591611e-01,
+                               6.73523010531292681824e-02,
+                               2.05808084325167332806e-02,
+                               7.38555086081402883957e-03,
+                               2.89051383673415629091e-03,
+                               1.19270763183362067845e-03,
+                               5.10069792153511336608e-04,
+                               2.20862790713908385557e-04,
+                               1.08011567247583939954e-04,
+                               2.52144565451257326939e-05,
+                               4.48640949618915160150e-05 };
+        static const double t[] = { 4.83836122723810047042e-01,
+                              -1.47587722994593911752e-01,
+                               6.46249402391333854778e-02,
+                              -3.27885410759859649565e-02,
+                               1.79706750811820387126e-02,
+                              -1.03142241298341437450e-02,
+                               6.10053870246291332635e-03,
+                              -3.68452016781138256760e-03,
+                               2.25964780900612472250e-03,
+                              -1.40346469989232843813e-03,
+                               8.81081882437654011382e-04,
+                              -5.38595305356740546715e-04,
+                               3.15632070903625950361e-04,
+                              -3.12754168375120860518e-04,
+                               3.35529192635519073543e-04 };
+        static const double u[] = { -7.72156649015328655494e-02,
+                               6.32827064025093366517e-01,
+                               1.45492250137234768737e+00,
+                               9.77717527963372745603e-01,
+                               2.28963728064692451092e-01,
+                               1.33810918536787660377e-02 };
+        static const double v[] = { 0.0,
+                               2.45597793713041134822e+00,
+                               2.12848976379893395361e+00,
+                               7.69285150456672783825e-01,
+                               1.04222645593369134254e-01,
+                               3.21709242282423911810e-03 };
+        static const double tc  =  1.46163214496836224576e+00;
+        static const double tf  = -1.21486290535849611461e-01;
+        static const double tt  = -3.63867699703950536541e-18;
+        if (x <= 0.9)
+        {
+            res = -std::log(x);
+            if (x >= 0.7316)
+            {
+                double y = 1.0-x;
+                double z = y*y;
+                double p1 = a[0]+z*(a[2]+z*(a[4]+z*(a[6]+z*(a[8]+z*a[10]))));
+                double p2 = z*(a[1]+z*(a[3]+z*(a[5]+z*(a[7]+z*(a[9]+z*a[11])))));
+                double p  = y*p1+p2;
+                res  += (p-0.5*y);
+            }
+            else if (x >= 0.23164)
+            {
+                double y = x-(tc-1.0);
+                double z = y*y;
+                double w = z*y;
+                double p1 = t[0]+w*(t[3]+w*(t[6]+w*(t[9] +w*t[12])));
+                double p2 = t[1]+w*(t[4]+w*(t[7]+w*(t[10]+w*t[13])));
+                double p3 = t[2]+w*(t[5]+w*(t[8]+w*(t[11]+w*t[14])));
+                double p  = z*p1-(tt-w*(p2+y*p3));
+                res += (tf + p);
+            }
+            else
+            {
+                double y = x;
+                double p1 = y*(u[0]+y*(u[1]+y*(u[2]+y*(u[3]+y*(u[4]+y*u[5])))));
+                double p2 = 1.0+y*(v[1]+y*(v[2]+y*(v[3]+y*(v[4]+y*v[5]))));
+                res += (-0.5*y + p1/p2);
+            }
+        }
+        else
+        {
+            res = 0.0;
+            if (x >= 1.7316)
+            {
+                double y = 2.0-x;
+                double z = y*y;
+                double p1 = a[0]+z*(a[2]+z*(a[4]+z*(a[6]+z*(a[8]+z*a[10]))));
+                double p2 = z*(a[1]+z*(a[3]+z*(a[5]+z*(a[7]+z*(a[9]+z*a[11])))));
+                double p  = y*p1+p2;
+                res  += (p-0.5*y);
+            }
+            else if(x >= 1.23164)
+            {
+                double y = x-tc;
+                double z = y*y;
+                double w = z*y;
+                double p1 = t[0]+w*(t[3]+w*(t[6]+w*(t[9] +w*t[12])));
+                double p2 = t[1]+w*(t[4]+w*(t[7]+w*(t[10]+w*t[13])));
+                double p3 = t[2]+w*(t[5]+w*(t[8]+w*(t[11]+w*t[14])));
+                double p  = z*p1-(tt-w*(p2+y*p3));
+                res += (tf + p);
+            }
+            else
+            {
+                double y = x-1.0;
+                double p1 = y*(u[0]+y*(u[1]+y*(u[2]+y*(u[3]+y*(u[4]+y*u[5])))));
+                double p2 = 1.0+y*(v[1]+y*(v[2]+y*(v[3]+y*(v[4]+y*v[5]))));
+                res += (-0.5*y + p1/p2);
+            }
+        }
+    }
+    else if(x < 8.0)
+    {
+        static const double s[] = { -7.72156649015328655494e-02,
+                               2.14982415960608852501e-01,
+                               3.25778796408930981787e-01,
+                               1.46350472652464452805e-01,
+                               2.66422703033638609560e-02,
+                               1.84028451407337715652e-03,
+                               3.19475326584100867617e-05 };
+        static const double r[] = { 0.0,
+                               1.39200533467621045958e+00,
+                               7.21935547567138069525e-01,
+                               1.71933865632803078993e-01,
+                               1.86459191715652901344e-02,
+                               7.77942496381893596434e-04,
+                               7.32668430744625636189e-06 };
+        double i = std::floor(x);
+        double t = 0.0;
+        double y = x-i;
+        double p = y*(s[0]+y*(s[1]+y*(s[2]+y*(s[3]+y*(s[4]+y*(s[5]+y*s[6]))))));
+        double q = 1.0+y*(r[1]+y*(r[2]+y*(r[3]+y*(r[4]+y*(r[5]+y*r[6])))));
+        res = 0.5*y+p/q;
+        double z = 1.0;
+        while (i > 2.0)
+        {
+            --i;
+            z *= (y+i);
+        }
+        res += std::log(z);
+    }
+    else if (x < 2.8823037615171174e+17)
+    {
+        static const double w[] = { 4.18938533204672725052e-01,
+                               8.33333333333329678849e-02,
+                              -2.77777777728775536470e-03,
+                               7.93650558643019558500e-04,
+                              -5.95187557450339963135e-04,
+                               8.36339918996282139126e-04,
+                              -1.63092934096575273989e-03 };
+        double t = std::log(x);
+        double z = 1.0/x;
+        double y = z*z;
+        double yy = w[0]+z*(w[1]+y*(w[2]+y*(w[3]+y*(w[4]+y*(w[5]+y*w[6])))));
+        res = (x-0.5)*(t-1.0)+yy;
+    }
+    else
+    {
+        res =  x*(std::log(x) - 1.0);
+    }
+    
+    return res;
+}
+
+
 } // namespace detail
 
     /*! The gamma function.
@@ -1223,6 +1416,22 @@ REAL gammaImpl(REAL x)
 inline double gamma(double x)
 {
     return detail::gammaImpl(x);
+}
+
+    /*! The natural logarithm of the gamma function.
+
+        This function is based on a free implementation by Sun Microsystems, Inc., see
+        <a href="http://www.sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libm/mathfp/er_lgamma.c?rev=1.6&content-type=text/plain&cvsroot=src">sourceware.org</a> archive. It can be removed once all compilers support the new C99
+        math functions.
+        
+        The argument must be positive and < 1e30. An exception is thrown when these conditions are violated.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+inline double loggamma(double x)
+{
+    return detail::loggammaImpl(x);
 }
 
 

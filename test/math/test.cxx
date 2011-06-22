@@ -431,7 +431,28 @@ struct FunctionsTest
         try { vigra::gamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
         try { vigra::gamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
 
-        double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
+        shouldEqual(vigra::loggamma(1.0), 0.0);
+        shouldEqual(vigra::loggamma(2.0), 0.0);
+		shouldEqualTolerance(vigra::loggamma(4.0e-22), 49.2705776847491144296, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(0.1), 2.2527126517342055401, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(0.3), 1.0957979948180756047, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(0.8), 0.15205967839983755563, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(1.1), -0.049872441259839757344, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(1.3), -0.10817480950786048655, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(1.8), -0.071083872914372153717, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(3.0), 0.69314718055994528623, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(3.1), 0.78737508327386251938, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(4.0), 1.79175946922805500081, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(8.0), 8.5251613610654143002, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(1000.0), 5905.2204232091812118261, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(1000.2), 5906.6018942569799037, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(2.8e+17), 1.096859847946237952e+19, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(2.9e+17), 1.1370510622188449792e+19, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(5.7646075230342349e+17), 2.2998295812288974848e+19, 1e-15);
+        try { vigra::loggamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+        try { vigra::loggamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
+
+		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
         for(int i=0; i<5; ++i)
         {
             double x = args[i], x2 = x*x;
