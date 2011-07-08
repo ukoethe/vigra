@@ -374,8 +374,8 @@ VIGRA_EXPORT void dt_export_HDF5(hid_t & group_id,
                     
 } //namespace detail
 
-template<class T>
-bool rf_export_HDF5(RandomForest<T> const &rf, 
+template<class T, class Tag>
+bool rf_export_HDF5(RandomForest<T,Tag> const &rf,
                     std::string filename, 
                     std::string pathname = "",
                     bool overwriteflag = false)
@@ -442,8 +442,8 @@ bool rf_export_HDF5(RandomForest<T> const &rf,
 }
 
 
-template<class T>
-bool rf_import_HDF5(RandomForest<T> &rf, 
+template<class T, class Tag>
+bool rf_import_HDF5(RandomForest<T, Tag> &rf,
                     std::string filename, 
                     std::string pathname = "")
 { 
