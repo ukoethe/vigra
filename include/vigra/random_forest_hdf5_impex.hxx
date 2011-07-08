@@ -43,8 +43,6 @@
 #include <cstdio>
 #include <string>
 
-#ifdef HasHDF5
-
 namespace vigra 
 {
 
@@ -504,8 +502,6 @@ bool rf_import_HDF5(RandomForest<T> &rf,
     return 1;
 }
 } // namespace vigra
-
-#endif // HasHDF5
 
 #endif // VIGRA_RANDOM_FOREST_HDF5_IMPEX_HXX
 
