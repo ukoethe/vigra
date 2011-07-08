@@ -235,7 +235,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
     m_height = (m_height-mod)/xbin;
 
 
-    size_t data_size = m_width * m_height * 4 * m_stacksize;
+    size_t data_size = (size_t)m_width * m_height * 4 * m_stacksize;
     vigra_precondition(m_offset + data_size + 8 == filesize, "error reading sif file: data with header should be equal to filesize. ");
     
 
