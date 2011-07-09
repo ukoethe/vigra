@@ -35,6 +35,7 @@
 #ifndef VIGRA_RANDOM_FOREST_SPLIT_HXX
 #define VIGRA_RANDOM_FOREST_SPLIT_HXX
 #include <algorithm>
+#include <cstddef>
 #include <map>
 #include <numeric>
 #include <math.h>
