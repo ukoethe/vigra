@@ -1729,7 +1729,7 @@ struct ConvolutionTest
             }
             else
             {
-                should(acc_dest_avoid(dest_iter_avoid) == acc_dest_repeat(dest_iter_repeat));
+                shouldEqualTolerance(acc_dest_avoid(dest_iter_avoid), acc_dest_repeat(dest_iter_repeat), 1e-15);
                 dest_iter_repeat++;
             }
         }
