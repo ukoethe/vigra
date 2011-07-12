@@ -95,6 +95,7 @@ def test_writeAndReadImageHDF5():
     h5py_file = h5py.File('hdf5test.hd5', 'w')
     h5py_file.create_dataset('imgdata', data=image.swapaxes(0, 1))
     h5py_file.close() 
+    raise
     image_imp3 = im.readImageFromHDF5("hdf5test.hd5", "imgdata")
     checkEqualData(image,image_imp3)
         

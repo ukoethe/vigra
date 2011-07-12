@@ -810,9 +810,11 @@ struct EqualWithToleranceFunctor
 struct LocalMinMaxTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArray<3,double> Volume;
+    typedef MultiArrayShape<3>::type Shp3D;
 
     LocalMinMaxTest()
-    : img(9,9)
+    : img(9,9), vol()
     {
         static const double in[] = {
             0.2,  0.1,  0.1,  0.3,  0.5,  0.3,  0.0,  0.0, -0.1,
@@ -834,7 +836,101 @@ struct LocalMinMaxTest
         {
             acc.set(*p, i);
         }
+
+        //prepare the multiarray
+        vol.reshape(Shp3D(10,20,50),0);
+        vol(1,1,1)=10;
+        vol(5,5,5)=350;
+
+        vol(6,7,7)=-0.5;
+        vol(7,7,7)=-1;
+        vol(7,1,15)=-100;
+        vol(7,1,19)=-20;
+        vol(10,18,25)=-100;
+
     }
+
+
+    void localMinimum3DTest()
+       {
+           Volume res(vol);
+           res.init(0);
+
+           localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+
+           Volume desired(vol);
+           desired.init(0);
+
+           desired(7,7,7)=1;
+           desired(7,1,15)=1;
+           desired(7,1,19)=1;
+
+           for(int z=0; z<vol.shape(2); ++z)
+               for(int y=0; y<vol.shape(1); ++y)
+                   for(int x=0; x<vol.shape(0); ++x)
+                   shouldEqual(res(x,y,z), desired(x,y,z));
+
+       }
+
+    void extendedLocalMinimum3DTest()
+       {
+           Volume res(vol);
+           res.init(0);
+
+           localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+
+           Volume desired(vol);
+           desired.init(0);
+
+           desired(7,7,7)=1;
+           desired(7,1,15)=1;
+           desired(7,1,19)=1;
+
+           for(int z=0; z<vol.shape(2); ++z)
+               for(int y=0; y<vol.shape(1); ++y)
+                   for(int x=0; x<vol.shape(0); ++x)
+                       shouldEqual(res(x,y,z), desired(x,y,z));
+       }
+
+
+    void localMaximum3DTest()
+       {
+           Volume res(vol);
+           res.init(0);
+
+           localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+
+           Volume desired(vol);
+           desired.init(0);
+
+           desired(1,1,1)=1;
+           desired(5,5,5)=1;
+
+           for(int z=0; z<vol.shape(2); ++z)
+               for(int y=0; y<vol.shape(1); ++y)
+                   for(int x=0; x<vol.shape(0); ++x)
+                       shouldEqual(res(x,y,z), desired(x,y,z));
+       }
+
+    void extendedLocalMaximum3DTest()
+       {
+           Volume res(vol);
+           res.init(0);
+
+
+           extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+
+           Volume desired(vol);
+           desired.init(0);
+
+           desired(1,1,1)=1;
+           desired(5,5,5)=1;
+
+           for(int z=0; z<vol.shape(2); ++z)
+               for(int y=0; y<vol.shape(1); ++y)
+                   for(int x=0; x<vol.shape(0); ++x)
+                       shouldEqual(res(x,y,z), desired(x,y,z));
+       }
 
     void localMinimumTest()
     {
@@ -863,6 +959,8 @@ struct LocalMinMaxTest
 		desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
+
+
 
     void localMinimum4Test()
     {
@@ -1175,6 +1273,7 @@ struct LocalMinMaxTest
     }
 
     Image img;
+    Volume vol;
 };
 
 struct WatershedsTest
@@ -2023,6 +2122,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &DistanceTransformTest::distanceTransformL1Test));
         add( testCase( &DistanceTransformTest::distanceTransformL2Test));
         add( testCase( &DistanceTransformTest::distanceTransformLInfTest));
+
         add( testCase( &LocalMinMaxTest::localMinimumTest));
         add( testCase( &LocalMinMaxTest::localMinimum4Test));
         add( testCase( &LocalMinMaxTest::localMinimumTestThr));
@@ -2033,6 +2133,12 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LocalMinMaxTest::extendedLocalMinimum4Test));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximumTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMaximum4Test));
+
+        add( testCase( &LocalMinMaxTest::extendedLocalMaximum3DTest));
+        add( testCase( &LocalMinMaxTest::extendedLocalMinimum3DTest));
+        add( testCase( &LocalMinMaxTest::localMaximum3DTest));
+        add( testCase( &LocalMinMaxTest::localMinimum3DTest));
+
         add( testCase( &LocalMinMaxTest::plateauWithHolesTest));
         add( testCase( &WatershedsTest::watershedsTest));
         add( testCase( &WatershedsTest::watersheds4Test));

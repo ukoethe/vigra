@@ -102,6 +102,7 @@ def test_watersheds():
     assert_raises(RuntimeError, watershedsUnionFind, img_scalar_f, 17, img_scalar_i)
 
 def test_MinimaMaxima():
+    #2D Case
     res = localMinima(img_scalar_f)
     checkShape(img_scalar_f,res)
     checkType(res,img_scalar_f.dtype)
@@ -125,6 +126,47 @@ def test_MinimaMaxima():
     res = labelImageWithBackground(img_scalar_f)
     checkShape(img_scalar_f,res)
     checkType(res,np.uint32)
+    
+    #3D Case
+    res = localMinima(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = extendedLocalMinima(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = localMaxima(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = extendedLocalMaxima(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    data = at.ScalarVolume(np.zeros((100,200,50)),dtype=np.float32).swapaxes(0,1).swapaxes(1,2).swapaxes(0,1)
+
+    data[10,5,10]=1
+    data[98,10,10]=1
+    data[90,50,30]=1
+    data[10,10,2]=1
+    data[10,80,8]=1
+    data[10,10,8]=1
+    data[10,150,2]=1
+    data[80,10,10]=1
+    data[70,120,40]=1
+    
+    res = localMaxima(data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Maxima")
+
+    res = extendedLocalMaxima(data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Maxima")
+    
+    res = localMinima(1-data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Minima")
+    
+    res = extendedLocalMinima(1-data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Minima")
 
 def test_Region2Crack():
     res = regionImageToCrackEdgeImage(img_scalar_i)
