@@ -805,7 +805,7 @@ void defineSegmentation()
          arg("out")=python::object()),
         "Find local minima in a volume and mark them with the given 'marker'. Parameter "
         "'neighborhood' specifies the pixel neighborhood to be used and can be "
-        "6 or 8 (default).\n\n"
+        "6 or 26 (default).\n\n"
         "For details see localMinima_ in the vigra C++ documentation.\n");
 
     multidef("extendedLocalMinima",
@@ -826,9 +826,9 @@ void defineSegmentation()
          arg("marker")=1.0,
          arg("neighborhood") = 6,
          arg("out")=python::object()),
-        "Find local minima and minimal plateaus in an image and mark them with "
+        "Find local minima and minimal plateaus in a volume and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-        "neighborhood to be used and can be 4 or 8 (default).\n\n"
+        "neighborhood to be used and can be 6(default) or 26 .\n\n"
         "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
         );
 
@@ -849,9 +849,9 @@ void defineSegmentation()
           arg("marker")=1.0,
           arg("neighborhood") = 6,
           arg("out")=python::object()),
-         "Find local maxima and maximal plateaus in an image and mark them with "
+         "Find local maxima and maximal plateaus in a volume and mark them with "
          "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-         "neighborhood to be used and can be 6 or 26 (default).\n\n"
+         "neighborhood to be used and can be 6(default) or 26 .\n\n"
          "For details see localMinima_ in the vigra C++ documentation.\n");
 
     multidef("extendedLocalMaxima",
@@ -871,9 +871,9 @@ void defineSegmentation()
          arg("marker")=1.0,
          arg("neighborhood") = 6,
          arg("out")=python::object()),
-        "Find local maxima and maximal plateaus in an image and mark them with "
+        "Find local maxima and maximal plateaus in a volume and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-        "neighborhood to be used and can be 6 or 26 (default).\n\n"
+        "neighborhood to be used and can be 6 (default) or 26 .\n\n"
         "For details see localMinima_ in the vigra C++ documentation.\n");
 
     /*************************************************************************/
