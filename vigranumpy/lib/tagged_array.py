@@ -40,6 +40,24 @@ def preserve_doc(f):
     f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__)
     return f
 
+def finalize_scalar_return(f):
+    def new_f(self, axis=None, *args):
+        res = f(self, axis, *args)
+        if axis is not None:
+            res.axistags = res.copy_axistags()
+            del res.axistags[axis]
+        else:
+            # this 'else' is necessary because numpy 1.6.0 gives 
+            #     type(res) == type(self)
+            # instead of the desired
+            #     type(res) == self.dtype
+            # when res is scalar and self is a subclass of ndarray 
+            # (this is probably a bug in numpy, since it works correctly 
+            #  when self is a plain ndarray)
+            res = res.dtype.type(res)
+        return res
+    return new_f
+
 class TaggedArray(numpy.ndarray):
     '''
 TaggedArray extends numpy.ndarray with an attribute 'axistags'. Any 
@@ -171,37 +189,25 @@ of 'numpy.ndarray'.
         return "%s(shape=%s, axistags=%s, dtype=%s, data=\n%s)" % \
           (self.__class__.__name__, str(self.shape), repr(self.axistags), str(self.dtype), str(self))
           
+    @finalize_scalar_return
     @preserve_doc
     def all(self, axis=None, out=None):
-        res = numpy.ndarray.all(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.all(self, axis, out)
 
+    @finalize_scalar_return
     @preserve_doc
     def any(self, axis=None, out=None):
-        res = numpy.ndarray.any(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.any(self, axis, out)
 
+    @finalize_scalar_return
     @preserve_doc
     def argmax(self, axis=None, out=None):
-        res = numpy.ndarray.argmax(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.argmax(self, axis, out)
         
+    @finalize_scalar_return
     @preserve_doc
     def argmin(self, axis=None, out=None):
-        res = numpy.ndarray.argmin(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.argmin(self, axis, out)
     
     @preserve_doc
     def cumsum(self, axis=None, dtype=None, out=None):
@@ -225,29 +231,20 @@ of 'numpy.ndarray'.
         res.axistags = res.empty_axistags(res.ndim)
         return res        
 
+    @finalize_scalar_return
     @preserve_doc
     def max(self, axis=None, out=None):
-        res = numpy.ndarray.max(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.max(self, axis, out)
 
+    @finalize_scalar_return
     @preserve_doc
     def mean(self, axis=None, out=None):
-        res = numpy.ndarray.mean(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.mean(self, axis, out)
     
+    @finalize_scalar_return
     @preserve_doc
     def min(self, axis=None, out=None):
-        res = numpy.ndarray.min(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.min(self, axis, out)
     
     @preserve_doc
     def nonzero(self):
@@ -256,21 +253,15 @@ of 'numpy.ndarray'.
             res[k].axistags = copy.copy(self.axistags[k])
         return res
 
+    @finalize_scalar_return
     @preserve_doc
     def prod(self, axis=None, dtype=None, out=None):
-        res = numpy.ndarray.prod(self, axis, dtype, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.prod(self, axis, dtype, out)
 
+    @finalize_scalar_return
     @preserve_doc
     def ptp(self, axis=None, out=None):
-        res = numpy.ndarray.ptp(self, axis, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.ptp(self, axis, out)
 
     @preserve_doc
     def ravel(self, order='C'):
@@ -307,23 +298,15 @@ of 'numpy.ndarray'.
                     del res.axistags[k]
         return res        
 
+    @finalize_scalar_return
     @preserve_doc
     def std(self, axis=None, dtype=None, out=None, ddof=0):
-        res = numpy.ndarray.std(self, axis, dtype, out, ddof)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        if len(res.shape) == 0:
-            res = res.item()
-        return res
+        return numpy.ndarray.std(self, axis, dtype, out, ddof)
 
+    @finalize_scalar_return
     @preserve_doc
     def sum(self, axis=None, dtype=None, out=None):
-        res = numpy.ndarray.sum(self, axis, dtype, out)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        return res
+        return numpy.ndarray.sum(self, axis, dtype, out)
             
     @preserve_doc
     def swapaxes(self, i, j):
@@ -348,15 +331,10 @@ of 'numpy.ndarray'.
         res.axistags = res.transpose_axistags(*axes)
         return res
 
+    @finalize_scalar_return
     @preserve_doc
     def var(self, axis=None, dtype=None, out=None, ddof=0):
-        res = numpy.ndarray.var(self, axis, dtype, out, ddof)
-        if axis is not None:
-            res.axistags = res.copy_axistags()
-            del res.axistags[axis]
-        if len(res.shape) == 0:
-            res = res.item()
-        return res
+        return numpy.ndarray.var(self, axis, dtype, out, ddof)
 
     @property
     def T(self):
