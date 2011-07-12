@@ -252,7 +252,8 @@ pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
                             int neighborhood = 8,
                             NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    vigra_precondition(neighborhood == 4 || neighborhood == 8,
+
+	vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "extendedLocalMinima(): neighborhood must be 4 or 8.");
 
     res.reshapeIfEmpty(image.shape(), "extendedLocalMinima(): Output array has wrong shape.");
@@ -437,7 +438,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMinima3D, pythonLocalMinima3D)
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima2D, pythonExtendedLocalMinima2D)
 
-VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima2D)
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima3D)
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMaxima2D, pythonLocalMaxima2D)
 

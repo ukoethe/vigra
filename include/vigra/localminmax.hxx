@@ -383,7 +383,8 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 template<class SrcIterator, class SrcShape, class SrcAccessor,
 		class DestIterator, class DestAccessor, class DestValue,
 		class Neighborhood, class Compare, class Equal>
-void extendedLocalMinMax(SrcIterator sul, SrcShape shp, SrcAccessor sa,
+void
+extendedLocalMinMax(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 		DestIterator dul, DestAccessor da, DestValue marker,
 		Neighborhood neighbourhood, Compare compare, Equal equal,
 		typename SrcAccessor::value_type threshold, bool allowExtremaAtBorder =
@@ -499,7 +500,7 @@ void extendedLocalMinMax(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 
 			for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
 			{
-				std::cerr << "xl " << *xl << std::endl;
+
 
 				if (isExtremum[*xl])
 					da.set(marker, xd);
@@ -1605,6 +1606,19 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     extendedLocalMinima(src.first, src.second, src.third,
                         dest.first, dest.second, marker, neighborhood);
 }
+
+template <class SrcIterator, class SrcAccessor, class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood>
+inline void
+extendedLocalMinima(triple<SrcIterator, SrcShape, SrcAccessor> src,
+            pair<DestIterator, DestAccessor> dest,
+            typename DestAccessor::value_type marker, Neighborhood neighborhood)
+{
+    extendedLocalMinima(src.first, src.second, src.third,
+                        dest.first, dest.second, marker, neighborhood);
+}
+
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
