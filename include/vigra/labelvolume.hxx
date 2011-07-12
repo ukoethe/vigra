@@ -165,6 +165,18 @@ namespace vigra{
 */
 doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
+
+template <class SrcIterator, class SrcAccessor,class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D>
+unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+						 pair<DestIterator, DestAccessor> dest,
+                         Neighborhood3D neighborhood3D)
+{
+        return labelVolume(s_Iter, srcShape, sa, dest.first, dest.second, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
           class Neighborhood3D>

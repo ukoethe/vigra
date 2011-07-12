@@ -213,14 +213,47 @@ pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     return res;
 }
 
+
 template < class PixelType >
-NumpyAnyArray 
+NumpyAnyArray
+pythonLocalMinima3D(NumpyArray<3, Singleband<PixelType> > image,
+                    PixelType marker = NumericTraits<PixelType>::one(),
+                    int neighborhood = 6,
+                    NumpyArray<3, Singleband<PixelType> > res = python::object())
+{
+    vigra_precondition(neighborhood == 6 || neighborhood == 26,
+        "localMaxima(): neighborhood must be 6 or 26.");
+
+    res.reshapeIfEmpty(image.shape(), "localMaxima(): Output array has wrong shape.");
+    switch (neighborhood)
+    {
+        case 6:
+        {
+
+        	localMinima(srcMultiArrayRange(image), destMultiArray(res),marker,
+				NeighborCode3DSix());
+            break;
+        }
+        case 26:
+        {
+        	localMinima(srcMultiArrayRange(image), destMultiArray(res), marker,
+            	NeighborCode3DTwentySix());
+            break;
+        }
+    }
+
+    return res;
+}
+
+template < class PixelType >
+NumpyAnyArray
 pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
                             PixelType marker = NumericTraits<PixelType>::one(),
                             int neighborhood = 8,
                             NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    vigra_precondition(neighborhood == 4 || neighborhood == 8,
+
+	vigra_precondition(neighborhood == 4 || neighborhood == 8,
         "extendedLocalMinima(): neighborhood must be 4 or 8.");
 
     res.reshapeIfEmpty(image.shape(), "extendedLocalMinima(): Output array has wrong shape.");
@@ -241,6 +274,38 @@ pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     }
     return res;
 }
+
+template < class PixelType >
+NumpyAnyArray
+pythonExtendedLocalMinima3D(NumpyArray<3, Singleband<PixelType> > image,
+                    PixelType marker = NumericTraits<PixelType>::one(),
+                    int neighborhood = 6,
+                    NumpyArray<3, Singleband<PixelType> > res = python::object())
+{
+    vigra_precondition(neighborhood == 6 || neighborhood == 26,
+        "localMaxima(): neighborhood must be 6 or 26.");
+
+    res.reshapeIfEmpty(image.shape(), "localMaxima(): Output array has wrong shape.");
+    switch (neighborhood)
+    {
+        case 6:
+        {
+
+        	extendedLocalMinima(srcMultiArrayRange(image), destMultiArray(res),marker,
+				NeighborCode3DSix());
+            break;
+        }
+        case 26:
+        {
+        	extendedLocalMinima(srcMultiArrayRange(image), destMultiArray(res), marker,
+            	NeighborCode3DTwentySix());
+            break;
+        }
+    }
+
+    return res;
+}
+
 
 template < class PixelType >
 NumpyAnyArray 
@@ -274,6 +339,71 @@ pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
 
 template < class PixelType >
 NumpyAnyArray 
+pythonLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > image,
+                    PixelType marker = NumericTraits<PixelType>::one(),
+                    int neighborhood = 6,
+                    NumpyArray<3, Singleband<PixelType> > res = python::object())
+{
+    vigra_precondition(neighborhood == 6 || neighborhood == 26,
+        "localMaxima(): neighborhood must be 6 or 26.");
+
+    res.reshapeIfEmpty(image.shape(), "localMaxima(): Output array has wrong shape.");
+    switch (neighborhood)
+    {
+        case 6:
+        {
+
+            localMaxima(srcMultiArrayRange(image), destMultiArray(res),marker,
+				NeighborCode3DSix());
+            break;
+        }
+        case 26:
+        {
+            localMaxima(srcMultiArrayRange(image), destMultiArray(res), marker,
+            	NeighborCode3DTwentySix());
+            break;
+        }
+    }
+
+    return res;
+}
+
+
+template < class PixelType >
+NumpyAnyArray
+pythonExtendedLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > image,
+                    PixelType marker = NumericTraits<PixelType>::one(),
+                    int neighborhood = 6,
+                    NumpyArray<3, Singleband<PixelType> > res = python::object())
+{
+    vigra_precondition(neighborhood == 6 || neighborhood == 26,
+        "localMaxima(): neighborhood must be 6 or 26.");
+
+    res.reshapeIfEmpty(image.shape(), "localMaxima(): Output array has wrong shape.");
+    switch (neighborhood)
+    {
+        case 6:
+        {
+
+        	extendedLocalMaxima(srcMultiArrayRange(image), destMultiArray(res),marker,
+				NeighborCode3DSix());
+            break;
+        }
+        case 26:
+        {
+        	extendedLocalMaxima(srcMultiArrayRange(image), destMultiArray(res), marker,
+            	NeighborCode3DTwentySix());
+            break;
+        }
+    }
+
+    return res;
+}
+
+
+
+template < class PixelType >
+NumpyAnyArray
 pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
                             PixelType marker = NumericTraits<PixelType>::one(),
                             int neighborhood = 8,
@@ -300,6 +430,23 @@ pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
     }
     return res;
 }
+
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMinima2D, pythonLocalMinima2D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMinima3D, pythonLocalMinima3D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima2D, pythonExtendedLocalMinima2D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima3D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMaxima2D, pythonLocalMaxima2D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLocalMaxima3D, pythonLocalMaxima3D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMaxima2D, pythonLocalMaxima2D)
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMaxima3D, pythonLocalMaxima3D)
 
 /*************************************************************************/
 
@@ -639,8 +786,8 @@ void defineSegmentation()
     
     /******************************************************************************/
     
-    def("localMinima",
-        registerConverters(&pythonLocalMinima2D<float>),
+    multidef("localMinima",
+    		pyLocalMinima2D<float>(),
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
@@ -650,8 +797,19 @@ void defineSegmentation()
         "4 or 8 (default).\n\n"
         "For details see localMinima_ in the vigra C++ documentation.\n");
 
-    def("extendedLocalMinima",
-        registerConverters(&pythonExtendedLocalMinima2D<float>),
+    multidef("localMinima",
+        pyLocalMinima3D<float>(),
+        (arg("volume"),
+         arg("marker")=1.0,
+         arg("neighborhood") = 6,
+         arg("out")=python::object()),
+        "Find local minima in a volume and mark them with the given 'marker'. Parameter "
+        "'neighborhood' specifies the pixel neighborhood to be used and can be "
+        "6 or 26 (default).\n\n"
+        "For details see localMinima_ in the vigra C++ documentation.\n");
+
+    multidef("extendedLocalMinima",
+        pyExtendedLocalMinima2D<float>(),
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
@@ -662,8 +820,20 @@ void defineSegmentation()
         "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
         );
 
-    def("localMaxima",
-        registerConverters(&pythonLocalMaxima2D<float>),
+    multidef("extendedLocalMinima",
+        pyExtendedLocalMinima3D<float>(),
+        (arg("volume"),
+         arg("marker")=1.0,
+         arg("neighborhood") = 6,
+         arg("out")=python::object()),
+        "Find local minima and minimal plateaus in a volume and mark them with "
+        "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+        "neighborhood to be used and can be 6(default) or 26 .\n\n"
+        "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
+        );
+
+    multidef("localMaxima",
+        pyLocalMaxima2D<float>(),
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
@@ -673,8 +843,19 @@ void defineSegmentation()
         "4 or 8 (default).\n\n"
         "For details see localMaxima_ in the vigra C++ documentation.\n");
 
-    def("extendedLocalMaxima",
-        registerConverters(&pythonExtendedLocalMaxima2D<float>),
+    multidef("localMaxima",
+         pyLocalMaxima3D<float>(),
+         (arg("volume"),
+          arg("marker")=1.0,
+          arg("neighborhood") = 6,
+          arg("out")=python::object()),
+         "Find local maxima and maximal plateaus in a volume and mark them with "
+         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+         "neighborhood to be used and can be 6(default) or 26 .\n\n"
+         "For details see localMinima_ in the vigra C++ documentation.\n");
+
+    multidef("extendedLocalMaxima",
+        pyExtendedLocalMaxima2D<float>(),
         (arg("image"), 
          arg("marker")=1.0, 
          arg("neighborhood") = 8,
@@ -682,6 +863,17 @@ void defineSegmentation()
         "Find local maxima and maximal plateaus in an image and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
         "neighborhood to be used and can be 4 or 8 (default).\n\n"
+        "For details see localMinima_ in the vigra C++ documentation.\n");
+
+    multidef("extendedLocalMaxima",
+        pyExtendedLocalMaxima3D<float>(),
+        (arg("volume"),
+         arg("marker")=1.0,
+         arg("neighborhood") = 6,
+         arg("out")=python::object()),
+        "Find local maxima and maximal plateaus in a volume and mark them with "
+        "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+        "neighborhood to be used and can be 6 (default) or 26 .\n\n"
         "For details see localMinima_ in the vigra C++ documentation.\n");
 
     /*************************************************************************/
