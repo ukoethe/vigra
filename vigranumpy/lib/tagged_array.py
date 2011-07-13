@@ -40,9 +40,11 @@ def preserve_doc(f):
     f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__)
     return f
 
-def finalize_scalar_return(f):
-    def new_f(self, axis=None, *args):
-        res = f(self, axis, *args)
+# a decorator to finalize the return value of a 
+# dimension-reducing function (e.g. array.max())
+def finalize_reduce_result(f):
+    def new_f(self, axis=None, *args, **kw):
+        res = f(self, axis, *args, **kw)
         if axis is not None:
             res.axistags = res.copy_axistags()
             del res.axistags[axis]
@@ -189,22 +191,22 @@ of 'numpy.ndarray'.
         return "%s(shape=%s, axistags=%s, dtype=%s, data=\n%s)" % \
           (self.__class__.__name__, str(self.shape), repr(self.axistags), str(self.dtype), str(self))
           
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def all(self, axis=None, out=None):
         return numpy.ndarray.all(self, axis, out)
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def any(self, axis=None, out=None):
         return numpy.ndarray.any(self, axis, out)
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def argmax(self, axis=None, out=None):
         return numpy.ndarray.argmax(self, axis, out)
         
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def argmin(self, axis=None, out=None):
         return numpy.ndarray.argmin(self, axis, out)
@@ -231,17 +233,17 @@ of 'numpy.ndarray'.
         res.axistags = res.empty_axistags(res.ndim)
         return res        
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def max(self, axis=None, out=None):
         return numpy.ndarray.max(self, axis, out)
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def mean(self, axis=None, out=None):
         return numpy.ndarray.mean(self, axis, out)
     
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def min(self, axis=None, out=None):
         return numpy.ndarray.min(self, axis, out)
@@ -253,12 +255,12 @@ of 'numpy.ndarray'.
             res[k].axistags = copy.copy(self.axistags[k])
         return res
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def prod(self, axis=None, dtype=None, out=None):
         return numpy.ndarray.prod(self, axis, dtype, out)
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def ptp(self, axis=None, out=None):
         return numpy.ndarray.ptp(self, axis, out)
@@ -298,12 +300,12 @@ of 'numpy.ndarray'.
                     del res.axistags[k]
         return res        
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def std(self, axis=None, dtype=None, out=None, ddof=0):
         return numpy.ndarray.std(self, axis, dtype, out, ddof)
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def sum(self, axis=None, dtype=None, out=None):
         return numpy.ndarray.sum(self, axis, dtype, out)
@@ -331,7 +333,7 @@ of 'numpy.ndarray'.
         res.axistags = res.transpose_axistags(*axes)
         return res
 
-    @finalize_scalar_return
+    @finalize_reduce_result
     @preserve_doc
     def var(self, axis=None, dtype=None, out=None, ddof=0):
         return numpy.ndarray.var(self, axis, dtype, out, ddof)
