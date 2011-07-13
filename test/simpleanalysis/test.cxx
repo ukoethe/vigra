@@ -880,11 +880,6 @@ struct LocalMinMaxTest
            desired(7,1,15)=1;
            desired(7,1,19)=1;
 
-           desired(10,15,26)=1; //platoo
-           desired(10,15,27)=1;
-           desired(10,15,28)=1;
-           desired(10,16,26)=1;
-
 
            for(int z=0; z<vol.shape(2); ++z)
                for(int y=0; y<vol.shape(1); ++y)

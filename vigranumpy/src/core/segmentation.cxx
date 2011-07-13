@@ -773,7 +773,7 @@ void defineSegmentation()
                 "For details see localMinima_ in the vigra C++ documentation.\n");
 
     def(
-            "localMinima",
+            "localMinima3D",
             registerConverters(&pythonLocalMinima3D<float> ),
             (arg("volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg(
                     "out") = python::object()),
@@ -790,7 +790,7 @@ void defineSegmentation()
                 "neighborhood to be used and can be 4 or 8 (default).\n\n"
                 "For details see extendedLocalMinima_ in the vigra C++ documentation.\n");
 
-    def("extendedLocalMinima", registerConverters(&pythonExtendedLocalMinima3D<
+    def("extendedLocalMinima3D", registerConverters(&pythonExtendedLocalMinima3D<
             float> ), (arg("volume"), arg("marker") = 1.0, arg("neighborhood")
             = 6, arg("out") = python::object()),
             "Find local minima and minimal plateaus in a volume and mark them with "
@@ -808,7 +808,7 @@ void defineSegmentation()
                 "4 or 8 (default).\n\n"
                 "For details see localMaxima_ in the vigra C++ documentation.\n");
 
-    def("localMaxima", registerConverters(&pythonLocalMaxima3D<float> ), (arg(
+    def("localMaxima3D", registerConverters(&pythonLocalMaxima3D<float> ), (arg(
             "volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg("out")
             = python::object()),
             "Find local maxima and maximal plateaus in a volume and mark them with "
@@ -824,7 +824,7 @@ void defineSegmentation()
                 "neighborhood to be used and can be 4 or 8 (default).\n\n"
                 "For details see localMinima_ in the vigra C++ documentation.\n");
 
-    def("extendedLocalMaxima", registerConverters(&pythonExtendedLocalMaxima3D<
+    def("extendedLocalMaxima3D", registerConverters(&pythonExtendedLocalMaxima3D<
             float> ), (arg("volume"), arg("marker") = 1.0, arg("neighborhood")
             = 6, arg("out") = python::object()),
             "Find local maxima and maximal plateaus in a volume and mark them with "

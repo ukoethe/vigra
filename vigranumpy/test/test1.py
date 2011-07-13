@@ -156,16 +156,16 @@ def test_MinimaMaxima():
     data[80,10,10]=1
     data[70,120,40]=1
     
-    res = localMaxima(data,neighborhood=26)
+    res = localMaxima3D(data,neighborhood=26)
     np.testing.assert_array_equal(res, data, "Error in the calculation of the Maxima")
 
-    res = extendedLocalMaxima(data,neighborhood=26)
+    res = extendedLocalMaxima3D(data,neighborhood=26)
     np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Maxima")
     
-    res = localMinima(1-data,neighborhood=26)
+    res = localMinima3D(1-data,neighborhood=26)
     np.testing.assert_array_equal(res, data, "Error in the calculation of the Minima")
     
-    res = extendedLocalMinima(1-data,neighborhood=26)
+    res = extendedLocalMinima3D(1-data,neighborhood=26)
     np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Minima")
 
 def test_Region2Crack():
