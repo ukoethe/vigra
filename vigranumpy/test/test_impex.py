@@ -63,24 +63,27 @@ def checkUnequalData(i1,i2):
     assert(np.any(i1!=i2))
 
 def test_writeAndReadImageHDF5():
-    if not hasattr(im, 'writeImageToHDF5'):
+    try:
+        import h5py
+    except:
+        print "Warning: 'import h5py' failed, not executing HDF5 import/export tests"
         return
     
     # positive tests
     # write and read image
-    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
-    image_imp = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
+    image_imp = im.readHDF5("hdf5test.hd5", "group/subgroup/imgdata")
     checkEqualData(image,image_imp)
     # write and read scalar image
-    im.writeImageToHDF5(scalar_image, "hdf5test.hd5", "group/subgroup/imgdata")
-    scalar_image_imp = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeHDF5(scalar_image, "hdf5test.hd5", "group/subgroup/imgdata")
+    scalar_image_imp = im.readHDF5("hdf5test.hd5", "group/subgroup/imgdata")
     scalar_image_imp = scalar_image_imp.dropChannelAxis()
     checkEqualData(scalar_image,scalar_image_imp)
     # write multiple sets and check if they are all there afterwards
-    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
-    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata2")
-    image_imp1 = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata")
-    image_imp2 = im.readImageFromHDF5("hdf5test.hd5", "group/subgroup/imgdata2")
+    im.writeHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
+    im.writeHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata2")
+    image_imp1 = im.readHDF5("hdf5test.hd5", "group/subgroup/imgdata")
+    image_imp2 = im.readHDF5("hdf5test.hd5", "group/subgroup/imgdata2")
     checkEqualData(image,image_imp1)
     checkEqualData(image,image_imp2)
 
@@ -92,45 +95,27 @@ def test_writeAndReadImageHDF5():
     scalar_image_imp[1,1] = 100000
     checkUnequalData(scalar_image,scalar_image_imp)
     
-    # check that we do the same as h5py
+def test_writeAndReadVolumeHDF5():
     try:
         import h5py
     except:
         return
-        
-    h5py_file = h5py.File('hdf5test.hd5', 'w')
-    h5py_file.create_dataset('imgdata', data=image.transposeToNumpyOrder())
-    h5py_file.close() 
-    image_imp3 = im.readImageFromHDF5("hdf5test.hd5", "imgdata")
-    checkEqualData(image,image_imp3)
-        
-    im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
-    h5py_file = h5py.File('hdf5test.hd5', 'r')
-    image_imp4 = h5py_file['/group/subgroup/imgdata']
-    checkEqualData(image.transposeToNumpyOrder().view(np.ndarray), image_imp4.value)
-
-def test_writeAndReadVolumeHDF5():
-    if not hasattr(im, 'writeVolumeToHDF5'):
-        return
     
     # positive tests
     # write and read volume
-    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
-    volume256_imp = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
-    # FIXME: this should be volume256_imp.dropChannelAxis()
-    #        but volume256_imp is ndarray
-    volume256_imp = volume256_imp[...,0]
+    im.writeHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
+    volume256_imp = im.readHDF5("hdf5test.hd5", "group/subgroup/voldata")
     checkEqualData(volume256,volume256_imp)
     # write and read binary volume
-    im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
-    volumeFloat_imp = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
+    im.writeHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
+    volumeFloat_imp = im.readHDF5("hdf5test.hd5", "group/subgroup/voldata")
     checkEqualData(volumeFloat.transposeToDefaultOrder(), volumeFloat_imp)
     # write multiple sets and check if they are all there afterwards
-    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
-    im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata2")
-    volume256_imp1 = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata")
+    im.writeHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
+    im.writeHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata2")
+    volume256_imp1 = im.readHDF5("hdf5test.hd5", "group/subgroup/voldata")
     volume256_imp1 = volume256_imp1.dropChannelAxis()
-    volume256_imp2 = im.readVolumeFromHDF5("hdf5test.hd5", "group/subgroup/voldata2")
+    volume256_imp2 = im.readHDF5("hdf5test.hd5", "group/subgroup/voldata2")
     volume256_imp2 = volume256_imp2.dropChannelAxis()
     checkEqualData(volume256,volume256_imp1)
     checkEqualData(volume256,volume256_imp2)
@@ -142,20 +127,3 @@ def test_writeAndReadVolumeHDF5():
     # write and read binary volume
     volumeFloat_imp[1,1,1] = 100000
     checkUnequalData(volumeFloat.transposeToDefaultOrder(), volumeFloat_imp)
-    
-    # check that we do the same as h5py
-    try:
-        import h5py
-    except:
-        return
-        
-    h5py_file = h5py.File('hdf5test.hd5', 'w')
-    h5py_file.create_dataset('voldata', data=volumeFloat.transposeToNumpyOrder())
-    h5py_file.close() 
-    volumeFloat_imp1 = im.readVolumeFromHDF5("hdf5test.hd5", "voldata")
-    checkEqualData(volumeFloat.transposeToDefaultOrder(), volumeFloat_imp1)
-        
-    im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
-    h5py_file = h5py.File('hdf5test.hd5', 'r')
-    volumeFloat_imp2 = h5py_file['/group/subgroup/voldata']
-    checkEqualData(volumeFloat.transposeToNumpyOrder().view(np.ndarray), volumeFloat_imp2.value)

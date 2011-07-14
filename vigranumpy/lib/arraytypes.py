@@ -520,6 +520,8 @@ this class via its subclasses!
         elif order == 'V':
             if self.channelIndex < self.ndim:
                 permutation = permutation[1:] + [permutation[0]]
+        elif order != 'F':
+            raise RuntimeError("VigraArray.transposeToOrder(): unknown order '%s'" % order)
         return self.transpose(permutation)
     
     def transposeToDefaultOrder(self):
@@ -676,19 +678,28 @@ this class via its subclasses!
 
         vigra.impex.writeVolume(self, filename_base, filename_ext, dtype, compression)
             
-    def writeHDF5(self, filename, pathInFile, dtype = ''):
-        "Write an image or volume to a HDF5 file. Consult :func:`vigra.impex.writeImageToHDF5` and :func:`vigra.impex.writeVolumeToHDF5` for detailed documentation"
+    # def writeHDF5(self, filename, pathInFile, dtype = ''):
+        # "Write an image or volume to a HDF5 file. Consult :func:`vigra.impex.writeImageToHDF5` and :func:`vigra.impex.writeVolumeToHDF5` for detailed documentation"
+        # import vigra.impex
+
+        # ndim = self.ndim
+        # if self.channelIndex < ndim:
+            # ndim -= 1
+        # if ndim == 2:
+            # vigra.impex.writeImageToHDF5(self, filename, pathInFile, dtype)
+        # elif ndim == 3:
+            # vigra.impex.writeVolumeToHDF5(self, filename, pathInFile, dtype)
+        # else:
+            # raise RuntimeError("VigraArray.writeHDF5(): array must have 2 or 3 non-channel axes.")
+
+    def writeHDF5(self, filenameOurGroup, pathInFile):
+        """Write the array to a HDF5 file. 
+        
+           This is just a shortcut for 'vigra.impex.writeHDF5(self, filenameOurGroup, pathInFile)'
+        """
         import vigra.impex
 
-        ndim = self.ndim
-        if self.channelIndex < ndim:
-            ndim -= 1
-        if ndim == 2:
-            vigra.impex.writeImageToHDF5(self, filename, pathInFile, dtype)
-        elif ndim == 3:
-            vigra.impex.writeVolumeToHDF5(self, filename, pathInFile, dtype)
-        else:
-            raise RuntimeError("VigraArray.writeHDF5(): array must have 2 or 3 non-channel axes.")
+        vigra.impex.writeHDF5(self, filenameOurGroup, pathInFile)
 
     def show(self, normalize = True):
         '''
