@@ -35,10 +35,13 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #define NO_IMPORT_ARRAY
-#include <vigra/axistags.hxx>
+
 #include <vigra/numpy_array.hxx>
+#include <vigra/axistags.hxx>
 #include <boost/python.hpp>
 #include <boost/python/slice.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
 
 namespace python = boost::python;
 
@@ -133,6 +136,33 @@ AxisInfo AxisInfo_ft()
 AxisInfo AxisInfo_c()
 {
     return AxisInfo::c();
+}
+
+AxisTags AxisTags::fromJSON(std::string const & repr)
+{
+    using boost::property_tree::ptree;
+    
+    std::istringstream s(repr);
+    ptree pt;
+    read_json(s, pt);
+    
+    AxisTags res;
+    for(ptree::iterator v = pt.get_child("axes").begin(); 
+                         v != pt.get_child("axes").end(); ++v)
+    {
+        std::string key(v->second.get<std::string>("key"));
+        unsigned int typeFlags(v->second.get<unsigned int>("typeFlags"));
+        double resolution(v->second.get<double>("resolution"));
+        std::string description(v->second.get<std::string>("description"));
+        
+        res.push_back(AxisInfo(key, (AxisInfo::AxisType)typeFlags, resolution, description));
+    }    
+    return res;
+}
+
+AxisTags * AxisTags_readJSON(std::string const & repr)
+{
+    return new AxisTags(AxisTags::fromJSON(repr));
 }
 
 AxisTags *
@@ -510,6 +540,10 @@ void defineAxisTags()
         .def("compatible", &AxisTags::compatible)
         .def(self == self)
         .def(self != self)
+        .def("toJSON", &AxisTags::toJSON)
+        .def("fromJSON", &AxisTags_readJSON,
+                             return_value_policy<manage_new_object>())
+        .staticmethod("fromJSON")
     ;
 }
 

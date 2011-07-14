@@ -41,10 +41,9 @@
 #include "algorithm.hxx"
 #include "error.hxx"
 #include "functorexpression.hxx"
-#include <boost/python.hpp>
 #include <string>
-
-namespace python = boost::python;
+#include <sstream>
+#include <iomanip>
 
 namespace vigra {
 
@@ -340,6 +339,28 @@ class AxisTags
         push_back(i5);
     }
     
+    static AxisTags fromJSON(std::string const & repr);
+
+    std::string toJSON() const
+    {
+        std::stringstream s;
+        s << "{\n  \"axes\": [";
+        for(unsigned int k=0; k<size(); ++k)
+        {
+            if(k > 0)
+                s << ",";
+            s << "\n";
+            s << "    {\n";
+            s << "      \"key\": \"" << axes_[k].key() << "\",\n";
+            s << "      \"typeFlags\": " << (unsigned int)axes_[k].typeFlags() << ",\n";
+            s << "      \"resolution\": " << std::setprecision(17) << axes_[k].resolution() << ",\n";
+            s << "      \"description\": \"" << axes_[k].description() << "\"\n";
+            s << "    }";
+        }
+        s << "\n  ]\n}";
+        return s.str();
+    }
+
     unsigned int size() const
     {
         return axes_.size();

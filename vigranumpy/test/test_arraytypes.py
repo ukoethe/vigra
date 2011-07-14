@@ -819,6 +819,55 @@ def testVector3Volume():
 def testVector4Volume():
     checkArray(arraytypes.Vector4Volume, 4, 3)
 
+def testAxisTags():
+    axistags = AxisTags(AxisInfo.c(description="RGB"), 
+                        AxisInfo.ft(3.0, "time frequency"), 
+                        AxisInfo.y(0.5), 
+                        AxisInfo.z(4, "confocal depth"))
+    
+    json = '''{
+  "axes": [
+    {
+      "key": "c",
+      "typeFlags": 1,
+      "resolution": 0,
+      "description": "RGB"
+    },
+    {
+      "key": "t",
+      "typeFlags": 24,
+      "resolution": 3,
+      "description": "time frequency"
+    },
+    {
+      "key": "y",
+      "typeFlags": 2,
+      "resolution": 0.5,
+      "description": ""
+    },
+    {
+      "key": "z",
+      "typeFlags": 2,
+      "resolution": 4,
+      "description": "confocal depth"
+    }
+  ]
+}'''
+    assert_equal(axistags.toJSON(), json)
+    
+    readBack = AxisTags.fromJSON(json)
+    assert_equal(axistags, readBack)
+    assert_equal(readBack[0].description, "RGB")
+    assert_equal(readBack[1].description, "time frequency")
+    assert_equal(readBack[2].description, "")
+    assert_equal(readBack[3].description, "confocal depth")
+    assert_equal(readBack[0].resolution, 0)
+    assert_equal(readBack[1].resolution, 3)
+    assert_equal(readBack[2].resolution, 0.5)
+    assert_equal(readBack[3].resolution, 4)
+    
+    # FIXME: add more tests here
+            
 def testTaggedShape():
 
     a = arraytypes.Image((20,10))
