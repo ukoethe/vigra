@@ -843,19 +843,16 @@ struct LocalMinMaxTest
         vol(1,1,1)=10;
         vol(5,5,5)=350;
 
-        vol(8,3,5)=9; //platoo
+        vol(8,3,5)=9; //plateaux
         vol(8,4,5)=9;
         vol(8,5,5)=9;
-
-
 
         vol(6,7,7)=-0.5;
         vol(7,7,7)=-1;
         vol(7,1,15)=-100;
         vol(7,1,19)=-20;
 
-
-        vol(3,15,26)=-1; //platoo
+        vol(3,15,26)=-1; //plateaux
         vol(3,15,27)=-1;
         vol(3,15,28)=-1;
         vol(3,16,26)=-1;
@@ -867,103 +864,94 @@ struct LocalMinMaxTest
 
 
     void localMinimum3DTest()
-       {
-           Volume res(vol);
-           res.init(0);
+    {
+        Volume res(vol);
+        res.init(0);
 
-           localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
-           Volume desired(vol);
-           desired.init(0);
+        Volume desired(vol);
+        desired.init(0);
 
-           desired(7,7,7)=1;
-           desired(7,1,15)=1;
-           desired(7,1,19)=1;
+        desired(7,7,7)=1;
+        desired(7,1,15)=1;
+        desired(7,1,19)=1;
 
 
-           for(int z=0; z<vol.shape(2); ++z)
-               for(int y=0; y<vol.shape(1); ++y)
-                   for(int x=0; x<vol.shape(0); ++x)
-                   shouldEqual(res(x,y,z), desired(x,y,z));
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
 
-       }
+    }
 
     void extendedLocalMinimum3DTest()
-       {
-           Volume res(vol);
-           res.init(0);
+    {
+        Volume res(vol);
+        res.init(0);
 
-           extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
-           Volume desired(vol);
-           desired.init(0);
+        Volume desired(vol);
+        desired.init(0);
 
-           desired(7,7,7)=1;
-           desired(7,1,15)=1;
-           desired(7,1,19)=1;
+        desired(7,7,7)=1;
+        desired(7,1,15)=1;
+        desired(7,1,19)=1;
 
-           desired(3,15,26)=1; //platoo
-           desired(3,15,27)=1;
-           desired(3,15,28)=1;
-           desired(3,16,26)=1;
+        desired(3,15,26)=1; //plateaux
+        desired(3,15,27)=1;
+        desired(3,15,28)=1;
+        desired(3,16,26)=1;
 
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
 
-
-           for(int z=0; z<vol.shape(2); ++z)
-               for(int y=0; y<vol.shape(1); ++y)
-                   for(int x=0; x<vol.shape(0); ++x)
-                   shouldEqual(res(x,y,z), desired(x,y,z));
-
-       }
-
+    }
 
     void localMaximum3DTest()
-       {
-           Volume res(vol);
-           res.init(0);
+    {
+        Volume res(vol);
+        res.init(0);
 
-           localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
-           Volume desired(vol);
-           desired.init(0);
+        Volume desired(vol);
+        desired.init(0);
 
-           desired(1,1,1)=1;
-           desired(5,5,5)=1;
+        desired(1,1,1)=1;
+        desired(5,5,5)=1;
 
-
-
-
-           for(int z=0; z<vol.shape(2); ++z)
-               for(int y=0; y<vol.shape(1); ++y)
-                   for(int x=0; x<vol.shape(0); ++x)
-                       shouldEqual(res(x,y,z), desired(x,y,z));
-       }
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
+    }
 
     void extendedLocalMaximum3DTest()
-       {
-           Volume res(vol);
-           res.init(0);
+    {
+        Volume res(vol);
+        res.init(0);
 
+        extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
-           extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        Volume desired(vol);
+        desired.init(0);
 
-           Volume desired(vol);
-           desired.init(0);
+        desired(1,1,1)=1;
+        desired(5,5,5)=1;
 
-           desired(1,1,1)=1;
-           desired(5,5,5)=1;
+        desired(8,3,5)=1;
+        desired(8,4,5)=1;
+        desired(8,5,5)=1;
 
-
-           desired(8,3,5)=1;
-           desired(8,4,5)=1;
-           desired(8,5,5)=1;
-
-
-           for(int z=0; z<vol.shape(2); ++z)
-               for(int y=0; y<vol.shape(1); ++y)
-                   for(int x=0; x<vol.shape(0); ++x)
-                       shouldEqual(res(x,y,z), desired(x,y,z));
-       }
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
+    }
 
     void localMinimumTest()
     {
@@ -992,8 +980,6 @@ struct LocalMinMaxTest
 		desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
-
-
 
     void localMinimum4Test()
     {
