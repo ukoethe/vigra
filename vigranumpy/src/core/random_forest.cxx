@@ -328,7 +328,7 @@ void defineRandomForest()
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
 #ifdef HasHDF5
-        .def("writeHDF5", &rf_export_HDF5<UInt32>,
+        .def("writeHDF5", &rf_export_HDF5<UInt32, ClassificationTag>,
              (arg("filename"), arg("pathInFile")="", arg("overwriteflag")=false),
              "Store the random forest in the given HDF5 file 'filname' under the internal\n"
              "path 'pathInFile'. If a dataset already exists, 'overwriteflag' determines\n"

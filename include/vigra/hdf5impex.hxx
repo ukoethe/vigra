@@ -180,7 +180,7 @@ public:
         return *this;
     }
 
-        /** \brief Destreuctor.
+        /** \brief Destructor.
             Calls close() for the contained handle.
         */
     ~HDF5Handle()

@@ -148,11 +148,40 @@ bool find_groups_hdf5(std::string filename,
     return res; 
 }
 
+template<class X>
+static herr_t
+my_H5LTmake_dataset(const X & x, hid_t loc_id, const char *dset_name, int rank,
+                     const hsize_t *dims, hid_t tid, const void *data)
+{
+    if (data == 0)
+        return 0; 
+
+    // create dataspace
+    HDF5Handle sid(H5Screate_simple(rank, dims, NULL), &H5Sclose,
+                   "(): unable to create dataspace for scalar data.");
+
+    // plist :-/
+    HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose,
+                     "(): unable to create property list.");
+
+    // turn off time tagging of datasets.
+    H5Pset_obj_track_times(plist, 0);
+
+   // create dataset
+    HDF5Handle did(H5Dcreate(loc_id, dset_name, tid, sid,
+                             H5P_DEFAULT, plist, H5P_DEFAULT),
+                   &H5Dclose, "(): unable to create dataset.");
+
+    return H5Dwrite(did, tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
+
+}
+
+
 VIGRA_EXPORT int get_number_of_digits(int in);
 
 VIGRA_EXPORT std::string make_padded_number(int number, int max_number);
 
-/** write a ArrayVector to a hdf5 dataset.
+/** write an ArrayVector to an hdf5 dataset.
  */
 template<class U, class T>
 void write_array_2_hdf5(hid_t & id, 
@@ -161,7 +190,8 @@ void write_array_2_hdf5(hid_t & id,
                         T  type) 
 {
     hsize_t size = arr.size(); 
-    vigra_postcondition(H5LTmake_dataset (id, 
+    vigra_postcondition(my_H5LTmake_dataset (arr, 
+                                          id,
                                           name.c_str(), 
                                           1, 
                                           &size, 
@@ -197,7 +227,7 @@ void write_hdf5_2_array(hid_t & id,
                                           name.c_str(),
                                           type, 
                                           arr.data()) >= 0,
-                        "write_array_2_hdf5():"
+                        "write_hdf5_2_array():"
                         "unable to read dataset");
 }
 
