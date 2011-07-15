@@ -845,7 +845,7 @@ struct LocalMinMaxTest
 
         vol(8,3,5)=9; //platoo
         vol(8,4,5)=9;
-        vol(8,6,5)=9;
+        vol(8,5,5)=9;
 
 
 
@@ -855,13 +855,13 @@ struct LocalMinMaxTest
         vol(7,1,19)=-20;
 
 
-        vol(10,15,26)=-1; //platoo
-        vol(10,15,27)=-1;
-        vol(10,15,28)=-1;
-        vol(10,16,26)=-1;
+        vol(3,15,26)=-1; //platoo
+        vol(3,15,27)=-1;
+        vol(3,15,28)=-1;
+        vol(3,16,26)=-1;
 
-        vol(9,18,25)=-100; //on the border is skipped
-        vol(0,1,1)=100; //on the border is skipped
+        vol(9,18,35)=-100; //on the border is skipped
+        vol(0,1,49)=100; //on the border is skipped
 
     }
 
@@ -893,7 +893,7 @@ struct LocalMinMaxTest
            Volume res(vol);
            res.init(0);
 
-           localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+           extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
            Volume desired(vol);
            desired.init(0);
@@ -902,17 +902,18 @@ struct LocalMinMaxTest
            desired(7,1,15)=1;
            desired(7,1,19)=1;
 
-           desired(10,15,26)=1; //platoo
-           desired(10,15,27)=1;
-           desired(10,15,28)=1;
-           desired(10,16,26)=1;
+           desired(3,15,26)=1; //platoo
+           desired(3,15,27)=1;
+           desired(3,15,28)=1;
+           desired(3,16,26)=1;
 
 
 
            for(int z=0; z<vol.shape(2); ++z)
                for(int y=0; y<vol.shape(1); ++y)
                    for(int x=0; x<vol.shape(0); ++x)
-                       shouldEqual(res(x,y,z), desired(x,y,z));
+                   shouldEqual(res(x,y,z), desired(x,y,z));
+
        }
 
 
@@ -955,7 +956,7 @@ struct LocalMinMaxTest
 
            desired(8,3,5)=1;
            desired(8,4,5)=1;
-           desired(8,6,5)=1;
+           desired(8,5,5)=1;
 
 
            for(int z=0; z<vol.shape(2); ++z)
