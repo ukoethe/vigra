@@ -128,19 +128,19 @@ def test_MinimaMaxima():
     checkType(res,np.uint32)
     
     #3D Case
-    res = localMinima(vol_scalar_f)
+    res = localMinima3D(vol_scalar_f)
     checkShape(vol_scalar_f,res)
     checkType(res,vol_scalar_f.dtype)
     
-    res = extendedLocalMinima(vol_scalar_f)
+    res = extendedLocalMinima3D(vol_scalar_f)
     checkShape(vol_scalar_f,res)
     checkType(res,vol_scalar_f.dtype)
     
-    res = localMaxima(vol_scalar_f)
+    res = localMaxima3D(vol_scalar_f)
     checkShape(vol_scalar_f,res)
     checkType(res,vol_scalar_f.dtype)
     
-    res = extendedLocalMaxima(vol_scalar_f)
+    res = extendedLocalMaxima3D(vol_scalar_f)
     checkShape(vol_scalar_f,res)
     checkType(res,vol_scalar_f.dtype)
     
