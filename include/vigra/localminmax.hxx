@@ -78,8 +78,8 @@ inline bool isLocalExtremum(
                 sc(is, atBorder);
     for (int i = 0; i < directionCount; ++i, ++sc)
     {
-    if (!compare(v, sa(sc)))
-        return false;
+        if (!compare(v, sa(sc)))
+            return false;
     }
     return true;
 }
@@ -106,45 +106,45 @@ void localMinMax(
 
     if (allowExtremaAtBorder)
     {
-    SrcIterator is = sul;
-    DestIterator id = dul;
+        SrcIterator is = sul;
+        DestIterator id = dul;
 
-    for (x = 0; x < w; ++x, ++is.x, ++id.x)
-    {
-    if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                isAtImageBorder(x, 0, w, h)))
-        da.set(marker, id);
-    }
+        for (x = 0; x < w; ++x, ++is.x, ++id.x)
+        {
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(x, 0, w, h)))
+            da.set(marker, id);
+        }
 
-    is = sul + Diff2D(0, 1);
-    id = dul + Diff2D(0, 1);
+        is = sul + Diff2D(0, 1);
+        id = dul + Diff2D(0, 1);
 
-    for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
-    {
-    if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                isAtImageBorder(0, y, w, h)))
-        da.set(marker, id);
-    }
+        for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
+        {
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(0, y, w, h)))
+            da.set(marker, id);
+        }
 
-    is = sul + Diff2D(w - 1, 1);
-    id = dul + Diff2D(w - 1, 1);
+        is = sul + Diff2D(w - 1, 1);
+        id = dul + Diff2D(w - 1, 1);
 
-    for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
-    {
-    if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                isAtImageBorder(w - 1, y, w, h)))
-        da.set(marker, id);
-    }
+        for (y = 1; y < h - 1; ++y, ++is.y, ++id.y)
+        {
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(w - 1, y, w, h)))
+            da.set(marker, id);
+        }
 
-    is = sul + Diff2D(0, h - 1);
-    id = dul + Diff2D(0, h - 1);
+        is = sul + Diff2D(0, h - 1);
+        id = dul + Diff2D(0, h - 1);
 
-    for (x = 0; x < w; ++x, ++is.x, ++id.x)
-    {
-    if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                isAtImageBorder(x, h - 1, w, h)))
-        da.set(marker, id);
-    }
+        for (x = 0; x < w; ++x, ++is.x, ++id.x)
+        {
+            if (isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(x, h - 1, w, h)))
+            da.set(marker, id);
+        }
     }
 
     w -= 2;
@@ -154,27 +154,27 @@ void localMinMax(
 
     for (y = 0; y < h; ++y, ++sul.y, ++dul.y)
     {
-    SrcIterator sx = sul;
-    DestIterator dx = dul;
+        SrcIterator sx = sul;
+        DestIterator dx = dul;
 
-    for (x = 0; x < w; ++x, ++sx.x, ++dx.x)
-    {
-    typename SrcAccessor::value_type v = sa(sx);
+        for (x = 0; x < w; ++x, ++sx.x, ++dx.x)
+        {
+            typename SrcAccessor::value_type v = sa(sx);
 
-    if (!compare(v, threshold))
-        continue;
+            if (!compare(v, threshold))
+            continue;
 
-    int i;
-    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
-    {
-    if (!compare(v, sa(sc)))
-        break;
-    }
+            int i;
+            NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
+            for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
+            {
+                if (!compare(v, sa(sc)))
+                break;
+            }
 
-    if (i == Neighborhood::DirectionCount)
-        da.set(marker, dx);
-    }
+            if (i == Neighborhood::DirectionCount)
+            da.set(marker, dx);
+        }
     }
 }
 
@@ -201,48 +201,48 @@ void localMinMax3D(
 
     if (allowExtremaAtBorder)
     {
-    throw std::runtime_error("not implemented!");
-    /*
-     SrcIterator is = sul;
-     DestIterator id = dul;
+        throw std::runtime_error("not implemented!");
+        /*
+        SrcIterator is = sul;
+        DestIterator id = dul;
 
-     for(x=0; x<w; ++x, ++is.x, ++id.x)
-     {
-     if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-     isAtImageBorder(x, 0, w, h)))
-     da.set(marker, id);
-     }
+        for(x=0; x<w; ++x, ++is.x, ++id.x)
+        {
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(x, 0, w, h)))
+            da.set(marker, id);
+        }
 
-     is = sul + Diff2D(0,1);
-     id = dul + Diff2D(0,1);
+        is = sul + Diff2D(0,1);
+        id = dul + Diff2D(0,1);
 
-     for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-     {
-     if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-     isAtImageBorder(0, y, w, h)))
-     da.set(marker, id);
-     }
+        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
+        {
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(0, y, w, h)))
+            da.set(marker, id);
+        }
 
-     is = sul + Diff2D(w-1,1);
-     id = dul + Diff2D(w-1,1);
+        is = sul + Diff2D(w-1,1);
+        id = dul + Diff2D(w-1,1);
 
-     for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-     {
-     if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-     isAtImageBorder(w-1, y, w, h)))
-     da.set(marker, id);
-     }
+        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
+        {
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(w-1, y, w, h)))
+            da.set(marker, id);
+        }
 
-     is = sul + Diff2D(0,h-1);
-     id = dul + Diff2D(0,h-1);
+        is = sul + Diff2D(0,h-1);
+        id = dul + Diff2D(0,h-1);
 
-     for(x=0; x<w; ++x, ++is.x, ++id.x)
-     {
-     if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-     isAtImageBorder(x, h-1, w, h)))
-     da.set(marker, id);
-     }
-     */
+        for(x=0; x<w; ++x, ++is.x, ++id.x)
+        {
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
+                        isAtImageBorder(x, h-1, w, h)))
+            da.set(marker, id);
+        }
+    */
     }
 
     w -= 2;
@@ -258,34 +258,34 @@ void localMinMax3D(
 
     for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2())
     {
-    SrcIterator ys(zs);
-    DestIterator yd(zd);
+        SrcIterator ys(zs);
+        DestIterator yd(zd);
 
-    for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
-    {
-    SrcIterator xs(ys);
-    DestIterator xd(yd);
+        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1())
+        {
+            SrcIterator xs(ys);
+            DestIterator xd(yd);
 
-    for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
-    {
+            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0())
+            {
 
-    typename SrcAccessor::value_type v = sa(xs);
-    if (!compare(v, threshold))
-        continue;
+                typename SrcAccessor::value_type v = sa(xs);
+                if (!compare(v, threshold))
+                continue;
 
-    int i;
-    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(xs);
-    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
-    {
-    if (!compare(v, sa(sc)))
-        break;
-    }
+                int i;
+                NeighborhoodCirculator<SrcIterator, Neighborhood> sc(xs);
+                for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc)
+                {
+                    if (!compare(v, sa(sc)))
+                    break;
+                }
 
-    if (i == Neighborhood::DirectionCount)
-        da.set(marker, xd);
+                if (i == Neighborhood::DirectionCount)
+                da.set(marker, xd);
 
-    }
-    }
+            }
+        }
     }
 
 }
@@ -316,82 +316,82 @@ void extendedLocalMinMax(
     BasicImage<int> labels(w, h);
 
     int number_of_regions = labelImage(sul, slr, sa, labels.upperLeft(),
-                labels.accessor(), (Neighborhood::DirectionCount == 8), equal);
+    labels.accessor(), (Neighborhood::DirectionCount == 8), equal);
 
     // assume that a region is a extremum until the opposite is proved
     std::vector<unsigned char> isExtremum(number_of_regions + 1,
-                (unsigned char) 1);
+    (unsigned char) 1);
 
     BasicImage<int>::traverser ly = labels.upperLeft();
 
     for (y = 0; y < h; ++y, ++sul.y, ++ly.y)
     {
-    SrcIterator sx = sul;
-    BasicImage<int>::traverser lx(ly);
+        SrcIterator sx = sul;
+        BasicImage<int>::traverser lx(ly);
 
-    for (x = 0; x < w; ++x, ++sx.x, ++lx.x)
-    {
-    int lab = *lx;
-    SrcType v = sa(sx);
+        for (x = 0; x < w; ++x, ++sx.x, ++lx.x)
+        {
+            int lab = *lx;
+            SrcType v = sa(sx);
 
-    if (isExtremum[lab] == 0)
-        continue;
+            if (isExtremum[lab] == 0)
+            continue;
 
-    if (!compare(v, threshold))
-    {
-    // mark all regions that don't exceed the threshold as non-extremum
-    isExtremum[lab] = 0;
-    continue;
-    }
+            if (!compare(v, threshold))
+            {
+                // mark all regions that don't exceed the threshold as non-extremum
+                isExtremum[lab] = 0;
+                continue;
+            }
 
-    AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
-    if (atBorder == NotAtBorder)
-    {
-    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-    NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
-    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
-    {
-    if (lab != *lc && compare(sa(sc), v))
-    {
-    isExtremum[lab] = 0;
-    break;
-    }
-    }
-    }
-    else
-    {
-    if (allowExtremaAtBorder)
-    {
-    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
-                sc(sx, atBorder), scend(sc);
-    do
-    {
-    if (lab != *(lx + sc.diff()) && compare(sa(sc), v))
-    {
-    isExtremum[lab] = 0;
-    break;
-    }
-    } while (++sc != scend);
-    }
-    else
-    {
-    isExtremum[lab] = 0;
-    }
-    }
-    }
+            AtImageBorder atBorder = isAtImageBorder(x, y, w, h);
+            if (atBorder == NotAtBorder)
+            {
+                NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
+                NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
+                for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
+                {
+                    if (lab != *lc && compare(sa(sc), v))
+                    {
+                        isExtremum[lab] = 0;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                if (allowExtremaAtBorder)
+                {
+                    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
+                    sc(sx, atBorder), scend(sc);
+                    do
+                    {
+                        if (lab != *(lx + sc.diff()) && compare(sa(sc), v))
+                        {
+                            isExtremum[lab] = 0;
+                            break;
+                        }
+                    } while (++sc != scend);
+                }
+                else
+                {
+                    isExtremum[lab] = 0;
+                }
+            }
+        }
     }
 
     ly = labels.upperLeft();
     for (y = 0; y < h; ++y, ++dul.y, ++ly.y)
     {
-    DestIterator xd = dul;
-    BasicImage<int>::Iterator lx(ly);
+        DestIterator xd = dul;
+        BasicImage<int>::Iterator lx(ly);
 
-    for (x = 0; x < w; ++x, ++xd.x, ++lx.x)
-    {
-    if (isExtremum[*lx])
-        da.set(marker, xd);
-    }
+        for (x = 0; x < w; ++x, ++xd.x, ++lx.x)
+        {
+            if (isExtremum[*lx])
+            da.set(marker, xd);
+        }
     }
 }
 
@@ -422,9 +422,9 @@ void extendedLocalMinMax3D(
     MultiArray<3, int> labels(shp);
 
     int number_of_regions =
-                labelVolume(sul, shp, sa, labels.traverser_begin(),
-                            typename AccessorTraits<int>::default_accessor(),
-                            neighbourhood);
+    labelVolume(sul, shp, sa, labels.traverser_begin(),
+    typename AccessorTraits<int>::default_accessor(),
+    neighbourhood);
 
     MultiArray<3, int>::traverser zl(labels.traverser_begin());
 
@@ -433,75 +433,75 @@ void extendedLocalMinMax3D(
 
     // assume that a region is a extremum until the opposite is proved
     std::vector<unsigned char> isExtremum(number_of_regions + 1,
-                (unsigned char) 1);
+    (unsigned char) 1);
 
     for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2(), ++zl.dim2())
     {
-    SrcIterator ys(zs);
-    DestIterator yd(zd);
-    MultiArray<3, int>::traverser yl(zl);
+        SrcIterator ys(zs);
+        DestIterator yd(zd);
+        MultiArray<3, int>::traverser yl(zl);
 
-    for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1(), ++yl.dim1())
-    {
-    SrcIterator xs(ys);
-    DestIterator xd(yd);
-    MultiArray<3, int>::traverser xl(yl);
+        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1(), ++yl.dim1())
+        {
+            SrcIterator xs(ys);
+            DestIterator xd(yd);
+            MultiArray<3, int>::traverser xl(yl);
 
-    for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
-    {
+            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
+            {
 
-    int lab = *xl;
-    SrcType v = sa(xs);
+                int lab = *xl;
+                SrcType v = sa(xs);
 
-    if (isExtremum[lab] == 0)
-        continue;
+                if (isExtremum[lab] == 0)
+                continue;
 
-    if (!compare(v, threshold))
-    {
-    // mark all regions that don't exceed the threshold as non-extremum
-    isExtremum[lab] = 0;
-    continue;
-    }
+                if (!compare(v, threshold))
+                {
+                    // mark all regions that don't exceed the threshold as non-extremum
+                    isExtremum[lab] = 0;
+                    continue;
+                }
 
-    AtVolumeBorder atBorder = isAtVolumeBorder(x, y, z, w, h, d);
-    if (atBorder == NotAtBorder)
-    {
+                AtVolumeBorder atBorder = isAtVolumeBorder(x, y, z, w, h, d);
+                if (atBorder == NotAtBorder)
+                {
 
-    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(xs);
-    NeighborhoodCirculator<MultiArray<3, int>::traverser, Neighborhood> lc(xl);
-    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
-    {
+                    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(xs);
+                    NeighborhoodCirculator<MultiArray<3, int>::traverser, Neighborhood> lc(xl);
+                    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
+                    {
 
-    if (lab != *lc && compare(sa(sc), v))
-    {
+                        if (lab != *lc && compare(sa(sc), v))
+                        {
 
-    isExtremum[lab] = 0;
-    break;
-    }
-    }
-    }
-    else
-    {
-    if (allowExtremaAtBorder)
-    {
-    RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
-                sc(xs, atBorder), scend(sc);
-    do
-    {
-    if (lab != *(xl + sc.diff()) && compare(sa(sc), v))
-    {
-    isExtremum[lab] = 0;
-    break;
-    }
-    } while (++sc != scend);
-    }
-    else
-    {
-    isExtremum[lab] = 0;
-    }
-    }
-    }
-    }
+                            isExtremum[lab] = 0;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    if (allowExtremaAtBorder)
+                    {
+                        RestrictedNeighborhoodCirculator<SrcIterator, Neighborhood>
+                        sc(xs, atBorder), scend(sc);
+                        do
+                        {
+                            if (lab != *(xl + sc.diff()) && compare(sa(sc), v))
+                            {
+                                isExtremum[lab] = 0;
+                                break;
+                            }
+                        } while (++sc != scend);
+                    }
+                    else
+                    {
+                        isExtremum[lab] = 0;
+                    }
+                }
+            }
+        }
     }
 
     zl = labels.traverser_begin();
@@ -510,23 +510,23 @@ void extendedLocalMinMax3D(
 
     for (z = 0; z != d; ++z, ++zs.dim2(), ++zd.dim2(), ++zl.dim2())
     {
-    SrcIterator ys(zs);
-    DestIterator yd(zd);
-    MultiArray<3, int>::traverser yl(zl);
+        SrcIterator ys(zs);
+        DestIterator yd(zd);
+        MultiArray<3, int>::traverser yl(zl);
 
-    for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1(), ++yl.dim1())
-    {
-    SrcIterator xs(ys);
-    DestIterator xd(yd);
-    MultiArray<3, int>::traverser xl(yl);
+        for (y = 0; y != h; ++y, ++ys.dim1(), ++yd.dim1(), ++yl.dim1())
+        {
+            SrcIterator xs(ys);
+            DestIterator xd(yd);
+            MultiArray<3, int>::traverser xl(yl);
 
-    for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
-    {
+            for (x = 0; x != w; ++x, ++xs.dim0(), ++xd.dim0(), ++xl.dim0())
+            {
 
-    if (isExtremum[*xl])
-        da.set(marker, xd);
-    }
-    }
+                if (isExtremum[*xl])
+                da.set(marker, xd);
+            }
+        }
     }
 
 }
@@ -557,53 +557,53 @@ void extendedLocalMinMaxOld(
     BasicImage<int> labels(w, h);
 
     int number_of_regions = labelImage(sul, slr, sa, labels.upperLeft(),
-                labels.accessor(), (Neighborhood::DirectionCount == 8), equal);
+    labels.accessor(), (Neighborhood::DirectionCount == 8), equal);
 
     // assume that a region is a extremum until the opposite is proved
     std::vector<unsigned char> isExtremum(number_of_regions + 1,
-                (unsigned char) 1);
+    (unsigned char) 1);
 
     BasicImage<int>::traverser ly = labels.upperLeft();
 
     for (y = 0; y < h; ++y, ++sul.y, ++ly.y)
     {
-    SrcIterator sx = sul;
-    BasicImage<int>::traverser lx(ly);
+        SrcIterator sx = sul;
+        BasicImage<int>::traverser lx(ly);
 
-    for (x = 0; x < w; ++x, ++sx.x, ++lx.x)
-    {
-    int lab = *lx;
-    SrcType v = sa(sx);
-    if (x == 0 || y == 0 || x == w - 1 || y == h - 1 || !compare(v, threshold))
-    {
-    // mark all regions that touch the image border as non-extremum
-    // likewise for all pixels that don't exceed the threshold
-    isExtremum[lab] = 0;
-    continue;
-    }
+        for (x = 0; x < w; ++x, ++sx.x, ++lx.x)
+        {
+            int lab = *lx;
+            SrcType v = sa(sx);
+            if (x == 0 || y == 0 || x == w - 1 || y == h - 1 || !compare(v, threshold))
+            {
+                // mark all regions that touch the image border as non-extremum
+                // likewise for all pixels that don't exceed the threshold
+                isExtremum[lab] = 0;
+                continue;
+            }
 
-    NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-    NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
-    for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
-    {
-    if (lab != *lc && compare(sa(sc), v))
-        isExtremum[lab] = 0;
-    }
+            NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
+            NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
+            for (i = 0; i < Neighborhood::DirectionCount; ++i, ++sc, ++lc)
+            {
+                if (lab != *lc && compare(sa(sc), v))
+                isExtremum[lab] = 0;
+            }
 
-    }
+        }
     }
 
     ly = labels.upperLeft();
     for (y = 0; y < h; ++y, ++dul.y, ++ly.y)
     {
-    DestIterator xd = dul;
-    BasicImage<int>::Iterator lx(ly);
+        DestIterator xd = dul;
+        BasicImage<int>::Iterator lx(ly);
 
-    for (x = 0; x < w; ++x, ++xd.x, ++lx.x)
-    {
-    if (isExtremum[*lx])
-        da.set(marker, xd);
-    }
+        for (x = 0; x < w; ++x, ++xd.x, ++lx.x)
+        {
+            if (isExtremum[*lx])
+            da.set(marker, xd);
+        }
     }
 }
 
@@ -630,7 +630,7 @@ void extendedLocalMinMaxOld(
  */
 class LocalMinmaxOptions
 {
-public:
+  public:
     double marker, thresh;
     int neigh;
     bool use_threshold, allow_at_border, allow_plateaus;
@@ -743,26 +743,26 @@ public:
 
  pass image iterators explicitly:
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor>
- void
- localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
- DestIterator dul, DestAccessor da,
- LocalMinmaxOptions const & options = LocalMinmaxOptions());
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    void
+    localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                DestIterator dul, DestAccessor da,
+                LocalMinmaxOptions const & options = LocalMinmaxOptions());
+    }
  \endcode
 
  use argument objects in conjunction with \ref ArgumentObjectFactories :
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor>
- void
- localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
- pair<DestIterator, DestAccessor> dest,
- LocalMinmaxOptions const & options = LocalMinmaxOptions());
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    void
+    localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                pair<DestIterator, DestAccessor> dest,
+                LocalMinmaxOptions const & options = LocalMinmaxOptions());
+    }
  \endcode
 
  <b> Usage:</b>
@@ -830,47 +830,51 @@ inline void localMinima(
     typedef typename DestAccessor::value_type DestType;
 
     SrcType threshold = options.use_threshold ? std::min(
-                NumericTraits<SrcType>::max(), (SrcType) options.thresh)
-                : NumericTraits<SrcType>::max();
+    NumericTraits<SrcType>::max(), (SrcType) options.thresh)
+    : NumericTraits<SrcType>::max();
     DestType marker = (DestType) options.marker;
 
     if (options.allow_plateaus)
     {
-    if (options.neigh == 0 || options.neigh == 4)
-    {
-    detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
-                FourNeighborCode(), std::less<SrcType>(),
-                std::equal_to<SrcType>(), threshold, options.allow_at_border);
-    }
-    else if (options.neigh == 1 || options.neigh == 8)
-    {
-    detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
-                EightNeighborCode(), std::less<SrcType>(), std::equal_to<
-                            SrcType>(), threshold, options.allow_at_border);
-    }
-    else
-        vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
+        if (options.neigh == 0 || options.neigh == 4)
+        {
+            detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
+                                        FourNeighborCode(), std::less<SrcType>(),
+                                        std::equal_to<SrcType>(), threshold, 
+                                        options.allow_at_border);
+        }
+        else if (options.neigh == 1 || options.neigh == 8)
+        {
+            detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
+                                        EightNeighborCode(), std::less<SrcType>(), 
+                                        std::equal_to<SrcType>(), threshold, 
+                                        options.allow_at_border);
+        }
+        else
+            vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
 
     }
     else
     {
-    if (options.neigh == 0 || options.neigh == 4)
-    {
-    detail::localMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
-                threshold, std::less<SrcType>(), options.allow_at_border);
-    }
-    else if (options.neigh == 1 || options.neigh == 8)
-    {
-    detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
-                threshold, std::less<SrcType>(), options.allow_at_border);
-    }
-    else
-        vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
+        if (options.neigh == 0 || options.neigh == 4)
+        {
+            detail::localMinMax(sul, slr, sa, dul, da, marker, 
+                                FourNeighborCode(), threshold, std::less<SrcType>(), 
+                                options.allow_at_border);
+        }
+        else if (options.neigh == 1 || options.neigh == 8)
+        {
+            detail::localMinMax(sul, slr, sa, dul, da, marker, 
+                                EightNeighborCode(), threshold, std::less<SrcType>(), 
+                                options.allow_at_border);
+        }
+        else
+            vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
     }
 }
 
 template<class SrcIterator, class SrcAccessor, class DestIterator,
-            class DestAccessor, class DestValue>
+         class DestAccessor, class DestValue>
 inline void localMinima(
             SrcIterator sul,
             SrcIterator slr,
@@ -973,7 +977,7 @@ inline void localMinima(
  By default, minima are defined as points which are not
  at the array border and whose value is lower than the value
  of all indirect neighbors.
- The detected points will be marked.
+ The detected points will be marked. See localMinima() for more details.
 
  */
 doxygen_overloaded_function(template <...> void localMinima3D)
@@ -1081,26 +1085,26 @@ inline void localMinima3D(
 
  pass image iterators explicitly:
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor>
- void
- localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
- DestIterator dul, DestAccessor da,
- LocalMinmaxOptions const & options = LocalMinmaxOptions());
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    void
+    localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                DestIterator dul, DestAccessor da,
+                LocalMinmaxOptions const & options = LocalMinmaxOptions());
+    }
  \endcode
 
  use argument objects in conjunction with \ref ArgumentObjectFactories :
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor>
- void
- localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
- pair<DestIterator, DestAccessor> dest,
- LocalMinmaxOptions const & options = LocalMinmaxOptions());
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor>
+    void
+    localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                pair<DestIterator, DestAccessor> dest,
+                LocalMinmaxOptions const & options = LocalMinmaxOptions());
+    }
  \endcode
 
  <b> Usage:</b>
@@ -1170,41 +1174,45 @@ inline void localMaxima(
     typedef typename DestAccessor::value_type DestType;
 
     SrcType threshold = options.use_threshold ? std::max(
-                NumericTraits<SrcType>::min(), (SrcType) options.thresh)
-                : NumericTraits<SrcType>::min();
+    NumericTraits<SrcType>::min(), (SrcType) options.thresh)
+    : NumericTraits<SrcType>::min();
     DestType marker = (DestType) options.marker;
 
     if (options.allow_plateaus)
     {
-    if (options.neigh == 0 || options.neigh == 4)
-    {
-    detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
-                FourNeighborCode(), std::greater<SrcType>(), std::equal_to<
-                            SrcType>(), threshold, options.allow_at_border);
-    }
-    else if (options.neigh == 1 || options.neigh == 8)
-    {
-    detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
-                EightNeighborCode(), std::greater<SrcType>(), std::equal_to<
-                            SrcType>(), threshold, options.allow_at_border);
-    }
-    else
-        vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
-    }
-    else
-    {
-    if (options.neigh == 0 || options.neigh == 4)
-    {
-    detail::localMinMax(sul, slr, sa, dul, da, marker, FourNeighborCode(),
-                threshold, std::greater<SrcType>(), options.allow_at_border);
-    }
-    else if (options.neigh == 1 || options.neigh == 8)
-    {
-    detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
-                threshold, std::greater<SrcType>(), options.allow_at_border);
+        if (options.neigh == 0 || options.neigh == 4)
+        {
+            detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
+                                        FourNeighborCode(), std::greater<SrcType>(), 
+                                        std::equal_to<SrcType>(), threshold, 
+                                        options.allow_at_border);
+        }
+        else if (options.neigh == 1 || options.neigh == 8)
+        {
+            detail::extendedLocalMinMax(sul, slr, sa, dul, da, marker,
+                                        EightNeighborCode(), std::greater<SrcType>(), 
+                                        std::equal_to<SrcType>(), threshold, 
+                                        options.allow_at_border);
+        }
+        else
+            vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
     }
     else
-        vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
+    {
+        if (options.neigh == 0 || options.neigh == 4)
+        {
+            detail::localMinMax(sul, slr, sa, dul, da, marker, 
+                                FourNeighborCode(), threshold, std::greater<SrcType>(), 
+                                options.allow_at_border);
+        }
+        else if (options.neigh == 1 || options.neigh == 8)
+        {
+            detail::localMinMax(sul, slr, sa, dul, da, marker, 
+                                EightNeighborCode(), threshold, std::greater<SrcType>(), 
+                                options.allow_at_border);
+        }
+        else
+            vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
     }
 }
 
@@ -1303,7 +1311,7 @@ inline void localMaxima(
 
 /********************************************************/
 /*                                                      */
-/*                       localMaxima3D        */
+/*                       localMaxima3D                  */
 /*                                                      */
 /********************************************************/
 
@@ -1312,7 +1320,7 @@ inline void localMaxima(
  By default, maxima are defined as points which are not
  at the array border and whose value is higher than the value
  of all indirect neighbors.
- The detected points will be marked as specified.
+ The detected points will be marked as specified. See localMaxima() for mor details.
  */
 doxygen_overloaded_function(template <...> void localMaxima3D)
 
@@ -1393,119 +1401,118 @@ inline void localMaxima3D(
 
 /** \brief Find local minimal regions in an image .
 
- This function finds regions of uniform pixel value
- whose neighboring regions are all have smaller values
- (minimal plateaus of arbitrary size). By default, the pixels
- in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
- with tolerance, one can allow for plateaus that are not quite constant
- (this is often necessary with float pixel values). Pass
- \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode
- to determine the neighborhood where pixel values are compared.
+    This function finds regions of uniform pixel value
+    whose neighboring regions are all have smaller values
+    (minimal plateaus of arbitrary size). By default, the pixels
+    in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
+    with tolerance, one can allow for plateaus that are not quite constant
+    (this is often necessary with float pixel values). Pass
+    \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode
+    to determine the neighborhood where pixel values are compared.
 
- Minimal regions are
- marked in the destination image with the given marker value
- (default is 1), all other destination pixels remain unchanged.
- <TT>SrcAccessor::value_type</TT> must be equality-comparable and
- less-comparable. A pixel or region touching the image border will
- never be marked as minimum or minimal plateau. Use localMinima() with the
- appropriate options if you need that functionality. Likewise if you want to
- apply a threshold onl the fly. In fact, all functionality
- except for 'equality with tolerance' can be accessed via that function in
- a more readable way, so localMinima() should be preferred.
- The function uses accessors.
+    Minimal regions are
+    marked in the destination image with the given marker value
+    (default is 1), all other destination pixels remain unchanged.
+    <TT>SrcAccessor::value_type</TT> must be equality-comparable and
+    less-comparable. A pixel or region touching the image border will
+    never be marked as minimum or minimal plateau. Use localMinima() with the
+    appropriate options if you need that functionality. Likewise if you want to
+    apply a threshold onl the fly. In fact, all functionality
+    except for 'equality with tolerance' can be accessed via that function in
+    a more readable way, so localMinima() should be preferred.
+    The function uses accessors.
 
- <b> Declarations:</b>
+    <b> Declarations:</b>
 
 
- pass image iterators explicitly:
- \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor,
- class DestValue = DestAccessor::value_type,
- class Neighborhood = EightNeighborCode,
- class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
- void
- extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
- DestIterator dul, DestAccessor da,
- DestValue marker = NumericTraits<DestValue>::one(),
- Neighborhood neighborhood = EightNeighborCode(),
- EqualityFunctor equal = EqualityFunctor());
- }
- \endcode
+    pass image iterators explicitly:
+    \code
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DestValue = DestAccessor::value_type,
+              class Neighborhood = EightNeighborCode,
+              class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+    void
+    extendedLocalMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                        DestIterator dul, DestAccessor da,
+                        DestValue marker = NumericTraits<DestValue>::one(),
+                        Neighborhood neighborhood = EightNeighborCode(),
+                        EqualityFunctor equal = EqualityFunctor());
+    }
+    \endcode
 
- use argument objects in conjunction with \ref ArgumentObjectFactories :
- \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor,
- class DestValue = DestAccessor::value_type,
- class Neighborhood = EightNeighborCode,
- class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
- void
- extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
- pair<DestIterator, DestAccessor> dest,
- DestValue marker = NumericTraits<DestValue>::one(),
- Neighborhood neighborhood = EightNeighborCode(),
- EqualityFunctor equal = EqualityFunctor());
- }
- \endcode
+    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DestValue = DestAccessor::value_type,
+              class Neighborhood = EightNeighborCode,
+              class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+    void
+    extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        DestValue marker = NumericTraits<DestValue>::one(),
+                        Neighborhood neighborhood = EightNeighborCode(),
+                        EqualityFunctor equal = EqualityFunctor());
+    }
+    \endcode
 
- <b> Usage:</b>
+    <b> Usage:</b>
 
- <b>\#include</b> \<vigra/localminmax.hxx\><br>
- Namespace: vigra
+    <b>\#include</b> \<vigra/localminmax.hxx\><br>
+    Namespace: vigra
 
- \code
+    \code
+    // optional: define an equality functor
+    template <class T>
+    struct EqualWithToleranceFunctor
+    {
+        EqualWithToleranceFunctor(T tolerance)
+        : t(tolerance)
+        {}
 
- // optional: define an equality functor
- template <class T>
- struct EqualWithToleranceFunctor
- {
- EqualWithToleranceFunctor(T tolerance)
- : t(tolerance)
- {}
+        bool operator()(T l, T r) const
+        {
+            return vigra::abs(l-r) <= t;
+        }
 
- bool operator()(T l, T r) const
- {
- return vigra::abs(l-r) <= t;
- }
+        T t;
+    };
 
- T t;
- };
+    vigra::BImage src(w,h), minima(w,h);
 
- vigra::BImage src(w,h), minima(w,h);
+    // init destiniation image
+    minima.init(0);
 
- // init destiniation image
- minima.init(0);
+    vigra::extendedLocalMinima(srcImageRange(src), destImage(minima));
 
- vigra::extendedLocalMinima(srcImageRange(src), destImage(minima));
+    // allow plateaus with tolerance
+    minima.init(0);
+    vigra::extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
+    EqualWithToleranceFunctor<unsigned char>(1));
+    \endcode
 
- // allow plateaus with tolerance
- minima.init(0);
- vigra::extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
- EqualWithToleranceFunctor<unsigned char>(1));
- \endcode
+    <b> Required Interface:</b>
 
- <b> Required Interface:</b>
+    \code
+    SrcImageIterator src_upperleft, src_lowerright;
+    DestImageIterator dest_upperleft;
 
- \code
- SrcImageIterator src_upperleft, src_lowerright;
- DestImageIterator dest_upperleft;
+    SrcAccessor src_accessor;
+    DestAccessor dest_accessor;
 
- SrcAccessor src_accessor;
- DestAccessor dest_accessor;
+    SrcAccessor::value_type u = src_accessor(src_upperleft);
 
- SrcAccessor::value_type u = src_accessor(src_upperleft);
+    EqualityFunctor equal;
+    u == u
+    equal(u, u);
+    u < u
 
- EqualityFunctor equal;
- u == u
- equal(u, u);
- u < u
-
- DestValue marker;
- dest_accessor.set(marker, dest_upperleft);
- \endcode
+    DestValue marker;
+    dest_accessor.set(marker, dest_upperleft);
+    \endcode
 
  */
 doxygen_overloaded_function(template <...> void extendedLocalMinima)
@@ -1624,7 +1631,7 @@ inline void extendedLocalMinima(
 
 /********************************************************/
 /*                                                      */
-/*                 extendedLocalMinima3D                  */
+/*                 extendedLocalMinima3D                */
 /*                                                      */
 /********************************************************/
 
@@ -1636,10 +1643,9 @@ inline void extendedLocalMinima(
  in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
  with tolerance, one can allow for plateaus that are not quite constant
  (this is often necessary with float pixel values). Pass the neighborhood
- where pixel values are compared.
+ where pixel values are compared. See extendedLocalMinima() for more details.
 
- */
-
+*/
 doxygen_overloaded_function(template <...> void extendedLocalMinima3D)
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1739,36 +1745,36 @@ inline void extendedLocalMinima3D(
 
  pass image iterators explicitly:
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor,
- class DestValue = DestAccessor::value_type,
- class Neighborhood = EightNeighborCode,
- class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
- void
- extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
- DestIterator dul, DestAccessor da,
- DestValue marker = NumericTraits<DestValue>::one(),
- Neighborhood neighborhood = EightNeighborCode(),
- EqualityFunctor equal = EqualityFunctor())
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DestValue = DestAccessor::value_type,
+              class Neighborhood = EightNeighborCode,
+              class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+    void
+    extendedLocalMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                        DestIterator dul, DestAccessor da,
+                        DestValue marker = NumericTraits<DestValue>::one(),
+                        Neighborhood neighborhood = EightNeighborCode(),
+                        EqualityFunctor equal = EqualityFunctor()),
+    }
  \endcode
 
  use argument objects in conjunction with \ref ArgumentObjectFactories :
  \code
- namespace vigra {
- template <class SrcIterator, class SrcAccessor,
- class DestIterator, class DestAccessor,
- class DestValue = DestAccessor::value_type,
- class Neighborhood = EightNeighborCode,
- class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
- void
- extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
- pair<DestIterator, DestAccessor> dest,
- DestValue marker = NumericTraits<DestValue>::one(),
- Neighborhood neighborhood = EightNeighborCode(),
- EqualityFunctor equal = EqualityFunctor())
- }
+    namespace vigra {
+    template <class SrcIterator, class SrcAccessor,
+              class DestIterator, class DestAccessor,
+              class DestValue = DestAccessor::value_type,
+              class Neighborhood = EightNeighborCode,
+              class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+    void
+    extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        DestValue marker = NumericTraits<DestValue>::one(),
+                        Neighborhood neighborhood = EightNeighborCode(),
+                        EqualityFunctor equal = EqualityFunctor()),
+    }
  \endcode
 
  <b> Usage:</b>
@@ -1782,16 +1788,16 @@ inline void extendedLocalMinima3D(
  template <class T>
  struct EqualWithToleranceFunctor
  {
- EqualWithToleranceFunctor(T tolerance)
- : t(tolerance)
- {}
+     EqualWithToleranceFunctor(T tolerance)
+     : t(tolerance)
+     {}
 
- bool operator()(T l, T r) const
- {
- return vigra::abs(l-r) <= t;
- }
+     bool operator()(T l, T r) const
+     {
+         return vigra::abs(l-r) <= t;
+     }
 
- T t;
+     T t;
  };
 
  vigra::BImage src(w,h), maxima(w,h);
@@ -1959,7 +1965,7 @@ inline void extendedLocalMaxima(
 
 /********************************************************/
 /*                                                      */
-/*                 extendedLocalMaxima3D                  */
+/*                 extendedLocalMaxima3D                */
 /*                                                      */
 /********************************************************/
 
@@ -1971,7 +1977,7 @@ inline void extendedLocalMaxima(
  in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
  with tolerance, one can allow for plateaus that are not quite constant
  (this is often necessary with float pixel values). Pass
- the neighborhood where pixel values are compared.
+ the neighborhood where pixel values are compared. See extendedLocalMaxima() for more details.
  */
 
 doxygen_overloaded_function(template <...> void extendedLocalMaxima3D)
