@@ -466,10 +466,11 @@ class HDF5File
   private:
     HDF5Handle fileHandle_;
 
-
     // current group handle
     HDF5Handle cGroupHandle_;
 
+    // time tagging of datasets, turned off (= 0) by default.
+    int track_time;
 
     // datastructure to hold a list of dataset and group names
     struct lsOpData
@@ -519,7 +520,8 @@ class HDF5File
     Creates or opens HDF5 file at position filename. The current group is set
     to "/".
     */
-    HDF5File(std::string filename, OpenMode mode)
+    HDF5File(std::string filename, OpenMode mode, int track_creation_times = 0)
+        : track_time(track_creation_times)
     {
         std::string errorMessage = "HDF5File: Could not create file '" + filename + "'.";
         fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
@@ -1396,6 +1398,9 @@ class HDF5File
         HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::createDataset(): unable to create property list." );
         H5Pset_fill_value(plist,detail::getH5DataType<T>(), &init);
 
+        // turn off time tagging of datasets by default.
+        H5Pset_obj_track_times(plist, track_time);
+
         // enable chunks
         if(chunkSize[0] > 0)
         {
@@ -1887,6 +1892,9 @@ class HDF5File
 
         // set up properties list
         HDF5Handle plist ( H5Pcreate(H5P_DATASET_CREATE), &H5Pclose, "HDF5File::write(): unable to create property list." );
+
+        // turn off time tagging of datasets by default.
+        H5Pset_obj_track_times(plist, track_time);
 
         // enable chunks
         if(chunkSize[0] > 0)
