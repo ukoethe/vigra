@@ -425,7 +425,9 @@ void extendedLocalMinMax3D(
     labelVolume(sul, shp, sa, labels.traverser_begin(),
     typename AccessorTraits<int>::default_accessor(),
     neighbourhood);
-
+    
+   
+    
     MultiArray<3, int>::traverser zl(labels.traverser_begin());
 
     SrcIterator zs = sul;

@@ -910,6 +910,32 @@ struct LocalMinMaxTest
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
     }
+    
+        void extendedLocalMinimum3DTest2()
+    {
+        Volume res(vol);
+        res.init(0);
+
+        extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
+
+        Volume desired(vol);
+        desired.init(0);
+
+        desired(7,7,7)=1;
+        desired(7,1,15)=1;
+        desired(7,1,19)=1;
+
+        desired(3,15,26)=1; //plateaux
+        desired(3,15,27)=1;
+        desired(3,15,28)=1;
+        desired(3,16,26)=1;
+
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
+
+    }
 
     void localMaximum3DTest()
     {
@@ -936,6 +962,29 @@ struct LocalMinMaxTest
         res.init(0);
 
         extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+
+        Volume desired(vol);
+        desired.init(0);
+
+        desired(1,1,1)=1;
+        desired(5,5,5)=1;
+
+        desired(8,3,5)=1;
+        desired(8,4,5)=1;
+        desired(8,5,5)=1;
+
+        for(int z=0; z<vol.shape(2); ++z)
+            for(int y=0; y<vol.shape(1); ++y)
+                for(int x=0; x<vol.shape(0); ++x)
+                    shouldEqual(res(x,y,z), desired(x,y,z));
+    }
+    
+        void extendedLocalMaximum3DTest2()
+    {
+        Volume res(vol);
+        res.init(0);
+
+        extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
 
         Volume desired(vol);
         desired.init(0);
@@ -2155,6 +2204,8 @@ struct SimpleAnalysisTestSuite
 
         add( testCase( &LocalMinMaxTest::extendedLocalMaximum3DTest));
         add( testCase( &LocalMinMaxTest::extendedLocalMinimum3DTest));
+        add( testCase( &LocalMinMaxTest::extendedLocalMaximum3DTest2));
+        add( testCase( &LocalMinMaxTest::extendedLocalMinimum3DTest2));
         add( testCase( &LocalMinMaxTest::localMaximum3DTest));
         add( testCase( &LocalMinMaxTest::localMinimum3DTest));
 
