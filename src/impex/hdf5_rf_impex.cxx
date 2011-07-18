@@ -38,39 +38,36 @@
 #include "vigra/random_forest_hdf5_impex.hxx"
 #include "vigra/multi_array.hxx"
 #include <iostream>
-#include <cstring>
-#include <cstdio>
+#include <cstring> // rm...
+#include <cstdio> // rm...
+
+#include <string>
+#include <sstream>
+#include <iomanip>
 
 namespace vigra {
 
-namespace detail
-{
+namespace detail {
 
-int get_number_of_digits(int in)
+struct padded_number_string_data : public std::ostringstream
 {
-    int num = 0;
-    int i = 1; 
-    while(double(in) / double(i) >= 1)
-    {
-        i *= 10;
-        num += 1; 
-    }
-    if(num == 0)
-        num = 1;
-    return num; 
+    unsigned w;
+};
+padded_number_string::padded_number_string(int n)
+    : padded_number(new padded_number_string_data())
+{
+    (*padded_number) << (n - 1);
+    padded_number->w = padded_number->str().size();
 }
-
-std::string make_padded_number(int number, int max_number)
+std::string padded_number_string::operator()(int k) const
 {
-    int max_digit_ct = get_number_of_digits(max_number);
-    char buffer [50];
-    std::sprintf(buffer, "%d", number);
-    std::string padding = "";
-    std::string numeral = buffer;
-    int digit_ct = get_number_of_digits(number); 
-    for(int gg = 0; gg < max_digit_ct - digit_ct; ++ gg)
-        padding = padding + "0";
-    return padding + numeral;
+    padded_number->str("");
+    (*padded_number) << std::setw(padded_number->w) << std::setfill('0') << k;
+    return padded_number->str();
+}
+padded_number_string::~padded_number_string()
+{
+    delete padded_number;
 }
 
 MyT::type type_of_hid_t(hid_t group_id, std::string name)
@@ -152,25 +149,12 @@ void options_import_HDF5(hid_t & group_id,
     H5Gclose(opt_id);
 }
 
-void options_export_HDF5(hid_t & group_id, 
-                             RandomForestOptions const & opt, 
-                             std::string name)
+void options_export_HDF5(HDF5File & h5context, RandomForestOptions const & opt,
+                         std::string name)
 {
-    hid_t opt_id = H5Gcreate(group_id, name.c_str(), 
-                                           H5P_DEFAULT, 
-                                           H5P_DEFAULT, 
-                                        H5P_DEFAULT);
-    vigra_postcondition(opt_id >= 0, 
-                        "problemspec_export_HDF5():"
-                        " Unable to create external opteters");
-
-    //get a map containing all the double fields
-    std::map<std::string, ArrayVector<double> > serialized_opt;
-    opt.make_map(serialized_opt);
-    std::map<std::string, ArrayVector<double> >::iterator iter;
-    for(iter = serialized_opt.begin(); iter != serialized_opt.end(); ++iter)
-        write_array_2_hdf5(opt_id, iter->second, iter->first, H5T_NATIVE_DOUBLE);
-    H5Gclose(opt_id);
+    h5context.cd_mk(name);
+    rf_export_map_to_HDF5(h5context, opt);
+    h5context.cd_up();
 }
 
 void dt_import_HDF5(    hid_t & group_id,
@@ -198,41 +182,20 @@ void dt_import_HDF5(    hid_t & group_id,
     H5Gclose(tree_id);
 }
 
-
-void dt_export_HDF5(    hid_t & group_id,
-                            detail::DecisionTree const & tree,
-                            std::string name)
+void dt_export_HDF5(HDF5File & h5context,
+                    detail::DecisionTree const & tree,
+                    std::string name)
 {
-    //check if ext_param was written and write it if not
-    hid_t e_id = H5Gopen (group_id, 
-                          "_ext_param", 
-                          H5P_DEFAULT);
-       if(e_id < 0)
-    {
-        problemspec_export_HDF5(group_id,
-                                tree.ext_param_, 
-                                "_ext_param"); 
-    }
-    else H5Gclose(e_id);
-    
-    //make the folder for the tree.
-    hid_t tree_id =    H5Gcreate(group_id, name.c_str(), 
-                                           H5P_DEFAULT, 
-                                           H5P_DEFAULT, 
-                                        H5P_DEFAULT);
-    //write down topology
-    write_array_2_hdf5(tree_id, 
-                       tree.topology_, 
-                       "topology", 
-                       H5T_NATIVE_INT);
-    //write down parameters
-    write_array_2_hdf5(tree_id, 
-                       tree.parameters_, 
-                       "parameters", 
-                       H5T_NATIVE_DOUBLE);
-    H5Gclose(tree_id);
+    // make the folder for the tree.
+    h5context.cd_mk(name);
+    // write down topology
+    h5context.write("topology", tree.topology_);
+    // write down parameters
+    h5context.write("parameters", tree.parameters_);
+    h5context.cd_up();
 }
 
-}} // namespace vigra::detail
+} // namespace detail
+} // namespace vigra
 
 #endif // HasHDF5

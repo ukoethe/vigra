@@ -148,61 +148,6 @@ bool find_groups_hdf5(std::string filename,
     return res; 
 }
 
-template<class X>
-static herr_t
-my_H5LTmake_dataset(const X & x, hid_t loc_id, const char *dset_name, int rank,
-                     const hsize_t *dims, hid_t tid, const void *data)
-{
-    if (data == 0)
-        return 0; 
-
-    // create dataspace
-    HDF5Handle sid(H5Screate_simple(rank, dims, NULL), &H5Sclose,
-                   "(): unable to create dataspace for scalar data.");
-
-    // plist :-/
-    HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose,
-                     "(): unable to create property list.");
-
-    // turn off time tagging of datasets.
-    H5Pset_obj_track_times(plist, 0);
-
-   // create dataset
-    HDF5Handle did(H5Dcreate(loc_id, dset_name, tid, sid,
-                             H5P_DEFAULT, plist, H5P_DEFAULT),
-                   &H5Dclose, "(): unable to create dataset.");
-
-    return H5Dwrite(did, tid, H5S_ALL, H5S_ALL, H5P_DEFAULT, data);
-
-}
-
-
-VIGRA_EXPORT int get_number_of_digits(int in);
-
-VIGRA_EXPORT std::string make_padded_number(int number, int max_number);
-
-/** write an ArrayVector to an hdf5 dataset.
- */
-template<class U, class T>
-void write_array_2_hdf5(hid_t & id, 
-                        ArrayVector<U> const & arr, 
-                        std::string    const & name, 
-                        T  type) 
-{
-    hsize_t size = arr.size(); 
-    vigra_postcondition(my_H5LTmake_dataset (arr, 
-                                          id,
-                                          name.c_str(), 
-                                          1, 
-                                          &size, 
-                                          type, 
-                                          arr.begin()) 
-                        >= 0,
-                        "write_array_2_hdf5():"
-                        "unable to write dataset");
-}
-
-
 template<class U, class T>
 void write_hdf5_2_array(hid_t & id, 
                         ArrayVector<U>       & arr, 
@@ -243,16 +188,6 @@ inline void options_import_HDF5(hid_t & group_id,
                       serialized_options.end());
 }
 
-inline void options_export_HDF5(hid_t & group_id,
-                         RandomForestOptions const & opt, 
-                         std::string name)
-{
-    ArrayVector<double> serialized_options(opt.serialized_size());
-    opt.serialize(serialized_options.begin(),
-                  serialized_options.end());
-    write_array_2_hdf5(group_id, serialized_options,
-                      name, H5T_NATIVE_DOUBLE); 
-}
 */
 
 struct MyT
@@ -287,8 +222,8 @@ VIGRA_EXPORT void options_import_HDF5(hid_t & group_id,
                         RandomForestOptions  & opt, 
                         std::string name);
 
-VIGRA_EXPORT void options_export_HDF5(hid_t & group_id, 
-                         RandomForestOptions const & opt, 
+VIGRA_EXPORT void options_export_HDF5(HDF5File & h5context,
+                         RandomForestOptions const & opt,
                          std::string name);
 
 template<class T>
@@ -343,132 +278,88 @@ void problemspec_import_HDF5(hid_t & group_id,
         SOME_CASE(double,     DOUBLE);
         SOME_CASE(float,     FLOAT);
         default:
-            std::runtime_error("exportRF_HDF5(): unknown class type"); 
+            std::runtime_error("problemspec_import_HDF5(): unknown class type");
         #undef SOME_CASE
     }
     H5Gclose(param_id);
 }
 
+template<class X>
+void rf_export_map_to_HDF5(HDF5File & h5context, const X & param)
+{
+    typedef typename X::map_type map_type;
+    map_type serialized_param;
+    // get a map containing all the double fields
+    param.make_map(serialized_param);
+    typename map_type::const_iterator j;
+    for (j = serialized_param.begin(); j != serialized_param.end(); ++j)
+        h5context.write(j->first, j->second);
+}
+
 template<class T>
-void problemspec_export_HDF5(hid_t & group_id, 
-                             ProblemSpec<T> const & param, 
+void problemspec_export_HDF5(HDF5File & h5context, ProblemSpec<T> const & param,
                              std::string name)
 {
-    hid_t param_id = H5Gcreate(group_id, name.c_str(), 
-                                           H5P_DEFAULT, 
-                                           H5P_DEFAULT, 
-                                        H5P_DEFAULT);
-    vigra_postcondition(param_id >= 0, 
-                        "problemspec_export_HDF5():"
-                        " Unable to create external parameters");
-
-    //get a map containing all the double fields
-    std::map<std::string, ArrayVector<double> > serialized_param;
-    param.make_map(serialized_param);
-    std::map<std::string, ArrayVector<double> >::iterator iter;
-    for(iter = serialized_param.begin(); iter != serialized_param.end(); ++iter)
-        write_array_2_hdf5(param_id, iter->second, iter->first, H5T_NATIVE_DOUBLE);
-    
-    //save class_labels
-    switch(type_of(param.classes[0]))
-    {
-        #define SOME_CASE(type) \
-        case MyT::type:\
-            write_array_2_hdf5(param_id, param.classes, "labels", H5T_NATIVE_##type);\
-            break;
-        SOME_CASE(UINT8);
-        SOME_CASE(UINT16);
-        SOME_CASE(UINT32);
-        SOME_CASE(UINT64);
-        SOME_CASE(INT8);
-        SOME_CASE(INT16);
-        SOME_CASE(INT32);
-        SOME_CASE(INT64);
-        SOME_CASE(DOUBLE);
-        SOME_CASE(FLOAT);
-        default:
-            std::runtime_error("exportRF_HDF5(): unknown class type"); 
-        #undef SOME_CASE
-    }
-    H5Gclose(param_id);
+    h5context.cd_mk(name);
+    rf_export_map_to_HDF5(h5context, param);
+    h5context.write("labels", param.classes);
+    h5context.cd_up();
 }
 
 VIGRA_EXPORT void dt_import_HDF5(hid_t & group_id,
                     detail::DecisionTree & tree,
                     std::string name);
 
-
-VIGRA_EXPORT void dt_export_HDF5(hid_t & group_id,
+VIGRA_EXPORT void dt_export_HDF5(HDF5File & h5context,
                     detail::DecisionTree const & tree,
                     std::string name);
                     
-} //namespace detail
+struct padded_number_string_data;
+class VIGRA_EXPORT padded_number_string
+{
+private:
+    padded_number_string_data* padded_number;
+protected:
+    padded_number_string(const padded_number_string &);
+    void operator=(const padded_number_string &);
+public:
+    padded_number_string(int n);
+    std::string operator()(int k) const;
+    ~padded_number_string();
+};
+
+
+} // namespace detail
 
 template<class T, class Tag>
-bool rf_export_HDF5(RandomForest<T,Tag> const &rf,
-                    std::string filename, 
-                    std::string pathname = "",
-                    bool overwriteflag = false)
-{ 
-    using detail::make_padded_number;
-    using detail::options_export_HDF5;
-    using detail::problemspec_export_HDF5;
-    using detail::dt_export_HDF5;
-    
-    hid_t file_id;
-    //if file exists load it.
-    FILE* pFile = std::fopen ( filename.c_str(), "r" );
-    if ( pFile != NULL)
-    {    
-        std::fclose(pFile);
-        file_id = H5Fopen(filename.c_str(), H5F_ACC_RDWR, 
-                                                H5P_DEFAULT);
-    }
-    else
-    {
-		//create a new file.
-        file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 
-                                                    H5P_DEFAULT, 
-                                                    H5P_DEFAULT);
-	}
-    vigra_postcondition(file_id >= 0, 
-                        "rf_export_HDF5(): Unable to open file.");
-    //std::cerr << pathname.c_str()
+void rf_export_HDF5(RandomForest<T, Tag> const & rf,
+                    HDF5File & h5context,
+                    std::string pathname = "")
+{
+    if (pathname.size())
+        h5context.cd_mk(pathname);
 
-    //if the group already exists this will cause an error
-    //we will have to use the overwriteflag to check for 
-    //this, but i dont know how to delete groups...
-
-    hid_t group_id = pathname== "" ?
-                        file_id
-                    :    H5Gcreate(file_id, pathname.c_str(), 
-                                              H5P_DEFAULT, 
-                                              H5P_DEFAULT, 
-                                           H5P_DEFAULT);
-
-    vigra_postcondition(group_id >= 0, 
-                        "rf_export_HDF5(): Unable to create group");
-
-    //save serialized options
-        options_export_HDF5(group_id, rf.options(), "_options"); 
-    //save external parameters
-        problemspec_export_HDF5(group_id, rf.ext_param(), "_ext_param");
-    //save trees
-    
+    // save serialized options
+    detail::options_export_HDF5(h5context, rf.options(), "_options");
+    // save external parameters
+    detail::problemspec_export_HDF5(h5context, rf.ext_param(), "_ext_param");
+    // save trees
     int tree_count = rf.options_.tree_count_;
-    for(int ii = 0; ii < tree_count; ++ii)
-    {
-        std::string treename =     "Tree_"  + 
-                                make_padded_number(ii, tree_count -1);
-        dt_export_HDF5(group_id, rf.tree(ii), treename); 
-    }
-    
-    //clean up the mess
-    if(pathname != "")
-        H5Gclose(group_id);
-    H5Fclose(file_id);
+    detail::padded_number_string tree_number(tree_count);
+    for (int i = 0; i < tree_count; ++i)
+        detail::dt_export_HDF5(h5context, rf.tree(i), "Tree_" + tree_number(i));
 
-    return 1;
+    if (pathname.size())
+        h5context.cd_up();
+}
+
+template<class T, class Tag>
+void rf_export_HDF5(RandomForest<T, Tag> const & rf,
+                    std::string filename,
+                    std::string pathname = "")
+{
+    HDF5File h5context(filename , HDF5File::Open);
+    rf_export_HDF5(rf, h5context, pathname);
 }
 
 

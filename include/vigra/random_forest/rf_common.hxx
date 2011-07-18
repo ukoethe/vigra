@@ -200,6 +200,9 @@ class RandomForestOptions
     bool prepare_online_learning_;
     /*\}*/
 
+    typedef ArrayVector<double> double_array;
+    typedef std::map<std::string, double_array> map_type;
+
     int serialized_size() const
     {
         return 12;
@@ -287,7 +290,7 @@ class RandomForestOptions
         #undef PUSH
     }
     
-	void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+	void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -312,11 +315,11 @@ class RandomForestOptions
         #undef PULL
 		#undef PULLBOOL
     }
-    void make_map(std::map<std::string, ArrayVector<double> > & in) const
+    void make_map(map_type & in) const
     {
         typedef MultiArrayShape<2>::type Shp; 
-        #define PUSH(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_)); 
-        #define PUSHFUNC(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_!=0)); 
+        #define PUSH(item_, type_) in[#item_] = double_array(1, double(item_));
+        #define PUSHFUNC(item_, type_) in[#item_] = double_array(1, double(item_!=0));
         PUSH(training_set_proportion_,double);
         PUSH(training_set_size_, int);
         PUSH(mtry_, int);
@@ -540,6 +543,8 @@ public:
 
     typedef LabelType       Label_t;
     ArrayVector<Label_t>    classes;
+    typedef ArrayVector<double>                 double_array;
+    typedef std::map<std::string, double_array> map_type;
 
     int                     column_count_;    // number of features
     int                     class_count_;     // number of classes
@@ -609,8 +614,6 @@ public:
     }
     #undef EQUALS
 
-    // for some reason the function below does not match
-    // the default copy constructor
     #define EQUALS(field) (this->field = rhs.field);
     ProblemSpec & operator=(ProblemSpec const & rhs)
     {
@@ -759,7 +762,7 @@ public:
         #undef PUSH
     }
 
-    void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+    void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -776,10 +779,10 @@ public:
         class_weights_ = in["class_weights_"];
         #undef PUSH
     }
-    void make_map(std::map<std::string, ArrayVector<double> > & in) const
+    void make_map(map_type & in) const
     {
         typedef MultiArrayShape<2>::type Shp; 
-        #define PUSH(item_) in[#item_] = ArrayVector<double>(1, double(item_)); 
+        #define PUSH(item_) in[#item_] = double_array(1, double(item_));
         PUSH(column_count_);
         PUSH(class_count_)
         PUSH(row_count_);

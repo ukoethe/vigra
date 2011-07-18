@@ -1037,6 +1037,27 @@ class HDF5File
     }
 
 
+    /** \brief Write array vectors.
+      
+      Compression can be activated by setting 
+      \code compression = parameter; // 0 \< parameter \<= 9 
+      \endcode
+      where 0 stands for no compression and 9 for maximum compression.
+
+      If the first character of datasetName is a "/", the path will be interpreted as absolute path,
+      otherwise it will be interpreted as path relative to the current group.
+     */
+    template<class T>
+    void write(const std::string & datasetName,
+                      const ArrayVectorView<T> & array,
+                      int compression = 0)
+    {
+        // convert to a (trivial) MultiArrayView and forward.
+        MultiArrayShape<1>::type shape(array.size());
+        const MultiArrayView<1, T> m_array(shape, const_cast<T*>(array.data()));
+        write(datasetName, m_array, compression);
+    }
+
 
     template<unsigned int N, class T, int SIZE>
     inline void writeBlock(std::string datasetName, typename MultiArrayShape<N>::type blockOffset, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array)
