@@ -1192,8 +1192,8 @@ class NeighborCode3D
                                   InFrontSouthWest,   InFrontSouth,  InFrontSouthEast,*/
 
                                   /*NorthWest,*/      North,         NorthEast,
-                                  West,
-                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
+                                  /* West, */
+                                  Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //27 - Nothin
                                 { Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error, Error},
             //28 - Nothin
