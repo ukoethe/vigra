@@ -1,6 +1,6 @@
 # - improved version of the reduced FIND_PACKAGE syntax
 #
-#  VIGRA_FIND_PACKAGE(package [[COMPONENTS] component1 ... ] [NAMES name1 ...])
+#  VIGRA_FIND_PACKAGE(package [VERSION_SPEC] [COMPONENTS component1 ... ] [NAMES name1 ...])
 #
 # FIND_PACKAGE is dangerous when custom search prefixes are added, because these 
 # prefixes are tried for includes and libraries independently. Thus, it may happen
@@ -15,7 +15,8 @@ MACRO(VIGRA_FIND_PACKAGE package)
     # parse the args
     set(COMPONENTS)
     set(NAMES)
-    set(v COMPONENTS)
+    set(VERSION_SPEC)
+    set(v VERSION_SPEC)
     foreach(i ${ARGN})
         if(${i} MATCHES "^COMPONENTS$")
             set(v COMPONENTS)
@@ -34,8 +35,14 @@ MACRO(VIGRA_FIND_PACKAGE package)
         SET(COMPONENTS COMPONENTS ${COMPONENTS})
     ENDIF()
     
-    MESSAGE(STATUS "Searching for ${package}")
-    FIND_PACKAGE(${package} ${COMPONENTS})
+    if(VERSION_SPEC)
+        set(VERSION_MESSAGE " (at least version ${VERSION_SPEC})")
+    else()
+        set(VERSION_MESSAGE)
+    endif()
+    
+    MESSAGE(STATUS "Searching for ${package}${VERSION_MESSAGE}")
+    FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
     
     foreach(path ${DEPENDENCY_SEARCH_PREFIX})
         if(NOT ${package}_FOUND)
@@ -49,8 +56,8 @@ MACRO(VIGRA_FIND_PACKAGE package)
             SET(${package}_INCLUDE_DIR ${package}_INCLUDE_DIR-NOTFOUND)
             SET(${package}_LIBRARIES ${package}_LIBRARIES-NOTFOUND)
             SET(${package}_LIBRARY ${package}_LIBRARY-NOTFOUND)
-            MESSAGE(STATUS "Searching for ${package} in ${path}")
-            FIND_PACKAGE(${package} ${COMPONENTS})
+            MESSAGE(STATUS "Searching for ${package}${VERSION_MESSAGE} in ${path}")
+            FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
             IF(${package} STREQUAL "Boost")
                 SET(BOOST_INCLUDEDIR)
                 SET(BOOST_LIBRARYDIR)
