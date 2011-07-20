@@ -259,7 +259,7 @@ public:
 /** \brief Argument object for the function readHDF5().
 
 See \ref readHDF5() for a usage example. This object must be
-used to read an image or array from a HDF5 file 
+used to read an image or array from an HDF5 file 
 and enquire about its properties.
 
 <b>\#include</b> \<vigra/hdf5impex.hxx\><br>
@@ -425,8 +425,15 @@ VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
 
 } // namespace detail
 
+// helper friend function for callback HDF5_ls_inserter_callback()
+void HDF5_ls_insert(void*, const std::string &);
+// callback function for ls(), called via HDF5File::H5Literate()
+// see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
+// for as to why.
 
-
+VIGRA_EXPORT extern "C"
+herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char *name,
+                            const H5L_info_t *info, void* operator_data);
 
 /********************************************************/
 /*                                                      */
@@ -472,35 +479,39 @@ class HDF5File
     // time tagging of datasets, turned off (= 0) by default.
     int track_time;
 
-    // datastructure to hold a list of dataset and group names
-    struct lsOpData
+    // helper class for ls()
+    struct ls_closure
     {
-        std::vector<std::string> objects;
+        virtual void insert(const std::string &) = 0;
+        virtual ~ls_closure() {}
+    };
+    // datastructure to hold a list of dataset and group names
+    struct lsOpData : public ls_closure
+    {
+        std::vector<std::string> & objects;
+        lsOpData(std::vector<std::string> & o) : objects(o) {}
+        void insert(const std::string & x)
+        {
+            objects.push_back(x);
+        }
+    };
+    // (associative-)container closure
+    template<class Container>
+    struct ls_container_data : public ls_closure
+    {
+        Container & objects;
+        ls_container_data(Container & o) : objects(o) {}
+        void insert(const std::string & x)
+        {
+            objects.insert(std::string(x));
+        }
     };
 
-
-    // operator function, used by H5Literate
-    static herr_t opFunc (hid_t loc_id, const char *name, const H5L_info_t *info, void *operator_data)
-    {
-        // get information about object
-        H5O_info_t      infobuf;
-        H5Oget_info_by_name (loc_id, name, &infobuf, H5P_DEFAULT);
-
-        // add name to list, if object is a dataset or a group
-        if(infobuf.type == H5O_TYPE_GROUP)
-        {
-            (*(struct lsOpData *) operator_data).objects.push_back(std::string(name)+"/");
-        }
-        if(infobuf.type == H5O_TYPE_DATASET)
-        {
-            (*(struct lsOpData *) operator_data).objects.push_back(std::string(name));
-        }
-
-        return 0;
-    }
-
-
   public:
+
+    // helper for callback HDF5_ls_inserter_callback(), used by ls()
+    friend void HDF5_ls_insert(void*, const std::string &);
+
     /** \brief Set how a file is opened.
       OpenMode::New creates a new file. If the file already exists, overwrite it.
 
@@ -515,7 +526,7 @@ class HDF5File
 
 
 
-    /** \brief Create a HDF5File object.
+    /** \brief Create an HDF5File object.
 
     Creates or opens HDF5 file at position filename. The current group is set
     to "/".
@@ -640,23 +651,49 @@ class HDF5File
         cGroupHandle_ = HDF5Handle(openCreateGroup_(groupName.c_str()),&H5Gclose,message.c_str());
     }
 
+    // helper function for the various ls() variants.
+    void ls_H5Literate(ls_closure & data)
+    {
+        H5Literate(cGroupHandle_, H5_INDEX_NAME, H5_ITER_NATIVE, NULL,
+                   HDF5_ls_inserter_callback, static_cast<void*>(&data));
+    }
 
-
-
-    /** \brief List the content of the current group.
-      The function returns a vector of strings holding the entries of the current
-      group. Only datasets and groups are listed, other objects (e.g. datatypes)
-      are ignored. Group names always have an ending "/".
+    /** \brief List the contents of the current group.
+      The function returns a vector of strings holding the entries of the
+      current group. Only datasets and groups are listed, other objects
+      (e.g. datatypes) are ignored. Group names always have an ending "/".
+     */
+    /** 
+     * 
      */
     inline std::vector<std::string> ls()
     {
-        lsOpData data;
-        H5Literate(cGroupHandle_,H5_INDEX_NAME,H5_ITER_NATIVE,NULL, &opFunc, (void *) &data);
-
-        return data.objects;
+        std::vector<std::string> list;
+        lsOpData data(list);
+        ls_H5Literate(data);
+        return list;
     }
 
-
+    /** \brief List the contents of the current group into a container-like
+               object via insert(). Only datasets and groups are inserted, other
+               objects (e.g., datatypes) are ignored. Group names always have an
+               ending "/".
+     */
+    /** List the contents of the current group into the argument cont
+     * (presumably an associative container) via cont.insert(std::string).
+     * No other member functions of cont will be called. 
+     * Only datasets and groups are listed, other objects (e.g., datatypes) are
+     * ignored. Group names always have an ending "/".
+     * \param cont      reference to container supplying a member function
+     *                  insert(const i_type &), where i_type is convertible
+     *                  to std::string.
+     */
+    template<class Container>
+    void ls(Container & cont)
+    {
+        ls_container_data<Container> data(cont);
+        ls_H5Literate(data);
+    }
 
 
     /** \brief Get the path of the current group.
@@ -667,16 +704,12 @@ class HDF5File
     }
 
 
-
-
     /** \brief Get the name of the associated file.
      */
     inline std::string filename()
     {
         return fileName_();
     }
-
-
 
 
     /** \brief Get the number of dimensions of a certain dataset
@@ -1136,7 +1169,7 @@ class HDF5File
 
 
 
-    // Reading dat
+    // Reading data
 
     /** \brief Read data into a multi array.
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -1182,11 +1215,49 @@ class HDF5File
         read_(datasetName, array, detail::getH5DataType<T>(), 1);
     }
 
+    /** \brief Read data into an array vector.
+      If the first character of datasetName is a "/", the path will be interpreted as absolute path,
+      otherwise it will be interpreted as path relative to the current group.
+     */
+    template<class T>
+    inline void read(const std::string & datasetName, ArrayVectorView<T> & array)
+    {
+        // convert to a (trivial) MultiArrayView and forward.
+        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayView<1, T> m_array(shape, (array.data()));
+        read(datasetName, m_array);
+    }
 
+    /** \brief Read data into an array vector. Resize the array vector to the correct size.
+      If the first character of datasetName is a "/", the path will be interpreted as absolute path,
+      otherwise it will be interpreted as path relative to the current group.
+     */
+    template<class T>
+    inline void readAndResize(std::string datasetName,
+                              ArrayVector<T> & array)
+    {
+        // make dataset name clean
+        datasetName = get_absolute_path(datasetName);
 
-    /** \brief Read a block of data into s multi array.
+        // get dataset dimension
+        ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
+        hssize_t dimensions = getDatasetDimensions(datasetName);
+
+        // check if dimensions are correct
+        vigra_precondition((1 ==  MultiArrayIndex(dimensions)),
+            "HDF5File::readAndResize(): Array dimension disagrees with Dataset dimension must equal one for vigra::ArrayVector.");
+        // resize target array vector
+        array.resize(dimshape[0]);
+        // convert to a (trivial) MultiArrayView and forward.
+        MultiArrayShape<1>::type shape(array.size());
+        MultiArrayView<1, T> m_array(shape, (array.data()));
+
+        read_(datasetName, m_array, detail::getH5DataType<T>(), 1);
+    }
+
+    /** \brief Read a block of data into a multi array.
       This function allows to read a small block out of a larger volume stored
-      in a HDF5 dataset.
+      in an HDF5 dataset.
 
       blockOffset determines the position of the block.
       blockSize determines the size in each dimension of the block.
@@ -2100,12 +2171,6 @@ class HDF5File
     }
 
 };  /* class HDF5File */
-
-
-
-
-
-
 
 namespace detail {
 
