@@ -324,6 +324,14 @@ namespace vigra {
         TIFFGetField( tiff, TIFFTAG_IMAGEWIDTH, &width );
         TIFFGetField( tiff, TIFFTAG_IMAGELENGTH, &height );
 
+        // check for tiled TIFFs
+        uint32 tileWidth, tileHeight;
+        if( TIFFGetField( tiff, TIFFTAG_TILEWIDTH, &tileWidth ) &&
+            TIFFGetField( tiff, TIFFTAG_TILELENGTH, &tileHeight ) )
+            vigra_precondition( (tileWidth == width) && (tileHeight == height),
+                                "TIFFDecoderImpl::init(): "
+                                "Cannot read tiled TIFFs (not implemented)." );
+
         // find out strip heights
         stripheight = 1; // now using scanline interface instead of strip interface
 
@@ -596,14 +604,14 @@ namespace vigra {
 
             // invert grayscale images that interpret 0 as white
             if ( photometric == PHOTOMETRIC_MINISWHITE &&
-				 samples_per_pixel == 1 && pixeltype == "UINT8" ) {
+                 samples_per_pixel == 1 && pixeltype == "UINT8" ) {
 
                 UInt8 * buf = static_cast< UInt8 * >(stripbuffer[0]);
                 const unsigned int n = TIFFScanlineSize(tiff);
 
                 // invert every pixel
                 for ( unsigned int i = 0; i < n; ++i, ++buf )
-					*buf = 0xff - *buf;
+                    *buf = 0xff - *buf;
             }
         }
     }
