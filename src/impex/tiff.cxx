@@ -42,8 +42,6 @@
  *  - Added support for x and y resolution fields.
  *
  * Modification by Andrew Mihal, 27 October 2004:
- * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
  *  - Modified encoder to better estimate the number of rows per strip.
  *  - Modified decoder to use the scanline interface - the strip-based
  *    interface hogs memory when the rows/strip value is large.
@@ -163,8 +161,6 @@ namespace vigra {
         TIFF * tiff;
         tdata_t * stripbuffer;
         tstrip_t strip;
-        // mihal 27-10-2004: use scanline interface
-        unsigned int scanline;
 
         uint32 stripindex, stripheight;
         uint32 width, height;
@@ -188,8 +184,6 @@ namespace vigra {
         tiff = 0;
         stripbuffer = 0;
         strip = 0;
-        // mihal 27-10-2004: use scanline interface
-        scanline = 0;
         stripindex = 0;
         planarconfig = PLANARCONFIG_CONTIG;
         x_resolution = 0;
@@ -222,6 +216,8 @@ namespace vigra {
     {
         friend class TIFFDecoder;
 
+        unsigned int scanline;
+
         std::string get_pixeltype_by_sampleformat() const;
         std::string get_pixeltype_by_datatype() const;
 
@@ -245,6 +241,8 @@ namespace vigra {
             msg += "'.";
             vigra_precondition(0, msg.c_str());
         }
+
+        scanline = 0;
     }
 
     std::string TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
@@ -327,10 +325,7 @@ namespace vigra {
         TIFFGetField( tiff, TIFFTAG_IMAGELENGTH, &height );
 
         // find out strip heights
-        // mihal 27-10-2004: use scanline interface instead of strip interface
-        //if ( !TIFFGetField( tiff, TIFFTAG_ROWSPERSTRIP, &stripheight ) )
-        //    stripheight = height;
-        stripheight = 1;
+        stripheight = 1; // now using scanline interface instead of strip interface
 
         // get samples_per_pixel
         samples_per_pixel = 0;
@@ -538,8 +533,6 @@ namespace vigra {
         }
 
         // allocate data buffers
-        // mihal 27-10-2004: use scanline interface instead of strip interface
-        //const unsigned int stripsize = TIFFStripSize(tiff);
         const unsigned int stripsize = TIFFScanlineSize(tiff);
         if ( planarconfig == PLANARCONFIG_SEPARATE ) {
             stripbuffer = new tdata_t[samples_per_pixel];
@@ -592,13 +585,8 @@ namespace vigra {
             stripindex = 0;
 
             if ( planarconfig == PLANARCONFIG_SEPARATE ) {
-                // mihal 27-10-2004: modified to use scanline interface
-                //const tsize_t size = TIFFStripSize(tiff);
                 const tsize_t size = TIFFScanlineSize(tiff);
                 for( unsigned int i = 0; i < samples_per_pixel; ++i )
-                    // mihal 27-10-2004: use scanline interface
-                    //TIFFReadEncodedStrip( tiff, strip++, stripbuffer[i],
-                    //                      size );
                     TIFFReadScanline(tiff, stripbuffer[i], scanline++, size);
             } else {
                 TIFFReadScanline( tiff, stripbuffer[0], scanline++, 0);
@@ -607,21 +595,15 @@ namespace vigra {
             // XXX handle bilevel images
 
             // invert grayscale images that interpret 0 as white
-            if ( samples_per_pixel == 1 && pixeltype == "UINT8" &&
-                 photometric == PHOTOMETRIC_MINISWHITE ) {
+            if ( photometric == PHOTOMETRIC_MINISWHITE &&
+				 samples_per_pixel == 1 && pixeltype == "UINT8" ) {
 
-                UInt8 * buf = static_cast< UInt8 * >
-                    (stripbuffer[0]);
-                // mihal 27-10-2004: modified to use scanline interface
-                //const unsigned int n = TIFFStripSize(tiff);
+                UInt8 * buf = static_cast< UInt8 * >(stripbuffer[0]);
                 const unsigned int n = TIFFScanlineSize(tiff);
 
                 // invert every pixel
-                for ( unsigned int i = 0; i < n; ++i ) {
-                    int x = *buf;
-                    x = 0xff - x;
-                    *buf++ = x;
-                }
+                for ( unsigned int i = 0; i < n; ++i, ++buf )
+					*buf = 0xff - *buf;
             }
         }
     }
