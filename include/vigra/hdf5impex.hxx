@@ -686,7 +686,7 @@ class HDF5File
         only its member function <tt>cont.insert(std::string)</tt> will be
         called.
         \param cont      reference to a container supplying a member function
-                         <tt>insert(const i_type &)<tt>, where <tt>i_type</tt>
+                         <tt>insert(const i_type &)</tt>, where <tt>i_type</tt>
                          is convertible <tt>to std::string</tt>.
      */
     template<class Container>
