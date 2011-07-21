@@ -62,6 +62,9 @@
 # ifndef H5Acreate
 #  define H5Acreate(a, b, c, d, e, f) H5Acreate(a, b, c, d, e)
 # endif
+# ifndef H5Pset_obj_track_times
+#  define H5Pset_obj_track_times(a, b) do {} while (0)
+# endif
 # include <H5LT.h>
 #else
 # include <hdf5_hl.h>
