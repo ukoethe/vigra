@@ -38,6 +38,7 @@
 
 #include <cmath>
 #include <functional>
+#include <complex>
 #include "stdimage.hxx"
 #include "copyimage.hxx"
 #include "transformimage.hxx"
@@ -203,6 +204,15 @@ class FFTWComplex
         data_[1] = (Real)o[1];
     }
 
+        /** Construct from std::complex.
+        */
+    template <class T>
+    FFTWComplex(std::complex<T> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
+    }
+
         /** Construct from TinyVector.
         */
     template <class T>
@@ -282,6 +292,16 @@ class FFTWComplex
     {
         data_[0] = (Real)o[0];
         data_[1] = (Real)o[1];
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    template <class T>
+    FFTWComplex& operator=(std::complex<T> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
         return *this;
     }
 
@@ -953,6 +973,51 @@ template <class R>
 inline typename FFTWComplex<R>::SquaredNormType squaredNorm(const FFTWComplex<R> &a)
 {
     return a.squaredMagnitude();
+}
+
+#define VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(fct) \
+template <class R> \
+inline FFTWComplex<R> fct(const FFTWComplex<R> &a) \
+{ \
+    return std::fct(reinterpret_cast<std::complex<R> const &>(a)); \
+}
+
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cos)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cosh)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(exp)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(log)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(log10)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(sin)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(sinh)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(sqrt)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(tan)
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(tanh)
+
+#undef VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION
+
+template <class R>
+inline FFTWComplex<R> pow(const FFTWComplex<R> &a, int e)
+{
+    return std::pow(reinterpret_cast<std::complex<R> const &>(a), e);
+}
+
+template <class R>
+inline FFTWComplex<R> pow(const FFTWComplex<R> &a, R const & e)
+{
+    return std::pow(reinterpret_cast<std::complex<R> const &>(a), e);
+}
+
+template <class R>
+inline FFTWComplex<R> pow(const FFTWComplex<R> &a, const FFTWComplex<R> & e)
+{
+    return std::pow(reinterpret_cast<std::complex<R> const &>(a), 
+                     reinterpret_cast<std::complex<R> const &>(e));
+}
+
+template <class R>
+inline FFTWComplex<R> pow(R const & a, const FFTWComplex<R> &e)
+{
+    return std::pow(a, reinterpret_cast<std::complex<R> const &>(e));
 }
 
 //@}

@@ -145,7 +145,24 @@ struct FFTWComplexTest
         should(clx2/clx1 == FFTWComplex<>(0.0, -1.0));
         should(clx3*conj(clx3) == clx3.squaredMagnitude());
 
-    }
+		std::complex<typename FFTWComplex<>::value_type> c(clx3.re(), clx3.im()),
+			                                             c1(clx1.re(), clx1.im());
+
+		shouldEqual(cos(clx3), FFTWComplex<>(cos(c)));
+		shouldEqual(cosh(clx3), FFTWComplex<>(cosh(c)));
+		shouldEqual(exp(clx3), FFTWComplex<>(exp(c)));
+		shouldEqual(log(clx3), FFTWComplex<>(log(c)));
+		shouldEqual(log10(clx3), FFTWComplex<>(log10(c)));
+		shouldEqual(sin(clx3), FFTWComplex<>(sin(c)));
+		shouldEqual(sinh(clx3), FFTWComplex<>(sinh(c)));
+		shouldEqual(sqrt(clx3), FFTWComplex<>(sqrt(c)));
+		shouldEqual(tan(clx3), FFTWComplex<>(tan(c)));
+		shouldEqual(tanh(clx3), FFTWComplex<>(tanh(c)));
+		shouldEqual(pow(clx3, 2), FFTWComplex<>(pow(c, 2)));
+		shouldEqual(pow(clx3, 2.0), FFTWComplex<>(pow(c, 2.0)));
+		shouldEqual(pow(clx3, clx1), FFTWComplex<>(pow(c, c1)));
+		shouldEqual(pow(2.0, clx3), FFTWComplex<>(pow(2.0, c)));
+	}
 
     void testAccessor()
     {
