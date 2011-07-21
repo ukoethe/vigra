@@ -434,9 +434,9 @@ void HDF5_ls_insert(void*, const std::string &);
 // see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
 // for as to why.
 
+VIGRA_EXPORT H5O_type_t HDF5_get_type(hid_t, const char*);
 VIGRA_EXPORT extern "C"
-herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char *name,
-                            const H5L_info_t *info, void* operator_data);
+herr_t HDF5_ls_inserter_callback(hid_t, const char*, const H5L_info_t*, void*);
 
 /********************************************************/
 /*                                                      */
@@ -681,15 +681,13 @@ class HDF5File
                object via insert(). Only datasets and groups are inserted, other
                objects (e.g., datatypes) are ignored. Group names always have an
                ending "/".
-     */
-    /** List the contents of the current group into the argument cont
-     * (presumably an associative container) via cont.insert(std::string).
-     * No other member functions of cont will be called. 
-     * Only datasets and groups are listed, other objects (e.g., datatypes) are
-     * ignored. Group names always have an ending "/".
-     * \param cont      reference to container supplying a member function
-     *                  insert(const i_type &), where i_type is convertible
-     *                  to std::string.
+
+        The argument cont is presumably an associative container, however,
+        only its member function <tt>cont.insert(std::string)</tt> will be
+        called.
+        \param cont      reference to a container supplying a member function
+                         <tt>insert(const i_type &)<tt>, where <tt>i_type</tt>
+                         is convertible <tt>to std::string</tt>.
      */
     template<class Container>
     void ls(Container & cont)
@@ -889,8 +887,19 @@ class HDF5File
     inline void writeAttribute(std::string datasetName, std::string attributeName, std::string const & data) 
         { writeAtomicAttribute(datasetName,attributeName,data.c_str()); }
 
-
-
+    /** \brief Test if attribute exists.
+       
+      */
+    bool existsAttribute(std::string object_name, std::string attribute_name)
+    {
+        std::string obj_path = get_absolute_path(object_name);
+        htri_t exists = H5Aexists_by_name(fileHandle_, obj_path.c_str(),
+                                          attribute_name.c_str(), H5P_DEFAULT);
+        vigra_precondition(exists >= 0, "HDF5File::existsAttribute(): "
+                                        "object \"" + object_name + "\" "
+                                        "not found.");
+        return exists != 0;
+    }
 
     // Reading Attributes
 
@@ -1543,12 +1552,13 @@ class HDF5File
             return std::string(begin()+last+1, end());
         }
     };
-    
 
+  public:
 
-    
-    /* get_absolute_path takes any path and converts it into an absolute path
-       in the current file. Elements like "." and ".." are treated as expected.
+    /** \brief takes any path and converts it into an absolute path
+       in the current file.
+       
+       Elements like "." and ".." are treated as expected.
        Links are not supported or resolved.
      */
     inline std::string get_absolute_path(std::string path) {
@@ -1612,8 +1622,7 @@ class HDF5File
         return str;
     }
     
-    
-
+  private:
 
     /* checks if the given path is a relative path.
      */
@@ -1688,7 +1697,7 @@ class HDF5File
 
 
 
-    /* open a group and subgroups. Create if nescessary.
+    /* open a group and subgroups. Create if necessary.
      */
     inline hid_t openCreateGroup_(std::string groupName)
     {
@@ -1781,7 +1790,7 @@ class HDF5File
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
-        if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) != 1)
+        if (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) <= 0)
         {
             std::cerr << "HDF5File::getDatasetHandle_(): Dataset '" << datasetName << "' does not exist.\n";
             return -1;
@@ -1792,7 +1801,8 @@ class HDF5File
 
         hid_t datasetHandle = H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
 
-        if(groupHandle != cGroupHandle_){
+        if(groupHandle != cGroupHandle_)
+        {
             H5Gclose(groupHandle);
         }
 
@@ -1802,12 +1812,36 @@ class HDF5File
     }
 
 
+    /* get the type of an object specified by a string
+     */
+    H5O_type_t get_object_type_(std::string name)
+    {
+        name = get_absolute_path(name);
+        std::string group_name = SplitString(name).first();
+        std::string object_name = SplitString(name).last();
+        if (!object_name.size())
+            return H5O_TYPE_GROUP;
 
+        htri_t exists = H5Lexists(fileHandle_, name.c_str(), H5P_DEFAULT);
+        vigra_precondition(exists > 0,  "HDF5File::get_object_type_(): "
+                                        "object \"" + name + "\" "
+                                        "not found.");
+        // open parent group
+        hid_t group_handle = openCreateGroup_(group_name);
+        H5O_type_t h5_type = HDF5_get_type(group_handle, name.c_str());
+        if (group_handle != cGroupHandle_)
+        {
+            H5Gclose(group_handle);
+        }
+        return h5_type;
+    }
 
-    /* low-level write function to write vigra MultiArray data as attribute
+    /* low-level write function to write vigra MultiArray data as an attribute
      */
     template<unsigned int N, class T>
-    inline void write_attribute_(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
+    void write_attribute_(std::string name, const std::string & attribute_name,
+                          const MultiArrayView<N, T, UnstridedArrayTag> & array,
+                          const hid_t datatype, const int numBandsOfType)
     {
 
         // shape of the array. Add one dimension, if array contains non-scalars.
@@ -1819,18 +1853,43 @@ class HDF5File
         if(numBandsOfType > 1)
             shape[N] = numBandsOfType;
 
-        HDF5Handle dataspace ( H5Screate_simple(N + (numBandsOfType > 1), shape.begin(), NULL), &H5Sclose, "HDF5File::writeAttribute(): Can not create dataspace.");
+        HDF5Handle dataspace(H5Screate_simple(N + (numBandsOfType > 1),
+                                              shape.begin(), NULL),
+                             &H5Sclose, "HDF5File::writeAttribute(): Can not"
+                                        " create dataspace.");
 
-        // create and open group:
-        std::string errorMessage ("HDF5File::writeAttribute(): can not find dataset '" + datasetName + "'.");
+        std::string errorMessage ("HDF5File::writeAttribute(): can not find "
+                                  "object '" + name + "'.");
 
-        // get parent dataset handle
-        HDF5Handle datasetHandle(getDatasetHandle_(datasetName), &H5Dclose, errorMessage.c_str());
+        H5O_type_t h5_type = get_object_type_(name);
+        bool is_group = h5_type == H5O_TYPE_GROUP;
+        if (!is_group && h5_type != H5O_TYPE_DATASET)
+            vigra_precondition(0, "HDF5File::writeAttribute(): object \""
+                                   + name + "\" is neither a group nor a "
+                                   "dataset.");
+        // get parent object handle
+        HDF5Handle object_handle(is_group
+                                     ? openCreateGroup_(name)
+                                     : getDatasetHandle_(name),
+                                 is_group
+                                     ? &H5Gclose
+                                     : &H5Dclose,
+                                 errorMessage.c_str());
+        // create / open attribute
+        bool exists = existsAttribute(name, attribute_name);
+        HDF5Handle attributeHandle(exists
+                                   ? H5Aopen(object_handle,
+                                             attribute_name.c_str(),
+                                             H5P_DEFAULT)
+                                   : H5Acreate(object_handle,
+                                               attribute_name.c_str(), datatype,
+                                               dataspace, H5P_DEFAULT,
+                                               H5P_DEFAULT),
+                                   &H5Aclose,
+                                   "HDF5File::writeAttribute(): Can not create"
+                                   " attribute.");
 
-        // create attribute
-        HDF5Handle attributeHandle (H5Acreate(datasetHandle, attributeName.c_str(), datatype, dataspace,H5P_DEFAULT, H5P_DEFAULT), &H5Aclose, "HDF5File::write(): Can not create attribute.");
-
-        // Write the data to the HDF5 dataset as is
+        // Write the data to the HDF5 object
         H5Awrite(attributeHandle, datatype, array.data());
     }
 
@@ -1994,7 +2053,11 @@ class HDF5File
         HDF5Handle datasetHandle (H5Dcreate(groupHandle, setname.c_str(), datatype, dataspace,H5P_DEFAULT, plist, H5P_DEFAULT), &H5Dclose, "HDF5File::write(): Can not create dataset.");
 
         // Write the data to the HDF5 dataset as is
-        H5Dwrite( datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data());
+        herr_t write_status = H5Dwrite(datasetHandle, datatype, H5S_ALL,
+                                       H5S_ALL, H5P_DEFAULT, array.data());
+        vigra_precondition(write_status >= 0, "HDF5File::write_(): write to "
+                                        "dataset \"" + datasetName + "\" "
+                                        "failed.");
 
         if(groupHandle != cGroupHandle_)
         {

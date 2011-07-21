@@ -44,11 +44,15 @@
 namespace vigra 
 {
 
-static const char *const rf_hdf5_options    = "_options";
-static const char *const rf_hdf5_ext_param  = "_ext_param";
-static const char *const rf_hdf5_labels     = "labels";
-static const char *const rf_hdf5_topology   = "topology";
-static const char *const rf_hdf5_parameters = "parameters";
+static const char *const rf_hdf5_options       = "_options";
+static const char *const rf_hdf5_ext_param     = "_ext_param";
+static const char *const rf_hdf5_labels        = "labels";
+static const char *const rf_hdf5_topology      = "topology";
+static const char *const rf_hdf5_parameters    = "parameters";
+static const char *const rf_hdf5_tree          = "Tree_";
+static const char *const rf_hdf5_version_group = ".";
+static const char *const rf_hdf5_version_tag   = "vigra_random_forest_version";
+static const double      rf_hdf5_version       =  0.1;
 
 namespace detail
 {
@@ -147,16 +151,40 @@ public:
     ~padded_number_string();
 };
 
+inline std::string get_cwd(HDF5File & h5context)
+{
+    return h5context.get_absolute_path(h5context.pwd());
+}
+
 } // namespace detail
 
+/** \brief Save a random forest to an HDF5File object into a specified HDF5
+           group.
+    
+    The random forest is saved as a set of HDF5 datasets, groups, and
+    attributes below a certain HDF5 group (default: current group of the
+    HDF5File object). No additional data should be stored in that group.
+    
+    \param rf        Random forest object to be exported
+    \param h5context HDF5File object to use
+    \param pathname  If empty or not supplied, save the random forest to the
+                     current group of the HDF5File object. Otherwise, save to a
+                     new-created group specified by the path name, which may
+                     be either relative or absolute.
+*/
 template<class T, class Tag>
 void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                     HDF5File & h5context,
                     const std::string & pathname = "")
 {
-    if (pathname.size())
+    std::string cwd;
+    if (pathname.size()) {
+        cwd = detail::get_cwd(h5context);
         h5context.cd_mk(pathname);
-
+    }
+    // version attribute
+    h5context.writeAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
+                             rf_hdf5_version);
     // save serialized options
     detail::options_export_HDF5(h5context, rf.options(), rf_hdf5_options);
     // save external parameters
@@ -166,12 +194,27 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
     int tree_count = rf.options_.tree_count_;
     detail::padded_number_string tree_number(tree_count);
     for (int i = 0; i < tree_count; ++i)
-        detail::dt_export_HDF5(h5context, rf.tree(i), "Tree_" + tree_number(i));
+        detail::dt_export_HDF5(h5context, rf.tree(i),
+                                                 rf_hdf5_tree + tree_number(i));
 
     if (pathname.size())
-        h5context.cd_up();
+        h5context.cd(cwd);
 }
 
+/** \brief Save a random forest to a named HDF5 file into a specified HDF5
+           group.
+    
+    The random forest is saved as a set of HDF5 datasets, groups, and
+    attributes below a certain HDF5 group (default: root). No additional data
+    should be stored in that group.
+    
+    \param rf       Random forest object to be exported
+    \param filename Name of an HDF5 file to open
+    \param pathname If empty or not supplied, save the random forest to the
+                    root group of the HDF5 file. Otherwise, save to a
+                    new-created group specified by the path name (relative
+                    to the root group).
+*/
 template<class T, class Tag>
 void rf_export_HDF5(const RandomForest<T, Tag> & rf,
                     const std::string & filename, 
@@ -181,20 +224,45 @@ void rf_export_HDF5(const RandomForest<T, Tag> & rf,
     rf_export_HDF5(rf, h5context, pathname);
 }
 
+/** \brief Read a random forest from an HDF5File object's specified group.
+    
+    The random forest is read from a certain HDF5 group (default: current group
+    of the HDF5File object) as a set of HDF5 datasets, groups, and
+    attributes. No additional data should be present in that group.
+    
+    \param rf        Random forest object to be imported
+    \param h5context HDF5File object to use
+    \param pathname  If empty or not supplied, read from the random forest
+                     from the current group of the HDF5File object. Otherwise,
+                     use the group specified by the path name, which may
+                     be either relative or absolute.
+*/
 template<class T, class Tag>
 bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                     HDF5File & h5context,
                     const std::string & pathname = "")
 {
-    if (pathname.size())
+    std::string cwd;
+    if (pathname.size()) {
+        cwd = detail::get_cwd(h5context);
         h5context.cd(pathname);
+    }
+    // version attribute
+    if (h5context.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag))
+    {
+        double read_version;
+        h5context.readAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
+                                read_version);
+        vigra_precondition(read_version <= rf_hdf5_version,
+                          "rf_import_HDF5(): unexpected file format version.");
+    }
     // get serialized options
     detail::options_import_HDF5(h5context, rf.options_, rf_hdf5_options);
     // get external parameters
     detail::problemspec_import_HDF5(h5context, rf.ext_param_,
                                     rf_hdf5_ext_param);
     // get all groups in base path
-    // no check for the "Tree_" prefix...
+    // no check for the rf_hdf5_tree prefix...
     std::vector<std::string> names = h5context.ls();
     std::vector<std::string>::const_iterator j;
     for (j = names.begin(); j != names.end(); ++j)
@@ -206,10 +274,23 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
         }
     }
     if (pathname.size())
-        h5context.cd_up();
+        h5context.cd(cwd);
     return true;
 }
 
+/** \brief Read a random forest from a named HDF5 file's specified group.
+    
+    The random forest is read from a certain HDF5 group (default: root group
+    of the HDF5 file) as a set of HDF5 datasets, groups, and attributes.
+    No additional data should be present in that group.
+    
+    \param rf        Random forest object to be imported
+    \param filename Name of an HDF5 file to open
+    \param pathname  If empty or not supplied, read from the random forest
+                     from the current group of the HDF5 file. Otherwise,
+                     use the group specified by the path name, which may
+                     be either relative or absolute.
+*/
 template<class T, class Tag>
 bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                     const std::string & filename, 

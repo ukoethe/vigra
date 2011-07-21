@@ -96,7 +96,7 @@ void dt_import_HDF5(HDF5File & h5context, detail::DecisionTree & tree,
     h5context.cd(name);
     // read topology
     h5context.readAndResize(rf_hdf5_topology, tree.topology_);
-    // read down parameters
+    // read parameters
     h5context.readAndResize(rf_hdf5_parameters, tree.parameters_);
     h5context.cd_up();
 }
