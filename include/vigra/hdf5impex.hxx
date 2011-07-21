@@ -818,12 +818,12 @@ class HDF5File
       * In contrast to datasets, subarray access, chunks and compression are not available.
       */
     template<unsigned int N, class T>
-    inline void writeAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array)
+    inline void writeAttribute(std::string object_name, std::string attribute_name, const MultiArrayView<N, T, UnstridedArrayTag> & array)
     {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
+        // make object_name clean
+        object_name = get_absolute_path(object_name);
 
-        write_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
+        write_attribute_(object_name, attribute_name, array, detail::getH5DataType<T>(), 1);
     }
 
 
@@ -854,8 +854,8 @@ class HDF5File
     /** \brief Write a single value.
       Specialization of the write function for simple datatypes
      */
-    inline void writeAttribute(std::string datasetName, std::string attributeName, char data) 
-        { writeAtomicAttribute(datasetName,attributeName,data); }
+    inline void writeAttribute(std::string object_name, std::string attribute_name, char data) 
+        { writeAtomicAttribute(object_name,attribute_name,data); }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed char data) 
         { writeAtomicAttribute(datasetName,attributeName,data); }
     inline void writeAttribute(std::string datasetName, std::string attributeName, signed short data) 
@@ -907,12 +907,12 @@ class HDF5File
       * In contrast to datasets, subarray access is not available.
       */
     template<unsigned int N, class T>
-    inline void readAttribute(std::string datasetName, std::string attributeName, const MultiArrayView<N, T, UnstridedArrayTag> & array)
+    inline void readAttribute(std::string object_name, std::string attribute_name, const MultiArrayView<N, T, UnstridedArrayTag> & array)
     {
-        // make datasetName clean
-        datasetName = get_absolute_path(datasetName);
+        // make object_name clean
+        object_name = get_absolute_path(object_name);
 
-        read_attribute_(datasetName, attributeName, array, detail::getH5DataType<T>(), 1);
+        read_attribute_(object_name, attribute_name, array, detail::getH5DataType<T>(), 1);
     }
 
 
@@ -943,8 +943,8 @@ class HDF5File
     /** \brief Read a single value.
       Specialization of the read function for simple datatypes
      */
-    inline void readAttribute(std::string datasetName, std::string attributeName, char &data)       
-        { readAtomicAttribute(datasetName,attributeName,data); }
+    inline void readAttribute(std::string object_name, std::string attribute_name, char &data)       
+        { readAtomicAttribute(object_name,attribute_name,data); }
     inline void readAttribute(std::string datasetName, std::string attributeName, signed char &data)        
         { readAtomicAttribute(datasetName,attributeName,data); }
     inline void readAttribute(std::string datasetName, std::string attributeName, signed short &data)       
