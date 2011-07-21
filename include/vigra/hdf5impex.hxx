@@ -687,7 +687,7 @@ class HDF5File
         called.
         \param cont      reference to a container supplying a member function
                          <tt>insert(const i_type &)</tt>, where <tt>i_type</tt>
-                         is convertible <tt>to std::string</tt>.
+                         is convertible to <tt>std::string</tt>.
      */
     template<class Container>
     void ls(Container & cont)
