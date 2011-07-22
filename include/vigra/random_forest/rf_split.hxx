@@ -64,7 +64,7 @@ namespace detail
     template<class Tag>
     class Normalise
     {
-    public:
+      public:
         template<class Iter>
         static void exec(Iter begin, Iter  end)
         {}
@@ -73,7 +73,7 @@ namespace detail
     template<>
     class Normalise<ClassificationTag>
     {
-    public:
+      public:
         template<class Iter>
         static void exec (Iter begin, Iter end)
         {
@@ -171,20 +171,20 @@ class SplitBase
         node_ = ret;
         if(ext_param_.class_weights_.size() != region.classCounts().size())
         {
-        std::copy(          region.classCounts().begin(),
-                            region.classCounts().end(),
-                            ret.prob_begin());
+            std::copy(region.classCounts().begin(),
+                      region.classCounts().end(),
+                      ret.prob_begin());
         }
         else
         {
-        std::transform(     region.classCounts().begin(),
-                            region.classCounts().end(),
-                            ext_param_.class_weights_.begin(),
-                            ret.prob_begin(), std::multiplies<double>());
+            std::transform(region.classCounts().begin(),
+                           region.classCounts().end(),
+                           ext_param_.class_weights_.begin(),
+                           ret.prob_begin(), std::multiplies<double>());
         }
         detail::Normalise<RF_Tag>::exec(ret.prob_begin(), ret.prob_end());
-//		std::copy(ret.prob_begin(), ret.prob_end(), std::ostream_iterator<double>(std::cerr, ", " ));
-//		std::cerr << std::endl;
+//        std::copy(ret.prob_begin(), ret.prob_end(), std::ostream_iterator<double>(std::cerr, ", " ));
+//        std::cerr << std::endl;
         ret.weights() = region.size();  
         return e_ConstProbNode;
     }
@@ -392,20 +392,20 @@ public:
         double  entropy            = 0.0;
         if(class_count == 2)
         {
-			double p0			= (hist[0]/total);
-			double p1			= (hist[1]/total);
-			entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+            double p0            = (hist[0]/total);
+            double p1            = (hist[1]/total);
+            entropy                = 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
         }
         else
         {
             for(int ii = 0; ii < class_count; ++ii)
             {
                 double w        = weights[ii];
-				double pii		= hist[ii]/total;
+                double pii        = hist[ii]/total;
                 entropy         -= w*( pii*std::log(pii));
             }
         }
-  		entropy 			= total * entropy;
+          entropy             = total * entropy;
         return entropy; 
     }
 };
@@ -557,113 +557,113 @@ class ImpurityLoss
         return counts_;
     }
 };
-	
-	
-	
-	template <class DataSource>
-	class RegressionForestCounter
-	{
-	public:
-		typedef MultiArrayShape<2>::type Shp;
-		DataSource const &      labels_;
-		ArrayVector <double>    mean_;
-		ArrayVector <double>    variance_;
-		ArrayVector <double>    tmp_;
-		size_t                  count_;
-		int*					end_;
-		
-		template<class T>
-		RegressionForestCounter(DataSource const & labels, 
-								ProblemSpec<T> const & ext_)
-		:
+    
+    
+    
+    template <class DataSource>
+    class RegressionForestCounter
+    {
+    public:
+        typedef MultiArrayShape<2>::type Shp;
+        DataSource const &      labels_;
+        ArrayVector <double>    mean_;
+        ArrayVector <double>    variance_;
+        ArrayVector <double>    tmp_;
+        size_t                  count_;
+        int*                    end_;
+        
+        template<class T>
+        RegressionForestCounter(DataSource const & labels, 
+                                ProblemSpec<T> const & ext_)
+        :
         labels_(labels),
         mean_(ext_.response_size_, 0.0),
         variance_(ext_.response_size_, 0.0),
         tmp_(ext_.response_size_),
         count_(0)
-		{}
-		
-		template<class Iter>
-		double increment (Iter begin, Iter end)
-		{
-			for(Iter iter = begin; iter != end; ++iter)
-			{
-				++count_;
-				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-					tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
-				double f  = 1.0 / count_,
-				f1 = 1.0 - f;
-				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-					mean_[ii] += f*tmp_[ii]; 
-				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-					variance_[ii] += f1*sq(tmp_[ii]);
-			}
-			double res = std::accumulate(variance_.begin(), 
-										 variance_.end(),
-										 0.0,
-										 std::plus<double>());
-			//std::cerr << res << "  ) = ";
-			return res;
-		}
-		
-		template<class Iter>      //This is BROKEN
-		double decrement (Iter begin, Iter end)
-		{
-			for(Iter iter = begin; iter != end; ++iter)
-			{
-				--count_;
-			}
+        {}
+        
+        template<class Iter>
+        double increment (Iter begin, Iter end)
+        {
+            for(Iter iter = begin; iter != end; ++iter)
+            {
+                ++count_;
+                for(unsigned int ii = 0; ii < mean_.size(); ++ii)
+                    tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
+                double f  = 1.0 / count_,
+                f1 = 1.0 - f;
+                for(unsigned int ii = 0; ii < mean_.size(); ++ii)
+                    mean_[ii] += f*tmp_[ii]; 
+                for(unsigned int ii = 0; ii < mean_.size(); ++ii)
+                    variance_[ii] += f1*sq(tmp_[ii]);
+            }
+            double res = std::accumulate(variance_.begin(), 
+                                         variance_.end(),
+                                         0.0,
+                                         std::plus<double>());
+            //std::cerr << res << "  ) = ";
+            return res;
+        }
+        
+        template<class Iter>      //This is BROKEN
+        double decrement (Iter begin, Iter end)
+        {
+            for(Iter iter = begin; iter != end; ++iter)
+            {
+                --count_;
+            }
 
-			begin = end;
-			end   = end + count_;
-			
+            begin = end;
+            end   = end + count_;
+            
 
-			for(unsigned int ii = 0; ii < mean_.size(); ++ii)
-			{
-				mean_[ii] = 0;		
-				for(Iter iter = begin; iter != end; ++iter)
-				{
-					mean_[ii] += labels_(*iter, ii);
-				}
-				mean_[ii] /= count_;
-			    variance_[ii] = 0;
-				for(Iter iter = begin; iter != end; ++iter)
-				{
-					variance_[ii] += (labels_(*iter, ii) - mean_[ii])*(labels_(*iter, ii) - mean_[ii]);
-				}
-			}
-			double res = std::accumulate(variance_.begin(), 
-										 variance_.end(),
-										 0.0,
-										 std::plus<double>());
-			//std::cerr << res << "  ) = ";
-			return res;
-		}
+            for(unsigned int ii = 0; ii < mean_.size(); ++ii)
+            {
+                mean_[ii] = 0;        
+                for(Iter iter = begin; iter != end; ++iter)
+                {
+                    mean_[ii] += labels_(*iter, ii);
+                }
+                mean_[ii] /= count_;
+                variance_[ii] = 0;
+                for(Iter iter = begin; iter != end; ++iter)
+                {
+                    variance_[ii] += (labels_(*iter, ii) - mean_[ii])*(labels_(*iter, ii) - mean_[ii]);
+                }
+            }
+            double res = std::accumulate(variance_.begin(), 
+                                         variance_.end(),
+                                         0.0,
+                                         std::plus<double>());
+            //std::cerr << res << "  ) = ";
+            return res;
+        }
 
-		
-		template<class Iter, class Resp_t>
-		double init (Iter begin, Iter end, Resp_t resp)
-		{
-			reset();
-			return this->increment(begin, end);
-			
-		}
-		
-		
-		ArrayVector<double> const & response()
-		{
-			return mean_;
-		}
-		
-		void reset()
-		{
-			mean_.init(0.0);
-			variance_.init(0.0);
-			count_ = 0; 
-		}
-	};
-	
-	
+        
+        template<class Iter, class Resp_t>
+        double init (Iter begin, Iter end, Resp_t resp)
+        {
+            reset();
+            return this->increment(begin, end);
+            
+        }
+        
+        
+        ArrayVector<double> const & response()
+        {
+            return mean_;
+        }
+        
+        void reset()
+        {
+            mean_.init(0.0);
+            variance_.init(0.0);
+            count_ = 0; 
+        }
+    };
+    
+    
 template <class DataSource>
 class RegressionForestCounter2
 {
@@ -706,8 +706,8 @@ public:
                                0.0,
                                std::plus<double>())
                 /((count_ == 1)? 1:(count_ -1));
-		//std::cerr << res << "  ) = ";
-		return res;
+        //std::cerr << res << "  ) = ";
+        return res;
     }
 
     template<class Iter>      //This is BROKEN
@@ -728,8 +728,8 @@ public:
                                0.0,
                                std::plus<double>())
                 /((count_ == 1)? 1:(count_ -1));
-		//std::cerr << "( " << res << " + ";
-		return res;
+        //std::cerr << "( " << res << " + ";
+        return res;
     }
     /* west's alorithm for incremental variance
     // calculation
@@ -909,13 +909,13 @@ public:
         
         I_Iter iter = begin;
         I_Iter next = std::adjacent_find(iter, end, comp);
-		//std::cerr << std::distance(begin, end) << std::endl;
+        //std::cerr << std::distance(begin, end) << std::endl;
         while( next  != end)
         {
-			double lr  =  right.decrement(iter, next + 1);
-			double ll  =  left.increment(iter , next + 1);
+            double lr  =  right.decrement(iter, next + 1);
+            double ll  =  left.increment(iter , next + 1);
             double loss = lr +ll;
-			//std::cerr <<lr << " + "<< ll << " " << loss << " ";
+            //std::cerr <<lr << " + "<< ll << " " << loss << " ";
 #ifdef CLASSIFIER_TEST
             if(loss < min_gini_ && !closeAtTolerance(loss, min_gini_))
 #else
@@ -935,9 +935,9 @@ public:
             iter = next +1 ;
             next = std::adjacent_find(iter, end, comp);
         }
-		//std::cerr << std::endl << " 000 " << std::endl;
-		//int in;
-		//std::cin >> in;
+        //std::cerr << std::endl << " 000 " << std::endl;
+        //int in;
+        //std::cin >> in;
     }
 
     template<class DataSource_t, class Iter, class Array>
@@ -957,31 +957,31 @@ public:
 
 namespace detail
 {
-	template<class T>
-	struct Correction
-	{
-		template<class Region, class LabelT>
-		static void exec(Region & in, LabelT & labels)
-		{}
-	};
-	
-	template<>
-	struct Correction<ClassificationTag>
-	{
-		template<class Region, class LabelT>
-		static void exec(Region & region, LabelT & labels) 
-		{
-			if(std::accumulate(region.classCounts().begin(),
-							   region.classCounts().end(), 0) != region.size())
-			{
-				RandomForestClassCounter<   LabelT, 
-											ArrayVector<double> >
-					counter(labels, region.classCounts());
-				std::for_each(  region.begin(), region.end(), counter);
-				region.classCountsIsValid = true;
-			}
-		}
-	};
+    template<class T>
+    struct Correction
+    {
+        template<class Region, class LabelT>
+        static void exec(Region & in, LabelT & labels)
+        {}
+    };
+    
+    template<>
+    struct Correction<ClassificationTag>
+    {
+        template<class Region, class LabelT>
+        static void exec(Region & region, LabelT & labels) 
+        {
+            if(std::accumulate(region.classCounts().begin(),
+                               region.classCounts().end(), 0.0) != region.size())
+            {
+                RandomForestClassCounter<   LabelT, 
+                                            ArrayVector<double> >
+                    counter(labels, region.classCounts());
+                std::for_each(  region.begin(), region.end(), counter);
+                region.classCountsIsValid = true;
+            }
+        }
+    };
 }
 
 /** Chooses mtry columns ad applys ColumnDecisionFunctor to each of the
@@ -1048,7 +1048,7 @@ class ThresholdSplit: public SplitBase<Tag>
                         "continuing learning process...."; 
         }
         // calculate things that haven't been calculated yet. 
-		detail::Correction<Tag>::exec(region, labels);
+        detail::Correction<Tag>::exec(region, labels);
 
 
         // Is the region pure already?
@@ -1095,7 +1095,7 @@ class ThresholdSplit: public SplitBase<Tag>
                 num2try = SB::ext_param_.actual_mtry_;
             }
         }
-		//std::cerr << current_min_gini << "curr " << region_gini_ << std::endl;
+        //std::cerr << current_min_gini << "curr " << region_gini_ << std::endl;
         // did not find any suitable split
         if(closeAtTolerance(current_min_gini, region_gini_))
             return  makeTerminalNode(features, labels, region, randint);
@@ -1123,9 +1123,9 @@ class ThresholdSplit: public SplitBase<Tag>
     }
 };
 
-typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                 	 GiniSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<GiniCriterion> >                      GiniSplit;
 typedef  ThresholdSplit<BestGiniOfColumn<EntropyCriterion> >                 EntropySplit;
-typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>         	 RegressionSplit;
+typedef  ThresholdSplit<BestGiniOfColumn<LSQLoss>, RegressionTag>              RegressionSplit;
 
 namespace rf
 {
@@ -1268,8 +1268,8 @@ public:
     std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
-	typedef RandomMT19937	Random_t;
-	Random_t				random;
+    typedef RandomMT19937    Random_t;
+    Random_t                random;
 
     RandomSplitOfColumn()
     {}
@@ -1279,18 +1279,18 @@ public:
     :
         class_weights_(ext.class_weights_),
         ext_param_(ext),
-		random(RandomSeed)
+        random(RandomSeed)
     {
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
     
-	template<class T> 
+    template<class T> 
     RandomSplitOfColumn(ProblemSpec<T> const & ext, Random_t & random_)
     :
         class_weights_(ext.class_weights_),
         ext_param_(ext),
-		random(random_)
+        random(random_)
     {
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
@@ -1323,10 +1323,10 @@ public:
         LineSearchLoss right(labels, ext_param_);
         right.init(begin, end, region_response);
 
-		
-		min_gini_ = NumericTraits<double>::max();
+        
+        min_gini_ = NumericTraits<double>::max();
         int tmp_pt = random.uniformInt(std::distance(begin, end));
-		min_index_ = tmp_pt;
+        min_index_ = tmp_pt;
         min_threshold_ =  column[*(begin + min_index_)];
         SortSamplesByDimensions<DataSourceF_t> 
             sorter(column, 0, min_threshold_);
