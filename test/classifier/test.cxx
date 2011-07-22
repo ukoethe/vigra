@@ -739,6 +739,20 @@ struct ClassifierTest
 
     }
 #ifdef HasHDF5
+    void should_all(vigra::RandomForest<> & RF, vigra::RandomForest<> & R2)
+    {
+            should(RF.ext_param_ == R2.ext_param_);
+            should(RF.options_ == R2.options_);
+            should(RF.trees_.size() == R2.trees_.size());
+            for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
+            {
+			     should(RF.trees_[jj].topology_ == R2.trees_[jj].topology_);
+
+			     should(RF.trees_[jj].parameters_ == R2.trees_[jj].parameters_);
+
+            }
+            should(RF.options_.tree_count_ == R2.options_.tree_count_);
+    }
 	/** checks whether hdf5 import export is working
 	 */
     void HDF5ImpexTest()
@@ -748,29 +762,35 @@ struct ClassifierTest
             {
 				std::cerr << "Running HDF5 Impex Test\n";
 				std::string filename = data.names(ii) + "_rf.hdf5";
+				std::string filename_b = data.names(ii) + "_b_rf.hdf5";
 				std::remove(filename.c_str());
 				vigra::RandomForest<> RF(vigra::RandomForestOptions()
 											 .tree_count(100));
 
 				 RF.learn(data.features(ii), data.labels(ii));
-				 rf_export_HDF5(RF, data.names(ii) + "_rf.hdf5");
+				 rf_export_HDF5(RF, filename);
 
 				 vigra::RandomForest<> RF2;
-				 rf_import_HDF5(RF2,data.names(ii) + "_rf.hdf5");
+				 rf_import_HDF5(RF2, filename);
+                 should_all(RF, RF2);
 
-				 should(RF.ext_param_== RF2.ext_param_);
-				 should(RF.options_ ==  RF2.options_);
-				 shouldEqual(RF.trees_.size(), RF2.trees_.size());
-				 for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
-				 {
-					 should(RF.trees_[jj].topology_ == 
-							RF2.trees_[jj].topology_);
+				 vigra::RandomForest<> RF3;
+				 rf_import_HDF5(RF3, filename);
+                 should_all(RF, RF3);
 
-					 should(RF.trees_[jj].parameters_ ==
-							RF2.trees_[jj].parameters_);
+				 rf_export_HDF5(RF3, filename_b);
 
-				 }
-                 std::cerr << "[";
+				 vigra::RandomForest<> RF4;
+				 rf_import_HDF5(RF4, filename_b);
+                 should_all(RF, RF4);
+
+				 rf_export_HDF5(RF4, filename_b);
+
+				 vigra::RandomForest<> RF5;
+				 rf_import_HDF5(RF5, filename_b);
+                 should_all(RF, RF5);
+
+	             std::cerr << "[";
                  for(int ss = 0; ss < ii+1; ++ss)
                      std::cerr << "#";
                  for(int ss = ii+1; ss < data.size(); ++ss)

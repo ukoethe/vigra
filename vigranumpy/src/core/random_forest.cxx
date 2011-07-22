@@ -328,11 +328,10 @@ void defineRandomForest()
              "Works only if forest has been created with prepare_online_learning=true. "
              "Needs the old training data and the new appened, starting at startIndex.\n\n")
 #ifdef HasHDF5
-        .def("writeHDF5", &rf_export_HDF5<UInt32>,
-             (arg("filename"), arg("pathInFile")="", arg("overwriteflag")=false),
+			 .def("writeHDF5", (void (*)(const RandomForest<UInt32, ClassificationTag> &, std::string const &, std::string const &))&rf_export_HDF5,
+             (arg("filename"), arg("pathInFile")=""),
              "Store the random forest in the given HDF5 file 'filname' under the internal\n"
-             "path 'pathInFile'. If a dataset already exists, 'overwriteflag' determines\n"
-             "if the old data are overwritten.\n")
+             "path 'pathInFile'.\n")
 #endif // HasHDF5
         ;
 }

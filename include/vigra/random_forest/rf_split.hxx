@@ -589,13 +589,13 @@ class ImpurityLoss
 			for(Iter iter = begin; iter != end; ++iter)
 			{
 				++count_;
-				for(int ii = 0; ii < mean_.size(); ++ii)
+				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
 					tmp_[ii] = labels_(*iter, ii) - mean_[ii]; 
 				double f  = 1.0 / count_,
 				f1 = 1.0 - f;
-				for(int ii = 0; ii < mean_.size(); ++ii)
+				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
 					mean_[ii] += f*tmp_[ii]; 
-				for(int ii = 0; ii < mean_.size(); ++ii)
+				for(unsigned int ii = 0; ii < mean_.size(); ++ii)
 					variance_[ii] += f1*sq(tmp_[ii]);
 			}
 			double res = std::accumulate(variance_.begin(), 
@@ -618,7 +618,7 @@ class ImpurityLoss
 			end   = end + count_;
 			
 
-			for(int ii = 0; ii < mean_.size(); ++ii)
+			for(unsigned int ii = 0; ii < mean_.size(); ++ii)
 			{
 				mean_[ii] = 0;		
 				for(Iter iter = begin; iter != end; ++iter)
