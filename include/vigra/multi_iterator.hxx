@@ -2143,9 +2143,10 @@ class StridedScanOrderIterator
         return base_type::operator>=(r);
     }
 
-
     using base_type::point;
     using base_type::shape;
+    using base_type::strides;
+    using base_type::ptr;
     using base_type::index;
     using base_type::operator*;
     using base_type::operator->;
@@ -2282,6 +2283,16 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return i_;
     }
 
+    pointer ptr()
+    {
+        return i_;
+    }
+
+    const_pointer ptr() const
+    {
+        return i_;
+    }
+
     reference operator[](MultiArrayIndex i)
     {
         StridedScanOrderIterator t(*this);
@@ -2369,6 +2380,11 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     shape_type const & shape() const
     {
         return shape_;
+    }
+    
+    shape_type const & strides() const
+    {
+        return strides_;
     }
     
     StridedScanOrderIterator getEndIterator() const

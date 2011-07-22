@@ -601,6 +601,38 @@ struct CanSkipInitialization<FFTWComplex<Real> >
     static const bool value = type::asBool;
 };
 
+namespace multi_math {
+
+template <class ARG>
+struct MultiMathOperand;
+
+template <class Real>
+struct MultiMathOperand<FFTWComplex<Real> >
+{
+    typedef MultiMathOperand<FFTWComplex<Real> > AllowOverload;
+	typedef FFTWComplex<Real> result_type;
+    
+    MultiMathOperand(FFTWComplex<Real> const & v)
+    : v_(v)
+    {}
+    
+    template <class SHAPE>
+    bool checkShape(SHAPE const &) const
+    {
+        return true;
+    }
+    
+    template <class SHAPE>
+    FFTWComplex<Real> const & operator[](SHAPE const &) const
+    {
+        return v_;
+    }
+    
+    FFTWComplex<Real> v_;
+};
+
+} // namespace multi_math
+
 template<class Ty>
 class FFTWAllocator
 {
