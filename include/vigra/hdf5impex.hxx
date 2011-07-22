@@ -435,8 +435,7 @@ void HDF5_ls_insert(void*, const std::string &);
 // for as to why.
 
 VIGRA_EXPORT H5O_type_t HDF5_get_type(hid_t, const char*);
-VIGRA_EXPORT extern "C"
-herr_t HDF5_ls_inserter_callback(hid_t, const char*, const H5L_info_t*, void*);
+extern "C" VIGRA_EXPORT herr_t HDF5_ls_inserter_callback(hid_t, const char*, const H5L_info_t*, void*);
 
 /********************************************************/
 /*                                                      */
@@ -1259,7 +1258,7 @@ class HDF5File
         vigra_precondition((1 ==  MultiArrayIndex(dimensions)),
             "HDF5File::readAndResize(): Array dimension disagrees with Dataset dimension must equal one for vigra::ArrayVector.");
         // resize target array vector
-        array.resize(dimshape[0]);
+		array.resize((typename ArrayVector<T>::size_type)dimshape[0]);
         // convert to a (trivial) MultiArrayView and forward.
         MultiArrayShape<1>::type shape(array.size());
         MultiArrayView<1, T> m_array(shape, (array.data()));
