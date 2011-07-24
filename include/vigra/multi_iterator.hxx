@@ -356,6 +356,12 @@ class MultiArrayShape
     typedef TinyVector<MultiArrayIndex, N> type;
 };
 
+typedef MultiArrayShape<1>::type Shape1; ///< shape type for MultiArray<1, T>
+typedef MultiArrayShape<2>::type Shape2; ///< shape type for MultiArray<2, T>
+typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
+typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
+typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
+
 /********************************************************/
 /*                                                      */
 /*                      MultiIterator                   */
