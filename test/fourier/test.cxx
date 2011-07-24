@@ -145,24 +145,24 @@ struct FFTWComplexTest
         should(clx2/clx1 == FFTWComplex<>(0.0, -1.0));
         should(clx3*conj(clx3) == clx3.squaredMagnitude());
 
-		std::complex<typename FFTWComplex<>::value_type> c(clx3.re(), clx3.im()),
-			                                             c1(clx1.re(), clx1.im());
+        std::complex<FFTWComplex<>::value_type> c(clx3.re(), clx3.im()),
+                                                   c1(clx1.re(), clx1.im());
 
-		shouldEqual(cos(clx3), FFTWComplex<>(cos(c)));
-		shouldEqual(cosh(clx3), FFTWComplex<>(cosh(c)));
-		shouldEqual(exp(clx3), FFTWComplex<>(exp(c)));
-		shouldEqual(log(clx3), FFTWComplex<>(log(c)));
-		shouldEqual(log10(clx3), FFTWComplex<>(log10(c)));
-		shouldEqual(sin(clx3), FFTWComplex<>(sin(c)));
-		shouldEqual(sinh(clx3), FFTWComplex<>(sinh(c)));
-		shouldEqual(sqrt(clx3), FFTWComplex<>(sqrt(c)));
-		shouldEqual(tan(clx3), FFTWComplex<>(tan(c)));
-		shouldEqual(tanh(clx3), FFTWComplex<>(tanh(c)));
-		shouldEqual(pow(clx3, 2), FFTWComplex<>(pow(c, 2)));
-		shouldEqual(pow(clx3, 2.0), FFTWComplex<>(pow(c, 2.0)));
-		shouldEqual(pow(clx3, clx1), FFTWComplex<>(pow(c, c1)));
-		shouldEqual(pow(2.0, clx3), FFTWComplex<>(pow(2.0, c)));
-	}
+        shouldEqual(cos(clx3), FFTWComplex<>(cos(c)));
+        shouldEqual(cosh(clx3), FFTWComplex<>(cosh(c)));
+        shouldEqual(exp(clx3), FFTWComplex<>(exp(c)));
+        shouldEqual(log(clx3), FFTWComplex<>(log(c)));
+        shouldEqual(log10(clx3), FFTWComplex<>(log10(c)));
+        shouldEqual(sin(clx3), FFTWComplex<>(sin(c)));
+        shouldEqual(sinh(clx3), FFTWComplex<>(sinh(c)));
+        shouldEqual(sqrt(clx3), FFTWComplex<>(sqrt(c)));
+        shouldEqual(tan(clx3), FFTWComplex<>(tan(c)));
+        shouldEqual(tanh(clx3), FFTWComplex<>(tanh(c)));
+        shouldEqual(pow(clx3, 2), FFTWComplex<>(pow(c, 2)));
+        shouldEqual(pow(clx3, 2.0), FFTWComplex<>(pow(c, 2.0)));
+        shouldEqual(pow(clx3, clx1), FFTWComplex<>(pow(c, c1)));
+        shouldEqual(pow(2.0, clx3), FFTWComplex<>(pow(2.0, c)));
+    }
 
     void testAccessor()
     {
@@ -534,78 +534,78 @@ struct MultiFFTTest
         gauss.initGaussian(scale);
         gauss2.initGaussian(2.0*scale);
 
-		convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
-		convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
+        convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
+        convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
 
         MV kernel(Shape2(gauss.width(), gauss.height()), &gauss[gauss.upperLeft()]);
         MV kernel2(Shape2(gauss2.width(), gauss2.height()), &gauss2[gauss2.upperLeft()]);
 
-		//test complex double 2D convolution with spatial domain kernels
+        //test complex double 2D convolution with spatial domain kernels
         
         MultiArray<2, FFTWComplex<double> > inc(in);
         MultiArray<2, FFTWComplex<double> > outc(inc.shape()), outc2(inc.shape());
         MultiArray<2, FFTWComplex<double> > kernelc(kernel), kernelc2(kernel2);
         convolveFFTComplex(inc, kernelc, outc, false);
 
-		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
 
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref.data(), 1e-14);
 
-		outc.init(0.0);
-		
-		MVC kernels[] = { kernelc, kernelc2 };
+        outc.init(0.0);
+        
+        MVC kernels[] = { kernelc, kernelc2 };
         MVC outs[] = { outc, outc2 };
         convolveFFTComplexMany(inc, kernels, kernels+2, outs, false);
 
-		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref.data(), 1e-14);
-		copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref2.data(), 1e-14);
 
-		//test complex double 2D convolution with Fourier domain kernels
+        //test complex double 2D convolution with Fourier domain kernels
         
-		gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
-		gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
+        gauss.setBorderTreatment(BORDER_TREATMENT_WRAP);
+        gauss2.setBorderTreatment(BORDER_TREATMENT_WRAP);
 
-		convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
-		convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
+        convolveImage(srcImageRange(in), destImage(ref), kernel2d(gauss));
+        convolveImage(srcImageRange(in), destImage(ref2), kernel2d(gauss2));
 
         MultiArray<2, FFTWComplex<double> > kernelf(in.shape()), kernelf2(in.shape());
 
-		detail::fftEmbedKernel(kernelc, kernelf);
-		fourierTransform(kernelf, kernelf);
-		moveDCToCenter(kernelf);
+        detail::fftEmbedKernel(kernelc, kernelf);
+        fourierTransform(kernelf, kernelf);
+        moveDCToCenter(kernelf);
 
-		detail::fftEmbedKernel(kernelc2, kernelf2);
-		fourierTransform(kernelf2, kernelf2);
-		moveDCToCenter(kernelf2);
+        detail::fftEmbedKernel(kernelc2, kernelf2);
+        fourierTransform(kernelf2, kernelf2);
+        moveDCToCenter(kernelf2);
 
-		outc.init(0.0);
+        outc.init(0.0);
         convolveFFTComplex(inc, kernelf, outc, true);
 
-		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
 
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref.data(), 1e-14);
 
-		outc.init(0.0);
-		outc2.init(0.0);
-		
-		MVC kernelsf[] = { kernelf, kernelf2 };
+        outc.init(0.0);
+        outc2.init(0.0);
+        
+        MVC kernelsf[] = { kernelf, kernelf2 };
         convolveFFTComplexMany(inc, kernelsf, kernelsf+2, outs, true);
 
-		copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc, FFTWRealAccessor<double>()), destMultiArray(out));
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref.data(), 1e-14);
-		copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
+        copyMultiArray(srcMultiArrayRange(outc2, FFTWRealAccessor<double>()), destMultiArray(out));
         shouldEqualSequenceTolerance(out.data(), out.data()+out.size(),
                                      ref2.data(), 1e-14);
 #if 0
         // test complex float 3D convolution
-		// compile-only test, currently disabled because it requires libfftwf
+        // compile-only test, currently disabled because it requires libfftwf
                 
         Shape3 sc(100,100,100);
         vigra::MultiArray<3, FFTWComplex<float> > incf(sc);
