@@ -47,10 +47,272 @@
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
 #include "functorexpression.hxx"
+#include "tinyvector.hxx"
 
 namespace vigra
 {
 
+namespace detail
+{
+
+struct DoubleYielder
+{
+    const double value;
+    DoubleYielder(double v, unsigned, const char *const) : value(v) {}
+    DoubleYielder(double v)                              : value(v) {}
+    void operator++() {}
+    double operator*() const { return value; }
+};
+
+template <typename X>
+struct IteratorDoubleYielder
+{
+    X it;
+    IteratorDoubleYielder(X i, unsigned, const char *const) : it(i) {}
+    IteratorDoubleYielder(X i)                              : it(i) {}
+    void operator++() { ++it; }
+    double operator*() const { return *it; }
+};
+
+template <typename X>
+struct SequenceDoubleYielder
+{
+    typename X::const_iterator it;
+    SequenceDoubleYielder(const X & seq, unsigned dim,
+                          const char *const function_name = "SequenceDoubleYielder")
+        : it(seq.begin())
+    {
+        if (seq.size() == dim)
+            return;
+        std::string msg = "(): Parameter number be equal to the number of spatial dimensions.";
+        vigra_precondition(false, function_name + msg);
+    }
+    void operator++() { ++it; }
+    double operator*() const { return *it; }
+};
+
+template <typename X>
+struct WrapDoubleIterator
+{
+    typedef
+    typename IfBool< IsConvertibleTo<X, double>::value,
+        DoubleYielder,
+        typename IfBool< IsIterator<X>::value || IsArray<X>::value,
+            IteratorDoubleYielder<X>,
+            SequenceDoubleYielder<X>
+        >::type
+    >::type type;
+};
+
+template <class Param1, class Param2, class Param3>
+struct WrapDoubleIteratorTriple
+{
+    typename WrapDoubleIterator<Param1>::type sigma_eff_it;
+    typename WrapDoubleIterator<Param2>::type sigma_d_it;
+    typename WrapDoubleIterator<Param3>::type step_size_it;
+    WrapDoubleIteratorTriple(Param1 sigma_eff, Param2 sigma_d, Param3 step_size)
+        : sigma_eff_it(sigma_eff), sigma_d_it(sigma_d), step_size_it(step_size) {}
+    void operator++()
+    {
+        ++sigma_eff_it;
+        ++sigma_d_it;
+        ++step_size_it;
+    }
+    double sigma_eff() const { return *sigma_eff_it; }
+    double sigma_d() const { return *sigma_d_it; }
+    double step_size() const { return *step_size_it; }
+    static double sqr(double x) { return x * x; }
+    static void sigma_precondition(double sigma, const char *const function_name)
+    {
+        if (sigma < 0.0)
+        {
+             std::string msg = "(): Scale must be positive.";
+             vigra_precondition(false, function_name + msg);
+        }
+    }
+    double sigma_scaled(const char *const function_name = "unknown function ") const
+    {
+        sigma_precondition(sigma_eff(), function_name);
+        sigma_precondition(sigma_d(), function_name);
+        double sigma_squared = sqr(sigma_eff()) - sqr(sigma_d());
+        if (sigma_squared > 0.0)
+        {
+            return std::sqrt(sigma_squared) / step_size();
+        }
+        else
+        {
+             std::string msg = "(): Scale would be imaginary or zero.";
+             vigra_precondition(false, function_name + msg);
+             return 0;
+        }
+    }
+};
+
+template <unsigned dim>
+struct multiArrayScaleParam
+{
+    typedef TinyVector<double, dim> p_vector;
+    typedef typename p_vector::const_iterator return_type;
+    p_vector vec;
+
+    template <class Param>
+    multiArrayScaleParam(Param val, const char *const function_name = "multiArrayScaleParam")
+    {
+        typename WrapDoubleIterator<Param>::type in(val, dim, function_name);
+        for (unsigned i = 0; i != dim; ++i, ++in)
+            vec[i] = *in;
+    }
+    return_type operator()() const
+    {
+        return vec.begin();
+    }
+    static void precondition(unsigned n_par, const char *const function_name = "multiArrayScaleParam")
+    {
+        char n[3] = "0.";
+        n[0] += dim;
+        std::string msg = "(): dimension parameter must be ";
+        vigra_precondition(dim == n_par, function_name + msg + n);
+    }
+    multiArrayScaleParam(double v0, double v1, const char *const function_name = "multiArrayScaleParam")
+    {
+        precondition(2, function_name);
+        vec = p_vector(v0, v1);
+    }
+    multiArrayScaleParam(double v0, double v1, double v2, const char *const function_name = "multiArrayScaleParam")
+    {
+        precondition(3, function_name);
+        vec = p_vector(v0, v1, v2);
+    }
+    multiArrayScaleParam(double v0, double v1, double v2,  double v3, const char *const function_name = "multiArrayScaleParam")
+    {
+        precondition(4, function_name);
+        vec = p_vector(v0, v1, v2, v3);
+    }
+    multiArrayScaleParam(double v0, double v1, double v2,  double v3, double v4, const char *const function_name = "multiArrayScaleParam")
+    {
+        precondition(5, function_name);
+        vec = p_vector(v0, v1, v2, v3, v4);
+    }
+};
+
+} // namespace detail
+
+#define VIGRA_CONVOLUTION_OPTIONS(function_name, default_value, member_name) \
+    template <class Param> \
+    ConvolutionOptions & function_name(const Param & val) \
+    { \
+        member_name = ParamVec(val, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    } \
+    ConvolutionOptions & function_name() \
+    { \
+        member_name = ParamVec(default_value, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    } \
+    ConvolutionOptions & function_name(double v0, double v1) \
+    { \
+        member_name = ParamVec(v0, v1, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    } \
+    ConvolutionOptions & function_name(double v0, double v1, double v2) \
+    { \
+        member_name = ParamVec(v0, v1, v2, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    } \
+    ConvolutionOptions & function_name(double v0, double v1, double v2, double v3) \
+    { \
+        member_name = ParamVec(v0, v1, v2, v3, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    } \
+    ConvolutionOptions & function_name(double v0, double v1, double v2, double v3, double v4) \
+    { \
+        member_name = ParamVec(v0, v1, v2, v3, v4, "ConvolutionOptions::" #function_name); \
+        return *this; \
+    }
+
+
+/**\Options class for convolutions.
+ 
+  <b>usage:</b>
+ 
+  \code
+  const double step_size[2] = { x_scale, y_scale };
+  std::vector<double> r_sigmas;
+  r_sigmas.push_back(1.05 * x_scale);
+  r_sigmas.push_back(0.97 * y_scale);
+  ConvolutionOptions<2> opt = ConvolutionOptions<2>()
+                              .stdDev(2.8)
+                              .resolutionStdDev(r_sigmas)
+                              .stepSize(step_size)
+                              .outerScale(1.1, 1.7);
+  \endcode
+ 
+  Note that the return value of all methods is <tt>*this</tt> which makes
+  concatenating of options as above possible.
+*/
+template <unsigned dim>
+class ConvolutionOptions
+{
+     typedef detail::multiArrayScaleParam<dim> ParamVec;
+     typedef typename ParamVec::return_type    ParamIt;
+     ParamVec sigma_eff;
+     ParamVec sigma_d;
+     ParamVec step_size;
+     ParamVec outer_scale;
+  public:
+    ConvolutionOptions()
+    : sigma_eff(0.0),
+      sigma_d(0.0),
+      step_size(1.0),
+      outer_scale(0.0)
+    {}
+
+    typedef typename detail::WrapDoubleIteratorTriple<ParamIt, ParamIt, ParamIt>
+        ScaleIterator;
+    typedef typename detail::WrapDoubleIterator<ParamIt>::type
+        StepIterator;
+
+    ScaleIterator scaleParams() const
+    {
+        return ScaleIterator(sigma_eff(), sigma_d(), step_size());
+    }
+    StepIterator stepParams() const
+    {
+        return StepIterator(step_size());
+    }
+
+    ConvolutionOptions outerOptions() const
+    {
+        ConvolutionOptions outer = *this;
+        // backward-compatible values:
+        return outer.stdDev(outer_scale()).resolutionStdDev(0.0);
+    }
+
+        /**\brief Standard deviation of scale space operators.
+         *
+         * <br> Default: dim values of 0.0
+         */
+    VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
+
+        /**\brief Resolution standard deviation per axis.
+         *
+         * <br> Default: dim values of 0.0
+         */
+    VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_d)
+
+        /**\brief Step size per axis.
+         *
+         * <br> Default: dim values of 1.0
+         */
+    VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size)
+
+        /**\brief Outer scale, for structure tensor.
+         *
+         * <br> Default: dim values of 0.0
+         */
+    VIGRA_CONVOLUTION_OPTIONS(outerScale, 0.0, outer_scale)
+
+};
 
 namespace detail
 {
@@ -115,6 +377,14 @@ internalSeparableConvolveMultiArrayTmp(
                            kernel1d( *kit ) );
         }
     }
+}
+
+template <class K>
+void 
+scaleKernel(K & kernel, double a)
+{
+    for(int i = kernel.left(); i <= kernel.right(); ++i)
+        kernel[i] *= a;
 }
 
 
@@ -454,12 +724,32 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                   DestIterator d, DestAccessor dest, double sigma )
+                   DestIterator d, DestAccessor dest,
+                   const ConvolutionOptions<SrcShape::static_size> & opt,
+                   const char *const function_name = "gaussianSmoothMultiArray" )
 {
-    Kernel1D<double> gauss;
-    gauss.initGaussian( sigma );
+    typedef typename DestAccessor::value_type DestType;
 
-    separableConvolveMultiArray( s, shape, src, d, dest, gauss);
+    static const int N = SrcShape::static_size;
+
+    typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
+    ArrayVector<Kernel1D<double> > kernels(N);
+
+    for (int dim = 0; dim < N; ++dim, ++params)
+        kernels[dim].initGaussian(params.sigma_scaled(function_name));
+
+    separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+void
+gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                   DestIterator d, DestAccessor dest, const Param & sigma,
+                   const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    gaussianSmoothMultiArray(s, shape, src, d,  dest, par.stdDev(sigma));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -467,11 +757,23 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                   pair<DestIterator, DestAccessor> const & dest,
-                  double sigma )
+                  const ConvolutionOptions<SrcShape::static_size> & opt)
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
-                              dest.first, dest.second, sigma );
+                              dest.first, dest.second, opt );
 }
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                  pair<DestIterator, DestAccessor> const & dest, const Param & sigma,
+                  const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    gaussianSmoothMultiArray( source.first, source.second, source.third,
+                              dest.first, dest.second, sigma, opt );
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -549,13 +851,16 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                           DestIterator di, DestAccessor dest, double sigma )
+                           DestIterator di, DestAccessor dest,
+                           ConvolutionOptions<SrcShape::static_size> const & opt,
+                           const char *const function_name = "gaussianGradientMultiArray")
 {
     typedef typename DestAccessor::value_type DestType;
     typedef typename DestType::value_type     DestValueType;
     typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
    
     static const int N = SrcShape::static_size;
+    typedef typename ConvolutionOptions<N>::ScaleIterator ParamType;
 
     for(int k=0; k<N; ++k)
         if(shape[k] <=0)
@@ -564,30 +869,60 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     vigra_precondition(N == (int)dest.size(di),
         "gaussianGradientMultiArray(): Wrong number of channels in output array.");
 
-    vigra_precondition(sigma > 0.0, "gaussianGradientMultiArray(): Scale must be positive.");
+    ParamType params = opt.scaleParams();
+    ParamType params2(params);
 
-    Kernel1D<KernelType> gauss, derivative;
-    gauss.initGaussian(sigma);
+    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    for (int dim = 0; dim < N; ++dim, ++params)
+    {
+        double sigma = params.sigma_scaled(function_name);
+        plain_kernels[dim].initGaussian(sigma);
+    }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute gradient components
-    for(int d = 0; d < N; ++d )
+    for (int dim = 0; dim < N; ++dim, ++params2)
     {
-        ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
-        kernels[d].initGaussianDerivative(sigma, 1);
-        separableConvolveMultiArray( si, shape, src, di, ElementAccessor(d, dest), kernels.begin());
+        ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
+        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 1);
+        detail::scaleKernel(kernels[dim], 1 / params2.step_size());
+        separableConvolveMultiArray(si, shape, src, di, ElementAccessor(dim, dest), kernels.begin());
     }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+void
+gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                           DestIterator di, DestAccessor dest, const Param & sigma,
+                           const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    gaussianGradientMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                           pair<DestIterator, DestAccessor> const & dest, double sigma )
+                           pair<DestIterator, DestAccessor> const & dest,
+                           ConvolutionOptions<SrcShape::static_size> const & opt )
 {
     gaussianGradientMultiArray( source.first, source.second, source.third,
-                                dest.first, dest.second, sigma );
+                                dest.first, dest.second, opt );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                           pair<DestIterator, DestAccessor> const & dest,
+                           const Param & sigma,
+                           const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    gaussianGradientMultiArray( source.first, source.second, source.third,
+                                dest.first, dest.second, sigma, opt );
 }
 
 /********************************************************/
@@ -660,13 +995,15 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                            DestIterator di, DestAccessor dest)
+                            DestIterator di, DestAccessor dest,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     typedef typename DestAccessor::value_type DestType;
     typedef typename DestType::value_type     DestValueType;
     typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
 
     static const int N = SrcShape::static_size;
+    typedef typename ConvolutionOptions<N>::StepIterator StepType;
 
     for(int k=0; k<N; ++k)
         if(shape[k] <=0)
@@ -678,25 +1015,55 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
     Kernel1D<KernelType> filter;
     filter.initSymmetricGradient();
 
+    StepType step_size_it = opt.stepParams();
+
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute gradient components
-    for(int d = 0; d < N; ++d )
+    for (int d = 0; d < N; ++d, ++step_size_it)
     {
+        Kernel1D<KernelType> symmetric(filter);
+        detail::scaleKernel(symmetric, 1 / *step_size_it);
         convolveMultiArrayOneDimension(si, shape, src,
                                        di, ElementAccessor(d, dest),
-                                       d, filter);
+                                       d, symmetric);
     }
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Param>
+void
+symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                            DestIterator di, DestAccessor dest,
+                            Param step_size,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    symmetricGradientMultiArray(si, shape, src, di, dest, par.stepSize(step_size));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                            pair<DestIterator, DestAccessor> const & dest )
+                            pair<DestIterator, DestAccessor> const & dest,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     symmetricGradientMultiArray(source.first, source.second, source.third,
-                                dest.first, dest.second);
+                                dest.first, dest.second, opt);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest,
+                            Param step_size,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    symmetricGradientMultiArray(source.first, source.second, source.third,
+                                dest.first, dest.second, step_size, opt);
 }
 
 
@@ -770,7 +1137,8 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                              DestIterator di, DestAccessor dest, double sigma )
+                              DestIterator di, DestAccessor dest,
+                              ConvolutionOptions<SrcShape::static_size> const & opt )
 { 
     using namespace functor;
     
@@ -779,20 +1147,28 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
     typedef typename AccessorTraits<KernelType>::default_accessor DerivativeAccessor;
 
     static const int N = SrcShape::static_size;
+    typedef typename ConvolutionOptions<N>::ScaleIterator ParamType;
     
-    vigra_precondition(sigma > 0.0, "laplacianOfGaussianMultiArray(): Scale must be positive.");
+    ParamType params = opt.scaleParams();
+    ParamType params2(params);
 
-    Kernel1D<KernelType> gauss;
-    gauss.initGaussian(sigma);
+    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    for (int dim = 0; dim < N; ++dim, ++params)
+    {
+        double sigma = params.sigma_scaled("laplacianOfGaussianMultiArray");
+        plain_kernels[dim].initGaussian(sigma);
+    }
     
     MultiArray<N, KernelType> derivative(shape);
 
     // compute 2nd derivatives and sum them up
-    for(int d = 0; d < N; ++d )
+    for (int dim = 0; dim < N; ++dim, ++params2)
     {
-        ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
-        kernels[d].initGaussianDerivative(sigma, 2);
-        if(d == 0)
+        ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
+        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 2);
+        detail::scaleKernel(kernels[dim], 1 / (params2.step_size() * params2.step_size()));
+
+        if (dim == 0)
         {
             separableConvolveMultiArray( si, shape, src, 
                                          di, dest, kernels.begin());
@@ -809,13 +1185,37 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+void
+laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                              DestIterator di, DestAccessor dest, const Param & sigma,
+                              const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    laplacianOfGaussianMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                            pair<DestIterator, DestAccessor> const & dest, double sigma )
+                              pair<DestIterator, DestAccessor> const & dest,
+                              ConvolutionOptions<SrcShape::static_size> const & opt )
 {
     laplacianOfGaussianMultiArray( source.first, source.second, source.third,
-                                   dest.first, dest.second, sigma );
+                                   dest.first, dest.second, opt );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                              pair<DestIterator, DestAccessor> const & dest,
+                              const Param & sigma,
+                              const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    laplacianOfGaussianMultiArray( source.first, source.second, source.third,
+                                   dest.first, dest.second,  sigma, opt );
 }
 
 /********************************************************/
@@ -889,7 +1289,8 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                            DestIterator di, DestAccessor dest, double sigma )
+                            DestIterator di, DestAccessor dest,
+                            ConvolutionOptions<SrcShape::static_size> const & opt )
 { 
     typedef typename DestAccessor::value_type DestType;
     typedef typename DestType::value_type     DestValueType;
@@ -897,6 +1298,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
+    typedef typename ConvolutionOptions<N>::ScaleIterator ParamType;
     
     for(int k=0; k<N; ++k)
         if(shape[k] <=0)
@@ -905,28 +1307,37 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
     vigra_precondition(M == (int)dest.size(di),
         "hessianOfGaussianMultiArray(): Wrong number of channels in output array.");
 
-    vigra_precondition(sigma > 0.0, "hessianOfGaussianMultiArray(): Scale must be positive.");
+    ParamType params_init = opt.scaleParams();
 
-    Kernel1D<KernelType> gauss;
-    gauss.initGaussian(sigma);
+    ArrayVector<Kernel1D<KernelType> > plain_kernels(N);
+    ParamType params(params_init);
+    for (int dim = 0; dim < N; ++dim, ++params)
+    {
+        double sigma = params.sigma_scaled("hessianOfGaussianMultiArray");
+        plain_kernels[dim].initGaussian(sigma);
+    }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
 
     // compute elements of the Hessian matrix
-    for(int b=0, i=0; i<N; ++i)
+    ParamType params_i(params_init);
+    for (int b=0, i=0; i<N; ++i, ++params_i)
     {
-        for(int j=i; j<N; ++j, ++b)
+        ParamType params_j(params_i);
+        for (int j=i; j<N; ++j, ++b, ++params_j)
         {
-            ArrayVector<Kernel1D<KernelType> > kernels(N, gauss);
+            ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
             if(i == j)
             {
-                kernels[i].initGaussianDerivative(sigma, 2);
+                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 2);
             }
             else
             {
-                kernels[i].initGaussianDerivative(sigma, 1);
-                kernels[j].initGaussianDerivative(sigma, 1);
+                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 1);
+                kernels[j].initGaussianDerivative(params_j.sigma_scaled(), 1);
             }
+            detail::scaleKernel(kernels[i], 1 / params_i.step_size());
+            detail::scaleKernel(kernels[j], 1 / params_j.step_size());
             separableConvolveMultiArray(si, shape, src, di, ElementAccessor(b, dest),
                                         kernels.begin());
         }
@@ -934,13 +1345,37 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                            DestIterator di, DestAccessor dest, const Param & sigma,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    hessianOfGaussianMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                            pair<DestIterator, DestAccessor> const & dest, double sigma )
+                            pair<DestIterator, DestAccessor> const & dest,
+                            ConvolutionOptions<SrcShape::static_size> const & opt )
 {
     hessianOfGaussianMultiArray( source.first, source.second, source.third,
-                                 dest.first, dest.second, sigma );
+                                 dest.first, dest.second, opt );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class Param>
+inline void
+hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest,
+                            const Param & sigma,
+                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    hessianOfGaussianMultiArray( source.first, source.second, source.third,
+                                 dest.first, dest.second, sigma, opt );
 }
 
 namespace detail {
@@ -1043,7 +1478,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 void
 structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                           DestIterator di, DestAccessor dest, 
-                          double innerScale, double outerScale)
+                          ConvolutionOptions<SrcShape::static_size> const & opt)
 { 
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
@@ -1061,19 +1496,32 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
     vigra_precondition(M == (int)dest.size(di),
         "structureTensorMultiArray(): Wrong number of channels in output array.");
 
-    vigra_precondition(innerScale > 0.0 && outerScale >= 0.0,
-         "structureTensorMultiArray(): Scale must be positive.");
-
     MultiArray<N, GradientVector> gradient(shape);
     gaussianGradientMultiArray(si, shape, src, 
                                gradient.traverser_begin(), GradientAccessor(), 
-                               innerScale);
+                               opt,
+                               "structureTensorMultiArray");
 
     transformMultiArray(gradient.traverser_begin(), shape, GradientAccessor(), 
                         di, dest, 
                         detail::StructurTensorFunctor<N, DestType>());
 
-    gaussianSmoothMultiArray(di, shape, dest, di, dest, outerScale);
+    gaussianSmoothMultiArray(di, shape, dest, di, dest, opt.outerOptions(),
+                             "structureTensorMultiArray");
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Param_i, class Param_o>
+inline void
+structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                          DestIterator di, DestAccessor dest,
+                          const Param_i & innerScale, const Param_o & outerScale,
+                          const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    ConvolutionOptions<SrcShape::static_size> par = opt;
+    structureTensorMultiArray(si, shape, src, di, dest,
+                              par.stdDev(innerScale).outerScale(outerScale));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1081,10 +1529,25 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                           pair<DestIterator, DestAccessor> const & dest, 
-                          double innerScale, double outerScale)
+                          ConvolutionOptions<SrcShape::static_size> const & opt )
 {
     structureTensorMultiArray( source.first, source.second, source.third,
-                               dest.first, dest.second, innerScale, outerScale );
+                               dest.first, dest.second, opt );
+}
+
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Param_i, class Param_o>
+inline void
+structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                          pair<DestIterator, DestAccessor> const & dest,
+                          const Param_i & innerScale, const Param_o & outerScale,
+                          const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+{
+    structureTensorMultiArray( source.first, source.second, source.third,
+                               dest.first, dest.second,
+                               innerScale, outerScale, opt);
 }
 
 //@}
