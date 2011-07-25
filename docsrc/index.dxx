@@ -241,7 +241,7 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Separable distance transform for arrays of arbitrary dimension</em>
     <LI> \ref MultiArrayMorphology 
          <BR>&nbsp;&nbsp;&nbsp;<em>Separable morphology with parabola structuring function for arrays of arbitrary dimension</em>
-    <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D()
+    <LI> \ref labelVolume(), \ref seededRegionGrowing3D(), \ref watersheds3D(), \ref localMinima3D(), \ref localMaxima3D(),
          <BR>&nbsp;&nbsp;&nbsp;<em>3-dimensional image (i.e. volume) analysis</em>
     <LI> \ref VoxelNeighborhood
          <BR>&nbsp;&nbsp;&nbsp;<em>Easy access to the 6- and 26-neighbors of a voxel</em>
