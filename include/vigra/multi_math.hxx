@@ -49,18 +49,42 @@ namespace multi_math {
 template <class ARG>
 struct MultiMathOperand
 {
-	typedef typename ARG::result_type result_type;
+    typedef typename ARG::result_type result_type;
     
     MultiMathOperand(ARG const & a)
     : arg_(a)
     {}
         
+    // Check if all arrays involved in the expression have compatible shapes
+    // (including transparent expansion of singleton axes).
+    // 's' is the shape of the LHS array. If 's' is zero (i.e. the LHS is 
+    // not yet initialized), it is set to the maximal RHS shape.
+    //
     template <class SHAPE>
     bool checkShape(SHAPE & s) const
     {
         return arg_.checkShape(s);
     }
     
+    // increment the pointer of all RHS arrays along the given 'axis'
+    void inc(unsigned int axis) const
+    {
+        arg_.inc(axis);
+    }
+    
+    // reset the pointer of all RHS arrays along the given 'axis'
+    void reset(unsigned int axis) const
+    {
+        arg_.reset(axis);
+    }
+    
+    // get the value of the expression at the current pointer location
+    result_type operator*() const
+    {
+        return *arg_;
+    }
+    
+    // get the value of the expression at an offset of the current pointer location
     template <class SHAPE>
     result_type operator[](SHAPE const & s) const
     {
@@ -76,7 +100,7 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
     typedef MultiMathOperand AllowOverload;    
     typedef typename MultiArrayShape<N>::type Shape;
 
-	typedef T result_type;
+    typedef T result_type;
     
     MultiMathOperand(MultiArrayView<N, T, C> const & a)
     : p_(a.data()),
@@ -117,7 +141,22 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
         return p_[dot(s, strides_)];
     }
     
-    T const * p_;
+    void inc(unsigned int axis) const
+    {
+        p_ += strides_[axis];
+    }
+    
+    void reset(unsigned int axis) const
+    {
+        p_ -= shape_[axis]*strides_[axis];
+    }
+    
+    result_type operator*() const
+    {
+        return *p_;
+    }
+    
+    mutable T const * p_;
     Shape shape_, strides_;
 };
 
@@ -132,30 +171,50 @@ struct MultiMathOperand<MultiArray<N, T, A> >
     {}
 };
 
+template <class T>
+struct MultiMathScalarOperand
+{
+    typedef MultiMathOperand<T> AllowOverload;
+    typedef T result_type;
+    
+    MultiMathScalarOperand(T const & v)
+    : v_(v)
+    {}
+    
+    template <class SHAPE>
+    bool checkShape(SHAPE const &) const
+    {
+        return true;
+    }
+    
+    template <class SHAPE>
+    T const & operator[](SHAPE const &) const
+    {
+        return v_;
+    }
+    
+    void inc(unsigned int /* axis */) const
+    {}
+    
+    void reset(unsigned int /* axis */) const
+    {}
+    
+    T const & operator*() const
+    {
+        return v_;
+    }
+    
+    T v_;
+};
+
 #define VIGRA_CONSTANT_OPERAND(template_dcl, type) \
 template template_dcl \
 struct MultiMathOperand<type > \
+: MultiMathScalarOperand<type > \
 { \
-    typedef MultiMathOperand<type > AllowOverload; \
-	typedef type result_type; \
-     \
     MultiMathOperand(type const & v) \
-    : v_(v) \
+    : MultiMathScalarOperand<type >(v) \
     {} \
-     \
-    template <class SHAPE> \
-    bool checkShape(SHAPE const &) const \
-    { \
-        return true; \
-    } \
-     \
-    template <class SHAPE> \
-    type const & operator[](SHAPE const &) const \
-    { \
-        return v_; \
-    } \
-     \
-    type v_; \
 };
 
 VIGRA_CONSTANT_OPERAND(<>, signed char)
@@ -202,10 +261,26 @@ struct MultiMathUnaryOperator
         return o_.checkShape(s);
     }
     
+    //
+    void inc(unsigned int axis) const
+    {
+        o_.inc(axis);
+    }
+    
+    void reset(unsigned int axis) const
+    {
+        o_.reset(axis);
+    }
+    
     template <class POINT>
     result_type operator[](POINT const & p) const
     {
         return f_(o_[p]);
+    }
+    
+    result_type operator*() const
+    {
+        return f_(*o_);
     }
     
     O o_;
@@ -224,7 +299,7 @@ struct NAME \
      \
     template <class T> \
     typename Result<T>::type \
-	operator()(T const & t) const \
+    operator()(T const & t) const \
     { \
         return FCT(t); \
     } \
@@ -334,11 +409,34 @@ struct MultiMathBinaryOperator
         return f_(o1_[p], o2_[p]);
     }
     
+    void inc(unsigned int axis) const
+    {
+        o1_.inc(axis);
+        o2_.inc(axis);
+    }
+    
+    void reset(unsigned int axis) const
+    {
+        o1_.reset(axis);
+        o2_.reset(axis);
+    }
+    
+    result_type operator*() const
+    {
+        return f_(*o1_, *o2_);
+    }
+    
     O1 o1_;
     O2 o2_;
     F f_;
 };
 
+
+// In the sequel, the nested type 'MultiMathOperand<T>::AllowOverload'
+// ensures that template functions only participate in overload
+// resulution when this type is defined, i.e. when T is a number 
+// or array type. It thus prevents 'ambigous overload' errors.
+//
 #define VIGRA_MULTIMATH_BINARY_OPERATOR(NAME, FCT, OPNAME, SEP, RESTYPE) \
 \
 namespace detail { \
@@ -508,7 +606,60 @@ VIGRA_MULTIMATH_BINARY_OPERATOR(Maximum, std::max, maximum, VIGRA_COMMA, VIGRA_P
 
 namespace detail {
 
+// We pass 'strideOrder' to the recursion in order to make sure
+// that the inner loop iterates over the output's major axis.
+// Of course, this does not help when the RHS arrays are ordered 
+// differently -- maybe it is better to find the most common order
+// among all arguments (both RHS and LHS)?
+//
+template <unsigned int N, class Assign>
+struct MultiMathExec
+{
+    enum { LEVEL = N-1 };
+    
+    template <class T, class Shape, class Expression>
+    static void exec(T * data, Shape const & shape, Shape const & strides, 
+                     Shape const & strideOrder, Expression const & e)
+    {
+        MultiArrayIndex axis = strideOrder[LEVEL];
+        for(MultiArrayIndex k=0; k<shape[axis]; ++k, data += strides[axis], e.inc(axis))
+        {
+            MultiMathExec<N-1, Assign>::exec(data, shape, strides, strideOrder, e);
+        }
+        e.reset(axis);
+        data -= shape[axis]*strides[axis];
+    }
+};
+
+template <class Assign>
+struct MultiMathExec<1, Assign>
+{
+    enum { LEVEL = 0 };
+    
+    template <class T, class Shape, class Expression>
+    static void exec(T * data, Shape const & shape, Shape const & strides, 
+                     Shape const & strideOrder, Expression const & e)
+    {
+        MultiArrayIndex axis = strideOrder[LEVEL];
+        for(MultiArrayIndex k=0; k<shape[axis]; ++k, data += strides[axis], e.inc(axis))
+        {
+            Assign::assign(data, e);
+        }
+        e.reset(axis);
+        data -= shape[axis]*strides[axis];
+    }
+};
+
 #define VIGRA_MULTIMATH_ASSIGN(NAME, OP) \
+struct MultiMath##NAME \
+{ \
+    template <class T, class Expression> \
+    static void assign(T * data, Expression const & e) \
+    { \
+        *data OP (*e); \
+    } \
+}; \
+ \
 template <unsigned int N, class T, class C, class Expression> \
 void NAME(MultiArrayView<N, T, C> a, MultiMathOperand<Expression> const & e) \
 { \
@@ -517,9 +668,8 @@ void NAME(MultiArrayView<N, T, C> a, MultiMathOperand<Expression> const & e) \
     vigra_precondition(e.checkShape(shape), \
        "multi_math: shape mismatch in expression."); \
         \
-    typename MultiArrayView<N, T, C>::iterator i = a.begin(), end = a.end(); \
-    for(; i != end; ++i) \
-	*i OP (e[i.point()]); \
+    MultiMathExec<N, MultiMath##NAME>::exec(a.data(), a.shape(), a.stride(), \
+                                            a.strideOrdering(), e); \
 } \
  \
 template <unsigned int N, class T, class A, class Expression> \
@@ -533,10 +683,8 @@ void NAME##OrResize(MultiArray<N, T, A> & a, MultiMathOperand<Expression> const 
     if(a.size() == 0) \
         a.reshape(shape); \
          \
-    typename MultiArrayView<N, T>::iterator i = static_cast<MultiArrayView<N, T> &>(a).begin(), \
-                                            end = i.getEndIterator(); \
-    for(; i != end; ++i) \
-        *i OP (e[i.point()]); \
+    MultiMathExec<N, MultiMath##NAME>::exec(a.data(), a.shape(), a.stride(), \
+                                            a.strideOrdering(), e); \
 }
 
 VIGRA_MULTIMATH_ASSIGN(assign, = vigra::detail::RequiresExplicitCast<T>::cast)
