@@ -108,6 +108,16 @@ class classproperty(object):
 
 from vigranumpycore import AxisType, AxisInfo, AxisTags
 
+def newaxis(axistype=AxisType()):
+    return axistype
+
+def taggedView(array, axistags):
+    if array.ndim != len(axistags):
+        raise RuntimeError('vigra.taggedView(): array.ndim must match len(axistags).')
+    res = array.view(VigraArray)
+    res.axistags = copy.copy(axistags)
+    return res
+
 def dropChannelAxis(array):
     try:
         return array.dropChannelAxis()
@@ -480,7 +490,11 @@ this class via its subclasses!
         return self.transposeToNumpyOrder().view(numpy.ndarray).ravel(order)        
 
     def __str__(self):
-        return str(self.transposeToVigraOrder().transpose().view(numpy.ndarray))
+        try:
+            self = self.transposeToVigraOrder().transpose()
+        except:
+            pass
+        return str(self.view(numpy.ndarray))
     
     def bindAxis(self, which, value=0):
         if type(which) == str:
@@ -535,6 +549,32 @@ this class via its subclasses!
 
     def transposeToNumpyOrder(self):
         return self.transposeToOrder('C')
+
+    def __getitem__(self, index):
+        '''x.__getitem__(y) <==> x[y]
+         
+           In addition to the usual indexing functionality, this function
+           also updates the axistags of the result array. There are three cases:
+             * getitem creates a scalar value => no axistags are required
+             * getitem creates an arrayview => axistags are transferred from the
+                                             corresponding axes of the base array,
+                                             axes resulting from 'newaxis' get tag 'None'
+             * getitem creates a copy of an array (fancy indexing) => all axistags are 'None'
+           If the index contains 'numpy.newaxis', a new singleton axis is inserted at the 
+           appropriate position, whose axisinfo is set to 'unknown'. If the index contains
+           'vigra.newaxis(axisinfo)', the singleton axis will get the given axisinfo.
+        '''
+        try:
+            res = numpy.ndarray.__getitem__(self, index)
+        except:
+            res = numpy.ndarray.__getitem__(self, 
+                     map(lambda x: None if isinstance(x, AxisInfo) else x, index))
+        if res is not self and hasattr(res, 'axistags'):
+            if res.base is self:
+                res.axistags = res.transform_axistags(index)
+            else:
+                res.axistags = res.empty_axistags(res.ndim)
+        return res
     
     # we reimplement the numerical operators in order to make sure that array order is preserved
     def __abs__(self):

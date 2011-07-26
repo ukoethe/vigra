@@ -264,7 +264,7 @@ void AxisTags_insertChannelAxis(AxisTags & axistags)
         axistags.push_back(AxisInfo::c());
 }
 
-AxisInfo const & AxisTags_getitem(AxisTags const & axistags, int index)
+AxisInfo & AxisTags_getitem(AxisTags & axistags, int index)
 {
     if(index < 0)
         index += axistags.size();
@@ -337,7 +337,7 @@ AxisTags_permutationFromNumpyOrder(AxisTags & axistags)
 AxisTags *
 AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
 {
-    std::auto_ptr<AxisTags> newTags(new AxisTags(lnew));
+    std::auto_ptr<AxisTags> newTags(new AxisTags());
     python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
     int lold = oldTags.size();
     if(!PySequence_Check(index.ptr()))
@@ -345,16 +345,16 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
         index = python::make_tuple(index);
     }
     int lindex = len(index);
-    int lnone = 0, lellipsis = 0;
+    int lnewaxis = 0, lellipsis = 0;
     for(int k=0; k<lindex; ++k)
     {
         python::object item(index[k]);
-        if(item == python::object())
-            ++lnone;
+        if(item == python::object() || python::extract<AxisInfo const &>(item).check())
+            ++lnewaxis;
         else if(item == ellipsis)
             ++lellipsis;
     }
-    lindex -= lnone;
+    lindex -= lnewaxis;
     if(lindex < lold && lellipsis == 0)
     {
         index += python::make_tuple(ellipsis);
@@ -374,18 +374,31 @@ AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
         {
             if(item != python::object())
             {
-                newTags->get(knew) = oldTags.get(kold);
-                // adjust the resolution if item has a valid 'step' member
-                python::extract<python::slice> slice(item);
-                if(slice.check())
+                python::extract<AxisInfo const &> newaxis(item);
+                
+                if(newaxis.check())
                 {
-                    python::extract<int> step(slice().step());
-                    if(step.check())
-                    {
-                        newTags->get(knew).resolution_ *= step();
-                    }
+                    newTags->push_back(newaxis);
                 }
-                ++kold;
+                else
+                {
+                    newTags->push_back(oldTags.get(kold));
+                    // adjust the resolution if item has a valid 'step' member
+                    python::extract<python::slice> slice(item);
+                    if(slice.check())
+                    {
+                        python::extract<int> step(slice().step());
+                        if(step.check())
+                        {
+                            newTags->get(knew).resolution_ *= step();
+                        }
+                    }
+                    ++kold;
+                }
+            }
+            else
+            {
+                newTags->push_back(AxisInfo());
             }
             ++knew;
             if(lellipsis > 0 && item == ellipsis)
@@ -482,11 +495,9 @@ void defineAxisTags()
         .def("__copy__", &generic__copy__<AxisTags>)
         .def("__deepcopy__", &generic__deepcopy__<AxisTags>)
         .def("__len__", &AxisTags::size)
-        .def("__getitem__", &AxisTags_getitem,
-                             return_value_policy<copy_const_reference>())
+        .def("__getitem__", &AxisTags_getitem, return_internal_reference<>())
         .def("__getitem__", 
-            (AxisInfo const & (AxisTags::*)(std::string const &) const)&AxisTags::get,
-                             return_value_policy<copy_const_reference>())
+            (AxisInfo & (AxisTags::*)(std::string const &))&AxisTags::get, return_internal_reference<>())
         .def("__setitem__", (void (AxisTags::*)(int, AxisInfo const &))&AxisTags::set)
         .def("__setitem__", 
             (void (AxisTags::*)(std::string const &, AxisInfo const &))&AxisTags::set)
