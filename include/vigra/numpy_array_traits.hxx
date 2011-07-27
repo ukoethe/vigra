@@ -261,8 +261,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-		PyObject * obj = (PyObject *)array;
-		int ndim = PyArray_NDIM(obj);
+        PyObject * obj = (PyObject *)array;
+        int ndim = PyArray_NDIM(obj);
 
         return ndim == N;
     }
@@ -303,7 +303,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
         
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
@@ -318,7 +318,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
     }
 
@@ -346,20 +346,23 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
-        int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
         if(channelIndex < ndim)
         {
-            return (ndim == N && strides[channelIndex] == itemsize);
+            // When we have a channel axis, it will become the innermost dimension
+            return (ndim == N && strides[channelIndex] == sizeof(T));
         }
         else if(majorIndex < ndim)
         {
-            return (ndim == N && strides[majorIndex] == itemsize);
+            // When we have axistags, but no channel axis, the major spatial
+            // axis will be the innermost dimension
+            return (ndim == N && strides[majorIndex] == sizeof(T));
         }
-        else
+        else 
         {
-            return (ndim == N && strides[ndim-1] == itemsize);
+            // When we have no axistags, the first axis will be the innermost dimension
+            return (ndim == N && strides[0] == sizeof(T));
         }
     }
 
@@ -389,17 +392,15 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-		int ndim = PyArray_NDIM(obj);
-        long channelIndex = pythonGetAttr(obj, "channelIndex", N);
+        int ndim = PyArray_NDIM(obj);
+        long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         
-        // When ndim is right, this array must not have an explicit channel axis.
-        if(ndim == N)
-            return channelIndex == N;
+        // If we have no channel axis (because either we don't have axistags, 
+        // or the tags do not contain a channel axis), ndim must match.
+        if(channelIndex == ndim)
+            return ndim == N;
             
-        // When we have one extra axis, we allow to drop it, provided it is
-        // a channel axis and the number of channels is 1.
-        // When no explicit channel axis is known, we use the last axis by
-        // default (we automaticaly get 'channelIndex == N' in this case).
+        // Otherwise, the channel axis must be a singleton axis that we can drop.
         return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1;
     }
 
@@ -450,7 +451,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
         
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
@@ -464,7 +465,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
         else if(permute.size() == N+1)
         {
@@ -497,34 +498,21 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
-        int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
-        if(channelIndex < ndim)
-        {
-            // When we have a channel axis, it must be a singleton, so that we can drop it.
-            // Moreover, the major axis among the remaining ones must be unstrided.
-            // (Note that existence of a valid channelIndex implies a valid majorIndex.)
-            return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && strides[majorIndex] == itemsize;
-        }
-        else if(majorIndex < ndim)
-        {
-            // We have axistags, but no channel axis
-            // => ndim must be right, and the majorAxis must be unstrided
-            return ndim == N && strides[majorIndex] == itemsize;
-        }
-        else
-        {
-            // We have no axistags. When ndim == N, we assume that
-            //     there is no channel index and
-            //     majorIndex == ndim-1
-            // When ndim == N+1, we assume that
-            //     channelIndex == ndim-1
-            //     majorIndex == ndim-2
-            // and require the channel axis to be a singleton.
-            return (ndim == N && strides[ndim-1] == itemsize)  ||
-                    (ndim == N+1 && PyArray_DIM(obj, ndim-1) == 1 && strides[ndim-2] == itemsize);
-        }
+        // If we have no axistags, ndim must match, and axis 0 must be unstrided.
+        if(majorIndex == ndim) 
+            return N == ndim && strides[0] == sizeof(T);
+            
+        // If we have axistags, but no channel axis, ndim must match, 
+        // and the major non-channel axis must be unstrided.
+        if(channelIndex == ndim) 
+            return N == ndim && strides[majorIndex] == sizeof(T);
+            
+        // Otherwise, the channel axis must be a singleton axis that we can drop,
+        // and the major non-channel axis must be unstrided.
+        return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && 
+                strides[majorIndex] == sizeof(T);
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -561,7 +549,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         
         if(channelIndex < ndim)
         {
-            // When we have a channel axis, ndim must be right.
+            // When we have a channel axis, ndim must match.
             return ndim == N;
         }
         else if(majorIndex < ndim)
@@ -571,8 +559,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         }
         else
         {
-            // Otherwise, we may or may not add a singleton channel axis.
-            return ndim == N || ndim == N-1;
+            // When we have no axistags, ndim must match.
+            return ndim == N;
         }
     }
 
@@ -596,7 +584,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
-        if(!tagged_shape.axistags.hasChannelAxis() && tagged_shape.channelCount() == 1)
+        if(tagged_shape.axistags && 
+           !tagged_shape.axistags.hasChannelAxis() && tagged_shape.channelCount() == 1)
         {
             tagged_shape.setChannelCount(0);
             vigra_precondition(tagged_shape.size() == N-1,
@@ -624,9 +613,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
             if(permute.size() == 0)
             {
-                permute.resize(N-1);
-                linearSequence(permute.begin(), permute.end(), int(N-2), -1);
-                permute.push_back(N-1);
+                permute.resize(N);
+                linearSequence(permute.begin(), permute.end());
             }
             else
             {
@@ -648,7 +636,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             if(permute.size() == 0)
             {
                 permute.resize(N-1);
-                linearSequence(permute.begin(), permute.end(), int(N-2), -1);
+                linearSequence(permute.begin(), permute.end());
             }
         }
         
@@ -663,10 +651,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
         if(permute.size() == 0)
         {
-            permute.resize(N-1);
-            linearSequence(permute.begin(), permute.end(), int(N-2), -1);
-            if(PyArray_NDIM((PyArrayObject*)array.get()) == N)
-                permute.push_back(N-1);
+            permute.resize(N);
+            linearSequence(permute.begin(), permute.end());
         }
         else if(permute.size() == N)
         {
@@ -702,31 +688,25 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
-        int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
 
         if(channelIndex < ndim)
         {
-            // When we have a channel axis, ndim must be right, and the major non-channel
+            // When we have a channel axis, ndim must match, and the major non-channel
             // axis must be unstrided.
-            return ndim == N && strides[majorIndex] == itemsize*PyArray_DIM(obj, channelIndex);
+            return ndim == N && strides[majorIndex] == sizeof(T);
         }
         else if(majorIndex < ndim)
         {
-            // We have axistags, but no channel axis
-            // => We will add a singleton channel axis later, and the major axis must be unstrided.
-            return ndim == N-1 && strides[majorIndex] == itemsize;
+            // When we have axistags, but no channel axis, we will add a
+            // singleton channel axis, and the major non-channel axis must be unstrided.
+            return ndim == N-1 && strides[majorIndex] == sizeof(T);
         }
         else
         {
-            // We have no axistags. When ndim == N, we assume that
-            //     channelIndex == ndim-1
-            //     majorIndex == ndim-2
-            // When ndim == N-1, we assume
-            //     there is no channel axis
-            //     majorIndex == ndim-1
-            return (ndim == N && strides[ndim-2] == itemsize*PyArray_DIM(obj, ndim-1))  ||
-                    (ndim == N-1 && strides[ndim-1] == itemsize);
+            // When we have no axistags, ndim must match, and axis 0 must
+            // be unstrided.
+            return ndim == N && strides[0] == sizeof(T);
         }
     }
 
@@ -770,14 +750,15 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     {
         PyObject * obj = (PyObject *)array;
         
-        if(PyArray_NDIM(obj) != N+1) // We need an extra channel axis.
+         // We need an extra channel axis.
+         if(PyArray_NDIM(obj) != N+1)
             return false;
             
+        // When there are no axistags, we assume that the last axis represents the channels.
         long channelIndex = pythonGetAttr(obj, "channelIndex", N);
-        int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
-        return PyArray_DIM(obj, channelIndex) == M && strides[channelIndex] == itemsize;
+        return PyArray_DIM(obj, channelIndex) == M && strides[channelIndex] == sizeof(T);
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -818,7 +799,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
         
         applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
@@ -832,7 +813,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         if(permute.size() == 0)
         {
             permute.resize(N);
-            linearSequence(permute.begin(), permute.end(), int(N-1), -1);
+            linearSequence(permute.begin(), permute.end());
         }
         else if(permute.size() == N+1)
         {
@@ -875,28 +856,33 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
         
-        if(PyArray_NDIM(obj) != N+1) // We need an extra channel axis.
+         // We need an extra channel axis. 
+        if(ndim != N+1)
             return false;
             
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
-        int itemsize = PyArray_ITEMSIZE(obj);
         npy_intp * strides = PyArray_STRIDES(obj);
         
-        if(channelIndex == ndim)
+        if(majorIndex < ndim)
         {
-            if(majorIndex != ndim) // we have axis tags, but no channel axis 
-                return false;     // => cannot be a vector image
+            // We have axistags, but no channel axis => cannot be a TinyVector image
+            if(channelIndex == ndim)
+                return false;
                 
-            return PyArray_DIM(obj, N) == M && 
-                   strides[N] == itemsize &&
-                   strides[N-1] == sizeof(TinyVector<T, M>);
+            // We have an explicit channel axis => shapes and strides must match
+            return PyArray_DIM(obj, channelIndex) == M && 
+                   strides[channelIndex] == sizeof(T) &&
+                   strides[majorIndex] == sizeof(TinyVector<T, M>);
+            
+            
         }
         else
         {
-            return PyArray_DIM(obj, channelIndex) == M && 
-                   strides[channelIndex] == itemsize &&
-                   strides[majorIndex] == sizeof(TinyVector<T, M>);
+            // we have no axistags => we assume that the channel axis is last
+            return PyArray_DIM(obj, N) == M && 
+                   strides[N] == sizeof(T) &&
+                   strides[0] == sizeof(TinyVector<T, M>);
         }
     }
 

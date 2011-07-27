@@ -528,7 +528,7 @@ class TaggedShape
     
     void rotateToNormalOrder()
     {
-        if(channelAxis == last)
+        if(axistags && channelAxis == last)
         {
             int ndim = (int)size();
             
@@ -806,10 +806,10 @@ void unifyTaggedShapeSize(TaggedShape & tagged_shape)
 inline // FIXME
 ArrayVector<npy_intp> finalizeTaggedShape(TaggedShape & tagged_shape)
 {
-    tagged_shape.rotateToNormalOrder();
-    
     if(tagged_shape.axistags)
     {
+        tagged_shape.rotateToNormalOrder();
+    
         // we assume here that the axistag object belongs to the array to be created
         // so that we can freely edit it
         scaleAxisResolution(tagged_shape);

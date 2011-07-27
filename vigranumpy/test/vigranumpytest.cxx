@@ -41,6 +41,8 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <iostream>
 
+namespace python = boost::python;
+
 namespace vigra {
 
 python::tuple testAny(NumpyAnyArray array)

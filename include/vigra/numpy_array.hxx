@@ -363,7 +363,7 @@ class NumpyAnyArray
          // */
     // difference_type permutationToNormalOrder() const
     // {
-		// if(!hasData())
+        // if(!hasData())
             // return difference_type();
             
         // // difference_type res(detail::getAxisPermutationImpl(pyArray_, 
@@ -484,6 +484,7 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
     
     int ndim = (int)shape.size();
     ArrayVector<npy_intp> inverse_permutation;
+    int order = 1; // Fortran order
     
     if(axistags)
     {
@@ -499,11 +500,14 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
         arraytype = python_ptr((PyObject*)&PyArray_Type);
 
         inverse_permutation.resize(ndim);
-        linearSequence(inverse_permutation.begin(), inverse_permutation.end(), ndim-1, -1);
+        linearSequence(inverse_permutation.begin(), inverse_permutation.end());
+        order = 0; // C order
     }
     
+//    std::cerr << "constructArray: " << shape << "\n" << inverse_permutation << "\n";
+    
     python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
-                                  typeCode, 0, 0, 0, 1 /* Fortran order */, 0),
+                                  typeCode, 0, 0, 0, order, 0),
                      python_ptr::keep_count);
     pythonToCppException(array);
 
@@ -849,7 +853,7 @@ class NumpyArray
     ArrayVector<U>
     permuteLikewise(ArrayVector<U> const & data) const
     {
-		vigra_precondition(hasData(),
+        vigra_precondition(hasData(),
             "NumpyArray::permuteLikewise(): array has no data.");
 
         ArrayVector<U> res(data.size());
@@ -865,7 +869,7 @@ class NumpyArray
     TinyVector<U, K>
     permuteLikewise(TinyVector<U, K> const & data) const
     {
-		vigra_precondition(hasData(),
+        vigra_precondition(hasData(),
             "NumpyArray::permuteLikewise(): array has no data.");
             
         TinyVector<U, K> res;
@@ -963,7 +967,7 @@ class NumpyArray
     }
 
 #if 0 // FIXME: implement this in a different way
-	    /**
+        /**
          * Set up an unsafe reference to the given MultiArrayView.
          * ATTENTION: This creates a numpy.ndarray that points to the
          * same data, but does not own it, so it must be ensured by
@@ -993,6 +997,13 @@ class NumpyArray
          */
     void makeCopy(PyObject *obj, bool strict = false)
     {
+#if VIGRA_CONVERTER_DEBUG
+        int ndim = PyArray_NDIM((PyArrayObject *)obj);
+        npy_intp * s = PyArray_DIMS((PyArrayObject *)obj);
+        std::cerr << "makeCopy: " << ndim << " " <<  ArrayVectorView<npy_intp>(ndim, s) << 
+                     ", strides " << ArrayVectorView<npy_intp>(ndim, PyArray_STRIDES((PyArrayObject *)obj)) << "\n";
+        std::cerr << "for " << typeid(*this).name() << "\n";
+#endif
         vigra_precondition(strict ? isReferenceCompatible(obj) : isCopyCompatible(obj),
                      "NumpyArray::makeCopy(obj): Cannot copy an incompatible array.");
 
@@ -1040,8 +1051,8 @@ class NumpyArray
     void reshapeIfEmpty(difference_type const & shape, std::string message = "")
     {
         // FIXME: is this really a good replacement?
-		// reshapeIfEmpty(shape, standardStrideOrdering(), message);
-		reshapeIfEmpty(TaggedShape(shape), message);
+        // reshapeIfEmpty(shape, standardStrideOrdering(), message);
+        reshapeIfEmpty(TaggedShape(shape), message);
     }
 
         /**
@@ -1051,7 +1062,9 @@ class NumpyArray
          */
     void reshapeIfEmpty(TaggedShape tagged_shape, std::string message = "")
     {
+//        std::cerr << "before: " << tagged_shape.shape << "\n";
         ArrayTraits::finalizeTaggedShape(tagged_shape);
+//        std::cerr << "after: " << tagged_shape.shape << "\n";
         
         if(hasData())
         {
@@ -1062,6 +1075,9 @@ class NumpyArray
 
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
                              python_ptr::keep_count);
+            // int ndim = PyArray_NDIM((PyArrayObject *)array.get());
+            // npy_intp * s = PyArray_DIMS((PyArrayObject *)array.get());
+            // std::cerr << "constructed: " << ndim << " " <<  ArrayVectorView<npy_intp>(ndim, s) << "\n";
             vigra_postcondition(makeReference(NumpyAnyArray(array.get())),
                   "NumpyArray.reshapeIfEmpty(): Python constructor did not produce a compatible array.");
         }
