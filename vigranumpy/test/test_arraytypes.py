@@ -327,14 +327,10 @@ def checkFailure(obj, n):
         return
     raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s, stride %s, axistags '%s'" % (n, type(obj), str(obj.shape), str(obj.strides), repr(getattr(obj, "axistags", "none")))
 
-def checkCompatibility(testarray, compatible, addSingletonAxisForMultiband=""):
+def checkCompatibility(obj, compatible):
     for n in compatible:
         try:
             f = getattr(vt, n)
-            if n == addSingletonAxisForMultiband:
-                obj = testarray[..., None]
-            else:
-                obj = testarray
             shape, acopy, default_ordering, same_ordering = f(obj)
             
             assert_equal(obj.shape, shape)
@@ -376,24 +372,11 @@ def checkCompatibility(testarray, compatible, addSingletonAxisForMultiband=""):
                     else:
                         assert_equal(obj.shape, default_ordering.shape)
                         
-                 # else:
-                    # # FIXME: should permutationToNormalOrder() return a list?
-                    # permutation = list(default_ordering.permutationToNormalOrder())
-                    # permutation.reverse()
-                    # cdefault = default_ordering.transpose(permutation)
-                    
-                    # if obj.ndim < cdefault.ndim and cdefault.shape[-1] == 1:
-                        # assert_equal(obj.shape, cdefault.shape[:-1])
-                    # else:
-                        # assert_equal(obj.shape, cdefault.shape)
-                        
                 # test 'same_ordering'
                 assert_equal(obj.__class__, same_ordering.__class__)
                     
                 cobj = obj
                 cdefault = same_ordering
-                
-                assert (obj == same_ordering).all()
                 
                 if hasattr(obj, 'axistags'):
                     if cobj.ndim > cdefault.ndim:
@@ -408,6 +391,7 @@ def checkCompatibility(testarray, compatible, addSingletonAxisForMultiband=""):
                         cdefault = cdefault[...,0]
                 
                 assert_equal(cobj.shape, cdefault.shape)
+                assert (cobj == cdefault).all()
         except Exception:
             print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
                                             repr(getattr(obj, "axistags", "none")))
@@ -417,7 +401,6 @@ def checkCompatibility(testarray, compatible, addSingletonAxisForMultiband=""):
     incompatible = allTests.difference(compatible)
     
     for n in incompatible:
-        obj = testarray
         try:
             checkFailure(obj, n)
         except Exception:
@@ -449,7 +432,7 @@ def testImage1():
 
     a = numpy.ndarray(rshape, dtype=numpy.float32)
     a[...] = 2
-    checkCompatibility(a, c, "testImageMultibandStrided")
+    checkCompatibility(a, c)
 
     img = arraytypes.Image(rshape, order='C').dropChannelAxis()
     checkShape(vt.viewArray2Unstrided(img), shape)
@@ -477,20 +460,16 @@ def testImage2():
          
     checkCompatibility(arraytypes.Image(cshape, order='C', value=2), c)
     
-    # c += ["testImageMultibandUnstrided"]
-
     checkCompatibility(arraytypes.Image(shape, order='V', value=2), c)
     
     checkCompatibility(arraytypes.Image(fshape, order='F', value=2), c)
-    
-    # c += ["testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-          # "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
     
     c = ["testAny",
          "testArray3Strided",
          "testImageMultibandStrided",
          "testImageVector2Strided",
-         "testVolumeSinglebandStrided"]
+         "testVolumeSinglebandStrided",
+         "testVolumeMultibandStrided"]
 
     a = numpy.ndarray(cshape, dtype=numpy.float32)
     a[...] = 2
@@ -538,8 +517,7 @@ def testScalarImage():
          "testImageSinglebandStrided",
          "testImageMultibandStrided"]
          
-    checkCompatibility(arraytypes.ScalarImage(cshape, order='C', value=2).view(numpy.ndarray), 
-                       c, "testImageMultibandStrided")
+    checkCompatibility(arraytypes.ScalarImage(cshape, order='C', value=2).view(numpy.ndarray), c)
 
     img = arraytypes.ScalarImage(cshape, order='C')
     checkShape(vt.viewArray2Unstrided(img), shape)
@@ -571,14 +549,12 @@ def testRGBImage():
 
     checkCompatibility(arraytypes.RGBImage(shape, order='F', value=2), c)
     
-    # c += ["testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-          # "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    
     c = ["testAny",
          "testArray3Strided",
          "testImageMultibandStrided",
          "testImageRGBStrided",
-         "testVolumeSinglebandStrided"]
+         "testVolumeSinglebandStrided",
+         "testVolumeMultibandStrided"]
 
     checkCompatibility(arraytypes.RGBImage(cshape, order='C', value=2).view(numpy.ndarray), c)
 
@@ -620,14 +596,12 @@ def testVector2Image():
     
     checkCompatibility(arraytypes.Vector2Image(shape, order='F', value=2), c)
     
-    # c += ["testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-          # "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    
     c = ["testAny",
          "testArray3Strided",
          "testImageMultibandStrided",
          "testImageVector2Strided",
-         "testVolumeSinglebandStrided"]
+         "testVolumeSinglebandStrided", 
+         "testVolumeMultibandStrided"]
 
     checkCompatibility(arraytypes.Vector2Image(cshape, order='C', value=2).view(numpy.ndarray), c)
 
@@ -676,13 +650,13 @@ def testVolume1():
     
     c = ["testAny",
          "testArray3Strided",
+         "testImageMultibandStrided",
          "testVolumeSinglebandStrided",
-         "testVolumeMultibandStrided",
-         "testImageMultibandStrided"]
+         "testVolumeMultibandStrided"]
 
     a = numpy.ndarray(rshape, dtype=numpy.float32)
     a[...] = 2
-    checkCompatibility(a, c, "testVolumeMultibandStrided")
+    checkCompatibility(a, c)
 
     vol = arraytypes.Volume(rshape, order='C').dropChannelAxis()
     checkShape(vt.viewArray3Unstrided(vol), shape)
@@ -760,16 +734,13 @@ def testScalarVolume():
     
     checkCompatibility(arraytypes.ScalarVolume(shape, order='F', value=2), c)
     
-    # c += ["testImageMultibandUnstrided", "testImageMultibandStrided"]
-    
     c = ["testAny",
          "testArray3Strided",
+         "testImageMultibandStrided",
          "testVolumeSinglebandStrided",
-         "testVolumeMultibandStrided",
-         "testImageMultibandStrided"]
+         "testVolumeMultibandStrided"]
          
-    checkCompatibility(arraytypes.ScalarVolume(cshape, order='C', value=2).view(numpy.ndarray), 
-                       c, "testVolumeMultibandStrided")
+    checkCompatibility(arraytypes.ScalarVolume(cshape, order='C', value=2).view(numpy.ndarray), c)
 
     vol = arraytypes.ScalarVolume(cshape, order='C')
     checkShape(vt.viewArray3Unstrided(vol), shape)

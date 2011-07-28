@@ -559,8 +559,8 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         }
         else
         {
-            // When we have no axistags, ndim must match.
-            return ndim == N;
+            // When we have no axistags, we may add a singleton dimension.
+            return ndim == N || ndim == N-1;
         }
     }
 
@@ -651,7 +651,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
         if(permute.size() == 0)
         {
-            permute.resize(N);
+            permute.resize(PyArray_NDIM((PyArrayObject*)array.get()));
             linearSequence(permute.begin(), permute.end());
         }
         else if(permute.size() == N)
@@ -704,9 +704,9 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         }
         else
         {
-            // When we have no axistags, ndim must match, and axis 0 must
-            // be unstrided.
-            return ndim == N && strides[0] == sizeof(T);
+            // When we have no axistags, axis 0 must be unstrided, but we
+            // may add a singleton dimension at the end.
+            return (ndim == N || ndim == N-1) && strides[0] == sizeof(T);
         }
     }
 
