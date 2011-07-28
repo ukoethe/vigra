@@ -263,15 +263,24 @@ this class via its subclasses!
 
     # IMPORTANT: do not remove this function, it is called from C++
     @staticmethod
-    def defaultAxistags(ndim, order=None):
+    def defaultAxistags(ndim, order=None, noChannels=False):
         if order is None:
             order = VigraArray.defaultOrder
         if order == 'F':
-            tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim]
+            if noChannels:
+                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
+            else:
+                tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
         elif order == 'C':
-            tags = [AxisInfo(), AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
+            if noChannels:
+                tags = [AxisInfo.t, AxisInfo.z, AxisInfo.y, AxisInfo.x][-ndim:]
+            else:
+                tags = [AxisInfo.t, AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
         else: # order in ['A', 'V']:
-            tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo()][:ndim-1] + [AxisInfo.c]
+            if noChannels:
+                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
+            else:
+                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim-1] + [AxisInfo.c]
         return AxisTags(tags)
 
     # IMPORTANT: do not remove this function, it is called from C++
