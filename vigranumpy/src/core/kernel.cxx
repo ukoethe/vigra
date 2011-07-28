@@ -51,16 +51,16 @@ namespace vigra
 template<class T>
 void pythonInitExplicitlyKernel1D(Kernel1D<T> &k, int left, int right, NumpyArray<1,T> contents)
 {
-	vigra_precondition(contents.size() == 1 || right-left+1 == contents.shape(0),
-	          "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
-	          
-	k.initExplicitly(left,right);
-	for(int i=left; i<=right; ++i)
-	{
-		k[i] = (contents.size() == 1)
-		             ? contents(0)
-		             : contents(i-left);
-	}
+    vigra_precondition(contents.size() == 1 || right-left+1 == contents.shape(0),
+              "Kernel1D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
+              
+    k.initExplicitly(left,right);
+    for(int i=left; i<=right; ++i)
+    {
+        k[i] = (contents.size() == 1)
+                     ? contents(0)
+                     : contents(i-left);
+    }
 }
 
 #if 0 // alternative implementation
@@ -134,43 +134,27 @@ void pythonSetItemKernel1D(Kernel1D<T> & self, int position, T value)
         python::throw_error_already_set();
     }
 }
-	
+    
 template<class T>
 void pythonInitExplicitlyKernel2D(Kernel2D<T> &k,
                                   MultiArrayShape<2>::type upperleft, MultiArrayShape<2>::type lowerright,
                                   NumpyArray<2,T> contents)
 {
-	vigra_precondition(contents.size() == 1 || 
-	                   lowerright - upperleft + MultiArrayShape<2>::type(1,1) == contents.shape(),
-	          "Kernel2D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
+    vigra_precondition(contents.size() == 1 || 
+                       lowerright - upperleft + MultiArrayShape<2>::type(1,1) == contents.shape(),
+              "Kernel2D::initExplicitly(): 'contents' must contain as many elements as the kernel (or just one element).");
 
     Point2D ul(upperleft[0], upperleft[1]), lr(lowerright[0], lowerright[1]);
     
     k.initExplicitly(ul, lr);
 
-    if(contents.axistags())
+    for(int y = ul.y; y <= lr.y; ++y)
     {
-        for(int y = ul.y; y <= lr.y; ++y)
+        for(int x = ul.x; x <= lr.x; ++x)
         {
-            for(int x = ul.x; x <= lr.x; ++x)
-            {
-                k(x,y) = (contents.size() == 1)
-                               ? contents(0)
-                               : contents(x-ul.x, y-ul.y);
-            }
-        }
-    }
-    else
-    {
-        // we must transpose contents() when there are not axistags
-        for(int y = ul.y; y <= lr.y; ++y)
-        {
-            for(int x = ul.x; x <= lr.x; ++x)
-            {
-                k(x,y) = (contents.size() == 1)
-                               ? contents(0)
-                               : contents(y-ul.y, x-ul.x);
-            }
+            k(x,y) = (contents.size() == 1)
+                           ? contents(0)
+                           : contents(x-ul.x, y-ul.y);
         }
     }
 }
@@ -260,18 +244,18 @@ void pythonSetItemKernel2D(Kernel2D<T> & self, MultiArrayShape<2>::type position
 template<class T>
 void defineKernels()
 {
-	using namespace python;
+    using namespace python;
     
     docstring_options doc_options(true, true, false);
 
-	enum_<BorderTreatmentMode>("BorderTreatmentMode")
-		.value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)
-		.value("BORDER_TREATMENT_CLIP",BORDER_TREATMENT_CLIP)
-		.value("BORDER_TREATMENT_REPEAT",BORDER_TREATMENT_REPEAT)
-		.value("BORDER_TREATMENT_REFLECT",BORDER_TREATMENT_REFLECT)
-		.value("BORDER_TREATMENT_WRAP",BORDER_TREATMENT_WRAP);
+    enum_<BorderTreatmentMode>("BorderTreatmentMode")
+        .value("BORDER_TREATMENT_AVOID",BORDER_TREATMENT_AVOID)
+        .value("BORDER_TREATMENT_CLIP",BORDER_TREATMENT_CLIP)
+        .value("BORDER_TREATMENT_REPEAT",BORDER_TREATMENT_REPEAT)
+        .value("BORDER_TREATMENT_REFLECT",BORDER_TREATMENT_REFLECT)
+        .value("BORDER_TREATMENT_WRAP",BORDER_TREATMENT_WRAP);
 
-	class_<Kernel1D<T> > kernel1d("Kernel1D",
+    class_<Kernel1D<T> > kernel1d("Kernel1D",
                                 "Generic 1 dimensional convolution kernel.\n\n"
                                 "This kernel may be used for convolution of 1 dimensional signals or "
                                 "for separable convolution of multidimensional signals. "
@@ -282,13 +266,13 @@ void defineKernels()
                                 "properties. "
                                 "For more details, see Kernel1D_ in the C++ documentation.\n\n",
                                 init<>("Standard constructor::\n\n   Kernel1D()\n\nCreates an identity kernel.\n"));
-	kernel1d
+    kernel1d
         .def(init< Kernel1D<T> >(args("kernel"),
             "Copy constructor::\n\n"
             "   Kernel1D(other_kernel)\n\n"))
-		.def("initGaussian",
-			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
-			 (arg("scale"), arg("norm")=1.0),
+        .def("initGaussian",
+             (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
+             (arg("scale"), arg("norm")=1.0),
                 "Init kernel as a sampled Gaussian function. The radius of the kernel is "
                 "always 3*std_dev. 'norm' denotes the desired sum of all bins of the "
                 "kernel (i.e. the kernel is corrected for the normalization error "
@@ -298,17 +282,17 @@ void defineKernels()
                 "windowing error is performed.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'gaussianKernel()'.\n\n")
-		.def("initDiscreteGaussian",
-			 (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
-			 (arg("scale"),arg("norm")=1.0),
+        .def("initDiscreteGaussian",
+             (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initDiscreteGaussian,
+             (arg("scale"),arg("norm")=1.0),
                 "Init kernel as Lindeberg's discrete analog of the Gaussian function. "
                 "The radius of the kernel is always 3*std_dev. 'norm' denotes "
                 "the desired sum of all bins of the kernel.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'discreteGaussianKernel()'.\n\n")
-		.def("initGaussianDerivative",
-			 (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
-			 (arg("scale"),arg("order"),arg("norm")=1.0),
+        .def("initGaussianDerivative",
+             (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
+             (arg("scale"),arg("order"),arg("norm")=1.0),
                 "Init kernel as a Gaussian derivative of order 'order'. The radius of "
                 "the kernel is always 3*std_dev + 0.5*order. 'norm' denotes "
                 "the norm of the kernel. Thus, the kernel will be corrected for "
@@ -318,59 +302,59 @@ void defineKernels()
                 "correction for the windowing error is performed.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'gaussianDerivativeKernel()'.\n\n")
-		.def("initBurtFilter",
-			 &Kernel1D<T>::initBurtFilter,
-			 (arg("a")=0.04785),
+        .def("initBurtFilter",
+             &Kernel1D<T>::initBurtFilter,
+             (arg("a")=0.04785),
                 "Init kernel as a 5-tap smoothing filter of the form::\n\n"
                 "   [ a, 0.25, 0.5 - 2*a, 0.25, a]\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'burtFilterKernel()'.\n\n")
-		.def("initBinomial",
-			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
-			 (arg("radius"), arg("norm")=1.0),
+        .def("initBinomial",
+             (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initBinomial,
+             (arg("radius"), arg("norm")=1.0),
                 "Init kernel as a binomial filter with given radius (i.e. window size 2*radius+1). "
                 "'norm' denotes the sum of all bins of the kernel.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'binomialKernel()'.\n\n")
-		.def("initAveraging",
-			 (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
-			 (arg("radius"),arg("norm")=1.0),
+        .def("initAveraging",
+             (void (Kernel1D<T>::*)(int,T))&Kernel1D<T>::initAveraging,
+             (arg("radius"),arg("norm")=1.0),
                 "Init kernel as an averaging filter with given radius (i.e. window size 2*radius+1). "
                 "'norm' denotes the sum of all bins of the kernel.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'averagingKernel()'.\n\n")
-		.def("initSymmetricDifference",
-			 (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
-			 (arg("norm")=1.0),
+        .def("initSymmetricDifference",
+             (void (Kernel1D<T>::*)(T))&Kernel1D<T>::initSymmetricDifference,
+             (arg("norm")=1.0),
                 "Init kernel as a symmetric difference filter of the form::\n\n"
                 "   [ 0.5 * norm, 0.0 * norm, -0.5 * norm]\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'symmetricDifferenceKernel()'.\n\n")
-		.def("initSecondDifference3",
-			 &Kernel1D<T>::initSecondDifference3,
+        .def("initSecondDifference3",
+             &Kernel1D<T>::initSecondDifference3,
                 "Init kernel as a 3-tap second difference filter of the form::\n\n"
                 "   [ 1, -2, 1]\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'secondDifference3Kernel()'.\n\n")
-		.def("initOptimalSmoothing3",
-			 &Kernel1D<T>::initOptimalSmoothing3)
-		.def("initOptimalFirstDerivativeSmoothing3",
-			 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing3)
-		.def("initOptimalSecondDerivativeSmoothing3",
-			 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing3)
-		.def("initOptimalSmoothing5",
-			 &Kernel1D<T>::initOptimalSmoothing5)
-		.def("initOptimalFirstDerivativeSmoothing5",
-			 &Kernel1D<T>::initOptimalFirstDerivativeSmoothing5)
-		.def("initOptimalSecondDerivativeSmoothing5",
-			 &Kernel1D<T>::initOptimalSecondDerivativeSmoothing5)
-		.def("initOptimalFirstDerivative5",
-			 &Kernel1D<T>::initOptimalFirstDerivative5)
-		.def("initOptimalSecondDerivative5",
-			 &Kernel1D<T>::initOptimalSecondDerivative5)
-		.def("initExplicitly",
-			 registerConverters(&pythonInitExplicitlyKernel1D<T>),
-			 (arg("left"), arg("right"), arg("contents")),
+        .def("initOptimalSmoothing3",
+             &Kernel1D<T>::initOptimalSmoothing3)
+        .def("initOptimalFirstDerivativeSmoothing3",
+             &Kernel1D<T>::initOptimalFirstDerivativeSmoothing3)
+        .def("initOptimalSecondDerivativeSmoothing3",
+             &Kernel1D<T>::initOptimalSecondDerivativeSmoothing3)
+        .def("initOptimalSmoothing5",
+             &Kernel1D<T>::initOptimalSmoothing5)
+        .def("initOptimalFirstDerivativeSmoothing5",
+             &Kernel1D<T>::initOptimalFirstDerivativeSmoothing5)
+        .def("initOptimalSecondDerivativeSmoothing5",
+             &Kernel1D<T>::initOptimalSecondDerivativeSmoothing5)
+        .def("initOptimalFirstDerivative5",
+             &Kernel1D<T>::initOptimalFirstDerivative5)
+        .def("initOptimalSecondDerivative5",
+             &Kernel1D<T>::initOptimalSecondDerivative5)
+        .def("initExplicitly",
+             registerConverters(&pythonInitExplicitlyKernel1D<T>),
+             (arg("left"), arg("right"), arg("contents")),
                 "Init the kernel with explicit values from 'contents', which must be a "
                 "1D numpy.ndarray. 'left' and 'right' are the boundaries of the kernel "
                 "(inclusive). If 'contents' contains the wrong number of values, a "
@@ -379,38 +363,38 @@ void defineKernels()
                 "The norm is set to the sum of the initializer values. \n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'explicitlyKernel()'.\n\n")
-		.def("__getitem__",
-			 &pythonGetItemKernel1D<T>)
-		.def("__setitem__",
-			 &pythonSetItemKernel1D<T>)
-		.def("left",
-			 &Kernel1D<T>::left,
+        .def("__getitem__",
+             &pythonGetItemKernel1D<T>)
+        .def("__setitem__",
+             &pythonSetItemKernel1D<T>)
+        .def("left",
+             &Kernel1D<T>::left,
                 "Left border of kernel (inclusive).\n")
-		.def("right",
-			 &Kernel1D<T>::right,
+        .def("right",
+             &Kernel1D<T>::right,
                 "Right border of kernel (inclusive).\n")
-		.def("size",
-			 &Kernel1D<T>::size,
-			    "Number of kernel elements (right() - left() + 1).\n")
-		.def("borderTreatment",
-			 &Kernel1D<T>::borderTreatment,
+        .def("size",
+             &Kernel1D<T>::size,
+                "Number of kernel elements (right() - left() + 1).\n")
+        .def("borderTreatment",
+             &Kernel1D<T>::borderTreatment,
                 "Return current border treatment mode.\n")
-		.def("setBorderTreatment",
-			 &Kernel1D<T>::setBorderTreatment,
-			 args("borderTreatment"),
+        .def("setBorderTreatment",
+             &Kernel1D<T>::setBorderTreatment,
+             args("borderTreatment"),
                 "Set border treatment mode.\n")
-		.def("norm",
-			 &Kernel1D<T>::norm,
+        .def("norm",
+             &Kernel1D<T>::norm,
                 "Return the norm of kernel.\n")
-		.def("normalize",
-			 (void (Kernel1D<T>::*)(T,unsigned int,double))&Kernel1D<T>::normalize,
-			 (arg("norm")=1.0,arg("derivativeOrder")=0,arg("offset")= 0.0),
+        .def("normalize",
+             (void (Kernel1D<T>::*)(T,unsigned int,double))&Kernel1D<T>::normalize,
+             (arg("norm")=1.0,arg("derivativeOrder")=0,arg("offset")= 0.0),
                 "Set a new norm and normalize kernel, use the normalization "
                 "formula for the given derivativeOrder.\n")
-		;
+        ;
 
-	class_<Kernel2D<T> > kernel2d("Kernel2D",
-	        "Generic 2 dimensional convolution kernel.\n\n"
+    class_<Kernel2D<T> > kernel2d("Kernel2D",
+            "Generic 2 dimensional convolution kernel.\n\n"
             "This kernel may be used for convolution of 2 dimensional signals. "
             "The desired border treatment mode is returned by borderTreatment()."
             "(Note that the 2D convolution functions don't currently support all "
@@ -419,13 +403,13 @@ void defineKernels()
             "properties. "
             "For more details, see Kernel2D_ in the C++ documentation.\n\n",
             init<>("Standard constructor::\n\n   Kernel2D()\n\nCreates an identity kernel.\n"));
-	kernel2d
+    kernel2d
         .def(init< Kernel2D<T> >(args("kernel"),
             "Copy constructor::\n\n"
             "   Kernel2D(other_kernel)\n\n"))
-		.def("initExplicitly",
-			 registerConverters(&pythonInitExplicitlyKernel2D<T>),
-			 (arg("upperLeft"), arg("lowerRight"), arg("contents")),
+        .def("initExplicitly",
+             registerConverters(&pythonInitExplicitlyKernel2D<T>),
+             (arg("upperLeft"), arg("lowerRight"), arg("contents")),
                 "Init the kernel with explicit values from 'contents', which must be a "
                 "2D numpy.ndarray. 'upperLeft' and 'lowerRight' are the boundaries of the "
                 "kernel (inclusive), and  must be 2D tuples. "
@@ -435,17 +419,17 @@ void defineKernels()
                 "The norm is set to the sum of the initializer values. \n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'explicitlyKernel2D()'.\n\n")
-		.def("initSeparable",
-			 (void (Kernel2D<T>::*)(Kernel1D<T> const &,Kernel1D<T> const &))&Kernel2D<T>::initSeparable,
-			 (arg("kernelX"), arg("kernelY")),
-		        "Init the 2D kernel as the cartesian product of two 1D kernels of "
+        .def("initSeparable",
+             (void (Kernel2D<T>::*)(Kernel1D<T> const &,Kernel1D<T> const &))&Kernel2D<T>::initSeparable,
+             (arg("kernelX"), arg("kernelY")),
+                "Init the 2D kernel as the cartesian product of two 1D kernels of "
                 "type Kernel1D. The norm becomes the product of the two original "
                 "norms.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'separableKernel2D()'.\n\n")
-		.def("initGaussian",
-			 (void (Kernel2D<T>::*)(double, T))&Kernel2D<T>::initGaussian,
-			 (arg("scale"), arg("norm")=1.0),
+        .def("initGaussian",
+             (void (Kernel2D<T>::*)(double, T))&Kernel2D<T>::initGaussian,
+             (arg("scale"), arg("norm")=1.0),
                 "Init kernel as a sampled 2D Gaussian function. The radius of the kernel is "
                 "always 3*std_dev. 'norm' denotes the desired sum of all bins of the "
                 "kernel (i.e. the kernel is corrected for the normalization error "
@@ -455,51 +439,51 @@ void defineKernels()
                 "windowing error is performed.\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'gaussianKernel2D()'.\n\n")
-		.def("initDisk",
-			 &Kernel2D<T>::initDisk,
-			 args("radius"),
+        .def("initDisk",
+             &Kernel2D<T>::initDisk,
+             args("radius"),
                 "Init the 2D kernel as a circular averaging filter. The norm will "
                 "be calculated as 1 / (number of non-zero kernel values).\n\n"
                 "Precondition::\n\n"
                 "   radius > 0\n\n"
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'diskKernel2D()'.\n\n")
-		.def("__setitem__",
-			 &pythonSetItemKernel2D<T>)
-		.def("__getitem__",
-			 &pythonGetItemKernel2D<T>)
-		.def("width",
-			 &Kernel2D<T>::width,
-			    "Horizontal kernel size (lowerRight()[0] - upperLeft()[0] + 1).\n")
-		.def("height",
-			 &Kernel2D<T>::height,
-			    "Vertical kernel size (lowerRight()[1] - upperLeft()[1] + 1).\n")
-		.def("upperLeft",
-			 &Kernel2D<T>::upperLeft,
+        .def("__setitem__",
+             &pythonSetItemKernel2D<T>)
+        .def("__getitem__",
+             &pythonGetItemKernel2D<T>)
+        .def("width",
+             &Kernel2D<T>::width,
+                "Horizontal kernel size (lowerRight()[0] - upperLeft()[0] + 1).\n")
+        .def("height",
+             &Kernel2D<T>::height,
+                "Vertical kernel size (lowerRight()[1] - upperLeft()[1] + 1).\n")
+        .def("upperLeft",
+             &Kernel2D<T>::upperLeft,
                 "Upper left border of kernel (inclusive).\n")
-		.def("lowerRight",
-			 &Kernel2D<T>::lowerRight,
+        .def("lowerRight",
+             &Kernel2D<T>::lowerRight,
                 "Lower right border of kernel (inclusive).\n")
-		.def("norm",
-			 &Kernel2D<T>::norm,
-			    "Return the norm of the kernel.\n")
-		.def("normalize",
-		    (void (Kernel2D<T>::*)(T))&Kernel2D<T>::normalize,
-			 (arg("norm")=1.0),
-			    "Set the kernel's norm and renormalize the values.\n")
-		.def("borderTreatment",
-			 &Kernel2D<T>::borderTreatment,
+        .def("norm",
+             &Kernel2D<T>::norm,
+                "Return the norm of the kernel.\n")
+        .def("normalize",
+            (void (Kernel2D<T>::*)(T))&Kernel2D<T>::normalize,
+             (arg("norm")=1.0),
+                "Set the kernel's norm and renormalize the values.\n")
+        .def("borderTreatment",
+             &Kernel2D<T>::borderTreatment,
                 "Return current border treatment mode.\n")
-		.def("setBorderTreatment",
-			 &Kernel2D<T>::setBorderTreatment,
-			 args("borderTreatment"),
+        .def("setBorderTreatment",
+             &Kernel2D<T>::setBorderTreatment,
+             args("borderTreatment"),
                 "Set border treatment mode.\n")
-	;
+    ;
 }
 
 void defineKernels()
 {
-	defineKernels<KernelValueType>();
+    defineKernels<KernelValueType>();
 }
 
 } // namespace vigra

@@ -42,6 +42,7 @@
 #ifdef HasHDF5
 # include <vigra/random_forest_hdf5_impex.hxx>
 #endif
+#include <vigra/timing.hxx>
 #include <set>
 #include <cmath>
 #include <memory>
@@ -55,10 +56,7 @@ template<class FeatureType>
 OnlinePredictionSet<FeatureType>* 
 pythonConstructOnlinePredictioSet(NumpyArray<2,FeatureType> features, int num_sets)
 {
-    // FIXME: We construct OnlinePredictionSet with transposed features.
-    //        This should be cleanly solved with axistags.
-    MultiArrayView<2, FeatureType, StridedArrayTag> tfeat = features.transpose();
-    return new OnlinePredictionSet<FeatureType>(tfeat, num_sets);
+    return new OnlinePredictionSet<FeatureType>(features, num_sets);
 }
 
 template<class LabelType, class FeatureType>
@@ -101,7 +99,7 @@ pythonConstructRandomForest(int treeCount,
 template<class LabelType>
 RandomForest<LabelType> * 
 pythonImportRandomForestFromHDF5(std::string filename, 
-					             std::string pathname = "")
+                                 std::string pathname = "")
 { 
     std::auto_ptr<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
     
@@ -124,24 +122,14 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData.transpose(), trainLabels.transpose(), 
+        rf.learn(trainData, trainLabels, 
                  visitors::create_visitor(var_imp, oob_v));
     }
     
     double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
 
-    // FIXME: We construct varImp with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    NumpyArray<2, double> varImp(MultiArrayShape<2>::type(var_imp.variable_importance_.shape(1),
-                                                           var_imp.variable_importance_.shape(0))); 
-
-    for (int y=0; y<varImp.shape(1); ++y)
-        for (int x=0; x<varImp.shape(0); ++x)
-            varImp(x,y)= var_imp.variable_importance_(y,x);
-
-    return python::make_tuple(oob, varImp);
+    return python::make_tuple(oob, var_imp.variable_importance_);
 }
 
 template<class LabelType, class FeatureType>
@@ -155,7 +143,7 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
 
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData.transpose(), trainLabels.transpose(), visitors::create_visitor(oob_v));
+        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
     }
     double oob = oob_v.oob_breiman;
 
@@ -172,7 +160,7 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     bool adjust_thresholds)
 {
     PyAllowThreads _pythread;
-    rf.onlineLearn(trainData.transpose(), trainLabels.transpose(), startIndex, adjust_thresholds);
+    rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
 }
 
 template<class LabelType,class FeatureType>
@@ -183,7 +171,7 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     int treeId)
 {
     PyAllowThreads _pythread;
-    rf.reLearnTree(trainData.transpose(), trainLabels.transpose(), treeId);
+    rf.reLearnTree(trainData, trainLabels, treeId);
 }
 
 template<class LabelType,class FeatureType>
@@ -192,14 +180,10 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
-    // FIXME: We construct the result with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(1, testData.shape(1)),
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
                        "Output array has wrong dimensions.");
     PyAllowThreads _pythread;
-    MultiArrayView<2, LabelType, StridedArrayTag> tres = res.transpose();
-    rf.predictLabels(testData.transpose(), tres);
+    rf.predictLabels(testData, res);
     return res;
 }
 
@@ -209,15 +193,11 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
                              NumpyArray<2,FeatureType> testData, 
                              NumpyArray<2,float> res)
 {
-    // FIXME: We construct the result with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.ext_param_.class_count_, testData.shape(1)),
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "Output array has wrong dimensions.");
     
     PyAllowThreads _pythread;
-    MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
-    rf.predictProbabilities(testData.transpose(), tres);
+    rf.predictProbabilities(testData, res);
 
     return res;
 }
@@ -228,20 +208,17 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
                                           OnlinePredictionSet<FeatureType> & predSet,
                                           NumpyArray<2,float> res)
 {
-    // FIXME: We construct the result with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.ext_param_.class_count_, 
-                                                 predSet.features.shape(0)),
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),
+                                                 rf.ext_param_.class_count_),
                        "Output array has wrong dimenstions.");
-    clock_t start=clock();
+    USETICTOC;
+    TIC;
     {
         PyAllowThreads _pythread;
-        MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
-        rf.predictProbabilities(predSet, tres);
+        rf.predictProbabilities(predSet, res);
     }
-    double duration=(clock()-start)/double(CLOCKS_PER_SEC);
-    std::cerr<<"Prediction Time: "<<duration<<std::endl;
+    std::string t = TOCS;
+    std::cerr << "Prediction Time: " << t << std::endl;
     return res;
 }
 

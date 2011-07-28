@@ -75,17 +75,17 @@ pythonConstructRandomForest(NumpyArray<2, FeatureType> trainData,
         
     std::set<LabelType> uniqueLabels(trainLabels.data(), trainLabels.data()+trainLabels.size());
 
-	RandomForest<LabelType>* rf = 
+    RandomForest<LabelType>* rf = 
         new RandomForest<LabelType>(uniqueLabels.begin(), uniqueLabels.end(),
                                     treeCount, options);
-	double oob;
+    double oob;
 
-	{
+    {
         PyAllowThreads _pythread;
-        oob = rf->learn(trainData.transpose(), trainLabels.transpose());
-	}
-	
-	std::cout << "Out-of-bag error " << oob << std::endl;
+        oob = rf->learn(trainData, trainLabels);
+    }
+    
+    std::cout << "Out-of-bag error " << oob << std::endl;
     return rf;
 }
 
@@ -95,15 +95,11 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
-    // FIXME: We construct the result with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(1, testData.shape(1)),
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
             "Output array has wrong dimensions.");
     
     PyAllowThreads _pythread;
-    MultiArrayView<2, LabelType, StridedArrayTag> tres = res.transpose();
-    rf.predictLabels(testData.transpose(), tres);
+    rf.predictLabels(testData, res);
     return res;
 }
 
@@ -113,15 +109,11 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
                              NumpyArray<2,FeatureType> testData,
                              NumpyArray<2,float> res)
 {
-    // FIXME: We construct the result with transposed shape, so that
-    //        it arrives in Python with the correct shape.
-    //        This should be cleanly solved with axistags.
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(rf.labelCount(), testData.shape(1)),
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.labelCount()),
             "Output array has wrong dimensions.");
     {
         PyAllowThreads _pythread;
-        MultiArrayView<2, float, StridedArrayTag> tres = res.transpose();
-        rf.predictProbabilities(testData.transpose(), tres);
+        rf.predictProbabilities(testData, res);
     }
     return res;
 }
