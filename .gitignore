@@ -6,6 +6,7 @@
 /test/testSuccess
 /private/
 /vigranumpy/private/
+/vigranumpy/lib/__version__.py
 CMakeFiles/
 Release/
 Debug/
@@ -31,3 +32,4 @@ Makefile
 *.[do]
 *.l[doa]
 *.loT
+*.orig

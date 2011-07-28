@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*        Copyright 2008-2009 by Rahul Nair and Ullrich Koethe          */
+/*        Copyright 2009-2010 by Ullrich Koethe and Janis Fehr          */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -33,68 +33,39 @@
 /*                                                                      */
 /************************************************************************/
 
-#include <iostream>
-#include <set>
-#include <vigra/matlab.hxx>
+#ifndef VIGRA_INVARIANT_FEATURES3D_HXX
+#define VIGRA_INVARIANT_FEATURES3D_HXX
 
-#define HasHDF5
-#include "random_forest_impex.hxx"
-#include <vigra/random_forest_hdf5_impex.hxx>
+#include <complex>
+#include "config.hxx"
+#include "error.hxx"
+#include "utilities.hxx"
+#include "mathutil.hxx"
+#include "array_vector.hxx"
+#include "matrix.hxx"
+#include "tinyvector.hxx"
+#include "quaternion.hxx"
 
-using namespace vigra;
-using namespace matlab;
-using namespace rf;
-using namespace visitors;
+namespace vigra {
 
+namespace detail  {
 
+// computes the normalization for SH base functions
+inline double realSH(double l, double m)
+{
+    return std::sqrt((2.0*l + 1.0) / (4.0*M_PI*facLM(l,m)));
 
-void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
-    /* INPUT */
-    if (inputs.size() != 1)
-        mexErrMsgTxt("One inputs required.");
-
-    // get RF object
-   RandomForest<> rf;
-   std::string filename = inputs.getString(0, v_required());
-   std::string groupname = inputs.getString(1, v_default(std::string("")));
-   vigra::rf_import_HDF5(rf, filename, groupname );
-   matlab::exportRandomForest(rf, matlab::createCellArray(2*rf.options_.tree_count_+2, outputs[0]));
 }
 
-
-
-
-/***************************************************************************************************
-**         VIGRA GATEWAY                                                                          **
-****************************************************************************************************/
-inline void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputArray inputs)
+template<int N, class T, class C>
+TinyVector<float, N> centerOfBB(MultiArrayView<N, T, C> const & A)
 {
-    vigraMain(outputs, inputs);
-};
+    return TinyVector<float, N>(A.shape()) /= 2.0;                        
+}
+
+} // namespace detail
 
 
-/**ADDITIONAL_BUILD_FLAGS
--lhdf5 -lhdf5_hl
-*/
+} // namespace vigra 
 
-/** MATLAB
-function rf = vigraImporthdf5RF( filename, groupname);
-
-Import a previously trained Random Forest from  a hdf5 file
-
-    rf        - MATLAB cell array representing the random forest classifier
-   filename  - name of hdf5 file
-
-   groupname    - optional: name of group which shoud be used as the base
-                    path
-
-to compile on Linux:
---------------------
-  mex vigraImporthdf5RF.cpp -I../../include -lhdf5 -lhdf5_hl
-
-to compile on Windows:
-----------------------
-  mex vigraImporthdf5RF.cpp -I../../include -I[HDF5PATH]/include -L[HDF5PATH]/lib -lhdf5dll -lhdf5_hldll -D_HDF5USEDLL_ -DHDF5CPP_USEDLL
-
-hdf5 1.6.x or hdf5 1.8.x must be installed. 
-*/
+#endif // VIGRA_INVARIANT_FEATURES3D_HXX

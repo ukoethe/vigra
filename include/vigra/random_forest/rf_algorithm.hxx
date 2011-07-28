@@ -37,6 +37,7 @@
 #include <vector>
 #include "splices.hxx"
 #include <queue>
+#include <fstream>
 namespace vigra
 {
  
@@ -209,6 +210,7 @@ class VariableSelectionResult
         {
             return false;
         }
+        initialized = true;
         // calculate error with all features
         selected.resize(all_features.shape(1), 0);
         for(unsigned int ii = 0; ii < selected.size(); ++ii)
@@ -313,7 +315,7 @@ void forward_selection(FeatureT          const & features,
     int not_selected_size = std::distance(pivot, selected.end());
     while(not_selected_size > 1)
     {
-        std::vector<int> current_errors;
+        std::vector<double> current_errors;
         VariableSelectionResult::Pivot_t next = pivot;
         for(int ii = 0; ii < not_selected_size; ++ii, ++next)
         {
@@ -334,6 +336,10 @@ void forward_selection(FeatureT          const & features,
         std::advance(next, pos);
         std::swap(*pivot, *next);
         errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
+#ifdef RN_VERBOSE
+            std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
+            std::cerr << "Choosing " << *pivot << " at error of " <<  current_errors[pos] << std::endl;
+#endif
         ++pivot;
         not_selected_size = std::distance(pivot, selected.end());
     }
@@ -413,28 +419,32 @@ void backward_elimination(FeatureT              const & features,
     while(selected_size > 1)
     {
         VariableSelectionResult::Pivot_t next = selected.begin();
-        std::vector<int> current_errors;
+        std::vector<double> current_errors;
         for(int ii = 0; ii < selected_size; ++ii, ++next)
         {
             std::swap(*pivot, *next);
             MultiArray<2, double> cur_feats;
             detail::choose( features, 
                             selected.begin(), 
-                            pivot, 
+                            pivot+1, 
                             cur_feats);
             double error = errorcallback(cur_feats, response);
             current_errors.push_back(error);
             std::swap(*pivot, *next);
         }
         int pos = std::distance(current_errors.begin(),
-                                std::max_element(current_errors.begin(),
+                                std::min_element(current_errors.begin(),
                                                    current_errors.end()));
         next = selected.begin();
         std::advance(next, pos);
         std::swap(*pivot, *next);
 //        std::cerr << std::distance(selected.begin(), pivot) << " " << pos << " " << current_errors.size() << " " << errors.size() << std::endl;
-        errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
+        errors[std::distance(selected.begin(), pivot)-1] = current_errors[pos];
         selected_size = std::distance(selected.begin(), pivot);
+#ifdef RN_VERBOSE
+            std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
+            std::cerr << "Eliminating " << *pivot << " at error of " << current_errors[pos] << std::endl;
+#endif
         --pivot;
     }
 }
@@ -503,15 +513,18 @@ void rank_selection      (FeatureT              const & features,
     int ii = 0;
     for(; iter != selected.end(); ++iter)
     {
-//        std::cerr << ii<< std::endl;
         ++ii;
         MultiArray<2, double> cur_feats;
         detail::choose( features, 
                         selected.begin(), 
-                        iter, 
+                        iter+1, 
                         cur_feats);
         double error = errorcallback(cur_feats, response);
         errors[std::distance(selected.begin(), iter)] = error;
+#ifdef RN_VERBOSE
+            std::copy(selected.begin(), iter+1, std::ostream_iterator<int>(std::cerr, ", "));
+            std::cerr << "Choosing " << *(iter+1) << " at error of " <<  error << std::endl;
+#endif
 
     }
 }
@@ -695,9 +708,10 @@ public:
     }
     /**save to HDF5 - defunct - has to be updated to new HDF5 interface
      */
+#ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
-        
+
         vigra::writeHDF5(file.c_str(), (prefix + "topology").c_str(), 
                                MultiArrayView<2, int>(
                                     Shp(topology_.size(),1),
@@ -708,8 +722,9 @@ public:
                                     parameters_.data()));
         vigra::writeHDF5(file.c_str(), (prefix + "begin_addr").c_str(), 
                                MultiArrayView<2, int>(Shp(1,1), &begin_addr));
-                               
+
     }
+#endif
 
     /**Perform single linkage clustering
      * \param distance distance matrix used. \sa CorrelationVisitor
@@ -960,11 +975,13 @@ public:
     GetClusterVariables(MultiArrayView<2, int> vars)
         :variables(vars), index(0)
     {}
+#ifdef HasHDF5
     void save(std::string file, std::string prefix)
     {
         vigra::writeHDF5(file.c_str(), (prefix + "_variables").c_str(), 
                                variables);
     }
+#endif
 
     template<class Node>
     bool operator()(Node& node)
@@ -1307,6 +1324,19 @@ void cluster_permutation_importance(FeatureT              const & features,
 {
     MultiArray<2, double> distance;
     cluster_permutation_importance(features, response, linkage, distance);
+}
+
+    
+template<class Array1, class Vector1>
+void get_ranking(Array1 const & in, Vector1 & out)
+{
+    std::map<double, int> mymap;
+    for(int ii = 0; ii < in.size(); ++ii)
+        mymap[in[ii]] = ii;
+    for(std::map<double, int>::reverse_iterator iter = mymap.rbegin(); iter!= mymap.rend(); ++iter)
+    {
+        out.push_back(iter->second);
+    }
 }
 }//namespace algorithms
 }//namespace rf

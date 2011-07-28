@@ -42,8 +42,6 @@
  *  - Added support for x and y resolution fields.
  *
  * Modification by Andrew Mihal, 27 October 2004:
- * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
  *  - Modified encoder to better estimate the number of rows per strip.
  *  - Modified decoder to use the scanline interface - the strip-based
  *    interface hogs memory when the rows/strip value is large.
@@ -71,6 +69,7 @@ extern "C"
 {
 #include <tiff.h>
 #include <tiffio.h>
+#include <tiffvers.h>
 }
 
 namespace vigra {
@@ -95,15 +94,20 @@ namespace vigra {
         desc.pixelTypes[8] = "DOUBLE";
 
         // init compression types
-        desc.compressionTypes.resize(5);
+        desc.compressionTypes.resize(6);
         desc.compressionTypes[0] = "NONE";
         desc.compressionTypes[1] = "RLE";
-        desc.compressionTypes[2] = "JPEG";
-        desc.compressionTypes[3] = "LZW";
-        desc.compressionTypes[4] = "DEFLATE";
+        desc.compressionTypes[2] = "PACKBITS";
+        desc.compressionTypes[3] = "JPEG";
+        desc.compressionTypes[4] = "LZW";
+        desc.compressionTypes[5] = "DEFLATE";
 
         // init magic strings
+#if TIFFLIB_VERSION > 20070712
+        desc.magicStrings.resize(3);
+#else
         desc.magicStrings.resize(2);
+#endif
         desc.magicStrings[0].resize(4);
         desc.magicStrings[0][0] = '\115';
         desc.magicStrings[0][1] = '\115';
@@ -114,6 +118,14 @@ namespace vigra {
         desc.magicStrings[1][1] = '\111';
         desc.magicStrings[1][2] = '\052';
         desc.magicStrings[1][3] = '\000';
+#if TIFFLIB_VERSION > 20070712
+        // magic for bigtiff
+        desc.magicStrings[2].resize(4);
+        desc.magicStrings[2][0] = '\111';
+        desc.magicStrings[2][1] = '\111';
+        desc.magicStrings[2][2] = '\053';
+        desc.magicStrings[2][3] = '\000';
+#endif
 
         // init file extensions
         desc.fileExtensions.resize(2);
@@ -149,8 +161,6 @@ namespace vigra {
         TIFF * tiff;
         tdata_t * stripbuffer;
         tstrip_t strip;
-        // mihal 27-10-2004: use scanline interface
-        unsigned int scanline;
 
         uint32 stripindex, stripheight;
         uint32 width, height;
@@ -158,6 +168,7 @@ namespace vigra {
             photometric, planarconfig, fillorder, extra_samples_per_pixel;
         float x_resolution, y_resolution;
         Diff2D position;
+        Size2D canvasSize;
 
         Decoder::ICCProfile iccProfile;
 
@@ -173,8 +184,6 @@ namespace vigra {
         tiff = 0;
         stripbuffer = 0;
         strip = 0;
-        // mihal 27-10-2004: use scanline interface
-        scanline = 0;
         stripindex = 0;
         planarconfig = PLANARCONFIG_CONTIG;
         x_resolution = 0;
@@ -207,6 +216,8 @@ namespace vigra {
     {
         friend class TIFFDecoder;
 
+        unsigned int scanline;
+
         std::string get_pixeltype_by_sampleformat() const;
         std::string get_pixeltype_by_datatype() const;
 
@@ -230,6 +241,8 @@ namespace vigra {
             msg += "'.";
             vigra_precondition(0, msg.c_str());
         }
+
+        scanline = 0;
     }
 
     std::string TIFFDecoderImpl::get_pixeltype_by_sampleformat() const
@@ -311,11 +324,16 @@ namespace vigra {
         TIFFGetField( tiff, TIFFTAG_IMAGEWIDTH, &width );
         TIFFGetField( tiff, TIFFTAG_IMAGELENGTH, &height );
 
+        // check for tiled TIFFs
+        uint32 tileWidth, tileHeight;
+        if( TIFFGetField( tiff, TIFFTAG_TILEWIDTH, &tileWidth ) &&
+            TIFFGetField( tiff, TIFFTAG_TILELENGTH, &tileHeight ) )
+            vigra_precondition( (tileWidth == width) && (tileHeight == height),
+                                "TIFFDecoderImpl::init(): "
+                                "Cannot read tiled TIFFs (not implemented)." );
+
         // find out strip heights
-        // mihal 27-10-2004: use scanline interface instead of strip interface
-        //if ( !TIFFGetField( tiff, TIFFTAG_ROWSPERSTRIP, &stripheight ) )
-        //    stripheight = height;
-        stripheight = 1;
+        stripheight = 1; // now using scanline interface instead of strip interface
 
         // get samples_per_pixel
         samples_per_pixel = 0;
@@ -350,25 +368,43 @@ namespace vigra {
                         " A suitable default was not found." );
 
         // check photometric preconditions
-        if ( photometric == PHOTOMETRIC_MINISWHITE ||
-                                photometric == PHOTOMETRIC_MINISBLACK ||
-             photometric == PHOTOMETRIC_PALETTE )
+        switch ( photometric )
         {
-            if ( samples_per_pixel - extra_samples_per_pixel != 1 )
+            case PHOTOMETRIC_MINISWHITE:
+            case PHOTOMETRIC_MINISBLACK:
+            case PHOTOMETRIC_PALETTE:
+            {
+                if ( samples_per_pixel - extra_samples_per_pixel != 1 )
                 vigra_fail("TIFFDecoderImpl::init():"
                                 " Photometric tag does not fit the number of"
                                 " samples per pixel." );
-        }
-        if ( photometric == PHOTOMETRIC_RGB )
-        {
-            if ( samples_per_pixel > 3 && extra_samples_per_pixel == 0 ) {
-                // file probably lacks the extra_samples tag
-                extra_samples_per_pixel = samples_per_pixel - 3;
+                break;
             }
-            if ( samples_per_pixel - extra_samples_per_pixel != 3 )
-                vigra_fail("TIFFDecoderImpl::init():"
-                                " Photometric tag does not fit the number of"
-                                " samples per pixel." );
+            case PHOTOMETRIC_RGB:
+            {
+                if ( samples_per_pixel > 3 && extra_samples_per_pixel == 0 ) {
+                    // file probably lacks the extra_samples tag
+                    extra_samples_per_pixel = samples_per_pixel - 3;
+                }
+                if ( samples_per_pixel - extra_samples_per_pixel != 3 )
+                    vigra_fail("TIFFDecoderImpl::init():"
+                                    " Photometric tag does not fit the number of"
+                                    " samples per pixel." );
+                break;
+            }
+            case PHOTOMETRIC_LOGL:
+            case PHOTOMETRIC_LOGLUV:
+            {
+                uint16 tiffcomp;
+                TIFFGetFieldDefaulted( tiff, TIFFTAG_COMPRESSION, &tiffcomp );
+                if (tiffcomp != COMPRESSION_SGILOG && tiffcomp != COMPRESSION_SGILOG24)
+                    vigra_fail("TIFFDecoderImpl::init():"
+                                    " Only SGILOG compression is supported for"
+                                    " LogLuv TIFF."
+                    );
+                TIFFSetField(tiff, TIFFTAG_SGILOGDATAFMT, SGILOGDATAFMT_FLOAT);
+                break;
+            }
         }
 
         // get planarconfig
@@ -433,8 +469,15 @@ namespace vigra {
                 fillorder = FILLORDER_MSB2LSB;
         }
 
+        // make sure the LogLuv has correct pixeltype because only float is supported
+        if (photometric == PHOTOMETRIC_LOGLUV) {
+            pixeltype = "FLOAT";
+            samples_per_pixel = 3;
+        }
+
         // other fields
         uint16 u16value;
+        uint32 u32value;
         float unitLength = 1.0f;
         if (TIFFGetField( tiff, TIFFTAG_RESOLUTIONUNIT, &u16value )) {
             switch (u16value) {
@@ -472,6 +515,19 @@ namespace vigra {
             position.y = (int)floor(fvalue + 0.5);
         }
 
+        // canvas size
+        if (TIFFGetField( tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, &u32value )) {
+            canvasSize.x = u32value;
+        }
+        if (TIFFGetField( tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, &u32value )) {
+            canvasSize.y = u32value;
+        }
+
+        if ((uint32)canvasSize.x < position.x + width || (uint32)canvasSize.y < position.y + height)
+        {
+            canvasSize.x = canvasSize.y = 0;
+        }
+
         // ICC Profile
         UInt32 iccProfileLength = 0;
         const unsigned char *iccProfilePtr = NULL;
@@ -485,8 +541,6 @@ namespace vigra {
         }
 
         // allocate data buffers
-        // mihal 27-10-2004: use scanline interface instead of strip interface
-        //const unsigned int stripsize = TIFFStripSize(tiff);
         const unsigned int stripsize = TIFFScanlineSize(tiff);
         if ( planarconfig == PLANARCONFIG_SEPARATE ) {
             stripbuffer = new tdata_t[samples_per_pixel];
@@ -539,41 +593,25 @@ namespace vigra {
             stripindex = 0;
 
             if ( planarconfig == PLANARCONFIG_SEPARATE ) {
-                // mihal 27-10-2004: modified to use scanline interface
-                //const tsize_t size = TIFFStripSize(tiff);
                 const tsize_t size = TIFFScanlineSize(tiff);
                 for( unsigned int i = 0; i < samples_per_pixel; ++i )
-                    // mihal 27-10-2004: use scanline interface
-                    //TIFFReadEncodedStrip( tiff, strip++, stripbuffer[i],
-                    //                      size );
                     TIFFReadScanline(tiff, stripbuffer[i], scanline++, size);
             } else {
-                // mihal 27-10-2004: modified to use scanline interface
-                //const tsize_t size = TIFFStripSize(tiff);
-                const tsize_t size = TIFFScanlineSize(tiff);
-                // mihal 27-10-2004: modified to use scanline interface
-                //TIFFReadEncodedStrip( tiff, strip++, stripbuffer[0], size );
-                TIFFReadScanline( tiff, stripbuffer[0], scanline++, size);
+                TIFFReadScanline( tiff, stripbuffer[0], scanline++, 0);
             }
 
             // XXX handle bilevel images
 
             // invert grayscale images that interpret 0 as white
-            if ( samples_per_pixel == 1 && pixeltype == "UINT8" &&
-                 photometric == PHOTOMETRIC_MINISWHITE ) {
+            if ( photometric == PHOTOMETRIC_MINISWHITE &&
+                 samples_per_pixel == 1 && pixeltype == "UINT8" ) {
 
-                UInt8 * buf = static_cast< UInt8 * >
-                    (stripbuffer[0]);
-                // mihal 27-10-2004: modified to use scanline interface
-                //const unsigned int n = TIFFStripSize(tiff);
+                UInt8 * buf = static_cast< UInt8 * >(stripbuffer[0]);
                 const unsigned int n = TIFFScanlineSize(tiff);
 
                 // invert every pixel
-                for ( unsigned int i = 0; i < n; ++i ) {
-                    int x = *buf;
-                    x = 0xff - x;
-                    *buf++ = x;
-                }
+                for ( unsigned int i = 0; i < n; ++i, ++buf )
+                    *buf = 0xff - *buf;
             }
         }
     }
@@ -618,6 +656,11 @@ namespace vigra {
     vigra::Diff2D TIFFDecoder::getPosition() const
     {
         return pimpl->position;
+    }
+
+    vigra::Size2D TIFFDecoder::getCanvasSize() const
+    {
+        return pimpl->canvasSize;
     }
 
     float TIFFDecoder::getXResolution() const
@@ -731,6 +774,8 @@ namespace vigra {
             tiffcomp = COMPRESSION_OJPEG;
         else if ( comp == "RLE" || comp == "RunLength")
             tiffcomp = COMPRESSION_CCITTRLE;
+        else if ( comp == "PACKBITS")
+            tiffcomp = COMPRESSION_PACKBITS;
         else if ( comp == "LZW" )
             tiffcomp = COMPRESSION_LZW;
         else if ( comp == "DEFLATE" )
@@ -829,6 +874,13 @@ namespace vigra {
             TIFFSetField( tiff, TIFFTAG_YPOSITION, position.y / y_resolution);
         }
 
+        if ((uint32)canvasSize.x >= position.x + width
+            && (uint32)canvasSize.y >= position.y + height)
+        {
+            TIFFSetField( tiff, TIFFTAG_PIXAR_IMAGEFULLWIDTH, canvasSize.x);
+            TIFFSetField( tiff, TIFFTAG_PIXAR_IMAGEFULLLENGTH, canvasSize.y);
+        }
+
         // Set ICC profile, if available.
         if (iccProfile.size()) {
             TIFFSetField(tiff, TIFFTAG_ICCPROFILE,
@@ -895,6 +947,12 @@ namespace vigra {
     {
         VIGRA_IMPEX_FINALIZED(pimpl->finalized);
         pimpl->position = pos;
+    }
+
+    void TIFFEncoder::setCanvasSize( const vigra::Size2D & size )
+    {
+        VIGRA_IMPEX_FINALIZED(pimpl->finalized);
+        pimpl->canvasSize = size;
     }
 
     void TIFFEncoder::setXResolution( float xres )

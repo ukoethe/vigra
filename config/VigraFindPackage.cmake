@@ -47,7 +47,11 @@ MACRO(VIGRA_FIND_PACKAGE package)
     foreach(path ${DEPENDENCY_SEARCH_PREFIX})
         if(NOT ${package}_FOUND)
             IF(${package} STREQUAL "Boost")
-                SET(BOOST_INCLUDEDIR ${path}/include)
+                IF(EXISTS "${path}/boost/config.hpp")
+                    SET(BOOST_INCLUDEDIR ${path}) # boost's default include path
+                ELSE()
+                    SET(BOOST_INCLUDEDIR ${path}/include) # standard include path
+                ENDIF()
                 SET(BOOST_LIBRARYDIR ${path}/lib)
             ELSE()
                 SET(CMAKE_INCLUDE_PATH ${path}/include)

@@ -181,6 +181,39 @@ hid_t HDF5ImportInfo::getDatasetHandle() const
     return m_dataset_handle; 
 }
 
+H5O_type_t HDF5_get_type(hid_t loc_id, const char* name)
+{
+    // get information about object
+    H5O_info_t infobuf;
+    H5Oget_info_by_name(loc_id, name, &infobuf, H5P_DEFAULT);
+    return infobuf.type;
+}
+
+// helper friend function for callback ls_inserter_callback()
+void HDF5_ls_insert(void* operator_data, const std::string & x)
+{
+    static_cast<HDF5File::ls_closure*>(operator_data)->insert(x);
+}
+// callback function for ls(), called via HDF5File::H5Literate()
+// see http://www.parashift.com/c++-faq-lite/pointers-to-members.html#faq-33.2
+// for as to why.
+extern "C"
+herr_t HDF5_ls_inserter_callback(hid_t loc_id, const char* name,
+                                 const H5L_info_t*, void* operator_data)
+{
+    H5O_type_t h5_type = HDF5_get_type(loc_id, name);
+    // add name to list if object is a dataset or a group
+    if (h5_type == H5O_TYPE_GROUP)
+    {
+        HDF5_ls_insert(operator_data, name + std::string("/"));
+    }
+    if (h5_type == H5O_TYPE_DATASET)
+    {
+        HDF5_ls_insert(operator_data, name);
+    }
+    return 0;
+}
+
 } // namespace vigra
 
 #endif // HasHDF5

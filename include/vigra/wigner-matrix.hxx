@@ -138,7 +138,7 @@ class WignerMatrix
           * \param theta    rotation angle
           * \param psi      rotation angle
           *
-          * \return rotated PH expansion   
+          * \retval PHresult PH expansion   
           */
     void rotatePH(NestedArray const & PH, Real phi, Real theta, Real psi,
                   NestedArray & PHresult);

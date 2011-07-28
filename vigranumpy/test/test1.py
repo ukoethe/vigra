@@ -38,6 +38,7 @@ print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
 from nose.tools import assert_equal, raises, assert_raises
+import vigra
 import numpy as np
 from vigra.analysis import *
 from vigra.filters import *
@@ -107,6 +108,7 @@ def test_watersheds():
     assert_raises(RuntimeError, watershedsUnionFind, img_scalar_f, 17, img_scalar_i)
 
 def test_MinimaMaxima():
+    #2D Case
     res = localMinima(img_scalar_f)
     checkShape(img_scalar_f,res)
     checkType(res,img_scalar_f.dtype)
@@ -130,6 +132,48 @@ def test_MinimaMaxima():
     res = labelImageWithBackground(img_scalar_f)
     checkShape(img_scalar_f,res)
     checkType(res,np.uint32)
+    
+    #3D Case
+    res = localMinima3D(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = extendedLocalMinima3D(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = localMaxima3D(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    res = extendedLocalMaxima3D(vol_scalar_f)
+    checkShape(vol_scalar_f,res)
+    checkType(res,vol_scalar_f.dtype)
+    
+    data = vigra.taggedView(np.zeros((100,200,50),dtype=np.float32), 
+                            vigra.defaultAxistags(3, noChannels=True))
+
+    data[10,5,10]=1
+    data[98,10,10]=1
+    data[90,50,30]=1
+    data[10,10,2]=1
+    data[10,80,8]=1
+    data[10,10,8]=1
+    data[10,150,2]=1
+    data[80,10,10]=1
+    data[70,120,40]=1
+    
+    res = localMaxima3D(data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Maxima")
+
+    res = extendedLocalMaxima3D(data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Maxima")
+    
+    res = localMinima3D(1-data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Minima")
+    
+    res = extendedLocalMinima3D(1-data,neighborhood=26)
+    np.testing.assert_array_equal(res, data, "Error in the calculation of the Extended Minima")
 
 def test_Region2Crack():
     res = regionImageToCrackEdgeImage(img_scalar_i)

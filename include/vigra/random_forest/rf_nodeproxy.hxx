@@ -327,7 +327,7 @@ class NodeBase
         /*while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());*/
 
-        int n = topology.size();
+        size_t n = topology.size();
         for(int ii = 0; ii < tLen; ++ii)
             topology.push_back(0);
         //topology.resize (n  + tLen);
@@ -335,7 +335,7 @@ class NodeBase
         topology_           =   topology.begin()+ n;
         typeID()            =   UnFilledNode;
 
-        parameter_addr()    =   parameter.size();
+        parameter_addr()    =   static_cast<int>(parameter.size());
 
         //parameter.resize(parameter.size() + pLen);
         for(int ii = 0; ii < pLen; ++ii)
@@ -366,12 +366,12 @@ class NodeBase
         /*while((int)xrange.size() <  featureCount_)
             xrange.push_back(xrange.size());*/
 
-        int n            = topology.size();
+        size_t n            = topology.size();
         for(int ii = 0; ii < toCopy.topology_size(); ++ii)
             topology.push_back(toCopy.topology_begin()[ii]);
 //        topology.insert(topology.end(), toCopy.topology_begin(), toCopy.topology_end());
         topology_           =   topology.begin()+ n;
-        parameter_addr()    =   parameter.size();
+        parameter_addr()    =   static_cast<int>(parameter.size());
         for(int ii = 0; ii < toCopy.parameters_size(); ++ii)
             parameter.push_back(toCopy.parameters_begin()[ii]);
 //        parameter.insert(parameter.end(), toCopy.parameters_begin(), toCopy.parameters_end());

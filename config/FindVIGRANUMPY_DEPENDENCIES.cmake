@@ -10,14 +10,14 @@ IF(PYTHONINTERP_FOUND)
     FIND_PACKAGE(PythonLibs)
     IF(NOT PYTHONLIBS_FOUND)
         # fallback when standard search does not work
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
                          "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
                          "import sys; print sys.exec_prefix"
                           OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
         FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} "${PYTHON_PREFIX}/libs")
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                         "from distutils.sysconfig import *; print get_python_inc()"
                          OUTPUT_VARIABLE PYTHON_INCLUDE OUTPUT_STRIP_TRAILING_WHITESPACE)
         SET(PYTHON_INCLUDE_PATH ${PYTHON_INCLUDE}
@@ -35,7 +35,7 @@ IF(PYTHONINTERP_FOUND)
     #
     ######################################################################
     IF(NOT DEFINED VIGRANUMPY_INSTALL_DIR OR VIGRANUMPY_INSTALL_DIR MATCHES "^$")
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
                          "from distutils.sysconfig import *; print get_python_lib(1)"
                           OUTPUT_VARIABLE PYTHON_SITE_PACKAGES OUTPUT_STRIP_TRAILING_WHITESPACE)
         FILE(TO_CMAKE_PATH ${PYTHON_SITE_PACKAGES} VIGRANUMPY_INSTALL_DIR)
@@ -53,8 +53,10 @@ IF(PYTHONINTERP_FOUND)
     #
     ######################################################################
     IF(NOT PYTHON_NUMPY_INCLUDE_DIR)
-        execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
-                         "from numpy.distutils.misc_util import *; print ' '.join(get_numpy_include_dirs())" 
+        # Note: we must suppress possible output of the 'from numpy... import *' command,
+        #       because the output cannot be interpreted correctly otherwise
+        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
+                         "import sys, os; sys.stdout = open(os.devnull, 'w'); from numpy.distutils.misc_util import *; sys.__stdout__.write(' '.join(get_numpy_include_dirs()))"
                           RESULT_VARIABLE PYTHON_NUMPY_NOT_FOUND
                           OUTPUT_VARIABLE PYTHON_NUMPY_INCLUDE_DIR 
                           OUTPUT_STRIP_TRAILING_WHITESPACE)
@@ -78,7 +80,7 @@ IF(PYTHONINTERP_FOUND)
     #      check if nosetests are installed
     #
     ######################################################################
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
                      "import nose" 
                       RESULT_VARIABLE PYTHON_NOSETESTS_NOT_FOUND)
 
@@ -93,7 +95,7 @@ IF(PYTHONINTERP_FOUND)
     #      check if sphinx documentation generator is installed
     #
     ######################################################################
-    find_program ( PYTHON_SPHINX sphinx-build "${PYTHON_PREFIX}/Scripts")
+    find_program(PYTHON_SPHINX sphinx-build "${PYTHON_PREFIX}/Scripts")
 
     IF(NOT PYTHON_SPHINX)
         MESSAGE(STATUS "Could NOT find sphinx documentation generator")
@@ -106,7 +108,7 @@ IF(PYTHONINTERP_FOUND)
     #      find Python platform
     #
     ######################################################################
-    execute_process ( COMMAND ${PYTHON_EXECUTABLE} -c 
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c 
                      "import sys; p = sys.platform; print 'windows' if p.startswith('win') else p" 
                       OUTPUT_VARIABLE PYTHON_PLATFORM OUTPUT_STRIP_TRAILING_WHITESPACE)
 

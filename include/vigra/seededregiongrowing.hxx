@@ -161,8 +161,6 @@ struct UnlabelWatersheds
 
 } // namespace detail
 
-enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWatershedLabel = -1 };
-
 /** \addtogroup SeededRegionGrowing Region Segmentation Algorithms
     Region growing, watersheds, and voronoi tesselation
 */
@@ -173,6 +171,14 @@ enum SRGType { CompleteGrow = 0, KeepContours = 1, StopAtThreshold = 2, SRGWater
 /*                    seededRegionGrowing               */
 /*                                                      */
 /********************************************************/
+
+/** Choose between different types of Region Growing */
+enum SRGType { 
+    CompleteGrow = 0, 
+    KeepContours = 1, 
+    StopAtThreshold = 2, 
+    SRGWatershedLabel = -1 
+};
 
 /** \brief Region Segmentation by means of Seeded Region Growing.
 

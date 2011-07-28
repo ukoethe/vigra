@@ -80,7 +80,7 @@ class RidgeSplit: public SplitBase<Tag>
 
     double                      region_gini_;
     ArrayVector<double>         min_gini_;
-    ArrayVector<ptrdiff_t>      min_indices_;
+    ArrayVector<std::ptrdiff_t> min_indices_;
     ArrayVector<double>         min_thresholds_;
 
     int                         bestSplitIndex;
@@ -315,7 +315,6 @@ class RidgeSplit: public SplitBase<Tag>
         {
           //calculate gini index
           bgfunc(dDistanceFromHyperplane,
-                 0,
               labels, 
               region.oob_begin(), region.oob_end(), 
               region.classCounts());
@@ -389,7 +388,6 @@ class RidgeSplit: public SplitBase<Tag>
         
     //calculate gini index
         bgfunc(dDistanceFromHyperplane,
-               0,
             labels, 
             region.begin(), region.end(), 
             region.classCounts());

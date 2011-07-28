@@ -537,19 +537,25 @@ doxygen_overloaded_function(template <...> void importScalarImage)
         <LI> the image file must be readable
         <LI> the file type must be one of
 
-                <DL>
-                <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-                <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-                <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format; compressed 24-bit color. (only available if libjpeg is installed)
-                <DT>"PNG"<DD> Portable Network Graphic. (only available if libpng is installed)
-                <DT>"PBM"<DD> Portable bitmap format (black and white).
-                <DT>"PGM"<DD> Portable graymap format (gray scale).
-                <DT>"PNM"<DD> Portable anymap.
-                <DT>"PPM"<DD> Portable pixmap format (color).
-                <DT>"SUN"<DD> SUN Rasterfile.
-                <DT>"TIFF"<DD> Tagged Image File Format. (only available if libtiff is installed.)
-                <DT>"VIFF"<DD> Khoros Visualization image file.
-                </DL>
+            <DL>
+            <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
+            <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
+            (only available if libpng is installed).
+            <DT>"PBM"<DD> Portable bitmap format (black and white).
+            <DT>"PGM"<DD> Portable graymap format (gray scale).
+            <DT>"PNM"<DD> Portable anymap.
+            <DT>"PPM"<DD> Portable pixmap format (color).
+            <DT>"SUN"<DD> SUN Rasterfile.
+            <DT>"TIFF"<DD> Tagged Image File Format.
+            (only available if libtiff is installed.)
+            <DT>"VIFF"<DD> Khoros Visualization image file.
+            </DL>
         </UL>
     **/
 doxygen_overloaded_function(template <...> void importImage)

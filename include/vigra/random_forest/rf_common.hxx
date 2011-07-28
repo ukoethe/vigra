@@ -200,6 +200,9 @@ class RandomForestOptions
     bool prepare_online_learning_;
     /*\}*/
 
+    typedef ArrayVector<double> double_array;
+    typedef std::map<std::string, double_array> map_type;
+
     int serialized_size() const
     {
         return 12;
@@ -287,7 +290,7 @@ class RandomForestOptions
         #undef PUSH
     }
     
-    void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+    void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -301,9 +304,10 @@ class RandomForestOptions
         PULLBOOL(prepare_online_learning_, bool);
         PULLBOOL(predict_weighted_, bool);
         
-        PULL(training_set_calc_switch_, (RF_OptionTag)int);
-        PULL(stratification_method_, (RF_OptionTag)int);
-        PULL(mtry_switch_, (RF_OptionTag)int);
+        PULL(training_set_calc_switch_, (RF_OptionTag)(int));
+
+        PULL(stratification_method_, (RF_OptionTag)(int));
+        PULL(mtry_switch_, (RF_OptionTag)(int));
         
         /*don't pull*/
         //PULL(mtry_func_!=0, int);
@@ -311,11 +315,11 @@ class RandomForestOptions
         #undef PULL
         #undef PULLBOOL
     }
-    void make_map(std::map<std::string, ArrayVector<double> > & in) const
+    void make_map(map_type & in) const
     {
         typedef MultiArrayShape<2>::type Shp; 
-        #define PUSH(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_)); 
-        #define PUSHFUNC(item_, type_) in[#item_] = ArrayVector<double>(1, double(item_!=0)); 
+        #define PUSH(item_, type_) in[#item_] = double_array(1, double(item_));
+        #define PUSHFUNC(item_, type_) in[#item_] = double_array(1, double(item_!=0));
         PUSH(training_set_proportion_,double);
         PUSH(training_set_size_, int);
         PUSH(mtry_, int);
@@ -539,6 +543,8 @@ public:
 
     typedef LabelType       Label_t;
     ArrayVector<Label_t>    classes;
+    typedef ArrayVector<double>                 double_array;
+    typedef std::map<std::string, double_array> map_type;
 
     int                     column_count_;    // number of features
     int                     class_count_;     // number of classes
@@ -553,7 +559,7 @@ public:
     ArrayVector<double>     class_weights_;   // if classes have different importance
     int                     is_weighted_;     // class_weights_ are used
     double                  precision_;       // termination criterion for regression loss
-    
+    int						response_size_; 
         
     template<class T> 
     void to_classlabel(int index, T & out) const
@@ -578,7 +584,8 @@ public:
         EQUALS(used_),
         EQUALS(class_weights_),
         EQUALS(is_weighted_),
-        EQUALS(precision_)
+        EQUALS(precision_),
+        EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -598,7 +605,8 @@ public:
         EQUALS(used_),
         EQUALS(class_weights_),
         EQUALS(is_weighted_),
-        EQUALS(precision_)
+        EQUALS(precision_),
+        EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -606,8 +614,6 @@ public:
     }
     #undef EQUALS
 
-    // for some reason the function below does not match
-    // the default copy constructor
     #define EQUALS(field) (this->field = rhs.field);
     ProblemSpec & operator=(ProblemSpec const & rhs)
     {
@@ -620,6 +626,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted_);
         EQUALS(precision_);
+        EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -643,6 +650,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted_);
         EQUALS(precision_);
+        EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -671,6 +679,7 @@ public:
         COMPARE(used_);
         COMPARE(class_weights_);
         COMPARE(classes);
+        COMPARE(response_size_)
         #undef COMPARE
         return result;
     }
@@ -707,6 +716,7 @@ public:
         PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
+        PULL(response_size_, int);
         if(is_weighted_)
         {
             vigra_precondition(end - begin == 9 + 2*class_count_, 
@@ -738,6 +748,7 @@ public:
         PUSH(is_weighted_);
         PUSH(used_);
         PUSH(precision_);
+        PUSH(response_size_);
         if(is_weighted_)
         {
             std::copy(class_weights_.begin(),
@@ -751,7 +762,7 @@ public:
         #undef PUSH
     }
 
-    void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+    void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -764,13 +775,14 @@ public:
         PULL(is_weighted_, int);
         PULL(used_, int);
         PULL(precision_, double);
+        PULL(response_size_, int);
         class_weights_ = in["class_weights_"];
         #undef PUSH
     }
-    void make_map(std::map<std::string, ArrayVector<double> > & in) const
+    void make_map(map_type & in) const
     {
         typedef MultiArrayShape<2>::type Shp; 
-        #define PUSH(item_) in[#item_] = ArrayVector<double>(1, double(item_)); 
+        #define PUSH(item_) in[#item_] = double_array(1, double(item_));
         PUSH(column_count_);
         PUSH(class_count_)
         PUSH(row_count_);
@@ -780,6 +792,7 @@ public:
         PUSH(is_weighted_);
         PUSH(used_);
         PUSH(precision_);
+        PUSH(response_size_);
         in["class_weights_"] = class_weights_;
         #undef PUSH
     }
@@ -795,7 +808,8 @@ public:
         problem_type_(CHECKLATER),
         used_(false),
         is_weighted_(false),
-        precision_(0.0)
+        precision_(0.0),
+        response_size_(1)
     {}
 
 
@@ -846,6 +860,7 @@ public:
         problem_type_ = CHECKLATER;
         is_weighted_ = false;
         precision_   = 0.0;
+        response_size_ = 0;
 
     }
 

@@ -357,6 +357,39 @@ struct ClassifierTest
         }
 
     }
+    
+    
+    void RFSplitFunctorTest()
+    {
+        //Create Test output by Random Forest
+        {
+            vigra::TestVisitor testVisitor;
+            std::cerr << "RFSplitFunctorTest(): Learning on Datasets (Warning this checks whether Median and RandomSplit functors compile and run"
+                                                "if you plan to use it, please improve the test\n";
+            for(int ii = 0; ii < data.size() ; ii++)
+            {
+                vigra::RandomForest<>
+                    RF2(vigra::RandomForestOptions().tree_count(32));
+                vigra::RandomForest<int>
+                    RF3(vigra::RandomForestOptions().tree_count(5), vigra::ProblemSpec<int>().classes_(data.ClassIter(ii).begin(), data.ClassIter(ii).end()));
+
+                RF3.learn(  data.features(ii),
+                            data.labels(ii),
+                            rf_default(),
+                            rf::split::MedianSplit(),
+                            rf_default(),
+                            vigra::RandomMT19937(1));
+
+                RF2.learn(  data.features(ii),
+                            data.labels(ii),
+                            rf_default(),
+                            rf::split::RandomSplit(),
+                            rf_default(),
+                            vigra::RandomMT19937(1));
+            }
+        }
+        std::cerr << "DONE!\n\n";
+    }
 /**
         ClassifierTest::RFdefaultTest():
     Learns The Refactored Random Forest with a fixed Random Seed and default sampling Options on
@@ -706,6 +739,20 @@ struct ClassifierTest
 
     }
 #ifdef HasHDF5
+    void should_all(vigra::RandomForest<> & RF, vigra::RandomForest<> & R2)
+    {
+            should(RF.ext_param_ == R2.ext_param_);
+            should(RF.options_ == R2.options_);
+            should(RF.trees_.size() == R2.trees_.size());
+            for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
+            {
+                 should(RF.trees_[jj].topology_ == R2.trees_[jj].topology_);
+
+                 should(RF.trees_[jj].parameters_ == R2.trees_[jj].parameters_);
+
+            }
+            should(RF.options_.tree_count_ == R2.options_.tree_count_);
+    }
     /** checks whether hdf5 import export is working
      */
     void HDF5ImpexTest()
@@ -715,28 +762,34 @@ struct ClassifierTest
             {
                 std::cerr << "Running HDF5 Impex Test\n";
                 std::string filename = data.names(ii) + "_rf.hdf5";
+                std::string filename_b = data.names(ii) + "_b_rf.hdf5";
                 std::remove(filename.c_str());
                 vigra::RandomForest<> RF(vigra::RandomForestOptions()
                                              .tree_count(100));
 
                  RF.learn(data.features(ii), data.labels(ii));
-                 rf_export_HDF5(RF, data.names(ii) + "_rf.hdf5");
+                 rf_export_HDF5(RF, filename);
 
                  vigra::RandomForest<> RF2;
-                 rf_import_HDF5(RF2,data.names(ii) + "_rf.hdf5");
+                 rf_import_HDF5(RF2, filename);
+                 should_all(RF, RF2);
 
-                 should(RF.ext_param_== RF2.ext_param_);
-                 should(RF.options_ ==  RF2.options_);
-                 shouldEqual(RF.trees_.size(), RF2.trees_.size());
-                 for(int jj = 0; jj < int(RF.trees_.size()); ++jj)
-                 {
-                     should(RF.trees_[jj].topology_ == 
-                            RF2.trees_[jj].topology_);
+                 vigra::RandomForest<> RF3;
+                 rf_import_HDF5(RF3, filename);
+                 should_all(RF, RF3);
 
-                     should(RF.trees_[jj].parameters_ ==
-                            RF2.trees_[jj].parameters_);
+                 rf_export_HDF5(RF3, filename_b);
 
-                 }
+                 vigra::RandomForest<> RF4;
+                 rf_import_HDF5(RF4, filename_b);
+                 should_all(RF, RF4);
+
+                 rf_export_HDF5(RF4, filename_b);
+
+                 vigra::RandomForest<> RF5;
+                 rf_import_HDF5(RF5, filename_b);
+                 should_all(RF, RF5);
+
                  std::cerr << "[";
                  for(int ss = 0; ss < ii+1; ++ss)
                      std::cerr << "#";
@@ -748,7 +801,135 @@ struct ClassifierTest
             std::cerr << "done!\n";
     }
 #endif
+//};
+
+
+/** checks Regression RF
+ */
+
+    
+void RFRegressionTest()
+{
+    std::cerr << "RFRegressionTest().....\n";
+    typedef MultiArrayShape<2>::type Shp;
+    MultiArray<2, double> features(Shp(100,1));
+    MultiArray<2, double> response(Shp(100,1));
+    //MultiArray<2, double> response(Shp(100,1));
+    
+    //Populate the matrix with one coordinate
+    double x0= -50;
+    double dx=1;
+    for (int i=0;i<features.shape(0);++i){
+        features(i,0)=x0;
+        x0=x0+dx;
+    }
+    
+    //Popolate the matrix of labels (should not be called labels)
+    // linear function
+    
+    double a= 1;
+    double q= 0.0;
+    
+    for (int i=0;i<response.shape(0);++i){
+            response(i,0)=features(i,0)*a+q;
+            x0=x0+dx;
+    
+    }
+
+    
+    
+    vigra::RegressionSplit regsplit;
+    
+    //split class
+    vigra::RandomForest<double, RegressionTag> rf(vigra::RandomForestOptions().tree_count(1000));
+    //vigra::RandomForest<double, RegressionTag > rf(vigra::RandomForestOptions().tree_count(10));
+    vigra::RegressionSplit rsplit;
+    //vigra::GiniRidgeSplit rsplit;
+    rf.learn(features, response, rf_default(),rsplit);
+    
+    MultiArray<2, double> predicted(Shp(100,1));
+    
+    
+    rf.predictRaw(features,predicted);
+    //std::cerr << "DONE\n";
+    
+
+    for (int i=0; i<predicted.shape(0); ++i) {
+        shouldEqualTolerance(response(i, 0), predicted(i, 0), 1.0);
+    }
+        
+    std::cerr << "done!\n";
+        
+}
+
+    
+    void MultidimensionalRFRegressionTest()
+    {
+        std::cerr << "MultidimensioalRFRegressionTest().....\n";
+        typedef MultiArrayShape<2>::type Shp;
+        MultiArray<2, double> features(Shp(100,5));
+        MultiArray<2, double> response(Shp(100,5));
+        //MultiArray<2, double> response(Shp(100,1));
+        
+        //Populate the matrix with one coordinate
+        double x0= -50;
+        double dx=1;
+        for(int j = 0; j < 5; ++ j)
+        for (int i=0;i<features.shape(0);++i){
+            features(i,j)=x0;
+            x0=x0+dx;
+        }
+        
+        //Popolate the matrix of labels (should not be called labels)
+        // linear function
+        
+        double a= 1;
+        double q= 0.0;
+        
+        for(int j = 0; j < 5; ++ j)
+        for (int i=0;i<response.shape(0);++i){
+            response(i,j)=features(i,j)*a+q;
+            x0=x0+dx;
+            
+        }
+        
+        
+        
+        vigra::RegressionSplit regsplit;
+        
+        //split class
+        vigra::RandomForest<double, RegressionTag> rf(vigra::RandomForestOptions().tree_count(1000));
+        //vigra::RandomForest<double, RegressionTag > rf(vigra::RandomForestOptions().tree_count(10));
+        vigra::RegressionSplit rsplit;
+        //vigra::GiniRidgeSplit rsplit;
+        rf.learn(features, response, rf_default(),rsplit);
+        
+        MultiArray<2, double> predicted(Shp(100,5));
+        
+        
+        rf.predictRaw(features,predicted);
+        //std::cerr << "DONE\n";
+        //
+        for(int j = 0; j < 5; ++ j)
+        for (int i=0; i<predicted.shape(0); ++i) {
+            //std::cout << predicted(i, j) << std::endl;
+            shouldEqualTolerance(response(i, j), predicted(i, j), 1.0);
+        }
+        
+        std::cerr << "done!\n";
+        
+    }
+    
+    
+    
+    
+    
 };
+
+
+
+
+
 
 
 struct ClassifierTestSuite
@@ -757,8 +938,9 @@ struct ClassifierTestSuite
     ClassifierTestSuite()
     : vigra::test_suite("ClassifierTestSuite")
     {
-    
         add( testCase( &ClassifierTest::RFdefaultTest));
+        add( testCase( &ClassifierTest::RFRegressionTest));
+        add( testCase( &ClassifierTest::MultidimensionalRFRegressionTest));
 #ifndef FAST
         add( testCase( &ClassifierTest::RFsetTest));
         add( testCase( &ClassifierTest::RFonlineTest));
@@ -773,9 +955,11 @@ struct ClassifierTestSuite
         add( testCase( &ClassifierTest::RFresponseTest));
         
         add( testCase( &ClassifierTest::RFridgeRegressionTest));
+        add( testCase( &ClassifierTest::RFSplitFunctorTest));
 #ifdef HasHDF5
         add( testCase( &ClassifierTest::HDF5ImpexTest));
 #endif
+         
     }
 };
 

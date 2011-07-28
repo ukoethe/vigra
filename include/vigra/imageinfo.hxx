@@ -61,7 +61,7 @@ namespace vigra
 {
 /** \addtogroup VigraImpex Image Import/Export Facilities
 
-    supports GIF, TIFF, JPEG, BMP, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
+    supports GIF, TIFF, JPEG, BMP, EXR, HDR, PNM (PBM, PGM, PPM), PNG, SunRaster, KHOROS-VIFF formats
 **/
 //@{
 
@@ -137,11 +137,11 @@ class ImageExportInfo
 
             The image will be stored under the given filename.
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo( const char * );
     VIGRA_EXPORT ~ImageExportInfo();
@@ -149,11 +149,11 @@ class ImageExportInfo
         /** Set image file name.
         
             The file type will be guessed from the extension unless overridden
-            by \ref setFileType(). Recognized extensions: '.bmp', '.gif',
+            by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            JPEG support requires libjpeg, PNG support requires libpng, and
-            TIFF support requires libtiff.
+            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo & setFileName(const char * filename);
     VIGRA_EXPORT const char * getFileName() const;
@@ -165,7 +165,10 @@ class ImageExportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
             <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
             compressed 24-bit color (only available if libjpeg is installed).
             <DT>"PNG"<DD> Portable Network Graphic
@@ -209,23 +212,45 @@ class ImageExportInfo
     VIGRA_EXPORT ImageExportInfo & setFileType( const char * );
     VIGRA_EXPORT const char * getFileType() const;
 
-        /** Set compression type.
+        /** Set compression type and quality.
 
-            Recognized strings: "" (no compression), "LZW",
-            "RunLength", "1" ... "100". A number is interpreted as the
-            compression quality for JPEG compression. JPEG compression is
-            supported by the JPEG and TIFF formats. "LZW" is only available
-            if libtiff was installed with LZW enabled. By default, libtiff came
-            with LZW disabled due to Unisys patent enforcement. In this case,
-            VIGRA stores the image uncompressed.
+            This option is ignored when the target file format doesn't recognize
+            the compression type. Valid arguments:
+            
+            <DL>
+            <DT>"NONE"<DD> (recognized by EXR and TIFF): do not compress (many other formats don't
+                           compress either, but it is not an option for them).
+            <DT>"JPEG"<DD> (recognized by JPEG and TIFF): use JPEG compression. 
+                           You can also specify a compression quality parameter by 
+                           passing "JPEG QUALITY=N", where "N" must be an integer between 1 and 100 
+                           (e.g. "JPEG QUALITY=70").
+            <DT>"JPEG-ARITH"<DD> (recognized by new versions of JPEG): use arithmetic coding as a back-end
+                           after JPEG compression (by default, the back-end is Huffman coding). 
+                           You can also specify a compression quality parameter by 
+                           passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100 
+                           (e.g. "JPEG-ARITH QUALITY=70").
+            <DT>"RLE", "RunLength"<DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
+                          uses run-length encoding, but there it is not an option).
+            <DT>"PACKBITS"<DD> (recognized by TIFF): use packbits encoding (a variant of RLE).
+            <DT>"DEFLATE"<DD> (recognized by TIFF): use deflate encoding, as defined in zlib (PNG also
+                           uses deflate, but there it is not an option).
+            <DT>"LZW"<DD> (recognized by TIFF): use Lempel-Ziv-Welch encoding.
+            <DT>"ZIP"<DD> (recognized by EXR): use zip-style encoding.
+            <DT>"PIZ"<DD> (recognized by EXR): use wavelet encoding.
+            <DT>"PXR24"<DD> (recognized by EXR): reduce to 24-bit, then use zip-style encoding.
+            <DT>"B44", "B44A"<DD> (recognized by EXR): see OpenEXR documentation.
+            <DT>"ASCII"<DD> (recognized by PNM): store pixels as ASCII (human readable numbers).
+            <DT>"RAW"<DD> (recognized by PNM): store pixels as uncompressed binary data.
+            <DT>"BILEVEL"<DD> (recognized by PNM): store as one bit per pixel.
+            <DT>"1" ... "100"<DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt> 
+                             where the number denotes the desired quality).
+            </DL>
 
-                Valid Compression for TIFF files:
-                  JPEG    jpeg compression, call setQuality as well!
-                  RLE     runlength compression
-                  LZW     lzw compression
-                  DEFLATE deflate compression
+            Some of these options (e.g. "JPEG-ARITH", "LZW", "B44", "B44A") may only be available when
+            they have been enabled in the corresponding third-party library.
          **/
-    VIGRA_EXPORT ImageExportInfo & setCompression( const char * );
+    VIGRA_EXPORT ImageExportInfo & setCompression( const char * type);
+    
     VIGRA_EXPORT const char * getCompression() const;
 
         /** Set the pixel type of the image file. Possible values are:
@@ -286,7 +311,7 @@ class ImageExportInfo
         /** Set the position of the upper Left corner on a global
             canvas.
 
-            Currently only supported by TIFF and PNG files.
+            Currently only supported by TIFF, PNG and OpenEXR files.
 
             The offset is encoded in the XPosition and YPosition TIFF tags.
 
@@ -299,6 +324,16 @@ class ImageExportInfo
             a global canvas.
          **/
     VIGRA_EXPORT Diff2D getPosition() const;
+
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT Size2D getCanvasSize() const;
+
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT ImageExportInfo & setCanvasSize(const Size2D & size);
 
         /**
           ICC profiles (handled as raw data so far).
@@ -321,6 +356,7 @@ class ImageExportInfo
     float m_x_res, m_y_res;
     Diff2D m_pos;
     ICCProfile m_icc_profile;
+    Size2D m_canvas_size;
     double fromMin_, fromMax_, toMin_, toMax_;
 };
 
@@ -354,10 +390,13 @@ class ImageImportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format
-            (only available if libjpeg is installed).
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
-            <DT>"PNG"<DD> Portable Network Graphics
+            <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
+            <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+            compressed 24-bit color (only available if libjpeg is installed).
+            <DT>"PNG"<DD> Portable Network Graphic
             (only available if libpng is installed).
             <DT>"PBM"<DD> Portable bitmap format (black and white).
             <DT>"PGM"<DD> Portable graymap format (gray scale).
@@ -458,6 +497,11 @@ class ImageImportInfo
          **/
     VIGRA_EXPORT Diff2D getPosition() const;
 
+        /** Get the size of the canvas, on which the image is positioned at
+            getPosition()
+         **/
+    VIGRA_EXPORT Size2D getCanvasSize() const;
+
         /** Returns the image resolution in horizontal direction
          **/
     VIGRA_EXPORT float getXResolution() const;
@@ -484,6 +528,7 @@ class ImageImportInfo
     int m_width, m_height, m_num_bands, m_num_extra_bands;
     float m_x_res, m_y_res;
     Diff2D m_pos;
+    Size2D m_canvas_size;
     ICCProfile m_icc_profile;
 };
 

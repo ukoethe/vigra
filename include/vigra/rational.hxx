@@ -276,25 +276,25 @@ public:
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator+= (const Rational& r);
+    Rational& operator+= (const Rational & r);
 
         /** Subtract-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator-= (const Rational& r);
+    Rational& operator-= (const Rational & r);
 
         /** Multiply-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator*= (const Rational& r);
+    Rational& operator*= (const Rational & r);
 
         /** Divide-assignment from <tt>Rational</tt>
 
             <tt>throws bad_rational</tt> if indeterminate expression.
         */
-    Rational& operator/= (const Rational& r);
+    Rational& operator/= (const Rational & r);
 
         /** Add-assignment from <tt>IntType</tt>
 
@@ -399,7 +399,7 @@ Rational<IntType>::assign(param_type n, param_type d, bool doNormalize)
 
 // Arithmetic assignment operators
 template <typename IntType>
-Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
+Rational<IntType>& Rational<IntType>::operator+= (const Rational & r)
 {
     IntType zero(0);
 
@@ -449,7 +449,7 @@ Rational<IntType>& Rational<IntType>::operator+= (const Rational<IntType>& r)
 }
 
 template <typename IntType>
-Rational<IntType>& Rational<IntType>::operator-= (const Rational<IntType>& r)
+Rational<IntType>& Rational<IntType>::operator-= (const Rational & r)
 {
     IntType zero(0);
 
@@ -483,7 +483,7 @@ Rational<IntType>& Rational<IntType>::operator-= (const Rational<IntType>& r)
 }
 
 template <typename IntType>
-Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
+Rational<IntType>& Rational<IntType>::operator*= (const Rational & r)
 {
     IntType zero(0);
 
@@ -517,7 +517,7 @@ Rational<IntType>& Rational<IntType>::operator*= (const Rational<IntType>& r)
 }
 
 template <typename IntType>
-Rational<IntType>& Rational<IntType>::operator/= (const Rational<IntType>& r)
+Rational<IntType>& Rational<IntType>::operator/= (const Rational & r)
 {
     IntType zero(0);
 

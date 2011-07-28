@@ -356,6 +356,12 @@ class MultiArrayShape
     typedef TinyVector<MultiArrayIndex, N> type;
 };
 
+typedef MultiArrayShape<1>::type Shape1; ///< shape type for MultiArray<1, T>
+typedef MultiArrayShape<2>::type Shape2; ///< shape type for MultiArray<2, T>
+typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
+typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
+typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
+
 /********************************************************/
 /*                                                      */
 /*                      MultiIterator                   */
@@ -2137,9 +2143,10 @@ class StridedScanOrderIterator
         return base_type::operator>=(r);
     }
 
-
     using base_type::point;
     using base_type::shape;
+    using base_type::strides;
+    using base_type::ptr;
     using base_type::index;
     using base_type::operator*;
     using base_type::operator->;
@@ -2276,6 +2283,16 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return i_;
     }
 
+    pointer ptr()
+    {
+        return i_;
+    }
+
+    const_pointer ptr() const
+    {
+        return i_;
+    }
+
     reference operator[](MultiArrayIndex i)
     {
         StridedScanOrderIterator t(*this);
@@ -2363,6 +2380,11 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     shape_type const & shape() const
     {
         return shape_;
+    }
+    
+    shape_type const & strides() const
+    {
+        return strides_;
     }
     
     StridedScanOrderIterator getEndIterator() const

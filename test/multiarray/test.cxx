@@ -42,7 +42,11 @@
 #include "vigra/tensorutilities.hxx"
 #include "vigra/multi_tensorutilities.hxx"
 #include "vigra/functorexpression.hxx"
+#include "vigra/multi_math.hxx"
+#include "vigra/algorithm.hxx"
 #include "vigra/random.hxx"
+#include "vigra/timing.hxx"
+//#include "marray.hxx"
 
 using namespace vigra;
 using namespace vigra::functor;
@@ -209,6 +213,26 @@ public:
         traverser [2] += 1;
         shouldEqual (array [traverser], 222);
         shouldEqual (array (1,1,1), 222);
+    }
+
+    void testIsUnstrided()
+    {
+        typedef difference3_type Shape;
+
+        should(array3.isUnstrided());
+        should(array3.isUnstrided(0));
+        should(array3.isUnstrided(1));
+        should(array3.isUnstrided(2));
+        should(array3.bindOuter(0).isUnstrided());
+        should(!array3.bindInner(0).isUnstrided());
+        should(!array3.bindAt(1, 0).isUnstrided());
+        should(array3.bindAt(1, 0).isUnstrided(0));
+        should(!array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided());
+        should(!array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided(1));
+        should(array3.subarray(Shape(), array3.shape()-Shape(1)).isUnstrided(0));
+        should(!array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided());
+        should(array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided(1));
+        should(array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided(0));
     }
 
     // permute and transpose tests
@@ -955,9 +979,10 @@ public:
 
     void testNavigator ()
     {
-        int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
-                            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
-                            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        unsigned char expected[][24] = 
+            {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
         typedef MultiArrayNavigator<array3_type::traverser, 3> Navigator;
         for(int d=0; d<3; ++d)
         {
@@ -974,9 +999,10 @@ public:
 
     void testCoordinateNavigator ()
     {
-        int expected[][24] = {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
-                            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
-                            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
+        unsigned char expected[][24] = 
+            {{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23},
+            {0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11, 12, 16, 20, 13, 17, 21, 14, 18, 22, 15, 19, 23},
+            {0, 12, 1, 13, 2, 14, 3, 15, 4, 16, 5, 17, 6, 18, 7, 19, 8, 20, 9, 21, 10, 22, 11, 23}};
         typedef MultiCoordinateNavigator<3> Navigator;
         for(int d=0; d<3; ++d)
         {
@@ -1782,6 +1808,479 @@ struct MultiArrayPointoperatorsTest
     }
 };
 
+class MultiMathTest
+{
+public:
+
+    typedef double scalar_type;
+    typedef MultiArray <3, scalar_type> array3_type;
+    typedef MultiArrayView <3, scalar_type> view_type;
+    typedef array3_type::difference_type shape3_type;
+    
+    shape3_type shape3;
+    array3_type r1, r2, r3, r4, r5, a, b, c, d;
+    view_type rv, bv, cv, dv;
+
+    MultiMathTest ()
+        : shape3 (4, 3, 2), 
+          r2(shape3),
+          r3(shape3),
+          r4(shape3),
+          r5(Shape3(2,3,4)),
+          a(shape3),
+          b(shape3),
+          c(shape3),
+          d(shape3),
+          rv(r3),
+          bv(b),
+          cv(c),
+          dv(d)
+    {
+        // initialize the array to the test data
+        for (unsigned int i = 0; i < 24; ++i)
+        {
+            a[i] = std::exp(-0.2*i);
+            b[i] = 0.5 + i;
+            c[i] = 100.0 + i;
+            d[i] = -(i+1.0);
+        }
+    }
+
+    void testSpeed()
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+        Shape3 s(100, 100, 100);
+        array3_type u(s),
+                    v(s),
+                    w(s);
+        std::string t;
+        USETICTOC;
+        std::cerr << "multi_math speed test: \n";
+#if 0
+        marray::Marray<double> mu(s.begin(), s.end()),
+                               mv(s.begin(), s.end()),
+                               mw(s.begin(), s.end());
+        
+        TIC;
+        marray::Marray<double>::iterator iu = mu.begin(), end = mu.end(),
+                                         iv = mv.begin(), iw = mw.begin();
+        for(; iu != end; ++iu, ++iv, ++iw)
+            *iw = *iu * *iv;
+        t = TOCS;
+        std::cerr << "    marray iterator: " << t << "\n";
+        TIC;
+        mw = mu*mv;
+        t = TOCS;
+        std::cerr << "    marray expression: " << t << "\n";
+#endif
+        TIC;
+        w = u*v;
+        t = TOCS;
+        std::cerr << "    multi_math expression: " << t << "\n";
+        TIC;
+        w.transpose() = u.transpose()*v.transpose();
+        t = TOCS;
+        std::cerr << "    transposed multi_math expression: " << t << "\n";
+        TIC;
+        combineTwoMultiArrays(srcMultiArrayRange(u), srcMultiArray(v), destMultiArray(w),
+                              Arg1()*Arg2());
+        t = TOCS;
+        std::cerr << "    lambda expression: " << t << "\n";
+        TIC;
+        combineTwoMultiArrays(srcMultiArrayRange(u.transpose()), srcMultiArray(v.transpose()), destMultiArray(w),
+                              Arg1()*Arg2());
+        t = TOCS;
+        std::cerr << "    transposed lambda expression: " << t << "\n";
+        TIC;
+        for(int z=0; z<100; ++z)
+            for(int y=0; y<100; ++y)
+                for(int x=0; x<100; ++x)
+                    w(x,y,z) = u(x,y,z) * v(x,y,z);
+        t = TOCS;
+        std::cerr << "    explicit loops: " << t << "\n";
+    }
+
+    void testBasicArithmetic()
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+
+        // test all overload variants
+        r1 = b*d;
+        rv = bv*dv;
+        r4.transpose() = b.transpose()*d.transpose();
+        r5 = b.transpose()*d.transpose();
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              Arg1()*Arg2());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequence(r4.begin(), r4.end(), r2.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), r5.transpose().begin());
+
+        r1 = b*cv;
+        rv = cv*b;
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(c), destMultiArray(r2),
+                              Arg1()*Arg2());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = 2.0*d;
+        rv = 2.0*dv;
+        r4.transpose() = 2.0*d.transpose();
+        r5 = 2.0*d.transpose();
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            Param(2.0)*Arg1());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequence(r4.begin(), r4.end(), r2.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), r5.transpose().begin());
+
+        r1 = d*4.0;
+        rv = dv*4.0;
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            Arg1()*Param(4.0));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = (d*2.0)+b;
+        rv = (dv*2.0)+bv;
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              (Arg2()*Param(2.0))+Arg1());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = b/(d*2.0);
+        rv = bv/(dv*2.0);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              Arg1()/(Arg2()*Param(2.0)));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = (2.0*b)-(d*2.0);
+        rv = (2.0*bv)-(dv*2.0);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              (Param(2.0)*Arg1())-(Arg2()*Param(2.0)));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = 2.0*(d*2.0);
+        rv = 2.0*(dv*2.0);
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            Param(2.0)*(Arg1()*Param(2.0)));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = (d*3.0)*6.0;
+        rv = (dv*3.0)*6.0;
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            (Param(3.0)*Arg1())*Param(6.0));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+
+        r1 = sqrt(b);
+        rv = sqrt(bv);
+        r4.transpose() = sqrt(b.transpose());
+        r5 = sqrt(b.transpose());
+        transformMultiArray(srcMultiArrayRange(b), destMultiArray(r2),
+                            sqrt(Arg1()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequence(r4.begin(), r4.end(), r2.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), r5.transpose().begin());
+
+        r1 = sqrt(-d);
+        rv = sqrt(-dv);
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            sqrt(-Arg1()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = sqrt(b)*d;
+        rv = sqrt(bv)*dv;
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              sqrt(Arg1())*Arg2());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = d*sqrt(b);
+        rv = dv*sqrt(bv);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              Arg2()*sqrt(Arg1()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = sqrt(b)*(d*2.0);
+        rv = sqrt(bv)*(dv*2.0);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              sqrt(Arg1())*(Arg2()*Param(2.0)));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = (d*2.0)*sqrt(b);
+        rv = (dv*2.0)*sqrt(bv);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
+                              (Arg2()*Param(2.0))*sqrt(Arg1()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+
+        r1 = b*(-c);
+        rv = bv*(-cv);
+        combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(c), destMultiArray(r2),
+                              Arg1()*(-Arg2()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = b*c*d;
+        rv = bv*cv*dv;
+        combineThreeMultiArrays(srcMultiArrayRange(b), srcMultiArray(c), srcMultiArray(d), destMultiArray(r2),
+                                Arg1()*Arg2()*Arg3());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = sqrt(b)*c*d*b;
+        rv = sqrt(bv)*cv*dv*bv;
+        combineThreeMultiArrays(srcMultiArrayRange(b), srcMultiArray(c), srcMultiArray(d), destMultiArray(r2),
+                                sqrt(Arg1())*Arg2()*Arg3()*Arg1());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+
+        r1 = (b*c)*2.0*(abs(d)*b);
+        rv = (bv*cv)*2.0*(abs(dv)*bv);
+        combineThreeMultiArrays(srcMultiArrayRange(b), srcMultiArray(c), srcMultiArray(d), destMultiArray(r2),
+                                (Arg1()*Arg2())*Param(2.0)*(abs(Arg3())*Arg1()));
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+    
+        array3_type fails(shape3_type(2, 7,6));
+
+        try 
+        {
+            r1 = b * fails;
+            failTest("shape mismatch exception not thrown");
+        }
+        catch(PreconditionViolation & e)
+        {
+            shouldEqual(std::string(e.what()), 
+                        std::string("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"));
+        }
+    }
+
+#define VIGRA_TEST_UNARY_FUNCTION(FCT, RHS) \
+        r1 = FCT(RHS); \
+        for(int k=0; k<r2.size(); ++k) \
+            r2[k] = FCT(RHS[k]); \
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin()); 
+
+#define VIGRA_TEST_BINARY_FUNCTION(FCT, MFCT, V1, V2) \
+        r1 = MFCT(V1, V2); \
+        for(int k=0; k<r2.size(); ++k) \
+            r2[k] = FCT(V1[k], V2[k]); \
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin()); 
+
+#define VIGRA_TEST_BINARY_OPERATOR(OP, V1, V2) \
+        r1 = V1 OP V2; \
+        for(int k=0; k<r2.size(); ++k) \
+            r2[k] = V1[k] OP V2[k]; \
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin()); 
+
+    void testAllFunctions()
+    {
+        using namespace vigra::multi_math;
+
+        MultiArray<3, unsigned int> i(r2.shape()), j(r2.shape());
+        linearSequence(i.begin(), i.end());
+        j.init(2);
+
+        VIGRA_TEST_UNARY_FUNCTION(-, b)
+        VIGRA_TEST_UNARY_FUNCTION(!, i)
+        VIGRA_TEST_UNARY_FUNCTION(~, i)
+
+        VIGRA_TEST_UNARY_FUNCTION(abs, d)
+        VIGRA_TEST_UNARY_FUNCTION(erf, b)
+        VIGRA_TEST_UNARY_FUNCTION(even, i)
+        VIGRA_TEST_UNARY_FUNCTION(odd, i)
+        VIGRA_TEST_UNARY_FUNCTION(sign, d)
+        VIGRA_TEST_UNARY_FUNCTION(signi, b)
+        VIGRA_TEST_UNARY_FUNCTION(sq, b)
+        VIGRA_TEST_UNARY_FUNCTION(norm, d)
+        VIGRA_TEST_UNARY_FUNCTION(squaredNorm, d)
+        VIGRA_TEST_UNARY_FUNCTION(vigra::multi_math::round, b)
+        VIGRA_TEST_UNARY_FUNCTION(roundi, b)
+        VIGRA_TEST_UNARY_FUNCTION(sqrti, i)
+        VIGRA_TEST_UNARY_FUNCTION(sin_pi, b)
+        VIGRA_TEST_UNARY_FUNCTION(cos_pi, b)
+        VIGRA_TEST_UNARY_FUNCTION(vigra::multi_math::gamma, b)
+        VIGRA_TEST_UNARY_FUNCTION(loggamma, b)
+        VIGRA_TEST_UNARY_FUNCTION(sqrt, b)
+        VIGRA_TEST_UNARY_FUNCTION(exp, b)
+        VIGRA_TEST_UNARY_FUNCTION(log, b)
+        VIGRA_TEST_UNARY_FUNCTION(log10, b)
+        VIGRA_TEST_UNARY_FUNCTION(sin, b)
+        VIGRA_TEST_UNARY_FUNCTION(asin, a)
+        VIGRA_TEST_UNARY_FUNCTION(cos, b)
+        VIGRA_TEST_UNARY_FUNCTION(acos, a)
+        VIGRA_TEST_UNARY_FUNCTION(tan, b)
+        VIGRA_TEST_UNARY_FUNCTION(atan, b)
+        VIGRA_TEST_UNARY_FUNCTION(floor, b)
+        VIGRA_TEST_UNARY_FUNCTION(ceil, b)
+
+        VIGRA_TEST_BINARY_FUNCTION(atan2, atan2, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(pow, pow, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(fmod, fmod, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(std::min, minimum, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(std::max, maximum, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(std::min, multi_math::min, b, c)
+        VIGRA_TEST_BINARY_FUNCTION(std::max, multi_math::max, b, c)
+
+        VIGRA_TEST_BINARY_OPERATOR(+, b, c)
+        VIGRA_TEST_BINARY_OPERATOR(-, b, c)
+        VIGRA_TEST_BINARY_OPERATOR(*, b, c)
+        VIGRA_TEST_BINARY_OPERATOR(/, b, c)
+        VIGRA_TEST_BINARY_OPERATOR(%, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(&&, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(||, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(==, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(!=, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(<, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(<=, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(>, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(>=, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(<<, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(>>, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(&, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(|, i, j)
+        VIGRA_TEST_BINARY_OPERATOR(^, i, j)
+    }
+
+#undef VIGRA_TEST_UNARY_FUNCTION
+#undef VIGRA_TEST_BINARY_FUNCTION
+#undef VIGRA_TEST_BINARY_OPERATOR
+
+    void testMixedExpressions()
+    {
+        using namespace vigra::multi_math;
+
+        r1 = 2.0 + b;
+        r2 = 2 + b;
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+
+        MultiArray<3, int> i(r2.shape());
+
+        i = 2 + c;
+        r1 = i;
+        r2 = 2 + c;
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+    }
+
+    void testComputedAssignment()
+    {
+        using namespace vigra::multi_math;
+        shouldEqual(r1.size(), 0);
+        r1 += sq(b);
+        rv.init(0.0);
+        rv += sq(b);
+        r2 = sq(b);
+        shouldEqual(r1.size(), 24);
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), rv.begin());
+
+        r1 *= sq(b);
+        rv *= sq(b);
+        r2 = r2 * sq(b);
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), rv.begin());
+
+        r1 -= sq(b);
+        rv -= sq(b);
+        r2 = r2 - sq(b);
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), rv.begin());
+
+        r1 /= sq(b);
+        rv /= sq(b);
+        r2 = r2 / sq(b);
+        shouldEqualSequence(r2.begin(), r2.end(), r1.begin());
+        shouldEqualSequence(r2.begin(), r2.end(), rv.begin());
+    }
+
+    void testNonscalarValues()
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+
+        typedef std::complex<double> C;
+        MultiArray<3, C> q(r2.shape()), qr(q.shape()), qref(q.shape());
+        linearSequence(q.begin(), q.end(), 1.0);
+
+        qr = -q;
+        transformMultiArray(srcMultiArrayRange(q), destMultiArray(qref),
+                            -Arg1());
+        shouldEqualSequence(qref.begin(), qref.end(), qr.begin());
+        shouldEqual(qr[0], C(-1.0));
+
+        qr = C(2.0, -2.0)*q;
+        transformMultiArray(srcMultiArrayRange(q), destMultiArray(qref),
+                            Param(C(2.0, -2.0))*Arg1());
+        shouldEqualSequence(qref.begin(), qref.end(), qr.begin());
+        shouldEqual(qr[1], C(4.0, -4.0));
+
+        qr = 2.0*q;
+        transformMultiArray(srcMultiArrayRange(q), destMultiArray(qref),
+                            Param(2.0)*Arg1());
+        shouldEqualSequence(qref.begin(), qref.end(), qr.begin());
+        shouldEqual(qr[1], C(4.0));
+
+        typedef RGBValue<int> R;
+        MultiArray<3, R> r(r2.shape()), rr(q.shape()), rref(q.shape());
+        linearSequence(r.begin(), r.end(), 1);
+
+        rr = sq(r);
+        transformMultiArray(srcMultiArrayRange(r), destMultiArray(rref),
+                            sq(Arg1()));
+        shouldEqualSequence(rref.begin(), rref.end(), rr.begin());
+        shouldEqual(rr[1], R(4));
+
+        rr = R(2)*r;
+        transformMultiArray(srcMultiArrayRange(r), destMultiArray(rref),
+                            Param(R(2))*Arg1());
+        shouldEqualSequence(rref.begin(), rref.end(), rr.begin());
+        shouldEqual(rr[0], R(2));
+
+        rr = 4.0*r;
+        transformMultiArray(srcMultiArrayRange(r), destMultiArray(rref),
+                            Param(4.0)*Arg1());
+        shouldEqualSequence(rref.begin(), rref.end(), rr.begin());
+        shouldEqual(rr[0], R(4));
+    }
+
+    void testExpandMode()
+    {
+        using namespace vigra::multi_math;
+        using namespace vigra::functor;
+
+        array3_type s(shape3_type(1,1,1));
+        s.init(3.0);
+
+        r1 = s*d;
+        transformMultiArray(srcMultiArrayRange(d), destMultiArray(r2),
+                            Param(3.0)*Arg1());
+        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
+
+        MultiArray<1, double> ss(Shape1(d.shape(1)));
+        linearSequence(ss.begin(), ss.end(), 1.0);
+
+        r1 = ss.insertSingletonDimension(0).insertSingletonDimension(2) + d;
+
+        for(int z=0; z<d.shape(2); ++z)
+            for(int y=0; y<d.shape(1); ++y)
+                for(int x=0; x<d.shape(0); ++x)
+                    shouldEqual(d(x,y,z)+ss(y), r1(x,y,z));
+    }
+};
+
 
 struct ImageViewTestSuite
 : public vigra::test_suite
@@ -1849,6 +2348,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::test_bindAt ) );
         add( testCase( &MultiArrayDataTest::test_bind ) );
         add( testCase( &MultiArrayDataTest::test_bind0 ) );
+        add( testCase( &MultiArrayDataTest::testIsUnstrided ) );
         add( testCase( &MultiArrayDataTest::test_singletonDimension ) );
         add( testCase( &MultiArrayDataTest::testPermute ) );
         add( testCase( &MultiArrayDataTest::testNorm ) );
@@ -1882,6 +2382,14 @@ struct MultiArrayPointOperatorsTestSuite
         add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
         add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
         add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
+
+        add( testCase( &MultiMathTest::testSpeed ) );
+        add( testCase( &MultiMathTest::testBasicArithmetic ) );
+        add( testCase( &MultiMathTest::testExpandMode ) );
+        add( testCase( &MultiMathTest::testAllFunctions ) );
+        add( testCase( &MultiMathTest::testComputedAssignment ) );
+        add( testCase( &MultiMathTest::testNonscalarValues ) );
+        add( testCase( &MultiMathTest::testMixedExpressions ) );
     }
 }; // struct MultiArrayPointOperatorsTestSuite
 

@@ -265,7 +265,7 @@ void bessjyn(int n, REAL x,int &nm, double *jn, double *yn)
 
         This function wraps a number of existing implementations and falls back to 
         a rather slow algorithm if none of them is available. In particular,
-        it uses boost::math when <tt>HasBoostMath</tt> is #defined, or native 
+        it uses boost::math when <tt>HasBoostMath</tt> is \#defined, or native 
         implementations on gcc and MSVC otherwise.
 
         <b>\#include</b> \<vigra/bessel.hxx\><br>
@@ -301,7 +301,7 @@ inline double besselJ(int n, double x)
 
         This function wraps a number of existing implementations and falls back to 
         a rather slow algorithm if none of them is available. In particular,
-        it uses boost::math when <tt>HasBoostMath</tt> is #defined, or native 
+        it uses boost::math when <tt>HasBoostMath</tt> is \#defined, or native 
         implementations on gcc and MSVC otherwise.
 
         <b>\#include</b> \<vigra/bessel.hxx\><br>

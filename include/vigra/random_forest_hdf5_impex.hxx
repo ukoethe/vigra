@@ -33,479 +33,273 @@
 /*                                                                      */
 /************************************************************************/
 
-
 #ifndef VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
 #define VIGRA_RANDOM_FOREST_IMPEX_HDF5_HXX
 
 #include "config.hxx"
 #include "random_forest.hxx"
 #include "hdf5impex.hxx"
-#include <cstdio>
 #include <string>
-
-#ifdef HasHDF5
 
 namespace vigra 
 {
 
+static const char *const rf_hdf5_options       = "_options";
+static const char *const rf_hdf5_ext_param     = "_ext_param";
+static const char *const rf_hdf5_labels        = "labels";
+static const char *const rf_hdf5_topology      = "topology";
+static const char *const rf_hdf5_parameters    = "parameters";
+static const char *const rf_hdf5_tree          = "Tree_";
+static const char *const rf_hdf5_version_group = ".";
+static const char *const rf_hdf5_version_tag   = "vigra_random_forest_version";
+static const double      rf_hdf5_version       =  0.1;
+
 namespace detail
 {
 
+VIGRA_EXPORT void options_import_HDF5(HDF5File &, RandomForestOptions &,
+                                      const std::string &);
 
-/** shallow search the hdf5 group for containing elements
- * returns negative value if unsuccessful
- * \param grp_id    hid_t containing path to group.
- * \param cont        reference to container that supports
- *                     insert(). valuetype of cont must be
- *                     std::string
- */
-template<class Container>
-bool find_groups_hdf5(hid_t grp_id, Container &cont)
+VIGRA_EXPORT void options_export_HDF5(HDF5File &, const RandomForestOptions &,
+                                      const std::string &);
+
+VIGRA_EXPORT void dt_import_HDF5(HDF5File &, detail::DecisionTree &,
+                                 const std::string &);
+
+VIGRA_EXPORT void dt_export_HDF5(HDF5File &, const detail::DecisionTree &,
+                                 const std::string &);
+
+template<class X>
+void rf_import_HDF5_to_map(HDF5File & h5context, X & param,
+                           const char *const ignored_label = 0)
 {
-    
-    //get group info
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-    hsize_t size;
-    H5Gget_num_objs(grp_id, &size);
-#else
-    hsize_t size;
-    H5G_info_t ginfo;
-    herr_t         status;    
-    status = H5Gget_info (grp_id , &ginfo);
-    if(status < 0)
-        std::runtime_error("find_groups_hdf5():"
-                           "problem while getting group info");
-    size = ginfo.nlinks;
-#endif
-    for(hsize_t ii = 0; ii < size; ++ii)
+    // read a map containing all the double fields
+    typedef typename X::map_type map_type;
+    typedef std::pair<typename map_type::iterator, bool> inserter_type;
+    typedef typename map_type::value_type value_type;
+    typedef typename map_type::mapped_type mapped_type;
+
+    map_type serialized_param;
+    bool ignored_seen = ignored_label == 0;
+
+    std::vector<std::string> names = h5context.ls();
+    std::vector<std::string>::const_iterator j;
+    for (j = names.begin(); j != names.end(); ++j)
     {
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-        ssize_t buffer_size = 
-                H5Gget_objname_by_idx(grp_id, 
-                                      ii, NULL, 0 ) + 1;
-#else
-        std::ptrdiff_t buffer_size =
-                H5Lget_name_by_idx(grp_id, ".",
-                                   H5_INDEX_NAME,
-                                   H5_ITER_INC,
-                                   ii, 0, 0, H5P_DEFAULT)+1;
-#endif
-        ArrayVector<char> buffer(buffer_size);
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR <= 6)
-        buffer_size = 
-                H5Gget_objname_by_idx(grp_id, 
-                                      ii, buffer.data(), 
-                                      (size_t)buffer_size );
-#else
-        buffer_size =
-                H5Lget_name_by_idx(grp_id, ".",
-                                   H5_INDEX_NAME,
-                                   H5_ITER_INC,
-                                   ii, buffer.data(),
-                                   (size_t)buffer_size,
-                                   H5P_DEFAULT);
-#endif
-        cont.insert(cont.end(), std::string(buffer.data()));
+        if (ignored_label && *j == ignored_label)
+        {
+            ignored_seen = true;
+            continue;
+        }
+        // get sort of an iterator to a new empty array vector in the map ...
+        inserter_type new_array
+            = serialized_param.insert(value_type(*j, mapped_type()));
+        // ... and read the data into that place.
+        h5context.readAndResize(*j, (*(new_array.first)).second);
     }
+    vigra_precondition(ignored_seen, "rf_import_HDF5_to_map(): "
+                                                         "labels are missing.");
+    param.make_from_map(serialized_param);
+}
+
+template<class T>
+void problemspec_import_HDF5(HDF5File & h5context, ProblemSpec<T> & param,
+                             const std::string & name)
+{
+    h5context.cd(name);
+    rf_import_HDF5_to_map(h5context, param, rf_hdf5_labels);
+    // load_class_labels
+    ArrayVector<T> labels;
+    h5context.readAndResize(rf_hdf5_labels, labels);
+    param.classes_(labels.begin(), labels.end());
+    h5context.cd_up();
+}
+
+template<class X>
+void rf_export_map_to_HDF5(HDF5File & h5context, const X & param)
+{
+    typedef typename X::map_type map_type;
+    map_type serialized_param;
+    // get a map containing all the double fields
+    param.make_map(serialized_param);
+    typename map_type::const_iterator j;
+    for (j = serialized_param.begin(); j != serialized_param.end(); ++j)
+        h5context.write(j->first, j->second);
+}
+
+template<class T>
+void problemspec_export_HDF5(HDF5File & h5context, ProblemSpec<T> const & param,
+                             const std::string & name)
+{
+    h5context.cd_mk(name);
+    rf_export_map_to_HDF5(h5context, param);
+    h5context.write(rf_hdf5_labels, param.classes);
+    h5context.cd_up();
+}
+
+struct padded_number_string_data;
+class VIGRA_EXPORT padded_number_string
+{
+private:
+    padded_number_string_data* padded_number;
+protected:
+    padded_number_string(const padded_number_string &);
+    void operator=(const padded_number_string &);
+public:
+    padded_number_string(int n);
+    std::string operator()(int k) const;
+    ~padded_number_string();
+};
+
+inline std::string get_cwd(HDF5File & h5context)
+{
+    return h5context.get_absolute_path(h5context.pwd());
+}
+
+} // namespace detail
+
+/** \brief Save a random forest to an HDF5File object into a specified HDF5
+           group.
+    
+    The random forest is saved as a set of HDF5 datasets, groups, and
+    attributes below a certain HDF5 group (default: current group of the
+    HDF5File object). No additional data should be stored in that group.
+    
+    \param rf        Random forest object to be exported
+    \param h5context HDF5File object to use
+    \param pathname  If empty or not supplied, save the random forest to the
+                     current group of the HDF5File object. Otherwise, save to a
+                     new-created group specified by the path name, which may
+                     be either relative or absolute.
+*/
+template<class T, class Tag>
+void rf_export_HDF5(const RandomForest<T, Tag> & rf,
+                    HDF5File & h5context,
+                    const std::string & pathname = "")
+{
+    std::string cwd;
+    if (pathname.size()) {
+        cwd = detail::get_cwd(h5context);
+        h5context.cd_mk(pathname);
+    }
+    // version attribute
+    h5context.writeAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
+                             rf_hdf5_version);
+    // save serialized options
+    detail::options_export_HDF5(h5context, rf.options(), rf_hdf5_options);
+    // save external parameters
+    detail::problemspec_export_HDF5(h5context, rf.ext_param(),
+                                    rf_hdf5_ext_param);
+    // save trees
+    int tree_count = rf.options_.tree_count_;
+    detail::padded_number_string tree_number(tree_count);
+    for (int i = 0; i < tree_count; ++i)
+        detail::dt_export_HDF5(h5context, rf.tree(i),
+                                                 rf_hdf5_tree + tree_number(i));
+
+    if (pathname.size())
+        h5context.cd(cwd);
+}
+
+/** \brief Save a random forest to a named HDF5 file into a specified HDF5
+           group.
+    
+    The random forest is saved as a set of HDF5 datasets, groups, and
+    attributes below a certain HDF5 group (default: root). No additional data
+    should be stored in that group.
+    
+    \param rf       Random forest object to be exported
+    \param filename Name of an HDF5 file to open
+    \param pathname If empty or not supplied, save the random forest to the
+                    root group of the HDF5 file. Otherwise, save to a
+                    new-created group specified by the path name (relative
+                    to the root group).
+*/
+template<class T, class Tag>
+void rf_export_HDF5(const RandomForest<T, Tag> & rf,
+                    const std::string & filename, 
+                    const std::string & pathname = "")
+{
+    HDF5File h5context(filename , HDF5File::Open);
+    rf_export_HDF5(rf, h5context, pathname);
+}
+
+/** \brief Read a random forest from an HDF5File object's specified group.
+    
+    The random forest is read from a certain HDF5 group (default: current group
+    of the HDF5File object) as a set of HDF5 datasets, groups, and
+    attributes. No additional data should be present in that group.
+    
+    \param rf        Random forest object to be imported
+    \param h5context HDF5File object to use
+    \param pathname  If empty or not supplied, read from the random forest
+                     from the current group of the HDF5File object. Otherwise,
+                     use the group specified by the path name, which may
+                     be either relative or absolute.
+*/
+template<class T, class Tag>
+bool rf_import_HDF5(RandomForest<T, Tag> & rf,
+                    HDF5File & h5context,
+                    const std::string & pathname = "")
+{
+    std::string cwd;
+    if (pathname.size()) {
+        cwd = detail::get_cwd(h5context);
+        h5context.cd(pathname);
+    }
+    // version attribute
+    if (h5context.existsAttribute(rf_hdf5_version_group, rf_hdf5_version_tag))
+    {
+        double read_version;
+        h5context.readAttribute(rf_hdf5_version_group, rf_hdf5_version_tag,
+                                read_version);
+        vigra_precondition(read_version <= rf_hdf5_version,
+                          "rf_import_HDF5(): unexpected file format version.");
+    }
+    // get serialized options
+    detail::options_import_HDF5(h5context, rf.options_, rf_hdf5_options);
+    // get external parameters
+    detail::problemspec_import_HDF5(h5context, rf.ext_param_,
+                                    rf_hdf5_ext_param);
+    // get all groups in base path
+    // no check for the rf_hdf5_tree prefix...
+    std::vector<std::string> names = h5context.ls();
+    std::vector<std::string>::const_iterator j;
+    for (j = names.begin(); j != names.end(); ++j)
+    {
+        if ((*j->rbegin() == '/') && (*j->begin() != '_')) // skip the above
+        {
+            rf.trees_.push_back(detail::DecisionTree(rf.ext_param_));
+            detail::dt_import_HDF5(h5context, rf.trees_.back(), *j);
+        }
+    }
+    if (pathname.size())
+        h5context.cd(cwd);
     return true;
 }
 
-
-/** shallow search the hdf5 group for containing elements
- * returns negative value if unsuccessful
- * \param filename name of hdf5 file
- * \param groupname path in hdf5 file
- * \param cont        reference to container that supports
- *                     insert(). valuetype of cont must be
- *                     std::string
- */
-template<class Container>
-bool find_groups_hdf5(std::string filename, 
-                              std::string groupname, 
-                              Container &cont)
-{
-    //check if file exists
-    FILE* pFile;
-    pFile = std::fopen ( filename.c_str(), "r" );
-    if ( pFile == NULL)
-    {    
-        return 0;
-    }
-    std::fclose(pFile);
-    //open the file
-    HDF5Handle file_id(H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT),
-                       &H5Fclose, "Unable to open HDF5 file");
-    HDF5Handle grp_id;
-    if(groupname == "")
-    {
-        grp_id = HDF5Handle(file_id, 0, "");
-    }
-    else
-    {
-        grp_id = HDF5Handle(H5Gopen(file_id, groupname.c_str(), H5P_DEFAULT),
-                            &H5Gclose, "Unable to open group");
-
-    }
-    bool res =  find_groups_hdf5(grp_id, cont); 
-    return res; 
-}
-
-VIGRA_EXPORT int get_number_of_digits(int in);
-
-VIGRA_EXPORT std::string make_padded_number(int number, int max_number);
-
-/** write a ArrayVector to a hdf5 dataset.
- */
-template<class U, class T>
-void write_array_2_hdf5(hid_t & id, 
-                        ArrayVector<U> const & arr, 
-                        std::string    const & name, 
-                        T  type) 
-{
-    hsize_t size = arr.size(); 
-    vigra_postcondition(H5LTmake_dataset (id, 
-                                          name.c_str(), 
-                                          1, 
-                                          &size, 
-                                          type, 
-                                          arr.begin()) 
-                        >= 0,
-                        "write_array_2_hdf5():"
-                        "unable to write dataset");
-}
-
-
-template<class U, class T>
-void write_hdf5_2_array(hid_t & id, 
-                        ArrayVector<U>       & arr, 
-                        std::string    const & name, 
-                        T  type) 
-{    
-    // The last three values of get_dataset_info can be NULL
-    // my EFFING FOOT! that is valid for HDF5 1.8 but not for
-    // 1.6 - but documented the other way around AAARRHGHGHH
-    hsize_t size; 
-    H5T_class_t a; 
-    size_t b;
-    vigra_postcondition(H5LTget_dataset_info(id, 
-                                             name.c_str(), 
-                                             &size, 
-                                             &a, 
-                                             &b) >= 0,
-                        "write_hdf5_2_array(): "
-                        "Unable to locate dataset");
-    arr.resize((typename ArrayVector<U>::size_type)size);
-    vigra_postcondition(H5LTread_dataset (id, 
-                                          name.c_str(),
-                                          type, 
-                                          arr.data()) >= 0,
-                        "write_array_2_hdf5():"
-                        "unable to read dataset");
-}
-
-/*
-inline void options_import_HDF5(hid_t & group_id,
-                         RandomForestOptions & opt, 
-                         std::string name)
-{
-    ArrayVector<double> serialized_options;
-    write_hdf5_2_array(group_id, serialized_options,
-                          name, H5T_NATIVE_DOUBLE); 
-    opt.unserialize(serialized_options.begin(),
-                      serialized_options.end());
-}
-
-inline void options_export_HDF5(hid_t & group_id,
-                         RandomForestOptions const & opt, 
-                         std::string name)
-{
-    ArrayVector<double> serialized_options(opt.serialized_size());
-    opt.serialize(serialized_options.begin(),
-                  serialized_options.end());
-    write_array_2_hdf5(group_id, serialized_options,
-                      name, H5T_NATIVE_DOUBLE); 
-}
+/** \brief Read a random forest from a named HDF5 file's specified group.
+    
+    The random forest is read from a certain HDF5 group (default: root group
+    of the HDF5 file) as a set of HDF5 datasets, groups, and attributes.
+    No additional data should be present in that group.
+    
+    \param rf        Random forest object to be imported
+    \param filename Name of an HDF5 file to open
+    \param pathname  If empty or not supplied, read from the random forest
+                     from the current group of the HDF5 file. Otherwise,
+                     use the group specified by the path name, which may
+                     be either relative or absolute.
 */
-
-struct MyT
+template<class T, class Tag>
+bool rf_import_HDF5(RandomForest<T, Tag> & rf,
+                    const std::string & filename, 
+                    const std::string & pathname = "")
 {
-    enum type { INT8 = 1,  INT16 = 2,  INT32 =3,  INT64=4, 
-                  UINT8 = 5, UINT16 = 6, UINT32= 7, UINT64= 8,
-                  FLOAT = 9, DOUBLE = 10, OTHER = 3294};
-};
-
-
-
-#define create_type_of(TYPE, ENUM) \
-inline MyT::type type_of(TYPE)\
-{\
-    return MyT::ENUM; \
-}
-create_type_of(Int8, INT8)
-create_type_of(Int16, INT16)
-create_type_of(Int32, INT32)
-create_type_of(Int64, INT64)
-create_type_of(UInt8, UINT8)
-create_type_of(UInt16, UINT16)
-create_type_of(UInt32, UINT32)
-create_type_of(UInt64, UINT64)
-create_type_of(float, FLOAT)
-create_type_of(double, DOUBLE)
-#undef create_type_of
-
-VIGRA_EXPORT MyT::type type_of_hid_t(hid_t group_id, std::string name);
-
-VIGRA_EXPORT void options_import_HDF5(hid_t & group_id, 
-                        RandomForestOptions  & opt, 
-                        std::string name);
-
-VIGRA_EXPORT void options_export_HDF5(hid_t & group_id, 
-                         RandomForestOptions const & opt, 
-                         std::string name);
-
-template<class T>
-void problemspec_import_HDF5(hid_t & group_id, 
-                             ProblemSpec<T>  & param, 
-                             std::string name)
-{
-    hid_t param_id = H5Gopen (group_id, 
-                              name.c_str(), 
-                              H5P_DEFAULT);
-
-    vigra_postcondition(param_id >= 0, 
-                        "problemspec_import_HDF5():"
-                        " Unable to open external parameters");
-
-    //get a map containing all the double fields
-    std::set<std::string> ext_set;
-    find_groups_hdf5(param_id, ext_set);
-    std::map<std::string, ArrayVector <double> > ext_map;
-    std::set<std::string>::iterator iter;
-    if(ext_set.find(std::string("labels")) == ext_set.end())
-        std::runtime_error("labels are missing");
-    for(iter = ext_set.begin(); iter != ext_set.end(); ++ iter)
-    {
-        if(*iter != std::string("labels"))
-        {
-            ext_map[*iter] = ArrayVector<double>();
-            write_hdf5_2_array(param_id, ext_map[*iter], 
-                               *iter, H5T_NATIVE_DOUBLE);
-        }
-    }
-    param.make_from_map(ext_map);
-    //load_class_labels
-    switch(type_of_hid_t(param_id,"labels" ))
-    {
-        #define SOME_CASE(type_, enum_) \
-      case MyT::enum_ :\
-        {\
-            ArrayVector<type_> tmp;\
-            write_hdf5_2_array(param_id, tmp, "labels", H5T_NATIVE_##enum_);\
-            param.classes_(tmp.begin(), tmp.end());\
-        }\
-            break;
-        SOME_CASE(UInt8,     UINT8);
-        SOME_CASE(UInt16,     UINT16);
-        SOME_CASE(UInt32,     UINT32);
-        SOME_CASE(UInt64,     UINT64);
-        SOME_CASE(Int8,      INT8);
-        SOME_CASE(Int16,     INT16);
-        SOME_CASE(Int32,     INT32);
-        SOME_CASE(Int64,     INT64);
-        SOME_CASE(double,     DOUBLE);
-        SOME_CASE(float,     FLOAT);
-        default:
-            std::runtime_error("exportRF_HDF5(): unknown class type"); 
-        #undef SOME_CASE
-    }
-    H5Gclose(param_id);
+    HDF5File h5context(filename, HDF5File::Open);
+    return rf_import_HDF5(rf, h5context, pathname);
 }
 
-template<class T>
-void problemspec_export_HDF5(hid_t & group_id, 
-                             ProblemSpec<T> const & param, 
-                             std::string name)
-{
-    hid_t param_id = H5Gcreate(group_id, name.c_str(), 
-                                           H5P_DEFAULT, 
-                                           H5P_DEFAULT, 
-                                        H5P_DEFAULT);
-    vigra_postcondition(param_id >= 0, 
-                        "problemspec_export_HDF5():"
-                        " Unable to create external parameters");
-
-    //get a map containing all the double fields
-    std::map<std::string, ArrayVector<double> > serialized_param;
-    param.make_map(serialized_param);
-    std::map<std::string, ArrayVector<double> >::iterator iter;
-    for(iter = serialized_param.begin(); iter != serialized_param.end(); ++iter)
-        write_array_2_hdf5(param_id, iter->second, iter->first, H5T_NATIVE_DOUBLE);
-    
-    //save class_labels
-    switch(type_of(param.classes[0]))
-    {
-        #define SOME_CASE(type) \
-        case MyT::type:\
-            write_array_2_hdf5(param_id, param.classes, "labels", H5T_NATIVE_##type);\
-            break;
-        SOME_CASE(UINT8);
-        SOME_CASE(UINT16);
-        SOME_CASE(UINT32);
-        SOME_CASE(UINT64);
-        SOME_CASE(INT8);
-        SOME_CASE(INT16);
-        SOME_CASE(INT32);
-        SOME_CASE(INT64);
-        SOME_CASE(DOUBLE);
-        SOME_CASE(FLOAT);
-        default:
-            std::runtime_error("exportRF_HDF5(): unknown class type"); 
-        #undef SOME_CASE
-    }
-    H5Gclose(param_id);
-}
-
-VIGRA_EXPORT void dt_import_HDF5(hid_t & group_id,
-                    detail::DecisionTree & tree,
-                    std::string name);
-
-
-VIGRA_EXPORT void dt_export_HDF5(hid_t & group_id,
-                    detail::DecisionTree const & tree,
-                    std::string name);
-                    
-} //namespace detail
-
-template<class T>
-bool rf_export_HDF5(RandomForest<T> const &rf, 
-                    std::string filename, 
-                    std::string pathname = "",
-                    bool overwriteflag = false)
-{ 
-    using detail::make_padded_number;
-    using detail::options_export_HDF5;
-    using detail::problemspec_export_HDF5;
-    using detail::dt_export_HDF5;
-    
-    hid_t file_id;
-    //if file exists load it.
-    FILE* pFile = std::fopen ( filename.c_str(), "r" );
-    if ( pFile != NULL)
-    {    
-        std::fclose(pFile);
-        file_id = H5Fopen(filename.c_str(), H5F_ACC_RDWR, 
-                                                H5P_DEFAULT);
-    }
-    else
-    {
-        //create a new file.
-        file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 
-                                                    H5P_DEFAULT, 
-                                                    H5P_DEFAULT);
-    }
-    vigra_postcondition(file_id >= 0, 
-                        "rf_export_HDF5(): Unable to open file.");
-    //std::cerr << pathname.c_str()
-
-    //if the group already exists this will cause an error
-    //we will have to use the overwriteflag to check for 
-    //this, but i dont know how to delete groups...
-
-    hid_t group_id = pathname== "" ?
-                        file_id
-                    :    H5Gcreate(file_id, pathname.c_str(), 
-                                              H5P_DEFAULT, 
-                                              H5P_DEFAULT, 
-                                           H5P_DEFAULT);
-
-    vigra_postcondition(group_id >= 0, 
-                        "rf_export_HDF5(): Unable to create group");
-
-    //save serialized options
-        options_export_HDF5(group_id, rf.options(), "_options"); 
-    //save external parameters
-        problemspec_export_HDF5(group_id, rf.ext_param(), "_ext_param");
-    //save trees
-    
-    int tree_count = rf.options_.tree_count_;
-    for(int ii = 0; ii < tree_count; ++ii)
-    {
-        std::string treename =     "Tree_"  + 
-                                make_padded_number(ii, tree_count -1);
-        dt_export_HDF5(group_id, rf.tree(ii), treename); 
-    }
-    
-    //clean up the mess
-    if(pathname != "")
-        H5Gclose(group_id);
-    H5Fclose(file_id);
-
-    return 1;
-}
-
-
-template<class T>
-bool rf_import_HDF5(RandomForest<T> &rf, 
-                    std::string filename, 
-                    std::string pathname = "")
-{ 
-    using detail::find_groups_hdf5;
-    using detail::options_import_HDF5;
-    using detail::problemspec_import_HDF5;
-    using detail::dt_export_HDF5;
-    // check if file exists
-    FILE* pFile = std::fopen ( filename.c_str(), "r" );
-    if ( pFile == NULL)
-        return 0;
-    std::fclose(pFile);
-    //open file
-    hid_t file_id = H5Fopen (filename.c_str(), 
-                             H5F_ACC_RDONLY, 
-                             H5P_DEFAULT);
-    
-    vigra_postcondition(file_id >= 0, 
-                        "rf_import_HDF5(): Unable to open file.");
-    hid_t group_id = pathname== "" ?
-                        file_id
-                    :    H5Gopen (file_id, 
-                                 pathname.c_str(), 
-                                 H5P_DEFAULT);
-    
-    vigra_postcondition(group_id >= 0, 
-                        "rf_export_HDF5(): Unable to create group");
-
-    //get serialized options
-        options_import_HDF5(group_id, rf.options_, "_options"); 
-    //save external parameters
-        problemspec_import_HDF5(group_id, rf.ext_param_, "_ext_param");
-    // TREE SAVING TIME
-    // get all groups in base path
-    
-    std::set<std::string> tree_set;
-    std::set<std::string>::iterator iter; 
-    find_groups_hdf5(filename, pathname, tree_set);
-    
-    for(iter = tree_set.begin(); iter != tree_set.end(); ++iter)
-    {
-        if((*iter)[0] != '_')
-        {
-            rf.trees_.push_back(detail::DecisionTree(rf.ext_param_));
-            dt_import_HDF5(group_id, rf.trees_.back(), *iter); 
-        }
-    }
-    
-    //clean up the mess
-    if(pathname != "")
-        H5Gclose(group_id);
-    H5Fclose(file_id);
-    /*rf.tree_indices_.resize(rf.tree_count());
-    for(int ii = 0; ii < rf.tree_count(); ++ii)
-        rf.tree_indices_[ii] = ii; */
-    return 1;
-}
 } // namespace vigra
 
-#endif // HasHDF5
-
 #endif // VIGRA_RANDOM_FOREST_HDF5_IMPEX_HXX
-

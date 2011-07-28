@@ -41,6 +41,8 @@
 #include <vigra/windows.h>
 #include <iostream>
 #include <iomanip>
+
+#include <vigra/multi_pointoperators.hxx>
 #include <vigra/timing.hxx>
 
 namespace vigra
@@ -184,7 +186,7 @@ class VisitorBase
      * \param tr        reference to the tree object that called this visitor
      * \param index     index in the topology_ array we currently are at
      * \param node_t    type of node we have (will be e_.... - )
-     * \param weight    Node weight of current node. 
+     * \param features  feature matrix
      * \sa  NodeTags;
      *
      * you can create the node by using a switch on node_tag and using the 
@@ -580,6 +582,10 @@ public:
     //Need to now the label for interior node visiting
     vigra::Int32 current_label;
     //marginal distribution for interior nodes
+    //
+    OnlineLearnVisitor():
+        adjust_thresholds(false), tree_id(0), last_node_id(0), current_label(0)
+    {}
     struct MarginalDistribution
     {
         ArrayVector<Int32> leftCounts;
@@ -859,8 +865,7 @@ class OOB_Error : public VisitorBase
     MultiArray<2, double>       oobCount;
     ArrayVector< int>           indices; 
     OOB_Error() : VisitorBase(), oob_breiman(0.0) {}
-
-#if HasHDF5
+#ifdef HasHDF5
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -870,9 +875,9 @@ class OOB_Error : public VisitorBase
         temp[0] = oob_breiman;
         writeHDF5(filename, (pathn + "breiman_error").c_str(), temp);
     }
+#endif
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
-#endif
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -936,8 +941,6 @@ class OOB_Error : public VisitorBase
                         tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                 }
                 rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
-                // FIXME: what's the purpose of the next line?
-                // int label = argMax(tmp_prob); 
                 
             }
         }else
@@ -968,9 +971,6 @@ class OOB_Error : public VisitorBase
                             tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                     }
                     rowVector(prob_oob, ll) += tmp_prob;
-                    // FIXME: what's the purpose of the next line?
-                    //int label = argMax(tmp_prob); 
-                    
                 }
             }
         }
@@ -1078,9 +1078,9 @@ class CompleteOOBInfo : public VisitorBase
         temp[0] = oob_per_tree2;
         writeHDF5(filename, (pathn + "ulli_error").c_str(), temp);
     }
+#endif
     // negative value if sample was ib, number indicates how often.
     //  value >=0  if sample was oob, 0 means fail 1, corrrect
-#endif
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -1631,7 +1631,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < features.shape(1); ++k)
             {
                 bgfunc(columnVector(features, k),
-                       0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1642,7 +1641,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise, k),
-                       0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1654,7 +1652,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 bgfunc(columnVector(noise_l, k),
-                       0,
                        tmp_labels, 
                        parent.begin(), parent.end(), 
                        tmp_cc);
@@ -1662,7 +1659,7 @@ class CorrelationVisitor : public VisitorBase
                 corr_l(n, k) 
                     += wgini;
             }
-            bgfunc(labels,0,  tmp_labels, parent.begin(), parent.end(),tmp_cc);
+            bgfunc(labels, tmp_labels, parent.begin(), parent.end(),tmp_cc);
             wgini = (region_gini - bgfunc.min_gini_);
             gini_missc(n, columnCount(gini_missc)-1) 
                 += wgini;
@@ -1677,7 +1674,6 @@ class CorrelationVisitor : public VisitorBase
             for(int k = 0; k < 10; ++k)
             {
                 split.bgfunc(columnVector(noise, k),
-                             0,
                              labels, 
                              parent.begin(), parent.end(), 
                              parent.classCounts());

@@ -25,13 +25,13 @@ def getFunctionList(namespaceList):
     for namespace in namespaceList:
         text = open(path + '/' + namespace[0]).read()
         # start of function section in the namespace file
-        start = re.search(r'<tr><td colspan="2">(?:<br>)?<h2>Functions</h2></td></tr>', text)
+        start = re.search(r'<tr><td colspan="2">(?:<br>|)?<h2>(?:<a name="func-members"></a>\n)?Functions</h2></td></tr>', text)
         if not start:
             continue # no functions in this namespace
         # end of function section in the namespace file
-        end = re.search(r'<tr><td colspan="2">(?:<br>)?<h2>Variables</h2></td></tr>', text)
+        end = re.search(r'<tr><td colspan="2">(?:<br>)?<h2>(?:<a name="var-members"></a>\n)?Variables</h2></td></tr>', text)
         if not end:
-            end = re.search(r'<hr/?><a name="_details"></a><h2>Detailed Description</h2>', text)
+            end = re.search(r'<hr/?><a name="_details"></a><h2[^>]*>Detailed Description</h2>', text)
         # extract the function section from the namespace file
         text = text[start.regs[0][0]:end.regs[0][0]]
         

@@ -535,11 +535,55 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 /*                                                      */
 /********************************************************/
 
-// forward declaration
+// forward declarations
+
 template <unsigned int N, class T, class C = UnstridedArrayTag>
 class MultiArrayView;
 template <unsigned int N, class T, class A = std::allocator<T> >
 class MultiArray;
+
+namespace multi_math {
+
+template <class T>
+struct MultiMathOperand;
+
+namespace detail {
+
+template <unsigned int N, class T, class C, class E>
+void assign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class C, class E>
+void plusAssign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class C, class E>
+void minusAssign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class C, class E>
+void multiplyAssign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class C, class E>
+void divideAssign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class A, class E>
+void assignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class A, class E>
+void plusAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class A, class E>
+void minusAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class A, class E>
+void multiplyAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
+
+template <unsigned int N, class T, class A, class E>
+void divideAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
+
+} // namespace detail
+
+} // namespace multi_math
+
+
 
 /********************************************************/
 /*                                                      */
@@ -823,6 +867,56 @@ public:
         return *this;
     }
 
+        /** Assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArrayView & operator=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::assign(*this, rhs);
+        return *this;
+    }
+
+        /** Add-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArrayView & operator+=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::plusAssign(*this, rhs);
+        return *this;
+    }
+
+        /** Subtract-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArrayView & operator-=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::minusAssign(*this, rhs);
+        return *this;
+    }
+
+        /** Multiply-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArrayView & operator*=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::multiplyAssign(*this, rhs);
+        return *this;
+    }
+
+        /** Divide-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArrayView & operator/=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::divideAssign(*this, rhs);
+        return *this;
+    }
+
         /** array access.
          */
     reference operator[] (const difference_type &d)
@@ -1024,6 +1118,20 @@ public:
     void swapData(MultiArrayView <N, T2, C2> rhs)
     {
         swapDataImpl(rhs);
+    }
+    
+        /** check whether the array is unstrided (i.e. has consecutive memory) up 
+            to the given dimension.
+
+            \a dimension can range from 0 ... N-1. If a certain dimension is unstrided, 
+            all lower dimensions are also unstrided.
+        */
+    bool isUnstrided(unsigned int dimension = N-1) const
+    {
+        difference_type p = shape() - difference_type(1);
+        for(unsigned int k = dimension+1; k < N; ++k)
+            p[k] = 0;
+        return (&operator[](p) - m_ptr) == coordinateToScanOrderIndex(p);
     }
 
         /** bind the M outmost dimensions to certain indices.
@@ -1474,7 +1582,7 @@ public:
 
 template <unsigned int N, class T, class C>
 MultiArrayView<N, T, C> &
-MultiArrayView <N, T, C>::operator=(MultiArrayView<N, T, C> const & rhs)
+MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
 {
     if(this == &rhs)
         return *this;
@@ -2039,6 +2147,18 @@ public:
         allocate (this->m_ptr, this->elementCount (), rhs.data ());
     }
 
+        /** constructor from an array expression
+         */
+    template<class Expression>
+    MultiArray (multi_math::MultiMathOperand<Expression> const & rhs,
+                allocator_type const & alloc = allocator_type())
+    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
+                             difference_type (diff_zero_t(0)), 0),
+      m_alloc (rhs.m_alloc)
+    {
+        multi_math::detail::assignOrResize(*this, rhs);
+    }
+
         /** construct by copying from a MultiArrayView
          */
     template <class U, class C>
@@ -2140,6 +2260,55 @@ public:
         view_type::operator/=(rhs);
         return *this;
     }
+        /** Assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArray & operator=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::assignOrResize(*this, rhs);
+        return *this;
+    }
+
+        /** Add-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArray & operator+=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::plusAssignOrResize(*this, rhs);
+        return *this;
+    }
+
+        /** Subtract-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArray & operator-=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::minusAssignOrResize(*this, rhs);
+        return *this;
+    }
+
+        /** Multiply-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArray & operator*=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::multiplyAssignOrResize(*this, rhs);
+        return *this;
+    }
+
+        /** Divide-assignment of an array expression. Fails with
+            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+         */
+    template<class Expression>
+    MultiArray & operator/=(multi_math::MultiMathOperand<Expression> const & rhs)
+    {
+        multi_math::detail::divideAssignOrResize(*this, rhs);
+        return *this;
+    }
 
         /** destructor
          */
@@ -2164,7 +2333,7 @@ public:
          */
     void reshape (const difference_type &shape)
     {
-        reshape (shape, NumericTraits <T>::zero ());
+        reshape (shape, T());
     }
 
         /** Allocate new memory with the given shape and initialize it
@@ -2230,7 +2399,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, this->elementCount (), NumericTraits<T>::zero ());
+    allocate (this->m_ptr, this->elementCount (), T());
 }
 
 template <unsigned int N, class T, class A>
@@ -2319,7 +2488,7 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
 
 template <unsigned int N, class T, class A>
 inline void
-MultiArray <N, T, A>::swap (MultiArray <N, T, A> & other)
+MultiArray <N, T, A>::swap (MultiArray & other)
 {
     if (this == &other)
         return;

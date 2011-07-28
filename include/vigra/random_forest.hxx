@@ -102,23 +102,39 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  * 	options. 
  *
  * 	\code
- *  typedef xxx feature_t \\ replace xxx with whichever type
- *  typedef yyy label_t   \\ meme chose. 
- *  MultiArrayView<2, feature_t> f = get_some_features();
- *  MultiArrayView<2, label_t>   l = get_some_labels();
- *  RandomForest<> rf()
- *  double oob_error = rf.learn(f, l);
+ *  using namespace vigra;
+ *  using namespace rf;
+ *  typedef xxx feature_t; \\ replace xxx with whichever type
+ *  typedef yyy label_t;   \\ likewise 
+ *  
+ *  // allocate the training data
+ *  MultiArrayView<2, feature_t> f = get_training_features();
+ *  MultiArrayView<2, label_t>   l = get_training_labels();
+ *  
+ *  RandomForest<> rf;
+ *
+ *  // construct visitor to calculate out-of-bag error
+ *  visitors::OOB_Error oob_v;
+ *
+ *  // perform training
+ *  rf.learn(f, l, visitors::create_visitor(oob_v));
+ *
+ *  std::cout << "the out-of-bag error is: " << oob_v.oob_breiman << "\n";
  *      
- *  MultiArrayView<2, feature_t> pf = get_some_unknown_features();
- *  MultiArrayView<2, label_t> prediction = allocate_space_for_response();
- *  MultiArrayView<2, double> prob  = allocate_space_for_probability();
+ *  // get features for new data to be used for prediction
+ *  MultiArrayView<2, feature_t> pf = get_features();
+ *
+ *  // allocate space for the response (pf.shape(0) is the number of samples)
+ *  MultiArrayView<2, label_t> prediction(pf.shape(0), 1);
+ *  MultiArrayView<2, double> prob(pf.shape(0), rf.class_count());
  *      
+ *  // perform prediction on new data
  *  rf.predict_labels(pf, prediction);
  *  rf.predict_probabilities(pf, prob);
  *
  * 	\endcode
  *
- * 	Additional information such as OOB Error and Variable Importance measures are accessed
+ * 	Additional information such as Variable Importance measures are accessed
  * 	via Visitors defined in rf::visitors. 
  *  Have a look at rf::split for other splitting methods.
  *
@@ -614,6 +630,10 @@ class RandomForest
     {
         predictProbabilities(features, prob, rf_default()); 
     }   
+
+    template <class U, class C1, class T, class C2>
+    void predictRaw(MultiArrayView<2, U, C1>const &   features,
+                    MultiArrayView<2, T, C2> &        prob)  const;
 
 
     /*\}*/
@@ -1237,6 +1257,69 @@ void RandomForest<LabelType, PreprocessorTag>
             prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
         }
     }
+
+}
+
+template <class LabelType, class PreprocessorTag>
+template <class U, class C1, class T, class C2>
+void RandomForest<LabelType, PreprocessorTag>
+    ::predictRaw(MultiArrayView<2, U, C1>const &  features,
+                           MultiArrayView<2, T, C2> &       prob) const
+{
+    //Features are n xp
+    //prob is n x NumOfLabel probability for each feature in each class
+
+    vigra_precondition(rowCount(features) == rowCount(prob),
+      "RandomForestn::predictProbabilities():"
+        " Feature matrix and probability matrix size mismatch.");
+
+    // num of features must be bigger than num of features in Random forest training
+    // but why bigger?
+    vigra_precondition( columnCount(features) >= ext_param_.column_count_,
+      "RandomForestn::predictProbabilities():"
+        " Too few columns in feature matrix.");
+    vigra_precondition( columnCount(prob)
+                        == (MultiArrayIndex)ext_param_.class_count_,
+      "RandomForestn::predictProbabilities():"
+      " Probability matrix must have as many columns as there are classes.");
+
+    #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
+    prob.init(NumericTraits<T>::zero());
+    /* This code was originally there for testing early stopping
+     * - we wanted the order of the trees to be randomized
+    if(tree_indices_.size() != 0)
+    {
+       std::random_shuffle(tree_indices_.begin(),
+                           tree_indices_.end()); 
+    }
+    */
+    //Classify for each row.
+    for(int row=0; row < rowCount(features); ++row)
+    {
+        ArrayVector<double>::const_iterator weights;
+
+        //totalWeight == totalVoteCount!
+        double totalWeight = 0.0;
+
+        //Let each tree classify...
+        for(int k=0; k<options_.tree_count_; ++k)
+        {
+            //get weights predicted by single tree
+            weights = trees_[k /*tree_indices_[k]*/].predict(rowVector(features, row));
+
+            //update votecount.
+            int weighted = options_.predict_weighted_;
+            for(int l=0; l<ext_param_.class_count_; ++l)
+            {
+                double cur_w = weights[l] * (weighted * (*(weights-1))
+                                           + (1-weighted));
+                prob(row, l) += (T)cur_w;
+                //every weight in totalWeight.
+                totalWeight += cur_w;
+            }
+        }
+    }
+    prob/= options_.tree_count_;
 
 }
 

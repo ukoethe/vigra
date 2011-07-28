@@ -12,11 +12,11 @@
 /*    Permission is hereby granted, free of charge, to any person       */
 /*    obtaining a copy of this software and associated documentation    */
 /*    files (the "Software"), to deal in the Software without           */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
 /*    restriction, including without limitation the rights to use,      */
 /*    copy, modify, merge, publish, distribute, sublicense, and/or      */
 /*    sell copies of the Software, and to permit persons to whom the    */
-/*    Software is furnished to do so, subject to the following          */
-/*    conditions:                                                       */
 /*                                                                      */
 /*    The above copyright notice and this permission notice shall be    */
 /*    included in all copies or substantial portions of the             */
@@ -38,12 +38,17 @@
 #define VIGRA_MATLAB_HXX
 
 #include <string>
-#include <mex.h>
+
 #include "array_vector.hxx"
 #include "sized_int.hxx"
 #include "matrix.hxx"
 #include <map>
 #include <time.h>
+// This is needed with visual studio 10
+#ifdef _CHAR16T
+#define CHAR16_T
+#endif
+#include <mex.h>
 #include "matlab_FLEXTYPE.hxx"
 
 namespace vigra {
@@ -197,7 +202,7 @@ class ConstCellArray
         if(matPointer != 0 && !mxIsCell(matPointer))
             mexErrMsgTxt("CellArray(mxArray *): Argument must be a Matlab cell array.");
         if(matPointer != 0)
-            size_ = mxGetNumberOfElements(matPointer);
+            size_ = static_cast<int>(mxGetNumberOfElements(matPointer));
         else
             size_ = -1;
     }
@@ -522,7 +527,7 @@ getString(mxArray const * t)
         mexErrMsgTxt("getString() on empty input.");
     if(!mxIsChar(t))
         mexErrMsgTxt("getString(): argument is not a string.");
-    int size = mxGetNumberOfElements(t) + 1;
+    int size = static_cast<int>(mxGetNumberOfElements(t) + 1);
     ArrayVector<char> buf(size);
     mxGetString(t, buf.begin(), size);
     return std::string(buf.begin());

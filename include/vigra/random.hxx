@@ -281,7 +281,8 @@ void RandomState<MT19937>::generateNumbers() const
     
     <b>Traits defined:</b>
     
-    <tt>FunctorTraits<RandomNumberGenerator<Engine> >::isInitializer</tt> is true (<tt>VigraTrueType</tt>).
+    \verbatim FunctorTraits<RandomNumberGenerator<Engine> >::isInitializer \endverbatim
+    is true (<tt>VigraTrueType</tt>).
 */
 template <class Engine = detail::RandomState<detail::TT800> >
 class RandomNumberGenerator
@@ -591,8 +592,10 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
     
     <b>Traits defined:</b>
     
-    <tt>FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer</tt> and
-    <tt>FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor</tt> are true (<tt>VigraTrueType</tt>).
+    \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
+    and
+    \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor \endverbatim
+    are true (<tt>VigraTrueType</tt>).
 */
 template <class Engine = RandomTT800>
 class UniformIntRandomFunctor
@@ -698,7 +701,8 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
     
     <b>Traits defined:</b>
     
-    <tt>FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer</tt> is true (<tt>VigraTrueType</tt>).
+    \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
+    is true (<tt>VigraTrueType</tt>).
 */
 template <class Engine = RandomTT800>
 class UniformRandomFunctor
@@ -769,7 +773,8 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
     
     <b>Traits defined:</b>
     
-    <tt>FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer</tt> is true (<tt>VigraTrueType</tt>).
+    \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
+    is true (<tt>VigraTrueType</tt>).
 */
 template <class Engine = RandomTT800>
 class NormalRandomFunctor
