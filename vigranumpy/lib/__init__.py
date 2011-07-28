@@ -146,7 +146,7 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
         if not isinstance(dataset, h5py.highlevel.Dataset):
             raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
         data = dataset.value
-        axistags = dataset.attrs.get('axistags')
+        axistags = dataset.attrs.get('axistags', None)
         if axistags is not None:
             data = data.view(arraytypes.VigraArray)
             data.axistags = arraytypes.AxisTags.fromJSON(axistags)
@@ -189,14 +189,14 @@ def writeHDF5(data, filenameOrGroup, pathInFile):
         for groupname in levels[:-1]:
             if groupname == '':
                 continue
-            g = group.get(groupname)
+            g = group.get(groupname, default=None)
             if g is None:
                 group = group.create_group(groupname)
             elif not isinstance(g, h5py.highlevel.Group):
                 raise IOError("writeHDF5(): invalid path '%s'" % pathInFile)
             else:
                 group = g
-        dataset = group.get(levels[-1])
+        dataset = group.get(levels[-1], default=None)
         if dataset is not None:
             if isinstance(dataset, h5py.highlevel.Dataset):
                 del group[levels[-1]]
