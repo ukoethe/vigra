@@ -339,7 +339,7 @@ class AxisTags
         push_back(i5);
     }
     
-    static AxisTags fromJSON(std::string const & repr);
+    // static AxisTags fromJSON(std::string const & repr);
 
     std::string toJSON() const
     {

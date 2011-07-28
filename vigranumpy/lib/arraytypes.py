@@ -123,7 +123,20 @@ def dropChannelAxis(array):
         return array.dropChannelAxis()
     except:
         return array
-                
+
+# FIXME: This is a workaround for the disabled C++ function for the same purpose.
+#        Enable the C++ version when boost 1.41 is available on all relevant platforms.
+def AxisTags_fromJSON(json_rep):
+    from vigranumpycore import AxisType
+    tag_dict = eval(json_rep)
+    tag_list = []
+    for tags in tag_dict['axes']:
+        tags['typeFlags'] = eval('AxisType(%d)' % tags['typeFlags'])
+        tag_list.append(AxisInfo(**tags))
+    return AxisTags(tag_list)
+
+AxisTags.fromJSON = staticmethod(AxisTags_fromJSON)
+    
 # How to construct a VigraArray
 #
 # case 1: from shape and order or axistags

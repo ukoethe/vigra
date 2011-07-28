@@ -40,8 +40,18 @@
 #include <vigra/axistags.hxx>
 #include <boost/python.hpp>
 #include <boost/python/slice.hpp>
+
+// disable axistag construction from json for the moment,
+// because these libraries require boost 1.41, whereas
+// our Ubuntu longterm support has only boost 1.40
+//
+// as a workaround, we will do this in Python using the 'json' module
+#define VIGRA_DISABLE_FROMJSON
+
+#ifndef VIGRA_DISABLE_FROMJSON  
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#endif
 
 namespace python = boost::python;
 
@@ -138,6 +148,7 @@ AxisInfo AxisInfo_c()
     return AxisInfo::c();
 }
 
+#ifndef VIGRA_DISABLE_FROMJSON  
 AxisTags AxisTags::fromJSON(std::string const & repr)
 {
     using boost::property_tree::ptree;
@@ -164,6 +175,7 @@ AxisTags * AxisTags_readJSON(std::string const & repr)
 {
     return new AxisTags(AxisTags::fromJSON(repr));
 }
+#endif
 
 AxisTags *
 AxisTags_create(python::object i1, python::object i2,
@@ -448,7 +460,7 @@ void defineAxisTags()
 
     class_<AxisInfo>("AxisInfo", no_init)
         .def(init<std::string, AxisInfo::AxisType, double, std::string>(
-             (arg("name")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
+             (arg("key")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
         .def_readonly("key", &AxisInfo::key_)
@@ -552,10 +564,12 @@ void defineAxisTags()
         .def(self == self)
         .def(self != self)
         .def("toJSON", &AxisTags::toJSON)
+#ifndef VIGRA_DISABLE_FROMJSON
         .def("fromJSON", &AxisTags_readJSON,
                              return_value_policy<manage_new_object>())
         .staticmethod("fromJSON")
-    ;
+#endif
+        ;
 }
 
 } // namespace vigra
