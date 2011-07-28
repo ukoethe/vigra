@@ -115,112 +115,106 @@ except:
 # import most frequently used functions
 from arraytypes import *
 standardArrayType = arraytypes.VigraArray 
+defaultAxistags = arraytypes.VigraArray.defaultAxistags
 
 from impex import readImage, readVolume
-try:
-    from impex import readImageFromHDF5, readVolumeFromHDF5
-except:
-    pass
 
-try:
-    import h5py as _h5py
+def readHDF5(filenameOrGroup, pathInFile, order=None):
+    '''Read an array from an HDF5 file.
     
-    def readHDF5(filenameOrGroup, pathInFile, order=None):
-        '''Read an array from an HDF5 file.
-        
-           'filenameOrGroup' can contain a filename or a group object
-           referring to an already open HDF5 file. 'pathInFile' is the name of the
-           dataset to be read, including intermediate groups. If the first
-           argument is a group object, the path is relative to this group,
-           otherwise it is relative to the file's root group.
-           
-           If the dataset has an attribute 'axistags', the returned array
-           will have type 'VigraArray' and will be transposed into the given
-           'order' (if no order is given, 'VigraArray.defaultOrder' is used).
-           Otherwise, the returned array is a plain 'numpy.ndarray'. In this
-           case, 'order=F' will case the array be transposed to Fortran order.
-        '''
-        if isinstance(filenameOrGroup, _h5py.highlevel.Group):
-            file = None
-            group = filenameOrGroup
+       'filenameOrGroup' can contain a filename or a group object
+       referring to an already open HDF5 file. 'pathInFile' is the name of the
+       dataset to be read, including intermediate groups. If the first
+       argument is a group object, the path is relative to this group,
+       otherwise it is relative to the file's root group.
+       
+       If the dataset has an attribute 'axistags', the returned array
+       will have type 'VigraArray' and will be transposed into the given
+       'order' (if no order is given, 'VigraArray.defaultOrder' is used).
+       Otherwise, the returned array is a plain 'numpy.ndarray'. In this
+       case, 'order=F' will case the array be transposed to Fortran order.
+    '''
+    import h5py
+    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+        file = None
+        group = filenameOrGroup
+    else:
+        file = h5py.File(filenameOrGroup, 'r')
+        group = file['/']
+    try:
+        dataset = group[pathInFile]
+        if not isinstance(dataset, h5py.highlevel.Dataset):
+            raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
+        data = dataset.value
+        axistags = dataset.attrs.get('axistags')
+        if axistags is not None:
+            data = data.view(arraytypes.VigraArray)
+            data.axistags = arraytypes.AxisTags.fromJSON(axistags)
+            if order is None:
+                order = arraytypes.VigraArray.defaultOrder
+            data = data.transposeToOrder(order)
         else:
-            file = _h5py.File(filenameOrGroup, 'r')
-            group = file['/']
-        try:
-            dataset = group[pathInFile]
-            if not isinstance(dataset, _h5py.highlevel.Dataset):
-                raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
-            data = dataset.value
-            axistags = dataset.attrs.get('axistags')
-            if axistags is not None:
-                data = data.view(arraytypes.VigraArray)
-                data.axistags = arraytypes.AxisTags.fromJSON(axistags)
-                if order is None:
-                    order = arraytypes.VigraArray.defaultOrder
-                data = data.transposeToOrder(order)
+            if order == 'F':
+                data = data.transpose()
+            elif order not in [None, 'C', 'A']:
+                raise IOError("readHDF5(): unsupported order '%s'" % order)
+    finally:
+        if file is not None:
+            file.close()
+    return data
+        
+def writeHDF5(data, filenameOrGroup, pathInFile):
+    '''Write an array to an HDF5 file.
+    
+       'filenameOrGroup' can contain a filename or a group object
+       referring to an already open HDF5 file. 'pathInFile' is the name of the
+       dataset to be written, including intermediate groups. If the first
+       argument is a group object, the path is relative to this group,
+       otherwise it is relative to the file's root group. If the dataset already
+       exists, it will be replaced without warning.
+       
+       If 'data' has an attribute 'axistags', the array is transposed to 
+       numpy order before writing. Moreover, the axistags will be 
+       stored along with the data in an attribute 'axistags'.
+    '''
+    import h5py
+    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+        file = None
+        group = filenameOrGroup
+    else:
+        file = h5py.File(filenameOrGroup)
+        group = file['/']
+    try:
+        levels = pathInFile.split('/')
+        for groupname in levels[:-1]:
+            if groupname == '':
+                continue
+            g = group.get(groupname)
+            if g is None:
+                group = group.create_group(groupname)
+            elif not isinstance(g, h5py.highlevel.Group):
+                raise IOError("writeHDF5(): invalid path '%s'" % pathInFile)
             else:
-                if order == 'F':
-                    data = data.transpose()
-                elif order not in [None, 'C', 'A']:
-                    raise IOError("readHDF5(): unsupported order '%s'" % order)
-        finally:
-            if file is not None:
-                file.close()
-        return data
-            
-    def writeHDF5(data, filenameOrGroup, pathInFile):
-        '''Write an array to an HDF5 file.
-        
-           'filenameOrGroup' can contain a filename or a group object
-           referring to an already open HDF5 file. 'pathInFile' is the name of the
-           dataset to be written, including intermediate groups. If the first
-           argument is a group object, the path is relative to this group,
-           otherwise it is relative to the file's root group. If the dataset already
-           exists, it will be replaced without warning.
-           
-           If 'data' has an attribute 'axistags', the array is transposed to 
-           numpy order before writing. Moreover, the axistags will be 
-           stored along with the data in an attribute 'axistags'.
-        '''
-        if isinstance(filenameOrGroup, _h5py.highlevel.Group):
-            file = None
-            group = filenameOrGroup
-        else:
-            file = _h5py.File(filenameOrGroup)
-            group = file['/']
+                group = g
+        dataset = group.get(levels[-1])
+        if dataset is not None:
+            if isinstance(dataset, h5py.highlevel.Dataset):
+                del group[levels[-1]]
+            else:
+                raise IOError("writeHDF5(): cannot replace '%s' because it is not a dataset" % pathInFile)
         try:
-            levels = pathInFile.split('/')
-            for groupname in levels[:-1]:
-                if groupname == '':
-                    continue
-                g = group.get(groupname)
-                if g is None:
-                    group = group.create_group(groupname)
-                elif not isinstance(g, _h5py.highlevel.Group):
-                    raise IOError("writeHDF5(): invalid path '%s'" % pathInFile)
-                else:
-                    group = g
-            dataset = group.get(levels[-1])
-            if dataset is not None:
-                if isinstance(dataset, _h5py.highlevel.Dataset):
-                    del group[levels[-1]]
-                else:
-                    raise IOError("writeHDF5(): cannot replace '%s' because it is not a dataset" % pathInFile)
-            try:
-                data = data.transposeToNumpyOrder()
-            except: 
-                pass
-            dataset = group.create_dataset(levels[-1], data=data)
-            if hasattr(data, 'axistags'):
-                dataset.attrs['axistags'] = data.axistags.toJSON()
-        finally:
-            if file is not None:
-                file.close()
-            
-    impex.readHDF5 = readHDF5
-    impex.writeHDF5 = writeHDF5
-except:
-    pass
+            data = data.transposeToNumpyOrder()
+        except: 
+            pass
+        dataset = group.create_dataset(levels[-1], data=data)
+        if hasattr(data, 'axistags'):
+            dataset.attrs['axistags'] = data.axistags.toJSON()
+    finally:
+        if file is not None:
+            file.close()
+        
+impex.readHDF5 = readHDF5
+impex.writeHDF5 = writeHDF5
 
 from filters import convolve, gaussianSmoothing
 from sampling import resize
@@ -244,6 +238,7 @@ def searchfor(searchstring):
          if ( cont.upper().find(searchstring.upper()) ) >= 0:
             print attr+"."+cont
 
+# FIXME: use axistags here
 def imshow(image):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
