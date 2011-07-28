@@ -699,6 +699,16 @@ protected:
     {
         return false;
     }
+    
+    bool checkInnerStride(UnstridedArrayTag)
+    {
+        return m_stride[0] <= 1;
+    }
+    
+    bool checkInnerStride(StridedArrayTag)
+    {
+        return true;
+    }
 
 public:
 
@@ -719,7 +729,7 @@ public:
 
         /** Construct from shape, strides (offset of a sample to the
             next) for every dimension, and pointer.  (Note that
-            strides are not given in bytes, but in offsets of the
+            strides are not given in bytes, but in offset steps of the
             respective pointer type.)
          */
     MultiArrayView (const difference_type &shape,
@@ -728,7 +738,10 @@ public:
     : m_shape (shape),
       m_stride (stride),
       m_ptr (ptr)
-    {}
+    {
+        vigra_precondition(checkInnerStride(C()),
+            "MultiArrayView<..., UnstridedArrayTag>::MultiArrayView(): First dimension of given array is not unstrided.");
+    }
 
 
         /** Assignment. There are 3 cases:
