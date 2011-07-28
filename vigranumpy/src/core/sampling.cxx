@@ -423,18 +423,18 @@ NumpyAnyArray resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
     Gaussian< double > smoothx(sigmax, derivativeOrderX);
     Gaussian< double > smoothy(sigmay, derivativeOrderY);
 
-	res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), 
+    res.reshapeIfEmpty(MultiArrayShape<3>::type(rational_cast< int >(image.shape(0)*xratio), 
                                                 rational_cast< int >(image.shape(1)*yratio), 
-	                                            image.shape(2)), 
+                                                image.shape(2)), 
                        "resamplingGaussian2D(): Output array has wrong shape.");
 
-	for(int k=0; k<image.shape(2); ++k)
-	{
-	    MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-	    MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-	    resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
-	            smoothx, xratio, xoffset, smoothy, yratio, yoffset);
-	}
+    for(int k=0; k<image.shape(2); ++k)
+    {
+        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+        resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
+                smoothx, xratio, xoffset, smoothy, yratio, yoffset);
+    }
     return res;
 }
 

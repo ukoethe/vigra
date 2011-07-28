@@ -1378,9 +1378,9 @@ FFTWConvolvePlan<N, Real>::init(Shape in, Shape kernel,
      
     CArray newFourierArray(complexShape), newFourierKernel(complexShape);
     
-	Shape realStrides = 2*newFourierArray.stride();
-	realStrides[0] = 1;
-	RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
+    Shape realStrides = 2*newFourierArray.stride();
+    realStrides[0] = 1;
+    RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
     RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
     
     FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);
@@ -1409,9 +1409,9 @@ FFTWConvolvePlan<N, Real>::initFourierKernel(Shape in, Shape kernel,
 
     CArray newFourierArray(complexShape), newFourierKernel(complexShape);
     
-	Shape realStrides = 2*newFourierArray.stride();
-	realStrides[0] = 1;
-	RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
+    Shape realStrides = 2*newFourierArray.stride();
+    realStrides[0] = 1;
+    RArray newRealArray(paddedShape, realStrides, (Real*)newFourierArray.data());
     RArray newRealKernel(paddedShape, realStrides, (Real*)newFourierKernel.data());
     
     FFTWPlan<N, Real> fplan(newRealArray, newFourierArray, planner_flags);

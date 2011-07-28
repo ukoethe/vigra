@@ -290,7 +290,7 @@ class RandomForestOptions
         #undef PUSH
     }
     
-	void make_from_map(map_type & in) // -> const: .operator[] -> .find
+    void make_from_map(map_type & in) // -> const: .operator[] -> .find
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -302,18 +302,18 @@ class RandomForestOptions
         PULL(min_split_node_size_, int);
         PULLBOOL(sample_with_replacement_, bool);
         PULLBOOL(prepare_online_learning_, bool);
-		PULLBOOL(predict_weighted_, bool);
+        PULLBOOL(predict_weighted_, bool);
         
         PULL(training_set_calc_switch_, (RF_OptionTag)(int));
 
         PULL(stratification_method_, (RF_OptionTag)(int));
         PULL(mtry_switch_, (RF_OptionTag)(int));
-		
-		/*don't pull*/
+        
+        /*don't pull*/
         //PULL(mtry_func_!=0, int);
         //PULL(training_set_func,int);
         #undef PULL
-		#undef PULLBOOL
+        #undef PULLBOOL
     }
     void make_map(map_type & in) const
     {
@@ -327,12 +327,12 @@ class RandomForestOptions
         PUSH(min_split_node_size_, int);
         PUSH(sample_with_replacement_, bool);
         PUSH(prepare_online_learning_, bool);
-		PUSH(predict_weighted_, bool);
+        PUSH(predict_weighted_, bool);
         
         PUSH(training_set_calc_switch_, RF_OptionTag);
         PUSH(stratification_method_, RF_OptionTag);
         PUSH(mtry_switch_, RF_OptionTag);
-		
+        
         PUSHFUNC(mtry_func_, int);
         PUSHFUNC(training_set_func_,int);
         #undef PUSH
@@ -559,7 +559,7 @@ public:
     ArrayVector<double>     class_weights_;   // if classes have different importance
     int                     is_weighted_;     // class_weights_ are used
     double                  precision_;       // termination criterion for regression loss
-   	int						response_size_; 
+    int						response_size_; 
         
     template<class T> 
     void to_classlabel(int index, T & out) const
@@ -585,7 +585,7 @@ public:
         EQUALS(class_weights_),
         EQUALS(is_weighted_),
         EQUALS(precision_),
-		EQUALS(response_size_)
+        EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -606,7 +606,7 @@ public:
         EQUALS(class_weights_),
         EQUALS(is_weighted_),
         EQUALS(precision_),
-		EQUALS(response_size_)
+        EQUALS(response_size_)
     {
         std::back_insert_iterator<ArrayVector<Label_t> >
                         iter(classes);
@@ -626,7 +626,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted_);
         EQUALS(precision_);
-		EQUALS(response_size_)
+        EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -650,7 +650,7 @@ public:
         EQUALS(used_);
         EQUALS(is_weighted_);
         EQUALS(precision_);
-		EQUALS(response_size_)
+        EQUALS(response_size_)
         class_weights_.clear();
         std::back_insert_iterator<ArrayVector<double> >
                         iter2(class_weights_);
@@ -679,7 +679,7 @@ public:
         COMPARE(used_);
         COMPARE(class_weights_);
         COMPARE(classes);
-		COMPARE(response_size_)
+        COMPARE(response_size_)
         #undef COMPARE
         return result;
     }
@@ -748,7 +748,7 @@ public:
         PUSH(is_weighted_);
         PUSH(used_);
         PUSH(precision_);
-		PUSH(response_size_);
+        PUSH(response_size_);
         if(is_weighted_)
         {
             std::copy(class_weights_.begin(),
@@ -809,7 +809,7 @@ public:
         used_(false),
         is_weighted_(false),
         precision_(0.0),
-		response_size_(1)
+        response_size_(1)
     {}
 
 
@@ -860,7 +860,7 @@ public:
         problem_type_ = CHECKLATER;
         is_weighted_ = false;
         precision_   = 0.0;
-		response_size_ = 0;
+        response_size_ = 0;
 
     }
 

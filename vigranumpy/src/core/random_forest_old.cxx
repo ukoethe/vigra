@@ -68,15 +68,15 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
         .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
     std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
 
-	RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
-	double oob;
+    RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+    double oob;
 
-	{
+    {
         PyAllowThreads _pythread;
         oob = rf->learn(trainData, trainLabels);
-	}
-	
-	std::cout << "Out-of-bag error " << oob << std::endl;
+    }
+    
+    std::cout << "Out-of-bag error " << oob << std::endl;
     return rf;
 }
 
@@ -101,10 +101,10 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf.labelCount()),
                                                 "Output array has wrong dimensions.");
-	{
+    {
         PyAllowThreads _pythread;
         rf.predictProbabilities(testData,res);
-	}
+    }
     return res;
 }
 

@@ -210,7 +210,7 @@ class VariableSelectionResult
         {
             return false;
         }
-		initialized = true;
+        initialized = true;
         // calculate error with all features
         selected.resize(all_features.shape(1), 0);
         for(unsigned int ii = 0; ii < selected.size(); ++ii)
@@ -337,8 +337,8 @@ void forward_selection(FeatureT          const & features,
         std::swap(*pivot, *next);
         errors[std::distance(selected.begin(), pivot)] = current_errors[pos];
 #ifdef RN_VERBOSE
-			std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
-			std::cerr << "Choosing " << *pivot << " at error of " <<  current_errors[pos] << std::endl;
+            std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
+            std::cerr << "Choosing " << *pivot << " at error of " <<  current_errors[pos] << std::endl;
 #endif
         ++pivot;
         not_selected_size = std::distance(pivot, selected.end());
@@ -442,8 +442,8 @@ void backward_elimination(FeatureT              const & features,
         errors[std::distance(selected.begin(), pivot)-1] = current_errors[pos];
         selected_size = std::distance(selected.begin(), pivot);
 #ifdef RN_VERBOSE
-			std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
-			std::cerr << "Eliminating " << *pivot << " at error of " << current_errors[pos] << std::endl;
+            std::copy(current_errors.begin(), current_errors.end(), std::ostream_iterator<double>(std::cerr, ", "));
+            std::cerr << "Eliminating " << *pivot << " at error of " << current_errors[pos] << std::endl;
 #endif
         --pivot;
     }
@@ -510,7 +510,7 @@ void rank_selection      (FeatureT              const & features,
                            "result struct mismatch!");
     }
     
-	int ii = 0;
+    int ii = 0;
     for(; iter != selected.end(); ++iter)
     {
         ++ii;
@@ -522,8 +522,8 @@ void rank_selection      (FeatureT              const & features,
         double error = errorcallback(cur_feats, response);
         errors[std::distance(selected.begin(), iter)] = error;
 #ifdef RN_VERBOSE
-			std::copy(selected.begin(), iter+1, std::ostream_iterator<int>(std::cerr, ", "));
-			std::cerr << "Choosing " << *(iter+1) << " at error of " <<  error << std::endl;
+            std::copy(selected.begin(), iter+1, std::ostream_iterator<int>(std::cerr, ", "));
+            std::cerr << "Choosing " << *(iter+1) << " at error of " <<  error << std::endl;
 #endif
 
     }
@@ -1326,17 +1326,17 @@ void cluster_permutation_importance(FeatureT              const & features,
     cluster_permutation_importance(features, response, linkage, distance);
 }
 
-	
+    
 template<class Array1, class Vector1>
 void get_ranking(Array1 const & in, Vector1 & out)
 {
-	std::map<double, int> mymap;
-	for(int ii = 0; ii < in.size(); ++ii)
-		mymap[in[ii]] = ii;
-	for(std::map<double, int>::reverse_iterator iter = mymap.rbegin(); iter!= mymap.rend(); ++iter)
-	{
-		out.push_back(iter->second);
-	}
+    std::map<double, int> mymap;
+    for(int ii = 0; ii < in.size(); ++ii)
+        mymap[in[ii]] = ii;
+    for(std::map<double, int>::reverse_iterator iter = mymap.rbegin(); iter!= mymap.rend(); ++iter)
+    {
+        out.push_back(iter->second);
+    }
 }
 }//namespace algorithms
 }//namespace rf

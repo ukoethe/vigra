@@ -67,8 +67,8 @@ namespace vigra
 
     This module provides classification algorithms that map 
     features to labels or label probablities.
-	Look at the RandomForest class first for a overview of most of the 
-	functionality provided as well as use cases. 
+    Look at the RandomForest class first for a overview of most of the 
+    functionality provided as well as use cases. 
 **/
 //@{
 
@@ -209,14 +209,14 @@ class RandomForest
     /**\brief Create RF from external source
      * \param treeCount Number of trees to add.
      * \param topology_begin     
-	 * 					Iterator to a Container where the topology_ data
+     * 					Iterator to a Container where the topology_ data
      *                  of the trees are stored.
-	 *                  Iterator should support at least treeCount forward 
-	 *                  iterations. (i.e. topology_end - topology_begin >= treeCount
+     *                  Iterator should support at least treeCount forward 
+     *                  iterations. (i.e. topology_end - topology_begin >= treeCount
      * \param parameter_begin  
-	 * 					iterator to a Container where the parameters_ data
+     * 					iterator to a Container where the parameters_ data
      *                  of the trees are stored. Iterator should support at 
-	 *                  least treeCount forward iterations.
+     *                  least treeCount forward iterations.
      * \param problem_spec 
      *                  Extrinsic parameters that specify the problem e.g.
      *                  ClassCount, featureCount etc.
@@ -227,7 +227,7 @@ class RandomForest
      */
      /* TODO: This constructor may be replaced by a Constructor using
      * NodeProxy iterators to encapsulate the underlying data type.
-	 */
+     */
     template<class TopologyIterator, class ParameterIterator>
     RandomForest(int                	   treeCount,
                   TopologyIterator         topology_begin,
@@ -321,18 +321,18 @@ class RandomForest
     /*\}*/
 
     /**\brief return number of features used while 
-	 * training.
+     * training.
      */
     int feature_count() const
     {
       return ext_param_.column_count_;
     }
     
-	
-	/**\brief return number of features used while 
-	 * training.
-	 *
-	 * deprecated. Use feature_count() instead.
+    
+    /**\brief return number of features used while 
+     * training.
+     *
+     * deprecated. Use feature_count() instead.
      */
     int column_count() const
     {
@@ -340,15 +340,15 @@ class RandomForest
     }
 
     /**\brief return number of classes used while 
-	 * training.
+     * training.
      */
     int class_count() const
     {
       return ext_param_.class_count_;
     }
 
-	/**\brief return number of trees
-	 */
+    /**\brief return number of trees
+     */
     int tree_count() const
     {
       return options_.tree_count_;
@@ -441,7 +441,7 @@ class RandomForest
      * 					see also: rf::visitors
      * \param split     split functor to be used to calculate each split
      *                  use rf_default() for using default value. (GiniSplit)
-	 * 					see also:  rf::split 
+     * 					see also:  rf::split 
      * \param stop
      *                  predicate to be used to calculate each split
      *                  use rf_default() for using default value. (EarlyStoppStd)
@@ -475,7 +475,7 @@ class RandomForest
                 Stop_t                              stop)
 
     {
-		RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
+        RandomNumberGenerator<> rnd = RandomNumberGenerator<>(RandomSeed);
         learn(  features, 
                 response,
                 visitor, 
@@ -988,7 +988,7 @@ void RandomForest<LabelType, PreprocessorTag>::
     }
 
     visitor.visit_at_end(*this, preprocessor);
-	// Only for online learning?
+    // Only for online learning?
     online_visitor_.deactivate();
 }
 
@@ -1319,7 +1319,7 @@ void RandomForest<LabelType, PreprocessorTag>
             }
         }
     }
-	prob/= options_.tree_count_;
+    prob/= options_.tree_count_;
 
 }
 

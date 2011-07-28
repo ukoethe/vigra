@@ -394,7 +394,7 @@ namespace vigra {
        else if (comp == "B44")
            exrcomp = B44_COMPRESSION;
        else if (comp == "B44A")
-    	   exrcomp = B44A_COMPRESSION;
+           exrcomp = B44A_COMPRESSION;
 #endif
     }
 

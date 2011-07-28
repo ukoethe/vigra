@@ -52,7 +52,7 @@ pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image,
                            double edgeThreshold, double scale,
                            NumpyArray<3, Multiband<float> > res=python::object())
 {
-	res.reshapeIfEmpty(image.shape(), "nonlinearDiffusion2D(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.shape(), "nonlinearDiffusion2D(): Output array has wrong shape.");
     for(int k=0; k<image.shape(2); ++k)
     {
         MultiArrayView<2, float, StridedArrayTag> bres = res.bindOuter(k);

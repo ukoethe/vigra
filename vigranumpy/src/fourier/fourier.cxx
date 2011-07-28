@@ -88,7 +88,7 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
 template <unsigned int N, int SIGN>
 NumpyAnyArray
 pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in, 
-					   NumpyArray<N, Multiband<FFTWComplex<float> > > res)
+                       NumpyArray<N, Multiband<FFTWComplex<float> > > res)
 {
     res.reshapeIfEmpty(in.shape(), in.strideOrdering(),
         "fourierTransform(): Output array must have the same shape and stride ordering as input array.", true);

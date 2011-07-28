@@ -124,7 +124,7 @@ struct ConvolutionTest
         line_kernel.initExplicitly(Diff2D(-2,0), Diff2D(2,0)) = 1, 4,   12,   4, 1 ;
         line_kernel.normalize(1);
         
-		ImageImportInfo info("lenna128.xv");
+        ImageImportInfo info("lenna128.xv");
 
         lenna.resize(info.width(), info.height());
         importImage(info, destImage(lenna));
@@ -227,7 +227,7 @@ struct ConvolutionTest
     }
 
     void gaussianSharpeningTest()
-	{
+    {
         Image dest_lenna(lenna);
         gaussianSharpening(srcImageRange(lenna), destImage(dest_lenna), 3., 0.7);
 
@@ -243,7 +243,7 @@ struct ConvolutionTest
         Image::Accessor acc_dest_correct = dest_correct.accessor();
 
         for (; i_dest != end_dest; i_dest++, i_dest_correct++ )
-		{
+        {
             shouldEqualTolerance(acc_dest(i_dest) , acc_dest_correct(i_dest_correct), 1e-6);
         }
 
@@ -305,7 +305,7 @@ struct ConvolutionTest
     
 
     void stdConvolutionTestWithAvoid()
-	{
+    {
         Image dest(sym_image);
         dest.init(42.1);
 
@@ -331,7 +331,7 @@ struct ConvolutionTest
     }
     
     void stdConvolutionTestWithClip()
-	{
+    {
         Image dest(sym_image);
         dest.init(42.1);
 
@@ -356,7 +356,7 @@ struct ConvolutionTest
     }
     
     void stdConvolutionTestWithWrap()
-	{
+    {
         Image dest(unsym_image);
         dest.init(42.1);
 
@@ -381,7 +381,7 @@ struct ConvolutionTest
     }
     
     void stdConvolutionTestWithReflect()
-	{
+    {
         Image dest(unsym_image);
         dest.init(42.1);
 
@@ -406,7 +406,7 @@ struct ConvolutionTest
     }
     
     void stdConvolutionTestWithRepeat()
-	{
+    {
         Image dest(unsym_image);
         dest.init(42.1);
 
@@ -431,7 +431,7 @@ struct ConvolutionTest
     }
 
     void stdConvolutionTestFromWrapWithReflect()
-	{
+    {
     
         Image src_wrap(78, 1);
         Image src_reflect(40, 1);
@@ -468,7 +468,7 @@ struct ConvolutionTest
     }
   
     void stdConvolutionTestFromRepeatWithAvoid()
-	{
+    {
         Image src_avoid(40, 1);
         src_avoid.init(2.47);
         Image src_repeat(36, 1);
@@ -754,7 +754,7 @@ struct ConvolutionTest
     
     void gaussianSmoothingTest()
     {
-		double scale = 1.0;
+        double scale = 1.0;
         vigra::Kernel1D<double> gauss;
         gauss.initGaussian(scale);
         gauss.setBorderTreatment(BORDER_TREATMENT_REFLECT);
@@ -777,7 +777,7 @@ struct ConvolutionTest
             should(acc(i1) == acc(i2));
         }
 
-		// test recursive approximation
+        // test recursive approximation
         Image recursive(lenna.size());
         recursiveGaussianFilterX(srcImageRange(lenna), destImage(tmp2), scale);
         recursiveGaussianFilterY(srcImageRange(tmp2), destImage(recursive), scale);
@@ -787,13 +787,13 @@ struct ConvolutionTest
         i2 = recursive.begin();
         
         double sum = 0.0;
-		for(; i1 != i1end; ++i1, ++i2)
+        for(; i1 != i1end; ++i1, ++i2)
         {
-			double diff = abs(acc(i1) - acc(i2));
-			sum += diff;
+            double diff = abs(acc(i1) - acc(i2));
+            sum += diff;
             should(diff < 6.0);
         }
-		should(sum / lenna.width() / lenna.height() < 0.5);
+        should(sum / lenna.width() / lenna.height() < 0.5);
     }
     
     void optimalSmoothing3Test()
@@ -879,18 +879,18 @@ struct ConvolutionTest
             shouldEqualTolerance(grad-acc(i), 0.0, 1e-12);
         }
 
-		// compare with 2D convolution
-		vigra::Kernel2D<double> gradx;
-		gradx.initSeparable(grad, gauss);
-		Image nsgrad(lenna.size());
-		convolveImage(srcImageRange(lenna), destImage(nsgrad), kernel2d(gradx));
+        // compare with 2D convolution
+        vigra::Kernel2D<double> gradx;
+        gradx.initSeparable(grad, gauss);
+        Image nsgrad(lenna.size());
+        convolveImage(srcImageRange(lenna), destImage(nsgrad), kernel2d(gradx));
 
-		using namespace vigra::functor;
+        using namespace vigra::functor;
 
-		combineTwoImages(srcImageRange(nsgrad), srcImage(tmp1), destImage(nsgrad), Arg1() - Arg2());
-		Image zero(lenna.size(), 0.0);
-		shouldEqualSequenceTolerance(nsgrad.data(), nsgrad.data()+nsgrad.width()*nsgrad.height(), 
-			                         zero.data(), 1e-12);
+        combineTwoImages(srcImageRange(nsgrad), srcImage(tmp1), destImage(nsgrad), Arg1() - Arg2());
+        Image zero(lenna.size(), 0.0);
+        shouldEqualSequenceTolerance(nsgrad.data(), nsgrad.data()+nsgrad.width()*nsgrad.height(), 
+                                     zero.data(), 1e-12);
     }
     
     void gradientTest()
@@ -2118,7 +2118,7 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
-		add( testCase( &ConvolutionTest::initExplicitlyTest));
+        add( testCase( &ConvolutionTest::initExplicitlyTest));
 
         add( testCase( &ConvolutionTest::simpleSharpeningTest)); 
         add( testCase( &ConvolutionTest::gaussianSharpeningTest)); 
@@ -2174,7 +2174,7 @@ struct ConvolutionTestSuite
 
         add( testCase( &ImagePyramidTest::testPyramidConstruction));
         add( testCase( &ImagePyramidTest::testBurtReduceExpand));
-	}
+    }
 };
 
 int main(int argc, char ** argv)

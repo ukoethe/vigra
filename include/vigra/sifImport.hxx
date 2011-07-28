@@ -85,7 +85,7 @@ Namespace: vigra
 */
 class SIFImportInfo
 {
-	public:
+    public:
         /** Construct SIFImportInfo object.
 
             The header of the Andor SIF file \a filename is accessed to 
@@ -95,64 +95,64 @@ class SIFImportInfo
             SIFImportInfo info(filename);
             \endcode
          */
-		VIGRA_EXPORT SIFImportInfo(const char* filename);
+        VIGRA_EXPORT SIFImportInfo(const char* filename);
 
         /** Get the width in pixels.
          */
-		VIGRA_EXPORT const int width() const;
+        VIGRA_EXPORT const int width() const;
 
         /** Get the height in pixels.
          */
-		VIGRA_EXPORT const int height() const;
+        VIGRA_EXPORT const int height() const;
 
         /** Get the stacksize, that is the number of 
             images contained in the dataset.
          */
-		VIGRA_EXPORT const int stacksize() const;
+        VIGRA_EXPORT const int stacksize() const;
 
         /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
             variable lenght header.
          */
-		VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
+        VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
 
         /** Get the filename of this SIF object.
          */
-		VIGRA_EXPORT const char * getFileName() const;
+        VIGRA_EXPORT const char * getFileName() const;
 
         /** Output all information such as shutter, Temperature etc. 
            as human readable output.
           
-		<b> Usage:</b>
-		
-		<b>\#include</b> \<vigra/sifImport.hxx\><br>
-		Namespace: vigra
-		
-		\code
-		SIFImportInfo info(filename);
-		std::cout << info << std::endl;	// print infos to the console
+        <b> Usage:</b>
+        
+        <b>\#include</b> \<vigra/sifImport.hxx\><br>
+        Namespace: vigra
+        
+        \code
+        SIFImportInfo info(filename);
+        std::cout << info << std::endl;	// print infos to the console
 
-		\endcode
+        \endcode
          */
-		VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
+        VIGRA_EXPORT friend std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
-	private:
-		const char* m_filename;
-		int m_width;
-		int m_height;
-		int m_stacksize;
-		std::ptrdiff_t m_offset;
-		int mod;
-		int left, right, bottom, top;
-		int xbin, ybin, xres, yres;
-		int headerlen;
-		double readout;
-		double temperature1, temperature2;
-		long long d;
-		std::string cycleTime, temperature, exposureTime, EMGain,
-		verticalShiftSpeed, version, model, originalFilename, preAmpGain;	
-		size_t filesize;
-	
+    private:
+        const char* m_filename;
+        int m_width;
+        int m_height;
+        int m_stacksize;
+        std::ptrdiff_t m_offset;
+        int mod;
+        int left, right, bottom, top;
+        int xbin, ybin, xres, yres;
+        int headerlen;
+        double readout;
+        double temperature1, temperature2;
+        long long d;
+        std::string cycleTime, temperature, exposureTime, EMGain,
+        verticalShiftSpeed, version, model, originalFilename, preAmpGain;	
+        size_t filesize;
+    
 };
 
 
@@ -179,13 +179,13 @@ class SIFImportInfo
     Namespace: vigra
     
     \code
-	SIFImportInfo info(filename);
+    SIFImportInfo info(filename);
 
-	// create a 3D array of appropriate size
-	typedef MultiArray<3, float>::difference_type Shape;
-	MultiArray<3, float> in(Shape(info.width(), info.height(), info.stacksize()));
+    // create a 3D array of appropriate size
+    typedef MultiArray<3, float>::difference_type Shape;
+    MultiArray<3, float> in(Shape(info.width(), info.height(), info.stacksize()));
 
-	readSIF(info, in); 
+    readSIF(info, in); 
     \endcode
 */
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);

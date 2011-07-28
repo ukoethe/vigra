@@ -391,8 +391,8 @@ seededRegionGrowing(SrcIterator srcul,
 
     SrcIterator isy = srcul, isx = srcul;  // iterators for the src image
 
-	typedef typename SeedAccessor::value_type LabelType;
-	typedef typename RegionStatisticsArray::value_type RegionStatistics;
+    typedef typename SeedAccessor::value_type LabelType;
+    typedef typename RegionStatisticsArray::value_type RegionStatistics;
     typedef typename RegionStatistics::cost_type CostType;
     typedef detail::SeedRgPixel<CostType> Pixel;
 
@@ -661,7 +661,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)
 {
-	typedef typename DestAccessor::value_type LabelType;
+    typedef typename DestAccessor::value_type LabelType;
 
     vigra_precondition((srgType & KeepContours) == 0,
        "fastSeededRegionGrowing(): the turbo algorithm doesn't support 'KeepContours', sorry.");
@@ -680,7 +680,7 @@ fastSeededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
     {
         for(isx=isy, idx=idy, pos.x=0; pos.x<w; ++pos.x, ++isx.x, ++idx.x)
         {
-			LabelType label = ad(idx);
+            LabelType label = ad(idx);
             if(label != 0)
             {
                 vigra_precondition(label <= stats.maxRegionLabel(),
