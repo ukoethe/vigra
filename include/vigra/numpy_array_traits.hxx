@@ -247,8 +247,6 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
     static NPY_TYPES const typeCode = ValuetypeTraits::typeCode;
 
-    enum { spatialDimensions = N, channels = 1 };
-
     static bool isArray(PyObject * obj)
     {
         return obj && PyArray_Check(obj);
@@ -267,29 +265,47 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         return ndim == N;
     }
 
+    // The '*Compatible' functions are called whenever a NumpyArray is to be constructed
+    // from a Python numpy.ndarray to check whether types and memory layout are
+    // compatible. During overload resolution, boost::python iterates through the list
+    // of overloads and invokes the first function where all arguments pass this check.
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && isValuetypeCompatible(obj);
     }
     
+    // Construct a tagged shape from a 'shape - axistags' pair (called in 
+    // NumpyArray::taggedShape()).
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, PyAxisTags axistags)
     {
         return TaggedShape(shape, axistags);
     }
 
+    // Construct a tagged shape from a 'shape - order' pair by creating
+    // the appropriate axistags object for that order and NumpyArray type.
+    // (called in NumpyArray constuctors via NumpyArray::init())
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
+        // we ignore the 'order' parameter, because we don't know the axis meaning
+        // in a plain array (use Singleband, Multiband, TinyVector etc. instead)
         return TaggedShape(shape, PyAxisTags(detail::emptyAxistags(shape.size())));
     }
 
+    // Adjust a TaggedShape that was created by another array to the properties of
+    // the present NumpyArray type (called in NumpyArray::reshapeIfEmpty()).
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
         vigra_precondition(tagged_shape.size() == N,
                   "reshapeIfEmpty(): tagged_shape has wrong size.");
     }
     
+    // This function is used to synchronize the axis re-ordering of 'data'
+    // with that of 'array'. For example, when we want to apply Gaussian smoothing
+    // with a different scale for each axis, 'data' would contains those scales,
+    // and permuteLikewise() would make sure that the scales are applied to the right
+    // axes, regardless of axis re-ordering.
     template <class ARRAY>
     static void permuteLikewise(python_ptr array, ARRAY const & data, ARRAY & res)
     {
@@ -300,15 +316,14 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         detail::getAxisPermutationImpl(permute, array, "permutationToNormalOrder", 
                                        AxisInfo::AllAxes, true);
 
-        if(permute.size() == 0)
+        if(permute.size() != 0)
         {
-            permute.resize(N);
-            linearSequence(permute.begin(), permute.end());
+            applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
         }
-        
-        applyPermutation(permute.begin(), permute.end(), data.begin(), res.begin());
     }
     
+    // This function is called in NumpyArray::setupArrayView() to determine the
+    // desired axis re-ordering.
     template <class U>
     static void permutationToSetupOrder(python_ptr array, ArrayVector<U> & permute)
     {
@@ -322,13 +337,18 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         }
     }
 
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
+    // This function is called in NumpyArray::makeUnsafeReference() to create
+    // a numpy.ndarray view for a block of memory managed by C++.
+    // The term 'unsafe' should remind you that memory management cannot be done
+    // automatically, bu must be done explicitly by the programmer.
+    template <class U>
+    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const & shape,
+                                                T *data, TinyVector<U, N> const & stride)
+    {
+        TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
+        return constructNumpyArrayFromData(shape, npyStride.begin(), 
+                                                    ValuetypeTraits::typeCode, data);
+    }
 };
 
 /********************************************************/
@@ -370,14 +390,6 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -472,14 +484,6 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
             permute.erase(permute.begin());
         }
     }
-    
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -519,14 +523,6 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -537,8 +533,6 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 {
     typedef NumpyArrayTraits<N, T, StridedArrayTag> BaseType;
     typedef typename BaseType::ValuetypeTraits ValuetypeTraits;
-
-    enum { spatialDimensions = N-1, channels = 0 };
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
@@ -663,14 +657,6 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             permute[N-1] = channelIndex;
         }
     }
-    
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -714,14 +700,6 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N> npyStride(stride * sizeof(T));
-        // return detail::constructNumpyArrayFromData(typeKeyFull(), BaseType::typeKey(), shape, npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -733,8 +711,6 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
     typedef TinyVector<T, M> value_type;
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
     static NPY_TYPES const typeCode = ValuetypeTraits::typeCode;
-
-    enum { spatialDimensions = N, channels = M };
 
     static bool isArray(PyObject * obj)
     {
@@ -821,24 +797,23 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         }
     }
     
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N+1> npyShape;
-        // std::copy(shape.begin(), shape.end(), npyShape.begin());
-        // npyShape[N] = M;
+    template <class U>
+    static python_ptr unsafeConstructorFromData(TinyVector<U, N> const & shape,
+                                                value_type *data, TinyVector<U, N> const & stride)
+    {
+        TinyVector<npy_intp, N+1> npyShape;
+        std::copy(shape.begin(), shape.end(), npyShape.begin());
+        npyShape[N] = M;
 
-        // TinyVector<npy_intp, N+1> npyStride;
-        // std::transform(
-            // stride.begin(), stride.end(), npyStride.begin(),
-            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        // npyStride[N] = sizeof(T);
+        TinyVector<npy_intp, N+1> npyStride;
+        std::transform(
+            stride.begin(), stride.end(), npyStride.begin(),
+            std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
+        npyStride[N] = sizeof(T);
 
-        // return detail::constructNumpyArrayFromData(
-            // typeKeyFull(), typeKey(), npyShape,
-            // npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
+        return constructNumpyArrayFromData(npyShape, npyStride.begin(), 
+                                                    ValuetypeTraits::typeCode, data);
+    }
 };
 
 /********************************************************/
@@ -890,25 +865,6 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
     }
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N+1> npyShape;
-        // std::copy(shape.begin(), shape.end(), npyShape.begin());
-        // npyShape[N] = M;
-
-        // TinyVector<npy_intp, N+1> npyStride;
-        // std::transform(
-            // stride.begin(), stride.end(), npyStride.begin(),
-            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        // npyStride[N] = sizeof(T);
-
-        // return detail::constructNumpyArrayFromData(
-            // typeKeyFull(), BaseType::typeKey(), npyShape,
-            // npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -920,25 +876,6 @@ struct NumpyArrayTraits<N, RGBValue<T>, StridedArrayTag>
     typedef T dtype;
     typedef RGBValue<T> value_type;
     typedef NumpyArrayValuetypeTraits<T> ValuetypeTraits;
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N+1> npyShape;
-        // std::copy(shape.begin(), shape.end(), npyShape.begin());
-        // npyShape[N] = 3;
-
-        // TinyVector<npy_intp, N+1> npyStride;
-        // std::transform(
-            // stride.begin(), stride.end(), npyStride.begin(),
-            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        // npyStride[N] = sizeof(T);
-
-        // return detail::constructNumpyArrayFromData(
-            // typeKeyFull(), typeKey(), npyShape,
-            // npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 /********************************************************/
@@ -961,25 +898,6 @@ struct NumpyArrayTraits<N, RGBValue<T>, UnstridedArrayTag>
     {
         return UnstridedTraits::isPropertyCompatible(obj);
     }
-
-    // template <class U>
-    // static python_ptr constructor(TinyVector<U, N> const & shape,
-                                  // T *data, TinyVector<U, N> const & stride)
-    // {
-        // TinyVector<npy_intp, N+1> npyShape;
-        // std::copy(shape.begin(), shape.end(), npyShape.begin());
-        // npyShape[N] = 3;
-
-        // TinyVector<npy_intp, N+1> npyStride;
-        // std::transform(
-            // stride.begin(), stride.end(), npyStride.begin(),
-            // std::bind2nd(std::multiplies<npy_intp>(), sizeof(value_type)));
-        // npyStride[N] = sizeof(T);
-
-        // return detail::constructNumpyArrayFromData(
-            // typeKeyFull(), BaseType::typeKey(), npyShape,
-            // npyStride.begin(), ValuetypeTraits::typeCode, data);
-    // }
 };
 
 } // namespace vigra

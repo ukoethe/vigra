@@ -803,7 +803,7 @@ void unifyTaggedShapeSize(TaggedShape & tagged_shape)
     }
 }
 
-inline // FIXME
+inline
 ArrayVector<npy_intp> finalizeTaggedShape(TaggedShape & tagged_shape)
 {
     if(tagged_shape.axistags)

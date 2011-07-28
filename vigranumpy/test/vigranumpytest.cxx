@@ -79,16 +79,14 @@ testView(MultiArrayView<N, T, Stride> array)
     return array.shape();
 }
 
-#if 0 // FIXME: temporarily disabled
-// (right now, a compile-only test:)
-void testMakeReference()
+// FIXME: make this to a real test (right now, it's a compile-only test)
+void testMakeReferenceUnsafe()
 {
     MultiArray<2, vigra::UInt8> cpp_memory(MultiArrayShape<2>::type(100, 100));
 
     NumpyArray<2, npy_uint8, vigra::UnstridedArrayTag> python_view;
-    python_view.makeReference(cpp_memory);
+    python_view.makeUnsafeReference(cpp_memory);
 }
-#endif
 
 template <unsigned int N, class T>
 python::tuple 

@@ -249,7 +249,7 @@ class NumpyAnyArray
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(), 
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
                                python_ptr::keep_count);
-                vigra_postcondition(res,
+                vigra_postcondition(res.get() != 0,
                        "NumpyArray::operator=(): VigraArray.copyValuesImpl() failed.");
             }
             else
@@ -525,31 +525,22 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
     return array.release();
 }
 
-#if 0
-
 // FIXME: reimplement in terms of TaggedShape?
 template <class TINY_VECTOR>
 inline
 python_ptr constructNumpyArrayFromData(
-    std::string const & typeKeyFull,
-    std::string const & typeKey,
     TINY_VECTOR const & shape, npy_intp *strides,
     NPY_TYPES typeCode, void *data)
 {
     ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
 
-    python_ptr type = detail::getArrayTypeObject(typeKeyFull);
-    if(type == 0)
-        type = detail::getArrayTypeObject(typeKey, &PyArray_Type);
-
-    python_ptr array(PyArray_New((PyTypeObject *)type.ptr(), shape.size(), pyShape.begin(), typeCode, strides, data, 0, NPY_WRITEABLE, 0),
+    python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(), 
+                                 typeCode, strides, data, 0, NPY_WRITEABLE, 0),
                      python_ptr::keep_count);
     pythonToCppException(array);
 
     return array;
 }
-
-#endif
 
 /********************************************************/
 /*                                                      */
@@ -654,24 +645,6 @@ class NumpyArray
                           python_ptr::keep_count);
     }
 
-#if 0 // FIXME: not sure if this is still needed when we have axistags
-    static python_ptr init(difference_type const & shape, difference_type const & strideOrdering, bool init = true)
-    {
-        // FIXME: what to do with this function?
-        ArrayVector<npy_intp> pshape(shape.begin(), shape.end()),
-                              pstrideOrdering(strideOrdering.begin(), strideOrdering.end());
-        if(pstrideOrdering.size() == ArrayTraits::spatialDimensions)
-        {
-            for(unsigned int k=0; k < pstrideOrdering.size(); ++k)
-                pstrideOrdering[k] += 1;
-            pstrideOrdering.push_back(0);
-        }
-        return detail::constructNumpyArrayImpl((PyTypeObject *)getArrayTypeObject().ptr(), pshape,
-                       ArrayTraits::spatialDimensions, ArrayTraits::channels,
-                       typeCode, "A", init, pstrideOrdering);
-    }
-#endif
-
   public:
 
     using view_type::init;
@@ -743,21 +716,6 @@ class NumpyArray
         vigra_postcondition(makeReference(init(shape, true, order)),
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
     }
-
-#if 0
-        /**
-         * Construct a new array object, allocating an internal python
-         * ndarray of the given shape and given stride ordering, initialized
-         * with zeros.
-         *
-         * An exception is thrown when construction fails.
-         */
-    NumpyArray(difference_type const & shape, difference_type const & strideOrdering)
-    {
-        vigra_postcondition(makeReference(init(shape, strideOrdering)),
-                     "NumpyArray(shape): Python constructor did not produce a compatible array.");
-    }
-#endif
 
         /**
          * Constructor from NumpyAnyArray.
@@ -966,7 +924,6 @@ class NumpyArray
         return makeReference(array.pyObject(), strict);
     }
 
-#if 0 // FIXME: implement this in a different way
         /**
          * Set up an unsafe reference to the given MultiArrayView.
          * ATTENTION: This creates a numpy.ndarray that points to the
@@ -977,17 +934,18 @@ class NumpyArray
          * python object which directly or indirectly holds the memory
          * of the given MultiArrayView.)
          */
-    void makeReference(const view_type &multiArrayView)
+    void makeUnsafeReference(const view_type &multiArrayView)
     {
-        vigra_precondition(!hasData(), "makeReference(): cannot replace existing view with given buffer");
+        vigra_precondition(!hasData(), 
+            "makeUnsafeReference(): cannot replace existing view with given buffer");
 
         // construct an ndarray that points to our data (taking strides into account):
-        python_ptr array(ArrayTraits::constructor(multiArrayView.shape(), multiArrayView.data(), multiArrayView.stride()));
+        python_ptr array(ArrayTraits::unsafeConstructorFromData(multiArrayView.shape(), 
+                                  multiArrayView.data(), multiArrayView.stride()));
 
         view_type::operator=(multiArrayView);
         pyArray_ = array;
     }
-#endif
 
         /**
          Try to create a copy of the given PyObject.
@@ -1010,23 +968,6 @@ class NumpyArray
         NumpyAnyArray copy(obj, true);
         makeReferenceUnchecked(copy.pyObject());
     }
-
-#if 0
-        /**
-            Allocate new memory with the given shape and initialize with zeros.<br>
-            If a stride ordering is given, the resulting array will have this stride
-            ordering, when it is compatible with the array's memory layout (unstrided
-            arrays only permit the standard ascending stride ordering).
-
-            <em>Note:</em> this operation invalidates dependent objects
-            (MultiArrayViews and iterators)
-         */
-    void reshape(difference_type const & shape, difference_type const & strideOrdering = standardStrideOrdering())
-    {
-        vigra_postcondition(makeReference(init(shape, strideOrdering)),
-                     "NumpyArray(shape): Python constructor did not produce a compatible array.");
-    }
-#endif
 
         /**
             Allocate new memory with the given shape and initialize with zeros.<br>
@@ -1062,9 +1003,7 @@ class NumpyArray
          */
     void reshapeIfEmpty(TaggedShape tagged_shape, std::string message = "")
     {
-//        std::cerr << "before: " << tagged_shape.shape << "\n";
         ArrayTraits::finalizeTaggedShape(tagged_shape);
-//        std::cerr << "after: " << tagged_shape.shape << "\n";
         
         if(hasData())
         {
@@ -1075,46 +1014,11 @@ class NumpyArray
 
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
                              python_ptr::keep_count);
-            // int ndim = PyArray_NDIM((PyArrayObject *)array.get());
-            // npy_intp * s = PyArray_DIMS((PyArrayObject *)array.get());
-            // std::cerr << "constructed: " << ndim << " " <<  ArrayVectorView<npy_intp>(ndim, s) << "\n";
             vigra_postcondition(makeReference(NumpyAnyArray(array.get())),
                   "NumpyArray.reshapeIfEmpty(): Python constructor did not produce a compatible array.");
         }
     }
 
-#if 0
-        /**
-            When this array has no data, allocate new memory with the given \a shape and
-            initialize with zeros. Otherwise, check if the new shape matches the old shape
-            and throw a precondition exception with the given \a message if not. If strict
-            is true, the given stride ordering must also match that of the existing data.
-         */
-    void reshapeIfEmpty(difference_type const & shape, difference_type const & strideOrdering,
-                        std::string message = "", bool strict = false)
-    {
-        if(hasData())
-        {
-            if(strict)
-            {
-                if(message == "")
-                    message = "NumpyArray::reshapeIfEmpty(shape): array was not empty, and shape or stride ordering did not match.";
-                vigra_precondition(shape == this->shape() && strideOrdering == this->strideOrdering(), message.c_str());
-            }
-            else
-            {
-                if(message == "")
-                    message = "NumpyArray::reshapeIfEmpty(shape): array was not empty, and shape did not match.";
-                vigra_precondition(shape == this->shape(), message.c_str());
-            }
-        }
-        else
-        {
-            reshape(shape, strideOrdering);
-        }
-    }
-#endif
-    
     TaggedShape taggedShape() const
     {
         return ArrayTraits::taggedShape(this->shape(), PyAxisTags(this->axistags(), true));
@@ -1146,6 +1050,9 @@ void NumpyArray<N, T, Stride>::setupArrayView()
 
         this->m_stride /= sizeof(value_type);
         this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
+        vigra_precondition(checkInnerStride(Stride()),
+            "NumpyArray<..., UnstridedArrayTag>::setupArrayView(): First dimension of given array is not unstrided (should never happen).");
+
     }
     else
     {
