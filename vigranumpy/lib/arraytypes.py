@@ -131,7 +131,7 @@ def AxisTags_fromJSON(json_rep):
     tag_dict = eval(json_rep)
     tag_list = []
     for tags in tag_dict['axes']:
-        tags['typeFlags'] = eval('AxisType(%d)' % tags['typeFlags'])
+        tags['typeFlags'] = AxisType(tags['typeFlags'])
         tag_list.append(AxisInfo(**tags))
     return AxisTags(tag_list)
 
