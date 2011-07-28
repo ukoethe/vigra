@@ -389,20 +389,20 @@ public:
         double  entropy            = 0.0;
         if(class_count == 2)
         {
-			double p0			= (hist[0]/total);
-			double p1			= (hist[1]/total);
-			entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+            double p0			= (hist[0]/total);
+            double p1			= (hist[1]/total);
+            entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
         }
         else
         {
             for(int ii = 0; ii < class_count; ++ii)
             {
                 double w        = weights[ii];
-				double pii		= hist[ii]/total;
+                double pii		= hist[ii]/total;
                 entropy         -= w*( pii*std::log(pii));
             }
         }
-  		entropy 			= total * entropy;
+        entropy 			= total * entropy;
         return entropy; 
     }
 };
@@ -1088,8 +1088,8 @@ public:
     std::ptrdiff_t               min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
-	typedef RandomMT19937	Random_t;
-	Random_t				random;
+    typedef RandomMT19937	Random_t;
+    Random_t				random;
 
     RandomSplitOfColumn()
     {}
@@ -1099,18 +1099,18 @@ public:
     :
         class_weights_(ext.class_weights_),
         ext_param_(ext),
-		random(RandomSeed)
+        random(RandomSeed)
     {
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
     }
     
-	template<class T> 
+    template<class T> 
     RandomSplitOfColumn(ProblemSpec<T> const & ext, Random_t & random_)
     :
         class_weights_(ext.class_weights_),
         ext_param_(ext),
-		random(random_)
+        random(random_)
     {
         bestCurrentCounts[0].resize(ext.class_count_);
         bestCurrentCounts[1].resize(ext.class_count_);
@@ -1143,10 +1143,10 @@ public:
         LineSearchLoss right(labels, ext_param_);
         right.init(begin, end, region_response);
 
-		
-		min_gini_ = NumericTraits<double>::max();
         
-		min_index_ = begin + random.uniformInt(end -begin);
+        min_gini_ = NumericTraits<double>::max();
+        
+        min_index_ = begin + random.uniformInt(end -begin);
         min_threshold_ =  column[*(begin + min_index_)];
         SortSamplesByDimensions<DataSourceF_t> 
             sorter(column, 0, min_threshold_);

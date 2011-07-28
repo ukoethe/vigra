@@ -316,7 +316,7 @@ void defineEdgedetection()
 {
     using namespace python;
 
-	docstring_options doc_options(true, true, false);
+    docstring_options doc_options(true, true, false);
 
     class_<Edgel> edgel("Edgel", "Represent an Edgel at a particular subpixel position (x, y), having "
                                   "given 'strength' and 'orientation'.\n\n"

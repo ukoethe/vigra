@@ -76,17 +76,17 @@ def checkAboutSame(i1,i2):
     checkShape(i1.shape, i2.shape)
     difference=np.sum(np.abs(i1-i2))/float(np.size(i1))
     assert(difference<5)
-	
+    
 def test_watersheds():
-	res = watersheds(img_scalar_f)
-	checkShape(res[0].shape, img_scalar_f.shape)
+    res = watersheds(img_scalar_f)
+    checkShape(res[0].shape, img_scalar_f.shape)
     
 def test_structureTensor():
     res = structureTensor(img_scalar_f,1.0,2.0, out=img_3_f)
     res = structureTensor(img_scalar_f,1.0,2.0)
     res = structureTensor(img_rgb_f,1.0,2.0)
     checkShape(res.shape, img_scalar_f.shape[:2] + (3,))
-	
+    
 def test_simpleSharpening():
     res = simpleSharpening2D(img_scalar_f)
     

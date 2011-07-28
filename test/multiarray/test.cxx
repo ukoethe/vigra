@@ -372,8 +372,8 @@ public:
     typedef array3_t::traverser traverser3_t;
     typedef traverser3_t::next_type traverser2_t;
     typedef traverser2_t::next_type traverser1_t;
-	typedef MultiArrayView<3, unsigned char> array_view3_t;
-	typedef array_view3_t::iterator iterator3_t;
+    typedef MultiArrayView<3, unsigned char> array_view3_t;
+    typedef array_view3_t::iterator iterator3_t;
     
     shape3_t s;
     array3_t a3;
@@ -438,8 +438,8 @@ public:
 
     void test_iterator ()
     {
-		// test scan-order navigation
-		array_view3_t av = a3;
+        // test scan-order navigation
+        array_view3_t av = a3;
         iterator3_t i1 = av.begin();
         iterator3_t i2 = av.begin();
         iterator3_t iend = av.end();
@@ -460,14 +460,14 @@ public:
         shouldEqual(&*(i1+7), &a3(1,0,1));
         shouldEqual(&*(i1+9), &a3(1,1,1));
 
-		shouldEqual(&*(iend-1), &a3(1,2,4));
+        shouldEqual(&*(iend-1), &a3(1,2,4));
         shouldEqual(&*(iend-2), &a3(0,2,4));
         shouldEqual(&*(iend-3), &a3(1,1,4));
         shouldEqual(&*(iend-7), &a3(1,2,3));
         shouldEqual(&*(iend-8), &a3(0,2,3));
         shouldEqual(&*(iend-10), &a3(0,1,3));
 
-		shouldEqual(&iend[-1], &a3(1,2,4));
+        shouldEqual(&iend[-1], &a3(1,2,4));
         shouldEqual(&iend[-2], &a3(0,2,4));
         shouldEqual(&iend[-3], &a3(1,1,4));
         shouldEqual(&iend[-7], &a3(1,2,3));
@@ -475,9 +475,9 @@ public:
         shouldEqual(&iend[-10], &a3(0,1,3));
 
         unsigned int count = 0;
-		shape3_t p;
+        shape3_t p;
 
-		// iterate over the third dimension
+        // iterate over the third dimension
         for (p[2]=0; p[2] != s[2]; ++p[2]) 
         {
             for (p[1]=0; p[1] != s[1]; ++p[1]) 
@@ -493,61 +493,61 @@ public:
                     shouldEqual(i1.index(), count);
                     shouldEqual(i2.index(), count);
 
-					should(i1 != iend);
-					should(!(i1 == iend));
-					should(i1 < iend);
-					should(i1 <= iend);
-					should(!(i1 > iend));
-					should(!(i1 >= iend));
+                    should(i1 != iend);
+                    should(!(i1 == iend));
+                    should(i1 < iend);
+                    should(i1 <= iend);
+                    should(!(i1 > iend));
+                    should(!(i1 >= iend));
 
-					shouldEqual(iend - i1, av.size() - count);
+                    shouldEqual(iend - i1, av.size() - count);
 
-					bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
-						            p[2] == 0 || p[2] == s[2]-1;
-					if(!atBorder)
-					{
-						should(!i1.atBorder());
-						should(!i2.atBorder());
-					}
-					else
-					{
-						should(i1.atBorder());
-						should(i2.atBorder());
-					}
+                    bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
+                                    p[2] == 0 || p[2] == s[2]-1;
+                    if(!atBorder)
+                    {
+                        should(!i1.atBorder());
+                        should(!i2.atBorder());
+                    }
+                    else
+                    {
+                        should(i1.atBorder());
+                        should(i2.atBorder());
+                    }
                 }
             }
         }
 
-		should(i1 == iend);
-		should(!(i1 != iend));
-		should(!(i1 < iend));
-		should(i1 <= iend);
-		should(!(i1 > iend));
-		should(i1 >= iend);
+        should(i1 == iend);
+        should(!(i1 != iend));
+        should(!(i1 < iend));
+        should(i1 <= iend);
+        should(!(i1 > iend));
+        should(i1 >= iend);
 
-		should(i2 == iend);
-		should(!(i2 != iend));
-		should(!(i2 < iend));
-		should(i2 <= iend);
-		should(!(i2 > iend));
-		should(i2 >= iend);
+        should(i2 == iend);
+        should(!(i2 != iend));
+        should(!(i2 < iend));
+        should(i2 <= iend);
+        should(!(i2 > iend));
+        should(i2 >= iend);
 
-		shouldEqual(iend - i1, 0);
-		shouldEqual(iend - i2, 0);
+        shouldEqual(iend - i1, 0);
+        shouldEqual(iend - i2, 0);
         shouldEqual (count, av.size());
 
-		--i1;
-		i2 -= 1;
+        --i1;
+        i2 -= 1;
         shouldEqual(&*i1, &a3(1,2,4));
         shouldEqual(&*i2, &a3(1,2,4));
     }
 
     void test_const_iterator()
     {
-		typedef array_view3_t::const_iterator iterator;
+        typedef array_view3_t::const_iterator iterator;
 
-		// test const scan-order navigation
-		array_view3_t av = a3;
+        // test const scan-order navigation
+        array_view3_t av = a3;
         iterator i1 = const_cast<array_view3_t const &>(av).begin();
         iterator i2 = const_cast<array_view3_t const &>(av).begin();
         iterator iend = const_cast<array_view3_t const &>(av).end();
@@ -568,14 +568,14 @@ public:
         shouldEqual(&*(i1+7), &a3(1,0,1));
         shouldEqual(&*(i1+9), &a3(1,1,1));
 
-		shouldEqual(&*(iend-1), &a3(1,2,4));
+        shouldEqual(&*(iend-1), &a3(1,2,4));
         shouldEqual(&*(iend-2), &a3(0,2,4));
         shouldEqual(&*(iend-3), &a3(1,1,4));
         shouldEqual(&*(iend-7), &a3(1,2,3));
         shouldEqual(&*(iend-8), &a3(0,2,3));
         shouldEqual(&*(iend-10), &a3(0,1,3));
 
-		shouldEqual(&iend[-1], &a3(1,2,4));
+        shouldEqual(&iend[-1], &a3(1,2,4));
         shouldEqual(&iend[-2], &a3(0,2,4));
         shouldEqual(&iend[-3], &a3(1,1,4));
         shouldEqual(&iend[-7], &a3(1,2,3));
@@ -583,9 +583,9 @@ public:
         shouldEqual(&iend[-10], &a3(0,1,3));
 
         unsigned int count = 0;
-		shape3_t p;
+        shape3_t p;
 
-		// iterate over the third dimension
+        // iterate over the third dimension
         for (p[2]=0; p[2] != s[2]; ++p[2]) 
         {
             for (p[1]=0; p[1] != s[1]; ++p[1]) 
@@ -601,54 +601,54 @@ public:
                     shouldEqual(i1.index(), count);
                     shouldEqual(i2.index(), count);
 
-					should(i1 != iend);
-					should(!(i1 == iend));
-					should(i1 < iend);
-					should(i1 <= iend);
-					should(!(i1 > iend));
-					should(!(i1 >= iend));
+                    should(i1 != iend);
+                    should(!(i1 == iend));
+                    should(i1 < iend);
+                    should(i1 <= iend);
+                    should(!(i1 > iend));
+                    should(!(i1 >= iend));
 
-					shouldEqual(iend - i1, av.size() - count);
+                    shouldEqual(iend - i1, av.size() - count);
 
-					bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
-						            p[2] == 0 || p[2] == s[2]-1;
-					if(!atBorder)
-					{
-						should(!i1.atBorder());
-						should(!i2.atBorder());
-					}
-					else
-					{
-						should(i1.atBorder());
-						should(i2.atBorder());
-					}
+                    bool atBorder = p[0] == 0 || p[0] == s[0]-1 || p[1] == 0 || p[1] == s[1]-1 ||
+                                    p[2] == 0 || p[2] == s[2]-1;
+                    if(!atBorder)
+                    {
+                        should(!i1.atBorder());
+                        should(!i2.atBorder());
+                    }
+                    else
+                    {
+                        should(i1.atBorder());
+                        should(i2.atBorder());
+                    }
                 }
             }
         }
 
-		should(i1 == iend);
-		should(!(i1 != iend));
-		should(!(i1 < iend));
-		should(i1 <= iend);
-		should(!(i1 > iend));
-		should(i1 >= iend);
+        should(i1 == iend);
+        should(!(i1 != iend));
+        should(!(i1 < iend));
+        should(i1 <= iend);
+        should(!(i1 > iend));
+        should(i1 >= iend);
 
-		should(i2 == iend);
-		should(!(i2 != iend));
-		should(!(i2 < iend));
-		should(i2 <= iend);
-		should(!(i2 > iend));
-		should(i2 >= iend);
+        should(i2 == iend);
+        should(!(i2 != iend));
+        should(!(i2 < iend));
+        should(i2 <= iend);
+        should(!(i2 > iend));
+        should(i2 >= iend);
 
-		shouldEqual(iend - i1, 0);
-		shouldEqual(iend - i2, 0);
+        shouldEqual(iend - i1, 0);
+        shouldEqual(iend - i2, 0);
         shouldEqual (count, av.size());
 
-		--i1;
-		i2 -= 1;
+        --i1;
+        i2 -= 1;
         shouldEqual(&*i1, &a3(1,2,4));
         shouldEqual(&*i2, &a3(1,2,4));
-	}
+    }
 
     void test_traverser ()
     {
@@ -718,21 +718,21 @@ public:
 
     void test_const_traverser ()
     {
-		typedef array3_t::const_traverser traverser;
+        typedef array3_t::const_traverser traverser;
 
         // test hierarchical navigation
-		traverser i3_f = const_cast<array3_t const &>(a3).traverser_begin ();
-		traverser i3_l = const_cast<array3_t const &>(a3).traverser_end ();
+        traverser i3_f = const_cast<array3_t const &>(a3).traverser_begin ();
+        traverser i3_l = const_cast<array3_t const &>(a3).traverser_end ();
 
         unsigned int countx = 0, county = 0, countz = 0;
 
         // iterate over the third dimension
         for (; i3_f != i3_l; ++i3_f) {
-			traverser::next_type i2_f = i3_f.begin ();
+            traverser::next_type i2_f = i3_f.begin ();
             traverser::next_type i2_l = i3_f.end ();
             // iterate over the second dimension
             for (; i2_f != i2_l; ++i2_f) {
-				traverser::next_type::next_type i1_f = i2_f.begin ();
+                traverser::next_type::next_type i1_f = i2_f.begin ();
                 traverser::next_type::next_type i1_l = i2_f.end ();
                 // iterate over the first dimension
                 for (; i1_f != i1_l; ++i1_f)
@@ -835,14 +835,14 @@ public:
         shouldEqual (a3.shape (2), 50);
         shouldEqual(a3(0,0), 0);
     }
-	
-	void test_copy_int_float()
-	{
-		MultiArray<2, float> a(MultiArrayShape<2>::type(2,2));
-		a.init(3);
-		MultiArray<2, unsigned short> b(a.shape());
-		b = a;
-	}
+    
+    void test_copy_int_float()
+    {
+        MultiArray<2, float> a(MultiArrayShape<2>::type(2,2));
+        a.init(3);
+        MultiArray<2, unsigned short> b(a.shape());
+        b = a;
+    }
 
     void test_subarray ()
     {
@@ -984,7 +984,7 @@ public:
             int k = 0;
             for(; nav.hasMore(); ++nav)
             {
-				Navigator::value_type i = nav.begin(), end = nav.end();
+                Navigator::value_type i = nav.begin(), end = nav.end();
                 for(; i[d] != end[d]; ++i[d], ++k)
                     shouldEqual(array3[i], expected[d][k]);
             }
@@ -1831,7 +1831,7 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_copy_int_float ) );
 
         add( testCase( &MultiImpexTest::testImpex ) );
-	}
+    }
 };
 
 struct MultiArrayDataTestSuite

@@ -478,7 +478,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     }
     
     npy_uint32 maxRegionLabel = 0;
-	if(method == "regiongrowing")
+    if(method == "regiongrowing")
     {
         PyAllowThreads _pythread;
         if(neighborhood == 4)

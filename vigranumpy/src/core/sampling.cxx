@@ -413,13 +413,13 @@ resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
              "resamplingGaussian2D(): Output array has wrong shape.");
 
     PyAllowThreads _pythread;
-	for(int k=0; k<image.shape(2); ++k)
-	{
-	    MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-	    MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-	    resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
-	            smoothx, xratio, xoffset, smoothy, yratio, yoffset);
-	}
+    for(int k=0; k<image.shape(2); ++k)
+    {
+        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+        resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
+                smoothx, xratio, xoffset, smoothy, yratio, yoffset);
+    }
     return res;
 }
 

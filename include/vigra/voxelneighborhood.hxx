@@ -1053,7 +1053,7 @@ class NeighborCode3D
 
                                   NorthWest,        North,           /* NorthEast, */
                                   West,
-								  Error, Error, Error, Error},
+                                  Error, Error, Error, Error},
             //2 - AtLeftBorder
                                 { /*InFrontNorthWest,*/ InFrontNorth,InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,
@@ -1097,7 +1097,7 @@ class NeighborCode3D
 
                                   NorthWest,         North,           NorthEast,
                                   West,
-								  Error, Error, Error},
+                                  Error, Error, Error},
             //9 - AtBottomRightBorder 
                                 { InFrontNorthWest, InFrontNorth,    /* InFrontNorthEast, */
                                   InFrontWest,      InFront,         /* InFrontEast, */
@@ -1105,7 +1105,7 @@ class NeighborCode3D
 
                                   NorthWest,        North,           /* NorthEast, */
                                   West,
-								  Error, Error, Error,Error, Error, Error},
+                                  Error, Error, Error,Error, Error, Error},
             //10 - AtBottomLeftBorder
                                 { /*InFrontNorthWest,*/InFrontNorth, InFrontNorthEast,
                                   /*InFrontWest,*/  InFront,         InFrontEast,

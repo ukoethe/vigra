@@ -398,11 +398,11 @@ bool rf_export_HDF5(RandomForest<T> const &rf,
     }
     else
     {
-		//create a new file.
+        //create a new file.
         file_id = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 
                                                     H5P_DEFAULT, 
                                                     H5P_DEFAULT);
-	}
+    }
     vigra_postcondition(file_id >= 0, 
                         "rf_export_HDF5(): Unable to open file.");
     //std::cerr << pathname.c_str()
@@ -454,10 +454,10 @@ bool rf_import_HDF5(RandomForest<T> &rf,
     using detail::problemspec_import_HDF5;
     using detail::dt_export_HDF5;
     // check if file exists
-	FILE* pFile = std::fopen ( filename.c_str(), "r" );
+    FILE* pFile = std::fopen ( filename.c_str(), "r" );
     if ( pFile == NULL)
         return 0;
-	std::fclose(pFile);
+    std::fclose(pFile);
     //open file
     hid_t file_id = H5Fopen (filename.c_str(), 
                              H5F_ACC_RDONLY, 

@@ -500,7 +500,7 @@ void rank_selection      (FeatureT              const & features,
                            "result struct mismatch!");
     }
     
-	int ii = 0;
+    int ii = 0;
     for(; iter != selected.end(); ++iter)
     {
 //        std::cerr << ii<< std::endl;

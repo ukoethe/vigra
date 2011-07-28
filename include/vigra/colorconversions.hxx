@@ -894,14 +894,14 @@ class RGBPrime2XYZFunctor
             The maximum value for each RGB component defaults to 255.
         */
     RGBPrime2XYZFunctor()
-	: gamma_(1.0/ 0.45), max_(component_type(255.0))
+    : gamma_(1.0/ 0.45), max_(component_type(255.0))
     {}
     
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     RGBPrime2XYZFunctor(component_type max)
-	: gamma_(1.0/ 0.45), max_(max)
+    : gamma_(1.0/ 0.45), max_(max)
     {}
     
         /** apply the transformation
@@ -1070,14 +1070,14 @@ class XYZ2RGBPrimeFunctor
             The maximum value for each RGB component defaults to 255.
         */
     XYZ2RGBPrimeFunctor()
-	: gamma_(0.45), max_(component_type(255.0))
+    : gamma_(0.45), max_(component_type(255.0))
     {}
     
         /** constructor
             \arg max - the maximum value for each RGB component
         */
     XYZ2RGBPrimeFunctor(component_type max)
-	: gamma_(0.45), max_(max)
+    : gamma_(0.45), max_(max)
     {}
     
         /** apply the transformation

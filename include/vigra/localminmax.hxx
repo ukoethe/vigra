@@ -103,7 +103,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         
         for(x=0; x<w; ++x, ++is.x, ++id.x)
         {
-			if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
                                 isAtImageBorder(x, 0, w, h)))
                 da.set(marker, id);
         }
@@ -113,7 +113,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         
         for(y=1; y<h-1; ++y, ++is.y, ++id.y)
         {
-			if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
                                 isAtImageBorder(0, y, w, h)))
                 da.set(marker, id);
         }
@@ -123,7 +123,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         
         for(y=1; y<h-1; ++y, ++is.y, ++id.y)
         {
-			if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
                                 isAtImageBorder(w-1, y, w, h)))
                 da.set(marker, id);
         }
@@ -133,7 +133,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
         
         for(x=0; x<w; ++x, ++is.x, ++id.x)
         {
-			if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
+            if(isLocalExtremum(is, sa, neighborhood, threshold, compare, 
                                 isAtImageBorder(x, h-1, w, h)))
                 da.set(marker, id);
         }
@@ -151,7 +151,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
 
         for(x=0; x<w; ++x, ++sx.x, ++dx.x)
         {
-			typename SrcAccessor::value_type v = sa(sx);
+            typename SrcAccessor::value_type v = sa(sx);
             
             if(!compare(v, threshold))
                 continue;
@@ -166,7 +166,7 @@ localMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             
             if(i == Neighborhood::DirectionCount)
                 da.set(marker, dx);
-		}
+        }
     }
 }
 
@@ -210,9 +210,9 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             SrcType v = sa(sx);
             
             if(isExtremum[lab] == 0)
-				continue;
-				
-			if(!compare(v, threshold))
+                continue;
+                
+            if(!compare(v, threshold))
             {
                 // mark all regions that don't exceed the threshold as non-extremum
                 isExtremum[lab] = 0;
@@ -227,10 +227,10 @@ extendedLocalMinMax(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                 for(i=0; i<Neighborhood::DirectionCount; ++i, ++sc, ++lc)
                 {
                     if(lab != *lc && compare(sa(sc),v))
-					{
+                    {
                         isExtremum[lab] = 0;
-						break;
-					}
+                        break;
+                    }
                 }
             }
             else
@@ -606,8 +606,8 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                                         std::less<SrcType>(), std::equal_to<SrcType>(), 
                                         threshold, options.allow_at_border);
         }
-		else
-			vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
+        else
+            vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
 
     }
     else
@@ -622,8 +622,8 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
                                 threshold, std::less<SrcType>(), options.allow_at_border);
         }
-		else
-			vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
+        else
+            vigra_precondition(false, "localMinima(): neighborhood must be 4 or 8.");
     }
 }
 
@@ -636,7 +636,7 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestValue marker, FourNeighborCode neighborhood)
 {
     detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
-					    NumericTraits<typename SrcAccessor::value_type>::max(),
+                        NumericTraits<typename SrcAccessor::value_type>::max(),
                         std::less<typename SrcAccessor::value_type>());
 }
 
@@ -649,7 +649,7 @@ localMinima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestValue marker, EightNeighborCode neighborhood)
 {
     detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
-					    NumericTraits<typename SrcAccessor::value_type>::max(),
+                        NumericTraits<typename SrcAccessor::value_type>::max(),
                         std::less<typename SrcAccessor::value_type>());
 }
 
@@ -866,8 +866,8 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
                                         std::greater<SrcType>(), std::equal_to<SrcType>(), 
                                         threshold, options.allow_at_border);
         }
-		else
-			vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
+        else
+            vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
     }
     else
     {
@@ -881,8 +881,8 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             detail::localMinMax(sul, slr, sa, dul, da, marker, EightNeighborCode(),
                                 threshold, std::greater<SrcType>(), options.allow_at_border);
         }
-		else
-			vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
+        else
+            vigra_precondition(false, "localMaxima(): neighborhood must be 4 or 8.");
     }
 }
 
@@ -895,7 +895,7 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestValue marker, FourNeighborCode neighborhood)
 {
     detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
-					    NumericTraits<typename SrcAccessor::value_type>::min(),
+                        NumericTraits<typename SrcAccessor::value_type>::min(),
                         std::greater<typename SrcAccessor::value_type>());
 }
 
@@ -908,7 +908,7 @@ localMaxima(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
             DestValue marker, EightNeighborCode neighborhood)
 {
     detail::localMinMax(sul, slr, sa, dul, da, marker, neighborhood,
-					    NumericTraits<typename SrcAccessor::value_type>::min(),
+                        NumericTraits<typename SrcAccessor::value_type>::min(),
                         std::greater<typename SrcAccessor::value_type>());
 }
 

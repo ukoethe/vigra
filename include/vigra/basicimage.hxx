@@ -863,7 +863,7 @@ class BasicImage
     }
 
         /** access pixel at given location. <br>
-	    usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
+        usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
         */
     reference operator[](difference_type const & d)
     {
@@ -872,7 +872,7 @@ class BasicImage
     }
 
         /** read pixel at given location. <br>
-	    usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
+        usage: <TT> value_type value = image[Diff2D(1,2)] </TT>
         */
     const_reference operator[](difference_type const & d) const
     {
@@ -881,7 +881,7 @@ class BasicImage
     }
 
         /** access pixel at given location. <br>
-	    usage: <TT> value_type value = image(1,2) </TT>
+        usage: <TT> value_type value = image(1,2) </TT>
         */
     reference operator()(int dx, int dy)
     {
@@ -890,7 +890,7 @@ class BasicImage
     }
 
         /** read pixel at given location. <br>
-	    usage: <TT> value_type value = image(1,2) </TT>
+        usage: <TT> value_type value = image(1,2) </TT>
         */
     const_reference operator()(int dx, int dy) const
     {
@@ -899,8 +899,8 @@ class BasicImage
     }
 
         /** access pixel at given location.
-	        Note that the 'x' index is the trailing index. <br>
-	    usage: <TT> value_type value = image[2][1] </TT>
+            Note that the 'x' index is the trailing index. <br>
+        usage: <TT> value_type value = image[2][1] </TT>
         */
     pointer operator[](int dy)
     {
@@ -909,8 +909,8 @@ class BasicImage
     }
 
         /** read pixel at given location.
-	        Note that the 'x' index is the trailing index. <br>
-	    usage: <TT> value_type value = image[2][1] </TT>
+            Note that the 'x' index is the trailing index. <br>
+        usage: <TT> value_type value = image[2][1] </TT>
         */
     const_pointer operator[](int dy) const
     {

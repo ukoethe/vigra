@@ -52,7 +52,7 @@ pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image,
                            double edgeThreshold, double scale,
                            NumpyArray<3, Multiband<OutValue> > res=python::object())
 {
-	res.reshapeIfEmpty(image.taggedShape(), 
+    res.reshapeIfEmpty(image.taggedShape(), 
         "nonlinearDiffusion2D(): Output array has wrong shape.");
         
     PyAllowThreads _pythread;

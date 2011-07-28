@@ -74,7 +74,7 @@ class WignerMatrix
           *			the D matrix)
           *
           */
-	WignerMatrix(int l_max);
+    WignerMatrix(int l_max);
     
          /*! \brief Compute D with fixed theta = pi/2, phi=0, psi=0.
           *
@@ -82,7 +82,7 @@ class WignerMatrix
           *
              FIXME: compute_D(l, 0.0, M_PI / 2.0, 0.0) creates the transposed matrix!
           */
-	void compute_D(int band);
+    void compute_D(int band);
 
          /*! \brief Compute D for arbitrary rotations.
           *
@@ -92,7 +92,7 @@ class WignerMatrix
           * \param psi 	rotation angle
           *
           */
-	void compute_D(int l, Real phi, Real theta, Real psi);
+    void compute_D(int l, Real phi, Real theta, Real psi);
 
          /*! \brief  Get the (n,m) entry of D.
           *
@@ -123,13 +123,13 @@ class WignerMatrix
           * \param l        expansion band
           */
     Matrix<Complex> const & get_D(int l) const
-	{
+    {
         std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
         message << l << " l_max=" << l_max << "\n";
                               
         vigra_precondition(l > 0 && l <= l_max, message.c_str());
-	    return D[l];
-	}
+        return D[l];
+    }
 
          /*! \brief Rotate in PH.
           *
@@ -145,7 +145,7 @@ class WignerMatrix
 
 
   private:
-	// FIXME: is function is not called (and cannot be called from outside the class)
+    // FIXME: is function is not called (and cannot be called from outside the class)
     TinyVector<double,3> 
     rot(TinyVector<double,3> const & vec, TinyVector<double,3> const & axis, double angle)
     {
@@ -155,10 +155,10 @@ class WignerMatrix
         return (qr * qv * conj(qr)).v();
     }
 
-	int l_max;
-	int cg1cnt;
-	ArrayVector<double> CGcoeff;
-	ArrayVector<Matrix<Complex> > D;
+    int l_max;
+    int cg1cnt;
+    ArrayVector<double> CGcoeff;
+    ArrayVector<Matrix<Complex> > D;
 };
 
 template <class Real>

@@ -287,7 +287,7 @@ class RandomForestOptions
         #undef PUSH
     }
     
-	void make_from_map(std::map<std::string, ArrayVector<double> > & in)
+    void make_from_map(std::map<std::string, ArrayVector<double> > & in)
     {
         typedef MultiArrayShape<2>::type Shp; 
         #define PULL(item_, type_) item_ = type_(in[#item_][0]); 
@@ -299,17 +299,17 @@ class RandomForestOptions
         PULL(min_split_node_size_, int);
         PULLBOOL(sample_with_replacement_, bool);
         PULLBOOL(prepare_online_learning_, bool);
-		PULLBOOL(predict_weighted_, bool);
+        PULLBOOL(predict_weighted_, bool);
         
         PULL(training_set_calc_switch_, (RF_OptionTag)int);
         PULL(stratification_method_, (RF_OptionTag)int);
         PULL(mtry_switch_, (RF_OptionTag)int);
-		
-		/*don't pull*/
+        
+        /*don't pull*/
         //PULL(mtry_func_!=0, int);
         //PULL(training_set_func,int);
         #undef PULL
-		#undef PULLBOOL
+        #undef PULLBOOL
     }
     void make_map(std::map<std::string, ArrayVector<double> > & in) const
     {
@@ -323,12 +323,12 @@ class RandomForestOptions
         PUSH(min_split_node_size_, int);
         PUSH(sample_with_replacement_, bool);
         PUSH(prepare_online_learning_, bool);
-		PUSH(predict_weighted_, bool);
+        PUSH(predict_weighted_, bool);
         
         PUSH(training_set_calc_switch_, RF_OptionTag);
         PUSH(stratification_method_, RF_OptionTag);
         PUSH(mtry_switch_, RF_OptionTag);
-		
+        
         PUSHFUNC(mtry_func_, int);
         PUSHFUNC(training_set_func_,int);
         #undef PUSH

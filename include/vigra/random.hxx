@@ -125,11 +125,11 @@ struct RandomState<TT800>
     : current_(0)
     {
         UInt32 seeds[N] = { 
-	        0x95f24dab, 0x0b685215, 0xe76ccae7, 0xaf3ec239, 0x715fad23,
-	        0x24a590ad, 0x69e4b5ef, 0xbf456141, 0x96bc1b7b, 0xa7bdf825,
-	        0xc1de75b7, 0x8858a9c9, 0x2da87693, 0xb657f9dd, 0xffdc8a9f,
-	        0x8121da71, 0x8b823ecb, 0x885d05f5, 0x4e20cd47, 0x5a9ad5d9,
-	        0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
+            0x95f24dab, 0x0b685215, 0xe76ccae7, 0xaf3ec239, 0x715fad23,
+            0x24a590ad, 0x69e4b5ef, 0xbf456141, 0x96bc1b7b, 0xa7bdf825,
+            0xc1de75b7, 0x8858a9c9, 0x2da87693, 0xb657f9dd, 0xffdc8a9f,
+            0x8121da71, 0x8b823ecb, 0x885d05f5, 0x4e20cd47, 0x5a9ad5d9,
+            0x512c0c03, 0xea857ccd, 0x4cc1d30f, 0x8891a8a1, 0xa6b7aadb
         };
          
         for(UInt32 i=0; i<N; ++i)
@@ -176,7 +176,7 @@ void RandomState<TT800>::generateNumbers() const
 
     for(UInt32 i=0; i<N-M; ++i)
     {
-    	state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
+        state_[i] = state_[i+M] ^ (state_[i] >> 1) ^ mag01[state_[i] % 2];
     }
     for (UInt32 i=N-M; i<N; ++i) 
     {
@@ -450,8 +450,8 @@ class RandomNumberGenerator
         */
     double uniform53() const
     {
-	    // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
-	    return ( (this->get() >> 5) * 67108864.0 + (this->get() >> 6)) * (1.0/9007199254740992.0); 
+        // make full use of the entire 53-bit mantissa of a double, by Isaku Wada
+        return ( (this->get() >> 5) * 67108864.0 + (this->get() >> 6)) * (1.0/9007199254740992.0); 
     }
     
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0].
