@@ -56,12 +56,6 @@ ADD_DEPENDENCIES(vigranumpytest vigranumpy)
 
 # setup the file 'set_path.py' to ensure that tests are run against the binaries
 # which are currently being built, not against (possibly outdated) installed modules
-MACRO(DEPENDENCY_PATH variable target)
-    GET_TARGET_PROPERTY(${variable} ${target} LOCATION)
-    STRING(REGEX REPLACE "(/\\$\\([^\\)]*\\)/[^/]*|/[^/]*)$" "" ${variable} ${${variable}}) # get path prefix
-    FILE(TO_NATIVE_PATH ${${variable}} ${variable})
-ENDMACRO(DEPENDENCY_PATH)
-
 DEPENDENCY_PATH(VIGRAIMPEX_PATH vigraimpex)
 DEPENDENCY_PATH(VIGRANUMPYTEST_PATH vigranumpytest)
 
