@@ -863,7 +863,7 @@ void defineSegmentation()
             "Find local minima in a volume and mark them with the given 'marker'. Parameter "
                 "'neighborhood' specifies the pixel neighborhood to be used and can be "
                 "6 or 26 (default).\n\n"
-                "For details see localMinima_ in the vigra C++ documentation.\n");
+                "For details see localMinima3D_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMinima",
         registerConverters(&pythonExtendedLocalMinima2D<float>),
@@ -883,7 +883,7 @@ void defineSegmentation()
             "Find local minima and minimal plateaus in a volume and mark them with "
             "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
             "neighborhood to be used and can be 6(default) or 26 .\n\n"
-            "For details see extendedLocalMinima_ in the vigra C++ documentation.\n");
+            "For details see extendedLocalMinima3D_ in the vigra C++ documentation.\n");
 
     def("localMaxima",
         registerConverters(&pythonLocalMaxima2D<float>),
@@ -901,7 +901,7 @@ void defineSegmentation()
             "Find local maxima and maximal plateaus in a volume and mark them with "
             "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
             "neighborhood to be used and can be 6(default) or 26 .\n\n"
-            "For details see localMinima_ in the vigra C++ documentation.\n");
+            "For details see localMaxima3D_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMaxima",
         registerConverters(&pythonExtendedLocalMaxima2D<float>),
@@ -912,7 +912,7 @@ void defineSegmentation()
         "Find local maxima and maximal plateaus in an image and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
         "neighborhood to be used and can be 4 or 8 (default).\n\n"
-        "For details see localMinima_ in the vigra C++ documentation.\n");
+        "For details see extendedLocalMaxima_ in the vigra C++ documentation.\n");
 
     def("extendedLocalMaxima3D", 
         registerConverters(&pythonExtendedLocalMaxima3D<float> ), 
@@ -920,7 +920,7 @@ void defineSegmentation()
         "Find local maxima and maximal plateaus in a volume and mark them with "
         "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
         "neighborhood to be used and can be 6 (default) or 26 .\n\n"
-        "For details see localMinima_ in the vigra C++ documentation.\n");
+        "For details see extendedLocalMaxima3D_ in the vigra C++ documentation.\n");
 
     /*************************************************************************/
 

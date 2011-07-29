@@ -132,7 +132,7 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
        will have type 'VigraArray' and will be transposed into the given
        'order' (if no order is given, 'VigraArray.defaultOrder' is used).
        Otherwise, the returned array is a plain 'numpy.ndarray'. In this
-       case, 'order=F' will case the array be transposed to Fortran order.
+       case, 'order=F' will return the array transposed into Fortran order.
     '''
     import h5py
     if isinstance(filenameOrGroup, h5py.highlevel.Group):
@@ -214,7 +214,9 @@ def writeHDF5(data, filenameOrGroup, pathInFile):
             file.close()
         
 impex.readHDF5 = readHDF5
+readHDF5.__module__ = 'vigra.impex'
 impex.writeHDF5 = writeHDF5
+writeHDF5.__module__ = 'vigra.impex'
 
 from filters import convolve, gaussianSmoothing
 from sampling import resize

@@ -110,13 +110,9 @@ in detail, the other classes work analogously. The new array classes serve sever
   
 Mapping between C++ types and Python types is controlled by the following two functions:
 
-.. autofunction:: vigra.registerPythonArrayType
-
-.. autofunction:: vigra.listExportedArrayKeys
-
 ----------------
 
-.. autoclass:: vigra.Image
+.. autoclass:: vigra.VigraArray
    :show-inheritance:
    :members:
   
@@ -133,15 +129,11 @@ Mapping between C++ types and Python types is controlled by the following two fu
 
 -------------
 
-.. autoclass:: vigra.ScalarImage
-   :show-inheritance:
-   :members:
+.. autofunction:: vigra.ScalarImage
 
 -------------
 
-.. autoclass:: vigra.RGBImage
-   :show-inheritance:
-   :members:
+.. autofunction:: vigra.RGBImage
 
 -------------
 
@@ -159,7 +151,6 @@ you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
 
 .. automodule:: vigra.impex
    :members:
-
 
    
 .. _sec-dtype-coercion:

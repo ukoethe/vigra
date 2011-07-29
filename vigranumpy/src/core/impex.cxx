@@ -361,7 +361,7 @@ void defineImpexFunctions()
 {
     using namespace python;
     
-    docstring_options doc_options(true, true, false);
+    docstring_options doc_options(true, false, false);
     
     class_<ImageImportInfo>("ImageInfo", python::no_init)
         .def(init<char const *>(args("filename"), "Extract header info from given file.\n\n"))
