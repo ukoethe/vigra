@@ -241,6 +241,8 @@ struct TypeList
     typedef Tail tail;
 };
 
+// in the sequel, the doc string is only registered with the last
+// overload, so that it shows up only once
 template <class Head, class Tail>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>)
 {
@@ -251,8 +253,8 @@ inline void multidef(char const* functor_name, TypeList<Head, Tail>)
 template <class Head, class Tail>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>, const char * help)
 {
-    Head::def(functor_name, help);
-    multidef(functor_name, Tail());
+    Head::def(functor_name);
+    multidef(functor_name, Tail(), help);
 }
 
 template <class Head, class Tail, class Args>
@@ -265,8 +267,8 @@ inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const&
 template <class Head, class Tail, class Args>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const& args, char const * help)
 {
-    Head::def(functor_name, args, help);
-    multidef(functor_name, Tail(), args);
+    Head::def(functor_name, args);
+    multidef(functor_name, Tail(), args, help);
 }
 
 template <class Head, class Tail>
