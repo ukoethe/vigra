@@ -365,7 +365,7 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp * strides = PyArray_STRIDES(obj);
         
         if(channelIndex < ndim)
@@ -501,7 +501,7 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp * strides = PyArray_STRIDES(obj);
         
         // If we have no axistags, ndim must match, and axis 0 must be unstrided.
@@ -539,7 +539,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
         PyObject * obj = (PyObject*)array;
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         
         if(channelIndex < ndim)
         {
@@ -673,7 +673,7 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
         PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(obj);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp * strides = PyArray_STRIDES(obj);
 
         if(channelIndex < ndim)
@@ -836,7 +836,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
             return false;
             
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
-        long majorIndex = pythonGetAttr(obj, "majorNonchannelIndex", ndim);
+        long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         npy_intp * strides = PyArray_STRIDES(obj);
         
         if(majorIndex < ndim)

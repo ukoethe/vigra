@@ -346,7 +346,7 @@ def checkCompatibility(obj, compatible):
                 assert_equal(arraytypes.VigraArray, default_ordering.__class__)
                 
                 if n.startswith("testArray"):
-                    tags = arraytypes.VigraArray.empty_axistags(default_ordering.ndim)
+                    tags = arraytypes.VigraArray._empty_axistags(default_ordering.ndim)
                 elif default_ordering.axistags.channelIndex == default_ordering.ndim:
                     tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim+1)
                     tags.dropChannelAxis()

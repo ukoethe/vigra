@@ -243,14 +243,14 @@ class NumpyAnyArray
                 "NumpyArray::operator=(): Cannot assign from empty array.");
                 
             python_ptr arraytype = getArrayTypeObject();
-            python_ptr f(PyString_FromString("copyValuesImpl"), python_ptr::keep_count);
+            python_ptr f(PyString_FromString("_copyValuesImpl"), python_ptr::keep_count);
             if(PyObject_HasAttr(arraytype, f))
             {
                 python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(), 
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
                                python_ptr::keep_count);
                 vigra_postcondition(res.get() != 0,
-                       "NumpyArray::operator=(): VigraArray.copyValuesImpl() failed.");
+                       "NumpyArray::operator=(): VigraArray._copyValuesImpl() failed.");
             }
             else
             {
@@ -305,11 +305,11 @@ class NumpyAnyArray
         return pythonGetAttr(pyObject(), "channelIndex", ndim());
     }
 
-    MultiArrayIndex majorNonchannelIndex() const
+    MultiArrayIndex innerNonchannelIndex() const
     {
         if(!hasData())
             return 0;
-        return pythonGetAttr(pyObject(), "majorNonchannelIndex", ndim());
+        return pythonGetAttr(pyObject(), "innerNonchannelIndex", ndim());
     }
 
         /**

@@ -83,7 +83,7 @@ inline
 python_ptr emptyAxistags(int ndim)
 {
     python_ptr arraytype = getArrayTypeObject();
-    python_ptr func(PyString_FromString("empty_axistags"), python_ptr::keep_count);
+    python_ptr func(PyString_FromString("_empty_axistags"), python_ptr::keep_count);
     python_ptr d(PyInt_FromLong(ndim), python_ptr::keep_count);
     python_ptr axistags(PyObject_CallMethodObjArgs(arraytype, func.get(), d.get(), NULL),
                         python_ptr::keep_count);
@@ -233,14 +233,14 @@ class PyAxisTags
         return channelIndex() != size();
     }
     
-    long majorNonchannelIndex(long defaultVal) const
+    long innerNonchannelIndex(long defaultVal) const
     {
-        return pythonGetAttr(axistags, "majorNonchannelIndex", defaultVal);
+        return pythonGetAttr(axistags, "innerNonchannelIndex", defaultVal);
     }
 
-    long majorNonchannelIndex() const
+    long innerNonchannelIndex() const
     {
-        return majorNonchannelIndex(size());
+        return innerNonchannelIndex(size());
     }
 
     void setChannelDescription(std::string const & description)

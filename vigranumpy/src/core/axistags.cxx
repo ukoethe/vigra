@@ -550,7 +550,7 @@ void defineAxisTags()
                (void (AxisTags::*)(std::string const &, int))&AxisTags::fromFrequencyDomain,
                (arg("key"), arg("size")=0))
         .add_property("channelIndex", &AxisTags::channelIndex)
-        .add_property("majorNonchannelIndex", &AxisTags::majorNonchannelIndex)
+        .add_property("innerNonchannelIndex", &AxisTags::innerNonchannelIndex)
         .def("axisTypeCount", &AxisTags::axisTypeCount)
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)

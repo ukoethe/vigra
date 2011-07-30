@@ -570,7 +570,7 @@ class AxisTags
         return (int)size();
     }
     
-    int majorNonchannelIndex() const
+    int innerNonchannelIndex() const
     {
         int k = 0;
         for(; k<(int)size(); ++k)

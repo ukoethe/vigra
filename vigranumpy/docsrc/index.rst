@@ -113,27 +113,36 @@ Mapping between C++ types and Python types is controlled by the following two fu
 ----------------
 
 .. autoclass:: vigra.VigraArray
-   :show-inheritance:
-   :members:
-  
-   .. attribute:: channels
-   
-      the number of channels of this image (e.g. RGB has three channels)
-
-   .. attribute:: spatialDimensions
-   
-      number of spatial dimensions (always 2 for images). This is useful for 
-      distinguishing RGBImage from ScalarVolume in overload resolution.
-
-.. autofunction:: vigra.imshow
+    :show-inheritance:
+    :members: defaultOrder, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, defaultAxistags, dropChannelAxis, insertChannelAxis, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationFromNormalOrder, permutationFromNumpyOrder, permutationFromVigraOrder, permutationToNormalOrder, permutationToNumpyOrder, permutationToVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
+    
+    .. attribute:: VigraArray.axistags
+    
+      The :class:`vigra.AxisTags` object of this array. 
 
 -------------
 
+.. autofunction:: vigra.newaxis(axisinfo=vigra.AxisInfo())
+.. autofunction:: vigra.taggedView
+
+-------------
+
+.. autofunction:: vigra.Image
 .. autofunction:: vigra.ScalarImage
+.. autofunction:: vigra.Vector2Image
+.. autofunction:: vigra.Vector3Image
+.. autofunction:: vigra.Vector4Image
+.. autofunction:: vigra.RGBImage
 
 -------------
 
-.. autofunction:: vigra.RGBImage
+.. autofunction:: vigra.Volume
+.. autofunction:: vigra.ScalarVolume
+.. autofunction:: vigra.Vector2Volume
+.. autofunction:: vigra.Vector3Volume
+.. autofunction:: vigra.Vector4Volume
+.. autofunction:: vigra.Vector6Volume
+.. autofunction:: vigra.RGBVolume
 
 -------------
 
