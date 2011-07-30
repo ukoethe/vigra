@@ -447,35 +447,120 @@ void defineAxisTags()
 {
     using namespace boost::python;
 
-    enum_<AxisInfo::AxisType>("AxisType")
+    docstring_options doc_options(true, false, false);
+
+    enum_<AxisInfo::AxisType>("AxisType",
+         "\nEnum to encode the type of an axis described by an\n"
+         ":class:`~vigra.AxisInfo` object. Possible values:\n\n"
+         "   ``AxisType.UnknownAxisType:``\n      type not specified\n"
+         "   ``AxisType.Channels:``\n      a channel axis\n"
+         "   ``AxisType.Space:``\n      a spatial axis\n"
+         "   ``AxisType.Angle:``\n      an axis encoding angles (e.g. polar coordinates)\n"
+         "   ``AxisType.Time:``\n      a temporal axis\n"
+         "   ``AxisType.Frequency:``\n      an axis in the Fourier domain\n"
+         "   ``AxisType.NonChannel:``\n      any type except Channels\n"
+         "   ``AxisType.AllAxes:``\n      any type\n\n"
+         "Types can be combined by the bitwise 'or' operator. For example,\n"
+         "'Space | Frequency' denotes a spatial axis in the Fourier domain.\n"
+         "The above ordering corresponds to the canonical axis ordering\n"
+         "which is applied by various :class:`~vigra.AxisTags` methods.\n\n")
         .value("UnknownAxisType", AxisInfo::UnknownAxisType)
-        .value("Space", AxisInfo::Space)
-        .value("Time", AxisInfo::Time)
         .value("Channels", AxisInfo::Channels)
-        .value("Frequency", AxisInfo::Frequency)
+        .value("Space", AxisInfo::Space)
         .value("Angle", AxisInfo::Angle)
+        .value("Time", AxisInfo::Time)
+        .value("Frequency", AxisInfo::Frequency)
         .value("NonChannel", AxisInfo::NonChannel)
         .value("AllAxes", AxisInfo::AllAxes)
     ;
 
-    class_<AxisInfo>("AxisInfo", no_init)
+    class_<AxisInfo>("AxisInfo", 
+         "\n"
+         "An object describing a single axis.\n\nConstructor:\n\n"
+         ".. method:: AxisInfo(key='?', typeFlags=AxisType.UnknownAxisType, resolution=0.0, description='')\n\n"
+         "    :param key: the key of the axis,\n"
+         "                e.g. 'x' (x-axis), 'c' (channel axis), '?' (unknown)\n" 
+         "    :param typeFlags: the type of the axis,\n"
+         "                      e.g. AxisType.Space or AxisType.Time\n"
+         "    :type typeFlags: :class:`~vigra.AxisType`\n"
+         "    :param resolution: the resolution (step size) of the axis\n"
+         "                       (e.g. 0.0 means 'unknown')\n"
+         "    :param description: an arbitrary string giving additional information \n"
+         "                        about the axis.\n\n"
+         "In addition, AxisInfo defines the following factories for the most common\n"
+         "cases:\n\n"
+         "   ``AxisInfo.c:``\n"
+         "        Factory for an axisinfo object describing the 'c' (channel) axis.\n"
+         "   ``AxisInfo.x:``\n"
+         "        Factory for an axisinfo object describing the 'x' (spatial) axis.\n"
+         "   ``AxisInfo.y:``\n"
+         "        Factory for an axisinfo object describing the 'y' (spatial) axis.\n"
+         "   ``AxisInfo.z:``\n"
+         "        Factory for an axisinfo object describing the 'z' (spatial) axis.\n"
+         "   ``AxisInfo.t:``\n"
+         "        Factory for an axisinfo object describing the 't' (time) axis.\n"
+         "   ``AxisInfo.fx:``\n"
+         "        Factory for an axisinfo object describing the 'x' axis\n"
+         "        in the Fourier domain.\n"
+         "   ``AxisInfo.fy:``\n"
+         "        Factory for an axisinfo object describing the 'y' axis\n"
+         "        in the Fourier domain.\n"
+         "   ``AxisInfo.fz:``\n"
+         "        Factory for an axisinfo object describing the 'z' axis\n"
+         "        in the Fourier domain.\n"
+         "   ``AxisInfo.ft:``\n"
+         "        Factory for an axisinfo object describing the 't' axis\n"
+         "        in the Fourier domain.\n\n", 
+         no_init)
         .def(init<std::string, AxisInfo::AxisType, double, std::string>(
              (arg("key")="?", arg("typeFlags")=AxisInfo::UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
-        .def_readonly("key", &AxisInfo::key_)
-        .def_readwrite("description", &AxisInfo::description_)
-        .def_readwrite("resolution", &AxisInfo::resolution_)
-        .def_readonly("typeFlags", &AxisInfo::flags_)
+        .def_readonly("key", &AxisInfo::key_,
+             "\n(read only property) the key of the axis.\n")
+        .def_readwrite("description", &AxisInfo::description_,
+             "\n(read/write property) the string description of the axis.\n")
+        .def_readwrite("resolution", &AxisInfo::resolution_,
+             "\n(read/write property) the resolution of the axis. The resolution will be "
+             "automatically adjusted whenever the image size changes, e.g. due to  a call to "
+             ":func:`~vigra.sampling.resize` or slicing with non-unit step size::\n\n"
+             "    >>> a = vigra.RGBImage((200,100))\n"
+             "    >>> a.axistags['x'].resolution = 1.0\n"
+             "    >>> a.axistags['y'].resolution = 1.2\n"
+             "    >>> print a.axistags\n"
+             "    AxisInfo: 'x' (type: Space, resolution=1)\n"
+             "    AxisInfo: 'y' (type: Space, resolution=1.2)\n"
+             "    AxisInfo: 'c' (type: Channels) RGB\n"
+             "    >>> b = a[::2, ::4, :]\n"
+             "    >>> print b.axistags\n"
+             "    AxisInfo: 'x' (type: Space, resolution=2)\n"
+             "    AxisInfo: 'y' (type: Space, resolution=4.8)\n"
+             "    AxisInfo: 'c' (type: Channels) RGB\n\n")
+        .def_readonly("typeFlags", &AxisInfo::flags_,
+             "\n(read only property) the type of the axis .\n")
         .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0, arg("sign") = 1))
         .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
-        .def("isSpatial", &AxisInfo::isSpatial)
-        .def("isTemporal", &AxisInfo::isTemporal)
-        .def("isChannel", &AxisInfo::isChannel)
-        .def("isFrequency", &AxisInfo::isFrequency)
-        .def("isAngular", &AxisInfo::isAngular)
-        .def("isType", &AxisInfo::isType)
-        .def("compatible", &AxisInfo::compatible)
+        .def("isSpatial", &AxisInfo::isSpatial, 
+             "\naxisinfo.isSSpactial() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Space\n")
+        .def("isTemporal", &AxisInfo::isTemporal, 
+             "\naxisinfo.isTemporal() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Time\n")
+        .def("isChannel", &AxisInfo::isChannel, 
+             "\naxisinfo.isChannel() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Channels\n")
+        .def("isFrequency", &AxisInfo::isFrequency, 
+             "\naxisinfo.isFrequency() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Frequency\n")
+        .def("isAngular", &AxisInfo::isAngular, 
+             "\naxisinfo.isAngular() yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains AxisType.Angle\n")
+        .def("isType", &AxisInfo::isType, 
+             "\naxisinfo.isType(axistype) yields True when :attr:`~vigra.AxisInfo.typeFlags` "
+             "contains the given axistype.\n")
+        .def("compatible", &AxisInfo::compatible, 
+             "\naxisinfo1.compatible(axisinfo2) yields True when the two axisinfo objects "
+             "have the same keys and types, or either of the two is 'unknown'.\n")
         .def(self == self)
         .def(self != self)
         .def(self < self)
@@ -497,7 +582,21 @@ void defineAxisTags()
         .add_static_property("c", &AxisInfo_c)
     ;
 
-    class_<AxisTags >("AxisTags", no_init)
+    class_<AxisTags >("AxisTags", 
+            "Object to describe axis properties and axis ordering in a "
+            ":class:`~vigra.VigraArray`. \n\nConstructor:\n\n"
+            ".. method:: AxisTags(i1=None, i2=None, i3=None, i4=None, i5=None)\n\n"
+            "    The parameters 'i1'...'i5' are the :class:`~vigra.AxisInfo` objects\n"
+            "    describing the axes. If all are None, an empty AxisTags object is\n"
+            "    created. Alternatively, 'i1' can also be a Python sequence of\n"
+            "    :class:`~vigra.AxisInfo` objects, or an integer (in which case an\n"
+            "    AxisTags object with that many '?' entries is created).\n\n"
+            "Most AxisTags methods should not be called directly, but via the\n"
+            "corresponding array methods, because this ensures that arrays and\n"
+            "their axistags are always kept in sync.\n\n"
+            ""
+            ,
+            no_init)
         .def("__init__", make_constructor(&AxisTags_create,
             default_call_policies(),
             (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 

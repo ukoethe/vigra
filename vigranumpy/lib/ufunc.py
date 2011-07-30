@@ -37,22 +37,20 @@ import numpy
 import copy
 
 vigraTypecastingRules = '''
-The ideas behind the vigranumpy typcasting rules are (i) to represent
-data with at most 32 bits, when possible, (ii) to reduce the number of
-types that occur as results of mixed expressions, and (iii) to minimize 
-the chance of bad surprises. Default output types are thus determined 
-according to the following rules:
+Default output types are thus determined according to the following rules:
    
    1. The output type does not depend on the order of the arguments::
    
          a + b results in the same type as b + a
    
-   2.a) With exception of logical functions and abs(), the output type 
-        does not depend on the function to be executed. 
-     b) The output type of logical functions is bool. 
-     c) The output type of abs() follows general rules unless the 
-        input contains complex numbers, in which case the output type 
-        is the corresponding float number type.
+   2.a With exception of logical functions and abs(), the output type 
+       does not depend on the function to be executed.
+        
+   2.b The output type of logical functions is bool. 
+   
+   2.c The output type of abs() follows general rules unless the 
+       input contains complex numbers, in which case the output type 
+       is the corresponding float number type::
       
          a + b results in the same type as a / b
          a == b => bool
@@ -98,8 +96,8 @@ according to the following rules:
    
          ufunc.add(uint8, uint8, uint16) => uint16
          
-      In order to prevent overflow, necessary upcasting is performed before 
-      the function is executed.
+In order to prevent overflow, necessary upcasting is performed before 
+the function is executed.
 '''
 
 class Function(object):
@@ -351,13 +349,19 @@ VigraArray::
     __rrshift__   __rshift__   __rsub__   __rtruediv__   __rxor__   __sub__
     __truediv__   __xor__
 
-vigranumpy re-implements these functions for two reasons::
+As usual, these functions are applied independently at each pixel.
 
-    * Axistag consistency is checked, and the order of axes and strides is 
-      preserved in the result array. (In contrast, plain numpy functions 
-      always create C-order arrays, disregarding the stride order of the 
-      inputs.)
-    * Typecasting rules are changed to be more suitable for image analysis. 
+Vigranumpy overloads the numpy-versions of these functions in order to make their
+behavior more suitable for image analysis. In particular, we changed two aspects:
+
+* Axistag consistency is checked, and the order of axes and strides is 
+  preserved in the result array. (In contrast, plain numpy functions 
+  always create C-order arrays, disregarding the stride order of the 
+  inputs.)
+* Typecasting rules are changed such that (i) data are represented with 
+  at most 32 bits, when possible, (ii) the number of types that occur as 
+  results of mixed expressions is reduced, and (iii) the chance of bad 
+  surprises is minimized. 
 
 ''' + vigraTypecastingRules
 

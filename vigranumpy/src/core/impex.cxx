@@ -438,10 +438,10 @@ void defineImpexFunctions()
         "(allowed values: 'C', 'F', 'V'). When order == '' (the default), " 
         "vigra.VigraArray.defaultOrder is used.\n"
         "\n"
-        "Supported file formats are listed by the function vigra.impexListFormats().\n"
+        "Supported file formats are listed by the function :func:`listFormats`.\n"
         "When filename does not refer to a recognized image file format, an\n"
         "exception is raised. The file can be checked beforehand with the function\n"
-        ":func:`isImage`(filename).\n");
+        ":func:`isImage`.\n");
         
     multidef("writeImage", pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
        (arg("image"), arg("filename"), arg("dtype") = "", arg("compression") = ""),
@@ -483,7 +483,7 @@ void defineImpexFunctions()
         "        write as ASCII rather than binary file (only supported by PNM)\n"
         "     '1' ... '100':\n"
         "        use this JPEG compression level (only supported by JPEG and TIFF)\n\n"
-        "Supported file formats are listed by the function vigra.impexListFormats().\n"
+        "Supported file formats are listed by the function :func:`.listFormats()`.\n"
         "The different file formats support the following pixel types:\n\n"
         "   BMP:\n"
         "       Microsoft Windows bitmap image file (pixel type: UINT8 as gray and RGB).\n" 

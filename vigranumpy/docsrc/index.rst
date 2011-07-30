@@ -55,28 +55,22 @@ Image and Volume Data Structures
 
 Vigranumpy can work directly on numpy.ndarrays. However, plain ndarrays do not carry
 any information about the semantics of the different coordinate axes. For example,
-one cannot distinguish a 2-dimensional RGB image from a scalar volume data set that
-happens to contain only three slices. In order to distinguish between arrays that 
-have the same structure but different interpretation, vigra.arraytypes provides the 
-following array classes::
+one cannot distinguish a 2-dimensional RGB image from a scalar volume dataset that
+happens to contain only three slices. Among other problems, this leads to ambiguities
+in function overload resolution -- it may be unclear whether one should apply a 3D 
+filter to the entire array, or a 2D filter to each slice individually.
 
-    numpy.ndarray
-        Image
-            ScalarImage
-            Vector2Image
-            Vector3Image
-                RGBImage
-            Vector4Image
-        Volume
-            ScalarVolume
-            Vector2Volume
-            Vector3Volume
-                RGBVolume
-            Vector4Volume
-            Vector6Volume
-    
-    list 
-        ImagePyramid
+In order to distinguish between arrays with the same structure but different 
+interpretation, vigranumpy introduces the concept of **axistags**. An object of
+type :class:`~vigra.AxisTags` is a list of :class:`~vigra.AxisInfo` objects that 
+describe the corresponding axes. Axistags are stored as a property of the new 
+array class :class:`~vigra.VigraArray` which is a subclass of numpy.ndarray. 
+The order of the axis info object is the same as the order of the array's shape 
+and indices. Whenever the axis order changes (e.g. due to a call to 'array.transpose()')
+the axistags are re-arranged accordingly, so that the user has full control of
+the meaning of each axis.
+
+
 
 where indentation encodes inheritance. Below, we describe :class:`~vigra.Image`, 
 :class:`~vigra.ScalarImage`, :class:`~vigra.RGBImage`, and  :class:`~vigra.ImagePyramid` 
@@ -112,18 +106,33 @@ Mapping between C++ types and Python types is controlled by the following two fu
 
 ----------------
 
+.. autoclass:: vigra.AxisType
+
+.. autoclass:: vigra.AxisInfo
+    :members: key, typeFlags, resolution, description, isSpatial, isTemporal, isChannel, isFrequency, isAngular, isType, compatible
+    
+
+.. autoclass:: vigra.AxisTags
+
+----------------
+
 .. autoclass:: vigra.VigraArray
     :show-inheritance:
-    :members: defaultOrder, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, defaultAxistags, dropChannelAxis, insertChannelAxis, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationFromNormalOrder, permutationFromNumpyOrder, permutationFromVigraOrder, permutationToNormalOrder, permutationToNumpyOrder, permutationToVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
+    :members: defaultAxistags, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, dropChannelAxis, insertChannelAxis, __getitem__, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, T, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationFromNormalOrder, permutationFromNumpyOrder, permutationFromVigraOrder, permutationToNormalOrder, permutationToNumpyOrder, permutationToVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
     
     .. attribute:: VigraArray.axistags
     
-      The :class:`vigra.AxisTags` object of this array. 
+      The :class:`~vigra.AxisTags` object of this array. 
+
+    .. attribute:: VigraArray.defaultOrder
+    
+      Get the default axis ordering, currently 'V' (VIGRA order).
 
 -------------
 
 .. autofunction:: vigra.newaxis(axisinfo=vigra.AxisInfo())
 .. autofunction:: vigra.taggedView
+.. autofunction:: vigra.dropChannelAxis
 
 -------------
 
@@ -171,22 +180,6 @@ Vigra images and volumes support all arithmetic and algebraic functions defined 
 `numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_. 
 
 .. automodule:: vigra.ufunc
-
-As usual, these functions are applied independently at each pixel.
-Vigranumpy overloads the numpy-versions of these functions in order to make their
-behavior more suitable for image analysis. In particular, we changed two aspects:
-
-* The memory layout of the input arrays is preserved in the result arrays. 
-  In contrast, plain numpy.ufuncs always create C-order arrays, even if 
-  the inputs have a different order (e.g. as Fortran-order). 
-
-* The value types of result arrays (i.e. their 'dtype') are determined in a way 
-  that is more suitable for image processing than the original numpy conversion rules.  
-
-Array dtype conversion (aka coercion) is implemented by the function 
-vigra.ufunc.Function.common_type according to the following coercion rules:
-
-.. automethod::  vigra.ufunc.Function.common_type(in_type, out_type)
 
 
 Color and Intensity Manipulation
