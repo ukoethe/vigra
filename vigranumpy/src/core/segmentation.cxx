@@ -963,7 +963,7 @@ void defineSegmentation()
         "      'RegionGrowing':\n"
         "        (default) use seededRegionGrowing_ or seededRegionGrowing3D_ respectively\n"
         "      'UnionFind:\n"
-        "        use watersheds_ or watersheds3D_ respectively\n\n"
+        "        use watershedsUnionFind_ or watersheds3D_ respectively\n\n"
         " terminate:\n"
         "    when to stop growing. Possible values:\n\n"
         "      CompleteGrow:\n"

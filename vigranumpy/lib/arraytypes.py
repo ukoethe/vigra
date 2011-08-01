@@ -49,6 +49,8 @@ def _preserve_doc(f):
 # dimension-reducing function (e.g. array.max())
 def _finalize_reduce_result(f):
     def new_f(self, axis=None, *args, **kw):
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         res = f(self, axis, *args, **kw)
         if axis is not None:
             res.axistags = res._copy_axistags()
@@ -120,7 +122,11 @@ def dropChannelAxis(array):
 # FIXME: This is a workaround for the disabled C++ function for the same purpose.
 #        Enable the C++ version when boost 1.41 is available on all relevant platforms.
 def _AxisTags_fromJSON(json_rep):
-    from vigranumpycore import AxisType
+    '''
+        Construct a new AxisTags object from the given JSON representation.
+        This is mainly used to reconstruct arrays from HDF5 datasets with
+        a suitable axistags attribute (see :func:`~vigra.impex.readHDF5`).
+    '''
     tag_dict = eval(json_rep)
     tag_list = []
     for tags in tag_dict['axes']:
@@ -198,9 +204,9 @@ class VigraArray(numpy.ndarray):
     This class extends numpy.ndarray with the concept of **axistags** 
     which encode the semantics of the array's axes. VigraArray overrides all
     numpy.ndarray methods in order to handle axistags in a sensible way.
-    In particular, an operation acting on two arrays simultaneously (e.g.
-    addition) will first transpose the arrays such that axes with corresponding
-    axistags are aligned.
+    In particular, operations acting on two arrays simultaneously (e.g.
+    addition) will first transpose the arguments such that their axis 
+    ordering matches.
 
     Constructor:
     
@@ -231,32 +237,10 @@ class VigraArray(numpy.ndarray):
           is raised.
           
         **order** can be 'C' (C order), 'F' (Fortran order), 'V' (VIGRA
-        order), and 'A' or None. This parameter controls the order of strides and 
-        axistags (unless axistags are explicit passed into the constructor).
-
-            'C' order:
-                Both strides and axes are arranged in descending order, as in a 
-                plain numpy.ndarray. For example, axistags will be 'y x c' or 
-                'z y x c'. array.flags['C_CONTIGUOUS'] will be true.
-
-            'F' order:
-                Both strides and axes are arranged in ascending order, i.e. 
-                opposite to 'C' order. For example, axistags will be 'c x y' 
-                or 'c x y z'. array.flags['F_CONTIGUOUS'] will be true.
-
-            'V' order:
-                VIGRA-order is an interleaved memory layout that simulates vector-
-                valued pixels or voxels: Channels will be the last axis and have 
-                the smallest stride, whereas all other axes are arranged in 
-                ascending order. For example, axistags will be 'x y c' or 
-                'x y z c'.
-
-            'A' order:
-                Defaults to 'V' when a new array is created, and means
-                'preserve order' when an existing array is copied.
-                
-            None:
-                use 'VigraArray.defaultOrder'
+        order), 'A' (any), or None. This parameter controls the order of strides 
+        and axistags (unless axistags are explicit passed into the constructor). 
+        See the :ref:`order definitions <array-order-parameter>` for details. If 
+        'order=None', the order is determined by :attr:`VigraArray.defaultOrder`.
     '''
     
     ###############################################################
@@ -277,41 +261,46 @@ class VigraArray(numpy.ndarray):
 
     # IMPORTANT: do not remove or rename this function, it is called from C++
     @staticmethod
-    def defaultAxistags(ndim, order=None, noChannels=False):
+    def defaultAxistags(tagSpec, order=None, noChannels=False):
         '''
-        Get default axistags for the given number of dimensions. The 'order'
-        parameter determines the axis ordering. Possible values are:
+        Get default axistags for the given specification 'tagSpec'. TagSpec can be the 
+        number of dimensions of the array (``array.ndim``, must be <= 5) or a string 
+        containing a sequence of axis keys (only the default keys 'x', 'y', 'z', 't', 
+        and 'c' are currently supported). The 'order' parameter determines the axis 
+        ordering, see the :ref:`order definitions <array-order-parameter>` for details.
+        If 'noChannels' is True, there will be no channel axis. Examples::
         
-            'V', 'A':
-                VIGRA-order, axes will be ordered 'x y c' (if ndim=3) or 'x y z c' (if ndim=4)
-            'C': 
-                C-order, axes will be ordered 'y x c' (if ndim=3) or 'z y x c' (if ndim=4)
-            'F':
-                Fortran order, axes will be ordered 'c y x' (if ndim=3) or 'c x y z' (if ndim=4)
-            None:
-                Use VigraArray.defaultOrder (currently 'V')
-            
-        If 'noChannels' is True, there will be no channel axis, so that we get 
-        'x y' (if ndim=2) or 'x y z' (if ndim=3) etc.
+            >>> vigra.VigraArray.defaultAxistags(3)
+            x y c
+            >>> vigra.VigraArray.defaultAxistags(4)
+            x y z c
+            >>> vigra.VigraArray.defaultAxistags(5)
+            x y z t c
+            >>> vigra.VigraArray.defaultAxistags(3, order='C')
+            y x c
+            >>> vigra.VigraArray.defaultAxistags(2, noChannels=True)
+            x y z
+            >>> vigra.VigraArray.defaultAxistags(3, noChannels=True)
+            x y z
+            >>> vigra.VigraArray.defaultAxistags(4, noChannels=True)
+            x y z t
+            >>> vigra.VigraArray.defaultAxistags('xty')
+            x t y
+            >>> vigra.VigraArray.defaultAxistags('xty', order='V')
+            x y t
         '''
-        if order is None:
-            order = VigraArray.defaultOrder
-        if order == 'F':
-            if noChannels:
-                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
-            else:
-                tags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
-        elif order == 'C':
-            if noChannels:
-                tags = [AxisInfo.t, AxisInfo.z, AxisInfo.y, AxisInfo.x][-ndim:]
-            else:
-                tags = [AxisInfo.t, AxisInfo.z, AxisInfo.y, AxisInfo.x, AxisInfo.c][-ndim:]
-        else: # order in ['A', 'V']:
-            if noChannels:
-                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim]
-            else:
-                tags = [AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][:ndim-1] + [AxisInfo.c]
-        return AxisTags(tags)
+        if type(tagSpec) == str:
+            taglist = [eval('AxisInfo.' + k) for k in tagSpec]
+        else:
+            start = 1 if noChannels else 0
+            end = start + tagSpec
+            taglist = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t][start:end]
+            if order is None or order == 'A':
+                order = VigraArray.defaultOrder
+        tags = AxisTags(taglist)
+        if order is not None:
+            tags.transpose(tags.permutationToOrder(order))
+        return tags
 
     # IMPORTANT: do not remove or rename this function, it is called from C++
     @staticmethod
@@ -594,7 +583,8 @@ class VigraArray(numpy.ndarray):
     def innerNonchannelIndex(self):
         '''
         The index of the innermost non-channel axis according to the axistags.
-        The innermost axis is determined by the AxisInfo sorting rules (see ???).
+        The innermost axis is determined by the AxisInfo sorting rules (see 
+        the :ref:`order definitions <array-order-parameter>` for details).
         For example, when axistags are 'x y c', the innerNonchannelIndex is 0.
         '''
         return self.axistags.innerNonchannelIndex
@@ -811,6 +801,13 @@ class VigraArray(numpy.ndarray):
             res.axistags[-1] = AxisInfo.c
         return res
     
+    def permutationToOrder(self, order):
+        '''Create the permutation that would transpose this array into
+           an array view with the given order (where order can be 'A',
+           'C', 'F', 'V' with the usual meaning). 
+        '''
+        return list(self.axistags.permutationToOrder(order))
+    
     def permutationToNormalOrder(self, types=AxisType.AllAxes):
         '''Create the permutation that would transpose this array to 
            normal order (that is, from the current axis order into 
@@ -847,10 +844,7 @@ class VigraArray(numpy.ndarray):
            ascending spatial order, but with the channel axis at the 
            last position, e.g. 'c x y' into 'x y c'). 
         '''
-        permutation = self.permutationToNormalOrder()
-        if self.channelIndex < self.ndim:
-            permutation = permutation[1:] + [permutation[0]]
-        return permutation
+        return list(self.axistags.permutationToVigraOrder())
     
     def permutationFromVigraOrder(self):
         '''Create the permutation that would transpose an array that is 
@@ -858,7 +852,7 @@ class VigraArray(numpy.ndarray):
            axis at the last position) into the axis order of this array.
            (e.g.  'x y c' into 'c x y'). 
         '''
-        return list(numpy.argsort(self.permutationToVigraOrder()))
+        return list(self.axistags.permutationFromVigraOrder())
     
     def transposeToOrder(self, order):
         '''
@@ -877,14 +871,7 @@ class VigraArray(numpy.ndarray):
         '''
         if order == 'A':
             return self
-        permutation = self.permutationToNormalOrder()
-        if order == 'C':
-            permutation.reverse()
-        elif order == 'V':
-            if self.channelIndex < self.ndim:
-                permutation = permutation[1:] + [permutation[0]]
-        elif order != 'F':
-            raise RuntimeError("VigraArray.transposeToOrder(): unknown order '%s'" % order)
+        permutation = self.permutationToOrder(order)
         return self.transpose(permutation)
     
     def transposeToDefaultOrder(self):
@@ -916,7 +903,7 @@ class VigraArray(numpy.ndarray):
 
     def __getitem__(self, index):
         '''
-        'array.__getitem__(index)' implements the indexing operator 'array[index]'.
+        ``array.__getitem__(index)`` implements the indexing operator ``array[index]``.
         In addition to the usual numpy.ndarray indexing functionality, this function
         also updates the axistags of the result array. There are three cases:
 
@@ -971,19 +958,15 @@ class VigraArray(numpy.ndarray):
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
     
+    @_finalize_reduce_result
     @_preserve_doc
     def cumsum(self, axis=None, dtype=None, out=None):
-        res = numpy.ndarray.cumsum(self, axis, dtype, out)
-        if res.ndim != self.ndim:
-            res.axistags = res._empty_axistags(res.ndim)
-        return res        
+        return numpy.ndarray.cumsum(self, axis, dtype, out)
 
+    @_finalize_reduce_result
     @_preserve_doc
     def cumprod(self, axis=None, dtype=None, out=None):
-        res = numpy.ndarray.cumprod(self, axis, dtype, out)
-        if res.ndim != self.ndim:
-            res.axistags = res._empty_axistags(res.ndim)
-        return res        
+        return numpy.ndarray.cumprod(self, axis, dtype, out)
 
     @property
     def flat(self):

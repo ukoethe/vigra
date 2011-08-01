@@ -123,16 +123,19 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
     '''Read an array from an HDF5 file.
     
        'filenameOrGroup' can contain a filename or a group object
-       referring to an already open HDF5 file. 'pathInFile' is the name of the
-       dataset to be read, including intermediate groups. If the first
-       argument is a group object, the path is relative to this group,
-       otherwise it is relative to the file's root group.
+       referring to an already open HDF5 file. 'pathInFile' is the name 
+       of the dataset to be read, including intermediate groups. If the 
+       first argument is a group object, the path is relative to this 
+       group, otherwise it is relative to the file's root group.
        
        If the dataset has an attribute 'axistags', the returned array
-       will have type 'VigraArray' and will be transposed into the given
-       'order' (if no order is given, 'VigraArray.defaultOrder' is used).
-       Otherwise, the returned array is a plain 'numpy.ndarray'. In this
-       case, 'order=F' will return the array transposed into Fortran order.
+       will have type :class:`~vigra.VigraArray` and will be transposed 
+       into the given 'order' ('vigra.VigraArray.defaultOrder'
+       will be used if no order is given).  Otherwise, the returned 
+       array is a plain 'numpy.ndarray'. In this case, order='F' will 
+       return the array transposed into Fortran order.
+       
+       Requirements: the 'h5py' module must be installed.
     '''
     import h5py
     if isinstance(filenameOrGroup, h5py.highlevel.Group):
@@ -176,6 +179,8 @@ def writeHDF5(data, filenameOrGroup, pathInFile):
        If 'data' has an attribute 'axistags', the array is transposed to 
        numpy order before writing. Moreover, the axistags will be 
        stored along with the data in an attribute 'axistags'.
+       
+       Requirements: the 'h5py' module must be installed.
     '''
     import h5py
     if isinstance(filenameOrGroup, h5py.highlevel.Group):

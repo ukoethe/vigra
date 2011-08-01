@@ -18,107 +18,182 @@ Vigranumpy exports the functionality of the C++ image processing library `VIGRA 
 
     import vigra
 
-Vigranumpy is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. Thus, it is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. Since vigranumpy uses `boost_python <http://www.boost.org/doc/libs>`_, it is able to support function overloading (which plain Python does not provide), so that calling syntax is largely uniform, regardless of the type and dimension of the input arguments.
+Vigranumpy is based on the popular `numpy <http://numpy.scipy.org/>`_ module and uses its ndarray data structure to represent image and volume data. It introduces the C++ wrapper class NumpyArray_ to allow transparent execution of VIGRA C++ functions on numpy arrays. Thus, vigranumpy is fully interoperable with existing numpy functionality, including various tools for image display such as matplotlib. Since vigranumpy uses `boost_python <http://www.boost.org/doc/libs>`_, it is able to support function overloading (which plain Python does not provide), so that calling syntax is largely uniform, regardless of the type and dimension of the input arguments.
 
 Basic calling syntax is similar to C++, with one important difference: Arguments for output images are optional. If no output image is provided, vigranumpy will allocate it as appropriate. In either case, the output image will be returned by the function, for example::
 
     # allocate new result image
-    smoothImage = vigra.gaussianSmoothing(inputImage, scale)
+    >>> smoothImage = vigra.gaussianSmoothing(inputImage, scale)
     
     # reuse and overwrite existing result image
-    smoothImage = vigra.gaussianSmoothing(inputImage, scale, out=smoothImage)
+    >>> smoothImage = vigra.gaussianSmoothing(inputImage, scale, out=smoothImage)
     
 Unless otherwise noted, all functions expect and create arrays with dtype=numpy.float32.
 
-Another important property is vigranumpy's indexing convention. In order to be compatible with the index order of the VIGRA C++ version and many other libraries (e.g. `Qt <http://qt.nokia.com/>`_ and `Image Magick <http://www.imagemagick.org/>`_), and with standard mathematical notation, images are indexed in the following order::
+Another important concern is the interpretation and ordering of the array axes. Numpy does not provide any means to attach semantics to axes, but relies purely on the convention that the most important axis is last, as in ``array[y, x]`` or ``array[z, y, x]`` ("C-order"). However, there is no way to enforce this convention in a program, since arrays can be transposed outside of the user's control (e.g. when saving data to a file). Moreover, many imaging libraries (e.g. `Image Magick <http://www.imagemagick.org/>`_, `OpenCV <http://opencv.willowgarage.com/>`_, `Qt <http://qt.nokia.com/>`_ and the C++ version of VIGRA) use the opposite convention where the x-axis comes first, as in ``array[x, y]`` or ``array[x, y, z]``. This makes it very difficult to convert solutions developed in Python into a fast C++ version, because one has to reverse all indices without making mistakes. Matters become even more complicated when multi-channel (e.g. color) images are considered -- should the color index now be first or last?
 
-    value = scalarImage[x, y]
-    value = multibandImage[x, y, channel]
-    
-    value = scalarVolume[x, y, z]
-    value = multibandVolume[x, y, z, channel]
+To solve these ambiguities in a clean way, vigranumpy introduces the concept of **axistags** which is realized in class :class:`vigra.AxisTags`. Every :class:`~vigra.VigraArray` (which is a subclass of numpy.ndarray) gets a new property ``array.axistags`` that describes axis semantics, and all vigranumpy functions account for and preserve axistag information. Unfortunately, this functionality cannot easily be retrofitted to numpy.ndarray itself. Therefore, we employ the following conversion rules between Python and C++ arrays:
 
-where x is the horizontal axis (increasing left to right), and y is the vertical axis (increasing top to bottom). This convention differs from the `Python Imaging Library <http://www.pythonware.com/products/pil/>`_ and Matlab, where the spatial indices must be given in reverse order (e.g. scalarImage[y, x]). Either convention has advantages and disadvantages. In the end, we considered compatibility between the Python and C++ versions of VIGRA to be a very critical feature in order to prevent subtle errors when porting from one language to the other, so we went with the [x, y] order described. Note that this convention does *not* change the internal representation of the data in memory. It only changes the indexing order, so that one can switch between the different conventions by simply swapping axes, for example::
-
-    vigraImage  = array2D.swapaxes(0, 1).view(vigra.ScalarImage)
-    array2D     = vigraImage.swapaxes(0, 1).view(numpy.ndarray)
-   
-    vigraVolume = array3D.swapaxes(0, 2).view(vigra.ScalarVolume)
-    array3D     = vigraVolume.swapaxes(0, 2).view(numpy.ndarray)
-
-In order to turn your own C++ VIGRA functions into Python modules, look at the VIGRA wrapper class
-NumpyArray_ and the source code of the existing vigranumpy modules.
-
-    
-Image and Volume Data Structures
---------------------------------
-
-Vigranumpy can work directly on numpy.ndarrays. However, plain ndarrays do not carry
-any information about the semantics of the different coordinate axes. For example,
-one cannot distinguish a 2-dimensional RGB image from a scalar volume dataset that
-happens to contain only three slices. Among other problems, this leads to ambiguities
-in function overload resolution -- it may be unclear whether one should apply a 3D 
-filter to the entire array, or a 2D filter to each slice individually.
-
-In order to distinguish between arrays with the same structure but different 
-interpretation, vigranumpy introduces the concept of **axistags**. An object of
-type :class:`~vigra.AxisTags` is a list of :class:`~vigra.AxisInfo` objects that 
-describe the corresponding axes. Axistags are stored as a property of the new 
-array class :class:`~vigra.VigraArray` which is a subclass of numpy.ndarray. 
-The order of the axis info object is the same as the order of the array's shape 
-and indices. Whenever the axis order changes (e.g. due to a call to 'array.transpose()')
-the axistags are re-arranged accordingly, so that the user has full control of
-the meaning of each axis.
-
-
-
-where indentation encodes inheritance. Below, we describe :class:`~vigra.Image`, 
-:class:`~vigra.ScalarImage`, :class:`~vigra.RGBImage`, and  :class:`~vigra.ImagePyramid` 
-in detail, the other classes work analogously. The new array classes serve several purposes:
-
-* Semantic interpretation improves code readability.
-
-* vigra.arraytypes maximize compatibility with corresponding VIGRA C++ types. In
-  particular, vigra.arraytype constructors ensure that arrays are created with 
-  the most appropriate memory layout on the Python side. For example, RGBImage 
-  (with dtype=numpy.float32) can be mapped to MultiArrayView<2, RGBValue<float> >. 
-
-* The distinction of different array types allows for more fine-grained overload
-  resolution and thus improves mapping from Python to C++. For example, 
-  gaussianSmoothing() works differently for 2D RGBImages and 3D ScalarVolumes, 
-  although both kinds of arrays have the same 3-dimensional memory layout.
-
-* The array types help simplify use of the vigranumpy indexing convention::
-
-    image[x, y, channel]
-    volume[x, y, z, channel]
+* When the Python array has **no** ``array.axistags`` property, it is mapped to the C++ NumpyArray 
+  **without** any change in axis ordering. Since most VIGRA functions can work on arbitrarily 
+  transposed arrays, you will get correct results, but execution may be slower because the 
+  processor cache is poorly utilized.
   
-  In particular, they overload '__str__' and '__repr__' (used in print), 'flatten', 
-  and 'imshow' (for matplotlib-based image display) so that these functions work in the 
-  expected way (i.e. images are printed in horizontal scan order and are displayed 
-  upright). Note that other Python imaging modules (such as PIL) use a different
-  indexing convention (namely image[y, x, channel]).
-
-* vigra.arraytypes and vigra.ufunc overload numpy.ufunc (i.e. basic mathematical 
-  functions for arrays). See :ref:`sec-dtype-coercion` for details.
+  Moreover, this may lead to overload resolution ambiguities. For example, when the array has shape 
+  ``(3, 60, 40)``, vigranumpy has no way to decide if this is a 2-dimensional RGB image or
+  a 3-dimensional array that happens to have only 3 slices. Thus, vigranumpy may not always 
+  execute the function you actually intended.
   
-Mapping between C++ types and Python types is controlled by the following two functions:
+* When the Python array **has** the ``array.axistags`` property, it is transposed into a 
+  **canonical** axis ordering before vigranumpy executes a function, and the results are 
+  transposed back into the original ordering. Likewise, functions that change axis ordering
+  (such as ``array.swapaxes(0,1)``) or reduce the number of axes (such as ``array.max(axis=1)``)
+  as well as array arithmetic operations preserve axistags (see section :ref:`sec-dtype-coercion`). 
+  Thus, you can work in any desired axis order without loosing control. Overload ambiguities 
+  can no longer occur because a function cannot be called when the axistags are unsuitable.
+
+Detailed information about the use of axistags is given in section :ref:`sec-vigraarray` below. In order to learn how the axistags mechanism works on the C++ side (and to wrap your own C++ VIGRA functions into Python modules), look at the VIGRA wrapper class NumpyArray_ and the source code of the existing vigranumpy modules. TODO: write a turorial here.
+
+.. _sec-vigraarray:
+    
+Axistags and the VigraArray Data Structure
+------------------------------------------
+
+While vigranumpy can directly work on numpy.ndarrays, this would not give us the advantages of axistags as described above. Therefore, vigranumpy introduces its own array class :class:`~vigra.VigraArray` which is a subclass of numpy.ndarray, but re-implements many of its methods so that axistags are respected. Arrays with a conforming ``axistags`` property are most easily constructed by one of the predefined :ref:`array factories <subsec-array-factories>`. We illustrate the ideas by some examples::
+
+    >>> width, height, depth = 300, 200, 3
+    
+    # create a 2-dimensional RGB image
+    >>> rgb = vigra.RGBImage((width, height))
+    >>> rgb.shape
+    (300, 200, 3)
+    >>> rgb.axistags             # short output: only axis keys
+    x y c
+    >> print rgb.axistags        # long output
+    AxisInfo: 'x' (type: Space)
+    AxisInfo: 'y' (type: Space)
+    AxisInfo: 'c' (type: Channels) RGB
+    
+    # create a 3-dimensional scalar volume
+    >>> volume = vigra.ScalarVolume((width, height, depth))
+    >>> volume.shape
+    (300, 200, 3)        # same shape as before
+    >>> volume.axistags
+    x y z                # but different semantic interpretation
+    >> print volume.axistags
+    AxisInfo: 'x' (type: Space)
+    AxisInfo: 'y' (type: Space)
+    AxisInfo: 'z' (type: Space)
+
+It is also possible to attach additional information to the axistags, in particular the resolution of the axis, and a text comment. The resolution will be correctly adjusted when the image is resized::
+
+    >>> rgb.axistags['x'].resolution = 1.2  # in some unit of length
+    >>> rgb.axistags['y'].resolution = 1.4  # in some unit of length
+    >>> rgb.axistags['c'].description = 'fluorescence microscopy, DAPI and GFP staining'
+    >>> print rgb.axistags
+    AxisInfo: 'x' (type: Space, resolution=1.2)
+    AxisInfo: 'y' (type: Space, resolution=1.4)
+    AxisInfo: 'c' (type: Channels) fluorescence microscopy, DAPI and GFP staining
+    
+    # interpolate the image to twice its original size
+    >>> rgb2 = vigra.sampling.resize(rgb, shape=(2*width-1, 2*height-1))
+    >>> print rgb2.axistags
+    AxisInfo: 'x' (type: Space, resolution=0.6)
+    AxisInfo: 'y' (type: Space, resolution=0.7)
+    AxisInfo: 'c' (type: Channels) fluorescence microscopy, DAPI and GFP staining
+
+When the array is transposed, the axistags are transposed accordingly. When axes are dropped from the array, the corresponding entries are dropped from the axistags property::
+
+    # transpose the volume into reverse axis order
+    >>> transposed_volume = volume.transpose()
+    >>> transposed_volume.shape
+    (3, 200, 300)
+    >>> transposed_volume.axistags
+    z y x
+    
+    # get a view to the first slice (z == 0)
+    >>> first_slice = volume[..., 0]
+    >>> first_slice.shape
+    (300, 200)
+    >>> first_slice.axistags
+    x y
+    
+    # get the maximum of each slice
+    >>> volume.max(axis=0).max(axis=0)
+    VigraArray(shape=(3,), axistags=z, dtype=float32, data=
+    [ 0.  0.  0.])
+    
+    # likewise, but specify axes by their keya
+    >>> volume.max(axis='x').max(axis='y')
+    VigraArray(shape=(3,), axistags=z, dtype=float32, data=
+    [ 0.  0.  0.])
+
+The initial ordering of the axes is controlled by the argument ``order`` that can optionally be passed to the VigraArray constuctor or the factory functions. If ``order`` is not explicitly provided, it is determined by the static property :attr:`VigraArray.defaultOrder` (which yields 'V' order). The following orders are currently supported:
+
+.. _array-order-parameter:
+
+    'C' order:
+        Both strides and axes are arranged in descending order, as in a 
+        plain numpy.ndarray. For example, axistags will be 'y x c' or 
+        'z y x c'. array.flags['C_CONTIGUOUS'] will be true.
+
+    'F' order:
+        Both strides and axes are arranged in ascending order, i.e. 
+        opposite to 'C' order. For example, axistags will be 'c x y' 
+        or 'c x y z'. array.flags['F_CONTIGUOUS'] will be true.
+
+    'V' order:
+        VIGRA-order is an interleaved memory layout that simulates 
+        vector-valued pixels or voxels: Channels will be the last axis 
+        and have the smallest stride, whereas all other axes are arranged 
+        in ascending order. For example, axistags will be 'x y c' or 
+        'x y z c'.
+
+    'A' order:
+        Defaults to 'V' when a new array is created, and means
+        'preserve order' when an existing array is copied.
+        
+The meaning of 'ascending' or 'descending' order is determined by two rules: the primary order is according to axis type (see :class:`vigra.AxisType`), where ``Channels < Space < Angle < Time < Frequency < Unknown``. The secondary order (between axes of the same type) is lexicographic, such that 'x' < 'y' < 'z'. Usage examples::
+
+    >>> rgbv = vigra.RGBImage((width, height), order='V')
+    >>> rgbv.shape
+    (300, 200, 3)
+    >>> rgbv.axistags
+    x y c
+    
+    >>> rgbc = vigra.RGBImage((width, height), order='C')
+    >>> rgbc.shape
+    (200, 300, 3)
+    >>> rgbc.axistags
+    y x c
+    
+    >>> rgbf = vigra.RGBImage((width, height), order='F')
+    >>> rgbf.shape
+    (3, 300, 200)
+    >>> rgbf.axistags
+    c x y
+
+Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individual entries are of type :class:`vigra.AxisInfo`. The simplest way to attach axistags to a plain numpy.ndarray (by creating a view of type VigraArray) is via the convenienve function :func:`vigra.taggedView`.
 
 ----------------
 
 .. autoclass:: vigra.AxisType
 
+----------------
+
 .. autoclass:: vigra.AxisInfo
     :members: key, typeFlags, resolution, description, isSpatial, isTemporal, isChannel, isFrequency, isAngular, isType, compatible
     
+----------------
 
 .. autoclass:: vigra.AxisTags
+    :members: index, channelIndex, innerNonchannelIndex, axisTypeCount, setChannelDescription, toJSON, fromJSON
 
 ----------------
 
 .. autoclass:: vigra.VigraArray
     :show-inheritance:
-    :members: defaultAxistags, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, dropChannelAxis, insertChannelAxis, __getitem__, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, T, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationFromNormalOrder, permutationFromNumpyOrder, permutationFromVigraOrder, permutationToNormalOrder, permutationToNumpyOrder, permutationToVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
+    :members: defaultAxistags, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, dropChannelAxis, insertChannelAxis, __getitem__, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, T, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationToOrder, permutationToNormalOrder, permutationFromNormalOrder, permutationToNumpyOrder, permutationFromNumpyOrder, permutationToVigraOrder, permutationFromVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
     
     .. attribute:: VigraArray.axistags
     
@@ -126,7 +201,7 @@ Mapping between C++ types and Python types is controlled by the following two fu
 
     .. attribute:: VigraArray.defaultOrder
     
-      Get the default axis ordering, currently 'V' (VIGRA order).
+      Get the default axis ordering, currently 'V' (:ref:`VIGRA order <array-order-parameter>`).
 
 -------------
 
@@ -135,6 +210,8 @@ Mapping between C++ types and Python types is controlled by the following two fu
 .. autofunction:: vigra.dropChannelAxis
 
 -------------
+
+.. _subsec-array-factories:
 
 .. autofunction:: vigra.Image
 .. autofunction:: vigra.ScalarImage
