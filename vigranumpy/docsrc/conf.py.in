@@ -13,6 +13,23 @@
 
 import sys, os
 
+# silent lots of 'arg is not a Python function' warnings
+import inspect
+
+_original_getargspec = inspect.getargspec
+
+def _getargspec_workaround(*args, **kw):
+    try:
+        return _original_getargspec(*args, **kw)
+    except TypeError, e:
+        if str(e).startswith('arg is not a Python function'):
+            return inspect.ArgSpec([], None, None, None)
+        else:
+            raise
+
+inspect.getargspec = _getargspec_workaround
+_getargspec_workaround.__module__ = 'inspect'
+
 # set the PATH of the current build, so that we don't create
 # documentation for a possibly outdated installation
 vigranumpy_path=r'@VIGRANUMPY_TMP_PATH@'
