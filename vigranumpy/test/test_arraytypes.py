@@ -408,6 +408,94 @@ def checkCompatibility(obj, compatible):
                                             repr(getattr(obj, "axistags", "none")))
             raise
 
+def testAxisTags():
+    axistags = AxisTags(AxisInfo.c(description="RGB"), 
+                        AxisInfo.ft(3.0, "time frequency"), 
+                        AxisInfo.y(0.5), 
+                        AxisInfo.z(4, "confocal depth"))
+    
+    json = '''{
+  "axes": [
+    {
+      "key": "c",
+      "typeFlags": 1,
+      "resolution": 0,
+      "description": "RGB"
+    },
+    {
+      "key": "t",
+      "typeFlags": 24,
+      "resolution": 3,
+      "description": "time frequency"
+    },
+    {
+      "key": "y",
+      "typeFlags": 2,
+      "resolution": 0.5,
+      "description": ""
+    },
+    {
+      "key": "z",
+      "typeFlags": 2,
+      "resolution": 4,
+      "description": "confocal depth"
+    }
+  ]
+}'''
+    assert_equal(axistags.toJSON(), json)
+    
+    readBack = AxisTags.fromJSON(json)
+    assert_equal(axistags, readBack)
+    assert_equal(readBack[0].description, "RGB")
+    assert_equal(readBack[1].description, "time frequency")
+    assert_equal(readBack[2].description, "")
+    assert_equal(readBack[3].description, "confocal depth")
+    assert_equal(readBack[0].resolution, 0)
+    assert_equal(readBack[1].resolution, 3)
+    assert_equal(readBack[2].resolution, 0.5)
+    assert_equal(readBack[3].resolution, 4)
+    
+    # FIXME: add more tests here
+    defaultTags = arraytypes.VigraArray.defaultAxistags('cxyt')
+    assert_equal(defaultTags.permutationToOrder('A'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('F'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('C'), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToOrder('V'), (1, 2, 3, 0))
+    assert_equal(defaultTags.permutationToNormalOrder(), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToNumpyOrder(), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToVigraOrder(), (1, 2, 3, 0))
+    assert_equal(defaultTags.permutationFromNormalOrder(), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationFromNumpyOrder(), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationFromVigraOrder(), (3, 0, 1, 2))
+    
+    defaultTags = arraytypes.AxisTags(4)
+    assert_equal(defaultTags.permutationToOrder('A'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('F'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('C'), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToOrder('V'), (0, 1, 2, 3))
+
+    assert_equal(arraytypes.VigraArray.defaultAxistags('cxyz'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='F'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('zyxc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='C'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('xyzc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='V'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('xyzc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='A'))
+
+    for order in 'VCF':
+        defaultTags = arraytypes.VigraArray.defaultAxistags(3, order=order)
+        assert_equal(defaultTags.permutationToOrder(order), (0, 1, 2))
+        assert (defaultTags.channelIndex == 0 if order == 'F' else 2)
+        
+        defaultTags.transpose(defaultTags.permutationToOrder('V'))
+        assert_equal(defaultTags.permutationToVigraOrder(), (0, 1, 2))
+        assert (defaultTags.channelIndex == 2)
+        
+        defaultTags = arraytypes.VigraArray.defaultAxistags(3, order=order, noChannels=True)
+        assert_equal(defaultTags.permutationToOrder(order), (0, 1, 2))
+        assert (defaultTags.channelIndex == 3)
+            
 def testImage1():
     checkArray(arraytypes.Image, 1, 2)
     
@@ -850,55 +938,6 @@ def testVector3Volume():
 def testVector4Volume():
     checkArray(arraytypes.Vector4Volume, 4, 3)
 
-def testAxisTags():
-    axistags = AxisTags(AxisInfo.c(description="RGB"), 
-                        AxisInfo.ft(3.0, "time frequency"), 
-                        AxisInfo.y(0.5), 
-                        AxisInfo.z(4, "confocal depth"))
-    
-    json = '''{
-  "axes": [
-    {
-      "key": "c",
-      "typeFlags": 1,
-      "resolution": 0,
-      "description": "RGB"
-    },
-    {
-      "key": "t",
-      "typeFlags": 24,
-      "resolution": 3,
-      "description": "time frequency"
-    },
-    {
-      "key": "y",
-      "typeFlags": 2,
-      "resolution": 0.5,
-      "description": ""
-    },
-    {
-      "key": "z",
-      "typeFlags": 2,
-      "resolution": 4,
-      "description": "confocal depth"
-    }
-  ]
-}'''
-    assert_equal(axistags.toJSON(), json)
-    
-    readBack = AxisTags.fromJSON(json)
-    assert_equal(axistags, readBack)
-    assert_equal(readBack[0].description, "RGB")
-    assert_equal(readBack[1].description, "time frequency")
-    assert_equal(readBack[2].description, "")
-    assert_equal(readBack[3].description, "confocal depth")
-    assert_equal(readBack[0].resolution, 0)
-    assert_equal(readBack[1].resolution, 3)
-    assert_equal(readBack[2].resolution, 0.5)
-    assert_equal(readBack[3].resolution, 4)
-    
-    # FIXME: add more tests here
-            
 def testTaggedShape():
 
     a = arraytypes.Image((20,10))

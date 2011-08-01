@@ -620,14 +620,16 @@ class AxisTags
     }
     
     template <class T>
-    void permutationToNormalOrder(ArrayVector<T> & permutation)
+    void 
+    permutationToNormalOrder(ArrayVector<T> & permutation) const
     {
         permutation.resize(size());
         indexSort(axes_.begin(), axes_.end(), permutation.begin());
     }
     
     template <class T>
-    void permutationToNormalOrder(ArrayVector<T> & permutation, AxisInfo::AxisType types)
+    void 
+    permutationToNormalOrder(ArrayVector<T> & permutation, AxisInfo::AxisType types) const
     {
         ArrayVector<AxisInfo> matchingAxes;
         for(int k=0; k<(int)size(); ++k)
@@ -638,7 +640,8 @@ class AxisTags
     }
     
     template <class T>
-    void permutationFromNormalOrder(ArrayVector<T> & inverse_permutation)
+    void 
+    permutationFromNormalOrder(ArrayVector<T> & inverse_permutation) const
     {
         ArrayVector<T> permutation;
         permutationToNormalOrder(permutation);
@@ -647,7 +650,8 @@ class AxisTags
     }   
     
     template <class T>
-    void permutationFromNormalOrder(ArrayVector<T> & inverse_permutation, AxisInfo::AxisType types)
+    void 
+    permutationFromNormalOrder(ArrayVector<T> & inverse_permutation, AxisInfo::AxisType types) const
     {
         ArrayVector<T> permutation;
         permutationToNormalOrder(permutation, types);
@@ -656,19 +660,69 @@ class AxisTags
     }   
     
     template <class T>
-    void permutationToNumpyOrder(ArrayVector<T> & permutation)
+    void permutationToNumpyOrder(ArrayVector<T> & permutation) const
     {
-        permutation.resize(size());
-        indexSort(axes_.begin(), axes_.end(), permutation.begin(), std::greater<AxisInfo>());
+        permutationToNormalOrder(permutation);
+        std::reverse(permutation.begin(), permutation.end());
     }
     
     template <class T>
-    void permutationFromNumpyOrder(ArrayVector<T> & inverse_permutation)
+    void permutationFromNumpyOrder(ArrayVector<T> & inverse_permutation) const
     {
         ArrayVector<T> permutation;
         permutationToNumpyOrder(permutation);
         inverse_permutation.resize(permutation.size());
         indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
+    }   
+    
+    template <class T>
+    void permutationToVigraOrder(ArrayVector<T> & permutation) const
+    {
+        permutation.resize(size());
+        indexSort(axes_.begin(), axes_.end(), permutation.begin());
+        int channel = channelIndex();
+        if(channel < (int)size())
+        {
+            for(int k=1; k<(int)size(); ++k)
+                permutation[k-1] = permutation[k];
+            permutation.back() = channel;
+        }
+    }
+    
+    template <class T>
+    void permutationFromVigraOrder(ArrayVector<T> & inverse_permutation) const
+    {
+        ArrayVector<T> permutation;
+        permutationToVigraOrder(permutation);
+        inverse_permutation.resize(permutation.size());
+        indexSort(permutation.begin(), permutation.end(), inverse_permutation.begin());
+    }   
+    
+    template <class T>
+    void permutationToOrder(ArrayVector<T> & permutation, std::string const & order) const
+    {
+        if(order == "A")
+        {
+            permutation.resize(size());
+            linearSequence(permutation.begin(), permutation.end());
+        }
+        else if(order == "C")
+        {
+            permutationToNumpyOrder(permutation);
+        }
+        else if(order == "F")
+        {
+            permutationToNormalOrder(permutation);
+        }
+        else if(order == "V")
+        {
+            permutationToVigraOrder(permutation);
+        }
+        else
+        {
+            vigra_precondition(false, 
+                "AxisTags::permutationToOrder(): unknown order '" + order + "'.");
+        }
     }   
     
 #if 0

@@ -299,7 +299,7 @@ std::string AxisTags_str(AxisTags const & axistags)
 }
 
 python::object
-AxisTags_permutationToNormalOrder(AxisTags & axistags)
+AxisTags_permutationToNormalOrder(AxisTags const & axistags)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationToNormalOrder(permutation);
@@ -307,7 +307,7 @@ AxisTags_permutationToNormalOrder(AxisTags & axistags)
 }
 
 python::object
-AxisTags_permutationToNormalOrder2(AxisTags & axistags, unsigned int types)
+AxisTags_permutationToNormalOrder2(AxisTags const & axistags, unsigned int types)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationToNormalOrder(permutation, (AxisInfo::AxisType)types);
@@ -315,7 +315,7 @@ AxisTags_permutationToNormalOrder2(AxisTags & axistags, unsigned int types)
 }
 
 python::object
-AxisTags_permutationFromNormalOrder(AxisTags & axistags)
+AxisTags_permutationFromNormalOrder(AxisTags const & axistags)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationFromNormalOrder(permutation);
@@ -323,7 +323,7 @@ AxisTags_permutationFromNormalOrder(AxisTags & axistags)
 }
 
 python::object
-AxisTags_permutationFromNormalOrder2(AxisTags & axistags, unsigned int types)
+AxisTags_permutationFromNormalOrder2(AxisTags const & axistags, unsigned int types)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationFromNormalOrder(permutation, (AxisInfo::AxisType)types);
@@ -331,7 +331,7 @@ AxisTags_permutationFromNormalOrder2(AxisTags & axistags, unsigned int types)
 }
 
 python::object
-AxisTags_permutationToNumpyOrder(AxisTags & axistags)
+AxisTags_permutationToNumpyOrder(AxisTags const & axistags)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationToNumpyOrder(permutation);
@@ -339,12 +339,38 @@ AxisTags_permutationToNumpyOrder(AxisTags & axistags)
 }
 
 python::object
-AxisTags_permutationFromNumpyOrder(AxisTags & axistags)
+AxisTags_permutationFromNumpyOrder(AxisTags const & axistags)
 {
     ArrayVector<npy_intp> permutation;
     axistags.permutationFromNumpyOrder(permutation);
     return python::object(permutation);
 }
+
+python::object
+AxisTags_permutationToVigraOrder(AxisTags const & axistags)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationToVigraOrder(permutation);
+    return python::object(permutation);
+}
+
+python::object
+AxisTags_permutationFromVigraOrder(AxisTags const & axistags)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationFromVigraOrder(permutation);
+    return python::object(permutation);
+}
+
+python::object
+AxisTags_permutationToOrder(AxisTags const & axistags, std::string const & order)
+{
+    ArrayVector<npy_intp> permutation;
+    axistags.permutationToOrder(permutation, order);
+    return python::object(permutation);
+}
+
+
 
 AxisTags *
 AxisTags_transform(AxisTags const & oldTags, python::object index, int lnew)
@@ -452,18 +478,16 @@ void defineAxisTags()
     enum_<AxisInfo::AxisType>("AxisType",
          "\nEnum to encode the type of an axis described by an\n"
          ":class:`~vigra.AxisInfo` object. Possible values:\n\n"
-         "   ``AxisType.UnknownAxisType:``\n      type not specified\n"
          "   ``AxisType.Channels:``\n      a channel axis\n"
          "   ``AxisType.Space:``\n      a spatial axis\n"
          "   ``AxisType.Angle:``\n      an axis encoding angles (e.g. polar coordinates)\n"
          "   ``AxisType.Time:``\n      a temporal axis\n"
          "   ``AxisType.Frequency:``\n      an axis in the Fourier domain\n"
+         "   ``AxisType.UnknownAxisType:``\n      type not specified\n"
          "   ``AxisType.NonChannel:``\n      any type except Channels\n"
          "   ``AxisType.AllAxes:``\n      any type\n\n"
          "Types can be combined by the bitwise 'or' operator. For example,\n"
-         "'Space | Frequency' denotes a spatial axis in the Fourier domain.\n"
-         "The above ordering corresponds to the canonical axis ordering\n"
-         "which is applied by various :class:`~vigra.AxisTags` methods.\n\n")
+         "``Space | Frequency`` denotes a spatial axis in the Fourier domain.\n\n")
         .value("UnknownAxisType", AxisInfo::UnknownAxisType)
         .value("Channels", AxisInfo::Channels)
         .value("Space", AxisInfo::Space)
@@ -480,6 +504,7 @@ void defineAxisTags()
          ".. method:: AxisInfo(key='?', typeFlags=AxisType.UnknownAxisType, resolution=0.0, description='')\n\n"
          "    :param key: the key of the axis,\n"
          "                e.g. 'x' (x-axis), 'c' (channel axis), '?' (unknown)\n" 
+         "    :type key: string\n"
          "    :param typeFlags: the type of the axis,\n"
          "                      e.g. AxisType.Space or AxisType.Time\n"
          "    :type typeFlags: :class:`~vigra.AxisType`\n"
@@ -489,26 +514,26 @@ void defineAxisTags()
          "                        about the axis.\n\n"
          "In addition, AxisInfo defines the following factories for the most common\n"
          "cases:\n\n"
-         "   ``AxisInfo.c:``\n"
+         "   ``AxisInfo.c`` or ``AxisInfo.c(description='a description')``:\n"
          "        Factory for an axisinfo object describing the 'c' (channel) axis.\n"
-         "   ``AxisInfo.x:``\n"
+         "   ``AxisInfo.x`` or ``AxisInfo.x(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'x' (spatial) axis.\n"
-         "   ``AxisInfo.y:``\n"
+         "   ``AxisInfo.y`` or ``AxisInfo.y(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'y' (spatial) axis.\n"
-         "   ``AxisInfo.z:``\n"
+         "   ``AxisInfo.z`` or ``AxisInfo.z(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'z' (spatial) axis.\n"
-         "   ``AxisInfo.t:``\n"
+         "   ``AxisInfo.t`` or ``AxisInfo.t(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 't' (time) axis.\n"
-         "   ``AxisInfo.fx:``\n"
+         "   ``AxisInfo.fx`` or ``AxisInfo.fx(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'x' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.fy:``\n"
+         "   ``AxisInfo.fy`` or ``AxisInfo.fy(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'y' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.fz:``\n"
+         "   ``AxisInfo.fz`` or ``AxisInfo.fz(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 'z' axis\n"
          "        in the Fourier domain.\n"
-         "   ``AxisInfo.ft:``\n"
+         "   ``AxisInfo.ft`` or ``AxisInfo.ft(resolution=0.0, description='')``:\n"
          "        Factory for an axisinfo object describing the 't' axis\n"
          "        in the Fourier domain.\n\n", 
          no_init)
@@ -517,13 +542,13 @@ void defineAxisTags()
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
         .def_readonly("key", &AxisInfo::key_,
-             "\n(read only property) the key of the axis.\n")
+             "\n(read-only property, type 'string') the key of the axis.\n")
         .def_readwrite("description", &AxisInfo::description_,
-             "\n(read/write property) the string description of the axis.\n")
+             "\n(read/write property, type 'string') the string description of the axis.\n")
         .def_readwrite("resolution", &AxisInfo::resolution_,
-             "\n(read/write property) the resolution of the axis. The resolution will be "
-             "automatically adjusted whenever the image size changes, e.g. due to  a call to "
-             ":func:`~vigra.sampling.resize` or slicing with non-unit step size::\n\n"
+             "\n(read/write property, type 'float') the resolution of the axis. The resolution\n"
+             "will be automatically adjusted whenever the image size changes, e.g. due to a call\n"
+             "to :func:`~vigra.sampling.resize` or slicing with non-unit step size::\n\n"
              "    >>> a = vigra.RGBImage((200,100))\n"
              "    >>> a.axistags['x'].resolution = 1.0\n"
              "    >>> a.axistags['y'].resolution = 1.2\n"
@@ -537,7 +562,7 @@ void defineAxisTags()
              "    AxisInfo: 'y' (type: Space, resolution=4.8)\n"
              "    AxisInfo: 'c' (type: Channels) RGB\n\n")
         .def_readonly("typeFlags", &AxisInfo::flags_,
-             "\n(read only property) the type of the axis .\n")
+             "\n(read-only property, type :class:`~vigra.AxisType`) the type of the axis .\n")
         .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0, arg("sign") = 1))
         .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
         .def("isSpatial", &AxisInfo::isSpatial, 
@@ -593,9 +618,18 @@ void defineAxisTags()
             "    AxisTags object with that many '?' entries is created).\n\n"
             "Most AxisTags methods should not be called directly, but via the\n"
             "corresponding array methods, because this ensures that arrays and\n"
-            "their axistags are always kept in sync.\n\n"
-            ""
-            ,
+            "their axistags are always kept in sync (rule of thumb: if an axistags\n" 
+            "function is not documented, you call it on your own risk).\n\n"
+            "The entries of an axistags object (i.e. the individual axisinfo objects)\n"
+            "can be accessed via the index operator, where the argument can either be\n"
+            "the axis index or the axis key::\n\n"
+            "    >>> print array.axistags[0]\n"
+            "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
+            "    >>> print array.axistags['x']\n"
+            "    AxisInfo: 'x' (type: Space, resolution=1.2)\n"
+            "    >>> array.axistags['x'].resolution = 2.0\n"
+            "    >>> print array.axistags['x']\n"
+            "    AxisInfo: 'x' (type: Space, resolution=2)\n\n",
             no_init)
         .def("__init__", make_constructor(&AxisTags_create,
             default_call_policies(),
@@ -619,9 +653,39 @@ void defineAxisTags()
         .def("dropChannelAxis", &AxisTags::dropChannelAxis)
         .def("insertChannelAxis", &AxisTags_insertChannelAxis)
         .def("swapaxes", &AxisTags::swapaxes)
+        
+        // NOTE: in contrast to arrays, AxisTags::transpose() works
+        //       in-place, i.e. changes 'self'
         .def("transpose", (void (AxisTags::*)())&AxisTags::transpose)
         .def("transpose", (void (AxisTags::*)(ArrayVector<npy_intp> const &))&AxisTags::transpose)
-        .def("index", &AxisTags::index)
+        .def("index", &AxisTags::index,
+             "Get the axis index of a given axis key::\n\n"
+             "    >>> axistags.index('x')\n"
+             "    0   # the 'x' axis is first index\n\n")
+        .add_property("channelIndex", &AxisTags::channelIndex,
+            "(read-only property, type 'int') the index of the channel axis, or ``len(axistags)``\n"
+            "when no channel axis exists (i.e. ``axistags.channelIndex`` is similar to\n"
+            "``axistags.index('c')``, but doesn't throw an exception when there\n"
+            "is no 'c' axis.)\n\n")
+        .add_property("innerNonchannelIndex", &AxisTags::innerNonchannelIndex,
+            "(read-only property, type 'int') the index of the innermost non-channel axis.\n")
+        .def("axisTypeCount", &AxisTags::axisTypeCount,
+            "How many axes of the given type(s) are in this axistags object?::\n\n"
+            "    axistags.axisTypeCount(types) -> int\n\n"
+            "The 'types' of the query must be single :class:`~vigra.AxisType` instances\n"
+            "or a combination of them. Examples::\n\n"
+            "    >>> a = vigra.defaultAxistags('txyc')\n"
+            "    >>> a.axisTypeCount(vigra.AxisType.Space)\n"
+            "    2\n"
+            "    >>> a.axisTypeCount(vigra.AxisType.Time)\n"
+            "    1\n"
+            "    >>> a.axisTypeCount(vigra.AxisType(vigra.AxisType.Space | vigra.AxisType.Time))\n"
+            "    3\n"
+            "    >>> a.axisTypeCount(vigra.AxisType.NonChannel)\n"
+            "    3\n\n")
+        
+        // IMPORTANT: do not remove are rename the following functions,
+        //            they are used by the vigranumpy C++ API
         .def("resolution", (double (AxisTags::*)(int) const)&AxisTags::resolution)
         .def("resolution", (double (AxisTags::*)(std::string const &) const)&AxisTags::resolution)
         .def("setResolution", (void (AxisTags::*)(int, double))&AxisTags::setResolution)
@@ -637,7 +701,14 @@ void defineAxisTags()
             (void (AxisTags::*)(int, std::string const &))&AxisTags::setDescription)
         .def("setDescription", 
             (void (AxisTags::*)(std::string const &, std::string const &))&AxisTags::setDescription)
-        .def("setChannelDescription", &AxisTags::setChannelDescription)
+        .def("setChannelDescription", &AxisTags::setChannelDescription,
+             "Set a description for the channel axis, if one exists::\n\n"
+             "    axistags.setChannelDescription('colors are in Lab color space')\n\n"
+             "It is similar to::\n\n"
+             "    axistags['c'].description = 'colors are in Lab color space'\n\n"
+             "except when the axistags contain no channel axis, in which case\n"
+             "setChannelDescription() is simply ignored, whereas axistags['c']\n"
+             "would cause an exception.\n")
         .def("toFrequencyDomain", (void (AxisTags::*)(int, int, int))&AxisTags::toFrequencyDomain,
                 (arg("index"), arg("size")=0, arg("sign")=1))
         .def("toFrequencyDomain", 
@@ -648,21 +719,22 @@ void defineAxisTags()
         .def("fromFrequencyDomain", 
                (void (AxisTags::*)(std::string const &, int))&AxisTags::fromFrequencyDomain,
                (arg("key"), arg("size")=0))
-        .add_property("channelIndex", &AxisTags::channelIndex)
-        .add_property("innerNonchannelIndex", &AxisTags::innerNonchannelIndex)
-        .def("axisTypeCount", &AxisTags::axisTypeCount)
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder)
         .def("permutationToNormalOrder", &AxisTags_permutationToNormalOrder2)
         .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder)
         .def("permutationFromNormalOrder", &AxisTags_permutationFromNormalOrder2)
         .def("permutationToNumpyOrder", &AxisTags_permutationToNumpyOrder)
         .def("permutationFromNumpyOrder", &AxisTags_permutationFromNumpyOrder)
+        .def("permutationToVigraOrder", &AxisTags_permutationToVigraOrder)
+        .def("permutationFromVigraOrder", &AxisTags_permutationFromVigraOrder)
+        .def("permutationToOrder", &AxisTags_permutationToOrder)
         .def("transform", &AxisTags_transform,
                              return_value_policy<manage_new_object>())
         .def("compatible", &AxisTags::compatible)
         .def(self == self)
         .def(self != self)
-        .def("toJSON", &AxisTags::toJSON)
+        .def("toJSON", &AxisTags::toJSON,
+             "Create a string representation of this axistags in JSON format.")
 #ifndef VIGRA_DISABLE_FROMJSON
         .def("fromJSON", &AxisTags_readJSON,
                              return_value_policy<manage_new_object>())
