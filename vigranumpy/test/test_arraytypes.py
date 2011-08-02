@@ -105,6 +105,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         
         shape = (channels, 5, 10, 20)
         axistags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z]
+        axistags5 = AxisTags(AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t)
         
         # figure out expected strides and axistags
         s = 0 if hasChannelAxis else 1
@@ -151,6 +152,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         
         # test axistags
         assert_equal(img.axistags, vaxistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
         # FIXME: add more tests
 
         # test initialization and assignment
@@ -203,6 +205,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.axistags, (-img).axistags)
         assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.axistags, (img*2).axistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
 
         # test shape, strides, and copy for 'A' order (should be equal to 'V' order)
         img = cls(vshape, order='A')
@@ -246,6 +249,8 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.axistags, (-img).axistags)
         assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.axistags, (img*2).axistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
+
 
         value = 10 if channels == 1 else range(10,channels+10)
         zero = 0 if channels == 1 else (0,)*channels

@@ -93,7 +93,7 @@ def newaxis(axisinfo=AxisInfo()):
         >>> t.axistags  # with channel axis 
         x y c
     '''
-    return axistype
+    return axisinfo
 
 def taggedView(array, axistags):
     '''
@@ -800,6 +800,22 @@ class VigraArray(numpy.ndarray):
             res = self[..., numpy.newaxis]
             res.axistags[-1] = AxisInfo.c
         return res
+    
+    def view5D(self, order='C'):
+        '''
+            Create a 5-dimensional view containing the standard tags 'x', 'y', 'z', 't', 'c'
+            in the desired 'order' (which can be 'C', 'F', and 'V' with the usual meaning). 
+            If 'self' has an axis key that is not among the five admissible keys, an 
+            exception is raised. Axes missing in 'self' are added as singleton axes with the appropriate tags. 
+        '''
+        stdTags = ['x', 'y', 'z', 't', 'c']
+        for tag in self.axistags:
+            try:
+                del stdTags[stdTags.index(tag.key)]
+            except:
+                raise RuntimeError("VigraArray.view5D(): array contains unsuitable axis key '%s'." % tag.key)
+        index = [Ellipsis] + [newaxis(eval('AxisInfo.' + k)) for k in stdTags]
+        return self[index].transposeToOrder(order)
     
     def permutationToOrder(self, order):
         '''Create the permutation that would transpose this array into
