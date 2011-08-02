@@ -52,7 +52,7 @@ To solve these ambiguities in a clean way, vigranumpy introduces the concept of 
   Thus, you can work in any desired axis order without loosing control. Overload ambiguities 
   can no longer occur because a function cannot be called when the axistags are unsuitable.
 
-Detailed information about the use of axistags is given in section :ref:`sec-vigraarray` below. In order to learn how the axistags mechanism works on the C++ side (and to wrap your own C++ VIGRA functions into Python modules), look at the VIGRA wrapper class NumpyArray_ and the source code of the existing vigranumpy modules. TODO: write a turorial here.
+Detailed information about the use of axistags is given in section :ref:`sec-vigraarray` below. Section :ref:`sec-own-modules` describes how you can take advantage of the axistags mechanism in your own code.
 
 .. _sec-vigraarray:
     
@@ -229,12 +229,6 @@ Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individu
 .. autofunction:: vigra.Vector4Volume
 .. autofunction:: vigra.Vector6Volume
 .. autofunction:: vigra.RGBVolume
-
--------------
-
-.. autoclass:: vigra.ImagePyramid
-   :show-inheritance:
-   :members:
    
 
 Import and Export Functions
@@ -283,8 +277,8 @@ morphological operators, feature detectors (such as the structure tensor) etc.
    :members:
 
 
-Sampling
---------
+Sampling: Image Resizing and Image Pyramids
+-------------------------------------------
 
 The module vigra.sampling contains methods to change the number and/or location of
 the image sampling points, such as resizing, rotation, and interpolation.
@@ -310,6 +304,12 @@ Below, we describe SplineImageView3 in detail, but the other classes work
 analogously. See SplineImageView_ in the C++ documentation for more detailed information.
 
 .. autoclass:: vigra.sampling.SplineImageView3
+   :members:
+
+-------------
+
+.. autoclass:: vigra.sampling.ImagePyramid
+   :show-inheritance:
    :members:
 
 
@@ -368,6 +368,142 @@ method proposed by Foerstner.
 
 .. automodule:: vigra.noise
    :members:
+
+   
+.. _sec-own-modules:
+
+Writing Your Own C++ Modules
+----------------------------
+
+When you want to write your own vigranumpy extension modules, first make sure that you compile and link with the same versions of numpy and boost_python that your current vigranumpy installation uses. Otherwise, communication between new and existing modules will not work (and even crash). Then follow these steps:
+
+1. Create the main module source file. This file contains the module's 'init' function. Let's assume that the module will be called 'my_module', and the file is 'my_module.cxx'. A stub for 'my_module.cxx' typically looks like this::
+
+        // define PY_ARRAY_UNIQUE_SYMBOL (required by the numpy C-API)
+        #define PY_ARRAY_UNIQUE_SYMBOL my_module_PyArray_API
+
+        // include the vigranumpy C++ API
+        #include <Python.h>
+        #include <boost/python.hpp>
+        #include <vigra/numpy_array.hxx>
+        #include <vigra/numpy_array_converters.hxx>
+        
+        ... // your includes
+        
+        ... // implementation of your wrapper functions and classes
+        
+        using namespace boost::python;
+        
+        // the argument of the init macro must be the module name
+        BOOST_PYTHON_MODULE_INIT(my_module)
+        {
+            // initialize numpy and vigranumpy
+            import_vigranumpy();
+            
+            // export a function
+            def("my_function", &my_function, 
+                (arg("arg1"), arg("arg2"), ...),
+                "Documentation");
+
+            // export a class and its member functions
+            class_<MyClass>("MyClass",
+                "Documentation")
+                .def("foo", &MyClass::foo,
+                     (arg("arg1"), arg("arg2"), ...),
+                     "Documentation")
+            ;
+                     
+            ... // more module functionality
+        }
+    
+2. When your module uses additional C++ source files, they should start with the following defines::
+
+        // this must define the same symbol as the main module file (numpy requirement)
+        #define PY_ARRAY_UNIQUE_SYMBOL my_module_PyArray_API
+        #define NO_IMPORT_ARRAY
+
+3. Implement your wrapper functions. Numpy ndarrays are passed to C++ via the wrapper classes NumpyArray_ and NumpyAnyArray_. You can influence the conversion from Python to C++ by using different instantiations of NumpyArray, as long as the Python array supports the axistags attribute (refer to :ref:`axis order definitions <array-order-parameter>` for the meaning of the term 'ascending order')::
+
+        using vigra::NumpyAnyArray;
+        using vigra::NumpyArray;
+
+            // Accept any array type and return an arbitrary array type.
+            // Returning NumpyAnyArray is always safe, because at that point
+            // C++ no longer cares about the particular type of the array.
+        NumpyAnyArray foo(NumpyAnyArray array);
+        
+            // Accept a 3-dimensional float32 array and transpose it 
+            // into ascending axis order ('F' order).
+        void foo(NumpyArray<3, float> array);
+        
+            // Accept a 2-dimensional float32 array with an arbitrary number of channels and
+            // transpose the axes into VIGRA ('V') order (channels are last, other axes ascending).
+            // Note that the NumpyArray dimension is 3 to accout for the channel dimension.
+            // If the original numpy array has no channel axis, vigranumpy will automatically
+            // insert a singleton axis.
+        void foo(NumpyArray<3, Multiband<float> > array);
+        
+            // Accept a 2-dimensional float32 array that has only a single channel
+            // (that is, 'array.channels == 1' must hold on the Python side).
+            // Non-channel axes are transposed into ascending order.
+            // Note that the NumpyArray dimension is now 2.
+        void foo(NumpyArray<2, Singleband<float> > array);
+        
+            // Accept a float32 array that has 2 non-channel dimensions and 
+            // exactly 3 channels (i.e. 'array.channels == 3' on the Python side). 
+            // Non-channel axes are transposed into ascending order.
+            // Note that the NumpyArray dimension is again 2, but the pixel type is 
+            // now a vector.
+        void foo(NumpyArray<2, TinyVector<float, 3> > array);
+        void foo(NumpyArray<2, RGBValue<float> > array);
+    
+   Or course, these functions can also be templated. 
+   
+   When your functions return newly allocated arrays, it is usually desirable to transfer the input's axistags to the output (otherwise, vigranumpy will use :meth:`~vigra.VigraArray.defaultAxistags` as a fallback). There is a standard vigranumpy idiom for this task which assumes that the wrapped function has an optional parameter 'output' for a possibly pre-allocated output array. The axistags are then transferred by reshaping the output array with a ``taggedShape()`` (which is a combination of a shape and axistags)::
+   
+        NumpyAnyArray
+        foo(NumpyArray<3, Multiband<float32> > input, 
+            NumpyArray<3, Multiband<float32> > output = boost::python::object())
+        {
+            // Reshape only if the output array was not explicitly passed in.
+            // Otherwise, use the output array as is.
+            output.reshapeIfEmpty(input.taggedShape(), 
+                      "error message when shape is unsuitable.");
+                      
+            ... // your algorithm
+        }
+        
+   It is also possible to modify the tagged shape before it is applied to the output array::
+   
+        input.taggedShape()
+             .resize(vigra::Shape2(new_width, new_height))
+             .setChannelCount(new_channel_count)
+             .setChannelDescription("a description")
+             
+   The C++ code can be multi-threaded when you unlock the Python main interpreter lock. After unlocking, your wrapper code must not call any Python functions, so the unlock statement should go after ``output.reshapeIfEmpty()``::
+   
+        NumpyAnyArray
+        foo(NumpyArray<3, Multiband<float32> > input, 
+            NumpyArray<3, Multiband<float32> > output = boost::python::object())
+        {
+            output.reshapeIfEmpty(input.taggedShape(), "Message.");
+            
+                // Allow parallelization from here on. The desctructor of
+                // _pythread will automatically regain the main interpreter lock
+                // just before this function returns to Python.
+            PyAllowThreads _pythread;
+            
+            ... // your algorithm
+        }
+
+4. Export your wrapped functions. ``boost::python::def`` is called in its usual way, with one simple extension: Since vigranumpy does not know which NumpyArray variants you are going to use, appropriate converter functions between Python and C++ must be registered on demand. You do this by enclosing your function pointer into a call to the 'registerConverters()' function::
+
+        // in the module's init function
+        def("my_function", vigra::registerConverters(&my_function),
+           (arg("arg1"), ...),
+           "Documentation");
+           
+If you need more information, it is always a good idea to look at the source code of the existing vigranumpy modules.
 
 
 Indices and tables

@@ -106,6 +106,8 @@ import colors
 import noise
 import geometry
 
+sampling.ImagePyramid = arraytypes.ImagePyramid
+
 try:
     import fourier
 except:
