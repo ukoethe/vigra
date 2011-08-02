@@ -399,7 +399,7 @@ class TaggedShape
     ChannelAxis channelAxis;
     std::string channelDescription;
     
-    TaggedShape(MultiArrayIndex size)
+    explicit TaggedShape(MultiArrayIndex size)
     : shape(size),
       axistags(size),
       channelAxis(none)
@@ -422,14 +422,14 @@ class TaggedShape
     {}
     
     template <class U, int N>
-    TaggedShape(TinyVector<U, N> const & sh)
+    explicit TaggedShape(TinyVector<U, N> const & sh)
     : shape(sh.begin(), sh.end()),
       original_shape(sh.begin(), sh.end()),
       channelAxis(none)
     {}
     
     template <class T>
-    TaggedShape(ArrayVector<T> const & sh)
+    explicit TaggedShape(ArrayVector<T> const & sh)
     : shape(sh.begin(), sh.end()),
       original_shape(sh.begin(), sh.end()),
       channelAxis(none)

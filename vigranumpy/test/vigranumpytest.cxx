@@ -63,8 +63,7 @@ python::tuple test(NumpyArray<N, T, Stride> const & array)
     NumpyArray<N, T> same_shape(array.shape());
     same_shape = array;
 
-    NumpyArray<N, T> same_shape_and_tags;
-    same_shape_and_tags.reshapeIfEmpty(array.taggedShape());
+    NumpyArray<N, T> same_shape_and_tags(array.taggedShape());
     same_shape_and_tags = anyarray;
 
     return python::make_tuple(anyarray.shape(), copy, 

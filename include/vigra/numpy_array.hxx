@@ -706,7 +706,7 @@ class NumpyArray
 
         /**
          * Construct a new array object, allocating an internal python
-         * ndarray of the given shape (in fortran order), initialized
+         * ndarray of the given shape in the given order (default: VIGRA order), initialized
          * with zeros.
          *
          * An exception is thrown when construction fails.
@@ -715,6 +715,18 @@ class NumpyArray
     {
         vigra_postcondition(makeReference(init(shape, true, order)),
                      "NumpyArray(shape): Python constructor did not produce a compatible array.");
+    }
+
+        /**
+         * Construct a new array object, allocating an internal python
+         * ndarray according to the given tagged shape, initialized with zeros.
+         *
+         * An exception is thrown when construction fails.
+         */
+    explicit NumpyArray(TaggedShape const & tagged_shape)
+    {
+        reshapeIfEmpty(tagged_shape,
+           "NumpyArray(tagged_shape): Python constructor did not produce a compatible array.");
     }
 
         /**
@@ -1011,7 +1023,6 @@ class NumpyArray
         }
         else
         {
-
             python_ptr array(constructArray(tagged_shape, typeCode, true), 
                              python_ptr::keep_count);
             vigra_postcondition(makeReference(NumpyAnyArray(array.get())),
