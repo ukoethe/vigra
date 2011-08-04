@@ -69,7 +69,7 @@ While vigranumpy can directly work on numpy.ndarrays, this would not give us the
     (300, 200, 3)
     >>> rgb.axistags             # short output: only axis keys
     x y c
-    >> print rgb.axistags        # long output
+    >>> print rgb.axistags        # long output
     AxisInfo: 'x' (type: Space)
     AxisInfo: 'y' (type: Space)
     AxisInfo: 'c' (type: Channels) RGB
@@ -80,7 +80,7 @@ While vigranumpy can directly work on numpy.ndarrays, this would not give us the
     (300, 200, 3)        # same shape as before
     >>> volume.axistags
     x y z                # but different semantic interpretation
-    >> print volume.axistags
+    >>> print volume.axistags
     AxisInfo: 'x' (type: Space)
     AxisInfo: 'y' (type: Space)
     AxisInfo: 'z' (type: Space)
@@ -123,7 +123,7 @@ When the array is transposed, the axistags are transposed accordingly. When axes
     VigraArray(shape=(3,), axistags=z, dtype=float32, data=
     [ 0.  0.  0.])
     
-    # likewise, but specify axes by their keya
+    # likewise, but specify axes by their keys
     >>> volume.max(axis='x').max(axis='y')
     VigraArray(shape=(3,), axistags=z, dtype=float32, data=
     [ 0.  0.  0.])
@@ -247,8 +247,8 @@ you may call 'vigra.readImage(...)' instead of 'vigra.impex.readImage(...)' etc.
 Mathematical Functions and Type Coercion
 ----------------------------------------
 
-Vigra images and volumes support all arithmetic and algebraic functions defined in  
-`numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_. 
+vigranumpy supports all arithmetic and algebraic functions defined in  
+`numpy.ufunc <http://docs.scipy.org/doc/numpy/reference/ufuncs.html#available-ufuncs>`_, but re-implements them in module `vigra.ufunc` to take full advantage of axistags. 
 
 .. automodule:: vigra.ufunc
 
