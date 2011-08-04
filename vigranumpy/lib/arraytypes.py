@@ -529,11 +529,14 @@ class VigraArray(numpy.ndarray):
         '''
         try:
             import qimage2ndarray
-        except:
+        except Exception, e:
             from vigra import _fallbackModule
             _fallbackModule('qimage2ndarray',
-            '''    It can be obtained at
-            http://pypi.python.org/pypi/qimage2ndarray/.''')
+            '''
+            %s
+            
+            If qimage2ndarray is missing on your system, download it from
+            http://pypi.python.org/pypi/qimage2ndarray/.''' % str(e))
             import qimage2ndarray
         
         ndim = self.ndim

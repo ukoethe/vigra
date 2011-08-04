@@ -44,10 +44,13 @@ import vigra.ufunc
 
 try:
     from VigraQt import OverlayViewer, ImageCursor
-except:
+except Exception, e:
     vigra._fallbackModule('VigraQt',
-    '''    It can be obtained at
-    http://kogs-www.informatik.uni-hamburg.de/~meine/software/vigraqt/.''')
+    '''
+    %s
+    
+    If VigraQt is missing on your system, you can download it from
+    http://kogs-www.informatik.uni-hamburg.de/~meine/software/vigraqt/.''' % str(e))
     from VigraQt import OverlayViewer, ImageCursor
 
 import quickdialog

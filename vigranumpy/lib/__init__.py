@@ -68,7 +68,7 @@ def _fallbackModule(moduleName, message):
 
     module = FallbackModule(moduleName)
     sys.modules[moduleName] = module
-    module.__doc__ = """Module '%s' is not available.\n%s""" % (moduleName, message)
+    module.__doc__ = """Import of module '%s' failed.\n%s""" % (moduleName, message)
 
 if not os.path.exists(_vigra_doc_path):
     _vigra_doc_path = "http://hci.iwr.uni-heidelberg.de/vigra/doc/vigranumpy/index.html"
@@ -110,8 +110,13 @@ sampling.ImagePyramid = arraytypes.ImagePyramid
 
 try:
     import fourier
-except:
-    _fallbackModule('vigra.fourier', "   Probably, the fftw3 libraries could not be found during compilation or import.")
+except Exception, e:
+    _fallbackModule('vigra.fourier', 
+    '''
+    %s
+    
+    Make sure that the fftw3 libraries are found during compilation and import.
+    They may be downloaded at http://www.fftw.org/.''' % str(e))
     import fourier
 
 # import most frequently used functions
