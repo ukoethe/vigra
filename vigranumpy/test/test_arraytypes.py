@@ -1128,6 +1128,98 @@ def testDeepcopyWithCyclicReference():
     assert hasattr(c, "myCustomAttribute")
     assert c.myCustomAttribute.backLink is c
 
+def testMethods():
+    a = arraytypes.ScalarImage((20, 30))
+    ones = arraytypes.ScalarImage((20, 30), value=1)
+    
+    a.ravel()[...] = range(a.size)
+    
+    for k, i in zip(a.flat, xrange(a.size)):
+        assert_equal(k, i)
+        
+    assert (a.flatten() == range(a.size)).all()
+    
+    assert (a >= 0).all()
+    assert not (a == 0).all()
+    
+    assert (a == 0).any()
+    assert not (a == -1).any()
+    
+    assert_equal(a.argmax(), a.size-1)
+    assert (a.argmax(axis='y') == a.shape[1]-1).all()
+    
+    assert_equal(a.argmin(), 0)
+    assert (a.argmin(axis='y') == 0).all()
+    
+    assert (ones.cumsum()-1 == a.ravel()).all()
+    oc = ones.cumsum(axis='x')-1
+    for s in oc.sliceIter('y'):
+        assert (s == range(a.shape[0])).all()
+    
+    assert (ones.cumprod() == 1).all()
+    assert (ones.cumprod(axis='x') == 1).all()
+    
+    assert_equal(a.max(), a.size-1)
+    assert (a.max(axis='y') == range(a.size-a.shape[0], a.size)).all()
+    
+    assert_equal(a.mean(dtype=numpy.longdouble), (a.size - 1.0) / 2.0)
+    assert (a.mean(axis='y', dtype=numpy.longdouble) == 
+            range((a.size-a.shape[0])/2, (a.size+a.shape[0])/2)).all()
+
+    assert_equal(a.min(), 0)
+    assert (a.min(axis='y') == range(a.shape[0])).all()
+    
+    n = arraytypes.ScalarImage(numpy.array([[1, 0, 0],[0, 1, 1],[1, 0, 1]]))
+    nz = n.nonzero()
+    assert (nz[0] == [0, 1, 1, 2, 2]).all()
+    assert_equal(nz[0].axistags, n.defaultAxistags('x'))
+    assert (nz[1] == [0, 1, 2, 0, 2]).all()
+    assert_equal(nz[1].axistags, n.defaultAxistags('y'))
+    
+    assert_equal(ones.prod(), 1.0)
+    assert (ones.prod(axis='y') == [1]*ones.shape[0]).all()
+    
+    assert_equal(a.ptp(), a.size-1)
+    assert (a.ptp(axis='x') == [a.shape[0]-1]*a.shape[1]).all()
+    
+    r = arraytypes.ScalarImage((2,2))
+    r.ravel()[...] = range(4)
+    
+    assert (r.repeat(1) == r.ravel()).all()
+    assert (r.repeat(2) == reduce(lambda x,y: x+[y,y], range(4), [])).all()
+    assert (r.repeat([0,1,2,3]) == [1,2,2,3,3,3]).all()
+    assert (r.repeat(2, axis='y').ravel() == [0,1,0,1,2,3,2,3]).all()
+    assert (r.repeat([1,2], axis='y').ravel() == [0,1,2,3,2,3]).all()
+    
+    s = a[arraytypes.AxisInfo.c,:,arraytypes.AxisInfo.z,:,arraytypes.AxisInfo.t]
+    assert_equal(s.shape, (1, a.shape[0], 1, a.shape[1], 1))
+    assert_equal(s.axistags,a.defaultAxistags('cxzyt'))
+    ss = s.squeeze()
+    assert_equal(ss.shape, a.shape)
+    assert_equal(ss.axistags,a.axistags)
+    
+    assert_equal(ones.std(dtype=numpy.longdouble), 0.0)
+    assert (ones.std(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()
+    
+    assert_equal(ones.sum(dtype=numpy.longdouble), ones.size)
+    assert (ones.sum(axis='x', dtype=numpy.longdouble) == [a.shape[0]]*a.shape[1]).all()
+    
+    b = a.swapaxes(0, 1)
+    assert_equal(b.shape, (a.shape[1], a.shape[0]))
+    assert_equal(len(b.axistags), 2)
+    assert_equal(b.axistags[0], a.axistags[1])
+    assert_equal(b.axistags[1], a.axistags[0])
+    
+    rt = r.take([1,2])
+    assert (rt == [1,2]).all()
+    assert_equal(rt.axistags, arraytypes.AxisTags(1))
+    rt = r.take([0,1], axis='y')
+    assert (rt == r).all()
+    assert_equal(rt.axistags, rt.axistags)
+    
+    assert_equal(ones.var(dtype=numpy.longdouble), 0.0)
+    assert (ones.var(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()    
+    
 def testUfuncs():
     from numpy import bool, int8, uint8, int16, uint16, int32, uint32, int64, uint64
     from numpy import float32, float64, longdouble, complex64, complex128, clongdouble

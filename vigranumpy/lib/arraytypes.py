@@ -48,22 +48,23 @@ def _preserve_doc(f):
 # a decorator to finalize the return value of a 
 # dimension-reducing function (e.g. array.max())
 def _finalize_reduce_result(f):
-    def new_f(self, axis=None, *args, **kw):
+    def new_f(self, axis=None, out=None):
         if type(axis) == str:
             axis = self.axistags.index(axis)
-        res = f(self, axis, *args, **kw)
-        if axis is not None:
-            res.axistags = res._copy_axistags()
-            del res.axistags[axis]
-        else:
-            # this 'else' is necessary because numpy 1.6.0 gives 
-            #     type(res) == type(self)
-            # instead of the desired
-            #     type(res) == self.dtype
-            # when res is scalar and self is a subclass of ndarray 
-            # (this is probably a bug in numpy, since it works correctly 
-            #  when self is a plain ndarray)
-            res = res.dtype.type(res)
+        res = f(self, axis, out)
+        if out is None:
+            if axis is not None:
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            else:
+                # this 'else' is necessary because numpy 1.6.0 gives 
+                #     type(res) == type(self)
+                # instead of the desired
+                #     type(res) == self.dtype
+                # when res is scalar and self is a subclass of ndarray 
+                # (this is probably a bug in numpy, since it works correctly 
+                #  when self is a plain ndarray)
+                res = res.dtype.type(res)
         return res
     return new_f
 
@@ -347,12 +348,16 @@ class VigraArray(numpy.ndarray):
         else:
             return self._empty_axistags(self.ndim)
 
-    def _transpose_axistags(self, permutation = None):
+    def _transpose_axistags(self, *permutation):
         '''Create a copy of self.axistags with transposed entries.
         '''
         if hasattr(self, 'axistags'):
             res = copy.copy(self.axistags)
-            res.transpose(permutation)
+            try:
+                len(permutation[0])
+                res.transpose(permutation[0])
+            except:
+                res.transpose(permutation)
             return res
         else:
             return self._empty_axistags(self.ndim)
@@ -445,7 +450,7 @@ class VigraArray(numpy.ndarray):
         if ndim != 2:
             raise RuntimeError("VigraArray.writeImage(): array must have 2 non-channel axes.")
 
-        vigra.impex.writeImage(self, writeImage, dtype, compression)
+        vigra.impex.writeImage(self, filename, dtype, compression)
             
     def writeSlices(self, filename_base, filename_ext, dtype = '', compression = ''):
         '''Write a volume to a sequence of files.         
@@ -977,15 +982,23 @@ class VigraArray(numpy.ndarray):
     def copy(self, order='A'):
         return self.__class__(self, dtype=self.dtype, order=order)
     
-    @_finalize_reduce_result
     @_preserve_doc
     def cumsum(self, axis=None, dtype=None, out=None):
-        return numpy.ndarray.cumsum(self, axis, dtype, out)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        res = numpy.ndarray.cumsum(self, axis, dtype, out)
+        if axis is None and out is None:
+            res.axistags = res._empty_axistags(res.ndim)
+        return res
 
-    @_finalize_reduce_result
     @_preserve_doc
     def cumprod(self, axis=None, dtype=None, out=None):
-        return numpy.ndarray.cumprod(self, axis, dtype, out)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        res = numpy.ndarray.cumprod(self, axis, dtype, out)
+        if axis is None and out is None:
+            res.axistags = res._empty_axistags(res.ndim)
+        return res
 
     @property
     def flat(self):
@@ -993,17 +1006,27 @@ class VigraArray(numpy.ndarray):
     
     @_preserve_doc
     def flatten(self, order='C'):
-         return self.transposeToNumpyOrder().view(numpy.ndarray).flatten(order)        
+        res = self.transposeToNumpyOrder().view(numpy.ndarray).flatten(order)
+        return taggedView(res, self._empty_axistags(1))
 
     @_finalize_reduce_result
     @_preserve_doc
     def max(self, axis=None, out=None):
         return numpy.ndarray.max(self, axis, out)
 
-    @_finalize_reduce_result
     @_preserve_doc
-    def mean(self, axis=None, out=None):
-        return numpy.ndarray.mean(self, axis, out)
+    def mean(self, axis=None, dtype=None, out=None):
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).mean(dtype=dtype, out=out)
+        else:
+            res = self.view(numpy.ndarray).mean(axis, dtype, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
     
     @_finalize_reduce_result
     @_preserve_doc
@@ -1014,7 +1037,7 @@ class VigraArray(numpy.ndarray):
     def nonzero(self):
         res = numpy.ndarray.nonzero(self)
         for k in xrange(len(res)):
-            res[k].axistags = copy.copy(self.axistags[k])
+            res[k].axistags = AxisTags(self.axistags[k])
         return res
 
     @property
@@ -1028,26 +1051,47 @@ class VigraArray(numpy.ndarray):
             return 'V'
         return 'A'
     
-    @_finalize_reduce_result
     @_preserve_doc
     def prod(self, axis=None, dtype=None, out=None):
-        return numpy.ndarray.prod(self, axis, dtype, out)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).prod(dtype=dtype, out=out)
+        else:
+            res = self.view(numpy.ndarray).prod(axis, dtype, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
 
-    @_finalize_reduce_result
     @_preserve_doc
     def ptp(self, axis=None, out=None):
-        return numpy.ndarray.ptp(self, axis, out)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).ptp(out=out)
+        else:
+            res = self.view(numpy.ndarray).ptp(axis, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
 
     @_preserve_doc
     def ravel(self, order='C'):
-        return self.transposeToNumpyOrder().view(numpy.ndarray).ravel(order)        
+        res = self.transposeToNumpyOrder().view(numpy.ndarray).ravel(order)
+        return taggedView(res, self._empty_axistags(1))
 
     @_preserve_doc
     def repeat(self, repeats, axis=None):
-        res = numpy.ndarray.repeat(self, repeats, axis)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         if axis is None:
-            res.axistags = res._empty_axistags(res.ndim)
-        return res        
+            return numpy.ndarray.repeat(self.ravel(), repeats)
+        else:
+            return numpy.ndarray.repeat(self, repeats, axis)
 
     @_preserve_doc
     def reshape(self, shape, order='C'):
@@ -1071,15 +1115,33 @@ class VigraArray(numpy.ndarray):
                     del res.axistags[k]
         return res        
 
-    @_finalize_reduce_result
     @_preserve_doc
     def std(self, axis=None, dtype=None, out=None, ddof=0):
-        return numpy.ndarray.std(self, axis, dtype, out, ddof)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).std(dtype=dtype, out=out)
+        else:
+            res = self.view(numpy.ndarray).std(axis, dtype, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
 
-    @_finalize_reduce_result
     @_preserve_doc
     def sum(self, axis=None, dtype=None, out=None):
-        return numpy.ndarray.sum(self, axis, dtype, out)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).sum(dtype=dtype, out=out)
+        else:
+            res = self.view(numpy.ndarray).sum(axis, dtype, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
             
     @_preserve_doc
     def swapaxes(self, i, j):
@@ -1093,10 +1155,12 @@ class VigraArray(numpy.ndarray):
  
     @_preserve_doc
     def take(self, indices, axis=None, out=None, mode='raise'):
-        res = numpy.ndarray.take(self, indices, axis, out, mode)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         if axis is None:
-            res.axistags = res._empty_axistags(res.ndim)
-        return res        
+            return numpy.ndarray.take(self.ravel(), indices, axis, out, mode)
+        else:
+            return numpy.ndarray.take(self, indices, axis, out, mode)
            
     @_preserve_doc
     def transpose(self, *axes):
@@ -1104,10 +1168,19 @@ class VigraArray(numpy.ndarray):
         res.axistags = res._transpose_axistags(*axes)
         return res
 
-    @_finalize_reduce_result
     @_preserve_doc
     def var(self, axis=None, dtype=None, out=None, ddof=0):
-        return numpy.ndarray.var(self, axis, dtype, out, ddof)
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        if axis is None:
+            return self.transposeToOrder('C').view(numpy.ndarray).var(dtype=dtype, out=out)
+        else:
+            res = self.view(numpy.ndarray).var(axis, dtype, out)
+            if out is None:
+                res = res.view(VigraArray)
+                res.axistags = self._copy_axistags()
+                del res.axistags[axis]
+            return res
 
     ###############################################################
     #                                                             #
@@ -1126,6 +1199,7 @@ class VigraArray(numpy.ndarray):
         return ufunc.bitwise_and(self, other)
         
     def __div__(self, other):
+        print "__div__", self.shape, repr(self.axistags)
         return ufunc.divide(self, other)
     
     def __divmod__(self, other):
