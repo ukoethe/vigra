@@ -219,14 +219,14 @@ struct CoordinatesToOffest<UnstridedArrayTag>
 
 Namespace: vigra::detail
 */
-template <unsigned int N>
+template <class StrideTag, unsigned int N>
 struct MaybeStrided
 {
-    typedef UnstridedArrayTag type;
+    typedef StrideTag type;
 };
 
-template <>
-struct MaybeStrided <0>
+template <class StrideTag>
+struct MaybeStrided <StrideTag, 0>
 {
     typedef StridedArrayTag type;
 };
@@ -640,7 +640,7 @@ The template parameter are as follows
 
 Namespace: vigra
 */
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 class MultiArrayView
 {
 public:
@@ -697,16 +697,16 @@ public:
         /** traverser (MultiIterator) type
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        C>::template Traverser <actual_dimension, T, T &, T *>::type traverser;
+        StrideTag>::template Traverser <actual_dimension, T, T &, T *>::type traverser;
 
         /** const traverser (MultiIterator) type
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        C>::template Traverser <actual_dimension, T, T const &, T const *>::type const_traverser;
+        StrideTag>::template Traverser <actual_dimension, T, T const &, T const *>::type const_traverser;
 
         /** the view type associated with this array.
          */
-    typedef MultiArrayView <N, T, C> view_type;
+    typedef MultiArrayView <N, T, StrideTag> view_type;
 
         /** the matrix type associated with this array.
          */
@@ -783,10 +783,16 @@ public:
       m_stride (stride),
       m_ptr (ptr)
     {
-        vigra_precondition(checkInnerStride(C()),
+        vigra_precondition(checkInnerStride(StrideTag()),
             "MultiArrayView<..., UnstridedArrayTag>::MultiArrayView(): First dimension of given array is not unstrided.");
     }
-
+    
+        /** Conversion to a strided view.
+         */
+    operator MultiArrayView<N, T, StridedArrayTag>() const
+    {
+        return MultiArrayView<N, T, StridedArrayTag>(m_shape, m_stride, m_ptr);
+    }
 
         /** Assignment. There are 3 cases:
 
@@ -994,7 +1000,7 @@ public:
     reference operator() (difference_type_1 x)
     {
         VIGRA_ASSERT_INSIDE(difference_type(x));
-        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
+        return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x)];
     }
 
         /** 2D array access. Use only if N == 2.
@@ -1002,7 +1008,7 @@ public:
     reference operator() (difference_type_1 x, difference_type_1 y)
     {
         VIGRA_ASSERT_INSIDE(difference_type(x, y));
-        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
+        return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x, y)];
     }
 
         /** 3D array access. Use only if N == 3.
@@ -1036,7 +1042,7 @@ public:
     const_reference operator() (difference_type_1 x) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(x));
-        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x)];
+        return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x)];
     }
 
         /** 2D const array access. Use only if N == 2.
@@ -1044,7 +1050,7 @@ public:
     const_reference operator() (difference_type_1 x, difference_type_1 y) const
     {
         VIGRA_ASSERT_INSIDE(difference_type(x, y));
-        return m_ptr [detail::CoordinatesToOffest<C>::exec(m_stride, x, y)];
+        return m_ptr [detail::CoordinatesToOffest<StrideTag>::exec(m_stride, x, y)];
     }
 
         /** 3D const array access. Use only if N == 3.
@@ -1149,7 +1155,7 @@ public:
             \endcode
         */
     template <unsigned int M>
-    MultiArrayView <N-M, T, C> bindOuter (const TinyVector <MultiArrayIndex, M> &d) const;
+    MultiArrayView <N-M, T, StrideTag> bindOuter (const TinyVector <MultiArrayIndex, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -1187,7 +1193,7 @@ public:
             \endcode
          */
     template <unsigned int M>
-    MultiArrayView <N-1, T, typename vigra::detail::MaybeStrided <M>::type >
+    MultiArrayView <N-1, T, typename vigra::detail::MaybeStrided<StrideTag, M>::type >
     bind (difference_type_1 d) const;
 
         /** bind the outmost dimension to a certain index.
@@ -1204,7 +1210,7 @@ public:
             MultiArrayView <2, double> array2 = array3.bindOuter(12);
             \endcode
         */
-    MultiArrayView <N-1, T, C> bindOuter (difference_type_1 d) const;
+    MultiArrayView <N-1, T, StrideTag> bindOuter (difference_type_1 d) const;
 
         /** bind the innermost dimension to a certain index.
             this reduces the dimensionality of the image to
@@ -1268,7 +1274,7 @@ public:
                                 FindAverage<double>());
             \endcode
          */
-    MultiArrayView <N+1, T, C>
+    MultiArrayView <N+1, T, StrideTag>
     insertSingletonDimension (difference_type_1 i) const;
 
         /** create a rectangular subarray that spans between the
@@ -1580,9 +1586,9 @@ public:
     }
 };
 
-template <unsigned int N, class T, class C>
-MultiArrayView<N, T, C> &
-MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
+template <unsigned int N, class T, class StrideTag>
+MultiArrayView<N, T, StrideTag> &
+MultiArrayView <N, T, StrideTag>::operator=(MultiArrayView const & rhs)
 {
     if(this == &rhs)
         return *this;
@@ -1599,10 +1605,10 @@ MultiArrayView <N, T, C>::operator=(MultiArrayView const & rhs)
     return *this;
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <class CN>
 bool
-MultiArrayView <N, T, C>::arraysOverlap(const MultiArrayView <N, T, CN>& rhs) const
+MultiArrayView <N, T, StrideTag>::arraysOverlap(const MultiArrayView <N, T, CN>& rhs) const
 {
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::arraysOverlap(): shape mismatch.");
@@ -1614,10 +1620,10 @@ MultiArrayView <N, T, C>::arraysOverlap(const MultiArrayView <N, T, CN>& rhs) co
     return !(last_element < rhs_first_element || rhs_last_element < first_element);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <class U, class CN>
 void
-MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
+MultiArrayView <N, T, StrideTag>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
 {
     if(!arraysOverlap(rhs))
     {
@@ -1634,10 +1640,10 @@ MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
 }
 
 #define VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(name, op) \
-template <unsigned int N, class T, class C> \
+template <unsigned int N, class T, class StrideTag> \
 template<class U, class C1> \
-MultiArrayView<N, T, C> &  \
-MultiArrayView <N, T, C>::operator op(MultiArrayView<N, U, C1> const & rhs) \
+MultiArrayView<N, T, StrideTag> &  \
+MultiArrayView <N, T, StrideTag>::operator op(MultiArrayView<N, U, C1> const & rhs) \
 { \
     vigra_precondition(this->shape() == rhs.shape(), "MultiArrayView::operator" #op "() size mismatch."); \
     if(!arraysOverlap(rhs)) \
@@ -1659,10 +1665,10 @@ VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(copyDiv, /=)
 
 #undef VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <class U, class CN>
 void
-MultiArrayView <N, T, C>::swapDataImpl(MultiArrayView <N, U, CN> rhs)
+MultiArrayView <N, T, StrideTag>::swapDataImpl(MultiArrayView <N, U, CN> rhs)
 {
     vigra_precondition (shape () == rhs.shape (),
         "MultiArrayView::swapData(): shape mismatch.");
@@ -1688,9 +1694,9 @@ MultiArrayView <N, T, C>::swapDataImpl(MultiArrayView <N, U, CN> rhs)
     }
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 MultiArrayView <N, T, StridedArrayTag>
-MultiArrayView <N, T, C>::permuteDimensions (const difference_type &s) const
+MultiArrayView <N, T, StrideTag>::permuteDimensions (const difference_type &s) const
 {
     difference_type shape, stride, check((typename difference_type::value_type)0);
     for (unsigned int i = 0; i < actual_dimension; ++i)
@@ -1704,9 +1710,9 @@ MultiArrayView <N, T, C>::permuteDimensions (const difference_type &s) const
     return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
 }
 
-template <unsigned int N, class T, class C>
-typename MultiArrayView <N, T, C>::difference_type 
-MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
+template <unsigned int N, class T, class StrideTag>
+typename MultiArrayView <N, T, StrideTag>::difference_type 
+MultiArrayView <N, T, StrideTag>::strideOrdering(difference_type stride)
 {
     difference_type permutation;
     for(int k=0; k<(int)N; ++k)
@@ -1731,9 +1737,9 @@ MultiArrayView <N, T, C>::strideOrdering(difference_type stride)
     return ordering;
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 MultiArrayView <N, T, StridedArrayTag>
-MultiArrayView <N, T, C>::permuteStridesAscending() const
+MultiArrayView <N, T, StrideTag>::permuteStridesAscending() const
 {
     difference_type ordering(strideOrdering(m_stride)), permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
@@ -1741,9 +1747,9 @@ MultiArrayView <N, T, C>::permuteStridesAscending() const
     return permuteDimensions(permutation);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 MultiArrayView <N, T, StridedArrayTag>
-MultiArrayView <N, T, C>::permuteStridesDescending() const
+MultiArrayView <N, T, StrideTag>::permuteStridesDescending() const
 {
     difference_type ordering(strideOrdering(m_stride)), permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
@@ -1751,10 +1757,10 @@ MultiArrayView <N, T, C>::permuteStridesDescending() const
     return permuteDimensions(permutation);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <unsigned int M>
-MultiArrayView <N-M, T, C>
-MultiArrayView <N, T, C>::bindOuter (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N-M, T, StrideTag>
+MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <MultiArrayIndex, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin () + N-M, m_stride.end ());
@@ -1771,13 +1777,13 @@ MultiArrayView <N, T, C>::bindOuter (const TinyVector <MultiArrayIndex, M> &d) c
         inner_shape.init (m_shape.begin (), m_shape.end () - M);
         inner_stride.init (m_stride.begin (), m_stride.end () - M);
     }
-    return MultiArrayView <N-M, T, C> (inner_shape, inner_stride, ptr);
+    return MultiArrayView <N-M, T, StrideTag> (inner_shape, inner_stride, ptr);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <unsigned int M>
 MultiArrayView <N - M, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindInner (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <MultiArrayIndex, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin (), m_stride.end () - N + M);
@@ -1798,10 +1804,10 @@ MultiArrayView <N, T, C>::bindInner (const TinyVector <MultiArrayIndex, M> &d) c
         (outer_shape, outer_stride, ptr);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 template <unsigned int M>
-MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type >
-MultiArrayView <N, T, C>::bind (difference_type_1 d) const
+MultiArrayView <N-1, T, typename detail::MaybeStrided<StrideTag, M>::type >
+MultiArrayView <N, T, StrideTag>::bind (difference_type_1 d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <MultiArrayIndex, NNew> shape, stride;
@@ -1820,13 +1826,13 @@ MultiArrayView <N, T, C>::bind (difference_type_1 d) const
         std::copy (m_stride.begin () + M+1, m_stride.end (),
                    stride.begin () + M);
     }
-    return MultiArrayView <N-1, T, typename detail::MaybeStrided <M>::type>
+    return MultiArrayView <N-1, T, typename detail::MaybeStrided<StrideTag, M>::type>
         (shape, stride, m_ptr + d * m_stride[M]);
 }
 
-template <unsigned int N, class T, class C>
-MultiArrayView <N - 1, T, C>
-MultiArrayView <N, T, C>::bindOuter (difference_type_1 d) const
+template <unsigned int N, class T, class StrideTag>
+MultiArrayView <N - 1, T, StrideTag>
+MultiArrayView <N, T, StrideTag>::bindOuter (difference_type_1 d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <MultiArrayIndex, NNew> inner_shape, inner_stride;
@@ -1840,13 +1846,13 @@ MultiArrayView <N, T, C>::bindOuter (difference_type_1 d) const
         inner_shape.init (m_shape.begin (), m_shape.end () - 1);
         inner_stride.init (m_stride.begin (), m_stride.end () - 1);
     }
-    return MultiArrayView <N-1, T, C> (inner_shape, inner_stride,
+    return MultiArrayView <N-1, T, StrideTag> (inner_shape, inner_stride,
                                        m_ptr + d * m_stride [N-1]);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 MultiArrayView <N - 1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindInner (difference_type_1 d) const
+MultiArrayView <N, T, StrideTag>::bindInner (difference_type_1 d) const
 {
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <MultiArrayIndex, NNew> outer_shape, outer_stride;
@@ -1864,13 +1870,13 @@ MultiArrayView <N, T, C>::bindInner (difference_type_1 d) const
         (outer_shape, outer_stride, m_ptr + d * m_stride [0]);
 }
 
-template <unsigned int N, class T, class C>
+template <unsigned int N, class T, class StrideTag>
 MultiArrayView <N - 1, T, StridedArrayTag>
-MultiArrayView <N, T, C>::bindAt (difference_type_1 n, difference_type_1 d) const
+MultiArrayView <N, T, StrideTag>::bindAt (difference_type_1 n, difference_type_1 d) const
 {
     vigra_precondition (
         n < static_cast <int> (N),
-        "MultiArrayView <N, T, C>::bindAt(): dimension out of range.");
+        "MultiArrayView <N, T, StrideTag>::bindAt(): dimension out of range.");
     static const int NNew = (N-1 == 0) ? 1 : N-1;
     TinyVector <MultiArrayIndex, NNew> shape, stride;
     // the remaining dimensions are 0..n-1,n+1..N-1
@@ -1892,13 +1898,13 @@ MultiArrayView <N, T, C>::bindAt (difference_type_1 n, difference_type_1 d) cons
         (shape, stride, m_ptr + d * m_stride[n]);
 }
 
-template <unsigned int N, class T, class C>
-MultiArrayView <N + 1, T, C>
-MultiArrayView <N, T, C>::insertSingletonDimension (difference_type_1 i) const
+template <unsigned int N, class T, class StrideTag>
+MultiArrayView <N + 1, T, StrideTag>
+MultiArrayView <N, T, StrideTag>::insertSingletonDimension (difference_type_1 i) const
 {
     vigra_precondition (
         0 <= i && i <= static_cast <difference_type_1> (N),
-        "MultiArrayView <N, T, C>::insertSingletonDimension(): index out of range.");
+        "MultiArrayView <N, T, StrideTag>::insertSingletonDimension(): index out of range.");
     TinyVector <MultiArrayIndex, N+1> shape, stride;
     std::copy (m_shape.begin (), m_shape.begin () + i, shape.begin ());
     std::copy (m_shape.begin () + i, m_shape.end (), shape.begin () + i + 1);
@@ -1907,12 +1913,12 @@ MultiArrayView <N, T, C>::insertSingletonDimension (difference_type_1 i) const
     shape[i] = 1;
     stride[i] = 1;
 
-    return MultiArrayView <N+1, T, C>(shape, stride, m_ptr);
+    return MultiArrayView <N+1, T, StrideTag>(shape, stride, m_ptr);
 }
 
-template <unsigned int N, class T, class C>
-typename NormTraits<MultiArrayView <N, T, C> >::NormType
-MultiArrayView <N, T, C>::norm(int type, bool useSquaredNorm) const
+template <unsigned int N, class T, class StrideTag>
+typename NormTraits<MultiArrayView <N, T, StrideTag> >::NormType
+MultiArrayView <N, T, StrideTag>::norm(int type, bool useSquaredNorm) const
 {
     typedef typename NormTraits<MultiArrayView>::NormType NormType;
 
@@ -1962,16 +1968,16 @@ MultiArrayView <N, T, C>::norm(int type, bool useSquaredNorm) const
 /*                                                      */
 /********************************************************/
 
-template <unsigned int N, class T, class C>
-inline typename NormTraits<MultiArrayView <N, T, C> >::SquaredNormType
-squaredNorm(MultiArrayView <N, T, C> const & a)
+template <unsigned int N, class T, class StrideTag>
+inline typename NormTraits<MultiArrayView <N, T, StrideTag> >::SquaredNormType
+squaredNorm(MultiArrayView <N, T, StrideTag> const & a)
 {
     return a.squaredNorm();
 }
 
-template <unsigned int N, class T, class C>
-inline typename NormTraits<MultiArrayView <N, T, C> >::NormType
-norm(MultiArrayView <N, T, C> const & a)
+template <unsigned int N, class T, class StrideTag>
+inline typename NormTraits<MultiArrayView <N, T, StrideTag> >::NormType
+norm(MultiArrayView <N, T, StrideTag> const & a)
 {
     return a.norm();
 }
@@ -2098,15 +2104,15 @@ protected:
         /** allocate memory, write its address into the given
             pointer and initialize it by copying the data from the given MultiArrayView.
         */
-    template <class U, class C>
-    void allocate (pointer &ptr, MultiArrayView<N, U, C> const & init);
+    template <class U, class StrideTag>
+    void allocate (pointer &ptr, MultiArrayView<N, U, StrideTag> const & init);
 
         /** deallocate the memory (of length s) starting at the given address.
          */
     void deallocate (pointer &ptr, difference_type_1 s);
 
-    template <class U, class C>
-    void copyOrReshape (const MultiArrayView<N, U, C> &rhs);
+    template <class U, class StrideTag>
+    void copyOrReshape (const MultiArrayView<N, U, StrideTag> &rhs);
 public:
         /** default constructor
          */
@@ -2161,8 +2167,8 @@ public:
 
         /** construct by copying from a MultiArrayView
          */
-    template <class U, class C>
-    MultiArray (const MultiArrayView<N, U, C>  &rhs,
+    template <class U, class StrideTag>
+    MultiArray (const MultiArrayView<N, U, StrideTag>  &rhs,
                 allocator_type const & alloc = allocator_type());
 
         /** assignment.<br>
@@ -2182,8 +2188,8 @@ public:
             the data are copied. Otherwise, new storage is allocated, which invalidates all
             objects (array views, iterators) depending on the lhs array.
          */
-    template <class U, class C>
-    MultiArray &operator= (const MultiArrayView<N, U, C> &rhs)
+    template <class U, class StrideTag>
+    MultiArray &operator= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         this->copyOrReshape(rhs);
         return *this;
@@ -2192,8 +2198,8 @@ public:
         /** Add-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
-    template <class U, class C>
-    MultiArray &operator+= (const MultiArrayView<N, U, C> &rhs)
+    template <class U, class StrideTag>
+    MultiArray &operator+= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         view_type::operator+=(rhs);
         return *this;
@@ -2202,8 +2208,8 @@ public:
         /** Subtract-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
-    template <class U, class C>
-    MultiArray &operator-= (const MultiArrayView<N, U, C> &rhs)
+    template <class U, class StrideTag>
+    MultiArray &operator-= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         view_type::operator-=(rhs);
         return *this;
@@ -2212,8 +2218,8 @@ public:
         /** Multiply-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
-    template <class U, class C>
-    MultiArray &operator*= (const MultiArrayView<N, U, C> &rhs)
+    template <class U, class StrideTag>
+    MultiArray &operator*= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         view_type::operator*=(rhs);
         return *this;
@@ -2222,8 +2228,8 @@ public:
         /** Divide-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
-    template <class U, class C>
-    MultiArray &operator/= (const MultiArrayView<N, U, C> &rhs)
+    template <class U, class StrideTag>
+    MultiArray &operator/= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         view_type::operator/=(rhs);
         return *this;
@@ -2435,8 +2441,8 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_pointer in
 }
 
 template <unsigned int N, class T, class A>
-template <class U, class C>
-MultiArray <N, T, A>::MultiArray(const MultiArrayView<N, U, C>  &rhs,
+template <class U, class StrideTag>
+MultiArray <N, T, A>::MultiArray(const MultiArrayView<N, U, StrideTag>  &rhs,
                                  allocator_type const & alloc)
 : MultiArrayView <N, T> (rhs.shape(),
                          detail::defaultStride <MultiArrayView<N,T>::actual_dimension>(rhs.shape()),
@@ -2447,9 +2453,9 @@ MultiArray <N, T, A>::MultiArray(const MultiArrayView<N, U, C>  &rhs,
 }
 
 template <unsigned int N, class T, class A>
-template <class U, class C>
+template <class U, class StrideTag>
 void
-MultiArray <N, T, A>::copyOrReshape(const MultiArrayView<N, U, C> &rhs)
+MultiArray <N, T, A>::copyOrReshape(const MultiArrayView<N, U, StrideTag> &rhs)
 {
     if (this->shape() == rhs.shape())
         this->copy(rhs);
@@ -2536,8 +2542,8 @@ void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
 }
 
 template <unsigned int N, class T, class A>
-template <class U, class C>
-void MultiArray <N, T, A>::allocate (pointer & ptr, MultiArrayView<N, U, C> const & init)
+template <class U, class StrideTag>
+void MultiArray <N, T, A>::allocate (pointer & ptr, MultiArrayView<N, U, StrideTag> const & init)
 {
     difference_type_1 s = init.elementCount();
     ptr = m_alloc.allocate ((typename A::size_type)s);
@@ -2571,100 +2577,100 @@ inline void MultiArray <N, T, A>::deallocate (pointer & ptr, difference_type_1 s
 /*                                                      */
 /********************************************************/
 
-template <unsigned int N, class T, class C>
-inline triple<typename MultiArrayView<N,T,C>::const_traverser,
-              typename MultiArrayView<N,T,C>::difference_type,
+template <unsigned int N, class T, class StrideTag>
+inline triple<typename MultiArrayView<N,T,StrideTag>::const_traverser,
+              typename MultiArrayView<N,T,StrideTag>::difference_type,
               typename AccessorTraits<T>::default_const_accessor >
-srcMultiArrayRange( MultiArrayView<N,T,C> const & array )
+srcMultiArrayRange( MultiArrayView<N,T,StrideTag> const & array )
 {
-    return triple<typename MultiArrayView<N,T,C>::const_traverser,
-                  typename MultiArrayView<N,T,C>::difference_type,
+    return triple<typename MultiArrayView<N,T,StrideTag>::const_traverser,
+                  typename MultiArrayView<N,T,StrideTag>::difference_type,
                   typename AccessorTraits<T>::default_const_accessor >
       ( array.traverser_begin(),
         array.shape(),
         typename AccessorTraits<T>::default_const_accessor() );
 }
 
-template <unsigned int N, class T, class C, class Accessor>
-inline triple<typename MultiArrayView<N,T,C>::const_traverser,
-              typename MultiArrayView<N,T,C>::difference_type,
+template <unsigned int N, class T, class StrideTag, class Accessor>
+inline triple<typename MultiArrayView<N,T,StrideTag>::const_traverser,
+              typename MultiArrayView<N,T,StrideTag>::difference_type,
               Accessor >
-srcMultiArrayRange( MultiArrayView<N,T,C> const & array, Accessor a )
+srcMultiArrayRange( MultiArrayView<N,T,StrideTag> const & array, Accessor a )
 {
-    return triple<typename MultiArrayView<N,T,C>::const_traverser,
-                  typename MultiArrayView<N,T,C>::difference_type,
+    return triple<typename MultiArrayView<N,T,StrideTag>::const_traverser,
+                  typename MultiArrayView<N,T,StrideTag>::difference_type,
                   Accessor >
       ( array.traverser_begin(),
         array.shape(),
         a);
 }
 
-template <unsigned int N, class T, class C>
-inline pair<typename MultiArrayView<N,T,C>::const_traverser,
+template <unsigned int N, class T, class StrideTag>
+inline pair<typename MultiArrayView<N,T,StrideTag>::const_traverser,
             typename AccessorTraits<T>::default_const_accessor >
-srcMultiArray( MultiArrayView<N,T,C> const & array )
+srcMultiArray( MultiArrayView<N,T,StrideTag> const & array )
 {
-    return pair<typename MultiArrayView<N,T,C>::const_traverser,
+    return pair<typename MultiArrayView<N,T,StrideTag>::const_traverser,
                 typename AccessorTraits<T>::default_const_accessor >
       ( array.traverser_begin(),
         typename AccessorTraits<T>::default_const_accessor() );
 }
 
-template <unsigned int N, class T, class C, class Accessor>
-inline pair<typename MultiArrayView<N,T,C>::const_traverser,
+template <unsigned int N, class T, class StrideTag, class Accessor>
+inline pair<typename MultiArrayView<N,T,StrideTag>::const_traverser,
             Accessor >
-srcMultiArray( MultiArrayView<N,T,C> const & array, Accessor a )
+srcMultiArray( MultiArrayView<N,T,StrideTag> const & array, Accessor a )
 {
-    return pair<typename MultiArrayView<N,T,C>::const_traverser,
+    return pair<typename MultiArrayView<N,T,StrideTag>::const_traverser,
                 Accessor >
       ( array.traverser_begin(), a );
 }
 
-template <unsigned int N, class T, class C>
-inline triple<typename MultiArrayView<N,T,C>::traverser,
-              typename MultiArrayView<N,T,C>::difference_type,
+template <unsigned int N, class T, class StrideTag>
+inline triple<typename MultiArrayView<N,T,StrideTag>::traverser,
+              typename MultiArrayView<N,T,StrideTag>::difference_type,
               typename AccessorTraits<T>::default_accessor >
-destMultiArrayRange( MultiArrayView<N,T,C> & array )
+destMultiArrayRange( MultiArrayView<N,T,StrideTag> & array )
 {
-    return triple<typename MultiArrayView<N,T,C>::traverser,
-                  typename MultiArrayView<N,T,C>::difference_type,
+    return triple<typename MultiArrayView<N,T,StrideTag>::traverser,
+                  typename MultiArrayView<N,T,StrideTag>::difference_type,
                   typename AccessorTraits<T>::default_accessor >
       ( array.traverser_begin(),
         array.shape(),
         typename AccessorTraits<T>::default_accessor() );
 }
 
-template <unsigned int N, class T, class C, class Accessor>
-inline triple<typename MultiArrayView<N,T,C>::traverser,
-              typename MultiArrayView<N,T,C>::difference_type,
+template <unsigned int N, class T, class StrideTag, class Accessor>
+inline triple<typename MultiArrayView<N,T,StrideTag>::traverser,
+              typename MultiArrayView<N,T,StrideTag>::difference_type,
               Accessor >
-destMultiArrayRange( MultiArrayView<N,T,C> & array, Accessor a )
+destMultiArrayRange( MultiArrayView<N,T,StrideTag> & array, Accessor a )
 {
-    return triple<typename MultiArrayView<N,T,C>::traverser,
-                  typename MultiArrayView<N,T,C>::difference_type,
+    return triple<typename MultiArrayView<N,T,StrideTag>::traverser,
+                  typename MultiArrayView<N,T,StrideTag>::difference_type,
                   Accessor >
       ( array.traverser_begin(),
         array.shape(),
         a );
 }
 
-template <unsigned int N, class T, class C>
-inline pair<typename MultiArrayView<N,T,C>::traverser,
+template <unsigned int N, class T, class StrideTag>
+inline pair<typename MultiArrayView<N,T,StrideTag>::traverser,
             typename AccessorTraits<T>::default_accessor >
-destMultiArray( MultiArrayView<N,T,C> & array )
+destMultiArray( MultiArrayView<N,T,StrideTag> & array )
 {
-    return pair<typename MultiArrayView<N,T,C>::traverser,
+    return pair<typename MultiArrayView<N,T,StrideTag>::traverser,
                 typename AccessorTraits<T>::default_accessor >
         ( array.traverser_begin(),
           typename AccessorTraits<T>::default_accessor() );
 }
 
-template <unsigned int N, class T, class C, class Accessor>
-inline pair<typename MultiArrayView<N,T,C>::traverser,
+template <unsigned int N, class T, class StrideTag, class Accessor>
+inline pair<typename MultiArrayView<N,T,StrideTag>::traverser,
             Accessor >
-destMultiArray( MultiArrayView<N,T,C> & array, Accessor a )
+destMultiArray( MultiArrayView<N,T,StrideTag> & array, Accessor a )
 {
-    return pair<typename MultiArrayView<N,T,C>::traverser,
+    return pair<typename MultiArrayView<N,T,StrideTag>::traverser,
                 Accessor >
         ( array.traverser_begin(), a );
 }
