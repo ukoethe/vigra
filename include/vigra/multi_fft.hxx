@@ -815,10 +815,10 @@ fftEmbedKernel(MultiArrayView<N, Real, C1> kernel,
     FFTEmbedKernel<(int)N-1>::exec(out, kernel.shape(), srcPoint, destPoint, false);
 }
 
-template <unsigned int N, class Real, class C1, class C2>
+template <unsigned int N, class T1, class C1, class T2, class C2>
 void 
-fftEmbedArray(MultiArrayView<N, Real, C1> in,
-              MultiArrayView<N, Real, C2> out)
+fftEmbedArray(MultiArrayView<N, T1, C1> in,
+              MultiArrayView<N, T2, C2> out)
 {
     typedef typename MultiArrayShape<N>::type Shape;
     
@@ -829,7 +829,7 @@ fftEmbedArray(MultiArrayView<N, Real, C1> in,
     
     out.subarray(leftDiff, right) = in;
     
-    typedef typename MultiArrayView<N, Real, C2>::traverser Traverser;
+    typedef typename MultiArrayView<N, T2, C2>::traverser Traverser;
     typedef MultiArrayNavigator<Traverser, N> Navigator;
     typedef typename Navigator::iterator Iterator;
     
@@ -1154,6 +1154,16 @@ class FFTWConvolvePlan
     }
    
     template <class C1, class C2, class C3>
+    FFTWConvolvePlan(MultiArrayView<N, Real, C1> in,
+                     MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                     MultiArrayView<N, FFTWComplex<Real>, C3> out, 
+                     bool fourierDomainKernel,
+                     unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        init(in, kernel, out, fourierDomainKernel, planner_flags);
+    }
+
+    template <class C1, class C2, class C3>
     FFTWConvolvePlan(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                      MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
                      MultiArrayView<N, FFTWComplex<Real>, C3> out, 
@@ -1195,6 +1205,19 @@ class FFTWConvolvePlan
         vigra_precondition(in.shape() == out.shape(),
             "FFTWConvolvePlan::init(): input and output must have the same shape.");
         initFourierKernel(in.shape(), kernel.shape(), planner_flags);
+    }
+    
+    template <class C1, class C2, class C3>
+    void init(MultiArrayView<N, Real, C1> in, 
+              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+              MultiArrayView<N, FFTWComplex<Real>, C3> out, 
+              bool fourierDomainKernel,
+              unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        vigra_precondition(in.shape() == out.shape(),
+            "FFTWConvolvePlan::init(): input and output must have the same shape.");
+        useFourierKernel = fourierDomainKernel;
+        initComplex(in.shape(), kernel.shape(), planner_flags);
     }
     
     template <class C1, class C2, class C3>
@@ -1242,36 +1265,31 @@ class FFTWConvolvePlan
     }
      
     template <class C1, class KernelIterator, class OutIterator>
-    void initMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                  KernelIterator kernels, KernelIterator kernelsEnd,
-                  OutIterator outs,
-                  bool fourierDomainKernels,
-                  unsigned int planner_flags = FFTW_ESTIMATE)
+    void initManyComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                         KernelIterator kernels, KernelIterator kernelsEnd,
+                         OutIterator outs,
+                         bool fourierDomainKernels,
+                         unsigned int planner_flags = FFTW_ESTIMATE)
     {
-        typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
-        typedef typename KernelArray::value_type KernelValue;
-        typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
-        typedef typename OutArray::value_type OutValue;
-
-        vigra_precondition((IsSameType<KernelValue, Complex>::value),
-             "FFTWConvolvePlan::initMany(): kernels have unsuitable value_type.");
-        vigra_precondition((IsSameType<OutValue, Complex>::value),
-             "FFTWConvolvePlan::initMany(): outputs have unsuitable value_type.");
-
-        useFourierKernel = fourierDomainKernels;
-        
-        Shape paddedShape = checkShapesComplex(in.shape(), kernels, kernelsEnd, outs);
-    
-        CArray newFourierArray(paddedShape), newFourierKernel(paddedShape);
-    
-        FFTWPlan<N, Real> fplan(newFourierArray, newFourierArray, FFTW_FORWARD, planner_flags);
-        FFTWPlan<N, Real> bplan(newFourierArray, newFourierArray, FFTW_BACKWARD, planner_flags);
-    
-        forward_plan = fplan;
-        backward_plan = bplan;
-        fourierArray.swap(newFourierArray);
-        fourierKernel.swap(newFourierKernel);
+        initManyComplexImpl(in, kernels, kernelsEnd, outs, fourierDomainKernels, planner_flags);
     }
+    
+    template <class C1, class KernelIterator, class OutIterator>
+    void initManyComplex(MultiArrayView<N, Real, C1> in, 
+                         KernelIterator kernels, KernelIterator kernelsEnd,
+                         OutIterator outs,
+                         bool fourierDomainKernels,
+                         unsigned int planner_flags = FFTW_ESTIMATE)
+    {
+        initManyComplexImpl(in, kernels, kernelsEnd, outs, fourierDomainKernels, planner_flags);
+    }
+    
+    template <class T, class C1, class KernelIterator, class OutIterator>
+    void initManyComplexImpl(MultiArrayView<N, T, C1> in, 
+                             KernelIterator kernels, KernelIterator kernelsEnd,
+                             OutIterator outs,
+                             bool fourierDomainKernels,
+                             unsigned int planner_flags = FFTW_ESTIMATE);
     
     void init(Shape inOut, Shape kernel,
               unsigned int planner_flags = FFTW_ESTIMATE);
@@ -1305,16 +1323,47 @@ class FFTWConvolvePlan
                  MultiArrayView<N, Real, C3> out);
 
     template <class C1, class C2, class C3>
-    void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
-                 MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                 MultiArrayView<N, FFTWComplex<Real>, C3> out);
+    void executeComplex(MultiArrayView<N, Real, C1> in,
+                        MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                        MultiArrayView<N, FFTWComplex<Real>, C3> out)
+    {
+        executeComplexImpl(in, kernel, out);
+    }
 
+    template <class C1, class C2, class C3>
+    void executeComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
+                        MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                        MultiArrayView<N, FFTWComplex<Real>, C3> out)
+    {
+        executeComplexImpl(in, kernel, out);
+    }
 
-    template <class C1, class KernelIterator, class OutIterator>
-    void executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                     KernelIterator kernels, KernelIterator kernelsEnd,
-                     OutIterator outs);
+    template <class T, class C1, class C2, class C3>
+    void executeComplexImpl(MultiArrayView<N, T, C1> in,
+                            MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                            MultiArrayView<N, FFTWComplex<Real>, C3> out);
+
+    template <class T, class C1, class KernelIterator, class OutIterator>
+    void executeManyComplexImpl(MultiArrayView<N, T, C1> in, 
+                                KernelIterator kernels, KernelIterator kernelsEnd,
+                                OutIterator outs);
                      
+    template <class C1, class KernelIterator, class OutIterator>
+    void executeManyComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                            KernelIterator kernels, KernelIterator kernelsEnd,
+                            OutIterator outs)
+    {
+        executeManyComplexImpl(in, kernels, kernelsEnd, outs);
+    }
+    
+    template <class C1, class KernelIterator, class OutIterator>
+    void executeManyComplex(MultiArrayView<N, Real, C1> in, 
+                            KernelIterator kernels, KernelIterator kernelsEnd,
+                            OutIterator outs)
+    {
+        executeManyComplexImpl(in, kernels, kernelsEnd, outs);
+    }
+    
     template <class C1, class KernelIterator, class OutIterator>
     void executeMany(MultiArrayView<N, Real, C1> in, 
                      KernelIterator kernels, KernelIterator kernelsEnd,
@@ -1458,6 +1507,40 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
 }
 
 template <unsigned int N, class Real>
+template <class T, class C1, class KernelIterator, class OutIterator>
+void 
+FFTWConvolvePlan<N, Real>::initManyComplexImpl(MultiArrayView<N, T, C1> in, 
+                                               KernelIterator kernels, KernelIterator kernelsEnd,
+                                               OutIterator outs,
+                                               bool fourierDomainKernels,
+                                               unsigned int planner_flags)
+{
+    typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
+    typedef typename KernelArray::value_type KernelValue;
+    typedef typename std::iterator_traits<OutIterator>::value_type OutArray;
+    typedef typename OutArray::value_type OutValue;
+
+    vigra_precondition((IsSameType<KernelValue, Complex>::value),
+         "FFTWConvolvePlan::initMany(): kernels have unsuitable value_type.");
+    vigra_precondition((IsSameType<OutValue, Complex>::value),
+         "FFTWConvolvePlan::initMany(): outputs have unsuitable value_type.");
+
+    useFourierKernel = fourierDomainKernels;
+    
+    Shape paddedShape = checkShapesComplex(in.shape(), kernels, kernelsEnd, outs);
+
+    CArray newFourierArray(paddedShape), newFourierKernel(paddedShape);
+
+    FFTWPlan<N, Real> fplan(newFourierArray, newFourierArray, FFTW_FORWARD, planner_flags);
+    FFTWPlan<N, Real> bplan(newFourierArray, newFourierArray, FFTW_BACKWARD, planner_flags);
+
+    forward_plan = fplan;
+    backward_plan = bplan;
+    fourierArray.swap(newFourierArray);
+    fourierKernel.swap(newFourierKernel);
+}
+
+template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
 FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in, 
@@ -1529,14 +1612,14 @@ FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, Real, C1> in,
 }
 
 template <unsigned int N, class Real>
-template <class C1, class C2, class C3>
+template <class T, class C1, class C2, class C3>
 void 
-FFTWConvolvePlan<N, Real>::execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                                    MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
-                                    MultiArrayView<N, FFTWComplex<Real>, C3> out)
+FFTWConvolvePlan<N, Real>::executeComplexImpl(MultiArrayView<N, T, C1> in, 
+                                              MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                                              MultiArrayView<N, FFTWComplex<Real>, C3> out)
 {
     vigra_precondition(in.shape() == out.shape(),
-        "FFTWConvolvePlan::execute(): input and output must have the same shape.");
+        "FFTWConvolvePlan::executeComplex(): input and output must have the same shape.");
     
     Shape paddedShape = fourierArray.shape(),
           diff = paddedShape - in.shape(), 
@@ -1640,11 +1723,11 @@ FFTWConvolvePlan<N, Real>::executeManyImpl(MultiArrayView<N, Real, C1> in,
 }
 
 template <unsigned int N, class Real>
-template <class C1, class KernelIterator, class OutIterator>
+template <class T, class C1, class KernelIterator, class OutIterator>
 void 
-FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
-                                       KernelIterator kernels, KernelIterator kernelsEnd,
-                                       OutIterator outs)
+FFTWConvolvePlan<N, Real>::executeManyComplexImpl(MultiArrayView<N, T, C1> in, 
+                                                  KernelIterator kernels, KernelIterator kernelsEnd,
+                                                  OutIterator outs)
 {
     typedef typename std::iterator_traits<KernelIterator>::value_type KernelArray;
     typedef typename KernelArray::value_type KernelValue;
@@ -1905,12 +1988,22 @@ convolveFFT(MultiArrayView<N, Real, C1> in,
 
 template <unsigned int N, class Real, class C1, class C2, class C3>
 void
+convolveFFTComplex(MultiArrayView<N, Real, C1> in,
+            MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+            MultiArrayView<N, FFTWComplex<Real>, C3> out,
+            bool fourierDomainKernel)
+{
+    FFTWConvolvePlan<N, Real>(in, kernel, out, fourierDomainKernel).executeComplex(in, kernel, out);
+}
+
+template <unsigned int N, class Real, class C1, class C2, class C3>
+void
 convolveFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
             MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
             MultiArrayView<N, FFTWComplex<Real>, C3> out,
             bool fourierDomainKernel)
 {
-    FFTWConvolvePlan<N, Real>(in, kernel, out, fourierDomainKernel).execute(in, kernel, out);
+    FFTWConvolvePlan<N, Real>(in, kernel, out, fourierDomainKernel).executeComplex(in, kernel, out);
 }
 
 template <unsigned int N, class Real, class C1, 
@@ -1928,14 +2021,27 @@ convolveFFTMany(MultiArrayView<N, Real, C1> in,
 template <unsigned int N, class Real, class C1, 
           class KernelIterator, class OutIterator>
 void 
+convolveFFTComplexMany(MultiArrayView<N, Real, C1> in, 
+                KernelIterator kernels, KernelIterator kernelsEnd,
+                OutIterator outs,
+                bool fourierDomainKernel)
+{
+    FFTWConvolvePlan<N, Real> plan;
+    plan.initManyComplex(in, kernels, kernelsEnd, outs, fourierDomainKernel);
+    plan.executeManyComplex(in, kernels, kernelsEnd, outs);
+}
+
+template <unsigned int N, class Real, class C1, 
+          class KernelIterator, class OutIterator>
+void 
 convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                 KernelIterator kernels, KernelIterator kernelsEnd,
                 OutIterator outs,
                 bool fourierDomainKernel)
 {
     FFTWConvolvePlan<N, Real> plan;
-    plan.initMany(in, kernels, kernelsEnd, outs, fourierDomainKernel);
-    plan.executeMany(in, kernels, kernelsEnd, outs);
+    plan.initManyComplex(in, kernels, kernelsEnd, outs, fourierDomainKernel);
+    plan.executeManyComplex(in, kernels, kernelsEnd, outs);
 }
 
 } // namespace vigra

@@ -46,8 +46,11 @@
 #include "tinyvector.hxx"
 #include "quaternion.hxx"
 #include "clebsch-gordan.hxx"
+#include "multi_fft.hxx"
+
 
 namespace vigra {
+
 
     /*!
      *  \class WignerMatrix 
@@ -64,8 +67,7 @@ class WignerMatrix
 {   
   public:
   
-    // FIXME: should we rather use FFTWComplex?
-    typedef std::complex<Real> Complex;
+    typedef FFTWComplex<Real> Complex;
     typedef ArrayVector<ArrayVector<ArrayVector<Complex> > > NestedArray;
     
          /*! \brief constructor
@@ -80,7 +82,6 @@ class WignerMatrix
           *
           * \param band	expansion band
           *
-             FIXME: compute_D(l, 0.0, M_PI / 2.0, 0.0) creates the transposed matrix!
           */
     void compute_D(int band);
 
@@ -100,17 +101,17 @@ class WignerMatrix
           * \param n      	
           * \param m    
           */
-    Complex get_D(int l, int n, int m) const
+    Complex get_d(int l, int h, int m) const
     {
         if (l>0)
         {
             std::string message = std::string("WignerMatrix::get_D(): index out of bounds: l=");
-            message << l << " l_max=" << D.size() << " m=" << m << " n=" << n << "\n";
+            message << l << " l_max=" << D.size() << " m=" << m << " n=" << h << "\n";
                                   
-            vigra_precondition(l < D.size() && m+l <= 2*l+1 &&
-                               n+l <= 2*l+1 && m+l >= 0 && n+l >= 0,
+            vigra_precondition(l < (int)D.size() && m+l <= 2*l+1 &&
+                               h+l <= 2*l+1 && m+l >= 0 && h+l >= 0,
                                message.c_str());
-            return D[l](n+l, m+l);
+            return D[l](h+l, m+l);
         }
         else 
         {
@@ -140,21 +141,13 @@ class WignerMatrix
           *
           * \retval PHresult PH expansion   
           */
-    void rotatePH(NestedArray const & PH, Real phi, Real theta, Real psi,
-                  NestedArray & PHresult);
+    void rotatePH(std::vector<std::vector<std::vector<vigra::FFTWComplex<Real> > > > const & PH, Real phi, Real theta, Real psi, std::vector<std::vector<std::vector<vigra::FFTWComplex<Real> > > >  & PHresult);
+
+    void rotateSH(std::vector<std::vector<vigra::FFTWComplex<Real> > >  const & SH, Real phi, Real theta, Real psi, std::vector<std::vector<vigra::FFTWComplex<Real> > > & SHresult);
+
 
 
   private:
-    // FIXME: is function is not called (and cannot be called from outside the class)
-    TinyVector<double,3> 
-    rot(TinyVector<double,3> const & vec, TinyVector<double,3> const & axis, double angle)
-    {
-        typedef Quaternion<double> Q;
-        Q qr = Q::createRotation(angle, axis),
-          qv(0.0, vec);
-        return (qr * qv * conj(qr)).v();
-    }
-
     int l_max;
     int cg1cnt;
     ArrayVector<double> CGcoeff;
@@ -194,27 +187,27 @@ template <class Real>
 void
 WignerMatrix<Real>::compute_D(int l, Real phi, Real theta, Real psi)
 {
-    double s = std::sin(theta);
-    double c = std::cos(theta);
+    Real s = std::sin(theta);
+    Real c = std::cos(theta);
     
-    Complex i(0.0, 1.0);
-    Complex eiphi = std::exp(i*phi);
-    Complex emiphi = std::exp(-i*phi);
-    Complex eipsi = std::exp(i*psi);
-    Complex emipsi = std::exp(-i*psi);
+    FFTWComplex<Real> i(0.0, 1.0);
+    FFTWComplex<Real> eiphi = exp(i*phi);
+    FFTWComplex<Real> emiphi = exp(-i*phi);
+    FFTWComplex<Real> eipsi = exp(i*psi);
+    FFTWComplex<Real> emipsi = exp(-i*psi);
     
     if (D.size() < (std::size_t)(l+1)) 
         D.resize(l+1);
     D[1].reshape(MultiArrayShape<2>::type(3,3));
     
     D[1](0,0) = emipsi * Complex(Real(0.5*(1.0+c))) * emiphi;
-    D[1](0,1) = Complex(Real(-s/M_SQRT2)) * emiphi;
-    D[1](0,2) = eipsi * Complex(Real(0.5*(1.0-c))) * emiphi;
-    D[1](1,0) = emipsi * Complex(Real(s/M_SQRT2));
+    D[1](1,0) = Complex(Real(-s/M_SQRT2)) * emiphi;
+    D[1](2,0) = eipsi * Complex(Real(0.5*(1.0-c))) * emiphi;
+    D[1](0,1) = emipsi * Complex(Real(s/M_SQRT2));
     D[1](1,1) = Complex(Real(c));
-    D[1](1,2) = eipsi * Complex(Real(-s/M_SQRT2));
-    D[1](2,0) = emipsi * Complex(Real(0.5*(1.0-c))) * eiphi; 
-    D[1](2,1) = Complex(Real(s/M_SQRT2)) * eiphi;
+    D[1](2,1) = eipsi * Complex(Real(-s/M_SQRT2));
+    D[1](0,2) = emipsi * Complex(Real(0.5*(1.0-c))) * eiphi; 
+    D[1](1,2) = Complex(Real(s/M_SQRT2)) * eiphi;
     D[1](2,2) = eipsi * Complex(Real(0.5*(1.0+c))) * eiphi;
 
     l_max = 1;
@@ -237,8 +230,6 @@ WignerMatrix<Real>::compute_D(int l)
     if (l==1)
     {
         //precompute D0 =1 and D1 = (90 degree rot)
-        // FIXME: signs are inconsistent with above explicit formula for 
-        //        theta = pi/2, phi=0, psi=0 (sine terms should be negated)
         D[1].reshape(MultiArrayShape<2>::type(3,3));
         D[1](0,0) = Real(0.5);
         D[1](0,1) = Real(0.5*M_SQRT2);
@@ -287,27 +278,56 @@ WignerMatrix<Real>::compute_D(int l)
 }
 
 template <class Real>
-void 
-WignerMatrix<Real>::rotatePH(NestedArray const & PH, Real phi, Real theta, Real psi,
-                             NestedArray & PHresult)
+void
+WignerMatrix<Real>::rotateSH(std::vector<std::vector< FFTWComplex<Real> > > const  & SH, 
+                             Real phi, Real theta, Real psi, 
+                             std::vector<std::vector< FFTWComplex<Real> > > & SHresult)
 {
-    int band = PH[1].size()-1;
+    int band = SH.size()-1;
+    compute_D(band, phi, theta, psi);
+
+    SHresult.resize(SH.size());
+
+    for (int l=0; l<(int)SH.size(); l++)
+    {
+        SHresult[l].resize(SH[l].size());
+        for(int m=-l; m<=l; m++)
+        {
+            Complex tmp = 0;
+            for (int h=-l; h<=l; h++)
+            {
+                tmp += get_d(l,h,m) * SH[l][h+l];
+            }
+
+            SHresult[l][m+l] = tmp;
+        }
+    }
+}
+
+
+template <class Real>
+void 
+WignerMatrix<Real>::rotatePH(std::vector<std::vector<std::vector< FFTWComplex<Real> > > > const  & PH, 
+                             Real phi, Real theta, Real psi,
+                             std::vector<std::vector<std::vector< FFTWComplex<Real> > > > & PHresult)
+{
+    int band = PH.size()-1;
     compute_D(band, phi, theta, psi);
 
     PHresult.resize(PH.size());
 
-    for(int n=1; n<=band; n++)
+    for(int n=1; n<(int)PH.size(); n++)
     {
-        PHresult[n].resize(band+1);
-        for (int l=0; l<=band; l++)
+        PHresult[n].resize(PH[n].size());
+        for (int l=0; l<(int)PH[n].size(); l++)
         {
-            PHresult[n][l].resize(2*band+1);
+            PHresult[n][l].resize(PH[n][l].size());
             for(int m=-l; m<=l; m++)
             {
                 Complex tmp = 0;
                 for (int h=-l; h<=l; h++)
                 {
-                    tmp += get_D(l,h,m) * PH[n][l][h+l];
+                    tmp += get_d(l,h,m) * PH[n][l][h+l];
                 }
 
                 PHresult[n][l][m+l] = tmp;
