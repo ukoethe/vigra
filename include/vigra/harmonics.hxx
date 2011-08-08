@@ -1045,8 +1045,9 @@ class PH_Iterator
     typedef int difference_type;
     typedef std::random_access_iterator_tag iterator_category;
 
-    PH_Iterator(std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > > >& data, int k, int l, int m)
-    : _data(data)
+    PH_Iterator(std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > > >& data, 
+                int k, int l, int m)
+    : _data(data),
       _k(k),
       _l(l),
       _m(m)
