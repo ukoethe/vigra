@@ -51,7 +51,7 @@ struct MultiMathOperand
 {
     typedef typename ARG::result_type result_type;
     
-    enum { ndim = ARG::ndim };
+    static const int ndim = ARG::ndim;
     
     MultiMathOperand(ARG const & a)
     : arg_(a)
@@ -104,7 +104,7 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
 
     typedef T result_type;
     
-    enum { ndim = N };
+    static const int ndim = (int)N;
     
     MultiMathOperand(MultiArrayView<N, T, C> const & a)
     : p_(a.data()),
@@ -181,7 +181,7 @@ struct MultiMathScalarOperand
     typedef MultiMathOperand<T> AllowOverload;
     typedef T result_type;
     
-    enum { ndim = 0 };
+    static const int ndim = 0;
     
     MultiMathScalarOperand(T const & v)
     : v_(v)
@@ -257,7 +257,7 @@ struct MultiMathUnaryOperator
 {
     typedef typename F::template Result<typename O::result_type>::type result_type;
     
-    enum { ndim = O::ndim };
+    static const int ndim = O::ndim;
                                     
     MultiMathUnaryOperator(O const & o)
     : o_(o)
@@ -405,7 +405,7 @@ struct MultiMathBinaryOperator
     typedef typename F::template Result<typename O1::result_type,
                                          typename O2::result_type>::type result_type;
                                     
-    enum { ndim = O1::ndim > O2::ndim ? O1::ndim : O2::ndim };
+    static const int ndim = O1::ndim > O2::ndim ? O1::ndim : O2::ndim;
     
     MultiMathBinaryOperator(O1 const & o1, O2 const & o2)
     : o1_(o1),
@@ -767,7 +767,7 @@ template <class T, class U>
 U
 sum(MultiMathOperand<T> const & v, U res) 
 { 
-    enum { ndim = MultiMathOperand<T>::ndim };
+    static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     detail::MultiMathReduce<ndim, detail::MultiMathplusAssign>::exec(res, shape, v);
@@ -778,7 +778,7 @@ template <class T, class U>
 U
 product(MultiMathOperand<T> const & v, U res) 
 { 
-    enum { ndim = MultiMathOperand<T>::ndim };
+    static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     detail::MultiMathReduce<ndim, detail::MultiMathmultiplyAssign>::exec(res, shape, v);
@@ -789,7 +789,7 @@ template <class T>
 bool
 all(MultiMathOperand<T> const & v) 
 { 
-    enum { ndim = MultiMathOperand<T>::ndim };
+    static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     bool res = true;
@@ -801,7 +801,7 @@ template <class T>
 bool
 any(MultiMathOperand<T> const & v) 
 { 
-    enum { ndim = MultiMathOperand<T>::ndim };
+    static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     bool res = false;
