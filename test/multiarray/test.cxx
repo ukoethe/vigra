@@ -291,7 +291,7 @@ public:
         }
     }
 
-    void testNorm ()
+    void testMethods ()
     {
         shouldEqual(array3.squaredNorm(), 332833500);
         
@@ -300,7 +300,7 @@ public:
         shouldEqual(array3.norm(1), 499500.0);
         shouldEqualTolerance(array3.norm(2, false), std::sqrt(332833500.0), 1e-14);
         
-        difference3_type first(0,0,0), last(0,1,1);
+        difference3_type first(0,0,0), last(1,1,1);
         shouldEqual(array3.subarray(first, last).norm(), 0.0);
         shouldEqual(array3.subarray(first, last).norm(0), 0.0);
         shouldEqual(array3.subarray(first, last).norm(1), 0.0);
@@ -308,6 +308,24 @@ public:
 
         shouldEqual(array3.squaredNorm(), squaredNorm(array3));
         shouldEqual(array3.norm(), vigra::norm(array3));
+
+        should(array3.any());
+        should(!array3.subarray(first, last).any());
+        should(!array3.all());
+        should(array3.subarray(last, array3.shape()).all());
+
+        shouldEqual(array3.sum(0), 499500);
+        shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).product(1), 183521184);
+
+        scalar_type minimum, maximum;
+        array3.minmax(minimum, maximum);
+        shouldEqual(minimum, 0);
+        shouldEqual(maximum, array3.size()-1);
+
+        double mean, variance;
+        array3.meanVariance(mean, variance);
+        shouldEqual(mean, 499.5);
+        shouldEqual(variance, 83333.25);
     }
     
     void testScanOrderAccess()
@@ -954,6 +972,39 @@ public:
         shouldEqual(&*i, &a3[shape3_t(0,0,0)]);
         shouldEqual(&i[shape3_t(2,3,4)], &a3[shape3_t(6,12,24)]);
         shouldEqual(&*(i+shape3_t(2,3,4)), &a3[shape3_t(6,12,24)]);
+    }
+
+    void test_expandElements()
+    {
+        using namespace multi_math;
+
+        MultiArray<3, TinyVector<int, 3> > a(Shape3(4,3,2));
+        a.init(TinyVector<int, 3>(1,2,3));
+
+        MultiArrayView<4, int, StridedArrayTag> ex = a.expandElements(0);
+        MultiArrayView<4, int, StridedArrayTag>::iterator i = ex.begin();
+        while(i != ex.end())
+        {
+            shouldEqual(*i, 1); ++i;
+            shouldEqual(*i, 2); ++i;
+            shouldEqual(*i, 3); ++i;
+        }
+
+        MultiArrayView<4, int, StridedArrayTag> ex2 = a.expandElements(3);
+        i = ex2.begin();
+        for(int k=0; k < a.size(); ++i, ++k)
+            shouldEqual(*i, 1);
+        for(int k=0; k < a.size(); ++i, ++k)
+            shouldEqual(*i, 2);
+        for(int k=0; k < a.size(); ++i, ++k)
+            shouldEqual(*i, 3);
+
+        MultiArray<3, bool> b = (a.bindElementChannel(0) == 1);
+        should(b.all());
+        b = (a.bindElementChannel(1) == 2);
+        should(b.all());
+        b = (a.bindElementChannel(2) == 3);
+        should(b.all());
     }
 };
 
@@ -2054,10 +2105,18 @@ public:
         shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
         shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
     
-        array3_type fails(shape3_type(2, 7,6));
+        shouldEqual(sum(b+0.5, 0.0), 300.0);
+        shouldEqual(product(b.subarray(Shape3(1,0,0), Shape3(2,2,2))+0.5, 1.0), 3024.0);
+
+        should(all(b > 0.0));
+        should(!all(b > 10.0));
+
+        should(any(b > 10.0));
+        should(!any(b > 100.0));
 
         try 
         {
+            array3_type fails(shape3_type(2, 7, 6));
             r1 = b * fails;
             failTest("shape mismatch exception not thrown");
         }
@@ -2279,6 +2338,38 @@ public:
                 for(int x=0; x<d.shape(0); ++x)
                     shouldEqual(d(x,y,z)+ss(y), r1(x,y,z));
     }
+
+    void testComplex()
+    {
+        using namespace vigra::multi_math;
+        MultiArray<3, std::complex<double> > ac(a.shape());
+        ac.init(std::complex<double>(2.0, 3.0));
+
+        MultiArray<3, std::complex<double> > bc = conj(ac);
+        for(int z=0; z<bc.shape(2); ++z)
+            for(int y=0; y<bc.shape(1); ++y)
+                for(int x=0; x<bc.shape(0); ++x)
+                    shouldEqual(bc(x,y,z), std::complex<double>(2.0, -3.0));
+
+        bc = ac + ac;
+        for(int z=0; z<bc.shape(2); ++z)
+            for(int y=0; y<bc.shape(1); ++y)
+                for(int x=0; x<bc.shape(0); ++x)
+                    shouldEqual(bc(x,y,z), std::complex<double>(4.0, 6.0));
+
+        a = real(ac);
+        for(int z=0; z<a.shape(2); ++z)
+            for(int y=0; y<a.shape(1); ++y)
+                for(int x=0; x<a.shape(0); ++x)
+                    shouldEqual(a(x,y,z), 2.0);
+
+        a = imag(ac);
+        for(int z=0; z<a.shape(2); ++z)
+            for(int y=0; y<a.shape(1); ++y)
+                for(int x=0; x<a.shape(0); ++x)
+                    shouldEqual(a(x,y,z), 3.0);
+    }
+
 };
 
 
@@ -2328,6 +2419,7 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_subarray ) );
         add( testCase( &MultiArrayTest::test_stridearray ) );
         add( testCase( &MultiArrayTest::test_copy_int_float ) );
+        add( testCase( &MultiArrayTest::test_expandElements ) );
 
         add( testCase( &MultiImpexTest::testImpex ) );
     }
@@ -2351,7 +2443,7 @@ struct MultiArrayDataTestSuite
         add( testCase( &MultiArrayDataTest::testIsUnstrided ) );
         add( testCase( &MultiArrayDataTest::test_singletonDimension ) );
         add( testCase( &MultiArrayDataTest::testPermute ) );
-        add( testCase( &MultiArrayDataTest::testNorm ) );
+        add( testCase( &MultiArrayDataTest::testMethods ) );
         add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
         add( testCase( &MultiArrayDataTest::testAssignmentAndReset ) );
         add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
@@ -2390,6 +2482,7 @@ struct MultiArrayPointOperatorsTestSuite
         add( testCase( &MultiMathTest::testComputedAssignment ) );
         add( testCase( &MultiMathTest::testNonscalarValues ) );
         add( testCase( &MultiMathTest::testMixedExpressions ) );
+        add( testCase( &MultiMathTest::testComplex ) );
     }
 }; // struct MultiArrayPointOperatorsTestSuite
 
