@@ -51,6 +51,8 @@ struct MultiMathOperand
 {
     typedef typename ARG::result_type result_type;
     
+    enum { ndim = ARG::ndim };
+    
     MultiMathOperand(ARG const & a)
     : arg_(a)
     {}
@@ -101,6 +103,8 @@ struct MultiMathOperand<MultiArrayView<N, T, C> >
     typedef typename MultiArrayShape<N>::type Shape;
 
     typedef T result_type;
+    
+    enum { ndim = N };
     
     MultiMathOperand(MultiArrayView<N, T, C> const & a)
     : p_(a.data()),
@@ -177,6 +181,8 @@ struct MultiMathScalarOperand
     typedef MultiMathOperand<T> AllowOverload;
     typedef T result_type;
     
+    enum { ndim = 0 };
+    
     MultiMathScalarOperand(T const & v)
     : v_(v)
     {}
@@ -250,6 +256,8 @@ template <class O, class F>
 struct MultiMathUnaryOperator
 {
     typedef typename F::template Result<typename O::result_type>::type result_type;
+    
+    enum { ndim = O::ndim };
                                     
     MultiMathUnaryOperator(O const & o)
     : o_(o)
@@ -383,6 +391,11 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Atan, std::atan, atan, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Floor, std::floor, floor, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Ceil, std::ceil, ceil, VIGRA_REALPROMOTE)
 
+VIGRA_MULTIMATH_UNARY_OPERATOR(Conj, conj, conj, T)
+VIGRA_MULTIMATH_UNARY_OPERATOR(Real, real, real, typename T::value_type)
+VIGRA_MULTIMATH_UNARY_OPERATOR(Imag, imag, imag, typename T::value_type)
+
+
 #undef VIGRA_REALPROMOTE
 #undef VIGRA_MULTIMATH_UNARY_OPERATOR
 
@@ -392,6 +405,8 @@ struct MultiMathBinaryOperator
     typedef typename F::template Result<typename O1::result_type,
                                          typename O2::result_type>::type result_type;
                                     
+    enum { ndim = O1::ndim > O2::ndim ? O1::ndim : O2::ndim };
+    
     MultiMathBinaryOperator(O1 const & o1, O2 const & o2)
     : o1_(o1),
       o2_(o2)
@@ -695,7 +710,105 @@ VIGRA_MULTIMATH_ASSIGN(divideAssign, /=)
 
 #undef VIGRA_MULTIMATH_ASSIGN
 
+template <unsigned int N, class Assign>
+struct MultiMathReduce
+{
+    enum { LEVEL = N-1 };
+    
+    template <class T, class Shape, class Expression>
+    static void exec(T & t, Shape const & shape, Expression const & e)
+    {
+        for(MultiArrayIndex k=0; k<shape[LEVEL]; ++k, e.inc(LEVEL))
+        {
+            MultiMathReduce<N-1, Assign>::exec(t, shape, e);
+        }
+        e.reset(LEVEL);
+    }
+};
+
+template <class Assign>
+struct MultiMathReduce<1, Assign>
+{
+    enum { LEVEL = 0 };
+    
+    template <class T, class Shape, class Expression>
+    static void exec(T & t, Shape const & shape, Expression const & e)
+    {
+        for(MultiArrayIndex k=0; k<shape[0]; ++k, e.inc(0))
+        {
+            Assign::assign(&t, e);
+        }
+        e.reset(0);
+    }
+};
+
+struct MultiMathReduceAll
+{
+    template <class T, class Expression>
+    static void assign(T * data, Expression const & e)
+    {
+        *data = *data && *e;
+    }
+};
+
+struct MultiMathReduceAny
+{
+    template <class T, class Expression>
+    static void assign(T * data, Expression const & e)
+    {
+        *data = *data || *e;
+    }
+};
+
+
 } // namespace detail
+
+template <class T, class U>
+U
+sum(MultiMathOperand<T> const & v, U res) 
+{ 
+    enum { ndim = MultiMathOperand<T>::ndim };
+    typename MultiArrayShape<ndim>::type shape;
+    v.checkShape(shape);
+    detail::MultiMathReduce<ndim, detail::MultiMathplusAssign>::exec(res, shape, v);
+    return res;
+}
+
+template <class T, class U>
+U
+product(MultiMathOperand<T> const & v, U res) 
+{ 
+    enum { ndim = MultiMathOperand<T>::ndim };
+    typename MultiArrayShape<ndim>::type shape;
+    v.checkShape(shape);
+    detail::MultiMathReduce<ndim, detail::MultiMathmultiplyAssign>::exec(res, shape, v);
+    return res;
+}
+
+template <class T>
+bool
+all(MultiMathOperand<T> const & v) 
+{ 
+    enum { ndim = MultiMathOperand<T>::ndim };
+    typename MultiArrayShape<ndim>::type shape;
+    v.checkShape(shape);
+    bool res = true;
+    detail::MultiMathReduce<ndim, detail::MultiMathReduceAll>::exec(res, shape, v);
+    return res;
+}
+
+template <class T>
+bool
+any(MultiMathOperand<T> const & v) 
+{ 
+    enum { ndim = MultiMathOperand<T>::ndim };
+    typename MultiArrayShape<ndim>::type shape;
+    v.checkShape(shape);
+    bool res = false;
+    detail::MultiMathReduce<ndim, detail::MultiMathReduceAny>::exec(res, shape, v);
+    return res;
+}
+
 
 }} // namespace vigra::multi_math
 
