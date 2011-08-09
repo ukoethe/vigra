@@ -631,7 +631,7 @@ struct MultiMathOperand<FFTWComplex<Real> >
     typedef MultiMathOperand<FFTWComplex<Real> > AllowOverload;
     typedef FFTWComplex<Real> result_type;
     
-    enum { ndim = 0 };
+    static const int ndim = 0;
     
     MultiMathOperand(FFTWComplex<Real> const & v)
     : v_(v)
