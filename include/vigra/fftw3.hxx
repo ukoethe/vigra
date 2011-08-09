@@ -180,6 +180,15 @@ class FFTWComplex
         data_[1] = o.data_[1];
     }
 
+        /** Copy constructor.
+        */
+    template <class U>
+    FFTWComplex(FFTWComplex<U> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
+    }
+
         /** Construct from plain <TT>fftw_complex</TT>.
         */
     FFTWComplex(fftw_complex const & o)
@@ -228,6 +237,16 @@ class FFTWComplex
     {
         data_[0] = o.data_[0];
         data_[1] = o.data_[1];
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    template <class U>
+    FFTWComplex& operator=(FFTWComplex<U> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
         return *this;
     }
 
@@ -611,6 +630,8 @@ struct MultiMathOperand<FFTWComplex<Real> >
 {
     typedef MultiMathOperand<FFTWComplex<Real> > AllowOverload;
     typedef FFTWComplex<Real> result_type;
+    
+    enum { ndim = 0 };
     
     MultiMathOperand(FFTWComplex<Real> const & v)
     : v_(v)
