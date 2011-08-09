@@ -627,11 +627,11 @@ struct MultiMathOperand<FFTWComplex<Real> >
     {
         return v_;
     }
-    
-    void inc(unsigned int LEVEL) const
+
+    void inc(unsigned int /*LEVEL*/) const
     {}
-    
-    void reset(unsigned int LEVEL) const
+
+    void reset(unsigned int /*LEVEL*/) const
     {}
     
     FFTWComplex<Real> const & operator*() const
