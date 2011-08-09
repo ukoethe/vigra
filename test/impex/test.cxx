@@ -559,10 +559,10 @@ class CanvasSizeTest
     void testTIFFCanvasSize ()
     {
         vigra::ImageExportInfo exportinfo ("res.tif");
+        FRGBImage img(1, 1);
 #if !defined(HasTIFF)
         failCodec(img, exportinfo);
 #else
-        FRGBImage img(1, 1);
         img(0,0) = 1;
         exportinfo.setCompression ("LZW");
         Size2D canvasSize(3, 8);
