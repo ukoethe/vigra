@@ -324,26 +324,6 @@ class FFTWComplex
         return *this;
     }
 
-        /** Plus-assign.
-        */
-    template <class U>
-    FFTWComplex& operator+=(FFTWComplex<U> const & o)
-    {
-        data_[0] += o.real();
-        data_[1] += o.imag();
-        return *this;
-    }
-
-        /** Minus-assign.
-        */
-    template <class U>
-    FFTWComplex& operator-=(FFTWComplex<U> const & o)
-    {
-        data_[0] -= o.real();
-        data_[1] -= o.imag();
-        return *this;
-    }
-
     reference re()
         { return data_[0]; }
 
