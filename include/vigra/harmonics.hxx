@@ -48,6 +48,7 @@
 #include "wigner-matrix.hxx"
 #include "clebsch-gordan.hxx"
 #include "multi_fft.hxx"
+#include "multi_math.hxx"
 #include "bessel.hxx"
 
 
@@ -90,6 +91,7 @@ eulerAngles(REAL sphereRadius_um,
             REAL gaussWidthAtHalfMaximum_um,
             TinyVector<REAL,3> voxelSize=TinyVector<REAL,3>(1.0))
 {
+    vigra_fail("eulerAngles is untested");
     REAL radiusLev = sphereRadius_um /voxelSize[0] + gaussWidthAtHalfMaximum_um*3;
     REAL radiusRow = sphereRadius_um /voxelSize[1] + gaussWidthAtHalfMaximum_um*3;
     REAL radiusCol = sphereRadius_um /voxelSize[2] + gaussWidthAtHalfMaximum_um*3;
@@ -149,6 +151,7 @@ binarySphereREAL(REAL radius_um,
                  REAL gaussWidthAtHalfMaximum_um, 
                  TinyVector<REAL,3> voxelSize=TinyVector<REAL,3>(1.0))
 {
+    vigra_fail("binarySphereREAL is untested");
     REAL kernelRadius_um = radius_um;// + gaussWidthAtHalfMaximum_um*3;
     REAL radiusLev = kernelRadius_um /voxelSize[0] + gaussWidthAtHalfMaximum_um*3 ;
     REAL radiusRow = kernelRadius_um /voxelSize[1] + gaussWidthAtHalfMaximum_um*3;
@@ -305,6 +308,9 @@ sphereVecHarmonic(MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >  & res,
                   REAL radius, REAL gauss, 
                   int l, int k, int m)
 {
+    vigra_fail("sphereVecHarmonic is untested");
+    using namespace multi_math;
+    
     //std::cerr<<"computing VH: "<<l<<" "<<k<<" "<<m<<"\n";
     //1-m
     MultiArray<3,FFTWComplex<REAL> > tmpSH;
@@ -314,18 +320,20 @@ sphereVecHarmonic(MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >  & res,
     {
         if (abs(1-m)>l) 
             throw err;
-        FFTWComplex<REAL> cg;
-        cg.real() = clebschGordan(l+k, m, l, 1-m, 1, 1);
-        cg.imag() = 0;
-        sphereSurfHarmonic(tmpSH,radius, gauss, l, 1-m, false);
+        FFTWComplex<REAL> cg(clebschGordan(l+k, m, l, 1-m, 1, 1));
+
+        sphereSurfHarmonic(tmpSH,radius, gauss, l, 1-m, false);        
+        // res.bindElementChannel(0) = cg * tmpSH;
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         typename MultiArray<3,FFTWComplex<REAL> >::iterator q = tmpSH.begin();
         for (;q!=tmpSH.end();++p,++q)
             (*p)[0] = cg * *q;
     }
-    catch(InvariantViolation &err) //in case clebsh gordan dilivers invalid combination
+    catch(InvariantViolation &) //in case clebsh gordan dilivers invalid combination
     {
-        //std::cerr<<"no Z\n";
+        // res.bindElementChannel(0).init(0.0);
+        
+        // //std::cerr<<"no Z\n";
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         for (; p!=res.end();++p)
             (*p)[0] = (REAL)0;
@@ -335,16 +343,18 @@ sphereVecHarmonic(MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >  & res,
     {
         if (abs(-m)>l) 
             throw err;
-        FFTWComplex<REAL> cg;
-        cg.real() = clebschGordan(l+k, m, l, -m, 1, 0);
+        FFTWComplex<REAL> cg(clebschGordan(l+k, m, l, -m, 1, 0));
         sphereSurfHarmonic(tmpSH,radius, gauss, l, 1-m, false);
+        // res.bindElementChannel(1) = cg * tmpSH;
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         typename MultiArray<3,FFTWComplex<REAL> >::iterator q = tmpSH.begin();
         for (;q!=tmpSH.end();++p,++q)
             (*p)[1] = cg * *q;
     }
-    catch(InvariantViolation &err) //in case clebsh gordan dilivers invalid combination
+    catch(InvariantViolation &) //in case clebsh gordan dilivers invalid combination
     {
+        // res.bindElementChannel(1).init(0.0);
+        
         //std::cerr<<"no Y\n";
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         for (; p!=res.end();++p)
@@ -356,17 +366,19 @@ sphereVecHarmonic(MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >  & res,
     {
         if (abs(-(1+m))>l) 
             throw err;
-        FFTWComplex<REAL> cg;
-        cg.real() = clebschGordan(l+k, m, l, -(1+m), 1, -1);
-        cg.imag() = 0;
+        FFTWComplex<REAL> cg(clebschGordan(l+k, m, l, -(1+m), 1, -1));
         sphereSurfHarmonic(tmpSH,radius, gauss, l, -(m+1), false);
+        // res.bindElementChannel(2) = cg * tmpSH;
+        
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         typename MultiArray<3,FFTWComplex<REAL> >::iterator q = tmpSH.begin();
         for (;q!=tmpSH.end();++p,++q)
             (*p)[0] = cg * *q;
     }
-    catch(InvariantViolation &err) //in case clebsh gordan dilivers invalid combination
+    catch(InvariantViolation &) //in case clebsh gordan dilivers invalid combination
     {
+        // res.bindElementChannel(2).init(0.0);
+        
         //std::cerr<<"no X\n";
         typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >::iterator p = res.begin();
         for (; p!=res.end();++p)
@@ -506,6 +518,7 @@ sphereFullVecHarmonic(MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > >& output,
                       int n, int l, int k, int m, 
                       TinyVector<REAL,3> voxelSize=TinyVector<REAL,3>(1.0))
 {
+    vigra_fail("sphereFullVecHarmonic is untested");
     REAL radiusLev = sphereRadius_um / voxelSize[0] +3;
     REAL radiusRow = sphereRadius_um / voxelSize[1] +3;
     REAL radiusCol = sphereRadius_um / voxelSize[2] +3;
@@ -612,7 +625,7 @@ computePHbaseF(REAL radius, unsigned int band,
     //n=0 undefined
     int mMin;
     int mOff;
-    //for real data one only needs posstive coeefs (symmetry)
+    //for real data one only needs positive coeffs (symmetry)
     for (int n = 1; n <= (int)band; n++)
     {
         PHbaseF[n].resize(band + 1);
@@ -647,6 +660,7 @@ void
 computeVHbaseF(REAL radius, REAL gauss, unsigned int band, 
                std::vector<std::vector<std::vector<MultiArray<3, TinyVector<FFTWComplex<REAL>,3> > > > > &VHbaseF)
 {
+    vigra_fail("computeVHbaseF is untested");
     VHbaseF.resize(band + 1);
 
     for (int l = 0; l <= band; l++)
@@ -672,6 +686,7 @@ void
 computeVPHbaseF(REAL radius, unsigned int band, 
                 std::vector<std::vector<std::vector<std::vector<MultiArray<3, TinyVector< FFTWComplex<REAL>,3 > > > > > >&VHbaseF)
 {
+    vigra_fail("computeVPHbaseF is untested");
     VHbaseF.resize(band + 1);
     for(int n=0; n>= band; n++)
     {
@@ -702,6 +717,7 @@ MultiArray<3,REAL>
 sphereSurfGauss(REAL sphereRadius_um, REAL gaussWidthAtHalfMaximum_um, 
                 TinyVector<REAL,3> voxelSize=TinyVector<REAL,3>(1.0))
 {
+    vigra_fail("sphereSurfGauss is untested");
     REAL kernelRadius_um = sphereRadius_um;;
     REAL radiusLev = kernelRadius_um /voxelSize[0] + gaussWidthAtHalfMaximum_um*3;
     REAL radiusRow = kernelRadius_um /voxelSize[1] + gaussWidthAtHalfMaximum_um*3;
@@ -751,6 +767,8 @@ reconstSH(REAL radius, REAL gauss, unsigned int band,
           const std::vector<std::vector<FFTWComplex<REAL> >  >& SH_A, 
           const std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > >& SHbaseF)
 {
+    using namespace multi_math;
+    
     //FIXME reconstSH currently only works for real data
     reconstruct.reshape(SHbaseF[0][0].shape());
 
@@ -760,6 +778,7 @@ reconstSH(REAL radius, REAL gauss, unsigned int band,
     {
         for (int m=-l;m<=l;m++)
         {
+            // reconstruct += real(SHbaseF[l][l+m] * conj(SH_A[l][l+m]));
             typename MultiArray<3,FFTWComplex<REAL> >::iterator p=SHbaseF[l][l+m].begin();
             typename MultiArray<3,REAL >::iterator q=reconstruct.begin();
             for (;q!=reconstruct.end();++p,++q)
@@ -775,6 +794,8 @@ reconstPH(REAL radius, unsigned int band,
           const std::vector<std::vector<std::vector<FFTWComplex<REAL> >  > >& PH_A, 
           std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > > > &PHbaseF)
 {
+    using namespace multi_math;
+    
     //FIXME reconstPH currently only works for real data
     reconstruct.reshape(PHbaseF[1][0][0].shape(), 0);
 
@@ -784,6 +805,7 @@ reconstPH(REAL radius, unsigned int band,
         {
             for (int m=0;m<(int)PH_A[n][l].size();m++)
             {
+                // reconstruct += real(PHbaseF[n][l][m] * conj(PH_A[n][l][m]));
                 typename MultiArray<3,FFTWComplex<REAL> >::iterator p = PHbaseF[n][l][m].begin();
                 typename MultiArray<3, REAL >::iterator q=reconstruct.begin();
                 for (;q!=reconstruct.end();++q,++p)
@@ -799,6 +821,9 @@ reconstVPH(REAL radius, unsigned int band,
            MultiArray<3, TinyVector<REAL,3> >& reconstruct, 
            const std::vector<std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > >& VPH_A)
 {
+    vigra_fail("reconstVPH is untested");
+    using namespace multi_math;
+    
     MultiArray<3, TinyVector<FFTWComplex<REAL>,3 > > base_tmp;
     sphereVecHarmonic(base_tmp, radius, 1, 0, 0, 0);
     reconstruct.reshape(base_tmp.shape());
@@ -815,6 +840,8 @@ reconstVPH(REAL radius, unsigned int band,
                 for (int m=-(l+k);m<=(l+k);m++)
                 {
                     sphereVecHarmonic(base_tmp, radius, n, l, k, m);
+                    
+                    // tmp += conj(VPH_A[n][l][k+1][(l+k)+m]) * base_tmp;
                     typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3> >::iterator p=tmp.begin();
                     typename MultiArray< 3, TinyVector<FFTWComplex<REAL>,3 > >::iterator q=base_tmp.begin();
                     for (;q!=base_tmp.end();++p,++q)
@@ -827,6 +854,10 @@ reconstVPH(REAL radius, unsigned int band,
             }
         }
     }
+    
+    // reconstruct.bindElementChannel(0) = real(tmp.bindElementChannel(1));
+    // reconstruct.bindElementChannel(1) = -sqrt(2.0)*real(tmp.bindElementChannel(0));
+    // reconstruct.bindElementChannel(1) = sqrt(2.0)*imag(tmp.bindElementChannel(0));
     //reconst real vec directions
     typename MultiArray<3, TinyVector<REAL,3> >::iterator p=reconstruct.begin();
     typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3> >::iterator q=tmp.begin();
@@ -844,7 +875,9 @@ reconstVH(REAL radius, REAL gauss, unsigned int band,
           MultiArray<3, TinyVector<REAL,3> >& reconstruct,
           const std::vector<std::vector<std::vector<FFTWComplex<REAL> > > >& VH_A)
 {
-
+    vigra_fail("reconstVH is untested");
+    using namespace multi_math;
+    
     MultiArray< 3, TinyVector<FFTWComplex<REAL>,3 > > base_tmp;
     sphereVecHarmonic(base_tmp, radius, gauss, 0, 0, 0);
     reconstruct.reshape(base_tmp.shape());
@@ -859,6 +892,8 @@ reconstVH(REAL radius, REAL gauss, unsigned int band,
             for (int m=-(l+k);m<=(l+k);m++)
             {
                 sphereVecHarmonic(base_tmp, radius, gauss, l, k, m);
+                // tmp += conj(VH_A[l][k+1][(l+k)+m]) * base_tmp;
+                
                 typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3> >::iterator p=tmp.begin();
                 typename MultiArray< 3, TinyVector<FFTWComplex<REAL>,3 > >::iterator q=base_tmp.begin();
                 for (;q!=base_tmp.end();++p,++q)
@@ -871,6 +906,9 @@ reconstVH(REAL radius, REAL gauss, unsigned int band,
         }
     }
 
+    // reconstruct.bindElementChannel(0) = real(tmp.bindElementChannel(1));
+    // reconstruct.bindElementChannel(1) = -sqrt(2.0)*real(tmp.bindElementChannel(0));
+    // reconstruct.bindElementChannel(1) = sqrt(2.0)*imag(tmp.bindElementChannel(0));
     //reconst real vec directions
     typename MultiArray<3, TinyVector<REAL,3> >::iterator p=reconstruct.begin();
     typename MultiArray<3, TinyVector<FFTWComplex<REAL>,3> >::iterator q=tmp.begin();
@@ -1163,6 +1201,7 @@ PHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> >  > > &PH_A,
       std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > > > &PHbaseF,
       const TinyVector<REAL, 3> &pos)
 {
+    using namespace multi_math;
     PH_A.resize(PHbaseF.size());
 
     for (int n=1;n<(int)PHbaseF.size();n++)
@@ -1180,6 +1219,11 @@ PHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> >  > > &PH_A,
                 int ye = ya + coffShape[1] - 1;
                 int za = (int) floor(pos[0] - coffShape[0] / 2);
                 int ze = za + coffShape[0] - 1;
+                
+                // PH_A[n][l][m] = sum(A.subarray(Shape3(za,ya,xa),Shape3(ze,ye,xe))*PHbaseF[n][l][m],
+                                    // FFTWComplex<double>());
+
+
                 PH_A[n][l][m] = (REAL)0;
                 int sz=0;
                 int sy=0;
@@ -1217,6 +1261,7 @@ Array2PH(std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> >  >
          const MultiArray<3,FFTWComplex<REAL> > &A, 
          fftwf_plan forward_plan, fftwf_plan backward_plan)
 {
+    vigra_fail("Array2PH is untested");
     std::vector<std::vector<std::vector<MultiArray<3,FFTWComplex<REAL> > > > > PHbaseF;
     computePHbaseF(radius, band, PHbaseF, realData);
 
@@ -1440,6 +1485,10 @@ VHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > &VH_A,
       const MultiArray<3,TinyVector<REAL,3> > &A, 
       const TinyVector<REAL, 3> &pos)
 {
+    using namespace multi_math;
+    
+    vigra_fail("VHpos is untested");
+    
     //transform input to C^(2j+1)
     MultiArray< 3,FFTWComplex<REAL> >  inputZ(A.shape());
     MultiArray< 3,FFTWComplex<REAL> >  inputY(A.shape());
@@ -1448,6 +1497,14 @@ VHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > &VH_A,
     typename MultiArray< 3,FFTWComplex<REAL> >::iterator y=inputY.begin();
     typename MultiArray< 3,FFTWComplex<REAL> >::iterator x=inputX.begin();
 
+    // double one_over_sqrt_2 = 1.0 / M_SQRT2;
+    
+    // inputZ.bindElementChannel(0) = A.bindElementChannel(1) * -one_over_sqrt_2;
+    // inputZ.bindElementChannel(1) = A.bindElementChannel(2) * -one_over_sqrt_2;
+    // inputY.bindElementChannel(0) = A.bindElementChannel(0);
+    // inputX.bindElementChannel(0) = A.bindElementChannel(1) * one_over_sqrt_2;
+    // inputX.bindElementChannel(1) = A.bindElementChannel(2) * -one_over_sqrt_2;
+    
     for (typename MultiArray<3,TinyVector<REAL,3> >::const_iterator p=A.begin();p!=A.end();++p,++z,++y,++x)
     {
         z->real() = -(*p)[1];
@@ -1480,7 +1537,12 @@ VHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > &VH_A,
             ye = ya + vh.shape()[1] - 1;
             za = (int) floor(pos[0] - vh.shape()[0] / 2);
             ze = za + vh.shape()[0] - 1;
-
+            
+            // MultiArrayView<4, FFTWComplex<REAL>, StridedArrayTag > zsub = 
+                // inputZ.subarray(Shape3(za,ya,xa),Shape3(ze,ye,xe)).insertSingletonDimension(0);
+            
+            // VH_A[0][1+k][1+m] = sum(zsub * vh.expandElements(0) / norm, FFTWComplex<double>());
+            
             int zs=0;
             int ys=0;
             int xs=0;
@@ -1513,6 +1575,11 @@ VHpos(std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > &VH_A,
                 ye = ya + vh.shape()[1] - 1;
                 za = (int) floor(pos[0] - vh.shape()[0] / 2);
                 ze = za + vh.shape()[0] - 1;
+                
+                // MultiArrayView<4, FFTWComplex<REAL>, StridedArrayTag > zsub = 
+                    // inputZ.subarray(Shape3(za,ya,xa),Shape3(ze,ye,xe)).insertSingletonDimension(0);
+                
+                // VH_A[l][1+k][1+m] = sum(zsub * vh.expandElements(0) / norm, FFTWComplex<double>());
 
                 int zs=0;
                 for (int z=za;z!=ze;z++,zs++)
@@ -1547,11 +1614,24 @@ VPHpos(std::vector<std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > >
        unsigned int band, REAL radius, 
        const MultiArray<3, TinyVector<REAL,3> > &A, const TinyVector<REAL, 3> pos)
 {
+    using namespace multi_math;
+    
+    vigra_fail("VPHpos is untested");
+    
     REAL gauss = 1;
     //transform input to C^(2j+1)
     MultiArray< 3,FFTWComplex<REAL> >  inputZ(A.shape());
     MultiArray< 3,FFTWComplex<REAL> >  inputY(A.shape());
     MultiArray< 3,FFTWComplex<REAL> >  inputX(A.shape());
+    
+    // double one_over_sqrt_2 = 1.0 / M_SQRT2;
+    
+    // inputZ.bindElementChannel(0) = A.bindElementChannel(1) * -one_over_sqrt_2;
+    // inputZ.bindElementChannel(1) = A.bindElementChannel(2) * -one_over_sqrt_2;
+    // inputY.bindElementChannel(0) = A.bindElementChannel(0);
+    // inputX.bindElementChannel(0) = A.bindElementChannel(1) * one_over_sqrt_2;
+    // inputX.bindElementChannel(1) = A.bindElementChannel(2) * -one_over_sqrt_2;
+    
     typename MultiArray< 3,FFTWComplex<REAL> >::iterator z=inputZ.begin();
     typename MultiArray< 3,FFTWComplex<REAL> >::iterator y=inputY.begin();
     typename MultiArray< 3,FFTWComplex<REAL> >::iterator x=inputX.begin();
@@ -1594,6 +1674,12 @@ VPHpos(std::vector<std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > >
                 za = (int) floor(pos[0] - vh.shape()[0] / 2);
                 ze = za + vh.shape()[0] - 1;
 
+                // MultiArrayView<4, FFTWComplex<REAL>, StridedArrayTag > zsub = 
+                    // inputZ.subarray(Shape3(za,ya,xa),Shape3(ze,ye,xe)).insertSingletonDimension(0);
+
+                // VH_A[n][0][1+k][1+m] = sum(zsub * vh.expandElements(0) / norm, 
+                                            // FFTWComplex<double>());
+                
                 int zs=0;
                 for (int z=za;z!=ze;z++,zs++)
                 {
@@ -1626,6 +1712,11 @@ VPHpos(std::vector<std::vector<std::vector<std::vector<FFTWComplex<REAL> > > > >
                     ye = ya + vh.shape()[1] - 1;
                     za = (int) floor(pos[0] - vh.shape()[0] / 2);
                     ze = za + vh.shape()[0] - 1;
+
+                    // MultiArrayView<4, FFTWComplex<REAL>, StridedArrayTag > zsub = 
+                        // inputZ.subarray(Shape3(za,ya,xa),Shape3(ze,ye,xe)).insertSingletonDimension(0);
+                    // VH_A[n][l][1+k][1+m] = sum(zsub * vh.expandElements(0) / norm, 
+                                                // FFTWComplex<double>());
 
                     int zs=0;
                     int ys=0;
