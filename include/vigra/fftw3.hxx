@@ -753,8 +753,8 @@ class allocator<vigra::FFTWComplex<Real> >
     {
         return (pointer)fftw_malloc(count * sizeof(value_type));
     }
-    
-    void deallocate(pointer ptr, size_type count)
+
+    void deallocate(pointer ptr, size_type /*count*/)
     {
         fftw_free(ptr);
     }
@@ -1025,6 +1025,7 @@ inline FFTWComplex<R> fct(const FFTWComplex<R> &a) \
     return std::fct(reinterpret_cast<std::complex<R> const &>(a)); \
 }
 
+VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(arg)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cos)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cosh)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(exp)

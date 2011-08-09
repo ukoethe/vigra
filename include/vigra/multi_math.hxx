@@ -345,6 +345,9 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(BitwiseNot, ~, operator~, T)
 using vigra::abs;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Abs, vigra::abs, abs, T)
 
+using vigra::arg;
+VIGRA_MULTIMATH_UNARY_OPERATOR(Arg, vigra::arg, arg, typename NumericTraits<T>::Promote)
+
 using vigra::erf;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Erf, vigra::erf, erf, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Even, vigra::even, even, bool)
@@ -371,7 +374,8 @@ using vigra::gamma;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Loggamma, vigra::loggamma, loggamma, VIGRA_REALPROMOTE)
 
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sqrt, std::sqrt, sqrt, VIGRA_REALPROMOTE)
-VIGRA_MULTIMATH_UNARY_OPERATOR(Exp, std::exp, exp, VIGRA_REALPROMOTE)
+using vigra::exp;
+VIGRA_MULTIMATH_UNARY_OPERATOR(Exp, vigra::exp, exp, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Log, std::log, log, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Log10, std::log10, log10, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sin, std::sin, sin, VIGRA_REALPROMOTE)

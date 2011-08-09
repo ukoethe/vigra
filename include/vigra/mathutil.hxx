@@ -1363,7 +1363,7 @@ REAL loggammaImpl(REAL x)
                                7.77942496381893596434e-04,
                                7.32668430744625636189e-06 };
         double i = std::floor(x);
-        double t = 0.0;
+        //double t = 0.0;
         double y = x-i;
         double p = y*(s[0]+y*(s[1]+y*(s[2]+y*(s[3]+y*(s[4]+y*(s[5]+y*s[6]))))));
         double q = 1.0+y*(r[1]+y*(r[2]+y*(r[3]+y*(r[4]+y*(r[5]+y*r[6])))));
