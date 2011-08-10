@@ -84,7 +84,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
         {
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
         
-        gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), params());
+            gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), params());
             combineTwoMultiArrays(srcMultiArrayRange(grad), srcMultiArray(res), destMultiArray(res), 
                                   squaredNorm(Arg1())+Arg2());
         }
@@ -101,7 +101,7 @@ pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
                             unsigned int yorder,
                             NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");    
+    res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");
     
     rieszTransformOfLOG(srcImageRange(image), destImage(res),
         scale, xorder, yorder);
@@ -184,7 +184,7 @@ pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
     {
         PyAllowThreads _pythread;
-    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
+        hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
     }
     return res;
 }
@@ -200,7 +200,7 @@ pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.shape(), "hessianOfGaussian(): Output array has wrong shape.");
     {
         PyAllowThreads _pythread;
-    hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), params());
+        hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), params());
     }
     return res;
 }
@@ -223,8 +223,8 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
     MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(0);
     {
         PyAllowThreads _pythread;
-        structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), 
-                              params());
+        structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res),
+                                  params());
         
         
         if(image.shape(N-1) > 1)

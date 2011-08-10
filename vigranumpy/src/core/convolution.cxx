@@ -180,7 +180,7 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > volume,
         {
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        gaussianSmoothMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), params());
+            gaussianSmoothMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), params());
         }
     }
     return res;
@@ -293,7 +293,7 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > image,
         {
             MultiArrayView<N-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
             MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-	    laplacianOfGaussianMultiArray(srcMultiArrayRange(bimage), destMultiArray(bres), params());
+            laplacianOfGaussianMultiArray(srcMultiArrayRange(bimage), destMultiArray(bres), params());
         }
     }
     return res;
