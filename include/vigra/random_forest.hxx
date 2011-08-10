@@ -905,6 +905,9 @@ void RandomForest<LabelType, PreprocessorTag>::
 
     // See rf_preprocessing.hxx for more info on this
     typedef Processor<PreprocessorTag,LabelType, U, C1, U2, C2> Preprocessor_t;
+
+    vigra_precondition(features.shape(0) == response.shape(0),
+        "RandomForest::learn(): shape mismatch between features and response.");
     
     // default values and initialization
     // Value Chooser chooses second argument as value if first argument
