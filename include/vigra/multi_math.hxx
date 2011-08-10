@@ -747,7 +747,7 @@ struct MultiMathReduceAll
     template <class T, class Expression>
     static void assign(T * data, Expression const & e)
     {
-        *data = *data && *e;
+        *data = *data && (*e != NumericTraits<typename Expression::result_type>::zero());
     }
 };
 
@@ -756,7 +756,7 @@ struct MultiMathReduceAny
     template <class T, class Expression>
     static void assign(T * data, Expression const & e)
     {
-        *data = *data || *e;
+        *data = *data || (*e != NumericTraits<typename Expression::result_type>::zero());
     }
 };
 
