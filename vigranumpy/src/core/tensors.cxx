@@ -349,9 +349,17 @@ void defineTensor()
         registerConverters(&pythonGaussianGradientND<float,2>),
         (arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the gradient vector by means of a 1st derivative of "
-        "Gaussian filter at the given scale for a 2D scalar image.\n"
-        "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
+        "Gaussian filter at the given scale for a 2D scalar image.\n\n"
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see gaussianGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianGradient",
         registerConverters(&pythonGaussianGradientND<float,3>),
@@ -371,9 +379,17 @@ void defineTensor()
         "Gaussian filter at the given scale for a 2D scalar or multiband image.\n"
         "If 'accumulate' is True (the default), the gradients are accumulated (in the "
         "L2-norm sense) over all  channels of a multi-channel array. Otherwise, "
-        "a separate gradient magnitude is computed for each channel.\n"
-        "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
+        "a separate gradient magnitude is computed for each channel.\n\n"
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see gaussianGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianGradientMagnitude",
         registerConverters(&pythonGaussianGradientMagnitude<float,4>),
@@ -385,7 +401,10 @@ void defineTensor()
         (arg("image"), arg("out")=python::object(), arg("step_size")=1.0),
         "Calculate gradient of a scalar 2D image using symmetric difference filters."
         "\n"
-        "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.\n");
+        "The optional tuple or list 'step_size' denotes the distance between two "
+        "adjacent pixels for each dimension; its length must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see symmetricGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,3>), 
@@ -398,7 +417,16 @@ void defineTensor()
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D scalar image.\n"
         "\n"
-        "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see hessianOfGaussianMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("hessianOfGaussian3D",
         registerConverters(&pythonHessianOfGaussian3D<float>),
@@ -417,9 +445,19 @@ void defineTensor()
     	(arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the structure tensor of an image by means of Gaussian "
         "(derivative) filters at the given scales. If the input has multiple channels, "
-        "the structure tensors of each channel are added to get the result.\n"
-        "\n"
-        "For details see structureTensorMultiArray_ in the vigra C++ documentation.\n");
+        "the structure tensors of each channel are added to get the result.\n\n"
+        "If 'innerScale' and 'outerScale' are single values, "
+        "isotropic filters at these scales are "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'innerScale' and / or 'outerScale' are are tuples or lists of "
+        "values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see structureTensorMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("structureTensor",
         registerConverters(&pythonStructureTensor<float,4>),

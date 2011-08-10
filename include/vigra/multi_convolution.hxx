@@ -231,8 +231,10 @@ struct multiArrayScaleParam
     }
 
 
-/**\Options class for convolutions.
+/** \brief  Options class template for convolutions.
  
+  <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
   <b>usage:</b>
  
   \code
@@ -243,12 +245,60 @@ struct multiArrayScaleParam
   ConvolutionOptions<2> opt = ConvolutionOptions<2>()
                               .stdDev(2.8)
                               .resolutionStdDev(r_sigmas)
-                              .stepSize(step_size)
-                              .outerScale(1.1, 1.7);
+                              .outerScale(1.1, 1.7)
+                              .stepSize(step_size);
+
+  MultiArray<2, double>                 test_image;
+  MultiArray<2, TinyVector<double, 3> > out(test_image.shape());
+  structureTensorMultiArray(srcMultiArrayRange(test_image),
+                            destMultiArray(out),
+                            opt);
   \endcode
  
-  Note that the return value of all methods is <tt>*this</tt> which makes
-  concatenating of options as above possible.
+  The <tt>ConvolutionOptions</tt> class must be parameterized by the dimension
+  <tt>dim</tt>
+  of the <tt>MultiArray</tt>s on which it is used. The actual per-axis
+  options are set by the (overloaded) member functions explained below,
+  or else default to neutral values corresponding to the absence of the
+  particular option.
+  
+  <tt>stdDev():</tt> Standard deviation(s) of scale space operators,
+  or <tt>innerScale</tt> for \ref structureTensorMultiArray(). Usually not
+  required, since a single value for all axes may be specified as a parameter
+  <tt>sigma</tt> to the call of
+  an convolution operator such as \ref gaussianGradientMultiArray(), and
+  anisotropic data requiring the use of the <tt>stepSize()</tt> options.
+  Default: <tt>dim</tt> values of 0.0
+  
+  <tt>resolutionStdDev():</tt> Resolution standard deviation(s) per axis,
+  i.e., a supposed pre-existing filtering by this value. The 
+  standard deviation actually used by the convolution operators
+  is <tt>sqrt(stdDev^2 - resolutionStdDev^2)</tt> (not taking the step
+  size into account, see below).
+  Default: <tt>dim</tt> values of 0.0
+
+  <tt>outerScale():</tt>  Outer scale(s): Standard deviation(s) of the second
+  convolution, used by the structure tensor.
+  Default: <tt>dim</tt> values of 0.0
+
+  <tt>stepSize():</tt> Step size(s) per axis, i.e., the distance between two
+  adjacent pixels. Note that a convolution containing a derivative operator
+  of order <tt>d</tt> results in a multiplication by <tt>stepSize^(-d)</tt>.
+  Also, the above standard deviations are scaled according to the step size
+  of each axis.
+  Default: <tt>dim</tt> values of 1.0
+
+  All member functions set <tt>dim</tt> values of the respective convolution
+  option, one for each dimension. They may be set explicitly by multiple
+  arguments for up to five dimensions, or by a single argument to the same
+  value for all dimensions. For the general case, a single argument that is
+  either a C-syle array, an iterator, or a C++ standard library style
+  sequence (such as <tt>std::vector</tt>, with member functions <tt>begin()</tt>
+  and <tt>size()</tt>) supplies the option values for any number of dimensions.
+  
+  Note that the return value of all member functions is <tt>*this</tt>, which
+  makes concatenating of options as above possible.
+
 */
 template <unsigned dim>
 class ConvolutionOptions
@@ -288,28 +338,20 @@ class ConvolutionOptions
         return outer.stdDev(outer_scale()).resolutionStdDev(0.0);
     }
 
-        /**\brief Standard deviation of scale space operators.
-         *
-         * <br> Default: dim values of 0.0
-         */
+    // Standard deviation of scale space operators.
+    // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
 
-        /**\brief Resolution standard deviation per axis.
-         *
-         * <br> Default: dim values of 0.0
-         */
+    // Resolution standard deviation per axis.
+    // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_d)
 
-        /**\brief Step size per axis.
-         *
-         * <br> Default: dim values of 1.0
-         */
+    // Step size per axis.
+    // Default: dim values of 1.0
     VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size)
 
-        /**\brief Outer scale, for structure tensor.
-         *
-         * <br> Default: dim values of 0.0
-         */
+    // Outer scale, for structure tensor.
+    // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(outerScale, 0.0, outer_scale)
 
 };
@@ -666,16 +708,17 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
 /** \brief Isotropic Gaussian smoothing of a multi-dimensional arrays.
 
-    This function computes an isotropic convolution of the given multi-dimensional
+    This function computes an isotropic convolution of the given N-dimensional
     array with a Gaussian filter at the given standard deviation <tt>sigma</tt>.
     Both source and destination arrays are represented by
     iterators, shape objects and accessors. The destination array is required to
     already have the correct size. This function may work in-place, which means
     that <tt>siter == diter</tt> is allowed. It is implemented by a call to
     \ref separableConvolveMultiArray() with the appropriate kernel.
-    If the data are anisotropic (different pixel size along different dimensions)
-    you should call \ref separableConvolveMultiArray() directly with the appropriate
-    anisotropic Gaussians.
+
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is left out.
 
     <b> Declarations:</b>
 
@@ -687,7 +730,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
         void
         gaussianSmoothMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                  DestIterator diter, DestAccessor dest,
-                                 double sigma);
+                                 double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -699,7 +742,7 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
         void
         gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                  pair<DestIterator, DestAccessor> const & dest,
-                                 double sigma);
+                                 double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -783,7 +826,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
 /** \brief Calculate Gaussian gradient of a multi-dimensional arrays.
 
-    This function computes the Gaussian gradient of the given multi-dimensional
+    This function computes the Gaussian gradient of the given N-dimensional
     array with a sequence of first-derivative-of-Gaussian filters at the given
     standard deviation <tt>sigma</tt> (differentiation is applied to each dimension
     in turn, starting with the innermost dimension). Both source and destination arrays
@@ -791,9 +834,10 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     required to have a vector valued pixel type with as many elements as the number of
     dimensions. This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
-    If the data are anisotropic (different pixel size along different dimensions)
-    you should call \ref separableConvolveMultiArray() directly with the appropriate
-    anisotropic Gaussian derivatives.
+
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is left out.
 
     <b> Declarations:</b>
 
@@ -805,7 +849,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
         void
         gaussianGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                    DestIterator diter, DestAccessor dest,
-                                   double sigma);
+                                   double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -817,7 +861,7 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
         void
         gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                    pair<DestIterator, DestAccessor> const & dest,
-                                   double sigma);
+                                   double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -933,7 +977,7 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
 /** \brief Calculate gradient of a multi-dimensional arrays using symmetric difference filters.
 
-    This function computes the gradient of the given multi-dimensional
+    This function computes the gradient of the given N-dimensional
     array with a sequence of symmetric difference filters a (differentiation is applied
     to each dimension in turn, starting with the innermost dimension). Both source and
     destination arrays are represented by iterators, shape objects and accessors.
@@ -941,6 +985,10 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
     elements as the number of dimensions. This function is implemented by calls to
     \ref convolveMultiArrayOneDimension() with the symmetric difference kernel.
 
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is optional
+    otherwise.
+    
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -950,7 +998,8 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                   class DestIterator, class DestAccessor>
         void
         symmetricGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest);
+                                    DestIterator diter, DestAccessor dest,
+                                    const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -961,7 +1010,8 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                   class DestIterator, class DestAccessor>
         void
         symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                                    pair<DestIterator, DestAccessor> const & dest);
+                                    pair<DestIterator, DestAccessor> const & dest,
+                                    const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1082,6 +1132,10 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     arrays must have scalar value_type. This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels, followed by summation.
 
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is left out.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -1092,7 +1146,7 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         laplacianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                       DestIterator diter, DestAccessor dest,
-                                      double sigma);
+                                      double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1104,7 +1158,7 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                       pair<DestIterator, DestAccessor> const & dest,
-                                      double sigma);
+                                      double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1234,6 +1288,10 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
     upper triangular part of the symmetric Hessian matrix). This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
 
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is left out.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -1244,7 +1302,7 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
         void
         hessianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest,
-                                    double sigma);
+                                    double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1256,7 +1314,7 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
         void
         hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest,
-                                    double sigma);
+                                    double sigma, const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1422,6 +1480,11 @@ struct StructurTensorFunctor
     This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
 
+    Anisotropic data should be passed with appropiate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameters <tt>innerScale</tt> and <tt>outerScale</tt> are
+    both left out.
+
     <b> Declarations:</b>
 
     pass arguments explicitly:
@@ -1432,7 +1495,8 @@ struct StructurTensorFunctor
         void
         structureTensorMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                   DestIterator diter, DestAccessor dest,
-                                  double innerScale, double outerScale);
+                                  double innerScale, double outerScale,
+                                  const ConvolutionOptions<N> & opt);
     }
     \endcode
 
@@ -1444,7 +1508,8 @@ struct StructurTensorFunctor
         void
         structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                   pair<DestIterator, DestAccessor> const & dest,
-                                  double innerScale, double outerScale);
+                                  double innerScale, double outerScale,
+                                  const ConvolutionOptions<N> & opt);
     }
     \endcode
 
