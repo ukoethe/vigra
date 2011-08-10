@@ -318,12 +318,12 @@ public:
         shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).product(1), 183521184);
 
         scalar_type minimum, maximum;
-        array3.minmax(minimum, maximum);
+        array3.minmax(&minimum, &maximum);
         shouldEqual(minimum, 0);
         shouldEqual(maximum, array3.size()-1);
 
         double mean, variance;
-        array3.meanVariance(mean, variance);
+        array3.meanVariance(&mean, &variance);
         shouldEqual(mean, 499.5);
         shouldEqual(variance, 83333.25);
     }

@@ -1635,21 +1635,21 @@ public:
 
         /** Find the minimum and maximum element in this array.
          */
-    void minmax(T & minimum, T & maximum) const
+    void minmax(T * minimum, T * maximum) const
     {
         std::pair<T, T> res(NumericTraits<T>::max(), NumericTraits<T>::min());
         detail::reduceOverMultiArray(traverser_begin(), shape(),
                                      res, 
                                      detail::MinmaxReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
-        minimum = res.first;
-        maximum = res.second;
+        *minimum = res.first;
+        *maximum = res.second;
     }
 
         /** Compute the mean and variance of the values in this array.
          */
     template <class U>
-    void meanVariance(U & mean, U & variance) const
+    void meanVariance(U * mean, U * variance) const
     {
         typedef typename NumericTraits<U>::RealPromote R;
         triple<R, R, R> res(0.0, 0.0, 0.0);
@@ -1657,8 +1657,8 @@ public:
                                      res, 
                                      detail::MeanVarianceReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
-        mean     = res.second;
-        variance = res.third / res.first;
+        *mean     = res.second;
+        *variance = res.third / res.first;
     }
 
         /** Compute the sum of the array elements.
