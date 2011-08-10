@@ -268,7 +268,7 @@ struct BucketQueueTest
         
         for(unsigned int k=0; k<idata.size(); ++k)
         {
-			shouldEqual(queue.top(), bqueue.top());
+            shouldEqual(queue.top(), bqueue.top());
             queue.pop();
             bqueue.pop();
         }
@@ -279,7 +279,7 @@ struct BucketQueueTest
     
     void testAscending()
     {
-		std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
+        std::priority_queue<int, std::vector<int>, std::greater<int> > queue;
         BucketQueue<int, true> bqueue;
         
         for(unsigned int k=0; k<idata.size(); ++k)
@@ -293,7 +293,7 @@ struct BucketQueueTest
         
         for(unsigned int k=0; k<idata.size(); ++k)
         {
-			shouldEqual(queue.top(), bqueue.top());
+            shouldEqual(queue.top(), bqueue.top());
             queue.pop();
             bqueue.pop();
         }
@@ -319,16 +319,16 @@ struct BucketQueueTest
         
         for(unsigned int k=0; k<data.size(); ++k)
         {
-			shouldEqual(queue.top(), priority(bqueue.top()));
-			switch(k)
-			{
-			  case 1:
-				  shouldEqual(4.4, bqueue.top());
-				  break;
-			  case 2:
-				  shouldEqual(4.5, bqueue.top());
-				  break;
-			}
+            shouldEqual(queue.top(), priority(bqueue.top()));
+            switch(k)
+            {
+              case 1:
+                  shouldEqual(4.4, bqueue.top());
+                  break;
+              case 2:
+                  shouldEqual(4.5, bqueue.top());
+                  break;
+            }
             queue.pop();
             bqueue.pop();
         }
@@ -354,16 +354,16 @@ struct BucketQueueTest
         
         for(unsigned int k=0; k<data.size(); ++k)
         {
-			shouldEqual(queue.top(), priority(bqueue.top()));
-			switch(k)
-			{
-			  case 3:
-				  shouldEqual(4.4, bqueue.top());
-				  break;
-			  case 4:
-				  shouldEqual(4.5, bqueue.top());
-				  break;
-			}
+            shouldEqual(queue.top(), priority(bqueue.top()));
+            switch(k)
+            {
+              case 3:
+                  shouldEqual(4.4, bqueue.top());
+                  break;
+              case 4:
+                  shouldEqual(4.5, bqueue.top());
+                  break;
+            }
             queue.pop();
             bqueue.pop();
         }
@@ -462,13 +462,13 @@ struct MetaprogrammingTest
 
 void stringTest()
 {
-	std::string s;
-	s << "Hallo " << 1 << " " << 2.0 << " " << false;
-	shouldEqual(s, std::string("Hallo 1 2 0"));
+    std::string s;
+    s << "Hallo " << 1 << " " << 2.0 << " " << false;
+    shouldEqual(s, std::string("Hallo 1 2 0"));
 
-	shouldEqual(asString(1), "1");
-	shouldEqual(asString(2.0), "2");
-	shouldEqual(asString(false), "0");
+    shouldEqual(asString(1), "1");
+    shouldEqual(asString(2.0), "2");
+    shouldEqual(asString(false), "0");
 }
 
 struct UtilitiesTestSuite

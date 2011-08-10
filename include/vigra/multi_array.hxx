@@ -406,81 +406,133 @@ uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALL
     }
 }
 
-template <class SrcIterator, class Shape, class T>
+template <class SrcIterator, class Shape, class T, class Functor>
 inline void
-normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<0>)
+reduceOverMultiArray(SrcIterator s, Shape const & shape, T & result, Functor const & f, MetaInt<0>)
 {
     SrcIterator send = s + shape[0];
     for(; s < send; ++s)
     {
-        T v = norm(*s);
-        if(result < v)
-            result = v;
+        f(result, *s);
     }
 }
 
-template <class SrcIterator, class Shape, class T, int N>
+template <class SrcIterator, class Shape, class T, class Functor, int N>
 void
-normMaxOfMultiArray(SrcIterator s, Shape const & shape, T & result, MetaInt<N>)
+reduceOverMultiArray(SrcIterator s, Shape const & shape, T & result, Functor const & f, MetaInt<N>)
 {
     SrcIterator send = s + shape[N];
     for(; s < send; ++s)
     {
-        normMaxOfMultiArray(s.begin(), shape, result, MetaInt<N-1>());
+        reduceOverMultiArray(s.begin(), shape, result, f, MetaInt<N-1>());
     }
 }
 
-template <class T>
-struct MultiArrayL1Functor
+struct MaxNormReduceFunctor
 {
-    template <class U>
-    T operator()(U t) const
-    { return norm(t); }
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        T v = norm(u);
+        if(result < v)
+            result = v;
+    }
+};
+
+struct L1NormReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        result += norm(u);
+    }
+};
+
+struct SquaredL2NormReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        result += squaredNorm(u);
+    }
 };
 
 template <class T>
-struct MultiArrayL2Functor
-{
-    template <class U>
-    T operator()(U t) const
-    { return squaredNorm(t); }
-};
-
-template <class T>
-struct MultiArrayScaledL2Functor
+struct WeightedL2NormReduceFunctor
 {
     T scale;
 
-    MultiArrayScaledL2Functor(T s)
+    WeightedL2NormReduceFunctor(T s)
     : scale(s)
     {}
 
     template <class U>
-    T operator()(U t) const
-    { return squaredNorm(T(t) / scale); }
+    void operator()(T & result, U const & u) const
+    {
+        result += squaredNorm(u * scale);
+    }
 };
 
-template <class SrcIterator, class Shape, class Functor, class T>
-inline void
-sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<0>)
+struct SumReduceFunctor
 {
-    SrcIterator send = s + shape[0];
-    for(; s < send; ++s)
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
     {
-        result += f(*s);
+        result += u;
     }
-}
+};
 
-template <class SrcIterator, class Shape, class Functor, class T, int N>
-void
-sumOverMultiArray(SrcIterator s, Shape const & shape, Functor f, T & result, MetaInt<N>)
+struct ProdReduceFunctor
 {
-    SrcIterator send = s + shape[N];
-    for(; s < send; ++s)
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
     {
-        sumOverMultiArray(s.begin(), shape, f, result, MetaInt<N-1>());
+        result *= u;
     }
-}
+};
+
+struct MinmaxReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        if(u < result.first)
+            result.first = u;
+        if(result.second < u)
+            result.second = u;
+    }
+};
+
+struct MeanVarianceReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        ++result.first;
+        typename T::second_type t1 = u - result.second;
+        typename T::second_type t2 = t1 / result.first;
+        result.second += t2;
+        result.third += (result.first-1.0)*t1*t2;
+    }
+};
+
+struct AllTrueReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        result = result && (u != NumericTraits<U>::zero());
+    }
+};
+
+struct AnyTrueReduceFunctor
+{
+    template <class T, class U>
+    void operator()(T & result, U const & u) const
+    {
+        result = result || (u != NumericTraits<U>::zero());
+    }
+};
 
 template <class SrcIterator, class Shape, class DestIterator>
 inline bool
@@ -583,6 +635,70 @@ void divideAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
 
 } // namespace multi_math
 
+struct UnsuitableTypeForExpandElements {};
+
+template <class T>
+struct ExpandElementResult
+{
+    typedef UnsuitableTypeForExpandElements type;
+};
+
+template <class T>
+struct ExpandElementResult<std::complex<T> >
+{
+    typedef T type;
+    enum { size = 2 };
+};
+
+template <class T>
+class FFTWComplex;
+
+template <class T>
+struct ExpandElementResult<FFTWComplex<T> >
+{
+    typedef T type;
+    enum { size = 2 };
+};
+
+template <class T, int SIZE>
+struct ExpandElementResult<TinyVector<T, SIZE> >
+{
+    typedef T type;
+    enum { size = SIZE };
+};
+
+template <class T, unsigned int R, unsigned int G, unsigned int B>
+struct ExpandElementResult<RGBValue<T, R, G, B> >
+{
+    typedef T type;
+    enum { size = 3 };
+};
+
+#define VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(TYPE) \
+template <>  \
+struct ExpandElementResult<TYPE> \
+{ \
+    typedef TYPE type; \
+    enum { size = 1 }; \
+}; \
+
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(bool)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(char)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(signed char)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(signed short)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(signed int)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(signed long)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(signed long long)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(unsigned char)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(unsigned short)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(unsigned int)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(unsigned long)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(unsigned long long)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(float)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(double)
+VIGRA_DEFINE_EXPAND_ELEMENT_RESULT(long double)
+
+#undef VIGRA_DEFINE_EXPAND_ELEMENT_RESULT
 
 
 /********************************************************/
@@ -1225,7 +1341,52 @@ public:
          */
     MultiArrayView <N-1, T, StridedArrayTag>
     bindAt (difference_type_1 m, difference_type_1 d) const;
+    
+    
+        /** Create a view to channel 'i' of a vector-like value type. Possible value types
+            (of the original array) are: \ref TinyVector, \ref RGBValue, \ref FFTWComplex, 
+            and <tt>std::complex</tt>. The list can be extended to any type whose memory
+            layout is equivalent to a fixed-size C array, by specialzing 
+            <tt>ExpandElementResult</tt>.
 
+            <b>Usage:</b>
+            \code
+                MultiArray<2, RGBValue<float> > rgb_image(Shape2(w, h));
+                
+                MultiArrayView<2, float, StridedArrayTag> red   = rgb_image.bindElementChannel(0);
+                MultiArrayView<2, float, StridedArrayTag> green = rgb_image.bindElementChannel(1);
+                MultiArrayView<2, float, StridedArrayTag> blue  = rgb_image.bindElementChannel(2);
+            \endcode
+        */
+    MultiArrayView <N, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    bindElementChannel(difference_type_1 i) const
+    {
+        vigra_precondition(0 <= i && i < ExpandElementResult<T>::size,
+              "MultiArrayView::bindElementChannel(i): 'i' out of range.");
+        return expandElements(0).bindInner(i);
+    }
+
+        /** Create a view where a vector-like element type is expanded into a new 
+            array dimension. The new deimension is inserted at index position 'd',
+            which must be between 0 and N inclusive.
+            
+            Possible value types of the original array are: \ref TinyVector, \ref RGBValue, 
+            \ref FFTWComplex, <tt>std::complex</tt>, and the built-in number types (in this 
+            case, <tt>expandElements</tt> is equivalent to <tt>insertSingletonDimension</tt>). 
+            The list of supported types can be extended to any type whose memory
+            layout is equivalent to a fixed-size C array, by specialzing 
+            <tt>ExpandElementResult</tt>.
+
+            <b>Usage:</b>
+            \code
+                MultiArray<2, RGBValue<float> > rgb_image(Shape2(w, h));
+                
+                MultiArrayView<3, float, StridedArrayTag> multiband_image = rgb_image.expandElements(2);
+            \endcode
+        */
+    MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag> 
+    expandElements(difference_type_1 d) const;
+    
         /** Add a singleton dimension (dimension of legth 1).
 
             Singleton dimensions don't change the size of the data, but introduce
@@ -1446,14 +1607,99 @@ public:
         return true;
     }
 
+        /** Check if the array contains only non-zero elements (or if all elements
+            are 'true' if the value type is 'bool').
+         */
+    bool all() const
+    {
+        bool res = true;
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res, 
+                                     detail::AllTrueReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        return res;
+    }
+
+        /** Check if the array contains a non-zero element (or an element
+            that is 'true' if the value type is 'bool').
+         */
+    bool any() const
+    {
+        bool res = false;
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res, 
+                                     detail::AnyTrueReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        return res;
+    }
+
+        /** Find the minimum and maximum element in this array.
+         */
+    void minmax(T * minimum, T * maximum) const
+    {
+        std::pair<T, T> res(NumericTraits<T>::max(), NumericTraits<T>::min());
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res, 
+                                     detail::MinmaxReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        *minimum = res.first;
+        *maximum = res.second;
+    }
+
+        /** Compute the mean and variance of the values in this array.
+         */
+    template <class U>
+    void meanVariance(U * mean, U * variance) const
+    {
+        typedef typename NumericTraits<U>::RealPromote R;
+        triple<R, R, R> res(0.0, 0.0, 0.0);
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res, 
+                                     detail::MeanVarianceReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        *mean     = res.second;
+        *variance = res.third / res.first;
+    }
+
+        /** Compute the sum of the array elements.
+
+            \arg initial determines the initial value and the type of the sum.
+         */
+    template <class U>
+    U sum(U initial = NumericTraits<U>::zero()) const
+    {
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     initial, 
+                                     detail::SumReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        return initial;
+    }
+
+        /** Compute the product of the array elements.
+
+            \arg initial determines the initial value and the type of the sum.
+         */
+    template <class U>
+    U product(U initial = NumericTraits<U>::one()) const
+    {
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     initial, 
+                                     detail::ProdReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
+        return initial;
+    }
+
         /** Compute the squared Euclidean norm of the array (sum of squares of the array elements).
          */
-    typename NormTraits<MultiArrayView>::SquaredNormType squaredNorm() const
+    typename NormTraits<MultiArrayView>::SquaredNormType 
+    squaredNorm() const
     {
         typedef typename NormTraits<MultiArrayView>::SquaredNormType SquaredNormType;
         SquaredNormType res = NumericTraits<SquaredNormType>::zero();
-        detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayL2Functor<SquaredNormType>(),
-                                  res, MetaInt<actual_dimension-1>());
+        detail::reduceOverMultiArray(traverser_begin(), shape(),
+                                     res, 
+                                     detail::SquaredL2NormReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
         return res;
     }
 
@@ -1470,7 +1716,8 @@ public:
             Parameter \a useSquaredNorm has no effect when \a type != 2. Defaults: compute L2 norm as square root of
             <tt>squaredNorm()</tt>.
          */
-    typename NormTraits<MultiArrayView>::NormType norm(int type = 2, bool useSquaredNorm = true) const;
+    typename NormTraits<MultiArrayView>::NormType 
+    norm(int type = 2, bool useSquaredNorm = true) const;
 
         /** return the pointer to the image data
          */
@@ -1620,7 +1867,7 @@ MultiArrayView <N, T, C>::copyImpl(const MultiArrayView <N, U, CN>& rhs)
     }
 }
 
-#define VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(name, op) \
+#define VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT(name, op) \
 template <unsigned int N, class T, class C> \
 template<class U, class C1> \
 MultiArrayView<N, T, C> &  \
@@ -1639,12 +1886,12 @@ MultiArrayView <N, T, C>::operator op(MultiArrayView<N, U, C1> const & rhs) \
     return *this; \
 }
 
-VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(copyAdd, +=)
-VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(copySub, -=)
-VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(copyMul, *=)
-VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT(copyDiv, /=)
+VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT(copyAdd, +=)
+VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT(copySub, -=)
+VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT(copyMul, *=)
+VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT(copyDiv, /=)
 
-#undef VIGRA_MULTI_ARRY_COMPUTED_ASSIGNMENT
+#undef VIGRA_MULTI_ARRAY_COMPUTED_ASSIGNMENT
 
 template <unsigned int N, class T, class C>
 template <class U, class CN>
@@ -1879,6 +2126,36 @@ MultiArrayView <N, T, C>::bindAt (difference_type_1 n, difference_type_1 d) cons
         (shape, stride, m_ptr + d * m_stride[n]);
 }
 
+
+template <unsigned int N, class T, class C>
+MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag>
+MultiArrayView <N, T, C>::expandElements(difference_type_1 d) const
+{
+    vigra_precondition(0 <= d && d <= static_cast <difference_type_1> (N),
+          "MultiArrayView<N, ...>::expandElements(d): 0 <= 'd' <= N required.");
+    
+    int elementSize = ExpandElementResult<T>::size;
+    typename MultiArrayShape<N+1>::type newShape, newStrides;
+    for(int k=0; k<d; ++k)
+    {
+        newShape[k] = m_shape[k];
+        newStrides[k] = m_stride[k]*elementSize;
+    }   
+    
+    newShape[d] = elementSize;
+    newStrides[d] = 1;
+    
+    for(int k=d; k<N; ++k)
+    {
+        newShape[k+1] = m_shape[k];
+        newStrides[k+1] = m_stride[k]*elementSize;
+    }   
+    
+    typedef typename ExpandElementResult<T>::type U;     
+    return MultiArrayView<N+1, U, StridedArrayTag>(
+                    newShape, newStrides, reinterpret_cast<U*>(m_ptr));
+}
+
 template <unsigned int N, class T, class C>
 MultiArrayView <N + 1, T, C>
 MultiArrayView <N, T, C>::insertSingletonDimension (difference_type_1 i) const
@@ -1908,14 +2185,19 @@ MultiArrayView <N, T, C>::norm(int type, bool useSquaredNorm) const
       case 0:
       {
         NormType res = NumericTraits<NormType>::zero();
-        detail::normMaxOfMultiArray(traverser_begin(), shape(), res, MetaInt<actual_dimension-1>());
+        detail::reduceOverMultiArray(traverser_begin(), shape(), 
+                                     res, 
+                                     detail::MaxNormReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
         return res;
       }
       case 1:
       {
         NormType res = NumericTraits<NormType>::zero();
-        detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayL1Functor<NormType>(),
-                                res, MetaInt<actual_dimension-1>());
+        detail::reduceOverMultiArray(traverser_begin(), shape(), 
+                                     res, 
+                                     detail::L1NormReduceFunctor(),
+                                     MetaInt<actual_dimension-1>());
         return res;
       }
       case 2:
@@ -1927,12 +2209,17 @@ MultiArrayView <N, T, C>::norm(int type, bool useSquaredNorm) const
         else
         {
             NormType normMax = NumericTraits<NormType>::zero();
-            detail::normMaxOfMultiArray(traverser_begin(), shape(), normMax, MetaInt<actual_dimension-1>());
+            detail::reduceOverMultiArray(traverser_begin(), shape(), 
+                                        normMax, 
+                                        detail::MaxNormReduceFunctor(),
+                                        MetaInt<actual_dimension-1>());
             if(normMax == NumericTraits<NormType>::zero())
                 return normMax;
             NormType res  = NumericTraits<NormType>::zero();
-            detail::sumOverMultiArray(traverser_begin(), shape(), detail::MultiArrayScaledL2Functor<NormType>(normMax),
-                                    res, MetaInt<actual_dimension-1>());
+            detail::reduceOverMultiArray(traverser_begin(), shape(), 
+                                         res, 
+                                         detail::WeightedL2NormReduceFunctor<NormType>(1.0/normMax),
+                                         MetaInt<actual_dimension-1>());
             return sqrt(res)*normMax;
         }
       }
@@ -2141,7 +2428,7 @@ public:
                 allocator_type const & alloc = allocator_type())
     : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
                              difference_type (diff_zero_t(0)), 0),
-      m_alloc (rhs.m_alloc)
+      m_alloc (alloc)
     {
         multi_math::detail::assignOrResize(*this, rhs);
     }

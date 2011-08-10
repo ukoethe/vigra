@@ -105,12 +105,12 @@ struct FFTWReal2Complex<long double>
 /** \brief Wrapper class for the FFTW complex types '<TT>fftw_complex</TT>'.
 
     This class encapsulates the low-level complex number types provided by the 
-	<a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a> library (i.e. 
-	'<TT>fftw_complex</TT>', '<TT>fftwf_complex</TT>', '<TT>fftwl_complex</TT>'). 
-	In particular, it provides constructors, member functions and 
-	\ref FFTWComplexOperators "arithmetic operators" that make FFTW complex numbers
-	compatible with <tt>std::complex</tt>. In addition, the class defines 
-	transformations to polar coordinates and \ref FFTWComplexAccessors "accessors".
+    <a href="http://www.fftw.org/">FFTW Fast Fourier Transform</a> library (i.e. 
+    '<TT>fftw_complex</TT>', '<TT>fftwf_complex</TT>', '<TT>fftwl_complex</TT>'). 
+    In particular, it provides constructors, member functions and 
+    \ref FFTWComplexOperators "arithmetic operators" that make FFTW complex numbers
+    compatible with <tt>std::complex</tt>. In addition, the class defines 
+    transformations to polar coordinates and \ref FFTWComplexAccessors "accessors".
 
     FFTWComplex implements the concepts \ref AlgebraicField and
     \ref DivisionAlgebra. The standard image types <tt>FFTWRealImage</tt>
@@ -133,7 +133,7 @@ class FFTWComplex
   public:
         /** The wrapped complex type
         */
-	  typedef typename FFTWReal2Complex<Real>::type complex_type;
+      typedef typename FFTWReal2Complex<Real>::type complex_type;
 
         /** The complex' component type, as defined in '<TT>fftw3.h</TT>'
         */
@@ -178,6 +178,15 @@ class FFTWComplex
     {
         data_[0] = o.data_[0];
         data_[1] = o.data_[1];
+    }
+
+        /** Copy constructor.
+        */
+    template <class U>
+    FFTWComplex(FFTWComplex<U> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
     }
 
         /** Construct from plain <TT>fftw_complex</TT>.
@@ -228,6 +237,16 @@ class FFTWComplex
     {
         data_[0] = o.data_[0];
         data_[1] = o.data_[1];
+        return *this;
+    }
+
+        /** Assignment.
+        */
+    template <class U>
+    FFTWComplex& operator=(FFTWComplex<U> const & o)
+    {
+        data_[0] = (Real)o.real();
+        data_[1] = (Real)o.imag();
         return *this;
     }
 
@@ -610,7 +629,9 @@ template <class Real>
 struct MultiMathOperand<FFTWComplex<Real> >
 {
     typedef MultiMathOperand<FFTWComplex<Real> > AllowOverload;
-	typedef FFTWComplex<Real> result_type;
+    typedef FFTWComplex<Real> result_type;
+    
+    static const int ndim = 0;
     
     MultiMathOperand(FFTWComplex<Real> const & v)
     : v_(v)
@@ -624,6 +645,17 @@ struct MultiMathOperand<FFTWComplex<Real> >
     
     template <class SHAPE>
     FFTWComplex<Real> const & operator[](SHAPE const &) const
+    {
+        return v_;
+    }
+    
+    void inc(unsigned int LEVEL) const
+    {}
+    
+    void reset(unsigned int LEVEL) const
+    {}
+    
+    FFTWComplex<Real> const & operator*() const
     {
         return v_;
     }
@@ -667,8 +699,8 @@ class FFTWAllocator
     template<class Other>
     FFTWAllocator& operator=(const FFTWAllocator<Other>& right)
     {
-		return *this;
-	}
+        return *this;
+    }
     
     pointer allocate(size_type count, void * = 0)
     {
@@ -735,8 +767,8 @@ class allocator<vigra::FFTWComplex<Real> >
     template<class Other>
     allocator& operator=(const allocator<Other>& right)
     {
-		return *this;
-	}
+        return *this;
+    }
     
     pointer allocate(size_type count, void * = 0)
     {
@@ -1061,8 +1093,8 @@ namespace std {
 template <class Real>
 ostream & operator<<(ostream & s, vigra::FFTWComplex<Real> const & v)
 {
-	s << std::complex<Real>(v.re(), v.im());
-	return s;
+    s << std::complex<Real>(v.re(), v.im());
+    return s;
 }
 
 } // namespace std

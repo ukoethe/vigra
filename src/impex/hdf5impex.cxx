@@ -64,43 +64,43 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     //why?
     //vigra_precondition( m_dimensions>=2, "HDF5ImportInfo(): Number of dimensions is lower than 2. Not an image!" );
 
-	hid_t datatype = H5Dget_type(m_dataset_handle);
-	H5T_class_t dataclass = H5Tget_class(datatype);
-	size_t datasize  = H5Tget_size(datatype);
-	H5T_sign_t datasign  = H5Tget_sign(datatype);
+    hid_t datatype = H5Dget_type(m_dataset_handle);
+    H5T_class_t dataclass = H5Tget_class(datatype);
+    size_t datasize  = H5Tget_size(datatype);
+    H5T_sign_t datasign  = H5Tget_sign(datatype);
 
-	if(dataclass == H5T_FLOAT)
-	{
-		if(datasize == 4)
-			m_pixeltype = "FLOAT";
-		else if(datasize == 8)
-			m_pixeltype = "DOUBLE";
-	}
-	else if(dataclass == H5T_INTEGER)	
-	{
-		if(datasign == H5T_SGN_NONE)
-		{
-			if(datasize ==  1)
-				m_pixeltype = "UINT8";
-			else if(datasize == 2)
-				m_pixeltype = "UINT16";
-			else if(datasize == 4)
-				m_pixeltype = "UINT32";
-			else if(datasize == 8)
-				m_pixeltype = "UINT64";
-		}
-		else
-		{
-			if(datasize ==  1)
-				m_pixeltype = "INT8";
-			else if(datasize == 2)
-				m_pixeltype = "INT16";
-			else if(datasize == 4)
-				m_pixeltype = "INT32";
-			else if(datasize == 8)
-				m_pixeltype = "INT64";
-		}
-	}
+    if(dataclass == H5T_FLOAT)
+    {
+        if(datasize == 4)
+            m_pixeltype = "FLOAT";
+        else if(datasize == 8)
+            m_pixeltype = "DOUBLE";
+    }
+    else if(dataclass == H5T_INTEGER)	
+    {
+        if(datasign == H5T_SGN_NONE)
+        {
+            if(datasize ==  1)
+                m_pixeltype = "UINT8";
+            else if(datasize == 2)
+                m_pixeltype = "UINT16";
+            else if(datasize == 4)
+                m_pixeltype = "UINT32";
+            else if(datasize == 8)
+                m_pixeltype = "UINT64";
+        }
+        else
+        {
+            if(datasize ==  1)
+                m_pixeltype = "INT8";
+            else if(datasize == 2)
+                m_pixeltype = "INT16";
+            else if(datasize == 4)
+                m_pixeltype = "INT32";
+            else if(datasize == 8)
+                m_pixeltype = "INT64";
+        }
+    }
 
     ArrayVector<hsize_t>::size_type ndims = ArrayVector<hsize_t>::size_type(m_dimensions);
     m_dims.resize(ndims);
@@ -108,11 +108,11 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
     ArrayVector<hsize_t> maxdims(ndims);
     H5Sget_simple_extent_dims(dataspace_handle, size.data(), maxdims.data());
     //dset.getSpace().getSimpleExtentDims(size, NULL);
-	// invert the dimensions to guarantee c-order
-	for(ArrayVector<hsize_t>::size_type i=0; i<ndims; i++) {
+    // invert the dimensions to guarantee c-order
+    for(ArrayVector<hsize_t>::size_type i=0; i<ndims; i++) {
         m_dims[i] = size[ndims-1-i];
-		//std::cout << "m_dims[" << i << "]=" << m_dims[i] << std::endl;
-	}
+        //std::cout << "m_dims[" << i << "]=" << m_dims[i] << std::endl;
+    }
 }
 
 HDF5ImportInfo::~HDF5ImportInfo()

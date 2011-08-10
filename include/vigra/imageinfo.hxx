@@ -444,7 +444,7 @@ class ImageImportInfo
 
         /** Get size of the image in a form compatible to MultiArray.
          **/
-	VIGRA_EXPORT MultiArrayShape<2>::type shape() const;
+    VIGRA_EXPORT MultiArrayShape<2>::type shape() const;
 
         /** Returns true if the image is gray scale.
          **/

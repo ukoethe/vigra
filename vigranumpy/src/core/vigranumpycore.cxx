@@ -159,7 +159,7 @@ class AxisInfo
             res += " ";
             res += description_;
         }
-		return res;
+        return res;
     }
     
     AxisInfo toFrequencyDomain(unsigned int size = 0) const
@@ -185,19 +185,19 @@ class AxisInfo
         return res;
     }
 
-	bool operator==(AxisInfo const & other) const
-	{
-		if(isUnknown() || other.isUnknown())
+    bool operator==(AxisInfo const & other) const
+    {
+        if(isUnknown() || other.isUnknown())
             return true;
         return key() == other.key() && typeFlags() == other.typeFlags() && 
-			   (resolution() == 0.0 || other.resolution() == 0.0 || 
+               (resolution() == 0.0 || other.resolution() == 0.0 || 
                 resolution() == other.resolution());
-	}
+    }
 
-	bool operator!=(AxisInfo const & other) const
-	{
-		return !operator==(other);
-	}
+    bool operator!=(AxisInfo const & other) const
+    {
+        return !operator==(other);
+    }
     
     // factory functions for standard tags
     static AxisInfo x(double resolution = 0.0, std::string const & description = "")
@@ -257,7 +257,7 @@ AxisInfo AxisInfo__call__(AxisInfo const & i, double resolution, std::string con
 
 AxisInfo AxisInfo_x()
 {
-	return AxisInfo::x();
+    return AxisInfo::x();
 }
 
 AxisInfo AxisInfo_y()
@@ -312,15 +312,15 @@ struct AxisInfoSorter
     template <class T>
     bool operator()(T const & l, T const & r) const
     {
-		UInt32 lAxisType = get(l).typeFlags();
+        UInt32 lAxisType = get(l).typeFlags();
         if(lAxisType == 0)
             lAxisType = UnknownAxisType;
         UInt32 rAxisType = get(r).typeFlags();
         if(rAxisType == 0)
             rAxisType = UnknownAxisType;
-		return (lAxisType == rAxisType)
-			        ? get(l).key() < get(r).key()
-					: lAxisType < rAxisType;
+        return (lAxisType == rAxisType)
+                    ? get(l).key() < get(r).key()
+                    : lAxisType < rAxisType;
     }
 };
 
@@ -394,10 +394,10 @@ class AxisTags
         return get(findKey(key));
     }
 
-	unsigned int size() const
-	{
-		return axes_.size();
-	}
+    unsigned int size() const
+    {
+        return axes_.size();
+    }
     
     std::string repr() const
     {
@@ -409,7 +409,7 @@ class AxisTags
             res += " ";
             res += get(k).key();
         }
-		return res;
+        return res;
     }
     
     void push_back(T const & i)
@@ -491,27 +491,27 @@ class AxisTags
         std::reverse(axes_.begin(), axes_.end());
     }
 
-	bool operator==(AxisTags const & other) const
-	{
-		return std::equal(axes_.begin(), axes_.end(), other.axes_.begin());
-	}
+    bool operator==(AxisTags const & other) const
+    {
+        return std::equal(axes_.begin(), axes_.end(), other.axes_.begin());
+    }
 
-	bool operator!=(AxisTags const & other) const
-	{
-		return !operator==(other);
-	}
+    bool operator!=(AxisTags const & other) const
+    {
+        return !operator==(other);
+    }
     
   protected:
-	std::vector<T> axes_;
+    std::vector<T> axes_;
     GetFunctor getFunctor;
 };
 
 struct PyGetFunctor
 {
-	AxisInfo const & operator()(python::object const & o) const
-	{
-		return python::extract<AxisInfo const &>(o)();
-	}
+    AxisInfo const & operator()(python::object const & o) const
+    {
+        return python::extract<AxisInfo const &>(o)();
+    }
 };
 
 class PyAxisTags
@@ -520,14 +520,14 @@ class PyAxisTags
     typedef AxisTags<python::object, PyGetFunctor> BaseType;
   public:
     PyAxisTags()
-	{}
+    {}
 
     PyAxisTags(python::object i1, python::object i2,
              python::object i3, python::object i4, python::object i5)
     {
         if(PySequence_Check(i1.ptr()))
         {
-			int size = len(i1);
+            int size = len(i1);
             for(int k=0; k<size; ++k)
                 if(python::extract<AxisInfo const &>(i1[k]).check())
                     push_back(i1[k]);
@@ -556,13 +556,13 @@ class PyAxisTags
     python::object getitem(int k)
     {
         if(!checkIndex(k))
-		{
-			PyErr_SetString(PyExc_IndexError, "AxisInfo::getitem(): Invalid index or key.");
-			python::throw_error_already_set();
-		}
+        {
+            PyErr_SetString(PyExc_IndexError, "AxisInfo::getitem(): Invalid index or key.");
+            python::throw_error_already_set();
+        }
         if(k < 0)
             k += this->size();
-		return this->axes_[k];
+        return this->axes_[k];
     }
     
     python::object getitem(std::string const & key)
@@ -573,19 +573,19 @@ class PyAxisTags
     void setitem(int k, python::object i)
     {
         if(!this->checkIndex(k))
-		{
-			PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
-			python::throw_error_already_set();
-		}
+        {
+            PyErr_SetString(PyExc_IndexError, "AxisInfo::setitem(): Invalid index or key.");
+            python::throw_error_already_set();
+        }
         if(!python::extract<AxisInfo const &>(i).check())
-		{
-			PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
-			python::throw_error_already_set();
-		}
+        {
+            PyErr_SetString(PyExc_TypeError, "AxisInfo::setitem(): Item type must be AxisInfo.");
+            python::throw_error_already_set();
+        }
         
         if(k < 0)
             k += this->size();
-		this->axes_[k] = i;
+        this->axes_[k] = i;
     }
     
     void setitem(std::string const & key, python::object i)
@@ -607,11 +607,11 @@ class PyAxisTags
         if(k > (int)this->size())
             k = this->size();
         if(!python::extract<AxisInfo const &>(i).check())
-		{
-			PyErr_SetString(PyExc_TypeError, "AxisInfo::insert(): Item type must be AxisInfo.");
-			python::throw_error_already_set();
-		}
-		this->axes_.insert(this->axes_.begin()+k, i);
+        {
+            PyErr_SetString(PyExc_TypeError, "AxisInfo::insert(): Item type must be AxisInfo.");
+            python::throw_error_already_set();
+        }
+        this->axes_.insert(this->axes_.begin()+k, i);
     }
     
     void insert(std::string const & key, python::object i)
@@ -619,103 +619,103 @@ class PyAxisTags
         insert(this->findKey(key), i);
     }
 
-	python::list axesByFlag(AxisType typeFlags) const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).typeFlags() == typeFlags)
-				res.append(k);
-		return res;
-	}
+    python::list axesByFlag(AxisType typeFlags) const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).typeFlags() == typeFlags)
+                res.append(k);
+        return res;
+    }
 
-	python::list spatialAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isSpatial())
-				res.append(k);
-		return res;
-	}
+    python::list spatialAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isSpatial())
+                res.append(k);
+        return res;
+    }
 
-	python::list temporalAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isTemporal())
-				res.append(k);
-		return res;
-	}
+    python::list temporalAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isTemporal())
+                res.append(k);
+        return res;
+    }
 
-	python::list channelAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isChannel())
-				res.append(k);
-		return res;
-	}
+    python::list channelAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isChannel())
+                res.append(k);
+        return res;
+    }
 
-	python::list frequencyAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isFrequency())
-				res.append(k);
-		return res;
-	}
+    python::list frequencyAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isFrequency())
+                res.append(k);
+        return res;
+    }
 
-	python::list angularAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isAngular())
-				res.append(k);
-		return res;
-	}
+    python::list angularAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isAngular())
+                res.append(k);
+        return res;
+    }
 
-	python::list untaggedAxes() const
-	{
-		python::list res;
-		for(unsigned int k=0; k<this->size(); ++k)
-			if(this->get(k).isUnknown())
-				res.append(k);
-		return res;
-	}
+    python::list untaggedAxes() const
+    {
+        python::list res;
+        for(unsigned int k=0; k<this->size(); ++k)
+            if(this->get(k).isUnknown())
+                res.append(k);
+        return res;
+    }
 
-	template <class U>
+    template <class U>
     python::list vectorToPython(std::vector<U> const & v) const
-	{
-		python::list res;
+    {
+        python::list res;
         for(unsigned int k=0; k<v.size(); ++k)
-			res.append(v[k]);
-		return res;
-	}
+            res.append(v[k]);
+        return res;
+    }
 
-	python::list canonicalOrdering()
-	{
-		return vectorToPython(BaseType::canonicalOrdering());
-	}
+    python::list canonicalOrdering()
+    {
+        return vectorToPython(BaseType::canonicalOrdering());
+    }
 
-	python::list matchOrdering(PyAxisTags const & other)
-	{
-		return vectorToPython(BaseType::matchOrdering(other));
-	}
+    python::list matchOrdering(PyAxisTags const & other)
+    {
+        return vectorToPython(BaseType::matchOrdering(other));
+    }
 
-	void transpose(python::object const & o)
-	{
-		unsigned int osize = len(o);
+    void transpose(python::object const & o)
+    {
+        unsigned int osize = len(o);
         std::vector<UInt32> permutation(osize);
         
         for(unsigned int k=0; k<this->size(); ++k)
-			permutation[k] = python::extract<UInt32>(o[k])();
+            permutation[k] = python::extract<UInt32>(o[k])();
             
-		BaseType::transpose(permutation);
-	}
+        BaseType::transpose(permutation);
+    }
 
-	void transpose()
-	{
-		BaseType::transpose();
-	}
+    void transpose()
+    {
+        BaseType::transpose();
+    }
     
     PyAxisTags transform(python::object index, int lnew) const;
 };
@@ -724,8 +724,8 @@ PyAxisTags
 PyAxisTags::transform(python::object index, int lnew) const
 {
     PyAxisTags newTags;
-	python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
-	int lold = this->size();
+    python::object ellipsis = python::object(python::detail::borrowed_reference(Py_Ellipsis));
+    int lold = this->size();
     if(!PySequence_Check(index.ptr()))
     {
         index = python::make_tuple(index);
@@ -809,21 +809,21 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
              (arg("name")="?", arg("typeFlags")=UnknownAxisType, 
               arg("resolution")=0.0, arg("description")="")))
         .def(init<AxisInfo const &>())
-		.def_readonly("key", &AxisInfo::key_)
-		.def_readwrite("description", &AxisInfo::description_)
-		.def_readwrite("resolution", &AxisInfo::resolution_)
-		.def_readonly("typeFlags", &AxisInfo::flags_)
-		.def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
-		.def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
-		.def("isSpatial", &AxisInfo::isSpatial)
-		.def("isTemporal", &AxisInfo::isTemporal)
-		.def("isChannel", &AxisInfo::isChannel)
-		.def("isFrequency", &AxisInfo::isFrequency)
-		.def("isAngular", &AxisInfo::isAngular)
-		.def(self == self)
-		.def(self != self)
-		.def("__repr__", &AxisInfo::repr)
-		.def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
+        .def_readonly("key", &AxisInfo::key_)
+        .def_readwrite("description", &AxisInfo::description_)
+        .def_readwrite("resolution", &AxisInfo::resolution_)
+        .def_readonly("typeFlags", &AxisInfo::flags_)
+        .def("toFrequencyDomain", &AxisInfo::toFrequencyDomain, (arg("size") = 0))
+        .def("fromFrequencyDomain", &AxisInfo::fromFrequencyDomain, (arg("size") = 0))
+        .def("isSpatial", &AxisInfo::isSpatial)
+        .def("isTemporal", &AxisInfo::isTemporal)
+        .def("isChannel", &AxisInfo::isChannel)
+        .def("isFrequency", &AxisInfo::isFrequency)
+        .def("isAngular", &AxisInfo::isAngular)
+        .def(self == self)
+        .def(self != self)
+        .def("__repr__", &AxisInfo::repr)
+        .def("__call__", &AxisInfo__call__, (arg("resolution") = 0.0, arg("description") = ""))
         .add_static_property("x", &AxisInfo_x)
         .add_static_property("y", &AxisInfo_y)
         .add_static_property("z", &AxisInfo_z)
@@ -835,36 +835,36 @@ BOOST_PYTHON_MODULE_INIT(vigranumpycore)
         .add_static_property("c", &AxisInfo_c)
     ;
 
-	class_<PyAxisTags>("AxisTags", no_init)
+    class_<PyAxisTags>("AxisTags", no_init)
         .def(init<object const &, object const &, object const &, 
                   object const &, object const &>(
                   (arg("i1")=object(), arg("i2")=object(), arg("i3")=object(), 
                    arg("i4")=object(), arg("i5")=object())))
-		.def("__repr__", &PyAxisTags::repr)
-		.def("__getitem__", (object (PyAxisTags::*)(int))&PyAxisTags::getitem)
-		.def("__getitem__", (object (PyAxisTags::*)(std::string const &))&PyAxisTags::getitem)
-		.def("__setitem__", (void (PyAxisTags::*)(int, object))&PyAxisTags::setitem)
-		.def("__setitem__", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::setitem)
-		.def("insert", (void (PyAxisTags::*)(int, object))&PyAxisTags::insert)
-		.def("insert", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::insert)
-		.def("append", &PyAxisTags::append)
-		.def("__delitem__", (void (PyAxisTags::*)(int))&PyAxisTags::dropAxis)
-		.def("__delitem__", (void (PyAxisTags::*)(std::string const &))&PyAxisTags::dropAxis)
-		.def("__len__", &PyAxisTags::size)
-		.def(self == self)
-		.def(self != self)
-		.def("axesByFlag", &PyAxisTags::axesByFlag)
-		.def("spatialAxes", &PyAxisTags::spatialAxes)
-		.def("temporalAxes", &PyAxisTags::temporalAxes)
-		.def("channelAxes", &PyAxisTags::channelAxes)
-		.def("frequencyAxes", &PyAxisTags::frequencyAxes)
-		.def("angularAxes", &PyAxisTags::angularAxes)
-		.def("untaggedAxes", &PyAxisTags::untaggedAxes)
-		.def("canonicalOrdering", &PyAxisTags::canonicalOrdering)
-		.def("matchOrdering", &PyAxisTags::matchOrdering)
-		.def("transpose", (void (PyAxisTags::*)(object const &))&PyAxisTags::transpose)
-		.def("transpose", (void (PyAxisTags::*)())&PyAxisTags::transpose)
-		.def("transform", &PyAxisTags::transform)
+        .def("__repr__", &PyAxisTags::repr)
+        .def("__getitem__", (object (PyAxisTags::*)(int))&PyAxisTags::getitem)
+        .def("__getitem__", (object (PyAxisTags::*)(std::string const &))&PyAxisTags::getitem)
+        .def("__setitem__", (void (PyAxisTags::*)(int, object))&PyAxisTags::setitem)
+        .def("__setitem__", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::setitem)
+        .def("insert", (void (PyAxisTags::*)(int, object))&PyAxisTags::insert)
+        .def("insert", (void (PyAxisTags::*)(std::string const &, object))&PyAxisTags::insert)
+        .def("append", &PyAxisTags::append)
+        .def("__delitem__", (void (PyAxisTags::*)(int))&PyAxisTags::dropAxis)
+        .def("__delitem__", (void (PyAxisTags::*)(std::string const &))&PyAxisTags::dropAxis)
+        .def("__len__", &PyAxisTags::size)
+        .def(self == self)
+        .def(self != self)
+        .def("axesByFlag", &PyAxisTags::axesByFlag)
+        .def("spatialAxes", &PyAxisTags::spatialAxes)
+        .def("temporalAxes", &PyAxisTags::temporalAxes)
+        .def("channelAxes", &PyAxisTags::channelAxes)
+        .def("frequencyAxes", &PyAxisTags::frequencyAxes)
+        .def("angularAxes", &PyAxisTags::angularAxes)
+        .def("untaggedAxes", &PyAxisTags::untaggedAxes)
+        .def("canonicalOrdering", &PyAxisTags::canonicalOrdering)
+        .def("matchOrdering", &PyAxisTags::matchOrdering)
+        .def("transpose", (void (PyAxisTags::*)(object const &))&PyAxisTags::transpose)
+        .def("transpose", (void (PyAxisTags::*)())&PyAxisTags::transpose)
+        .def("transform", &PyAxisTags::transform)
     ;
     
     def("checksum", &pychecksum, args("data"));
