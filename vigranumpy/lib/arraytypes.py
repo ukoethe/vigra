@@ -42,7 +42,8 @@ import vigranumpycore
 from vigranumpycore import AxisType, AxisInfo, AxisTags
 
 def _preserve_doc(f):
-    f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__)
+    f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__) + \
+                 ("" if f.__doc__ is None else "\n" + f.__doc__)
     return f
 
 # a decorator to finalize the return value of a 
@@ -66,6 +67,7 @@ def _finalize_reduce_result(f):
                 #  when self is a plain ndarray)
                 res = res.dtype.type(res)
         return res
+    new_f.__doc__ = f.__doc__
     return new_f
 
 def _numpyarray_overloaded_function(f, self, axis=None, dtype=None, out=None):
@@ -974,21 +976,41 @@ class VigraArray(numpy.ndarray):
     @_finalize_reduce_result
     @_preserve_doc
     def all(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         return numpy.ndarray.all(self, axis, out)
 
     @_finalize_reduce_result
     @_preserve_doc
     def any(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         return numpy.ndarray.any(self, axis, out)
 
     @_finalize_reduce_result
     @_preserve_doc
     def argmax(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         return numpy.ndarray.argmax(self, axis, out)
         
     @_finalize_reduce_result
     @_preserve_doc
     def argmin(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
         return numpy.ndarray.argmin(self, axis, out)
     
     @_preserve_doc
@@ -996,16 +1018,10 @@ class VigraArray(numpy.ndarray):
         return self.__class__(self, dtype=self.dtype, order=order)
     
     @_preserve_doc
-    def cumsum(self, axis=None, dtype=None, out=None):
-        if type(axis) == str:
-            axis = self.axistags.index(axis)
-        res = numpy.ndarray.cumsum(self, axis, dtype, out)
-        if axis is None and out is None:
-            res.axistags = res._empty_axistags(res.ndim)
-        return res
-
-    @_preserve_doc
     def cumprod(self, axis=None, dtype=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         if type(axis) == str:
             axis = self.axistags.index(axis)
         res = numpy.ndarray.cumprod(self, axis, dtype, out)
@@ -1013,27 +1029,54 @@ class VigraArray(numpy.ndarray):
             res.axistags = res._empty_axistags(res.ndim)
         return res
 
+    @_preserve_doc
+    def cumsum(self, axis=None, dtype=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
+        if type(axis) == str:
+            axis = self.axistags.index(axis)
+        res = numpy.ndarray.cumsum(self, axis, dtype, out)
+        if axis is None and out is None:
+            res.axistags = res._empty_axistags(res.ndim)
+        return res
+
     @property
     def flat(self):
+        '''
+        The array is always transposed to 'C' order before flattening.
+        '''
         return self.transposeToNumpyOrder().view(numpy.ndarray).flat
     
     @_preserve_doc
     def flatten(self, order='C'):
+        '''
+        The array is always transposed to 'C' order before flattening.
+        '''
         res = self.transposeToNumpyOrder().view(numpy.ndarray).flatten(order)
         return taggedView(res, self._empty_axistags(1))
 
     @_finalize_reduce_result
     @_preserve_doc
     def max(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return numpy.ndarray.max(self, axis, out)
 
     @_preserve_doc
     def mean(self, axis=None, dtype=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return _numpyarray_overloaded_function(numpy.ndarray.mean, self, axis, dtype, out)
     
     @_finalize_reduce_result
     @_preserve_doc
     def min(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return numpy.ndarray.min(self, axis, out)
     
     @_preserve_doc
@@ -1056,10 +1099,16 @@ class VigraArray(numpy.ndarray):
     
     @_preserve_doc
     def prod(self, axis=None, dtype=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return _numpyarray_overloaded_function(numpy.ndarray.prod, self, axis, dtype, out)
 
     @_preserve_doc
     def ptp(self, axis=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         if type(axis) == str:
             axis = self.axistags.index(axis)
         if axis is None:
@@ -1074,11 +1123,17 @@ class VigraArray(numpy.ndarray):
 
     @_preserve_doc
     def ravel(self, order='C'):
+        '''
+        The array is always transposed to 'C' order before flattening.
+        '''
         res = self.transposeToNumpyOrder().view(numpy.ndarray).ravel(order)
         return taggedView(res, self._empty_axistags(1))
 
     @_preserve_doc
     def repeat(self, repeats, axis=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         if type(axis) == str:
             axis = self.axistags.index(axis)
         if axis is None:
@@ -1110,14 +1165,27 @@ class VigraArray(numpy.ndarray):
 
     @_preserve_doc
     def std(self, axis=None, dtype=None, out=None, ddof=0):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return _numpyarray_overloaded_function(numpy.ndarray.std, self, axis, dtype, out)
 
     @_preserve_doc
     def sum(self, axis=None, dtype=None, out=None):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return _numpyarray_overloaded_function(numpy.ndarray.sum, self, axis, dtype, out)
             
     @_preserve_doc
     def swapaxes(self, i, j):
+        '''
+        Parameters 'i' and 'j' can also be ints (axis positions) or strings (axis keys).
+        '''
+        if type(i) == str:
+            i = self.axistags.index(i)
+        if type(j) == str:
+            j = self.axistags.index(j)
         res = numpy.ndarray.swapaxes(self, i, j)
         res.axistags = res._copy_axistags()
         try:
@@ -1128,6 +1196,10 @@ class VigraArray(numpy.ndarray):
  
     @_preserve_doc
     def take(self, indices, axis=None, out=None, mode='raise'):
+        '''
+        The array is always transposed to 'C' order before flattening.
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         if type(axis) == str:
             axis = self.axistags.index(axis)
         if axis is None:
@@ -1143,6 +1215,9 @@ class VigraArray(numpy.ndarray):
 
     @_preserve_doc
     def var(self, axis=None, dtype=None, out=None, ddof=0):
+        '''
+        The 'axis' parameter can be an int (axis position) or string (axis key).
+        '''
         return _numpyarray_overloaded_function(numpy.ndarray.var, self, axis, dtype, out)
 
     ###############################################################

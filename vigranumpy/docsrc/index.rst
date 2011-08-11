@@ -172,6 +172,8 @@ The meaning of 'ascending' or 'descending' order is determined by two rules: the
     (3, 300, 200)
     >>> rgbf.axistags
     c x y
+    
+Functions that reduce the array to a one-dimensional shape (``flatten()``, ``flat``, ``ravel()``, ``take()``) always transpose the array into 'C' order before flattening.
 
 Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individual entries are of type :class:`vigra.AxisInfo`. The simplest way to attach axistags to a plain numpy.ndarray (by creating a view of type VigraArray) is via the convenienve function :func:`vigra.taggedView`.
 

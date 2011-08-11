@@ -84,14 +84,17 @@ as usual.
 
 The following sub-modules group related functionality:
 
-* impex
-* colors
-* filters
-* sampling
-* fourier
-* analysis
-* learning
-* noise
+* arraytypes (VigraArray and axistags, automatically imported into 'vigra')
+* ufunc      (improved array arithmetic, automatically used by VigraArray)
+* impex      (image and array I/O)
+* colors     (color space transformations)
+* filters    (spatial filtering, e.g. smoothing)
+* sampling   (image and array re-sampling and interpolation)
+* fourier    (Fourier transform and Fourier domain filters)
+* analysis   (image analysis and segmentation)
+* learning   (machine learning and classification)
+* noise      (noise estimation and normalization)
+* geometry   (geometric algorithms, e.g. convex hull)
 ''' % _vigra_doc_path
  
 from __version__ import version
