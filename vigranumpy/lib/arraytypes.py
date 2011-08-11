@@ -824,11 +824,11 @@ class VigraArray(numpy.ndarray):
             res.axistags[-1] = AxisInfo.c
         return res
     
-    def ensureAxes(self, *axiskeys):
+    def withAxes(self, *axiskeys):
         '''
         Create a view containing the desired axis keys in the given  
-        order. When the array contains an axis not listed, it will
-        be dropped if it is a singfleton axis (otherwise, an exception
+        order. When the array contains an axis not listed, the axis
+        will be dropped if it is a singfleton (otherwise, an exception
         is raised). If a requested key is not present in this array,
         a singleton axis will be inserted at that position, if the 
         missing key is among the known standard keys (otherwise, an 
@@ -843,7 +843,7 @@ class VigraArray(numpy.ndarray):
             x y
             >>> a.shape
             (200, 100)
-            >>> b = a.ensureAxes('y', 'x', 'c')
+            >>> b = a.withAxes('y', 'x', 'c')
             >>> b.axistags
             y x c
             >>> b.shape
