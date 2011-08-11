@@ -50,7 +50,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
         mexErrMsgTxt("Two inputs required.");
 
     // get RF object
-   	RandomForest<> rf; 
+    RandomForest<> rf; 
     matlab::importRandomForest(rf, matlab::getCellArray(inputs[0]));
 
     // get feature matrix
@@ -61,7 +61,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /* OUTPUT */
     MultiArrayView<3, double> probs = outputs.createMultiArray<3, double>(0, v_required(),
                                                                 MultiArrayShape<3>::type(rowCount(features), 
-																						 rf.ext_param_.class_count_, rf.tree_count()));
+                                                                                         rf.ext_param_.class_count_, rf.tree_count()));
     ArrayVector<double>::const_iterator weights;
 
     double totalWeight = 0.0;

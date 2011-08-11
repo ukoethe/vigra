@@ -559,10 +559,10 @@ class CanvasSizeTest
     void testTIFFCanvasSize ()
     {
         vigra::ImageExportInfo exportinfo ("res.tif");
+        FRGBImage img(1, 1);
 #if !defined(HasTIFF)
         failCodec(img, exportinfo);
 #else
-        FRGBImage img(1, 1);
         img(0,0) = 1;
         exportinfo.setCompression ("LZW");
         Size2D canvasSize(3, 8);
@@ -1508,7 +1508,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&FloatRGBImageExportImportTest::testVIFF));
         add(testCase(&FloatRGBImageExportImportTest::testHDR));
 
-		// failure tests
+        // failure tests
         add(testCase(&ImageExportImportFailureTest::testGIFExport));
         add(testCase(&ImageExportImportFailureTest::testGIFImport));
         add(testCase(&ImageExportImportFailureTest::testJPEGExport));
@@ -1535,5 +1535,5 @@ int main (int argc, char ** argv)
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-	return failed != 0;
+    return failed != 0;
 }

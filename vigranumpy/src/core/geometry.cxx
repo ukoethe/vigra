@@ -54,14 +54,14 @@ pyconvexHull(NumpyArray<1, TinyVector<Coordinate, 2>, UnstridedArrayTag > points
 {
     ArrayVector<TinyVector<Coordinate, 2> > hull;
 
-	convexHull(ArrayVectorView<TinyVector<Coordinate, 2> >(points.shape(0), points.data()), hull);
+    convexHull(ArrayVectorView<TinyVector<Coordinate, 2> >(points.shape(0), points.data()), hull);
 
-	NumpyArray<1, TinyVector<Coordinate, 2> > result(MultiArrayShape<1>::type(hull.size()));
+    NumpyArray<1, TinyVector<Coordinate, 2> > result(MultiArrayShape<1>::type(hull.size()));
 
-	for(MultiArrayIndex i = 0; i < result.shape(0); ++i)
-		result(i) = hull[i];
+    for(MultiArrayIndex i = 0; i < result.shape(0); ++i)
+        result(i) = hull[i];
 
-	return result;
+    return result;
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pythonConvexHull, pyconvexHull)

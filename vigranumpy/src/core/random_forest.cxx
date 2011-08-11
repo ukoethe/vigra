@@ -97,7 +97,7 @@ pythonConstructRandomForest(int treeCount,
 template<class LabelType>
 RandomForest<LabelType> * 
 pythonImportRandomForestFromHDF5(std::string filename, 
-					             std::string pathname = "")
+                                 std::string pathname = "")
 { 
     std::auto_ptr<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
     
@@ -118,10 +118,10 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
     double oob;
-	{
+    {
         PyAllowThreads _pythread;
         rf.learn(trainData, trainLabels, visitors::create_visitor(var_imp, oob_v));
-	}
+    }
     oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
 
@@ -199,10 +199,10 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
     //construct result
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
                        "Output array has wrong dimensions.");
-	{
+    {
         PyAllowThreads _pythread;
         rf.predictProbabilities(testData,res);
-	}
+    }
     return res;
 }
 
@@ -216,10 +216,10 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),rf.ext_param_.class_count_),
                        "Output array has wrong dimenstions.");
     clock_t start=clock();
-	{ 
-		PyAllowThreads _pythread;
-		rf.predictProbabilities(predSet, res);
-	}
+    { 
+        PyAllowThreads _pythread;
+        rf.predictProbabilities(predSet, res);
+    }
     double duration=(clock()-start)/double(CLOCKS_PER_SEC);
     std::cerr<<"Prediction Time: "<<duration<<std::endl;
     return res;

@@ -433,7 +433,7 @@ struct FunctionsTest
 
         shouldEqual(vigra::loggamma(1.0), 0.0);
         shouldEqual(vigra::loggamma(2.0), 0.0);
-		shouldEqualTolerance(vigra::loggamma(4.0e-22), 49.2705776847491144296, 1e-15);
+        shouldEqualTolerance(vigra::loggamma(4.0e-22), 49.2705776847491144296, 1e-15);
         shouldEqualTolerance(vigra::loggamma(0.1), 2.2527126517342055401, 1e-15);
         shouldEqualTolerance(vigra::loggamma(0.3), 1.0957979948180756047, 1e-15);
         shouldEqualTolerance(vigra::loggamma(0.8), 0.15205967839983755563, 1e-15);
@@ -452,7 +452,7 @@ struct FunctionsTest
         try { vigra::loggamma(0.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
         try { vigra::loggamma(-1.0); failTest("No exception thrown"); } catch(vigra::PreconditionViolation &) {}
 
-		double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
+        double args[5] = {0.0, 1.0, 0.7, -0.7, -1.0};
         for(int i=0; i<5; ++i)
         {
             double x = args[i], x2 = x*x;
@@ -572,83 +572,83 @@ struct FunctionsTest
 
     void testAlgorithms()
     {
-		static const int size = 6;
-		int index[size];
+        static const int size = 6;
+        int index[size];
 
-		vigra::linearSequence(index, index+size);
-		int indexref[size] = {0, 1, 2, 3, 4, 5};
-		shouldEqualSequence(index, index+size, indexref);
+        vigra::linearSequence(index, index+size);
+        int indexref[size] = {0, 1, 2, 3, 4, 5};
+        shouldEqualSequence(index, index+size, indexref);
 
-		vigra::linearSequence(index, index+size, 5, 5);
-		int indexref2[size] = {5, 10, 15, 20, 25, 30};
-		shouldEqualSequence(index, index+size, indexref2);
+        vigra::linearSequence(index, index+size, 5, 5);
+        int indexref2[size] = {5, 10, 15, 20, 25, 30};
+        shouldEqualSequence(index, index+size, indexref2);
 
         double data[size] = {1.0, 5.0,
                          3.0, 2.0,
                         -2.0, 4.0};
 
-		vigra::indexSort(data, data+size, index, std::greater<double>());
-		int sortref[size] = {1, 5, 2, 3, 0, 4};
-		shouldEqualSequence(index, index+size, sortref);
+        vigra::indexSort(data, data+size, index, std::greater<double>());
+        int sortref[size] = {1, 5, 2, 3, 0, 4};
+        shouldEqualSequence(index, index+size, sortref);
 
-		vigra::indexSort(data, data+size, index);
-		int sortref2[size] = {4, 0, 3, 2, 5, 1};
-		shouldEqualSequence(index, index+size, sortref2);
+        vigra::indexSort(data, data+size, index);
+        int sortref2[size] = {4, 0, 3, 2, 5, 1};
+        shouldEqualSequence(index, index+size, sortref2);
 
-		double res[size];
-		vigra::applyPermutation(index, index+size, data, res);
-		double ref[size] = {-2.0, 1.0, 2.0, 3.0, 4.0, 5.0 };
-		shouldEqualSequence(res, res+size, ref);
+        double res[size];
+        vigra::applyPermutation(index, index+size, data, res);
+        double ref[size] = {-2.0, 1.0, 2.0, 3.0, 4.0, 5.0 };
+        shouldEqualSequence(res, res+size, ref);
 
-		int inverse[size];
-		vigra::inversePermutation(index, index+size, inverse);
-		int inverseref[size] = {1, 5, 3, 2, 0, 4};
-		shouldEqualSequence(inverse, inverse+size, inverseref);
+        int inverse[size];
+        vigra::inversePermutation(index, index+size, inverse);
+        int inverseref[size] = {1, 5, 3, 2, 0, 4};
+        shouldEqualSequence(inverse, inverse+size, inverseref);
 
-		vigra::applyPermutation(inverse, inverse+size, ref, res);
-		shouldEqualSequence(res, res+size, data);
+        vigra::applyPermutation(inverse, inverse+size, ref, res);
+        shouldEqualSequence(res, res+size, data);
     }
 
     void testChecksum()
     {
-		std::string s("");
-		vigra::UInt32 crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 0u);
+        std::string s("");
+        vigra::UInt32 crc = vigra::checksum(s.c_str(), s.size());
+        shouldEqual(crc, 0u);
 
-		s = "hello world";
-		crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 222957957u);
+        s = "hello world";
+        crc = vigra::checksum(s.c_str(), s.size());
+        shouldEqual(crc, 222957957u);
 
-		s = "hallo world";
-		crc = vigra::checksum(s.c_str(), s.size());
-		shouldEqual(crc, 77705727u);
+        s = "hallo world";
+        crc = vigra::checksum(s.c_str(), s.size());
+        shouldEqual(crc, 77705727u);
 
-		int split = 5;
-		std::string s1 = s.substr(0, split), s2 = s.substr(split);
-		crc = vigra::checksum(s1.c_str(), s1.size());
-		crc = vigra::concatenateChecksum(crc, s2.c_str(), s2.size());
-		shouldEqual(crc, 77705727u);
+        int split = 5;
+        std::string s1 = s.substr(0, split), s2 = s.substr(split);
+        crc = vigra::checksum(s1.c_str(), s1.size());
+        crc = vigra::concatenateChecksum(crc, s2.c_str(), s2.size());
+        shouldEqual(crc, 77705727u);
 
-		const int size = 446;
-		char t[size+1] =  
-			"Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
-			"sed do eiusmod tempor incididunt ut labore et dolore magna "
-			"aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
-			"ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-			"Duis aute irure dolor in reprehenderit in voluptate velit "
-			"esse cillum dolore eu fugiat nulla pariatur. Excepteur "
-			"sint occaecat cupidatat non proident, sunt in culpa qui "
-			"officia deserunt mollit anim id est laborum.";
+        const int size = 446;
+        char t[size+1] =  
+            "Lorem ipsum dolor sit amet, consectetur adipisicing elit, "
+            "sed do eiusmod tempor incididunt ut labore et dolore magna "
+            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation "
+            "ullamco laboris nisi ut aliquip ex ea commodo consequat. "
+            "Duis aute irure dolor in reprehenderit in voluptate velit "
+            "esse cillum dolore eu fugiat nulla pariatur. Excepteur "
+            "sint occaecat cupidatat non proident, sunt in culpa qui "
+            "officia deserunt mollit anim id est laborum.";
 
-		crc = vigra::checksum(t, size);
-		shouldEqual(crc, 2408722991u);
+        crc = vigra::checksum(t, size);
+        shouldEqual(crc, 2408722991u);
 
-		for(split = 64; split < 80; ++split) // check alignment
-		{
-			crc = vigra::checksum(t, split);
-			crc = vigra::concatenateChecksum(crc, t+split, size-split);
-			shouldEqual(crc, 2408722991u);
-		}
+        for(split = 64; split < 80; ++split) // check alignment
+        {
+            crc = vigra::checksum(t, split);
+            crc = vigra::concatenateChecksum(crc, t+split, size-split);
+            shouldEqual(crc, 2408722991u);
+        }
     }
 
     void testClebschGordan()
@@ -2279,7 +2279,7 @@ struct LinalgTest
 
     void testInverse()
     {
-		double epsilon = 1e-11;
+        double epsilon = 1e-11;
         Matrix idref = vigra::identityMatrix<double>(size);
 
         for(unsigned int i = 0; i < iterations; ++i)
@@ -2306,24 +2306,24 @@ struct LinalgTest
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
 
-		// test pseudo-inverse
-		double data2[] = { 0.,  1.,  0.,  0.,  0.,
+        // test pseudo-inverse
+        double data2[] = { 0.,  1.,  0.,  0.,  0.,
                            0.,  0.,  1.,  0.,  2.,
-						   2.,  0.,  0.,  3.,  0. };
-		double refdata[] = {  0.0, 0.0, 0.15384615384615388,
-			                  1.0, 0.0, 0.0,
-							  0.0, 0.2, 0.0,
-							  0.0, 0.0, 0.23076923076923081,
-							  0.0, 0.4, 0.0 };
-			
-		Matrix m(3, 5, data2), piref(5, 3, refdata), pitref(transpose(piref));
-		Matrix pi = inverse(m);
-		shouldEqual(pi.shape(), Shape(5, 3));
-		shouldEqualSequenceTolerance(piref.data(), piref.data()+15, pi.data(), 1e-15);
+                           2.,  0.,  0.,  3.,  0. };
+        double refdata[] = {  0.0, 0.0, 0.15384615384615388,
+                              1.0, 0.0, 0.0,
+                              0.0, 0.2, 0.0,
+                              0.0, 0.0, 0.23076923076923081,
+                              0.0, 0.4, 0.0 };
+            
+        Matrix m(3, 5, data2), piref(5, 3, refdata), pitref(transpose(piref));
+        Matrix pi = inverse(m);
+        shouldEqual(pi.shape(), Shape(5, 3));
+        shouldEqualSequenceTolerance(piref.data(), piref.data()+15, pi.data(), 1e-15);
 
-		Matrix pit = inverse(transpose(m));
-		shouldEqual(pit.shape(), Shape(3, 5));
-		shouldEqualSequenceTolerance(pitref.data(), pitref.data()+15, pit.data(), 1e-15);
+        Matrix pit = inverse(transpose(m));
+        shouldEqual(pit.shape(), Shape(3, 5));
+        shouldEqualSequenceTolerance(pitref.data(), pitref.data()+15, pit.data(), 1e-15);
     }
 
     void testSymmetricEigensystem()
@@ -2721,8 +2721,8 @@ struct PolygonTest
         shouldEqual(10u, hull.size());
         shouldEqualSequence(ref, ref+10, hull.begin());
 
-		int size = sizeof(convexHullInputs) / sizeof(Point);
-		points = vigra::ArrayVector<Point>(convexHullInputs, convexHullInputs+size);
+        int size = sizeof(convexHullInputs) / sizeof(Point);
+        points = vigra::ArrayVector<Point>(convexHullInputs, convexHullInputs+size);
         hull.clear();
         
         vigra::convexHull(points, hull);
@@ -2839,7 +2839,7 @@ struct MathTestSuite
         add( testCase(&RandomTest::testRandomFunctors));
 
         add( testCase(&PolygonTest::testConvexHull));
-	}
+    }
 };
 
 int main(int argc, char ** argv)

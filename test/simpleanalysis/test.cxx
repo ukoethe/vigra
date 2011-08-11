@@ -597,8 +597,8 @@ struct EdgeDetectionTest
         }
         should(count == 75);
 
-		std::vector<vigra::Edgel> edgelsThresh;
-		double threshold = 1.25;
+        std::vector<vigra::Edgel> edgelsThresh;
+        double threshold = 1.25;
         cannyEdgelListThreshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
         count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
@@ -609,8 +609,8 @@ struct EdgeDetectionTest
             should(edgels[i].y == edgelsThresh[count].y);
             ++count;
         }
-		should(count == 38);
-	}
+        should(count == 38);
+    }
 
     void cannyEdgelList3x3Test()
     {
@@ -627,8 +627,8 @@ struct EdgeDetectionTest
         }
         should(count == 38);
 
-		std::vector<vigra::Edgel> edgelsThresh;
-		double threshold = 1.3;
+        std::vector<vigra::Edgel> edgelsThresh;
+        double threshold = 1.3;
         cannyEdgelList3x3Threshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
         count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
@@ -639,7 +639,7 @@ struct EdgeDetectionTest
             should(edgels[i].y == edgelsThresh[count].y);
             ++count;
         }
-		should(count == 36);
+        should(count == 36);
     }
 
     void cannyEdgeImageTest()
@@ -1022,11 +1022,11 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowAtBorder());
-		desired[8] = 1.0;
-		desired[26] = 1.0;
+                    LocalMinmaxOptions().allowAtBorder());
+        desired[8] = 1.0;
+        desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1050,14 +1050,14 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(4).allowAtBorder());
-		desired[8] = 1.0;
-		desired[26] = 1.0;
-		desired[53] = 1.0;
+                    LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+        desired[8] = 1.0;
+        desired[26] = 1.0;
+        desired[53] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
-	}
+    }
 
     void localMinimumTestThr()
     {
@@ -1065,7 +1065,7 @@ struct LocalMinMaxTest
         res.init(0);
 
         localMinima(srcImageRange(img), destImage(res),
-			        LocalMinmaxOptions().neighborhood(8).markWith(1.0).threshold(-1.0));
+                    LocalMinmaxOptions().neighborhood(8).markWith(1.0).threshold(-1.0));
 
         double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -1080,10 +1080,10 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder());
-		desired[26] = 1.0;
+                    LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder());
+        desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1107,11 +1107,11 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowAtBorder());
-		desired[0] = 1.0;
-		desired[63] = 1.0;
+                    LocalMinmaxOptions().allowAtBorder());
+        desired[0] = 1.0;
+        desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1121,7 +1121,7 @@ struct LocalMinMaxTest
         res.init(0);
 
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(4));
+                    LocalMinmaxOptions().neighborhood(4));
 
         double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -1136,12 +1136,12 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(4).allowAtBorder());
-		desired[0] = 1.0;
-		desired[27] = 1.0;
-		desired[63] = 1.0;
+                    LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+        desired[0] = 1.0;
+        desired[27] = 1.0;
+        desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1151,7 +1151,7 @@ struct LocalMinMaxTest
         res.init(0);
 
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().markWith(1.0).neighborhood(8).threshold(0.2));
+                    LocalMinmaxOptions().markWith(1.0).neighborhood(8).threshold(0.2));
 
         double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -1166,10 +1166,10 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowAtBorder().threshold(0.2));
-		desired[63] = 1.0;
+                    LocalMinmaxOptions().allowAtBorder().threshold(0.2));
+        desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1193,16 +1193,16 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
-		localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowPlateaus());
+        res.init(0);
+        localMinima(srcImageRange(img), destImage(res), 
+                    LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowAtBorder().allowPlateaus());
-		desired[8] = 1.0;
-		desired[26] = 1.0;
+                    LocalMinmaxOptions().allowAtBorder().allowPlateaus());
+        desired[8] = 1.0;
+        desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -1226,17 +1226,17 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
  
-		res.init(0);
-		localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowPlateaus().neighborhood(4));
+        res.init(0);
+        localMinima(srcImageRange(img), destImage(res), 
+                    LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
-		desired[8] = 1.0;
-		desired[26] = 1.0;
-		desired[53] = 1.0;
+                    LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
+        desired[8] = 1.0;
+        desired[26] = 1.0;
+        desired[53] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
    }
 
@@ -1259,16 +1259,16 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         shouldEqualSequence(res.begin(), res.end(), desired);
-		res.init(0);
-		localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowPlateaus());
+        res.init(0);
+        localMaxima(srcImageRange(img), destImage(res), 
+                    LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowAtBorder().allowPlateaus());
-		desired[0] = 1.0;
-		desired[63] = 1.0;
+                    LocalMinmaxOptions().allowAtBorder().allowPlateaus());
+        desired[0] = 1.0;
+        desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
    }
 
@@ -1292,17 +1292,17 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
-		localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().allowPlateaus().neighborhood(4));
+        res.init(0);
+        localMaxima(srcImageRange(img), destImage(res), 
+                    LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
+        res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-			        LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
-		desired[0] = 1.0;
-		desired[27] = 1.0;
-		desired[63] = 1.0;
+                    LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
+        desired[0] = 1.0;
+        desired[27] = 1.0;
+        desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
    }
 
@@ -1369,7 +1369,7 @@ struct WatershedsTest
 
         for(; i != end; ++i, ++p)
         {
-			// transform data to a range suitable for BucketQueue (in the turbo algorithm)
+            // transform data to a range suitable for BucketQueue (in the turbo algorithm)
             acc.set(*p*10.0 + 30.0, i);
         }
     }
@@ -1394,46 +1394,46 @@ struct WatershedsTest
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
-	    count = generateWatershedSeeds(srcImageRange(img), destImage(res),
-			                           SeedOptions().extendedMinima());
+        res.init(0);
+        count = generateWatershedSeeds(srcImageRange(img), destImage(res),
+                                       SeedOptions().extendedMinima());
 
-		static const double desiredSeeds[] = {
+        static const double desiredSeeds[] = {
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
-			0.0,  2.0,  0.0,  3.0,  0.0,  1.0,  0.0,  1.0,  1.0,  
-			0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
-			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
-			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-			0.0,  0.0,  4.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
-			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
-			0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
+            0.0,  2.0,  0.0,  3.0,  0.0,  1.0,  0.0,  1.0,  1.0,  
+            0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  4.0,  4.0,  4.0,  0.0,  5.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
+            0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
 
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
 
-		static const double desiredRG[] = {
+        static const double desiredRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  3.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  1.0,  1.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0};
+            2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  3.0,  3.0,  1.0,  1.0,  1.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  1.0,  1.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0};
 
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
-		res.init(0);
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
-			                            WatershedOptions().keepContours()
-										  .seedOptions(SeedOptions().extendedMinima()));
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+                                        WatershedOptions().keepContours()
+                                          .seedOptions(SeedOptions().extendedMinima()));
 
-		static const double desiredRGC[] = {
+        static const double desiredRGC[] = {
             2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
@@ -1447,21 +1447,21 @@ struct WatershedsTest
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRGC);
 
-		res.init(0);
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
-			                            WatershedOptions().turboAlgorithm()
-										  .seedOptions(SeedOptions().extendedMinima()));
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+                                        WatershedOptions().turboAlgorithm()
+                                          .seedOptions(SeedOptions().extendedMinima()));
 
-		static const double desiredTRG[] = {
+        static const double desiredTRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
-			2.0,  2.0,  3.0,  3.0,  3.0,  5.0,  1.0,  1.0,  1.0,  
-			4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  1.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
-			4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0};
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
+            2.0,  2.0,  3.0,  3.0,  3.0,  5.0,  1.0,  1.0,  1.0,  
+            4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  1.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
+            4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0};
 
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredTRG);
@@ -1470,8 +1470,8 @@ struct WatershedsTest
         std::cerr << count << "\n";
         for(int y=0;y<9;++y)
         {
-			std::cerr << "            ";
-			for(int x=0;x<9;++x)
+            std::cerr << "            ";
+            for(int x=0;x<9;++x)
                 std::cerr << res(x,y) << ".0,  ";
             std::cerr << "\n\n";
         }
@@ -1495,14 +1495,14 @@ struct WatershedsTest
 
         int count = watershedsUnionFind(srcImageRange(img), destImage(res), FourNeighborCode());
 
-		should(10 == count);
+        should(10 == count);
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-		res.init(0);
-	    count = generateWatershedSeeds(srcImageRange(img), destImage(res), FourNeighborCode(),
-			                           SeedOptions().extendedMinima());
+        res.init(0);
+        count = generateWatershedSeeds(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                       SeedOptions().extendedMinima());
 
-		static const double desiredSeeds[] = {
+        static const double desiredSeeds[] = {
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
             0.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
             0.0,  0.0,  0.0,  3.0,  0.0,  0.0,  0.0,  1.0,  1.0,  
@@ -1516,9 +1516,9 @@ struct WatershedsTest
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
 
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
 
-		static const double desiredRG[] = {
+        static const double desiredRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  3.0,  3.0,  4.0,  4.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
@@ -1532,12 +1532,12 @@ struct WatershedsTest
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
-		res.init(0);
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
-			                            WatershedOptions().keepContours()
-										  .seedOptions(SeedOptions().extendedMinima()));
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                        WatershedOptions().keepContours()
+                                          .seedOptions(SeedOptions().extendedMinima()));
 
-		static const double desiredRGC[] = {
+        static const double desiredRGC[] = {
             2.0,  2.0,  2.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
@@ -1551,12 +1551,12 @@ struct WatershedsTest
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRGC);
 
-		res.init(0);
-		count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
-			                            WatershedOptions().turboAlgorithm()
-										  .seedOptions(SeedOptions().extendedMinima()));
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                        WatershedOptions().turboAlgorithm()
+                                          .seedOptions(SeedOptions().extendedMinima()));
 
-		static const double desiredTRG[] = {
+        static const double desiredTRG[] = {
             2.0,  2.0,  2.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  2.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  3.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
@@ -1574,8 +1574,8 @@ struct WatershedsTest
         std::cerr << count << "\n";
         for(int y=0;y<9;++y)
         {
-			std::cerr << "            ";
-			for(int x=0;x<9;++x)
+            std::cerr << "            ";
+            for(int x=0;x<9;++x)
                 std::cerr << res(x,y) << ".0,  ";
             std::cerr << "\n";
         }
@@ -1662,13 +1662,13 @@ struct RegionGrowingTest
             }
         }
 
-		vigra::IImage wres(img.size());
+        vigra::IImage wres(img.size());
 
-		watershedsRegionGrowing(srcImageRange(img), destImage(wres),
-			                    WatershedOptions().completeGrow()
-							     .seedOptions(SeedOptions().minima().threshold(1.0)));
+        watershedsRegionGrowing(srcImageRange(img), destImage(wres),
+                                WatershedOptions().completeGrow()
+                                 .seedOptions(SeedOptions().minima().threshold(1.0)));
 
-		shouldEqualSequence(res.begin(), res.end(), wres.begin());
+        shouldEqualSequence(res.begin(), res.end(), wres.begin());
     }
 
     void voronoiWithBorderTest()

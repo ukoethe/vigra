@@ -54,42 +54,42 @@ namespace rf
 //@{
 
 /**
-  	This namespace contains all classes and methods related to extracting information during 
-	learning of the random forest. All Visitors share the same interface defined in 
-	visitors::VisitorBase. The member methods are invoked at certain points of the main code in 
-	the order they were supplied.
-   	
-	For the Random Forest the  Visitor concept is implemented as a statically linked list 
-	(Using templates). Each Visitor object is encapsulated in a detail::VisitorNode object. The 
-	VisitorNode object calls the Next Visitor after one of its visit() methods have terminated.
-	
-	To simplify usage create_visitor() factory methods are supplied.
-	Use the create_visitor() method to supply visitor objects to the RandomForest::learn() method.
-	It is possible to supply more than one visitor. They will then be invoked in serial order.
+    This namespace contains all classes and methods related to extracting information during 
+    learning of the random forest. All Visitors share the same interface defined in 
+    visitors::VisitorBase. The member methods are invoked at certain points of the main code in 
+    the order they were supplied.
+    
+    For the Random Forest the  Visitor concept is implemented as a statically linked list 
+    (Using templates). Each Visitor object is encapsulated in a detail::VisitorNode object. The 
+    VisitorNode object calls the Next Visitor after one of its visit() methods have terminated.
+    
+    To simplify usage create_visitor() factory methods are supplied.
+    Use the create_visitor() method to supply visitor objects to the RandomForest::learn() method.
+    It is possible to supply more than one visitor. They will then be invoked in serial order.
 
-	The calculated information are stored as public data members of the class. - see documentation
-	of the individual visitors
-	
-	While creating a new visitor the new class should therefore publicly inherit from this class 
-	(i.e.: see visitors::OOB_Error).
+    The calculated information are stored as public data members of the class. - see documentation
+    of the individual visitors
+    
+    While creating a new visitor the new class should therefore publicly inherit from this class 
+    (i.e.: see visitors::OOB_Error).
 
-	\code
+    \code
 
- 	  typedef xxx feature_t \\ replace xxx with whichever type
- 	  typedef yyy label_t   \\ meme chose. 
- 	  MultiArrayView<2, feature_t> f = get_some_features();
- 	  MultiArrayView<2, label_t>   l = get_some_labels();
- 	  RandomForest<> rf()
-	
-	  //calculate OOB Error
-	  visitors::OOB_Error oob_v;
-	  //calculate Variable Importance
-	  visitors::VariableImportanceVisitor varimp_v;
+      typedef xxx feature_t \\ replace xxx with whichever type
+      typedef yyy label_t   \\ meme chose. 
+      MultiArrayView<2, feature_t> f = get_some_features();
+      MultiArrayView<2, label_t>   l = get_some_labels();
+      RandomForest<> rf()
+    
+      //calculate OOB Error
+      visitors::OOB_Error oob_v;
+      //calculate Variable Importance
+      visitors::VariableImportanceVisitor varimp_v;
 
- 	  double oob_error = rf.learn(f, l, visitors::create_visitor(oob_v, varimp_v);
-	  //the data can be found in the attributes of oob_v and varimp_v now
+      double oob_error = rf.learn(f, l, visitors::create_visitor(oob_v, varimp_v);
+      //the data can be found in the attributes of oob_v and varimp_v now
       
-	\endcode
+    \endcode
 */
 namespace visitors
 {
@@ -170,7 +170,7 @@ class VisitorBase
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)
     {}
-	
+    
     /** do something before learning starts 
      *
      * \param rf        reference to the random forest object that called this
@@ -582,10 +582,10 @@ public:
     //Need to now the label for interior node visiting
     vigra::Int32 current_label;
     //marginal distribution for interior nodes
-	//
-	OnlineLearnVisitor():
-		adjust_thresholds(false), tree_id(0), last_node_id(0), current_label(0)
-	{}
+    //
+    OnlineLearnVisitor():
+        adjust_thresholds(false), tree_id(0), last_node_id(0), current_label(0)
+    {}
     struct MarginalDistribution
     {
         ArrayVector<Int32> leftCounts;
@@ -637,10 +637,10 @@ public:
     {
         tree_id++;
     }
-	
+    
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
     void visit_after_split( Tree  	      & tree, 
-			    Split         & split,
+                Split         & split,
                             Region       & parent,
                             Region        & leftChild,
                             Region        & rightChild,
@@ -772,8 +772,8 @@ public:
 class OOB_PerTreeError:public VisitorBase
 {
 public:
-	/** Average error of one randomized decision tree
-	 */
+    /** Average error of one randomized decision tree
+     */
     double oobError;
 
     int totalOobCount;
@@ -858,8 +858,8 @@ class OOB_Error : public VisitorBase
     public:
 
     MultiArray<2, double>       prob_oob; 
-	/** Ensemble oob error rate
-	 */
+    /** Ensemble oob error rate
+     */
     double                      oob_breiman;
 
     MultiArray<2, double>       oobCount;
@@ -903,9 +903,9 @@ class OOB_Error : public VisitorBase
         // go through the samples
         int total_oob =0;
         // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
-		//                            (i.e. the OOB sample ist very large)
-		//                     40000: use at most 40000 OOB samples per class for OOB error estimate 
-		if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
+        //                            (i.e. the OOB sample ist very large)
+        //                     40000: use at most 40000 OOB samples per class for OOB error estimate 
+        if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
         {
             ArrayVector<int> oob_indices;
             ArrayVector<int> cts(class_count, 0);
@@ -1010,56 +1010,56 @@ class CompleteOOBInfo : public VisitorBase
     public:
 
     /** OOB Error rate of each individual tree
-	 */
+     */
     MultiArray<2, double>       oob_per_tree;
-	/** Mean of oob_per_tree
-	 */
+    /** Mean of oob_per_tree
+     */
     double                      oob_mean;
-	/**Standard deviation of oob_per_tree
-	 */
+    /**Standard deviation of oob_per_tree
+     */
     double                      oob_std;
     
     MultiArray<2, double>       prob_oob; 
-	/** Ensemble OOB error
-	 *
-	 * \sa OOB_Error
-	 */
+    /** Ensemble OOB error
+     *
+     * \sa OOB_Error
+     */
     double                      oob_breiman;
 
     MultiArray<2, double>       oobCount;
     MultiArray<2, double>       oobErrorCount;
-	/** Per Tree OOB error calculated as in OOB_PerTreeError
-	 * (Ulli's version)
-	 */
+    /** Per Tree OOB error calculated as in OOB_PerTreeError
+     * (Ulli's version)
+     */
     double                      oob_per_tree2;
 
-	/**Column containing the development of the Ensemble
-	 * error rate with increasing number of trees
-	 */
+    /**Column containing the development of the Ensemble
+     * error rate with increasing number of trees
+     */
     MultiArray<2, double>       breiman_per_tree;
-	/** 4 dimensional array containing the development of confusion matrices 
-	 * with number of trees - can be used to estimate ROC curves etc.
-	 *
-	 * oobroc_per_tree(ii,jj,kk,ll) 
-	 * corresponds true label = ii 
-	 * predicted label = jj
-	 * confusion matrix after ll trees
-	 *
-	 * explaination of third index:
-	 *
-	 * Two class case:
-	 * kk = 0 - (treeCount-1)
-	 *         Threshold is on Probability for class 0  is kk/(treeCount-1);
-	 * More classes:
-	 * kk = 0. Threshold on probability set by argMax of the probability array.
-	 */
+    /** 4 dimensional array containing the development of confusion matrices 
+     * with number of trees - can be used to estimate ROC curves etc.
+     *
+     * oobroc_per_tree(ii,jj,kk,ll) 
+     * corresponds true label = ii 
+     * predicted label = jj
+     * confusion matrix after ll trees
+     *
+     * explaination of third index:
+     *
+     * Two class case:
+     * kk = 0 - (treeCount-1)
+     *         Threshold is on Probability for class 0  is kk/(treeCount-1);
+     * More classes:
+     * kk = 0. Threshold on probability set by argMax of the probability array.
+     */
     MultiArray<4, double>       oobroc_per_tree;
     
     CompleteOOBInfo() : VisitorBase(), oob_mean(0), oob_std(0), oob_per_tree2(0)  {}
 
 #ifdef HasHDF5
-	/** save to HDF5 file
-	 */
+    /** save to HDF5 file
+     */
     void save(std::string filen, std::string pathn)
     {
         if(*(pathn.end()-1) != '/')
@@ -1222,28 +1222,28 @@ class VariableImportanceVisitor : public VisitorBase
 
     /** This Array has the same entries as the R - random forest variable
      *  importance.
-	 *  Matrix is   featureCount by (classCount +2)
-	 *  variable_importance_(ii,jj) is the variable importance measure of 
-	 *  the ii-th variable according to:
-	 *  jj = 0 - (classCount-1)
-	 *  	classwise permutation importance 
-	 *  jj = rowCount(variable_importance_) -2
-	 *  	permutation importance
-	 *  jj = rowCount(variable_importance_) -1
-	 *  	gini decrease importance.
-	 *
-	 *  permutation importance:
-	 *  The difference between the fraction of OOB samples classified correctly
-	 *  before and after permuting (randomizing) the ii-th column is calculated.
-	 *  The ii-th column is permuted rep_cnt times.
-	 *
-	 *  class wise permutation importance:
-	 *  same as permutation importance. We only look at those OOB samples whose 
-	 *  response corresponds to class jj.
-	 *
-	 *  gini decrease importance:
-	 *  row ii corresponds to the sum of all gini decreases induced by variable ii 
-	 *  in each node of the random forest.
+     *  Matrix is   featureCount by (classCount +2)
+     *  variable_importance_(ii,jj) is the variable importance measure of 
+     *  the ii-th variable according to:
+     *  jj = 0 - (classCount-1)
+     *  	classwise permutation importance 
+     *  jj = rowCount(variable_importance_) -2
+     *  	permutation importance
+     *  jj = rowCount(variable_importance_) -1
+     *  	gini decrease importance.
+     *
+     *  permutation importance:
+     *  The difference between the fraction of OOB samples classified correctly
+     *  before and after permuting (randomizing) the ii-th column is calculated.
+     *  The ii-th column is permuted rep_cnt times.
+     *
+     *  class wise permutation importance:
+     *  same as permutation importance. We only look at those OOB samples whose 
+     *  response corresponds to class jj.
+     *
+     *  gini decrease importance:
+     *  row ii corresponds to the sum of all gini decreases induced by variable ii 
+     *  in each node of the random forest.
      */
     MultiArray<2, double>       variable_importance_;
     int                         repetition_count_;
@@ -1259,11 +1259,11 @@ class VariableImportanceVisitor : public VisitorBase
     }
 #endif
 
-	/** Constructor
-	 * \param rep_cnt (defautl: 10) how often should 
-	 * the permutation take place. Set to 1 to make calculation faster (but
-	 * possibly more instable)
-	 */
+    /** Constructor
+     * \param rep_cnt (defautl: 10) how often should 
+     * the permutation take place. Set to 1 to make calculation faster (but
+     * possibly more instable)
+     */
     VariableImportanceVisitor(int rep_cnt = 10) 
     :   repetition_count_(rep_cnt)
 
@@ -1314,18 +1314,18 @@ class VariableImportanceVisitor : public VisitorBase
         Int32                   column_count = rf.ext_param_.column_count_;
         Int32                   class_count  = rf.ext_param_.class_count_;  
         
-		/* This solution saves memory uptake but not multithreading
-		 * compatible
-		 */
+        /* This solution saves memory uptake but not multithreading
+         * compatible
+         */
         // remove the const cast on the features (yep , I know what I am 
         // doing here.) data is not destroyed.
         //typename PR::Feature_t & features 
         //    = const_cast<typename PR::Feature_t &>(pr.features());
 
-		typedef typename PR::FeatureWithMemory_t FeatureArray;
-		typedef typename FeatureArray::value_type FeatureValue;
+        typedef typename PR::FeatureWithMemory_t FeatureArray;
+        typedef typename FeatureArray::value_type FeatureValue;
 
-		FeatureArray features = pr.features();
+        FeatureArray features = pr.features();
 
         //find the oob indices of current tree. 
         ArrayVector<Int32>      oob_indices;
@@ -1484,43 +1484,43 @@ class RandomForestProgressVisitor : public VisitorBase {
 class CorrelationVisitor : public VisitorBase
 {
     public:
-	/** gini_missc(ii, jj) describes how well variable jj can describe a partition
-	 * created on variable ii(when variable ii was chosen)
-	 */ 
+    /** gini_missc(ii, jj) describes how well variable jj can describe a partition
+     * created on variable ii(when variable ii was chosen)
+     */ 
     MultiArray<2, double>   gini_missc;
     MultiArray<2, int>      tmp_labels;
-	/** additional noise features. 
-	 */
+    /** additional noise features. 
+     */
     MultiArray<2, double>   noise;
     MultiArray<2, double>   noise_l;
-	/** how well can a noise column describe a partition created on variable ii.
-	 */
+    /** how well can a noise column describe a partition created on variable ii.
+     */
     MultiArray<2, double>   corr_noise;
     MultiArray<2, double>   corr_l;
 
-	/** Similarity Matrix
-	 * 
-	 * (numberOfFeatures + 1) by (number Of Features + 1) Matrix
-	 * gini_missc 
-	 *  - row normalized by the number of times the column was chosen
-	 *  - mean of corr_noise subtracted
-	 *  - and symmetrised. 
-	 *          
-	 */
+    /** Similarity Matrix
+     * 
+     * (numberOfFeatures + 1) by (number Of Features + 1) Matrix
+     * gini_missc 
+     *  - row normalized by the number of times the column was chosen
+     *  - mean of corr_noise subtracted
+     *  - and symmetrised. 
+     *          
+     */
     MultiArray<2, double>   similarity;
-	/** Distance Matrix 1-similarity
-	 */
+    /** Distance Matrix 1-similarity
+     */
     MultiArray<2, double>   distance;
     ArrayVector<int>        tmp_cc;
-	
-	/** How often was variable ii chosen
-	 */
+    
+    /** How often was variable ii chosen
+     */
     ArrayVector<int>        numChoices;
     typedef BestGiniOfColumn<GiniCriterion> ColumnDecisionFunctor;
     BestGiniOfColumn<GiniCriterion>         bgfunc;
     void save(std::string file, std::string prefix)
     {
-		/*
+        /*
         std::string tmp;
 #define VAR_WRITE(NAME) \
         tmp = #NAME;\

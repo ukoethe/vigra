@@ -510,15 +510,15 @@ def testVolume2():
     
     c = ["testAny",
          "testArray4Unstrided", 
-		 "testArray4Strided",
+         "testArray4Strided",
          "testVolumeMultibandUnstrided", 
-		 "testVolumeMultibandStrided"]
+         "testVolumeMultibandStrided"]
     checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='F'), c)
     
     c = ["testAny",
          "testArray4Strided",
          "testVolumeVector2Unstrided", 
-		 "testVolumeVector2Strided",
+         "testVolumeVector2Strided",
          "testVolumeMultibandStrided"]
     checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='V'), c)
     

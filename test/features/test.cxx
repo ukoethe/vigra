@@ -104,15 +104,15 @@ struct InvariantFeaturesTest
             M diff(2*l+1, 2*l+1);
             FindMinMax<float> minmax;
 
-			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
-				                destMultiArray(diff), ComplexImagFunctor<float>());
+            transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+                                destMultiArray(diff), ComplexImagFunctor<float>());
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             shouldEqual(minmax.min, 0.0f);
             shouldEqual(minmax.max, 0.0f);
 
-			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
-				                destMultiArray(diff), ComplexRealFunctor<float>());
-			diff -= ref[l];
+            transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+                                destMultiArray(diff), ComplexRealFunctor<float>());
+            diff -= ref[l];
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);
@@ -128,16 +128,16 @@ struct InvariantFeaturesTest
             M diff(2*l+1, 2*l+1);
             FindMinMax<float> minmax;
 
-			transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
-				                destMultiArray(diff), ComplexImagFunctor<float>());
+            transformMultiArray(srcMultiArrayRange(wigner.get_D(l)),
+                                destMultiArray(diff), ComplexImagFunctor<float>());
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             shouldEqual(minmax.min, 0.0f);
             shouldEqual(minmax.max, 0.0f);
             
             // FIXME: transpose() shouldn't be necessary below
-			transformMultiArray(srcMultiArrayRange(transpose(wigner2.get_D(l))),
-				                destMultiArray(diff), ComplexRealFunctor<float>());
-			diff -= ref[l];
+            transformMultiArray(srcMultiArrayRange(transpose(wigner2.get_D(l))),
+                                destMultiArray(diff), ComplexRealFunctor<float>());
+            diff -= ref[l];
             inspectMultiArray(srcMultiArrayRange(diff), minmax);
             should(minmax.min > -1e-4f);
             should(minmax.max <  1e-4f);

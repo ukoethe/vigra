@@ -86,7 +86,7 @@ Import a previously trained Random Forest from  a hdf5 file
    filename  - name of hdf5 file
 
    groupname    - optional: name of group which shoud be used as the base
-   					path
+                    path
 
 to compile on Linux:
 --------------------
