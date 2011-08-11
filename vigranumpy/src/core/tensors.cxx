@@ -152,7 +152,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                                         double sigma,
                                         NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
-					python::object step_size = 1.0)
+                                        python::object step_size = 1.0)
 {
     pythonScaleParam1<ndim> steps(step_size, "symmetricGradient");
     res.reshapeIfEmpty(volume.shape(), "symmetricGradient(): Output array has wrong shape.");
@@ -374,7 +374,7 @@ void defineTensor()
 
     def("gaussianGradientMagnitude",
         registerConverters(&pythonGaussianGradientMagnitude<float,3>),
-    	(arg("image"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("image"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the gradient magnitude by means of a 1st derivative of "
         "Gaussian filter at the given scale for a 2D scalar or multiband image.\n"
         "If 'accumulate' is True (the default), the gradients are accumulated (in the "
@@ -393,7 +393,7 @@ void defineTensor()
 
     def("gaussianGradientMagnitude",
         registerConverters(&pythonGaussianGradientMagnitude<float,4>),
-    	(arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Likewise for a 3D scalar or multiband volume.\n");
 
     def("symmetricGradient",
@@ -413,7 +413,7 @@ void defineTensor()
     
     def("hessianOfGaussian2D",
         registerConverters(&pythonHessianOfGaussian2D<float>),
-    	(arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D scalar image.\n"
         "\n"
@@ -430,7 +430,7 @@ void defineTensor()
 
     def("hessianOfGaussian3D",
         registerConverters(&pythonHessianOfGaussian3D<float>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D or 3D scalar image.\n"
         "\n"
@@ -438,11 +438,11 @@ void defineTensor()
 
     def("hessianOfGaussian",
         registerConverters(&pythonHessianOfGaussianND<float,3>),
-    	(arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0));
+        (arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0));
 
     def("structureTensor",
         registerConverters(&pythonStructureTensor<float,3>),
-    	(arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the structure tensor of an image by means of Gaussian "
         "(derivative) filters at the given scales. If the input has multiple channels, "
         "the structure tensors of each channel are added to get the result.\n\n"
@@ -461,7 +461,7 @@ void defineTensor()
 
     def("structureTensor",
         registerConverters(&pythonStructureTensor<float,4>),
-    	(arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Likewise for a 3D scalar or multiband volume.\n");
 
     def("boundaryTensor2D",
