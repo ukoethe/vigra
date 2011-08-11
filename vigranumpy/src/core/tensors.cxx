@@ -43,6 +43,7 @@
 #include <vigra/orientedtensorfilters.hxx>
 #include <vigra/tensorutilities.hxx>
 #include <vigra/multi_tensorutilities.hxx>
+#include "vigranumpyscaleparam.hxx"
 
 namespace python = boost::python;
 
@@ -51,13 +52,15 @@ namespace vigra
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
-                                       double sigma,
-                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object())
+                                       python::object sigma,
+                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
+                                       python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
+    pythonScaleParam<ndim> params(sigma, sigma_d, step_size, "gaussianGradient");
     res.reshapeIfEmpty(volume.shape(), "gaussianGradient(): Output array has wrong shape.");
     {
         PyAllowThreads _pythread;
-        gaussianGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+        gaussianGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
     }
     return res;
 }
@@ -66,7 +69,7 @@ NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
-                                  double sigma, 
+                                  const pythonScaleParam<ndim - 1> & params,
                                   NumpyArray<ndim-1, Singleband<VoxelType> > res=python::object())
 {
     using namespace vigra::functor;
@@ -81,7 +84,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
         {
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
         
-            gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), sigma);
+            gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), params());
             combineTwoMultiArrays(srcMultiArrayRange(grad), srcMultiArray(res), destMultiArray(res), 
                                   squaredNorm(Arg1())+Arg2());
         }
@@ -98,7 +101,7 @@ pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
                             unsigned int yorder,
                             NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");    
+    res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");
     
     rieszTransformOfLOG(srcImageRange(image), destImage(res),
         scale, xorder, yorder);
@@ -109,7 +112,7 @@ pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
-                                  double sigma, 
+                                  const pythonScaleParam<ndim - 1> & params,
                                   NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
 {
     using namespace vigra::functor;
@@ -125,7 +128,7 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
             MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
         
-            gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), sigma);
+        gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), params());
             transformMultiArray(srcMultiArrayRange(grad), destMultiArray(bres), norm(Arg1()));
         }
     }
@@ -135,45 +138,53 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
-                                double sigma, bool accumulate, 
-                                NumpyAnyArray res=python::object())
+                                python::object sigma, bool accumulate,
+                                NumpyAnyArray res=python::object(),
+                                python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
+    pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianGradientMagnitude");
     return accumulate
-              ? pythonGaussianGradientMagnitudeND(volume, sigma, NumpyArray<ndim-1, Singleband<VoxelType> >(res))
-              : pythonGaussianGradientMagnitudeND(volume, sigma, NumpyArray<ndim, Multiband<VoxelType> >(res));
+              ? pythonGaussianGradientMagnitudeND(volume, params, NumpyArray<ndim-1, Singleband<VoxelType> >(res))
+              : pythonGaussianGradientMagnitudeND(volume, params, NumpyArray<ndim, Multiband<VoxelType> >(res));
 }
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                                         double sigma,
-                                        NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object())
+                                        NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
+					python::object step_size = 1.0)
 {
+    pythonScaleParam1<ndim> steps(step_size, "symmetricGradient");
     res.reshapeIfEmpty(volume.shape(), "symmetricGradient(): Output array has wrong shape.");
-    symmetricGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res));
+    symmetricGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), steps());
     return res;
 }
 
 template < class VoxelType, unsigned int N >
 NumpyAnyArray 
 pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
-                          double sigma,
-                          NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object())
+                          python::object sigma,
+                          NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object(),
+                          python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
+    pythonScaleParam<N> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
-    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
     return res;
 }
 
 template < class VoxelType>
 NumpyAnyArray 
 pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
-                          double sigma,
-                          NumpyArray<3, TinyVector<VoxelType, 6> > res=python::object())
+                          python::object sigma,
+                          NumpyArray<3, TinyVector<VoxelType, 6> > res=python::object(),
+                          python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
+    pythonScaleParam<3> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
     {
         PyAllowThreads _pythread;
-        hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), sigma);
+        hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
     }
     return res;
 }
@@ -181,13 +192,15 @@ pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
 template < class PixelType>
 NumpyAnyArray 
 pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
-                          double sigma,
-                          NumpyArray<2, TinyVector<PixelType, 3> > res=python::object())
+                          python::object sigma,
+                          NumpyArray<2, TinyVector<PixelType, 3> > res=python::object(),
+                          python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
+    pythonScaleParam<2> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(image.shape(), "hessianOfGaussian(): Output array has wrong shape.");
     {
         PyAllowThreads _pythread;
-        hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), sigma);
+        hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), params());
     }
     return res;
 }
@@ -197,19 +210,21 @@ pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
 template <class PixelType, unsigned int N>
 NumpyAnyArray 
 pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image, 
-                      double innerScale, double outerScale,
-                      NumpyArray<N-1, TinyVector<PixelType, int(N*(N-1)/2)> > res=python::object() )
+                      python::object innerScale, python::object outerScale,
+                      NumpyArray<N-1, TinyVector<PixelType, int(N*(N-1)/2)> > res=python::object(),
+                      python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
     using namespace vigra::functor;
     
+    pythonScaleParam<N-1> params(innerScale, sigma_d, step_size, outerScale, "structureTensor");
     res.reshapeIfEmpty(typename MultiArrayShape<N-1>::type(image.shape().begin()), 
                  "structureTensor(): Output array has wrong shape.");
     
     MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(0);
     {
         PyAllowThreads _pythread;
-        structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), 
-                                  innerScale, outerScale);
+        structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res),
+                                  params());
         
         
         if(image.shape(N-1) > 1)
@@ -220,7 +235,7 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image,
             {
                 MultiArrayView<N-1, PixelType, StridedArrayTag> band = image.bindOuter(b);
                 structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(st), 
-                                          innerScale, outerScale);
+                                      params());
                 combineTwoMultiArrays(srcMultiArrayRange(res), srcMultiArray(st), 
                                       destMultiArray(res), Arg1() + Arg2());
             }
@@ -332,15 +347,23 @@ void defineTensor()
     
     def("gaussianGradient",
         registerConverters(&pythonGaussianGradientND<float,2>),
-        (arg("image"), arg("sigma"), arg("out")=python::object()),
+        (arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the gradient vector by means of a 1st derivative of "
-        "Gaussian filter at the given scale for a 2D scalar image.\n"
-        "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
+        "Gaussian filter at the given scale for a 2D scalar image.\n\n"
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see gaussianGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianGradient",
         registerConverters(&pythonGaussianGradientND<float,3>),
-        (arg("volume"), arg("sigma"), arg("out")=python::object()),
+        (arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Likewise for a 3D scalar volume.\n");
 
     def("rieszTransformOfLOG2D",
@@ -351,43 +374,63 @@ void defineTensor()
 
     def("gaussianGradientMagnitude",
         registerConverters(&pythonGaussianGradientMagnitude<float,3>),
-        (arg("image"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object()),
+    	(arg("image"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the gradient magnitude by means of a 1st derivative of "
         "Gaussian filter at the given scale for a 2D scalar or multiband image.\n"
         "If 'accumulate' is True (the default), the gradients are accumulated (in the "
         "L2-norm sense) over all  channels of a multi-channel array. Otherwise, "
-        "a separate gradient magnitude is computed for each channel.\n"
-        "\n"
-        "For details see gaussianGradientMultiArray_ in the vigra C++ documentation.\n");
+        "a separate gradient magnitude is computed for each channel.\n\n"
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see gaussianGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianGradientMagnitude",
         registerConverters(&pythonGaussianGradientMagnitude<float,4>),
-        (arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object()),
+    	(arg("volume"), arg("sigma"), arg("accumulate")=true, arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Likewise for a 3D scalar or multiband volume.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,2>),
-        (arg("image"), arg("out")=python::object()),
+        (arg("image"), arg("out")=python::object(), arg("step_size")=1.0),
         "Calculate gradient of a scalar 2D image using symmetric difference filters."
         "\n"
-        "For details see symmetricGradientMultiArray_ in the vigra C++ documentation.\n");
+        "The optional tuple or list 'step_size' denotes the distance between two "
+        "adjacent pixels for each dimension; its length must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see symmetricGradientMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("symmetricGradient",
         registerConverters(&pythonSymmetricGradientND<float,3>), 
-        (arg("volume"), arg("out")=python::object()),
+        (arg("volume"), arg("out")=python::object(), arg("step_size")=1.0),
         "Likewise for a 3D scalar volume.\n");
     
     def("hessianOfGaussian2D",
         registerConverters(&pythonHessianOfGaussian2D<float>),
-        (arg("image"), arg("sigma"), arg("out")=python::object()),
+    	(arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D scalar image.\n"
         "\n"
-        "For details see hessianOfGaussianMultiArray_ in the vigra C++ documentation.\n");
+        "If 'sigma' is a single value, an isotropic filter at this scale is "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'sigma' is a tuple or list of values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see hessianOfGaussianMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("hessianOfGaussian3D",
         registerConverters(&pythonHessianOfGaussian3D<float>),
-        (arg("volume"), arg("sigma"), arg("out")=python::object()),
+    	(arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the Hessian matrix by means of a derivative of "
         "Gaussian filters at the given scale for a 2D or 3D scalar image.\n"
         "\n"
@@ -395,20 +438,30 @@ void defineTensor()
 
     def("hessianOfGaussian",
         registerConverters(&pythonHessianOfGaussianND<float,3>),
-        (arg("volume"), arg("sigma"), arg("out")=python::object()));
+    	(arg("volume"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0));
 
     def("structureTensor",
         registerConverters(&pythonStructureTensor<float,3>),
-        (arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object()),
+    	(arg("image"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Calculate the structure tensor of an image by means of Gaussian "
         "(derivative) filters at the given scales. If the input has multiple channels, "
-        "the structure tensors of each channel are added to get the result.\n"
-        "\n"
-        "For details see structureTensorMultiArray_ in the vigra C++ documentation.\n");
+        "the structure tensors of each channel are added to get the result.\n\n"
+        "If 'innerScale' and 'outerScale' are single values, "
+        "isotropic filters at these scales are "
+        "applied (i.e., each dimension is filtered in the same way). "
+        "If 'innerScale' and / or 'outerScale' are are tuples or lists of "
+        "values, the amount of smoothing "
+        "will be different for each spatial dimension.\n"
+        "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+        "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+        "pixels for each dimension. "
+        "The length of the tuples or lists must be equal to the "
+        "number of spatial dimensions.\n\n"        
+        "For details see structureTensorMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("structureTensor",
         registerConverters(&pythonStructureTensor<float,4>),
-        (arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object()),
+    	(arg("volume"), arg("innerScale"), arg("outerScale"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Likewise for a 3D scalar or multiband volume.\n");
 
     def("boundaryTensor2D",
