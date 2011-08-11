@@ -833,7 +833,8 @@ class VigraArray(numpy.ndarray):
         a singleton axis will be inserted at that position, if the 
         missing key is among the known standard keys (otherwise, an 
         exception is raised). The function fails if this array contains
-        axes of unknown type (key '?').
+        axes of unknown type (key '?'). If 'self' is already suitable, 
+        it is simply retured without generating a new view.
         
         Usage::
         
@@ -849,6 +850,8 @@ class VigraArray(numpy.ndarray):
             (100, 200, 1)
         
         '''
+        if repr(self.axistags) == ' '.join(axiskeys):
+            return self
         axisinfo = []
         slicing = [0]*self.ndim
         for key in axiskeys:
