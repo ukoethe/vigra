@@ -785,10 +785,10 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
-void
+          class DestIterator, class DestAccessor>
+inline void
 gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                   DestIterator d, DestAccessor dest, const Param & sigma,
+                   DestIterator d, DestAccessor dest, double sigma,
                    const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     ConvolutionOptions<SrcShape::static_size> par = opt;
@@ -807,10 +807,10 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest, const Param & sigma,
+                  pair<DestIterator, DestAccessor> const & dest, double sigma,
                   const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
@@ -936,10 +936,10 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 void
 gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                           DestIterator di, DestAccessor dest, const Param & sigma,
+                           DestIterator di, DestAccessor dest, double sigma,
                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     ConvolutionOptions<SrcShape::static_size> par = opt;
@@ -958,11 +958,11 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 inline void
 gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                            pair<DestIterator, DestAccessor> const & dest,
-                           const Param & sigma,
+                           double sigma,
                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     gaussianGradientMultiArray( source.first, source.second, source.third,
@@ -1081,19 +1081,6 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Param>
-void
-symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                            DestIterator di, DestAccessor dest,
-                            Param step_size,
-                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
-{
-    ConvolutionOptions<SrcShape::static_size> par = opt;
-    symmetricGradientMultiArray(si, shape, src, di, dest, par.stepSize(step_size));
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
@@ -1103,19 +1090,6 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     symmetricGradientMultiArray(source.first, source.second, source.third,
                                 dest.first, dest.second, opt);
 }
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
-inline void
-symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                            pair<DestIterator, DestAccessor> const & dest,
-                            Param step_size,
-                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
-{
-    symmetricGradientMultiArray(source.first, source.second, source.third,
-                                dest.first, dest.second, step_size, opt);
-}
-
 
 /********************************************************/
 /*                                                      */
@@ -1239,10 +1213,10 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 void
 laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                              DestIterator di, DestAccessor dest, const Param & sigma,
+                              DestIterator di, DestAccessor dest, double sigma,
                               const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     ConvolutionOptions<SrcShape::static_size> par = opt;
@@ -1261,11 +1235,11 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 inline void
 laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                               pair<DestIterator, DestAccessor> const & dest,
-                              const Param & sigma,
+                              double sigma,
                               const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     laplacianOfGaussianMultiArray( source.first, source.second, source.third,
@@ -1403,10 +1377,10 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 inline void
 hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
-                            DestIterator di, DestAccessor dest, const Param & sigma,
+                            DestIterator di, DestAccessor dest, double sigma,
                             const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     ConvolutionOptions<SrcShape::static_size> par = opt;
@@ -1425,11 +1399,11 @@ hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class Param>
+          class DestIterator, class DestAccessor>
 inline void
 hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
-                            const Param & sigma,
+                            double sigma,
                             const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     hessianOfGaussianMultiArray( source.first, source.second, source.third,
@@ -1544,7 +1518,7 @@ void
 structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                           DestIterator di, DestAccessor dest, 
                           ConvolutionOptions<SrcShape::static_size> const & opt)
-{ 
+{
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
     
@@ -1576,12 +1550,11 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Param_i, class Param_o>
+          class DestIterator, class DestAccessor>
 inline void
 structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                           DestIterator di, DestAccessor dest,
-                          const Param_i & innerScale, const Param_o & outerScale,
+                          double innerScale, double outerScale,
                           const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     ConvolutionOptions<SrcShape::static_size> par = opt;
@@ -1602,12 +1575,11 @@ structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sou
 
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Param_i, class Param_o>
+          class DestIterator, class DestAccessor>
 inline void
 structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                           pair<DestIterator, DestAccessor> const & dest,
-                          const Param_i & innerScale, const Param_o & outerScale,
+                          double innerScale, double outerScale,
                           const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     structureTensorMultiArray( source.first, source.second, source.third,

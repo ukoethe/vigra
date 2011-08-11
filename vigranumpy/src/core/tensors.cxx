@@ -154,7 +154,8 @@ NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> >
                                         NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
                                         python::object step_size = 1.0)
 {
-    pythonScaleParam1<ndim> steps(step_size, "symmetricGradient");
+    pythonScaleParam<ndim> steps(python::object(0.0), python::object(0.0),
+                                 step_size, "symmetricGradient");
     res.reshapeIfEmpty(volume.shape(), "symmetricGradient(): Output array has wrong shape.");
     symmetricGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), steps());
     return res;

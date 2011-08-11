@@ -452,7 +452,7 @@ void test_compare(const array_2d & x1_image_b, const array_2d & res_image,
 }
 
 unsigned resized(double scale, int size) {
-    return std::floor(1 + scale * (size - 1));
+    return static_cast<unsigned>(std::floor(1 + scale * (size - 1)));
 }
 
 shape_2d resized_shape(const vigra::ImageImportInfo & size_info, double scale_x,
@@ -519,7 +519,7 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     sigmas[1] = std_dev_factor * y_scale;
     vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
     		    vigra::destMultiArray(pre_scale_image),
-    		    &(sigmas[0]));
+                options_2d().stdDev(sigmas));
     // downscale:
     array_2d downscaled_image(resized_shape(size_info,
                         1 / x_scale, 1 / y_scale));
@@ -576,7 +576,8 @@ struct args {
     template<class X>
     X operator()(X default_value) {
         ++pos;
-        return (argc > pos) ? argv[pos] : default_value;
+        return static_cast<X>(
+                 (argc > pos) ? argv[pos] : static_cast<double>(default_value));
     }
 };
 
