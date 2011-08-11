@@ -42,6 +42,7 @@
 #include <sstream>
 #include <limits>
 #include <functional>
+#include <cmath>
 
 #include "unittest.hxx"
 #include "vigra/impex.hxx"
@@ -450,14 +451,14 @@ void test_compare(const array_2d & x1_image_b, const array_2d & res_image,
     cmp.local_tol.check(rel);
 }
 
-unsigned resize(double scale, int size) {
-    return double(1 + scale * (size - 1));
+unsigned resized(double scale, int size) {
+    return std::floor(1 + scale * (size - 1));
 }
 
 shape_2d resized_shape(const vigra::ImageImportInfo & size_info, double scale_x,
                        double scale_y) {
-    return shape_2d(resize(scale_x, size_info.width()),
-            resize(scale_y, size_info.height()));
+    return shape_2d(resized(scale_x, size_info.width()),
+                    resized(scale_y, size_info.height()));
 }
 
 void test_upscaled(void (*resize)(const array_2d &, array_2d &),
