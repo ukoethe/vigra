@@ -195,7 +195,7 @@ Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individu
 
 .. autoclass:: vigra.VigraArray
     :show-inheritance:
-    :members: defaultAxistags, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, dropChannelAxis, insertChannelAxis, view5D, __getitem__, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, T, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationToOrder, permutationToNormalOrder, permutationFromNormalOrder, permutationToNumpyOrder, permutationFromNumpyOrder, permutationToVigraOrder, permutationFromVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
+    :members: defaultAxistags, channelIndex, innerNonchannelIndex, channels, spatialDimensions, width, height, depth, duration, dropChannelAxis, insertChannelAxis, ensureAxes, view5D, __getitem__, bindAxis, channelIter, sliceIter, spaceIter, timeIter, copyValues, T, transposeToOrder, transposeToDefaultOrder, transposeToNormalOrder, transposeToNumpyOrder, transposeToVigraOrder, permutationToOrder, permutationToNormalOrder, permutationFromNormalOrder, permutationToNumpyOrder, permutationFromNumpyOrder, permutationToVigraOrder, permutationFromVigraOrder, writeHDF5, writeImage, writeSlices, qimage, show
     
     .. attribute:: VigraArray.axistags
     

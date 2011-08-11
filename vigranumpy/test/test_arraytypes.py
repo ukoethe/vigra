@@ -105,6 +105,8 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         
         shape = (channels, 5, 10, 20)
         axistags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z]
+        axistags3 = AxisTags(AxisInfo.y, AxisInfo.z, AxisInfo.x)
+        axistags4 = AxisTags(AxisInfo.y, AxisInfo.z, AxisInfo.x, AxisInfo.c)
         axistags5 = AxisTags(AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t)
         
         # figure out expected strides and axistags
@@ -153,6 +155,15 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         # test axistags
         assert_equal(img.axistags, vaxistags)
         assert_equal(img.view5D('F').axistags, axistags5)
+        assert_equal(img.ensureAxes('y', 'z', 'x', 'c').axistags, axistags4)
+        if img.channels == 1:
+            assert_equal(img.ensureAxes('y', 'z', 'x').axistags, axistags3)
+        else:
+            try:
+                img.ensureAxes('y', 'z', 'x')
+                raise AssertionError, "img.ensureAxes() failed to throw on non-singleton channel."
+            except RuntimeError:
+                pass
         # FIXME: add more tests
 
         # test initialization and assignment
@@ -206,6 +217,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.axistags, (img*2).axistags)
         assert_equal(img.view5D('F').axistags, axistags5)
+        assert_equal(img.ensureAxes('y', 'z', 'x', 'c').axistags, axistags4)
 
         # test shape, strides, and copy for 'A' order (should be equal to 'V' order)
         img = cls(vshape, order='A')
@@ -250,7 +262,7 @@ def checkArray(cls, channels, dim, hasChannelAxis=True):
         assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.axistags, (img*2).axistags)
         assert_equal(img.view5D('F').axistags, axistags5)
-
+        assert_equal(img.ensureAxes('y', 'z', 'x', 'c').axistags, axistags4)
 
         value = 10 if channels == 1 else range(10,channels+10)
         zero = 0 if channels == 1 else (0,)*channels

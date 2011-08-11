@@ -824,12 +824,57 @@ class VigraArray(numpy.ndarray):
             res.axistags[-1] = AxisInfo.c
         return res
     
+    def ensureAxes(self, *axiskeys):
+        '''
+        Create a view containing the desired axis keys in the given  
+        order. When the array contains an axis not listed, it will
+        be dropped if it is a singfleton axis (otherwise, an exception
+        is raised). If a requested key is not present in this array,
+        a singleton axis will be inserted at that position, if the 
+        missing key is among the known standard keys (otherwise, an 
+        exception is raised). The function fails if this array contains
+        axes of unknown type (key '?').
+        
+        Usage::
+        
+            >>> a = vigra.ScalarVolume((200, 100))
+            >>> a.axistags
+            x y
+            >>> a.shape
+            (200, 100)
+            >>> b = a.ensureAxes('y', 'x', 'c')
+            >>> b.axistags
+            y x c
+            >>> b.shape
+            (100, 200, 1)
+        
+        '''
+        axisinfo = []
+        slicing = [0]*self.ndim
+        for key in axiskeys:
+            index = self.axistags.index(key)
+            if index < self.ndim:
+                axisinfo.append(self.axistags[index])
+                slicing[index] = slice(None)
+            else:
+                axisinfo.append(eval('AxisInfo.%s' % key))
+                slicing.append(axisinfo[-1])
+        for k in xrange(self.ndim):
+            if self.axistags[k].isType(AxisType.UnknownAxisType):
+                raise RuntimeError("VigraArray.ensureAxes(): array must not contain axes of unknown type (key '?').")
+            if slicing[k] == 0 and self.shape[k] != 1:
+                raise RuntimeError("VigraArray.ensureAxes(): cannot drop non-singleton axis '%s'." % self.axistags[k].key)
+        permutation = AxisTags(axisinfo).permutationFromNumpyOrder()
+        return self[slicing].transposeToNumpyOrder().transpose(permutation)
+    
     def view5D(self, order='C'):
         '''
-            Create a 5-dimensional view containing the standard tags 'x', 'y', 'z', 't', 'c'
-            in the desired 'order' (which can be 'C', 'F', and 'V' with the usual meaning). 
-            If 'self' has an axis key that is not among the five admissible keys, an 
-            exception is raised. Axes missing in 'self' are added as singleton axes with the appropriate tags. 
+            Create a 5-dimensional view containing the standard tags 
+            'x', 'y', 'z', 't', 'c' in the desired 'order' (which can be 
+            'C', 'F', and 'V' with the usual meaning). If 'self' has an 
+            axis key that is not among the five admissible keys, an 
+            exception is raised. Axes missing in 'self' are added as 
+            singleton axes with the appropriate tags. 
         '''
         stdTags = ['x', 'y', 'z', 't', 'c']
         for tag in self.axistags:
