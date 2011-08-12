@@ -518,7 +518,7 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     sigmas[0] = std_dev_factor * x_scale;
     sigmas[1] = std_dev_factor * y_scale;
     vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
-    		    vigra::destMultiArray(pre_scale_image),
+                vigra::destMultiArray(pre_scale_image),
                 options_2d().stdDev(sigmas));
     // downscale:
     array_2d downscaled_image(resized_shape(size_info,
@@ -591,7 +591,7 @@ std::string perform_test(int argc, test_data & argv,
     const double sigma        = cmd_line(2.0);
     const double im_scale     = cmd_line(3.0);
     const int intp_type       = cmd_line(0);
-    const bool write_im       = cmd_line(true);
+    const bool write_im       = cmd_line(1) == 1;
     const int test_nr         = cmd_line(0);
     const double outer        = cmd_line(sigma);
     const int test_type       = cmd_line(0);

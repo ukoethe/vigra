@@ -426,7 +426,7 @@ void
 scaleKernel(K & kernel, double a)
 {
     for(int i = kernel.left(); i <= kernel.right(); ++i)
-        kernel[i] *= a;
+        kernel[i] = detail::RequiresExplicitCast<typename K::value_type>::cast(kernel[i] * a);
 }
 
 
