@@ -426,6 +426,27 @@ VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
 
 #undef VIGRA_H5_UNSIGNED_DATATYPE
 
+#if 0
+template<>
+inline hid_t getH5DataType<FFTWComplex<float> >()
+{
+    hid_t complex_id = H5Tcreate (H5T_COMPOUND, sizeof (FFTWComplex<float>));
+    H5Tinsert (complex_id, "real", 0, H5T_NATIVE_FLOAT);
+    H5Tinsert (complex_id, "imaginary", sizeof(float), H5T_NATIVE_FLOAT);
+    return complex_id;
+}
+
+template<>
+inline hid_t getH5DataType<FFTWComplex<double> >()
+{
+    hid_t complex_id = H5Tcreate (H5T_COMPOUND, sizeof (FFTWComplex<double>));
+    H5Tinsert (complex_id, "real", 0, H5T_NATIVE_DOUBLE);
+    H5Tinsert (complex_id, "imaginary", sizeof(double), H5T_NATIVE_DOUBLE);
+    return complex_id;
+}
+#endif
+
+
 } // namespace detail
 
 // helper friend function for callback HDF5_ls_inserter_callback()
@@ -2709,6 +2730,13 @@ inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiA
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
 }
 
+// non-scalar (FFTWComplex) and unstrided multi arrays
+template<unsigned int N, class T>
+inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, UnstridedArrayTag> & array)
+{
+    writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 2);
+}
+
 // unstrided multi arrays
 template<unsigned int N, class T>
 void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
@@ -2743,6 +2771,13 @@ template<unsigned int N, class T>
 inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, RGBValue<T>, StridedArrayTag> & array) 
 {
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
+}
+
+// non-scalar (RGBValue) and strided multi arrays
+template<unsigned int N, class T>
+inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, StridedArrayTag> & array) 
+{
+    writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 2);
 }
 
 // strided multi arrays
