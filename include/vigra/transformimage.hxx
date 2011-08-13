@@ -962,7 +962,7 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
     vigra::FImage fimage(width, height);
     ...
 
-    vigra::FindMinmax<float> minmax;
+    vigra::FindMinMax<float> minmax;
     vigra::inspectImage(srcImageRange(fimage), minmax);
 
     vigra::transformImage(srcImageRange(fimage), destImage(fimage),
@@ -1229,7 +1229,7 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
     vigra::FImage fimage(width, height);
     ...
 
-    vigra::FindMinmax<float> minmax;
+    vigra::FindMinMax<float> minmax;
     vigra::inspectImage(srcImageRange(fimage), minmax);
 
     vigra::transformImage(srcImageRange(fimage), destImage(fimage),
