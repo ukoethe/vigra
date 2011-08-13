@@ -212,7 +212,7 @@ namespace vigra
         virtual void setPosition( const vigra::Diff2D & /*pos*/ )
         {
         }
-        virtual void setCanvasSize( const vigra::Size2D & size)
+        virtual void setCanvasSize( const vigra::Size2D & /*size*/)
         {
         }
         virtual void setXResolution( float /*xres*/ )
