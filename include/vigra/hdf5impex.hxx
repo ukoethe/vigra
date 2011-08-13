@@ -1845,7 +1845,7 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             shape[N-1-i] = array.shape(i); // reverse order
         }
 
@@ -2002,7 +2002,7 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             shape[N-1-i] = array.shape(i); // reverse order
         }
 
@@ -2032,7 +2032,7 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             ArrayVector<hsize_t> cSize(N + (numBandsOfType > 1),0);
-            for(int i = 0; i<N; i++)
+            for(unsigned int i = 0; i<N; i++)
             {
                 cSize[i] = chunkSize[N-1-i];
             }
