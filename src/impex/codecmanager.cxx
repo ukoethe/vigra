@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -222,7 +222,8 @@ namespace vigra
     // look up decoder from the list, then return it
     std::auto_ptr<Decoder>
     CodecManager::getDecoder( const std::string & filename,
-                              const std::string & filetype ) const
+                              const std::string & filetype,
+                              unsigned int imageindex ) const
     {
         std::string fileType = filetype;
 
@@ -247,17 +248,18 @@ namespace vigra
 
         // okay, we can return a decoder
         std::auto_ptr<Decoder> dec = search->second->getDecoder();
-        dec->init(filename);
+        dec->init(filename, imageindex);
         return dec;
     }
 
     // look up encoder from the list, then return it
     std::string
     CodecManager::getEncoderType( const std::string & filename,
-                              const std::string & fType ) const
+                                  const std::string & fType,
+                                  const std::string & mode ) const
     {
         std::string fileType = fType;
-        
+
         if ( fileType == "" || fileType == "undefined" ) {
             // look up the file type by the file extension
             std::string ext
@@ -270,14 +272,15 @@ namespace vigra
             // at this point, we have found a valid fileType
             fileType = search->second;
         }
-        
+
         return fileType;
     }
 
     // look up encoder from the list, then return it
     std::auto_ptr<Encoder>
     CodecManager::getEncoder( const std::string & filename,
-                              const std::string & fType ) const
+                              const std::string & fType,
+                              const std::string & mode ) const
     {
         std::string fileType = getEncoderType(filename, fType);
 
@@ -289,15 +292,15 @@ namespace vigra
 
         // okay, we can return an encoder
         std::auto_ptr<Encoder> enc = search->second->getEncoder();
-        enc->init(filename);
+        enc->init(filename, mode);
         return enc;
     }
 
     // get a decoder
     std::auto_ptr<Decoder>
-    getDecoder( const std::string & filename, const std::string & filetype )
+    getDecoder( const std::string & filename, const std::string & filetype, unsigned int imageindex )
     {
-        return codecManager().getDecoder( filename, filetype );
+        return codecManager().getDecoder( filename, filetype, imageindex );
     }
 
     // get an encoder type
@@ -309,9 +312,9 @@ namespace vigra
 
     // get an encoder
     std::auto_ptr<Encoder>
-    getEncoder( const std::string & filename, const std::string & filetype )
+    getEncoder( const std::string & filename, const std::string & filetype, const std::string & mode )
     {
-        return codecManager().getEncoder( filename, filetype );
+        return codecManager().getEncoder( filename, filetype, mode );
     }
 
     std::vector<std::string>
@@ -320,14 +323,14 @@ namespace vigra
         return codecManager().queryCodecPixelTypes(codecname);
     }
 
-    
+
     // return true if downcasting is required, false otherwise
     bool negotiatePixelType( std::string const & codecname,
                  std::string const & srcPixeltype, std::string & destPixeltype )
     {
         std::vector<std::string> ptypes
             = codecManager().queryCodecPixelTypes(codecname);
-        
+
         std::vector<std::string>::iterator pend;
         if(destPixeltype != "")
         {
@@ -335,9 +338,9 @@ namespace vigra
             if(pend == ptypes.end())
             {
                 std::string msg("exportImage(): file type ");
-                msg += codecname + " does not support requested pixel type " 
+                msg += codecname + " does not support requested pixel type "
                                           + destPixeltype + ".";
-                vigra_precondition(false, msg.c_str()); 
+                vigra_precondition(false, msg.c_str());
             }
             ++pend;
         }
@@ -345,10 +348,10 @@ namespace vigra
         {
             pend = ptypes.end();
         }
-        
+
         std::vector<std::string>::const_iterator result
                                    = std::find( ptypes.begin(), pend, srcPixeltype );
-        
+
         if( result == pend)
         {
             if(destPixeltype == "")
