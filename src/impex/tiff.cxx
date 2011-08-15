@@ -229,7 +229,11 @@ namespace vigra {
 
         TIFFDecoderImpl( const std::string & filename );
 
-        void init();
+        void init( unsigned int imageIndex );
+
+        unsigned int getNumImages();
+        void setImageIndex( unsigned int index );
+        unsigned int getImageIndex();
 
         const void * currentScanlineOfBand( unsigned int band ) const;
         void nextScanline();
@@ -320,8 +324,15 @@ namespace vigra {
         return "undefined";
     }
 
-    void TIFFDecoderImpl::init()
+    void TIFFDecoderImpl::init(unsigned int imageIndex)
     {
+        // set image directory, if necessary:
+        if (imageIndex != TIFFCurrentDirectory(tiff))
+        {
+            if (!TIFFSetDirectory( tiff, (tdir_t)(imageIndex)) )
+                vigra_fail( "Invalid TIFF image index" );
+        }
+
         // read width and height
         TIFFGetField( tiff, TIFFTAG_IMAGEWIDTH, &width );
         TIFFGetField( tiff, TIFFTAG_IMAGELENGTH, &height );
@@ -626,10 +637,10 @@ namespace vigra {
         }
     }
 
-    void TIFFDecoder::init( const std::string & filename )
+    void TIFFDecoder::init( const std::string & filename, unsigned int imageIndex=0 )
     {
         pimpl = new TIFFDecoderImpl(filename);
-        pimpl->init();
+        pimpl->init(imageIndex);
         iccProfile_ = pimpl->iccProfile;
     }
 
@@ -663,6 +674,21 @@ namespace vigra {
         return pimpl->extra_samples_per_pixel;
     }
 
+    unsigned int TIFFDecoder::getNumImages() const
+    {
+        return pimpl->getNumImages();
+    }
+
+    void TIFFDecoder::setImageIndex(unsigned int imageIndex)
+    {
+        pimpl->setImageIndex(imageIndex);
+    }
+
+    unsigned int TIFFDecoder::getImageIndex() const
+    {
+        return pimpl->getImageIndex();
+    }
+
     vigra::Diff2D TIFFDecoder::getPosition() const
     {
         return pimpl->position;
@@ -694,6 +720,29 @@ namespace vigra {
             1 : pimpl->samples_per_pixel;
     }
 
+    unsigned int
+    TIFFDecoderImpl::getNumImages()
+    {
+        unsigned int currIndex = getImageIndex();
+        TIFFSetDirectory(tiff, 0);
+        int numPages = 1;
+        while (TIFFReadDirectory(tiff)) numPages++;
+        TIFFSetDirectory(tiff, currIndex);
+        return numPages;
+    }
+
+    void
+    TIFFDecoderImpl::setImageIndex( unsigned int imageIndex )
+    {
+        init(imageIndex);
+    }
+
+    unsigned int
+    TIFFDecoderImpl::getImageIndex()
+    {
+        return TIFFCurrentDirectory(tiff);
+    }
+
     const void * TIFFDecoder::currentScanlineOfBand( unsigned int band ) const
     {
         return pimpl->currentScanlineOfBand(band);
@@ -721,10 +770,10 @@ namespace vigra {
 
         // ctor, dtor
 
-        TIFFEncoderImpl( const std::string & filename )
+        TIFFEncoderImpl( const std::string & filename, const std::string & mode )
             : tiffcomp(COMPRESSION_NONE), finalized(false)
         {
-            tiff = TIFFOpen( filename.c_str(), "w" );
+            tiff = TIFFOpen( filename.c_str(), mode.c_str() );
             if (!tiff)
             {
                 std::string msg("Unable to open file '");
@@ -907,9 +956,9 @@ namespace vigra {
         finalized = true;
     }
 
-    void TIFFEncoder::init( const std::string & filename )
+    void TIFFEncoder::init( const std::string & filename, const std::string & mode )
     {
-        pimpl = new TIFFEncoderImpl(filename);
+        pimpl = new TIFFEncoderImpl(filename, mode);
     }
 
     TIFFEncoder::~TIFFEncoder()
