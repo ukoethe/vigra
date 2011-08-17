@@ -505,23 +505,6 @@ struct MultiArraySeparableConvolutionTestSuite
 
 //--------------------------------------------------------
 
-template <class to_type>
-std::string to_string(const to_type & x)
-{
-        std::ostringstream y;
-        y << x;
-        return y.str();
-}
-
-template <class to_type>
-to_type from_string(const std::string & s)
-{
-    std::istringstream i(s);
-    to_type x;
-    i >> x;
-    return x;
-}
-
 typedef double pixel_type;
 
 typedef vigra::MultiArrayShape<2>::type                         shape_2d;
@@ -566,17 +549,21 @@ struct rel_dist
 struct logger
 {
     const bool do_log;
-        std::ostringstream os;
+    std::ostringstream os;
+
     logger(bool d = true) : do_log(d) {}
+
     operator bool()
     {
         return do_log;
     }
+
     void next()
     {
         if(os.str().size())
             os << ", ";
     }
+
     void operator()(const std::string & msg)
     {
         next();
@@ -588,6 +575,7 @@ struct logger
         next();
         os << name << " = " << value;
     }
+
     std::string str() {
         return os.str();
     }
@@ -643,7 +631,7 @@ double compare(F func, const char *const func_name,
     int crop = 1 + int(3 * sigma_pix + 0.5);
     int wcrop = image_view_delta.width() - 2 * crop;
     shouldMsg(wcrop > 1, ("no width left after std. dev. crop at"
-            " borders, width = " + to_string(wcrop)).c_str());
+            " borders, width = " + asString(wcrop)).c_str());
 
     array_2d delta_cropped(shape_2d(wcrop, image_view_delta.height()));
     copyImage(srcIterRange(
@@ -671,12 +659,6 @@ void resize_n(const array_2d & a, array_2d & b)
                                                my_spline());
 }
 
-template<class A, class B, class C, class Y>
-vigra::triple<A, B, Y> replace_third(const vigra::triple<A, B, C> & x, const Y & y)
-{
-    return vigra::triple<A, B, Y>(x.first, x.second, y);
-}
-
 struct t_func
 {
     static const double zeros[2]; // = { 0, 0 };
@@ -698,7 +680,7 @@ struct t_func
     }
     virtual double operator()(array_2d & test_image, double im_scale) const
     {
-            double w[2] = { 1 / im_scale, 1 };
+        double w[2] = { 1.0 / im_scale, 1 };
         return operator()(test_image, zeros, w);
     }
     virtual double operator()(array_2d & image) const
@@ -723,10 +705,9 @@ struct gsmaa_f : public t_func
     }
     double operator()(array_2d & test_image,  const options_2d & opt) const
     {
-            vigra::gaussianSmoothMultiArray(
-                                          vigra::srcMultiArrayRange(test_image),
-                                          vigra::destMultiArray(test_image),
-                                          sigma, opt);
+        vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
+                                        vigra::destMultiArray(test_image),
+                                        sigma, opt);
         return sigma;
     }
 };
@@ -738,7 +719,7 @@ struct ggma_f : public t_func
     ggma_f(double s, int a) : sigma(s), axis(a) {}
     std::string name() const
     {
-        return "gaussianGradientMultiArray, axis " + to_string(axis);
+        return "gaussianGradientMultiArray, axis " + asString(axis);
     }
     double operator()(array_2d & test_image,  const options_2d & opt) const {
 
@@ -749,10 +730,8 @@ struct ggma_f : public t_func
         // copy gradient #axis to image:
         typedef grad_2d::value_type value_type;
         typedef vigra::VectorComponentAccessor<value_type> accessor;
-        vigra::copyMultiArray(replace_third(
-                                           vigra::srcMultiArrayRange(grad_data),
-                                           accessor(axis)),
-                                           vigra::destMultiArray(test_image));
+        vigra::copyMultiArray(vigra::srcMultiArrayRange(grad_data, accessor(axis)),
+                              vigra::destMultiArray(test_image));
         return sigma;
     }
 };
@@ -761,7 +740,7 @@ struct sgma_f : public t_func {
     int axis;
     sgma_f(int a) : axis(a) {}
     std::string name() const {
-        return "symmetricGradientMultiArray, axis " + to_string(axis);
+        return "symmetricGradientMultiArray, axis " + asString(axis);
     }
     double operator()(array_2d & test_image,  const options_2d & opt) const
     {
@@ -774,10 +753,8 @@ struct sgma_f : public t_func {
         // copy gradient #axis to image:
         typedef grad_2d::value_type value_type;
         typedef vigra::VectorComponentAccessor<value_type> accessor;
-        vigra::copyMultiArray(replace_third(
-                                           vigra::srcMultiArrayRange(grad_data),
-                                           accessor(axis)),
-                                           vigra::destMultiArray(test_image));
+        vigra::copyMultiArray(vigra::srcMultiArrayRange(grad_data, accessor(axis)),
+                              vigra::destMultiArray(test_image));
         return 0;
     }
 };
@@ -810,7 +787,7 @@ struct hgma_f : public t_func
     hgma_f(double s, int e) : sigma(s), entry(e) {}
     std::string name() const
     {
-        return "hessianOfGaussianMultiArray, entry " + to_string(entry);
+        return "hessianOfGaussianMultiArray, entry " + asString(entry);
     }
     double operator()(array_2d & test_image,  const options_2d & opt) const
     {
@@ -822,10 +799,8 @@ struct hgma_f : public t_func
         // copy hessian entry to image:
         typedef symm_2d::value_type value_type;
         typedef vigra::VectorComponentAccessor<value_type> accessor;
-        vigra::copyMultiArray(replace_third(
-                                           vigra::srcMultiArrayRange(hess_data),
-                                           accessor(entry)),
-                                           vigra::destMultiArray(test_image));
+        vigra::copyMultiArray(vigra::srcMultiArrayRange(hess_data, accessor(entry)),
+                              vigra::destMultiArray(test_image));
         return sigma;
     }
 };
@@ -838,7 +813,7 @@ struct stma_f : public t_func
     stma_f(double in, double out, int e) : inner(in), outer(out), entry(e) {}
     std::string name() const
     {
-        return "structureTensorMultiArray, entry " + to_string(entry);
+        return "structureTensorMultiArray, entry " + asString(entry);
     }
     double operator()(array_2d & test_image,  const options_2d & opt) const
     {
@@ -850,9 +825,8 @@ struct stma_f : public t_func
         // copy st entry to image:
         typedef symm_2d::value_type value_type;
         typedef vigra::VectorComponentAccessor<value_type> accessor;
-        vigra::copyMultiArray(replace_third(vigra::srcMultiArrayRange(st_data),
-                                            accessor(entry)),
-                                            vigra::destMultiArray(test_image));
+        vigra::copyMultiArray(vigra::srcMultiArrayRange(st_data, accessor(entry)),
+                              vigra::destMultiArray(test_image));
         return std::sqrt(inner * inner + outer * outer);
     }
 };
@@ -908,8 +882,8 @@ struct cmp_double
     {
         shouldMsg(!tol || (std::abs(val) <= tol),
                   ("relative difference above tolerance: "
-                  "accepted = " + to_string(tol) +
-                  ", actual = " + to_string(val)).c_str());
+                  "accepted = " + asString(tol) +
+                  ", actual = " + asString(val)).c_str());
     }
 };
 
@@ -997,7 +971,7 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
 {
     const double y_scale = 3;
     const double x_scale = im_scale * y_scale;
-    log_name("downscaled test (factor " + to_string(y_scale) + ")");
+    log_name("downscaled test (factor " + asString(y_scale) + ")");
     if (log_name)
         return;
 
@@ -1105,7 +1079,7 @@ std::string perform_test(int argc, test_data & argv,
     const t_func *const test = new_test(sigma, outer, test_nr, log_name);
     if (! test)
     {
-        shouldMsg(!run_test, ("unknown test number " + to_string(test_nr)
+        shouldMsg(!run_test, ("unknown test number " + asString(test_nr)
                                             + " for new_test_alloc()").c_str());
         return "(unknown test number)";
     }
