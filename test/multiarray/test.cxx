@@ -2122,8 +2122,9 @@ public:
         }
         catch(PreconditionViolation & e)
         {
-            shouldEqual(std::string(e.what()), 
-                        std::string("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"));
+            std::string expected("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"),
+                        actual(e.what());
+            shouldEqual(actual.substr(0, expected.size()), expected);
         }
     }
 
