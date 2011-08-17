@@ -641,8 +641,9 @@ struct scaled_test : public vigra::detail::test_functor<scaled_test> {
                                                              const array_2d & t)
         : argv(a), import_info(ii), test_image(t) {}
     void operator()() {
-        std::cout << perform_test(argc, argv, import_info, test_image)
-                  << "\n";
+//         std::cout << perform_test(argc, argv, import_info, test_image)
+//                   << "\n";
+        perform_test(argc, argv, import_info, test_image);
     }
     std::string str() {
         return "MultiArraySeparableConvolutionScaledTestSuite ["
@@ -696,7 +697,7 @@ struct MultiArraySeparableConvolutionScaledTestSuite
 
     MultiArraySeparableConvolutionScaledTestSuite()
         : vigra::test_suite("MultiArraySeparableConvolutionScaledTestSuite"),
-          import_info("oi_single.png"),
+          import_info("oi_single.gif"),
           test_image(shape_2d(import_info.width(), import_info.height()))
         {
             vigra::importImage(import_info, destImage(test_image));
