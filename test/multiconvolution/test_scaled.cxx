@@ -42,6 +42,7 @@
 #include <sstream>
 #include <limits>
 #include <functional>
+#include <cmath>
 
 #include "unittest.hxx"
 #include "vigra/impex.hxx"
@@ -450,14 +451,14 @@ void test_compare(const array_2d & x1_image_b, const array_2d & res_image,
     cmp.local_tol.check(rel);
 }
 
-unsigned resize(double scale, int size) {
-    return double(1 + scale * (size - 1));
+unsigned resized(double scale, int size) {
+    return static_cast<unsigned>(std::floor(1 + scale * (size - 1)));
 }
 
 shape_2d resized_shape(const vigra::ImageImportInfo & size_info, double scale_x,
                        double scale_y) {
-    return shape_2d(resize(scale_x, size_info.width()),
-            resize(scale_y, size_info.height()));
+    return shape_2d(resized(scale_x, size_info.width()),
+                    resized(scale_y, size_info.height()));
 }
 
 void test_upscaled(void (*resize)(const array_2d &, array_2d &),
@@ -517,8 +518,8 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     sigmas[0] = std_dev_factor * x_scale;
     sigmas[1] = std_dev_factor * y_scale;
     vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
-    		    vigra::destMultiArray(pre_scale_image),
-    		    &(sigmas[0]));
+                vigra::destMultiArray(pre_scale_image),
+                options_2d().stdDev(sigmas));
     // downscale:
     array_2d downscaled_image(resized_shape(size_info,
                         1 / x_scale, 1 / y_scale));
@@ -575,7 +576,8 @@ struct args {
     template<class X>
     X operator()(X default_value) {
         ++pos;
-        return (argc > pos) ? argv[pos] : default_value;
+        return static_cast<X>(
+                 (argc > pos) ? argv[pos] : static_cast<double>(default_value));
     }
 };
 
@@ -589,7 +591,7 @@ std::string perform_test(int argc, test_data & argv,
     const double sigma        = cmd_line(2.0);
     const double im_scale     = cmd_line(3.0);
     const int intp_type       = cmd_line(0);
-    const bool write_im       = cmd_line(true);
+    const bool write_im       = cmd_line(1) == 1;
     const int test_nr         = cmd_line(0);
     const double outer        = cmd_line(sigma);
     const int test_type       = cmd_line(0);
@@ -639,8 +641,9 @@ struct scaled_test : public vigra::detail::test_functor<scaled_test> {
                                                              const array_2d & t)
         : argv(a), import_info(ii), test_image(t) {}
     void operator()() {
-        std::cout << perform_test(argc, argv, import_info, test_image)
-                  << "\n";
+//         std::cout << perform_test(argc, argv, import_info, test_image)
+//                   << "\n";
+        perform_test(argc, argv, import_info, test_image);
     }
     std::string str() {
         return "MultiArraySeparableConvolutionScaledTestSuite ["
@@ -694,7 +697,7 @@ struct MultiArraySeparableConvolutionScaledTestSuite
 
     MultiArraySeparableConvolutionScaledTestSuite()
         : vigra::test_suite("MultiArraySeparableConvolutionScaledTestSuite"),
-          import_info("oi_single.png"),
+          import_info("oi_single.gif"),
           test_image(shape_2d(import_info.width(), import_info.height()))
         {
             vigra::importImage(import_info, destImage(test_image));
