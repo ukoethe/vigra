@@ -219,11 +219,10 @@ public:
 
     void testTIFFSequence()
     {
-        char fileName[11];
         for (int i=0; i < 3; ++i)
         {
-            sprintf(fileName, "lenna_%d.tif", i);
-            vigra::ImageImportInfo ininfo (fileName);
+            std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
+            vigra::ImageImportInfo ininfo (fileName.c_str());
             Image inimg(ininfo.width(), ininfo.height());
             importImage(ininfo, destImage(inimg));
             vigra::ImageExportInfo outinfo ("resseq.tif", i==0?"w":"a");
@@ -234,9 +233,9 @@ public:
         {
             vigra::ImageImportInfo ininfo ("resseq.tif", j);
             Image inimg(ininfo.width(), ininfo.height());
-            sprintf(fileName, "lenna_%d.tif", j);
+            std::string fileName = std::string("lenna_") + vigra::asString(j) + ".tif";
             importImage(ininfo, destImage(inimg));
-            vigra::ImageImportInfo originfo (fileName);
+            vigra::ImageImportInfo originfo (fileName.c_str());
             Image origimg(originfo.width(), originfo.height());
             importImage(originfo, destImage(origimg));
 
