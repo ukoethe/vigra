@@ -74,9 +74,9 @@ pythonDecompose(PLSA & plsa,
     NumpyArray<2, U> FZ(MultiArrayShape<2>::type(features.shape(0),
                                                            plsa.options_.numComponents)); 
     NumpyArray<2, U> ZV(MultiArrayShape<2>::type(plsa.options_.numComponents, 
-		                                                   features.shape(1))); 
+                                                           features.shape(1))); 
     PyAllowThreads _pythread;
-	plsa.decompose(features, FZ, ZV);
+    plsa.decompose(features, FZ, ZV);
 
     return python::make_tuple(FZ, ZV);
 }
@@ -98,13 +98,13 @@ void definePLSA()
                                                    arg("min_relative_gain")=0.001f)),
              "Constructor::\n\n"
              "  PLSA(numComponents = 1, max_iterations=100, min_rel_gain=1e-4,\n")
-			 // usage from python:  import vigra as v
-			 //						plsa = v.unsupervised.PLSA(3)
-			 //						fz, zv = plsa.decompose(data)
+             // usage from python:  import vigra as v
+             //						plsa = v.unsupervised.PLSA(3)
+             //						fz, zv = plsa.decompose(data)
         .def("decompose",
              registerConverters(&pythonDecompose<float>),
              (arg("features")),
-			 "Decomposes the feature matrix 'features' of size NUMFEATURESxNUMVOXELS. Returns two matrices: The former is of size NUMFEATURESxNUMCOMPONENTS and gives the feature to component distribution, the latter is of size NUMCOMPONENTSxNUMVOXELS and gives the component to voxel distribution. \n")
+             "Decomposes the feature matrix 'features' of size NUMFEATURESxNUMVOXELS. Returns two matrices: The former is of size NUMFEATURESxNUMCOMPONENTS and gives the feature to component distribution, the latter is of size NUMCOMPONENTSxNUMVOXELS and gives the component to voxel distribution. \n")
         ;
 }
 

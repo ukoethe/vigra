@@ -382,48 +382,48 @@ class Matrix
 
         /** sums over the matrix.
         */
-	TemporaryMatrix<T> sum() const
+    TemporaryMatrix<T> sum() const
     {
-		TemporaryMatrix<T> result(1, 1);
-		vigra::transformMultiArray(srcMultiArrayRange(*this),
+        TemporaryMatrix<T> result(1, 1);
+        vigra::transformMultiArray(srcMultiArrayRange(*this),
                                destMultiArrayRange(result),
                                vigra::FindSum<T>() );
-		return result;
+        return result;
     }
-	
-		/** sums over dimension \a d of the matrix.
+    
+        /** sums over dimension \a d of the matrix.
         */
-	TemporaryMatrix<T> sum(difference_type_1 d) const
+    TemporaryMatrix<T> sum(difference_type_1 d) const
     {
-		difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
-		TemporaryMatrix<T> result(shape);
-		vigra::transformMultiArray(srcMultiArrayRange(*this),
+        difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
+        TemporaryMatrix<T> result(shape);
+        vigra::transformMultiArray(srcMultiArrayRange(*this),
                                destMultiArrayRange(result),
                                vigra::FindSum<T>() );
-		return result;
+        return result;
     }
 
         /** sums over the matrix.
         */
-	TemporaryMatrix<T> mean() const
+    TemporaryMatrix<T> mean() const
     {
-		TemporaryMatrix<T> result(1, 1);
-		vigra::transformMultiArray(srcMultiArrayRange(*this),
+        TemporaryMatrix<T> result(1, 1);
+        vigra::transformMultiArray(srcMultiArrayRange(*this),
                                destMultiArrayRange(result),
                                vigra::FindAverage<T>() );
-		return result;
+        return result;
     }
-	
+    
         /** calculates mean over dimension \a d of the matrix.
         */
-	TemporaryMatrix<T> mean(difference_type_1 d) const
+    TemporaryMatrix<T> mean(difference_type_1 d) const
     {
-		difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
-		TemporaryMatrix<T> result(shape);
-		vigra::transformMultiArray(srcMultiArrayRange(*this),
+        difference_type shape(d==0 ? 1 : this->m_shape[0], d==0 ? this->m_shape[1] : 1);
+        TemporaryMatrix<T> result(shape);
+        vigra::transformMultiArray(srcMultiArrayRange(*this),
                                destMultiArrayRange(result),
                                vigra::FindAverage<T>() );
-		return result;
+        return result;
     }
 
 

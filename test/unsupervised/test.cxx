@@ -63,84 +63,84 @@ public:
     PLSATest()
     {}
 
-	void testPLSADecomposition()
-	{
-		char hdf5File[] = "example_data.h5";
-		char hdf5group_1[] = "volume/data";
+    void testPLSADecomposition()
+    {
+        char hdf5File[] = "example_data.h5";
+        char hdf5group_1[] = "volume/data";
 
-		HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
+        HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
         MultiArray<2,double> features(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(0), infoHDF5_1.shapeOfDimension(1)));
         readHDF5(infoHDF5_1, features);
 
-		unsigned int numComponents = 3;
-		unsigned int numFeatures = infoHDF5_1.shapeOfDimension(0);
-		unsigned int numVoxels = infoHDF5_1.shapeOfDimension(1);
+        unsigned int numComponents = 3;
+        unsigned int numFeatures = infoHDF5_1.shapeOfDimension(0);
+        unsigned int numVoxels = infoHDF5_1.shapeOfDimension(1);
 
-		MultiArray<2,double> FZ(MultiArrayShape<2>::type(numFeatures, numComponents));
-		MultiArray<2,double> ZV(MultiArrayShape<2>::type(numComponents, numVoxels));
+        MultiArray<2,double> FZ(MultiArrayShape<2>::type(numFeatures, numComponents));
+        MultiArray<2,double> ZV(MultiArrayShape<2>::type(numComponents, numVoxels));
 
-		PLSA plsa(vigra::PLSAOptions().numberOfComponents(numComponents));
-		plsa.decompose(features, FZ, ZV);
+        PLSA plsa(vigra::PLSAOptions().numberOfComponents(numComponents));
+        plsa.decompose(features, FZ, ZV);
 
-		// TESTS
-		// -----
-		Matrix<double> fz = FZ;
-		Matrix<double> zv = ZV;
-		Matrix<double> feats = features;
-		double eps = 1e-10;
+        // TESTS
+        // -----
+        Matrix<double> fz = FZ;
+        Matrix<double> zv = ZV;
+        Matrix<double> feats = features;
+        double eps = 1e-10;
 
-		// test if result matrices have correct dimensionality
-		should (rowCount(fz) == rowCount(feats));
-		should (columnCount(fz) == numComponents);
-		should (rowCount(zv) == numComponents);
-		should (columnCount(zv) == columnCount(feats));
+        // test if result matrices have correct dimensionality
+        should (rowCount(fz) == rowCount(feats));
+        should (columnCount(fz) == numComponents);
+        should (rowCount(zv) == numComponents);
+        should (columnCount(zv) == columnCount(feats));
 
-		// test if result matrices (approximately) satisfy normalization properties
-		Matrix<double> colSumFZ = fz.sum(0);
-		for(int i=0; i<columnCount(fz); ++i)
-		{
-			shouldEqualTolerance( colSumFZ(i, 0), 1, eps );
-		}
-		Matrix<double> colSumZV = zv.sum(0);
-		for(int i=0; i<columnCount(zv); ++i)
-		{
-			shouldEqualTolerance( colSumZV(i, 0), 1, eps );
-		}
+        // test if result matrices (approximately) satisfy normalization properties
+        Matrix<double> colSumFZ = fz.sum(0);
+        for(int i=0; i<columnCount(fz); ++i)
+        {
+            shouldEqualTolerance( colSumFZ(i, 0), 1, eps );
+        }
+        Matrix<double> colSumZV = zv.sum(0);
+        for(int i=0; i<columnCount(zv); ++i)
+        {
+            shouldEqualTolerance( colSumZV(i, 0), 1, eps );
+        }
 
-		// all entries in FZ, ZV are >= 0
-		for(int j=0; j<columnCount(zv); ++j)
-		{
-			for(int i=0; i<rowCount(zv); ++i)
-			{
-				should ( zv(i, j) >= 0 );
-			}
-		}
-		for(int j=0; j<columnCount(fz); ++j)
-		{
-			for(int i=0; i<rowCount(fz); ++i)
-			{
-				should ( fz(i, j) >= 0 );
-			}
-		}
+        // all entries in FZ, ZV are >= 0
+        for(int j=0; j<columnCount(zv); ++j)
+        {
+            for(int i=0; i<rowCount(zv); ++i)
+            {
+                should ( zv(i, j) >= 0 );
+            }
+        }
+        for(int j=0; j<columnCount(fz); ++j)
+        {
+            for(int i=0; i<rowCount(fz); ++i)
+            {
+                should ( fz(i, j) >= 0 );
+            }
+        }
 
-		// test if reconstruction is close to original
-		// tricky - how to properly test that? it will never be identical!
+        // test if reconstruction is close to original
+        // tricky - how to properly test that? it will never be identical!
         Matrix<double> fzv = fz*zv; 
-	    Matrix<double> voxelSums = feats.sum(0);
-		Matrix<double> ones(numFeatures, 1, 1);
+        Matrix<double> voxelSums = feats.sum(0);
+        Matrix<double> ones(numFeatures, 1, 1);
         Matrix<double> model = (pmul((ones * voxelSums), fzv));
-		double meanError = (feats - model).squaredNorm() / columnCount(feats);
-		should ( meanError < 5000 );
+        double meanError = (feats - model).squaredNorm() / columnCount(feats);
+        should ( meanError < 5000 );
 
-		/*
-		char hdf5File_2[] = "example_data_results.h5";
-		char hdf5group_2[] = "FZ";
-		char hdf5group_3[] = "ZV";
-		writeHDF5(hdf5File_2, hdf5group_2, FZ);
-		writeHDF5(hdf5File_2, hdf5group_3, ZV);
-		*/
+        /*
+        char hdf5File_2[] = "example_data_results.h5";
+        char hdf5group_2[] = "FZ";
+        char hdf5group_3[] = "ZV";
+        writeHDF5(hdf5File_2, hdf5group_2, FZ);
+        writeHDF5(hdf5File_2, hdf5group_3, ZV);
+        */
 
-	}
+    }
 
 };
 
@@ -151,8 +151,8 @@ struct PLSATestSuite : public vigra::test_suite
     PLSATestSuite()
         : vigra::test_suite("PLSATestSuite")
     {
-		add(testCase(&PLSATest::testPLSADecomposition));
-	}
+        add(testCase(&PLSATest::testPLSADecomposition));
+    }
 };
 
 
@@ -162,5 +162,5 @@ int main (int argc, char ** argv)
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-	return failed != 0;
+    return failed != 0;
 }
