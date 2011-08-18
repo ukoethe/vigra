@@ -394,7 +394,7 @@ class ConvolutionOptions
     // Standard deviation of scale space operators.
     // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
-    VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_eff)
+    VIGRA_CONVOLUTION_OPTIONS(innerScale, 0.0, sigma_eff)
 
 #ifdef DOXYGEN
         /** Standard deviation(s) of scale space operators, or inner scale(s) for \ref structureTensorMultiArray().
