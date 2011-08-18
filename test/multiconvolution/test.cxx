@@ -901,8 +901,8 @@ struct cmp_data
 };
 
 void test_compare(const array_2d & x1_image_b, const array_2d & res_image,
-                 double sigma_pix, const cmp_data & cmp,
-                 logger & log_write)
+                  double sigma_pix, const cmp_data & cmp,
+                  logger & log_write)
 {
     double mm_delta = min_max_delta(x1_image_b);
 
@@ -988,8 +988,8 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     sigmas[0] = std_dev_factor * x_scale;
     sigmas[1] = std_dev_factor * y_scale;
     vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
-                vigra::destMultiArray(pre_scale_image),
-                options_2d().stdDev(sigmas));
+                                    vigra::destMultiArray(pre_scale_image),
+                                    options_2d().stdDev(sigmas));
     // downscale:
     array_2d downscaled_image(resized_shape(size_info,
                         1 / x_scale, 1 / y_scale));
@@ -1001,7 +1001,6 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     double sigma = test_f(downscaled_image, sigmas, step_size);
 
     write_out(downscaled_image, "test_downscaled_new_f.png", cmp);
-
 
     array_2d x1_image_b(test_image);
     test_f(x1_image_b);

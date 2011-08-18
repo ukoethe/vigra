@@ -234,60 +234,31 @@ struct multiArrayScaleParam
 /** \brief  Options class template for convolutions.
  
   <b>\#include</b> \<vigra/multi_convolution.hxx\>
+  
+  This class enables the calculation of scale space convolutions
+  such as \ref gaussianGradientMultiArray() on data with anistropic
+  discretization. For these, the result of the ordinary caluculation
+  has to be multiplied by factors of \f$1/w^{n}\f$ for each dimension,
+  where \f$w\f$ is the step size of the grid in said dimension and
+  \f$n\f$ is the differiantial order of the convolution, e.g., 1 for
+  gaussianGradientMultiArray(), and 0 for gaussianSmoothMultiArray(),
+  respectively. Also for each dimension in turn, the convolution's scale
+  parameter \f$\sigma\f$ has to be replaced by
+  \f$\sqrt{\sigma_\mathrm{eff}^2 - \sigma_\mathrm{D}^2}\Big/w\f$,
+  where \f$\sigma_\mathrm{eff}\f$ is the resulting effective filtering
+  scale. The data is assumed to be already filtered by a 
+  gaussian smoothing with the scale parameter \f$\sigma_\mathrm{D}\f$
+  (such as by measuring equipment). All of the above changes are
+  automatically employed by the convolution functions for <tt>MultiArray</tt>s
+  if a correspondig options object is provided.
 
-  <b>usage:</b>
- 
-  \code
-  const double step_size[2] = { x_scale, y_scale };
-  std::vector<double> r_sigmas;
-  r_sigmas.push_back(1.05 * x_scale);
-  r_sigmas.push_back(0.97 * y_scale);
-  ConvolutionOptions<2> opt = ConvolutionOptions<2>()
-                              .stdDev(2.8)
-                              .resolutionStdDev(r_sigmas)
-                              .outerScale(1.1, 1.7)
-                              .stepSize(step_size);
-
-  MultiArray<2, double>                 test_image;
-  MultiArray<2, TinyVector<double, 3> > out(test_image.shape());
-  structureTensorMultiArray(srcMultiArrayRange(test_image),
-                            destMultiArray(out),
-                            opt);
-  \endcode
- 
   The <tt>ConvolutionOptions</tt> class must be parameterized by the dimension
   <tt>dim</tt>
   of the <tt>MultiArray</tt>s on which it is used. The actual per-axis
-  options are set by the (overloaded) member functions explained below,
+  options are set by (overloaded) member functions explained below,
   or else default to neutral values corresponding to the absence of the
   particular option.
   
-  <tt>stdDev():</tt> Standard deviation(s) of scale space operators,
-  or <tt>innerScale</tt> for \ref structureTensorMultiArray(). Usually not
-  required, since a single value for all axes may be specified as a parameter
-  <tt>sigma</tt> to the call of
-  an convolution operator such as \ref gaussianGradientMultiArray(), and
-  anisotropic data requiring the use of the <tt>stepSize()</tt> options.
-  Default: <tt>dim</tt> values of 0.0
-  
-  <tt>resolutionStdDev():</tt> Resolution standard deviation(s) per axis,
-  i.e., a supposed pre-existing filtering by this value. The 
-  standard deviation actually used by the convolution operators
-  is <tt>sqrt(stdDev^2 - resolutionStdDev^2)</tt> (not taking the step
-  size into account, see below).
-  Default: <tt>dim</tt> values of 0.0
-
-  <tt>outerScale():</tt>  Outer scale(s): Standard deviation(s) of the second
-  convolution, used by the structure tensor.
-  Default: <tt>dim</tt> values of 0.0
-
-  <tt>stepSize():</tt> Step size(s) per axis, i.e., the distance between two
-  adjacent pixels. Note that a convolution containing a derivative operator
-  of order <tt>d</tt> results in a multiplication by <tt>stepSize^(-d)</tt>.
-  Also, the above standard deviations are scaled according to the step size
-  of each axis.
-  Default: <tt>dim</tt> values of 1.0
-
   All member functions set <tt>dim</tt> values of the respective convolution
   option, one for each dimension. They may be set explicitly by multiple
   arguments for up to five dimensions, or by a single argument to the same
@@ -297,8 +268,55 @@ struct multiArrayScaleParam
   and <tt>size()</tt>) supplies the option values for any number of dimensions.
   
   Note that the return value of all member functions is <tt>*this</tt>, which
-  makes concatenating of options as above possible.
+  provides the mechanism for concatenating member function calls as shown below.
 
+  <b>usage with explicit parameters:</b>
+
+  \code
+  ConvolutionOptions<2> opt = ConvolutionOptions<2>().stepSize(1, 2.3);
+  \endcode
+ 
+  <b>usage with arrays:</b>
+ 
+  \code
+  const double step_size[3] = { x_scale, y_scale, z_scale };
+  ConvolutionOptions<3> opt = ConvolutionOptions<3>().stepSize(step_size);
+  \endcode
+
+  <b>usage with C++ standard library style sequences:</b>
+ 
+  \code
+  TinyVector<double, 4> step_size(1, 1, 2.0, 1.5);
+  TinyVector<double, 4>  r_sigmas(1, 1, 2.3, 3.2);
+  ConvolutionOptions<4> opt = ConvolutionOptions<4>().stepSize(step_size).resolutionStdDev(r_sigmas);
+  \endcode
+
+  <b>usage with iterators:</b>
+
+  \code
+  ArrayVector<double> step_size;
+  step_size.push_back(0);
+  step_size.push_back(3);
+  step_size.push_back(4);
+  ArrayVector<double>::iterator i = step_size.begin();
+  ++i;
+  ConvolutionOptions<2> opt = ConvolutionOptions<2>().stepSize(i);
+  \endcode
+
+  <b>general usage in a convolution function call:</b>
+
+  \code
+  MultiArray<3, double> test_image;
+  MultiArray<3, double> out_image;
+  gaussianSmoothMultiArray(srcMultiArrayRange(test_image),
+                           destMultiArray(out_image),
+                           5.0,
+                           ConvolutionOptions<3>()
+                              .stepSize        (1, 1, 3.2)
+                              .resolutionStdDev(1, 1, 4)
+                          );
+  \endcode
+ 
 */
 template <unsigned dim>
 class ConvolutionOptions
@@ -338,21 +356,90 @@ class ConvolutionOptions
         return outer.stdDev(outer_scale()).resolutionStdDev(0.0);
     }
 
-    // Standard deviation of scale space operators.
-    // Default: dim values of 0.0
-    VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
+    // Step size per axis.
+    // Default: dim values of 1.0
+    VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size)
+#ifdef DOXYGEN
+        /** Step size(s) per axis, i.e., the distance between two
+            adjacent pixels. Required for <tt>MultiArray</tt>
+            containig anisotropic data.
+ 
+            Note that a convolution containing a derivative operator
+            of order <tt>n</tt> results in a multiplication by 
+            \f${\rm stepSize}^{-n}\f$ for each axis.
+            Also, the above standard deviations
+            are scaled according to the step size of each axis.
+            Default value for the options object if this member funtion is not
+            used: A value of 1.0 for each dimension.
+        */
+    ConvolutionOptions<dim> & stepSize(...);
+#endif
 
     // Resolution standard deviation per axis.
     // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_d)
+#ifdef DOXYGEN
+        /** Resolution standard deviation(s) per axis, i.e., a supposed
+            pre-existing gaussian filtering by this value.
+       
+            The standard deviation actually used by the convolution operators
+            is \f$\sqrt{{\rm sigma}^{2} - {\rm resolutionStdDev}^{2}}\f$ for each
+            axis.
+            Default value for the options object if this member funtion is not
+            used: A value of 0.0 for each dimension.
+        */
+    ConvolutionOptions<dim> & resolutionStdDev(...);
+#endif
 
-    // Step size per axis.
-    // Default: dim values of 1.0
-    VIGRA_CONVOLUTION_OPTIONS(stepSize, 1.0, step_size)
+    // Standard deviation of scale space operators.
+    // Default: dim values of 0.0
+    VIGRA_CONVOLUTION_OPTIONS(stdDev, 0.0, sigma_eff)
+    VIGRA_CONVOLUTION_OPTIONS(resolutionStdDev, 0.0, sigma_eff)
+
+#ifdef DOXYGEN
+        /** Standard deviation(s) of scale space operators, or inner scale(s) for \ref structureTensorMultiArray().
+        
+            Usually not
+            needed, since a single value for all axes may be specified as a parameter
+            <tt>sigma</tt> to the call of
+            an convolution operator such as \ref gaussianGradientMultiArray(), and
+            anisotropic data requiring the use of the stepSize() member function.
+            Default value for the options object if this member funtion is not
+            used: A value of 0.0 for each dimension.
+        */
+    ConvolutionOptions<dim> & stdDev(...);
+
+        /** Standard deviation(s) of scale space operators, or inner scale(s) for \ref structureTensorMultiArray().
+        
+            Usually not
+            needed, since a single value for all axes may be specified as a parameter
+            <tt>sigma</tt> to the call of
+            an convolution operator such as \ref gaussianGradientMultiArray(), and
+            anisotropic data requiring the use of the stepSize() member function.
+            Default value for the options object if this member funtion is not
+            used: A value of 0.0 for each dimension.
+        */
+    ConvolutionOptions<dim> & innerScale(...);
+#endif
 
     // Outer scale, for structure tensor.
     // Default: dim values of 0.0
     VIGRA_CONVOLUTION_OPTIONS(outerScale, 0.0, outer_scale)
+#ifdef DOXYGEN
+        /** Standard deviation(s) of the second convolution of the
+            structure tensor. 
+
+            Usually not needed, since a single value for
+            all axes may be specified as a parameter <tt>outerScale</tt> to
+            the call of \ref structureTensorMultiArray(), and
+            anisotropic data requiring the use of the stepSize() member
+            function.
+            Default value for the options object if this member funtion is not
+            used: A value of 0.0 for each dimension.
+        */
+    ConvolutionOptions<dim> & outerScale(...);
+#endif
+
 
 };
 
@@ -529,6 +616,15 @@ scaleKernel(K & kernel, double a)
     // perform Gaussian smoothing on all dimensions
     separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), 
                                 kernels.begin());
+    \endcode
+
+    <b> Required Interface:</b>
+
+    see \ref separableConvolveMultiArray(), in addition:
+
+    \code
+    int dimension = 0;
+    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see vigra::Kernel1D, convolveLine()
@@ -759,6 +855,22 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
     \endcode
 
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, float> dest(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // perform anisotropic Gaussian smoothing at scale 'sigma'
+    gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+                             ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
+    \endcode
+
     \see separableConvolveMultiArray()
 */
 doxygen_overloaded_function(template <...> void gaussianSmoothMultiArray)
@@ -876,6 +988,22 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     ...
     // compute Gaussian gradient at scale sigma
     gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, TinyVector<float, 3> > dest(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute Gaussian gradient at scale sigma
+    gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+                               ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
     <b> Required Interface:</b>
@@ -1028,6 +1156,21 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
     symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
     \endcode
 
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, TinyVector<float, 3> > dest(shape);
+    TinyVector<float, 3> step_size;
+    ...
+    // compute gradient
+    symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest),
+                                ConvolutionOptions<3>().stepSize(step_size));
+    \endcode
+
     <b> Required Interface:</b>
 
     see \ref convolveMultiArrayOneDimension(), in addition:
@@ -1146,6 +1289,21 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     ...
     // compute Laplacian at scale sigma
     laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, float> source(shape);
+    MultiArray<3, float> laplacian(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute Laplacian at scale sigma
+    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma,
+                                  ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
     <b> Required Interface:</b>
@@ -1302,6 +1460,21 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
     ...
     // compute Hessian at scale sigma
     hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, float> source(shape);
+    MultiArray<3, TinyVector<float, 6> > dest(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute Hessian at scale sigma
+    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+                                ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
     <b> Required Interface:</b>
@@ -1497,6 +1670,21 @@ struct StructurTensorFunctor
     ...
     // compute structure tensor at scales innerScale and outerScale
     structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, RGBValue<float> > source(shape);
+    MultiArray<3, TinyVector<float, 6> > dest(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute structure tensor at scales innerScale and outerScale
+    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale,
+                              ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
     <b> Required Interface:</b>
