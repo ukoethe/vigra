@@ -137,7 +137,7 @@ def test_3DMorphologyGrayscale():
 def test_Noise():
     # ATM, we only test that these things run
     noiseVarianceEstimation(scalar_image)
-    noiseVarianceClustering(scalar_image)
+    # noiseVarianceClustering(scalar_image) # This test is not expected to work whith the kind of image used here.
     nonparametricNoiseNormalization(image)
     quadraticNoiseNormalizationEstimated(image)
     linearNoiseNormalizationEstimated(image)
