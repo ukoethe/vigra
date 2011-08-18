@@ -635,6 +635,8 @@ void divideAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
 
 } // namespace multi_math
 
+template <class T> class FindSum;
+
 struct UnsuitableTypeForExpandElements {};
 
 template <class T>

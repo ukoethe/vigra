@@ -66,47 +66,37 @@ public:
     void testPLSADecomposition()
     {
         char hdf5File[] = "example_data.h5";
-        char hdf5group_1[] = "volume/data";
+        char hdf5group[] = "volume/data";
 
-        HDF5ImportInfo infoHDF5_1(hdf5File, hdf5group_1);
-        MultiArray<2,double> features(MultiArrayShape<2>::type(infoHDF5_1.shapeOfDimension(0), infoHDF5_1.shapeOfDimension(1)));
-        readHDF5(infoHDF5_1, features);
-
+        HDF5ImportInfo infoHDF5(hdf5File, hdf5group);
         unsigned int numComponents = 3;
-        unsigned int numFeatures = infoHDF5_1.shapeOfDimension(0);
-        unsigned int numVoxels = infoHDF5_1.shapeOfDimension(1);
+        unsigned int numFeatures = infoHDF5.shapeOfDimension(0);
+        unsigned int numSamples = infoHDF5.shapeOfDimension(1);
 
-        MultiArray<2,double> FZ(MultiArrayShape<2>::type(numFeatures, numComponents));
-        MultiArray<2,double> ZV(MultiArrayShape<2>::type(numComponents, numVoxels));
+        Matrix<double> features(Shape2(numFeatures, numSamples));
+        readHDF5(infoHDF5, features);
 
-        PLSA plsa(vigra::PLSAOptions().numberOfComponents(numComponents));
-        plsa.decompose(features, FZ, ZV);
+        Matrix<double> fz(Shape2(numFeatures, numComponents));
+        Matrix<double> zv(Shape2(numComponents, numSamples));
+
+        pLSA(features, fz, zv, PLSAOptions().normalizedComponentWeights(false));
 
         // TESTS
         // -----
-        Matrix<double> fz = FZ;
-        Matrix<double> zv = ZV;
-        Matrix<double> feats = features;
         double eps = 1e-10;
-
-        // test if result matrices have correct dimensionality
-        should (rowCount(fz) == rowCount(feats));
-        should (columnCount(fz) == numComponents);
-        should (rowCount(zv) == numComponents);
-        should (columnCount(zv) == columnCount(feats));
 
         // test if result matrices (approximately) satisfy normalization properties
         Matrix<double> colSumFZ = fz.sum(0);
         for(int i=0; i<columnCount(fz); ++i)
         {
-            shouldEqualTolerance( colSumFZ(i, 0), 1, eps );
+            shouldEqualTolerance( colSumFZ(0,i), 1, eps );
         }
         Matrix<double> colSumZV = zv.sum(0);
+        Matrix<double> colSumFeat = features.sum(0);
         for(int i=0; i<columnCount(zv); ++i)
         {
-            shouldEqualTolerance( colSumZV(i, 0), 1, eps );
+            shouldEqualTolerance( colSumZV(0,i) / colSumFeat(0, i), 1, eps );
         }
-
         // all entries in FZ, ZV are >= 0
         for(int j=0; j<columnCount(zv); ++j)
         {
@@ -125,23 +115,18 @@ public:
 
         // test if reconstruction is close to original
         // tricky - how to properly test that? it will never be identical!
-        Matrix<double> fzv = fz*zv; 
-        Matrix<double> voxelSums = feats.sum(0);
-        Matrix<double> ones(numFeatures, 1, 1);
-        Matrix<double> model = (pmul((ones * voxelSums), fzv));
-        double meanError = (feats - model).squaredNorm() / columnCount(feats);
+        Matrix<double> model = fz*zv; 
+        double meanError = (features - model).squaredNorm() / columnCount(features);
         should ( meanError < 5000 );
 
-        /*
+#if 0
         char hdf5File_2[] = "example_data_results.h5";
         char hdf5group_2[] = "FZ";
         char hdf5group_3[] = "ZV";
-        writeHDF5(hdf5File_2, hdf5group_2, FZ);
-        writeHDF5(hdf5File_2, hdf5group_3, ZV);
-        */
-
+        writeHDF5(hdf5File_2, hdf5group_2, fz);
+        writeHDF5(hdf5File_2, hdf5group_3, zv);
+#endif    
     }
-
 };
 
 

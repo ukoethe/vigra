@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyunsupervised_PyArray_API
+#define PY_ARRAY_UNIQUE_SYMBOL vigranumpylearning_PyArray_API
 // #define NO_IMPORT_ARRAY
 
 #include <vigra/numpy_array.hxx>
@@ -48,37 +48,26 @@ namespace python = boost::python;
 namespace vigra
 {
 
-PLSA*
-pythonConstructPLSA(int numComponents,
-                            int max_iterations,
-                            float min_relative_gain)
-
-
-{
-    PLSAOptions options;
-    options .numberOfComponents(numComponents)
-            .maximumNumberOfIterations(max_iterations)
-            .minimumRelativeGain(min_relative_gain);
-
-
-    PLSA* plsa = new PLSA(options);
-
-    return plsa;
-}
-
 template<class U>
 python::tuple
-pythonDecompose(PLSA & plsa, 
-                        NumpyArray<2,U> features)
+pythonPLSA(NumpyArray<2,U> features, 
+           int nComponents,
+           int nIterations,
+           double minGain,
+           bool normalize)
 {
-    NumpyArray<2, U> FZ(MultiArrayShape<2>::type(features.shape(0),
-                                                           plsa.options_.numComponents)); 
-    NumpyArray<2, U> ZV(MultiArrayShape<2>::type(plsa.options_.numComponents, 
-                                                           features.shape(1))); 
-    PyAllowThreads _pythread;
-    plsa.decompose(features, FZ, ZV);
+    NumpyArray<2, U> fz(Shape2(nComponents, features.shape(1))); 
+    NumpyArray<2, U> zv(Shape2(features.shape(0), nComponents)); 
 
-    return python::make_tuple(FZ, ZV);
+    {
+        PyAllowThreads _pythread;
+        pLSA(features.transpose(), fz.transpose(), zv.transpose(),
+             RandomNumberGenerator<>(), 
+             PLSAOptions().maximumNumberOfIterations(nIterations)
+                          .minimumRelativeGain(minGain)
+                          .normalizedComponentWeights(normalize));
+    }
+    return python::make_tuple(fz, zv);
 }
 
 
@@ -88,25 +77,20 @@ void definePLSA()
     
     docstring_options doc_options(true, true, false);
 
-    class_<PLSA> plsaclass("PLSA",python::no_init);
+    PLSAOptions options;
 
-    plsaclass
-        .def("__init__",python::make_constructor(registerConverters(&pythonConstructPLSA),
-                                                 boost::python::default_call_policies(),
-                                                 ( arg("numComponents")=1,
-                                                   arg("max_iterations")= 100,
-                                                   arg("min_relative_gain")=0.001f)),
-             "Constructor::\n\n"
-             "  PLSA(numComponents = 1, max_iterations=100, min_rel_gain=1e-4,\n")
-             // usage from python:  import vigra as v
-             //						plsa = v.unsupervised.PLSA(3)
-             //						fz, zv = plsa.decompose(data)
-        .def("decompose",
-             registerConverters(&pythonDecompose<float>),
-             (arg("features")),
-             "Decomposes the feature matrix 'features' of size NUMFEATURESxNUMVOXELS. Returns two matrices: The former is of size NUMFEATURESxNUMCOMPONENTS and gives the feature to component distribution, the latter is of size NUMCOMPONENTSxNUMVOXELS and gives the component to voxel distribution. \n")
-        ;
+    def("pLSA", registerConverters(&pythonPLSA<double>),
+        (arg("features"), arg("nComponents"), arg("nIterations") = options.max_iterations,
+         arg("minGain") = options.min_rel_gain, arg("normalize") = options.normalized_component_weights),
+        "\nPerform probabilistic latent semantic analysis. \n\n"
+        "See pLSA_ in the C++ documentation for detailed information.\n"
+        "However, note that the Python version of this functions treats\n"
+        "all matrices *transposed* (i.e. the feature matrix has shape\n"
+        "numSamples * numFeatures etc)!\n\n");
 }
+
+void defineRandomForest();
+void defineRandomForestOld();
 
 } // namespace vigra
 
@@ -114,10 +98,12 @@ void definePLSA()
 using namespace vigra;
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE_INIT(unsupervised)
+BOOST_PYTHON_MODULE_INIT(learning)
 {
     import_vigranumpy();
     definePLSA();
+    defineRandomForest();
+    defineRandomForestOld();
 }
 
 
