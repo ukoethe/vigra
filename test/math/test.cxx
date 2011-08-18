@@ -1922,6 +1922,7 @@ struct LinalgTest
         using vigra::ZeroMean;
         using vigra::UnitVariance;
         using vigra::UnitNorm;
+        using vigra::UnitSum;
 
         double epsilon = 1e-11;
 
@@ -1945,6 +1946,15 @@ struct LinalgTest
             Matrix a = random_matrix (size, size);
 
             columnStatistics(a, columnMean, columnStdDev, columnNorm);
+
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitSum);
+            shouldEqualSequence(zeroColRef.data(), zeroColRef.data()+size, columnOffset.data());
+            columnScaling *= columnMean;
+            columnScaling *= size;
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnScaling.data(), epsilon);
+            columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
+            columnMeanPrepared *= size;
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnMeanPrepared.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
@@ -1987,6 +1997,15 @@ struct LinalgTest
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
+
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitSum);
+            shouldEqualSequence(zeroRowRef.data(), zeroRowRef.data()+size, rowOffset.data());
+            rowScaling *= rowMean;
+            rowScaling *= size;
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowScaling.data(), epsilon);
+            rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
+            rowMeanPrepared *= size;
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowMeanPrepared.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);

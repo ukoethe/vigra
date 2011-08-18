@@ -844,7 +844,7 @@ void identityMatrix(MultiArrayView<2, T, C> &r)
     }
 }
 
-    /** create n identity matrix of the given size.
+    /** create an identity matrix of the given size.
         Usage:
 
         \code
@@ -863,6 +863,25 @@ TemporaryMatrix<T> identityMatrix(MultiArrayIndex size)
         ret(i, i) = NumericTraits<T>::one();
     return ret;
 }
+
+    /** create matrix of ones of the given size.
+        Usage:
+
+        \code
+        vigra::Matrix<double> m = vigra::ones<double>(rows, cols);
+        \endcode
+
+    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T>
+TemporaryMatrix<T> ones(MultiArrayIndex rows, MultiArrayIndex cols)
+{
+    return TemporaryMatrix<T>(rows, cols, NumericTraits<T>::one());
+}
+
+
 
 template <class T, class C1, class C2>
 void diagonalMatrixImpl(MultiArrayView<1, T, C1> const & v, MultiArrayView<2, T, C2> &r)
@@ -2317,9 +2336,10 @@ columnStatisticsImpl(MultiArrayView<2, T1, C1> const & A,
     
     for(MultiArrayIndex k=0; k<m; ++k)
     {
+        typedef typename NumericTraits<T2>::RealPromote TmpType;
         Matrix<T2> t = rowVector(A, k) - mean;
-        typename NumericTraits<T2>::RealPromote f  = 1.0 / (k + 1.0),
-                                                f1 = 1.0 - f;
+        TmpType f  = TmpType(1.0 / (k + 1.0)),
+                f1 = TmpType(1.0 - f);
         mean += f*t;
         sumOfSquaredDifferences += f1*sq(t);
     }
@@ -2683,7 +2703,7 @@ covarianceMatrixOfRows(MultiArrayView<2, T, C> const & features)
     return res;
 }
 
-enum DataPreparationGoals { ZeroMean = 1, UnitVariance = 2, UnitNorm = 4 };
+enum DataPreparationGoals { ZeroMean = 1, UnitVariance = 2, UnitNorm = 4, UnitSum = 8 };
 
 inline DataPreparationGoals operator|(DataPreparationGoals l, DataPreparationGoals r)
 {
@@ -2716,9 +2736,35 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     bool zeroMean = (goals & ZeroMean) != 0;
     bool unitVariance = (goals & UnitVariance) != 0;
     bool unitNorm = (goals & UnitNorm) != 0;
+    bool unitSum = (goals & UnitSum) != 0;
+
+    if(unitSum)
+    {
+        vigra_precondition(goals == UnitSum,
+             "prepareData(): Unit sum is not compatible with any other data preparation goal.");
+             
+        transformMultiArray(srcMultiArrayRange(A), destMultiArrayRange(scaling), FindSum<T>());
+        
+        offset.init(NumericTraits<T>::zero());
+        
+        for(MultiArrayIndex k=0; k<n; ++k)
+        {
+            if(scaling(0, k) != NumericTraits<T>::zero())
+            {
+                scaling(0, k) = NumericTraits<T>::one() / scaling(0, k);
+                columnVector(res, k) = columnVector(A, k) * scaling(0, k);
+            }
+            else
+            {
+                scaling(0, k) = NumericTraits<T>::one();
+            }
+        }
+        
+        return;     
+    }
 
     vigra_precondition(!(unitVariance && unitNorm),
-        "prepareDataImpl(): Unit variance and unit norm cannot be achieved at the same time.");
+        "prepareData(): Unit variance and unit norm cannot be achieved at the same time.");
 
     Matrix<T> mean(1, n), sumOfSquaredDifferences(1, n);
     detail::columnStatisticsImpl(A, mean, sumOfSquaredDifferences);
@@ -2777,6 +2823,8 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     <DL>
     <DT><tt>ZeroMean</tt><DD> Subtract the column mean form every column if the values in the column are not constant. 
                               Do nothing in a constant column.
+    <DT><tt>UnitSum</tt><DD> Scale the colums so that the their sum is one if the sum was initially non-zero. 
+                              Do nothing in a zero-sum column.
     <DT><tt>UnitVariance</tt><DD> Divide by the column standard deviation if the values in the column are not constant. 
                               Do nothing in a constant column.
     <DT><tt>UnitNorm</tt><DD> Divide by the column norm if it is non-zero.
@@ -2927,7 +2975,7 @@ prepareRows(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & res,
             DataPreparationGoals goals = ZeroMean | UnitVariance)
 {
     MultiArrayView<2, T, StridedArrayTag> tr = transpose(res);
-    Matrix<T> offset(rowCount(A), 1), scaling(rowCount(A), 1);
+    Matrix<T> offset(1, rowCount(A)), scaling(1, rowCount(A));
     detail::prepareDataImpl(transpose(A), tr, offset, scaling, goals);
 }
 
@@ -2942,6 +2990,7 @@ using linalg::prepareRows;
 using linalg::ZeroMean;
 using linalg::UnitVariance;
 using linalg::UnitNorm;
+using linalg::UnitSum;
 
 }  // namespace vigra
 
