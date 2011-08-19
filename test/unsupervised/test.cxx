@@ -46,8 +46,6 @@
 #include <unittest.hxx>
 #include <vector>
 #include <limits>
-#include "vigra/hdf5impex.hxx"
-#include "vigra/multi_array.hxx"
 #include "test_data.hxx"
 
 
@@ -56,13 +54,39 @@
 using namespace vigra;
 
 
-class PLSATest
+class UnsupervisedDecompositionTest
 {
 
 public:
 
-    PLSATest()
+    UnsupervisedDecompositionTest()
     {}
+
+    void testPCADecomposition()
+    {
+        unsigned int numComponents = 3;
+        unsigned int numFeatures = 159;
+        unsigned int numSamples = 1024;
+
+        Matrix<double> features(numFeatures, numSamples, plsaData, ColumnMajor);
+        Matrix<double> fz(Shape2(numFeatures, numComponents));
+        Matrix<double> zv(Shape2(numComponents, numSamples));
+
+        prepareRows(features, features, ZeroMean);
+
+        principleComponents(features, fz, zv);
+
+        Matrix<double> model = fz*zv;
+        shouldEqualTolerance(squaredNorm(model-features), 1530214.34284834, 1e-10);
+
+#if 0
+        char hdf5File_2[] = "example_data_results.h5";
+        char hdf5group_2[] = "FZ";
+        char hdf5group_3[] = "ZV";
+        writeHDF5(hdf5File_2, hdf5group_2, fz);
+        writeHDF5(hdf5File_2, hdf5group_3, zv);
+#endif    
+    }
 
     void testPLSADecomposition()
     {
@@ -139,19 +163,20 @@ public:
 
 
 
-struct PLSATestSuite : public vigra::test_suite
+struct UnsupervisedDecompositionTestSuite : public vigra::test_suite
 {
-    PLSATestSuite()
-        : vigra::test_suite("PLSATestSuite")
+    UnsupervisedDecompositionTestSuite()
+        : vigra::test_suite("UnsupervisedDecompositionTestSuite")
     {
-        add(testCase(&PLSATest::testPLSADecomposition));
+        add(testCase(&UnsupervisedDecompositionTest::testPCADecomposition));
+        add(testCase(&UnsupervisedDecompositionTest::testPLSADecomposition));
     }
 };
 
 
 int main (int argc, char ** argv)
 {
-    PLSATestSuite test;
+    UnsupervisedDecompositionTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 

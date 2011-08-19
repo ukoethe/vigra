@@ -37,19 +37,11 @@
 #ifndef VIGRA_UNSUPERVISED_DECOMPOSITION_HXX
 #define VIGRA_UNSUPERVISED_DECOMPOSITION_HXX
 
-#include <iostream>
-#include <algorithm>
-#include <map>
-#include <set>
-#include <list>
 #include <numeric>
 #include "mathutil.hxx"
-#include "array_vector.hxx"
-#include "sized_int.hxx"
 #include "matrix.hxx"
+#include "singular_value_decomposition.hxx"
 #include "random.hxx"
-#include "functorexpression.hxx"
-#include "time.h"
 
 namespace vigra
 {
@@ -60,6 +52,98 @@ namespace vigra
 **/
 //@{
 
+/*****************************************************************/
+/*                                                               */
+/*              principle component analysis (PCA)               */
+/*                                                               */
+/*****************************************************************/
+
+   /** \brief Decompose a matrix according to the PCA algorithm. 
+
+        This function implements the PCA algorithm (principle component analysis).
+
+        \arg features must be a matrix with shape <tt>(numFeatures * numSamples)</tt>, which is
+        decomposed into the matrices 
+        \arg fz with shape <tt>(numFeatures * numComponents)</tt> and
+        \arg zv with shape <tt>(numComponents * numSamples)</tt>
+        
+        such that
+        \f[
+            \mathrm{features} \approx \mathrm{fz} * \mathrm{zv}
+        \f]
+        (this formula requires that the features have been center around the mean by  
+        \ref <tt>prepareRows(features, features, ZeroMean)</tt>).
+       
+        The shape parameter <tt>numComponents</tt> determines the complexity of 
+        the decomposition model and therefore the approximation quality (if
+        <tt>numComponents == numFeatures</tt>, the representation becomes exact). 
+        Intuitively, <tt>fz</tt> is a projection matrix from the reduced space
+        into the original space, and <tt>zv</tt> is  the reduced representation
+        of the data, using just <tt>numComponents</tt> features.
+
+        <b>Declaration:</b>
+        
+        <b>\#include</b> \<vigra/unsupervised_decomposition.hxx\>
+
+        \code
+        namespace vigra {
+        
+            template <class U, class C1, class C2, class C3>
+            void
+            principleComponents(MultiArrayView<2, U, C1> const & features,
+                                MultiArrayView<2, U, C2> fz, 
+                                MultiArrayView<2, U, C3> zv);
+        }
+        \endcode
+        
+        <b>Usage:</b>
+        \code
+        Matrix<double> data(numFeatures, numSamples);
+        ... // fill the imput matrix
+        
+        int numComponents = 3;
+        Matrix<double> fz(numFeatures, numComponents),
+                       zv(numComponents, numSamples);
+                       
+        // center the data
+        prepareRows(data, data, ZeroMean);
+        
+        // compute the reduced representation
+        principleComponents(data, fz, zv);
+        
+        Matrix<double> model = fz*zv;
+        double meanSquaredError = squaredNorm(data - model) / numSamples;
+        \endcode
+   */
+template <class U, class C1, class C2, class C3>
+void
+principleComponents(MultiArrayView<2, U, C1> const & features,
+                    MultiArrayView<2, U, C2> fz, 
+                    MultiArrayView<2, U, C3> zv)
+{
+    using namespace linalg; // activate matrix multiplication and arithmetic functions
+
+    int numFeatures = rowCount(features);
+    int numSamples = columnCount(features);
+    int numComponents = columnCount(fz);
+    vigra_precondition(numSamples >= numFeatures,
+      "principleComponents(): The number of samples has to be larger than the number of features.");
+    vigra_precondition(numFeatures >= numComponents && numComponents >= 1,
+      "principleComponents(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
+    vigra_precondition(rowCount(fz) == numFeatures,
+      "principleComponents(): The output matrix fz has to be of dimension numFeatures*numComponents.");
+    vigra_precondition(columnCount(zv) == numSamples && rowCount(zv) == numComponents,
+      "principleComponents(): The output matrix zv has to be of dimension numComponents*numSamples.");
+
+    Matrix<U> U(numSamples, numFeatures), S(numFeatures, 1), V(numFeatures, numFeatures);
+    singularValueDecomposition(features.transpose(), U, S, V);
+    
+    for(int k=0; k<numComponents; ++k)
+    {
+        rowVector(zv, k) = columnVector(U, k).transpose() * S(k, 0);
+        columnVector(fz, k) = columnVector(V, k);
+    }
+}
 
 /*****************************************************************/
 /*                                                               */
@@ -154,16 +238,17 @@ class PLSAOptions
         frequency of the words in each document. The components represents a 
         (presumably small) set of topics. The matrix <tt>fz</tt> encodes the 
         relative frequency of words in the different topics, and the matrix  
-        <tt>zv</tt> encodes how much of each topic is contained in each document (i.e. how 
-        well each topic explains the decument's contents). If you want 
-        <tt>zv</tt> to represent relative topic weights (i.e. topic weights sum 
-        to one in each document), you must 
+        <tt>zv</tt> encodes to what extend each topic explains the content of each 
+        document.
 
         The option object determines the iteration termination conditions and the ouput
         normalization. In addition, you may pass a random number generator to pLSA()
         which is used to create the initial solution.
 
         <b>Declarations:</b>
+        
+        <b>\#include</b> \<vigra/unsupervised_decomposition.hxx\>
+
         \code
         namespace vigra {
         
@@ -218,9 +303,9 @@ pLSA(MultiArrayView<2, U, C1> const & features,
     vigra_precondition(numFeatures >= numComponents && numComponents >= 1,
       "pLSA(): The number of features has to be larger or equal to the number of components in which the feature matrix is decomposed.");
     vigra_precondition(rowCount(fz) == numFeatures,
-      "pLSA(): The output matrix fz has to be of dimension NUMFEATURESxNUMCOMPONENTS.");
+      "pLSA(): The output matrix fz has to be of dimension numFeatures*numComponents.");
     vigra_precondition(columnCount(zv) == numSamples && rowCount(zv) == numComponents,
-      "pLSA(): The output matrix zv has to be of dimension NUMCOMPONENTSxnumSamples.");
+      "pLSA(): The output matrix zv has to be of dimension numComponents*numSamples.");
 
     // random initialization of result matrices, subsequent normalization
     UniformRandomFunctor<Random> randf(random);
