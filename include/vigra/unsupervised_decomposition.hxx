@@ -115,11 +115,11 @@ namespace vigra
         double meanSquaredError = squaredNorm(data - model) / numSamples;
         \endcode
    */
-template <class U, class C1, class C2, class C3>
+template <class T, class C1, class C2, class C3>
 void
-principleComponents(MultiArrayView<2, U, C1> const & features,
-                    MultiArrayView<2, U, C2> fz, 
-                    MultiArrayView<2, U, C3> zv)
+principleComponents(MultiArrayView<2, T, C1> const & features,
+                    MultiArrayView<2, T, C2> fz, 
+                    MultiArrayView<2, T, C3> zv)
 {
     using namespace linalg; // activate matrix multiplication and arithmetic functions
 
@@ -135,7 +135,7 @@ principleComponents(MultiArrayView<2, U, C1> const & features,
     vigra_precondition(columnCount(zv) == numSamples && rowCount(zv) == numComponents,
       "principleComponents(): The output matrix zv has to be of dimension numComponents*numSamples.");
 
-    Matrix<U> U(numSamples, numFeatures), S(numFeatures, 1), V(numFeatures, numFeatures);
+    Matrix<T> U(numSamples, numFeatures), S(numFeatures, 1), V(numFeatures, numFeatures);
     singularValueDecomposition(features.transpose(), U, S, V);
     
     for(int k=0; k<numComponents; ++k)
