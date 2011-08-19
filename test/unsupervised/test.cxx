@@ -48,6 +48,7 @@
 #include <limits>
 #include "vigra/hdf5impex.hxx"
 #include "vigra/multi_array.hxx"
+#include "test_data.hxx"
 
 
 #include <stdlib.h>
@@ -65,6 +66,7 @@ public:
 
     void testPLSADecomposition()
     {
+#if 0 // load data fro, HDF5 file
         char hdf5File[] = "example_data.h5";
         char hdf5group[] = "volume/data";
 
@@ -75,7 +77,13 @@ public:
 
         Matrix<double> features(Shape2(numFeatures, numSamples));
         readHDF5(infoHDF5, features);
+#else // get data from header file
+        unsigned int numComponents = 3;
+        unsigned int numFeatures = 159;
+        unsigned int numSamples = 1024;
 
+        Matrix<double> features(numFeatures, numSamples, plsaData, ColumnMajor);
+#endif
         Matrix<double> fz(Shape2(numFeatures, numComponents));
         Matrix<double> zv(Shape2(numComponents, numSamples));
 
