@@ -217,6 +217,36 @@ public:
 #endif
     }
 
+    void testTIFFSequence()
+    {
+        for (int i=0; i < 3; ++i)
+        {
+            std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
+            vigra::ImageImportInfo ininfo (fileName.c_str());
+            Image inimg(ininfo.width(), ininfo.height());
+            importImage(ininfo, destImage(inimg));
+            vigra::ImageExportInfo outinfo ("resseq.tif", i==0?"w":"a");
+            exportImage(srcImageRange(inimg), outinfo);
+        }
+
+        for (int j=0; j < 3; ++j)
+        {
+            vigra::ImageImportInfo ininfo ("resseq.tif", j);
+            Image inimg(ininfo.width(), ininfo.height());
+            std::string fileName = std::string("lenna_") + vigra::asString(j) + ".tif";
+            importImage(ininfo, destImage(inimg));
+            vigra::ImageImportInfo originfo (fileName.c_str());
+            Image origimg(originfo.width(), originfo.height());
+            importImage(originfo, destImage(origimg));
+
+            Image::ScanOrderIterator it = inimg.begin ();
+            Image::ScanOrderIterator it1 = origimg.begin ();
+            Image::Accessor acc = inimg.accessor ();
+            for (; it != inimg.end (); ++it, ++it1)
+                should (acc (it) == acc (it1));
+         }
+    }
+
     void testBMP ()
     {
         testFile ("res.bmp");
@@ -1108,7 +1138,7 @@ public:
         }
     }
 
-    void failingTest (char const * filename, 
+    void failingTest (char const * filename,
                       char const * message = "exportImage(): file format does not support requested number of bands (color channels)")
     {
         try
@@ -1449,6 +1479,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteImageExportImportTest::testGIF));
         add(testCase(&ByteImageExportImportTest::testJPEG));
         add(testCase(&ByteImageExportImportTest::testTIFF));
+        add(testCase(&ByteImageExportImportTest::testTIFFSequence));
         add(testCase(&ByteImageExportImportTest::testBMP));
         add(testCase(&ByteImageExportImportTest::testPGM));
         add(testCase(&ByteImageExportImportTest::testPNM));

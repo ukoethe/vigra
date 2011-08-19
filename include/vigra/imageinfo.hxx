@@ -140,23 +140,27 @@ class ImageExportInfo
             by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            EXR support requires libopenexr, JPEG support requires libjpeg,
             PNG support requires libpng and TIFF support requires libtiff.
          **/
-    VIGRA_EXPORT ImageExportInfo( const char * );
+    VIGRA_EXPORT ImageExportInfo( const char *, const char * = "w" );
     VIGRA_EXPORT ~ImageExportInfo();
 
         /** Set image file name.
-        
+
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
-            EXR support requires libopenexr, JPEG support requires libjpeg, 
+            EXR support requires libopenexr, JPEG support requires libjpeg,
             PNG support requires libpng and TIFF support requires libtiff.
          **/
     VIGRA_EXPORT ImageExportInfo & setFileName(const char * filename);
     VIGRA_EXPORT const char * getFileName() const;
+
+        /** Return the image file opening mode.
+         **/
+    VIGRA_EXPORT const char * getMode() const;
 
         /** Store image as given file type.
 
@@ -165,7 +169,7 @@ class ImageExportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format.
             (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
             <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
@@ -216,18 +220,18 @@ class ImageExportInfo
 
             This option is ignored when the target file format doesn't recognize
             the compression type. Valid arguments:
-            
+
             <DL>
             <DT>"NONE"<DD> (recognized by EXR and TIFF): do not compress (many other formats don't
                            compress either, but it is not an option for them).
-            <DT>"JPEG"<DD> (recognized by JPEG and TIFF): use JPEG compression. 
-                           You can also specify a compression quality parameter by 
-                           passing "JPEG QUALITY=N", where "N" must be an integer between 1 and 100 
+            <DT>"JPEG"<DD> (recognized by JPEG and TIFF): use JPEG compression.
+                           You can also specify a compression quality parameter by
+                           passing "JPEG QUALITY=N", where "N" must be an integer between 1 and 100
                            (e.g. "JPEG QUALITY=70").
             <DT>"JPEG-ARITH"<DD> (recognized by new versions of JPEG): use arithmetic coding as a back-end
-                           after JPEG compression (by default, the back-end is Huffman coding). 
-                           You can also specify a compression quality parameter by 
-                           passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100 
+                           after JPEG compression (by default, the back-end is Huffman coding).
+                           You can also specify a compression quality parameter by
+                           passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100
                            (e.g. "JPEG-ARITH QUALITY=70").
             <DT>"RLE", "RunLength"<DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
                           uses run-length encoding, but there it is not an option).
@@ -242,7 +246,7 @@ class ImageExportInfo
             <DT>"ASCII"<DD> (recognized by PNM): store pixels as ASCII (human readable numbers).
             <DT>"RAW"<DD> (recognized by PNM): store pixels as uncompressed binary data.
             <DT>"BILEVEL"<DD> (recognized by PNM): store as one bit per pixel.
-            <DT>"1" ... "100"<DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt> 
+            <DT>"1" ... "100"<DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt>
                              where the number denotes the desired quality).
             </DL>
 
@@ -250,7 +254,7 @@ class ImageExportInfo
             they have been enabled in the corresponding third-party library.
          **/
     VIGRA_EXPORT ImageExportInfo & setCompression( const char * type);
-    
+
     VIGRA_EXPORT const char * getCompression() const;
 
         /** Set the pixel type of the image file. Possible values are:
@@ -265,7 +269,7 @@ class ImageExportInfo
             </DL>
 
             <b>Usage:</b>
-            
+
             \code
             FImage img(w,h);
 
@@ -289,15 +293,15 @@ class ImageExportInfo
             </DL>
          **/
     VIGRA_EXPORT const char * getPixelType() const;
-    
+
     VIGRA_EXPORT ImageExportInfo & setForcedRangeMapping(double fromMin, double fromMax,
-                                                     double toMin, double toMax);    
+                                                     double toMin, double toMax);
     VIGRA_EXPORT bool hasForcedRangeMapping() const;
     VIGRA_EXPORT double getFromMin() const;
     VIGRA_EXPORT double getFromMax() const;
     VIGRA_EXPORT double getToMin() const;
     VIGRA_EXPORT double getToMax() const;
-    
+
         /** Set the image resolution in horizontal direction
          **/
     VIGRA_EXPORT ImageExportInfo & setXResolution( float );
@@ -352,7 +356,7 @@ class ImageExportInfo
     VIGRA_EXPORT ImageExportInfo & setICCProfile(const ICCProfile & profile);
 
   private:
-    std::string m_filename, m_filetype, m_pixeltype, m_comp;
+    std::string m_filename, m_filetype, m_pixeltype, m_comp, m_mode;
     float m_x_res, m_y_res;
     Diff2D m_pos;
     ICCProfile m_icc_profile;
@@ -390,7 +394,7 @@ class ImageImportInfo
 
             <DL>
             <DT>"BMP"<DD> Microsoft Windows bitmap image file.
-            <DT>"EXR"<DD> OpenEXR high dynamic range image format. 
+            <DT>"EXR"<DD> OpenEXR high dynamic range image format.
             (only available if libopenexr is installed)
             <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
             <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
@@ -408,7 +412,7 @@ class ImageImportInfo
             <DT>"VIFF"<DD> Khoros Visualization image file.
             </DL>
          **/
-    VIGRA_EXPORT ImageImportInfo( const char *  );
+    VIGRA_EXPORT ImageImportInfo( const char *, unsigned int = 0 );
     VIGRA_EXPORT ~ImageImportInfo();
 
     VIGRA_EXPORT const char * getFileName() const;
@@ -437,6 +441,18 @@ class ImageImportInfo
          ** Usually these are the alpha channels.
          **/
     VIGRA_EXPORT int numExtraBands() const;
+
+        /** Get the number of images contained in the image file.
+         **/
+    VIGRA_EXPORT int numImages() const;
+
+        /** Sets the index of the image to import from the image file.
+         **/
+    VIGRA_EXPORT void setImageIndex(const int);
+
+        /** Gets the index of the image to import from the image file.
+         **/
+    VIGRA_EXPORT int getImageIndex() const;
 
         /** Get size of the image.
          **/
@@ -471,7 +487,7 @@ class ImageImportInfo
 
         /** Query the pixel type of the image.
 
-            Same as getPixelType(), but the result is returned as a 
+            Same as getPixelType(), but the result is returned as a
             ImageImportInfo::PixelType enum. This is useful to implement
             a switch() on the pixel type.
 
@@ -525,11 +541,13 @@ class ImageImportInfo
 
   private:
     std::string m_filename, m_filetype, m_pixeltype;
-    int m_width, m_height, m_num_bands, m_num_extra_bands;
+    int m_width, m_height, m_num_bands, m_num_extra_bands, m_num_images, m_image_index;
     float m_x_res, m_y_res;
     Diff2D m_pos;
     Size2D m_canvas_size;
     ICCProfile m_icc_profile;
+
+    void readHeader_();
 };
 
 // return a decoder for a given ImageImportInfo object

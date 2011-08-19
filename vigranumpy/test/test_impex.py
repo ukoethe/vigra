@@ -1,36 +1,36 @@
 #######################################################################
-#                                                                      
-#         Copyright 2009-2010 by Ullrich Koethe                        
-#                                                                      
-#    This file is part of the VIGRA computer vision library.           
-#    The VIGRA Website is                                              
-#        http://hci.iwr.uni-heidelberg.de/vigra/                       
-#    Please direct questions, bug reports, and contributions to        
-#        ullrich.koethe@iwr.uni-heidelberg.de    or                    
-#        vigra@informatik.uni-hamburg.de                               
-#                                                                      
-#    Permission is hereby granted, free of charge, to any person       
-#    obtaining a copy of this software and associated documentation    
-#    files (the "Software"), to deal in the Software without           
-#    restriction, including without limitation the rights to use,      
-#    copy, modify, merge, publish, distribute, sublicense, and/or      
-#    sell copies of the Software, and to permit persons to whom the    
-#    Software is furnished to do so, subject to the following          
-#    conditions:                                                       
-#                                                                      
-#    The above copyright notice and this permission notice shall be    
-#    included in all copies or substantial portions of the             
-#    Software.                                                         
-#                                                                      
-#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    
-#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   
-#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          
-#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       
-#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      
-#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      
-#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     
-#    OTHER DEALINGS IN THE SOFTWARE.                                   
-#                                                                      
+#
+#         Copyright 2009-2010 by Ullrich Koethe
+#
+#    This file is part of the VIGRA computer vision library.
+#    The VIGRA Website is
+#        http://hci.iwr.uni-heidelberg.de/vigra/
+#    Please direct questions, bug reports, and contributions to
+#        ullrich.koethe@iwr.uni-heidelberg.de    or
+#        vigra@informatik.uni-hamburg.de
+#
+#    Permission is hereby granted, free of charge, to any person
+#    obtaining a copy of this software and associated documentation
+#    files (the "Software"), to deal in the Software without
+#    restriction, including without limitation the rights to use,
+#    copy, modify, merge, publish, distribute, sublicense, and/or
+#    sell copies of the Software, and to permit persons to whom the
+#    Software is furnished to do so, subject to the following
+#    conditions:
+#
+#    The above copyright notice and this permission notice shall be
+#    included in all copies or substantial portions of the
+#    Software.
+#
+#    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND
+#    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+#    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+#    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+#    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+#    OTHER DEALINGS IN THE SOFTWARE.
+#
 #######################################################################
 
 import sys
@@ -41,10 +41,10 @@ from nose.tools import assert_equal, raises
 import numpy as np
 import vigra.impex as im
 import vigra.arraytypes as at
-
 #in the hope, that functions are tested in C++, we basicly test return types
 
 image=at.RGBImage(np.random.rand(10,10,3)*255,dtype=np.float32)
+image2=at.RGBImage(np.random.rand(20,20,3)*255,dtype=np.uint8)
 scalar_image=at.ScalarImage(np.random.rand(10,10)*255,dtype=np.float32)
 volume256=at.Volume(np.random.rand(8,9,10)*255,dtype=np.uint8)
 volumeFloat=at.Volume(np.random.rand(3,4,5,6)*100,dtype=np.float32)
@@ -57,10 +57,39 @@ def checkUnequalData(i1,i2):
     assert(i1.shape==i2.shape)
     assert(np.any(i1!=i2))
 
+def test_multiImageTiff():
+    if not 'TIFF' in im.listFormats():
+        return
+
+    filename = 'resimage.tif'
+
+    # decompose the RGB image and write the three channels as individual images
+    # to a multi-image TIFF
+    for i in range(3):
+        # the first image requires mode="w" in case the image already exists
+        im.writeImage(image2[:,:,i], filename, mode="w" if i == 0 else "a")
+
+    # test different dimensions and data types
+    im.writeImage(image, filename, mode="a")
+    im.writeImage(image2, filename, mode="a")
+    im.writeImage(scalar_image, filename, mode="a")
+
+    # check number of images contained in the file
+    assert(im.numberImages(filename) == 6)
+
+    # check for equal data
+    for i in range(3):
+        img_test = im.readImage(filename, index=i)
+        checkEqualData(img_test, image2[:,:,i])
+    checkEqualData(im.readImage(filename, index=3), image)
+    checkEqualData(im.readImage(filename, index=4), image2)
+    checkEqualData(im.readImage(filename, index=5), scalar_image)
+
+
 def test_writeAndReadImageHDF5():
     if not hasattr(im, 'writeImageToHDF5'):
         return
-    
+
     # positive tests
     # write and read image
     im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
@@ -85,28 +114,30 @@ def test_writeAndReadImageHDF5():
     # write and read scalar image
     scalar_image_imp[1,1] = 100000
     checkUnequalData(scalar_image,scalar_image_imp)
-    
+
     # check that we do the same as h5py
     try:
         import h5py
     except:
         return
-        
+
     h5py_file = h5py.File('hdf5test.hd5', 'w')
     h5py_file.create_dataset('imgdata', data=image.swapaxes(0, 1))
-    h5py_file.close() 
+    h5py_file.close()
     image_imp3 = im.readImageFromHDF5("hdf5test.hd5", "imgdata")
     checkEqualData(image,image_imp3)
-        
+
     im.writeImageToHDF5(image, "hdf5test.hd5", "group/subgroup/imgdata")
     h5py_file = h5py.File('hdf5test.hd5', 'r')
     image_imp4 = h5py_file['/group/subgroup/imgdata']
     checkEqualData(image,image_imp4.value.swapaxes(0,1))
+    
+    h5py_file.close()
 
 def test_writeAndReadVolumeHDF5():
     if not hasattr(im, 'writeVolumeToHDF5'):
         return
-    
+
     # positive tests
     # write and read volume
     im.writeVolumeToHDF5(volume256, "hdf5test.hd5", "group/subgroup/voldata")
@@ -131,20 +162,22 @@ def test_writeAndReadVolumeHDF5():
     # write and read binary volume
     volumeFloat_imp[1,1,1] = 100000
     checkUnequalData(volumeFloat,volumeFloat_imp)
-    
+
     # check that we do the same as h5py
     try:
         import h5py
     except:
         return
-        
+
     h5py_file = h5py.File('hdf5test.hd5', 'w')
     h5py_file.create_dataset('voldata', data=volumeFloat.swapaxes(0, 2))
-    h5py_file.close() 
+    h5py_file.close()
     volumeFloat_imp1 = im.readVolumeFromHDF5("hdf5test.hd5", "voldata")
     checkEqualData(volumeFloat, volumeFloat_imp1)
-        
+
     im.writeVolumeToHDF5(volumeFloat, "hdf5test.hd5", "group/subgroup/voldata")
     h5py_file = h5py.File('hdf5test.hd5', 'r')
     volumeFloat_imp2 = h5py_file['/group/subgroup/voldata']
     checkEqualData(volumeFloat, volumeFloat_imp2.value.swapaxes(0,2))
+    
+    h5py_file.close()

@@ -116,14 +116,14 @@ std::string numpyTypeIdToImpexString(NPY_TYPES typeID)
 
 } // namespace detail
 
-NumpyAnyArray readImage(const char * filename, python::object import_type)
+NumpyAnyArray readImage(const char * filename, python::object import_type, unsigned int index)
 {
-    ImageImportInfo info(filename);
+    ImageImportInfo info(filename, index);
     std::string importType(info.getPixelType());
-    
+
     if(python::extract<std::string>(import_type).check())
     {
-        std::string type = python::extract<std::string>(import_type)();        
+        std::string type = python::extract<std::string>(import_type)();
         if(type != "" && type != "NATIVE")
             importType = type;
     }
@@ -158,15 +158,16 @@ NumpyAnyArray readImage(const char * filename, python::object import_type)
 // (see negotiatePixelType())
 template <class T>
 void writeImage(NumpyArray<3, Multiband<T> > const & image,
-                    const char * filename, 
-                    python::object export_type,  
-                    const char * compression = "")
+                    const char * filename,
+                    python::object export_type,
+                    const char * compression = "",
+                    const char * mode = "w")
 {
-    ImageExportInfo info(filename);
-    
+    ImageExportInfo info(filename, mode);
+
     if(python::extract<std::string>(export_type).check())
     {
-        std::string type = python::extract<std::string>(export_type)();        
+        std::string type = python::extract<std::string>(export_type)();
         if(type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
@@ -183,12 +184,18 @@ void writeImage(NumpyArray<3, Multiband<T> > const & image,
     }
     else if(export_type)
         vigra_precondition(false, "writeImage(filename, export_type): export_type must be a string or a numpy dtype.");
-        
+
     if(std::string(compression) == "RunLength")
         info.setCompression("RLE");
     else if(std::string(compression) != "")
         info.setCompression(compression);
     exportImage(srcImageRange(image), info);
+}
+
+unsigned int numberImages(const char * filename)
+{
+    ImageImportInfo info(filename);
+    return info.numImages();
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteImage, writeImage)
@@ -251,7 +258,7 @@ NumpyAnyArray readVolume(const char * filename, python::object import_type)
 
     if(python::extract<std::string>(import_type).check())
     {
-        std::string type = python::extract<std::string>(import_type)();        
+        std::string type = python::extract<std::string>(import_type)();
         if(type != "" && type != "NATIVE")
             importType = type;
     }
@@ -282,16 +289,16 @@ NumpyAnyArray readVolume(const char * filename, python::object import_type)
 
 template <class T>
 void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
-                    const char * filename_base, 
-                    const char * filename_ext, 
-                    python::object export_type,  
+                    const char * filename_base,
+                    const char * filename_ext,
+                    python::object export_type,
                     const char * compression = "")
 {
     VolumeExportInfo info(filename_base, filename_ext);
-    
+
     if(python::extract<std::string>(export_type).check())
     {
-        std::string type = python::extract<std::string>(export_type)();        
+        std::string type = python::extract<std::string>(export_type)();
         if(type == "NBYTE")
         {
             info.setForcedRangeMapping(0.0, 0.0, 0.0, 255.0);
@@ -308,7 +315,7 @@ void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
     }
     else if(export_type)
         vigra_precondition(false, "writeVolume(filename, export_type): export_type must be a string or a numpy dtype.");
-        
+
     if(std::string(compression) == "RunLength")
         info.setCompression("RLE");
     else if(std::string(compression) != "")
@@ -330,25 +337,25 @@ NumpyAnyArray readImageHDF5Impl(HDF5ImportInfo const & info)
     {
       case 2:
       {
-        NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0), 
+        NumpyArray<2, Singleband<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(0),
                                                                     info.shapeOfDimension(1)));
         readHDF5(info, res);
         return res;
       }
       case 3:
       {
-      
+
         if(info.shapeOfDimension(0) == 3)
         {
-            NumpyArray<2, RGBValue<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(1), 
+            NumpyArray<2, RGBValue<T> > res(MultiArrayShape<2>::type(info.shapeOfDimension(1),
                                                                       info.shapeOfDimension(2)));
             readHDF5(info, res);
             return res;
         }
         else
         {
-            NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
-                                                                       info.shapeOfDimension(1), 
+            NumpyArray<3, Multiband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0),
+                                                                       info.shapeOfDimension(1),
                                                                        info.shapeOfDimension(2)));
             readHDF5(info, res);
             TinyVector<npy_intp, 3> permutation(1,2,0);
@@ -372,10 +379,10 @@ NumpyAnyArray readImageFromHDF5(const char * filePath, const char * pathInFile, 
 {
     HDF5ImportInfo info(filePath, pathInFile);
     std::string importType(info.getPixelType());
-    
+
     if(python::extract<std::string>(import_type).check())
     {
-        std::string type = python::extract<std::string>(import_type)();        
+        std::string type = python::extract<std::string>(import_type)();
         if(type != "" && type != "NATIVE")
             importType = type;
     }
@@ -407,9 +414,9 @@ NumpyAnyArray readImageFromHDF5(const char * filePath, const char * pathInFile, 
 
 template <class T>
 void writeImageToHDF5(NumpyArray<3, Multiband<T> > const & image,
-                    const char * filePath, 
-                    const char * pathInFile, 
-                    python::object export_type)  
+                    const char * filePath,
+                    const char * pathInFile,
+                    python::object export_type)
 {
     // write the data
     // if scalar image
@@ -436,17 +443,17 @@ NumpyAnyArray readVolumeHDF5Impl(HDF5ImportInfo const & info)
     {
       case 3:
       {
-        NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0), 
-                                                                    info.shapeOfDimension(1), 
+        NumpyArray<3, Singleband<T> > res(MultiArrayShape<3>::type(info.shapeOfDimension(0),
+                                                                    info.shapeOfDimension(1),
                                                                     info.shapeOfDimension(2)));
         readHDF5(info, res);
         return res;
       }
       case 4:
       {
-        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0), 
-                                                                   info.shapeOfDimension(1), 
-                                                                   info.shapeOfDimension(2), 
+        NumpyArray<4, Multiband<T> > res(MultiArrayShape<4>::type(info.shapeOfDimension(0),
+                                                                   info.shapeOfDimension(1),
+                                                                   info.shapeOfDimension(2),
                                                                    info.shapeOfDimension(3)));
         readHDF5(info, res);
         TinyVector<npy_intp, 4> permutation(1,2,3,0);
@@ -468,10 +475,10 @@ NumpyAnyArray readVolumeFromHDF5(const char * filePath, const char * pathInFile,
 {
     HDF5ImportInfo info(filePath, pathInFile);
     std::string importType(info.getPixelType());
-    
+
     if(python::extract<std::string>(import_type).check())
     {
-        std::string type = python::extract<std::string>(import_type)();        
+        std::string type = python::extract<std::string>(import_type)();
         if(type != "" && type != "NATIVE")
             importType = type;
     }
@@ -503,9 +510,9 @@ NumpyAnyArray readVolumeFromHDF5(const char * filePath, const char * pathInFile,
 
 template <class T>
 void writeVolumeToHDF5(NumpyArray<4, Multiband<T> > const & volume,
-                    const char * filePath, 
-                    const char * pathInFile, 
-                    python::object export_type) 
+                    const char * filePath,
+                    const char * pathInFile,
+                    python::object export_type)
 {
     // write the data
     // if scalar volume
@@ -527,9 +534,9 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywriteVolumeToHDF5, writeVolumeToHDF5)
 void defineImpexFunctions()
 {
     using namespace python;
-    
+
     docstring_options doc_options(true, true, false);
-    
+
     def("readVolume", &readVolume, (arg("filename"), arg("dtype") = "FLOAT"),
         "Read a 3D volume from a directory::\n\n"
         "   readVolume(filename, dtype = 'FLOAT') -> Volume\n\n"
@@ -561,17 +568,17 @@ void defineImpexFunctions()
         "'FLOAT', 'DOUBLE', or one of the corresponding numpy dtypes (numpy.uint8\n"
         "etc.), the returned volume will have the requested pixel type. For details\n"
         "see the help for :func:`readImage`.\n");
-    multidef("writeVolume", pywriteVolume<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
+    multidef("writeVolume", pywriteVolume<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(),
        (arg("volume"), arg("filename_base"), arg("filename_ext"), arg("dtype") = "", arg("compression") = ""),
        "Wrtie a volume as a sequence of images::\n\n"
        "   writeVolume(volume, filename_base, filename_ext, dtype = '', compression = '')\n\n"
        "The resulting image sequence will be enumerated in the form::\n\n"
        "    filename_base+[0-9]+filename_ext\n\n"
        "Parameters 'dtype' and 'compression' will be handled as in :func:`writeImage`.\n\n");
-    
-    def("readImage", &readImage, (arg("filename"), arg("dtype") = "FLOAT"),
+
+    def("readImage", &readImage, (arg("filename"), arg("dtype") = "FLOAT", arg("index") = 0),
         "Read an image from a file::\n\n"
-        "   readImage(filename, dtype = 'FLOAT') -> Image\n\n"
+        "   readImage(filename, dtype = 'FLOAT', index = 0) -> Image\n\n"
         "When import_type is 'UINT8', 'INT16', 'UINT16', 'INT32', 'UINT32',\n"
         "'FLOAT', 'DOUBLE', or one of the corresponding numpy dtypes (numpy.uint8\n"
         "etc.), the returned image will have the requested pixel type. If\n"
@@ -580,14 +587,17 @@ void defineImpexFunctions()
         "dtype is smaller than the original type in the file, values will be\n"
         "clipped at the bounds of the representable range, which may not be the\n"
         "desired behavior.\n\n"
+        "Individual images of sequential formats such as multi-image TIFF can be \n"
+        "accessed via index. The number of images in a file can be checked with the \n"
+        "function :func:`numberImages`(filename).\n\n"
         "Supported file formats are listed by the function vigra.impexListFormats().\n"
         "When filename does not refer to a recognized image file format, an\n"
         "exception is raised. The file can be checked beforehand with the function\n"
         ":func:`isImage`(filename).\n");
-    multidef("writeImage", pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
-       (arg("image"), arg("filename"), arg("dtype") = "", arg("compression") = ""),
+    multidef("writeImage", pywriteImage<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(),
+       (arg("image"), arg("filename"), arg("dtype") = "", arg("compression") = "", arg("mode") = "w"),
         "Save an image to a file::\n\n"
-        "   writeImage(image, filename, dtype = '', compression = '')\n\n"
+        "   writeImage(image, filename, dtype = '', compression = '', mode = 'w')\n\n"
         "Parameters:\n\n"
         " image:\n"
         "    the image to be saved\n"
@@ -606,7 +616,7 @@ void defineImpexFunctions()
         "     'NBYTE':\n"
         "        normalize to range 0...255 and then save as 'UINT8'\n"
         "     numpy.uint8, numpy.int16 etc.:\n"
-        "        behaves like the corresponding string argument\n\n" 
+        "        behaves like the corresponding string argument\n\n"
         " compression:\n"
         "     how to compress the data (ignored when compression type is unsupported \n"
         "     by the file format). Possible values:\n\n"
@@ -622,36 +632,42 @@ void defineImpexFunctions()
         "        write as ASCII rather than binary file (only supported by PNM)\n"
         "     '1' ... '100':\n"
         "        use this JPEG compression level (only supported by JPEG and TIFF)\n\n"
+        " mode:\n"
+        "     support for sequential file formats such as multi-image TIFF. \n"
+        "     Possible values:\n\n"
+        "     'w' create a new file (default)\n"
+        "     'a' append an image to a file or creates a new one if the file does \n"
+        "        not exist (only supported by TIFF)\n\n"
         "Supported file formats are listed by the function vigra.impexListFormats().\n"
         "The different file formats support the following pixel types:\n\n"
         "   BMP:\n"
-        "       Microsoft Windows bitmap image file (pixel type: UINT8 as gray and RGB).\n" 
+        "       Microsoft Windows bitmap image file (pixel type: UINT8 as gray and RGB).\n"
         "   GIF:\n"
         "       CompuServe graphics interchange format; 8-bit color\n"
-        "       (pixel type: UINT8 as gray and RGB).\n" 
+        "       (pixel type: UINT8 as gray and RGB).\n"
         "   JPEG:\n"
         "       Joint Photographic Experts Group JFIF format; compressed 24-bit color\n"
-        "       (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed)\n" 
+        "       (pixel types: UINT8 as gray and RGB). (only available if libjpeg is installed)\n"
         "   PNG:\n"
         "       Portable Network Graphic (pixel types: UINT8 and UINT16 with\n"
         "       up to 4 channels). (only available if libpng is installed)\n"
         "   PBM:\n"
-        "       Portable bitmap format (black and white).\n" 
+        "       Portable bitmap format (black and white).\n"
         "   PGM:\n"
-        "       Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)).\n" 
+        "       Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale)).\n"
         "   PNM:\n"
-        "       Portable anymap (pixel types: UINT8, INT16, INT32, gray and RGB)\n" 
+        "       Portable anymap (pixel types: UINT8, INT16, INT32, gray and RGB)\n"
         "   PPM:\n"
         "       Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB)\n"
         "   SUN:\n"
-        "       SUN Rasterfile (pixel types: UINT8 as gray and RGB).\n" 
+        "       SUN Rasterfile (pixel types: UINT8 as gray and RGB).\n"
         "   TIFF:\n"
         "       Tagged Image File Format (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE\n"
         "       with up to 4 channels). (only available if libtiff is installed.)\n"
         "   VIFF:\n"
         "       Khoros Visualization image file (pixel types: UINT8, INT16\n"
         "       INT32, FLOAT, DOUBLE with arbitrary many channels).\n\n");
-    def("listFormats", &impexListFormats, 
+    def("listFormats", &impexListFormats,
         "Ask for the image file formats that vigra.impex understands::\n\n"
         "    listFormats() -> string\n\n"
         "This function returns a string containing the supported image file "
@@ -670,6 +686,11 @@ void defineImpexFunctions()
         "It checks the first few bytes of the file and compares them with "
         "the \"magic strings\" of each recognized image format. If the "
         "image format is supported it returns True otherwise False.\n");
+    def("numberImages", &numberImages, args("filename"),
+        "Check how many images the given file contains::\n\n"
+        "   numberImages(filename) -> int\n\n"
+        "This function tests how many images an image file contains"
+        "(Values > 1 are only expected for the TIFF format to support multi-image TIFF).");
 
 #ifdef HasHDF5
     def("readImageFromHDF5", &readImageFromHDF5, (arg("filepath"), arg("pathInFile"), arg("dtype") = "FLOAT"),
@@ -682,7 +703,7 @@ void defineImpexFunctions()
         "   readVolumeFromHDF5(filepath, pathInFile, dtype='FLOAT') -> volume\n\n"
         "If the file contains 4-dimensional data, the innermost (last)\n"
         "index is interpreted as a channel dimension.\n\n");
-    multidef("writeImageToHDF5", pywriteImageToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
+    multidef("writeImageToHDF5", pywriteImageToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(),
        (arg("image"), arg("filepath"), arg("pathInFile"), arg("dtype") = ""),
         "Save an image to an HDF5 file::\n\n"
         "   writeImageToHDF5(image, filepath, pathInFile, dtype='')\n\n"
@@ -697,7 +718,7 @@ void defineImpexFunctions()
         "   h5py_file.close()\n"
         "\n"
         "(note the axes transposition which accounts for the VIGRA indexing convention).\n\n");
-    multidef("writeVolumeToHDF5", pywriteVolumeToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
+    multidef("writeVolumeToHDF5", pywriteVolumeToHDF5<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(),
        (arg("volume"), arg("filepath"), arg("pathInFile"), arg("dtype") = ""),
         "Save a volume to an HDF5 file::\n\n"
         "   writeVolumeToHDF5(volume, filepath, pathInFile, dtype='')\n\n"

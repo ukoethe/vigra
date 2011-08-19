@@ -79,6 +79,11 @@ namespace vigra {
         unsigned int getNumBands() const;
 
         unsigned int getNumExtraBands() const;
+
+        unsigned int getNumImages() const;
+        void setImageIndex(unsigned int);
+        unsigned int getImageIndex() const;
+
         Diff2D getPosition() const;
         Size2D getCanvasSize() const;
         float getXResolution() const;
@@ -90,7 +95,12 @@ namespace vigra {
         std::string getPixelType() const;
         unsigned int getOffset() const;
 
-        void init( const std::string & );
+        void init( const std::string &, unsigned int );
+        void init( const std::string & fileName)
+        {
+            init(fileName, 0);
+        }
+
         void close();
         void abort();
     };
@@ -127,7 +137,12 @@ namespace vigra {
 
         void setICCProfile(const ICCProfile & data);
 
-        void init( const std::string & );
+        void init( const std::string &, const std::string & );
+        void init( const std::string & fileName)
+        {
+            init(fileName, "w");
+        }
+
         void close();
         void abort();
     };

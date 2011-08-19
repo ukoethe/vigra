@@ -321,8 +321,8 @@ bool isImage(char const * filename)
 
 // class ImageExportInfo
 
-ImageExportInfo::ImageExportInfo( const char * filename )
-    : m_filename(filename),
+ImageExportInfo::ImageExportInfo( const char * filename, const char * mode )
+    : m_filename(filename), m_mode(mode),
       m_x_res(0), m_y_res(0),
       fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {}
@@ -387,6 +387,11 @@ ImageExportInfo & ImageExportInfo::setFileName(const char * name)
 const char * ImageExportInfo::getFileName() const
 {
     return m_filename.c_str();
+}
+
+const char * ImageExportInfo::getMode() const
+{
+    return m_mode.c_str();
 }
 
 const char * ImageExportInfo::getFileType() const
@@ -475,11 +480,11 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
     if ( filetype != "" ) {
         validate_filetype(filetype);
         std::auto_ptr<Encoder> enc2
-            = getEncoder( std::string( info.getFileName() ), filetype );
+            = getEncoder( std::string( info.getFileName() ), filetype, std::string( info.getMode() ) );
         enc = enc2;
     } else {
         std::auto_ptr<Encoder> enc2
-            = getEncoder( std::string( info.getFileName() ) );
+            = getEncoder( std::string( info.getFileName() ), "undefined", std::string( info.getMode() ) );
         enc = enc2;
     }
 
@@ -488,27 +493,27 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
 
         // check for quality parameter of JPEG compression
         int quality = -1;
-        
+
         // possibility 1: quality specified as "JPEG QUALITY=N" or "JPEG-ARITH QUALITY=N"
         // possibility 2 (deprecated): quality specified as just a number "10"
         std::string sq(" QUALITY="), parsed_comp;
         std::string::size_type pos = comp.rfind(sq), start = 0;
-        
+
         if(pos != std::string::npos)
         {
             start = pos + sq.size();
             parsed_comp = comp.substr(0, pos);
         }
-        
+
         std::istringstream compstream(comp.substr(start));
         compstream >> quality;
-        if ( quality != -1 ) 
+        if ( quality != -1 )
         {
             if(parsed_comp == "")
                 parsed_comp = "JPEG";
              enc->setCompressionType( parsed_comp, quality );
-        } 
-        else 
+        }
+        else
         {
             // leave any other compression type to the codec
             enc->setCompressionType(comp);
@@ -542,25 +547,10 @@ std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
 
 // class ImageImportInfo
 
-ImageImportInfo::ImageImportInfo( const char * filename )
-    : m_filename(filename)
+ImageImportInfo::ImageImportInfo( const char * filename, unsigned int imageIndex )
+    : m_filename(filename), m_image_index(imageIndex)
 {
-    std::auto_ptr<Decoder> decoder = getDecoder(m_filename);
-
-    m_filetype = decoder->getFileType();
-    m_pixeltype = decoder->getPixelType();
-    m_width = decoder->getWidth();
-    m_height = decoder->getHeight();
-    m_num_bands = decoder->getNumBands();
-    m_num_extra_bands = decoder->getNumExtraBands();
-    m_pos = decoder->getPosition();
-    m_canvas_size = decoder->getCanvasSize();
-    m_x_res = decoder->getXResolution();
-    m_y_res = decoder->getYResolution();
-
-    m_icc_profile = decoder->getICCProfile();
-
-    decoder->abort(); // there probably is no better way than this
+    readHeader_();
 }
 
 ImageImportInfo::~ImageImportInfo() {
@@ -622,6 +612,22 @@ int ImageImportInfo::numExtraBands() const
     return m_num_extra_bands;
 }
 
+int ImageImportInfo::numImages() const
+{
+    return m_num_images;
+}
+
+void ImageImportInfo::setImageIndex(int index)
+{
+    m_image_index = index;
+    readHeader_();
+}
+
+int ImageImportInfo::getImageIndex() const
+{
+    return m_image_index;
+}
+
 Size2D ImageImportInfo::size() const
 {
     return Size2D( m_width, m_height );
@@ -672,12 +678,33 @@ const ImageImportInfo::ICCProfile & ImageImportInfo::getICCProfile() const
     return m_icc_profile;
 }
 
+void ImageImportInfo::readHeader_()
+{
+    std::auto_ptr<Decoder> decoder = getDecoder(m_filename, "undefined", m_image_index);
+    m_num_images = decoder->getNumImages();
+
+    m_filetype = decoder->getFileType();
+    m_pixeltype = decoder->getPixelType();
+    m_width = decoder->getWidth();
+    m_height = decoder->getHeight();
+    m_num_bands = decoder->getNumBands();
+    m_num_extra_bands = decoder->getNumExtraBands();
+    m_pos = decoder->getPosition();
+    m_canvas_size = decoder->getCanvasSize();
+    m_x_res = decoder->getXResolution();
+    m_y_res = decoder->getYResolution();
+
+    m_icc_profile = decoder->getICCProfile();
+
+    decoder->abort(); // there probably is no better way than this
+}
+
 // return a decoder for a given ImageImportInfo object
 std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
 {
     std::string filetype = info.getFileType();
     validate_filetype(filetype);
-    return getDecoder( std::string( info.getFileName() ), filetype );
+    return getDecoder( std::string( info.getFileName() ), filetype, info.getImageIndex() );
 }
 
 // class VolumeExportInfo
@@ -700,7 +727,7 @@ VolumeExportInfo & VolumeExportInfo::setFileType( const char * filetype )
 }
 
 VolumeExportInfo & VolumeExportInfo::setForcedRangeMapping(double fromMin, double fromMax,
-                                                     double toMin, double toMax) 
+                                                     double toMin, double toMax)
 {
     fromMin_ = fromMin;
     fromMax_ = fromMax;

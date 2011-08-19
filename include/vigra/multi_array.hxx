@@ -635,6 +635,8 @@ void divideAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
 
 } // namespace multi_math
 
+template <class T> class FindSum;
+
 struct UnsuitableTypeForExpandElements {};
 
 template <class T>
@@ -1663,30 +1665,75 @@ public:
 
         /** Compute the sum of the array elements.
 
-            \arg initial determines the initial value and the type of the sum.
+            You must provide the type of the result by an explicit template parameter:
+            \code
+            MultiArray<2, UInt8> A(width, height);
+            
+            double sum = A.sum<double>();
+            \endcode
          */
     template <class U>
-    U sum(U initial = NumericTraits<U>::zero()) const
+    U sum() const
     {
+        U res = NumericTraits<U>::zero();
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     initial, 
+                                     res, 
                                      detail::SumReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
-        return initial;
+        return res;
+    }
+
+        /** Compute the sum of the array elements over selected axes.
+        
+            \arg sums must have the same shape as this array, except for the
+            axes along which the sum is to be accumulated. These axes must be 
+            singletons. Note that you must include <tt>multi_pointoperators.hxx</tt>
+            for this function to work.
+
+            <b>Usage:</b>
+            \code
+            #include <vigra/multi_array.hxx>
+            #include <vigra/multi_pointoperators.hxx>
+            
+            MultiArray<2, double> A(rows, cols);
+            ... // fill A
+            
+            // make the first axis a singleton to sum over the first index
+            MultiArray<2, double> rowSums(1, cols);
+            A.sum(rowSums);
+            
+            // this is equivalent to
+            transformMultiArray(srcMultiArrayRange(A),
+                                destMultiArrayRange(rowSums),
+                                FindSum<double>());
+            \endcode
+         */
+    template <class U, class S>
+    void sum(MultiArrayView<N, U, S> sums) const
+    {
+        transformMultiArray(srcMultiArrayRange(*this),
+                            destMultiArrayRange(sums),
+                            FindSum<U>());
     }
 
         /** Compute the product of the array elements.
 
-            \arg initial determines the initial value and the type of the sum.
+            You must provide the type of the result by an explicit template parameter:
+            \code
+            MultiArray<2, UInt8> A(width, height);
+            
+            double prod = A.product<double>();
+            \endcode
          */
     template <class U>
-    U product(U initial = NumericTraits<U>::one()) const
+    U product() const
     {
+        U res = NumericTraits<U>::one();
         detail::reduceOverMultiArray(traverser_begin(), shape(),
-                                     initial, 
+                                     res, 
                                      detail::ProdReduceFunctor(),
                                      MetaInt<actual_dimension-1>());
-        return initial;
+        return res;
     }
 
         /** Compute the squared Euclidean norm of the array (sum of squares of the array elements).
