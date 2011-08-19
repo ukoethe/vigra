@@ -635,7 +635,7 @@ struct ImageFunctionsTest
         Image img1(3,3);
 
         transformImage(srcImageRange(img), destImage(img1),
-					   linearIntensityTransform<Image::value_type>(3.3));
+                       linearIntensityTransform<Image::value_type>(3.3));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -687,29 +687,29 @@ struct ImageFunctionsTest
         BImage img1(3,3);
 
         transformImage(srcImageRange(img), destImage(img1),
-					   linearRangeMapping(1.0, 10.0, 0, 250));
+                       linearRangeMapping(1.0, 10.0, 0, 250));
 
         int res[] = {3, 33, 64, 94, 125, 156, 186, 217, 247 };
 
         shouldEqualSequence(img1.begin(), img1.end(), res);
 
-		FindMinMax<double> minmax;
-		inspectImage(srcImageRange(img), minmax);
+        FindMinMax<double> minmax;
+        inspectImage(srcImageRange(img), minmax);
         transformImage(srcImageRange(img), destImage(img1),
-					   linearRangeMapping(minmax, 0, 250));
-	
+                       linearRangeMapping(minmax, 0, 250));
+    
         int res1[] = {0, 31, 62, 94, 125, 156, 187, 219, 250 };
 #if 0
-		for(int i=0; i<9; ++i)
-			std::cerr << (int)*(&img1(0,0)+i) << ", ";
-		std::cerr << "\n";
+        for(int i=0; i<9; ++i)
+            std::cerr << (int)*(&img1(0,0)+i) << ", ";
+        std::cerr << "\n";
 #endif
-		shouldEqualSequence(img1.begin(), img1.end(), res1);
+        shouldEqualSequence(img1.begin(), img1.end(), res1);
 
         BRGBImage img2(3,3);
 
         transformImage(srcImageRange(rgb), destImage(img2),
-					   linearRangeMapping(RGBValue(1.0, 1.0, 1.0),
+                       linearRangeMapping(RGBValue(1.0, 1.0, 1.0),
                                           RGBValue(3.0, 3.0, 3.0),
                                           BRGBImage::value_type(0, 0, 0),
                                           BRGBImage::value_type(255, 255, 255)));
@@ -1537,6 +1537,10 @@ struct GeometricTransformsTest
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res1(w-x-1, y));
+        reflectImage(srcImageRange(img), destImage(res1), vigra::horizontal | vigra::vertical);
+        for(int y = 0; y < 10; ++y)
+            for(int x = 0; x < 10; ++x)
+                shouldEqual(img(x,y), res1(w-x-1, h-y-1));
 
         double xfactor = 3.0;
         double yfactor = 2.0;

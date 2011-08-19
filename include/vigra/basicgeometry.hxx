@@ -200,7 +200,13 @@ rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-enum Reflect{horizontal = 1, vertical = 2};
+enum Reflect {horizontal = 1, vertical = 2};
+
+inline 
+Reflect operator|(Reflect l, Reflect r)
+{
+    return Reflect((unsigned int)l | (unsigned int)r);
+}
 
 /** \brief Reflect image horizontally or vertically.
 
