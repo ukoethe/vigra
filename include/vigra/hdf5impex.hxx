@@ -2314,11 +2314,11 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     selectHyperslabs(mid1, mid2, shape, counter, elements, numBandsOfType);
 
     // read from hdf5
-    H5Dread(dataset_id, datatype, mid2, mid1, H5P_DEFAULT, buffer.data());
+    herr_t read_status = H5Dread(dataset_id, datatype, mid2, mid1, H5P_DEFAULT, buffer.data());
+    vigra_precondition(read_status >= 0, "readHDF5Impl(): read from dataset failed.");
 
     // increase counter
     counter++;
-
 
     //std::cout << "numBandsOfType: " << numBandsOfType << std::endl;
     DestIterator dend = d + shape[0];
