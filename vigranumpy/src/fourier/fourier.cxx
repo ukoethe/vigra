@@ -148,11 +148,15 @@ pythonFourierTransformR2C(NumpyAnyArray in, NumpyAnyArray res)
 
 } // namespace vigra
 
-using namespace boost::python;
 using namespace vigra;
 
 BOOST_PYTHON_MODULE_INIT(fourier)
 {
+    using boost::python::arg;
+    using boost::python::docstring_options;
+    using boost::python::object;
+    using boost::python::def;
+
     import_vigranumpy();
 
     docstring_options doc_options(true, true, false);
