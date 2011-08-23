@@ -101,7 +101,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     the destination's value_type), or a functor with compatible result_type. These two 
     cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
     yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
-    <tt>operator()</tt> must be const, and ist internal state may need to be <tt>mutable</tt>.
+    <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
     
     <b> Declarations:</b>
     
