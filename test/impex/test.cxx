@@ -219,6 +219,7 @@ public:
 
     void testTIFFSequence()
     {
+#if defined(HasTIFF)
         for (int i=0; i < 3; ++i)
         {
             std::string fileName = std::string("lenna_") + vigra::asString(i) + ".tif";
@@ -244,7 +245,8 @@ public:
             Image::Accessor acc = inimg.accessor ();
             for (; it != inimg.end (); ++it, ++it1)
                 should (acc (it) == acc (it1));
-         }
+        }
+#endif
     }
 
     void testBMP ()
