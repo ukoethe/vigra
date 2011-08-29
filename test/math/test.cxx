@@ -1062,7 +1062,11 @@ struct QuaternionTest
         shouldEqual(q*2.0, Q(2,4,6,8));
         shouldEqual(2.0*q, Q(2,4,6,8));
 
-        shouldEqual(q/q, Q(1,0,0,0));
+        Q q1 = q / q;       
+        shouldEqualTolerance(q1[0], 1.0, 1e-16);
+        shouldEqualTolerance(q1[1], 0.0, 1e-16);
+        shouldEqualTolerance(q1[2], 0.0, 1e-16);
+        shouldEqualTolerance(q1[3], 0.0, 1e-16);
         shouldEqual(Q(2,4,6,8)/2.0, q);
         shouldEqual(60.0/q, Q(2,-4,-6,-8));
 
