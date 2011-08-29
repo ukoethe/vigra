@@ -56,8 +56,8 @@ namespace vigra
 
 template<class PixelType>
 NumpyAnyArray pythonLabelImage(NumpyArray<2, Singleband<PixelType> > image,
-        int neighborhood = 4, NumpyArray<2, Singleband<npy_uint32> > res =
-                python::object())
+        int neighborhood = 4, NumpyArray<2, Singleband<npy_uint32> > res = 
+			       NumpyArray<2, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "labelImage(): neighborhood must be 4 or 8.");
@@ -88,7 +88,8 @@ template<class PixelType>
 NumpyAnyArray pythonLabelImageWithBackground(NumpyArray<2,
         Singleband<PixelType> > image, int neighborhood = 4,
         PixelType background_value = 0,
-        NumpyArray<2, Singleband<npy_uint32> > res = python::object())
+        NumpyArray<2, Singleband<npy_uint32> > res = 
+					     NumpyArray<2, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "labelImageWithBackground(): neighborhood must be 4 or 8.");
@@ -119,7 +120,7 @@ NumpyAnyArray pythonLabelImageWithBackground(NumpyArray<2,
 template<class VoxelType>
 NumpyAnyArray pythonLabelVolume(NumpyArray<3, Singleband<VoxelType> > volume,
         int neighborhood = 6, NumpyArray<3, Singleband<npy_uint32> > res =
-                python::object())
+				NumpyArray<3, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "labelVolume(): neighborhood must be 6 or 26.");
@@ -150,7 +151,7 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelVolume, pythonLabelVolume)
 template<class VoxelType>
 NumpyAnyArray pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<
         VoxelType> > volume, int neighborhood = 6, VoxelType background_value =
-        0, NumpyArray<3, Singleband<npy_uint32> > res = python::object())
+					      0, NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "labelVolumeWithBackground(): neighborhood must be 6 or 26.");
@@ -182,7 +183,7 @@ NumpyAnyArray pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<
 template<class PixelType>
 NumpyAnyArray pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
         PixelType marker = NumericTraits<PixelType>::one(), int neighborhood =
-                8, NumpyArray<2, Singleband<PixelType> > res = python::object())
+				  8, NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "localMinima(): neighborhood must be 4 or 8.");
@@ -211,7 +212,7 @@ NumpyAnyArray pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
 template<class PixelType>
 NumpyAnyArray pythonLocalMinima3D(NumpyArray<3, Singleband<PixelType> > image,
         PixelType marker = NumericTraits<PixelType>::one(), int neighborhood =
-                6, NumpyArray<3, Singleband<PixelType> > res = python::object())
+				  6, NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "localMaxima(): neighborhood must be 6 or 26.");
@@ -242,7 +243,7 @@ template<class PixelType>
 NumpyAnyArray pythonExtendedLocalMinima2D(
         NumpyArray<2, Singleband<PixelType> > image, PixelType marker =
                 NumericTraits<PixelType>::one(), int neighborhood = 8,
-        NumpyArray<2, Singleband<PixelType> > res = python::object())
+        NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
 
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
@@ -272,7 +273,7 @@ template<class PixelType>
 NumpyAnyArray pythonExtendedLocalMinima3D(
         NumpyArray<3, Singleband<PixelType> > image, PixelType marker =
                 NumericTraits<PixelType>::one(), int neighborhood = 6,
-        NumpyArray<3, Singleband<PixelType> > res = python::object())
+        NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "localMaxima(): neighborhood must be 6 or 26.");
@@ -302,7 +303,7 @@ NumpyAnyArray pythonExtendedLocalMinima3D(
 template<class PixelType>
 NumpyAnyArray pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
         PixelType marker = NumericTraits<PixelType>::one(), int neighborhood =
-                8, NumpyArray<2, Singleband<PixelType> > res = python::object())
+				  8, NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "localMaxima(): neighborhood must be 4 or 8.");
@@ -331,7 +332,7 @@ NumpyAnyArray pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
 template<class PixelType>
 NumpyAnyArray pythonLocalMaxima3D(NumpyArray<3, Singleband<PixelType> > image,
         PixelType marker = NumericTraits<PixelType>::one(), int neighborhood =
-                6, NumpyArray<3, Singleband<PixelType> > res = python::object())
+				  6, NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "localMaxima(): neighborhood must be 6 or 26.");
@@ -362,7 +363,7 @@ template<class PixelType>
 NumpyAnyArray pythonExtendedLocalMaxima3D(
         NumpyArray<3, Singleband<PixelType> > image, PixelType marker =
                 NumericTraits<PixelType>::one(), int neighborhood = 6,
-        NumpyArray<3, Singleband<PixelType> > res = python::object())
+        NumpyArray<3, Singleband<PixelType> > res = NumpyArray<3, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "localMaxima(): neighborhood must be 6 or 26.");
@@ -393,7 +394,7 @@ template<class PixelType>
 NumpyAnyArray pythonExtendedLocalMaxima2D(
         NumpyArray<2, Singleband<PixelType> > image, PixelType marker =
                 NumericTraits<PixelType>::one(), int neighborhood = 8,
-        NumpyArray<2, Singleband<PixelType> > res = python::object())
+        NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "extendedLocalMaxima(): neighborhood must be 4 or 8.");
@@ -425,11 +426,11 @@ template < class PixelType >
 python::tuple
 pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
         int neighborhood = 4,
-        NumpyArray<2, Singleband<npy_uint32> > seeds = python::object(),
+	NumpyArray<2, Singleband<npy_uint32> > seeds = NumpyArray<2, Singleband<npy_uint32> >(),
         std::string method = "RegionGrowing",
         SRGType srgType = CompleteGrow,
         PixelType max_cost = 0.0,
-        NumpyArray<2, Singleband<npy_uint32> > res = python::object())
+        NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "watersheds2D(): neighborhood must be 4 or 8.");
@@ -506,9 +507,10 @@ pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
 template<class PixelType>
 python::tuple pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
         int neighborhood = 4, NumpyArray<2, Singleband<npy_uint32> > seeds =
-                python::object(), std::string method = "RegionGrowing",
+				 NumpyArray<2, Singleband<npy_uint32> >(),
+				 std::string method = "RegionGrowing",
         SRGType srgType = CompleteGrow, PixelType max_cost = 0.0, NumpyArray<2,
-                Singleband<npy_uint32> > res = python::object())
+				 Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
             "watersheds2D(): neighborhood must be 4 or 8.");
@@ -585,9 +587,10 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2D, pythonWatersheds2D)
 template<class PixelType>
 python::tuple pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
         int neighborhood = 6, NumpyArray<3, Singleband<npy_uint32> > seeds =
-                python::object(), std::string method = "RegionGrowing",
+				 NumpyArray<3, Singleband<npy_uint32> >(),
+				 std::string method = "RegionGrowing",
         SRGType srgType = CompleteGrow, PixelType max_cost = 0.0, NumpyArray<3,
-                Singleband<npy_uint32> > res = python::object())
+				 Singleband<npy_uint32> > res = NumpyArray<3,Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
             "watersheds3D(): neighborhood must be 6 or 26.");

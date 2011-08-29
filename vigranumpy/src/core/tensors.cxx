@@ -53,7 +53,7 @@ namespace vigra
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                                        python::object sigma,
-                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
+                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res = NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> >(),
                                        python::object sigma_d = 0.0, python::object step_size = 1.0)
 {
     pythonScaleParam<ndim> params(sigma, sigma_d, step_size, "gaussianGradient");
@@ -70,7 +70,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                   const pythonScaleParam<ndim - 1> & params,
-                                  NumpyArray<ndim-1, Singleband<VoxelType> > res=python::object())
+                                  NumpyArray<ndim-1, Singleband<VoxelType> > res = NumpyArray<ndim-1, Singleband<VoxelType> >())
 {
     using namespace vigra::functor;
     
@@ -99,7 +99,7 @@ NumpyAnyArray
 pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
                             double scale, unsigned int xorder,
                             unsigned int yorder,
-                            NumpyArray<2, Singleband<PixelType> > res = python::object())
+                            NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");
     
@@ -113,7 +113,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                   const pythonScaleParam<ndim - 1> & params,
-                                  NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
+                                  NumpyArray<ndim, Multiband<VoxelType> > res = NumpyArray<ndim, Multiband<VoxelType> >())
 {
     using namespace vigra::functor;
     
@@ -139,8 +139,8 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                 python::object sigma, bool accumulate,
-                                NumpyAnyArray res=python::object(),
-                                python::object sigma_d = 0.0, python::object step_size = 1.0)
+                                NumpyAnyArray res,
+                                python::object sigma_d, python::object step_size)
 {
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianGradientMagnitude");
     return accumulate
