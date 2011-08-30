@@ -502,6 +502,24 @@ struct IsIterator<T const *>
     typedef VigraTrueType type;
 };
 
+template <class T>
+struct IsArray
+{
+    typedef char falseResult[1];
+    typedef char trueResult[2];
+    
+    static falseResult * test(...);
+    template <class U, unsigned n>
+    static trueResult * test(U (*)[n]);
+    
+    enum { resultSize = sizeof(*test((T*)0)) };
+    
+    static const bool value = (resultSize == 2);
+    typedef typename
+        IfBool<value, VigraTrueType, VigraFalseType>::type
+        type;
+};
+
 } // namespace vigra
 
 #endif /* VIGRA_METAPROGRAMMING_HXX */

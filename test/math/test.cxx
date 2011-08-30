@@ -1062,7 +1062,11 @@ struct QuaternionTest
         shouldEqual(q*2.0, Q(2,4,6,8));
         shouldEqual(2.0*q, Q(2,4,6,8));
 
-        shouldEqual(q/q, Q(1,0,0,0));
+        Q q1 = q / q;       
+        shouldEqualTolerance(q1[0], 1.0, 1e-16);
+        shouldEqualTolerance(q1[1], 0.0, 1e-16);
+        shouldEqualTolerance(q1[2], 0.0, 1e-16);
+        shouldEqualTolerance(q1[3], 0.0, 1e-16);
         shouldEqual(Q(2,4,6,8)/2.0, q);
         shouldEqual(60.0/q, Q(2,-4,-6,-8));
 
@@ -1813,6 +1817,20 @@ struct LinalgTest
                 for(unsigned int j=0; j<c; ++j)
                     for(unsigned int i=0; i<r; ++i)
                         shouldEqual(rep(k*r+i, l*c+j), a(i,j));
+
+        double columnSum[] = {8.0, 14.0};
+        double rowSum[] = {6.0, 5.0, 11.0};
+        Matrix matColumnSum = Matrix(1, 2, columnSum);
+        Matrix matRowSum = Matrix(3, 1, rowSum);
+        shouldEqualSequence(matColumnSum.data(), matColumnSum.data()+2, a.sum(0).data());
+        shouldEqualSequence(matRowSum.data(), matRowSum.data()+3, a.sum(1).data());
+
+        double columnMean[] = {8/3.0, 14/3.0};
+        double rowMean[] = {3.0, 2.5, 5.5};
+        Matrix matColumnMean = Matrix(1, 2, columnMean);
+        Matrix matRowMean = Matrix(3, 1, rowMean);
+        shouldEqualSequence(matColumnMean.data(), matColumnMean.data()+2, a.mean(0).data());
+        shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());	
     }
 
     void testArgMinMax()
@@ -1908,6 +1926,7 @@ struct LinalgTest
         using vigra::ZeroMean;
         using vigra::UnitVariance;
         using vigra::UnitNorm;
+        using vigra::UnitSum;
 
         double epsilon = 1e-11;
 
@@ -1931,6 +1950,15 @@ struct LinalgTest
             Matrix a = random_matrix (size, size);
 
             columnStatistics(a, columnMean, columnStdDev, columnNorm);
+
+            prepareColumns(a, columnPrepared, columnOffset, columnScaling, UnitSum);
+            shouldEqualSequence(zeroColRef.data(), zeroColRef.data()+size, columnOffset.data());
+            columnScaling *= columnMean;
+            columnScaling *= size;
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnScaling.data(), epsilon);
+            columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
+            columnMeanPrepared *= size;
+            shouldEqualSequenceTolerance(oneColRef.data(), oneColRef.data()+size, columnMeanPrepared.data(), epsilon);
 
             prepareColumns(a, columnPrepared, columnOffset, columnScaling, ZeroMean);
             columnStatistics(columnPrepared, columnMeanPrepared, columnStdDevPrepared, columnNormPrepared);
@@ -1973,6 +2001,15 @@ struct LinalgTest
             shouldEqualSequenceTolerance(a.data(), a.data()+size*size, ap.data(), epsilon);
 
             rowStatistics(a, rowMean, rowStdDev, rowNorm);
+
+            prepareRows(a, rowPrepared, rowOffset, rowScaling, UnitSum);
+            shouldEqualSequence(zeroRowRef.data(), zeroRowRef.data()+size, rowOffset.data());
+            rowScaling *= rowMean;
+            rowScaling *= size;
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowScaling.data(), epsilon);
+            rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);
+            rowMeanPrepared *= size;
+            shouldEqualSequenceTolerance(oneRowRef.data(), oneRowRef.data()+size, rowMeanPrepared.data(), epsilon);
 
             prepareRows(a, rowPrepared, rowOffset, rowScaling, ZeroMean);
             rowStatistics(rowPrepared, rowMeanPrepared, rowStdDevPrepared, rowNormPrepared);

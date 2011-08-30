@@ -472,7 +472,7 @@ class TinyVectorBase
     template <class Iterator>
     void init(Iterator i, Iterator end)
     {
-		vigra_precondition(end-i == SIZE,
+        vigra_precondition(end-i == SIZE,
             "TinyVector::init(): Sequence has wrong size.");
         Loop::assignCast(data_, i);
     }

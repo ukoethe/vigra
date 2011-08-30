@@ -276,7 +276,8 @@ Machine Learning
 ----------------
 
 The module vigra.learning will eventually provide a wide range of machine learning 
-tools. Right now, it only contains an implementation of the random forest classifier.
+tools. Right now, it only contains an implementation of the random forest classifier
+and probabilistic latent sementic analysis (pLSA) as an example for unsupervised learning.
 
 .. automodule:: vigra.learning
    :members:
