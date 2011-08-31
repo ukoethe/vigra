@@ -153,7 +153,7 @@ class SplitBase
                       ArrayVector<Region> childs,
                       Random randint)
     {
-	// FIXME: This compile-time checking trick does not work for clang.
+        // FIXME: This compile-time checking trick does not work for clang.
         // CompileTimeError SplitFunctor__findBestSplit_member_was_not_defined;
         return 0;
     }
