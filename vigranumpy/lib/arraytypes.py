@@ -1190,16 +1190,40 @@ class VigraArray(numpy.ndarray):
             return numpy.ndarray.repeat(self, repeats, axis)
 
     @_preserve_doc
-    def reshape(self, shape, order='C'):
+    def reshape(self, shape, order='C', axistags=None):
+        '''
+        An additional keyword argument 'axistags' can be used to determine
+        the result's axistags. If not given, all axes of the result will 
+        have type 'unknown'.
+        '''
+        if axistags is not None and len(shape) != len(axistags):
+            raise RuntimeError("VigraArray.reshape(): size mismatch between shape and axistags.")
         res = numpy.ndarray.reshape(self, shape, order)
-        res.axistags = res._empty_axistags(res.ndim)
+        if axistags is not None:
+            res.axistags = copy.copy(axistags)
+        else:
+            res.axistags = res._empty_axistags(res.ndim)
         return res        
 
     @_preserve_doc
-    def resize(self, new_shape, refcheck=True, order=False):
-        res = numpy.ndarray.reshape(self, new_shape, refcheck, order)
-        res.axistags = res._empty_axistags(res.ndim)
-        return res        
+    def resize(self, new_shape, refcheck=True, order=False, axistags=None):
+        '''
+        An additional keyword argument 'axistags' can be used to determine
+        the self's axistags after the resize. If not given, all axes will have 
+        type 'unknown'.
+        '''
+        # ndarray.resize() internally checks for refcount <= 2
+        # We need to increase the threshold because we have two
+        # additional references ('self' and the argument to 'sys.getrefcount')
+        if sys.getrefcount(self) <= 4:
+            refcheck = False
+        if axistags is not None and len(new_shape) != len(axistags):
+            raise RuntimeError("VigraArray.resize(): size mismatch between shape and axistags.")
+        numpy.ndarray.resize(self, new_shape, refcheck=refcheck)
+        if axistags is not None:
+            self.axistags = copy.copy(axistags)
+        else:
+            self.axistags = self._empty_axistags(self.ndim)
             
     @_preserve_doc
     def squeeze(self):
