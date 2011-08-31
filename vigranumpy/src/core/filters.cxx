@@ -50,7 +50,7 @@ template <class PixelType>
 NumpyAnyArray 
 pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image, 
                            double edgeThreshold, double scale,
-                           NumpyArray<3, Multiband<float> > res=python::object())
+                           NumpyArray<3, Multiband<float> > res=NumpyArray<3, Multiband<float> >())
 {
     res.reshapeIfEmpty(image.shape(), "nonlinearDiffusion2D(): Output array has wrong shape.");
     for(int k=0; k<image.shape(2); ++k)
@@ -66,7 +66,7 @@ pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image,
 template < class SrcPixelType >
 NumpyAnyArray pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
                                         double scale = 1,
-                                        NumpyArray<2, Singleband<SrcPixelType> > res = python::object())
+					      NumpyArray<2, Singleband<SrcPixelType> > res = NumpyArray<2, Singleband<SrcPixelType> >())
 {
     res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "radialSymmetryTransform2D(): Output array has wrong shape.");    
     radialSymmetryTransform(srcImageRange(image), destImage(res), scale);

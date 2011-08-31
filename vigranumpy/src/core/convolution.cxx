@@ -167,7 +167,7 @@ NumpyAnyArray
 pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > volume,
                         python::object sigma,
                         NumpyArray<ndim, Multiband<VoxelType> > res=python::object(),
-                        python::object sigma_d = 0.0, python::object step_size = 1.0)
+                        python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
        
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianSmoothing");
@@ -281,7 +281,7 @@ NumpyAnyArray
 pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > image,
                           python::object scale,
                           NumpyArray<N, Multiband<PixelType> > res=python::object(),
-                          python::object sigma_d = 0.0, python::object step_size = 1.0)
+                          python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
     

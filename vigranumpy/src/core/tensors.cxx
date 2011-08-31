@@ -53,8 +53,8 @@ namespace vigra
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                                        python::object sigma,
-                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
-                                       python::object sigma_d = 0.0, python::object step_size = 1.0)
+                                       NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res = NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> >(),
+                                       python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<ndim> params(sigma, sigma_d, step_size, "gaussianGradient");
     res.reshapeIfEmpty(volume.shape(), "gaussianGradient(): Output array has wrong shape.");
@@ -70,7 +70,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                   const pythonScaleParam<ndim - 1> & params,
-                                  NumpyArray<ndim-1, Singleband<VoxelType> > res=python::object())
+                                  NumpyArray<ndim-1, Singleband<VoxelType> > res = NumpyArray<ndim-1, Singleband<VoxelType> >())
 {
     using namespace vigra::functor;
     
@@ -99,7 +99,7 @@ NumpyAnyArray
 pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
                             double scale, unsigned int xorder,
                             unsigned int yorder,
-                            NumpyArray<2, Singleband<PixelType> > res = python::object())
+                            NumpyArray<2, Singleband<PixelType> > res = NumpyArray<2, Singleband<PixelType> >())
 {
     res.reshapeIfEmpty(image.shape(), "rieszTransformOfLOG2D(): Output array has wrong shape.");
     
@@ -113,7 +113,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                   const pythonScaleParam<ndim - 1> & params,
-                                  NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
+                                  NumpyArray<ndim, Multiband<VoxelType> > res = NumpyArray<ndim, Multiband<VoxelType> >())
 {
     using namespace vigra::functor;
     
@@ -139,8 +139,8 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
                                 python::object sigma, bool accumulate,
-                                NumpyAnyArray res=python::object(),
-                                python::object sigma_d = 0.0, python::object step_size = 1.0)
+                                NumpyAnyArray res,
+                                python::object sigma_d, python::object step_size)
 {
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianGradientMagnitude");
     return accumulate
@@ -152,7 +152,7 @@ template < class VoxelType, unsigned int ndim >
 NumpyAnyArray pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                                         double sigma,
                                         NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
-                                        python::object step_size = 1.0)
+                                        python::object step_size = python::object(1.0))
 {
     pythonScaleParam<ndim> steps(python::object(0.0), python::object(0.0),
                                  step_size, "symmetricGradient");
@@ -166,7 +166,7 @@ NumpyAnyArray
 pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > volume,
                           python::object sigma,
                           NumpyArray<N, TinyVector<VoxelType, int(N*(N-1)/2)> > res=python::object(),
-                          python::object sigma_d = 0.0, python::object step_size = 1.0)
+                          python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<N> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
@@ -179,7 +179,7 @@ NumpyAnyArray
 pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
                           python::object sigma,
                           NumpyArray<3, TinyVector<VoxelType, 6> > res=python::object(),
-                          python::object sigma_d = 0.0, python::object step_size = 1.0)
+                          python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<3> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(volume.shape(), "hessianOfGaussian(): Output array has wrong shape.");
@@ -195,7 +195,7 @@ NumpyAnyArray
 pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
                           python::object sigma,
                           NumpyArray<2, TinyVector<PixelType, 3> > res=python::object(),
-                          python::object sigma_d = 0.0, python::object step_size = 1.0)
+                          python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<2> params(sigma, sigma_d, step_size, "hessianOfGaussian");
     res.reshapeIfEmpty(image.shape(), "hessianOfGaussian(): Output array has wrong shape.");
@@ -213,7 +213,7 @@ NumpyAnyArray
 pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > image, 
                       python::object innerScale, python::object outerScale,
                       NumpyArray<N-1, TinyVector<PixelType, int(N*(N-1)/2)> > res=python::object(),
-                      python::object sigma_d = 0.0, python::object step_size = 1.0)
+                      python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     using namespace vigra::functor;
     

@@ -388,7 +388,7 @@ class Box
         if(r.isEmpty())
             return *this;
         if(isEmpty())
-            return operator=(r);
+            return this->operator=(r);
 
         for(unsigned int i = 0; i < DIMENSION; ++i)
         {
@@ -421,7 +421,7 @@ class Box
         if(isEmpty())
             return *this;
         if(r.isEmpty())
-            return operator=(r);
+            return this->operator=(r);
 
         for(unsigned int i = 0; i < DIMENSION; ++i)
         {
