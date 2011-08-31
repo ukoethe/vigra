@@ -38,9 +38,9 @@
 
 #include <Python.h>
 #include <algorithm>
+#include <string>
 #include "vigra/error.hxx"
 #include "vigra/tinyvector.hxx"
-
 
 namespace vigra {
 
@@ -65,12 +65,18 @@ void pythonToCppException(PYOBJECT_PTR obj)
     throw std::runtime_error(message.c_str());
 }
 
+/********************************************************/
+/*                                                      */
+/*                       python_ptr                     */
+/*                                                      */
+/********************************************************/
+
 class python_ptr
 {
-private:
+  private:
     PyObject * ptr_;
 
-public:
+  public:
 
     typedef PyObject element_type;
     typedef PyObject value_type;
@@ -203,8 +209,10 @@ inline void swap(python_ptr & a, python_ptr & b)
     a.swap(b);
 }
 
+/****************************************************************/
+
 inline python_ptr 
-getPythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
+makePythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
                     char const * k2 = 0, PyObject * a2 = 0,
                     char const * k3 = 0, PyObject * a3 = 0)
 {
@@ -219,15 +227,24 @@ getPythonDictionary(char const * k1 = 0, PyObject * a1 = 0,
     return dict;
 }
 
-inline python_ptr pythonFromNumber(bool t)
+/****************************************************************/
+
+inline python_ptr pythonFromData(bool t)
 {
     python_ptr res(PyBool_FromLong(t ? 1 : 0), python_ptr::keep_count);
     pythonToCppException(res);
     return res;
 }
 
-#define VIGRA_PYTHON_NUMBER_CONVERSION(type, condition, fct1, fct2) \
-inline python_ptr pythonFromNumber(type t) \
+inline python_ptr pythonFromData(std::string const & s)
+{
+    python_ptr res(PyString_FromString(s.c_str()), python_ptr::keep_count);
+    pythonToCppException(res);
+    return res;
+}
+
+#define VIGRA_PYTHON_FROM_DATA(type, condition, fct1, fct2) \
+inline python_ptr pythonFromData(type t) \
 { \
     python_ptr res; \
     if(condition) \
@@ -238,20 +255,99 @@ inline python_ptr pythonFromNumber(type t) \
     return res; \
 }
 
-VIGRA_PYTHON_NUMBER_CONVERSION(signed char, true, PyInt_FromLong, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(unsigned char, true, PyInt_FromLong, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(short, true, PyInt_FromLong, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(unsigned short, true, PyInt_FromLong, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(long, true, PyInt_FromLong, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(unsigned long, sizeof(unsigned long) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyLong_FromUnsignedLongLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(int, sizeof(long) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyInt_FromLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(unsigned int, sizeof(unsigned int) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyLong_FromUnsignedLongLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(long long, true, PyLong_FromLongLong, PyLong_FromLongLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(unsigned long long, true, PyLong_FromUnsignedLongLong, PyLong_FromUnsignedLongLong)
-VIGRA_PYTHON_NUMBER_CONVERSION(float, true, PyFloat_FromDouble, PyFloat_FromDouble)
-VIGRA_PYTHON_NUMBER_CONVERSION(double, true, PyFloat_FromDouble, PyFloat_FromDouble)
+VIGRA_PYTHON_FROM_DATA(signed char, true, PyInt_FromLong, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(unsigned char, true, PyInt_FromLong, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(short, true, PyInt_FromLong, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(unsigned short, true, PyInt_FromLong, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(long, true, PyInt_FromLong, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(unsigned long, sizeof(unsigned long) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyLong_FromUnsignedLongLong)
+VIGRA_PYTHON_FROM_DATA(int, sizeof(long) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyInt_FromLong)
+VIGRA_PYTHON_FROM_DATA(unsigned int, sizeof(unsigned int) < sizeof(Py_ssize_t), PyInt_FromSsize_t, PyLong_FromUnsignedLongLong)
+VIGRA_PYTHON_FROM_DATA(long long, true, PyLong_FromLongLong, PyLong_FromLongLong)
+VIGRA_PYTHON_FROM_DATA(unsigned long long, true, PyLong_FromUnsignedLongLong, PyLong_FromUnsignedLongLong)
+VIGRA_PYTHON_FROM_DATA(float, true, PyFloat_FromDouble, PyFloat_FromDouble)
+VIGRA_PYTHON_FROM_DATA(double, true, PyFloat_FromDouble, PyFloat_FromDouble)
+VIGRA_PYTHON_FROM_DATA(char const *, true, PyString_FromString, PyString_FromString)
 
-#undef VIGRA_PYTHON_NUMBER_CONVERSION
+#undef VIGRA_PYTHON_FROM_DATA
+
+/****************************************************************/
+
+#define VIGRA_DATA_FROM_PYTHON(type, check, extract) \
+inline type dataFromPython(PyObject * data, type const & defaultVal) \
+{ \
+    return data && check(data) \
+             ? (type)extract(data) \
+             : defaultVal; \
+}
+
+VIGRA_DATA_FROM_PYTHON(signed char, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(unsigned char, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(short, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(unsigned short, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(long, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(unsigned long, PyInt_Check, PyInt_AsUnsignedLongMask)
+VIGRA_DATA_FROM_PYTHON(int, PyInt_Check, PyInt_AsLong)
+VIGRA_DATA_FROM_PYTHON(unsigned int, PyInt_Check, PyInt_AsUnsignedLongMask)
+VIGRA_DATA_FROM_PYTHON(long long, PyInt_Check, PyInt_AsSsize_t)
+VIGRA_DATA_FROM_PYTHON(unsigned long long, PyInt_Check, PyInt_AsUnsignedLongLongMask)
+VIGRA_DATA_FROM_PYTHON(float, PyFloat_Check, PyFloat_AsDouble)
+VIGRA_DATA_FROM_PYTHON(double, PyFloat_Check, PyFloat_AsDouble)
+
+inline std::string dataFromPython(PyObject * data, const char * defaultVal) 
+{ 
+    return data && PyString_Check(data) 
+             ? std::string(PyString_AsString(data)) 
+             : std::string(defaultVal); 
+}
+
+inline std::string dataFromPython(PyObject * data, std::string const & defaultVal) 
+{ 
+    return data && PyString_Check(data) 
+             ? std::string(PyString_AsString(data)) 
+             : defaultVal; 
+}
+
+inline python_ptr dataFromPython(PyObject * data, python_ptr defaultVal) 
+{ 
+    return data
+             ? python_ptr(data) 
+             : defaultVal; 
+}
+
+#undef VIGRA_DATA_FROM_PYTHON
+
+/****************************************************************/
+
+template <class T>
+T pythonGetAttr(PyObject * obj, const char * key, T defaultValue)
+{
+    if(!obj)
+        return defaultValue;
+        
+    python_ptr k(PyString_FromString(key), python_ptr::keep_count);
+    pythonToCppException(k);
+    python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
+    if(!pres)
+        PyErr_Clear();
+    return dataFromPython(pres, defaultValue);
+}
+
+inline std::string 
+pythonGetAttr(PyObject * obj, const char * key, const char * defaultValue)
+{
+    if(!obj)
+        return std::string(defaultValue);
+        
+    python_ptr k(PyString_FromString(key), python_ptr::keep_count);
+    pythonToCppException(k);
+    python_ptr pres(PyObject_GetAttr(obj, k), python_ptr::keep_count);
+    if(!pres)
+        PyErr_Clear();
+    return dataFromPython(pres, defaultValue);
+}
+
+/****************************************************************/
 
 template <class T, int N>
 python_ptr shapeToPythonTuple(TinyVector<T, N> const & shape)
@@ -260,7 +356,7 @@ python_ptr shapeToPythonTuple(TinyVector<T, N> const & shape)
     pythonToCppException(tuple);
     for(unsigned int k=0; k<N; ++k)
     {
-        PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), k, pythonFromNumber(shape[k]).release());
+        PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), k, pythonFromData(shape[k]).release());
     }
     return tuple;
 }
@@ -272,10 +368,12 @@ python_ptr shapeToPythonTuple(ArrayVectorView<T> const & shape)
     pythonToCppException(tuple);
     for(unsigned int k=0; k<shape.size(); ++k)
     {
-        PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), k, pythonFromNumber(shape[k]).release());
+        PyTuple_SET_ITEM((PyTupleObject *)tuple.get(), k, pythonFromData(shape[k]).release());
     }
     return tuple;
 }
+
+/****************************************************************/
 
 class PyAllowThreads
 {

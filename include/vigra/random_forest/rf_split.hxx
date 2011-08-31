@@ -393,20 +393,20 @@ public:
         double  entropy            = 0.0;
         if(class_count == 2)
         {
-            double p0            = (hist[0]/total);
-            double p1            = (hist[1]/total);
-            entropy                = 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+            double p0			= (hist[0]/total);
+            double p1			= (hist[1]/total);
+            entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
         }
         else
         {
             for(int ii = 0; ii < class_count; ++ii)
             {
                 double w        = weights[ii];
-                double pii        = hist[ii]/total;
+                double pii		= hist[ii]/total;
                 entropy         -= w*( pii*std::log(pii));
             }
         }
-          entropy             = total * entropy;
+        entropy 			= total * entropy;
         return entropy; 
     }
 };
@@ -1269,8 +1269,8 @@ public:
     std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
-    typedef RandomMT19937    Random_t;
-    Random_t                random;
+    typedef RandomMT19937	Random_t;
+    Random_t				random;
 
     RandomSplitOfColumn()
     {}

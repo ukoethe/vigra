@@ -55,7 +55,7 @@ namespace vigra
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
-pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > volume,
+pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > array,
                              unsigned int dim,
                              Kernel const & kernel,
                              NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
@@ -63,58 +63,70 @@ pythonConvolveOneDimensionND(NumpyArray<ndim, Multiband<VoxelType> > volume,
     vigra_precondition(dim < ndim-1,
            "convolveOneDimension(): dim out of range.");
 
-    res.reshapeIfEmpty(volume.shape(), "convolveOneDimension(): Output array has wrong shape.");
+    res.reshapeIfEmpty(array.taggedShape(), 
+            "convolveOneDimension(): Output array has wrong shape.");
     
-    for(int k=0;k<volume.shape(ndim-1);++k)
+    PyAllowThreads _pythread;
+    for(int k=0;k<array.shape(ndim-1);++k)
     {
-        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        convolveMultiArrayOneDimension(srcMultiArrayRange(bvolume), destMultiArray(bres), dim, kernel);
+        convolveMultiArrayOneDimension(srcMultiArrayRange(barray), 
+                                       destMultiArray(bres), dim, kernel);
     }
     return res;
 }
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
-pythonSeparableConvolveND_1Kernel(NumpyArray<ndim, Multiband<VoxelType> > volume,
+pythonSeparableConvolveND_1Kernel(NumpyArray<ndim, Multiband<VoxelType> > array,
                                   Kernel const & kernel,
                                   NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
 {
-    res.reshapeIfEmpty(volume.shape(), "convolve(): Output array has wrong shape.");
+    res.reshapeIfEmpty(array.taggedShape(), 
+            "convolve(): Output array has wrong shape.");
     
-    for(int k=0;k<volume.shape(ndim-1);++k)
+    PyAllowThreads _pythread;
+    for(int k=0;k<array.shape(ndim-1);++k)
     {
-        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernel);
+        separableConvolveMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), kernel);
     }
     return res;
 }
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
-pythonSeparableConvolveND_NKernels(NumpyArray<ndim, Multiband<VoxelType> > volume,
+pythonSeparableConvolveND_NKernels(NumpyArray<ndim, Multiband<VoxelType> > array,
                                    python::tuple pykernels,
                                    NumpyArray<ndim, Multiband<VoxelType> > res=python::object())
 {
     if(python::len(pykernels) == 1)
-        return pythonSeparableConvolveND_1Kernel(volume, 
-                              python::extract<Kernel1D<KernelValueType> const &>(pykernels[0]), res);
-        
+    {
+        return pythonSeparableConvolveND_1Kernel(array, 
+                    python::extract<Kernel1D<KernelValueType> const &>(pykernels[0]), res);
+    }
+    
     vigra_precondition(python::len(pykernels) == ndim-1,
        "convolve(): Number of kernels must be 1 or equal to the number of spatial dimensions.");
        
-    res.reshapeIfEmpty(volume.shape(), "convolve(): Output array has wrong shape.");
-    
     ArrayVector<Kernel1D<KernelValueType> > kernels;
     for(unsigned int k=0; k < ndim-1; ++k)
         kernels.push_back(python::extract<Kernel1D<KernelValueType> const &>(pykernels[k]));
+        
+    kernels = array.permuteLikewise(kernels);
 
-    for(int k=0; k < volume.shape(ndim-1); ++k)
+    res.reshapeIfEmpty(array.taggedShape(), 
+            "convolve(): Output array has wrong shape.");
+    
+    PyAllowThreads _pythread;
+    for(int k=0; k < array.shape(ndim-1); ++k)
     {
-        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        separableConvolveMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), kernels.begin());
+        separableConvolveMultiArray(srcMultiArrayRange(barray), 
+                                    destMultiArray(bres), kernels.begin());
     }
     return res;
 }
@@ -125,8 +137,10 @@ pythonConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
                     TwoDKernel const & kernel, 
                     NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "convolve(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "convolve(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -149,8 +163,10 @@ pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
     vigra_precondition(mask.shape(0)==image.shape(0) && mask.shape(1)==image.shape(1),
                "normalizedConvolveImage(): mask dimensions must be same as image dimensions");
 
-    res.reshapeIfEmpty(image.shape(), "normalizedConvolveImage(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+           "normalizedConvolveImage(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -164,25 +180,28 @@ pythonNormalizedConvolveImage(NumpyArray<3, Multiband<PixelType> > image,
 
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
-pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > volume,
+pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
                         python::object sigma,
                         NumpyArray<ndim, Multiband<VoxelType> > res=python::object(),
-                        python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
+                        python::object sigma_d = python::object(0.0), 
+                        python::object step_size = python::object(1.0))
 {
        
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianSmoothing");
     
-    res.reshapeIfEmpty(volume.shape(), "gaussianSmoothing(): Output array has wrong shape.");
+    params.permuteLikewise(array);
+    
+    res.reshapeIfEmpty(array.taggedShape(), 
+            "gaussianSmoothing(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
+    for(int k=0; k<array.shape(ndim-1); ++k)
     {
-        PyAllowThreads _pythread;
-        for(int k=0;k<volume.shape(ndim-1);++k)
-        {
-            MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
-            MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-            gaussianSmoothMultiArray(srcMultiArrayRange(bvolume), destMultiArray(bres), params());
-        }
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
+        MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+        gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), params());
     }
+    
     return res;
 }
 
@@ -208,8 +227,12 @@ pythonRecursiveGaussian(NumpyArray<3, Multiband<VoxelType> > image,
     {
         scales.push_back(scales.back());
     }
+    scales = image.permuteLikewise(scales);
     
-    res.reshapeIfEmpty(image.shape(), "recursiveGaussianSmoothing(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "recursiveGaussianSmoothing(): Output array has wrong shape.");
+
+    PyAllowThreads _pythread;
     MultiArray<ndim-1, TmpType> tmp(image.bindOuter(0).shape());
 
     for(int k=0;k<image.shape(ndim-1);++k)
@@ -238,11 +261,13 @@ pythonSimpleSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
                          double sharpeningFactor,
                          NumpyArray<3, Multiband<PixelType> > res=python::object() )
 {
-    res.reshapeIfEmpty(image.shape(), "simpleSharpening2D(): Output array has wrong shape.");
-    
     vigra_precondition(sharpeningFactor >= 0 ,
        "simpleSharpening2D(): sharpeningFactor must be >= 0.");
        
+    res.reshapeIfEmpty(image.taggedShape(), 
+          "simpleSharpening2D(): Output array has wrong shape.");
+    
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -259,13 +284,15 @@ pythonGaussianSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
                            double sharpeningFactor, double scale, 
                            NumpyArray<3, Multiband<PixelType> > res=python::object() )
 {
-    res.reshapeIfEmpty(image.shape(), "gaussianSharpening2D(): Output array has wrong shape.");
-    
     vigra_precondition(sharpeningFactor >= 0 ,
        "gaussianSharpening2D(): sharpeningFactor must be >= 0.");
     vigra_precondition(sharpeningFactor >= 0 ,
        "gaussianSharpening2D(): scale must be >= 0.");
        
+    res.reshapeIfEmpty(image.taggedShape(), 
+             "gaussianSharpening2D(): Output array has wrong shape.");
+    
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -278,34 +305,41 @@ pythonGaussianSharpening2D(NumpyArray<3, Multiband<PixelType> > image,
 
 template <class PixelType, unsigned int N>
 NumpyAnyArray 
-pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > image,
+pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
                           python::object scale,
                           NumpyArray<N, Multiband<PixelType> > res=python::object(),
                           python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
+    params.permuteLikewise(array);
     
-    res.reshapeIfEmpty(image.shape(), "laplacianOfGaussian(): Output array has wrong shape.");
+    std::string description("channel-wise Laplacian of Gaussian, scale=");
+    description += asString(scale);
     
+    res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+            "laplacianOfGaussian(): Output array has wrong shape.");
+    
+    PyAllowThreads _pythread;
+    for(int k=0; k<array.shape(N-1); ++k)
     {
-        PyAllowThreads _pythread;
-        for(int k=0; k<image.shape(N-1); ++k)
-        {
-            MultiArrayView<N-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-            MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-            laplacianOfGaussianMultiArray(srcMultiArrayRange(bimage), destMultiArray(bres), params());
-        }
+        MultiArrayView<N-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+        MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+        laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), params());
     }
+    
     return res;
 }
 
 template <class PixelType>
-NumpyAnyArray pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
-                                     double b, BorderTreatmentMode borderTreatment, 
-                                     NumpyArray<3, Multiband<PixelType> > res = python::object())
+NumpyAnyArray 
+pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
+                       double b, BorderTreatmentMode borderTreatment, 
+                       NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "recursiveFilter2D(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "recursiveFilter2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -317,12 +351,15 @@ NumpyAnyArray pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
 }
 
 template <class PixelType>
-NumpyAnyArray pythonRecursiveFilter2(NumpyArray<3, Multiband<PixelType> > image,
-                                     double b1, double b2, 
-                                     NumpyArray<3, Multiband<PixelType> > res = python::object())
+NumpyAnyArray 
+pythonRecursiveFilter2(NumpyArray<3, Multiband<PixelType> > image,
+                       double b1, double b2, 
+                       NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "recursiveFilter2D(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+            "recursiveFilter2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -335,20 +372,27 @@ NumpyAnyArray pythonRecursiveFilter2(NumpyArray<3, Multiband<PixelType> > image,
 
 
 template <class PixelType>
-NumpyAnyArray pythonRecursiveSmooth(NumpyArray<3, Multiband<PixelType> > image,
-                                    double scale, BorderTreatmentMode borderTreatment, 
-                                    NumpyArray<3, Multiband<PixelType> > res = python::object())
+NumpyAnyArray 
+pythonRecursiveSmooth(NumpyArray<3, Multiband<PixelType> > image,
+                      double scale, BorderTreatmentMode borderTreatment, 
+                      NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     return pythonRecursiveFilter1(image, std::exp(-1.0/scale), borderTreatment, res);
 }
 
 template <class PixelType>
-NumpyAnyArray pythonRecursiveGradient(NumpyArray<2, Singleband<PixelType> > image,
-                                      double scale, 
-                                      NumpyArray<2, TinyVector<PixelType, 2> > res = python::object())
+NumpyAnyArray 
+pythonRecursiveGradient(NumpyArray<2, Singleband<PixelType> > image,
+                        double scale, 
+                        NumpyArray<2, TinyVector<PixelType, 2> > res = python::object())
 {
-    res.reshapeIfEmpty(image.shape(), "recursiveGradient2D(): Output array has wrong shape.");
+    std::string description("recursive gradient, scale=");
+    description += asString(scale);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "recursiveGradient2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     VectorComponentValueAccessor<TinyVector<PixelType, 2> > band(0);
     recursiveFirstDerivativeX(srcImageRange(image), destImage(res, band), scale);
     recursiveSmoothY(srcImageRange(res, band), destImage(res, band), scale);
@@ -361,14 +405,20 @@ NumpyAnyArray pythonRecursiveGradient(NumpyArray<2, Singleband<PixelType> > imag
 }
 
 template <class PixelType>
-NumpyAnyArray pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
-                                     double scale, 
-                                     NumpyArray<3, Multiband<PixelType> > res = python::object())
+NumpyAnyArray 
+pythonRecursiveLaplacian(NumpyArray<3, Multiband<PixelType> > image,
+                         double scale, 
+                         NumpyArray<3, Multiband<PixelType> > res = python::object())
 {
     using namespace vigra::functor;
     
-    res.reshapeIfEmpty(image.shape(), "recursiveLaplacian2D(): Output array has wrong shape.");
+    std::string description("channel-wise recursive Laplacian, scale=");
+    description += asString(scale);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "recursiveLaplacian2D(): Output array has wrong shape.");
 
+    PyAllowThreads _pythread;
     MultiArrayShape<2>::type tmpShape(image.shape().begin());
     MultiArray<2, PixelType > tmp(tmpShape);
     for(int k=0;k<image.shape(2);++k)
@@ -450,8 +500,8 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),
-        (arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
-        "Perform Gaussian smoothing of a 2D or 3D scalar or multiband image.\n\n"
+        (arg("array"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        "Perform Gaussian smoothing of a 2D or 3D scalar or multiband array.\n\n"
         "Each channel of the array is smoothed independently. "
         "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is "
         "applied (i.e. each dimension is smoothed in the same way). "
@@ -466,7 +516,7 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,4>),
-        (arg("image"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("array"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
         "Smooth volume with Gaussian.\n");
 
     def("recursiveGaussianSmoothing2D",
@@ -504,8 +554,8 @@ void defineConvolutionFunctions()
           
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,3>),
-         (arg("image"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
-          "Filter scalar image with the Laplacian of Gaussian operator at the given scale.\n\n"
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
+          "Filter 2D or 3D scalar array with the Laplacian of Gaussian operator at the given scale.\n\n"
           "If 'sigma' is a single value, an isotropic filter at this scale is "
           "applied (i.e., each dimension is filtered in the same way). "
           "If 'sigma' is a tuple or list of values, the amount of smoothing "
@@ -519,7 +569,7 @@ void defineConvolutionFunctions()
 
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,4>),
-         (arg("volume"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
          "Likewise for a scalar volume.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),

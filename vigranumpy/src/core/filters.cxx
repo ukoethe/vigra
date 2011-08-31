@@ -46,16 +46,19 @@ namespace python = boost::python;
 namespace vigra
 {
 
-template <class PixelType>
+template <class InValue, class OutValue>
 NumpyAnyArray 
-pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image, 
+pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image, 
                            double edgeThreshold, double scale,
-                           NumpyArray<3, Multiband<float> > res=NumpyArray<3, Multiband<float> >())
+                           NumpyArray<3, Multiband<OutValue> > res=NumpyArray<3, Multiband<float> >())
 {
-    res.reshapeIfEmpty(image.shape(), "nonlinearDiffusion2D(): Output array has wrong shape.");
+    res.reshapeIfEmpty(image.taggedShape(), 
+        "nonlinearDiffusion2D(): Output array has wrong shape.");
+        
+    PyAllowThreads _pythread;
     for(int k=0; k<image.shape(2); ++k)
     {
-        MultiArrayView<2, float, StridedArrayTag> bres = res.bindOuter(k);
+        MultiArrayView<2, OutValue, StridedArrayTag> bres = res.bindOuter(k);
         nonlinearDiffusion(srcImageRange(image.bindOuter(k)), 
                            destImage(bres), 
                            DiffusivityFunctor< double >(edgeThreshold), scale);
@@ -66,10 +69,16 @@ pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<PixelType> > image,
 template < class SrcPixelType >
 NumpyAnyArray 
 pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
-                                double scale = 1,
-                                NumpyArray<2, Singleband<SrcPixelType> > res = NumpyArray<2, Singleband<SrcPixelType> >())
+                                double scale = 1.0,
+                                NumpyArray<2, Singleband<SrcPixelType> > res = python::object())
 {
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(image.shape(0), image.shape(1)), "radialSymmetryTransform2D(): Output array has wrong shape.");    
+    std::string description("radial symmetry transform, scale=");
+    description += asString(scale);
+    
+    res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
+            "radialSymmetryTransform2D(): Output array has wrong shape.");    
+        
+    PyAllowThreads _pythread;
     radialSymmetryTransform(srcImageRange(image), destImage(res), scale);
     return res;
 }
@@ -82,7 +91,7 @@ void defineFilters2D()
     docstring_options doc_options(true, true, false);
     
     def("nonlinearDiffusion", 
-        registerConverters(&pythonNonlinearDiffusion2D<float>),
+        registerConverters(&pythonNonlinearDiffusion2D<float, float>),
         (arg("image"), arg("edgeThreshold"), arg("scale"), arg("out")=python::object()),
         "Perform edge-preserving smoothing at the given scale."
         "\n\n"

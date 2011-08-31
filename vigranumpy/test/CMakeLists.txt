@@ -5,7 +5,8 @@ SET(TEST_SCRIPTS
     test_impex.py
     test1.py
     test2.py
-    test3.py)
+    test3.py
+    )
 
 # setup the file 'testsuccess.cxx' which will become out-of-date when the
 # last test failed or when the tests code changed, so that tests are re-executed
@@ -31,7 +32,6 @@ IF(NOT TESTSUCCESS_FOUND)
 ENDIF()
 
 # setup the test target
-
 IF(AUTOBUILD_TESTS)
   ADD_LIBRARY(vigranumpytest SHARED 
                vigranumpytest.cxx ${TEST_SUCCESS_FILE} ${TEST_SCRIPTS})
@@ -48,19 +48,14 @@ ELSE()
     SET_TARGET_PROPERTIES(vigranumpytest PROPERTIES PREFIX "")
 ENDIF()
 
-TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpy_core)
+#TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES} vigranumpy_core)
+TARGET_LINK_LIBRARIES(vigranumpytest ${VIGRANUMPY_LIBRARIES})
 ADD_DEPENDENCIES(check_python vigranumpytest)
 ADD_DEPENDENCIES(ctest vigranumpytest)
 ADD_DEPENDENCIES(vigranumpytest vigranumpy)
 
 # setup the file 'set_path.py' to ensure that tests are run against the binaries
 # which are currently being built, not against (possibly outdated) installed modules
-MACRO(DEPENDENCY_PATH variable target)
-    GET_TARGET_PROPERTY(${variable} ${target} LOCATION)
-    STRING(REGEX REPLACE "(/\\$\\([^\\)]*\\)/[^/]*|/[^/]*)$" "" ${variable} ${${variable}}) # get path prefix
-    FILE(TO_NATIVE_PATH ${${variable}} ${variable})
-ENDMACRO(DEPENDENCY_PATH)
-
 DEPENDENCY_PATH(VIGRAIMPEX_PATH vigraimpex)
 DEPENDENCY_PATH(VIGRANUMPYTEST_PATH vigranumpytest)
 
