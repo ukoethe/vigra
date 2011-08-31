@@ -314,8 +314,15 @@ public:
         should(!array3.all());
         should(array3.subarray(last, array3.shape()).all());
 
-        shouldEqual(array3.sum(0), 499500);
-        shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).product(1), 183521184);
+        shouldEqual(array3.sum<int>(), 499500);
+        shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).product<int>(), 183521184);
+
+        Shape3 reducedShape(1, 1, array3.shape(2));
+        array3_type reducedSums(reducedShape);
+        array3.sum(reducedSums);
+        int res = 4950;
+        for(int k=0; k<reducedShape[2]; ++k, res += 10000)
+            shouldEqual(reducedSums(0,0,k), res);
 
         scalar_type minimum, maximum;
         array3.minmax(&minimum, &maximum);
@@ -2122,8 +2129,9 @@ public:
         }
         catch(PreconditionViolation & e)
         {
-            shouldEqual(std::string(e.what()), 
-                        std::string("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"));
+            std::string expected("\nPrecondition violation!\nmulti_math: shape mismatch in expression.\n"),
+                        actual(e.what());
+            shouldEqual(actual.substr(0, expected.size()), expected);
         }
     }
 

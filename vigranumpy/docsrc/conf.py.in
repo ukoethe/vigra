@@ -13,9 +13,40 @@
 
 import sys, os
 
-new_path=os.getcwd()+r'/..'
-sys.path.insert(0,new_path)
-print new_path
+# silent lots of 'arg is not a Python function' warnings
+import inspect
+
+_original_getargspec = inspect.getargspec
+
+def _getargspec_workaround(*args, **kw):
+    try:
+        return _original_getargspec(*args, **kw)
+    except TypeError, e:
+        if str(e).startswith('arg is not a Python function'):
+            return inspect.ArgSpec([], None, None, None)
+        else:
+            raise
+
+inspect.getargspec = _getargspec_workaround
+_getargspec_workaround.__module__ = 'inspect'
+
+# set the PATH of the current build, so that we don't create
+# documentation for a possibly outdated installation
+vigranumpy_path=r'@VIGRANUMPY_TMP_PATH@'
+print "Working directory:", vigranumpy_path
+sys.path.insert(0,vigranumpy_path)
+
+# find the build configuration ('release' or 'debug' on Windows, nothing on Linux)
+outdir = ''
+match = 'build_configuration='
+for a in sys.argv:
+    if a.startswith(match):
+        outdir = '/' + a[len(match):]
+
+vigraimpex_path=r'@VIGRAIMPEX_PATH@%s' % outdir
+print "vigraimpex path:", vigraimpex_path
+os.environ['PATH'] = os.pathsep.join([vigraimpex_path, os.environ['PATH']])
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

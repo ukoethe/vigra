@@ -1481,7 +1481,7 @@ template <class T1, class T2>
 inline bool closeAtTolerance(T1 l, T2 r)
 {
     typedef typename PromoteTraits<T1, T2>::Promote T;
-    return closeAtTolerance(l, r, 2.0 * NumericTraits<T>::epsilon());
+    return closeAtTolerance(l, r, T(2.0) * NumericTraits<T>::epsilon());
 }
 
 //@}

@@ -40,11 +40,14 @@ import sys
 print >> sys.stderr, "\nexecuting test file", __file__
 execfile('set_paths.py')
 
+# import vigra  # FIXME: without this line, C++ constructors don't find VigraArray
 import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
 import numpy, copy
 import vigranumpytest as vt
 from nose.tools import assert_equal, raises
+
+from vigra.arraytypes import AxisTags, AxisInfo
 
 numpyHasComplexNegateBug = numpy.version.version.startswith('1.0')
 
@@ -58,11 +61,32 @@ for n, f in vt.__dict__.items():
     if n.startswith('test'):
         allTests.add(n)
  
-def checkArray(cls, channels, dim):
+def checkShape(shape1, shape2):
+    assert_equal(shape1, shape2)
+
+def checkStride(stride1, stride2):
+    assert_equal(stride1, stride2)
+    
+def computeFStrides(shape):
+    return tuple(numpy.cumprod((1,)+shape[:-1]))
+
+def computeCStrides(shape):
+    return tuple(reversed(computeFStrides(tuple(reversed(shape)))))
+
+def computeVStrides(shape, hasChannelAxis):
+    if not hasChannelAxis:
+        return computeFStrides(shape)
+    stride = computeFStrides(shape[-1:] + shape[:-1])   
+    return stride[1:] + stride[0:1]
+
+def checkArray(cls, channels, dim, hasChannelAxis=True):
         def testCopy(img):
             b = cls(img, order='A')
             assert_equal(sys.getrefcount(b), 2)
+            assert b.__class__ is img.__class__
             assert_equal(b.shape, img.shape)
+            # print b.shape, img.shape, b.strides, img.strides
+            # assert False
             assert_equal(b.strides, img.strides)
             assert_equal(b.order, img.order)
             assert_equal(b.flags.c_contiguous, img.flags.c_contiguous)
@@ -79,131 +103,181 @@ def checkArray(cls, channels, dim):
             assert (b == img).all()
             assert not numpy.may_share_memory(b, img)
         
-        shape = (20, 10, 5, channels)[-(dim+1):]
+        shape = (channels, 5, 10, 20)
+        axistags = [AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z]
+        axistags3 = AxisTags(AxisInfo.y, AxisInfo.z, AxisInfo.x)
+        axistags4 = AxisTags(AxisInfo.y, AxisInfo.z, AxisInfo.x, AxisInfo.c)
+        axistags5 = AxisTags(AxisInfo.c, AxisInfo.x, AxisInfo.y, AxisInfo.z, AxisInfo.t)
         
-        # figure out expected strides for various memory layouts
-        if channels > 1:
-            d = dim+1
-            rshape = shape[:d]
-            fcstrides = (200*channels, 20*channels, 4*channels, 4)[-d:]
-            bcstrides = (50*channels, 5*channels, channels, 1)[-d:]
-            ffstrides = (4, shape[0]*4, shape[0]*shape[1]*4, shape[0]*shape[1]*shape[2]*4)[:d]
-            bfstrides = (1, shape[0], shape[0]*shape[1], shape[0]*shape[1]*shape[2])[:d]
-            fvstrides = (channels*4, channels*shape[0]*4, channels*shape[0]*shape[1]*4)[:d-1]+(4,)
-            bvstrides = (channels, channels*shape[0], channels*shape[0]*shape[1])[:d-1]+(1,)
-        else:
-            d = dim
-            rshape = shape[:d]
-            fcstrides = (200, 20, 4)[-d:]
-            bcstrides = (50, 5, 1)[-d:]
-            ffstrides = (4, shape[0]*4, shape[0]*shape[1]*4)[:d]
-            bfstrides = (1, shape[0], shape[0]*shape[1])[:d]
-            fvstrides = ffstrides
-            bvstrides = bfstrides
-            
-        if cls.channels > 0 or channels == 1:
-            shape = shape[:-1]
+        # figure out expected strides and axistags
+        s = 0 if hasChannelAxis else 1
+        d = dim + 1
+        fshape = shape[s:d]
+        fstrides = computeFStrides(fshape)
+        faxistags = AxisTags(axistags[s:d])
+        
+        cshape = tuple(reversed(fshape))
+        cstrides = computeCStrides(cshape)
+        caxistags = AxisTags(list(reversed(faxistags)))
+        
+        vshape = fshape[1-s:d] + fshape[:1-s]
+        vstrides = computeVStrides(vshape, hasChannelAxis)
+        vaxistags = AxisTags(axistags[1:d] + axistags[:1-s])
+        
+        fcstrides = tuple([k*4 for k in cstrides])
+        fvstrides = tuple([k*4 for k in vstrides])
+        ffstrides = tuple([k*4 for k in fstrides])
         
         value = 1 if channels == 1 else range(1,channels+1)
 
         # test type
-        img = cls(shape, order="V")
-        assert type(img) is cls
+        img = cls(vshape, order="V")
+#        assert type(img) is cls
         assert isinstance(img, numpy.ndarray)
         assert_equal(img.dtype, numpy.float32)
-        assert_equal(sys.getrefcount(img), 2)
+        assert_equal(sys.getrefcount(img), 2)        
         
         # test shape
-        assert_equal(img.shape, rshape)
-        assert_equal(img.width, rshape[0])
-        assert_equal(img.height, rshape[1])
+        checkShape(img.shape, vshape)
+        assert_equal(img.width, vshape[0])
+        assert_equal(img.height, vshape[1])
         if dim == 3:
-            assert_equal(img.depth, rshape[2])
+            assert_equal(img.depth, vshape[2])
         assert_equal(img.channels, channels)
         assert_equal(img.spatialDimensions, dim)
        
         # test strides and order
-        assert_equal(img.strides, fvstrides)
-        assert_equal(img.order, "F" if channels == 1 else "V")
-        assert not img.flags.c_contiguous
-        assert_equal(img.flags.f_contiguous, True if channels == 1 else False)
+        checkStride(img.strides, fvstrides)
+        assert_equal(img.order, "V" if hasChannelAxis else "F")
+        assert_equal(img.flags.c_contiguous, False)
+        assert_equal(img.flags.f_contiguous, False if hasChannelAxis else True)
+        
+        # test axistags
+        assert_equal(img.axistags, vaxistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
+        assert_equal(img.withAxes('y', 'z', 'x', 'c').axistags, axistags4)
+        if img.channels == 1:
+            assert_equal(img.withAxes('y', 'z', 'x').axistags, axistags3)
+        else:
+            try:
+                img.withAxes('y', 'z', 'x')
+                raise AssertionError, "img.withAxes() failed to throw on non-singleton channel."
+            except RuntimeError:
+                pass
+        # FIXME: add more tests
 
         # test initialization and assignment
         assert_equal(img.min(), 0.0)
         assert_equal(img.max(), 0.0)
+        img = cls(vshape, order="V", value=99.0)
+        assert_equal(img.min(), 99.0)
+        assert_equal(img.max(), 99.0)
         img.flat[:] = range(img.size)
         assert_equal(img.flatten().tolist(), range(img.size))
         img[1,2] = value
-        assert (img[1,2]==value).all()
+        assert_equal((img[1,2]==value).all(), True)
 
         # test that copy and ufuncs preserve memory layout
         testCopy(img)
         assert_equal(img.shape, (-img).shape)
         assert_equal(img.strides, (-img).strides)
+        assert_equal(img.axistags, (-img).axistags)
         assert_equal(img.shape, (img+img).shape)
         assert_equal(img.strides, (img+img).strides)
+        assert_equal(img.axistags, (img+img).axistags)
         assert_equal(img.shape, (img*2).shape)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (img*2).axistags)
         
-        if cls.channels > 0 or channels == 1:
-            img = cls(shape + (channels,))
-            assert_equal(img.shape, rshape)
-            assert_equal(img.strides, fvstrides)
-
         # test shape, strides, and copy for 'F' order
-        img = cls(shape, order='F')
+        img = cls(fshape, order='F')
         assert_equal(sys.getrefcount(img), 2)
-        assert_equal(img.shape, rshape)
-        assert_equal(img.strides, ffstrides)
+        checkShape(img.shape, fshape)
+        checkStride(img.strides, ffstrides)
+        assert_equal(img.axistags, faxistags)
         assert_equal(img.order, "F")
-        assert not img.flags.c_contiguous
-        assert img.flags.f_contiguous
-        img[1,2] = value
+        assert_equal(img.flags.c_contiguous, False)
+        assert_equal(img.flags.f_contiguous, True)
+        
+        assert_equal(img.min(), 0.0)
+        assert_equal(img.max(), 0.0)
+        img = cls(fshape, order="F", value=99.0)
+        assert_equal(img.min(), 99.0)
+        assert_equal(img.max(), 99.0)
+
+        if dim == 2:
+            img[...,1,2] = value
+        else:
+            img[...,0,1,2] = value
         testCopy(img)
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
+        assert_equal(img.withAxes('y', 'z', 'x', 'c').axistags, axistags4)
 
         # test shape, strides, and copy for 'A' order (should be equal to 'V' order)
-        img = cls(shape, order='A')
+        img = cls(vshape, order='A')
         assert_equal(sys.getrefcount(img), 2)
-        assert_equal(img.shape, rshape)
-        assert_equal(img.strides, fvstrides)
-        assert_equal(img.order, "F" if channels == 1 else "V")
-        assert not img.flags.c_contiguous
-        assert_equal(img.flags.f_contiguous, True if channels == 1 else False)
+        checkShape(img.shape, vshape)
+        checkStride(img.strides, fvstrides)
+        assert_equal(img.order, "V" if hasChannelAxis else "F")
+        assert_equal(img.flags.c_contiguous, False)
+        assert_equal(img.flags.f_contiguous, False if hasChannelAxis else True)
+        assert_equal(img.axistags, vaxistags)
         img[1,2] = value
         testCopy(img)
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
 
         # test shape, strides, and copy for 'C' order
-        img = cls(shape, order='C')
+        img = cls(cshape, order='C')
         assert_equal(sys.getrefcount(img), 2)
-        assert_equal(img.shape, rshape)
-        assert_equal(img.strides, fcstrides)
+        checkShape(img.shape, cshape)
+        checkStride(img.strides, fcstrides)
+        assert_equal(img.axistags, caxistags)
         assert_equal(img.order, "C")
-        assert img.flags.c_contiguous
-        assert not img.flags.f_contiguous
+        assert_equal(img.flags.c_contiguous, True)
+        assert_equal(img.flags.f_contiguous, False)
+        
+        assert_equal(img.min(), 0.0)
+        assert_equal(img.max(), 0.0)
+        img = cls(cshape, order="C", value=99.0)
+        assert_equal(img.min(), 99.0)
+        assert_equal(img.max(), 99.0)
+        
         img[1,2] = value
         testCopy(img)
         assert_equal(img.strides, (-img).strides)
         assert_equal(img.strides, (img+img).strides)
         assert_equal(img.strides, (img*2).strides)
+        assert_equal(img.axistags, (-img).axistags)
+        assert_equal(img.axistags, (img+img).axistags)
+        assert_equal(img.axistags, (img*2).axistags)
+        assert_equal(img.view5D('F').axistags, axistags5)
+        assert_equal(img.withAxes('y', 'z', 'x', 'c').axistags, axistags4)
 
         value = 10 if channels == 1 else range(10,channels+10)
         zero = 0 if channels == 1 else (0,)*channels
         
         # test shape, strides, and copy for dtype uint8
+        img = cls(vshape, order="V")
         b = cls(img, dtype=numpy.uint8, order='V')
         assert_equal(sys.getrefcount(b), 2)
         assert_equal(b.dtype, numpy.uint8)
-        assert_equal(b.shape, rshape)
-        assert_equal(b.strides, bvstrides)
-        assert_equal(b.order, "F" if channels == 1 else "V")
-        assert not b.flags.c_contiguous
-        assert_equal(b.flags.f_contiguous, True if channels == 1 else False)
+        checkShape(b.shape, img.shape)
+        checkStride(b.strides, computeVStrides(b.shape, hasChannelAxis))
+        assert_equal(img.order, "V" if hasChannelAxis else "F")
+        assert_equal(b.axistags, img.axistags)
+        assert_equal(b.flags.c_contiguous, False)
+        assert_equal(b.flags.f_contiguous, False if hasChannelAxis else True)
         assert (b==img).all()
         b[2,1] = value
         assert (b[2,1]==value).all()
@@ -211,11 +285,16 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
 
+        img = cls(cshape, order="C")
         b = cls(img, dtype=numpy.uint8, order='C')
         assert_equal(sys.getrefcount(b), 2)
-        assert_equal(b.shape, rshape)
-        assert_equal(b.strides, bcstrides)
+        checkShape(b.shape, img.shape)
+        checkStride(b.strides, computeCStrides(b.shape))
+        assert_equal(b.axistags, img.axistags)
         assert_equal(b.order, "C")
         assert b.flags.c_contiguous
         assert not b.flags.f_contiguous
@@ -223,11 +302,16 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
         
+        img = cls(fshape, order="F")
         b = cls(img, dtype=numpy.uint8, order='F')
         assert_equal(sys.getrefcount(b), 2)
-        assert_equal(b.shape, rshape)
-        assert_equal(b.strides, bfstrides)
+        checkShape(b.shape, img.shape)
+        checkStride(b.strides, computeFStrides(b.shape))
+        assert_equal(b.axistags, img.axistags)
         assert_equal(b.order, "F")
         assert not b.flags.c_contiguous
         assert b.flags.f_contiguous
@@ -235,17 +319,22 @@ def checkArray(cls, channels, dim):
         assert_equal(b.strides, (-b).strides)
         assert_equal(b.strides, (b+b).strides)
         assert_equal(b.strides, (b*2).strides)
+        assert_equal(b.axistags, (-b).axistags)
+        assert_equal(b.axistags, (b+b).axistags)
+        assert_equal(b.axistags, (b*2).axistags)
         
         value = 100 if channels == 1 else range(100,channels+100)
 
         # test ndarray view
-        v = img.view(numpy.ndarray)
-        assert type(v) is numpy.ndarray
-        assert (v==img).all()
-        assert numpy.may_share_memory(v, img)
-        v[3,4] = value
-        assert (v[3,4]==value).all()
-        assert (v==img).all()
+        img = cls(vshape, order="V")
+        v1 = img.view(numpy.ndarray)
+        v2 = img.view(numpy.ndarray)
+        assert type(v1) is numpy.ndarray
+        assert (v1==v2).all()
+        assert numpy.may_share_memory(v1, img)
+        v1[3,4] = value
+        assert (v2[3,4]==value).all()
+        assert (v1==v2).all()
 
 def checkFailure(obj, n):
     f = getattr(vt, n)
@@ -253,212 +342,392 @@ def checkFailure(obj, n):
         f(obj)
     except ArgumentError:
         return
-    raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s and stride %s" % (n, type(obj), str(obj.shape), str(obj.strides))
+    raise AssertionError, "%r did not throw ArgumentError as expected when passed a %r with shape %s, stride %s, axistags '%s'" % (n, type(obj), str(obj.shape), str(obj.strides), repr(getattr(obj, "axistags", "none")))
 
 def checkCompatibility(obj, compatible):
     for n in compatible:
-        f = getattr(vt, n)
-        assert_equal(obj.shape, f(obj))
+        try:
+            f = getattr(vt, n)
+            shape, acopy, default_ordering, same_ordering = f(obj)
+            
+            assert_equal(obj.shape, shape)
+            
+            assert_equal(obj.__class__, acopy.__class__)
+            assert_equal(obj.shape, acopy.shape)
+            if hasattr(obj, 'axistags'):
+                assert_equal(obj.axistags, acopy.axistags)
+                
+            if n != "testAny":
+            
+                # test 'default_ordering'
+                assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                
+                if n.startswith("testArray"):
+                    tags = arraytypes.VigraArray._empty_axistags(default_ordering.ndim)
+                elif default_ordering.axistags.channelIndex == default_ordering.ndim:
+                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim+1)
+                    tags.dropChannelAxis()
+                else:
+                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim)
+                assert_equal(tags, default_ordering.axistags)
+
+                if hasattr(obj, 'axistags'):
+                    cobj = obj.transpose(obj.permutationToNormalOrder())
+                    cdefault = default_ordering.transpose(default_ordering.permutationToNormalOrder())
+                    
+                    assert (obj == default_ordering).all()
+                    
+                    if cobj.ndim > cdefault.ndim and cobj.shape[0] == 1:
+                        assert_equal(cobj.shape[1:], cdefault.shape)
+                    elif cobj.ndim < cdefault.ndim and cdefault.shape[0] == 1:
+                        assert_equal(cobj.shape, cdefault.shape[1:])
+                    else:
+                        assert_equal(cobj.shape, cdefault.shape)
+                else:
+                    if obj.ndim < default_ordering.ndim and default_ordering.shape[-1] == 1:
+                        assert_equal(obj.shape, default_ordering.shape[:-1])
+                    else:
+                        assert_equal(obj.shape, default_ordering.shape)
+                        
+                # test 'same_ordering'
+                assert_equal(obj.__class__, same_ordering.__class__)
+                    
+                cobj = obj
+                cdefault = same_ordering
+                
+                if hasattr(obj, 'axistags'):
+                    if cobj.ndim > cdefault.ndim:
+                        cobj = arraytypes.dropChannelAxis(cobj)
+                    elif cobj.ndim < cdefault.ndim:
+                        cdefault = arraytypes.dropChannelAxis(cdefault)
+                    assert_equal(cobj.axistags, cdefault.axistags)
+                else:
+                    if cobj.ndim > cdefault.ndim:
+                        cobj = cobj[...,0]
+                    elif cobj.ndim < cdefault.ndim:
+                        cdefault = cdefault[...,0]
+                
+                assert_equal(cobj.shape, cdefault.shape)
+                assert (cobj == cdefault).all()
+        except Exception:
+            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
+                                            repr(getattr(obj, "axistags", "none")))
+            raise
+        
         
     incompatible = allTests.difference(compatible)
     
     for n in incompatible:
-        checkFailure(obj, n)
+        try:
+            checkFailure(obj, n)
+        except Exception:
+            print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
+                                            repr(getattr(obj, "axistags", "none")))
+            raise
 
+def testAxisTags():
+    axistags = AxisTags(AxisInfo.c(description="RGB"), 
+                        AxisInfo.ft(3.0, "time frequency"), 
+                        AxisInfo.y(0.5), 
+                        AxisInfo.z(4, "confocal depth"))
+    
+    json = '''{
+  "axes": [
+    {
+      "key": "c",
+      "typeFlags": 1,
+      "resolution": 0,
+      "description": "RGB"
+    },
+    {
+      "key": "t",
+      "typeFlags": 24,
+      "resolution": 3,
+      "description": "time frequency"
+    },
+    {
+      "key": "y",
+      "typeFlags": 2,
+      "resolution": 0.5,
+      "description": ""
+    },
+    {
+      "key": "z",
+      "typeFlags": 2,
+      "resolution": 4,
+      "description": "confocal depth"
+    }
+  ]
+}'''
+    assert_equal(axistags.toJSON(), json)
+    
+    readBack = AxisTags.fromJSON(json)
+    assert_equal(axistags, readBack)
+    assert_equal(readBack[0].description, "RGB")
+    assert_equal(readBack[1].description, "time frequency")
+    assert_equal(readBack[2].description, "")
+    assert_equal(readBack[3].description, "confocal depth")
+    assert_equal(readBack[0].resolution, 0)
+    assert_equal(readBack[1].resolution, 3)
+    assert_equal(readBack[2].resolution, 0.5)
+    assert_equal(readBack[3].resolution, 4)
+    
+    # FIXME: add more tests here
+    defaultTags = arraytypes.VigraArray.defaultAxistags('cxyt')
+    assert_equal(defaultTags.permutationToOrder('A'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('F'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('C'), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToOrder('V'), (1, 2, 3, 0))
+    assert_equal(defaultTags.permutationToNormalOrder(), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToNumpyOrder(), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToVigraOrder(), (1, 2, 3, 0))
+    assert_equal(defaultTags.permutationFromNormalOrder(), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationFromNumpyOrder(), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationFromVigraOrder(), (3, 0, 1, 2))
+    
+    defaultTags = arraytypes.AxisTags(4)
+    assert_equal(defaultTags.permutationToOrder('A'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('F'), (0, 1, 2, 3))
+    assert_equal(defaultTags.permutationToOrder('C'), (3, 2, 1, 0))
+    assert_equal(defaultTags.permutationToOrder('V'), (0, 1, 2, 3))
+
+    assert_equal(arraytypes.VigraArray.defaultAxistags('cxyz'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='F'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('zyxc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='C'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('xyzc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='V'))
+    assert_equal(arraytypes.VigraArray.defaultAxistags('xyzc'),
+                 arraytypes.VigraArray.defaultAxistags(4, order='A'))
+
+    for order in 'VCF':
+        defaultTags = arraytypes.VigraArray.defaultAxistags(3, order=order)
+        assert_equal(defaultTags.permutationToOrder(order), (0, 1, 2))
+        assert (defaultTags.channelIndex == 0 if order == 'F' else 2)
+        
+        defaultTags.transpose(defaultTags.permutationToOrder('V'))
+        assert_equal(defaultTags.permutationToVigraOrder(), (0, 1, 2))
+        assert (defaultTags.channelIndex == 2)
+        
+        defaultTags = arraytypes.VigraArray.defaultAxistags(3, order=order, noChannels=True)
+        assert_equal(defaultTags.permutationToOrder(order), (0, 1, 2))
+        assert (defaultTags.channelIndex == 3)
+            
 def testImage1():
     checkArray(arraytypes.Image, 1, 2)
     
+    shape = (10, 20)
+    rshape = (20, 10)
+
+    c = ["testAny",
+         "testArray3Unstrided", "testArray3Strided",
+         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
+         "testImageMultibandUnstrided", "testImageMultibandStrided"]
+
+    checkCompatibility(arraytypes.Image(rshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Image(shape, order='V', value=2), c)
+
+    checkCompatibility(arraytypes.Image(shape, order='F', value=2), c)
+    
     c = ["testAny",
          "testArray2Strided",
-         "testArray3Strided",
          "testImageSinglebandStrided",
          "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='C'), c)
-    
-    c = ["testAny",
-         "testArray2Unstrided", "testArray2Strided",
-         "testArray3Unstrided", "testArray3Strided",
-         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='F'), c)
-    
-    c = ["testAny",
-         "testArray2Unstrided", "testArray2Strided",
-         "testArray3Unstrided", "testArray3Strided",
-         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10), order='V'), c)
-    
-    img = arraytypes.Image((20, 10), order='F')
-    assert_equal(vt.viewArray2Unstrided(img), img.shape)
+
+    a = numpy.ndarray(rshape, dtype=numpy.float32)
+    a[...] = 2
+    checkCompatibility(a, c)
+
+    img = arraytypes.Image(rshape, order='C').dropChannelAxis()
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.Image((20, 10), order='V')
-    assert_equal(vt.viewArray2Unstrided(img), img.shape)
+    img = arraytypes.Image(shape, order='V').dropChannelAxis()
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.Image((20, 10), order='C')
-    assert_equal(vt.viewArray2Strided(img), img.shape)
+    img = arraytypes.Image(shape, order='F').dropChannelAxis()
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
  
 def testImage2():
     checkArray(arraytypes.Image, 2, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testArray4Strided",
-         "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='C'), c)
+    shape = (10, 20, 2)
+    cshape = (20, 10, 2)
+    fshape = (2, 10, 20)
     
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='F'), c)
+         "testImageVector2Unstrided", "testImageVector2Strided",
+         "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Image(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Image(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.Image(fshape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
-         "testImageVector2Unstrided", "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Image((20, 10, 2), order='V'), c)
-    
-    img = arraytypes.Image((20, 10, 2), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+         "testImageMultibandStrided",
+         "testImageVector2Strided",
+         "testVolumeSinglebandStrided",
+         "testVolumeMultibandStrided"]
+
+    a = numpy.ndarray(cshape, dtype=numpy.float32)
+    a[...] = 2
+    checkCompatibility(a, c)
+
+    img = arraytypes.Image(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), fshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.Image(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), fshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0)).all()
+    img = arraytypes.Image(fshape, order='F')
+    assert_equal(vt.viewArray3Strided(img), fshape)
+    assert (img[:,0,0]==(1,0)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='V')
-    assert_equal(vt.viewImageVector2Unstrided(img), (20, 10))
+    img = arraytypes.Image(cshape, order='C')
+    assert_equal(vt.viewImageVector2Strided(img), shape[:-1])
     assert (img[0,0]==(1,1)).all()
     
-    img = arraytypes.Image((20, 10, 2), order='C')
-    assert_equal(vt.viewImageVector2Strided(img), (20,10))
+    img = arraytypes.Image(shape, order='V')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape[:-1])
     assert (img[0,0]==(1,1)).all()
  
 def testScalarImage():
-    checkArray(arraytypes.ScalarImage, 1, 2)
+    checkArray(arraytypes.ScalarImage, 1, 2, False)
+    
+    shape = (10, 20)
+    cshape = (20, 10)
+
+    c = ["testAny",
+         "testArray2Unstrided", "testArray2Strided",
+         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
+         "testImageMultibandUnstrided", "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.ScalarImage(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.ScalarImage(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.ScalarImage(shape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray2Strided",
-         "testArray3Strided",
          "testImageSinglebandStrided",
          "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='C'), c)
-    
-    c = ["testAny",
-         "testArray2Unstrided", "testArray2Strided",
-         "testArray3Unstrided", "testArray3Strided",
-         "testImageSinglebandUnstrided", "testImageSinglebandStrided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='F'), c)
-    
-    checkCompatibility(arraytypes.ScalarImage((20, 10), order='V'), c)
-    
-    img = arraytypes.ScalarImage((20, 10), order='F')
-    assert_equal(vt.viewArray2Unstrided(img), img.shape)
+         
+    checkCompatibility(arraytypes.ScalarImage(cshape, order='C', value=2).view(numpy.ndarray), c)
+
+    img = arraytypes.ScalarImage(cshape, order='C')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.ScalarImage((20, 10), order='V')
-    assert_equal(vt.viewArray2Unstrided(img), img.shape)
+    img = arraytypes.ScalarImage(shape, order='V')
+    checkShape(vt.viewArray2Unstrided(img), shape)
     assert_equal(img[0,0], 1)
     
-    img = arraytypes.ScalarImage((20, 10), order='C')
-    assert_equal(vt.viewArray2Strided(img), img.shape)
+    img = arraytypes.ScalarImage(shape, order='F')
+    checkShape(vt.viewArray2Strided(img), shape)
     assert_equal(img[0,0], 1)
  
 def testRGBImage():
     checkArray(arraytypes.RGBImage, 3, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testArray4Strided",
-         "testImageRGBStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='C'), c)
-    
+    cshape = (20, 10)
+    shape = (10, 20)
+    rshape = (3, 10, 20)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='F'), c)
+         "testImageRGBUnstrided", "testImageRGBStrided",
+         "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.RGBImage(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.RGBImage(shape, order='V', value=2), c)
+
+    checkCompatibility(arraytypes.RGBImage(shape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
-         "testImageRGBUnstrided", "testImageRGBStrided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.RGBImage((20, 10), order='V'), c)
-    
-    img = arraytypes.RGBImage((20, 10), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+         "testImageMultibandStrided",
+         "testImageRGBStrided",
+         "testVolumeSinglebandStrided",
+         "testVolumeMultibandStrided"]
+
+    checkCompatibility(arraytypes.RGBImage(cshape, order='C', value=2).view(numpy.ndarray), c)
+
+    img = arraytypes.RGBImage(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.RGBImage(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0,0)).all()
+    img = arraytypes.RGBImage(shape, order='F')
+    assert_equal(vt.viewArray3Strided(img), rshape)
+    assert (img[:,0,0]==(1,0,0)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='V')
-    assert_equal(vt.viewImageRGBUnstrided(img), (20, 10))
+    img = arraytypes.RGBImage(cshape, order='C')
+    assert_equal(vt.viewImageRGBUnstrided(img), shape)
     assert (img[0,0]==(1,1,1)).all()
     
-    img = arraytypes.RGBImage((20, 10), order='C')
-    assert_equal(vt.viewImageRGBStrided(img), (20,10))
+    img = arraytypes.RGBImage(shape, order='V')
+    assert_equal(vt.viewImageRGBStrided(img), shape)
     assert (img[0,0]==(1,1,1)).all()
  
 def testVector2Image():
     checkArray(arraytypes.Vector2Image, 2, 2)
     
-    c = ["testAny",
-         "testArray3Strided",
-         "testArray4Strided",
-         "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='C'), c)
-    
+    cshape = (20, 10)
+    shape = (10, 20)
+    rshape = (2, 10, 20)
+
     c = ["testAny",
          "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testImageMultibandUnstrided", "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='F'), c)
+         "testImageVector2Unstrided", "testImageVector2Strided",
+         "testImageMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Vector2Image(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Vector2Image(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.Vector2Image(shape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
-         "testImageVector2Unstrided", "testImageVector2Strided",
-         "testImageMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Image((20, 10), order='V'), c)
-    
-    img = arraytypes.Vector2Image((20, 10), order='F')
-    assert_equal(vt.viewArray3Unstrided(img), img.shape)
+         "testImageMultibandStrided",
+         "testImageVector2Strided",
+         "testVolumeSinglebandStrided", 
+         "testVolumeMultibandStrided"]
+
+    checkCompatibility(arraytypes.Vector2Image(cshape, order='C', value=2).view(numpy.ndarray), c)
+
+    img = arraytypes.Vector2Image(cshape, order='C')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='V')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
+    img = arraytypes.Vector2Image(shape, order='V')
+    assert_equal(vt.viewArray3Unstrided(img), rshape)
     assert (img[0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='C')
-    assert_equal(vt.viewArray3Strided(img), img.shape)
-    assert (img[0,0]==(1,0)).all()
+    img = arraytypes.Vector2Image(shape, order='F')
+    assert_equal(vt.viewArray3Strided(img), rshape)
+    assert (img[:,0,0]==(1,0)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='V')
-    assert_equal(vt.viewImageVector2Unstrided(img), (20, 10))
+    img = arraytypes.Vector2Image(cshape, order='C')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape)
     assert (img[0,0]==(1,1)).all()
     
-    img = arraytypes.Vector2Image((20, 10), order='C')
-    assert_equal(vt.viewImageVector2Strided(img), (20,10))
+    img = arraytypes.Vector2Image(shape, order='V')
+    assert_equal(vt.viewImageVector2Unstrided(img), shape)
     assert (img[0,0]==(1,1)).all()
  
 def testVector3Image():
@@ -470,183 +739,214 @@ def testVector4Image():
 def testVolume1():
     checkArray(arraytypes.Volume, 1, 3)
     
+    shape = (5, 10, 20)
+    rshape = (20, 10, 5)
+
+    c = ["testAny",
+         "testArray4Unstrided", "testArray4Strided",
+         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
+         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Volume(rshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Volume(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.Volume(shape, order='F', value=2), c)
+    
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
+         "testImageMultibandStrided",
          "testVolumeSinglebandStrided",
          "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='C'), c)
-    
-    c = ["testAny",
-         "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='F'), c)
-    
-    c = ["testAny",
-         "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5), order='V'), c)
-    
-    vol = arraytypes.Volume((20, 10, 5), order='V')
-    assert_equal(vt.viewArray3Unstrided(vol), vol.shape)
+
+    a = numpy.ndarray(rshape, dtype=numpy.float32)
+    a[...] = 2
+    checkCompatibility(a, c)
+
+    vol = arraytypes.Volume(rshape, order='C').dropChannelAxis()
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
     
-    vol = arraytypes.Volume((20, 10, 5), order='C')
-    assert_equal(vt.viewArray3Strided(vol), vol.shape)
+    vol = arraytypes.Volume(shape, order='V').dropChannelAxis()
+    checkShape(vt.viewArray3Unstrided(vol), shape)
+    assert_equal(vol[0,0,0], 1)
+    
+    vol = arraytypes.Volume(shape, order='F').dropChannelAxis()
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
  
 def testVolume2():
     checkArray(arraytypes.Volume, 2, 3)
     
+    shape = (5, 10, 20, 2)
+    cshape = (20, 10, 5, 2)
+    fshape = (2, 5, 10, 20)
+        
+    c = ["testAny",
+         "testArray4Unstrided", "testArray4Strided",
+         "testVolumeVector2Unstrided", "testVolumeVector2Strided",
+         "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Volume(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Volume(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.Volume(fshape, order='F', value=2), c)
+        
     c = ["testAny",
          "testArray4Strided",
          "testVolumeVector2Strided",
          "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='C'), c)
-    
-    c = ["testAny",
-         "testArray4Unstrided", 
-         "testArray4Strided",
-         "testVolumeMultibandUnstrided", 
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='F'), c)
-    
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeVector2Unstrided", 
-         "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Volume((20, 10, 5, 2), order='V'), c)
-    
-    vol = arraytypes.Volume((20, 10, 5, 2), order='F')
-    assert_equal(vt.viewArray4Unstrided(vol), vol.shape)
+         
+    a = numpy.ndarray(cshape, dtype=numpy.float32)
+    a[...] = 2
+    checkCompatibility(a, c)
+
+    vol = arraytypes.Volume(cshape, order='C')
+    assert_equal(vt.viewArray4Unstrided(vol), fshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='V')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.Volume(shape, order='V')
+    assert_equal(vt.viewArray4Unstrided(vol), fshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='C')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0)).all()
+    vol = arraytypes.Volume(fshape, order='F')
+    assert_equal(vt.viewArray4Strided(vol), fshape)
+    assert (vol[:,0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='V')
-    assert_equal(vt.viewVolumeVector2Unstrided(vol), (20, 10, 5))
+    vol = arraytypes.Volume(cshape, order='C')
+    assert_equal(vt.viewVolumeVector2Unstrided(vol), shape[:-1])
     assert (vol[0,0,0]==(1,1)).all()
     
-    vol = arraytypes.Volume((20, 10, 5, 2), order='C')
-    assert_equal(vt.viewVolumeVector2Strided(vol), (20, 10, 5))
+    vol = arraytypes.Volume(shape, order='V')
+    assert_equal(vt.viewVolumeVector2Unstrided(vol), shape[:-1])
     assert (vol[0,0,0]==(1,1)).all()
  
 def testScalarVolume():
-    checkArray(arraytypes.ScalarVolume, 1, 3)
+    checkArray(arraytypes.ScalarVolume, 1, 3, False)
+    
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+
+    c = ["testAny",
+         "testArray3Unstrided", "testArray3Strided",
+         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
+         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.ScalarVolume(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.ScalarVolume(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.ScalarVolume(shape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray3Strided",
-         "testArray4Strided",
+         "testImageMultibandStrided",
          "testVolumeSinglebandStrided",
          "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='C'), c)
-    
-    c = ["testAny",
-         "testArray3Unstrided", "testArray3Strided",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeSinglebandUnstrided", "testVolumeSinglebandStrided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='F'), c)
-    
-    checkCompatibility(arraytypes.ScalarVolume((20, 10, 5), order='V'), c)
-    
-    vol = arraytypes.ScalarVolume((20, 10, 5), order='V')
-    assert_equal(vt.viewArray3Unstrided(vol), vol.shape)
+         
+    checkCompatibility(arraytypes.ScalarVolume(cshape, order='C', value=2).view(numpy.ndarray), c)
+
+    vol = arraytypes.ScalarVolume(cshape, order='C')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
     
-    vol = arraytypes.ScalarVolume((20, 10, 5), order='C')
-    assert_equal(vt.viewArray3Strided(vol), vol.shape)
+    vol = arraytypes.ScalarVolume(shape, order='V')
+    checkShape(vt.viewArray3Unstrided(vol), shape)
     assert_equal(vol[0,0,0], 1)
  
+    vol = arraytypes.ScalarVolume(shape, order='F')
+    checkShape(vt.viewArray3Strided(vol), shape)
+    assert_equal(vol[0,0,0], 1)
+
 def testRGBVolume():
     checkArray(arraytypes.RGBVolume, 3, 3)
+    
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+    rshape = (3, 5, 10, 20)
+
+    c = ["testAny",
+         "testArray4Unstrided", "testArray4Strided",
+         "testVolumeRGBUnstrided", "testVolumeRGBStrided",
+         "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.RGBVolume(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.RGBVolume(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.RGBVolume(shape, order='F', value=2), c)
     
     c = ["testAny",
          "testArray4Strided",
          "testVolumeRGBStrided",
          "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='C'), c)
+         
+    checkCompatibility(arraytypes.RGBVolume(cshape, order='C', value=2).view(numpy.ndarray), c)
     
-    c = ["testAny",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='F'), c)
-    
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeRGBUnstrided", "testVolumeRGBStrided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.RGBVolume((20, 10, 5), order='V'), c)
-    
-    vol = arraytypes.RGBVolume((20, 10, 5), order='F')
-    assert_equal(vt.viewArray4Unstrided(vol), vol.shape)
+    vol = arraytypes.RGBVolume(cshape, order='C')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='V')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.RGBVolume(shape, order='V')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='C')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0,0)).all()
+    vol = arraytypes.RGBVolume(shape, order='F')
+    checkShape(vt.viewArray4Strided(vol), rshape)
+    assert (vol[:,0,0,0]==(1,0,0)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='V')
-    assert_equal(vt.viewVolumeRGBUnstrided(vol), (20, 10, 5))
+    vol = arraytypes.RGBVolume(cshape, order='C')
+    checkShape(vt.viewVolumeRGBUnstrided(vol), shape)
     assert (vol[0,0,0]==(1,1,1)).all()
     
-    vol = arraytypes.RGBVolume((20, 10, 5), order='C')
-    assert_equal(vt.viewVolumeRGBStrided(vol), (20, 10, 5))
+    vol = arraytypes.RGBVolume(shape, order='V')
+    checkShape(vt.viewVolumeRGBUnstrided(vol), shape)
     assert (vol[0,0,0]==(1,1,1)).all()
  
 def testVector2Volume():
     checkArray(arraytypes.Vector2Volume, 2, 3)
     
+    cshape = (20, 10, 5)
+    shape = (5, 10, 20)
+    rshape = (2, 5, 10, 20)
+
+    c = ["testAny",
+         "testArray4Unstrided", "testArray4Strided",
+         "testVolumeVector2Unstrided", "testVolumeVector2Strided",
+         "testVolumeMultibandStrided"]
+         
+    checkCompatibility(arraytypes.Vector2Volume(cshape, order='C', value=2), c)
+    
+    checkCompatibility(arraytypes.Vector2Volume(shape, order='V', value=2), c)
+    
+    checkCompatibility(arraytypes.Vector2Volume(shape, order='F', value=2), c)
+    
     c = ["testAny",
          "testArray4Strided",
          "testVolumeVector2Strided",
          "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='C'), c)
+         
+    checkCompatibility(arraytypes.Vector2Volume(cshape, order='C', value=2).view(numpy.ndarray), c)
     
-    c = ["testAny",
-         "testArray4Unstrided", "testArray4Strided",
-         "testVolumeMultibandUnstrided", "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='F'), c)
-    
-    c = ["testAny",
-         "testArray4Strided",
-         "testVolumeVector2Unstrided", "testVolumeVector2Strided",
-         "testVolumeMultibandStrided"]
-    checkCompatibility(arraytypes.Vector2Volume((20, 10, 5), order='V'), c)
-    
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='F')
-    assert_equal(vt.viewArray4Unstrided(vol), vol.shape)
+    vol = arraytypes.Vector2Volume(cshape, order='C')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='V')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
+    vol = arraytypes.Vector2Volume(shape, order='V')
+    checkShape(vt.viewArray4Unstrided(vol), rshape)
     assert (vol[0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='C')
-    assert_equal(vt.viewArray4Strided(vol), vol.shape)
-    assert (vol[0,0,0]==(1,0)).all()
+    vol = arraytypes.Vector2Volume(shape, order='F')
+    checkShape(vt.viewArray4Strided(vol), rshape)
+    assert (vol[:,0,0,0]==(1,0)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='V')
-    assert_equal(vt.viewVolumeVector2Unstrided(vol), (20, 10, 5))
+    vol = arraytypes.Vector2Volume(cshape, order='C')
+    checkShape(vt.viewVolumeVector2Unstrided(vol), shape)
     assert (vol[0,0,0]==(1,1)).all()
     
-    vol = arraytypes.Vector2Volume((20, 10, 5), order='C')
-    assert_equal(vt.viewVolumeVector2Strided(vol), (20, 10, 5))
+    vol = arraytypes.Vector2Volume(shape, order='V')
+    checkShape(vt.viewVolumeVector2Unstrided(vol), shape)
     assert (vol[0,0,0]==(1,1)).all()
  
 def testVector3Volume():
@@ -654,32 +954,284 @@ def testVector3Volume():
  
 def testVector4Volume():
     checkArray(arraytypes.Vector4Volume, 4, 3)
+
+def testTaggedShape():
+
+    a = arraytypes.Image((20,10))
+    a.axistags.setChannelDescription("in")
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10,1))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,1))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    res = vt.checkTaggedShapeSingleband(a)
+    
+    assert_equal(res[0].shape, (20,10,1))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,1))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    a = arraytypes.Image((20,10,2))
+    a.axistags.setChannelDescription("in")
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10,2))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(res[0].axistags[2].description, "in")
+    
+    assert_equal(res[1].shape, (20,10,2))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(res[1].axistags[2].description, "res2")
+    
+    assert_equal(res[2].shape, (20,10,1))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(res[2].axistags[2].description, "res3")
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, a.axistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10,1))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(res[4].axistags[2].description, "res5")
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, a.axistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+
+    a = arraytypes.ScalarImage((20,10))
+    a.axistags.setChannelDescription("in")
+    resaxistags = copy.copy(a.axistags)
+    resaxistags.insertChannelAxis()
+    
+    res = vt.checkTaggedShapeMultiband(a)
+    
+    assert_equal(res[0].shape, (20,10))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(len(res[0].axistags), 2)
+    
+    assert_equal(res[1].shape, (20,10))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[2].shape, (20,10))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, resaxistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(len(res[4].axistags), 2)
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, resaxistags)
+    assert_equal(res[5].axistags[2].description, "res6")
+    
+    res = vt.checkTaggedShapeSingleband(a)
+    
+    assert_equal(res[0].shape, (20,10))
+    assert_equal(res[0].axistags, a.axistags)
+    assert_equal(len(res[0].axistags), 2)
+    
+    assert_equal(res[1].shape, (20,10))
+    assert_equal(res[1].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[2].shape, (20,10))
+    assert_equal(res[2].axistags, a.axistags)
+    assert_equal(len(res[1].axistags), 2)
+    
+    assert_equal(res[3].shape, (20,10,3))
+    assert_equal(res[3].axistags, resaxistags)
+    assert_equal(res[3].axistags[2].description, "res4")
+    
+    assert_equal(res[4].shape, (20,10))
+    assert_equal(res[4].axistags, a.axistags)
+    assert_equal(len(res[4].axistags), 2)
+    
+    assert_equal(res[5].shape, (20,10,3))
+    assert_equal(res[5].axistags, resaxistags)
+    assert_equal(res[5].axistags[2].description, "res6")
  
 def testDeepcopy():
-        a = arraytypes.Image(numpy.random.random((10, 4)), order='C')
-        b = copy.deepcopy(a)
-        assert numpy.all(a == b)
-        assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
-        assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
-        a[0,0] = 42
-        assert b[0,0] != 42
+    a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
+
+    a = arraytypes.RGBImage(numpy.random.random((4, 10, 3)), order='V')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
+
+    a = arraytypes.RGBImage(numpy.random.random((3, 4, 10)), order='F')
+    b = copy.deepcopy(a)
+    assert numpy.all(a == b)
+    assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
+    assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
+    assert_equal(b.axistags, a.axistags)
+    a[0,0,0] = 42
+    assert b[0,0,0] != 42
 
 def testDeepcopyWithAttributes():
-        a = arraytypes.Image((320, 200), order='C')
-        a.myCustomAttribute = 42
-        b = copy.deepcopy(a)
-        assert hasattr(b, "myCustomAttribute")
-        assert_equal(b.myCustomAttribute, 42)
+    a = arraytypes.Image((320, 200), order='C')
+    a.myCustomAttribute = 42
+    b = copy.deepcopy(a)
+    assert hasattr(b, "myCustomAttribute")
+    assert_equal(b.myCustomAttribute, 42)
 
 def testDeepcopyWithCyclicReference():
-        a = arraytypes.Image((320, 200), order='C')
-        b = arraytypes.Image((320, 200), order='C')
-        a.myCustomAttribute = b
-        b.backLink = a
-        c = copy.deepcopy(a)
-        assert hasattr(c, "myCustomAttribute")
-        assert c.myCustomAttribute.backLink is c
+    a = arraytypes.Image((320, 200), order='C')
+    b = arraytypes.Image((320, 200), order='C')
+    a.myCustomAttribute = b
+    b.backLink = a
+    c = copy.deepcopy(a)
+    assert hasattr(c, "myCustomAttribute")
+    assert c.myCustomAttribute.backLink is c
 
+def testMethods():
+    a = arraytypes.ScalarImage((20, 30))
+    ones = arraytypes.ScalarImage((20, 30), value=1)
+    
+    a.ravel()[...] = range(a.size)
+    
+    for k, i in zip(a.flat, xrange(a.size)):
+        assert_equal(k, i)
+        
+    assert (a.flatten() == range(a.size)).all()
+    
+    assert (a >= 0).all()
+    assert not (a == 0).all()
+    
+    assert (a == 0).any()
+    assert not (a == -1).any()
+    
+    assert_equal(a.argmax(), a.size-1)
+    assert (a.argmax(axis='y') == a.shape[1]-1).all()
+    
+    assert_equal(a.argmin(), 0)
+    assert (a.argmin(axis='y') == 0).all()
+    
+    assert (ones.cumsum()-1 == a.ravel()).all()
+    oc = ones.cumsum(axis='x')-1
+    for s in oc.sliceIter('y'):
+        assert (s == range(a.shape[0])).all()
+    
+    assert (ones.cumprod() == 1).all()
+    assert (ones.cumprod(axis='x') == 1).all()
+    
+    assert_equal(a.max(), a.size-1)
+    assert (a.max(axis='y') == range(a.size-a.shape[0], a.size)).all()
+    
+    assert_equal(a.mean(dtype=numpy.longdouble), (a.size - 1.0) / 2.0)
+    assert (a.mean(axis='y', dtype=numpy.longdouble) == 
+            range((a.size-a.shape[0])/2, (a.size+a.shape[0])/2)).all()
+
+    assert_equal(a.min(), 0)
+    assert (a.min(axis='y') == range(a.shape[0])).all()
+    
+    n = arraytypes.ScalarImage(numpy.array([[1, 0, 0],[0, 1, 1],[1, 0, 1]]))
+    nz = n.nonzero()
+    assert (nz[0] == [0, 1, 1, 2, 2]).all()
+    assert_equal(nz[0].axistags, n.defaultAxistags('x'))
+    assert (nz[1] == [0, 1, 2, 0, 2]).all()
+    assert_equal(nz[1].axistags, n.defaultAxistags('y'))
+    
+    assert_equal(ones.prod(), 1.0)
+    assert (ones.prod(axis='y') == [1]*ones.shape[0]).all()
+    
+    assert_equal(a.ptp(), a.size-1)
+    assert (a.ptp(axis='x') == [a.shape[0]-1]*a.shape[1]).all()
+    
+    r = arraytypes.ScalarImage((2,2))
+    r.ravel()[...] = range(4)
+    
+    assert (r.repeat(1) == r.ravel()).all()
+    assert (r.repeat(2) == reduce(lambda x,y: x+[y,y], range(4), [])).all()
+    assert (r.repeat([0,1,2,3]) == [1,2,2,3,3,3]).all()
+    assert (r.repeat(2, axis='y').ravel() == [0,1,0,1,2,3,2,3]).all()
+    assert (r.repeat([1,2], axis='y').ravel() == [0,1,2,3,2,3]).all()
+    
+    s = a[arraytypes.AxisInfo.c,:,arraytypes.AxisInfo.z,:,arraytypes.AxisInfo.t]
+    assert_equal(s.shape, (1, a.shape[0], 1, a.shape[1], 1))
+    assert_equal(s.axistags,a.defaultAxistags('cxzyt'))
+    ss = s.squeeze()
+    assert_equal(ss.shape, a.shape)
+    assert_equal(ss.axistags,a.axistags)
+    
+    assert_equal(ones.std(dtype=numpy.longdouble), 0.0)
+    assert (ones.std(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()
+    
+    assert_equal(ones.sum(dtype=numpy.longdouble), ones.size)
+    assert (ones.sum(axis='x', dtype=numpy.longdouble) == [a.shape[0]]*a.shape[1]).all()
+    
+    b = a.swapaxes(0, 1)
+    assert_equal(b.shape, (a.shape[1], a.shape[0]))
+    assert_equal(len(b.axistags), 2)
+    assert_equal(b.axistags[0], a.axistags[1])
+    assert_equal(b.axistags[1], a.axistags[0])
+    
+    rt = r.take([1,2])
+    assert (rt == [1,2]).all()
+    assert_equal(rt.axistags, arraytypes.AxisTags(1))
+    rt = r.take([0,1], axis='y')
+    assert (rt == r).all()
+    assert_equal(rt.axistags, rt.axistags)
+    
+    assert_equal(ones.var(dtype=numpy.longdouble), 0.0)
+    assert (ones.var(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()    
+    
 def testUfuncs():
     from numpy import bool, int8, uint8, int16, uint16, int32, uint32, int64, uint64
     from numpy import float32, float64, longdouble, complex64, complex128, clongdouble
@@ -695,27 +1247,34 @@ def testUfuncs():
     for t, a in arrays.iteritems():
         b = -a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         if not numpyHasComplexNegateBug or t is not clongdouble:
             assert (b == -t(2)).all()
         b = a + a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(4)).all()
         b = a == a
         assert_equal(bool, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == True).all()
         b = ones[t] + a
         assert_equal(a.shape, b.shape)
+        assert_equal(a.axistags, b.axistags)
         assert_equal(t, b.dtype)
         assert (b == t(3)).all()
         b = a + ones[t]
         assert_equal(a.shape, b.shape)
+        assert_equal(a.axistags, b.axistags)
         assert_equal(t, b.dtype)
         assert (b == t(3)).all()
         b = 3 + a
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(5)).all()
         b = a + 3
         assert_equal(t, b.dtype)
+        assert_equal(a.axistags, b.axistags)
         assert (b == t(5)).all()
     for i in integers:
         a1 = arrays[i]
@@ -728,28 +1287,36 @@ def testUfuncs():
                 assert_equal(int32, b.dtype)
             else:
                 assert_equal(int64, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 <= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
         for j in floats + compl:
             a2 = arrays[j]
             b = a1 * a2
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a2 * a1
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
         b = a1 + 1
         assert (b == 3).all()
         assert_equal(a1.dtype, b.dtype)
+        assert_equal(a1.axistags, b.axistags)
         b = a1 + 1.0
+        assert_equal(a1.axistags, b.axistags)
         assert (b == 3.0).all()
         if a1.dtype.itemsize < 8:
             assert_equal(float32, b.dtype)
@@ -763,19 +1330,33 @@ def testUfuncs():
             a2 = arrays[j]
             b = a1 * a2
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a2 * a1
             assert_equal(j, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == 4).all()
             b = a1 >= a2
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == True).all()
             b = a2 > a1
             assert_equal(bool, b.dtype)
+            assert_equal(a1.axistags, b.axistags)
             assert (b == False).all()
-        b = a1 + 1.0
-        assert (b == 3.0).all()
+        b = a1 + 0.5
+        assert (b == 2.5).all()
         assert_equal(a1.dtype, b.dtype)
+        assert_equal(a1.axistags, b.axistags)
+        
+        fractional, integral = ufunc.modf(b)
+        assert (fractional == 0.5).all()
+        assert (integral == 2.0).all()
+        assert_equal(a1.dtype, fractional.dtype)
+        assert_equal(a1.axistags, fractional.axistags)
+        assert_equal(a1.dtype, integral.dtype)
+        assert_equal(a1.axistags, integral.axistags)
+        
     assert_equal(float64, (arrays[float32]+arrays[float64]).dtype)
     assert_equal(float64, (arrays[float64]+arrays[float32]).dtype)
     assert_equal(longdouble, (arrays[float32]+arrays[longdouble]).dtype)
@@ -793,12 +1374,15 @@ def testUfuncs():
     b = abs(arrays[complex64])
     assert (b == 2.0).all()
     assert_equal(float32, b.dtype)
+    assert_equal(arrays[complex64].axistags, b.axistags)
     b = abs(arrays[complex128])
     assert (b == 2.0).all()
     assert_equal(float64, b.dtype)
+    assert_equal(arrays[complex128].axistags, b.axistags)
     b = abs(arrays[clongdouble])
     assert (b == 2.0).all()
     assert_equal(longdouble, b.dtype)
+    assert_equal(arrays[clongdouble].axistags, b.axistags)
 
     a = arraytypes.ScalarImage((2,2), uint8, value=255)
     b = a + a
@@ -807,12 +1391,16 @@ def testUfuncs():
     assert (b == 254).all()
     b = 255 + a
     assert (b == 254).all()
+    
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(a, a, b)
+    bb = ufunc.add(a, a, b)
+    assert bb is b
     assert (b == 510).all()
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(a, 255, b)
+    bb = ufunc.add(a, 255, b)
+    assert bb is b
     assert (b == 510).all()
     b = arraytypes.ScalarImage((2,2), int32, value=0)
-    ufunc.add(255, a, b)
+    bb = ufunc.add(255, a, b)
+    assert bb is b
     assert (b == 510).all()

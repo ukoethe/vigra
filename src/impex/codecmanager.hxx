@@ -29,7 +29,7 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
 
@@ -78,17 +78,20 @@ namespace vigra
         // look up decoder from the list, then return it
         std::auto_ptr<Decoder>
         getDecoder( const std::string & fileName,
-                    const std::string & fileType = "undefined" ) const;
+                    const std::string & fileType = "undefined",
+                    unsigned int imageIndex = 0 ) const;
 
         // look up encoder type from the list
         std::string
         getEncoderType( const std::string & fileName,
-                    const std::string & fileType = "undefined" ) const;
+                        const std::string & fileType = "undefined",
+                        const std::string & mode = "w" ) const;
 
         // look up encoder from the list, then return it
         std::auto_ptr<Encoder>
         getEncoder( const std::string & fileName,
-                    const std::string & fileType = "undefined" ) const;
+                    const std::string & fileType = "undefined",
+                    const std::string & mode = "w" ) const;
 
         // try to figure out the correct file type
         std::string getFileTypeByMagicString( const std::string & filename ) const;
@@ -97,7 +100,7 @@ namespace vigra
 
         // this will only be called by the singleton pattern
         CodecManager();
-        
+
         ~CodecManager();
 
     }; // class CodecManager

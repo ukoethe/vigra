@@ -153,7 +153,10 @@ class SplitBase
                       ArrayVector<Region> childs,
                       Random randint)
     {
+#ifndef __clang__	
+        // FIXME: This compile-time checking trick does not work for clang.
         CompileTimeError SplitFunctor__findBestSplit_member_was_not_defined;
+#endif
         return 0;
     }
 
@@ -266,7 +269,7 @@ class SortSamplesByHyperplane
                             Node<i_HyperplaneNode>  const & node)
     :       
             data_(data), 
-            node_()
+            node_(node)
     {}
 
     /** calculate the distance of a sample point to a hyperplane
@@ -392,20 +395,20 @@ public:
         double  entropy            = 0.0;
         if(class_count == 2)
         {
-            double p0            = (hist[0]/total);
-            double p1            = (hist[1]/total);
-            entropy                = 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+            double p0			= (hist[0]/total);
+            double p1			= (hist[1]/total);
+            entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
         }
         else
         {
             for(int ii = 0; ii < class_count; ++ii)
             {
                 double w        = weights[ii];
-                double pii        = hist[ii]/total;
+                double pii		= hist[ii]/total;
                 entropy         -= w*( pii*std::log(pii));
             }
         }
-          entropy             = total * entropy;
+        entropy 			= total * entropy;
         return entropy; 
     }
 };
@@ -1057,7 +1060,7 @@ class ThresholdSplit: public SplitBase<Tag>
                                              region.end(),
                                              region.classCounts());
         if(region_gini_ <= SB::ext_param_.precision_)
-            return  makeTerminalNode(features, labels, region, randint);
+            return  this->makeTerminalNode(features, labels, region, randint);
 
         // select columns  to be tried.
         for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
@@ -1098,7 +1101,7 @@ class ThresholdSplit: public SplitBase<Tag>
         //std::cerr << current_min_gini << "curr " << region_gini_ << std::endl;
         // did not find any suitable split
         if(closeAtTolerance(current_min_gini, region_gini_))
-            return  makeTerminalNode(features, labels, region, randint);
+            return  this->makeTerminalNode(features, labels, region, randint);
         
         //create a Node for output
         Node<i_ThresholdNode>   node(SB::t_data, SB::p_data);
@@ -1268,8 +1271,8 @@ public:
     std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
-    typedef RandomMT19937    Random_t;
-    Random_t                random;
+    typedef RandomMT19937	Random_t;
+    Random_t				random;
 
     RandomSplitOfColumn()
     {}

@@ -34,6 +34,71 @@
 #######################################################################
 
 import numpy
+import copy
+
+vigraTypecastingRules = '''
+Default output types are thus determined according to the following rules:
+   
+   1. The output type does not depend on the order of the arguments::
+   
+         a + b results in the same type as b + a
+   
+   2.a With exception of logical functions and abs(), the output type 
+       does not depend on the function to be executed.
+        
+   2.b The output type of logical functions is bool. 
+   
+   2.c The output type of abs() follows general rules unless the 
+       input contains complex numbers, in which case the output type 
+       is the corresponding float number type::
+      
+         a + b results in the same type as a / b
+         a == b => bool
+         abs(complex128) => float64
+         
+   3. If the inputs have the same type, the type is preserved::
+   
+         uint8 + uint8 => uint8
+   
+   4. If (and only if) one of the inputs has at least 64 bits, the output 
+      will also have at least 64 bits::
+      
+         int64 + uint32 => int64
+         int64 + 1.0    => float64
+         
+   5. If an array is combined with a scalar of the same kind (integer,
+      float, or complex), the array type is preserved. If an integer 
+      array with at most 32 bits is combined with a float scalar, the 
+      result is float32 (and rule 4 kicks in if the array has 64 bits)::
+      
+         uint8   + 1   => uint8
+         uint8   + 1.0 => float32
+         float32 + 1.0 => float32
+         float64 + 1.0 => float64
+         
+   6. Integer expressions with mixed types always produce signed results.
+      If the arguments have at most 32 bits, the result will be int32, 
+      otherwise it will be int64 (cf. rule 4)::
+      
+         int8  + uint8  => int32
+         int32 + uint8  => int32
+         int32 + uint32 => int32
+         int32 + int64  => int64
+         int64 + uint64 => int64
+         
+   7. In all other cases, the output type is equal to the highest input 
+      type::
+      
+         int32   + float32    => float32
+         float32 + complex128 => complex128
+         
+   8. All defaults can be overridden by providing an explicit output array::
+   
+         ufunc.add(uint8, uint8, uint16) => uint16
+         
+In order to prevent overflow, necessary upcasting is performed before 
+the function is executed.
+'''
 
 class Function(object):
     test_types = numpy.typecodes['AllInteger'][:-2] + numpy.typecodes['AllFloat']+'O'
@@ -47,6 +112,8 @@ class Function(object):
         self.is_bool = function.__name__ in self.boolFunctions
         self.is_abs  = function.__name__ == "absolute"
         self.__doc__ = function.__doc__
+        self.nin = function.nin
+        self.nout = function.nout
         
     def __getattr__(self, name):
         return getattr(self.function, name)
@@ -102,70 +169,9 @@ class Function(object):
            vigranumpy typecasting rules. in_dtype is the type into which 
            the arguments will be casted before performing the operation
            (to prevent possible overflow), out_type is the type the output
-           array will have (unless an explicit out-argument is provided). 
+           array will have (unless an explicit out-argument is provided).
            
-           The ideas behind the vigranumpy typcasting rules are (i) to represent
-           data with at most 32 bit, when possible, (ii) to reduce the number of
-           types that occur as results of mixed expressions, and (iii) to minimize 
-           the chance of bad surprises. Default output types are thus determined 
-           according to the following rules:
-           
-           1. The output type does not depend on the order of the arguments::
-           
-                 a + b results in the same type as b + a
-           
-           2. With exception of logical functions and abs(), the output type 
-              does not depend on the function to be executed. The output type 
-              of logical functions is bool. The output type of abs() follows
-              general rules unless the input is complex, in which case the
-              output type is the corresponding float type::
-              
-                 a + b results in the same type as a / b
-                 a == b => bool
-                 abs(complex128) => float64
-                 
-           3. If the inputs have the same type, the type is preserved::
-           
-                 uint8 + uint8 => uint8
-           
-           4. If (and only if) one of the inputs has at least 64 bits, the output 
-              will also have at least 64 bits::
-              
-                 int64 + uint32 => int64
-                 int64 + 1.0    => float64
-                 
-           5. If an array is combined with a scalar of the same kind (integer,
-              float, or complex), the array type is preserved. If an integer 
-              array with at most 32 bits is combined with a float scalar, the 
-              result is float32 (and rule 4 kicks in if the array has 64 bits)::
-              
-                 uint8   + 1   => uint8
-                 uint8   + 1.0 => float32
-                 float32 + 1.0 => float32
-                 float64 + 1.0 => float64
-                 
-           6. Integer expressions with mixed types always produce signed results.
-              If the arguments have at most 32 bits, the result will be int32, 
-              otherwise it will be int64 (cf. rule 4)::
-              
-                 int8  + uint8  => int32
-                 int32 + uint8  => int32
-                 int32 + uint32 => int32
-                 int32 + int64  => int64
-                 int64 + uint64 => int64
-                 
-           7. In all other cases, the output type is equal to the highest input 
-              type::
-              
-                 int32   + float32    => float32
-                 float32 + complex128 => complex128
-                 
-           8. All defaults can be overridden by providing an explicit output array::
-           
-                 ufunc.add(uint8, uint8, uint16) => uint16
-                 
-              In order to prevent overflow, necessary upcasting is performed before 
-              the function is executed.
+           See ufunc.vigraTypecastingRules for detailed information on coercion rules.
         '''
         if self.is_abs and args[0].dtype.kind == "c" and args[1] is None:
             dtype = args[0].dtype
@@ -186,7 +192,7 @@ class Function(object):
             highestArrayType = arrayTypes[-1]
             
         if self.is_bool:
-            return (highestArrayType[-1], numpy.bool)
+            return (highestArrayType[-1], numpy.bool8)
 
         scalarType = [numpy.dtype(type(x)) for x in args if numpy.isscalar(x)]
         if not scalarType:
@@ -199,161 +205,164 @@ class Function(object):
         else:
             return (highestArrayType[-1], scalarType[-1])        
         
-    def permutation(self, p):
-        '''Find the axis permutation that makes p as close to C-order
-           as possible. Return the permutation, its inverse, and the 
-           permuted shape object.'''
-        permutation  = [i for i, s in sorted(enumerate(p.strides), key = lambda (i, s): -s)]
-        inversePermutation = [permutation.index(i) for i in range(p.ndim)]
-        pshape       = [p.shape[j] for j in permutation]
-        return permutation, inversePermutation, pshape
-
 class UnaryFunction(Function):
-    def __call__(self, a, out = None):
-        if not isinstance(a, numpy.ndarray):
-            return self.function(a, out)
-        p = self.priorities(a, out)
-        if p is None:
-            return self.function(a, out)
-
-        if hasattr(a, 'axistags') and hasattr(out, 'axistags') and a.axistags != out.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        permutation, inversePermutation, pshape = self.permutation(p)
+    def __call__(self, arg, out=None):
+        a = arg.squeeze().transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out)
-
-        a = a.transpose(permutation)
-        a = numpy.require(a, dtype)
-        if hasattr(out, 'transpose'):
-            o = out.transpose(permutation)
-        else:
-            o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o.axistags = a.axistags.__class__(a.axistags)
-        self.function(a, o)
-
+        
         if out is None:
-            out = o.transpose(inversePermutation) 
-        return out
+            out = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
+            o = out.squeeze().transposeToNumpyOrder()
+        else:
+            o = out.squeeze().transposeToNumpyOrder()
+            if not a.axistags.compatible(o.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+        
+        a = numpy.require(a, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
+        self.function(a, o)
+        return out            
 
 class UnaryFunctionOut2(Function):
-    def __call__(self, a, out1 = None, out2 = None):
-        if not isinstance(a, numpy.ndarray):
-            return self.function(a, out1, out2)
-        p = self.priorities(a, out1, out2)
-        if p is None:
-            return self.function(a, out1, out2)
-
-        permutation, inversePermutation, pshape = self.permutation(p)
+    def __call__(self, arg, out1=None, out2=None):
+        a = arg.squeeze().transposeToNumpyOrder()
         dtype, out_dtype = self.common_type(a, out1, out2)
 
-        if hasattr(a, 'axistags') and hasattr(out1, 'axistags') and a.axistags != out1.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-        if hasattr(a, 'axistags') and hasattr(out2, 'axistags') and a.axistags != out2.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        a = a.transpose(permutation)
-        a = numpy.require(a, dtype)
-        if hasattr(out1, 'transpose'):
-            o1 = out1.transpose(permutation)
-        else:
-            o1 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o1.axistags = a.axistags.__class__(a.axistags)
-        if hasattr(out2, 'transpose'):
-            o2 = out2.transpose(permutation)
-        else:
-            o2 = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o2.axistags = a.axistags.__class__(a.axistags)
-        self.function(a, o1, o2)
-
         if out1 is None:
-            out1 = o1.transpose(inversePermutation) 
-        if out2 is None:
-            out2 = o2.transpose(inversePermutation) 
-        return out1, out2
-
-class BinaryFunction(Function):
-    def __call__(self, a, b, out = None):
-        a_isarray, b_isarray = isinstance(a, numpy.ndarray), isinstance(b, numpy.ndarray)
-        if not a_isarray and not b_isarray:
-            return self.function(a, b, out)
-        p = self.priorities(a, b, out)
-        if p is None:
-            return self.function(a, b, out)
-
-        if hasattr(a, 'axistags') and hasattr(b, 'axistags') and a.axistags != b.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-        if hasattr(a, 'axistags') and hasattr(out, 'axistags') and a.axistags != out.axistags:
-            raise RuntimeError("AxisTags mismatch (use 'array.view(numpy.ndarray)' to enforce execution)")
-
-        ndim = p.ndim
-        permutation, inversePermutation, pshape = self.permutation(p)
-        dtype, out_dtype = self.common_type(a, b, out)
-
-        if a_isarray:
-            if a.ndim < ndim:
-                a = a.reshape(((1,)*ndim + a.shape)[-ndim:])
-            a = a.transpose(permutation)
-        if b_isarray:
-            if b.ndim < ndim:
-                b = b.reshape(((1,)*ndim + b.shape)[-ndim:])
-            b = b.transpose(permutation)
-
-        # make sure that at least one input array has type dtype
-        if a_isarray and b_isarray:
-            if a.dtype != dtype and b.dtype != dtype:
-                if b.size < a.size:
-                    b = numpy.require(b, dtype)
-                else:
-                    a = numpy.require(a, dtype)
-        elif a_isarray and a.dtype != dtype:
-            a = numpy.require(a, dtype)
-        elif b_isarray and b.dtype != dtype:
-            b = numpy.require(b, dtype)
-
-        if hasattr(out, 'transpose'):
-            o = out.transpose(permutation)
+            out1 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)
+            o1 = out1.squeeze().transposeToNumpyOrder()
         else:
-            o = numpy.ndarray(pshape, out_dtype, order='C').view(p.__class__)
-            if hasattr(a, 'axistags'):
-                o.axistags = a.axistags.__class__(a.axistags)
+            o1 = out1.squeeze().transposeToNumpyOrder()
+            if not a.axistags.compatible(o1.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+
+        if out2 is None:
+            out2 = arg.__class__(arg, dtype=out_dtype, order='A', init=False)            
+            o2 = out2.squeeze().transposeToNumpyOrder()
+        else:
+            o2 = out2.squeeze().transposeToNumpyOrder()
+            if not a.axistags.compatible(o2.axistags):
+                raise RuntimeError("%s(): axistag mismatch" % self.function.__name__)
+            
+        a = numpy.require(a, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
+        self.function(a, o1, o2)
+        return out1, out2
+                
+class BinaryFunction(Function):
+    def __call__(self, arg1, arg2, out=None):
+        dtype, out_dtype = self.common_type(arg1, arg2, out)
         
-        self.function(a, b, o)
-
+        if isinstance(arg1, numpy.ndarray):
+            a1 = arg1.transposeToNumpyOrder()
+            if isinstance(arg2, numpy.ndarray):
+                a2 = arg2.transposeToNumpyOrder()
+                
+                if arg1.__array_priority__ == arg2.__array_priority__:
+                    priorityArg = arg2 if arg1.ndim < arg2.ndim else arg1
+                else:
+                    priorityArg = arg2 if arg1.__array_priority__ < arg2.__array_priority__ else arg1
+                
+                if a1.ndim < a2.ndim:
+                    a1 = a1.insertChannelAxis(order='C')
+                elif a1.ndim > a2.ndim:
+                    a2 = a2.insertChannelAxis(order='C')
+                    
+                axistags = a1.axistags
+                
+                if not axistags.compatible(a2.axistags):
+                    raise RuntimeError("%s(): input axistag mismatch %r vs. %r" % 
+                                         (self.function.__name__, axistags, a2.axistags))
+                shape = tuple(max(k) for k in zip(a1.shape, a2.shape))
+                a2 = numpy.require(a2, dtype).view(numpy.ndarray)
+            else:
+                priorityArg = arg1
+                axistags = a1.axistags
+                shape = a1.shape
+                a2 = arg2
+            a1 = numpy.require(a1, dtype).view(numpy.ndarray) # view(ndarray) prevents infinite recursion
+        else:
+            a1 = arg1
+            a2 = arg2.transposeToNumpyOrder()
+            axistags = a2.axistags
+            shape = a2.shape
+            priorityArg = arg2
+            a2 = numpy.require(a2, dtype).view(numpy.ndarray)
+            
         if out is None:
-            out = o.transpose(inversePermutation) 
+            outClass = priorityArg.__class__
+            inversePermutation = priorityArg.permutationFromNumpyOrder()
+            o = outClass(shape, dtype=out_dtype, order='C', axistags=axistags, init=False)
+            if priorityArg.ndim < o.ndim:
+                out = o.dropChannelAxis().transpose(inversePermutation)
+            else:
+                out = o.transpose(inversePermutation)
+        else:
+            o = out.transposeToNumpyOrder()
+            if o.ndim < len(shape):
+                o = o.insertChannelAxis(order='C')
+            if not axistags.compatible(o.axistags):
+                raise RuntimeError("%s(): output axistag mismatch %r vs. %r" % 
+                                         (self.function.__name__, axistags, o.axistags))
+        self.function(a1, a2, o)
         return out
-
         
 __all__ = []
 
-for k in numpy.__dict__.itervalues():
-     if type(k) == numpy.ufunc:
-        if k.nin == 1 and k.nout == 1:
-            exec k.__name__ + " = UnaryFunction(k)"
-        if k.nin == 1 and k.nout == 2:
-            exec k.__name__ + " = UnaryFunctionOut2(k)"
-        if k.nin == 2:
-            exec k.__name__ + " = BinaryFunction(k)"
-        __all__.append(k.__name__)
+for _k in numpy.__dict__.itervalues():
+     if type(_k) == numpy.ufunc:
+        if _k.nin == 1 and _k.nout == 1:
+            exec _k.__name__ + " = UnaryFunction(_k)"
+        if _k.nin == 1 and _k.nout == 2:
+            exec _k.__name__ + " = UnaryFunctionOut2(_k)"
+        if _k.nin == 2:
+            exec _k.__name__ + " = BinaryFunction(_k)"
+        __all__.append(_k.__name__)
 
 __all__.sort()
 
-__doc__ = '\nThe following mathematical functions are available in this module::\n\n'
-
-for k in range(0, len(__all__), 7):
-    __doc__ += '        ' + '   '.join(__all__[k:k+7]) + '\n'
-
-__doc__ += '''
-Some of these functions are also provided as member functions of the vigra array types::
-
-        __abs__   __add__   __and__   __div__   __divmod__   __eq__   __floordiv__
-        __ge__   __gt__   __invert__   __le__   __lshift__   __lt__   __mod__
-        __mul__   __ne__   __neg__   __or__   __pos__   __pow__   __radd__
-        __radd__   __rand__   __rdiv__   __rdivmod__   __rfloordiv__   __rlshift__
-        __rmod__   __rmul__   __ror__   __rpow__   __rrshift__   __rshift__
-        __rsub__   __rtruediv__   __rxor__   __sub__   __truediv__   __xor__
-
+def _prepareDoc():
+    doc = '''
+The following mathematical functions are available in this module
+(refer to numpy for detailed documentation)::
+    
 '''
+
+    k = 0    
+    while k < len(__all__):
+        t = 8
+        while True:
+            d = '    ' + '   '.join(__all__[k:k+t]) + '\n'
+            if len(d) <= 80:
+                break
+            t -= 1
+        doc += d
+        k += t
+
+    return doc + '''
+Some of these functions are also provided as member functions of 
+VigraArray::
+
+    __abs__   __add__   __and__   __div__   __divmod__   __eq__
+    __floordiv__   __ge__   __gt__   __invert__   __le__   __lshift__
+    __lt__   __mod__   __mul__   __ne__   __neg__   __or__   __pos__
+    __pow__   __radd__   __radd__   __rand__   __rdiv__   __rdivmod__
+    __rfloordiv__   __rlshift__   __rmod__   __rmul__   __ror__   __rpow__
+    __rrshift__   __rshift__   __rsub__   __rtruediv__   __rxor__   __sub__
+    __truediv__   __xor__
+
+As usual, these functions are applied independently at each pixel.
+
+Vigranumpy overloads the numpy-versions of these functions in order to make their
+behavior more suitable for image analysis. In particular, we changed two aspects:
+
+* Axistag consistency is checked, and the order of axes and strides is 
+  preserved in the result array. (In contrast, plain numpy functions 
+  always create C-order arrays, disregarding the stride order of the 
+  inputs.)
+* Typecasting rules are changed such that (i) data are represented with 
+  at most 32 bits, when possible, (ii) the number of types that occur as 
+  results of mixed expressions is reduced, and (iii) the chance of bad 
+  surprises is minimized. 
+
+''' + vigraTypecastingRules
+
+__doc__ = _prepareDoc()

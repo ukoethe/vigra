@@ -5,6 +5,7 @@ VIGRA_ADD_NUMPY_MODULE(core
   SOURCES 
     vigranumpycore.cxx
     converters.cxx
+    axistags.cxx
   VIGRANUMPY)
 
 VIGRA_ADD_NUMPY_MODULE(impex 
@@ -36,6 +37,7 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES
     random_forest_old.cxx
     random_forest.cxx
+    learning.cxx
   LIBRARIES   
     ${VIGRANUMPY_IMPEX_LIBRARIES}
   VIGRANUMPY)
