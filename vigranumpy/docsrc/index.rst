@@ -37,12 +37,12 @@ To solve these ambiguities in a clean way, vigranumpy introduces the concept of 
 * When the Python array has **no** ``array.axistags`` property, it is mapped to the C++ NumpyArray 
   **without** any change in axis ordering. Since most VIGRA functions can work on arbitrarily 
   transposed arrays, you will get correct results, but execution may be slower because the 
-  processor cache is poorly utilized.
+  processor cache is poorly utilized in certain axis orders.
   
   Moreover, this may lead to overload resolution ambiguities. For example, when the array has shape 
   ``(3, 60, 40)``, vigranumpy has no way to decide if this is a 2-dimensional RGB image or
   a 3-dimensional array that happens to have only 3 slices. Thus, vigranumpy may not always 
-  execute the function you actually intended.
+  execute the function you actually intended to call.
   
 * When the Python array **has** the ``array.axistags`` property, it is transposed into a 
   **canonical** axis ordering before vigranumpy executes a function, and the results are 
@@ -52,7 +52,7 @@ To solve these ambiguities in a clean way, vigranumpy introduces the concept of 
   Thus, you can work in any desired axis order without loosing control. Overload ambiguities 
   can no longer occur because a function cannot be called when the axistags are unsuitable.
 
-Detailed information about the use of axistags is given in section :ref:`sec-vigraarray` below. Section :ref:`sec-own-modules` describes how you can take advantage of the axistags mechanism in your own code.
+Detailed information about the use of axistags is given in section :ref:`sec-vigraarray` below. Section :ref:`sec-own-modules` describes how you can take advantage of the axistags mechanism in your own C++ code.
 
 .. _sec-vigraarray:
     
@@ -69,7 +69,7 @@ While vigranumpy can directly work on numpy.ndarrays, this would not give us the
     (300, 200, 3)
     >>> rgb.axistags             # short output: only axis keys
     x y c
-    >>> print rgb.axistags        # long output
+    >>> print rgb.axistags       # long output
     AxisInfo: 'x' (type: Space)
     AxisInfo: 'y' (type: Space)
     AxisInfo: 'c' (type: Channels) RGB
@@ -175,7 +175,7 @@ The meaning of 'ascending' or 'descending' order is determined by two rules: the
     
 Functions that reduce the array to a one-dimensional shape (``flatten()``, ``flat``, ``ravel()``, ``take()``) always transpose the array into 'C' order before flattening.
 
-Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individual entries are of type :class:`vigra.AxisInfo`. The simplest way to attach axistags to a plain numpy.ndarray (by creating a view of type VigraArray) is via the convenienve function :func:`vigra.taggedView`.
+Axistags are stored in a list-like class :class:`vigra.AxisTags`, whose individual entries are of type :class:`vigra.AxisInfo`. The simplest way to attach axistags to a plain numpy.ndarray (by creating a view of type VigraArray) is via the convenience function :func:`vigra.taggedView`.
 
 ----------------
 
@@ -349,7 +349,7 @@ Machine Learning
 
 The module vigra.learning will eventually provide a wide range of machine learning 
 tools. Right now, it only contains an implementation of the random forest classifier
-and probabilistic latent sementic analysis (pLSA) as an example for unsupervised learning.
+and probabilistic latent semantic analysis (pLSA) as an example for unsupervised learning.
 
 .. automodule:: vigra.learning
    :members:
@@ -401,7 +401,7 @@ When you want to write your own vigranumpy extension modules, first make sure th
         BOOST_PYTHON_MODULE_INIT(my_module)
         {
             // initialize numpy and vigranumpy
-            import_vigranumpy();
+            vigra::import_vigranumpy();
             
             // export a function
             def("my_function", &my_function, 
@@ -416,7 +416,7 @@ When you want to write your own vigranumpy extension modules, first make sure th
                      "Documentation")
             ;
                      
-            ... // more module functionality
+            ... // more module functionality (refer to boost_python documentation)
         }
     
 2. When your module uses additional C++ source files, they should start with the following defines::
@@ -427,8 +427,9 @@ When you want to write your own vigranumpy extension modules, first make sure th
 
 3. Implement your wrapper functions. Numpy ndarrays are passed to C++ via the wrapper classes NumpyArray_ and NumpyAnyArray_. You can influence the conversion from Python to C++ by using different instantiations of NumpyArray, as long as the Python array supports the axistags attribute (refer to :ref:`axis order definitions <array-order-parameter>` for the meaning of the term 'ascending order')::
 
-        using vigra::NumpyAnyArray;
-        using vigra::NumpyArray;
+            // We add a 'using' declaration for brevity of our examples.
+            // In actual code, you should probably prefer explicit namespace qualification.
+        using namespace vigra;
 
             // Accept any array type and return an arbitrary array type.
             // Returning NumpyAnyArray is always safe, because at that point
@@ -441,7 +442,7 @@ When you want to write your own vigranumpy extension modules, first make sure th
         
             // Accept a 2-dimensional float32 array with an arbitrary number of channels and
             // transpose the axes into VIGRA ('V') order (channels are last, other axes ascending).
-            // Note that the NumpyArray dimension is 3 to accout for the channel dimension.
+            // Note that the NumpyArray dimension is 3 to account for the channel dimension.
             // If the original numpy array has no channel axis, vigranumpy will automatically
             // insert a singleton axis.
         void foo(NumpyArray<3, Multiband<float> > array);
@@ -457,6 +458,9 @@ When you want to write your own vigranumpy extension modules, first make sure th
             // Non-channel axes are transposed into ascending order.
             // Note that the NumpyArray dimension is again 2, but the pixel type is 
             // now a vector.
+            // The conversion will only succeed if the channel axis is unstrided on
+            // the Python side (that is, the following expression is True:
+            //      array.strides[array.channelIndex] == array.dtype.itemsize).
         void foo(NumpyArray<2, TinyVector<float, 3> > array);
         void foo(NumpyArray<2, RGBValue<float> > array);
     
@@ -479,11 +483,11 @@ When you want to write your own vigranumpy extension modules, first make sure th
    It is also possible to modify the tagged shape before it is applied to the output array::
    
         input.taggedShape()
-             .resize(vigra::Shape2(new_width, new_height))
+             .resize(Shape2(new_width, new_height))
              .setChannelCount(new_channel_count)
              .setChannelDescription("a description")
              
-   The C++ code can be multi-threaded when you unlock the Python main interpreter lock. After unlocking, your wrapper code must not call any Python functions, so the unlock statement should go after ``output.reshapeIfEmpty()``::
+   The C++ code can be multi-threaded when you unlock Python's global interpreter lock. After unlocking, your wrapper code must not call any Python functions, so the unlock statement should go after ``output.reshapeIfEmpty()``::
    
         NumpyAnyArray
         foo(NumpyArray<3, Multiband<float32> > input, 
@@ -491,8 +495,8 @@ When you want to write your own vigranumpy extension modules, first make sure th
         {
             output.reshapeIfEmpty(input.taggedShape(), "Message.");
             
-                // Allow parallelization from here on. The desctructor of
-                // _pythread will automatically regain the main interpreter lock
+                // Allow parallelization from here on. The destructor of
+                // _pythread will automatically regain the global interpreter lock
                 // just before this function returns to Python.
             PyAllowThreads _pythread;
             
