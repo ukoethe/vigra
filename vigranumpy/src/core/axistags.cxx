@@ -89,7 +89,7 @@ generic__deepcopy__(python::object copyable, python::dict memo)
 
     python::dict locals;
     locals["copyable"] = copyable;
-    int copyableId = python::extract<int>(python::eval("id(copyable)", globals, locals))();
+    size_t copyableId = python::extract<size_t>(python::eval("id(copyable)", globals, locals))();
     memo[copyableId] = result;
 
     python::object dict_copy = deepcopy(python::extract<python::dict>(copyable.attr("__dict__"))(),
