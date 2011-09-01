@@ -24,6 +24,7 @@ message(STATUS "Configuring VIGRA version ${vigra_version}")
 SET(CMAKE_MODULE_PATH  ${CMAKE_MODULE_PATH}  ${vigra_SOURCE_DIR}/config)
 
 include(VigraSetDefaults)
+include(VigraCMakeUtils)
 
 INCLUDE_DIRECTORIES(${vigra_SOURCE_DIR}/include)
 

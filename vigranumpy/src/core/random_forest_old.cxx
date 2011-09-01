@@ -52,7 +52,8 @@ namespace vigra
 
 template<class LabelType,class FeatureType>
 RandomForest<LabelType>*
-pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,LabelType> trainLabels,
+pythonConstructRandomForest(NumpyArray<2, FeatureType> trainData,
+                            NumpyArray<1, LabelType> trainLabels,
                             int treeCount,
                             int mtry,
                             int min_split_node_size,
@@ -63,12 +64,20 @@ pythonConstructRandomForest(NumpyArray<2,FeatureType> trainData,NumpyArray<1,Lab
 
 {
     RandomForestOptions options;
-    options.featuresPerNode(mtry).sampleWithReplacement(sample_with_replacement).setTreeCount(treeCount)
-        .trainingSetSizeProportional(training_set_proportions).trainingSetSizeAbsolute(training_set_size)
-        .sampleClassesIndividually(sample_classes_individually).minSplitNodeSize(min_split_node_size);
-    std::set<LabelType> uniqueLabels(trainLabels.data(),trainLabels.data()+trainLabels.size());
+    options
+        .featuresPerNode(mtry)
+        .sampleWithReplacement(sample_with_replacement)
+        .setTreeCount(treeCount)
+        .trainingSetSizeProportional(training_set_proportions)
+        .trainingSetSizeAbsolute(training_set_size)
+        .sampleClassesIndividually(sample_classes_individually)
+        .minSplitNodeSize(min_split_node_size);
+        
+    std::set<LabelType> uniqueLabels(trainLabels.data(), trainLabels.data()+trainLabels.size());
 
-    RandomForest<LabelType>* rf=new RandomForest<LabelType>(uniqueLabels.begin(),uniqueLabels.end(),treeCount,options);
+    RandomForest<LabelType>* rf = 
+        new RandomForest<LabelType>(uniqueLabels.begin(), uniqueLabels.end(),
+                                    treeCount, options);
     double oob;
 
     {
@@ -86,9 +95,11 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),1),"Output array has wrong dimensions.");
-    rf.predictLabels(testData,res);
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
+            "Output array has wrong dimensions.");
+    
+    PyAllowThreads _pythread;
+    rf.predictLabels(testData, res);
     return res;
 }
 
@@ -98,12 +109,11 @@ pythonRFPredictProbabilities(RandomForest<LabelType> const & rf,
                              NumpyArray<2,FeatureType> testData,
                              NumpyArray<2,float> res)
 {
-    //construct result
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0),rf.labelCount()),
-                                                "Output array has wrong dimensions.");
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.labelCount()),
+            "Output array has wrong dimensions.");
     {
         PyAllowThreads _pythread;
-        rf.predictProbabilities(testData,res);
+        rf.predictProbabilities(testData, res);
     }
     return res;
 }

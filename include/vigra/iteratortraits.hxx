@@ -435,7 +435,7 @@ struct IteratorTraitsBase
 
     <table>
     <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
-        <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" array;</TT>
+        <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" img;</TT>
         </th>
     </tr>
     <tr><td>

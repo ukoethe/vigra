@@ -411,7 +411,7 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
     
-    // temporay array to hold the current line to enable in-place operation
+    // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
         
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;

@@ -102,7 +102,7 @@ enum AtImageBorder
 
     This function checks if \a x == 0 or \a x == \a width - 1 and
     \a y == 0 or \a y == \a height - 1 and returns the appropriate value
-    of \ref vigra::AtImageBorder, or zero when the point is not at te image border.
+    of \ref vigra::AtImageBorder, or zero when the point is not at the image border.
     The behavior of the function is undefined if (x,y) is not inside the image.
 
     <b>\#include</b> \<vigra/pixelneighborhood.hxx\><br>
@@ -658,8 +658,8 @@ typedef EightNeighborhood::NeighborCode EightNeighborCode;
     NeighborOffsetCirculator<FourNeighborCode>  four_circulator;
     \endcode
 
-    Since this circulator doesn't now about the pixels in any particular image,
-    you usually doesn't use it directly but rather as a base class or helper for
+    Since this circulator doesn't know about the pixels in any particular image,
+    you usually don't use it directly but rather as a base class or helper for
     neighborhood circulators refering to a particular image (e.g. NeighborhoodCirculator)
 
     <b>\#include</b> \<vigra/pixelneighborhood.hxx\><br>
@@ -955,7 +955,7 @@ typedef NeighborOffsetCirculator<FourNeighborCode> FourNeighborOffsetCirculator;
     image. The access functions return the value of the current neighbor pixel.
     Use <tt>center()</tt> to access the center pixel of the neighborhood.
     The center can be changed by calling <tt>moveCenterToNeighbor()</tt>
-    or <tt>swapCenterNeighbor()</tt>. Note that this circulator cannot
+    or <tt>swapCenterNeighbor()</tt>. Note that this circulator cannot be used
     when the center is at the image border. You must then use
     \ref vigra::RestrictedNeighborhoodCirculator
 
@@ -1050,7 +1050,7 @@ public:
         return operator+=(1);
     }
 
-        /** pre-decrement */
+        /** post-increment */
     NeighborhoodCirculator operator++(int)
     {
         NeighborhoodCirculator ret(*this);
@@ -1058,7 +1058,7 @@ public:
         return ret;
     }
 
-        /** post-increment */
+        /** pre-decrement */
     NeighborhoodCirculator & operator--()
     {
         return operator+=(-1);
@@ -1358,7 +1358,7 @@ public:
         return operator+=(1);
     }
 
-        /** pre-decrement */
+        /** post-increment */
     RestrictedNeighborhoodCirculator operator++(int)
     {
         RestrictedNeighborhoodCirculator ret(*this);
@@ -1366,7 +1366,7 @@ public:
         return ret;
     }
 
-        /** post-increment */
+        /** pre-decrement */
     RestrictedNeighborhoodCirculator & operator--()
     {
         return operator+=(-1);

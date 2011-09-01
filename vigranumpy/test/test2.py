@@ -136,8 +136,15 @@ def test_3DMorphologyGrayscale():
 
 def test_Noise():
     # ATM, we only test that these things run
-    noiseVarianceEstimation(scalar_image)
-    # noiseVarianceClustering(scalar_image) # This test is not expected to work whith the kind of image used here.
+    
+    image = RGBImage((100,100))
+    image[:50,:50] = (10, 10, 10)
+    image[50:,:50] = (20, 20, 20)
+    image[50:,50:] = (30, 30, 30)
+    image += np.random.normal(size=(100,100, 3))
+    
+    noiseVarianceEstimation(image.bindAxis('c', 0))
+    noiseVarianceClustering(image.bindAxis('c', 0))
     nonparametricNoiseNormalization(image)
     quadraticNoiseNormalizationEstimated(image)
     linearNoiseNormalizationEstimated(image)

@@ -36,8 +36,8 @@
 #ifndef VIGRA_NUMPY_ARRAY_CONVERTERS_HXX
 #define VIGRA_NUMPY_ARRAY_CONVERTERS_HXX
 
-#include <vigra/numpy_array.hxx>
-#include <vigra/metaprogramming.hxx>
+#include "numpy_array.hxx"
+#include "metaprogramming.hxx"
 #include <boost/python.hpp>
 #include <boost/python/to_python_converter.hpp>
 #include <set>
@@ -86,21 +86,23 @@ NumpyArrayConverter<NumpyArray<N, T, Stride> >::NumpyArrayConverter()
 {
     using namespace boost::python;
     
-    if(exportedArrayKeys().find(ArrayTraits::typeKeyFull()) == exportedArrayKeys().end())
+    converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
+    
+    // register the to_python_converter only once
+    // FIXME: I'm not sure if this is correct.
+    if(!reg || !reg->rvalue_chain)
     {
-        exportedArrayKeys().insert(ArrayTraits::typeKey());
-        exportedArrayKeys().insert(ArrayTraits::typeKeyFull());
-        
         to_python_converter<ArrayType, NumpyArrayConverter>();
-
-        converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
     }
+    converter::registry::insert(&convertible, &construct, type_id<ArrayType>());
 }
     
 template <unsigned int N, class T, class Stride>
 void * NumpyArrayConverter<NumpyArray<N, T, Stride> >::convertible(PyObject* obj)
 {
-    return obj == Py_None || ArrayType::isStrictlyCompatible(obj)
+    bool isCompatible = obj == Py_None || ArrayType::isStrictlyCompatible(obj);
+    // std::cerr << "compatible for " << typeid(NumpyArray<N, T, Stride>).name() << ": " << isCompatible << "\n";
+    return isCompatible
              ? obj
              : 0;
 }
@@ -134,8 +136,6 @@ struct NumpyArrayConverter<MultiArrayView<N, T, Stride> >
                                     type_id<ArrayType>());
     }
 };
-
-
 
 template <class Iter, class End>
 struct RegisterNumpyArrayConverters
@@ -241,6 +241,8 @@ struct TypeList
     typedef Tail tail;
 };
 
+// in the sequel, the doc string is only registered with the last
+// overload, so that it shows up only once
 template <class Head, class Tail>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>)
 {
@@ -251,8 +253,8 @@ inline void multidef(char const* functor_name, TypeList<Head, Tail>)
 template <class Head, class Tail>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>, const char * help)
 {
-    Head::def(functor_name, help);
-    multidef(functor_name, Tail());
+    Head::def(functor_name);
+    multidef(functor_name, Tail(), help);
 }
 
 template <class Head, class Tail, class Args>
@@ -265,8 +267,8 @@ inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const&
 template <class Head, class Tail, class Args>
 inline void multidef(char const* functor_name, TypeList<Head, Tail>, Args const& args, char const * help)
 {
-    Head::def(functor_name, args, help);
-    multidef(functor_name, Tail(), args);
+    Head::def(functor_name, args);
+    multidef(functor_name, Tail(), args, help);
 }
 
 template <class Head, class Tail>

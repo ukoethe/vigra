@@ -90,6 +90,15 @@ struct pythonScaleParam
         return opt.stdDev(sigma_eff()).resolutionStdDev(sigma_d())
                   .stepSize(step_size()).outerScale(outer_scale());
     }
+    
+    template <class Array>
+    void permuteLikewise(Array const & a)
+    {
+        sigma_eff.vec   = a.permuteLikewise(sigma_eff.vec);
+        sigma_d.vec     = a.permuteLikewise(sigma_d.vec);
+        step_size.vec   = a.permuteLikewise(step_size.vec);
+        outer_scale.vec = a.permuteLikewise(outer_scale.vec);
+    }
 };
 
 

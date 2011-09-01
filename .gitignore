@@ -1,3 +1,4 @@
+
 /lib/
 /bin/
 /build/
@@ -10,7 +11,6 @@
 CMakeFiles/
 Release/
 Debug/
-*.cmake
 *.py[co]
 *~
 *.mex
@@ -32,3 +32,4 @@ Makefile
 *.[do]
 *.l[doa]
 *.loT
+*.orig

@@ -80,7 +80,7 @@ class RidgeSplit: public SplitBase<Tag>
 
     double                      region_gini_;
     ArrayVector<double>         min_gini_;
-        ArrayVector<std::ptrdiff_t> min_indices_;
+    ArrayVector<std::ptrdiff_t> min_indices_;
     ArrayVector<double>         min_thresholds_;
 
     int                         bestSplitIndex;
@@ -157,7 +157,7 @@ class RidgeSplit: public SplitBase<Tag>
         region_gini_ = GiniCriterion::impurity(region.classCounts(),
                 region.size());
         if(region_gini_ == 0 || region.size() < SB::ext_param_.actual_mtry_ || region.oob_size() < 2)
-            return  makeTerminalNode(features, multiClassLabels, region, randint);
+            return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
 
         // select columns  to be tried.
     for(int ii = 0; ii < SB::ext_param_.actual_mtry_; ++ii)
@@ -394,7 +394,7 @@ class RidgeSplit: public SplitBase<Tag>
     
         // did not find any suitable split
     if(closeAtTolerance(bgfunc.min_gini_, NumericTraits<double>::max()))
-        return  makeTerminalNode(features, multiClassLabels, region, randint);
+        return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
     
     //take gini threshold here due to scaling, normalisation, etc. of the coefficients
     node.intercept()	= bgfunc.min_threshold_;
