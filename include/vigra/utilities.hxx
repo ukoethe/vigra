@@ -109,6 +109,8 @@ std::string & operator<<(std::string & s, T const & t)
          <BR>&nbsp;&nbsp;&nbsp;<em>pair, triple, tuple4, tuple5</em>
     <LI> \ref MathConstants
          <BR>&nbsp;&nbsp;&nbsp;<em>M_PI, M_SQRT2</em>
+    <LI> \ref TimingMacros
+         <BR>&nbsp;&nbsp;&nbsp;<em>Macros for taking execution speed measurements</em>
     </UL>
 */
 
