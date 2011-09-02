@@ -474,6 +474,19 @@ class NumpyAnyArray
 /*                                                      */
 /********************************************************/
 
+namespace detail {
+
+inline bool 
+nontrivialPermutation(ArrayVector<npy_intp> const & p)
+{
+    for(unsigned int k=0; k<p.size(); ++k)
+        if(p[k] != k)
+            return true;
+    return false;
+}
+
+} // namespace detail
+
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
 PyObject * 
@@ -498,9 +511,6 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
     else
     {
         arraytype = python_ptr((PyObject*)&PyArray_Type);
-
-        inverse_permutation.resize(ndim);
-        linearSequence(inverse_permutation.begin(), inverse_permutation.end());
         order = 0; // C order
     }
     
@@ -511,10 +521,13 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
                      python_ptr::keep_count);
     pythonToCppException(array);
 
-    PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-    array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
-                       python_ptr::keep_count);
-    pythonToCppException(array);
+    if(detail::nontrivialPermutation(inverse_permutation))
+    {
+        PyArray_Dims permute = { inverse_permutation.begin(), ndim };
+        array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
+                           python_ptr::keep_count);
+        pythonToCppException(array);
+    }
     
     if(arraytype != (PyObject*)&PyArray_Type && axistags)
         pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags.axistags) != -1);

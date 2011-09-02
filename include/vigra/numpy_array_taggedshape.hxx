@@ -175,6 +175,11 @@ class PyAxisTags
                            "PyAxisTags(tags): tags argument must have type 'AxisTags'.");
             pythonToCppException(false);
         }
+        else if(PySequence_Length(tags) == 0)
+        {
+            return;
+        }
+        
         if(createCopy)
         {
             python_ptr func(PyString_FromString("__copy__"), python_ptr::keep_count);
