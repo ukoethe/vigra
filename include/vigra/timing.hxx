@@ -269,6 +269,29 @@
 
 #endif // WIN32
 
+// TICTOCLOOP runs the body inner_repetitions times, and minimizes the result over a number of outer_repetitions runs,
+//  outputting the final minimal average to std::cerr
+#define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions) \
+    { \
+	USETICTOC \
+	    double tictoc_best_, tictoc_inner_repetitions_=inner_repetitions; size_t tictoc_outer_repetitions_=outer_repetitions; \
+	    for (size_t tictoccounter_=0; tictoccounter_<tictoc_outer_repetitions_; ++tictoccounter_) { \
+		TIC \
+		for (size_t tictocinnercounter_=0; tictocinnercounter_<inner_repetitions; ++tictocinnercounter_) { \
+
+		
+#define TICTOCLOOP_END \
+                } \
+		const double tictoc_cur_ = TOCN; \
+                if ((tictoccounter_==0) || (tictoc_cur_ < tictoc_best_)) \
+		    tictoc_best_ = tictoc_cur_; \
+	    } \
+	    std::cerr << tictoc_best_/tictoc_inner_repetitions_ \
+			 << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
+    }\
+
+
+
 #else // NDEBUG
 
 #define USETICTOC 
@@ -278,6 +301,10 @@
 #define TICS ""
 #define USE_NESTED_TICTOC
 #define TICPUSH
+#define TICTOCLOOP_BEGIN {
+#define TICTOCLOOP_END }
 #endif // NDEBUG
+
+
 
 #endif // VIGRA_TIMING_HXX
