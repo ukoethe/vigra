@@ -259,22 +259,30 @@ def searchfor(searchstring):
 def imshow(image):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
-       The image will be automatically scaled to the range 0...255.
+       The image will be automatically scaled to the range 0...255 when its dtype 
+       is not already 'uint8'.
     '''
     import matplotlib.pylab
     
-    if image.ndim == 3:
-        if image.shape[2] != 3:
-            raise RuntimeError("vigra.imshow(): Multi channel image must have 3 channels.")
-        if image.dtype != uint8:
-            image = colors.linearRangeMapping(image, newRange=(0.0, 255.0),\
-                                              out=image.__class__(image.shape, dtype=uint8))
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray))
-    elif image.ndim == 2:
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray), cmap=matplotlib.cm.gray, \
-                                     norm=matplotlib.cm.colors.Normalize())
+    if not hasattr(image, 'axistags'):
+        return matplotlib.pyplot.imshow(image)
+    
+    image = image.transposeToNumpyOrder()
+    if image.channels == 1:
+        image = image.dropChannelAxis().view(numpy.ndarray)
+        plot = matplotlib.pyplot.imshow(image, cmap=matplotlib.cm.gray, \
+                                         norm=matplotlib.cm.colors.Normalize())
+        matplotlib.pylab.show()
+        return plot
+    elif image.channels == 3:
+        if image.dtype != numpy.uint8:
+            out = image.__class__(image.shape, dtype=numpy.uint8, axistags=image.axistags)
+            image = colors.linearRangeMapping(image, newRange=(0.0, 255.0), out=out)
+        plot = matplotlib.pyplot.imshow(image.view(numpy.ndarray))
+        matplotlib.pylab.show()
+        return plot
     else:
-        raise RuntimeError("vigra.imshow(): ndim must be 2 or 3.")
+        raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
         
 # auto-generate code for additional Kernel generators:

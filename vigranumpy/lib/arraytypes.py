@@ -489,6 +489,13 @@ class VigraArray(numpy.ndarray):
 
         vigra.impex.writeHDF5(self, filenameOurGroup, pathInFile)
 
+    def imshow(self):
+        '''
+        Shorthand for 'vigra.imshow(self)'.
+        '''
+        import vigra
+        return vigra.imshow(self)
+
     def show(self, normalize = True):
         '''
         Display this image in a vigra.pyqt.ImageWindow.
