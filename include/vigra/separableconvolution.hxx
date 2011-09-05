@@ -1055,7 +1055,10 @@ class Kernel1D
              by windowing the Gaussian to a finite interval). However,
             if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic
             expression for the Gaussian, and <b>no</b> correction for the windowing
-            error is performed.
+            error is performed. If <tt>windowRatio = 0.0</tt>, the radius of the filter
+            window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is 
+            <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
+            is required).
 
             Precondition:
             \code
@@ -1070,7 +1073,7 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    void initGaussian(double std_dev, value_type norm);
+    void initGaussian(double std_dev, value_type norm, double windowRatio = 0.0);
 
         /** Init as a Gaussian function with norm 1.
          */
@@ -1121,7 +1124,10 @@ class Kernel1D
             by windowing the Gaussian to a finite interval. However,
             if <tt>norm</tt> is 0.0, the kernel is normalized to 1 by the analytic
             expression for the Gaussian derivative, and <b>no</b> correction for the
-            windowing error is performed.
+            windowing error is performed. If <tt>windowRatio = 0.0</tt>, the radius 
+            of the filter window is <tt>radius = round(3.0 * std_dev + 0.5 * order)</tt>, 
+            otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where 
+            <tt>windowRatio > 0.0</tt> is required).
 
             Preconditions:
             \code
@@ -1137,7 +1143,7 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    void initGaussianDerivative(double std_dev, int order, value_type norm);
+    void initGaussianDerivative(double std_dev, int order, value_type norm, double windowRatio = 0.0);
 
         /** Init as a Gaussian derivative with norm 1.
          */
@@ -1723,17 +1729,24 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
 
 template <class ARITHTYPE>
 void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
-                                       value_type norm)
+                                       value_type norm, 
+                                       double windowRatio)
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
+    vigra_precondition(windowRatio >= 0.0,
+              "Kernel1D::initGaussian(): windowRatio must be >= 0.");
 
     if(std_dev > 0.0)
     {
         Gaussian<ARITHTYPE> gauss((ARITHTYPE)std_dev);
 
         // first calculate required kernel sizes
-        int radius = (int)(3.0 * std_dev + 0.5);
+        int radius;
+        if (windowRatio == 0.0)
+            radius = (int)(3.0 * std_dev + 0.5);
+        else
+            radius = (int)(windowRatio * std_dev + 0.5);
         if(radius == 0)
             radius = 1;
 
@@ -1840,26 +1853,33 @@ void Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
 template <class ARITHTYPE>
 void
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
-                    int order,
-                    value_type norm)
+                                            int order,
+                                            value_type norm, 
+                                            double windowRatio)
 {
     vigra_precondition(order >= 0,
               "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
 
     if(order == 0)
     {
-        initGaussian(std_dev, norm);
+        initGaussian(std_dev, norm, windowRatio);
         return;
     }
 
     vigra_precondition(std_dev > 0.0,
               "Kernel1D::initGaussianDerivative(): "
               "Standard deviation must be > 0.");
+    vigra_precondition(windowRatio >= 0.0,
+              "Kernel1D::initGaussianDerivative(): windowRatio must be >= 0.");
 
     Gaussian<ARITHTYPE> gauss((ARITHTYPE)std_dev, order);
 
     // first calculate required kernel sizes
-    int radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);
+    int radius;
+    if(windowRatio == 0.0)
+        radius = (int)(3.0 * std_dev + 0.5 * order + 0.5);
+    else
+        radius = (int)(windowRatio * std_dev + 0.5);
     if(radius == 0)
         radius = 1;
 

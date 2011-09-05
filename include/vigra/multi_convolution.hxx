@@ -321,18 +321,24 @@ struct multiArrayScaleParam
 template <unsigned dim>
 class ConvolutionOptions
 {
-     typedef detail::multiArrayScaleParam<dim> ParamVec;
-     typedef typename ParamVec::return_type    ParamIt;
-     ParamVec sigma_eff;
-     ParamVec sigma_d;
-     ParamVec step_size;
-     ParamVec outer_scale;
   public:
+    typedef typename MultiArrayShape<dim>::type Shape;
+    typedef detail::multiArrayScaleParam<dim> ParamVec;
+    typedef typename ParamVec::return_type    ParamIt;
+
+    ParamVec sigma_eff;
+    ParamVec sigma_d;
+    ParamVec step_size;
+    ParamVec outer_scale;
+    double window_ratio;
+    Shape from_point, to_point;
+     
     ConvolutionOptions()
     : sigma_eff(0.0),
       sigma_d(0.0),
       step_size(1.0),
-      outer_scale(0.0)
+      outer_scale(0.0),
+      window_ratio(0.0)
     {}
 
     typedef typename detail::WrapDoubleIteratorTriple<ParamIt, ParamIt, ParamIt>
@@ -440,7 +446,40 @@ class ConvolutionOptions
     ConvolutionOptions<dim> & outerScale(...);
 #endif
 
+        /** Size of the filter window as a multiple of the scale parameter. 
 
+            This option is only used for Gaussian filters and their derivatives.
+            By default, the window size of a Gaussian filter is automatically 
+            determined such that the error resulting from restricting the 
+            infinitely large Gaussian function to a finite size is minimized. 
+            In particular, the window radius is determined as
+            <tt>radius = round(3.0 * sigma + 0.5 * order)</tt>, where 'order' is the 
+            desired derivative order. In some cases, it is desirable to trade off 
+            accuracy for speed, and this function can be used to request a smaller
+            window radius.
+            
+            Default: <tt>0.0</tt> (i.e. determine the window size automatically)
+        */
+    ConvolutionOptions<dim> & filterWindowSize(double ratio)
+    {
+        vigra_precondition(ratio >= 0.0,
+            "ConvolutionOptions::filterWindowSize(): ratio must not be negative.");
+        window_ratio = ratio;
+    }
+
+        /** Restrict the filter to a subregion of the input array. 
+
+            This is useful for speeding up computations by ignoring irrelevant 
+            areas in the array. <b>Note:</b> It is assumed that the output array
+            of the convolution has the size given in this function.
+            
+            Default: <tt>from = Shape(), to = Shape()</tt> (i.e. use entire array)
+        */
+    ConvolutionOptions<dim> & subregion(Shape const & from, Shape const & to)
+    {
+        from_point = from;
+        to_point = to;
+    }
 };
 
 namespace detail
@@ -891,7 +930,7 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     ArrayVector<Kernel1D<double> > kernels(N);
 
     for (int dim = 0; dim < N; ++dim, ++params)
-        kernels[dim].initGaussian(params.sigma_scaled(function_name));
+        kernels[dim].initGaussian(params.sigma_scaled(function_name), 1.0, opt.window_ratio);
 
     separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin());
 }
@@ -1048,7 +1087,7 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled(function_name);
-        plain_kernels[dim].initGaussian(sigma);
+        plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
     }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
@@ -1057,8 +1096,8 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
     for (int dim = 0; dim < N; ++dim, ++params2)
     {
         ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
-        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 1);
-        detail::scaleKernel(kernels[dim], 1 / params2.step_size());
+        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 1, 1.0, opt.window_ratio);
+        detail::scaleKernel(kernels[dim], 1.0 / params2.step_size());
         separableConvolveMultiArray(si, shape, src, di, ElementAccessor(dim, dest), kernels.begin());
     }
 }
@@ -1342,7 +1381,7 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled("laplacianOfGaussianMultiArray");
-        plain_kernels[dim].initGaussian(sigma);
+        plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
     }
     
     MultiArray<N, KernelType> derivative(shape);
@@ -1351,8 +1390,8 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
     for (int dim = 0; dim < N; ++dim, ++params2)
     {
         ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
-        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 2);
-        detail::scaleKernel(kernels[dim], 1 / (params2.step_size() * params2.step_size()));
+        kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 2, 1.0, opt.window_ratio);
+        detail::scaleKernel(kernels[dim], 1.0 / sq(params2.step_size()));
 
         if (dim == 0)
         {
@@ -1519,7 +1558,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
     for (int dim = 0; dim < N; ++dim, ++params)
     {
         double sigma = params.sigma_scaled("hessianOfGaussianMultiArray");
-        plain_kernels[dim].initGaussian(sigma);
+        plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
     }
 
     typedef VectorElementAccessor<DestAccessor> ElementAccessor;
@@ -1534,12 +1573,12 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
             ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
             if(i == j)
             {
-                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 2);
+                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 2, 1.0, opt.window_ratio);
             }
             else
             {
-                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 1);
-                kernels[j].initGaussianDerivative(params_j.sigma_scaled(), 1);
+                kernels[i].initGaussianDerivative(params_i.sigma_scaled(), 1, 1.0, opt.window_ratio);
+                kernels[j].initGaussianDerivative(params_j.sigma_scaled(), 1, 1.0, opt.window_ratio);
             }
             detail::scaleKernel(kernels[i], 1 / params_i.step_size());
             detail::scaleKernel(kernels[j], 1 / params_j.step_size());
