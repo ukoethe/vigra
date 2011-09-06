@@ -333,26 +333,32 @@ del _genWatershedsUnionFind
 
 # define tensor convenience functions
 def _genTensorConvenienceFunctions():
-    def hessianOfGaussianEigenvalues(image, scale, out = None, sigma_d = 0.0, step_size = 1.0):
+    def hessianOfGaussianEigenvalues(image, scale, out=None, 
+                                     sigma_d=0.0, step_size=1.0, window_size=0.0):
         '''Compute the eigenvalues of the Hessian of Gaussian at the given scale
            for a scalar image or volume.
            
            Calls :func:`hessianOfGaussian` and :func:`tensorEigenvalues`.
         '''
         
-        return filters.tensorEigenvalues(filters.hessianOfGaussian(image, scale, sigma_d=sigma_d, step_size=step_size), out=out)
+        hessian = filters.hessianOfGaussian(image, scale, 
+                                            sigma_d=sigma_d, step_size=step_size, window_size=window_size)
+        return filters.tensorEigenvalues(hessian, out=out)
     
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
 
-    def structureTensorEigenvalues(image, innerScale, outerScale, out = None, sigma_d = 0.0, step_size = 1.0):
+    def structureTensorEigenvalues(image, innerScale, outerScale, out=None, 
+                                   sigma_d=0.0, step_size=1.0, window_size=0.0):
         '''Compute the eigenvalues of the structure tensor at the given scales
            for a scalar or multi-channel image or volume.
            
            Calls :func:`structureTensor` and :func:`tensorEigenvalues`.
         '''
 
-        return filters.tensorEigenvalues(filters.structureTensor(image, innerScale, outerScale, sigma_d=sigma_d, step_size=step_size), out=out)
+        st = filters.structureTensor(image, innerScale, outerScale, 
+                                     sigma_d=sigma_d, step_size=step_size, window_size=window_size)
+        return filters.tensorEigenvalues(st, out=out)
     
     structureTensorEigenvalues.__module__ = 'vigra.filters'
     filters.structureTensorEigenvalues = structureTensorEigenvalues
