@@ -334,7 +334,7 @@ del _genWatershedsUnionFind
 # define tensor convenience functions
 def _genTensorConvenienceFunctions():
     def hessianOfGaussianEigenvalues(image, scale, out=None, 
-                                     sigma_d=0.0, step_size=1.0, window_size=0.0):
+                                     sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the Hessian of Gaussian at the given scale
            for a scalar image or volume.
            
@@ -342,14 +342,15 @@ def _genTensorConvenienceFunctions():
         '''
         
         hessian = filters.hessianOfGaussian(image, scale, 
-                                            sigma_d=sigma_d, step_size=step_size, window_size=window_size)
+                                            sigma_d=sigma_d, step_size=step_size, 
+                                            window_size=window_size, roi=roi)
         return filters.tensorEigenvalues(hessian, out=out)
     
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
 
     def structureTensorEigenvalues(image, innerScale, outerScale, out=None, 
-                                   sigma_d=0.0, step_size=1.0, window_size=0.0):
+                                   sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the structure tensor at the given scales
            for a scalar or multi-channel image or volume.
            
@@ -357,7 +358,8 @@ def _genTensorConvenienceFunctions():
         '''
 
         st = filters.structureTensor(image, innerScale, outerScale, 
-                                     sigma_d=sigma_d, step_size=step_size, window_size=window_size)
+                                     sigma_d=sigma_d, step_size=step_size, 
+                                     window_size=window_size, roi=roi)
         return filters.tensorEigenvalues(st, out=out)
     
     structureTensorEigenvalues.__module__ = 'vigra.filters'

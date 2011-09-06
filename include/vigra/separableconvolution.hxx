@@ -59,9 +59,9 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
                               KernelIterator kernel, KernelAccessor ka,
-                              int kleft, int kright)
+                              int kleft, int kright,
+                              int start = 0, int stop = 0)
 {
-  //    int w = iend - is;
     int w = std::distance( is, iend );
 
     typedef typename PromoteTraits<
@@ -69,8 +69,12 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
+    
+    if(stop == 0)
+        stop = w;
+    is += start;
 
-    for(int x=0; x<w; ++x, ++is, ++id)
+    for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
@@ -137,9 +141,9 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
                               KernelIterator kernel, KernelAccessor ka,
-                              int kleft, int kright, Norm norm)
+                              int kleft, int kright, Norm norm,
+                              int start = 0, int stop = 0)
 {
-  //    int w = iend - is;
     int w = std::distance( is, iend );
 
     typedef typename PromoteTraits<
@@ -147,8 +151,12 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
-
-    for(int x=0; x<w; ++x, ++is, ++id)
+    
+    if(stop == 0)
+        stop = w;
+    is += start;
+    
+    for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
@@ -201,7 +209,7 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                 sum += ka(ik) * sa(iss);
             }
         }
-
+        
         da.set(detail::RequiresExplicitCast<typename
                       DestAccessor::value_type>::cast(sum), id);
     }
@@ -219,9 +227,9 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
                               KernelIterator kernel, KernelAccessor ka,
-                              int kleft, int kright)
+                              int kleft, int kright,
+                              int start = 0, int stop = 0)
 {
-  //    int w = iend - is;
     int w = std::distance( is, iend );
 
     typedef typename PromoteTraits<
@@ -229,8 +237,12 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
+    
+    if(stop == 0)
+        stop = w;
+    is += start;
 
-    for(int x=0; x<w; ++x, ++is, ++id)
+    for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
@@ -295,9 +307,9 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
                               KernelIterator kernel, KernelAccessor ka,
-                              int kleft, int kright)
+                              int kleft, int kright,
+                              int start = 0, int stop = 0)
 {
-  //    int w = iend - is;
     int w = std::distance( is, iend );
 
     typedef typename PromoteTraits<
@@ -305,8 +317,12 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
             typename KernelAccessor::value_type>::Promote SumType;
 
     SrcIterator ibegin = is;
+    
+    if(stop == 0)
+        stop = w;
+    is += start;
 
-    for(int x=0; x<w; ++x, ++is, ++id)
+    for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
@@ -371,19 +387,34 @@ template <class SrcIterator, class SrcAccessor,
 void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                               DestIterator id, DestAccessor da,
                               KernelIterator kernel, KernelAccessor ka,
-                              int kleft, int kright)
+                              int kleft, int kright,
+                              int start = 0, int stop = 0)
 {
-  //    int w = iend - is;
     int w = std::distance( is, iend );
+    if(start < stop) // we got a valid subrange
+    {
+        if(w + kleft < stop)
+            stop = w + kleft;
+        if(start < kright)
+        {
+            id += kright - start;
+            start = kright;
+        }
+    }
+    else
+    {
+        id += kright;
+        start = kright;
+        stop = w + kleft;
+    }
 
     typedef typename PromoteTraits<
             typename SrcAccessor::value_type,
             typename KernelAccessor::value_type>::Promote SumType;
 
-    is += kright;
-    id += kright;
+    is += start;
 
-    for(int x=kright; x<w+kleft; ++x, ++is, ++id)
+    for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
@@ -434,6 +465,14 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     The kernel's value_type must be an algebraic field,
     i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
     be defined.
+    
+    If <tt>start</tt> and <tt>stop</tt> are non-zero, the relation
+    <tt>0 <= start < stop <= width</tt> must hold (where <tt>width</tt>
+    is the length of the input array). The convolution is then restricted to that 
+    subrange, and it is assumed that the output array only refers to that
+    subrange (i.e. <tt>id</tt> points to the element corresponding to 
+    <tt>start</tt>). If <tt>start</tt> and <tt>stop</tt> are both zero 
+    (the default), the entire array is convolved.
 
     <b> Declarations:</b>
 
@@ -446,7 +485,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
                           DestIterator id, DestAccessor da,
                           KernelIterator ik, KernelAccessor ka,
-                          int kleft, int kright, BorderTreatmentMode border)
+                          int kleft, int kright, BorderTreatmentMode border,
+                          int start = 0, int stop = 0 )
     }
     \endcode
 
@@ -460,7 +500,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
                           tuple5<KernelIterator, KernelAccessor,
-                                 int, int, BorderTreatmentMode> kernel)
+                                 int, int, BorderTreatmentMode> kernel,
+                           int start = 0, int stop = 0)
     }
     \endcode
 
@@ -540,7 +581,8 @@ template <class SrcIterator, class SrcAccessor,
 void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                   DestIterator id, DestAccessor da,
                   KernelIterator ik, KernelAccessor ka,
-                  int kleft, int kright, BorderTreatmentMode border)
+                  int kleft, int kright, BorderTreatmentMode border,
+                  int start = 0, int stop = 0)
 {
     typedef typename KernelAccessor::value_type KernelValue;
 
@@ -553,28 +595,32 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     int w = std::distance( is, iend );
 
     vigra_precondition(w >= std::max(kright, -kleft) + 1,
-                 "convolveLine(): kernel longer than line\n");
+                 "convolveLine(): kernel longer than line.\n");
+                 
+    if(stop != 0)
+        vigra_precondition(0 <= start && start < stop && stop <= w,
+                        "convolveLine(): invalid subrange (start, stop).\n");
 
     switch(border)
     {
       case BORDER_TREATMENT_WRAP:
       {
-        internalConvolveLineWrap(is, iend, sa, id, da, ik, ka, kleft, kright);
+        internalConvolveLineWrap(is, iend, sa, id, da, ik, ka, kleft, kright, start, stop);
         break;
       }
       case BORDER_TREATMENT_AVOID:
       {
-        internalConvolveLineAvoid(is, iend, sa, id, da, ik, ka, kleft, kright);
+        internalConvolveLineAvoid(is, iend, sa, id, da, ik, ka, kleft, kright, start, stop);
         break;
       }
       case BORDER_TREATMENT_REFLECT:
       {
-        internalConvolveLineReflect(is, iend, sa, id, da, ik, ka, kleft, kright);
+        internalConvolveLineReflect(is, iend, sa, id, da, ik, ka, kleft, kright, start, stop);
         break;
       }
       case BORDER_TREATMENT_REPEAT:
       {
-        internalConvolveLineRepeat(is, iend, sa, id, da, ik, ka, kleft, kright);
+        internalConvolveLineRepeat(is, iend, sa, id, da, ik, ka, kleft, kright, start, stop);
         break;
       }
       case BORDER_TREATMENT_CLIP:
@@ -583,13 +629,14 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         typedef typename KernelAccessor::value_type KT;
         KT norm = NumericTraits<KT>::zero();
         KernelIterator iik = ik + kleft;
-        for(int i=kleft; i<=kright; ++i, ++iik) norm += ka(iik);
+        for(int i=kleft; i<=kright; ++i, ++iik)
+            norm += ka(iik);
 
         vigra_precondition(norm != NumericTraits<KT>::zero(),
                      "convolveLine(): Norm of kernel must be != 0"
                      " in mode BORDER_TREATMENT_CLIP.\n");
 
-        internalConvolveLineClip(is, iend, sa, id, da, ik, ka, kleft, kright, norm);
+        internalConvolveLineClip(is, iend, sa, id, da, ik, ka, kleft, kright, norm, start, stop);
         break;
       }
       default:
@@ -607,12 +654,13 @@ inline
 void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   pair<DestIterator, DestAccessor> dest,
                   tuple5<KernelIterator, KernelAccessor,
-                         int, int, BorderTreatmentMode> kernel)
+                         int, int, BorderTreatmentMode> kernel,
+                  int start = 0, int stop = 0)
 {
     convolveLine(src.first, src.second, src.third,
                  dest.first, dest.second,
                  kernel.first, kernel.second,
-                 kernel.third, kernel.fourth, kernel.fifth);
+                 kernel.third, kernel.fourth, kernel.fifth, start, stop);
 }
 
 /********************************************************/

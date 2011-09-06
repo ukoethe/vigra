@@ -185,23 +185,38 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
                         NumpyArray<ndim, Multiband<VoxelType> > res=python::object(),
                         python::object sigma_d = python::object(0.0), 
                         python::object step_size = python::object(1.0),
-                        double window_size = 0.0)
+                        double window_size = 0.0, 
+                        python::object roi = python::object())
 {
-       
-    pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianSmoothing");
+    static const unsigned int N = ndim - 1;
+    
+    pythonScaleParam<N> params(sigma, sigma_d, step_size, "gaussianSmoothing");
     
     params.permuteLikewise(array);
     
-    res.reshapeIfEmpty(array.taggedShape(), 
-            "gaussianSmoothing(): Output array has wrong shape.");
-
+    ConvolutionOptions<N> opt(params().filterWindowSize(window_size));
+    
+    if(roi != python::object())
+    {
+        typedef typename MultiArrayShape<N>::type Shape;
+        Shape start = python::extract<Shape>(roi[0])();
+        Shape stop  = python::extract<Shape>(roi[1])();
+        opt.subarray(start, stop);
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start), 
+                "gaussianSmoothing(): Output array has wrong shape.");
+    }
+    else
+    {
+        res.reshapeIfEmpty(array.taggedShape(), 
+                "gaussianSmoothing(): Output array has wrong shape.");
+    }
+    
     PyAllowThreads _pythread;
     for(int k=0; k<array.shape(ndim-1); ++k)
     {
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), 
-                                 params().filterWindowSize(window_size));
+        gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), opt);
     }
     
     return res;
@@ -312,7 +327,8 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
                           NumpyArray<N, Multiband<PixelType> > res=python::object(),
                           python::object sigma_d = python::object(0.0), 
                           python::object step_size = python::object(1.0),
-                          double window_size = 0.0)
+                          double window_size = 0.0, 
+                          python::object roi = python::object())
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
     params.permuteLikewise(array);
@@ -320,16 +336,29 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
     std::string description("channel-wise Laplacian of Gaussian, scale=");
     description += asString(scale);
     
-    res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
-            "laplacianOfGaussian(): Output array has wrong shape.");
+    ConvolutionOptions<N-1> opt(params().filterWindowSize(window_size));
+    
+    if(roi != python::object())
+    {
+        typedef typename MultiArrayShape<N-1>::type Shape;
+        Shape start = python::extract<Shape>(roi[0])();
+        Shape stop  = python::extract<Shape>(roi[1])();
+        opt.subarray(start, stop);
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
+                "laplacianOfGaussian(): Output array has wrong shape.");
+    }
+    else
+    {
+        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+                "laplacianOfGaussian(): Output array has wrong shape.");
+    }
     
     PyAllowThreads _pythread;
     for(int k=0; k<array.shape(N-1); ++k)
     {
         MultiArrayView<N-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), 
-                                      params().filterWindowSize(window_size));
+        laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), opt);
     }
     
     return res;
@@ -506,7 +535,7 @@ void defineConvolutionFunctions()
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),
         (arg("array"), arg("sigma"), arg("out")=python::object(), 
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0),
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
         "Perform Gaussian smoothing of a 2D or 3D scalar or multiband array.\n\n"
         "Each channel of the array is smoothed independently. "
         "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is "
@@ -521,13 +550,22 @@ void defineConvolutionFunctions()
         "'window_size' specifies the ratio between the effective filter scale and "
         "the size of the filter window. Use a value around 2.0 to speed-up "
         "the computation by increasing the error resulting from cutting off the Gaussian. "
-        "For the default 0.0, the window size is automatically determined.\n\n"
+        "For the default 0.0, the window size is automatically determined.\n"
+        "\n"
+        "If 'roi' is not None, it must specify the desired region-of-interest as "
+        "a pair '(first_point, beyond_last_point)' (e.g. 'roi=((10,20), (200,250))'). "
+        "As usual, the second point is the first point outside the ROI, and the ROI "
+        "must not be outside the input array dimensions. "
+        "The coordinates refer only to non-channel axes - if your array has an explicit "
+        "channel axis, the ROI dimension must be one less than the array dimension. "
+        "If you pass in an explicit 'out' array and specify an ROI, the 'out' array "
+        "must have the shape of the ROI.\n\n"
         "For details see gaussianSmoothing_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,4>),
         (arg("array"), arg("sigma"), arg("out")=python::object(), 
-         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0),
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0, arg("roi")=python::object()),
         "Smooth volume with Gaussian.\n");
 
     def("recursiveGaussianSmoothing2D",
@@ -566,7 +604,7 @@ void defineConvolutionFunctions()
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,3>),
          (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
-          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0),
+          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
           "Filter 2D or 3D scalar array with the Laplacian of Gaussian operator at the given scale.\n\n"
           "If 'sigma' is a single value, an isotropic filter at this scale is "
           "applied (i.e., each dimension is filtered in the same way). "
@@ -577,13 +615,13 @@ void defineConvolutionFunctions()
           "pixels for each dimension. "
           "The length of the tuples or lists must be equal to the "
           "number of spatial dimensions.\n\n" 
-          "'window_size' has the same meaning as in gaussianSmoothing().\n\n"
+          "'window_size' and 'roi' have the same meaning as in :func:`gaussianSmoothing`.\n\n"
           "For details see laplacianOfGaussianMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,4>),
          (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
-          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0),
+         arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
          "Likewise for a scalar volume.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),

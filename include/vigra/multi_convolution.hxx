@@ -48,6 +48,7 @@
 #include "multi_pointoperators.hxx"
 #include "functorexpression.hxx"
 #include "tinyvector.hxx"
+#include "algorithm.hxx"
 
 namespace vigra
 {
@@ -476,7 +477,7 @@ class ConvolutionOptions
             
             Default: <tt>from = Shape(), to = Shape()</tt> (i.e. use entire array)
         */
-    ConvolutionOptions<dim> & subregion(Shape const & from, Shape const & to)
+    ConvolutionOptions<dim> & subarray(Shape const & from, Shape const & to)
     {
         from_point = from;
         to_point = to;
@@ -503,27 +504,29 @@ internalSeparableConvolveMultiArrayTmp(
     enum { N = 1 + SrcIterator::level };
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+    typedef typename AccessorTraits<TmpType>::default_accessor TmpAcessor;
 
     // temporay array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+    
+    TmpAcessor acc;
 
-    { // only operate on first dimension here
+    {
+        // only operate on first dimension here
         SNavigator snav( si, shape, 0 );
         DNavigator dnav( di, shape, 0 );
-
+        
         for( ; snav.hasMore(); snav++, dnav++ )
         {
-             // first copy source to temp for maximum cache efficiency
-             copyLine( snav.begin(), snav.end(), src,
-                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+             // first copy source to tmp for maximum cache efficiency
+             copyLine(snav.begin(), snav.end(), src, tmp.begin(), acc);
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(),
-                                        typename AccessorTraits<TmpType>::default_const_accessor()),
-                           destIter( dnav.begin(), dest ),
-                           kernel1d( *kit ) );
+             convolveLine(srcIterRange(tmp.begin(), tmp.end(), acc),
+                          destIter( dnav.begin(), dest ),
+                          kernel1d( *kit ) );
         }
         ++kit;
     }
@@ -537,17 +540,112 @@ internalSeparableConvolveMultiArrayTmp(
 
         for( ; dnav.hasMore(); dnav++ )
         {
-             // first copy source to temp for maximum cache efficiency
-             copyLine( dnav.begin(), dnav.end(), dest,
-                       tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+             // first copy source to tmp since convolveLine() cannot work in-place
+             copyLine(dnav.begin(), dnav.end(), dest, tmp.begin(), acc);
 
-             convolveLine( srcIterRange(tmp.begin(), tmp.end(),
-                                        typename AccessorTraits<TmpType>::default_const_accessor()),
-                           destIter( dnav.begin(), dest ),
-                           kernel1d( *kit ) );
+             convolveLine(srcIterRange(tmp.begin(), tmp.end(), acc),
+                          destIter( dnav.begin(), dest ),
+                          kernel1d( *kit ) );
         }
     }
 }
+
+/********************************************************/
+/*                                                      */
+/*         internalSeparableConvolveSubarray            */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class KernelIterator>
+void
+internalSeparableConvolveSubarray(
+                      SrcIterator si, SrcShape const & shape, SrcAccessor src,
+                      DestIterator di, DestAccessor dest, KernelIterator kit,
+                      SrcShape const & start, SrcShape const & stop)
+{
+    enum { N = 1 + SrcIterator::level };
+
+    typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+    typedef MultiArray<N, TmpType> TmpArray;
+    typedef typename TmpArray::traverser TmpIterator;
+    typedef typename AccessorTraits<TmpType>::default_accessor TmpAcessor;
+    
+    SrcShape sstart, sstop, axisorder, tmpshape;
+    TinyVector<double, N> overhead;
+    for(int k=0; k<N; ++k)
+    {
+        sstart[k] = start[k] - kit[k].right();
+        if(sstart[k] < 0)
+            sstart[k] = 0;
+        sstop[k] = stop[k] - kit[k].left();
+        if(sstop[k] > shape[k])
+            sstop[k] = shape[k];
+        overhead[k] = double(sstop[k] - sstart[k]) / (stop[k] - start[k]);
+    }
+    
+    indexSort(overhead.begin(), overhead.end(), axisorder.begin(), std::greater<double>());
+    
+    SrcShape dstart, dstop(sstop - sstart);
+    dstop[axisorder[0]]  = stop[axisorder[0]] - start[axisorder[0]];
+    
+    // temporay array to hold the current line to enable in-place operation
+    MultiArray<N, TmpType> tmp(dstop);
+
+    typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
+    typedef MultiArrayNavigator<TmpIterator, N> TNavigator;
+    typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+    
+    TmpAcessor acc;
+
+    {
+        // only operate on first dimension here
+        SNavigator snav( si, sstart, sstop, axisorder[0]);
+        TNavigator tnav( tmp.traverser_begin(), dstart, dstop, axisorder[0]);
+        
+        ArrayVector<TmpType> tmpline(sstop[axisorder[0]] - sstart[axisorder[0]]);
+        
+        int lstart = start[axisorder[0]] - sstart[axisorder[0]];
+        int lstop  = lstart + (stop[axisorder[0]] - start[axisorder[0]]);
+
+        for( ; snav.hasMore(); snav++, tnav++ )
+        {
+            // first copy source to tmp for maximum cache efficiency
+            copyLine(snav.begin(), snav.end(), src, tmpline.begin(), acc);
+            
+            convolveLine(srcIterRange(tmpline.begin(), tmpline.end(), acc),
+                         destIter(tnav.begin(), acc),
+                         kernel1d( kit[axisorder[0]] ), lstart, lstop);
+        }
+    }
+    
+    // operate on further dimensions
+    for( int d = 1; d < N; ++d)
+    {
+        TNavigator tnav( tmp.traverser_begin(), dstart, dstop, axisorder[d]);
+        
+        ArrayVector<TmpType> tmpline(dstop[axisorder[d]] - dstart[axisorder[d]]);
+        
+        int lstart = start[axisorder[d]] - sstart[axisorder[d]];
+        int lstop  = lstart + (stop[axisorder[d]] - start[axisorder[d]]);
+
+        for( ; tnav.hasMore(); tnav++ )
+        {
+            // first copy source to tmp because convolveLine() cannot work in-place
+            copyLine(tnav.begin(), tnav.end(), acc, tmpline.begin(), acc );
+
+            convolveLine(srcIterRange(tmpline.begin(), tmpline.end(), acc),
+                         destIter( tnav.begin() + lstart, acc ),
+                         kernel1d( kit[axisorder[d]] ), lstart, lstop);
+        }
+        
+        dstart[axisorder[d]] = lstart;
+        dstop[axisorder[d]] = lstop;
+    }
+    
+    copyMultiArray(tmp.traverser_begin()+dstart, stop-start, acc, di, dest);              
+}
+
 
 template <class K>
 void 
@@ -595,6 +693,12 @@ scaleKernel(K & kernel, double a)
     array directly would cause round-off errors (i.e. if
     <tt>typeid(typename NumericTraits<typename DestAccessor::value_type>::RealPromote)
     != typeid(typename DestAccessor::value_type)</tt>.
+    
+    If <tt>start</tt> and <tt>stop</tt> have non-default values, they must represent
+    a valid subarray of the input array. The convolution is then restricted to that 
+    subarray, and it is assumed that the output array only refers to the
+    subarray (i.e. <tt>diter</tt> points to the element corresponding to 
+    <tt>start</tt>). 
 
     <b> Declarations:</b>
 
@@ -607,7 +711,9 @@ scaleKernel(K & kernel, double a)
         void
         separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest,
-                                    Kernel1D<T> const & kernel);
+                                    Kernel1D<T> const & kernel,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
 
         // apply each kernel from the sequence 'kernels' in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -615,7 +721,9 @@ scaleKernel(K & kernel, double a)
         void
         separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest,
-                                    KernelIterator kernels);
+                                    KernelIterator kernels,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
     }
     \endcode
 
@@ -628,7 +736,9 @@ scaleKernel(K & kernel, double a)
         void
         separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest,
-                                    Kernel1D<T> const & kernel);
+                                    Kernel1D<T> const & kernel,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
 
         // apply each kernel from the sequence 'kernels' in turn
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -636,7 +746,9 @@ scaleKernel(K & kernel, double a)
         void
         separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest,
-                                    KernelIterator kernels);
+                                    KernelIterator kernels,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
     }
     \endcode
 
@@ -676,11 +788,23 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                             DestIterator d, DestAccessor dest, KernelIterator kernels )
+                             DestIterator d, DestAccessor dest, 
+                             KernelIterator kernels,
+                             SrcShape const & start = SrcShape(),
+                             SrcShape const & stop = SrcShape())
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
 
-    if(!IsSameType<TmpType, typename DestAccessor::value_type>::boolResult)
+    if(stop != SrcShape())
+    {
+        enum { N = 1 + SrcIterator::level };
+        for(int k=0; k<N; ++k)
+            vigra_precondition(0 <= start[k] && start[k] < stop[k] && stop[k] <= shape[k],
+              "separableConvolveMultiArray(): invalid subarray shape.");
+
+        detail::internalSeparableConvolveSubarray(s, shape, src, d, dest, kernels, start, stop);
+    }
+    else if(!IsSameType<TmpType, typename DestAccessor::value_type>::boolResult)
     {
         // need a temporary array to avoid rounding errors
         MultiArray<SrcShape::static_size, TmpType> tmpArray(shape);
@@ -700,10 +824,13 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline
 void separableConvolveMultiArray(
     triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
+    pair<DestIterator, DestAccessor> const & dest, 
+    KernelIterator kit,
+    SrcShape const & start = SrcShape(),
+    SrcShape const & stop = SrcShape())
 {
     separableConvolveMultiArray( source.first, source.second, source.third,
-                                 dest.first, dest.second, kit );
+                                 dest.first, dest.second, kit, start, stop );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -711,11 +838,13 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest,
-                             Kernel1D<T> const & kernel )
+                             Kernel1D<T> const & kernel,
+                             SrcShape const & start = SrcShape(),
+                             SrcShape const & stop = SrcShape())
 {
     ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
 
-    separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin() );
+    separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin(), start, stop);
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -723,12 +852,14 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                             pair<DestIterator, DestAccessor> const & dest,
-                            Kernel1D<T> const & kernel )
+                            Kernel1D<T> const & kernel,
+                            SrcShape const & start = SrcShape(),
+                            SrcShape const & stop = SrcShape())
 {
     ArrayVector<Kernel1D<T> > kernels(source.second.size(), kernel);
 
     separableConvolveMultiArray( source.first, source.second, source.third,
-                                 dest.first, dest.second, kernels.begin() );
+                                 dest.first, dest.second, kernels.begin(), start, stop);
 }
 
 /********************************************************/
@@ -745,6 +876,12 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     iterators, shape objects and accessors. The destination array is required to
     already have the correct size.
 
+    If <tt>start</tt> and <tt>stop</tt> have non-default values, they must represent
+    a valid subarray of the input array. The convolution is then restricted to that 
+    subarray, and it is assumed that the output array only refers to the
+    subarray (i.e. <tt>diter</tt> points to the element corresponding to 
+    <tt>start</tt>). 
+
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
 
     <b> Declarations:</b>
@@ -757,7 +894,9 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         convolveMultiArrayOneDimension(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                        DestIterator diter, DestAccessor dest,
-                                       unsigned int dim, vigra::Kernel1D<T> const & kernel);
+                                       unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                                       SrcShape const & start = SrcShape(),
+                                       SrcShape const & stop = SrcShape());
     }
     \endcode
 
@@ -769,7 +908,9 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                        pair<DestIterator, DestAccessor> const & dest,
-                                       unsigned int dim, vigra::Kernel1D<T> const & kernel);
+                                       unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                                       SrcShape const & start = SrcShape(),
+                                       SrcShape const & stop = SrcShape());
     }
     \endcode
 
@@ -798,7 +939,9 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 void
 convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccessor src,
                                DestIterator d, DestAccessor dest,
-                               unsigned int dim, vigra::Kernel1D<T> const & kernel )
+                               unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                               SrcShape const & start = SrcShape(),
+                               SrcShape const & stop = SrcShape())
 {
     enum { N = 1 + SrcIterator::level };
     vigra_precondition( dim < N,
@@ -806,13 +949,25 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
                         "than the data dimensionality" );
 
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
+    typedef typename AccessorTraits<TmpType>::default_const_accessor TmpAccessor;
     ArrayVector<TmpType> tmp( shape[dim] );
 
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
     typedef MultiArrayNavigator<DestIterator, N> DNavigator;
+    
+    SrcShape sstart, sstop(shape), dstart, dstop(shape);
+    
+    if(stop != SrcShape())
+    {
+        sstart = start;
+        sstop  = stop;
+        sstart[dim] = 0;
+        sstop[dim]  = shape[dim];
+        dstop = stop - start;
+    }
 
-    SNavigator snav( s, shape, dim );
-    DNavigator dnav( d, shape, dim );
+    SNavigator snav( s, sstart, sstop, dim );
+    DNavigator dnav( d, dstart, dstop, dim );
 
     for( ; snav.hasMore(); snav++, dnav++ )
     {
@@ -820,9 +975,9 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
          copyLine( snav.begin(), snav.end(), src,
            tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-         convolveLine( srcIterRange( tmp.begin(), tmp.end(), typename AccessorTraits<TmpType>::default_const_accessor()),
-                       destIter( dnav.begin(), dest ),
-                       kernel1d( kernel ) );
+         convolveLine(srcIterRange( tmp.begin(), tmp.end(), TmpAccessor()),
+                      destIter( dnav.begin(), dest ),
+                      kernel1d( kernel), start[dim], stop[dim]);
     }
 }
 
@@ -831,10 +986,12 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                pair<DestIterator, DestAccessor> const & dest,
-                               unsigned int dim, vigra::Kernel1D<T> const & kernel )
+                               unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                               SrcShape const & start = SrcShape(),
+                               SrcShape const & stop = SrcShape())
 {
-    convolveMultiArrayOneDimension( source.first, source.second, source.third,
-                                   dest.first, dest.second, dim, kernel );
+    convolveMultiArrayOneDimension(source.first, source.second, source.third,
+                                   dest.first, dest.second, dim, kernel, start, stop);
 }
 
 /********************************************************/
@@ -934,7 +1091,7 @@ gaussianSmoothMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src
     for (int dim = 0; dim < N; ++dim, ++params)
         kernels[dim].initGaussian(params.sigma_scaled(function_name), 1.0, opt.window_ratio);
 
-    separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin());
+    separableConvolveMultiArray(s, shape, src, d, dest, kernels.begin(), opt.from_point, opt.to_point);
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1100,7 +1257,8 @@ gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor s
         ArrayVector<Kernel1D<KernelType> > kernels(plain_kernels);
         kernels[dim].initGaussianDerivative(params2.sigma_scaled(), 1, 1.0, opt.window_ratio);
         detail::scaleKernel(kernels[dim], 1.0 / params2.step_size());
-        separableConvolveMultiArray(si, shape, src, di, ElementAccessor(dim, dest), kernels.begin());
+        separableConvolveMultiArray(si, shape, src, di, ElementAccessor(dim, dest), kernels.begin(), 
+                                    opt.from_point, opt.to_point);
     }
 }
 
@@ -1260,7 +1418,7 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         detail::scaleKernel(symmetric, 1 / *step_size_it);
         convolveMultiArrayOneDimension(si, shape, src,
                                        di, ElementAccessor(d, dest),
-                                       d, symmetric);
+                                       d, symmetric, opt.from_point, opt.to_point);
     }
 }
 
@@ -1386,7 +1544,11 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
         plain_kernels[dim].initGaussian(sigma, 1.0, opt.window_ratio);
     }
     
-    MultiArray<N, KernelType> derivative(shape);
+    SrcShape dshape(shape);
+    if(opt.to_point != SrcShape())
+        dshape = opt.to_point - opt.from_point;
+    
+    MultiArray<N, KernelType> derivative(dshape);
 
     // compute 2nd derivatives and sum them up
     for (int dim = 0; dim < N; ++dim, ++params2)
@@ -1398,14 +1560,14 @@ laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccesso
         if (dim == 0)
         {
             separableConvolveMultiArray( si, shape, src, 
-                                         di, dest, kernels.begin());
+                                         di, dest, kernels.begin(), opt.from_point, opt.to_point);
         }
         else
         {
             separableConvolveMultiArray( si, shape, src, 
                                          derivative.traverser_begin(), DerivativeAccessor(), 
-                                         kernels.begin());
-            combineTwoMultiArrays(di, shape, dest, derivative.traverser_begin(), DerivativeAccessor(), 
+                                         kernels.begin(), opt.from_point, opt.to_point);
+            combineTwoMultiArrays(di, dshape, dest, derivative.traverser_begin(), DerivativeAccessor(), 
                                   di, dest, Arg1() + Arg2() );
         }
     }
@@ -1585,7 +1747,7 @@ hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
             detail::scaleKernel(kernels[i], 1 / params_i.step_size());
             detail::scaleKernel(kernels[j], 1 / params_j.step_size());
             separableConvolveMultiArray(si, shape, src, di, ElementAccessor(b, dest),
-                                        kernels.begin());
+                                        kernels.begin(), opt.from_point, opt.to_point);
         }
     }
 }
@@ -1756,6 +1918,7 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
     typedef typename NumericTraits<DestValueType>::RealPromote KernelType;
     typedef TinyVector<KernelType, N> GradientVector;
     typedef typename AccessorTraits<GradientVector>::default_accessor GradientAccessor;
+    typedef typename AccessorTraits<DestType>::default_accessor GradientTensorAccessor;
 
     for(int k=0; k<N; ++k)
         if(shape[k] <=0)
@@ -1763,18 +1926,40 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
 
     vigra_precondition(M == (int)dest.size(di),
         "structureTensorMultiArray(): Wrong number of channels in output array.");
+        
+    ConvolutionOptions<N> innerOptions = opt;
+    ConvolutionOptions<N> outerOptions = opt.outerOptions();
+    typename ConvolutionOptions<N>::ScaleIterator params = outerOptions.scaleParams();
+    
+    SrcShape gradientShape(shape);
+    if(opt.to_point != SrcShape())
+    {
+        for(int k=0; k<N; ++k, ++params)
+        {
+            Kernel1D<double> gauss;
+            gauss.initGaussian(params.sigma_scaled("structureTensorMultiArray"), 1.0, opt.window_ratio);
+            int dilation = gauss.right();
+            innerOptions.from_point[k] = std::max<MultiArrayIndex>(0, opt.from_point[k] - dilation);
+            innerOptions.to_point[k] = std::min<MultiArrayIndex>(shape[k], opt.to_point[k] + dilation);
+        }
+        outerOptions.from_point -= innerOptions.from_point;
+        outerOptions.to_point -= innerOptions.from_point;
+        gradientShape = innerOptions.to_point - innerOptions.from_point;
+    }
 
-    MultiArray<N, GradientVector> gradient(shape);
+    MultiArray<N, GradientVector> gradient(gradientShape);
+    MultiArray<N, DestType> gradientTensor(gradientShape);
     gaussianGradientMultiArray(si, shape, src, 
                                gradient.traverser_begin(), GradientAccessor(), 
-                               opt,
+                               innerOptions,
                                "structureTensorMultiArray");
 
-    transformMultiArray(gradient.traverser_begin(), shape, GradientAccessor(), 
-                        di, dest, 
+    transformMultiArray(gradient.traverser_begin(), gradientShape, GradientAccessor(), 
+                        gradientTensor.traverser_begin(), GradientTensorAccessor(), 
                         detail::StructurTensorFunctor<N, DestType>());
 
-    gaussianSmoothMultiArray(di, shape, dest, di, dest, opt.outerOptions(),
+    gaussianSmoothMultiArray(gradientTensor.traverser_begin(), gradientShape, GradientTensorAccessor(), 
+                             di, dest, outerOptions,
                              "structureTensorMultiArray");
 }
 
