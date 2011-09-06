@@ -184,7 +184,8 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
                         python::object sigma,
                         NumpyArray<ndim, Multiband<VoxelType> > res=python::object(),
                         python::object sigma_d = python::object(0.0), 
-                        python::object step_size = python::object(1.0))
+                        python::object step_size = python::object(1.0),
+                        double window_size = 0.0)
 {
        
     pythonScaleParam<ndim - 1> params(sigma, sigma_d, step_size, "gaussianSmoothing");
@@ -199,7 +200,8 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
     {
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<ndim-1, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-        gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), params());
+        gaussianSmoothMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), 
+                                 params().filterWindowSize(window_size));
     }
     
     return res;
@@ -308,7 +310,9 @@ NumpyAnyArray
 pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
                           python::object scale,
                           NumpyArray<N, Multiband<PixelType> > res=python::object(),
-                          python::object sigma_d = python::object(0.0), python::object step_size = python::object(1.0))
+                          python::object sigma_d = python::object(0.0), 
+                          python::object step_size = python::object(1.0),
+                          double window_size = 0.0)
 {
     pythonScaleParam<N - 1> params(scale, sigma_d, step_size, "laplacianOfGaussian");
     params.permuteLikewise(array);
@@ -324,7 +328,8 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
     {
         MultiArrayView<N-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
         MultiArrayView<N-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), params());
+        laplacianOfGaussianMultiArray(srcMultiArrayRange(barray), destMultiArray(bres), 
+                                      params().filterWindowSize(window_size));
     }
     
     return res;
@@ -500,7 +505,8 @@ void defineConvolutionFunctions()
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,3>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0),
         "Perform Gaussian smoothing of a 2D or 3D scalar or multiband array.\n\n"
         "Each channel of the array is smoothed independently. "
         "If 'sigma' is a single value, an isotropic Gaussian filter at this scale is "
@@ -511,12 +517,17 @@ void defineConvolutionFunctions()
         "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
         "pixels for each dimension. "
         "The length of the tuples or lists must be equal to the "
-        "number of spatial dimensions.\n\n"        
+        "number of spatial dimensions.\n\n"
+        "'window_size' specifies the ratio between the effective filter scale and "
+        "the size of the filter window. Use a value around 2.0 to speed-up "
+        "the computation by increasing the error resulting from cutting off the Gaussian. "
+        "For the default 0.0, the window size is automatically determined.\n\n"
         "For details see gaussianSmoothing_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("gaussianSmoothing",
         registerConverters(&pythonGaussianSmoothing<float,4>),
-        (arg("array"), arg("sigma"), arg("out")=python::object(), arg("sigma_d")=0.0, arg("step_size")=1.0),
+        (arg("array"), arg("sigma"), arg("out")=python::object(), 
+         arg("sigma_d")=0.0, arg("step_size")=1.0, arg("window_size")=0.0),
         "Smooth volume with Gaussian.\n");
 
     def("recursiveGaussianSmoothing2D",
@@ -554,7 +565,8 @@ void defineConvolutionFunctions()
           
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,3>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0),
           "Filter 2D or 3D scalar array with the Laplacian of Gaussian operator at the given scale.\n\n"
           "If 'sigma' is a single value, an isotropic filter at this scale is "
           "applied (i.e., each dimension is filtered in the same way). "
@@ -564,7 +576,8 @@ void defineConvolutionFunctions()
           "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
           "pixels for each dimension. "
           "The length of the tuples or lists must be equal to the "
-          "number of spatial dimensions.\n\n"        
+          "number of spatial dimensions.\n\n" 
+          "'window_size' has the same meaning as in gaussianSmoothing().\n\n"
           "For details see laplacianOfGaussianMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
 
     def("laplacianOfGaussian", 

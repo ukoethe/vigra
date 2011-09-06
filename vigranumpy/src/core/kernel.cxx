@@ -271,8 +271,8 @@ void defineKernels()
             "Copy constructor::\n\n"
             "   Kernel1D(other_kernel)\n\n"))
         .def("initGaussian",
-             (void (Kernel1D<T>::*)(double,T))&Kernel1D<T>::initGaussian,
-             (arg("scale"), arg("norm")=1.0),
+             (void (Kernel1D<T>::*)(double,T, double))&Kernel1D<T>::initGaussian,
+             (arg("scale"), arg("norm")=1.0, arg("window_size")=0.0),
                 "Init kernel as a sampled Gaussian function. The radius of the kernel is "
                 "always 3*std_dev. 'norm' denotes the desired sum of all bins of the "
                 "kernel (i.e. the kernel is corrected for the normalization error "
@@ -291,8 +291,8 @@ void defineKernels()
                 "Kernel construction and initialization can be performed in one step "
                 "by calling the factory function 'discreteGaussianKernel()'.\n\n")
         .def("initGaussianDerivative",
-             (void (Kernel1D<T>::*)(double,int,T))&Kernel1D<T>::initGaussianDerivative,
-             (arg("scale"),arg("order"),arg("norm")=1.0),
+             (void (Kernel1D<T>::*)(double,int,T,double))&Kernel1D<T>::initGaussianDerivative,
+             (arg("scale"),arg("order"),arg("norm")=1.0, arg("window_size")=0.0),
                 "Init kernel as a Gaussian derivative of order 'order'. The radius of "
                 "the kernel is always 3*std_dev + 0.5*order. 'norm' denotes "
                 "the norm of the kernel. Thus, the kernel will be corrected for "

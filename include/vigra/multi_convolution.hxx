@@ -465,6 +465,7 @@ class ConvolutionOptions
         vigra_precondition(ratio >= 0.0,
             "ConvolutionOptions::filterWindowSize(): ratio must not be negative.");
         window_ratio = ratio;
+        return *this;
     }
 
         /** Restrict the filter to a subregion of the input array. 
@@ -479,6 +480,7 @@ class ConvolutionOptions
     {
         from_point = from;
         to_point = to;
+        return *this;
     }
 };
 
