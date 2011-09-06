@@ -108,10 +108,10 @@ inline int convertToInt(std::string const& s) {
 /*                                                      */
 /********************************************************/
 
-const int SIFImportInfo::width() const {    return m_width; }
-const int SIFImportInfo::height() const {    return m_height; }
-const int SIFImportInfo::stacksize() const {    return m_stacksize; }
-const std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
+int SIFImportInfo::width() const {    return m_width; }
+int SIFImportInfo::height() const {    return m_height; }
+int SIFImportInfo::stacksize() const {    return m_stacksize; }
+std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
 const char * SIFImportInfo::getFileName() const  {    return m_filename;    }    
 
 

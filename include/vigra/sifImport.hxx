@@ -99,22 +99,22 @@ class SIFImportInfo
 
         /** Get the width in pixels.
          */
-        VIGRA_EXPORT const int width() const;
+        VIGRA_EXPORT int width() const;
 
         /** Get the height in pixels.
          */
-        VIGRA_EXPORT const int height() const;
+        VIGRA_EXPORT int height() const;
 
         /** Get the stacksize, that is the number of 
             images contained in the dataset.
          */
-        VIGRA_EXPORT const int stacksize() const;
+        VIGRA_EXPORT int stacksize() const;
 
         /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
             variable length header.
          */
-        VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
+        VIGRA_EXPORT std::ptrdiff_t getOffset() const;
 
         /** Get the filename of this SIF object.
          */
