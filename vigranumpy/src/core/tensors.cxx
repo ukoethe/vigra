@@ -70,8 +70,8 @@ pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > array,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<ndim>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
                        "gaussianGradient(): Output array has wrong shape.");
@@ -192,7 +192,8 @@ pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
     typedef typename MultiArrayShape<ndim - 1>::type Shape;
     if(roi != python::object())
     {
-        opt.subarray(python::extract<Shape>(roi[0])(), python::extract<Shape>(roi[1])());
+        opt.subarray(volume.permuteLikewise(python::extract<Shape>(roi[0])()), 
+                     volume.permuteLikewise(python::extract<Shape>(roi[1])()));
     }
     else
     {
@@ -220,8 +221,8 @@ pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<ndim>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = volume.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = volume.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(volume.taggedShape().resize(stop-start).setChannelDescription("symmetric gradient"), 
                  "symmetricGradient(): Output array has wrong shape.");
@@ -257,8 +258,8 @@ pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > array,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
                "hessianOfGaussian(): Output array has wrong shape.");
@@ -341,8 +342,8 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > array,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N-1>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
                      "structureTensor(): Output array has wrong shape.");

@@ -199,8 +199,8 @@ pythonGaussianSmoothing(NumpyArray<ndim, Multiband<VoxelType> > array,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(array.taggedShape().resize(stop-start), 
                 "gaussianSmoothing(): Output array has wrong shape.");
@@ -341,8 +341,8 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
     if(roi != python::object())
     {
         typedef typename MultiArrayShape<N-1>::type Shape;
-        Shape start = python::extract<Shape>(roi[0])();
-        Shape stop  = python::extract<Shape>(roi[1])();
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
         opt.subarray(start, stop);
         res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
                 "laplacianOfGaussian(): Output array has wrong shape.");
