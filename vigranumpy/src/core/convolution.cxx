@@ -582,7 +582,8 @@ void defineConvolutionFunctions()
 
     def("laplacianOfGaussian", 
          registerConverters(&pythonLaplacianOfGaussian<float,4>),
-         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), arg("sigma_d") = 0.0, arg("step_size") = 1.0),
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0),
          "Likewise for a scalar volume.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
