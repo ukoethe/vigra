@@ -71,8 +71,8 @@ namespace vigra
         \f[
             \mathrm{features} \approx \mathrm{fz} * \mathrm{zv}
         \f]
-        (this formula requires that the features have been center around the mean by  
-        \ref <tt>prepareRows(features, features, ZeroMean)</tt>).
+        (this formula requires that the features have been centered around the mean by
+        <tt>\ref linalg::prepareRows&nbsp;(features, features, ZeroMean)</tt>).
        
         The shape parameter <tt>numComponents</tt> determines the complexity of 
         the decomposition model and therefore the approximation quality (if
@@ -228,8 +228,9 @@ class PLSAOptions
             \mathrm{features} \approx \mathrm{fz} * \mathrm{zv}
         \f]
         (this formula applies when pLSA is called with 
-        <tt>PLSAOptions.normalizedComponentWeights(false)</tt>. Otherwise, you must 
-        normalize the features by calling \ref <tt>prepareColumns(features, features, UnitSum)</tt> to make the formula hold).
+        <tt>PLSAOptions.normalizedComponentWeights(false)</tt>. Otherwise, you must
+        normalize the features by calling <tt>\ref linalg::prepareColumns&nbsp;(features, features, UnitSum)</tt>
+        to make the formula hold).
        
         The shape parameter <tt>numComponents</tt> determines the complexity of 
         the decomposition model and therefore the approximation quality. 
