@@ -768,7 +768,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This function calls gaussianGradient() and returns the pixel-wise magnitude of
     the resulting gradient vectors. If the original image has multiple bands,
     the squared gradient magnitude is computed for each band separately, and the
-    return value is the square root of the sum of these sqaured magnitudes.
+    return value is the square root of the sum of these squared magnitudes.
 
     <b> Declarations:</b>
 

@@ -95,7 +95,7 @@ class BucketQueue
         return size_;
     }
     
-        /** \brief Quene contains no elements.
+        /** \brief Queue contains no elements.
              Equivalent to <tt>size() == 0</tt>.
         */
     bool empty() const

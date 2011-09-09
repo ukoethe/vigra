@@ -191,7 +191,7 @@ public:
     <ol>
 
     <li> Find all candidate pixels that are 6-adjacent to a seed region.
-    Calculate the cost for aggregating each candidate into its adajacent region
+    Calculate the cost for aggregating each candidate into its adjacent region
     and put the candidates into a priority queue.
 
     <li> While( priority queue is not empty)

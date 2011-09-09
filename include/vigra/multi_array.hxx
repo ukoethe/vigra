@@ -1057,7 +1057,7 @@ public:
         return m_ptr [dot (d, m_stride)];
     }
 
-        /** equvalent to bindInner(), when M < N.
+        /** equivalent to bindInner(), when M < N.
          */
     template <unsigned int M>
     MultiArrayView <N-M, T, StridedArrayTag> operator[] (const TinyVector<MultiArrayIndex, M> &d) const
@@ -1367,7 +1367,7 @@ public:
         /** Create a view to channel 'i' of a vector-like value type. Possible value types
             (of the original array) are: \ref TinyVector, \ref RGBValue, \ref FFTWComplex, 
             and <tt>std::complex</tt>. The list can be extended to any type whose memory
-            layout is equivalent to a fixed-size C array, by specialzing 
+            layout is equivalent to a fixed-size C array, by specializing 
             <tt>ExpandElementResult</tt>.
 
             <b>Usage:</b>
@@ -1388,14 +1388,14 @@ public:
     }
 
         /** Create a view where a vector-like element type is expanded into a new 
-            array dimension. The new deimension is inserted at index position 'd',
+            array dimension. The new dimension is inserted at index position 'd',
             which must be between 0 and N inclusive.
             
             Possible value types of the original array are: \ref TinyVector, \ref RGBValue, 
             \ref FFTWComplex, <tt>std::complex</tt>, and the built-in number types (in this 
             case, <tt>expandElements</tt> is equivalent to <tt>insertSingletonDimension</tt>). 
             The list of supported types can be extended to any type whose memory
-            layout is equivalent to a fixed-size C array, by specialzing 
+            layout is equivalent to a fixed-size C array, by specializing 
             <tt>ExpandElementResult</tt>.
 
             <b>Usage:</b>
@@ -1408,7 +1408,7 @@ public:
     MultiArrayView <N+1, typename ExpandElementResult<T>::type, StridedArrayTag> 
     expandElements(difference_type_1 d) const;
     
-        /** Add a singleton dimension (dimension of legth 1).
+        /** Add a singleton dimension (dimension of length 1).
 
             Singleton dimensions don't change the size of the data, but introduce
             a new index that can only take the value 0. This is mainly useful for
@@ -1463,7 +1463,7 @@ public:
         /** apply an additional striding to the image, thereby reducing
             the shape of the array.
             for example, multiplying the stride of dimension one by three
-            turns an appropriately layed out (interleaved) rgb image into
+            turns an appropriately laid out (interleaved) rgb image into
             a single band image.
         */
     MultiArrayView <N, T, StridedArrayTag>

@@ -102,7 +102,7 @@
     The return type of this function can not be 'unsigned char' because
     the summation would very likely overflow. Since we know the source
     type, we can easily choose 'int' as an appropriate return type.
-    Likewise, we would have choosen 'float' if we had to sum a 
+    Likewise, we would have chosen 'float' if we had to sum a 
     sequence of floats. If we want to make this 
     algorithm generic, we would like to derive the appropriate return 
     type automatically. This can be done with NumericTraits. 
@@ -340,7 +340,7 @@
     
     This template is only applicable if both arguments have the same
     type. However, sometimes we may want to use the function in cases
-    where the argument types differ. The we can deduce the approrpiate
+    where the argument types differ. Then we can deduce the appropriate
     return type by using <TT>PromoteTraits</TT>:
     
     \code
@@ -397,7 +397,7 @@
           sqrt((SquareRootTraits<ArithmeticType>::SquareRootArgument)t);
     \endcode
     
-    This approach avoids 'ambigouos overload errors' when taking the square root of 
+    This approach avoids 'ambiguous overload errors' when taking the square root of 
     an integer type. It also takes care of determining the proper result of the
     sqrt() function of \ref vigra::FixedPoint and of the norm() function, when
     it is implemented via sqrt(squaredNorm(x)).
@@ -436,7 +436,7 @@
 
     This traits class is used to determine appropriate result types
     for the functions norm() and squaredNorm(). These functions are always 
-    declared like this (where <tt>ArithmeticType</tt> is a type thats supports a norm):
+    declared like this (where <tt>ArithmeticType</tt> is a type that supports a norm):
     
     \code
     NormTraits<ArithmeticType>::NormType        norm(ArithmeticType const & t);

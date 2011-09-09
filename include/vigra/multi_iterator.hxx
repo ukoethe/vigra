@@ -69,7 +69,7 @@ template <unsigned int N, class T,
 <p>
     The Multidimensional Iterator concept allows navigation on arrays
     of arbitrary dimension. It provides two modes of iteration: 
-    <em>direct traveral</em>, and <em>hierarchical traversal</em>.
+    <em>direct traversal</em>, and <em>hierarchical traversal</em>.
     In general, hierarchical traversal will be faster, while only 
     direct traversal allows for true random access in all dimensions.
     Via the <tt>dim<K>()</tt> function, operations applying to a particular
@@ -79,7 +79,7 @@ template <unsigned int N, class T,
     iterator points to element 0 in all dimensions below its current dimension.
     The current dimension of a <tt>MultiIterator<N, ...></tt> is <tt>N-1</tt>.
 </p>
-<h3>Gerneral Requirements for MultiIterator</h3>
+<h3>General Requirements for MultiIterator</h3>
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
 <tr><th colspan=2>
@@ -292,7 +292,7 @@ but iterator performance will suffer significantly, as is experienced with
 </tr>
 <tr>
     <td><tt>i.begin()</tt></td><td><tt>next_type</tt></td>
-    <td>create the hierarchical iterator poiting to the first element in the 
+    <td>create the hierarchical iterator pointing to the first element in the 
     next lower dimension.<br>
     <em>Note:</em> The result of this operation is undefined if the iterator
     doesn't point to element 0 in all dimensions below its current dimension.<br>
@@ -317,7 +317,7 @@ but iterator performance will suffer significantly, as is experienced with
 </tr>
 <tr>
     <td><tt>i.end()</tt></td><td><tt>next_type</tt></td>
-    <td>create the hierarchical iterator poiting to the past-the-end location in the 
+    <td>create the hierarchical iterator pointing to the past-the-end location in the 
     next lower dimension.<br>
     <em>Note:</em> The result of this operation is undefined if the iterator
     doesn't point to element 0 in all dimensions below its current dimension.</td>

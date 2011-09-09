@@ -99,7 +99,7 @@ namespace vigra
         <b>Usage:</b>
         \code
         Matrix<double> data(numFeatures, numSamples);
-        ... // fill the imput matrix
+        ... // fill the input matrix
         
         int numComponents = 3;
         Matrix<double> fz(numFeatures, numComponents),
@@ -242,7 +242,7 @@ class PLSAOptions
         <tt>zv</tt> encodes to what extend each topic explains the content of each 
         document.
 
-        The option object determines the iteration termination conditions and the ouput
+        The option object determines the iteration termination conditions and the output
         normalization. In addition, you may pass a random number generator to pLSA()
         which is used to create the initial solution.
 
@@ -273,7 +273,7 @@ class PLSAOptions
         <b>Usage:</b>
         \code
         Matrix<double> words(numWords, numDocuments);
-        ... // fill the imput matrix
+        ... // fill the input matrix
         
         int numTopics = 3;
         Matrix<double> fz(numWords, numTopics),

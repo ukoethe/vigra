@@ -226,7 +226,7 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 /** \addtogroup ResamplingConvolutionFilters Resampling Convolution Filters
 
     These functions implement the convolution operation when the source and target images
-    have different sizes. This is realized by accessing a continous kernel at the
+    have different sizes. This is realized by accessing a continuous kernel at the
     appropriate non-integer positions. The technique is, for example, described in
     D. Schumacher: <i>General Filtered Image Rescaling</i>, in: Graphics Gems III,
     Academic Press, 1992.
@@ -435,7 +435,7 @@ createResamplingKernels(Kernel const & kernel,
     Gaussian<float> smooth(sigma);
     ...
 
-    // simpultaneously enlarge and smooth source image
+    // simultaneously enlarge and smooth source image
     resamplingConvolveX(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
@@ -574,7 +574,7 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     Gaussian<float> smooth(sigma);
     ...
 
-    // simpultaneously enlarge and smooth source image
+    // simultaneously enlarge and smooth source image
     resamplingConvolveY(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
@@ -700,7 +700,7 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
     Gaussian<float> smooth(sigma);
     ...
 
-    // simpultaneously enlarge and smooth source image
+    // simultaneously enlarge and smooth source image
     resamplingConvolveImage(srcImageRange(src), destImageRange(dest),
                             smooth, xratio, offset,
                             smooth, yratio, offset);

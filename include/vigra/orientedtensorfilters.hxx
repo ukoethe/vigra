@@ -65,7 +65,7 @@ namespace vigra {
      
     It is closely related to the structure tensor (see \ref structureTensor()), but
     replaces the linear tensor smoothing with a smoothing along edges only. 
-    Smoothing accross edges is largely suppressed. This means that the
+    Smoothing across edges is largely suppressed. This means that the
     image structure is preserved much better because nearby features
     such as parallel edges are not blended into each other. 
     

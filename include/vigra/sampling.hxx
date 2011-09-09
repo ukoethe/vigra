@@ -101,7 +101,7 @@ class SamplerOptions
 
         /**\brief Draw the given number of samples.
          * If stratifiedSampling is true, the \a size is equally distributed
-         * accross all strata (e.g. <tt>size / strataCount</tt> samples are taken 
+         * across all strata (e.g. <tt>size / strataCount</tt> samples are taken 
          * from each stratum, subject to rounding).
          *
          * <br> Default: 0 (i.e. determine the count by means of sampleProportion())
@@ -118,7 +118,7 @@ class SamplerOptions
          * This option is overridden when an absolute count is specified by sampleSize().
          * 
          * If stratifiedSampling is true, the count is equally distributed
-         * accross all strata (e.g. <tt>totalCount * proportion / strataCount</tt> samples are taken 
+         * across all strata (e.g. <tt>totalCount * proportion / strataCount</tt> samples are taken 
          * from each stratum).
          *
          * <br> Default: 1.0
@@ -403,7 +403,7 @@ class Sampler
     }
 
         /** The number of strata to be used.
-            Will be 1 if no strata are given. Will be ognored when
+            Will be 1 if no strata are given. Will be ignored when
             stratifiedSampling() is false.
          */
     int strataCount() const

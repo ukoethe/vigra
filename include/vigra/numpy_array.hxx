@@ -96,7 +96,7 @@ class MultibandVectorAccessor
         /** Set the component data at given vector index
             at given iterator position. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void setComponent(V const & value, ITERATOR const & i, int idx) const
@@ -116,7 +116,7 @@ class MultibandVectorAccessor
     /** Set the component data at given vector index
         at an offset of given iterator position. The type <TT>V</TT> of the passed
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
     */
     template <class V, class ITERATOR, class DIFFERENCE>
     void
@@ -619,7 +619,7 @@ class NumpyArray
          */
     typedef typename view_type::difference_type_1 difference_type_1;
 
-        /** type of an array specifying an axis parmutation
+        /** type of an array specifying an axis permutation
          */
     typedef typename NumpyAnyArray::difference_type permutation_type;
 
