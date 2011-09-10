@@ -356,7 +356,7 @@ namespace detail
 class EntropyCriterion
 {
 public:
-    /**caculate the weighted gini impurity based on class histogram
+    /**calculate the weighted gini impurity based on class histogram
      * and class weights
      */
     template<class Array, class Array2>
@@ -418,7 +418,7 @@ public:
 class GiniCriterion
 {
 public:
-    /**caculate the weighted gini impurity based on class histogram
+    /**calculate the weighted gini impurity based on class histogram
      * and class weights
      */
     template<class Array, class Array2>
@@ -734,7 +734,7 @@ public:
         //std::cerr << "( " << res << " + ";
         return res;
     }
-    /* west's alorithm for incremental variance
+    /* west's algorithm for incremental variance
     // calculation
     template<class Iter>
     double increment (Iter begin, Iter end)
@@ -880,7 +880,7 @@ public:
      *                begin, end sorted by column given. 
      *                min_gini_ contains the minimum gini found or 
      *                NumericTraits<double>::max if no split was found.
-     *                min_index_ countains the splitting index in the range
+     *                min_index_ contains the splitting index in the range
      *                or invalid data if no split was found.
      *                BestCirremtcounts[0] and [1] contain the 
      *                class histogram of the left and right region of 
@@ -987,7 +987,7 @@ namespace detail
     };
 }
 
-/** Chooses mtry columns ad applys ColumnDecisionFunctor to each of the
+/** Chooses mtry columns and applies ColumnDecisionFunctor to each of the
  * columns. Then Chooses the column that is best
  */
 template<class ColumnDecisionFunctor, class Tag = ClassificationTag>

@@ -55,7 +55,7 @@
 
     <b>\#include</b> \<vigra/mathutil.hxx\>
 
-    Since mathematical constants sucha s <TT>M_PI</TT> and <TT>M_SQRT2</TT> 
+    Since mathematical constants such as <TT>M_PI</TT> and <TT>M_SQRT2</TT> 
     are not officially standardized, we provide definitions here for those 
     compilers that don't support them.
 
@@ -126,7 +126,7 @@ using VIGRA_CSTD::ceil;
 //    and abs(int), abs(long), abs(long long) from <cstdlib>
 using std::abs;  
 
-// define the missing variants of abs() to avoid 'ambigous overload'
+// define the missing variants of abs() to avoid 'ambiguous overload'
 // errors in template functions
 #define VIGRA_DEFINE_UNSIGNED_ABS(T) \
     inline T abs(T t) { return t; }
@@ -430,7 +430,7 @@ inline UInt32 sqrti(UInt32 v)
 }
 
 #ifdef VIGRA_NO_HYPOT
-    /*! Compute the Euclidean distance (length of the hypothenuse of a right-angled triangle).
+    /*! Compute the Euclidean distance (length of the hypotenuse of a right-angled triangle).
 
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
         It is implemented in a way that minimizes round-off error.

@@ -114,7 +114,7 @@ class DecisionTree
     /** learn a Tree
      *
      * \tparam  StackEntry_t The Stackentry containing Node/StackEntry_t 
-     *          Information used during learing. Each Split functor has a 
+     *          Information used during learning. Each Split functor has a 
      *          Stack entry associated with it (Split_t::StackEntry_t)
      * \sa RandomForest::learn()
      */

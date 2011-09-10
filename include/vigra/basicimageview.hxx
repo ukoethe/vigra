@@ -301,14 +301,14 @@ class BasicImageView
         return data_ + dy*stride_;
     }
 
-        /** init 2D random access iterator poining to upper left pixel
+        /** init 2D random access iterator pointing to upper left pixel
         */
     traverser upperLeft()
     {
         return traverser(data_, stride_);
     }
 
-        /** init 2D random access iterator poining to
+        /** init 2D random access iterator pointing to
          pixel(width, height), i.e. one pixel right and below lower right
          corner of the image as is common in C/C++.
         */
@@ -317,14 +317,14 @@ class BasicImageView
         return upperLeft() + size();
     }
 
-        /** init 2D random access const iterator poining to upper left pixel
+        /** init 2D random access const iterator pointing to upper left pixel
         */
     const_traverser upperLeft() const
     {
         return const_traverser(data_, stride_);
     }
 
-        /** init 2D random access const iterator poining to
+        /** init 2D random access const iterator pointing to
          pixel(width, height), i.e. one pixel right and below lower right
          corner of the image as is common in C/C++.
         */

@@ -36,7 +36,7 @@
 
 /* Modifications by Pablo d'Angelo
  * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
+ * as of 18 February 2006:
  *  - Added UINT16 and UINT32 pixel types.
  *  - Added support for obtaining extra bands beyond RGB.
  *  - Added support for a position field that indicates the start of this
@@ -197,7 +197,7 @@ class ImageExportInfo
             PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
             values in each channel.
 
-            TIFF and VIFF are aditionally able to store short and long
+            TIFF and VIFF are additionally able to store short and long
             integers (2 or 4 bytes) and real values (32 bit float and
             64 bit double) without conversion. So you will need to use
             TIFF or VIFF if you need to store images with high

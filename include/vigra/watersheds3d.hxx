@@ -174,7 +174,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
             {
                 LabelType currentLabel = labels.nextFreeLabel(); // default: new region    
 
-                //queck whether there is a special borde threatment to be used or not
+                //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
                     
                 //We are not at the border!
@@ -442,7 +442,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     as described in
 
     J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization stretegies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
 
     The source volume is a boundary indicator such as the gradient magnitude
     of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
@@ -453,7 +453,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     The function uses accessors. 
     
     ...probably soon in VIGRA:
-    Note that VIGRA provides an alternative implementaion of the watershed transform via
+    Note that VIGRA provides an alternative implementation of the watershed transform via
     \ref seededRegionGrowing3D(). It is slower, but handles plateaus better 
     and allows to keep a one pixel wide boundary between regions.
     

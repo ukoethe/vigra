@@ -660,7 +660,7 @@ typedef EightNeighborhood::NeighborCode EightNeighborCode;
 
     Since this circulator doesn't know about the pixels in any particular image,
     you usually don't use it directly but rather as a base class or helper for
-    neighborhood circulators refering to a particular image (e.g. NeighborhoodCirculator)
+    neighborhood circulators referring to a particular image (e.g. NeighborhoodCirculator)
 
     <b>\#include</b> \<vigra/pixelneighborhood.hxx\><br>
     Namespace: vigra
@@ -704,7 +704,7 @@ protected:
     Direction direction_;
 
 public:
-        /** Create circulator refering to the given direction.
+        /** Create circulator referring to the given direction.
         */
     NeighborOffsetCirculator(Direction dir = NEIGHBORCODE::InitialDirection)
         : direction_(dir)
@@ -815,7 +815,7 @@ public:
         return direction_ == o.direction_;
     }
 
-        /** unequality */
+        /** inequality */
     bool operator!=(NeighborOffsetCirculator const & o) const
     {
         return direction_ != o.direction_;
@@ -1257,14 +1257,14 @@ private:
 /********************************************************/
 
 /** \brief Circulator that walks around a given location in a given image,
-           unsing a restricted neighborhood.
+           using a restricted neighborhood.
 
     This circulator behaves essentially like \ref vigra::NeighborhoodCirculator,
     but can also be used near the image border, where some of the neighbor points
     would be outside the image und must not be accessed.
     The template parameters define the kind of neighborhood used (four or eight)
-    and the underlying image, whereas the required neighbirhood restriction is
-    given by the last constructur argument. This below for typical usage.
+    and the underlying image, whereas the required neighborhood restriction is
+    given by the last constructor argument. This below for typical usage.
 
     The access functions return the value of the current neighbor pixel. Use <tt>center()</tt> to
     access the center pixel of the neighborhood.

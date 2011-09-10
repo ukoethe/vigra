@@ -35,7 +35,7 @@
 
 /* Modifications by Pablo d'Angelo
  * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
+ * as of 18 February 2006:
  *  - Added UINT16 and UINT32 pixel types.
  *  - Added support for obtaining extra bands beyond RGB.
  *  - Added support for a position field that indicates the start of this

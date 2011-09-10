@@ -47,7 +47,7 @@ namespace vigra {
 
 /*! \brief Quickly create 1-dimensional iterator adapters.
 
-    This class supports the easy creation of 1D iterator adpaters out
+    This class supports the easy creation of 1D iterator adapters out
     of existing iterators. To use it, you must first implement a policy class
     that defines the iterator's behavior. The policy is used to
     instantiate the IteratorAdapter template, which thus automatically

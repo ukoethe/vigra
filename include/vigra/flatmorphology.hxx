@@ -66,7 +66,7 @@ namespace vigra {
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -208,7 +208,7 @@ discRankOrderFilter(SrcIterator upperleft1,
             }
         }
     
-        // find the desired histogramm bin 
+        // find the desired histogram bin 
         leftsum = 0;
         if(rank == 0.0)
         {
@@ -241,7 +241,7 @@ discRankOrderFilter(SrcIterator upperleft1,
             x1 = w - x - 1;
             y1 = h - y - 1;
             
-            // update histogramm 
+            // update histogram 
             // remove pixels at left border 
             yy = (y1 < radius) ? y1 : radius;
             for(; yy>=0; yy--)
@@ -298,7 +298,7 @@ discRankOrderFilter(SrcIterator upperleft1,
                 winsize++;
             }
         
-            // find the desired histogramm bin 
+            // find the desired histogram bin 
             if(rank == 0.0)
             {
                 if(leftsum == 0)
@@ -375,7 +375,7 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -445,7 +445,7 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -515,7 +515,7 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -594,7 +594,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -758,7 +758,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
             }
         }
     
-        // find the desired histogramm bin 
+        // find the desired histogram bin 
         if(winsize) 
         {
             if(rank == 0.0)
@@ -794,7 +794,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
             x1 = w - x - 1;
             y1 = h - y - 1;
             
-            // update histogramm 
+            // update histogram 
             // remove pixels at left border 
             yy = (y1 < radius) ? y1 : radius;
             for(; yy>=0; yy--)
@@ -867,7 +867,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
                 }
             }
         
-            // find the desired histogramm bin 
+            // find the desired histogram bin 
             if(winsize) 
             {
                 if(rank == 0.0)
@@ -956,7 +956,7 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1038,7 +1038,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1120,7 +1120,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitely:
+    pass arguments explicitly:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

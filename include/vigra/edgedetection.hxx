@@ -367,7 +367,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
     obtained by a subsequent \ref Labeling do not depend on
     whether 4- or 8-connectivity is used.
     The non-edge pixels (<TT>.</TT>) in the destination image remain unchanged.
-    The result conformes to the requirements of a \ref CrackEdgeImage. It can be further
+    The result conforms to the requirements of a \ref CrackEdgeImage. It can be further
     improved by the post-processing operations \ref removeShortEdges() and
     \ref closeGapsInCrackEdgeImage().
 
@@ -1029,7 +1029,7 @@ void closeGapsInCrackEdgeImage(
           . . . . .                   . . . . .
     \endcode
 
-    Therfore, this algorithm should only be applied as a vizualization aid, i.e.
+    Therefore, this algorithm should only be applied as a visualization aid, i.e.
     for human inspection. The algorithm assumes that edges are marked with <TT>edge_marker</TT>,
     and background pixels with <TT>background_marker</TT>. The image's value type must be
     equality comparable.
@@ -1284,10 +1284,10 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     the given image already contains the gradient (i.e. its value_type must be 
     a vector of length 2).
 
-    On the basis of the gradient image, a simple non-maxima supression is performed:
+    On the basis of the gradient image, a simple non-maxima suppression is performed:
     for each 3x3 neighborhood, it is determined whether the center pixel has
     larger gradient magnitude than its two neighbors in gradient direction
-    (where the direction is rounded into octands). If this is the case,
+    (where the direction is rounded into octants). If this is the case,
     a new \ref Edgel is appended to the given vector of <TT>edgels</TT>. The subpixel
     edgel position is determined by fitting a parabola to the three gradient 
     magnitude values mentioned above. The sub-pixel location of the parabola's tip
@@ -1305,7 +1305,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
         cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                        BackInsertable & edgels);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
@@ -1322,7 +1322,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        BackInsertable & edgels);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -1437,7 +1437,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                 BackInsertable & edgels, GradValue grad_threshold);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, 
                   class BackInsertable, class GradValue>
         void 
@@ -1456,7 +1456,7 @@ cannyEdgelList(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         cannyEdgelListThreshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 BackInsertable & edgels, GradValue grad_threshold);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, 
                   class BackInsertable, class GradValue>
         void
@@ -1918,7 +1918,7 @@ void cannyEdgeImageFromGradWithThinning(
     int h2 = h-2;
 
     typedef detail::SimplePoint<GradValue> SP;
-    // use std::greater becaus we need the smallest gradients at the top of the queue
+    // use std::greater because we need the smallest gradients at the top of the queue
     std::priority_queue<SP, std::vector<SP>, std::greater<SP> >  pqueue;
 
     Diff2D p(0,0);
@@ -2254,7 +2254,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
         void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                BackInsertable & edgels);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                BackInsertable & edgels, double scale);
@@ -2270,7 +2270,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
         cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           BackInsertable & edgels);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
@@ -2384,7 +2384,7 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         cannyEdgelList3x3Threshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
                                    BackInsertable & edgels, GradValue grad_thresh);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, 
                   class BackInsertable, class GradValue>
         void 
@@ -2403,7 +2403,7 @@ cannyEdgelList3x3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
         cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                    BackInsertable & edgels, GradValue grad_thresh);
 
-        // compute edgels from a scaler image (determine gradient internally at 'scale')
+        // compute edgels from a scalar image (determine gradient internally at 'scale')
         template <class SrcIterator, class SrcAccessor, 
                   class BackInsertable, class GradValue>
         void
@@ -2501,10 +2501,10 @@ cannyEdgelList3x3Threshold(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 Crack edges are marked <i>between</i> the pixels of an image.
 A Crack Edge Image is an image that represents these edges. In order
-to accomodate the cracks, the Crack Edge Image must be twice as large
+to accommodate the cracks, the Crack Edge Image must be twice as large
 as the original image (precisely (2*w - 1) by (2*h - 1)). A Crack Edge Image
 can easily be derived from a binary image or from the signs of the
-response of a Laplacean filter. Consider the following sketch, where
+response of a Laplacian filter. Consider the following sketch, where
 <TT>+</TT> encodes the foreground, <TT>-</TT> the background, and
 <TT>*</TT> the resulting crack edges.
 

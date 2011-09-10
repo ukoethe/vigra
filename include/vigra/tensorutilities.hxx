@@ -56,7 +56,7 @@ namespace vigra {
 
     This function is useful to transform vector images into a tensor representation 
     that can be used as input to tensor based processing and analysis functions
-    (e.g. tensor smoothing). The imput pixel type must be vectors of length 2, whereas
+    (e.g. tensor smoothing). The input pixel type must be vectors of length 2, whereas
     the output must contain vectors of length 3 which will represent the tensor components
     in the order t11, t12 (== t21 due to symmetry), t22.
     

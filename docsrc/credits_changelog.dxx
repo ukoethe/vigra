@@ -57,7 +57,7 @@ Many thanks to all!
 <UL>  
       <li> Fixed the build process for MacOS X.
       
-      <li> Re-activeted <tt>vigra-config</tt> (script to query VIGRA installation information) 
+      <li> Re-activated <tt>vigra-config</tt> (script to query VIGRA installation information) 
            and added <tt>VigraConfig.cmake</tt> (query VIGRA installation information from
            within cmake).
       
@@ -217,7 +217,7 @@ Many thanks to all!
       <li> Added mathematical functions:  elliptic integrals (\ref ellipticIntegralF(), \ref ellipticIntegralE()),
              chi-squared distribution (\ref chi2(), \ref chi2CDF(), \ref noncentralChi2(), \ref noncentralChi2CDF())
       
-      <li> Dropped "vigra/" from \#includes in headers (so compiler will first look in the same disrectory).
+      <li> Dropped "vigra/" from \#includes in headers (so compiler will first look in the same directory).
       
       <li> Switched to relative paths in the MSVC project files. Compile vigraimpex into a DLL.
       
@@ -289,7 +289,7 @@ Many thanks to all!
 <UL>      
       <li> Added \ref vigra::linalg::Matrix "Matrix class".
       
-      <li> Added \ref LinearAlgebraFunctions "Matrix algrebra,
+      <li> Added \ref LinearAlgebraFunctions "Matrix algebra,
            solution of linear systems, eigenvalue computation".
       
       <li> Bug fixes in the code and documentation.

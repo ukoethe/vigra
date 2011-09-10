@@ -457,7 +457,7 @@ class RandomNumberGenerator
     
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0].
             
-            That is, 0.0 &lt;= i &lt;= 1.0. This nuber is computed by <tt>uniformInt()</tt> / 2<sup>32</sup>, 
+            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / 2<sup>32</sup>, 
             so it has effectively only 32 random bits. 
         */
     double uniform() const
@@ -584,7 +584,7 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
 };
 
 
-/** Functor to create uniformely distributed integer random numbers.
+/** Functor to create uniformly distributed integer random numbers.
 
     This functor encapsulates the appropriate functions of the given random number
     <tt>Engine</tt> (usually <tt>RandomTT800</tt> or <tt>RandomMT19937</tt>)
@@ -693,7 +693,7 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
     typedef VigraFalseType isTernaryAnalyser;
 };
 
-/** Functor to create uniformely distributed double-precision random numbers.
+/** Functor to create uniformly distributed double-precision random numbers.
 
     This functor encapsulates the function <tt>uniform()</tt> of the given random number
     <tt>Engine</tt> (usually <tt>RandomTT800</tt> or <tt>RandomMT19937</tt>)
@@ -797,7 +797,7 @@ class NormalRandomFunctor
       generator_(generator)
     {}
 
-        /** Create functor for normal random numbers with goven mean and standard deviation
+        /** Create functor for normal random numbers with given mean and standard deviation
             using the given engine.
         */
     NormalRandomFunctor(double mean, double stddev, 

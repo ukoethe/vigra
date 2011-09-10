@@ -1007,7 +1007,7 @@ operator<<(std::ostream & out, TinyVectorBase<V1, SIZE, DATA, DERIVED> const & l
     <b>\#include</b> \<vigra/tinyvector.hxx\><br>
     Namespace: vigra
 
-    On compilers that don't support pertial template specialization (e.g.
+    On compilers that don't support partial template specialization (e.g.
     MS VisualC++), the traits classes are explicitly specialized for
     <TT>TinyVector<VALUETYPE, SIZE></TT> with
     <TT>VALUETYPE = unsigned char | int | float | double</TT> and <TT>SIZE = 2 | 3 | 4</TT>.

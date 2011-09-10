@@ -80,7 +80,7 @@ class FFTWComplex
         */
     typedef fftw_real const * const_iterator;
 
-        /** The norm type (result of magnitde())
+        /** The norm type (result of magnitude())
         */
     typedef fftw_real NormType;
 

@@ -79,7 +79,7 @@ internalResizeMultiArrayOneDimension(
     ArrayVector<Kernel1D<double> > kernels(period);
     createResamplingKernels(spline, mapCoordinate, kernels);
 
-    // temporay array to hold the current line to enable in-place operation
+    // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( ssize );
     typename ArrayVector<TmpType>::iterator t = tmp.begin(), tend = tmp.end();
     typename AccessorTraits<TmpType>::default_accessor ta;

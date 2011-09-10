@@ -898,7 +898,7 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This kernel may be used for convolution of 1 dimensional signals or for
     separable convolution of multidimensional signals.
 
-    Convlution functions access the kernel via a 1 dimensional random access
+    Convolution functions access the kernel via a 1 dimensional random access
     iterator which they get by calling \ref center(). This iterator
     points to the center of the kernel. The kernel's size is given by its left() (<=0)
     and right() (>= 0) methods. The desired border treatment mode is
@@ -1602,7 +1602,7 @@ class Kernel1D
             roberts_gradient_x.initExplicitly(0, 1) = 1.0, -1.0;
             \endcode
 
-            The norm is set to the sum of the initialzer values. If the wrong number of
+            The norm is set to the sum of the initializer values. If the wrong number of
             values is given, a run-time error results. It is, however, possible to give
             just one initializer. This creates an averaging filter with the given constant:
 

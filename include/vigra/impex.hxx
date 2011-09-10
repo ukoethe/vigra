@@ -34,11 +34,11 @@
 /************************************************************************/
 /* Modifications by Pablo d'Angelo
  * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
+ * as of 18 February 2006:
  *  - Added import/export of UINT16 and UINT32 image types.
  * Modifications by Andrew Mihal
  * updated to vigra 1.4 by Douglas Wilkins
- * as of 18 Febuary 2006:
+ * as of 18 February 2006:
  *  - Moved some RowIterator declarations around to avoid using default ctors
  *    (cachedfileimages do not have default ctors for row iterators).
  *  - Added some case-specific optimizations
@@ -381,7 +381,7 @@ namespace vigra
         }
         \endcode
 
-        <b> Paramters:</b>
+        <b> Parameters:</b>
 
         <DL>
         <DT>ImageIterator<DD> the image iterator type for the destination image
@@ -435,7 +435,7 @@ doxygen_overloaded_function(template <...> void importVectorImage)
         }
         \endcode
 
-        <b> Paramters:</b>
+        <b> Parameters:</b>
 
         <DL>
         <DT>ImageIterator<DD> the image iterator type for the destination image
