@@ -918,7 +918,7 @@ class BasicImage
         return lines_[dy];
     }
 
-        /** init 2D random access iterator poining to upper left pixel
+        /** init 2D random access iterator pointing to upper left pixel
         */
     traverser upperLeft()
     {
@@ -927,7 +927,7 @@ class BasicImage
         return traverser(lines_);
     }
 
-        /** init 2D random access iterator poining to
+        /** init 2D random access iterator pointing to
          pixel(width, height), i.e. one pixel right and below lower right
          corner of the image as is common in C/C++.
         */
@@ -938,7 +938,7 @@ class BasicImage
         return upperLeft() + size();
     }
 
-        /** init 2D random access const iterator poining to upper left pixel
+        /** init 2D random access const iterator pointing to upper left pixel
         */
     const_traverser upperLeft() const
     {
@@ -947,7 +947,7 @@ class BasicImage
         return const_traverser(const_cast<PIXELTYPE **>(lines_));
     }
 
-        /** init 2D random access const iterator poining to
+        /** init 2D random access const iterator pointing to
          pixel(width, height), i.e. one pixel right and below lower right
          corner of the image as is common in C/C++.
         */

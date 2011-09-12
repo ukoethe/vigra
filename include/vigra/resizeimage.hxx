@@ -372,7 +372,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 /** \brief Resize image using linear interpolation.
 
     The function uses the standard separable bilinear interpolation algorithm to
-    obtain a good compromize between quality and speed.
+    obtain a good compromise between quality and speed.
 
     The range must of both the input and output images (resp. regions)
     must be given. Both images must have a size of at
@@ -1392,7 +1392,7 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     resizeImageSplineInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
 }
-#endif  // old alghorithm version
+#endif  // old algorithm version
 
 //@}
 

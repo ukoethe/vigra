@@ -53,7 +53,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief Iterator adapter to linearly access colums.
+/** \brief Iterator adapter to linearly access columns.
 
     This iterator may be initialized from any standard ImageIterator,
     a MultibandImageIterator and so on.
@@ -470,7 +470,7 @@ class RowIterator : private IMAGE_ITERATOR
     This iterator may be initialized from a standard ImageIterator,
      a MultibandImageIterator and so on.
     It gives you STL-compatible (forward iterator) access to
-    an arbitraty line on the image.
+    an arbitrary line on the image.
     The iterator gets associated with the accessor of the base iterator.
 
     <b>\#include</b> \<vigra/imageiteratoradapter.hxx\>

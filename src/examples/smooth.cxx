@@ -55,7 +55,7 @@ int main(int argc, char ** argv)
     
     // Type of smoothing: 
     int type;
-    std::cout << "Type of smoothing (1 = Gauss, 2 = Exponential, 3 = nolinear) ? ";
+    std::cout << "Type of smoothing (1 = Gauss, 2 = Exponential, 3 = nonlinear) ? ";
     std::cin >> type;
     
     // input width of smoothing filter 

@@ -71,8 +71,8 @@ namespace vigra
         \f[
             \mathrm{features} \approx \mathrm{fz} * \mathrm{zv}
         \f]
-        (this formula requires that the features have been center around the mean by  
-        \ref <tt>prepareRows(features, features, ZeroMean)</tt>).
+        (this formula requires that the features have been centered around the mean by
+        <tt>\ref linalg::prepareRows&nbsp;(features, features, ZeroMean)</tt>).
        
         The shape parameter <tt>numComponents</tt> determines the complexity of 
         the decomposition model and therefore the approximation quality (if
@@ -99,7 +99,7 @@ namespace vigra
         <b>Usage:</b>
         \code
         Matrix<double> data(numFeatures, numSamples);
-        ... // fill the imput matrix
+        ... // fill the input matrix
         
         int numComponents = 3;
         Matrix<double> fz(numFeatures, numComponents),
@@ -228,8 +228,9 @@ class PLSAOptions
             \mathrm{features} \approx \mathrm{fz} * \mathrm{zv}
         \f]
         (this formula applies when pLSA is called with 
-        <tt>PLSAOptions.normalizedComponentWeights(false)</tt>. Otherwise, you must 
-        normalize the features by calling \ref <tt>prepareColumns(features, features, UnitSum)</tt> to make the formula hold).
+        <tt>PLSAOptions.normalizedComponentWeights(false)</tt>. Otherwise, you must
+        normalize the features by calling <tt>\ref linalg::prepareColumns&nbsp;(features, features, UnitSum)</tt>
+        to make the formula hold).
        
         The shape parameter <tt>numComponents</tt> determines the complexity of 
         the decomposition model and therefore the approximation quality. 
@@ -241,7 +242,7 @@ class PLSAOptions
         <tt>zv</tt> encodes to what extend each topic explains the content of each 
         document.
 
-        The option object determines the iteration termination conditions and the ouput
+        The option object determines the iteration termination conditions and the output
         normalization. In addition, you may pass a random number generator to pLSA()
         which is used to create the initial solution.
 
@@ -272,7 +273,7 @@ class PLSAOptions
         <b>Usage:</b>
         \code
         Matrix<double> words(numWords, numDocuments);
-        ... // fill the imput matrix
+        ... // fill the input matrix
         
         int numTopics = 3;
         Matrix<double> fz(numWords, numTopics),

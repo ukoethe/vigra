@@ -192,7 +192,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
     designed with exactly this application in mind and thus give the best results. But these
     conversions are also the most computationally demanding. The Y'PbPr color difference
     space (designed for coding digital video) is computationally much cheaper, and 
-    almost as good. Y'CbCr represents esentially the same transformation, but the color values 
+    almost as good. Y'CbCr represents essentially the same transformation, but the color values 
     are scaled so that they can be stored with 8 bits per channel with minimal loss of 
     information. The other transformations are of lesser interest here: XYZ is a device independent
     (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color 
@@ -2292,7 +2292,7 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
     
-    According to the PAL analog videa standard, the functor realizes the transformation
+    According to the PAL analog video standard, the functor realizes the transformation
     
     \f[
         \begin{array}{rcl}
@@ -2475,7 +2475,7 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
     
-    According to the NTSC analog videa standard, the functor realizes the transformation
+    According to the NTSC analog video standard, the functor realizes the transformation
     
     \f[
         \begin{array}{rcl}
@@ -2659,7 +2659,7 @@ class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
     Namespace: vigra
     
     This functor basically applies the same transformation as vigra::RGBPrime2YPrimePbPrFunctor
-    but the color components are scaled so that they can be coded as 8 bit intergers with
+    but the color components are scaled so that they can be coded as 8 bit integers with
     minimal loss of information:
     
     \f[
@@ -2890,8 +2890,8 @@ YUV: white = [229.992, 1, 9.81512e-17]
 /** \ingroup ColorConversions
     \defgroup PolarColors Polar Color Coordinates
     
-    Transform colors from/to a polar representation (hue, brighness, saturation).
-    In many situations, this is more inituitive than direct initialization in a 
+    Transform colors from/to a polar representation (hue, brightness, saturation).
+    In many situations, this is more intuitive than direct initialization in a 
     particular color space. The polar coordinates are 
     normalized so that a color angle of 0 degrees is always associated with red
     (green is at about 120 degrees, blue at about 240 degrees - exact values differ

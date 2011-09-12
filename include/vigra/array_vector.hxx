@@ -192,7 +192,7 @@ public:
         swapDataImpl(rhs);
     }
 
-        /** Construct <tt>ArrayVectorView</tt> refering to a subarray.
+        /** Construct <tt>ArrayVectorView</tt> referring to a subarray.
             \a begin and \a end must be a valid sub-range of the current array.
             Otherwise, a <tt>PreconditionViolation</tt>
             exception is thrown.
@@ -218,14 +218,14 @@ public:
         return data_;
     }
 
-        /** Get const iterator refering to the first array element.
+        /** Get const iterator referring to the first array element.
         */
     inline const_iterator begin() const
     {
         return data();
     }
 
-        /** Get iterator refering to the first array element.
+        /** Get iterator referring to the first array element.
         */
     inline iterator begin()
     {
@@ -456,7 +456,7 @@ ArrayVectorView <T>::swapDataImpl(const ArrayVectorView <U>& rhs)
 
     This means that memory managed by <tt>ArrayVector</tt> can be passed
     to algorithms that expect raw memory. This is especially important
-    when lagacy or C code has to be called, but it is also useful for certain
+    when legacy or C code has to be called, but it is also useful for certain
     optimizations.
 
     Moreover, <tt>ArrayVector</tt> is derived from <tt>ArrayVectorView</tt> so that one

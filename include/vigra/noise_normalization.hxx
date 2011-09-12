@@ -167,7 +167,7 @@ class NoiseNormalizationOptions
         /** Set the initial estimate of the noise variance.
             Robust noise variance estimation is an iterative procedure starting at the given value.<br>
             Default: 10.0<br>
-            Precondition: 0 < \a quess
+            Precondition: 0 < \a guess
         */
     NoiseNormalizationOptions & noiseVarianceInitialGuess(double guess)
     {
@@ -689,7 +689,7 @@ void noiseVarianceEstimationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor s
     findHomogeneousRegions(gradient.upperLeft(), gradient.lowerRight(), gradient.accessor(),
                                    homogeneous.upperLeft(), homogeneous.accessor());
 
-    // Generate noise of each of the remaining pixels == centers of homogenous areas (border is not used)
+    // Generate noise of each of the remaining pixels == centers of homogeneous areas (border is not used)
     unsigned int windowRadius = options.window_radius;
     for(unsigned int y=windowRadius; y<h-windowRadius; ++y)
     {

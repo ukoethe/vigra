@@ -96,11 +96,11 @@ Basic usage:
   This header defines timing macros for runtime measurements. See \ref TimingMacros for examples.
 
   \def USETICTOC
-  Enable timing using TIC/TOC* pairs. This macro defines temporary storage for the timing data, so in needs to preceed the TIC/TOC macros in their context.
+  Enable timing using TIC/TOC* pairs. This macro defines temporary storage for the timing data, so it needs to precede the TIC/TOC macros in their context.
   \hideinitializer
 
   \def USE_NESTED_TICTOC
-  Enable timing using TICPUSH/TOC* pairs. This macro defines temporary storage for the timing data, so in needs to preceed the TIC/TOC macros in their context.
+  Enable timing using TICPUSH/TOC* pairs. This macro defines temporary storage for the timing data, so it needs to precede the TIC/TOC macros in their context.
   \hideinitializer
 
   \def TIC

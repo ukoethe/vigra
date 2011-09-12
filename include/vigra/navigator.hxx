@@ -44,7 +44,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief A navigator that provides acces to the 1D subranges of an
+/** \brief A navigator that provides access to the 1D subranges of an
     n-dimensional range given by a \ref vigra::MultiIterator and an nD shape.
 
     Normally, the innermost loop of an iteration extends over the innermost
@@ -83,7 +83,7 @@ namespace vigra {
         for(; nav.hasMore(); ++nav)
         {
             // inner loop: linear iteration over current subset
-            //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
+            //             d == {0, 1, 2}: iterate along {x, y, z}-axis respectively
             Navigator::iterator i = nav.begin(), end = nav.end();
             for(; i != end; ++i)
                 // do something
@@ -245,7 +245,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
 /*                                                      */
 /********************************************************/
 
-/** \brief A navigator that provides acces to the 1D subranges of an
+/** \brief A navigator that provides access to the 1D subranges of an
     n-dimensional range given by an nD shape.
 
     This class works similarly to \ref MultiArrayNavigator, but instead of a 
@@ -280,7 +280,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         for(; nav.hasMore(); ++nav)
         {
             // inner loop: linear iteration over current subset
-            //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
+            //             d == {0, 1, 2}: iterate along {x, y, z}-axis respectively
             Shape point = nav.begin(), end = nav.end();
             for(; point[d] != end[d]; ++point[d])
                 a[point] = 5;

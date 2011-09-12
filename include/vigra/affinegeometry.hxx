@@ -348,7 +348,7 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     
     The algorithm applies the given \a affineMatrix to the <i>destination coordinates</i> and copies
     the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation. 
-    If the resulting coordinate is outside the source image, nothing will be writen at that destination point.
+    If the resulting coordinate is outside the source image, nothing will be written at that destination point.
     
     \code
         for all dest pixels:

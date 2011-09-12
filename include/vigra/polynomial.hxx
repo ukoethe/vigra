@@ -167,7 +167,7 @@ class PolynomialView
             
             The behavior of this function is undefined if <tt>r</tt>
             is not a root. Combined forward/backward deflation is best 
-            if <tt>r</tt> is an ontermediate root or we don't know
+            if <tt>r</tt> is an intermediate root or we don't know
             <tt>r</tt>'s relation to the other roots of the polynomial.
         */
     void forwardBackwardDeflate(T v);
@@ -176,7 +176,7 @@ class PolynomialView
             
             The behavior of this function is undefined if <tt>r</tt>
             is not a root. Backward deflation is best if <tt>r</tt> is
-            the snallest root (by magnitude).
+            the smallest root (by magnitude).
         */
     void backwardDeflate(T v);
     

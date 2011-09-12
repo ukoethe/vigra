@@ -465,7 +465,7 @@ class SplineImageView
     }
 
         /** Check if x and y are in the valid range. Points outside the original image range are computed
-            by reflcective boundary conditions, but only within the first reflection.
+            by reflective boundary conditions, but only within the first reflection.
             Equivalent to <tt>-width() + ORDER/2 + 2 < x < 2*width() - ORDER/2 - 2</tt> and
             <tt>-height() + ORDER/2 + 2 < y < 2*height() - ORDER/2 - 2</tt>.
         */

@@ -48,7 +48,7 @@ namespace vigra {
 
 /** \addtogroup Labeling Connected Components Labeling
      The 2-dimensional connected components algorithms may use either 4 or 8 connectivity.
-     By means of a functor the merge criterium can be defined arbitrarily.
+     By means of a functor the merge criterion can be defined arbitrarily.
 */
 //@{
 

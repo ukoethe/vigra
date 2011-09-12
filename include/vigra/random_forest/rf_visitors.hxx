@@ -191,7 +191,7 @@ class VisitorBase
      *
      * you can create the node by using a switch on node_tag and using the 
      * corresponding Node objects. Or - if you do not care about the type 
-     * use the Nodebase class.
+     * use the NodeBase class.
      */
     template<class TR, class IntT, class TopT,class Feat>
     void visit_external_node(TR & tr, IntT index, TopT node_t,Feat & features)
@@ -602,7 +602,7 @@ public:
     {
         std::vector<MarginalDistribution> mag_distributions;
         std::vector<IndexList> index_lists;
-        //map for linear index of mag_distiributions
+        //map for linear index of mag_distributions
         std::map<int,int> interior_to_index;
         //map for linear index of index_lists
         std::map<int,int> exterior_to_index;
@@ -611,7 +611,7 @@ public:
     //All trees
     std::vector<TreeOnlineInformation> trees_online_information;
 
-    /** Initilize, set the number of trees
+    /** Initialize, set the number of trees
      */
     template<class RF,class PR>
     void visit_at_beginning(RF & rf,const PR & pr)
@@ -877,7 +877,7 @@ class OOB_Error : public VisitorBase
     }
 #endif
     // negative value if sample was ib, number indicates how often.
-    //  value >=0  if sample was oob, 0 means fail 1, corrrect
+    //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -1045,7 +1045,7 @@ class CompleteOOBInfo : public VisitorBase
      * predicted label = jj
      * confusion matrix after ll trees
      *
-     * explaination of third index:
+     * explanation of third index:
      *
      * Two class case:
      * kk = 0 - (treeCount-1)
@@ -1080,7 +1080,7 @@ class CompleteOOBInfo : public VisitorBase
     }
 #endif
     // negative value if sample was ib, number indicates how often.
-    //  value >=0  if sample was oob, 0 means fail 1, corrrect
+    //  value >=0  if sample was oob, 0 means fail 1, correct
 
     template<class RF, class PR>
     void visit_at_beginning(RF & rf, PR & pr)
@@ -1374,7 +1374,7 @@ class VariableImportanceVisitor : public VisitorBase
         for(int ii = 0; ii < column_count; ++ii)
         {
             perm_oob_right.init(0.0); 
-            //make backup of orinal column
+            //make backup of original column
             backup_column.clear();
             for(iter = oob_indices.begin(); 
                 iter != oob_indices.end(); 
@@ -1392,7 +1392,7 @@ class VariableImportanceVisitor : public VisitorBase
                     std::swap(features(oob_indices[jj], ii), 
                               features(oob_indices[randint(jj+1)], ii));
 
-                //get the oob sucess rate after permuting
+                //get the oob success rate after permuting
                 for(iter = oob_indices.begin(); 
                     iter != oob_indices.end(); 
                     ++iter)
@@ -1556,7 +1556,7 @@ class CorrelationVisitor : public VisitorBase
         tmp_labels.reshape(pr.response().shape()); 
         tmp_cc.resize(2);
         numChoices.resize(n+1);
-        // look at allaxes
+        // look at all axes
     }
     template<class RF, class PR>
     void visit_at_end(RF const & rf, PR const & pr)

@@ -32,7 +32,7 @@
 /*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-#define VIGRA_RF_ALGORTIHM_HXX
+#define VIGRA_RF_ALGORITHM_HXX
 
 #include <vector>
 #include "splices.hxx"

@@ -284,7 +284,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     // Construct a tagged shape from a 'shape - order' pair by creating
     // the appropriate axistags object for that order and NumpyArray type.
-    // (called in NumpyArray constuctors via NumpyArray::init())
+    // (called in NumpyArray constructors via NumpyArray::init())
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {

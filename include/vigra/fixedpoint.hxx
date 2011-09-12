@@ -177,7 +177,7 @@ struct FPMulImplementation<true>
     must be made at the highest speed possible (e.g. in the inner loop
     of a volume rendering routine). The speed-up relative to floating
     point arithmetic can be dramatic, especially when one can avoid
-    conversions between integer anfloating point numbers (these are 
+    conversions between integer and floating point numbers (these are 
     very expensive because integer and floating point arithmetic
     resides in different pipelines). 
     
@@ -189,7 +189,7 @@ struct FPMulImplementation<true>
     in the result of an arithmetic operation. For example, when two 
     fixed point numbers are multiplied, the required number of integer
     bits in the result is the sum of the number of integer bits of the
-    arguments, but only when so many bits are avaiable. This is figured out
+    arguments, but only when so many bits are available. This is figured out
     by means of FixedPointTraits, and a compile-time error is raised
     when no suitable representation can be found. The idea is that the right
     thing happens automatically as often as possible.
@@ -1193,7 +1193,7 @@ public:
     }
 
         /** Construct from an int (fractional part will become zero).
-            Possible overflow is handled according to the taget type's <tt>OverflowHandling</tt>.
+            Possible overflow is handled according to the target type's <tt>OverflowHandling</tt>.
         */
     explicit FixedPoint16(Int32 v)
     : value(detail::FP16OverflowHandling<OverflowHandling>::exec(v << FRACTIONAL_BITS))
@@ -1211,7 +1211,7 @@ public:
 
         /** Construct from a double and round the fractional part to 
             <tt>FRACTIONAL_BITS</tt> accuracy. Possible overflow is handled according 
-            to the taget type's <tt>OverflowHandling</tt>.
+            to the target type's <tt>OverflowHandling</tt>.
         */
     explicit FixedPoint16(double rhs)
     : value(detail::FP16OverflowHandling<OverflowHandling>::exec(roundi(rhs * ONE)))
@@ -1228,7 +1228,7 @@ public:
     }
 
         /** Construct from a FixedPoint16 with different layout. It rounds as appropriate and 
-            handles possible overflow according to the taget type's <tt>OverflowHandling</tt>.
+            handles possible overflow according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2, FPOverflowHandling OverflowHandling2>
     FixedPoint16(const FixedPoint16<IntBits2, OverflowHandling2> &other)
@@ -1239,7 +1239,7 @@ public:
     }
 
         /** Assignment from int. The fractional part will become zero.  
-            Possible overflow is handled according to the taget type's <tt>OverflowHandling</tt>.
+            Possible overflow is handled according to the target type's <tt>OverflowHandling</tt>.
         */
     FixedPoint16 &operator=(Int32 rhs)
     {
@@ -1248,7 +1248,7 @@ public:
     }
 
         /** Assignment form double. The fractional part is rounded, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     FixedPoint16 &operator=(double rhs)
     {
@@ -1265,7 +1265,7 @@ public:
     }
 
         /** Assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1338,7 +1338,7 @@ public:
     }
 
         /** Add-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator+=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1348,7 +1348,7 @@ public:
     }
 
         /** Subtract-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator-=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1358,7 +1358,7 @@ public:
     }
     
         /** Multiply-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator*=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1368,7 +1368,7 @@ public:
     }
     
         /** Divide-assignment from a FixedPoint16 with different layout. It rounds as appropriate, and possible overflow is 
-            handled according to the taget type's <tt>OverflowHandling</tt>.
+            handled according to the target type's <tt>OverflowHandling</tt>.
         */
     template <int IntBits2>
     FixedPoint16 & operator/=(const FixedPoint16<IntBits2, OverflowHandling> &other)
@@ -1620,7 +1620,7 @@ sqrt(FixedPoint16<IntBits, OverflowHandling> v)
     using ::hypot;
 #endif
 
-    /// Length of hypothenuse. 
+    /// Length of hypotenuse. 
 template <int IntBits, FPOverflowHandling OverflowHandling>
 inline FixedPoint16<IntBits, OverflowHandling>
 hypot(FixedPoint16<IntBits, OverflowHandling> v1, FixedPoint16<IntBits, OverflowHandling> v2)

@@ -103,7 +103,7 @@ class BSplineBase
         */
     enum StaticOrder { order = ORDER };
 
-        /** Create functor for gevine derivative of the spline. The spline's order
+        /** Create functor for given derivative of the spline. The spline's order
             is specified spline by the template argument <TT>ORDER</tt>.
         */
     explicit BSplineBase(unsigned int derivativeOrder = 0)
@@ -113,7 +113,7 @@ class BSplineBase
         /** Unary function call.
             Returns the value of the spline with the derivative order given in the
             constructor. Note that only derivatives up to <tt>ORDER-1</tt> are
-            continous, and derivatives above <tt>ORDER+1</tt> are zero.
+            continuous, and derivatives above <tt>ORDER+1</tt> are zero.
         */
     result_type operator()(argument_type x) const
     {
@@ -123,7 +123,7 @@ class BSplineBase
         /** Binary function call.
             The given derivative order is added to the derivative order
             specified in the constructor. Note that only derivatives up to <tt>ORDER-1</tt> are
-            continous, and derivatives above <tt>ORDER+1</tt> are zero.
+            continuous, and derivatives above <tt>ORDER+1</tt> are zero.
         */
     result_type operator()(first_argument_type x, second_argument_type derivative_order) const
     {
