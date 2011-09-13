@@ -108,17 +108,20 @@ inline int convertToInt(std::string const& s) {
 /*                                                      */
 /********************************************************/
 
-int SIFImportInfo::width() const {    return m_width; }
-int SIFImportInfo::height() const {    return m_height; }
-int SIFImportInfo::stacksize() const {    return m_stacksize; }
+int SIFImportInfo::width() const {    return m_dims[0]; }
+int SIFImportInfo::height() const {    return m_dims[1]; }
+int SIFImportInfo::stacksize() const {    return m_dims[2]; }
 std::ptrdiff_t SIFImportInfo::getOffset() const {    return m_offset; }
 const char * SIFImportInfo::getFileName() const  {    return m_filename;    }    
 
+MultiArrayIndex SIFImportInfo::numDimensions() const { return 3; } // alway 3D data
+ArrayVector<size_t> const & SIFImportInfo::shape() const {return m_dims; }
+MultiArrayIndex SIFImportInfo::shapeOfDimension(const int dim) const { return m_dims[dim]; }
 
 
 
 SIFImportInfo::SIFImportInfo(const char* filename) :
-    m_filename(filename), m_offset(0), headerlen(32)
+    m_filename(filename), m_dims(3), m_offset(0), headerlen(32)
 {
 
     // some initialisations
@@ -193,7 +196,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
             vigra_precondition(tokens.size() >= 6, "format error. Not able to read stacksize.");
             yres = helper::convertToInt(tokens[2]);
             xres = helper::convertToInt(tokens[3]);
-            m_stacksize = helper::convertToInt(tokens[5]);
+            m_dims[2] = helper::convertToInt(tokens[5]);
             
         }
         if(i==(headerlen-1)) { // Read information about the size and bin
@@ -215,7 +218,7 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
     filesize -= siffile.tellg();
 
     // Estimate the offset value (header length)
-    for (int i = 0; i < (headerlen+m_stacksize); i++){
+    for (int i = 0; i < (headerlen+stacksize()); i++){
         while(siffile.get() != 10) {
             m_offset++;
         }
@@ -227,15 +230,17 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
     siffile.close();
     
     // Calc the width and the height value of the ROI
-    m_width = right-left+1;
-    mod = m_width % xbin;
-    m_width = (m_width-mod)/ybin;
-    m_height = top-bottom+1;
-    mod = m_height % ybin;
-    m_height = (m_height-mod)/xbin;
+    size_t width=0, height=0;
+    width = right-left+1;
+    mod = width % xbin;
+    width = (width-mod)/ybin;
+    height = top-bottom+1;
+    mod = height % ybin;
+    height = (height-mod)/xbin;
+    m_dims[0] = width;
+    m_dims[1] = height;
 
-
-    size_t data_size = (size_t)m_width * m_height * 4 * m_stacksize;
+    size_t data_size = (size_t)width * height * 4 * stacksize();
     vigra_precondition(m_offset + data_size + 8 == filesize, "error reading sif file: data with header should be equal to filesize. ");
     
 
@@ -285,7 +290,7 @@ std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info)
         "\nEM Gain level:\t"        << info.EMGain <<
         "\nVertical Shift Speed (s):\t" << info.verticalShiftSpeed <<
         "\nPre-Amplifier Gain:\t" << info.preAmpGain <<
-        "\nStacksize: \t\t\t" << info.m_stacksize <<
+        "\nStacksize: \t\t\t" << info.stacksize() <<
         "\nFilesize: \t\t\t" << info.filesize <<
         "\nOffset to Image Data: \t" << info.m_offset <<
         "\n";    

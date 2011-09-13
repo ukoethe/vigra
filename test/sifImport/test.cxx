@@ -1,5 +1,5 @@
 /************************************************************************/
-/*                                                                      */
+/*                                                                    */
 /*       Copyright 2010 by Joachim Schleicher and Ullrich Koethe        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
@@ -61,6 +61,9 @@ public:
         readSIF(infoSIF, in_data);
 
         // compare content
+        should (infoSIF.shape()[0] == 128);
+        should (infoSIF.shape()[1] == 128);
+        should (infoSIF.shape()[2] == 1);
         should (in_data == reference_data);
     }
 
@@ -82,6 +85,9 @@ public:
         
         
         // compare
+        should (infoSIF.shape()[0] == 8);
+        should (infoSIF.shape()[1] == 2);
+        should (infoSIF.shape()[2] == 1);
         should (in_data == reference_data);
     }
     
@@ -104,7 +110,25 @@ public:
         readSIF(infoSIF, in_data);
         
         // compare
+        should (infoSIF.shape()[0] == 3);
+        should (infoSIF.shape()[1] == 4);
+        should (infoSIF.shape()[2] == 1);
         should (in_data == reference_data);
+    }
+
+    // check for consistency of shape() vs shapeOfDimension(i)
+    void testShapeOfDimension() {
+        char sifFile[] = "testSif_4_6_30000.sif";
+
+        SIFImportInfo infoSIF(sifFile);
+
+        // compare
+        should (infoSIF.shape()[0] == infoSIF.width());
+        should (infoSIF.shape()[1] == infoSIF.height());
+        should (infoSIF.shape()[2] == infoSIF.stacksize());
+        for (int i = 0; i < 3; ++i) {
+            should (infoSIF.shape()[i] == infoSIF.shapeOfDimension(i));
+        }
     }
 
 };
@@ -120,6 +144,7 @@ struct SifImportTestSuite : public vigra::test_suite
         add(testCase(&SifImportTest::testSifImport_4_16));
         add(testCase(&SifImportTest::testSifImport_4_13));
         add(testCase(&SifImportTest::testSifImport_4_6));
+        add(testCase(&SifImportTest::testShapeOfDimension));
  
     }
 };

@@ -59,6 +59,7 @@
 #include <cstddef>
 #include <vector> 
 #include "vigra/multi_array.hxx"
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
  
@@ -110,6 +111,18 @@ class SIFImportInfo
          */
         VIGRA_EXPORT int stacksize() const;
 
+        /** Get the number of dimensions of the dataset represented by this info object.
+         */
+        VIGRA_EXPORT MultiArrayIndex numDimensions() const;
+
+        /** Get the shape of the dataset represented by this info object.
+         */
+        VIGRA_EXPORT ArrayVector<size_t> const & shape() const;
+
+        /** Get the shape (length) of the dataset along dimension \a dim.
+         */
+        VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
+
         /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
             variable length header.
@@ -138,9 +151,7 @@ class SIFImportInfo
 
     private:
         const char* m_filename;
-        int m_width;
-        int m_height;
-        int m_stacksize;
+        ArrayVector<size_t> m_dims;
         std::ptrdiff_t m_offset;
         int mod;
         int left, right, bottom, top;
