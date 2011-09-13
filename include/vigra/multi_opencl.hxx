@@ -263,7 +263,7 @@ namespace multi_math {
 
     #include <vigra/multi_opencl.hxx>
 
-    MultiArrayView<2, T > dataView = ...;
+    MultiArrayView<2, cl_double3 > dataView = ...;
 
     vigra::FindMinMax<double> minmax;
     vigra::inspectMultiArray(srcMultiArrayRange(dataView, cl_double3Accessor_z()), minmax);
