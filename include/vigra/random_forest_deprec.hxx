@@ -565,7 +565,7 @@ class RandomForestOptionsDeprec
 
             If \a n is 0 (the default), the number of features tried in every node
             is determined by the square root of the total number of features.
-            According to Breiman, this quantity should slways be optimized by means
+            According to Breiman, this quantity should always be optimized by means
             of the out-of-bag error.<br>
             Default: 0 (use <tt>sqrt(columnCount(featureMatrix))</tt>)
         */
@@ -721,7 +721,7 @@ class RandomForestDeprec
     {
         vigra_precondition(options.training_set_proportion == 0.0 ||
                            options.training_set_size == 0,
-            "RandomForestOptionsDeprec: absolute and proprtional training set sizes "
+            "RandomForestOptionsDeprec: absolute and proportional training set sizes "
             "cannot be specified at the same time.");
         vigra_precondition(classes_.size() > 1,
             "RandomForestOptionsDeprec::weights(): need at least two classes.");
@@ -754,7 +754,7 @@ class RandomForestDeprec
 
         vigra_precondition(options.training_set_proportion == 0.0 ||
                            options.training_set_size == 0,
-            "RandomForestOptionsDeprec: absolute and proprtional training set sizes "
+            "RandomForestOptionsDeprec: absolute and proportional training set sizes "
             "cannot be specified at the same time.");
         vigra_precondition(classes_.size() > 1,
             "RandomForestOptionsDeprec::weights(): need at least two classes.");

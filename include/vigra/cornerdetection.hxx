@@ -163,7 +163,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     The local maxima of the corner response denote the corners in the gray level 
     image.
     
-    The source value type must be a linaer algebra, i.e. addition, subtraction, and
+    The source value type must be a linear algebra, i.e. addition, subtraction, and
     multiplication with itself, multiplication with doubles and 
     \ref NumericTraits "NumericTraits" must 
     be defined. 

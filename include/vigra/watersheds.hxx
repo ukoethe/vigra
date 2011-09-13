@@ -562,7 +562,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     as described in
 
     J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization stretegies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
@@ -572,7 +572,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     are compared. The pixel type of the input image must be <tt>LessThanComparable</tt>.
     The function uses accessors.
 
-    Note that VIGRA provides an alternative implementaion of the watershed transform via
+    Note that VIGRA provides an alternative implementation of the watershed transform via
     \ref watershedsRegionGrowing(). It is slower, but offers many more configuration options.
 
     <b> Declarations:</b>
@@ -755,7 +755,7 @@ class WatershedOptions
         return *this;
     }
     
-        /** \brief Stop region grwoing when the boundaryness exceeds the threshold.
+        /** \brief Stop region growing when the boundaryness exceeds the threshold.
         
             This option may be combined with completeGrow() and keepContours().
         
@@ -804,8 +804,8 @@ class WatershedOptions
         
             In certain applications, one region (typically the background) should
             be preferred in region growing. This is most easily achieved
-            by adjusting the asignment cost for that region as <tt>factor*cost</tt>,
-            with a factor slighly below 1.
+            by adjusting the assignment cost for that region as <tt>factor*cost</tt>,
+            with a factor slightly below 1.
         
             Default: don't bias any region.
         */
@@ -1005,14 +1005,14 @@ class BiasedWatershedStatistics
          is faster because it orders pixels by means of a \ref BucketQueue (therefore,
          the boundary indicator must contain integers in the range 
          <tt>[0, ..., bucket_count-1]</tt>, where <tt>bucket_count</tt> is specified in
-         the options object), it only supports complet growing (no contour between regions
+         the options object), it only supports complete growing (no contour between regions
          is possible), and it handles plateaus in a simplistic way. It also saves some
          memory because it allocates less temporary storage.
     <li> Whether one region (label) is to be preferred or discouraged by biasing its cost 
          with a given factor (smaller than 1 for preference, larger than 1 for discouragement).
     </ul>
 
-    Note that VIGRA provides an alternative implementaion of the watershed transform via
+    Note that VIGRA provides an alternative implementation of the watershed transform via
     \ref watershedsUnionFind(). 
 
     <b> Declarations:</b>
@@ -1115,7 +1115,7 @@ class BiasedWatershedStatistics
     {
         vigra::IImage labeling(w, h);
         
-        .. // get seeds from somewhere, e.g. an interactive labeling programm,
+        .. // get seeds from somewhere, e.g. an interactive labeling program,
            // make sure that label 1 corresponds to the background
         
         // bias the watershed algorithm so that the background is preferred

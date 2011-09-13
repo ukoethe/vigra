@@ -100,7 +100,7 @@ enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
     \ingroup LinearAlgebraModule 
 
     This is the basic class for all linear algebra computations. Matrices are
-    strored in a <i>column-major</i> format, i.e. the row index is varying fastest.
+    stored in a <i>column-major</i> format, i.e. the row index is varying fastest.
     This is the same format as in the lapack and gmm++ libraries, so it will
     be easy to interface these libraries. In fact, if you need optimized
     high performance code, you should use them. The VIGRA linear algebra
@@ -505,7 +505,7 @@ class Matrix
         return *this;
     }
 
-        /** subtraxt \a other from each element of this matrix
+        /** subtract \a other from each element of this matrix
          */
     Matrix & operator-=(T other)
     {
@@ -521,7 +521,7 @@ class Matrix
         return *this;
     }
 
-        /** scalar devide this by \a other
+        /** scalar divide this by \a other
          */
     Matrix & operator/=(T other)
     {
@@ -895,7 +895,7 @@ void diagonalMatrixImpl(MultiArrayView<1, T, C1> const & v, MultiArrayView<2, T,
 
     /** make a diagonal matrix from a vector.
         The vector is given as matrix \a v, which must either have a single
-        row or column. The result is witten into the square matrix \a r.
+        row or column. The result is written into the square matrix \a r.
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
@@ -1908,7 +1908,7 @@ using vigra::argMaxIf;
         The function returns the index in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
         If the matrix is actually a vector, this is just the row or columns index.
-        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        In case of a truly 2-dimensional matrix, the index can be converted to an 
         index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
         
         <b>Required Interface:</b>
@@ -1941,7 +1941,7 @@ int argMin(MultiArrayView<2, T, C> const & a)
         The function returns the index in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
         If the matrix is actually a vector, this is just the row or columns index.
-        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        In case of a truly 2-dimensional matrix, the index can be converted to an 
         index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
         
         <b>Required Interface:</b>
@@ -1975,7 +1975,7 @@ int argMax(MultiArrayView<2, T, C> const & a)
         Otherwise, the index of the maximum element is returned in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
         If the matrix is actually a vector, this is just the row or columns index.
-        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        In case of a truly 2-dimensional matrix, the index can be converted to an 
         index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
         
         <b>Required Interface:</b>
@@ -2010,7 +2010,7 @@ int argMinIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
         Otherwise, the index of the maximum element is returned in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
         If the matrix is actually a vector, this is just the row or columns index.
-        In case of a truely 2-dimensional matrix, the index can be converted to an 
+        In case of a truly 2-dimensional matrix, the index can be converted to an 
         index pair by calling <tt>MultiArrayView::scanOrderIndexToCoordinate()</tt>
         
         <b>Required Interface:</b>
@@ -2823,12 +2823,12 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
     <DL>
     <DT><tt>ZeroMean</tt><DD> Subtract the column mean form every column if the values in the column are not constant. 
                               Do nothing in a constant column.
-    <DT><tt>UnitSum</tt><DD> Scale the colums so that the their sum is one if the sum was initially non-zero. 
+    <DT><tt>UnitSum</tt><DD> Scale the columns so that the their sum is one if the sum was initially non-zero. 
                               Do nothing in a zero-sum column.
     <DT><tt>UnitVariance</tt><DD> Divide by the column standard deviation if the values in the column are not constant. 
                               Do nothing in a constant column.
     <DT><tt>UnitNorm</tt><DD> Divide by the column norm if it is non-zero.
-    <DT><tt>ZeroMean | UnitVariance</tt><DD> First subtact the mean and then divide by the standard deviation, unless the 
+    <DT><tt>ZeroMean | UnitVariance</tt><DD> First subtract the mean and then divide by the standard deviation, unless the 
                                              column is constant (in which case the column remains unchanged).
     <DT><tt>ZeroMean | UnitNorm</tt><DD> If the column is non-constant, subtract the mean. Then divide by the norm
                                          of the result if the norm is non-zero.

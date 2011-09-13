@@ -44,7 +44,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief A navigator that provides acces to the 1D subranges of an
+/** \brief A navigator that provides access to the 1D subranges of an
     n-dimensional range given by a \ref vigra::MultiIterator and an nD shape.
 
     Normally, the innermost loop of an iteration extends over the innermost
@@ -83,7 +83,7 @@ namespace vigra {
         for(; nav.hasMore(); ++nav)
         {
             // inner loop: linear iteration over current subset
-            //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
+            //             d == {0, 1, 2}: iterate along {x, y, z}-axis respectively
             Navigator::iterator i = nav.begin(), end = nav.end();
             for(; i != end; ++i)
                 // do something
@@ -114,26 +114,24 @@ class MultiArrayNavigator
             and inner loop dimension <TT>inner_dimension</TT>.
          */
     MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
-    : base_type(i, shape, inner_dimension),
-      i_(i),
-      end_(i)
-    {
-        if(inner_dimension != level)
-            end_.template dim<level>() += shape[level];
-        else
-            end_.template dim<level>() += 1;
-    }
+    : base_type(i, shape, inner_dimension)
+    {}
+
+    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+                        unsigned int inner_dimension)
+    : base_type(i, start, stop, inner_dimension)
+    {}
 
         /** Advance to next starting location.
          */
     void operator++()
     {
         base_type::operator++();
-        if(base_type::atEnd() && i_ < end_) // this tests implicitly inner_dimension_ != level
+        if(this->point_[level-1] == this->stop_[level-1])
         {
-            ++i_.template dim<level>();
-            if(i_ < end_)
-                base_type::reset(i_);
+            base_type::reset();
+            ++this->point_[level];
+            ++this->i_.template dim<level>();
         }
     }
 
@@ -148,32 +146,22 @@ class MultiArrayNavigator
          */
     bool hasMore() const
     {
-        return this->inner_dimension_ == level 
-                     ? base_type::hasMore() 
-                     : i_ < end_;
+        return this->point_[level] < this->stop_[level];
     }
 
         /** true if iterator is exhausted.
          */
     bool atEnd() const
     {
-        return this->inner_dimension_ == level 
-                     ? base_type::atEnd()
-                     : !(i_ < end_);
+        return this->point_[level] >= this->stop_[level];
     }
 
   protected:
-    void reset(MULTI_ITERATOR const & i)
+    void reset()
     {
-        end_ = i_ = i;
-        if(this->inner_dimension_ != level)
-            end_.template dim<level>() += this->shape_[level];
-        else
-            end_.template dim<level>() += 1;
-        base_type::reset(i);
+        this->point_[level] = this->start_[level];
+        this->i_.template dim<level>() -= (this->stop_[level] - this->start_[level]);
     }
-
-    MULTI_ITERATOR i_, end_;
 };
 
 template <class MULTI_ITERATOR>
@@ -185,19 +173,27 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
     typedef typename MULTI_ITERATOR::iterator iterator;
 
     MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & shape, unsigned int inner_dimension)
-    : shape_(shape),
+    : start_(), stop_(shape), point_(start_),
       inner_dimension_(inner_dimension),
-      i_(i),
-      end_(i)
+      inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
+      i_(i + start_)
     {
-        if(inner_dimension != level)
-            end_.template dim<level>() += shape[level];
-        else
-            end_.template dim<level>() += 1;
+        stop_[inner_dimension] = start_[inner_dimension] + 1;
+    }
+
+    MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
+                        unsigned int inner_dimension)
+    : start_(start), stop_(stop), point_(start_),
+      inner_dimension_(inner_dimension),
+      inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
+      i_(i + start_)
+    {
+        stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
     void operator++()
     {
+        ++point_[level];
         ++i_.template dim<level>();
     }
 
@@ -213,32 +209,34 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
 
     iterator end() const
     {
-        return begin() + shape_[inner_dimension_];
+        return begin() + inner_shape_;
     }
 
     bool hasMore() const
     {
-        return i_ < end_;
+        return point_[level] < stop_[level];
     }
 
     bool atEnd() const
     {
-      return !(i_ < end_);
+        return point_[level] >= stop_[level];
+    }
+    
+    shape_type const & point() const
+    {
+        return point_;
     }
 
   protected:
-    void reset(MULTI_ITERATOR const & i)
+    void reset()
     {
-        end_ = i_ = i;
-        if(inner_dimension_ != level)
-            end_.template dim<level>() += shape_[level];
-        else
-            end_.template dim<level>() += 1;
+        point_[level] = start_[level];
+        i_.template dim<level>() -= (stop_[level] - start_[level]);
    }
 
-    shape_type shape_;
-    unsigned int inner_dimension_;
-    MULTI_ITERATOR i_, end_;
+    shape_type start_, stop_, point_;
+    unsigned int inner_dimension_, inner_shape_;
+    MULTI_ITERATOR i_;
 };
 
 /********************************************************/
@@ -247,7 +245,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
 /*                                                      */
 /********************************************************/
 
-/** \brief A navigator that provides acces to the 1D subranges of an
+/** \brief A navigator that provides access to the 1D subranges of an
     n-dimensional range given by an nD shape.
 
     This class works similarly to \ref MultiArrayNavigator, but instead of a 
@@ -282,7 +280,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
         for(; nav.hasMore(); ++nav)
         {
             // inner loop: linear iteration over current subset
-            //             d == {0, 1, 2}: interate along {x, y, z}-axis respectively
+            //             d == {0, 1, 2}: iterate along {x, y, z}-axis respectively
             Shape point = nav.begin(), end = nav.end();
             for(; point[d] != end[d]; ++point[d])
                 a[point] = 5;

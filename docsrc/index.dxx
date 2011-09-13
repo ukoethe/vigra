@@ -65,7 +65,7 @@
     Computer Vision"</em> by
     <a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/">Ullrich K&ouml;the</a>,
     in: B. J&auml;hne, H. Hau&szlig;ecker, P. Gei&szlig;ler: "Handbook on
-    Computer Vision and  Applications", volume 3, Acadamic Press, 1999.
+    Computer Vision and  Applications", volume 3, Academic Press, 1999.
     If you don't have the book,  you may read a
     <a href="documents/GenericProg2D.ps">draft of this article</a>. A shorter
     article <em><a href="http://hci.iwr.uni-heidelberg.de/people/ukoethe/papers/index.php#cite_GenericProg2DCppReport">STL Style Generic Programming with Images</a></em>
@@ -198,7 +198,7 @@
     <LI> \ref vigra::BasicImageView
          <BR>&nbsp;&nbsp;&nbsp;<em>Class template for images that use external memory</em>
     <LI> \ref StandardImageTypes
-         <BR>&nbsp;&nbsp;&nbsp;<em>The most common instanciations of \ref vigra::BasicImage</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>The most common instantiations of \ref vigra::BasicImage</em>
     <LI> \ref vigra::SplineImageView
          <BR>&nbsp;&nbsp;&nbsp;<em>Wrap a discrete image as a continous function</em>
     <LI> \ref VigraImpex

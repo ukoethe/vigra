@@ -93,7 +93,7 @@
     
     <UL>
     
-    <li> Writing a functor is more work then simply programm the loop
+    <li> Writing a functor is more work then simply program the loop
           directly, i.e. non-generically. Programmers will tend to
           avoid generic constructs, if they require so much writing. 
     <li> Often, functors are only needed for a single expression. 
@@ -101,7 +101,7 @@
           and documenting a new class if that class is used only once.
     <li> Functors cannot be implemented directly at the point of use.
           Thus, to find out exactly what a functor is doing, one needs
-          to look somewhere else. This complicates use and maintainance
+          to look somewhere else. This complicates use and maintenance
           ot generic code.
     
     </UL>
@@ -231,7 +231,7 @@
     \endcode
 
     You can use the <TT>Var()</TT> functor to assign values to a variable 
-    (<TT>=, +=, -=, *=, /=</TT>&nbsp; are suported). For example, the average gray
+    (<TT>=, +=, -=, *=, /=</TT>&nbsp; are supported). For example, the average gray
     value of the image is calculated like this:
     
     \code
@@ -270,7 +270,7 @@
     
     Often, we want to execute several commands in one functor. This can be done
     by means of the overloaded <TT>operator,()</TT> ("operator comma"). Expressions
-    seperated by a comma will be executed in succession. We can thus 
+    separated by a comma will be executed in succession. We can thus 
     simultaneously find the size and the average gray value of a region:
     
     \code

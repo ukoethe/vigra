@@ -467,7 +467,7 @@ class RandomForestOptions
 
     /**\brief Set mtry to a constant value
      *
-     * mtry is the number of columns/variates/variables randomly choosen
+     * mtry is the number of columns/variates/variables randomly chosen
      * to select the best split from.
      *
      */

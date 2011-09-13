@@ -734,14 +734,14 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
     \code
     namespace vigra {
       namespace linalg {
-        // compute either LASSO or least sqaures solutions
+        // compute either LASSO or least squares solutions
         template <class T, class C1, class C2, class Array1, class Array2>
         unsigned int
         leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
                              Array1 & activeSets, Array2 & solutions,
                              LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
 
-        // compute LASSO and least sqaures solutions
+        // compute LASSO and least squares solutions
         template <class T, class C1, class C2, class Array1, class Array2>
         unsigned int
         leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,

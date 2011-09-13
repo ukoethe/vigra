@@ -42,6 +42,7 @@ ENDIF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 # create fallback index.html that simply refers to the online documentation
 file(MAKE_DIRECTORY ${DOCDIR}/vigra)
 file(GLOB INDEX_HTML_EXISTS ${DOCDIR}/vigra/index.html)
+configure_file(vigra-icon.ico ${DOCDIR}/vigra/vigra-icon.ico COPYONLY)
 if(NOT INDEX_HTML_EXISTS)
     configure_file(index_fallback.html ${DOCDIR}/vigra/index.html COPYONLY)
     configure_file(vigra.css ${DOCDIR}/vigra/vigra.css COPYONLY)

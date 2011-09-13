@@ -204,7 +204,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     (i.e., where the mask is non-zero).
 
     The transformation given by the functor is applied to every source
-    pixel in the ROI (i.e. when the return vlaue of the mask's accessor
+    pixel in the ROI (i.e. when the return value of the mask's accessor
     is not zero)
     and the result is written into the corresponding destination pixel.
     The function uses accessors to access the pixel data.
@@ -823,7 +823,7 @@ linearRangeMapping(
 
     If a source pixel is above or equal the lower and below
     or equal the higher threshold (i.e. within the closed interval
-    [lower, heigher]) the destination pixel is set to 'yesresult',
+    [lower, higher]) the destination pixel is set to 'yesresult',
     otherwise to 'noresult'.
 
     <b> Traits defined:</b>

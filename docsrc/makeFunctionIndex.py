@@ -31,7 +31,7 @@ def getFunctionList(namespaceList):
         # end of function section in the namespace file
         end = re.search(r'<tr><td colspan="2">(?:<br>)?<h2>(?:<a name="var-members"></a>\n)?Variables</h2></td></tr>', text)
         if not end:
-            end = re.search(r'<hr/?><a name="_details"></a><h2[^>]*>Detailed Description</h2>', text)
+            end = re.search(r'<hr/?><a name="_?details"[^>]*></a><h2[^>]*>Detailed Description</h2>', text)
         # extract the function section from the namespace file
         text = text[start.regs[0][0]:end.regs[0][0]]
         
@@ -117,7 +117,10 @@ def generateFunctionIndex(functionList):
 
     # use file "/namespaces.html" as boiler plate for "/functionindex.html"
     text = open(path + "/namespaces.html").read()
-    header = text[:text.find('</h1>')+5]
+    if text.find('</h1>') > -1: # up to doxygen 1.7.1
+        header = text[:text.find('</h1>')+5]
+    else: # for doxygen 1.7.4
+        header = text[:re.search(r'<div class="title">[^<]*</div>\s*</div>\s*</div>',text).end()]
     footer = re.search(r'(?s)(<!-- footer.html -->.*)', text).group(1)
 
     text = re.sub(r'Namespace List', r'Function Index', header)

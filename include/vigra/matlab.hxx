@@ -944,7 +944,7 @@ class InputArray
     ConstCellArray getCellArray(std::string posOrName, ReqType req)
     {
         CompileTimeError ERROR__Const_Cell_Array_May_Not_Be_In_Option_Struct;
-        return ConstCellArray(); //avoid compiler warningg
+        return ConstCellArray(); //avoid compiler warning
     }
 
 };
@@ -1085,7 +1085,7 @@ using namespace vigra;
 
 
 /*++++++++++++++++++++++++++HELPERFUNC+++++++++++++++++++++++++++++++*
- * This is used for better readibility of the test cases            .
+ * This is used for better readability of the test cases            .
  * Nothing to be done here.
  *+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 int cantorPair(int x, int y){
@@ -1176,7 +1176,7 @@ class SparseArray
         else return data.find(newShape)->second;
     }
 
-    //see dokumentation of mxCreateSparse and the mxGet functions to understand this.
+    //see documentation of mxCreateSparse and the mxGet functions to understand this.
     void mapToMxArray(mxArray * & in){
 
         int len = data.size();

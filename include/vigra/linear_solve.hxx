@@ -951,7 +951,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         a == q * r;
         \endcode
 
-        If \a a dosn't have full rank, the function returns <tt>false</tt>. 
+        If \a a doesn't have full rank, the function returns <tt>false</tt>. 
         The decomposition is computed by householder transformations. It can be applied in-place,
         i.e. <tt>&a == &q</tt> or <tt>&a == &r</tt> are allowed.
 
@@ -1047,7 +1047,7 @@ bool linearSolveUpperTriangular(const MultiArrayView<2, T, C1> &r, const MultiAr
         
         The column vectors of matrix \a b are the right-hand sides of the equation (several equations
         with the same coefficients can thus be solved in one go). The result is returned
-        in \a x, whose columns contain the solutions for the correspoinding
+        in \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
         
@@ -1096,7 +1096,7 @@ bool linearSolveLowerTriangular(const MultiArrayView<2, T, C1> &l, const MultiAr
         
         The column vectors of matrix \a b are the right-hand sides of the equation (several equations
         with the same matrix \a L can thus be solved in one go). The result is returned
-        in \a x, whose columns contain the solutions for the correspoinding
+        in \a x, whose columns contain the solutions for the corresponding
         columns of \a b. This implementation can be applied in-place, i.e. <tt>&b == &x</tt> is allowed.
         The following size requirements apply:
         

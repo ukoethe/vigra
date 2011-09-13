@@ -122,7 +122,7 @@ private:
     
 public:
 
-        /** \brief Default constuctor.
+        /** \brief Default constructor.
             Creates a NULL handle.
         **/
     HDF5Handle()
@@ -237,14 +237,14 @@ public:
         return handle_ == h;
     }
 
-        /** \brief Unequality comparison of the contained handle.
+        /** \brief Inequality comparison of the contained handle.
         */
     bool operator!=(HDF5Handle const & h) const
     {
         return handle_ != h.handle_;
     }
 
-        /** \brief Unequality comparison of the contained handle.
+        /** \brief Inequality comparison of the contained handle.
         */
     bool operator!=(hid_t h) const
     {
@@ -539,7 +539,7 @@ class HDF5File
       OpenMode::New creates a new file. If the file already exists, overwrite it.
 
       OpenMode::Open opens a file for reading/writing. The file will be created,
-      if nescessary.
+      if necessary.
     */
     enum OpenMode {
         New,           // Create new empty file (existing file will be deleted).
@@ -661,7 +661,7 @@ class HDF5File
 
 
 
-    /** \brief Change the current group; create it if nescessary.
+    /** \brief Change the current group; create it if necessary.
       If the first character is a "/", the path will be interpreted as absolute path,
       otherwise it will be interpreted as path relative to the current group.
      */
@@ -1544,7 +1544,7 @@ class HDF5File
     /* Simple extension of std::string for splitting into two parts
      *
      *  Strings (in particular: file/dataset paths) will be split into two
-     *  parts. The split is made at the last occurance of the delimiter.
+     *  parts. The split is made at the last occurrence of the delimiter.
      *
      *  For example, "/path/to/some/file" will be split (delimiter = "/") into
      *  first() = "/path/to/some" and last() = "file".
@@ -1918,7 +1918,7 @@ class HDF5File
 
     /* Write single value attribute
       This function allows to write data of atomic datatypes (int, long, double)
-      as an attribute in the HDF5 file. So it is not nescessary to create a MultiArray
+      as an attribute in the HDF5 file. So it is not necessary to create a MultiArray
       of size 1 to write a single number.
      */
     template<class T>
@@ -1984,7 +1984,7 @@ class HDF5File
 
     /* Read a single value attribute.
       This functions allows to read a single value attribute of atomic datatype (int, long, double)
-      from the HDF5 file. So it is not nescessary to create a MultiArray
+      from the HDF5 file. So it is not necessary to create a MultiArray
       of size 1 to read a single number.
      */
     template<class T>
@@ -2090,7 +2090,7 @@ class HDF5File
 
     /* Write single value as dataset.
       This functions allows to write data of atomic datatypes (int, long, double)
-      as a dataset in the HDF5 file. So it is not nescessary to create a MultiArray
+      as a dataset in the HDF5 file. So it is not necessary to create a MultiArray
       of size 1 to write a single number.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -2146,7 +2146,7 @@ class HDF5File
 
     /* Read a single value.
       This functions allows to read a single datum of atomic datatype (int, long, double)
-      from the HDF5 file. So it is not nescessary to create a MultiArray
+      from the HDF5 file. So it is not necessary to create a MultiArray
       of size 1 to read a single number.
 
       If the first character of datasetName is a "/", the path will be interpreted as absolute path,
@@ -2237,7 +2237,7 @@ class HDF5File
         hsize_t bones [N];
 
         for(int i = 0; i < N; i++){
-            // virgra and hdf5 use different indexing
+            // vigra and hdf5 use different indexing
             boffset[i] = blockOffset[N-1-i];
             //bshape[i] = blockShape[i];
             bshape[i] = blockShape[N-1-i];

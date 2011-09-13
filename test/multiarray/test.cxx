@@ -1053,6 +1053,23 @@ public:
                     shouldEqual(*i, expected[d][k]);
             }
         }
+        
+        Shape3 start(1, 1, 0), stop(3, 3, 2);
+        unsigned char sexpected[][8] = 
+            {{5,  6,  9, 10, 17, 18, 21, 22},
+            {5,  9,  6, 10, 17, 21, 18, 22},
+            {5, 17,  6, 18,  9, 21, 10, 22}};
+        for(int d=0; d<3; ++d)
+        {
+            Navigator nav(array3.traverser_begin(), start, stop, d);
+            int k = 0;
+            for(; nav.hasMore(); ++nav)
+            {
+                Navigator::iterator i = nav.begin(), end = nav.end();
+                for(; i != end; ++i, ++k)
+                    shouldEqual(*i, sexpected[d][k]);
+            }
+        }
     }
 
     void testCoordinateNavigator ()

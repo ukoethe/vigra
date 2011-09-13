@@ -453,8 +453,8 @@ struct MultiMathBinaryOperator
 
 // In the sequel, the nested type 'MultiMathOperand<T>::AllowOverload'
 // ensures that template functions only participate in overload
-// resulution when this type is defined, i.e. when T is a number 
-// or array type. It thus prevents 'ambigous overload' errors.
+// resolution when this type is defined, i.e. when T is a number 
+// or array type. It thus prevents 'ambiguous overload' errors.
 //
 #define VIGRA_MULTIMATH_BINARY_OPERATOR(NAME, FCT, OPNAME, SEP, RESTYPE) \
 \

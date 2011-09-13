@@ -209,7 +209,7 @@ void internalNonlinearDiffusionAOSStep(
     <em> u(</em><b> x</b><em> , t)</em> is the smoothed image at time <em> t</em>, and
     <em> g(.)</em> is the location dependent diffusivity. At time zero, the image
     <em> u(</em><b> x</b><em> , 0)</em> is simply the original image. The time is
-    propotional to the square of the scale parameter: \f$t = s^2\f$.
+    proportional to the square of the scale parameter: \f$t = s^2\f$.
     The diffusion
     equation is solved iteratively according
     to the Additive Operator Splitting Scheme (AOS) from

@@ -19,6 +19,7 @@ IF(PYTHON_SPHINX)
 		-c ${CMAKE_CURRENT_BINARY_DIR}
 		${SPHINX_OPTS})
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_static)
+    configure_file(_static/vigra-icon.ico ${CMAKE_CURRENT_BINARY_DIR}/_static/vigra-icon.ico COPYONLY)
     
     DEPENDENCY_PATH(VIGRAIMPEX_PATH vigraimpex)
     STRING(REGEX REPLACE "/vigra$" "" VIGRANUMPY_TMP_PATH ${vigranumpy_tmp_dir})   

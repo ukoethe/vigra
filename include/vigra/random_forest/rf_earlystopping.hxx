@@ -93,7 +93,7 @@ public:
 
 /** Stop predicting after a certain amount of votes exceed certain proportion.
  *  case unweighted voting: stop if the leading class exceeds proportion * SB::tree_count_ 
- *  case weighted votion: stop if the leading class exceeds proportion * msample_ * SB::tree_count_ ;
+ *  case weighted voting: stop if the leading class exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
 class StopAfterVoteCount : public StopBase
@@ -156,7 +156,7 @@ public:
     typedef StopBase SB;
 
 	/** Constructor
-	 * \param thresh: If the two norm of the probabilites changes less then thresh then stop
+	 * \param thresh: If the two norm of the probabilities changes less then thresh then stop
 	 * \param num   : look at atleast num trees before stopping
 	 */
     StopIfConverging(double thresh, int num = 10)
@@ -209,7 +209,7 @@ public:
 
 /** Stop predicting if the margin prob(leading class) - prob(second class) exceeds a proportion
  *  case unweighted voting: stop if margin exceeds proportion * SB::tree_count_ 
- *  case weighted votion: stop if margin exceeds proportion * msample_ * SB::tree_count_ ;
+ *  case weighted voting: stop if margin exceeds proportion * msample_ * SB::tree_count_ ;
  *                          (maximal number of votes possible in both cases)
  */
 class StopIfMargin : public StopBase  
