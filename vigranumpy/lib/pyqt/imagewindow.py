@@ -326,9 +326,27 @@ class ImageViewer(OverlayViewer):
             self.applyExpression()
         elif e.key() == qcore.Qt.Key_L:
             self.cursorAction.trigger()
-        else:
+        elif e.key() == qcore.Qt.Key_Right or e.key() == qcore.Qt.Key_Left or \
+          e.key() == qcore.Qt.Key_Up or e.key() == qcore.Qt.Key_Down:
             OverlayViewer.keyPressEvent(self, e)
+        elif e.key() == qcore.Qt.Key_Plus or e.key() == qcore.Qt.Key_Greater:
+            OverlayViewer.zoomUp(self)
+        elif e.key() == qcore.Qt.Key_Minus or e.key() == qcore.Qt.Key_Less:
+            OverlayViewer.zoomDown(self)
+        else:
+            self.emit(qcore.SIGNAL("keyPressed"),(e.key()))
+            e.ignore()
             
+    def keyReleaseEvent(self, e):
+        self.emit(qcore.SIGNAL("keyReleased"),(e.key()))
+        e.ignore()
+
+    def mousePressEvent(self, e):
+        imagePos = OverlayViewer.imageCoordinateF(self, qcore.QPoint(e.x(), e.y()))
+        self.emit(qcore.SIGNAL("mousePressed"), (imagePos.x(), imagePos.y(), e.button()))
+        OverlayViewer.mousePressEvent(self, e)
+        e.ignore()
+
 class CaptionImageViewer(qt.QFrame):
     def __init__(self, image, normalize = True, title = None, parent = None):
         qt.QFrame.__init__(self, parent)
@@ -437,21 +455,22 @@ class ImageWindow(qt.QFrame):
         if self.layout.itemAtPosition(y, x):
             self.layout.itemAtPosition(y, x).widget().setImage(image, normalize)
         else:
-            viewer = CaptionImageViewer(image, normalize, title, parent = self)
-            self.layout.addWidget(viewer, y, x)
-            self.cursorAction.viewers.append(viewer)
+            CIviewer = CaptionImageViewer(image, normalize, title, parent = self)
+            self.viewer = CIviewer.viewer
+            self.layout.addWidget(CIviewer, y, x)
+            self.cursorAction.viewers.append(CIviewer)
             if len(self.cursorAction.viewers) == 1:
-                self.setWindowTitle(viewer.windowTitle())
+                self.setWindowTitle(CIviewer.windowTitle())
             if self.cursorAction.x != -1:
-                viewer.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
-            viewer.viewer.setZoomLevel(self.cursorAction.zoomLevel)
+                self.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
+            self.viewer.setZoomLevel(self.cursorAction.zoomLevel)
             if self.cursorAction.isChecked():
-                viewer.viewer.cursorAction.trigger()
-            self.disconnect(viewer.viewer.cursorAction, SIGNAL("triggered()"), viewer.viewer._toggleImageCursor)
-            self.connect(viewer.viewer.cursorAction, SIGNAL("triggered()"), self.cursorAction.trigger)
-            self.connect(viewer.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), self.cursorAction.broadcastPosition)
-            self.connect(viewer.viewer, SIGNAL("zoomLevelChanged(int)"), self.cursorAction.broadcastZoom)
-        self.updateGeometry()
+                self.viewer.cursorAction.trigger()
+            self.disconnect(self.viewer.cursorAction, SIGNAL("triggered()"), self.viewer._toggleImageCursor)
+            self.connect(self.viewer.cursorAction, SIGNAL("triggered()"), self.cursorAction.trigger)
+            self.connect(self.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), self.cursorAction.broadcastPosition)
+            self.connect(self.viewer, SIGNAL("zoomLevelChanged(int)"), self.cursorAction.broadcastZoom)
+            self.updateGeometry()
         # this call is necessary to update the sizeHint() before adjustSize() is called
         qcore.QCoreApplication.processEvents()
         self.adjustSize()
