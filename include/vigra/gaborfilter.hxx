@@ -69,7 +69,7 @@ namespace vigra {
     angular and radial sigmas of the gabor filter. (See \ref
     angularGaborSigma() for an explanation of possible values.)
 
-    The energy of the filter is explicitely normalized to 1.0.
+    The energy of the filter is explicitly normalized to 1.0.
 
     <b> Declarations:</b>
 
@@ -224,7 +224,7 @@ inline double radialGaborSigma(double centerFrequency)
 /** \brief Calculate sensible angular sigma for given parameters.
 
     "Sensible" means: If you use a range of gabor filters for feature
-    detection, you are interested in minimal redundance. This is hard
+    detection, you are interested in minimal redundancy. This is hard
     to define but one possible try is to arrange the filters in
     frequency space, so that the half-peak-magnitude ellipses touch
     each other.

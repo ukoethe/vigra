@@ -61,7 +61,7 @@ namespace vigra {
     offers additional functions for resizing the images and querying
     their common size. See \ref imageSize() for additional notes.
 
-    A custimized allocator can be passed as a template argument and via the constructor.
+    A customized allocator can be passed as a template argument and via the constructor.
     By default, the allocator of the <tt>ImageType</tt> is reused.
 
     <b>\#include</b> \<vigra/imagecontainer.hxx\>
@@ -454,7 +454,7 @@ public:
     pyramids, see also \ref pyramidReduceBurtFilter and \ref
     pyramidExpandBurtFilter.
 
-    A custimized allocator can be passed as a template argument and
+    A customized allocator can be passed as a template argument and
     via the constructor.  By default, the allocator of the
     <tt>ImageType</tt> is reused.
 

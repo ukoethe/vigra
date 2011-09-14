@@ -1636,21 +1636,21 @@ class ReduceFunctor
         /** the functor's argument type
             when used as a unary inspector.
             (This is not strictly correct since the argument type
-            is actuall a template parameter.)
+            is actually a template parameter.)
         */
     typedef VALUETYPE argument_type;
 
         /** the functor's first argument type
             when used as a binary inspector.
             (This is not strictly correct since the argument type
-            is actuall a template parameter.)
+            is actually a template parameter.)
         */
     typedef VALUETYPE first_argument_type;
 
         /** the functor's second argument type
             when used as a binary inspector.
             (This is not strictly correct since the argument type
-            is actuall a template parameter.)
+            is actually a template parameter.)
         */
     typedef VALUETYPE second_argument_type;
 
@@ -1751,7 +1751,7 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
 
     for(int i=0; i<= max_label; ++i)
     {
-        cout << "Max gray lavel of region " << i << ": "
+        cout << "Max gray level of region " << i << ": "
              << minmax.region[i].max << endl;
     }
 

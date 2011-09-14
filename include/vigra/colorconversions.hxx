@@ -38,6 +38,7 @@
 #define VIGRA_COLORCONVERSIONS_HXX
 
 #include <cmath>
+#include <string>
 #include "mathutil.hxx"
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
@@ -191,7 +192,7 @@ inline ValueType inverse_sRGBCorrection(double value, double norm)
     designed with exactly this application in mind and thus give the best results. But these
     conversions are also the most computationally demanding. The Y'PbPr color difference
     space (designed for coding digital video) is computationally much cheaper, and 
-    almost as good. Y'CbCr represents esentially the same transformation, but the color values 
+    almost as good. Y'CbCr represents essentially the same transformation, but the color values 
     are scaled so that they can be stored with 8 bits per channel with minimal loss of 
     information. The other transformations are of lesser interest here: XYZ is a device independent
     (but not perceptually uniform) color representation, and Y'IQ and Y'UV are the color 
@@ -318,6 +319,11 @@ class RGB2RGBPrimeFunctor
             detail::gammaCorrection<To>(rgb[2], 0.45, max_));
     }
     
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
+    
   private:
     component_type max_;    
 };
@@ -355,6 +361,11 @@ class RGB2RGBPrimeFunctor<unsigned char, unsigned char>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
     }
 };
 
@@ -436,6 +447,11 @@ class RGB2sRGBFunctor
             detail::sRGBCorrection<To>(rgb[2], max_));
     }
     
+    static std::string targetColorSpace()
+    {
+        return "sRGB";
+    }
+    
   private:
     component_type max_;    
 };
@@ -473,6 +489,11 @@ class RGB2sRGBFunctor<unsigned char, unsigned char>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "sRGB";
     }
 };
 
@@ -549,6 +570,11 @@ class RGBPrime2RGBFunctor
             detail::gammaCorrection<To>(rgb[1], gamma_, max_),
             detail::gammaCorrection<To>(rgb[2], gamma_, max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
+    }
 
   private:
     component_type max_;
@@ -588,6 +614,11 @@ class RGBPrime2RGBFunctor<unsigned char, unsigned char>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
     }
 };
 
@@ -667,6 +698,11 @@ class sRGB2RGBFunctor
             detail::inverse_sRGBCorrection<To>(rgb[1], max_),
             detail::inverse_sRGBCorrection<To>(rgb[2], max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
+    }
 
   private:
     component_type max_;
@@ -705,6 +741,11 @@ class sRGB2RGBFunctor<unsigned char, unsigned char>
     TinyVector<unsigned char, 3> operator()(V const & rgb) const
     {
         return TinyVector<unsigned char, 3>(lut_[rgb[0]], lut_[rgb[1]], lut_[rgb[2]]);
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
     }
 };
 
@@ -792,6 +833,11 @@ class RGB2XYZFunctor
         result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "XYZ";
+    }
 
   private:
     component_type max_;
@@ -871,6 +917,11 @@ class RGBPrime2XYZFunctor
         result[1] = Convert::cast(0.212671*red + 0.715160*green + 0.072169*blue);
         result[2] = Convert::cast(0.019334*red + 0.119193*green + 0.950227*blue);
         return result;
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "XYZ";
     }
 
   private:
@@ -957,6 +1008,11 @@ class XYZ2RGBFunctor
                           NumericTraits<T>::fromRealPromote(green * max_),
                           NumericTraits<T>::fromRealPromote(blue * max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
+    }
 };
 
 template <class T>
@@ -1036,6 +1092,11 @@ class XYZ2RGBPrimeFunctor
         return value_type(NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(red, gamma_) * max_),
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(green, gamma_) * max_),
                           NumericTraits<T>::fromRealPromote(detail::gammaCorrection<component_type>(blue, gamma_) * max_));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
     }
 };
 
@@ -1133,6 +1194,11 @@ class XYZ2LuvFunctor
         }
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Luv";
+    }
 
   private:
     double gamma_, kappa_, epsilon_;
@@ -1209,6 +1275,11 @@ class Luv2XYZFunctor
             result[2] = Convert::cast(((9.0 / vprime - 15.0)*result[1] - result[0])/ 3.0);
         }
         return result;
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "XYZ";
     }
 
   private:
@@ -1299,6 +1370,11 @@ class XYZ2LabFunctor
         result[2] = Convert::cast(200.0*(ygamma - zgamma));
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Lab";
+    }
 
   private:
     double gamma_, kappa_, epsilon_;
@@ -1369,6 +1445,11 @@ class Lab2XYZFunctor
         result[1] = Y;
         result[2] = Z;
         return result;
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "XYZ";
     }
 
   private:
@@ -1457,6 +1538,11 @@ class RGB2LuvFunctor
     result_type operator()(V const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "Luv";
     }
 
   private:
@@ -1547,6 +1633,11 @@ class RGB2LabFunctor
     {
         return xyz2lab(rgb2xyz(rgb));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Lab";
+    }
 
   private:
     RGB2XYZFunctor<T> rgb2xyz;
@@ -1609,6 +1700,11 @@ class Luv2RGBFunctor
     result_type operator()(V const & luv) const
     {
         return xyz2rgb(luv2xyz(luv));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
     }
 };
 
@@ -1675,6 +1771,11 @@ class Lab2RGBFunctor
     result_type operator()(V const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB";
     }
 };
 
@@ -1753,6 +1854,11 @@ class RGBPrime2LuvFunctor
     result_type operator()(V const & rgb) const
     {
         return xyz2luv(rgb2xyz(rgb));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "Luv";
     }
 
   private:
@@ -1836,6 +1942,11 @@ class RGBPrime2LabFunctor
     {
         return xyz2lab(rgb2xyz(rgb));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Lab";
+    }
 
   private:
     RGBPrime2XYZFunctor<T> rgb2xyz;
@@ -1906,6 +2017,11 @@ class Luv2RGBPrimeFunctor
     {
         return xyz2rgb(luv2xyz(luv));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
 };
 
 template <class T>
@@ -1971,6 +2087,11 @@ class Lab2RGBPrimeFunctor
     result_type operator()(V const & lab) const
     {
         return xyz2rgb(lab2xyz(lab));
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
     }
 };
 
@@ -2072,6 +2193,11 @@ class RGBPrime2YPrimePbPrFunctor
         result[2] = Convert::cast(0.5*red - 0.4186875892*green - 0.0813124108*blue);
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Y'PbPr";
+    }
 
   private:
     component_type max_;
@@ -2146,6 +2272,11 @@ class YPrimePbPr2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
 };
 
 template <class T>
@@ -2161,7 +2292,7 @@ class FunctorTraits<YPrimePbPr2RGBPrimeFunctor<T> >
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
     
-    According to the PAL analog videa standard, the functor realizes the transformation
+    According to the PAL analog video standard, the functor realizes the transformation
     
     \f[
         \begin{array}{rcl}
@@ -2245,6 +2376,11 @@ class RGBPrime2YPrimeIQFunctor
         result[2] = Convert::cast(0.212*red - 0.523*green + 0.311*blue);
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Y'IQ";
+    }
 
   private:
     component_type max_;
@@ -2319,6 +2455,11 @@ class YPrimeIQ2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
 };
 
 template <class T>
@@ -2334,7 +2475,7 @@ class FunctorTraits<YPrimeIQ2RGBPrimeFunctor<T> >
     <b>\#include</b> \<vigra/colorconversions.hxx\><br>
     Namespace: vigra
     
-    According to the NTSC analog videa standard, the functor realizes the transformation
+    According to the NTSC analog video standard, the functor realizes the transformation
     
     \f[
         \begin{array}{rcl}
@@ -2418,6 +2559,11 @@ class RGBPrime2YPrimeUVFunctor
         result[2] = Convert::cast(0.6149122807*red - 0.5149122807*green - 0.100*blue);
         return result;
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "Y'UV";
+    }
 
   private:
     component_type max_;
@@ -2492,6 +2638,11 @@ class YPrimeUV2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
 };
 
 template <class T>
@@ -2508,7 +2659,7 @@ class FunctorTraits<YPrimeUV2RGBPrimeFunctor<T> >
     Namespace: vigra
     
     This functor basically applies the same transformation as vigra::RGBPrime2YPrimePbPrFunctor
-    but the color components are scaled so that they can be coded as 8 bit intergers with
+    but the color components are scaled so that they can be coded as 8 bit integers with
     minimal loss of information:
     
     \f[
@@ -2580,6 +2731,11 @@ class RGBPrime2YPrimeCbCrFunctor
         result[1] = Convert::cast(128.0 - 37.79683972*red - 74.20316028*green + 112.0*blue);
         result[2] = Convert::cast(128.0 + 112.0*red - 93.78601998*green - 18.21398002*blue);
         return result;
+    }
+    
+    static std::string targetColorSpace()
+    {
+        return "Y'CbCr";
     }
 
   private:
@@ -2659,6 +2815,11 @@ class YPrimeCbCr2RGBPrimeFunctor
                            NumericTraits<T>::fromRealPromote(ngreen * max_),
                            NumericTraits<T>::fromRealPromote(nblue * max_));
     }
+    
+    static std::string targetColorSpace()
+    {
+        return "RGB'";
+    }
 };
 
 template <class T>
@@ -2729,8 +2890,8 @@ YUV: white = [229.992, 1, 9.81512e-17]
 /** \ingroup ColorConversions
     \defgroup PolarColors Polar Color Coordinates
     
-    Transform colors from/to a polar representation (hue, brighness, saturation).
-    In many situations, this is more inituitive than direct initialization in a 
+    Transform colors from/to a polar representation (hue, brightness, saturation).
+    In many situations, this is more intuitive than direct initialization in a 
     particular color space. The polar coordinates are 
     normalized so that a color angle of 0 degrees is always associated with red
     (green is at about 120 degrees, blue at about 240 degrees - exact values differ

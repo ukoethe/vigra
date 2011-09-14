@@ -66,7 +66,7 @@ namespace vigra
 /** \addtogroup MachineLearning Machine Learning
 
     This module provides classification algorithms that map 
-    features to labels or label probablities.
+    features to labels or label probabilities.
     Look at the RandomForest class first for a overview of most of the 
     functionality provided as well as use cases. 
 **/
@@ -181,7 +181,7 @@ class RandomForest
 
   public:
 
-    /** \name Contructors
+    /** \name Constructors
      * Note: No copy Constructor specified as no pointers are manipulated
      * in this class
      */
@@ -550,7 +550,7 @@ class RandomForest
      * \param features: a 1 by featureCount matrix containing
      *        data point to be predicted (this only works in
      *        classification setting)
-     * \param stop: early stopping critierion
+     * \param stop: early stopping criterion
      * \return double value representing class. You can use the
      *         predictLabels() function together with the
      *         rf.external_parameter().class_type_ attribute
@@ -607,7 +607,7 @@ class RandomForest
      *  \param features same as above
      *  \param prob a n x class_count_ matrix. passed by reference to
      *  save class probabilities
-     *  \param stop earlystopping criterion 
+     *  \param stop earlystopping criterion
      *  \sa EarlyStopping
      */
     template <class U, class C1, class T, class C2, class Stop>
@@ -905,6 +905,9 @@ void RandomForest<LabelType, PreprocessorTag>::
 
     // See rf_preprocessing.hxx for more info on this
     typedef Processor<PreprocessorTag,LabelType, U, C1, U2, C2> Preprocessor_t;
+
+    vigra_precondition(features.shape(0) == response.shape(0),
+        "RandomForest::learn(): shape mismatch between features and response.");
     
     // default values and initialization
     // Value Chooser chooses second argument as value if first argument
@@ -1045,11 +1048,11 @@ void RandomForest<LabelType,PreprocessorTag>
                           MultiArrayView<2, T2, C> &       prob)
 {
     //Features are n xp
-    //prob is n x NumOfLabel probaility for each feature in each class
+    //prob is n x NumOfLabel probability for each feature in each class
     
     vigra_precondition(rowCount(predictionSet.features) == rowCount(prob),
                        "RandomFroest::predictProbabilities():"
-                       " Feature matrix and probability matrix size misnmatch.");
+                       " Feature matrix and probability matrix size mismatch.");
     // num of features must be bigger than num of features in Random forest training
     // but why bigger?
     vigra_precondition( columnCount(predictionSet.features) >= ext_param_.column_count_,

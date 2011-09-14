@@ -598,7 +598,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     TIFFGetField(tiff, TIFFTAG_PHOTOMETRIC, &photometric);
 
     sampleFormat != SAMPLEFORMAT_VOID
-    samplesPerPixel == 3 // unlass photometric == PHOTOMETRIC_PALETTE
+    samplesPerPixel == 3 // unless photometric == PHOTOMETRIC_PALETTE
     photometric == PHOTOMETRIC_RGB ||
        photometric == PHOTOMETRIC_PALETTE
     bitsPerSample == 1 || 

@@ -43,43 +43,103 @@
 #include <sstream>
 #include <vector>
 
-// Usage:
-//
-// void time_it()
-// {
-//     USETICTOC
-//
-//     TIC
-//      ... // code to be timed
-//     TOC
-//      ... // untimed code
-//     TIC
-//      ... // other code to be timed
-//     TOC
-// }
-//
-// Intead of TOC which outputs the time difference to std::cerr, 
-// you may use TOCN (the time difference in msec as a double)
-// or TOCS (the time difference as a std::string). 
-//
-// Alternatively, you can performe nested timing like so:
-//
-// void time_it()
-// {
-//     USE_NESTED_TICTOC
-//
-//     TICPUSH
-//      ...      // code to be timed
-//     TICPUSH
-//      ...      // nested code to be timed
-//     TOC       // print time for nested code
-//      ...      // more code to be timed
-//     TOC       // print total time
-// }
-//
-// Timings below 1 msec are generally subject to round-off errors. Under
-// LINUX, you can #define VIGRA_HIRES_TIMING to get better
-// accuracy, but this requires linking against librt.
+/*! \page TimingMacros  Timing macros for runtime measurements
+
+    <b>\#include</b> \<vigra/timing.hxx\>
+
+    These macros allow to perform execution speed measurements. Results are reported
+    in <i>milliseconds</i>.
+    However, note that timings below 1 msec are generally subject to round-off errors. 
+    Under LINUX, you can \#define VIGRA_HIRES_TIMING to get better
+    accuracy, but this requires linking against librt.
+
+Basic usage:
+\code
+   void time_it()
+   {
+       USETICTOC
+  
+       TIC
+        ...    code to be timed
+       TOC
+        ...    untimed code
+       TIC
+        ...    other code to be timed
+       TOC
+   }
+\endcode
+
+   Instead of TOC, which outputs the time difference to std::cerr, 
+   you may use TOCN (the time difference in <i>msec</i> as a double)
+   or TOCS (the time difference as a std::string). 
+  
+   Alternatively, you can perform nested timing like so:
+\code
+   void time_it()
+   {
+       USE_NESTED_TICTOC
+  
+       TICPUSH
+        ...         code to be timed
+           TICPUSH
+            ...         nested code to be timed
+           TOC          print time for nested code
+        ...         more code to be timed
+       TOC          print total time
+   }
+\endcode
+  
+*/
+
+/*! \file timing.hxx  Timing macros for runtime measurements
+
+  This header defines timing macros for runtime measurements. See \ref TimingMacros for examples.
+
+  \def USETICTOC
+  Enable timing using TIC/TOC* pairs. This macro defines temporary storage for the timing data, so it needs to precede the TIC/TOC macros in their context.
+  \hideinitializer
+
+  \def USE_NESTED_TICTOC
+  Enable timing using TICPUSH/TOC* pairs. This macro defines temporary storage for the timing data, so it needs to precede the TIC/TOC macros in their context.
+  \hideinitializer
+
+  \def TIC
+  Start timing. Requires USE_TICTOC to be defined in the current context.
+  \hideinitializer
+
+  \def TOC
+  Stop timing and output result (the time difference w.r.t. the last TIC or TICPUSH 
+  instance) to std::cerr.
+  \hideinitializer
+
+  \def TICPUSH
+  Start timing, possibly a nested block of code within some other timed code block.
+  Requires USE_NESTED_TICTOC to be defined once in the current context.
+  \hideinitializer
+
+  \def TOCN
+  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC 
+  or TICPUSH) in msec as a double.
+  \hideinitializer
+  
+  \def TOCS
+  Stop timing. This macro evaluates to the time difference (w.r.t. the last TIC 
+  or TICPUSH) as a std::string (including units). 
+  \hideinitializer
+
+  \def TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions)
+  Executes the code block up to TICTOCLOOP_END outer_repetitions x
+  inner_repetitions times. The measurement is averaged over the
+  inner_repetitions, and the best result of the outer_repetitions is 
+  reported to std::cerr.
+  \hideinitializer
+
+  \def TICTOCLOOP_END
+  Ends the timing loop started with the TICTOCLOOP_BEGIN macro
+  and outputs the result.
+  \hideinitializer
+*/
+
 
 #ifdef WIN32
 
@@ -269,6 +329,29 @@
 
 #endif // WIN32
 
+// TICTOCLOOP runs the body inner_repetitions times, and minimizes the result over a number of outer_repetitions runs,
+//  outputting the final minimal average to std::cerr
+#define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions) \
+    { \
+    USETICTOC \
+        double tictoc_best_, tictoc_inner_repetitions_=inner_repetitions; size_t tictoc_outer_repetitions_=outer_repetitions; \
+        for (size_t tictoccounter_=0; tictoccounter_<tictoc_outer_repetitions_; ++tictoccounter_) { \
+        TIC \
+        for (size_t tictocinnercounter_=0; tictocinnercounter_<inner_repetitions; ++tictocinnercounter_) { \
+
+        
+#define TICTOCLOOP_END \
+                } \
+        const double tictoc_cur_ = TOCN; \
+                if ((tictoccounter_==0) || (tictoc_cur_ < tictoc_best_)) \
+            tictoc_best_ = tictoc_cur_; \
+        } \
+        std::cerr << tictoc_best_/tictoc_inner_repetitions_ \
+             << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
+    }\
+
+
+
 #else // NDEBUG
 
 #define USETICTOC 
@@ -278,6 +361,10 @@
 #define TICS ""
 #define USE_NESTED_TICTOC
 #define TICPUSH
+#define TICTOCLOOP_BEGIN {
+#define TICTOCLOOP_END }
 #endif // NDEBUG
+
+
 
 #endif // VIGRA_TIMING_HXX

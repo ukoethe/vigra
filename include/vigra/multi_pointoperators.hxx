@@ -92,7 +92,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
 
     This function can be used to init the array which must be represented by
     a pair of iterators compatible to \ref vigra::MultiIterator.
-    It uses an accessor to access the data alements. Note that the iterator range 
+    It uses an accessor to access the data elements. Note that the iterator range 
     must be specified by a shape object, because otherwise we could not control
     the range simultaneously in all dimensions (this is a necessary consequence
     of the \ref vigra::MultiIterator design).
@@ -101,7 +101,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     the destination's value_type), or a functor with compatible result_type. These two 
     cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
     yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
-    <tt>operator()</tt> must be const, and ist internal state may need to be <tt>mutable</tt>.
+    <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
     
     <b> Declarations:</b>
     
@@ -697,7 +697,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
 
     The destination array is only 1D (it's width and height are 1). 
     Thus, it will contain accumulated data for every slice of the source volume
-    (or for every frame, if the source is intepreted as an image sequence).
+    (or for every frame, if the source is interpreted as an image sequence).
     In the example, we use the functor \ref vigra::FindAverage to calculate
     the average gray value of every slice. Note that the destination shape
     must also be passed for the reduction to work, so we use 
@@ -736,7 +736,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     \endcode
     
     In reduce mode, it must be a model of UnaryAnalyser (i.e. support function call
-    with one argument and no return vakue <tt>functor(arg)</tt>) and Initializer
+    with one argument and no return value <tt>functor(arg)</tt>) and Initializer
     (i.e. support function call with no argument, but return value 
     <tt>res = functor()</tt>). Internally, such functors are recognized by the 
     meta functions <tt>FunctorTraits<FUNCTOR>::isUnaryAnalyser</tt> and
@@ -1132,7 +1132,7 @@ combineTwoMultiArraysImpl(
 
     The destination array is only 1D (it's width and height are 1). 
     Thus, it will contain accumulated data for every slice of the source volumes
-    (or for every frame, if the sources are intepreted as image sequences).
+    (or for every frame, if the sources are interpreted as image sequences).
     In the example, we use \ref vigra::ReduceFunctor together with a functor 
     expression (see \ref FunctorExpressions)
     to calculate the total absolute difference of the gray values in every pair of 
@@ -1156,7 +1156,7 @@ combineTwoMultiArraysImpl(
                 srcMultiArray(src2), 
                 destMultiArray(dest),  
                 reduceFunctor(Arg1() + abs(Arg2() - Arg3()), 0) );
-                // Arg1() is the sum accumulated so far, initialzed with 0
+                // Arg1() is the sum accumulated so far, initialized with 0
 
     \endcode
 
@@ -1186,7 +1186,7 @@ combineTwoMultiArraysImpl(
     \endcode
         
     In reduce mode, it must be a model of BinaryAnalyser (i.e. support function call
-    with two arguments and no return vakue <tt>functor(arg1, arg2)</tt>) and Initializer
+    with two arguments and no return value <tt>functor(arg1, arg2)</tt>) and Initializer
     (i.e. support function call with no argument, but return value 
     <tt>res = functor()</tt>). Internally, such functors are recognized by the 
     meta functions <tt>FunctorTraits<FUNCTOR>::isBinaryAnalyser</tt> and

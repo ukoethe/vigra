@@ -155,7 +155,7 @@ class FFTWComplex
         */
     typedef value_type const * const_iterator;
 
-        /** The norm type (result of magnitde())
+        /** The norm type (result of magnitude())
         */
     typedef value_type NormType;
 
@@ -1886,7 +1886,7 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
     If the destination image is scalar, only the real part of the result image is
     retained. In this case, you are responsible for choosing a filter image
     which ensures a zero imaginary part of the result (e.g. use a real, even symmetric
-    filter image, or a purely imaginary, odd symmetric on).
+    filter image, or a purely imaginary, odd symmetric one).
 
     The DC entry of the filter must be in the upper left, which is the
     position where FFTW expects it (see \ref moveDCToUpperLeft()).

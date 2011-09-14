@@ -19,16 +19,32 @@ IF(PYTHON_SPHINX)
 		-c ${CMAKE_CURRENT_BINARY_DIR}
 		${SPHINX_OPTS})
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_static)
+    configure_file(_static/vigra-icon.ico ${CMAKE_CURRENT_BINARY_DIR}/_static/vigra-icon.ico COPYONLY)
+    
+    DEPENDENCY_PATH(VIGRAIMPEX_PATH vigraimpex)
+    STRING(REGEX REPLACE "/vigra$" "" VIGRANUMPY_TMP_PATH ${vigranumpy_tmp_dir})   
+    
 	CONFIGURE_FILE(
 		${CMAKE_CURRENT_SOURCE_DIR}/conf.py.in
 		${CMAKE_CURRENT_BINARY_DIR}/conf.py
 		@ONLY)
     
+    # VIGRA_CONFIGURATION is 'release' or 'debug' on Windows, nothing on Linux
+    # variable CMAKE_CFG_INTDIR contains a dot '.' for a Windows nmake build, or
+    #                           '$(OutDir)' for a VisualStudio build (OutDir will be
+    #                           set by VS at build time)
+    IF(CMAKE_CFG_INTDIR AND NOT CMAKE_CFG_INTDIR STREQUAL ".")
+        SET(VIGRA_CONFIGURATION -D build_configuration=${CMAKE_CFG_INTDIR})
+    ELSE()
+        SET(VIGRA_CONFIGURATION)
+    ENDIF()
+
 	ADD_CUSTOM_TARGET (doc_python
 		COMMAND ${CMAKE_COMMAND} -E make_directory
 			${VIGRANUMPY_DOCDIR}
 		COMMAND ${PYTHON_SPHINX} -b html
 			${SPHINX_ALLOPTS}
+            ${VIGRA_CONFIGURATION}
 			${CMAKE_CURRENT_SOURCE_DIR}
 			${VIGRANUMPY_DOCDIR}
 		COMMENT "Generating vigranumpy documentation")

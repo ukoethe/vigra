@@ -112,7 +112,7 @@ class SIFImportInfo
 
         /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
-            variable lenght header.
+            variable length header.
          */
         VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
 

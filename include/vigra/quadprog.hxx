@@ -291,7 +291,7 @@ quadraticProgramming(MultiArrayView<2, T, C1> const & G, MultiArrayView<2, T, C2
         // the step is chosen as the minimum of dualStep and primalStep
         T step = std::min(dualStep, primalStep);
       
-        // take step and update matrizes
+        // take step and update matrices
       
         if (step == inf)
         {

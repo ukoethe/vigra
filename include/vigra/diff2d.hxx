@@ -1274,7 +1274,7 @@ public:
 
        /** Scale this rectangle by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
-        * multiplicated by `factor`.
+        * multiplied by `factor`.
         */
     Rect2D & operator*=(int factor)
     {
@@ -1285,7 +1285,7 @@ public:
 
        /** Scale this rectangle by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
-        * multiplicated by `factor`.
+        * multiplied by `factor`.
         */
     Rect2D & operator*=(double factor)
     {
@@ -1296,7 +1296,7 @@ public:
 
        /** Return rectangle scaled by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
-        * multiplicated by `factor`.
+        * multiplied by `factor`.
         */
     Rect2D operator*(int factor) const
     {
@@ -1305,7 +1305,7 @@ public:
 
        /** Return rectangle scaled by the given factor.
         * To be specific, both upperLeft() and lowerRight() are
-        * multiplicated by `factor`.
+        * multiplied by `factor`.
         */
     Rect2D operator*(double factor) const
     {

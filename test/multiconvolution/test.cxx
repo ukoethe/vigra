@@ -84,14 +84,16 @@ struct MultiArraySeparableConvolutionTest
     template<class Image>
     void makeRandom( Image &image )
     {
+        typedef typename Image::value_type T;
+
         int size = image.size();
         for( int k = 0; k < size; ++k ) 
         {
             typedef typename NumericTraits<typename Image::value_type>::isIntegral isIntegral;
             if(isIntegral::value)
-                image[k] = randomMT19937().uniformInt(256);
+                image[k] = (T)randomMT19937().uniformInt(256);
             else
-                image[k] = randomMT19937().uniform();
+                image[k] = (T)randomMT19937().uniform();
         }
     }
 
@@ -281,6 +283,40 @@ struct MultiArraySeparableConvolutionTest
 
 
     // - - - - - - - - - - - - - - - - - - - - - - - -
+
+    void testSmoothing()
+    {
+        makeRandom(srcImage);
+
+        ArrayVector<Kernel1D<double> > kernels(3);
+        kernels[0].initGaussian(1.0);
+        kernels[1].initAveraging(1);
+        kernels[2].initGaussian(2.0);
+
+        //kernels[1].setBorderTreatment(BORDER_TREATMENT_REFLECT);
+
+        Image3D res(shape);
+        separableConvolveMultiArray(srcMultiArrayRange(srcImage), destMultiArray(res), 
+                                    kernels.begin());
+
+        typedef Shape3 S;
+        int w = shape[0], h = shape[1], d = shape[2];
+        S start[] = { S(0, 0, 25), S(30, 0, 0), S(0, 30, 0), 
+                      S(2, h-1, 20), S(15, 1, d-2), S(2, 14, 1), 
+                      S(0,0,0), S(0, 0, 34), S(0, 12, 0) };
+        S stop[]  = { S(w, h, 26), S(31, h, d), S(w, 31, d), 
+                      S(w-2, h, 30), S(28, h-1, d), S(w-2, 44, d-1), 
+                      S(w,h,d), S(w, 1, 39), S(w-1, 26, 1) };
+        for(int k=0; k<9; ++k)
+        {
+            Image3D subarray(stop[k]-start[k]);
+            separableConvolveMultiArray(srcMultiArrayRange(srcImage), destMultiArray(subarray), 
+                                        kernels.begin(), start[k], stop[k]);
+
+            shouldEqualSequenceTolerance(subarray.begin(), subarray.end(), 
+                                         res.subarray(start[k], stop[k]).begin(), 1e-6);
+        }
+    }
 
     void test_inplaceness1( const Image3D &src, float ksize, bool useDerivative )
     {
@@ -495,12 +531,13 @@ struct MultiArraySeparableConvolutionTestSuite
                 add( testCase( &MultiArraySeparableConvolutionTest::test_Valid3 ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_InplaceN ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_Inplace1 ) );
+                add( testCase( &MultiArraySeparableConvolutionTest::testSmoothing ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_gradient1 ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_laplacian ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_hessian ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_structureTensor ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_gradient_magnitude ) );
-        }
+    }
 }; // struct MultiArraySeparableConvolutionTestSuite
 
 //--------------------------------------------------------
@@ -1202,9 +1239,11 @@ int main(int argc, char ** argv)
     MultiArraySeparableConvolutionTestSuite test1;
     int failed = test1.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test1.report() << std::endl;
+
     // run the multi-array separable scaled-convolution test suite
     MultiArraySeparableConvolutionScaledTestSuite test2;
     failed += test2.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test2.report() << std::endl;
+
     return (failed != 0);
 }

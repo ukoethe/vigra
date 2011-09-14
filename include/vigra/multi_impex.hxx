@@ -263,7 +263,7 @@ class VolumeExportInfo
             PNM can store 1 and 3 channel images with UInt8, UInt16 and UInt32
             values in each channel.
 
-            TIFF and VIFF are aditionally able to store short and long
+            TIFF and VIFF are additionally able to store short and long
             integers (2 or 4 bytes) and real values (32 bit float and
             64 bit double) without conversion. So you will need to use
             TIFF or VIFF if you need to store images with high

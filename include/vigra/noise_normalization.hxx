@@ -167,7 +167,7 @@ class NoiseNormalizationOptions
         /** Set the initial estimate of the noise variance.
             Robust noise variance estimation is an iterative procedure starting at the given value.<br>
             Default: 10.0<br>
-            Precondition: 0 < \a quess
+            Precondition: 0 < \a guess
         */
     NoiseNormalizationOptions & noiseVarianceInitialGuess(double guess)
     {
@@ -583,6 +583,9 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
         for(unsigned int k=0; k < clusters.size(); ++k)
         {
             int k1 = clusters[k][0], k2 = clusters[k][1]-1;
+            
+#if 0       // turned the "internal error" in a postcondition message
+            // for the most likely case
             std::string message("noiseVarianceListMedianCut(): internal error (");
             message += std::string("k: ") + asString(k) + ", ";
             message += std::string("k1: ") + asString(k1) + ", ";
@@ -590,6 +593,11 @@ void noiseVarianceListMedianCut(Vector1 const & noise, Vector2 & clusters,
             message += std::string("noise.size(): ") + asString(noise.size()) + ", ";
             message += std::string("clusters.size(): ") + asString(clusters.size()) + ").";
             vigra_invariant(k1 >= 0 && k1 < (int)noise.size() && k2 >= 0 && k2 < (int)noise.size(), message.c_str());
+#endif
+            
+            vigra_postcondition(k1 >= 0 && k1 < (int)noise.size() && 
+                                k2 >= 0 && k2 < (int)noise.size(), 
+                "noiseVarianceClustering(): Unable to find homogeneous regions.");
 
             double diff = noise[k2][0] - noise[k1][0];
             if(diff > diffMax)
@@ -681,7 +689,7 @@ void noiseVarianceEstimationImpl(SrcIterator sul, SrcIterator slr, SrcAccessor s
     findHomogeneousRegions(gradient.upperLeft(), gradient.lowerRight(), gradient.accessor(),
                                    homogeneous.upperLeft(), homogeneous.accessor());
 
-    // Generate noise of each of the remaining pixels == centers of homogenous areas (border is not used)
+    // Generate noise of each of the remaining pixels == centers of homogeneous areas (border is not used)
     unsigned int windowRadius = options.window_radius;
     for(unsigned int y=windowRadius; y<h-windowRadius; ++y)
     {

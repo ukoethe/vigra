@@ -54,7 +54,7 @@ namespace vigra
 
 namespace detail {
 
-// this class simplfies the design, but more importantly, it makes sure
+// this class simplifies the design, but more importantly, it makes sure
 // that the in-place code doesn't get compiled for boolean arrays 
 // (were it would never executed anyway -- see the specializations below)
 template <class DestType, class TmpType>
@@ -150,9 +150,9 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 /** \brief Binary erosion on multi-dimensional arrays.
 
     This function applies a flat circular erosion operator with a given radius. The
-    operation is isotropic. The input is intepreted as a binary multi-dimensional 
+    operation is isotropic. The input is interpreted as a binary multi-dimensional 
     array where non-zero pixels represent foreground and zero pixels represent 
-    background. In the output, foregound is always represented by ones 
+    background. In the output, foreground is always represented by ones 
     (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
     
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
@@ -249,9 +249,9 @@ void multiBinaryErosion(
 /** \brief Binary dilation on multi-dimensional arrays.
 
     This function applies a flat circular dilation operator with a given radius. The
-    operation is isotropic. The input is intepreted as a binary multi-dimensional 
+    operation is isotropic. The input is interpreted as a binary multi-dimensional 
     array where non-zero pixels represent foreground and zero pixels represent 
-    background. In the output, foregound is always represented by ones 
+    background. In the output, foreground is always represented by ones 
     (i.e. NumericTrais<typename DestAccessor::value_type>::one()).
     
     This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
@@ -411,7 +411,7 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
     
-    // temporay array to hold the current line to enable in-place operation
+    // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
         
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;
@@ -530,7 +530,7 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
     DestType MaxValue = NumericTraits<DestType>::max();
     enum { N = 1 + SrcIterator::level };
         
-    // temporay array to hold the current line to enable in-place operation
+    // temporary array to hold the current line to enable in-place operation
     ArrayVector<TmpType> tmp( shape[0] );
         
     typedef MultiArrayNavigator<SrcIterator, N> SNavigator;

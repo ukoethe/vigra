@@ -50,6 +50,20 @@ namespace vigra
 
 template<class U>
 python::tuple
+pythonPCA(NumpyArray<2,U> features, int nComponents)
+{
+    NumpyArray<2, U> fz(Shape2(nComponents, features.shape(1))); 
+    NumpyArray<2, U> zv(Shape2(features.shape(0), nComponents)); 
+
+    {
+        PyAllowThreads _pythread;
+        principleComponents(features, fz, zv);
+    }
+    return python::make_tuple(fz, zv);
+}
+
+template<class U>
+python::tuple
 pythonPLSA(NumpyArray<2,U> features, 
            int nComponents,
            int nIterations,
@@ -61,7 +75,7 @@ pythonPLSA(NumpyArray<2,U> features,
 
     {
         PyAllowThreads _pythread;
-        pLSA(features.transpose(), fz.transpose(), zv.transpose(),
+        pLSA(features, fz, zv,
              RandomNumberGenerator<>(), 
              PLSAOptions().maximumNumberOfIterations(nIterations)
                           .minimumRelativeGain(minGain)
@@ -71,11 +85,17 @@ pythonPLSA(NumpyArray<2,U> features,
 }
 
 
-void definePLSA()
+void defineUnsupervised()
 {
     using namespace python;
     
     docstring_options doc_options(true, true, false);
+
+    def("principleComponents", registerConverters(&pythonPCA<double>),
+        (arg("features"), arg("nComponents")),
+        "\nPerform principle component analysis. \n\n"
+        "See principleComponents_ in the C++ documentation for detailed information.\n"
+        "Note that the feature matrix must have shape (numFeatures * numSamples)!\n\n");
 
     PLSAOptions options;
 
@@ -84,9 +104,7 @@ void definePLSA()
          arg("minGain") = options.min_rel_gain, arg("normalize") = options.normalized_component_weights),
         "\nPerform probabilistic latent semantic analysis. \n\n"
         "See pLSA_ in the C++ documentation for detailed information.\n"
-        "However, note that the Python version of this functions treats\n"
-        "all matrices *transposed* (i.e. the feature matrix has shape\n"
-        "numSamples * numFeatures etc)!\n\n");
+        "Note that the feature matrix must have shape (numFeatures * numSamples)!\n\n");
 }
 
 void defineRandomForest();
@@ -101,7 +119,7 @@ using namespace boost::python;
 BOOST_PYTHON_MODULE_INIT(learning)
 {
     import_vigranumpy();
-    definePLSA();
+    defineUnsupervised();
     defineRandomForest();
     defineRandomForestOld();
 }

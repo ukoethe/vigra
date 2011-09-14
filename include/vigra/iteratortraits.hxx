@@ -231,7 +231,7 @@ struct IteratorTraitsBase
                 destIter(img3.upperLeft()));
     \endcode
 
-    All versions can be mixed freely within one explession.
+    All versions can be mixed freely within one expression.
     Technically, the argument objects are simply defined as
     pairs and triples of iterators and accessor so that all algorithms
     should declare a call interface version based on pairs and triples
@@ -435,7 +435,7 @@ struct IteratorTraitsBase
 
     <table>
     <tr><th bgcolor="#f0e0c0" colspan=2 align=left>
-        <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" array;</TT>
+        <TT>\ref vigra::MultiArrayView "vigra::MultiArrayView<N, SomeType>" img;</TT>
         </th>
     </tr>
     <tr><td>

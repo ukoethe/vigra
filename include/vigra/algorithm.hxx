@@ -49,7 +49,7 @@ namespace vigra {
 //@{
     /*! Find the minimum element in a sequence.
     
-        The function returns the iterator refering to the minimum element.
+        The function returns the iterator referring to the minimum element.
         This is identical to the function <tt>std::min_element()</tt>.
         
         <b>Required Interface:</b>
@@ -77,7 +77,7 @@ Iterator argMin(Iterator first, Iterator last)
 
     /*! Find the maximum element in a sequence.
     
-        The function returns the iterator refering to the maximum element.
+        The function returns the iterator referring to the maximum element.
         This is identical to the function <tt>std::max_element()</tt>.
         
         <b>Required Interface:</b>
@@ -105,7 +105,7 @@ Iterator argMax(Iterator first, Iterator last)
 
     /*! Find the minimum element in a sequence conforming to a condition.
     
-        The function returns the iterator refering to the minimum element,
+        The function returns the iterator referring to the minimum element,
         where only elements conforming to the condition (i.e. where 
         <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
         If no element conforms to the condition, or the sequence is empty,
@@ -141,7 +141,7 @@ Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
 
     /*! Find the maximum element in a sequence conforming to a condition.
     
-        The function returns the iterator refering to the maximum element,
+        The function returns the iterator referring to the maximum element,
         where only elements conforming to the condition (i.e. where 
         <tt>condition(*iterator)</tt> evaluates to <tt>true</tt>) are considered.
         If no element conforms to the condition, or the sequence is empty,

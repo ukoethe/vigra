@@ -68,7 +68,7 @@ def _fallbackModule(moduleName, message):
 
     module = FallbackModule(moduleName)
     sys.modules[moduleName] = module
-    module.__doc__ = """Module '%s' is not available.\n%s""" % (moduleName, message)
+    module.__doc__ = """Import of module '%s' failed.\n%s""" % (moduleName, message)
 
 if not os.path.exists(_vigra_doc_path):
     _vigra_doc_path = "http://hci.iwr.uni-heidelberg.de/vigra/doc/vigranumpy/index.html"
@@ -84,45 +84,157 @@ as usual.
 
 The following sub-modules group related functionality:
 
-* impex
-* colors
-* filters
-* sampling
-* fourier
-* analysis
-* learning
-* noise
+* arraytypes (VigraArray and axistags, automatically imported into 'vigra')
+* ufunc      (improved array arithmetic, automatically used by VigraArray)
+* impex      (image and array I/O)
+* colors     (color space transformations)
+* filters    (spatial filtering, e.g. smoothing)
+* sampling   (image and array re-sampling and interpolation)
+* fourier    (Fourier transform and Fourier domain filters)
+* analysis   (image analysis and segmentation)
+* learning   (machine learning and classification)
+* noise      (noise estimation and normalization)
+* geometry   (geometric algorithms, e.g. convex hull)
 ''' % _vigra_doc_path
  
 from __version__ import version
 import vigranumpycore
 import arraytypes
 import impex
-import filters
 import sampling
+import filters
 import analysis
 import learning
 import colors
 import noise
 import geometry
 
+sampling.ImagePyramid = arraytypes.ImagePyramid
+
 try:
     import fourier
-except:
-    print "WARNING: Unable to load module 'vigra.fourier'"
-    _fallbackModule('vigra.fourier', "   Probably, the fftw3 libraries could not be found during compilation or import.")
+except Exception, e:
+    _fallbackModule('vigra.fourier', 
+    '''
+    %s
+    
+    Make sure that the fftw3 libraries are found during compilation and import.
+    They may be downloaded at http://www.fftw.org/.''' % str(e))
     import fourier
 
 # import most frequently used functions
-from vigranumpycore import registerPythonArrayType, listExportedArrayKeys
 from arraytypes import *
+standardArrayType = arraytypes.VigraArray 
+defaultAxistags = arraytypes.VigraArray.defaultAxistags
+
+from impex import readImage, readVolume
+
+def readHDF5(filenameOrGroup, pathInFile, order=None):
+    '''Read an array from an HDF5 file.
+    
+       'filenameOrGroup' can contain a filename or a group object
+       referring to an already open HDF5 file. 'pathInFile' is the name 
+       of the dataset to be read, including intermediate groups. If the 
+       first argument is a group object, the path is relative to this 
+       group, otherwise it is relative to the file's root group.
+       
+       If the dataset has an attribute 'axistags', the returned array
+       will have type :class:`~vigra.VigraArray` and will be transposed 
+       into the given 'order' ('vigra.VigraArray.defaultOrder'
+       will be used if no order is given).  Otherwise, the returned 
+       array is a plain 'numpy.ndarray'. In this case, order='F' will 
+       return the array transposed into Fortran order.
+       
+       Requirements: the 'h5py' module must be installed.
+    '''
+    import h5py
+    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+        file = None
+        group = filenameOrGroup
+    else:
+        file = h5py.File(filenameOrGroup, 'r')
+        group = file['/']
+    try:
+        dataset = group[pathInFile]
+        if not isinstance(dataset, h5py.highlevel.Dataset):
+            raise IOError("readHDF5(): '%s' is not a dataset" % pathInFile)
+        data = dataset.value
+        axistags = dataset.attrs.get('axistags', None)
+        if axistags is not None:
+            data = data.view(arraytypes.VigraArray)
+            data.axistags = arraytypes.AxisTags.fromJSON(axistags)
+            if order is None:
+                order = arraytypes.VigraArray.defaultOrder
+            data = data.transposeToOrder(order)
+        else:
+            if order == 'F':
+                data = data.transpose()
+            elif order not in [None, 'C', 'A']:
+                raise IOError("readHDF5(): unsupported order '%s'" % order)
+    finally:
+        if file is not None:
+            file.close()
+    return data
+        
+def writeHDF5(data, filenameOrGroup, pathInFile):
+    '''Write an array to an HDF5 file.
+    
+       'filenameOrGroup' can contain a filename or a group object
+       referring to an already open HDF5 file. 'pathInFile' is the name of the
+       dataset to be written, including intermediate groups. If the first
+       argument is a group object, the path is relative to this group,
+       otherwise it is relative to the file's root group. If the dataset already
+       exists, it will be replaced without warning.
+       
+       If 'data' has an attribute 'axistags', the array is transposed to 
+       numpy order before writing. Moreover, the axistags will be 
+       stored along with the data in an attribute 'axistags'.
+       
+       Requirements: the 'h5py' module must be installed.
+    '''
+    import h5py
+    if isinstance(filenameOrGroup, h5py.highlevel.Group):
+        file = None
+        group = filenameOrGroup
+    else:
+        file = h5py.File(filenameOrGroup)
+        group = file['/']
+    try:
+        levels = pathInFile.split('/')
+        for groupname in levels[:-1]:
+            if groupname == '':
+                continue
+            g = group.get(groupname, default=None)
+            if g is None:
+                group = group.create_group(groupname)
+            elif not isinstance(g, h5py.highlevel.Group):
+                raise IOError("writeHDF5(): invalid path '%s'" % pathInFile)
+            else:
+                group = g
+        dataset = group.get(levels[-1], default=None)
+        if dataset is not None:
+            if isinstance(dataset, h5py.highlevel.Dataset):
+                del group[levels[-1]]
+            else:
+                raise IOError("writeHDF5(): cannot replace '%s' because it is not a dataset" % pathInFile)
+        try:
+            data = data.transposeToNumpyOrder()
+        except: 
+            pass
+        dataset = group.create_dataset(levels[-1], data=data)
+        if hasattr(data, 'axistags'):
+            dataset.attrs['axistags'] = data.axistags.toJSON()
+    finally:
+        if file is not None:
+            file.close()
+        
+impex.readHDF5 = readHDF5
+readHDF5.__module__ = 'vigra.impex'
+impex.writeHDF5 = writeHDF5
+writeHDF5.__module__ = 'vigra.impex'
+
 from filters import convolve, gaussianSmoothing
 from sampling import resize
-from impex import readImage, readVolume
-try:
-    from impex import readImageFromHDF5, readVolumeFromHDF5
-except:
-    pass
 
 # import enums
 CLOCKWISE = sampling.RotationDirection.CLOCKWISE
@@ -143,44 +255,56 @@ def searchfor(searchstring):
          if ( cont.upper().find(searchstring.upper()) ) >= 0:
             print attr+"."+cont
 
+# FIXME: use axistags here
 def imshow(image):
     '''Display a scalar or RGB image by means of matplotlib.
        If the image does not have one or three channels, an exception is raised.
-       The image will be automatically scaled to the range 0...255.
+       The image will be automatically scaled to the range 0...255 when its dtype 
+       is not already 'uint8'.
     '''
     import matplotlib.pylab
     
-    if image.ndim == 3:
-        if image.shape[2] != 3:
-            raise RuntimeError("vigra.imshow(): Multi channel image must have 3 channels.")
-        if image.dtype != uint8:
-            image = colors.linearRangeMapping(image, newRange=(0.0, 255.0),\
-                                              out=image.__class__(image.shape, dtype=uint8))
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray))
-    elif image.ndim == 2:
-        return matplotlib.pyplot.imshow(image.swapaxes(0,1).view(numpy.ndarray), cmap=matplotlib.cm.gray, \
-                                     norm=matplotlib.cm.colors.Normalize())
+    if not hasattr(image, 'axistags'):
+        return matplotlib.pyplot.imshow(image)
+    
+    image = image.transposeToNumpyOrder()
+    if image.channels == 1:
+        image = image.dropChannelAxis().view(numpy.ndarray)
+        plot = matplotlib.pyplot.imshow(image, cmap=matplotlib.cm.gray, \
+                                         norm=matplotlib.cm.colors.Normalize())
+        matplotlib.pylab.show()
+        return plot
+    elif image.channels == 3:
+        if image.dtype != numpy.uint8:
+            out = image.__class__(image.shape, dtype=numpy.uint8, axistags=image.axistags)
+            image = colors.linearRangeMapping(image, newRange=(0.0, 255.0), out=out)
+        plot = matplotlib.pyplot.imshow(image.view(numpy.ndarray))
+        matplotlib.pylab.show()
+        return plot
     else:
-        raise RuntimeError("vigra.imshow(): ndim must be 2 or 3.")
+        raise RuntimeError("vigra.imshow(): Image must have 1 or 3 channels.")
 
         
 # auto-generate code for additional Kernel generators:
 def _genKernelFactories(name):
-   for oldName in dir(eval('filters.'+name)):
-      if not oldName.startswith('init'):
-        continue
-      #remove init from beginning and start with lower case character
-      newName = oldName[4].lower() + oldName[5:] + 'Kernel'
-      if name == 'Kernel2D':
-        newName += '2D'
-      code = '''def %(newName)s(*args):
-      k = filters.%(name)s()
-      k.%(oldName)s(*args)
-      return k
+    for oldName in dir(eval('filters.'+name)):
+        if not oldName.startswith('init'):
+            continue
+        #remove init from beginning and start with lower case character
+        newPrefix = oldName[4].lower() + oldName[5:]
+        if newPrefix == "explicitly":
+            newPrefix = "explict"
+        newName = newPrefix + 'Kernel'
+        if name == 'Kernel2D':
+            newName += '2D'
+        code = '''def %(newName)s(*args):
+        k = filters.%(name)s()
+        k.%(oldName)s(*args)
+        return k
 %(newName)s.__doc__ = filters.%(name)s.%(oldName)s.__doc__
 filters.%(newName)s=%(newName)s
 ''' % {'oldName': oldName, 'newName': newName, 'name': name}
-      exec code
+        exec code
 
 _genKernelFactories('Kernel1D')
 _genKernelFactories('Kernel2D')
@@ -209,26 +333,34 @@ del _genWatershedsUnionFind
 
 # define tensor convenience functions
 def _genTensorConvenienceFunctions():
-    def hessianOfGaussianEigenvalues(image, scale, out = None, sigma_d = 0.0, step_size = 1.0):
+    def hessianOfGaussianEigenvalues(image, scale, out=None, 
+                                     sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the Hessian of Gaussian at the given scale
            for a scalar image or volume.
            
            Calls :func:`hessianOfGaussian` and :func:`tensorEigenvalues`.
         '''
         
-        return filters.tensorEigenvalues(filters.hessianOfGaussian(image, scale, sigma_d=sigma_d, step_size=step_size), out=out)
+        hessian = filters.hessianOfGaussian(image, scale, 
+                                            sigma_d=sigma_d, step_size=step_size, 
+                                            window_size=window_size, roi=roi)
+        return filters.tensorEigenvalues(hessian, out=out)
     
     hessianOfGaussianEigenvalues.__module__ = 'vigra.filters'
     filters.hessianOfGaussianEigenvalues = hessianOfGaussianEigenvalues
 
-    def structureTensorEigenvalues(image, innerScale, outerScale, out = None, sigma_d = 0.0, step_size = 1.0):
+    def structureTensorEigenvalues(image, innerScale, outerScale, out=None, 
+                                   sigma_d=0.0, step_size=1.0, window_size=0.0, roi=None):
         '''Compute the eigenvalues of the structure tensor at the given scales
            for a scalar or multi-channel image or volume.
            
            Calls :func:`structureTensor` and :func:`tensorEigenvalues`.
         '''
 
-        return filters.tensorEigenvalues(filters.structureTensor(image, innerScale, outerScale, sigma_d=sigma_d, step_size=step_size), out=out)
+        st = filters.structureTensor(image, innerScale, outerScale, 
+                                     sigma_d=sigma_d, step_size=step_size, 
+                                     window_size=window_size, roi=roi)
+        return filters.tensorEigenvalues(st, out=out)
     
     structureTensorEigenvalues.__module__ = 'vigra.filters'
     filters.structureTensorEigenvalues = structureTensorEigenvalues

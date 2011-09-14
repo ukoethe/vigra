@@ -143,7 +143,7 @@ class SlantedEdgeMTFOptions
 
         /** Amount of smoothing of the computed MTF.
         
-            If the datais noisy, so will be the MTF. Thus, some smoothing is useful.<br>
+            If the data is noisy, so will be the MTF. Thus, some smoothing is useful.<br>
             Default: 2.0
         */
     SlantedEdgeMTFOptions & mtfSmoothingScale(double scale)
@@ -501,9 +501,9 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     
     The input must be an image that contains a single step edge with bright pixels on one side and dark pixels on 
     the other. However, the intensity values must be neither saturated nor zero. The algorithms computes the MTF
-    from the Fourier transform of the edge's derivative. Thus, if the actual MTF is unisotropic, the estimated 
+    from the Fourier transform of the edge's derivative. Thus, if the actual MTF is anisotropic, the estimated 
     MTF does actually only apply in the direction perpendicular to the edge - several edges at different 
-    orientations are required to estimate an unisotropic MTF.
+    orientations are required to estimate an anisotropic MTF.
     
     The algorithm returns a sequence of frequency / attenuation pairs. The frequency axis is normalized so that the
     Nyquist frequency of the original image is 0.5. Since the edge's derivative is computed with subpixel accuracy,
@@ -520,7 +520,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
          of the derivative is impossible otherwise (i.e. the edge position perpendicular to the edge direction must 
          differ by at least 1 pixel between the two ends of the edge). 
          
-    <li> Our implementation uses a more accurate subpixel derivative algrithm. In addition, we first perform a shading 
+    <li> Our implementation uses a more accurate subpixel derivative algorithm. In addition, we first perform a shading 
          correction in order to reduce possible derivative bias due to nonuniform illumination.
 
     <li> If the input image is large enough (i.e. there are at least 20 pixels on either side of the edge over
@@ -627,7 +627,7 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
 
 /** \brief Fit a Gaussian function to a given MTF.
 
-    This function expects a squence of frequency / attenuation pairs as produced by \ref slantedEdgeMTF()
+    This function expects a sequence of frequency / attenuation pairs as produced by \ref slantedEdgeMTF()
     and finds the best fitting Gaussian point spread function (Gaussian functions are good approximations 
     of the PSF of many real cameras). It returns the standard deviation (scale) of this function. The algorithm
     computes the standard deviation by means of a linear least square on the logarithm of the MTF, i.e.

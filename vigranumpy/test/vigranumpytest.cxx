@@ -41,20 +41,33 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <iostream>
 
+namespace python = boost::python;
+
 namespace vigra {
 
-ArrayVector<npy_intp> testAny(NumpyAnyArray array)
+python::tuple testAny(NumpyAnyArray array)
 {
-    return array.shape();
+    NumpyAnyArray copy(array, true);
+    return python::make_tuple(array.shape(), copy, python::object(), python::object());
 }
 
 template <unsigned int N, class T, class Stride>
-ArrayVector<npy_intp> test(NumpyArray<N, T, Stride> const & array)
+python::tuple test(NumpyArray<N, T, Stride> const & array)
 {
-    NumpyArray<N, T> c(array, true);
-    vigra_postcondition(c.pyObject()->ob_refcnt == 1, 
+    NumpyAnyArray anyarray(array);
+    
+    NumpyArray<N, T> copy(array, true);
+    vigra_postcondition(copy.pyObject()->ob_refcnt == 1, 
           "freshly created NumpyArray<N, T> has reference count > 1.");
-    return ((NumpyAnyArray const &)array).shape();
+
+    NumpyArray<N, T> same_shape(array.shape());
+    same_shape = array;
+
+    NumpyArray<N, T> same_shape_and_tags(array.taggedShape());
+    same_shape_and_tags = anyarray;
+
+    return python::make_tuple(anyarray.shape(), copy, 
+                               same_shape, same_shape_and_tags);
 }
 
 template <unsigned int N, class T, class Stride>
@@ -65,13 +78,40 @@ testView(MultiArrayView<N, T, Stride> array)
     return array.shape();
 }
 
-// (right now, a compile-only test:)
-void testMakeReference()
+// FIXME: make this to a real test (right now, it's a compile-only test)
+void testMakeReferenceUnsafe()
 {
     MultiArray<2, vigra::UInt8> cpp_memory(MultiArrayShape<2>::type(100, 100));
 
     NumpyArray<2, npy_uint8, vigra::UnstridedArrayTag> python_view;
-    python_view.makeReference(cpp_memory);
+    python_view.makeUnsafeReference(cpp_memory);
+}
+
+template <unsigned int N, class T>
+python::tuple 
+checkTaggedShape(NumpyArray<N, T> in)
+{
+    NumpyArray<3, Multiband<float> > res1(in);
+    
+    NumpyArray<3, Multiband<float> > res2;
+    res2.reshapeIfEmpty(in.taggedShape().setChannelDescription("res2"), "res2 failed");
+    
+    NumpyArray<3, Multiband<float> > res3;
+    res3.reshapeIfEmpty(in.taggedShape().setChannelCount(1).setChannelDescription("res3"), 
+                        "res3 failed");
+    
+    NumpyArray<3, Multiband<float> > res4;
+    res4.reshapeIfEmpty(in.taggedShape().setChannelCount(3).setChannelDescription("res4"), 
+                        "res4 failed");
+    
+    NumpyArray<2, Singleband<float> > res5;
+    res5.reshapeIfEmpty(in.taggedShape().setChannelDescription("res5"), "res5 failed");
+    
+    NumpyArray<2, RGBValue<float> > res6;
+    res6.reshapeIfEmpty(in.taggedShape().setChannelDescription("res6"), 
+                        "res6 failed");
+    
+    return python::make_tuple(res1, res2, res3, res4, res5, res6); 
 }
 
 } // namespace vigra
@@ -130,4 +170,7 @@ BOOST_PYTHON_MODULE_INIT(vigranumpytest)
 
     def("viewArray4Strided", registerConverters(&testView<4, float, StridedArrayTag>));
     def("viewArray4Unstrided", registerConverters(&testView<4, float, UnstridedArrayTag>));
+    
+    def("checkTaggedShapeMultiband", registerConverters(&checkTaggedShape<3, Multiband<float> >));
+    def("checkTaggedShapeSingleband", registerConverters(&checkTaggedShape<2, Singleband<float> >));
 }

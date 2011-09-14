@@ -45,7 +45,7 @@ namespace vigra{
 
 /** \addtogroup Labeling Connected Components Labeling
      The 3-dimensional connected components algorithms may use either 6 or 26 connectivity.
-     By means of a functor the merge criterium can be defined arbitrarily.
+     By means of a functor the merge criterion can be defined arbitrarily.
 */
 //@{
 
@@ -246,7 +246,7 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
             {
                 LabelType currentLabel = label.nextFreeLabel();
 
-                //queck whether there is a special border treatment to be used or not
+                //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
 
                 //We are not at the border!
@@ -539,7 +539,7 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
 
                 LabelType currentLabel = label.nextFreeLabel();
 
-                //queck whether there is a special border treatment to be used or not
+                //check whether there is a special border treatment to be used or not
                 AtVolumeBorder atBorder = isAtVolumeBorderCausal(x,y,z,w,h,d);
                     
                 //We are not at the border!

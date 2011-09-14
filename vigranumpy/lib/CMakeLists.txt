@@ -4,6 +4,7 @@ FILE(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/__version__.py
 SET(PYSOURCES
     __init__.py
     __version__.py
+    tagged_array.py
     arraytypes.py
     ufunc.py
     )

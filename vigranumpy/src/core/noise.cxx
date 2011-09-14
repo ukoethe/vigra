@@ -61,48 +61,89 @@ NumpyAnyArray vectorToArray(std::vector< TinyVector< double, 2 > > & result)
 }
 
 template < class PixelType >
-NumpyAnyArray pythonNoiseVarianceEstimation(NumpyArray<2, Singleband<PixelType> > image,
-                                            bool useGradient=true, unsigned int windowRadius=6,
-                                            unsigned int clusterCount=10, double averagingQuantile=0.8,
-                                            double noiseEstimationQuantile=1.5, double noiseVarianceInitialGuess=10.0,
-                                            NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonNoiseVarianceEstimation(NumpyArray<2, Singleband<PixelType> > image,
+                              bool useGradient=true, 
+                              unsigned int windowRadius=6,
+                              unsigned int clusterCount=10, 
+                              double averagingQuantile=0.8,
+                              double noiseEstimationQuantile=1.5, 
+                              double noiseVarianceInitialGuess=10.0,
+                              NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
-    noiseNormalizationOptions.useGradient(useGradient).windowRadius(windowRadius).clusterCount(clusterCount).averagingQuantile(averagingQuantile).noiseEstimationQuantile(noiseEstimationQuantile).noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+    noiseNormalizationOptions
+        .useGradient(useGradient)
+        .windowRadius(windowRadius)
+        .clusterCount(clusterCount)
+        .averagingQuantile(averagingQuantile)
+        .noiseEstimationQuantile(noiseEstimationQuantile)
+        .noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+        
     std::vector< TinyVector< double, 2 > > result;
-
-    noiseVarianceEstimation(srcImageRange(image), result, noiseNormalizationOptions);
-
+    
+    {
+        PyAllowThreads _pythread;
+        noiseVarianceEstimation(srcImageRange(image), result, noiseNormalizationOptions);
+    }
+    
     return vectorToArray(result);
 }
 
 template < class PixelType >
-NumpyAnyArray pythonNoiseVarianceClustering(NumpyArray<2, Singleband<PixelType> > image,
-                                            bool useGradient=true, unsigned int windowRadius=6,
-                                            unsigned int clusterCount=10, double averagingQuantile=0.8,
-                                            double noiseEstimationQuantile=1.5, double noiseVarianceInitialGuess=10.0,
-                                            NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonNoiseVarianceClustering(NumpyArray<2, Singleband<PixelType> > image,
+                              bool useGradient=true, 
+                              unsigned int windowRadius=6,
+                              unsigned int clusterCount=10, 
+                              double averagingQuantile=0.8,
+                              double noiseEstimationQuantile=1.5, 
+                              double noiseVarianceInitialGuess=10.0,
+                              NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
-    noiseNormalizationOptions.useGradient(useGradient).windowRadius(windowRadius).clusterCount(clusterCount).averagingQuantile(averagingQuantile).noiseEstimationQuantile(noiseEstimationQuantile).noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+    noiseNormalizationOptions
+        .useGradient(useGradient)
+        .windowRadius(windowRadius)
+        .clusterCount(clusterCount)
+        .averagingQuantile(averagingQuantile)
+        .noiseEstimationQuantile(noiseEstimationQuantile)
+        .noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+        
     std::vector< TinyVector< double, 2 > > result;
-    noiseVarianceClustering(srcImageRange(image), result,
-        noiseNormalizationOptions);
+    
+    {
+        PyAllowThreads _pythread;
+        noiseVarianceClustering(srcImageRange(image), result, noiseNormalizationOptions);
+    }
+    
     return vectorToArray(result);
 }
 
 template < class PixelType >
-NumpyAnyArray pythonNonparametricNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
-                                                    bool useGradient=true, unsigned int windowRadius=6,
-                                                    unsigned int clusterCount=10, double averagingQuantile=0.8,
-                                                    double noiseEstimationQuantile=1.5, double noiseVarianceInitialGuess=10.0,
-                                                    NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonNonparametricNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
+                                      bool useGradient=true, 
+                                      unsigned int windowRadius=6,
+                                      unsigned int clusterCount=10, 
+                                      double averagingQuantile=0.8,
+                                      double noiseEstimationQuantile=1.5, 
+                                      double noiseVarianceInitialGuess=10.0,
+                                      NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
-    noiseNormalizationOptions.useGradient(useGradient).windowRadius(windowRadius).clusterCount(clusterCount).averagingQuantile(averagingQuantile).noiseEstimationQuantile(noiseEstimationQuantile).noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+    noiseNormalizationOptions
+        .useGradient(useGradient)
+        .windowRadius(windowRadius)
+        .clusterCount(clusterCount)
+        .averagingQuantile(averagingQuantile)
+        .noiseEstimationQuantile(noiseEstimationQuantile)
+        .noiseVarianceInitialGuess(noiseVarianceInitialGuess);
     
-    res.reshapeIfEmpty(image.shape(),"nonparametricNoiseNormalization(): Output images has wrong dimensions");
+    res.reshapeIfEmpty(image.taggedShape(),
+            "nonparametricNoiseNormalization(): Output images has wrong dimensions");
     
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         nonparametricNoiseNormalization(srcImageRange(image),
@@ -112,17 +153,29 @@ NumpyAnyArray pythonNonparametricNoiseNormalization(NumpyArray<3, Multiband<Pixe
 }
 
 template < class PixelType >
-NumpyAnyArray pythonQuadraticNoiseNormalizationEstimated( NumpyArray<3, Multiband<PixelType> > image,
-                                                          bool useGradient=true, unsigned int windowRadius=6,
-                                                          unsigned int clusterCount=10, double averagingQuantile=0.8,
-                                                          double noiseEstimationQuantile=1.5, double noiseVarianceInitialGuess=10.0,
-                                                          NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonQuadraticNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType> > image,
+                                           bool useGradient=true, 
+                                           unsigned int windowRadius=6,
+                                           unsigned int clusterCount=10, 
+                                           double averagingQuantile=0.8,
+                                           double noiseEstimationQuantile=1.5, 
+                                           double noiseVarianceInitialGuess=10.0,
+                                           NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
-    noiseNormalizationOptions.useGradient(useGradient).windowRadius(windowRadius).clusterCount(clusterCount).averagingQuantile(averagingQuantile).noiseEstimationQuantile(noiseEstimationQuantile).noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+    noiseNormalizationOptions
+        .useGradient(useGradient)
+        .windowRadius(windowRadius)
+        .clusterCount(clusterCount)
+        .averagingQuantile(averagingQuantile)
+        .noiseEstimationQuantile(noiseEstimationQuantile)
+        .noiseVarianceInitialGuess(noiseVarianceInitialGuess);
 
-    res.reshapeIfEmpty(image.shape(),"quadraticNoiseNormalizationEstimated(): Output images has wrong dimensions");
+    res.reshapeIfEmpty(image.taggedShape(),
+        "quadraticNoiseNormalizationEstimated(): Output images has wrong dimensions");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -134,17 +187,29 @@ NumpyAnyArray pythonQuadraticNoiseNormalizationEstimated( NumpyArray<3, Multiban
 }
 
 template < class PixelType >
-NumpyAnyArray pythonLinearNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType> > image,
-                                                      bool useGradient=true, unsigned int windowRadius=6,
-                                                      unsigned int clusterCount=10, double averagingQuantile=0.8,
-                                                      double noiseEstimationQuantile=1.5, double noiseVarianceInitialGuess=10.0,
-                                                      NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonLinearNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType> > image,
+                                        bool useGradient=true, 
+                                        unsigned int windowRadius=6,
+                                        unsigned int clusterCount=10, 
+                                        double averagingQuantile=0.8,
+                                        double noiseEstimationQuantile=1.5, 
+                                        double noiseVarianceInitialGuess=10.0,
+                                        NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
     NoiseNormalizationOptions noiseNormalizationOptions;
-    noiseNormalizationOptions.useGradient(useGradient).windowRadius(windowRadius).clusterCount(clusterCount).averagingQuantile(averagingQuantile).noiseEstimationQuantile(noiseEstimationQuantile).noiseVarianceInitialGuess(noiseVarianceInitialGuess);
+    noiseNormalizationOptions
+        .useGradient(useGradient)
+        .windowRadius(windowRadius)
+        .clusterCount(clusterCount)
+        .averagingQuantile(averagingQuantile)
+        .noiseEstimationQuantile(noiseEstimationQuantile)
+        .noiseVarianceInitialGuess(noiseVarianceInitialGuess);
     
-    res.reshapeIfEmpty(image.shape(),"linearNoiseNormalizationEstimated(): Output images has wrong dimensions");
+    res.reshapeIfEmpty(image.taggedShape(),
+        "linearNoiseNormalizationEstimated(): Output images has wrong dimensions");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
@@ -157,28 +222,35 @@ NumpyAnyArray pythonLinearNoiseNormalizationEstimated(NumpyArray<3, Multiband<Pi
 
 
 template < class PixelType >
-NumpyAnyArray pythonQuadraticNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
-                                                double a0, double a1, double a2,
-                                                NumpyArray<3, Multiband<PixelType> > res=python::object())
+NumpyAnyArray 
+pythonQuadraticNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
+                                  double a0, double a1, double a2,
+                                  NumpyArray<3, Multiband<PixelType> > res=python::object())
 {
-    res.reshapeIfEmpty(image.shape(),"quadraticNoiseNormalization(): Output images has wrong dimensions");
+    res.reshapeIfEmpty(image.taggedShape(),
+        "quadraticNoiseNormalization(): Output images has wrong dimensions");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
         MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        quadraticNoiseNormalization(srcImageRange(bimage), destImage(bres),a0, a1, a2);
+        quadraticNoiseNormalization(srcImageRange(bimage), destImage(bres), a0, a1, a2);
     }
     
     return res;
 }
 
 template < class PixelType >
-NumpyAnyArray pythonLinearNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
-                                             double a0, double a1, NumpyArray<3, Multiband<PixelType> > res)
+NumpyAnyArray 
+pythonLinearNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
+                               double a0, double a1, 
+                               NumpyArray<3, Multiband<PixelType> > res)
 {
-    res.reshapeIfEmpty(image.shape(),"linearNoiseNormalization(): Output images has wrong dimensions");
+    res.reshapeIfEmpty(image.taggedShape(),
+            "linearNoiseNormalization(): Output images has wrong dimensions");
 
+    PyAllowThreads _pythread;
     for(int k=0;k<image.shape(2);++k)
     {
         MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);

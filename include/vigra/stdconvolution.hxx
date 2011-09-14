@@ -1128,7 +1128,7 @@ public:
             0.125, 0.0, -0.125;
             \endcode
 
-            The norm is set to the sum of the initialzer values. If the wrong number of
+            The norm is set to the sum of the initializer values. If the wrong number of
             values is given, a run-time error results. It is, however, possible to give
             just one initializer. This creates an averaging filter with the given constant:
 

@@ -61,24 +61,31 @@ vol_rgb_i = at.RGBVolume(np.random.rand(100,200,60,3)*255,dtype=np.int32)
 vol_scalar_i = at.ScalarVolume(np.random.rand(100,200,50)*255,dtype=np.int32)
 vol_multi_i = at.Vector6Volume(np.random.rand(100,200,50,6)*255,dtype=np.int32)
 
+def checkShape(shape1, shape2):
+    if isinstance(shape1, np.ndarray):
+        shape1 = shape1.shape
+    if isinstance(shape2, np.ndarray):
+        shape2 = shape2.shape
+    assert_equal(shape1, shape2)
+
 def checkImages(i1,i2):
-    assert(i1.shape==i2.shape)
+    checkShape(i1.shape, i2.shape)
     assert(np.sum(i1==i2)!=0)
 
 def checkAboutSame(i1,i2):
-    assert(i1.shape==i2.shape)
+    checkShape(i1.shape, i2.shape)
     difference=np.sum(np.abs(i1-i2))/float(np.size(i1))
     assert(difference<5)
     
 def test_watersheds():
     res = watersheds(img_scalar_f)
-    assert(res[0].shape==img_scalar_f.shape)
+    checkShape(res[0].shape, img_scalar_f.shape)
     
 def test_structureTensor():
     res = structureTensor(img_scalar_f,1.0,2.0, out=img_3_f)
     res = structureTensor(img_scalar_f,1.0,2.0)
     res = structureTensor(img_rgb_f,1.0,2.0)
-    assert(res.shape==img_scalar_f.shape + (3,))
+    checkShape(res.shape, img_scalar_f.shape[:2] + (3,))
     
 def test_simpleSharpening():
     res = simpleSharpening2D(img_scalar_f)

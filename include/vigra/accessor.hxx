@@ -123,7 +123,7 @@ namespace vigra {
     while StandardValueAccessor is faster for the built-in types.
 
     When a floating point number is assigned by means of an accessor
-    with integral value_type, the value is rounded and clipped as approriate.
+    with integral value_type, the value is rounded and clipped as appropriate.
 
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
@@ -153,7 +153,7 @@ class StandardAccessor
 
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V const & value, ITERATOR const & i) const
@@ -167,7 +167,7 @@ class StandardAccessor
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const
@@ -188,7 +188,7 @@ class StandardAccessor
     while StandardValueAccessor is faster for the built-in types.
 
     When a floating point number is assigned by means of an accessor
-    with integral value_type, the value is rounded and clipped as approriate.
+    with integral value_type, the value is rounded and clipped as appropriate.
 
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
@@ -203,7 +203,7 @@ class StandardValueAccessor
 
         /** Read the current data item. The type <TT>ITERATOR::reference</TT>
             is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR const & i) const
@@ -212,7 +212,7 @@ class StandardValueAccessor
         /** Read the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>ITERATOR::index_reference</TT>
             is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
@@ -221,7 +221,7 @@ class StandardValueAccessor
     }
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V value, ITERATOR const & i) const
@@ -235,7 +235,7 @@ class StandardValueAccessor
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const
@@ -297,7 +297,7 @@ class StandardConstAccessor
     while StandardConstValueAccessor is faster for the built-in types.
 
     When an iterator passes a floating point number to an accessor
-    with integral value_type, the value is rounded and clipped as approriate.
+    with integral value_type, the value is rounded and clipped as appropriate.
 
     <b>\#include</b> \<vigra/accessor.hxx\><br>
     Namespace: vigra
@@ -310,7 +310,7 @@ class StandardConstValueAccessor
 
         /** Read the current data item. The type <TT>ITERATOR::reference</TT>
             is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR>
     VALUETYPE operator()(ITERATOR const & i) const
@@ -319,7 +319,7 @@ class StandardConstValueAccessor
         /** Read the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>ITERATOR::index_reference</TT>
             is automatically converted to <TT>VALUETYPE</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
     VALUETYPE operator()(ITERATOR const & i, DIFFERENCE const & diff) const
@@ -391,7 +391,7 @@ class VectorComponentAccessor
 
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V const & value, ITERATOR const & i) const
@@ -402,7 +402,7 @@ class VectorComponentAccessor
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
@@ -462,7 +462,7 @@ class VectorComponentValueAccessor
         /** Read the current data item.
             The type <TT>ITERATOR::index_reference::value_type</TT>
             is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR>
     value_type operator()(ITERATOR const & i) const
@@ -471,7 +471,7 @@ class VectorComponentValueAccessor
         /** Read the data item at an offset (can be 1D or 2D or higher order difference).
             The type <TT>ITERATOR::index_reference::value_type</TT>
             is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class ITERATOR, class DIFFERENCE>
     value_type operator()(ITERATOR const & i, DIFFERENCE const & diff) const
@@ -481,7 +481,7 @@ class VectorComponentValueAccessor
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V value, ITERATOR const & i) const 
@@ -492,7 +492,7 @@ class VectorComponentValueAccessor
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V value, ITERATOR const & i, DIFFERENCE const & diff) const 
@@ -516,8 +516,8 @@ class VectorComponentValueAccessor
 
 /** \brief Accessor for one component of a vector.
 
-    This works like VectorComponentAccessor, only the template paramters differ: 
-    Here, we need a vector accessor type , wheras VectorComponentAccessor requires a vector type.
+    This works like VectorComponentAccessor, only the template parameters differ: 
+    Here, we need a vector accessor type , whereas VectorComponentAccessor requires a vector type.
 
     <b>Usage:</b>
     
@@ -567,7 +567,7 @@ class VectorElementAccessor
     
         /** Write the current data item. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void set(V const & value, ITERATOR const & i) const 
@@ -578,7 +578,7 @@ class VectorElementAccessor
         /** Write the data item at an offset (can be 1D or 2D or higher order difference)..
             The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>value_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR, class DIFFERENCE>
     void set(V const & value, ITERATOR const & i, DIFFERENCE const & diff) const 
@@ -792,7 +792,7 @@ class VectorAccessor
         /** Set the component data at given vector index
             at given iterator position. The type <TT>V</TT> of the passed
             in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
         */
     template <class V, class ITERATOR>
     void setComponent(V const & value, ITERATOR const & i, int idx) const
@@ -812,7 +812,7 @@ class VectorAccessor
     /** Set the component data at given vector index
         at an offset of given iterator position. The type <TT>V</TT> of the passed
         in <TT>value</TT> is automatically converted to <TT>component_type</TT>.
-            In case of a conversion floating point -> intergral this includes rounding and clipping.
+            In case of a conversion floating point -> integral this includes rounding and clipping.
     */
     template <class V, class ITERATOR, class DIFFERENCE>
     void
@@ -834,11 +834,11 @@ class VectorAccessor
     This accessor is used when two images need to be treated as one
     because an algorithm accepts only one image. For example,
     \ref seededRegionGrowing() uses only one image two calculate
-    the cost for aggregating each pixel into a region. Somtimes, we
-    need more information to calcuate this cost, for example gray value
+    the cost for aggregating each pixel into a region. Sometimes, we
+    need more information to calculate this cost, for example gray value
     and local gradient magnitude. These values can be stored in two images,
     which appear as only one when we pass a <TT>MultiImageAccessor2</TT> to
-    the lagorithms. Of course, the cost functor must accept a <TT>pair</TT>
+    the algorithms. Of course, the cost functor must accept a <TT>pair</TT>
     of values for this to work. Instead of an actual image iterator, we
     pass a <a href="CoordinateIterator.html">CoordinateIterator</a> which
     selects the right pixels form both images.

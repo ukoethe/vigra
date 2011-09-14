@@ -34,11 +34,11 @@
 /************************************************************************/
 
 
-#ifndef VIGRA_LINEAR_ALGREBRA_HXX
-#define VIGRA_LINEAR_ALGREBRA_HXX
+#ifndef VIGRA_LINEAR_ALGEBRA_HXX
+#define VIGRA_LINEAR_ALGEBRA_HXX
 
 #include "matrix.hxx"
 #include "linear_solve.hxx"
 #include "eigensystem.hxx"
 
-#endif // VIGRA_LINEAR_ALGREBRA_HXX
+#endif // VIGRA_LINEAR_ALGEBRA_HXX
