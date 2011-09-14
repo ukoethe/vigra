@@ -734,6 +734,10 @@ MultiArrayView.  By default, MultiArrayViews are tagged as
 unstrided. If necessary, strided arrays are constructed automatically
 by calls to a variant of the bind...() function.
 
+In addition to the member functions described here, <tt>MultiArrayView</tt>
+and its subclasses support arithmetic and algebraic functions via the 
+module \ref MultiMathModule.
+
 If you want to apply an algorithm requiring an image to a
 <tt>MultiArrayView</tt> of appropriate (2-dimensional) shape, you can
 create a \ref vigra::BasicImageView that acts as a wrapper with the

@@ -225,6 +225,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Interface for multi-dimensional arrays </em>
     <LI> \ref vigra::MultiArray
          <BR>&nbsp;&nbsp;&nbsp;<em>Array class that holds the actual memory</em>
+    <LI> \ref MultiMathModule
+         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
     <LI> \ref MultiArrayTags
          <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
     <LI> \ref MultiIteratorPage

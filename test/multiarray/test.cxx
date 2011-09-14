@@ -2130,7 +2130,12 @@ public:
         shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
     
         shouldEqual(sum(b+0.5, 0.0), 300.0);
+        shouldEqual(sum<double>(b+0.5), 300.0);
+        shouldEqual(sum<double>(b), 288.0);
+
         shouldEqual(product(b.subarray(Shape3(1,0,0), Shape3(2,2,2))+0.5, 1.0), 3024.0);
+        shouldEqual(product<double>(b.subarray(Shape3(1,0,0), Shape3(2,2,2))+0.5), 3024.0);
+        shouldEqual(product<double>(MultiArray<3, float>(shape3)), 0.0);
 
         should(all(b > 0.0));
         should(!all(b > 10.0));
