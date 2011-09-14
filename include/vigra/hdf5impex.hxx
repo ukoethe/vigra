@@ -426,6 +426,27 @@ VIGRA_H5_UNSIGNED_DATATYPE(unsigned long long)
 
 #undef VIGRA_H5_UNSIGNED_DATATYPE
 
+#if 0
+template<>
+inline hid_t getH5DataType<FFTWComplex<float> >()
+{
+    hid_t complex_id = H5Tcreate (H5T_COMPOUND, sizeof (FFTWComplex<float>));
+    H5Tinsert (complex_id, "real", 0, H5T_NATIVE_FLOAT);
+    H5Tinsert (complex_id, "imaginary", sizeof(float), H5T_NATIVE_FLOAT);
+    return complex_id;
+}
+
+template<>
+inline hid_t getH5DataType<FFTWComplex<double> >()
+{
+    hid_t complex_id = H5Tcreate (H5T_COMPOUND, sizeof (FFTWComplex<double>));
+    H5Tinsert (complex_id, "real", 0, H5T_NATIVE_DOUBLE);
+    H5Tinsert (complex_id, "imaginary", sizeof(double), H5T_NATIVE_DOUBLE);
+    return complex_id;
+}
+#endif
+
+
 } // namespace detail
 
 // helper friend function for callback HDF5_ls_inserter_callback()
@@ -1845,7 +1866,7 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             shape[N-1-i] = array.shape(i); // reverse order
         }
 
@@ -2002,7 +2023,7 @@ class HDF5File
 
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(N + (numBandsOfType > 1),0);
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             shape[N-1-i] = array.shape(i); // reverse order
         }
 
@@ -2032,7 +2053,7 @@ class HDF5File
         if(chunkSize[0] > 0)
         {
             ArrayVector<hsize_t> cSize(N + (numBandsOfType > 1),0);
-            for(int i = 0; i<N; i++)
+            for(unsigned int i = 0; i<N; i++)
             {
                 cSize[i] = chunkSize[N-1-i];
             }
@@ -2293,11 +2314,11 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     selectHyperslabs(mid1, mid2, shape, counter, elements, numBandsOfType);
 
     // read from hdf5
-    H5Dread(dataset_id, datatype, mid2, mid1, H5P_DEFAULT, buffer.data());
+    herr_t read_status = H5Dread(dataset_id, datatype, mid2, mid1, H5P_DEFAULT, buffer.data());
+    vigra_precondition(read_status >= 0, "readHDF5Impl(): read from dataset failed.");
 
     // increase counter
     counter++;
-
 
     //std::cout << "numBandsOfType: " << numBandsOfType << std::endl;
     DestIterator dend = d + shape[0];
@@ -2709,6 +2730,13 @@ inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiA
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
 }
 
+// non-scalar (FFTWComplex) and unstrided multi arrays
+template<unsigned int N, class T>
+inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, UnstridedArrayTag> & array)
+{
+    writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 2);
+}
+
 // unstrided multi arrays
 template<unsigned int N, class T>
 void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, T, UnstridedArrayTag> & array, const hid_t datatype, const int numBandsOfType)
@@ -2743,6 +2771,13 @@ template<unsigned int N, class T>
 inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, RGBValue<T>, StridedArrayTag> & array) 
 {
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
+}
+
+// non-scalar (RGBValue) and strided multi arrays
+template<unsigned int N, class T>
+inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, StridedArrayTag> & array) 
+{
+    writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 2);
 }
 
 // strided multi arrays
