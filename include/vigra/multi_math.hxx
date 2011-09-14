@@ -351,10 +351,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Not, !, operator!, T)
 VIGRA_MULTIMATH_UNARY_OPERATOR(BitwiseNot, ~, operator~, T)
 
 using vigra::abs;
-VIGRA_MULTIMATH_UNARY_OPERATOR(Abs, vigra::abs, abs, T)
-
-using vigra::arg;
-VIGRA_MULTIMATH_UNARY_OPERATOR(Arg, vigra::arg, arg, typename NumericTraits<T>::Promote)
+VIGRA_MULTIMATH_UNARY_OPERATOR(Abs, vigra::abs, abs, typename NormTraits<T>::NormType)
 
 using vigra::erf;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Erf, vigra::erf, erf, VIGRA_REALPROMOTE)
@@ -378,7 +375,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Cos_pi, vigra::cos_pi, cos_pi, VIGRA_REALPROMOTE)
 using vigra::gamma;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Gamma, vigra::gamma, gamma, VIGRA_REALPROMOTE)
 
-using vigra::gamma;
+using vigra::loggamma;
 VIGRA_MULTIMATH_UNARY_OPERATOR(Loggamma, vigra::loggamma, loggamma, VIGRA_REALPROMOTE)
 
 VIGRA_MULTIMATH_UNARY_OPERATOR(Sqrt, std::sqrt, sqrt, VIGRA_REALPROMOTE)
@@ -398,6 +395,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Ceil, std::ceil, ceil, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Conj, conj, conj, T)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Real, real, real, typename T::value_type)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Imag, imag, imag, typename T::value_type)
+VIGRA_MULTIMATH_UNARY_OPERATOR(Arg, arg, arg, typename T::value_type)
 
 
 #undef VIGRA_REALPROMOTE
