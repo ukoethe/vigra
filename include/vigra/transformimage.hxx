@@ -661,11 +661,11 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
                           - minmax.min));                    // offset
     \endcode
 
-	The one-parameter version can be used like this:
+    The one-parameter version can be used like this:
 
     \code
-	// scale from 0..255 to 0..1.0
-	FImage dest(src.size());
+    // scale from 0..255 to 0..1.0
+    FImage dest(src.size());
 
     vigra::transformImage(srcImageRange(src), destImage(dest),
                           linearIntensityTransform<float>(1.0 / 255));
