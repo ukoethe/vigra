@@ -1515,16 +1515,25 @@ class FFTWPhaseAccessor
     \endcode
 
     This transformation can be reversed by \ref moveDCToUpperLeft().
-    Note that the transformation must not be executed in place - input
-    and output images must be different.
+    Note that the 2D versions of this transformation must not be executed in place - input
+    and output images must be different. In contrast, the nD version (with MultiArrayView
+    argument) always works in-place.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    use MultiArrayView (this works in-place, with arbitrary dimension N):
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class Stride>
+        void moveDCToCenter(MultiArrayView<N, T, Stride> a);
+    }
+    \endcode
+
+    pass iterators explicitly (2D only, not in-place):
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void moveDCToCenter(SrcImageIterator src_upperleft,
                                SrcImageIterator src_lowerright, SrcAccessor sa,
                                DestImageIterator dest_upperleft, DestAccessor da);
@@ -1532,7 +1541,7 @@ class FFTWPhaseAccessor
     \endcode
 
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    use argument objects in conjunction with \ref ArgumentObjectFactories (2D only, not in-place):
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1545,8 +1554,9 @@ class FFTWPhaseAccessor
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/fftw3.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/fftw3.hxx\> (for 2D variants) <br>
+    <b>\#include</b> \<vigra/multi_fft.hxx\> (for nD variants) <br>
+    Namespace: vigra
 
     \code
     vigra::FFTWComplexImage spatial(width,height), fourier(width,height);
@@ -1622,11 +1632,19 @@ inline void moveDCToCenter(
           in the image's upper left.
 
      This function is the inversion of \ref moveDCToCenter(). See there
-     for declarations and a usage example.
+     for a detailed description and usage examples.
 
      <b> Declarations:</b>
 
-     pass arguments explicitly:
+    use MultiArrayView (this works in-place, with arbitrary dimension N):
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class Stride>
+        void moveDCToUpperLeft(MultiArrayView<N, T, Stride> a);
+    }
+    \endcode
+
+    pass iterators explicitly (2D only, not in-place):
      \code
         namespace vigra {
             template <class SrcImageIterator, class SrcAccessor,
@@ -1638,7 +1656,7 @@ inline void moveDCToCenter(
      \endcode
 
 
-     use argument objects in conjunction with \ref ArgumentObjectFactories :
+     use argument objects in conjunction with \ref ArgumentObjectFactories (2D only, not in-place):
      \code
         namespace vigra {
             template <class SrcImageIterator, class SrcAccessor,
@@ -1744,12 +1762,68 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
 /** \brief Compute forward and inverse Fourier transforms.
 
-    In the forward direction, the input image may be scalar or complex, and the output image
-    is always complex. In the inverse direction, both input and output must be complex.
+    The array referring to the spatial domain (i.e. the input in a forward transform, 
+    and the output in an inverse transform) may be scalar or complex. The array representing
+    the frequency domain (i.e. output for forward transform, input for inverse transform) 
+    must always be complex.
+    
+    The new implementations (those using MultiArrayView arguments) perform a normalized transform, 
+    whereas the old ones (using 2D iterators or argument objects) perform an un-normalized 
+    transform (i.e. the result of the inverse transform is scaled by the number of pixels).
 
+    In general, input and output arrays must have the same shape, with the exception of the 
+    special <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C 
+    and C2R modes</a> defined by FFTW.
+    
+    The R2C transform reduces the redundancy in the Fourier representation of a real-valued signal:
+    Since the Fourier representation of a real signal is symmetric, about half of the Fourier coefficients 
+    can simply be dropped. By convention, this reduction is applied to the first (innermost) dimension, 
+    such that <tt>fourier.shape(0) == spatial.shape(0)/2 + 1</tt> holds. The correct frequency domain
+    shape can be conveniently computed by means of the function \ref fftwCorrespondingShapeR2C().
+    
+    Note that your program must always link against <tt>libfftw3</tt>. If you want to compute Fourier 
+    transforms for <tt>float</tt> or <tt>long double</tt> arrays, you must <i>additionally</i> link against <tt>libfftw3f</tt> and <tt>libfftw3l</tt> respectively. (Old-style functions only support <tt>double</tt>).
+    
+    The Fourier transform functions internally create <a href="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</a>
+    which control the algorithm details. The plans are creates with the flag <tt>FFTW_ESTIMATE</tt>, i.e.
+    optimal settings are guessed or read from saved "wisdom" files. If you need more control over planning,
+    you can use the class \ref FFTWPlan.
+    
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    use complex-valued MultiArrayView arguments (this works for arbitrary dimension N):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, class C2>
+        void 
+        fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                         MultiArrayView<N, FFTWComplex<Real>, C2> out);
+
+        template <unsigned int N, class Real, class C1, class C2>
+        void 
+        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                                MultiArrayView<N, FFTWComplex<Real>, C2> out);
+    }
+    \endcode
+
+    use real-valued MultiArrayView in the spatial domain, complex-valued MultiArrayView 
+    in the frequency domain (this works for arbitrary dimension N, and also supports
+    the R2C and C2R transform, depending on the array shape in the frequency domain):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, class C2>
+        void 
+        fourierTransform(MultiArrayView<N, Real, C1> in, 
+                         MultiArrayView<N, FFTWComplex<Real>, C2> out);
+
+        template <unsigned int N, class Real, class C1, class C2>
+        void 
+        fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                                MultiArrayView<N, Real, C2> out);
+    }
+    \endcode
+
+    pass iterators explicitly (2D only, double only):
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor>
@@ -1764,7 +1838,7 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     }
     \endcode
 
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
+    use argument objects in conjunction with \ref ArgumentObjectFactories (2D only, double only):
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor>
@@ -1780,11 +1854,13 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/fftw3.hxx\><br>
+    <b>\#include</b> \<vigra/fftw3.hxx\> (old-style 2D variants)<br>
+    <b>\#include</b> \<vigra/multi_fft.hxx\> (new-style nD variants)<br>
     Namespace: vigra
 
+    old-style example (using FFTWComplexImage):
     \code
-    // compute complex Fourier transform of a real image
+    // compute complex Fourier transform of a real image, old-style implementation
     vigra::DImage src(w, h);
     vigra::FFTWComplexImage fourier(w, h);
 
@@ -1794,8 +1870,35 @@ fourierTransformImpl(FFTWComplexImage::const_traverser sul,
     // note that both source and destination image must be of type vigra::FFTWComplexImage
     vigra::FFTWComplexImage inverseFourier(w, h);
 
-    fourierTransform(srcImageRange(fourier), destImage(inverseFourier));
+    fourierTransformInverse(srcImageRange(fourier), destImage(inverseFourier));
     \endcode
+    
+    new-style examples (using MultiArray):
+    \code
+    // compute Fourier transform of a real array, using the R2C algorithm
+    MultiArray<2, double> src(Shape2(w, h));
+    MultiArray<2, FFTWComplex<double> > fourier(fftwCorrespondingShapeR2C(src.shape()));
+
+    fourierTransform(src, fourier);
+
+    // compute inverse Fourier transform, using the C2R algorithm
+    MultiArray<2, double> dest(src.shape());
+    fourierTransformInverse(fourier, dest);
+    \endcode
+
+    \code
+    // compute Fourier transform of a real array with standard algorithm
+    MultiArray<2, double> src(Shape2(w, h));
+    MultiArray<2, FFTWComplex<double> > fourier(src.shape());
+
+    fourierTransform(src, fourier);
+
+    // compute inverse Fourier transform, using the C2R algorithm
+    MultiArray<2, double> dest(src.shape());
+    fourierTransformInverse(fourier, dest);
+    \endcode
+    Complex input arrays are handled in the same way. 
+    
 */
 doxygen_overloaded_function(template <...> void fourierTransform)
 
@@ -1838,6 +1941,8 @@ void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> sr
 
     See \ref fourierTransform() for details.
 */
+doxygen_overloaded_function(template <...> void fourierTransformInverse)
+
 inline void
 fourierTransformInverse(FFTWComplexImage::const_traverser sul,
                         FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
@@ -1891,6 +1996,9 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     The DC entry of the filter must be in the upper left, which is the
     position where FFTW expects it (see \ref moveDCToUpperLeft()).
+    
+    See also \ref convolveFFT() for corresponding functionality on the basis of the
+    \ref MultiArrayView interface.
 
     <b> Declarations:</b>
 
