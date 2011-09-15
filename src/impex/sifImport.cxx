@@ -250,7 +250,15 @@ SIFImportInfo::SIFImportInfo(const char* filename) :
 // this function only works for MultiArrayView<3, float> so we don't use a template here.
 void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array) 
 {
+    readSIFBlock(info, Shape3(0,0,0), Shape3(info.width(), info.height(), info.stacksize()), array);
+
+    return;
+}
+
+void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array)
+{
     vigra_precondition(sizeof(float) == 4, "SIF files can only be read into MultiArrayView<float32>. On your machine a float has more than 4 bytes.");
+    vigra_precondition(offset[0]==0 && shape[0]==info.width() && offset[1]==0 && shape[1]==info.height(), "readSIFBlock(): only complete frames implemented.");
     float * memblock =  array.data();        // here we assume that MultiArray hat float32 values as the sif raw data!!
 
     std::ifstream file (info.getFileName(), std::ios::in|std::ios::binary);
@@ -259,14 +267,12 @@ void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayT
     byteorder bo = byteorder("little endian");  // SIF file is little-endian
 
     std::ptrdiff_t pos = file.tellg();        // pointer to beginning of the file
-    file.seekg(pos+info.getOffset());
-    read_array( file, bo, memblock, info.width()*info.height()*info.stacksize() );
+    file.seekg(pos+info.getOffset()+offset[2]*info.width()*info.height()*4);
+    read_array( file, bo, memblock, shape[0]*shape[1]*shape[2] );
     file.close();
 
     return;
-    
 }
-
 
 std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info)
 {

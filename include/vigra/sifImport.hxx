@@ -201,6 +201,22 @@ class SIFImportInfo
 */
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
 
+/**
+    \brief Read parts of the image data from an Andor SIF file specified with an SIFImportinfo object
+    and write them into the MultiArray array.
+    
+    \code
+    SIFImportInfo info(filename);
+
+    // create a 3D array of appropriate size
+    MultiArray<3, float> in(Shape3(info.width(), info.height(), 1));
+
+    readBlock(info, Shape3(0,0,0), Shape3(w,h,1), im); // read the first frame only
+
+    \endcode
+*/
+VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array);
+
 VIGRA_EXPORT std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
 //@}
