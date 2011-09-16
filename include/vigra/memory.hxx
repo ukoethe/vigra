@@ -59,9 +59,9 @@ inline void destroy_n(T * /* p */, std::ptrdiff_t /* n */, VigraTrueType /* isPO
 template <class T>
 inline void destroy_n(T * p, std::ptrdiff_t n, VigraFalseType /* isPOD */)
 {
-	T * end = p + n;
-	for(; p != end; ++p)
-		p->~T();
+    T * end = p + n;
+    for(; p != end; ++p)
+        p->~T();
 }
 
 template <class T>

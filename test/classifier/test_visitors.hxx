@@ -41,7 +41,7 @@
 namespace vigra
 {
 
-	// create log output (as a text file) for debugging/testing
+    // create log output (as a text file) for debugging/testing
 class TestVisitor: public rf::visitors::VisitorBase
 {
 
@@ -97,7 +97,7 @@ class TestVisitor: public rf::visitors::VisitorBase
     }
 };
 
-	// test that all possible trees are created when there are only 4 samples
+    // test that all possible trees are created when there are only 4 samples
 class SetTestVisitor: public rf::visitors::VisitorBase
 {
     public:
@@ -152,10 +152,10 @@ class SetTestVisitor: public rf::visitors::VisitorBase
             ++k;
         }
         fout.close();
-	}
+    }
 };
 
-	// comprehensive debug output
+    // comprehensive debug output
 template <class T1, class C1, class T2, class C2>
 class AllOutputVisitor: public rf::visitors::VisitorBase
 {
@@ -220,7 +220,7 @@ class AllOutputVisitor: public rf::visitors::VisitorBase
     void visit_after_tree(    RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
         fout << std::endl << std::endl << "Tree Number: " << index << " finished." << std::endl << std::endl;
-	}
+    }
 
     void setDataSource(MultiArrayView<2, T1, C1> * feat, MultiArrayView<2, T2, C2> * label)
     {

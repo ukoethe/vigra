@@ -56,7 +56,7 @@ namespace vigra
 
     protected:
 
-	typedef size_t size_type;
+    typedef size_t size_type;
         void * m_data;
         size_type m_size, m_capacity;
 

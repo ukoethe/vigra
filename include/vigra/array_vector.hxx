@@ -769,7 +769,7 @@ ArrayVector<T, Alloc>::insert(iterator p, InputIterator i, InputIterator iend)
         size_type diff = pos + n - this->size_;
         std::uninitialized_copy(p, this->end(), this->end() + diff);
         InputIterator split = i;
-		std::advance(split, n - diff);
+        std::advance(split, n - diff);
         std::uninitialized_copy(split, iend, this->end());
         std::copy(i, split, p);
     }

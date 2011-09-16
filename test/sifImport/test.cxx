@@ -50,62 +50,62 @@ public:
     SifImportTest()
     {}
 
-	// Test Sif from Andor software version 4.16.30001
-	void testSifImport_4_16() {
-		MultiArray<3,float> reference_data(MultiArrayShape<3>::type(128, 128, 1), ref_4_16);
-		
-		// read SIF data to MultiArrayView
-		char sifFile[] = "testSif_4_16_30001.sif";
-		SIFImportInfo infoSIF(sifFile);
-		MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+    // Test Sif from Andor software version 4.16.30001
+    void testSifImport_4_16() {
+        MultiArray<3,float> reference_data(MultiArrayShape<3>::type(128, 128, 1), ref_4_16);
+        
+        // read SIF data to MultiArrayView
+        char sifFile[] = "testSif_4_16_30001.sif";
+        SIFImportInfo infoSIF(sifFile);
+        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data);
 
-		// compare content
-		should (in_data == reference_data);
-	}
+        // compare content
+        should (in_data == reference_data);
+    }
 
-	// SIF from Andor software version 4.13.30000
-	void testSifImport_4_13() {
-		char sifFile[] = "testSif_4_13_30000.sif";
+    // SIF from Andor software version 4.13.30000
+    void testSifImport_4_13() {
+        char sifFile[] = "testSif_4_13_30000.sif";
 
-		const float reference_array[] = 
-			{0.f, 27.f, 61.f, 96.f, 132.f, 166.f, 200.f, 235.f, 
-			 0.f, 27.f, 62.f, 97.f, 131.f, 166.f, 200.f, 235.f};
-		MultiArray<3, float> reference_data(MultiArrayShape<3>::type(8, 2, 1), reference_array);
-		
+        const float reference_array[] = 
+            {0.f, 27.f, 61.f, 96.f, 132.f, 166.f, 200.f, 235.f, 
+             0.f, 27.f, 62.f, 97.f, 131.f, 166.f, 200.f, 235.f};
+        MultiArray<3, float> reference_data(MultiArrayShape<3>::type(8, 2, 1), reference_array);
+        
 
-		// read SIF
-		SIFImportInfo infoSIF(sifFile);
-		// import to MultiArrayView
-		MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        // read SIF
+        SIFImportInfo infoSIF(sifFile);
+        // import to MultiArrayView
+        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data);
-		
-		
-		// compare
-		should (in_data == reference_data);
-	}
-	
-	// SIF from Andor software version 4.6.3
-	void testSifImport_4_6() {
-		char sifFile[] = "testSif_4_6_30000.sif";
+        
+        
+        // compare
+        should (in_data == reference_data);
+    }
+    
+    // SIF from Andor software version 4.6.3
+    void testSifImport_4_6() {
+        char sifFile[] = "testSif_4_6_30000.sif";
 
-		const float reference_array[] = 
-			{124.f, 176.114f, 228.f,
-			 68.f, 120.f, 172.f,
-			 12.299f, 64.f, 116.f,
-			 0.f, 8.299f, 60.f};
-		MultiArray<3, float> reference_data(MultiArrayShape<3>::type(3, 4, 1), reference_array);
-		
+        const float reference_array[] = 
+            {124.f, 176.114f, 228.f,
+             68.f, 120.f, 172.f,
+             12.299f, 64.f, 116.f,
+             0.f, 8.299f, 60.f};
+        MultiArray<3, float> reference_data(MultiArrayShape<3>::type(3, 4, 1), reference_array);
+        
 
-		// read SIF
-		SIFImportInfo infoSIF(sifFile);
-		// import to MultiArrayView
-		MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        // read SIF
+        SIFImportInfo infoSIF(sifFile);
+        // import to MultiArrayView
+        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
         readSIF(infoSIF, in_data);
-		
-		// compare
-		should (in_data == reference_data);
-	}
+        
+        // compare
+        should (in_data == reference_data);
+    }
 
 };
 
@@ -116,12 +116,12 @@ struct SifImportTestSuite : public vigra::test_suite
     SifImportTestSuite()
         : vigra::test_suite("SifImportTestSuite")
     {
-		// tests for import
-		add(testCase(&SifImportTest::testSifImport_4_16));
-		add(testCase(&SifImportTest::testSifImport_4_13));
-		add(testCase(&SifImportTest::testSifImport_4_6));
+        // tests for import
+        add(testCase(&SifImportTest::testSifImport_4_16));
+        add(testCase(&SifImportTest::testSifImport_4_13));
+        add(testCase(&SifImportTest::testSifImport_4_6));
  
-	}
+    }
 };
 
 
@@ -131,5 +131,5 @@ int main (int argc, char ** argv)
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
-	return failed != 0;
+    return failed != 0;
 }

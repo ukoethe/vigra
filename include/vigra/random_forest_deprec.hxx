@@ -269,7 +269,7 @@ DecisionTreeDeprecAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const 
     RandomForestDeprecClassCounter<ArrayVector<double> > counter(labels, classCounts);
     std::for_each(indices, indices+exampleCount, counter);
 
-	// find the best gini index
+    // find the best gini index
     double minGini = NumericTraits<double>::max();
     IndexIterator bestSplit = indices;
     for(int k=0; k<mtry; ++k)
@@ -289,11 +289,11 @@ DecisionTreeDeprecAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const 
             currentCounts[0][label] += w;
             totalCounts[0] += w;
             currentCounts[1][label] -= w;
-			totalCounts[1] -= w;
+            totalCounts[1] -= w;
 
-			if (m < exampleCount-2 &&
+            if (m < exampleCount-2 &&
                 features(indices[m], splitColumns[k]) == features(indices[m+1], splitColumns[k]))
-				continue ;
+                continue ;
 
             double gini = 0.0;
             if(classCount == 2)
@@ -321,7 +321,7 @@ DecisionTreeDeprecAxisSplitFunctor::findBestSplit(MultiArrayView<2, U, C> const 
 
     }
         //std::cerr << minGini << " " << bestSplitColumn << std::endl;
-	// split using the best feature
+    // split using the best feature
     sorter.setColumn(bestSplitColumn);
     std::sort(indices, indices+exampleCount, sorter);
 
@@ -708,8 +708,8 @@ class RandomForestDeprec
 
   public:
 
-	//First two constructors are straight forward.
-	//they take either the iterators to an Array of Classlabels or the values
+    //First two constructors are straight forward.
+    //they take either the iterators to an Array of Classlabels or the values
     template<class ClassLabelIterator>
     RandomForestDeprec(ClassLabelIterator cl, ClassLabelIterator cend,
                   unsigned int treeCount = 255,
@@ -762,8 +762,8 @@ class RandomForestDeprec
             "RandomForestOptionsDeprec::weights(): wrong number of classes.");
     }
 
-	//Not understood yet
-	//Does not use the options object but the columnCount object.
+    //Not understood yet
+    //Does not use the options object but the columnCount object.
     template<class ClassLabelIterator, class TreeIterator, class WeightIterator>
     RandomForestDeprec(ClassLabelIterator cl, ClassLabelIterator cend,
                   unsigned int treeCount, unsigned int columnCount,
@@ -804,7 +804,7 @@ class RandomForestDeprec
     template <class U, class C, class Array>
     double learn(MultiArrayView<2, U, C> const & features, Array const & labels)
     {
-		RandomNumberGenerator<> generator(RandomSeed);
+        RandomNumberGenerator<> generator(RandomSeed);
         return learn(features, labels, generator);
     }
 
@@ -863,7 +863,7 @@ RandomForestDeprec<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & featu
 
     ArrayVector<int> intLabels(m), classExampleCounts(classCount);
 
-	// verify the input labels
+    // verify the input labels
     int minClassCount;
     {
         typedef std::map<ClassLabelType, int > LabelChecker;
@@ -989,15 +989,15 @@ RandomForestDeprec<ClassLabelType>::learn(MultiArrayView<2, U, C1> const & featu
             {
                 ++oobCount[l];
                 if(trees_[k].predictLabel(rowVector(features, l)) != intLabels[l])
-				{
+                {
                     ++oobErrorCount[l];
                     if(options_.oob_data.data() != 0)
                         options_.oob_data(l, k) = 2;
-				}
-				else if(options_.oob_data.data() != 0)
-				{
-					options_.oob_data(l, k) = 1;
-				}
+                }
+                else if(options_.oob_data.data() != 0)
+                {
+                    options_.oob_data(l, k) = 1;
+                }
             }
         }
         // TODO: default value for oob_data
@@ -1060,42 +1060,42 @@ RandomForestDeprec<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1
                                                    MultiArrayView<2, T, C2> & prob) const
 {
 
-	//Features are n xp
-	//prob is n x NumOfLabel probability for each feature in each class
+    //Features are n xp
+    //prob is n x NumOfLabel probability for each feature in each class
 
     vigra_precondition(rowCount(features) == rowCount(prob),
       "RandomForestDeprec::predictProbabilities(): Feature matrix and probability matrix size mismatch.");
 
-	// num of features must be bigger than num of features in Random forest training
-	// but why bigger?
+    // num of features must be bigger than num of features in Random forest training
+    // but why bigger?
     vigra_precondition(columnCount(features) >= featureCount(),
       "RandomForestDeprec::predictProbabilities(): Too few columns in feature matrix.");
     vigra_precondition(columnCount(prob) == (MultiArrayIndex)labelCount(),
       "RandomForestDeprec::predictProbabilities(): Probability matrix must have as many columns as there are classes.");
 
-	//Classify for each row.
+    //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
-	//contains the weights returned by a single tree???
-	//thought that one tree has only one vote???
-	//Pruning???
+    //contains the weights returned by a single tree???
+    //thought that one tree has only one vote???
+    //Pruning???
         ArrayVector<double>::const_iterator weights;
 
         //totalWeight == totalVoteCount!
-	double totalWeight = 0.0;
+    double totalWeight = 0.0;
 
-	//Set each VoteCount = 0 - prob(row,l) contains vote counts until
-	//further normalisation
+    //Set each VoteCount = 0 - prob(row,l) contains vote counts until
+    //further normalisation
         for(unsigned int l=0; l<classes_.size(); ++l)
             prob(row, l) = 0.0;
 
-	//Let each tree classify...
+    //Let each tree classify...
         for(unsigned int k=0; k<trees_.size(); ++k)
         {
-		//get weights predicted by single tree
+        //get weights predicted by single tree
             weights = trees_[k].predict(rowVector(features, row));
 
-		//update votecount.
+        //update votecount.
             for(unsigned int l=0; l<classes_.size(); ++l)
             {
                 prob(row, l) += detail::RequiresExplicitCast<T>::cast(weights[l]);
@@ -1104,7 +1104,7 @@ RandomForestDeprec<ClassLabelType>::predictProbabilities(MultiArrayView<2, U, C1
             }
         }
 
-	//Normalise votes in each row by total VoteCount (totalWeight
+    //Normalise votes in each row by total VoteCount (totalWeight
         for(unsigned int l=0; l<classes_.size(); ++l)
                 prob(row, l) /= detail::RequiresExplicitCast<T>::cast(totalWeight);
     }

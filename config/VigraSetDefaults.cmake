@@ -18,11 +18,11 @@ SET(DOCDIR ${DOCDIR}
 # running make install, the content of ${DOCDIR}
 # is copied/installed at ${DOCINSTALL}.
 IF(NOT DEFINED DOCINSTALL)
-	SET(DOCINSTALL "doc")
+    SET(DOCINSTALL "doc")
 ENDIF()
 SET(DOCINSTALL ${DOCINSTALL}
-	CACHE STRING "where to install the documentation (relative to install prefix)"
-	FORCE)
+    CACHE STRING "where to install the documentation (relative to install prefix)"
+    FORCE)
 
 IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)

@@ -214,7 +214,7 @@ struct Watersheds3dTest
 
         int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
                                                        vigra::destMultiArray(labelVolume));
-		
+        
         shouldEqual(max_region_label, 2);
         
         //int c=1;
@@ -278,7 +278,7 @@ struct Watersheds3dTest
 
         IntVolume vol(IntVolume::difference_type(w,h,d));
 
-				static const int data[] = {
+                static const int data[] = {
             0, 0, 0, 0, 
             0, 0, 0, 0, 
             0, 0, 0, 0, 
@@ -356,7 +356,7 @@ struct Watersheds3dTest
 
         IntVolume vol(IntVolume::difference_type(w,h,d));
 
-				static const int data[] = {
+                static const int data[] = {
 
             0, 0, 4, 9, 9, 4, 0, 0,  
             0, 0, 4, 9, 9, 4, 0, 0,  
@@ -412,7 +412,7 @@ struct Watersheds3dTest
             4, 4, 4, 9, 9, 4, 4, 4,  
             4, 4, 4, 9, 9, 4, 4, 4,
 
-						0, 0, 4, 9, 9, 4, 0, 0,  
+                        0, 0, 4, 9, 9, 4, 0, 0,  
             0, 0, 4, 9, 9, 4, 0, 0,  
             4, 4, 4, 9, 9, 4, 4, 4,  
             9, 9, 9,10,10, 9, 9, 9,

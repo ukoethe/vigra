@@ -194,7 +194,7 @@ void vigraMexFunction(vigra::matlab::OutputArray outputs, vigra::matlab::InputAr
     {
         ALLOW_FD;
         ALLOW_UINT;
-	ALLOW_INT;
+    ALLOW_INT;
         default:
             mexErrMsgTxt("Type of input 0 not supported");
     }

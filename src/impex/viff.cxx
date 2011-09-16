@@ -56,7 +56,7 @@
 /* definitions for subimage information,
    long startx, starty; */
 #define	VFF_NOTSUB   		~0	/* a negative number indicates that
-					   the image is not a subimage	*/
+                       the image is not a subimage	*/
 
 /* definitions for machine dependencies,
    char machine_dep; */
@@ -73,8 +73,8 @@
    unsigned long data_storage_type; */
 #define	VFF_TYP_BIT		0	/* pixels are on or off (binary image)*/
                                         /* Note: This is an X11 XBitmap 
-					   with bits packed into a byte and
-					   padded to a byte */
+                       with bits packed into a byte and
+                       padded to a byte */
 #define	VFF_TYP_1_BYTE		1	/* pixels are byte (unsigned char) */
 #define	VFF_TYP_2_BYTE		2	/* pixels are two byte (short int) */
 #define	VFF_TYP_4_BYTE		4	/* pixels are four byte (integer) */
@@ -108,22 +108,22 @@
 /* definitions for mapping schemes,
    unsigned long map_scheme; */
 #define VFF_MS_NONE		0	/* No mapping is to be done, and no
-					   maps are to be stored. */
+                       maps are to be stored. */
 #define	VFF_MS_ONEPERBAND	1	/* Each data band has its own map */
 #define VFF_MS_CYCLE		2	/* An array of maps is selected in order
-					   by groups of maps_per_cycle, allowing
-					   "rotating the color map" */
+                       by groups of maps_per_cycle, allowing
+                       "rotating the color map" */
 #define	VFF_MS_SHARED		3	/* All data band share the same map */
 #define VFF_MS_GROUP		4	/* All data bands are "grouped" 
-					   together to point into one map */
+                       together to point into one map */
 /* definitions for enabling the map,
    unsigned long map_enable; */
 #define VFF_MAP_OPTIONAL	1	/* The data is valid without being
-					   sent thru the color map. If a
-					   map is defined, the data may 
-					   optionally be sent thru it. */
+                       sent thru the color map. If a
+                       map is defined, the data may 
+                       optionally be sent thru it. */
 #define	VFF_MAP_FORCE		2	/* The data MUST be sent thru the map
-					   to be interpreted */
+                       to be interpreted */
 
 /* definitions for color map models,
    unsigned long color_space_model; */
@@ -164,16 +164,16 @@
 #define	VFF_CM_cieucsLuv	13
 #define	VFF_CM_GENERIC		14	/* the color space is user defined */
 #define VFF_CM_genericRGB	15	/* an RGB image but not conforming
-					   to any standard */
+                       to any standard */
 
 /* definitions for location type,
    unsigned long location_type; */
 #define	VFF_LOC_IMPLICIT	1	/*  The location of image pixels
-					    or vector data is given by using
-					    the implied 2D array given by
-					    row_size and col_size.  */
+                        or vector data is given by using
+                        the implied 2D array given by
+                        row_size and col_size.  */
 #define	VFF_LOC_EXPLICIT	2	/*  The location of the image pixels
-					    or the vectors is explicit */
+                        or the vectors is explicit */
 
 namespace vigra {
     

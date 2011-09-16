@@ -124,7 +124,7 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/private/CMakeLists.txt)
-	ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
+    ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
 ENDIF()
 
 
@@ -135,7 +135,7 @@ ENDIF()
 ##################################################
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
-		DESTINATION include)
+        DESTINATION include)
 
 ##################################################
 #
@@ -153,14 +153,14 @@ INCLUDE(CPackConfig)
 IF(NOT WIN32)
 # vigra-config script for (non-CMake-based) third party packages
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/vigra-config.in
-		${PROJECT_BINARY_DIR}/bin/vigra-config
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/bin/vigra-config
+        @ONLY IMMEDIATE)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/bin/vigra-config
-		DESTINATION bin
-		PERMISSIONS
-			OWNER_READ OWNER_WRITE OWNER_EXECUTE
-			GROUP_READ GROUP_EXECUTE
-			WORLD_READ WORLD_EXECUTE)
+        DESTINATION bin
+        PERMISSIONS
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE
+            GROUP_READ GROUP_EXECUTE
+            WORLD_READ WORLD_EXECUTE)
 ENDIF(NOT WIN32)
 
 ##################################################
@@ -171,26 +171,26 @@ ENDIF(NOT WIN32)
 
 # config file for CMake FIND_PACKAGE command (for using the build tree)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigBuild.cmake.in
-		${PROJECT_BINARY_DIR}/VigraConfig.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/VigraConfig.cmake
+        @ONLY IMMEDIATE)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
-		${PROJECT_BINARY_DIR}/VigraConfigVersion.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/VigraConfigVersion.cmake
+        @ONLY IMMEDIATE)
 
 # config file for CMake FIND_PACKAGE command
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
-		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+        @ONLY IMMEDIATE)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
-		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
+        @ONLY IMMEDIATE)
 
 # export targets:
 INSTALL(EXPORT vigra-targets
-		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
-			${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
-		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+            ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
+        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -257,7 +257,7 @@ ENDIF()
 
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
+    MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )

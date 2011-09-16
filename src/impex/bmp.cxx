@@ -1031,7 +1031,7 @@ void BmpEncoderImpl::write_rgb_data()
 
         // pad
         for ( unsigned int p = 0; p < pad_size; ++p )
-	    stream.put(0);
+        stream.put(0);
     }
 }
 

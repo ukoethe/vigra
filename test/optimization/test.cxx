@@ -49,11 +49,11 @@ using namespace vigra;
 using namespace vigra::linalg;
 
 struct OptimizationTest {
-  	typedef vigra::linalg::Matrix<double>::difference_type Shape;
+    typedef vigra::linalg::Matrix<double>::difference_type Shape;
 
-  	ArrayVector<Matrix<double> > x, y, lars, larslsq, lasso, lassolsq, nnlasso, nnlassolsq;
-  	int size;
-  	static double w[100];
+    ArrayVector<Matrix<double> > x, y, lars, larslsq, lasso, lassolsq, nnlasso, nnlassolsq;
+    int size;
+    static double w[100];
 
     OptimizationTest()
     {
@@ -67,30 +67,30 @@ struct OptimizationTest {
     {
         double epsilon = 1e-10;
 
-	    ArrayVector<Matrix<double> > results;
-	    ArrayVector<ArrayVector<MultiArrayIndex> > activeSets;
+        ArrayVector<Matrix<double> > results;
+        ArrayVector<ArrayVector<MultiArrayIndex> > activeSets;
 
-	    Matrix<double> offset(1,50);
-	    Matrix<double> scaling(1,50, 1.0); // trivial init
+        Matrix<double> offset(1,50);
+        Matrix<double> scaling(1,50, 1.0); // trivial init
 
-	    prepareColumns(y, y, DataPreparationGoals(ZeroMean));
-	    prepareColumns(X, X, offset, scaling, DataPreparationGoals(ZeroMean|UnitVariance));
+        prepareColumns(y, y, DataPreparationGoals(ZeroMean));
+        prepareColumns(X, X, offset, scaling, DataPreparationGoals(ZeroMean|UnitVariance));
 
-	    int numSolutions = leastAngleRegression(X, y, activeSets, results, options);
-	    shouldMsg(numSolutions == ref.columnCount(), (std::string("wrong number of solutions in ") + message).c_str());
+        int numSolutions = leastAngleRegression(X, y, activeSets, results, options);
+        shouldMsg(numSolutions == ref.columnCount(), (std::string("wrong number of solutions in ") + message).c_str());
 
-	    for (MultiArrayIndex j = 0; j < numSolutions; ++j)
-	    {
-		    Matrix<double> B(50, 1);
-		    for (unsigned int i = 0; i < activeSets[j].size(); ++i)
-		    {
-			    // activeSets[j][i] is the true index of the i-th result
-			    B(activeSets[j][i],0) = results[j](i,0)*scaling(0, activeSets[j][i]);
-		    }
-		    std::ostringstream s;
-		    s << "solution " << j << " differs in " << message;
-		    shouldMsg((B - columnVector(ref, j)).norm(0) < epsilon, s.str().c_str());
-		}
+        for (MultiArrayIndex j = 0; j < numSolutions; ++j)
+        {
+            Matrix<double> B(50, 1);
+            for (unsigned int i = 0; i < activeSets[j].size(); ++i)
+            {
+                // activeSets[j][i] is the true index of the i-th result
+                B(activeSets[j][i],0) = results[j](i,0)*scaling(0, activeSets[j][i]);
+            }
+            std::ostringstream s;
+            s << "solution " << j << " differs in " << message;
+            shouldMsg((B - columnVector(ref, j)).norm(0) < epsilon, s.str().c_str());
+        }
     }
 
 #define VIGRA_TEST_LARS(options, k, name, msg) \
@@ -103,19 +103,19 @@ struct OptimizationTest {
 
         for(int m=0; m<3; ++m)
         {
-		    for(int k=0; k<size; ++k)
-		    {
-	            Matrix<double> result(50, 1);
+            for(int k=0; k<size; ++k)
+            {
+                Matrix<double> result(50, 1);
                 leastSquares(x[k], y[k], result, methods[m]);
 
-	            // check the KKT conditions
-	            Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result);
-	            r /= x[k].norm(2)*y[k].norm(2);
-	            std::ostringstream s;
-	            s << "failure in problem " << k << " of LSQ test with " << methods[m] << " solver";
-	            shouldMsg(r.norm(0) < epsilon, s.str().c_str());
-		    }
-		}
+                // check the KKT conditions
+                Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result);
+                r /= x[k].norm(2)*y[k].norm(2);
+                std::ostringstream s;
+                s << "failure in problem " << k << " of LSQ test with " << methods[m] << " solver";
+                shouldMsg(r.norm(0) < epsilon, s.str().c_str());
+            }
+        }
     }
 
     void testWeightedLSQ()
@@ -127,19 +127,19 @@ struct OptimizationTest {
 
         for(int m=0; m<3; ++m)
         {
-		    for(int k=0; k<size; ++k)
-		    {
-	            Matrix<double> result(50, 1);
+            for(int k=0; k<size; ++k)
+            {
+                Matrix<double> result(50, 1);
                 weightedLeastSquares(x[k], y[k], weights, result, methods[m]);
 
-	            // check the KKT conditions
-	            Matrix<double> r = transpose(x[k])*(weights*pointWise(y[k] - x[k]*result));
-	            r /= x[k].norm(2)*y[k].norm(2);
-	            std::ostringstream s;
-	            s << "failure in problem " << k << " of weighted LSQ test with " << methods[m] << " solver";
-	            shouldMsg(r.norm(0) < epsilon, s.str().c_str());
-		    }
-		}
+                // check the KKT conditions
+                Matrix<double> r = transpose(x[k])*(weights*pointWise(y[k] - x[k]*result));
+                r /= x[k].norm(2)*y[k].norm(2);
+                std::ostringstream s;
+                s << "failure in problem " << k << " of weighted LSQ test with " << methods[m] << " solver";
+                shouldMsg(r.norm(0) < epsilon, s.str().c_str());
+            }
+        }
     }
 
     void testRidgeRegression()
@@ -149,133 +149,133 @@ struct OptimizationTest {
         ArrayVector<double> lambdas(la, la+4);
         Matrix<double> weights(100, 1, w);
 
-	    for(int k=0; k<size; ++k)
-	    {
+        for(int k=0; k<size; ++k)
+        {
             Matrix<double> results(50, 4);
             ridgeRegressionSeries(x[k], y[k], results, lambdas);
             for(int m=0; m<4; ++m)
             {
-	            Matrix<double> result(50, 1);
+                Matrix<double> result(50, 1);
                 ridgeRegression(x[k], y[k], result, lambdas[m]);
 
-	            // check the KKT conditions
-	            Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result) - lambdas[m]*result;
-	            r /= x[k].norm(2)*y[k].norm(2);
-	            std::ostringstream s;
-	            s << "failure in problem " << k << " of ridge regression test";
-	            shouldMsg(r.norm(0) < epsilon, s.str().c_str());
-	            shouldMsg((result - columnVector(results, m)).norm(0) < epsilon, s.str().c_str());
-		    }
+                // check the KKT conditions
+                Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result) - lambdas[m]*result;
+                r /= x[k].norm(2)*y[k].norm(2);
+                std::ostringstream s;
+                s << "failure in problem " << k << " of ridge regression test";
+                shouldMsg(r.norm(0) < epsilon, s.str().c_str());
+                shouldMsg((result - columnVector(results, m)).norm(0) < epsilon, s.str().c_str());
+            }
             for(int m=0; m<4; ++m)
             {
-	            Matrix<double> result(50, 1);
+                Matrix<double> result(50, 1);
                 weightedRidgeRegression(x[k], y[k], weights, result, lambdas[m]);
 
-	            // check the KKT conditions
-	            Matrix<double> r = transpose(x[k])*(weights*pointWise(y[k] - x[k]*result)) - lambdas[m]*result;
-	            r /= x[k].norm(2)*y[k].norm(2);
-	            std::ostringstream s;
-	            s << "failure in problem " << k << " of weighted ridge regression test";
-	            shouldMsg(r.norm(0) < epsilon, s.str().c_str());
-		    }
-		}
+                // check the KKT conditions
+                Matrix<double> r = transpose(x[k])*(weights*pointWise(y[k] - x[k]*result)) - lambdas[m]*result;
+                r /= x[k].norm(2)*y[k].norm(2);
+                std::ostringstream s;
+                s << "failure in problem " << k << " of weighted ridge regression test";
+                shouldMsg(r.norm(0) < epsilon, s.str().c_str());
+            }
+        }
     }
 
     void testLars()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.lars().leastSquaresSolutions(false);
+        larsOptions = larsOptions.lars().leastSquaresSolutions(false);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "lars " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, lars, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "lars " << k;
+            VIGRA_TEST_LARS(larsOptions, k, lars, s.str().c_str());
+        }
     }
 
     void testLarsLSQ()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.lars().leastSquaresSolutions(true);
+        larsOptions = larsOptions.lars().leastSquaresSolutions(true);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "larslsq " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, larslsq, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "larslsq " << k;
+            VIGRA_TEST_LARS(larsOptions, k, larslsq, s.str().c_str());
+        }
     }
 
     void testLasso()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.lasso().leastSquaresSolutions(false);
+        larsOptions = larsOptions.lasso().leastSquaresSolutions(false);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "lasso " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, lasso, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "lasso " << k;
+            VIGRA_TEST_LARS(larsOptions, k, lasso, s.str().c_str());
+        }
     }
 
     void testLassoLSQ()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.lasso().leastSquaresSolutions(true);
+        larsOptions = larsOptions.lasso().leastSquaresSolutions(true);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "lassolsq " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, lassolsq, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "lassolsq " << k;
+            VIGRA_TEST_LARS(larsOptions, k, lassolsq, s.str().c_str());
+        }
     }
 
     void testNNLasso()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.nnlasso().leastSquaresSolutions(false);
+        larsOptions = larsOptions.nnlasso().leastSquaresSolutions(false);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "nnlasso " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, nnlasso, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "nnlasso " << k;
+            VIGRA_TEST_LARS(larsOptions, k, nnlasso, s.str().c_str());
+        }
     }
 
     void testNNLassoLSQ()
     {
         LeastAngleRegressionOptions larsOptions;
-		larsOptions = larsOptions.nnlasso().leastSquaresSolutions(true);
+        larsOptions = larsOptions.nnlasso().leastSquaresSolutions(true);
 
-		for(int k=0; k<size; ++k)
-		{
-		    std::ostringstream s;
-		    s << "nnlassolsq " << k;
-    		VIGRA_TEST_LARS(larsOptions, k, nnlassolsq, s.str().c_str());
-		}
+        for(int k=0; k<size; ++k)
+        {
+            std::ostringstream s;
+            s << "nnlassolsq " << k;
+            VIGRA_TEST_LARS(larsOptions, k, nnlassolsq, s.str().c_str());
+        }
     }
 
     void testNNLSQ()
     {
         double epsilon = 1e-10;
-		for(int k=0; k<size; ++k)
-		{
-	        Matrix<double> result(50, 1);
+        for(int k=0; k<size; ++k)
+        {
+            Matrix<double> result(50, 1);
             nonnegativeLeastSquares(x[k], y[k], result);
 
-	        // check the KKT conditions
-	        Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result);
-	        r /= x[k].norm(2)*y[k].norm(2);
+            // check the KKT conditions
+            Matrix<double> r = transpose(x[k])*(y[k] - x[k]*result);
+            r /= x[k].norm(2)*y[k].norm(2);
 
-	        std::ostringstream s;
-	        s << "failure in problem " << k << " of NNLSQ test";
-	        for(int l=0; l<50; ++l)
-    	        shouldMsg((r(l,0) <= 0.0 && result(l,0) == 0.0) || (abs(r(l,0)) < epsilon && result(l,0) > 0.0), s.str().c_str());
-		}
+            std::ostringstream s;
+            s << "failure in problem " << k << " of NNLSQ test";
+            for(int l=0; l<50; ++l)
+                shouldMsg((r(l,0) <= 0.0 && result(l,0) == 0.0) || (abs(r(l,0)) < epsilon && result(l,0) > 0.0), s.str().c_str());
+        }
     }
 
     void testQuadProg()
@@ -377,18 +377,18 @@ struct OptimizationTest {
             shouldEqualTolerance(quadraticProgramming(G, g, CE, ce, CI, ci, x), 5.96700441471631, 1e-10);
             shouldEqualSequenceTolerance(x.data(), x.data()+8, xrefdata, 1e-10);
         }
-		double epsilon = 1e-10;
-		for(int k=0; k<size; ++k)
-		{
-	        Matrix<double> result(50, 1), ref(50,1);
-	        Matrix<double> G = transpose(x[k])*x[k],
-	                       g = -transpose(x[k])*y[k];
+        double epsilon = 1e-10;
+        for(int k=0; k<size; ++k)
+        {
+            Matrix<double> result(50, 1), ref(50,1);
+            Matrix<double> G = transpose(x[k])*x[k],
+                           g = -transpose(x[k])*y[k];
             double m = quadraticProgramming(G, g, Matrix<double>(), Matrix<double>(),
                                  identityMatrix<double>(50), Matrix<double>(50, 1), result);
-	        nonnegativeLeastSquares(x[k], y[k], ref);
-	        shouldEqualTolerance(2.0*m, squaredNorm(x[k]*ref-y[k]) - squaredNorm(y[k]), epsilon);
-	        shouldEqualSequenceTolerance(ref.data(), ref.data()+50, result.data(), epsilon);
-	    }
+            nonnegativeLeastSquares(x[k], y[k], ref);
+            shouldEqualTolerance(2.0*m, squaredNorm(x[k]*ref-y[k]) - squaredNorm(y[k]), epsilon);
+            shouldEqualSequenceTolerance(ref.data(), ref.data()+50, result.data(), epsilon);
+        }
     }
 };
 
@@ -410,26 +410,26 @@ double OptimizationTest::w[100] =
 
 
 struct OptimizationTestSuite : public vigra::test_suite {
-	OptimizationTestSuite() : vigra::test_suite("Optimization Tests") {
-		add( testCase(&OptimizationTest::testLSQ));
-		add( testCase(&OptimizationTest::testWeightedLSQ));
-		add( testCase(&OptimizationTest::testRidgeRegression));
-		add( testCase(&OptimizationTest::testLars));
-		add( testCase(&OptimizationTest::testLarsLSQ));
-		add( testCase(&OptimizationTest::testLasso));
-		add( testCase(&OptimizationTest::testLassoLSQ));
-		add( testCase(&OptimizationTest::testNNLasso));
-		add( testCase(&OptimizationTest::testNNLassoLSQ));
-		add( testCase(&OptimizationTest::testNNLSQ));
-		add( testCase(&OptimizationTest::testQuadProg));
-	}
+    OptimizationTestSuite() : vigra::test_suite("Optimization Tests") {
+        add( testCase(&OptimizationTest::testLSQ));
+        add( testCase(&OptimizationTest::testWeightedLSQ));
+        add( testCase(&OptimizationTest::testRidgeRegression));
+        add( testCase(&OptimizationTest::testLars));
+        add( testCase(&OptimizationTest::testLarsLSQ));
+        add( testCase(&OptimizationTest::testLasso));
+        add( testCase(&OptimizationTest::testLassoLSQ));
+        add( testCase(&OptimizationTest::testNNLasso));
+        add( testCase(&OptimizationTest::testNNLassoLSQ));
+        add( testCase(&OptimizationTest::testNNLSQ));
+        add( testCase(&OptimizationTest::testQuadProg));
+    }
 };
 
 int main() {
-	OptimizationTestSuite test;
-	int failed = test.run();
-	std::cout << test.report() << std::endl;
-	return failed;
+    OptimizationTestSuite test;
+    int failed = test.run();
+    std::cout << test.report() << std::endl;
+    return failed;
 }
 
 
