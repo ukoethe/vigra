@@ -64,7 +64,7 @@ class Processor;
 namespace detail
 {
 
-    /** Common helper function used in all Processors. 
+    /* Common helper function used in all Processors. 
      * This function analyses the options struct and calculates the real 
      * values needed for the current problem (data)
      */
@@ -121,7 +121,7 @@ namespace detail
 
     }
     
-    /** Returns true if MultiArray contains NaNs
+    /* Returns true if MultiArray contains NaNs
      */
     template<unsigned int N, class T, class C>
     bool contains_nan(MultiArrayView<N, T, C> const & in)
@@ -132,7 +132,7 @@ namespace detail
         return false; 
     }
     
-    /** Returns true if MultiArray contains Infs
+    /* Returns true if MultiArray contains Infs
      */
     template<unsigned int N, class T, class C>
     bool contains_inf(MultiArrayView<N, T, C> const & in)
@@ -144,7 +144,7 @@ namespace detail
                 return true;
          return false;
     }
-}
+} // namespace detail
 
 
 

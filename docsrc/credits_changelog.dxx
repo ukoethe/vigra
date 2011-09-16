@@ -108,7 +108,7 @@ Many thanks to all!
       <li> Added \ref VigraMatlab.
       
       <li> Added support for <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> import/export of arrays
-           (see \ref HDF5).
+           (see \ref VigraHDF5Impex).
       
       <li> Added \ref vigra::RandomForest classifier.
           

@@ -120,7 +120,7 @@ def generateFunctionIndex(functionList):
     if text.find('</h1>') > -1: # up to doxygen 1.7.1
         header = text[:text.find('</h1>')+5]
     else: # for doxygen 1.7.4
-        header = text[:re.search(r'<div class="title">[^<]*</div>\s*</div>\s*</div>',text).end()]
+        header = text[:re.search(r'<div class="title">[^<]*</div>\s*</div>\s*</div>\n<div class="contents">',text).end()]
     footer = re.search(r'(?s)(<!-- footer.html -->.*)', text).group(1)
 
     text = re.sub(r'Namespace List', r'Function Index', header)

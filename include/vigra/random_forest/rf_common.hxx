@@ -55,7 +55,7 @@ inline detail::RF_DEFAULT& rf_default();
 namespace detail
 {
 
-/**\brief singleton default tag class -
+/* \brief singleton default tag class -
  *
  *  use the rf_default() factory function to use the tag.
  *  \sa RandomForest<>::learn();
@@ -73,7 +73,7 @@ class RF_DEFAULT
          */
 };
 
-/**\brief chooses between default type and type supplied
+/* \brief chooses between default type and type supplied
  * 
  * This is an internal class and you shouldn't really care about it.
  * Just pass on used in RandomForest.learn()

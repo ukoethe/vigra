@@ -1,4 +1,7 @@
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
+    execute_process(COMMAND ${DOXYGEN_EXECUTABLE} --version
+                  OUTPUT_VARIABLE DOXYGEN_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
+
 	CONFIGURE_FILE(
 		${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
 		${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
@@ -8,7 +11,7 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCDIR}
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${DOCDIR}/vigra
 		COMMAND ${DOXYGEN_EXECUTABLE}  
-		COMMENT "Generating doxygen documentation")
+		COMMENT "Generating documentation with doxygen ${DOXYGEN_VERSION}")
 
 	ADD_CUSTOM_COMMAND(
 		TARGET doc_cpp
@@ -17,7 +20,7 @@ IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
 			${CMAKE_CURRENT_SOURCE_DIR}/makeFunctionIndex.py
 			${DOCDIR}/vigra
 		COMMAND ${PYTHON_EXECUTABLE}
-			${CMAKE_CURRENT_SOURCE_DIR}/post-doxy-1.5.6.py
+			${CMAKE_CURRENT_SOURCE_DIR}/post.py
 			${DOCDIR}/vigra
 			${vigra_version}
 		COMMAND ${CMAKE_COMMAND} -E copy_directory

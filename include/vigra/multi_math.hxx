@@ -394,6 +394,8 @@ OPNAME(MultiMathOperand<T> const & v) \
 
 #define VIGRA_REALPROMOTE typename NumericTraits<T>::RealPromote
 
+#ifndef DOXYGEN  // doxygen gets confused by these macros
+
 VIGRA_MULTIMATH_UNARY_OPERATOR(Negate, -, operator-, T)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Not, !, operator!, T)
 VIGRA_MULTIMATH_UNARY_OPERATOR(BitwiseNot, ~, operator~, T)
@@ -445,6 +447,7 @@ VIGRA_MULTIMATH_UNARY_OPERATOR(Real, real, real, typename T::value_type)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Imag, imag, imag, typename T::value_type)
 VIGRA_MULTIMATH_UNARY_OPERATOR(Arg, arg, arg, typename T::value_type)
 
+#endif //DOXYGEN
 
 #undef VIGRA_REALPROMOTE
 #undef VIGRA_MULTIMATH_UNARY_OPERATOR

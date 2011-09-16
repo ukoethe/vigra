@@ -36,6 +36,9 @@ H3.details_section {
     padding: 5px;
     font-weight: bold;
 }
+.ingroups {
+    font-size: 60%;
+}
 H3 {
        font-size: 100%;
 }
@@ -371,6 +374,7 @@ HR { height: 1px;
 /*  border-color: #dedeee; */
   border-color: #e0d0a0;
   -moz-border-radius: 8px 8px 8px 8px;
+  margin-bottom: 20px;
 }
 .memname {
   white-space: nowrap;

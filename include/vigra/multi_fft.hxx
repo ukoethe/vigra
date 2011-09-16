@@ -743,6 +743,7 @@ fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
     computes the appropriate frequency domain shape for a given shape in the spatial domain.
     It simply replaces <tt>shape[0]</tt> with <tt>shape[0] / 2 + 1</tt>.
     
+    <b>\#include</b> \<vigra/multi_fft.hxx\>
 */
 template <class T, int N>
 TinyVector<T, N>
@@ -1107,7 +1108,7 @@ void FFTWPlan<N, Real>::executeImpl(MI ins, MO outs) const
     in an easy-to-use interface. It always creates a pair of plans, one for the forward and one
     for the inverse transform required for convolution.
 
-    Usually, you use this class only indirectly via \ref convolveFFT() and oits variations. 
+    Usually, you use this class only indirectly via \ref convolveFFT() and its variants. 
     You only need this class if you want to have more control about FFTW's planning process 
     (by providing non-default planning flags) and/or want to re-use plans for several convolutions.
     
@@ -1586,6 +1587,8 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
     fourierKernel.swap(newFourierKernel);
 }
 
+#ifndef DOXYGEN // doxygen documents these functions as free functions
+
 template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
 void 
@@ -1814,6 +1817,8 @@ FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> 
     }
 }
 
+#endif // DOXYGEN
+
 template <unsigned int N, class Real>
 template <class KernelIterator, class OutIterator>
 typename FFTWConvolvePlan<N, Real>::Shape 
@@ -1957,6 +1962,12 @@ fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     FFTWPlan<N, Real>(in, out).execute(in, out);
 }
 
+//@}
+
+/** \addtogroup MultiArrayConvolutionFilters
+*/
+//@{
+
 /********************************************************/
 /*                                                      */
 /*                     convolveFFT                      */
@@ -1976,19 +1987,19 @@ fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     The following functions implement various variants of FFT-based convolution:
     
         <DL>
-        <DT>convolveFFT<DD> Convolve a real-valued input array with a kernel such that the 
+        <DT><b>convolveFFT</b><DD> Convolve a real-valued input array with a kernel such that the 
                             result is also real-valued. That is, the kernel is either provided
                             as a real-valued array in the spatial domain, or as a 
                             complex-valued array in the Fourier domain, using the half-space format 
                             of the R2C Fourier transform (see below).
-        <DT>convolveFFTMany<DD> Like <tt>convolveFFT</tt>, but you may provide many kernels at once 
+        <DT><b>convolveFFTMany</b><DD> Like <tt>convolveFFT</tt>, but you may provide many kernels at once 
                             (using an iterator pair specifying the kernel sequence). 
                             This has the advantage that the forward transform of the input array needs 
                             to be executed only once.
-        <DT>convolveFFTComplex<DD> Convolve a complex-valued input array with a complex-valued kernel, 
+        <DT><b>convolveFFTComplex</b><DD> Convolve a complex-valued input array with a complex-valued kernel, 
                             resulting in a complex-valued output array. An additional flag is used to 
                             specify whether the kernel is defined in the spatial or frequency domain.
-        <DT>convolveFFTComplexMany<DD> Like <tt>convolveFFTComplex</tt>, but you may provide many kernels at once 
+        <DT><b>convolveFFTComplexMany</b><DD> Like <tt>convolveFFTComplex</tt>, but you may provide many kernels at once 
                             (using an iterator pair specifying the kernel sequence). 
                             This has the advantage that the forward transform of the input array needs 
                             to be executed only once.
