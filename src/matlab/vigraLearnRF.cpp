@@ -56,8 +56,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     **              INIT PART                                                                         **
     ****************************************************************************************************/
 
-    vigra::RandomForestOptions 	options;
-    vigra::ProblemSpec<inputLType>	ext_param;
+    vigra::RandomForestOptions  options;
+    vigra::ProblemSpec<inputLType>  ext_param;
     options.sample_with_replacement(inputs.getBool("sample_with_replacement", 
                                                    v_default(true)));
     
@@ -74,9 +74,9 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
         if(inputs.typeOf("mtry") == mxCHAR_CLASS)
         {
             std::map<std::string, int> map_;
-                map_["RF_LOG"] 	= int(RF_LOG);
+                map_["RF_LOG"]  = int(RF_LOG);
                 map_["RF_SQRT"] = int(RF_SQRT);
-                map_["RF_ALL"]	= int(RF_ALL);
+                map_["RF_ALL"]  = int(RF_ALL);
             RF_OptionTag method  = RF_OptionTag(inputs.getEnum("mtry", v_default(RF_LOG), map_));
         }
         else
@@ -111,8 +111,8 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     double var_imp_rep
         = inputs.getScalar<double>("importance_repetition",v_default(10));
     
-    VariableImportanceVisitor	var_imp(static_cast<int>(var_imp_rep));
-    OOB_Error					oob_err;
+    VariableImportanceVisitor   var_imp(static_cast<int>(var_imp_rep));
+    OOB_Error                   oob_err;
     MatlabRandomForestProgressVisitor progress;
     if(!outputs.isValid(2))
         var_imp.deactivate();
@@ -177,7 +177,7 @@ options     - a struct with the following possible fields (default will be used
     'weights'
                                     Array containing training weights for each class. The size of the array is
                                     not checked so you may get wierd errors if you do not enforce the size constraints.
-var_imp		- A FeatureCount x ClassCount +2 Matrix. 
+var_imp     - A FeatureCount x ClassCount +2 Matrix. 
                                     The last column is the variable importance based on mean decrease in impurity
                                     over all trees the end -1 column is the permutation based variable importance
                                     Columns 1 - ClassCount are the class wise permutation based variable importance

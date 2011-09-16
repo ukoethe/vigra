@@ -639,7 +639,7 @@ public:
     }
     
     template<class Tree, class Split, class Region, class Feature_t, class Label_t>
-    void visit_after_split( Tree  	      & tree, 
+    void visit_after_split( Tree          & tree, 
                 Split         & split,
                             Region       & parent,
                             Region        & leftChild,
@@ -1226,11 +1226,11 @@ class VariableImportanceVisitor : public VisitorBase
      *  variable_importance_(ii,jj) is the variable importance measure of 
      *  the ii-th variable according to:
      *  jj = 0 - (classCount-1)
-     *  	classwise permutation importance 
+     *      classwise permutation importance 
      *  jj = rowCount(variable_importance_) -2
-     *  	permutation importance
+     *      permutation importance
      *  jj = rowCount(variable_importance_) -1
-     *  	gini decrease importance.
+     *      gini decrease importance.
      *
      *  permutation importance:
      *  The difference between the fraction of OOB samples classified correctly

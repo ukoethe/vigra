@@ -54,7 +54,7 @@ namespace vigra {
      *  \brief computation of Wigner D matrix + rotation functions 
      *         in SH,VH and R³
      *
-     * All rotations in Euler zyz' convention	
+     * All rotations in Euler zyz' convention   
      *
      * WARNING: not thread safe! use a new instance of WignerMatrix
      * for each thread!!!
@@ -70,15 +70,15 @@ class WignerMatrix
     
          /*! \brief constructor
           * 
-          * \param l_max	maximum expansion band (used to pre-compute 
-          *			the D matrix)
+          * \param l_max    maximum expansion band (used to pre-compute 
+          *         the D matrix)
           *
           */
     WignerMatrix(int l_max);
     
          /*! \brief Compute D with fixed theta = pi/2, phi=0, psi=0.
           *
-          * \param band	expansion band
+          * \param band expansion band
           *
              FIXME: compute_D(l, 0.0, M_PI / 2.0, 0.0) creates the transposed matrix!
           */
@@ -86,10 +86,10 @@ class WignerMatrix
 
          /*! \brief Compute D for arbitrary rotations.
           *
-          * \param l     	expansion band
-          * \param phi	rotation angle	
-          * \param theta	rotation angle
-          * \param psi 	rotation angle
+          * \param l        expansion band
+          * \param phi  rotation angle  
+          * \param theta    rotation angle
+          * \param psi  rotation angle
           *
           */
     void compute_D(int l, Real phi, Real theta, Real psi);
@@ -97,7 +97,7 @@ class WignerMatrix
          /*! \brief  Get the (n,m) entry of D.
           *
           * \param l        expansion band
-          * \param n      	
+          * \param n        
           * \param m    
           */
     Complex get_D(int l, int n, int m) const
@@ -261,7 +261,7 @@ WignerMatrix<Real>::compute_D(int l)
         }
 
         D[l].reshape(MultiArrayShape<2>::type(2*l+1,2*l+1));
-        D[l].init(Real(0.0));	   
+        D[l].init(Real(0.0));      
         
         for(int m = -l; m <= l ; m++)
         {

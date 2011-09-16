@@ -356,7 +356,7 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > array,
     
     PyAllowThreads _pythread;
 
-    MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(0);	
+    MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(0); 
     structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), opt);
     
     if(array.shape(sdim) > 1)

@@ -559,7 +559,7 @@ public:
     ArrayVector<double>     class_weights_;   // if classes have different importance
     int                     is_weighted_;     // class_weights_ are used
     double                  precision_;       // termination criterion for regression loss
-    int						response_size_; 
+    int                     response_size_; 
         
     template<class T> 
     void to_classlabel(int index, T & out) const

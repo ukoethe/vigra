@@ -130,7 +130,7 @@ class SIFImportInfo
         
         \code
         SIFImportInfo info(filename);
-        std::cout << info << std::endl;	// print infos to the console
+        std::cout << info << std::endl; // print infos to the console
 
         \endcode
          */
@@ -150,7 +150,7 @@ class SIFImportInfo
         double temperature1, temperature2;
         long long d;
         std::string cycleTime, temperature, exposureTime, EMGain,
-        verticalShiftSpeed, version, model, originalFilename, preAmpGain;	
+        verticalShiftSpeed, version, model, originalFilename, preAmpGain;   
         size_t filesize;
     
 };

@@ -11,9 +11,9 @@
 % Arguments
 %   - OUTDIR: directory for compiled files (default '.', i.e. this directory)
 %   - TARGET (default: 'all'): 
-%	  - 'all':    builds all the files in the folder
-%	  - 'test':   see below
-%	  - 'clean':  remove all mex compiled files from the folder
+%     - 'all':    builds all the files in the folder
+%     - 'test':   see below
+%     - 'clean':  remove all mex compiled files from the folder
 %   - options:    struct('flags', 'additional compile flags') 
 %                 (if needed, see comments in the failing files for help)
 %

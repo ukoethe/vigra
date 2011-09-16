@@ -158,12 +158,12 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 {
     public:
     typedef Int32 LabelInt;
-    typedef	MultiArrayView<2, T1, C1> Feature_t;
+    typedef MultiArrayView<2, T1, C1> Feature_t;
     typedef MultiArray<2, T1> FeatureWithMemory_t;
     typedef MultiArrayView<2,LabelInt> Label_t;
-    MultiArrayView<2, T1, C1>const & 	features_;
-    MultiArray<2, LabelInt> 			intLabels_;
-    MultiArrayView<2, LabelInt> 		strata_;
+    MultiArrayView<2, T1, C1>const &    features_;
+    MultiArray<2, LabelInt>             intLabels_;
+    MultiArrayView<2, LabelInt>         strata_;
 
     template<class T>
     Processor(MultiArrayView<2, T1, C1>const & features,   
@@ -193,7 +193,7 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
         {
             // fill up a map with the current labels and then create the 
             // integral labels.
-            std::set<T2>             		labelToInt;
+            std::set<T2>                    labelToInt;
             for(MultiArrayIndex k = 0; k < features.shape(0); ++k)
                 labelToInt.insert(response(k,0));
             std::vector<T2> tmp_(labelToInt.begin(), labelToInt.end());
@@ -265,21 +265,21 @@ class Processor<RegressionTag,LabelType, T1, C1, T2, C2>
 {
 public:
     // only views are created - no data copied.
-    MultiArrayView<2, T1, C1> 	features_;
-    MultiArrayView<2, T2, C2> 	response_;
+    MultiArrayView<2, T1, C1>   features_;
+    MultiArrayView<2, T2, C2>   response_;
     RandomForestOptions const & options_;
     ProblemSpec<LabelType> const &
                                 ext_param_;
     // will only be filled if needed
-    MultiArray<2, int> 	 	strata_;
+    MultiArray<2, int>      strata_;
     bool strata_filled;
 
     // copy the views.
     template<class T>
-    Processor(	MultiArrayView<2, T1, C1> 	features,
-                MultiArrayView<2, T2, C2> 	response,
-                RandomForestOptions const &	options,
-                ProblemSpec<T>&	ext_param)
+    Processor(  MultiArrayView<2, T1, C1>   features,
+                MultiArrayView<2, T2, C2>   response,
+                RandomForestOptions const & options,
+                ProblemSpec<T>& ext_param)
     :
         features_(features),
         response_(response),

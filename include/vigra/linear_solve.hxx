@@ -908,7 +908,7 @@ template <class T, class C1, class C2>
 bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
                            MultiArrayView<2, T, C2> &L)
 {
-    MultiArrayIndex n = columnCount(A);	
+    MultiArrayIndex n = columnCount(A); 
     vigra_precondition(rowCount(A) == n,
                        "choleskyDecomposition(): Input matrix must be square.");
     vigra_precondition(n == columnCount(L) && n == rowCount(L),

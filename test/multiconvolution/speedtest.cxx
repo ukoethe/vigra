@@ -312,7 +312,7 @@ struct MultiArraySepConvSpeedTest
   */
 
 
-#define Speedy(f,name) int t = clock(); f; t = clock() - t;			\
+#define Speedy(f,name) int t = clock(); f; t = clock() - t;         \
     std::cout << "Timed function: " << name << std::endl << "   = " << t  << std::endl;
 
   void test1()

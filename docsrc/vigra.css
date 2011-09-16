@@ -128,7 +128,7 @@ DL.el { margin-left: -1cm }
        font-size: 95%;
 }
 PRE.fragment {
-/*	border: 1px solid #c8aa54; */
+/*  border: 1px solid #c8aa54; */
     border: 1px solid #dad0aa;
     background-color: #fcfaf8;
     margin-top: 4px;
@@ -156,7 +156,7 @@ BODY {
     margin-left: 20px;
 }
 TD.indexkey {
-/*	background-color: #e8eef2; */
+/*  background-color: #e8eef2; */
     background-color: #f8f0e0;
     font-weight: bold;
     padding-right  : 10px;
@@ -167,11 +167,11 @@ TD.indexkey {
     margin-right   : 0px;
     margin-top     : 2px;
     margin-bottom  : 2px;
-/*	border: 1px solid #CCCCCC; */
+/*  border: 1px solid #CCCCCC; */
     border: 1px solid #e0d0a0;
 }
 TD.indexvalue {
-/*	background-color: #e8eef2; */
+/*  background-color: #e8eef2; */
     background-color: #f8f0e0;
     font-style: italic;
     padding-right  : 10px;
@@ -182,7 +182,7 @@ TD.indexvalue {
     margin-right   : 0px;
     margin-top     : 2px;
     margin-bottom  : 2px;
-/*	border: 1px solid #CCCCCC; */
+/*  border: 1px solid #CCCCCC; */
     border: 1px solid #e0d0a0;
 }
 TR.memlist {

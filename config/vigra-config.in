@@ -10,14 +10,14 @@ parser = OptionParser()
 parser.add_option("--version", action = 'store_true',
                   help = "output version (@vigra_version@)")
 #parser.add_option("--target", action = 'store_true',
-#				  help = "output platform this VIGRA library was configured for")
+#                 help = "output platform this VIGRA library was configured for")
 parser.add_option("--impex-lib", "--libs", action = 'store_true',
                   help = "output flags for linking libvigraimpex")
 parser.add_option("--fftw-lib", action = 'store_true',
                   help = "output flags for linking libfftw"
                   + " (unavailable)" if not hasFFTW else "")
 #parser.add_option("--rfftw-lib", action = 'store_true',
-#				  help = "output flags for linking librfftw and libfftw")
+#                 help = "output flags for linking librfftw and libfftw")
 parser.add_option("--cppflags", action = 'store_true',
                   help = "output include flags for vigra"
                   + " and fftw" if hasFFTW else "")

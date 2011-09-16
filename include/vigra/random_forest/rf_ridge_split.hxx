@@ -86,8 +86,8 @@ class RidgeSplit: public SplitBase<Tag>
     int                         bestSplitIndex;
     
     //dns
-    bool			m_bDoScalingInTraining;
-    bool			m_bDoBestLambdaBasedOnGini;
+    bool            m_bDoScalingInTraining;
+    bool            m_bDoBestLambdaBasedOnGini;
     
     RidgeSplit()
     :m_bDoScalingInTraining(true),
@@ -141,7 +141,7 @@ class RidgeSplit: public SplitBase<Tag>
     typedef typename MultiArrayView <2, double>::difference_type dShape;
         
         // calculate things that haven't been calculated yet. 
-//	  std::cout << "start" << std::endl;
+//    std::cout << "start" << std::endl;
         if(std::accumulate(region.classCounts().begin(),
                            region.classCounts().end(), 0) != region.size())
         {
@@ -197,7 +197,7 @@ class RidgeSplit: public SplitBase<Tag>
     //_do implicit binary case
     
     //uncomment this for some debugging
-/*	int nNumCases=features.shape(0);
+/*  int nNumCases=features.shape(0);
 
     typedef typename MultiArrayView <2, int>::difference_type nShape;
     MultiArray<2, int> elementCounterArray(nShape(nNumCases,1),(int)0);
@@ -268,7 +268,7 @@ class RidgeSplit: public SplitBase<Tag>
             xtrain(n,m)=(cVector[region[n]]-dCurrFeatureColumnMean)/dCurrFeatureColumnStd;
     }
     
-//	  std::cout << "middle" << std::endl;
+//    std::cout << "middle" << std::endl;
     //get label vector (i.e. b)
     for(int n=0; n<region.size(); n++)
     {
@@ -339,7 +339,7 @@ class RidgeSplit: public SplitBase<Tag>
         }
     }
 
-//	  std::cout << "middle2" << std::endl;
+//    std::cout << "middle2" << std::endl;
         //create a Node for output
         Node<i_HyperplaneNode>   node(SB::ext_param_.actual_mtry_, SB::t_data, SB::p_data);
 
@@ -397,7 +397,7 @@ class RidgeSplit: public SplitBase<Tag>
         return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
     
     //take gini threshold here due to scaling, normalisation, etc. of the coefficients
-    node.intercept()	= bgfunc.min_threshold_;
+    node.intercept()    = bgfunc.min_threshold_;
     SB::node_ = node;
     
     childRegions[0].classCounts() = bgfunc.bestCurrentCounts[0];
@@ -414,7 +414,7 @@ class RidgeSplit: public SplitBase<Tag>
     childRegions[1].rule.push_back(std::make_pair(1, 1.0));
     
     //adjust oob ranges
-//	  std::cout << "adjust oob" << std::endl;
+//    std::cout << "adjust oob" << std::endl;
     //sort the oobs
       std::sort(region.oob_begin(), region.oob_end(), 
             SortSamplesByDimensions< MultiArray<2, double> > (dDistanceFromHyperplane, 0));
@@ -430,8 +430,8 @@ class RidgeSplit: public SplitBase<Tag>
       childRegions[0].set_oob_range(   region.oob_begin()  , region.oob_begin() + nOOBindx   );
       childRegions[1].set_oob_range(   region.oob_begin() + nOOBindx , region.oob_end() );
 
-//	  std::cout << "end" << std::endl;
-//	  outm2(region.oob_begin());outm2(nOOBindx);outm(region.oob_begin() + nOOBindx);
+//    std::cout << "end" << std::endl;
+//    outm2(region.oob_begin());outm2(nOOBindx);outm(region.oob_begin() + nOOBindx);
     //_adjust oob ranges
 
     return i_HyperplaneNode;

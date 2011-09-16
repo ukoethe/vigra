@@ -118,7 +118,7 @@ struct ClassifierTest
     }
     
 /** Tests whether RF rejects Matrices containing Inf
- */	
+ */ 
     void RF_InfCheck()
     {
         //Create Test output by Random Forest
@@ -196,8 +196,8 @@ struct ClassifierTest
         int ii = data.size() - 3; // this is the pina_indians dataset
         std::cerr << "RF_AlgorithmTest()....";
         
-        rf::algorithms::HClustering				linkage;
-        MultiArray<2, double>	distance;
+        rf::algorithms::HClustering             linkage;
+        MultiArray<2, double>   distance;
         std::cerr << "cluster_permutation_importance()....\n";
         cluster_permutation_importance(data.features(ii), data.labels(ii), linkage, distance);
         rf::algorithms::VariableSelectionResult  result1;
@@ -258,7 +258,7 @@ struct ClassifierTest
     }
     
 /** Tests whether RF rejects Matrices containing NaN
- */	
+ */ 
     void RF_NanCheck()
     {
         //Create Test output by Random Forest
@@ -540,10 +540,10 @@ struct ClassifierTest
     }
 
 /** Learns The Refactored Random Forest with 100 trees 10 times and
- * 	calulates the mean oob error. The distribution of the oob error
- * 	is gaussian as a first approximation. The mean oob error should
- * 	thus be in a 3 sigma neighborhood of the oob error produced by the working
- * 	version of the Random Forest.
+ *  calulates the mean oob error. The distribution of the oob error
+ *  is gaussian as a first approximation. The mean oob error should
+ *  thus be in a 3 sigma neighborhood of the oob error produced by the working
+ *  version of the Random Forest.
  */
     void RFoobTest()
     {
@@ -568,7 +568,7 @@ struct ClassifierTest
                 oob = oob - data.oobError(ii);
                 oob = oob<0? -oob : oob;
                 std::ostringstream s1;
-                s1 	<< "Error - mean oobError exceeds 3 sigma bound:  " << oob
+                s1  << "Error - mean oobError exceeds 3 sigma bound:  " << oob
                     << "<-->" <<  data.oobError(ii) << std::endl;
                 vigra::detail::should_impl(oob < 3* data.oobSTD(ii),
                                            s1.str().c_str(),
@@ -1042,8 +1042,8 @@ int main(int argc, char ** argv)
         MultiArray<2, int> labels(set_t.shape(srces.begin(), srces.end(), &a, &a +1));
         set_t.get_source("1","features", feats);
         set_t.get_source("1","labels", labels);
-        std::cerr << (feats == data.features(ii)) <<	std::endl;
-        std::cerr << (labels == data.labels(ii)) <<	std::endl;
+        std::cerr << (feats == data.features(ii)) <<    std::endl;
+        std::cerr << (labels == data.labels(ii)) << std::endl;
     }
 }
 #endif

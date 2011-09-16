@@ -96,12 +96,12 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *          Splitfunctor::Preprocessor_t while using custom splitfunctors
  *          as they may need the data to be in a different format. 
  *          \sa Preprocessor
- * 	
- * 	simple usage for classification (regression is not yet supported):
- * 	look at RandomForest::learn() as well as RandomForestOptions() for additional
- * 	options. 
+ *  
+ *  simple usage for classification (regression is not yet supported):
+ *  look at RandomForest::learn() as well as RandomForestOptions() for additional
+ *  options. 
  *
- * 	\code
+ *  \code
  *  using namespace vigra;
  *  using namespace rf;
  *  typedef xxx feature_t; \\ replace xxx with whichever type
@@ -132,10 +132,10 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *  rf.predict_labels(pf, prediction);
  *  rf.predict_probabilities(pf, prob);
  *
- * 	\endcode
+ *  \endcode
  *
- * 	Additional information such as Variable Importance measures are accessed
- * 	via Visitors defined in rf::visitors. 
+ *  Additional information such as Variable Importance measures are accessed
+ *  via Visitors defined in rf::visitors. 
  *  Have a look at rf::split for other splitting methods.
  *
 */
@@ -209,12 +209,12 @@ class RandomForest
     /**\brief Create RF from external source
      * \param treeCount Number of trees to add.
      * \param topology_begin     
-     * 					Iterator to a Container where the topology_ data
+     *                  Iterator to a Container where the topology_ data
      *                  of the trees are stored.
      *                  Iterator should support at least treeCount forward 
      *                  iterations. (i.e. topology_end - topology_begin >= treeCount
      * \param parameter_begin  
-     * 					iterator to a Container where the parameters_ data
+     *                  iterator to a Container where the parameters_ data
      *                  of the trees are stored. Iterator should support at 
      *                  least treeCount forward iterations.
      * \param problem_spec 
@@ -229,7 +229,7 @@ class RandomForest
      * NodeProxy iterators to encapsulate the underlying data type.
      */
     template<class TopologyIterator, class ParameterIterator>
-    RandomForest(int                	   treeCount,
+    RandomForest(int                       treeCount,
                   TopologyIterator         topology_begin,
                   ParameterIterator        parameter_begin,
                   ProblemSpec_t const & problem_spec,
@@ -433,15 +433,15 @@ class RandomForest
      *                  The Preprocessor specified during construction
      *                  should be able to handle features and labels
      *                  features and the labels.
-     *  				see also: SplitFunctor, Preprocessing
+     *                  see also: SplitFunctor, Preprocessing
      *
      * \param visitor   visitor which is to be applied after each split,
      *                  tree and at the end. Use rf_default for using
      *                  default value. (No Visitors)
-     * 					see also: rf::visitors
+     *                  see also: rf::visitors
      * \param split     split functor to be used to calculate each split
      *                  use rf_default() for using default value. (GiniSplit)
-     * 					see also:  rf::split 
+     *                  see also:  rf::split 
      * \param stop
      *                  predicate to be used to calculate each split
      *                  use rf_default() for using default value. (EarlyStoppStd)

@@ -24,7 +24,7 @@
 
 #ifdef HasJPEG
 
-#include <stdio.h>		/* needed to define "FILE", "NULL" */
+#include <stdio.h>      /* needed to define "FILE", "NULL" */
 # include <jpeglib.h>
 
 /*

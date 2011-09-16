@@ -40,9 +40,9 @@ public:
     
     /** called after the prediction of a tree was added to the total prediction
      * \param WeightIter Iterator to the weights delivered by current tree.
-     * \param k			 after kth tree
-     * \param prob		 Total probability array
-     * \param totalCt	 sum of probability array. 
+     * \param k          after kth tree
+     * \param prob       Total probability array
+     * \param totalCt    sum of probability array. 
      */
     template<class WeightIter, class T, class C>
     bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
