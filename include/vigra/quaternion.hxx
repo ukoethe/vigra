@@ -46,6 +46,17 @@
 
 namespace vigra {
 
+/** Quaternion class.
+
+    Quaternions are mainly used as a compact representation for 3D rotations because
+    they are much less prone to round-off errors than rotation matrices, especially
+    when many rotations are concatenated. In addition, the angle/axis interpretation
+    of normalized quaternions is very intuitive. Read the 
+    <a href="http://en.wikipedia.org/wiki/Quaternion">Wikipedia entry on quaternions</a> 
+    for more information on the mathematics.
+    
+    See also: \ref QuaternionOperations
+*/
 template<class ValueType>
 class Quaternion {
   public:
@@ -71,19 +82,28 @@ class Quaternion {
         */
     typedef typename NormTraits<ValueType>::NormType NormType;
 
-
+        /** Construct a quaternion with explicit values for the real and imaginary parts.
+        */
     Quaternion(ValueType w = 0, ValueType x = 0, ValueType y = 0, ValueType z = 0)
     : w_(w), v_(x, y, z)
     {}
     
+        /** Construct a quaternion with real value and imaginary vector.
+        
+            Equivalent to <tt>Quaternion(w, v[0], v[1], v[2])</tt>.
+        */
     Quaternion(ValueType w, const Vector &v)
     : w_(w), v_(v)
     {}
 
+        /** Copy constructor.
+        */
     Quaternion(const Quaternion &q)
     : w_(q.w_), v_(q.v_)
     {}
     
+        /** Copy assignment.
+        */
     Quaternion & operator=(Quaternion const & other)
     {
         w_ = other.w_;
@@ -91,9 +111,11 @@ class Quaternion {
         return *this;
     }
     
-    Quaternion & operator=(ValueType other)
+        /** Assign \a w to the real part and set the imaginary part to zero.
+        */
+    Quaternion & operator=(ValueType w)
     {
-        w_ = other;
+        w_ = w;
         v_.init(0);
         return *this;
     }
@@ -113,18 +135,31 @@ class Quaternion {
         if(angle > M_PI)
             angle -= 2.0*M_PI;
         double t = VIGRA_CSTD::sin(angle/2.0);
-		double norm = rotationAxis.magnitude();
+        double norm = rotationAxis.magnitude();
         return Quaternion(VIGRA_CSTD::sqrt(1.0-t*t), t*rotationAxis/norm);
     }
 
-        // rename to s
+        /** Read real part.
+        */
     ValueType w() const { return w_; }
+        /** Access real part.
+        */
     ValueType &w() { return w_; }
+        /** Set real part.
+        */
     void setW(ValueType w) { w_ = w; }
 
+        /** Read imaginary part.
+        */
     const Vector &v() const { return v_; }
+        /** Access imaginary part.
+        */
     Vector &v() { return v_; }
+        /** Set imaginary part.
+        */
     void setV(const Vector & v) { v_ = v; }
+        /** Set imaginary part.
+        */
     void setV(ValueType x, ValueType y, ValueType z)
     {
         v_[0] = x;
@@ -142,32 +177,47 @@ class Quaternion {
     void setY(ValueType y) { v_[1] = y; }
     void setZ(ValueType z) { v_[2] = z; }
     
+        /** Access entry at index (0 <=> w(), 1 <=> v[0] etc.).
+        */
     value_type & operator[](int index)
     {
         return (&w_)[index];
     }
     
+        /** Read entry at index (0 <=> w(), 1 <=> v[0] etc.).
+        */
     value_type operator[](int index) const
     {
         return (&w_)[index];
     }
     
+        /** Magnitude.
+        */
     NormType magnitude() const
     {
         return VIGRA_CSTD::sqrt((NormType)squaredMagnitude());
     }
 
+        /** Squared magnitude.
+        */
     SquaredNormType squaredMagnitude() const
     {
         return w_*w_ + v_.squaredMagnitude();
     }
 
+        /** Add \a w to the real part.
+        
+            If the quaternion represents a rotation, the rotation angle is
+            increased by \a w.
+        */
     Quaternion &operator+=(value_type const &w)
     {
         w_ += w;
         return *this;
     }
 
+        /** Add assigment.
+        */
     Quaternion &operator+=(Quaternion const &other)
     {
         w_ += other.w_;
@@ -175,12 +225,19 @@ class Quaternion {
         return *this;
     }
 
+        /** Subtract \a w from the real part.
+        
+            If the quaternion represents a rotation, the rotation angle is
+            decreased by \a w.
+        */
     Quaternion &operator-=(value_type const &w)
     {
         w_ -= w;
         return *this;
     }
 
+        /** Subtract assigment.
+        */
     Quaternion &operator-=(Quaternion const &other)
     {
         w_ -= other.w_;
@@ -188,16 +245,25 @@ class Quaternion {
         return *this;
     }
 
+        /** Addition.
+        */
     Quaternion operator+() const
     {
         return *this;
     }
 
+        /** Subtraction.
+        */
     Quaternion operator-() const
     {
         return Quaternion(-w_, -v_);
     }
 
+        /** Multiply assignment.
+        
+            If the quaternions represent rotations, the rotations of <tt>this</tt> and 
+            \a other are concatenated.
+        */
     Quaternion &operator*=(Quaternion const &other)
     {
         value_type newW = w_*other.w_ - dot(v_, other.v_);
@@ -206,6 +272,8 @@ class Quaternion {
         return *this;
     }
 
+        /** Multiply all entries with the scalar \a scale.
+        */
     Quaternion &operator*=(double scale)
     {
         w_ *= scale;
@@ -213,12 +281,16 @@ class Quaternion {
         return *this;
     }
 
+        /** Divide assignment.
+        */
     Quaternion &operator/=(Quaternion const &other)
     {
         (*this) *= conj(other) / squaredNorm(other);
         return *this;
     }
 
+        /** Devide all entries by the scalar \a scale.
+        */
     Quaternion &operator/=(double scale)
     {
         w_ /= scale;
@@ -226,11 +298,15 @@ class Quaternion {
         return *this;
     }
 
+        /** Equal.
+        */
     bool operator==(Quaternion const &other) const
     {
       return (w_ == other.w_) && (v_ == other.v_);
     }
 
+        /** Not equal.
+        */
     bool operator!=(Quaternion const &other) const
     {
       return (w_ != other.w_) || (v_ != other.v_);
@@ -313,12 +389,19 @@ struct NormTraits<Quaternion<T> >
     typedef typename SquareRootTraits<SquaredNormType>::SquareRootResult   NormType;
 };
 
+
+/** \defgroup QuaternionOperations Quaternion Operations
+*/
+//@{
+
+    /// Create conjugate quaternion.
 template<class ValueType>
 Quaternion<ValueType> conj(Quaternion<ValueType> const & q)
 {
     return Quaternion<ValueType>(q.w(), -q.v());
 }
 
+    /// Addition.
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
@@ -327,6 +410,7 @@ operator+(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) += t2;
 }
 
+    /// Addition of a scalar on the right.
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Quaternion<Type>& t1,
@@ -335,6 +419,7 @@ operator+(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) += t2;
 }
 
+    /// Addition of a scalar on the left.
 template<typename Type>
 inline Quaternion<Type>
 operator+(const Type& t1,
@@ -343,6 +428,7 @@ operator+(const Type& t1,
   return Quaternion<Type>(t1) += t2;
 }
 
+    /// Subtraction.
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
@@ -351,6 +437,7 @@ operator-(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) -= t2;
 }
 
+    /// Subtraction of a scalar on the right.
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Quaternion<Type>& t1,
@@ -359,6 +446,7 @@ operator-(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) -= t2;
 }
 
+    /// Subtraction of a scalar on the left.
 template<typename Type>
 inline Quaternion<Type>
 operator-(const Type& t1,
@@ -367,6 +455,7 @@ operator-(const Type& t1,
   return Quaternion<Type>(t1) -= t2;
 }
 
+    /// Multiplication.
 template<typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
@@ -375,6 +464,7 @@ operator*(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) *= t2;
 }
 
+    /// Multiplication with a scalar on the right.
 template<typename Type>
 inline Quaternion<Type>
 operator*(const Quaternion<Type>& t1,
@@ -383,6 +473,7 @@ operator*(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) *= t2;
 }
   
+    /// Multiplication with a scalar on the left.
 template<typename Type>
 inline Quaternion<Type>
 operator*(double t1,
@@ -391,6 +482,7 @@ operator*(double t1,
   return Quaternion<Type>(t1) *= t2;
 }
 
+    /// Division
 template<typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
@@ -399,6 +491,7 @@ operator/(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) /= t2;
 }
 
+    /// Division by a scalar.
 template<typename Type>
 inline Quaternion<Type>
 operator/(const Quaternion<Type>& t1,
@@ -407,6 +500,7 @@ operator/(const Quaternion<Type>& t1,
   return Quaternion<Type>(t1) /= t2;
 }
   
+    /// Division of a scalar by a Quaternion.
 template<typename Type>
 inline Quaternion<Type>
 operator/(double t1,
@@ -424,7 +518,7 @@ squaredNorm(Quaternion<Type> const & q)
     return q.squaredMagnitude();
 }
 
-    /// squared norm
+    /// norm
 template<typename Type>
 inline
 typename Quaternion<Type>::NormType
@@ -432,6 +526,8 @@ abs(Quaternion<Type> const & q)
 {
     return norm(q);
 }
+
+//@}
 
 } // namespace vigra
 
