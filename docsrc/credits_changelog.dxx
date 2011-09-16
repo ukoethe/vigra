@@ -33,13 +33,13 @@
       <li> Kasim Terzic, Florian Heinrich and Benjamin Seppke
       implemented image analysis functionality for 3- and higher-dimensional data.
 
-      <li> Pablo d'Angelo, Douglas Wilkins and other members of the  
+      <li> Pablo d'Angelo, Douglas Wilkins, Lukas Jirkovsky and other members of the  
       <a href="http://hugin.sourceforge.net">Hugin team</a> contributed various extensions of the impex
-      library (UINT16/UINT32 support, ICC profile support, HDR file type).
+      library (UINT16/UINT32 support, ICC profile support, HDR and OpenEXR file types).
 
       <li> Rahul Nair implemented the \ref vigra::RandomForest classifier and VIGRA Matlab bindings.
       
-      <li> Michael Hanselmann implemented much of the HDF5 support.
+      <li> Michael Hanselmann and Martin Lindner implemented much of the HDF5 support.
       
       <li> Nathan Huesken and Christoph Sommer helped a lot in developing 
            <a href="../vigranumpy/index.html">vigranumpy</a>, the VIGRA Python bindings.
@@ -51,6 +51,52 @@
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.7.1 to 1.8.0</b>
+
+<UL>  
+      <li> Various extensions to \ref LocalMinMax (3D algorithms, on-the-fly thresholding).
+      
+      <li> Added \ref vigra::BucketQueue, \ref vigra::MappedBucketQueue.
+      
+      <li> Refactored and extended 2D watershed algorithms (especially watershedsRegionGrowing()).
+      
+      <li> Added the \ref vigra::Quaternion class.
+      
+      <li> Added \ref Unsupervised_Decomposition.
+      
+      <li> Added mathematical functions (even(), odd(), gamma(), loggamma(), legendre(), besselJ(), besselY(), 
+           linearSequence(), indexSort(), inversePermutation(), applyPermutation(), checksum())
+      
+      <li> Implemented wrapper of the <a href="http://www.fftw.org/">FFTW library</a> to support 
+           arbitrary dimensional Fourier transforms (see \ref fourierTransform() and \ref vigra::FFTWPlan)
+           and FFT-based convolution (see \ref convolveFFT() and \ref vigra::FFTWConvolvePlan) and 
+           refactored \ref vigra::FFTWComplex.
+     
+      <li> Added cannyEdgelListThreshold(), cannyEdgelList3x3Threshold().
+      
+      <li> Added capability to handle subarrays and anisotropic resolution to separableConvolveMultiArray()
+           and related Gaussian filters. Added <tt>windowRatio</tt> parameters to \ref vigra::Kernel1D::initGaussian()
+           and \ref vigra::Kernel1D::initGaussianDerivative()
+      
+      <li> Added \ref vigra::StridedScanOrderIterator and corresponding \ref vigra::MultiArrayView::begin().
+      
+      <li> Extended \ref vigra::MultiArrayView. Added \ref vigra::Shape1 ... \ref vigra::Shape5 convenience typedefs.
+      
+      <li> Implemented \ref MultiMathModule (arithmetic and algebraic functions for multi-dimensional arrays).
+      
+      <li> Extended the \ref vigra::HDF5File class.
+      
+      <li> Improved and documented the \ref TimingMacros.
+      
+      <li> Added support for the <a href="http://www.openexr.com/">OpenEXR image format</a> and multi-page TIFF.
+      
+      <li> <b>vigranumpy</b>: added <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">axistags </a> 
+           and completly re-implemented VigraArray and the conversion between
+           Python and C++ arrays in terms of axistags.
+      
+      <li> Minor improvements and bug fixes in the code and documentation. 
+ </UL>
 
 <b> Changes from Version 1.7.0 to 1.7.1</b>
 
@@ -240,7 +286,7 @@ Many thanks to all!
            <a href="mailto:pablo.dangelo@web.de">pablo.dangelo@web.de</a>)
            for a patch.
       
-      <li> Added \ref watersheds().
+      <li> Added watersheds().
       
       <li> Added \ref cross() (cross product).
       

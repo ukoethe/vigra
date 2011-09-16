@@ -299,6 +299,8 @@
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref PointOperators
          <BR>&nbsp;&nbsp;&nbsp;<em>algorithms and functors for image arithmetic, inspection, transformations etc.</em>
+    <LI> \ref MultiMathModule
+         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
     <LI> \ref FunctorExpressions
          <BR>&nbsp;&nbsp;&nbsp;<em>Expression templates for automated functor creation</em>
     <LI> \ref GeometricTransformations "Resize and Other Geometric Image Transformations"
