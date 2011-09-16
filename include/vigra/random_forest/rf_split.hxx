@@ -105,7 +105,7 @@ class SplitBase
     NodeBase                            node_;
 
     /** returns the DecisionTree Node created by
-        \ref findBestSplit or \ref makeTerminalNode.
+        \ref SplitBase::findBestSplit() or \ref SplitBase::makeTerminalNode().
     **/
 
     template<class T>
@@ -141,8 +141,8 @@ class SplitBase
     }
 
 
-    /** findBestSplit has to be implemented in derived split functor.
-        these functions only insures That a CompileTime error is issued
+    /** findBestSplit has to be re-implemented in derived split functor.
+        The defaut implementation only insures that a CompileTime error is issued
         if no such method was defined.
     **/
 
@@ -160,7 +160,7 @@ class SplitBase
         return 0;
     }
 
-    /** default action for creating a terminal Node.
+    /** Default action for creating a terminal Node.
         sets the Class probability of the remaining region according to
         the class histogram
     **/
@@ -860,7 +860,6 @@ public:
     }
     /** calculate the best gini split along a Feature Column
      * \param column  the feature vector - has to support the [] operator
-     * \param g       ???
      * \param labels  the label vector 
      * \param begin 
      * \param end     (in and out)

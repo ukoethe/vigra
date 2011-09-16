@@ -37,16 +37,21 @@ public:
         is_weighted_ = is_weighted;
         tree_count_ = tree_count;
     }
-    
-    /** called after the prediction of a tree was added to the total prediction
-     * \param WeightIter Iterator to the weights delivered by current tree.
-     * \param k          after kth tree
-     * \param prob       Total probability array
-     * \param totalCt    sum of probability array. 
-     */
+
+#ifdef DOXYGEN
+        /** called after the prediction of a tree was added to the total prediction
+         * \param weightIter Iterator to the weights delivered by current tree.
+         * \param k          after kth tree
+         * \param prob       Total probability array
+         * \param totalCt    sum of probability array. 
+         */
     template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
+    bool after_prediction(WeightIter weightIter, int k, MultiArrayView<2, T, C> const &  prob , double totalCt)
+#else
+    template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
     {return false;}
+#endif //DOXYGEN
 };
 
 
@@ -276,7 +281,7 @@ public:
     double alpha_;  
     MultiArrayView<2, double> n_choose_k;
     /** Constructor
-     * \param proportion specify alpha value for binomial test.
+     * \param alpha specify alpha (=proportion) value for binomial test.
      * \param nck_ Matrix with precomputed values for n choose k
      * nck_(n, k) is n choose k. 
      */
@@ -357,7 +362,7 @@ public:
     
     
     /** Constructor
-     * \param proportion specify alpha value
+     * \param alpha specify alpha (=proportion) value
      * \param nck_ Matrix with precomputed values for n choose k
      * nck_(n, k) is n choose k. 
      */
