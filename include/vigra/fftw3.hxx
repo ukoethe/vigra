@@ -1004,6 +1004,13 @@ inline typename FFTWComplex<R>::NormType abs(const FFTWComplex<R> &a)
     return a.magnitude();
 }
 
+    /// pahse
+template <class R>
+inline R arg(const FFTWComplex<R> &a)
+{
+    return a.phase();
+}
+
     /// real part
 template <class R>
 inline R real(const FFTWComplex<R> &a)
@@ -1046,7 +1053,6 @@ inline FFTWComplex<R> fct(const FFTWComplex<R> &a) \
     return std::fct(reinterpret_cast<std::complex<R> const &>(a)); \
 }
 
-VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(arg)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cos)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(cosh)
 VIGRA_DEFINE_FFTW_COMPLEX_FUNCTION(exp)
@@ -1422,7 +1428,7 @@ class FFTWPhaseAccessor
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup FourierTransform Fast Fourier Transform
+/* \addtogroup FourierTransform Fast Fourier Transform
 
     This documentation describes the VIGRA interface to FFTW version 3. The interface
     to the old FFTW version 2 (file "vigra/fftw.hxx") is deprecated.
@@ -1480,7 +1486,14 @@ class FFTWPhaseAccessor
     Namespace: vigra
 */
 
-/** \addtogroup FourierTransform
+/** \addtogroup FourierTransform Fast Fourier Transform
+
+    VIGRA provides a powerful C++ API for the popular <a href="http://www.fftw.org/">FFTW library</a>
+    for fast Fourier transforms. There are two versions of the API: an older one based on image 
+    iterators (and therefore restricted to 2D) and a new one based on \ref MultiArrayView that
+    works for arbitrary dimensions. In addition, the functions \ref convolveFFT() and 
+    \ref applyFourierFilter() provide an easy-to-use interface for FFT-based convolution,
+    a major application of Fourier transforms.
 */
 //@{
 

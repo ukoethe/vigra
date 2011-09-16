@@ -94,7 +94,9 @@ struct FFTWComplexTest
         shouldEqual(clx2.re() , 0.0);
         shouldEqual(clx2.im() , -2.0);
         shouldEqual(clx3.re() , 2.0);
+        shouldEqual(real(clx3) , 2.0);
         shouldEqual(clx3.im() , -2.0);
+        shouldEqual(imag(clx3) , -2.0);
         shouldEqual(clx0[0] , 0.0);
         shouldEqual(clx0[1] , 0.0);
         shouldEqual(clx1[0] , 2.0);
@@ -126,6 +128,8 @@ struct FFTWComplexTest
         should(conj(clx3) == FFTWComplex<>(2.0, 2.0));
 
         shouldEqual(clx1.phase() , 0.0);
+        shouldEqual(arg(clx1) , 0.0);
+        shouldEqualTolerance(arg(clx3), -0.25*M_PI, 1e-16);
         shouldEqual(sin(clx2.phase()) , -1.0);
         shouldEqualTolerance(sin(clx3.phase()), -sqrt(2.0)/2.0, 1.0e-7);
 
