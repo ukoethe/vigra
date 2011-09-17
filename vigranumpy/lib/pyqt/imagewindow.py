@@ -65,6 +65,7 @@ class ImageViewer(OverlayViewer):
         self.setImage(image, normalize)
         self._savedExpression = "x"
         self._lastSaveType = 2
+        self.overlays = []
 
         if title is not None:
             self.setWindowTitle(title)
@@ -79,8 +80,8 @@ class ImageViewer(OverlayViewer):
 
         self.imageCursor = ImageCursor(self)
         self.imageCursor.setVisible(False)
-        self.imageCursor.setPosition(qcore.QPoint(self.image.width/2, self.image.height/2))
-        self.addOverlay(self.imageCursor)
+        self.imageCursor.setPosition(qcore.QPoint(self.image.width // 2, self.image.height // 2))
+        OverlayViewer.addOverlay(self, self.imageCursor)
 
         self.zoomInAction = qt.QAction("Zoom in", self)
         self.zoomInAction.setShortcut("+")
@@ -107,6 +108,10 @@ class ImageViewer(OverlayViewer):
         self.popup = qt.QMenu(self)
         self.popup.addAction(self.zoomInAction)
         self.popup.addAction(self.zoomOutAction)
+
+        self.overlayMenu = self.popup.addMenu("Overlays")
+        self.connect(self.overlayMenu, SIGNAL("aboutToShow()"), self.overlayPopup)
+
         self.popup.addAction(self.saveAction)
         self.popup.addAction(self.expressionAction)
         self.popup.addAction(self.cursorAction)
@@ -125,6 +130,33 @@ class ImageViewer(OverlayViewer):
     def _toggleImageCursor(self):
         self.imageCursor.activateTool(self.cursorAction.isChecked())
         self.imageCursor.setVisible(self.cursorAction.isChecked())
+
+    def addOverlay(self, overlay):
+        if not hasattr(overlay, "draw"):
+            raise TypeError("addOverlay: %s is no valid overlay with 'draw' method!" % str(overlay) )
+        overlay.visible = True
+        if not hasattr(overlay, "name") or not overlay.name:
+            overlay.name = self._defaultOverlayName(overlay)
+        self.overlays.append(overlay)
+        OverlayViewer.addOverlay(self, overlay)
+        self.update()
+        return len(self.overlays)-1
+    
+    def removeOverlay(self, overlay):
+        if type(overlay) == int:
+            try:
+                OverlayViewer.removeOverlay(self, self.overlays[overlay])
+                self.overlays.pop(overlay)
+                self.update()
+            except IndexError, e:
+                print "No such overlay."
+        else:
+            try:
+                self.overlays.remove(overlay)
+                OverlayViewer.removeOverlay(self, overlay)
+                self.update()
+            except ValueError, e:
+                print "No such overlay."
 
     def _slideAfterZoom(self, shift):
         if self.zoomLevel() > 0:
@@ -145,52 +177,81 @@ class ImageViewer(OverlayViewer):
         afterPos = self.imageCoordinate(self.mousepos)
         self._slideAfterZoom(afterPos - beforePos)
 
-#    def overlayPopup(self):
-#        self.overlayMenu.clear()
-#        index = 0
-#        hideable = False
-#        showable = False
-#        for o in self.viewer.overlays:
-#            if hasattr(o, "name"):
-#                overlayName = o.name
-#            else:
-#                overlayName = self.viewer._defaultOverlayName(o)
-#            text = "[%d] %s" % (index, overlayName)
-#
-#            color = None
-#            if hasattr(o, "color") and isinstance(o.color, qt.QColor):
-#                color = o.color
-#                pmHeight = 5
-#            elif hasattr(o, "fillColor") and isinstance(o.fillColor, qt.QColor):
-#                color = o.fillColor
-#                pmHeight = 16
-#
-#            if color:
-#                colorPM = qt.QPixmap(16, pmHeight)
-#                colorPM.fill(color)
-#                iconSet = qt.QIconSet()
-#                iconSet.setPixmap(colorPM, qt.QIconSet.Automatic,
-#                                  qt.QIconSet.Normal, qt.QIconSet.On)
-#                id = self.overlayMenu.insertItem(iconSet,
-#                       text, self.viewer.toggleOverlayVisibility)
-#            else:
-#                id = self.overlayMenu.insertItem(
-#                    text, self.viewer.toggleOverlayVisibility)
-#
-#            self.overlayMenu.setItemChecked(id, o.visible)
-#            self.overlayMenu.setItemParameter(id, index)
-#            if o.visible:
-#                hideable = True
-#            else:
-#                showable = True
-#            index += 1
-#        id = self.overlayMenu.insertItem("&Hide all", self.viewer.showOverlays)
-#        self.overlayMenu.setItemParameter(id, False)
-#        self.overlayMenu.setItemEnabled(id, hideable)
-#        id = self.overlayMenu.insertItem("&Show all", self.viewer.showOverlays)
-#        self.overlayMenu.setItemParameter(id, True)
-#        self.overlayMenu.setItemEnabled(id, showable)
-        
+    def _defaultOverlayName(self, o):
+        name = str(o.__class__)
+        if name[:8] == "<class '":
+            name = name[8:-2]
+        try:
+            name = name[name.rindex(".")+1:]
+        except ValueError:
+            pass
+        return name
+
+    def overlayPopup(self):
+        self.overlayMenu.clear()
+        index = 0
+        hideable = False
+        showable = False
+        for o in self.overlays:
+            overlayName = o.name
+            text = "[%d] %s" % (index, overlayName)
+
+            color = None
+            if hasattr(o, "color") and isinstance(o.color, qt.QColor):
+                color = o.color
+                pmHeight = 5
+            elif hasattr(o, "fillColor") and isinstance(o.fillColor, qt.QColor):
+                color = o.fillColor
+                pmHeight = 16
+
+            if color:
+                colorPM = qt.QPixmap(16, pmHeight)
+                colorPM.fill(color)
+                icon = qt.QIcon(colorPM)
+                id = qt.QAction(icon, text, self)
+            else:
+                id = qt.QAction(text, self)
+
+            self.overlayMenu.addAction(id)
+            id.setCheckable(True)
+            self.connect(id, SIGNAL('triggered()'), self.toggleOverlayVisibilityWithParam(o))
+            id.setChecked(o.isVisible())
+            if o.isVisible():
+                hideable = True
+            else:
+                showable = True
+            index += 1
+        id = qt.QAction("&Hide all", self)
+        self.overlayMenu.addAction(id)
+        self.connect(id, SIGNAL('triggered()'), self.toggleOverlayVisibilityWithParam(False))
+        id.setEnabled(hideable)
+        id = qt.QAction("&Show all", self)
+        self.overlayMenu.addAction(id)
+        self.connect(id, SIGNAL('triggered()'), self.toggleOverlayVisibilityWithParam(True))
+        id.setEnabled(showable)       
+
+    def toggleOverlayVisibilityWithParam(self, o):
+        return lambda: self.toggleOverlayVisibility(o)
+
+    def toggleOverlayVisibility(self, o = None):
+        '''Toggle or set visibility of given overlay and update view.
+           The parameter can be a boolean - which sets the visibility of
+           all overlays accordingly - an overlay object or the index
+           of the overlay to be hidden/re-shown. If it is omitted, all
+           overlays will be toggled.
+        '''
+        if o is None:
+           for k in self.overlays:
+                k.setVisible(not k.isVisible())
+        elif type(o) is bool:
+           for k in self.overlays:
+                k.setVisible(o)
+        else:
+            if type(o) is int:
+                o = self.overlays[o]
+            o.setVisible(not o.isVisible())
+        self.update()
+
     def applyExpression(self, expr = None, normalized = None):
         if expr is not None:
             self._savedExpression = expr
@@ -311,10 +372,10 @@ class ImageViewer(OverlayViewer):
 
     def contextMenuEvent(self, e):
         "handles pop-up menu"
-#        self.popup.setItemEnabled(
-#            self.overlayMenuIndex, len(self.viewer.overlays) > 0)
+        self.overlayMenu.setEnabled(len(self.overlays) > 0)
         self.mousepos = e.pos()
         self.popup.exec_(e.globalPos())
+
 
     def keyPressEvent(self, e):
         "handles keys [S], [E], and possibly [Q] (for toplevel-windows)"
