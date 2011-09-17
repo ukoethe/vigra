@@ -35,5 +35,6 @@
 
 import quickdialog
 import imagewindow
+import overlays
 
 from imagewindow import *
