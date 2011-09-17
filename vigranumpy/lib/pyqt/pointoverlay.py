@@ -31,6 +31,7 @@ class PointOverlay(VigraQt.Overlay):
         self.name = name
         self._parent = parent
         self.radius = radius
+        parent.addOverlay(self)
 
     def _calculatePoints(self):
         if self._qpointlist.size() < len(self.originalPoints):

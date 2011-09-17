@@ -109,12 +109,12 @@ class ImageViewer(OverlayViewer):
         self.popup.addAction(self.zoomInAction)
         self.popup.addAction(self.zoomOutAction)
 
-        self.overlayMenu = self.popup.addMenu("Overlays")
-        self.connect(self.overlayMenu, SIGNAL("aboutToShow()"), self.overlayPopup)
-
         self.popup.addAction(self.saveAction)
         self.popup.addAction(self.expressionAction)
         self.popup.addAction(self.cursorAction)
+
+        self.overlayMenu = self.popup.addMenu("Overlays")
+        self.connect(self.overlayMenu, SIGNAL("aboutToShow()"), self.overlayPopup)
     
     def setImage(self, image, normalize = True):
         if not hasattr(image, "qimage"):
@@ -517,24 +517,32 @@ class ImageWindow(qt.QFrame):
             self.layout.itemAtPosition(y, x).widget().setImage(image, normalize)
         else:
             CIviewer = CaptionImageViewer(image, normalize, title, parent = self)
-            self.viewer = CIviewer.viewer
             self.layout.addWidget(CIviewer, y, x)
             self.cursorAction.viewers.append(CIviewer)
             if len(self.cursorAction.viewers) == 1:
                 self.setWindowTitle(CIviewer.windowTitle())
             if self.cursorAction.x != -1:
-                self.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
-            self.viewer.setZoomLevel(self.cursorAction.zoomLevel)
+                CIviewer.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
+            CIviewer.viewer.setZoomLevel(self.cursorAction.zoomLevel)
             if self.cursorAction.isChecked():
-                self.viewer.cursorAction.trigger()
-            self.disconnect(self.viewer.cursorAction, SIGNAL("triggered()"), self.viewer._toggleImageCursor)
-            self.connect(self.viewer.cursorAction, SIGNAL("triggered()"), self.cursorAction.trigger)
-            self.connect(self.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), self.cursorAction.broadcastPosition)
-            self.connect(self.viewer, SIGNAL("zoomLevelChanged(int)"), self.cursorAction.broadcastZoom)
+                CIviewer.viewer.cursorAction.trigger()
+            self.disconnect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"), 
+                            CIviewer.viewer._toggleImageCursor)
+            self.connect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"), 
+                         self.cursorAction.trigger)
+            self.connect(CIviewer.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), 
+                         self.cursorAction.broadcastPosition)
+            self.connect(CIviewer.viewer, SIGNAL("zoomLevelChanged(int)"), 
+                         self.cursorAction.broadcastZoom)
             self.updateGeometry()
         # this call is necessary to update the sizeHint() before adjustSize() is called
         qcore.QCoreApplication.processEvents()
         self.adjustSize()
+        
+    def viewer(self, x=0, y=0):
+        if self.layout.itemAtPosition(y, x):
+            return self.layout.itemAtPosition(y, x).widget().viewer
+        raise ValueError("ImageWindow.viewer(): viewer at (%d, %d) is undefined." % (x,y))
 
 def showImage(image, normalize = True, title = None):
     if isinstance(image, str):
