@@ -1,7 +1,7 @@
 
 /lib/
 /bin/
-/build/
+/build*/
 /doc/
 /test/*/test
 /test/testSuccess
