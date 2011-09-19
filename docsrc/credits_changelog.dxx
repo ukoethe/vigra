@@ -44,7 +44,11 @@
       <li> Nathan Huesken and Christoph Sommer helped a lot in developing 
            <a href="../vigranumpy/index.html">vigranumpy</a>, the VIGRA Python bindings.
            
-      <li> Jens-Malte Gottfried contributed to the new cmake-based build system.
+      <li> Jens-Malte Gottfried contributed to the cmake-based build system.
+
+      <li> Joachim Schleicher implemented a reader for the SIF file format.
+
+      <li> Oliver Gathmann and Michael Held implemented support for the multi-page TIFF format.
 
       <li> Numerous people reported bugs and made suggestions.
 </UL>
@@ -89,7 +93,8 @@ Many thanks to all!
       
       <li> Improved and documented the \ref TimingMacros.
       
-      <li> Added support for the <a href="http://www.openexr.com/">OpenEXR image format</a> and multi-page TIFF.
+      <li> Added support for the <a href="http://www.openexr.com/">OpenEXR image format</a> and multi-page TIFF. Improved 
+           support for the SIF format.
       
       <li> <b>vigranumpy</b>: added <a href="../vigranumpy/index.html#axistags-and-the-vigraarray-data-structure">axistags </a> 
            and completly re-implemented VigraArray and the conversion between
