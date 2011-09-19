@@ -131,6 +131,26 @@ public:
         }
     }
 
+    void testReadBlock() {
+        char sifFile[] = "testSif_forBlocks_4_16_30001.sif";
+
+        SIFImportInfo infoSIF(sifFile);
+        should (infoSIF.stacksize() == 3);
+        should (infoSIF.width() == 4);
+        should (infoSIF.height() == 5);
+        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), 1));
+
+        // compare
+        for (int i=0; i<infoSIF.stacksize(); ++i) {
+            readSIFBlock(infoSIF, Shape3(0,0,i), Shape3(4,5,1), in_data); // read one frame at a time
+            for (int xx=0; xx<infoSIF.width(); ++xx) {
+                for(int yy=0; yy<infoSIF.height(); ++yy) {
+                    should ( in_data(xx,yy) = (float)(xx | (yy<<4) | ((i+1)<<8)) );
+                }
+            }
+        }
+    }
+
 };
 
 
@@ -145,6 +165,7 @@ struct SifImportTestSuite : public vigra::test_suite
         add(testCase(&SifImportTest::testSifImport_4_13));
         add(testCase(&SifImportTest::testSifImport_4_6));
         add(testCase(&SifImportTest::testShapeOfDimension));
+        add(testCase(&SifImportTest::testReadBlock));
  
     }
 };
