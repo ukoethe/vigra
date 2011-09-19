@@ -59,6 +59,7 @@
 #include <cstddef>
 #include <vector> 
 #include "vigra/multi_array.hxx"
+#include "vigra/array_vector.hxx"
 
 namespace vigra {
  
@@ -99,22 +100,34 @@ class SIFImportInfo
 
         /** Get the width in pixels.
          */
-        VIGRA_EXPORT const int width() const;
+        VIGRA_EXPORT int width() const;
 
         /** Get the height in pixels.
          */
-        VIGRA_EXPORT const int height() const;
+        VIGRA_EXPORT int height() const;
 
         /** Get the stacksize, that is the number of 
             images contained in the dataset.
          */
-        VIGRA_EXPORT const int stacksize() const;
+        VIGRA_EXPORT int stacksize() const;
+
+        /** Get the number of dimensions of the dataset represented by this info object.
+         */
+        VIGRA_EXPORT MultiArrayIndex numDimensions() const;
+
+        /** Get the shape of the dataset represented by this info object.
+         */
+        VIGRA_EXPORT ArrayVector<size_t> const & shape() const;
+
+        /** Get the shape (length) of the dataset along dimension \a dim.
+         */
+        VIGRA_EXPORT MultiArrayIndex shapeOfDimension(const int dim) const;
 
         /** Get the offset to the beginning of the actual data.
             Everything before this point belongs to the 
             variable length header.
          */
-        VIGRA_EXPORT const std::ptrdiff_t getOffset() const;
+        VIGRA_EXPORT std::ptrdiff_t getOffset() const;
 
         /** Get the filename of this SIF object.
          */
@@ -138,9 +151,7 @@ class SIFImportInfo
 
     private:
         const char* m_filename;
-        int m_width;
-        int m_height;
-        int m_stacksize;
+        ArrayVector<size_t> m_dims;
         std::ptrdiff_t m_offset;
         int mod;
         int left, right, bottom, top;
@@ -189,6 +200,22 @@ class SIFImportInfo
     \endcode
 */
 VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
+
+/**
+    \brief Read parts of the image data from an Andor SIF file specified with an SIFImportinfo object
+    and write them into the MultiArray array.
+    
+    \code
+    SIFImportInfo info(filename);
+
+    // create a 3D array of appropriate size
+    MultiArray<3, float> in(Shape3(info.width(), info.height(), 1));
+
+    readBlock(info, Shape3(0,0,0), Shape3(w,h,1), im); // read the first frame only
+
+    \endcode
+*/
+VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array);
 
 VIGRA_EXPORT std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 
