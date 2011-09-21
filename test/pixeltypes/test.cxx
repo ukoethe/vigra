@@ -275,6 +275,11 @@ struct TinyVectorTest
 
         float minRef[] = { 1.0f, 2.0f, 3.6f };
         shouldEqualSequence(minRef, minRef+3, min(iv3, fv3).begin());
+        shouldEqual(min(iv3), 1);
+        shouldEqual(min(fv3), 1.2f);
+        shouldEqual(max(iv3), 4);
+        shouldEqual(max(fv3), 3.6f);
+
         float maxRef[] = { 1.2f, 2.4f, 4.0f };
         shouldEqualSequence(maxRef, maxRef+3, max(iv3, fv3).begin());
 
