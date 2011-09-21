@@ -175,9 +175,16 @@ public:
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 1, 0)]), 104);
     }
 
-    // subarray tests
+    // subarray and diagonal tests
     void test_subarray ()
     {
+        MultiArray<1, scalar_type> diagRef(Shape1(10));
+        linearSequence(diagRef.begin(), diagRef.end(), 0, 111);
+
+        MultiArrayView <1, scalar_type, StridedArrayTag> diag = array3.diagonal();
+        shouldEqual(diag.shape(0), 10);
+        shouldEqualSequence(diagRef.begin(), diagRef.end(), diag.begin());
+
         typedef difference3_type Shape;
         
         Shape offset (1,1,1);
@@ -196,6 +203,7 @@ public:
             shouldEqual(array3[k], k+100);
         for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
+
     }
         
     // stridearray tests
