@@ -55,6 +55,7 @@ except Exception, e:
 
 import quickdialog
 import weakref
+import viewer2svg
 
 class ImageViewer(OverlayViewer):
     
@@ -95,6 +96,10 @@ class ImageViewer(OverlayViewer):
         self.saveAction.setShortcut("S")
         self.connect(self.saveAction, SIGNAL("triggered()"), self.writeImage)
 
+        self.svgAction = qt.QAction("Save as SVG...", self)
+        self.svgAction.setShortcut("V")
+        self.connect(self.svgAction, SIGNAL("triggered()"), self.writeSVG)
+
         self.expressionAction = qt.QAction("Apply expression...", self)
         self.expressionAction.setShortcut("E")
         self.connect(self.expressionAction, SIGNAL("triggered()"), self.applyExpression)
@@ -110,6 +115,7 @@ class ImageViewer(OverlayViewer):
         self.popup.addAction(self.zoomOutAction)
 
         self.popup.addAction(self.saveAction)
+        self.popup.addAction(self.svgAction)
         self.popup.addAction(self.expressionAction)
         self.popup.addAction(self.cursorAction)
 
@@ -140,7 +146,7 @@ class ImageViewer(OverlayViewer):
         self.overlays.append(overlay)
         OverlayViewer.addOverlay(self, overlay)
         self.update()
-        return len(self.overlays)-1
+        return len(self.overlays) - 1
     
     def removeOverlay(self, overlay):
         if type(overlay) == int:
@@ -182,7 +188,7 @@ class ImageViewer(OverlayViewer):
         if name[:8] == "<class '":
             name = name[8:-2]
         try:
-            name = name[name.rindex(".")+1:]
+            name = name[name.rindex(".") + 1:]
         except ValueError:
             pass
         return name
@@ -343,7 +349,7 @@ class ImageViewer(OverlayViewer):
                 else:
                     image = self.getDisplay()[0]
                 try:
-                    image.write(filename, pixelType)
+                    image.writeImage(filename, pixelType)
                 except RuntimeError, e:
                     qt.QMessageBox.critical(self, "Error", str(e))
                 else:
@@ -369,6 +375,41 @@ class ImageViewer(OverlayViewer):
                     pixmap = self.getContentsPixmap()
                     pixmap.save(filename, formats[ext[1:]])
                     return
+
+
+    def writeSVG(self):
+        d = quickdialog.QuickDialog(self,"Write Viewer Contents to SVG")
+
+        d.filedialog = quickdialog.OutputFile(
+            d, "Output filename:", "SVG Files (*.svg)")
+        d.filedialog.setFocus()
+
+        d.choices = quickdialog.HDialogGroup(d)
+
+        d.which = quickdialog.VChoice(d.choices, "Save ...")
+        d.which.addButton("all overlays", 0)
+        d.which.addButton("only displayed overlays", 1)
+
+        d.which.selectButton(self._lastSaveType)
+
+        while True:
+            if d.exec_() == 0:
+                return
+
+            self._lastSaveType = d.which.selection()
+            allOVs = (d.which.selection() == 0)
+
+            filename = d.filedialog.text()
+            basename, ext = os.path.splitext(filename)
+
+            try:
+                if ext == ".SVG" or ext==".svg":
+                    viewer2svg.viewer2svg(self, basename, not allOVs)
+                else:
+                    viewer2svg.viewer2svg(self, filename, not allOVs)
+            except RuntimeError, e:
+                qt.QMessageBox.critical(self, "Error", str(e))
+            return
 
     def contextMenuEvent(self, e):
         "handles pop-up menu"
