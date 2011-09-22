@@ -2,12 +2,13 @@ import VigraQt
 from PyQt4 import QtCore, QtGui
 
 class Overlay(VigraQt.Overlay):
-    def __init__(self, parent, color = QtCore.Qt.red, fillColor = None, width = 0, name = None):
+    def __init__(self, parent, color = QtCore.Qt.red, fillColor = None, width = 0, name = None, aa = False):
         VigraQt.Overlay.__init__(self, parent)
         self.color = color and QtGui.QColor(color)
         self.fillColor = fillColor and QtGui.QColor(fillColor)
         self.width = width
         self.name = name
+	self.setAntialiasing = aa
 
     def _setupPainter(self, p):
         if self.color:
@@ -23,8 +24,8 @@ class Overlay(VigraQt.Overlay):
 
 class PointOverlay(Overlay):
     def __init__(self, parent, points, color = QtCore.Qt.red, fillColor = QtCore.Qt.red,
-                 radius = 0.5, colors = None, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent, color, fillColor)
+                 radius = 0.5, colors = None, name = None, aa = False, isSuboverlay = False):
+        Overlay.__init__(self, parent, color, fillColor, name = name, aa = aa)
         self.originalPoints = points
         self.color = color and QtGui.QColor(color)
         self.colors = colors
@@ -58,8 +59,8 @@ class PointOverlay(Overlay):
 
 class EdgeOverlay(Overlay):   
     def __init__(self, parent, edges, color = QtCore.Qt.red, colors = None, fillColor = None, 
-                 width = 0, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent, color, fillColor, width,  name)
+                 width = 0, name = None, aa = False, isSuboverlay = False):
+        Overlay.__init__(self, parent, color, fillColor, width, name, aa)
         # input should be list of Polygons, but also accept single Polygon
         self._parent = parent
         self.width = width
@@ -97,15 +98,14 @@ class EdgeOverlay(Overlay):
 
 
 class TextOverlay(Overlay):
-    def __init__(self, parent, textlist, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent)
+    def __init__(self, parent, textlist, name = None, aa = False, isSuboverlay = False):
+        Overlay.__init__(self, parent, name = name, aa = aa)
         self.textlist = textlist # textlist = [["text", [PosX, PosY], optional color, optional pointsize], [...], ...]
         self.name = name
         self.setCoordinateSystem(VigraQt.Overlay.UnscaledPixel)
         self._parent = parent
         if not isSuboverlay:
             parent.addOverlay(self)
-        self._parent = parent
         
     def draw(self, p, r):
         visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.topLeft()), 
@@ -130,8 +130,8 @@ class TextOverlay(Overlay):
 
 class MapOverlay(Overlay):   
     def __init__(self, parent, geomap, edgeColor = QtCore.Qt.blue, 
-                   nodeColor = QtCore.Qt.red, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent)
+                   nodeColor = QtCore.Qt.red, name = None, aa = False, isSuboverlay = False):
+        Overlay.__init__(self, parent, name = name, aa = aa)
         self._parent = parent
         self.edges, self.nodes = [], []
         for edge in geomap.edgeIter():
