@@ -140,6 +140,8 @@ class ImageViewer(OverlayViewer):
     def addOverlay(self, overlay):
         if not hasattr(overlay, "draw"):
             raise TypeError("addOverlay: %s is no valid overlay with 'draw' method!" % str(overlay) )
+        if overlay.parent() is None:
+            overlay.setParent(self)
         overlay.visible = True
         if not hasattr(overlay, "name") or not overlay.name:
             overlay.name = self._defaultOverlayName(overlay)

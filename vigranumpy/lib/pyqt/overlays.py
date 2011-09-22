@@ -2,7 +2,7 @@ import VigraQt
 from PyQt4 import QtCore, QtGui
 
 class Overlay(VigraQt.Overlay):
-    def __init__(self, parent, color = QtCore.Qt.red, fillColor = None, width = 0, name = None):
+    def __init__(self, color=QtCore.Qt.red, fillColor=None, width=0, name=None, parent=None):
         VigraQt.Overlay.__init__(self, parent)
         self.color = color and QtGui.QColor(color)
         self.fillColor = fillColor and QtGui.QColor(fillColor)
@@ -20,24 +20,38 @@ class Overlay(VigraQt.Overlay):
         else:
             p.setBrush(QtCore.Qt.NoBrush)
 
+class OverlayGroup(Overlay):
+    def __init__(self, overlays, color=QtCore.Qt.red, fillColor=QtCore.Qt.red, name=None, parent=None):
+        Overlay.__init__(self, color, fillColor, parent)
+        self.overlays = overlays
+        if parent:
+            parent.addOverlay(self)
+
+    def setParent(self, parent):
+        Overlay.setParent(self, parent)
+        for o in self.overlays:
+            o.setParent(parent)
+
+    def draw(self, p, r):
+        for o in self.overlays:
+            o.draw(p, r)
 
 class PointOverlay(Overlay):
-    def __init__(self, parent, points, color = QtCore.Qt.red, fillColor = QtCore.Qt.red,
-                 radius = 0.5, colors = None, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent, color, fillColor)
+    def __init__(self, points, color=QtCore.Qt.red, fillColor=QtCore.Qt.red,
+                 radius=0.5, colors=None, name=None, parent=None):
+        Overlay.__init__(self, color, fillColor, parent=parent)
         self.originalPoints = points
         self.color = color and QtGui.QColor(color)
         self.colors = colors
         self.name = name
-        self._parent = parent
         self.radius = radius
-        if not isSuboverlay:
+        if parent:
             parent.addOverlay(self)
 
     def draw(self, p, r):
-        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.topLeft()), 
-          VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.bottomRight()))
-        w = (2.0 * self.radius + 1.0) / self._parent.zoomFactor()
+        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()), 
+          VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
+        w = (2.0 * self.radius + 1.0) / self.parent().zoomFactor()
         if self.colors:
             for i in range(len(self.originalPoints)):
                 point = QtCore.QPointF(*self.originalPoints[i])
@@ -57,23 +71,22 @@ class PointOverlay(Overlay):
 
 
 class EdgeOverlay(Overlay):   
-    def __init__(self, parent, edges, color = QtCore.Qt.red, colors = None, fillColor = None, 
-                 width = 0, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent, color, fillColor, width,  name)
+    def __init__(self, edges, color=QtCore.Qt.red, colors=None, fillColor=None, 
+                 width=0, name=None, parent=None):
+        Overlay.__init__(self, color, fillColor, width, name, parent)
         # input should be list of Polygons, but also accept single Polygon
-        self._parent = parent
         self.width = width
         self.colors = colors
         if not hasattr(edges[0][0], "__getitem__"):
             self.originalEdges = [edges]
         else:
             self.originalEdges = edges
-        if not isSuboverlay:
+        if parent:
             parent.addOverlay(self)
 
     def draw(self, p, r):
-        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.topLeft()), 
-          VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.bottomRight()))
+        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()), 
+          VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
         self._setupPainter(p)
         if self.colors:
             for j, polygon in enumerate(self.originalEdges):
@@ -97,51 +110,52 @@ class EdgeOverlay(Overlay):
 
 
 class TextOverlay(Overlay):
-    def __init__(self, parent, textlist, name = None, isSuboverlay = False):
-        Overlay.__init__(self, parent)
-        self.textlist = textlist # textlist = [["text", [PosX, PosY], optional color, optional pointsize], [...], ...]
+    def __init__(self, text, pos, color=QtCore.Qt.red, pointsize=None, name=None, parent=None):
+        Overlay.__init__(self, color, color, parent=parent)
+        self.text = text
+        self.pos  = pos
+        self.pointsize  = pointsize
         self.name = name
         self.setCoordinateSystem(VigraQt.Overlay.UnscaledPixel)
-        self._parent = parent
-        if not isSuboverlay:
+        if parent:
             parent.addOverlay(self)
-        self._parent = parent
         
     def draw(self, p, r):
-        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.topLeft()), 
-          VigraQt.OverlayViewer.imageCoordinateF(self._parent, r.bottomRight()))
+        visibleRect = QtCore.QRectF(VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()), 
+          VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
 
-        for entry in self.textlist:
-            text = entry[0]
-            position =  QtCore.QPointF(*map(lambda x: x * self._parent.zoomFactor(), entry[1]))
-            if len(entry) > 2:
-                p.setPen(QtGui.QPen(entry[2] and QtGui.QColor(entry[2]), 0))
-            else:
-                self._setupPainter(p)
-            if len(entry) > 3:
-                defaultFont = p.font()
-                defaultFont.setPointSizeF(entry[3])
-                p.setFont(defaultFont)
-            twidth, theight = p.fontMetrics().width(text), p.fontMetrics().height()
-            textRect = QtCore.QRectF(position.x() - twidth / 2.0, position.y() - theight / 2.0, twidth, theight)
-            displayRect = QtCore.QRectF(entry[1][0] - twidth / 2.0, entry[1][1] - theight / 2.0, twidth, theight)
-            if displayRect.intersects(visibleRect):
-                p.drawText(textRect, QtCore.Qt.AlignCenter, text)
+        text = self.text
+#        position =  QtCore.QPointF(*map(lambda x: x * self.parent().zoomFactor(), self.pos))
+        position =  QtCore.QPointF(*self.pos)
+        self._setupPainter(p)
+        if self.pointsize:
+            defaultFont = p.font()
+            defaultFont.setPointSizeF(self.pointsize)
+            p.setFont(defaultFont)
+        twidth, theight = p.fontMetrics().width(text), p.fontMetrics().height()
+        textRect = QtCore.QRectF(position.x() - twidth / 2.0, position.y() - theight / 2.0, twidth, theight)
+        displayRect = QtCore.QRectF(self.pos[0] - twidth / 2.0, self.pos[1] - theight / 2.0, twidth, theight)
+        if displayRect.intersects(visibleRect):
+            p.drawText(textRect, QtCore.Qt.AlignCenter, text)
 
 class MapOverlay(Overlay):   
-    def __init__(self, parent, geomap, edgeColor = QtCore.Qt.blue, 
-                   nodeColor = QtCore.Qt.red, name = None, isSuboverlay = False):
+    def __init__(self, geomap, edgeColor=QtCore.Qt.blue, 
+                   nodeColor=QtCore.Qt.red, name=None, parent=None):
         Overlay.__init__(self, parent)
-        self._parent = parent
         self.edges, self.nodes = [], []
         for edge in geomap.edgeIter():
-    	    self.edges.append(edge)
+            self.edges.append(edge)
         for node in geomap.nodeIter():
             self.nodes.append(node.position())
-        self.eo = EdgeOverlay(self._parent, self.edges, edgeColor, isSuboverlay = True)
-        self.po = PointOverlay(self._parent, self.nodes, nodeColor, radius = 0.3, isSuboverlay = True)
-        if not isSuboverlay:
+        self.eo = EdgeOverlay(self.edges, edgeColor, parent=parent)
+        self.po = PointOverlay(self.nodes, nodeColor, radius = 0.3, parent=parent)
+        if parent:
             parent.addOverlay(self)
+    
+    def setParent(self, parent):
+        Overlay.setParent(self, parent)
+        self.eo.setParent(parent)
+        self.po.setParent(parent)
 
     def draw(self, p, r):
         self.eo.draw(p, r)
