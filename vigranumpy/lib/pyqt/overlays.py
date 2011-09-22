@@ -8,7 +8,7 @@ class Overlay(VigraQt.Overlay):
         self.fillColor = fillColor and QtGui.QColor(fillColor)
         self.width = width
         self.name = name
-	self.setAntialiasing = aa
+        self.setAntialiasing = aa
 
     def _setupPainter(self, p):
         if self.color:
