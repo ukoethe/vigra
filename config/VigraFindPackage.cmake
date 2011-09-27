@@ -42,7 +42,6 @@ MACRO(VIGRA_FIND_PACKAGE package)
     endif()
     
     MESSAGE(STATUS "Searching for ${package}${VERSION_MESSAGE}")
-    FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
     
     foreach(path ${DEPENDENCY_SEARCH_PREFIX})
         if(NOT ${package}_FOUND)
@@ -71,5 +70,9 @@ MACRO(VIGRA_FIND_PACKAGE package)
             ENDIF()
         endif()
     endforeach(path)
-    
+   
+    # search the package in the default locations if not found 
+    # in the DEPENDENCY_SEARCH_PREFIX 
+    FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
+ 
 ENDMACRO(VIGRA_FIND_PACKAGE)    
