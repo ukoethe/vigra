@@ -39,7 +39,8 @@
 
       <li> Rahul Nair implemented the \ref vigra::RandomForest classifier and VIGRA Matlab bindings.
       
-      <li> Michael Hanselmann and Martin Lindner implemented much of the HDF5 support.
+      <li> Michael Hanselmann and Martin Lindner implemented much of the HDF5 support. Michael Hanselmann
+           also contributed his pLSA (probabilistic latent semantic analysis) implementation.
       
       <li> Nathan Huesken and Christoph Sommer helped a lot in developing 
            <a href="../vigranumpy/index.html">vigranumpy</a>, the VIGRA Python bindings.
