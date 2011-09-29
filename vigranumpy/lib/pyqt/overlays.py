@@ -65,6 +65,7 @@ class PointOverlay(Overlay):
             parent.addOverlay(self)
 
     def draw(self, p, r):
+        p.save()
         visibleRect = QtCore.QRectF(
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()),
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
@@ -85,6 +86,7 @@ class PointOverlay(Overlay):
                 point = QtCore.QPointF(*self.originalPoints[i])
                 if visibleRect.contains(point):
                     p.drawEllipse(point, w, w)
+        p.restore()
 
 
 class EdgeOverlay(Overlay):
@@ -102,6 +104,7 @@ class EdgeOverlay(Overlay):
             parent.addOverlay(self)
 
     def draw(self, p, r):
+        p.save()
         visibleRect = QtCore.QRectF(
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()),
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
@@ -125,6 +128,7 @@ class EdgeOverlay(Overlay):
                     qpolf[i] = QtCore.QPointF(x, y)
                 if qpolf.boundingRect().intersects(visibleRect):
                     p.drawPolygon(qpolf) if qpolf.isClosed() else p.drawPolyline(qpolf)
+        p.restore()
 
 
 class TextOverlay(Overlay):
@@ -143,6 +147,7 @@ class TextOverlay(Overlay):
             parent.addOverlay(self)
 
     def draw(self, p, r):
+        p.save()
         visibleRect = QtCore.QRectF(
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.topLeft()),
           VigraQt.OverlayViewer.imageCoordinateF(self.parent(), r.bottomRight()))
@@ -171,6 +176,8 @@ class TextOverlay(Overlay):
             displayRect = textRect
         if displayRect.intersects(visibleRect):
             p.drawText(textRect, QtCore.Qt.AlignCenter, self.text)
+        p.restore()
+
 
 class MapOverlay(Overlay):
     def __init__(self, geomap, edgeColor=QtCore.Qt.blue,
