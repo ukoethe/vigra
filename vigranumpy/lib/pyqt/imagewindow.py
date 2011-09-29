@@ -48,7 +48,7 @@ except Exception, e:
     vigra._fallbackModule('VigraQt',
     '''
     %s
-    
+
     If VigraQt is missing on your system, you can download it from
     http://kogs-www.informatik.uni-hamburg.de/~meine/software/vigraqt/.''' % str(e))
     from VigraQt import OverlayViewer, ImageCursor
@@ -58,10 +58,10 @@ import weakref
 import viewer2svg
 
 class ImageViewer(OverlayViewer):
-    
+
     activeViewers = weakref.WeakValueDictionary()
 
-    def __init__(self, image, normalize = True, title = None, parent = None):
+    def __init__(self, image, normalize=True, title=None, parent=None):
         OverlayViewer.__init__(self, parent)
         self.setImage(image, normalize)
         self._savedExpression = "x"
@@ -73,7 +73,7 @@ class ImageViewer(OverlayViewer):
         elif hasattr(image, "name"):
             self.setWindowTitle(image.name)
         else:
-            for k in xrange(1,10000):
+            for k in xrange(1, 10000):
                 if not ImageViewer.activeViewers.has_key(k):
                     break
             ImageViewer.activeViewers[k] = self
@@ -121,15 +121,15 @@ class ImageViewer(OverlayViewer):
 
         self.overlayMenu = self.popup.addMenu("Overlays")
         self.connect(self.overlayMenu, SIGNAL("aboutToShow()"), self.overlayPopup)
-    
-    def setImage(self, image, normalize = True):
+
+    def setImage(self, image, normalize=True):
         if not hasattr(image, "qimage"):
             image = image.view(vigra.Image)
         self.image = image
         self._normalized = normalize
         OverlayViewer.setImage(self, image.qimage(normalize))
-    
-    def showImageCursor(self, yesOrNo = True):
+
+    def showImageCursor(self, yesOrNo=True):
         if yesOrNo != self.cursorAction.isChecked():
             self.cursorAction.trigger()
 
@@ -139,7 +139,8 @@ class ImageViewer(OverlayViewer):
 
     def addOverlay(self, overlay):
         if not hasattr(overlay, "draw"):
-            raise TypeError("addOverlay: %s is no valid overlay with 'draw' method!" % str(overlay) )
+            raise TypeError("addOverlay: " + str(overlay) +
+              "is no valid overlay with 'draw' method!")
         if overlay.parent() is None:
             overlay.setParent(self)
         overlay.visible = True
@@ -149,7 +150,7 @@ class ImageViewer(OverlayViewer):
         OverlayViewer.addOverlay(self, overlay)
         self.update()
         return len(self.overlays) - 1
-    
+
     def removeOverlay(self, overlay):
         if type(overlay) == int:
             try:
@@ -236,12 +237,12 @@ class ImageViewer(OverlayViewer):
         id = qt.QAction("&Show all", self)
         self.overlayMenu.addAction(id)
         self.connect(id, SIGNAL('triggered()'), self.toggleOverlayVisibilityWithParam(True))
-        id.setEnabled(showable)       
+        id.setEnabled(showable)
 
     def toggleOverlayVisibilityWithParam(self, o):
         return lambda: self.toggleOverlayVisibility(o)
 
-    def toggleOverlayVisibility(self, o = None):
+    def toggleOverlayVisibility(self, o=None):
         '''Toggle or set visibility of given overlay and update view.
            The parameter can be a boolean - which sets the visibility of
            all overlays accordingly - an overlay object or the index
@@ -249,10 +250,10 @@ class ImageViewer(OverlayViewer):
            overlays will be toggled.
         '''
         if o is None:
-           for k in self.overlays:
+            for k in self.overlays:
                 k.setVisible(not k.isVisible())
         elif type(o) is bool:
-           for k in self.overlays:
+            for k in self.overlays:
                 k.setVisible(o)
         else:
             if type(o) is int:
@@ -260,11 +261,11 @@ class ImageViewer(OverlayViewer):
             o.setVisible(not o.isVisible())
         self.update()
 
-    def applyExpression(self, expr = None, normalized = None):
+    def applyExpression(self, expr=None, normalized=None):
         if expr is not None:
             self._savedExpression = expr
         else:
-            d = quickdialog.QuickDialog(self,"Enter Expression")
+            d = quickdialog.QuickDialog(self, "Enter Expression")
             d.expression = quickdialog.OptionalStringInput(d, "Execute 'lambda x: ")
             d.expression.setText(self._savedExpression)
             d.expression.setFocus()
@@ -311,11 +312,11 @@ class ImageViewer(OverlayViewer):
         return image, self._normalized
 
     def writeImage(self):
-        d = quickdialog.QuickDialog(self,"Write Image")
+        d = quickdialog.QuickDialog(self, "Write Image")
 
         imageFileExtensions = '*.' + ' *.'.join(vigra.impex.listExtensions().split(' '))
         d.filedialog = quickdialog.OutputFile(
-            d, "Output filename:", "Image Files ("+imageFileExtensions+")")
+            d, "Output filename:", "Image Files (" + imageFileExtensions + ")")
         d.filedialog.setFocus()
 
         d.choices = quickdialog.HDialogGroup(d)
@@ -372,15 +373,14 @@ class ImageViewer(OverlayViewer):
                 if not formats.has_key(ext[1:]):
                     f = " ".join(formats.keys())
                     qt.QMessageBox.critical(self, "Error", \
-                                   "Displayed image with overlays can only be stored as\n"+f)
+                                   "Displayed image with overlays can only be stored as\n" + f)
                 else:
                     pixmap = self.getContentsPixmap()
                     pixmap.save(filename, formats[ext[1:]])
                     return
 
-
     def writeSVG(self):
-        d = quickdialog.QuickDialog(self,"Write Viewer Contents to SVG")
+        d = quickdialog.QuickDialog(self, "Write Viewer Contents to SVG")
 
         d.filedialog = quickdialog.OutputFile(
             d, "Output filename:", "SVG Files (*.svg)")
@@ -405,7 +405,7 @@ class ImageViewer(OverlayViewer):
             basename, ext = os.path.splitext(filename)
 
             try:
-                if ext == ".SVG" or ext==".svg":
+                if ext == ".SVG" or ext == ".svg":
                     viewer2svg.viewer2svg(self, basename, not allOVs)
                 else:
                     viewer2svg.viewer2svg(self, filename, not allOVs)
@@ -418,7 +418,6 @@ class ImageViewer(OverlayViewer):
         self.overlayMenu.setEnabled(len(self.overlays) > 0)
         self.mousepos = e.pos()
         self.popup.exec_(e.globalPos())
-
 
     def keyPressEvent(self, e):
         "handles keys [S], [E], and possibly [Q] (for toplevel-windows)"
@@ -438,11 +437,11 @@ class ImageViewer(OverlayViewer):
         elif e.key() == qcore.Qt.Key_Minus or e.key() == qcore.Qt.Key_Less:
             OverlayViewer.zoomDown(self)
         else:
-            self.emit(qcore.SIGNAL("keyPressed"),(e.key()))
+            self.emit(qcore.SIGNAL("keyPressed"), (e.key()))
             e.ignore()
-            
+
     def keyReleaseEvent(self, e):
-        self.emit(qcore.SIGNAL("keyReleased"),(e.key()))
+        self.emit(qcore.SIGNAL("keyReleased"), (e.key()))
         e.ignore()
 
     def mousePressEvent(self, e):
@@ -452,16 +451,16 @@ class ImageViewer(OverlayViewer):
         e.ignore()
 
 class CaptionImageViewer(qt.QFrame):
-    def __init__(self, image, normalize = True, title = None, parent = None):
+    def __init__(self, image, normalize=True, title=None, parent=None):
         qt.QFrame.__init__(self, parent)
-        self.viewer = ImageViewer(image, normalize, title, parent = self)
+        self.viewer = ImageViewer(image, normalize, title, parent=self)
         self.setWindowTitle(self.viewer.windowTitle())
 
-        self._captionCoords = 0,0
+        self._captionCoords = 0, 0
         self._xplaces = int(math.log10(self.viewer.image.width) + 1.0)
         self._yplaces = int(math.log10(self.viewer.image.height) + 1.0)
-        self._valueplaces = self.viewer.image.channels*5
-        
+        self._valueplaces = self.viewer.image.channels * 5
+
         self.label = qt.QLabel(self)
         font = qt.QFont()
         font.setPointSize(10)
@@ -484,11 +483,11 @@ class CaptionImageViewer(qt.QFrame):
         if x < 0 or x >= self.viewer.image.width or \
            y < 0 or y >= self.viewer.image.height:
             return
-            
-        self._captionCoords = x,y
+
+        self._captionCoords = x, y
 
         label = str(x).rjust(self._xplaces) + " x " + str(y).rjust(self._yplaces) +\
-                " = " + str(self.viewer.image[x,y]).ljust(self._valueplaces)
+                " = " + str(self.viewer.image[x, y]).ljust(self._valueplaces)
         self.label.setText(label)
         self.emit(SIGNAL('captionChanged'), self.label.text())
 
@@ -497,18 +496,22 @@ class CaptionImageViewer(qt.QFrame):
 
     def _toggleCaptionSignals(self):
         if self.viewer.cursorAction.isChecked():
-            self.disconnect(self.viewer, SIGNAL('mouseOver(int, int)'), self.updateCaption)
-            self.connect(self.viewer.imageCursor, SIGNAL('positionChanged(QPoint)'), self.updateCaptionP)
+            self.disconnect(self.viewer,
+              SIGNAL('mouseOver(int, int)'), self.updateCaption)
+            self.connect(self.viewer.imageCursor,
+              SIGNAL('positionChanged(QPoint)'), self.updateCaptionP)
         else:
-            self.connect(self.viewer, SIGNAL('mouseOver(int, int)'), self.updateCaption)
-            self.disconnect(self.viewer.imageCursor, SIGNAL('positionChanged(QPoint)'), self.updateCaptionP)
+            self.connect(self.viewer,
+              SIGNAL('mouseOver(int, int)'), self.updateCaption)
+            self.disconnect(self.viewer.imageCursor,
+              SIGNAL('positionChanged(QPoint)'), self.updateCaptionP)
 
-    def setImage(self, image, normalize = None):
+    def setImage(self, image, normalize=None):
         """imageWindow.setImage(image, normalize = None)
 
         Replace the current image with the given one.  If normalized
         is not given (or None), the normalized state is not changed."""
-        
+
         self.viewer.setImage(image, normalize)
         self.updateCaption()
 
@@ -526,7 +529,7 @@ class CursorAction(qt.QAction):
             v._toggleCaptionSignals()
 
     def broadcastPosition(self, pos):
-        if self.x ==  pos.x() and self.y == pos.y():
+        if self.x == pos.x() and self.y == pos.y():
             return
         self.x, self.y = pos.x(), pos.y()
         for v in self.viewers:
@@ -538,11 +541,11 @@ class CursorAction(qt.QAction):
         self.zoomLevel = level
         for v in self.viewers:
             v.viewer.setZoomLevel(level)
-          
+
 class ImageWindow(qt.QFrame):
     '''Display one or more images in a grid-like layout.
     '''
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         qt.QFrame.__init__(self, parent)
         self.cursorAction = CursorAction("Connected line cursors", self)
         self.cursorAction.setCheckable(True)
@@ -550,7 +553,7 @@ class ImageWindow(qt.QFrame):
         self.addAction(self.cursorAction)
         self.cursorAction.viewers = []
         self.layout = qt.QGridLayout(self)
-        
+
     def setImage(self, image, x=0, y=0, normalize=True, title=None):
         """Place the given image at the given position of this window's grid layout.
 
@@ -559,39 +562,39 @@ class ImageWindow(qt.QFrame):
         if self.layout.itemAtPosition(y, x):
             self.layout.itemAtPosition(y, x).widget().setImage(image, normalize)
         else:
-            CIviewer = CaptionImageViewer(image, normalize, title, parent = self)
+            CIviewer = CaptionImageViewer(image, normalize, title, parent=self)
             self.layout.addWidget(CIviewer, y, x)
             self.cursorAction.viewers.append(CIviewer)
             if len(self.cursorAction.viewers) == 1:
                 self.setWindowTitle(CIviewer.windowTitle())
             if self.cursorAction.x != -1:
-                CIviewer.viewer.imageCursor.setPosition(qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
+                CIviewer.viewer.imageCursor.setPosition(
+                  qcore.QPoint(self.cursorAction.x, self.cursorAction.y))
             CIviewer.viewer.setZoomLevel(self.cursorAction.zoomLevel)
             if self.cursorAction.isChecked():
                 CIviewer.viewer.cursorAction.trigger()
-            self.disconnect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"), 
+            self.disconnect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"),
                             CIviewer.viewer._toggleImageCursor)
-            self.connect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"), 
+            self.connect(CIviewer.viewer.cursorAction, SIGNAL("triggered()"),
                          self.cursorAction.trigger)
-            self.connect(CIviewer.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"), 
+            self.connect(CIviewer.viewer.imageCursor, SIGNAL("positionChanged(QPoint)"),
                          self.cursorAction.broadcastPosition)
-            self.connect(CIviewer.viewer, SIGNAL("zoomLevelChanged(int)"), 
+            self.connect(CIviewer.viewer, SIGNAL("zoomLevelChanged(int)"),
                          self.cursorAction.broadcastZoom)
             self.updateGeometry()
         # this call is necessary to update the sizeHint() before adjustSize() is called
         qcore.QCoreApplication.processEvents()
         self.adjustSize()
-        
+
     def viewer(self, x=0, y=0):
         if self.layout.itemAtPosition(y, x):
             return self.layout.itemAtPosition(y, x).widget().viewer
-        raise ValueError("ImageWindow.viewer(): viewer at (%d, %d) is undefined." % (x,y))
+        raise ValueError("ImageWindow.viewer(): viewer at (%d, %d) is undefined." % (x, y))
 
-def showImage(image, normalize = True, title = None):
+def showImage(image, normalize=True, title=None):
     if isinstance(image, str):
         image = vigra.impex.readImage(image)
     v = ImageWindow()
     v.setImage(image, normalize=normalize, title=title)
     v.show()
     return v
-
