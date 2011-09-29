@@ -327,14 +327,14 @@ generateWatershedSeeds3D(MultiArrayView<N, T1, C1> in, MultiArrayView<N, T2, C2>
         transformMultiArray(srcMultiArrayRange(in), destMultiArray(seeds),
                             ifThenElse(Arg1() <= Param(options.thresh), Param(1), Param(0)));
     }
-	else
-	{
-	    localMinima(in, seeds,
-			LocalMinmaxOptions().neighborhood(Neighborhood::DirectionCount)
-			                    .markWith(1.0)
+    else
+    {
+        localMinima(in, seeds,
+            LocalMinmaxOptions().neighborhood(Neighborhood::DirectionCount)
+                                .markWith(1.0)
                                 .threshold(options.thresh)
                                 .allowAtBorder()
-								.allowPlateaus(options.mini == SeedOptions::ExtendedMinima));
+                                .allowPlateaus(options.mini == SeedOptions::ExtendedMinima));
     }
     
     return labelVolumeWithBackground(srcMultiArrayRange(seeds), destMultiArray(out), 

@@ -47,83 +47,83 @@
 
 /* definitions for version number,
    char release; */
-#define XV_IMAGE_VER_NUM	3	/* Version 3 (3.1) */
+#define XV_IMAGE_VER_NUM    3   /* Version 3 (3.1) */
 
 /* definitions for release number,
    char version; */
-#define XV_IMAGE_REL_NUM	1	/* Release 1   */
+#define XV_IMAGE_REL_NUM    1   /* Release 1   */
 
 /* definitions for subimage information,
    long startx, starty; */
-#define	VFF_NOTSUB   		~0	/* a negative number indicates that
-					   the image is not a subimage	*/
+#define VFF_NOTSUB          ~0  /* a negative number indicates that
+                       the image is not a subimage  */
 
 /* definitions for machine dependencies,
    char machine_dep; */
-#define	VFF_DEP_IEEEORDER   	0x2	/* IEEE byte ordering */
-#define	VFF_DEP_DECORDER    	0x4	/* DEC (VAX) byte ordering */
-#define VFF_DEP_NSORDER		0x8	/* NS32000 byte ordering */
-#define VFF_DEP_CRAYORDER	0xA	/* Cray byte size and ordering */
+#define VFF_DEP_IEEEORDER       0x2 /* IEEE byte ordering */
+#define VFF_DEP_DECORDER        0x4 /* DEC (VAX) byte ordering */
+#define VFF_DEP_NSORDER     0x8 /* NS32000 byte ordering */
+#define VFF_DEP_CRAYORDER   0xA /* Cray byte size and ordering */
 
-#define	VFF_DEP_BIGENDIAN	VFF_DEP_IEEEORDER
-#define	VFF_DEP_LITENDIAN	VFF_DEP_NSORDER
+#define VFF_DEP_BIGENDIAN   VFF_DEP_IEEEORDER
+#define VFF_DEP_LITENDIAN   VFF_DEP_NSORDER
 
 
 /* definitions for data storage type,
    unsigned long data_storage_type; */
-#define	VFF_TYP_BIT		0	/* pixels are on or off (binary image)*/
+#define VFF_TYP_BIT     0   /* pixels are on or off (binary image)*/
                                         /* Note: This is an X11 XBitmap 
-					   with bits packed into a byte and
-					   padded to a byte */
-#define	VFF_TYP_1_BYTE		1	/* pixels are byte (unsigned char) */
-#define	VFF_TYP_2_BYTE		2	/* pixels are two byte (short int) */
-#define	VFF_TYP_4_BYTE		4	/* pixels are four byte (integer) */
-#define	VFF_TYP_FLOAT		5	/* pixels are float (single precision)*/
-#define	VFF_TYP_COMPLEX		6	/* pixels are complex float */
-#define VFF_TYP_DOUBLE		9	/* pixels are float (double precision)*/
+                       with bits packed into a byte and
+                       padded to a byte */
+#define VFF_TYP_1_BYTE      1   /* pixels are byte (unsigned char) */
+#define VFF_TYP_2_BYTE      2   /* pixels are two byte (short int) */
+#define VFF_TYP_4_BYTE      4   /* pixels are four byte (integer) */
+#define VFF_TYP_FLOAT       5   /* pixels are float (single precision)*/
+#define VFF_TYP_COMPLEX     6   /* pixels are complex float */
+#define VFF_TYP_DOUBLE      9   /* pixels are float (double precision)*/
 
-#define VFF_TYP_DCOMPLEX	10	/* double complex */
+#define VFF_TYP_DCOMPLEX    10  /* double complex */
 
 /* definitions for data encoding scheme on disk - i.e. it may be
    compressed using RLE, or uncompressed (RAW).
    unsigned long data_encode_scheme; */
-#define	VFF_DES_RAW		0	/* Raw - no compression */
-#define VFF_DES_COMPRESS	1	/* Compressed using ALZ */
-#define VFF_DES_RLE		2	/* Compressed using RLE */
-#define VFF_DES_TRANSFORM	3	/* Transform based compression */
-#define VFF_DES_CCITT		4	/* CCITT standard compression */
-#define VFF_DES_ADPCM		5	/* ADPCM compression */
-#define VFF_DES_GENERIC		6	/* User-specified compression */
+#define VFF_DES_RAW     0   /* Raw - no compression */
+#define VFF_DES_COMPRESS    1   /* Compressed using ALZ */
+#define VFF_DES_RLE     2   /* Compressed using RLE */
+#define VFF_DES_TRANSFORM   3   /* Transform based compression */
+#define VFF_DES_CCITT       4   /* CCITT standard compression */
+#define VFF_DES_ADPCM       5   /* ADPCM compression */
+#define VFF_DES_GENERIC     6   /* User-specified compression */
 
 /* definitions for map data or cells storage type,
    unsigned long map_storage_type; */
-#define VFF_MAPTYP_NONE		0	/* No cell type is assigned  */
-#define	VFF_MAPTYP_1_BYTE	1	/* cells are byte (unsigned char)    */
-#define	VFF_MAPTYP_2_BYTE	2	/* cells are two byte (short int) */
-#define	VFF_MAPTYP_4_BYTE	4	/* cells are four byte (integer) */
-#define	VFF_MAPTYP_FLOAT	5	/* cells are float (single precision) */
-#define	VFF_MAPTYP_COMPLEX	6	/* cells are complex FLOAT */
-#define	VFF_MAPTYP_DOUBLE	7	/* cells are float (double precision) */
+#define VFF_MAPTYP_NONE     0   /* No cell type is assigned  */
+#define VFF_MAPTYP_1_BYTE   1   /* cells are byte (unsigned char)    */
+#define VFF_MAPTYP_2_BYTE   2   /* cells are two byte (short int) */
+#define VFF_MAPTYP_4_BYTE   4   /* cells are four byte (integer) */
+#define VFF_MAPTYP_FLOAT    5   /* cells are float (single precision) */
+#define VFF_MAPTYP_COMPLEX  6   /* cells are complex FLOAT */
+#define VFF_MAPTYP_DOUBLE   7   /* cells are float (double precision) */
 
 /* definitions for mapping schemes,
    unsigned long map_scheme; */
-#define VFF_MS_NONE		0	/* No mapping is to be done, and no
-					   maps are to be stored. */
-#define	VFF_MS_ONEPERBAND	1	/* Each data band has its own map */
-#define VFF_MS_CYCLE		2	/* An array of maps is selected in order
-					   by groups of maps_per_cycle, allowing
-					   "rotating the color map" */
-#define	VFF_MS_SHARED		3	/* All data band share the same map */
-#define VFF_MS_GROUP		4	/* All data bands are "grouped" 
-					   together to point into one map */
+#define VFF_MS_NONE     0   /* No mapping is to be done, and no
+                       maps are to be stored. */
+#define VFF_MS_ONEPERBAND   1   /* Each data band has its own map */
+#define VFF_MS_CYCLE        2   /* An array of maps is selected in order
+                       by groups of maps_per_cycle, allowing
+                       "rotating the color map" */
+#define VFF_MS_SHARED       3   /* All data band share the same map */
+#define VFF_MS_GROUP        4   /* All data bands are "grouped" 
+                       together to point into one map */
 /* definitions for enabling the map,
    unsigned long map_enable; */
-#define VFF_MAP_OPTIONAL	1	/* The data is valid without being
-					   sent thru the color map. If a
-					   map is defined, the data may 
-					   optionally be sent thru it. */
-#define	VFF_MAP_FORCE		2	/* The data MUST be sent thru the map
-					   to be interpreted */
+#define VFF_MAP_OPTIONAL    1   /* The data is valid without being
+                       sent thru the color map. If a
+                       map is defined, the data may 
+                       optionally be sent thru it. */
+#define VFF_MAP_FORCE       2   /* The data MUST be sent thru the map
+                       to be interpreted */
 
 /* definitions for color map models,
    unsigned long color_space_model; */
@@ -148,32 +148,32 @@
     which contains detailed descriptions on the fields along with numerous
     examples of proper use.  */
 
-#define VFF_CM_NONE	0
-#define	VFF_CM_ntscRGB	1
-#define	VFF_CM_ntscCMY	2
-#define	VFF_CM_ntscYIQ	3
-#define	VFF_CM_HSV	4
-#define	VFF_CM_HLS	5
-#define	VFF_CM_IHS	6
-#define	VFF_CM_cieRGB	7
-#define	VFF_CM_cieXYZ	8
-#define	VFF_CM_cieUVW	9
-#define	VFF_CM_cieucsUVW	10
-#define	VFF_CM_cieucsSOW	11
-#define	VFF_CM_cieucsLab	12
-#define	VFF_CM_cieucsLuv	13
-#define	VFF_CM_GENERIC		14	/* the color space is user defined */
-#define VFF_CM_genericRGB	15	/* an RGB image but not conforming
-					   to any standard */
+#define VFF_CM_NONE 0
+#define VFF_CM_ntscRGB  1
+#define VFF_CM_ntscCMY  2
+#define VFF_CM_ntscYIQ  3
+#define VFF_CM_HSV  4
+#define VFF_CM_HLS  5
+#define VFF_CM_IHS  6
+#define VFF_CM_cieRGB   7
+#define VFF_CM_cieXYZ   8
+#define VFF_CM_cieUVW   9
+#define VFF_CM_cieucsUVW    10
+#define VFF_CM_cieucsSOW    11
+#define VFF_CM_cieucsLab    12
+#define VFF_CM_cieucsLuv    13
+#define VFF_CM_GENERIC      14  /* the color space is user defined */
+#define VFF_CM_genericRGB   15  /* an RGB image but not conforming
+                       to any standard */
 
 /* definitions for location type,
    unsigned long location_type; */
-#define	VFF_LOC_IMPLICIT	1	/*  The location of image pixels
-					    or vector data is given by using
-					    the implied 2D array given by
-					    row_size and col_size.  */
-#define	VFF_LOC_EXPLICIT	2	/*  The location of the image pixels
-					    or the vectors is explicit */
+#define VFF_LOC_IMPLICIT    1   /*  The location of image pixels
+                        or vector data is given by using
+                        the implied 2D array given by
+                        row_size and col_size.  */
+#define VFF_LOC_EXPLICIT    2   /*  The location of the image pixels
+                        or the vectors is explicit */
 
 namespace vigra {
     

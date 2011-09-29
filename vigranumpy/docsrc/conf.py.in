@@ -236,9 +236,9 @@ for l in replace_file:
     k = replacement[0].rfind('.')
     if k >= 0:        
         rst_epilog += """
-	.. |%s| replace:: %s
+    .. |%s| replace:: %s
 """% (replacement[0],replacement[0][k+1:])
     rst_epilog += """
-	.. _%s: ../../doc/vigra/%s
+    .. _%s: ../../doc/vigra/%s
 """% (replacement[0],replacement[1])
 

@@ -239,7 +239,7 @@ void pythonSetItemKernel2D(Kernel2D<T> & self, MultiArrayShape<2>::type position
         PyErr_SetString(PyExc_ValueError, str.str().c_str());
         python::throw_error_already_set();
     }
-}	
+}   
 
 template<class T>
 void defineKernels()

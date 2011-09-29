@@ -76,7 +76,7 @@ HDF5ImportInfo::HDF5ImportInfo(const char* filePath, const char* pathInFile)
         else if(datasize == 8)
             m_pixeltype = "DOUBLE";
     }
-    else if(dataclass == H5T_INTEGER)	
+    else if(dataclass == H5T_INTEGER)   
     {
         if(datasign == H5T_SGN_NONE)
         {

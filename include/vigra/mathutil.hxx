@@ -42,6 +42,7 @@
 
 #include <cmath>
 #include <cstdlib>
+#include <complex>
 #include "config.hxx"
 #include "error.hxx"
 #include "tuple.hxx"
@@ -121,9 +122,11 @@ namespace vigra {
 using VIGRA_CSTD::pow;  
 using VIGRA_CSTD::floor;  
 using VIGRA_CSTD::ceil;  
+using VIGRA_CSTD::exp;  
 
 // import abs(float), abs(double), abs(long double) from <cmath>
-//    and abs(int), abs(long), abs(long long) from <cstdlib>
+//        abs(int), abs(long), abs(long long) from <cstdlib>
+//        abs(std::complex<T>) from <complex>
 using std::abs;  
 
 // define the missing variants of abs() to avoid 'ambiguous overload'

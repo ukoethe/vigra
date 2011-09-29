@@ -94,53 +94,53 @@ Type: dirifempty; Name: {app}
 
 [Code]
 var
-	VCPath: String;
-	VCUserPath: String;
+    VCPath: String;
+    VCUserPath: String;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 var
-	Path: String;
+    Path: String;
 begin
-	if CurStep = ssPostInstall then
-	begin
-		RegQueryStringValue(HKCU, 'Environment', 'PATH', Path);
-		Path := Path + ';' + ExpandConstant('{app}\bin');
-		RegWriteStringValue(HKCU, 'Environment', 'PATH', Path);
-	end;
+    if CurStep = ssPostInstall then
+    begin
+        RegQueryStringValue(HKCU, 'Environment', 'PATH', Path);
+        Path := Path + ';' + ExpandConstant('{app}\bin');
+        RegWriteStringValue(HKCU, 'Environment', 'PATH', Path);
+    end;
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
-	Path: String;
+    Path: String;
 begin
-	if CurUninstallStep = usPostUninstall then
-	begin
-		RegQueryStringValue(HKCU, 'Environment', 'PATH', Path);
-		StringChange(Path,  ';' + ExpandConstant('{app}\bin'), '');
-		RegWriteStringValue(HKCU, 'Environment', 'PATH', Path);
-	end;
+    if CurUninstallStep = usPostUninstall then
+    begin
+        RegQueryStringValue(HKCU, 'Environment', 'PATH', Path);
+        StringChange(Path,  ';' + ExpandConstant('{app}\bin'), '');
+        RegWriteStringValue(HKCU, 'Environment', 'PATH', Path);
+    end;
 end;
 
 procedure InitializeWizard();
 begin
-	if VCPath = '' then
-		CreateOutputMsgPage(wpWelcome, 'Visual C++ {#RequiredVCVersion} not found.', '',
-	     'Visual C++ {#RequiredVCVersion} could not be found on your computer. ' +
-	     'You may need to re-compile {#MyAppName}, because the provided binaries ' +
-	     'may be incompatible with your compiler.');
+    if VCPath = '' then
+        CreateOutputMsgPage(wpWelcome, 'Visual C++ {#RequiredVCVersion} not found.', '',
+         'Visual C++ {#RequiredVCVersion} could not be found on your computer. ' +
+         'You may need to re-compile {#MyAppName}, because the provided binaries ' +
+         'may be incompatible with your compiler.');
 
-	if VCUserPath <> '' then
-		WizardForm.DirEdit.Text := VCUserPath + '\{#MyAppName}'
-	else
-		WizardForm.DirEdit.Text := ExpandConstant('{pf}\{#MyAppName}');
+    if VCUserPath <> '' then
+        WizardForm.DirEdit.Text := VCUserPath + '\{#MyAppName}'
+    else
+        WizardForm.DirEdit.Text := ExpandConstant('{pf}\{#MyAppName}');
 end;
 
 function InitializeSetup(): Boolean;
 begin
-	// Look for Visual Studio
-	VCPath := '';
-	VCUserPath := '';
-	if RegQueryStringValue(HKLM, 'Software\Microsoft\VisualStudio\{#RequiredVCVersion}\Setup\VC', 'ProductDir', VCPath) then
-		RegQueryStringValue(HKCU, 'Software\Microsoft\VisualStudio\{#RequiredVCVersion}','VisualStudioProjectsLocation', VCUserPath);
-	Result := True;
+    // Look for Visual Studio
+    VCPath := '';
+    VCUserPath := '';
+    if RegQueryStringValue(HKLM, 'Software\Microsoft\VisualStudio\{#RequiredVCVersion}\Setup\VC', 'ProductDir', VCPath) then
+        RegQueryStringValue(HKCU, 'Software\Microsoft\VisualStudio\{#RequiredVCVersion}','VisualStudioProjectsLocation', VCUserPath);
+    Result := True;
 end;

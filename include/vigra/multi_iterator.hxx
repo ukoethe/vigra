@@ -63,6 +63,8 @@ template <unsigned int N, class T,
      <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for unstrided \ref vigra::MultiArrayView</em>
 <LI> \ref vigra::StridedMultiIterator
      <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for strided \ref vigra::MultiArrayView</em>
+<LI> \ref vigra::StridedScanOrderIterator
+     <BR>&nbsp;&nbsp;&nbsp;<em>STL-compatible random access iterator for \ref vigra::MultiArrayView</em>
 </UL>
 </p>
 
@@ -1993,6 +1995,20 @@ struct MoveToScanOrderIndex<0>
 
 }
 
+    /** \brief Sequential iterator for MultiArrayView.
+        
+        This iterator provides STL-compatible random access iterator functionality for arbitrary 
+        \ref MultiArrayView instances, regardless of their shapes and strides. The
+        class uses an implementation that minimizes speed penalties that could result from 
+        non-trivial strides. The <i>scan-order</i> is defined such that dimensions are iterated 
+        from front to back (first to last).
+        
+        You normally construct instances of this class by calling \ref MultiArrayView::begin() 
+        and \ref MultiArrayView::end(). 
+        
+        The iterator supports all functions listed in the STL documentation for 
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
+    */
 template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M = N>
 class StridedScanOrderIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance
@@ -2033,8 +2049,6 @@ class StridedScanOrderIterator
         return *this;
     }
 
-        /** Advance to next starting location.
-         */
     StridedScanOrderIterator operator++(int)
     {
         StridedScanOrderIterator res(*this);
@@ -2060,8 +2074,6 @@ class StridedScanOrderIterator
         return *this;
     }
 
-        /** Advance to next starting location.
-         */
     StridedScanOrderIterator operator--(int)
     {
         StridedScanOrderIterator res(*this);

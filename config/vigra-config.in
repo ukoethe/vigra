@@ -8,30 +8,30 @@ hasFFTW = bool('@FFTW3_LIBRARY@')
 parser = OptionParser()
 
 parser.add_option("--version", action = 'store_true',
-				  help = "output version (@vigra_version@)")
+                  help = "output version (@vigra_version@)")
 #parser.add_option("--target", action = 'store_true',
-#				  help = "output platform this VIGRA library was configured for")
+#                 help = "output platform this VIGRA library was configured for")
 parser.add_option("--impex-lib", "--libs", action = 'store_true',
-				  help = "output flags for linking libvigraimpex")
+                  help = "output flags for linking libvigraimpex")
 parser.add_option("--fftw-lib", action = 'store_true',
-				  help = "output flags for linking libfftw"
-				  + " (unavailable)" if not hasFFTW else "")
+                  help = "output flags for linking libfftw"
+                  + " (unavailable)" if not hasFFTW else "")
 #parser.add_option("--rfftw-lib", action = 'store_true',
-#				  help = "output flags for linking librfftw and libfftw")
+#                 help = "output flags for linking librfftw and libfftw")
 parser.add_option("--cppflags", action = 'store_true',
-				  help = "output include flags for vigra"
-				  + " and fftw" if hasFFTW else "")
+                  help = "output include flags for vigra"
+                  + " and fftw" if hasFFTW else "")
 parser.add_option("--include-path", "--includepath", action = 'store_true',
-				  help = "output path to VIGRA includes")
+                  help = "output path to VIGRA includes")
 parser.add_option("--docdir", action = 'store_true',
-				  help = "output path to VIGRA documentation")
+                  help = "output path to VIGRA documentation")
 
 (op, args) = parser.parse_args()
 
 if len(sys.argv) < 2:
-	sys.stderr.write("ERROR: no parameters given.\n")
-	parser.print_help()
-	sys.exit(1)
+    sys.stderr.write("ERROR: no parameters given.\n")
+    parser.print_help()
+    sys.exit(1)
 
 # --------------------------------------------------------------------
 
@@ -44,51 +44,51 @@ standardLibDirs = ["/lib", "/usr/lib", "/lib64", "/usr/lib64"]
 libExt = ".so" if not sys.platform == "darwin" else ".dylib"
 
 def filename2ldflags(libFilename):
-	dir, fn = os.path.split(libFilename)
-	if not (fn.startswith("lib") and fn.endswith(libExt)):
-		if libFilename:
-			sys.stderr.write("ERROR: don't know how to handle %r!\n" % libFilename)
-		return []
-	lib = fn[3:-len(libExt)]
+    dir, fn = os.path.split(libFilename)
+    if not (fn.startswith("lib") and fn.endswith(libExt)):
+        if libFilename:
+            sys.stderr.write("ERROR: don't know how to handle %r!\n" % libFilename)
+        return []
+    lib = fn[3:-len(libExt)]
 
-	result = []
-	if dir not in standardLibDirs:
-		result.append("-L" + dir)
-	result.append("-l" + lib)
-	return result
+    result = []
+    if dir not in standardLibDirs:
+        result.append("-L" + dir)
+    result.append("-l" + lib)
+    return result
 
 if op.version:
-	print "@vigra_version@"
+    print "@vigra_version@"
 
 if op.cppflags: # was: --cppflags|--cxxincludes|--cxxflags|--cincludes|--cflags
-	print '-I@CMAKE_INSTALL_PREFIX@/include'
+    print '-I@CMAKE_INSTALL_PREFIX@/include'
 
 if op.impex_lib: # was: --impex_lib|--impex-lib|--libs
-	ldflags = []
+    ldflags = []
 
-	libDir = '@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@'
-	if libDir not in standardLibDirs:
-		ldflags.append('-L' + libDir)
+    libDir = '@CMAKE_INSTALL_PREFIX@/lib@LIBDIR_SUFFIX@'
+    if libDir not in standardLibDirs:
+        ldflags.append('-L' + libDir)
 
-	ldflags.append('-lvigraimpex')
+    ldflags.append('-lvigraimpex')
 
-	for flag in '@vigraimpex_LIB_DEPENDS@'.split(';'):
-		if flag == 'general':
-			continue
-		for fl in filename2ldflags(flag):
-			if fl not in ldflags:
-				ldflags.append(fl)
+    for flag in '@vigraimpex_LIB_DEPENDS@'.split(';'):
+        if flag == 'general':
+            continue
+        for fl in filename2ldflags(flag):
+            if fl not in ldflags:
+                ldflags.append(fl)
 
-	print " ".join(ldflags)
+    print " ".join(ldflags)
 
 if op.fftw_lib:
-	if not hasFFTW:
-		sys.stderr.write("VIGRA was configured without FFTW switches, libpath unknown!\n")
-		sys.exit(1)
-	print " ".join(filename2ldflags('@FFTW3_LIBRARY@'))
+    if not hasFFTW:
+        sys.stderr.write("VIGRA was configured without FFTW switches, libpath unknown!\n")
+        sys.exit(1)
+    print " ".join(filename2ldflags('@FFTW3_LIBRARY@'))
 
 if op.include_path: # was: --include_path|--include-path|--includepath
-	print '@CMAKE_INSTALL_PREFIX@/include'
+    print '@CMAKE_INSTALL_PREFIX@/include'
 
 if op.docdir:
-	print '@DOCDIR@'
+    print '@DOCDIR@'

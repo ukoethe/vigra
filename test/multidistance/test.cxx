@@ -1049,9 +1049,9 @@ struct MultiDistanceTest
         
         MultiArray<3, double> res(vol.shape());
 
-		separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res), false);
+        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res), false);
                 
-		shouldEqualSequence(res.data(), res.data()+res.elementCount(), ref_dist2);
+        shouldEqualSequence(res.data(), res.data()+res.elementCount(), ref_dist2);
     }
 
     void testDistanceAxesPermutation()
@@ -1065,12 +1065,12 @@ struct MultiDistanceTest
         separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), true);
         separableMultiDistSquared(srcMultiArrayRange(pvol), destMultiArray(pres2), true);
                 
-		shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
+        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
         
-		separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), false);
+        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), false);
         separableMultiDistSquared(srcMultiArrayRange(pvol), destMultiArray(pres2), false);
                 
-		shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
+        shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
     }
 
     void testDistanceVolumesAnisoptopic()
@@ -1080,7 +1080,7 @@ struct MultiDistanceTest
         
         DoubleVolume desired(volume);
         for(std::list<std::list<IntVec> >::iterator list_iter=pointslists.begin(); 
-			                              list_iter!=pointslists.end(); ++list_iter){
+                                          list_iter!=pointslists.end(); ++list_iter){
 
             for(DoubleVolume::iterator vol_iter = volume.begin(); vol_iter != volume.end(); ++vol_iter)
                 *vol_iter=0;

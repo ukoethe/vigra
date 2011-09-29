@@ -496,9 +496,13 @@ class VigraArray(numpy.ndarray):
         import vigra
         return vigra.imshow(self)
 
-    def show(self, normalize = True):
+    def show(self, normalize=True):
         '''
         Display this image in a vigra.pyqt.ImageWindow.
+        
+        The channels are intepreted as follows: 1 channel = gray image, 
+        2 channels = gray + alpha, 3 channels = RGB, 4 channels = RGB + alpha.
+        
         The parameter `normalize` can be used to normalize an image's
         value range to 0..255:
 
@@ -521,15 +525,15 @@ class VigraArray(numpy.ndarray):
         ndim = self.ndim
         channelIndex = self.channelIndex
         if channelIndex < ndim:
-            if self.shape[channelIndex] not in [1, 3]:
-                raise RuntimeError("VigraArray.show(): array must have 1 or 3 channels.")
+            if self.channels > 4:
+                raise RuntimeError("VigraArray.show(): array can have at most 4 channels.")
             ndim -= 1
         if ndim != 2:
             raise RuntimeError("VigraArray.show(): array must have 2 non-channel axes.")
 
         return showImage(self, normalize)
 
-    def qimage(self, normalize = True):
+    def qimage(self, normalize=True):
         '''
         Convert this image to a Qt QImage (mainly for display purposes).
         The present image must have 1, 2, 3, or 4 channels, and the resulting

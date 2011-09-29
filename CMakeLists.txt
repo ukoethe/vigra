@@ -56,6 +56,7 @@ IF(WITH_HDF5)
     VIGRA_FIND_PACKAGE(HDF5)
 ENDIF()
 
+SET(DOXYGEN_SKIP_DOT TRUE)
 FIND_PACKAGE(Doxygen)
 FIND_PACKAGE(PythonInterp)
 
@@ -123,7 +124,7 @@ IF(WITH_VIGRANUMPY)
 ENDIF()
 
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/private/CMakeLists.txt)
-	ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
+    ADD_SUBDIRECTORY(private EXCLUDE_FROM_ALL)
 ENDIF()
 
 
@@ -134,7 +135,7 @@ ENDIF()
 ##################################################
 
 INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/include/vigra
-		DESTINATION include)
+        DESTINATION include)
 
 ##################################################
 #
@@ -145,6 +146,32 @@ INCLUDE(CPackConfig)
 
 ##################################################
 #
+#     add target vigra-$version-src.tar.gz
+#
+##################################################
+
+find_program(GIT_EXECUTABLE 
+              NAMES git git.exe git.cmd
+              HINTS $ENV{ProgramFiles}/Git/bin
+              DOC "git command line client")
+
+CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/package-src.cmake.in
+                ${PROJECT_BINARY_DIR}/package-src.cmake
+                @ONLY IMMEDIATE)
+
+add_custom_target(PACKAGE_SRC_TAR
+                   COMMAND ${CMAKE_COMMAND} -P package-src.cmake
+                   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+                   COMMENT "Creating ${PROJECT_BINARY_DIR}/vigra-${vigra_version}-src.tar.gz")        
+
+ADD_DEPENDENCIES(PACKAGE_SRC_TAR check)
+ADD_DEPENDENCIES(PACKAGE_SRC_TAR doc_cpp)
+IF(WITH_VIGRANUMPY)
+    ADD_DEPENDENCIES(PACKAGE_SRC_TAR doc_python)
+ENDIF()
+
+##################################################
+#
 #  enable other non-CMake projects to find Vigra
 #
 ##################################################
@@ -152,14 +179,14 @@ INCLUDE(CPackConfig)
 IF(NOT WIN32)
 # vigra-config script for (non-CMake-based) third party packages
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/vigra-config.in
-		${PROJECT_BINARY_DIR}/bin/vigra-config
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/bin/vigra-config
+        @ONLY IMMEDIATE)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/bin/vigra-config
-		DESTINATION bin
-		PERMISSIONS
-			OWNER_READ OWNER_WRITE OWNER_EXECUTE
-			GROUP_READ GROUP_EXECUTE
-			WORLD_READ WORLD_EXECUTE)
+        DESTINATION bin
+        PERMISSIONS
+            OWNER_READ OWNER_WRITE OWNER_EXECUTE
+            GROUP_READ GROUP_EXECUTE
+            WORLD_READ WORLD_EXECUTE)
 ENDIF(NOT WIN32)
 
 ##################################################
@@ -170,26 +197,26 @@ ENDIF(NOT WIN32)
 
 # config file for CMake FIND_PACKAGE command (for using the build tree)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigBuild.cmake.in
-		${PROJECT_BINARY_DIR}/VigraConfig.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/VigraConfig.cmake
+        @ONLY IMMEDIATE)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
-		${PROJECT_BINARY_DIR}/VigraConfigVersion.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/VigraConfigVersion.cmake
+        @ONLY IMMEDIATE)
 
 # config file for CMake FIND_PACKAGE command
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfig.cmake.in
-		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
+        @ONLY IMMEDIATE)
 CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
-		${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
-		@ONLY IMMEDIATE)
+        ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
+        @ONLY IMMEDIATE)
 
 # export targets:
 INSTALL(EXPORT vigra-targets
-		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
-			${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
-		DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+            ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
+        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -256,7 +283,7 @@ ENDIF()
 
 MESSAGE( STATUS "  binaries will be generated in: ${CMAKE_CURRENT_BINARY_DIR}")
 IF(DOXYGEN_FOUND AND PYTHONINTERP_FOUND)
-	MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
+    MESSAGE( STATUS "  manuals will be generated in: ${DOCDIR}")
 ENDIF()
 
 MESSAGE( STATUS "---------------------------------------------------------" )

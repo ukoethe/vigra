@@ -505,7 +505,7 @@ qrTransformToTriangularImpl(MultiArrayView<2, T, C1> & r, MultiArrayView<2, T, C
         }
         
 #if 0
-	    Matrix<T> u(k+1,k+1), s(k+1, 1), v(k+1,k+1);
+        Matrix<T> u(k+1,k+1), s(k+1, 1), v(k+1,k+1);
         singularValueDecomposition(r.subarray(Shape(0,0), Shape(k+1,k+1)), u, s, v);
         std::cerr << "estimate, svd " << k << ": " << minApproxSingularValue << " " << s(k,0) << "\n";
 #endif
@@ -908,7 +908,7 @@ template <class T, class C1, class C2>
 bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
                            MultiArrayView<2, T, C2> &L)
 {
-	MultiArrayIndex n = columnCount(A);	
+    MultiArrayIndex n = columnCount(A); 
     vigra_precondition(rowCount(A) == n,
                        "choleskyDecomposition(): Input matrix must be square.");
     vigra_precondition(n == columnCount(L) && n == rowCount(L),
@@ -920,10 +920,10 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
     {
         T d(0.0);
         for (MultiArrayIndex k = 0; k < j; ++k) 
-		{
+        {
             T s(0.0);
             for (MultiArrayIndex i = 0; i < k; ++i) 
-			{
+            {
                s += L(k, i)*L(j, i);
             }
             L(j, k) = s = (A(j, k) - s)/L(k, k);
@@ -937,7 +937,7 @@ bool choleskyDecomposition(MultiArrayView<2, T, C1> const & A,
         {
            L(j, k) = 0.0;
         }
-	}
+    }
     return true;
 }
 
@@ -1209,7 +1209,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
     else if(method == "svd")
     {
         MultiArrayIndex rhsCount = columnCount(b);
-	    Matrix<T> u(A.shape()), s(n, 1), v(n, n);
+        Matrix<T> u(A.shape()), s(n, 1), v(n, n);
 
         MultiArrayIndex rank = (MultiArrayIndex)singularValueDecomposition(A, u, s, v);
 

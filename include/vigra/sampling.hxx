@@ -253,7 +253,7 @@ class Sampler
     static const int oobInvalid = -1;
 
     int total_count_, sample_size_;
-	mutable int current_oob_count_;
+    mutable int current_oob_count_;
     StrataIndicesType     strata_indices_;
     StrataSizesType       strata_sample_size_;
     IndexArrayType        current_sample_;

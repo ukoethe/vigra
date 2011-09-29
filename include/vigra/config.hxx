@@ -51,52 +51,52 @@
         #error "Need VisualC++ 5.0, Service Pack 2, or later"
     #endif // _MSC_VER < 1100
 
-	#if (_MSC_VER < 1300)
-		#define NO_TYPENAME         // no 'typename' keyword
-		#define TEMPLATE_COPY_CONSTRUCTOR_BUG
-		#define NO_STL_MEMBER_TEMPLATES
-		#define NO_INLINE_STATIC_CONST_DEFINITION
-		#define CMATH_NOT_IN_STD
-		#define NO_COVARIANT_RETURN_TYPES
+    #if (_MSC_VER < 1300)
+        #define NO_TYPENAME         // no 'typename' keyword
+        #define TEMPLATE_COPY_CONSTRUCTOR_BUG
+        #define NO_STL_MEMBER_TEMPLATES
+        #define NO_INLINE_STATIC_CONST_DEFINITION
+        #define CMATH_NOT_IN_STD
+        #define NO_COVARIANT_RETURN_TYPES
 
-		#ifdef VIGRA_NO_STD_MINMAX  // activate if necessary
-		namespace std {
+        #ifdef VIGRA_NO_STD_MINMAX  // activate if necessary
+        namespace std {
 
-		template<class T>
-		const T& min(const T& x, const T& y)
-		{
-			return (y < x)
-				? y
-				: x;
-		}
+        template<class T>
+        const T& min(const T& x, const T& y)
+        {
+            return (y < x)
+                ? y
+                : x;
+        }
 
-		template<class T>
-		const T& max(const T& x, const T& y)
-		{
-			return (x < y)
-				? y
-				: x;
-		}
-		}
-		#endif // VIGRA_NO_STD_MINMAX
-	#endif // (_MSC_VER < 1300)
+        template<class T>
+        const T& max(const T& x, const T& y)
+        {
+            return (x < y)
+                ? y
+                : x;
+        }
+        }
+        #endif // VIGRA_NO_STD_MINMAX
+    #endif // (_MSC_VER < 1300)
 
     #if _MSC_VER < 1310
-    	#pragma warning( disable : 4786 4250 4244 4305)
+        #pragma warning( disable : 4786 4250 4244 4305)
 
         #define NO_PARTIAL_TEMPLATE_SPECIALIZATION
         #define NO_OUT_OF_LINE_MEMBER_TEMPLATES
         #include <cmath>
 
         #ifdef _MSC_EXTENSIONS
-	    #ifndef CMATH_NOT_IN_STD
+        #ifndef CMATH_NOT_IN_STD
                 namespace std {
-	    #endif // CMATH_NOT_IN_STD
+        #endif // CMATH_NOT_IN_STD
                 inline double abs(double v) { return fabs(v); }
                 inline float  abs(float v)  { return fabs(v); }
-	    #ifndef CMATH_NOT_IN_STD
+        #ifndef CMATH_NOT_IN_STD
                 }
-	    #endif // CMATH_NOT_IN_STD
+        #endif // CMATH_NOT_IN_STD
         #endif // _MSC_EXTENSIONS
     #endif // _MSC_VER < 1310
 

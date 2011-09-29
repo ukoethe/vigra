@@ -49,65 +49,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup FourierTransform Fast Fourier Transform
-
-    This documentation describes the VIGRA interface to FFTW version 3. The interface
-    to the old FFTW version 2 (file "vigra/fftw.hxx") is deprecated.
-
-    VIGRA uses the <a href="http://www.fftw.org/">FFTW Fast Fourier
-    Transform</a> package to perform Fourier transformations. VIGRA
-    provides a wrapper for FFTW's complex number type (FFTWComplex),
-    but FFTW's functions are used verbatim. If the image is stored as
-    a FFTWComplexImage, the simplest call to an FFT function is like this:
-
-    \code
-    vigra::FFTWComplexImage spatial(width,height), fourier(width,height);
-    ... // fill image with data
-
-    // create a plan with estimated performance optimization
-    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width,
-                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(),
-                                FFTW_FORWARD, FFTW_ESTIMATE );
-    // calculate FFT (this can be repeated as often as needed,
-    //                with fresh data written into the source array)
-    fftw_execute(forwardPlan);
-
-    // release the plan memory
-    fftw_destroy_plan(forwardPlan);
-
-    // likewise for the inverse transform
-    fftw_plan backwardPlan = fftw_plan_dft_2d(height, width,
-                                 (fftw_complex *)fourier.begin(), (fftw_complex *)spatial.begin(),
-                                 FFTW_BACKWARD, FFTW_ESTIMATE);
-    fftw_execute(backwardPlan);
-    fftw_destroy_plan(backwardPlan);
-
-    // do not forget to normalize the result according to the image size
-    transformImage(srcImageRange(spatial), destImage(spatial),
-                   std::bind1st(std::multiplies<FFTWComplex>(), 1.0 / width / height));
-    \endcode
-
-    Note that in the creation of a plan, the height must be given
-    first. Note also that <TT>spatial.begin()</TT> may only be passed
-    to <TT>fftw_plan_dft_2d</TT> if the transform shall be applied to the
-    entire image. When you want to restrict operation to an ROI, you
-    can create a copy of the ROI in an image of appropriate size, or
-    you may use the Guru interface to FFTW.
-
-    More information on using FFTW can be found <a href="http://www.fftw.org/doc/">here</a>.
-
-    FFTW produces fourier images that have the DC component (the
-    origin of the Fourier space) in the upper left corner. Often, one
-    wants the origin in the center of the image, so that frequencies
-    always increase towards the border of the image. This can be
-    achieved by calling \ref moveDCToCenter(). The inverse
-    transformation is done by \ref moveDCToUpperLeft().
-
-    <b>\#include</b> \<vigra/fftw3.hxx\><br>
-    Namespace: vigra
-*/
-
-/** \addtogroup FourierTransform
+/** \addtogroup FourierTransform 
 */
 //@{
 
@@ -197,82 +139,6 @@ void moveDCToUpperLeftImpl(MultiArrayView<N, T, C> a, unsigned int startDimensio
 /*                                                      */
 /********************************************************/
 
-/** \brief Rearrange the quadrants of a Fourier image so that the origin is
-          in the image center.
-
-    FFTW produces fourier images where the DC component (origin of
-    fourier space) is located in the upper left corner of the
-    image. The quadrants are placed like this (using a 4x4 image for
-    example):
-
-    \code
-            DC 4 3 3
-             4 4 3 3
-             1 1 2 2
-             1 1 2 2
-    \endcode
-
-    After applying the function, the quadrants are at their usual places:
-
-    \code
-            2 2  1 1
-            2 2  1 1
-            3 3 DC 4
-            3 3  4 4
-    \endcode
-
-    This transformation can be reversed by \ref moveDCToUpperLeft().
-    Note that the transformation must not be executed in place - input
-    and output images must be different.
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-          class DestImageIterator, class DestAccessor>
-        void moveDCToCenter(SrcImageIterator src_upperleft,
-                               SrcImageIterator src_lowerright, SrcAccessor sa,
-                               DestImageIterator dest_upperleft, DestAccessor da);
-    }
-    \endcode
-
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void moveDCToCenter(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest);
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-        <b>\#include</b> \<vigra/fftw3.hxx\><br>
-        Namespace: vigra
-
-    \code
-    vigra::FFTWComplexImage spatial(width,height), fourier(width,height);
-    ... // fill image with data
-
-    // create a plan with estimated performance optimization
-    fftw_plan forwardPlan = fftw_plan_dft_2d(height, width,
-                                (fftw_complex *)spatial.begin(), (fftw_complex *)fourier.begin(),
-                                FFTW_FORWARD, FFTW_ESTIMATE );
-    // calculate FFT
-    fftw_execute(forwardPlan);
-
-    vigra::FFTWComplexImage rearrangedFourier(width, height);
-    moveDCToCenter(srcImageRange(fourier), destImage(rearrangedFourier));
-
-    // delete the plan
-    fftw_destroy_plan(forwardPlan);
-    \endcode
-*/
 template <unsigned int N, class T, class C>
 inline void moveDCToCenter(MultiArrayView<N, T, C> a)
 {
@@ -637,7 +503,7 @@ int fftwEvenPaddingSize(int s)
 {
     // Image sizes where FFTW is fast. The list contains all even
     // numbers less than 100000 whose prime decomposition is of the form
-    // 2^a*3^b*5^c*7^d*11^e*13^f, where e+f is either 0 or 1, and the 
+    // 2^a*3^b*5^c*7^d*11^e*13^f, where a >= 1, e+f is either 0 or 1, and the 
     // other exponents are arbitrary
     static const int size = 1063;
     static int goodSizes[size] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 
@@ -869,6 +735,16 @@ fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
     return shape;
 }
 
+/** \brief Find frequency domain shape for a R2C Fourier transform.
+
+    When a real valued array is transformed to the frequency domain, about half of the 
+    Fourier coefficients are redundant. The transform can be optimized as a <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C 
+    transform</a> that doesn't compute and store the redundant coefficients. This function
+    computes the appropriate frequency domain shape for a given shape in the spatial domain.
+    It simply replaces <tt>shape[0]</tt> with <tt>shape[0] / 2 + 1</tt>.
+    
+    <b>\#include</b> \<vigra/multi_fft.hxx\>
+*/
 template <class T, int N>
 TinyVector<T, N>
 fftwCorrespondingShapeR2C(TinyVector<T, N> shape)
@@ -887,6 +763,39 @@ fftwCorrespondingShapeC2R(TinyVector<T, N> shape, bool oddDimension0 = false)
     return shape;
 }
 
+/********************************************************/
+/*                                                      */
+/*                       FFTWPlan                       */
+/*                                                      */
+/********************************************************/
+
+/** C++ wrapper for FFTW plans.
+
+    The class encapsulates the calls to <tt>fftw_plan_dft_2d</tt>, <tt>fftw_execute</tt>, and
+    <tt>fftw_destroy_plan</tt> (and their <tt>float</tt> and <tt>long double</tt> counterparts)
+    in an easy-to-use interface.
+
+    Usually, you use this class only indirectly via \ref fourierTransform() 
+    and \ref fourierTransformInverse(). You only need this class if you want to have more control
+    about FFTW's planning process (by providing non-default planning flags) and/or want to re-use
+    plans for several transformations.
+    
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_fft.hxx\><br>
+    Namespace: vigra
+
+    \code
+    // compute complex Fourier transform of a real image
+    MultiArray<2, double> src(Shape2(w, h));
+    MultiArray<2, FFTWComplex<double> > fourier(Shape2(w, h));
+    
+    // create an optimized plan by measuring the speed of several algorithm variants
+    FFTWPlan<2, double> plan(src, fourier, FFTW_MEASURE);
+    
+    plan.execute(src, fourier); 
+    \endcode
+*/
 template <unsigned int N, class Real = double>
 class FFTWPlan
 {
@@ -899,10 +808,22 @@ class FFTWPlan
     int sign;
     
   public:
+        /** \brief Create an empty plan.
+        
+            The plan can be initialized later by one of the init() functions.
+        */
     FFTWPlan()
     : plan(0)
     {}
     
+        /** \brief Create a plan for a complex-to-complex transform.
+        
+            \arg SIGN must be <tt>FFTW_FORWARD</tt> or <tt>FFTW_BACKWARD</tt> according to the
+            desired transformation direction.
+            \arg planner_flags must be a combination of the <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2>
     FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
              MultiArrayView<N, FFTWComplex<Real>, C2> out,
@@ -912,6 +833,17 @@ class FFTWPlan
         init(in, out, SIGN, planner_flags);
     }
     
+        /** \brief Create a plan for a real-to-complex transform.
+        
+            This always refers to a forward transform. The shape of the output determines
+            if a standard transform (when <tt>out.shape() == in.shape()</tt>) or an 
+            <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C 
+            transform</a> (when <tt>out.shape() == fftwCorrespondingShapeR2C(in.shape())</tt>) will be executed. 
+            
+            \arg planner_flags must be a combination of the <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2>
     FFTWPlan(MultiArrayView<N, Real, C1> in, 
              MultiArrayView<N, FFTWComplex<Real>, C2> out,
@@ -921,6 +853,17 @@ class FFTWPlan
         init(in, out, planner_flags);
     }
 
+        /** \brief Create a plan for a complex-to-real transform.
+        
+            This always refers to a inverse transform. The shape of the input determines
+            if a standard transform (when <tt>in.shape() == out.shape()</tt>) or a 
+            <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">C2R 
+            transform</a> (when <tt>in.shape() == fftwCorrespondingShapeR2C(out.shape())</tt>) will be executed. 
+            
+            \arg planner_flags must be a combination of the <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2>
     FFTWPlan(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
              MultiArrayView<N, Real, C2> out,
@@ -930,6 +873,8 @@ class FFTWPlan
         init(in, out, planner_flags);
     }
     
+        /** \brief Copy constructor.
+        */
     FFTWPlan(FFTWPlan const & other)
     : plan(other.plan),
       sign(other.sign)
@@ -941,6 +886,8 @@ class FFTWPlan
         o.plan = 0; // act like std::auto_ptr
     }
     
+        /** \brief Copy assigment.
+        */
     FFTWPlan & operator=(FFTWPlan const & other)
     {
         if(this != &other)
@@ -956,11 +903,17 @@ class FFTWPlan
         return *this;
     }
 
+        /** \brief Destructor.
+        */
     ~FFTWPlan()
     {
         detail::fftwPlanDestroy(plan);
     }
 
+        /** \brief Init a complex-to-complex transform.
+        
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2>
     void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
               MultiArrayView<N, FFTWComplex<Real>, C2> out,
@@ -973,6 +926,10 @@ class FFTWPlan
                  SIGN, planner_flags);
     }
         
+        /** \brief Init a real-to-complex transform.
+        
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2>
     void init(MultiArrayView<N, Real, C1> in, 
               MultiArrayView<N, FFTWComplex<Real>, C2> out,
@@ -985,6 +942,10 @@ class FFTWPlan
                  FFTW_FORWARD, planner_flags);
     }
         
+        /** \brief Init a complex-to-real transform.
+        
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2>
     void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
               MultiArrayView<N, Real, C2> out,
@@ -997,6 +958,13 @@ class FFTWPlan
                  FFTW_BACKWARD, planner_flags);
     }
     
+        /** \brief Execute a complex-to-complex transform.
+        
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2>
     void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                  MultiArrayView<N, FFTWComplex<Real>, C2> out) const
@@ -1004,6 +972,13 @@ class FFTWPlan
         executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
     }
     
+        /** \brief Execute a real-to-complex transform.
+        
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, FFTWComplex<Real>, C2> out) const
@@ -1011,6 +986,13 @@ class FFTWPlan
         executeImpl(in.permuteStridesDescending(), out.permuteStridesDescending());
     }
     
+        /** \brief Execute a complex-to-real transform.
+        
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2>
     void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                  MultiArrayView<N, Real, C2> out) const
@@ -1113,6 +1095,45 @@ void FFTWPlan<N, Real>::executeImpl(MI ins, MO outs) const
         outs *= V(1.0) / Real(outs.size());
 }
 
+/********************************************************/
+/*                                                      */
+/*                  FFTWConvolvePlan                    */
+/*                                                      */
+/********************************************************/
+
+/** C++ wrapper for a pair of FFTW plans used to perform FFT-based convolution.
+
+    The class encapsulates the calls to <tt>fftw_plan_dft_2d</tt>, <tt>fftw_execute</tt>, and
+    <tt>fftw_destroy_plan</tt> (and their <tt>float</tt> and <tt>long double</tt> counterparts)
+    in an easy-to-use interface. It always creates a pair of plans, one for the forward and one
+    for the inverse transform required for convolution.
+
+    Usually, you use this class only indirectly via \ref convolveFFT() and its variants. 
+    You only need this class if you want to have more control about FFTW's planning process 
+    (by providing non-default planning flags) and/or want to re-use plans for several convolutions.
+    
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_fft.hxx\><br>
+    Namespace: vigra
+
+    \code
+    // convolve a real array with a real kernel
+    MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w, h));
+    
+    MultiArray<2, double> spatial_kernel(Shape2(9, 9));
+    Gaussian<double> gauss(1.0);
+    
+    for(int y=0; y<9; ++y)
+        for(int x=0; x<9; ++x)
+            spatial_kernel(x, y) = gauss(x-4.0)*gauss(y-4.0);
+            
+    // create an optimized plan by measuring the speed of several algorithm variants
+    FFTWConvolvePlan<2, double> plan(src, spatial_kernel, dest, FFTW_MEASURE);
+    
+    plan.execute(src, spatial_kernel, dest); 
+    \endcode
+*/
 template <unsigned int N, class Real>
 class FFTWConvolvePlan
 {
@@ -1129,10 +1150,25 @@ class FFTWConvolvePlan
   
     typedef typename MultiArrayShape<N>::type Shape;
 
+        /** \brief Create an empty plan.
+        
+            The plan can be initialized later by one of the init() functions.
+        */
     FFTWConvolvePlan()
     : useFourierKernel(false)
     {}
     
+        /** \brief Create a plan to convolve a real array with a real kernel.
+        
+            The kernel must be defined in the spatial domain.
+            See \ref convolveFFT() for detailed information on required shapes and internal padding.
+        
+            \arg planner_flags must be a combination of the 
+            <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded 
+            <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2, class C3>
     FFTWConvolvePlan(MultiArrayView<N, Real, C1> in, 
                      MultiArrayView<N, Real, C2> kernel,
@@ -1143,6 +1179,17 @@ class FFTWConvolvePlan
         init(in, kernel, out, planner_flags);
     }
     
+        /** \brief Create a plan to convolve a real array with a complex kernel.
+        
+            The kernel must be defined in the Fourier domain, using the half-space format. 
+            See \ref convolveFFT() for detailed information on required shapes and internal padding.
+        
+            \arg planner_flags must be a combination of the 
+            <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded 
+            <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2, class C3>
     FFTWConvolvePlan(MultiArrayView<N, Real, C1> in, 
                      MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
@@ -1153,6 +1200,18 @@ class FFTWConvolvePlan
         init(in, kernel, out, planner_flags);
     }
    
+        /** \brief Create a plan to convolve a complex array with a complex kernel.
+        
+            See \ref convolveFFT() for detailed information on required shapes and internal padding.
+        
+            \arg fourierDomainKernel determines if the kernel is defined in the spatial or
+                  Fourier domain.
+            \arg planner_flags must be a combination of the 
+            <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded 
+            <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2, class C3>
     FFTWConvolvePlan(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                      MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
@@ -1164,6 +1223,18 @@ class FFTWConvolvePlan
     }
 
  
+        /** \brief Create a plan from just the shape information.
+        
+            See \ref convolveFFT() for detailed information on required shapes and internal padding.
+        
+            \arg fourierDomainKernel determines if the kernel is defined in the spatial or
+                  Fourier domain.
+            \arg planner_flags must be a combination of the 
+            <a href="http://www.fftw.org/doc/Planner-Flags.html">planner 
+            flags</a> defined by the FFTW library. The default <tt>FFTW_ESTIMATE</tt> will guess
+            optimal algorithm settings or read them from pre-loaded 
+            <a href="http://www.fftw.org/doc/Wisdom.html">"wisdom"</a>.
+        */
     template <class C1, class C2, class C3>
     FFTWConvolvePlan(Shape inOut, Shape kernel, 
                      bool useFourierKernel = false,
@@ -1175,6 +1246,10 @@ class FFTWConvolvePlan
             initFourierKernel(inOut, kernel, planner_flags);
     }
     
+        /** \brief Init a plan to convolve a real array with a real kernel.
+         
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2, class C3>
     void init(MultiArrayView<N, Real, C1> in, 
               MultiArrayView<N, Real, C2> kernel,
@@ -1186,6 +1261,10 @@ class FFTWConvolvePlan
         init(in.shape(), kernel.shape(), planner_flags);
     }
     
+        /** \brief Init a plan to convolve a real array with a complex kernel.
+         
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2, class C3>
     void init(MultiArrayView<N, Real, C1> in, 
               MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
@@ -1197,6 +1276,10 @@ class FFTWConvolvePlan
         initFourierKernel(in.shape(), kernel.shape(), planner_flags);
     }
     
+        /** \brief Init a plan to convolve a complex array with a complex kernel.
+         
+            See the constructor with the same signature for details.
+        */
     template <class C1, class C2, class C3>
     void init(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
               MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
@@ -1210,6 +1293,12 @@ class FFTWConvolvePlan
         initComplex(in.shape(), kernel.shape(), planner_flags);
     }
     
+        /** \brief Init a plan to convolve a real array with a sequence of kernels.
+         
+            The kernels can be either real or complex. The sequences \a kernels and \a outs
+            must have the same length. See the corresponding constructors 
+            for single kernels for details.
+        */
     template <class C1, class KernelIterator, class OutIterator>
     void initMany(MultiArrayView<N, Real, C1> in, 
                   KernelIterator kernels, KernelIterator kernelsEnd,
@@ -1241,6 +1330,12 @@ class FFTWConvolvePlan
         }
     }
      
+        /** \brief Init a plan to convolve a complex array with a sequence of kernels.
+         
+            The kernels must be complex as well. The sequences \a kernels and \a outs
+            must have the same length. See the corresponding constructors 
+            for single kernels for details.
+        */
     template <class C1, class KernelIterator, class OutIterator>
     void initMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                   KernelIterator kernels, KernelIterator kernelsEnd,
@@ -1294,27 +1389,62 @@ class FFTWConvolvePlan
         initFourierKernel(inOut, kernels, planner_flags);
     }
         
+        /** \brief Execute a plan to convolve a real array with a real kernel.
+         
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, Real, C2> kernel,
                  MultiArrayView<N, Real, C3> out);
     
+        /** \brief Execute a plan to convolve a real array with a complex kernel.
+         
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, Real, C1> in, 
                  MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
                  MultiArrayView<N, Real, C3> out);
 
+        /** \brief Execute a plan to convolve a complex array with a complex kernel.
+         
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, execute() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class C2, class C3>
     void execute(MultiArrayView<N, FFTWComplex<Real>, C1> in,
                  MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
                  MultiArrayView<N, FFTWComplex<Real>, C3> out);
 
 
+        /** \brief Execute a plan to convolve a complex array with a sequence of kernels.
+         
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, executeMany() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class KernelIterator, class OutIterator>
     void executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
                      KernelIterator kernels, KernelIterator kernelsEnd,
                      OutIterator outs);
                      
+        /** \brief Execute a plan to convolve a real array with a sequence of kernels.
+         
+            The array shapes must be the same as in the corresponding init function
+            or constructor. However, executeMany() can be called several times on
+            the same plan, even with different arrays, as long as they have the appropriate 
+            shapes.
+        */
     template <class C1, class KernelIterator, class OutIterator>
     void executeMany(MultiArrayView<N, Real, C1> in, 
                      KernelIterator kernels, KernelIterator kernelsEnd,
@@ -1456,6 +1586,8 @@ FFTWConvolvePlan<N, Real>::initComplex(Shape in, Shape kernel,
     fourierArray.swap(newFourierArray);
     fourierKernel.swap(newFourierKernel);
 }
+
+#ifndef DOXYGEN // doxygen documents these functions as free functions
 
 template <unsigned int N, class Real>
 template <class C1, class C2, class C3>
@@ -1685,6 +1817,8 @@ FFTWConvolvePlan<N, Real>::executeMany(MultiArrayView<N, FFTWComplex<Real>, C1> 
     }
 }
 
+#endif // DOXYGEN
+
 template <unsigned int N, class Real>
 template <class KernelIterator, class OutIterator>
 typename FFTWConvolvePlan<N, Real>::Shape 
@@ -1782,63 +1916,6 @@ FFTWConvolvePlan<N, Real>::checkShapesComplex(Shape in,
 /*                                                      */
 /********************************************************/
 
-/** \brief Compute forward and inverse Fourier transforms.
-
-    In the forward direction, the input image may be scalar or complex, and the output image
-    is always complex. In the inverse direction, both input and output must be complex.
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor>
-        void fourierTransform(SrcImageIterator srcUpperLeft,
-                              SrcImageIterator srcLowerRight, SrcAccessor src,
-                              FFTWComplexImage::traverser destUpperLeft, FFTWComplexImage::Accessor dest);
-
-        void
-        fourierTransformInverse(FFTWComplexImage::const_traverser sul,
-                                FFTWComplexImage::const_traverser slr, FFTWComplexImage::ConstAccessor src,
-                                FFTWComplexImage::traverser dul, FFTWComplexImage::Accessor dest)
-    }
-    \endcode
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor>
-        void fourierTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-                              pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
-
-        void
-        fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
-                                       FFTWComplexImage::const_traverser, FFTWComplexImage::ConstAccessor> src,
-                                pair<FFTWComplexImage::traverser, FFTWComplexImage::Accessor> dest);
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/fftw3.hxx\><br>
-    Namespace: vigra
-
-    \code
-    // compute complex Fourier transform of a real image
-    vigra::DImage src(w, h);
-    vigra::FFTWComplexImage fourier(w, h);
-
-    fourierTransform(srcImageRange(src), destImage(fourier));
-
-    // compute inverse Fourier transform
-    // note that both source and destination image must be of type vigra::FFTWComplexImage
-    vigra::FFTWComplexImage inverseFourier(w, h);
-
-    fourierTransform(srcImageRange(fourier), destImage(inverseFourier));
-    \endcode
-*/
-//doxygen_overloaded_function(template <...> void fourierTransform)
-
 template <unsigned int N, class Real, class C1, class C2>
 inline void 
 fourierTransform(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
@@ -1885,6 +1962,197 @@ fourierTransformInverse(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     FFTWPlan<N, Real>(in, out).execute(in, out);
 }
 
+//@}
+
+/** \addtogroup MultiArrayConvolutionFilters
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                     convolveFFT                      */
+/*                                                      */
+/********************************************************/
+
+/** \brief Convolve an array with a kernel by means of the Fourier transform.
+
+    Thanks to the convolution theorem of Fourier theory, a convolution in the spatial domain
+    is equivalent to a multiplication in the frequency domain. Thus, for certain kernels
+    (especially large, non-separable ones), it is advantageous to perform the convolution by first
+    transforming both array and kernel to the frequency domain, multiplying the frequency 
+    representations, and transforming the result back into the spatial domain. 
+    Some kernels have a much simpler definition in the frequency domain, so that they are readily 
+    computed there directly, avoiding Fourier transformation of those kernels. 
+    
+    The following functions implement various variants of FFT-based convolution:
+    
+        <DL>
+        <DT><b>convolveFFT</b><DD> Convolve a real-valued input array with a kernel such that the 
+                            result is also real-valued. That is, the kernel is either provided
+                            as a real-valued array in the spatial domain, or as a 
+                            complex-valued array in the Fourier domain, using the half-space format 
+                            of the R2C Fourier transform (see below).
+        <DT><b>convolveFFTMany</b><DD> Like <tt>convolveFFT</tt>, but you may provide many kernels at once 
+                            (using an iterator pair specifying the kernel sequence). 
+                            This has the advantage that the forward transform of the input array needs 
+                            to be executed only once.
+        <DT><b>convolveFFTComplex</b><DD> Convolve a complex-valued input array with a complex-valued kernel, 
+                            resulting in a complex-valued output array. An additional flag is used to 
+                            specify whether the kernel is defined in the spatial or frequency domain.
+        <DT><b>convolveFFTComplexMany</b><DD> Like <tt>convolveFFTComplex</tt>, but you may provide many kernels at once 
+                            (using an iterator pair specifying the kernel sequence). 
+                            This has the advantage that the forward transform of the input array needs 
+                            to be executed only once.
+        </DL>
+    
+    The output arrays must have the same shape as the input arrays. In the "Many" variants of the
+    convolution functions, the kernels must all have the same shape.
+    
+    The origin of the kernel is always assumed to be in the center of the kernel array (precisely,
+    at the point <tt>floor(kernel.shape() / 2.0)</tt>, except when the half-space format is used, see below). 
+    The function \ref moveDCToUpperLeft() will be called internally to align the kernel with the transformed 
+    input as appropriate.
+    
+    If a real input is combined with a real kernel, the kernel is automatically assumed to be defined
+    in the spatial domain. If a real input is combined with a complex kernel, the kernel is assumed 
+    to be defined in the Fourier domain in half-space format. If the input array is complex, a flag 
+    <tt>fourierDomainKernel</tt> determines where the kernel is defined.
+    
+    When the kernel is defined in the spatial domain, the convolution functions will automatically pad
+    (enlarge) the input array by at least the kernel radius in each direction. The newly added space is
+    filled according to reflective boundary conditions in order to minimize border artifacts during 
+    convolution. It is thus ensured that convolution in the Fourier domain yields the same results as 
+    convolution in the spatial domain (e.g. when \ref separableConvolveMultiArray() is called with the 
+    same kernel). A little further padding may be added to make sure that the padded array shape
+    uses integers which have only small prime factors, because FFTW is then able to use the fastest
+    possible algorithms. Any padding is automatically removed from the result arrays before the function
+    returns.
+    
+    When the kernel is defined in the frequency domain, it must be complex-valued, and its shape determines
+    the shape of the Fourier representation (i.e. the input is padded according to the shape of the kernel).
+    If we are going to perform a complex-valued convolution, the kernel must be defined for the entire 
+    frequency domain, and its shape directly determines the size of the FFT. 
+    
+    In contrast, a frequency domain kernel for a real-valued convolution must have symmetry properties
+    that allow to drop half of the kernel coefficients, as in the 
+    <a href="http://www.fftw.org/doc/Multi_002dDimensional-DFTs-of-Real-Data.html">R2C transform</a>. 
+    That is, the kernel must have the <i>half-space format</i>, that is the shape returned by <tt>fftwCorrespondingShapeR2C(fourier_shape)</tt>, where <tt>fourier_shape</tt> is the desired 
+    logical shape of the frequency representation (and thus the size of the padded input). The origin 
+    of the kernel must be at the point 
+    <tt>(0, floor(fourier_shape[0] / 2.0), ..., floor(fourier_shape[N-1] / 2.0))</tt> 
+    (i.e. as in a regular kernel except for the first dimension).
+    
+    The <tt>Real</tt> type in the declarations can be <tt>double</tt>, <tt>float</tt>, and 
+    <tt>long double</tt>. Your program must always link against <tt>libfftw3</tt>. If you use
+    <tt>float</tt> or <tt>long double</tt> arrays, you must <i>additionally</i> link against 
+    <tt>libfftw3f</tt> and <tt>libfftw3l</tt> respectively.
+    
+    The Fourier transform functions internally create <a href="http://www.fftw.org/doc/Using-Plans.html">FFTW plans</a>
+    which control the algorithm details. The plans are creates with the flag <tt>FFTW_ESTIMATE</tt>, i.e.
+    optimal settings are guessed or read from saved "wisdom" files. If you need more control over planning,
+    you can use the class \ref FFTWConvolvePlan.
+    
+    See also \ref applyFourierFilter() for corresponding functionality on the basis of the
+    old image iterator interface.
+    
+    <b> Declarations:</b>
+
+    Real-valued convolution with kernel in the spatial domain:
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, class C2, class C3>
+        void 
+        convolveFFT(MultiArrayView<N, Real, C1> in, 
+                    MultiArrayView<N, Real, C2> kernel,
+                    MultiArrayView<N, Real, C3> out);
+    }
+    \endcode
+
+    Real-valued convolution with kernel in the Fourier domain (half-space format):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, class C2, class C3>
+        void 
+        convolveFFT(MultiArrayView<N, Real, C1> in, 
+                    MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                    MultiArrayView<N, Real, C3> out);
+    }
+    \endcode
+
+    Series of real-valued convolutions with kernels in the spatial or Fourier domain 
+    (the kernel and out sequences must have the same length):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, 
+                  class KernelIterator, class OutIterator>
+        void 
+        convolveFFTMany(MultiArrayView<N, Real, C1> in, 
+                        KernelIterator kernels, KernelIterator kernelsEnd,
+                        OutIterator outs);
+    }
+    \endcode
+
+    Complex-valued convolution (parameter <tt>fourierDomainKernel</tt> determines if
+    the kernel is defined in the spatial or Fourier domain):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, class C2, class C3>
+        void
+        convolveFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
+                           MultiArrayView<N, FFTWComplex<Real>, C2> kernel,
+                           MultiArrayView<N, FFTWComplex<Real>, C3> out,
+                           bool fourierDomainKernel);
+    }
+    \endcode
+
+    Series of complex-valued convolutions (parameter <tt>fourierDomainKernel</tt> 
+    determines if the kernels are defined in the spatial or Fourier domain, 
+    the kernel and out sequences must have the same length):
+    \code
+    namespace vigra {
+        template <unsigned int N, class Real, class C1, 
+                  class KernelIterator, class OutIterator>
+        void 
+        convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in, 
+                               KernelIterator kernels, KernelIterator kernelsEnd,
+                               OutIterator outs,
+                               bool fourierDomainKernel);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_fft.hxx\><br>
+    Namespace: vigra
+
+    \code
+    // convolve real array with a Gaussian (sigma=1) defined in the spatial domain
+    // (implicitly uses padding by at least 4 pixels)
+    MultiArray<2, double> src(Shape2(w, h)), dest(Shape2(w,h));
+    
+    MultiArray<2, double> spatial_kernel(Shape2(9, 9));
+    Gaussian<double> gauss(1.0);
+    
+    for(int y=0; y<9; ++y)
+        for(int x=0; x<9; ++x)
+            spatial_kernel(x, y) = gauss(x-4.0)*gauss(y-4.0);
+
+    convolveFFT(src, spatial_kernel, dest);
+    
+    // convolve real array with a Gaussian (sigma=1) defined in the Fourier domain
+    // (uses no padding, because the kernel size corresponds to the input size)
+    MultiArray<2, FFTWComplex<double> > fourier_kernel(fftwCorrespondingShapeR2C(src.shape()));
+    int y0 = h / 2;
+        
+    for(int y=0; y<fourier_kernel.shape(1); ++y)
+        for(int x=0; x<fourier_kernel.shape(0); ++x)
+            fourier_kernel(x, y) = exp(-0.5*sq(x / double(w))) * exp(-0.5*sq((y-y0)/double(h)));
+
+    convolveFFT(src, fourier_kernel, dest);
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void convolveFFT)
+
 template <unsigned int N, class Real, class C1, class C2, class C3>
 void 
 convolveFFT(MultiArrayView<N, Real, C1> in, 
@@ -1903,6 +2171,12 @@ convolveFFT(MultiArrayView<N, Real, C1> in,
     FFTWConvolvePlan<N, Real>(in, kernel, out).execute(in, kernel, out);
 }
 
+/** \brief Convolve a complex-valued array by means of the Fourier transform.
+
+    See \ref convolveFFT() for details.
+*/
+doxygen_overloaded_function(template <...> void convolveFFTComplex)
+
 template <unsigned int N, class Real, class C1, class C2, class C3>
 void
 convolveFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
@@ -1912,6 +2186,12 @@ convolveFFTComplex(MultiArrayView<N, FFTWComplex<Real>, C1> in,
 {
     FFTWConvolvePlan<N, Real>(in, kernel, out, fourierDomainKernel).execute(in, kernel, out);
 }
+
+/** \brief Convolve a real-valued array with a sequence of kernels by means of the Fourier transform.
+
+    See \ref convolveFFT() for details.
+*/
+doxygen_overloaded_function(template <...> void convolveFFTMany)
 
 template <unsigned int N, class Real, class C1, 
           class KernelIterator, class OutIterator>
@@ -1925,6 +2205,12 @@ convolveFFTMany(MultiArrayView<N, Real, C1> in,
     plan.executeMany(in, kernels, kernelsEnd, outs);
 }
 
+/** \brief Convolve a complex-valued array with a sequence of kernels by means of the Fourier transform.
+
+    See \ref convolveFFT() for details.
+*/
+doxygen_overloaded_function(template <...> void convolveFFTComplexMany)
+
 template <unsigned int N, class Real, class C1, 
           class KernelIterator, class OutIterator>
 void 
@@ -1937,6 +2223,8 @@ convolveFFTComplexMany(MultiArrayView<N, FFTWComplex<Real>, C1> in,
     plan.initMany(in, kernels, kernelsEnd, outs, fourierDomainKernel);
     plan.executeMany(in, kernels, kernelsEnd, outs);
 }
+
+//@}
 
 } // namespace vigra
 

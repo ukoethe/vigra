@@ -116,7 +116,7 @@ class ConstVectorProxy
     int size() const
         { return size_; }
         
-	operator value_type() const
+    operator value_type() const
     {
         vigra_precondition(size_ == 1, 
             "ConstVectorProxy::operator value_type(): vector must have size 1.");

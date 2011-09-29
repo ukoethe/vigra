@@ -57,7 +57,7 @@ namespace vigra
 namespace detail
 {
  // todo FINALLY DECIDE TO USE CAMEL CASE OR UNDERSCORES !!!!!!
-/** decisiontree classifier. 
+/* decisiontree classifier. 
  *
  * This class is actually meant to be used in conjunction with the 
  * Random Forest Classifier 
@@ -77,10 +77,10 @@ namespace detail
  */
 class DecisionTree
 {
-    /**\todo make private?*/
+    /* \todo make private?*/
   public:
     
-    /** value type of container array. use whenever referencing it
+    /* value type of container array. use whenever referencing it
      */
     typedef Int32 TreeInt;
 
@@ -92,7 +92,7 @@ class DecisionTree
 
 
   public:
-    /** \brief Create tree with parameters */
+    /* \brief Create tree with parameters */
     template<class T>
     DecisionTree(ProblemSpec<T> ext_param)
     :
@@ -100,7 +100,7 @@ class DecisionTree
         classCount_(ext_param.class_count_)
     {}
 
-    /**clears all memory used.
+    /* clears all memory used.
      */
     void reset(unsigned int classCount = 0)
     {
@@ -111,7 +111,7 @@ class DecisionTree
     }
 
 
-    /** learn a Tree
+    /* learn a Tree
      *
      * \tparam  StackEntry_t The Stackentry containing Node/StackEntry_t 
      *          Information used during learning. Each Split functor has a 
@@ -149,13 +149,13 @@ class DecisionTree
                           //an index to which the last created exterior node will be moved (because it is not used anymore)
                           int                                   garbaged_child=-1);
 
-    /** is a node a Leaf Node? */
+    /* is a node a Leaf Node? */
     inline bool isLeafNode(TreeInt in) const
     {
         return (in & LeafNodeTag) == LeafNodeTag;
     }
 
-    /** data driven traversal from root to leaf
+    /* data driven traversal from root to leaf
      *
      * traverse through tree with data given in features. Use Visitors to 
      * collect statistics along the way. 
@@ -208,7 +208,7 @@ class DecisionTree
         visitor.visit_external_node(*this, index, topology_[index],features);
         return index;
     }
-    /** traverse tree to get statistics
+    /* traverse tree to get statistics
      *
      * Tree is traversed in order the Nodes are in memory (i.e. if no 
      * relearning//pruning scheme is utilized this will be pre order)
@@ -280,7 +280,7 @@ class DecisionTree
         }
     }
 
-    /** same thing as above, without any visitors */
+    /* same thing as above, without any visitors */
     template<class U, class C>
     TreeInt getToLeaf(MultiArrayView<2, U, C> const & features) const
     {

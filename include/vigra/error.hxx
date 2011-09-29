@@ -210,42 +210,42 @@ inline
 void throw_invariant_error(bool predicate, char const * message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::InvariantViolation(message, file, line); 
+       throw vigra::InvariantViolation(message, file, line); 
 }
 
 inline
 void throw_invariant_error(bool predicate, std::string message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::InvariantViolation(message.c_str(), file, line); 
+       throw vigra::InvariantViolation(message.c_str(), file, line); 
 }
 
 inline
 void throw_precondition_error(bool predicate, char const * message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::PreconditionViolation(message, file, line); 
+       throw vigra::PreconditionViolation(message, file, line); 
 }
 
 inline
 void throw_precondition_error(bool predicate, std::string message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::PreconditionViolation(message.c_str(), file, line); 
+       throw vigra::PreconditionViolation(message.c_str(), file, line); 
 }
 
 inline
 void throw_postcondition_error(bool predicate, char const * message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::PostconditionViolation(message, file, line); 
+       throw vigra::PostconditionViolation(message, file, line); 
 }
 
 inline
 void throw_postcondition_error(bool predicate, std::string message, char const * file, int line)
 {
     if(!predicate)
-	   throw vigra::PostconditionViolation(message.c_str(), file, line); 
+       throw vigra::PostconditionViolation(message.c_str(), file, line); 
 }
 
 inline
@@ -280,42 +280,42 @@ inline
 void throw_invariant_error(bool predicate, char const * message)
 {
     if(!predicate)
-	   throw vigra::InvariantViolation(message); 
+       throw vigra::InvariantViolation(message); 
 }
 
 inline
 void throw_precondition_error(bool predicate, char const * message)
 {
     if(!predicate)
-	   throw vigra::PreconditionViolation(message); 
+       throw vigra::PreconditionViolation(message); 
 }
 
 inline
 void throw_postcondition_error(bool predicate, char const * message)
 {
     if(!predicate)
-	   throw vigra::PostconditionViolation(message); 
+       throw vigra::PostconditionViolation(message); 
 }
 
 inline
 void throw_invariant_error(bool predicate, std::string message)
 {
     if(!predicate)
-	   throw vigra::InvariantViolation(message.c_str()); 
+       throw vigra::InvariantViolation(message.c_str()); 
 }
 
 inline
 void throw_precondition_error(bool predicate, std::string message)
 {
     if(!predicate)
-	   throw vigra::PreconditionViolation(message.c_str()); 
+       throw vigra::PreconditionViolation(message.c_str()); 
 }
 
 inline
 void throw_postcondition_error(bool predicate, std::string message)
 {
     if(!predicate)
-	   throw vigra::PostconditionViolation(message.c_str()); 
+       throw vigra::PostconditionViolation(message.c_str()); 
 }
 
 #define vigra_precondition(PREDICATE, MESSAGE) vigra::throw_precondition_error((PREDICATE), MESSAGE)

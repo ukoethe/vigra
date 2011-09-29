@@ -734,6 +734,10 @@ MultiArrayView.  By default, MultiArrayViews are tagged as
 unstrided. If necessary, strided arrays are constructed automatically
 by calls to a variant of the bind...() function.
 
+In addition to the member functions described here, <tt>MultiArrayView</tt>
+and its subclasses support arithmetic and algebraic functions via the 
+module \ref MultiMathModule.
+
 If you want to apply an algorithm requiring an image to a
 <tt>MultiArrayView</tt> of appropriate (2-dimensional) shape, you can
 create a \ref vigra::BasicImageView that acts as a wrapper with the
@@ -1439,6 +1443,28 @@ public:
          */
     MultiArrayView <N+1, T, StrideTag>
     insertSingletonDimension (difference_type_1 i) const;
+
+        /** Create a view to the diagonal elements of the array.
+        
+            This produces a 1D array view whose size equals the size
+            of the shortest dimension of the original array.
+
+            <b>Usage:</b>
+            \code
+            // create a 3D array of size 40x30x20
+            typedef MultiArray<3, double>::difference_type Shape;
+            MultiArray<3, double> array3(Shape(40, 30, 20));
+
+            // get a view to the diagonal elements
+            MultiArrayView <1, double, StridedArrayTag> diagonal = array3.diagonal();
+            assert(diagonal.shape(0) == 20);
+            \endcode
+        */
+    MultiArrayView<1, T, StridedArrayTag> diagonal() const
+    {
+        return MultiArrayView<1, T, StridedArrayTag>(Shape1(vigra::min(m_shape)), 
+                                                     Shape1(vigra::sum(m_stride)), m_ptr);
+    }
 
         /** create a rectangular subarray that spans between the
             points p and q, where p is in the subarray, q not.

@@ -22,7 +22,7 @@ public:
         should(image1->height() == 4);
         should(image1->width() == 3);
         should(image1->size() == vigra::Diff2D(3,4));
-		should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
         
         std::auto_ptr<Image> image2(Policy::factory(new typename ChildImage::InnerImage(0, 0, child_data[1])));
         should(image2->height() == 0);
@@ -215,7 +215,7 @@ public:
         
         should(image1_->end() == std::find_if(image1_->begin(), image1_->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), data[7])));
                     
-		for(int x = 0; x < image1_->width(); x++)
+        for(int x = 0; x < image1_->width(); x++)
             for(int y = 0; y < image1_->height(); y++)
                 should((*image1_)(x,y) == static_cast<typename Policy::PixelType>(data[7]));
 

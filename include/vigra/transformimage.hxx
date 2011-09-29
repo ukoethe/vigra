@@ -661,11 +661,11 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
                           - minmax.min));                    // offset
     \endcode
 
-	The one-parameter version can be used like this:
+    The one-parameter version can be used like this:
 
     \code
-	// scale from 0..255 to 0..1.0
-	FImage dest(src.size());
+    // scale from 0..255 to 0..1.0
+    FImage dest(src.size());
 
     vigra::transformImage(srcImageRange(src), destImage(dest),
                           linearIntensityTransform<float>(1.0 / 255));
@@ -962,7 +962,7 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
     vigra::FImage fimage(width, height);
     ...
 
-    vigra::FindMinmax<float> minmax;
+    vigra::FindMinMax<float> minmax;
     vigra::inspectImage(srcImageRange(fimage), minmax);
 
     vigra::transformImage(srcImageRange(fimage), destImage(fimage),
@@ -1229,7 +1229,7 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
     vigra::FImage fimage(width, height);
     ...
 
-    vigra::FindMinmax<float> minmax;
+    vigra::FindMinMax<float> minmax;
     vigra::inspectImage(srcImageRange(fimage), minmax);
 
     vigra::transformImage(srcImageRange(fimage), destImage(fimage),

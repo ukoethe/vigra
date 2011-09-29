@@ -29,7 +29,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void 
 convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
-	     DestIterator di, DestAccessor dest, KernelIterator kit)
+         DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
@@ -47,9 +47,9 @@ convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
         for( ; snav.hasMore(); snav++, dnav++ ) 
         {
- 	  convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
- 			destIter( dnav.begin(), dest ),
- 			kernel1d( *kit ) );
+      convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
+            destIter( dnav.begin(), dest ),
+            kernel1d( *kit ) );
         }
         ++kit;
     }
@@ -79,11 +79,11 @@ convolveCDR( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void convolveCDR( 
-	    triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-	    pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+        pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
   convolveCDR( source.first, source.second, source.third, 
-	       dest.first, dest.second, kit );
+           dest.first, dest.second, kit );
 }
 
 
@@ -95,7 +95,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void 
 convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
-		  DestIterator di, DestAccessor dest, KernelIterator kit)
+          DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
@@ -113,13 +113,13 @@ convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
         for( ; snav.hasMore(); snav++, dnav++ ) 
         {
- 	  convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
-			destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
- 			kernel1d( *kit ) );
+      convolveLine( srcIterRange( snav.begin(), snav.end(), src ),
+            destIter( tmp.begin(), StandardValueAccessor<TmpType>() ),
+            kernel1d( *kit ) );
 
-	  // copy temp result to target object
-	  copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
-		    dnav.begin(), dest);
+      // copy temp result to target object
+      copyLine( tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>(),
+            dnav.begin(), dest);
         }
         ++kit;
     }
@@ -149,11 +149,11 @@ convolveCopyDest( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void convolveCopyDest( 
-	    triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-	    pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+        pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
   convolveCopyDest( source.first, source.second, source.third, 
-		    dest.first, dest.second, kit );
+            dest.first, dest.second, kit );
 }
 
 
@@ -166,7 +166,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void 
 convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src, 
-		 DestIterator di, DestAccessor dest, KernelIterator kit)
+         DestIterator di, DestAccessor dest, KernelIterator kit)
 {
     enum { N = 1 + SrcIterator::level };
 
@@ -184,13 +184,13 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
         for( ; snav.hasMore(); snav++, dnav++ ) 
         {
-	  // copy source to temp 
-	  copyLine( snav.begin(), snav.end(), src,
-		    tmp.begin(), StandardValueAccessor<TmpType>() );
+      // copy source to temp 
+      copyLine( snav.begin(), snav.end(), src,
+            tmp.begin(), StandardValueAccessor<TmpType>() );
 
- 	  convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
-			destIter(dnav.begin(), dest),
- 			kernel1d( *kit ) );
+      convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+            destIter(dnav.begin(), dest),
+            kernel1d( *kit ) );
         }
         ++kit;
     }
@@ -204,13 +204,13 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 
         for( ; dnav.hasMore(); dnav++ ) 
         {
-	  // copy source to temp 
-	  copyLine( dnav.begin(), dnav.end(), dest,
-		    tmp.begin(), StandardValueAccessor<TmpType>() );
+      // copy source to temp 
+      copyLine( dnav.begin(), dnav.end(), dest,
+            tmp.begin(), StandardValueAccessor<TmpType>() );
 
- 	  convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
-			destIter(dnav.begin(), dest),
- 			kernel1d( *kit ) );
+      convolveLine( srcIterRange(tmp.begin(), tmp.end(), StandardConstValueAccessor<TmpType>()),
+            destIter(dnav.begin(), dest),
+            kernel1d( *kit ) );
         }
     }
 }
@@ -220,11 +220,11 @@ convolveCopySrc( SrcIterator si, SrcShape const & shape, SrcAccessor src,
 template <class SrcIterator, class SrcShape, class SrcAccessor, 
           class DestIterator, class DestAccessor, class KernelIterator>
 inline void convolveCopySrc( 
-	    triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
-	    pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
+        triple<SrcIterator, SrcShape, SrcAccessor> const & source, 
+        pair<DestIterator, DestAccessor> const & dest, KernelIterator kit )
 {
   convolveCopySrc( source.first, source.second, source.third, 
-		    dest.first, dest.second, kit );
+            dest.first, dest.second, kit );
 }
 
 
@@ -268,24 +268,24 @@ struct MultiArraySepConvSpeedTest
   void testCpySrc( const Image3D &src, Image3D &dst )
   {
     Impls::convolveCopySrc( srcMultiArrayRange(src),
-			    destMultiArray(dst),
-			    kernels.begin() );
+                destMultiArray(dst),
+                kernels.begin() );
   }
 
 
   void testCpyDest( const Image3D &src, Image3D &dst )
   {
     Impls::convolveCopyDest( srcMultiArrayRange(src),
-			     destMultiArray(dst),
-			     kernels.begin() );
+                 destMultiArray(dst),
+                 kernels.begin() );
   }
 
 
   void testCDR( const Image3D &src, Image3D &dst )
   {
     Impls::convolveCDR( srcMultiArrayRange(src),
-			destMultiArray(dst),
-			kernels.begin() );
+            destMultiArray(dst),
+            kernels.begin() );
   }
 
 
@@ -301,7 +301,7 @@ struct MultiArraySepConvSpeedTest
 
   /*
   void speedTest( const char *name, void (MultiArraySepConvSpeedTest::*f)( const Image3D &, Image3D &),
-		  const Image3D &src, Image3D &dst )
+          const Image3D &src, Image3D &dst )
   {
     int t = clock();
     this->*f( src, dst );
@@ -312,7 +312,7 @@ struct MultiArraySepConvSpeedTest
   */
 
 
-#define Speedy(f,name) int t = clock(); f; t = clock() - t;			\
+#define Speedy(f,name) int t = clock(); f; t = clock() - t;         \
     std::cout << "Timed function: " << name << std::endl << "   = " << t  << std::endl;
 
   void test1()

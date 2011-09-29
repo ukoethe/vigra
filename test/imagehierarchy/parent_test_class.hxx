@@ -217,7 +217,7 @@ public:
         should(image1->height() == 3);
         should(image1->width() == 2);
         should(image1->size() == vigra::Diff2D(2,3));
-		should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
+        should(image1->end() == std::find_if(image1->begin(), image1->end(), std::bind2nd(Pixels_not_equal_to<value_type>(), child_data[0])));    
         
         std::auto_ptr<Image> image2(Policy::factory(0, 0, child_data[1]));
         should(image2->height() == 0);
@@ -400,7 +400,7 @@ public:
         should(image1_->upperLeft()[Diff2D(2,3)] == (*image1_)[Diff2D(2,3)]);
 
         (*image1_->upperLeft()) = data[3];
-		should((*image1_->upperLeft()) == static_cast<typename Policy::PixelType>(data[3]));
+        should((*image1_->upperLeft()) == static_cast<typename Policy::PixelType>(data[3]));
     }
 
     void testLowerRight()
@@ -485,7 +485,7 @@ public:
     */
     void testAllAccessAndSetMethods()
     {
-		scanOrderIter1_ = image1_->begin();
+        scanOrderIter1_ = image1_->begin();
         traverserIter1_ = image1_->upperLeft();
         rowIter1_ = traverserIter1_.rowIterator();
         
@@ -575,7 +575,7 @@ public:
             traverserIter1_.x++;
             columnIter1_ = traverserIter1_.columnIterator();
         }         
-	} 
+    } 
        
 };// end of class ImageTest
 

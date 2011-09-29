@@ -49,8 +49,8 @@ struct VolumeLabelingTest
 
     VolumeLabelingTest()
     : vol1(IntVolume::difference_type(4,4,4)),vol2(IntVolume::difference_type(4,4,4)),
-	  vol3(IntVolume::difference_type(5,5,5)),vol4(DoubleVolume::difference_type(5,5,5)),
-	  vol5(DoubleVolume::difference_type(5,5,5)),vol6(DoubleVolume::difference_type(5,5,5))
+      vol3(IntVolume::difference_type(5,5,5)),vol4(DoubleVolume::difference_type(5,5,5)),
+      vol5(DoubleVolume::difference_type(5,5,5)),vol6(DoubleVolume::difference_type(5,5,5))
     {
         static const int in1[] = { 0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,
                                    0, 0, 0, 0,    0, 1, 1, 0,    0, 1, 1, 0,    0, 0, 0, 0,
@@ -126,38 +126,38 @@ struct VolumeLabelingTest
             *id=*pd;
         }
 
-		static const double in6[] = {
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
+        static const double in6[] = {
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			1.0, 1.0, 0.0, 1.0, 1.0, 
-			1.0, 1.0, 0.0, 1.0, 1.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            1.0, 1.0, 0.0, 1.0, 1.0, 
+            1.0, 1.0, 0.0, 1.0, 1.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			1.0, 1.0, 0.0, 1.0, 1.0, 
-			1.0, 1.0, 0.0, 1.0, 1.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            1.0, 1.0, 0.0, 1.0, 1.0, 
+            1.0, 1.0, 0.0, 1.0, 1.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0, 
-			0.0, 0.0, 0.0, 0.0, 0.0 };
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0, 
+            0.0, 0.0, 0.0, 0.0, 0.0 };
 
-		id = vol6.begin();
+        id = vol6.begin();
         endd = vol6.end();
         pd = in6;
 
@@ -335,53 +335,53 @@ struct VolumeLabelingTest
 
     void labelingAllTest()
     {
-		IntVolume res(vol6.shape());
-		static const int out6[] = {
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
+        IntVolume res(vol6.shape());
+        static const int out6[] = {
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				1, 1, 0, 2, 2, 
-				1, 1, 0, 2, 2, 
-				0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                1, 1, 0, 2, 2, 
+                1, 1, 0, 2, 2, 
+                0, 0, 0, 0, 0, 
 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				1, 1, 0, 2, 2, 
-				1, 1, 0, 2, 2, 
-				0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                1, 1, 0, 2, 2, 
+                1, 1, 0, 2, 2, 
+                0, 0, 0, 0, 0, 
 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0, 
-				0, 0, 0, 0, 0 };
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0 };
 
         should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DSix(), 0));
         shouldEqualSequence(res.begin(), res.end(), out6);
 
-		should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix(), 0));
+        should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix(), 0));
         shouldEqualSequence(res.begin(), res.end(), out6);
 
         should(3 == labelVolume(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DSix()));
-		res -= 1;
+        res -= 1;
         shouldEqualSequence(res.begin(), res.end(), out6);
 
-		should(3 == labelVolume(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix()));
-		res -= 1;
+        should(3 == labelVolume(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix()));
+        res -= 1;
         shouldEqualSequence(res.begin(), res.end(), out6);
 
-	}
+    }
 
     IntVolume vol1, vol2, vol3;
     DoubleVolume vol4, vol5, vol6;
@@ -395,7 +395,7 @@ struct VolumeLabelingTestSuite
     VolumeLabelingTestSuite()
     : vigra::test_suite("VolumeLabelingTestSuite")
     {
-		add( testCase( &VolumeLabelingTest::labelingSixTest1));
+        add( testCase( &VolumeLabelingTest::labelingSixTest1));
         add( testCase( &VolumeLabelingTest::labelingSixTest2));
         add( testCase( &VolumeLabelingTest::labelingSixTest3));
         add( testCase( &VolumeLabelingTest::labelingSixTest4));
@@ -404,7 +404,7 @@ struct VolumeLabelingTestSuite
         add( testCase( &VolumeLabelingTest::labelingTwentySixTest2));
         add( testCase( &VolumeLabelingTest::labelingTwentySixTest3));
         add( testCase( &VolumeLabelingTest::labelingTwentySixWithBackgroundTest1));
-		add( testCase( &VolumeLabelingTest::labelingAllTest));
+        add( testCase( &VolumeLabelingTest::labelingAllTest));
     }
 };
 

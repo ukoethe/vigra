@@ -40,6 +40,7 @@
 #include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
 #include <iosfwd>   // ostream
+#include <algorithm>
 #include "config.hxx"
 #include "error.hxx"
 #include "metaprogramming.hxx"
@@ -128,6 +129,18 @@ struct ExecLoop
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
     VIGRA_EXEC_LOOP_SCALAR(divScalar, /)
 
+    template <class T>
+    static T const & minimum(T const * p)
+    {
+        return *std::min_element(p, p+LEVEL);
+    }
+
+    template <class T>
+    static T const & maximum(T const * p)
+    {
+        return *std::max_element(p, p+LEVEL);
+    }
+
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)
     {
@@ -169,25 +182,56 @@ struct ExecLoop
 };
 
 template <int LEVEL>
-struct UnrollDot
+struct UnrollScalarResult
 {
     template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
     {
-        return *d * *d + UnrollDot<LEVEL-1>::dot(d+1);
+        return *d * *d + UnrollScalarResult<LEVEL-1>::dot(d+1);
     }
 
     template <class T1, class T2>
     static typename PromoteTraits<T1, T2>::Promote
     dot(T1 const * left, T2 const * right)
     {
-        return *left * *right + UnrollDot<LEVEL-1>::dot(left+1, right+1);
+        return *left * *right + UnrollScalarResult<LEVEL-1>::dot(left+1, right+1);
+    }
+    
+    template <class T>
+    static typename NormTraits<T>::SquaredNormType
+    squaredNorm(T const * d)
+    {
+        return vigra::squaredNorm(*d) + UnrollScalarResult<LEVEL-1>::squaredNorm(d+1);
+    }
+
+    static std::ptrdiff_t
+    squaredNorm(std::ptrdiff_t const * d)
+    {
+        return (*d)*(*d) + UnrollScalarResult<LEVEL-1>::squaredNorm(d+1);
+    }
+    
+    template <class T>
+    static T const & minimum(T const * p)
+    {
+        T const & m = UnrollScalarResult<LEVEL - 1>::minimum(p+1);
+        return *p < m
+                    ? *p
+                    : m;
+    }
+
+    template <class T>
+    static T const & maximum(T const * p)
+    {
+        T const & m = UnrollScalarResult<LEVEL - 1>::maximum(p+1);
+        return *p > m
+                    ? *p
+                    : m;
     }
 };
 
 template <>
-struct UnrollDot<1>
+struct UnrollScalarResult<1>
 {
     template <class T>
     static typename NumericTraits<T>::Promote
@@ -202,28 +246,7 @@ struct UnrollDot<1>
     {
         return *left * *right;
     }
-};
 
-template <int LEVEL>
-struct UnrollSquaredNorm
-{
-    template <class T>
-    static typename NormTraits<T>::SquaredNormType
-    squaredNorm(T const * d)
-    {
-        return vigra::squaredNorm(*d) + UnrollSquaredNorm<LEVEL-1>::squaredNorm(d+1);
-    }
-
-    static std::ptrdiff_t
-    squaredNorm(std::ptrdiff_t const * d)
-    {
-        return (*d)*(*d) + UnrollSquaredNorm<LEVEL-1>::squaredNorm(d+1);
-    }
-};
-
-template <>
-struct UnrollSquaredNorm<1>
-{
     template <class T>
     static typename NormTraits<T>::SquaredNormType
     squaredNorm(T const * d)
@@ -235,6 +258,18 @@ struct UnrollSquaredNorm<1>
     squaredNorm(std::ptrdiff_t const * d)
     {
         return (*d)*(*d);
+    }
+
+    template <class T>
+    static T const & minimum(T const * p)
+    {
+        return *p;
+    }
+
+    template <class T>
+    static T const & maximum(T const * p)
+    {
+        return *p;
     }
 };
 
@@ -296,6 +331,18 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
     VIGRA_UNROLL_LOOP_SCALAR(divScalar, /)
 
+    template <class T>
+    static T const & minimum(T const * p)
+    {
+        return UnrollScalarResult<LEVEL>::minimum(p);
+    }
+
+    template <class T>
+    static T const & maximum(T const * p)
+    {
+        return UnrollScalarResult<LEVEL>::maximum(p);
+    }
+
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)
     {
@@ -306,21 +353,21 @@ struct UnrollLoop
     static typename NumericTraits<T>::Promote
     dot(T const * d)
     {
-        return UnrollDot<LEVEL>::dot(d);
+        return UnrollScalarResult<LEVEL>::dot(d);
     }
 
     template <class T1, class T2>
     static typename PromoteTraits<T1, T2>::Promote
     dot(T1 const * left, T2 const * right)
     {
-        return UnrollDot<LEVEL>::dot(left, right);
+        return UnrollScalarResult<LEVEL>::dot(left, right);
     }
 
     template <class T>
     static typename NormTraits<T>::SquaredNormType
     squaredNorm(T const * d)
     {
-        return UnrollSquaredNorm<LEVEL>::squaredNorm(d);
+        return UnrollScalarResult<LEVEL>::squaredNorm(d);
     }
 };
 
@@ -364,12 +411,22 @@ struct UnrollLoop<0>
     static void ceil(T1, T2) {}
     template <class T1, class T2>
     static bool notEqual(T1, T2) { return false; }
+    template <class T>
+    static T minimum(T const * p)
+    {
+        return NumericTraits<T>::max();
+    }
+    template <class T>
+    static T maximum(T const * p)
+    {
+        return NumericTraits<T>::min();
+    }
 };
 
 template <int SIZE>
 struct LoopType
 {
-    typedef typename IfBool<(SIZE < 5), UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
+    typedef typename IfBool<(SIZE <= 5), UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
 
 };
 
@@ -549,6 +606,20 @@ class TinyVectorBase
     SquaredNormType squaredMagnitude() const
     {
         return Loop::squaredNorm(data_);
+    }
+
+        /** Return the minimal element.
+        */
+    VALUETYPE const & minimum() const
+    {
+        return Loop::minimum(data_);
+    }
+
+        /** Return the maximal element.
+        */
+    VALUETYPE const & maximum() const
+    {
+        return Loop::maximum(data_);
     }
 
         /** Access component by index.
@@ -1512,6 +1583,15 @@ min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return res;
 }
 
+    /// minimum element
+template <class V, int SIZE, class D1, class D2>
+inline
+V const &
+min(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    return l.minimum();
+}
+
     /// element-wise maximum
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
@@ -1524,6 +1604,15 @@ max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
         if(res[k] < r[k])
             res[k] = r[k];
     return res;
+}
+
+    /// maximum element
+template <class V, int SIZE, class D1, class D2>
+inline
+V const &
+max(TinyVectorBase<V, SIZE, D1, D2> const & l)
+{
+    return l.maximum();
 }
 
     /// squared norm

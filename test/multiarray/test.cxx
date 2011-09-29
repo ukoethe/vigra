@@ -175,9 +175,16 @@ public:
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 1, 0)]), 104);
     }
 
-    // subarray tests
+    // subarray and diagonal tests
     void test_subarray ()
     {
+        MultiArray<1, scalar_type> diagRef(Shape1(10));
+        linearSequence(diagRef.begin(), diagRef.end(), 0, 111);
+
+        MultiArrayView <1, scalar_type, StridedArrayTag> diag = array3.diagonal();
+        shouldEqual(diag.shape(0), 10);
+        shouldEqualSequence(diagRef.begin(), diagRef.end(), diag.begin());
+
         typedef difference3_type Shape;
         
         Shape offset (1,1,1);
@@ -196,6 +203,7 @@ public:
             shouldEqual(array3[k], k+100);
         for(int k=100; k<200; ++k)
             shouldEqual(array3[k], k-100);
+
     }
         
     // stridearray tests
@@ -2130,7 +2138,12 @@ public:
         shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
     
         shouldEqual(sum(b+0.5, 0.0), 300.0);
+        shouldEqual(sum<double>(b+0.5), 300.0);
+        shouldEqual(sum<double>(b), 288.0);
+
         shouldEqual(product(b.subarray(Shape3(1,0,0), Shape3(2,2,2))+0.5, 1.0), 3024.0);
+        shouldEqual(product<double>(b.subarray(Shape3(1,0,0), Shape3(2,2,2))+0.5), 3024.0);
+        shouldEqual(product<double>(MultiArray<3, float>(shape3)), 0.0);
 
         should(all(b > 0.0));
         should(!all(b > 10.0));
@@ -2368,31 +2381,43 @@ public:
     {
         using namespace vigra::multi_math;
         MultiArray<3, std::complex<double> > ac(a.shape());
-        ac.init(std::complex<double>(2.0, 3.0));
+        ac.init(std::complex<double>(3.0, 4.0));
 
         MultiArray<3, std::complex<double> > bc = conj(ac);
         for(int z=0; z<bc.shape(2); ++z)
             for(int y=0; y<bc.shape(1); ++y)
                 for(int x=0; x<bc.shape(0); ++x)
-                    shouldEqual(bc(x,y,z), std::complex<double>(2.0, -3.0));
+                    shouldEqual(bc(x,y,z), std::complex<double>(3.0, -4.0));
 
         bc = ac + ac;
         for(int z=0; z<bc.shape(2); ++z)
             for(int y=0; y<bc.shape(1); ++y)
                 for(int x=0; x<bc.shape(0); ++x)
-                    shouldEqual(bc(x,y,z), std::complex<double>(4.0, 6.0));
+                    shouldEqual(bc(x,y,z), std::complex<double>(6.0, 8.0));
 
         a = real(ac);
         for(int z=0; z<a.shape(2); ++z)
             for(int y=0; y<a.shape(1); ++y)
                 for(int x=0; x<a.shape(0); ++x)
-                    shouldEqual(a(x,y,z), 2.0);
+                    shouldEqual(a(x,y,z), 3.0);
 
         a = imag(ac);
         for(int z=0; z<a.shape(2); ++z)
             for(int y=0; y<a.shape(1); ++y)
                 for(int x=0; x<a.shape(0); ++x)
-                    shouldEqual(a(x,y,z), 3.0);
+                    shouldEqual(a(x,y,z), 4.0);
+
+        a = abs(ac);
+        for(int z=0; z<a.shape(2); ++z)
+            for(int y=0; y<a.shape(1); ++y)
+                for(int x=0; x<a.shape(0); ++x)
+                    shouldEqual(a(x,y,z), 5.0);
+
+        a = arg(ac);
+        for(int z=0; z<a.shape(2); ++z)
+            for(int y=0; y<a.shape(1); ++y)
+                for(int x=0; x<a.shape(0); ++x)
+                    shouldEqualTolerance(a(x,y,z), std::atan2(4.0, 3.0), 1e-16);
     }
 
 };

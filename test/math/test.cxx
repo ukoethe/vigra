@@ -1830,7 +1830,7 @@ struct LinalgTest
         Matrix matColumnMean = Matrix(1, 2, columnMean);
         Matrix matRowMean = Matrix(3, 1, rowMean);
         shouldEqualSequence(matColumnMean.data(), matColumnMean.data()+2, a.mean(0).data());
-        shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());	
+        shouldEqualSequence(matRowMean.data(), matRowMean.data()+3, a.mean(1).data());  
     }
 
     void testArgMinMax()

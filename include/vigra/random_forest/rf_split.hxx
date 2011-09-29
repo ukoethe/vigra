@@ -105,7 +105,7 @@ class SplitBase
     NodeBase                            node_;
 
     /** returns the DecisionTree Node created by
-        \ref findBestSplit or \ref makeTerminalNode.
+        \ref SplitBase::findBestSplit() or \ref SplitBase::makeTerminalNode().
     **/
 
     template<class T>
@@ -141,8 +141,8 @@ class SplitBase
     }
 
 
-    /** findBestSplit has to be implemented in derived split functor.
-        these functions only insures That a CompileTime error is issued
+    /** findBestSplit has to be re-implemented in derived split functor.
+        The defaut implementation only insures that a CompileTime error is issued
         if no such method was defined.
     **/
 
@@ -153,14 +153,14 @@ class SplitBase
                       ArrayVector<Region> childs,
                       Random randint)
     {
-#ifndef __clang__	
+#ifndef __clang__   
         // FIXME: This compile-time checking trick does not work for clang.
         CompileTimeError SplitFunctor__findBestSplit_member_was_not_defined;
 #endif
         return 0;
     }
 
-    /** default action for creating a terminal Node.
+    /** Default action for creating a terminal Node.
         sets the Class probability of the remaining region according to
         the class histogram
     **/
@@ -395,20 +395,20 @@ public:
         double  entropy            = 0.0;
         if(class_count == 2)
         {
-            double p0			= (hist[0]/total);
-            double p1			= (hist[1]/total);
-            entropy				= 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
+            double p0           = (hist[0]/total);
+            double p1           = (hist[1]/total);
+            entropy             = 0 - weights[0]*p0*std::log(p0) - weights[1]*p1*std::log(p1);
         }
         else
         {
             for(int ii = 0; ii < class_count; ++ii)
             {
                 double w        = weights[ii];
-                double pii		= hist[ii]/total;
+                double pii      = hist[ii]/total;
                 entropy         -= w*( pii*std::log(pii));
             }
         }
-        entropy 			= total * entropy;
+        entropy             = total * entropy;
         return entropy; 
     }
 };
@@ -860,7 +860,6 @@ public:
     }
     /** calculate the best gini split along a Feature Column
      * \param column  the feature vector - has to support the [] operator
-     * \param g       ???
      * \param labels  the label vector 
      * \param begin 
      * \param end     (in and out)
@@ -1271,8 +1270,8 @@ public:
     std::ptrdiff_t          min_index_;
     double                  min_threshold_;
     ProblemSpec<>           ext_param_;
-    typedef RandomMT19937	Random_t;
-    Random_t				random;
+    typedef RandomMT19937   Random_t;
+    Random_t                random;
 
     RandomSplitOfColumn()
     {}

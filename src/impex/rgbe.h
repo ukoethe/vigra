@@ -25,8 +25,8 @@ typedef struct {
   float gamma;          /* image has already been gamma corrected with 
                          * given gamma.  defaults to 1.0 (no correction) */
   float exposure;       /* a value of 1.0 in an image corresponds to
-			 * <exposure> watts/steradian/m^2. 
-			 * defaults to 1.0 */
+             * <exposure> watts/steradian/m^2. 
+             * defaults to 1.0 */
 } vigra_rgbe_header_info;
 
 /* flags indicating which fields in an rgbe_header_info are valid */
@@ -51,9 +51,9 @@ int VIGRA_RGBE_ReadPixels(FILE *fp, float *data, int numpixels);
 /* read or write run length encoded files */
 /* must be called to read or write whole scanlines */
 int VIGRA_RGBE_WritePixels_RLE(FILE *fp, float *data, int scanline_width,
-			 int num_scanlines);
+             int num_scanlines);
 int VIGRA_RGBE_ReadPixels_RLE(FILE *fp, float *data, int scanline_width,
-			int num_scanlines);
+            int num_scanlines);
 
 int VIGRA_RGBE_ReadPixels_Raw_RLE(FILE *fp, unsigned char *data, int scanline_width,
             int num_scanlines);

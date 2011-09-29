@@ -484,7 +484,7 @@ generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
                        SeedOptions const & options = SeedOptions())
 {
     using namespace functor;
-	typedef typename SrcAccessor::value_type SrcType;
+    typedef typename SrcAccessor::value_type SrcType;
     
     vigra_precondition(options.mini != SeedOptions::LevelSets || 
                        options.thresholdIsValid<SrcType>(),
@@ -499,14 +499,14 @@ generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
                        destImage(seeds),
                        ifThenElse(Arg1() <= Param(options.thresh), Param(1), Param(0)));
     }
-	else
-	{
-	    localMinima(srcIterRange(upperlefts, lowerrights, sa), destImage(seeds),
-			LocalMinmaxOptions().neighborhood(Neighborhood::DirectionCount)
-			                    .markWith(1.0)
+    else
+    {
+        localMinima(srcIterRange(upperlefts, lowerrights, sa), destImage(seeds),
+            LocalMinmaxOptions().neighborhood(Neighborhood::DirectionCount)
+                                .markWith(1.0)
                                 .threshold(options.thresh)
                                 .allowAtBorder()
-								.allowPlateaus(options.mini == SeedOptions::ExtendedMinima));
+                                .allowPlateaus(options.mini == SeedOptions::ExtendedMinima));
     }
     
     return labelImageWithBackground(srcImageRange(seeds), destIter(upperleftd, da), 
@@ -876,7 +876,7 @@ class SeedRgBiasedValueFunctor
   public:
     double bias;
 
-	    /* the functor's argument type
+        /* the functor's argument type
         */
     typedef Value argument_type;
 

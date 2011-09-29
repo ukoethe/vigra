@@ -42,9 +42,9 @@ IF(PYTHONINTERP_FOUND)
     ENDIF()
     SET(VIGRANUMPY_INSTALL_DIR ${VIGRANUMPY_INSTALL_DIR}
         CACHE PATH "where to install the VIGRA Python package" FORCE)
-	# this is the install path relative to CMAKE_INSTALL_PREFIX,
-	# use this in INSTALL() commands to get packaging right
-	FILE(RELATIVE_PATH VIGRANUMPY_INSTALL_DIR ${CMAKE_INSTALL_PREFIX} ${VIGRANUMPY_INSTALL_DIR})
+    # this is the install path relative to CMAKE_INSTALL_PREFIX,
+    # use this in INSTALL() commands to get packaging right
+    FILE(RELATIVE_PATH VIGRANUMPY_INSTALL_DIR ${CMAKE_INSTALL_PREFIX} ${VIGRANUMPY_INSTALL_DIR})
 
     ######################################################################
     #

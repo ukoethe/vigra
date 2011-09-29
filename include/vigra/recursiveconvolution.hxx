@@ -483,7 +483,7 @@ recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B*as(is, x) + (b1*ybackward[x+1]+b2*ybackward[x+2]+b3*ybackward[x+3]));
     }
 
-	//from left to right - causal - forward
+    //from left to right - causal - forward
     yforward[0] = detail::RequiresExplicitCast<TempType>::cast(B*as(is) + (b1*ybackward[1]+b2*ybackward[2]+b3*ybackward[3]));
 
     ++is;    
@@ -510,7 +510,7 @@ recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         ybackward[x] = detail::RequiresExplicitCast<TempType>::cast(B*yforward[x]+(b1*ybackward[x+1]+b2*ybackward[x+2]+b3*ybackward[x+3]));
     }
 
-	// output
+    // output
     for(x=0; x < w; ++x, ++id)
     {
         ad.set(ybackward[x], id);

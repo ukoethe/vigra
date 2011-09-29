@@ -125,7 +125,8 @@
             <LI> \ref vigra::Rational
             <LI> \ref vigra::TinyVector
             <LI> \ref vigra::FFTWComplex
-            <LI>\ref vigra::FixedPoint16
+            <LI> \ref vigra::FixedPoint16
+            <LI> \ref vigra::Quaternion
             </UL>
         <LI> \ref RandomNumberGeneration
              <BR>&nbsp;&nbsp;&nbsp;<em>Mersenne twister class and random number functors</em>
@@ -225,6 +226,8 @@
          <BR>&nbsp;&nbsp;&nbsp;<em>Interface for multi-dimensional arrays </em>
     <LI> \ref vigra::MultiArray
          <BR>&nbsp;&nbsp;&nbsp;<em>Array class that holds the actual memory</em>
+    <LI> \ref MultiMathModule
+         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
     <LI> \ref MultiArrayTags
          <BR>&nbsp;&nbsp;&nbsp;<em>Meta-programming tags to mark array's as strided or unstrided</em>
     <LI> \ref MultiIteratorPage
@@ -236,7 +239,9 @@
     <LI> \ref MultiPointoperators
          <BR>&nbsp;&nbsp;&nbsp;<em>Point operators on multi-dimensional arrays</em>
     <LI> \ref MultiArrayConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Separable convolution for arrays of arbitrary dimension</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>Convolution filters in arbitrary dimensions</em>
+    <LI> \ref FourierTransform
+         <BR>&nbsp;&nbsp;&nbsp;<em>Fast Fourier transform for arrays of arbitrary dimension</em>
     <LI> \ref resizeMultiArraySplineInterpolation()
          <BR>&nbsp;&nbsp;&nbsp;<em>Interpolation of arrays in arbitrary dimensions</em>
     <LI> \ref MultiArrayDistanceTransform 
@@ -294,6 +299,8 @@
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref PointOperators
          <BR>&nbsp;&nbsp;&nbsp;<em>algorithms and functors for image arithmetic, inspection, transformations etc.</em>
+    <LI> \ref MultiMathModule
+         <BR>&nbsp;&nbsp;&nbsp;<em>Arithmetic and algebraic expressions for multi-dimensional arrays</em>
     <LI> \ref FunctorExpressions
          <BR>&nbsp;&nbsp;&nbsp;<em>Expression templates for automated functor creation</em>
     <LI> \ref GeometricTransformations "Resize and Other Geometric Image Transformations"

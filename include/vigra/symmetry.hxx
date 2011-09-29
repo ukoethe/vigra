@@ -73,11 +73,11 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	              class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         void
         radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-			                    DestIterator dul, DestAccessor ad,
-			                    double scale)
+                                DestIterator dul, DestAccessor ad,
+                                double scale)
     }
     \endcode
 
@@ -85,12 +85,12 @@ namespace vigra {
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
-	              class DestIterator, class DestAccessor>
+                  class DestIterator, class DestAccessor>
         inline
         void radialSymmetryTransform(
-	           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	           pair<DestIterator, DestAccessor> dest,
-	           double scale)
+               triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               pair<DestIterator, DestAccessor> dest,
+               double scale)
     }
     \endcode
 
@@ -145,7 +145,7 @@ template <class SrcIterator, class SrcAccessor,
 void
 radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                DestIterator dul, DestAccessor ad,
-		double scale)
+        double scale)
 {
     vigra_precondition(scale > 0.0,
                  "radialSymmetryTransform(): Scale must be > 0");
@@ -248,12 +248,12 @@ template <class SrcIterator, class SrcAccessor,
 inline
 void radialSymmetryTransform(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
-	   pair<DestIterator, DestAccessor> dest,
-	   double scale)
+       pair<DestIterator, DestAccessor> dest,
+       double scale)
 {
     radialSymmetryTransform(src.first, src.second, src.third,
                             dest.first, dest.second,
-			    scale);
+                scale);
 }
 
 

@@ -37,16 +37,21 @@ public:
         is_weighted_ = is_weighted;
         tree_count_ = tree_count;
     }
-    
-	/** called after the prediction of a tree was added to the total prediction
-	 * \param WeightIter Iterator to the weights delivered by current tree.
-	 * \param k			 after kth tree
-	 * \param prob		 Total probability array
-	 * \param totalCt	 sum of probability array. 
-	 */
-	template<class WeightIter, class T, class C>
-    bool after_prediction(WeightIter,  int k, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
+
+#ifdef DOXYGEN
+        /** called after the prediction of a tree was added to the total prediction
+         * \param weightIter Iterator to the weights delivered by current tree.
+         * \param k          after kth tree
+         * \param prob       Total probability array
+         * \param totalCt    sum of probability array. 
+         */
+    template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter weightIter, int k, MultiArrayView<2, T, C> const &  prob , double totalCt)
+#else
+    template<class WeightIter, class T, class C>
+    bool after_prediction(WeightIter,  int /* k */, MultiArrayView<2, T, C> const & /* prob */, double /* totalCt */)
     {return false;}
+#endif //DOXYGEN
 };
 
 
@@ -61,10 +66,10 @@ public:
     
     ArrayVector<double> depths;
     
-	/** Constructor
-	 * \param max_tree number of trees to be used for prediction
-	 */
-	StopAfterTree(double max_tree)
+    /** Constructor
+     * \param max_tree number of trees to be used for prediction
+     */
+    StopAfterTree(double max_tree)
     :
         max_tree_p(max_tree)
     {}
@@ -103,9 +108,9 @@ public:
     typedef StopBase SB;
     ArrayVector<double> depths;
 
-	/** Constructor
-	 * \param proportion specify proportion to be used.
-	 */
+    /** Constructor
+     * \param proportion specify proportion to be used.
+     */
     StopAfterVoteCount(double proportion)
     :
         proportion_(proportion)
@@ -155,10 +160,10 @@ public:
     ArrayVector<double> depths;
     typedef StopBase SB;
 
-	/** Constructor
-	 * \param thresh: If the two norm of the probabilities changes less then thresh then stop
-	 * \param num   : look at atleast num trees before stopping
-	 */
+    /** Constructor
+     * \param thresh: If the two norm of the probabilities changes less then thresh then stop
+     * \param num   : look at atleast num trees before stopping
+     */
     StopIfConverging(double thresh, int num = 10)
     :
         thresh_(thresh), 
@@ -219,9 +224,9 @@ public:
     typedef StopBase SB;
     ArrayVector<double> depths;
 
-	/** Constructor
-	 * \param proportion specify proportion to be used.
-	 */
+    /** Constructor
+     * \param proportion specify proportion to be used.
+     */
     StopIfMargin(double proportion)
     :
         proportion_(proportion)
@@ -275,20 +280,20 @@ class StopIfBinTest : public StopBase
 public:
     double alpha_;  
     MultiArrayView<2, double> n_choose_k;
-	/** Constructor
-	 * \param proportion specify alpha value for binomial test.
-	 * \param nck_ Matrix with precomputed values for n choose k
-	 * nck_(n, k) is n choose k. 
-	 */
+    /** Constructor
+     * \param alpha specify alpha (=proportion) value for binomial test.
+     * \param nck_ Matrix with precomputed values for n choose k
+     * nck_(n, k) is n choose k. 
+     */
     StopIfBinTest(double alpha, MultiArrayView<2, double> nck_)
     :
         alpha_(alpha),
         n_choose_k(nck_)
     {}
     typedef StopBase SB;
-	
-	/**ArrayVector that will contain the fraction of trees that was visited before terminating
-	 */
+    
+    /**ArrayVector that will contain the fraction of trees that was visited before terminating
+     */
     ArrayVector<double> depths;
 
     double binomial(int N, int k, double p)
@@ -354,21 +359,21 @@ class StopIfProb : public StopBase
 public:
     double alpha_;  
     MultiArrayView<2, double> n_choose_k;
-	
-	
-	/** Constructor
-	 * \param proportion specify alpha value
-	 * \param nck_ Matrix with precomputed values for n choose k
-	 * nck_(n, k) is n choose k. 
-	 */
+    
+    
+    /** Constructor
+     * \param alpha specify alpha (=proportion) value
+     * \param nck_ Matrix with precomputed values for n choose k
+     * nck_(n, k) is n choose k. 
+     */
     StopIfProb(double alpha, MultiArrayView<2, double> nck_)
     :
         alpha_(alpha),
         n_choose_k(nck_)
     {}
     typedef StopBase SB;
-	/**ArrayVector that will contain the fraction of trees that was visited before terminating
-	 */
+    /**ArrayVector that will contain the fraction of trees that was visited before terminating
+     */
     ArrayVector<double> depths;
 
     double binomial(int N, int k, double p)

@@ -705,32 +705,32 @@ namespace detail {
 template <class T>
 std::complex<T> complexDiv(std::complex<T> const & a, std::complex<T> const & b)
 {
- 	 const double abs_breal = b.real() < 0 ? -b.real() : b.real();
-	 const double abs_bimag = b.imag() < 0 ? -b.imag() : b.imag();
+     const double abs_breal = b.real() < 0 ? -b.real() : b.real();
+     const double abs_bimag = b.imag() < 0 ? -b.imag() : b.imag();
 
-	 if (abs_breal >= abs_bimag) 
-	 {
- 		/* divide tops and bottom by b.real() */
-	 	if (abs_breal == 0.0) 
-	 	{
-	 		return std::complex<T>(a.real() / abs_breal, a.imag() / abs_breal);
-	 	}
-	 	else 
-	 	{
-	 		const double ratio = b.imag() / b.real();
-	 		const double denom = b.real() + b.imag() * ratio;
-	 		return std::complex<T>((a.real() + a.imag() * ratio) / denom,
-	 		                       (a.imag() - a.real() * ratio) / denom);
-	 	}
-	}
-	else 
-	{
-		/* divide tops and bottom by b.imag() */
-		const double ratio = b.real() / b.imag();
-		const double denom = b.real() * ratio + b.imag();
-		return std::complex<T>((a.real() * ratio + a.imag()) / denom,
+     if (abs_breal >= abs_bimag) 
+     {
+        /* divide tops and bottom by b.real() */
+        if (abs_breal == 0.0) 
+        {
+            return std::complex<T>(a.real() / abs_breal, a.imag() / abs_breal);
+        }
+        else 
+        {
+            const double ratio = b.imag() / b.real();
+            const double denom = b.real() + b.imag() * ratio;
+            return std::complex<T>((a.real() + a.imag() * ratio) / denom,
+                                   (a.imag() - a.real() * ratio) / denom);
+        }
+    }
+    else 
+    {
+        /* divide tops and bottom by b.imag() */
+        const double ratio = b.real() / b.imag();
+        const double denom = b.real() * ratio + b.imag();
+        return std::complex<T>((a.real() * ratio + a.imag()) / denom,
                                (a.imag() * ratio - a.real()) / denom);
-	}
+    }
 }
 
 template <class T>

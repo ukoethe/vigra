@@ -346,7 +346,7 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
                       
         internalNonlinearDiffusionAOSStep(s1, s1+size, a, wi, wa, s2, a, time_step);
     
-		std::swap(s1, s2);
+        std::swap(s1, s2);
     }
     
     copyImage(s1, s1+size, a, dul, ad);

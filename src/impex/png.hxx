@@ -83,8 +83,8 @@ namespace vigra {
         unsigned int getHeight() const;
         unsigned int getNumBands() const;
         unsigned int getNumExtraBands() const;
-	float getXResolution() const;
-	float getYResolution() const;
+    float getXResolution() const;
+    float getYResolution() const;
         Diff2D getPosition() const;
 
         unsigned int getOffset() const;

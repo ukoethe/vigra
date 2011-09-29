@@ -706,7 +706,7 @@ class LocalMinmaxOptions
     with the default value 1 in the destination array.
     
     The defaults can be overridden in various ways by providing 
-    \ref LocalMinmaxOptions: you can switch to the direct neighborhood
+    \ref LocalMinmaxOptions : you can switch to the direct neighborhood
     (i.e. 4-neighborhood in 2D, 6-neighborhood in 3D, 2*N neighborhood 
     in N-D), allow minima at the border, discard minima where the function 
     value is not below a given threshold, allow extended minima
@@ -1049,7 +1049,7 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     with the default value 1 in the destination array.
     
     The defaults can be overridden in various ways by providing 
-    \ref LocalMinmaxOptions: you can switch to the direct neighborhood
+    \ref LocalMinmaxOptions : you can switch to the direct neighborhood
     (i.e. 4-neighborhood in 2D, 6-neighborhood in 3D, 2*N neighborhood 
     in N-D), allow maxima at the border, discard maxima where the function 
     value is not above a given threshold, allow extended maxima

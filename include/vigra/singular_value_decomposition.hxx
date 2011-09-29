@@ -63,8 +63,8 @@ namespace linalg
    never fail (except if the shapes of the argument matrices don't match).
    The effective numerical rank of A is returned.
 
-	(Adapted from JAMA, a Java Matrix Library, developed jointly
-	by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
+    (Adapted from JAMA, a Java Matrix Library, developed jointly
+    by the Mathworks and NIST; see  http://math.nist.gov/javanumerics/jama).
 
     <b>\#include</b> \<vigra/singular_value_decomposition.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>

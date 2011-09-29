@@ -294,7 +294,7 @@ struct ImageTest
         img.init(NumericTraits<Value>::zero());
         for(; i != img.end(); ++i)
         {
-			should(acc(i) == NumericTraits<Value>::zero());
+            should(acc(i) == NumericTraits<Value>::zero());
         }
         img(1,1) = Value(200);
         img1 = img;
@@ -491,62 +491,62 @@ struct ImageTestSuite
 
 struct CompareFunctor
 {
-	double sumDifference_;
+    double sumDifference_;
 
-	CompareFunctor(): sumDifference_(0) {}
+    CompareFunctor(): sumDifference_(0) {}
 
-	void operator()(const float &a, const float &b)
+    void operator()(const float &a, const float &b)
     { sumDifference_+=  VIGRA_CSTD::abs(a-b); }
 
     double operator()()
-		{ return sumDifference_; }
+        { return sumDifference_; }
 };
 
 struct ImageContainerTests
 {
-	ImageImportInfo info;
-	int w, h;
-	FImage lennaImage;
+    ImageImportInfo info;
+    int w, h;
+    FImage lennaImage;
 
-	ImageContainerTests()
-		: info("lenna.xv"),
-		  w(info.width()), h(info.height()),
-		  lennaImage(w, h)
-	{
-		importImage(info, destImage(lennaImage));
-	}
+    ImageContainerTests()
+        : info("lenna.xv"),
+          w(info.width()), h(info.height()),
+          lennaImage(w, h)
+    {
+        importImage(info, destImage(lennaImage));
+    }
 
-	void initArrayWithImageTest()
-	{
-		ImageArray<FImage> threeLennas(3, lennaImage);
-		CompareFunctor cmp;
-		inspectTwoImages(srcImageRange(threeLennas[0]), srcImage(threeLennas[2]), cmp);
-		shouldEqual(cmp(), 0.0);
+    void initArrayWithImageTest()
+    {
+        ImageArray<FImage> threeLennas(3, lennaImage);
+        CompareFunctor cmp;
+        inspectTwoImages(srcImageRange(threeLennas[0]), srcImage(threeLennas[2]), cmp);
+        shouldEqual(cmp(), 0.0);
 
-		Diff2D newsize(50, 50);
-		threeLennas.resizeImages(newsize);
-		for (ImageArray<FImage>::iterator it= threeLennas.begin();
-			 it!= threeLennas.end(); it++)
-			shouldEqual((*it).size(), newsize);
-	}
+        Diff2D newsize(50, 50);
+        threeLennas.resizeImages(newsize);
+        for (ImageArray<FImage>::iterator it= threeLennas.begin();
+             it!= threeLennas.end(); it++)
+            shouldEqual((*it).size(), newsize);
+    }
 
-	void initArrayWithSizeTest()
-	{
-		Diff2D testsize(50, 50);
-		ImageArray<FImage> ia(6, testsize);
+    void initArrayWithSizeTest()
+    {
+        Diff2D testsize(50, 50);
+        ImageArray<FImage> ia(6, testsize);
 
-		for (unsigned int i=0; i<ia.size(); i++)
-			shouldEqual(ia[i].size(), testsize);
+        for (unsigned int i=0; i<ia.size(); i++)
+            shouldEqual(ia[i].size(), testsize);
 
-		ImageArray<FImage> ia2(ia.begin(), ia.end());
-		shouldEqual(ia2.imageSize(), testsize);
+        ImageArray<FImage> ia2(ia.begin(), ia.end());
+        shouldEqual(ia2.imageSize(), testsize);
 
-		ia2.erase(ia2.begin()+1);
-		shouldEqual(ia2.size(), ia.size()-1);
+        ia2.erase(ia2.begin()+1);
+        shouldEqual(ia2.size(), ia.size()-1);
 
-		ia.clear();
-		shouldEqual(ia.size(), 0u);
-	}
+        ia.clear();
+        shouldEqual(ia.size(), 0u);
+    }
 };
 
 struct ImageContainerTestSuite

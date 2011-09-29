@@ -2,20 +2,23 @@
 
     VIGRA can be downloaded from <a href="http://hci.iwr.uni-heidelberg.de/vigra/">http://hci.iwr.uni-heidelberg.de/vigra/</a>. It should work with any standard conforming C++ compiler on both 32-bit and 64-bit machines.
     
-    VIGRA is mainly a header library, i.e. much of its functionality can be accessed by simply copying the include files to a convenient location. A more involved build process is necessary for image file import and export, for the VIGRA Python bindings, and for the test suite and examples. VIGRA can take advantage of the following external libraries:
+    VIGRA is mainly a header library, i.e. much of its functionality can be accessed by simply copying the include files to a convenient location. A more involved build process is necessary for image file import and export, for the VIGRA Python bindings, and for the test suite and examples. VIGRA can take advantage of the following external software packages:
     
     <ul>
     <li> <a href="http://www.ijg.org/">libjpeg</a>, <a href="http://www.libtiff.org/">libtiff</a>,
-         <a href="http://www.libpng.org/">libpng</a> for reading and writing JPEG, TIFF, and PNG 
-         images.
-    <li> <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> for reading and writing HDF5 files (storage of MultiArray and RandomForest)
-    <li> <a href="http://www.fftw.org/">libfftw</a> for fast Fourier transforms
-    <li> <a href="http://www.python.org/">Python</a>, <a href="http://www.boost.org/">boost_python</a>, and <a href="http://numpy.scipy.org/">numpy</a> for the VIGRA Python bindings.
+         <a href="http://www.libpng.org/">libpng</a>, <a href="http://www.openexr.com/">OpenEXR</a> 
+         for reading and writing JPEG, TIFF, PNG, and EXR images respectively.
+    <li> <a href="http://www.hdfgroup.org/HDF5/">HDF5</a> for reading and writing HDF5 files (storage of MultiArray and RandomForest).
+    <li> <a href="http://www.fftw.org/">libfftw</a> for fast Fourier transforms.
+    <li> <a href="http://www.doxygen.org/">doxygen</a> and <a href="http://www.python.org/">Python</a> to generate C++ documentation.
+    <li> <a href="http://www.python.org/">Python</a>, <a href="http://www.boost.org/">boost_python</a>, and <a href="http://numpy.scipy.org/">numpy</a> to compile and run vigranumpy (the VIGRA Python bindings).
+    <li> <a href="http://sphinx.pocoo.org/">sphinx</a> to generate vigranumpy documentation.
+    <li> <a href="http://readthedocs.org/docs/nose/en/latest/">nosetests</a> to execute the vigranumpy test suite.
     </ul>
 
     These dependencies are optional - the functionality will simply be unavailable if the libraries cannot be found.
     
-    VIGRA installation is based on <a href="http://www.cmake.org/">cmake</a>. In order to configure the build and installation process, execute the following on the command line:
+    VIGRA installation is based on <a href="http://www.cmake.org/">cmake</a> which has to be installed on your machine. In order to configure the build and installation process, execute the following on the command line:
 
     
     \code
@@ -29,7 +32,7 @@
     > make examples # build examples (optional, Linux/Unix and MinGW only)
     \endcode
     
-    If you use Microsoft Visual C++, you just execute cmake (not make) which creates a solution file '&lt;vigra_build_path&gt;/vigra.sln'. This file must be opened in Visual Studio, and the projects 'ALL_BUILD', 'check', 'doc', 'INSTALL', and 'examples' should be generated. <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA -- always include <b>"vigra/windows.h"</b> instead.
+    If you use Microsoft Visual C++, you just execute <tt>cmake</tt> (not <tt>make</tt>) or <tt>cmake-gui</tt> with the appropriate generator which creates a solution file '&lt;vigra_build_path&gt;/vigra.sln'. This file must be opened in Visual Studio, and the projects 'ALL_BUILD', 'check', 'doc', 'INSTALL', and 'examples' should be generated. <b>Important note</b>: If you include <b>"windows.h"</b> in your projects: there are some name clashes with VIGRA -- always include <b>"vigra/windows.h"</b> instead.
     
     cmake [options] customize installation directories and guide cmake in its search for the VIGRA dependencies. On a Linux system, it is often possible to configure without any options. The most commonly used options are:
     
