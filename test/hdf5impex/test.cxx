@@ -1175,6 +1175,62 @@ public:
         file_open.readAttribute("/group2/float_array","float_array_attribute",read_attr);
     }
 
+    struct HDF5File_close_test : public HDF5File
+    {
+        HDF5File_close_test(const std::string & name)
+            : HDF5File(name, HDF5File::New) {}
+
+        hid_t get_file_id() const
+        {
+            return fileHandle_;
+        }
+    };
+    void test_file_closing()
+    {
+        hid_t file_id = 0;
+        { // open a new block on purpose.
+            HDF5File_close_test test_file("open_file_test.hdf5");
+            // mess around with the file in order to maybe trigger
+            // leaking hdf5 object descriptors that would block
+            // closing the file
+            test_file.cd_mk("subgroup_a"); // this at least used to leak.
+            test_file.cd("/");
+            test_file.cd_mk("subgroup_c");
+            test_file.mkdir("group1");
+            test_file.cd_mk("subgroup_b");
+            test_file.mkdir("group1");
+            test_file.cd("/");
+            test_file.mkdir("group1");
+            test_file.cd("/");
+            test_file.cd("group1");
+            test_file.mkdir("/group2/subgroup/subsubgroup");
+            test_file.cd_up();
+            test_file.cd("/group2/subgroup/subsubgroup");
+            test_file.cd("..");
+            test_file.cd_up(2);
+            test_file.cd_up();
+            test_file.ls();
+            test_file.cd("/group1/");
+            test_file.cd("../not/existing/../../group2/././subgroup/");
+            MultiArrayShape<3>::type shape (10, 10, 10);
+            test_file.createDataset<3, float>("new_dataset", shape, 1.23);
+
+            file_id = test_file.get_file_id();
+            hid_t new_file_id = H5Freopen(file_id);
+            should(new_file_id >= 0); // the file must be still open
+            H5Fclose(new_file_id);
+        } // this calls ~HDF5File() and therefore absolutely must close the file
+        // but is this really the case?
+        hid_t new_file_id = H5Freopen(file_id);
+        // here we fully expect a console error message such as
+        //  #000: ~/local/src/hdf5-1.8.7/src/H5F.c line 2032 in H5Freopen(): \
+        //                                                            not a file
+        //    major: Invalid arguments to routine
+        //    minor: Inappropriate type
+        should(new_file_id < 0); // the file must be 'already' closed...
+        if (new_file_id >= 0)
+            H5Fclose(new_file_id);
+    }
 };
 
 
@@ -1211,7 +1267,7 @@ struct HDF5ImportExportTestSuite : public vigra::test_suite
         add(testCase(&HDF5ExportImportTest::testHDF5FileBrowsing));
         add(testCase(&HDF5ExportImportTest::testHDF5FileAttributes));
         add(testCase(&HDF5ExportImportTest::testHDF5FileTutorial));
-
+        add(testCase(&HDF5ExportImportTest::test_file_closing));
     }
 };
 

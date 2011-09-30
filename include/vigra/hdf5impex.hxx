@@ -493,11 +493,12 @@ Namespace: vigra
 */
 class HDF5File
 {
-  private:
+  protected:
     HDF5Handle fileHandle_;
 
     // current group handle
     HDF5Handle cGroupHandle_;
+  private:
 
     // time tagging of datasets, turned off (= 0) by default.
     int track_time;
@@ -572,6 +573,12 @@ class HDF5File
         // the operating system, see
         // http://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html#File-Close .
     }
+
+    // copying is not implemented.
+  private:
+    HDF5File(const HDF5File &);
+    void operator=(const HDF5File &);
+  public:
 
     /** \brief Change current group to "/".
      */
