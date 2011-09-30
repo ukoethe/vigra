@@ -493,11 +493,12 @@ Namespace: vigra
 */
 class HDF5File
 {
-  private:
+  protected:
     HDF5Handle fileHandle_;
 
     // current group handle
     HDF5Handle cGroupHandle_;
+  private:
 
     // time tagging of datasets, turned off (= 0) by default.
     int track_time;
@@ -562,19 +563,22 @@ class HDF5File
         cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File(): Failed to open root group.");
     }
 
-
-
-
-    /** \brief Destructor to make sure that all data is flushed before closing the file.
+    /** \brief The destructor flushes and closes the file.
      */
     ~HDF5File()
     {
-        //Write everything to disk before closing
-        H5Fflush(fileHandle_, H5F_SCOPE_GLOBAL);
+        // The members fileHandle_ and cGroupHandle_ are automatically closed
+        // as they are of type HDF5Handle and are properly initialised.
+        // The closing of fileHandle_ implies flushing the file to
+        // the operating system, see
+        // http://www.hdfgroup.org/HDF5/doc/RM/RM_H5F.html#File-Close .
     }
 
-
-
+    // copying is not implemented.
+  private:
+    HDF5File(const HDF5File &);
+    void operator=(const HDF5File &);
+  public:
 
     /** \brief Change current group to "/".
      */
@@ -1742,7 +1746,6 @@ class HDF5File
 
         //open or create subgroups one by one
         std::string::size_type begin = 0, end = groupName.find('/');
-        int ii =  0;
         while (end != std::string::npos)
         {
             std::string group(groupName.begin()+begin, groupName.begin()+end);
@@ -1754,16 +1757,12 @@ class HDF5File
             } else {
                 parent = H5Gopen(prevParent, group.c_str(), H5P_DEFAULT);
             }
+            H5Gclose(prevParent);
 
-            if(ii != 0)
-            {
-                H5Gclose(prevParent);
-            }
             if(parent < 0)
             {
                 return parent;
             }
-            ++ii;
             begin = end + 1;
             end = groupName.find('/', begin);
         }
