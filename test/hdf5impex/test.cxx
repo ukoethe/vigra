@@ -1257,6 +1257,7 @@ public:
             file_id = test_file.get_file_id();
             // check that the file has one more open object (the leak) than it should
             shouldEqual(H5Fget_obj_count(file_id, H5F_OBJ_ALL), 3);
+            shouldEqual(H5Fget_obj_count(file_id, H5F_OBJ_ALL | H5F_OBJ_LOCAL), 2);
             // check that the 'leaked' object is still usable
             H5Gclose(leak_id);
             shouldEqual(H5Fget_obj_count(file_id, H5F_OBJ_ALL), 2);
