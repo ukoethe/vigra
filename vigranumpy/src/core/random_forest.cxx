@@ -116,6 +116,10 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
                                             NumpyArray<2,FeatureType> trainData, 
                                             NumpyArray<2,LabelType> trainLabels)
 {
+    vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
+                       "RandomForest.learnRFWithFeatureSelection(): training data and labels must not\n"
+                       "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
+    
     using namespace rf;
     visitors::VariableImportanceVisitor var_imp;
     visitors::OOB_Error                 oob_v;
@@ -128,8 +132,9 @@ pythonLearnRandomForestWithFeatureSelection(RandomForest<LabelType> & rf,
     
     double oob = oob_v.oob_breiman;
     // std::cout << "out of bag: " << oob << std::endl;
+    NumpyArray<2,double> res(var_imp.variable_importance_);
 
-    return python::make_tuple(oob, var_imp.variable_importance_);
+    return python::make_tuple(oob, res);
 }
 
 template<class LabelType, class FeatureType>
@@ -138,6 +143,10 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
                         NumpyArray<2,FeatureType> trainData, 
                         NumpyArray<2,LabelType> trainLabels)
 {
+    vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
+                       "RandomForest.learnRF(): training data and labels must not\n"
+                       "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
+    
     using namespace rf;
     visitors::OOB_Error oob_v;
 
@@ -159,6 +168,10 @@ pythonRFOnlineLearn(RandomForest<LabelType> & rf,
                     int startIndex,
                     bool adjust_thresholds)
 {
+    vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
+                       "RandomForest.onlineLearn(): training data and labels must not\n"
+                       "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
+    
     PyAllowThreads _pythread;
     rf.onlineLearn(trainData, trainLabels, startIndex, adjust_thresholds);
 }
@@ -170,6 +183,10 @@ pythonRFReLearnTree(RandomForest<LabelType> & rf,
                     NumpyArray<2,LabelType> trainLabels,
                     int treeId)
 {
+    vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
+                       "RandomForest.reLearnTree(): training data and labels must not\n"
+                       "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
+    
     PyAllowThreads _pythread;
     rf.reLearnTree(trainData, trainLabels, treeId);
 }
@@ -180,10 +197,16 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
                       NumpyArray<2,LabelType> res)
 {
+    vigra_precondition(!testData.axistags() && !res.axistags(),
+                       "RandomForest.predictLabels(): test data and output array must not have axistags\n"
+                       "(use 'array.view(numpy.ndarray)' to remove them).");
+    
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
-                       "Output array has wrong dimensions.");
-    PyAllowThreads _pythread;
-    rf.predictLabels(testData, res);
+                       "RandomForest.predictLabels(): Output array has wrong dimensions.");
+    {
+        PyAllowThreads _pythread;
+        rf.predictLabels(testData, res);
+    }
     return res;
 }
 
@@ -193,12 +216,16 @@ pythonRFPredictProbabilities(RandomForest<LabelType> & rf,
                              NumpyArray<2,FeatureType> testData, 
                              NumpyArray<2,float> res)
 {
-    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
-                       "Output array has wrong dimensions.");
+    vigra_precondition(!testData.axistags() && !res.axistags(),
+                       "RandomForest.predictProbabilities(): test data and output array must not\n"
+                       "have axistags (use 'array.view(numpy.ndarray)' to remove them).");
     
-    PyAllowThreads _pythread;
-    rf.predictProbabilities(testData, res);
-
+    res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), rf.ext_param_.class_count_),
+                       "RandomForest.predictProbabilities(): Output array has wrong dimensions.");
+    {
+        PyAllowThreads _pythread;
+        rf.predictProbabilities(testData, res);
+    }
     return res;
 }
 
@@ -208,9 +235,13 @@ pythonRFPredictProbabilitiesOnlinePredSet(RandomForest<LabelType> & rf,
                                           OnlinePredictionSet<FeatureType> & predSet,
                                           NumpyArray<2,float> res)
 {
+    vigra_precondition(!res.axistags(),
+                       "RandomForest.predictProbabilities(): output array must not have axistags\n"
+                       "(use 'array.view(numpy.ndarray)' to remove them).");
+    
     res.reshapeIfEmpty(MultiArrayShape<2>::type(predSet.features.shape(0),
                                                  rf.ext_param_.class_count_),
-                       "Output array has wrong dimenstions.");
+                       "RandomForest.predictProbabilities(): Output array has wrong dimenstions.");
     USETICTOC;
     TIC;
     {
