@@ -12,62 +12,62 @@
     <ul>
     
     <li> Convert an image file into another file type:
-    <a href="convert_8cxx-example.html">convert.cxx</a> <br>
+    <a href="convert.cxx-example.html">convert.cxx</a> <br>
     Usage: <TT>convert infile outfile</TT>
     
     <li> Read an image file and write out a subimage:
-    <a href="subimage_8cxx-example.html">subimage.cxx</a> <br>
+    <a href="subimage.cxx-example.html">subimage.cxx</a> <br>
     Usage: <TT>subimage infile outfile</TT>
     
     <li> Invert an image file (create a negative) using the function 
     \ref transformImage():
-    <a href="invert_8cxx-example.html">invert.cxx</a> <br>
+    <a href="invert.cxx-example.html">invert.cxx</a> <br>
     Usage: <TT>invert infile outfile</TT>
     
     <li> Invert an image file (create a negative) by coding the loop
     explicitly:
-    <a href="invert__explicitly_8cxx-example.html">invert_explicitly.cxx</a> <br>
+    <a href="invert__explicitly.cxx-example.html">invert_explicitly.cxx</a> <br>
     Usage: <TT>invert_explicitly infile outfile</TT>
     
     <li> Resize an image using \ref resizeImageSplineInterpolation():
-    <a href="resize_8cxx-example.html">resize.cxx</a> <br>
+    <a href="resize.cxx-example.html">resize.cxx</a> <br>
     Usage: <TT>resize infile outfile</TT>
     
     <li> Smooth an image using \ref RecursiveConvolution functions:
-    <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
+    <a href="smooth.cxx-example.html">smooth.cxx</a> <br>
     Usage: <TT>smooth infile outfile</TT>
     
     <li> Find the gray value profile along the image diagonal 
     by means of a \ref vigra::LineIterator :
-    <a href="profile_8cxx-example.html">profile.cxx</a> <br>
+    <a href="profile.cxx-example.html">profile.cxx</a> <br>
     Usage: <TT>profile infile</TT>, generates <TT>profile.gif</TT>
 
     <li> Create series of slices through different color spaces.:
-    <a href="palette_8cxx-example.html">palette.cxx</a> <br>
+    <a href="palette.cxx-example.html">palette.cxx</a> <br>
     Usage: <TT>palette lab</TT>, generates <TT>lab_*.gif</TT> (44 images)
 
     <li> Reduce image size by mean of a Gaussian pyramid:
-    <a href="pyramid_8cxx-example.html">pyramid.cxx</a> <br>
+    <a href="pyramid.cxx-example.html">pyramid.cxx</a> <br>
     Usage: <TT>pyramid infile outfile</TT>
     
     <li> Find edges by means of a 
     \ref differenceOfExponentialEdgeImage():
-    <a href="edge_8cxx-example.html">edge.cxx</a> <br>
+    <a href="edge.cxx-example.html">edge.cxx</a> <br>
     Usage: <TT>edge infile outfile</TT>
     <li> Segment image by means of the watershed algorithm, using 
     \ref seededRegionGrowing():
-    <a href="watershed_8cxx-example.html">watershed.cxx</a> <br>
+    <a href="watershed.cxx-example.html">watershed.cxx</a> <br>
     Usage: <TT>watershed infile outfile</TT>
     
     <li> Generate a Voronoi diagram, using \ref distanceTransform() and
     \ref seededRegionGrowing():
-    <a href="voronoi_8cxx-example.html">voronoi.cxx</a> <br>
+    <a href="voronoi.cxx-example.html">voronoi.cxx</a> <br>
     Usage: <TT>voronoi</TT>, generates: <TT>distances.gif</TT> (Euclidean distance transform) and <TT>voronoi.gif</TT>
     (Voronoi diagram)
         
     <li> Measure boundary and corner strengths with the 
     \ref boundaryTensor():
-    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
+    <a href="boundarytensor.cxx-example.html">boundarytensor.cxx</a> <br>
     Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
     
     </ul>
@@ -106,7 +106,7 @@
     
 /** \example smooth.cxx
     Smooth an image using \ref RecursiveConvolution functions:
-    <a href="smooth_8cxx-example.html">smooth.cxx</a> <br>
+    <a href="smooth.cxx-example.html">smooth.cxx</a> <br>
     Usage: <TT>smooth infile outfile</TT>
 */
     
@@ -147,7 +147,7 @@
 /** \example boundarytensor.cxx        
     Measure boundary and corner strengths with the 
     \ref boundaryTensor():
-    <a href="boundarytensor_8cxx-example.html">boundarytensor.cxx</a> <br>
+    <a href="boundarytensor.cxx-example.html">boundarytensor.cxx</a> <br>
     Usage: <TT>boundarytensor infile</TT>, creates <tt>boundarystrength.tif</tt> and <tt>cornerstrength.tif</tt>
 */
 
