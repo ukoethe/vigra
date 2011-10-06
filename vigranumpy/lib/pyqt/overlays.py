@@ -156,7 +156,7 @@ class TextOverlay(Overlay):
             position = QtCore.QPointF(*self.pos)
         else:
             position = QtCore.QPointF(*map(
-              lambda x: x * self.parent().zoomFactor(), self.pos + [0.5, 0.5]))
+              lambda x: (x+0.5) * self.parent().zoomFactor(), self.pos))
 
         self._setupPainter(p)
         if self.pointsize:
