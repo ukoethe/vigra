@@ -46,6 +46,48 @@ namespace vigra
 {
 
 template <class T >
+NumpyAnyArray
+pythonLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
+{
+    NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
+    
+    {
+        PyAllowThreads _pythread;
+        
+        leastSquares(A, b, res);
+    }
+    return res;
+}
+
+template <class T >
+NumpyAnyArray
+pythonNonnegativeLeastSquares(NumpyArray<2, T> A, NumpyArray<2, T> b)
+{
+    NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
+    
+    {
+        PyAllowThreads _pythread;
+        
+        nonnegativeLeastSquares(A, b, res);
+    }
+    return res;
+}
+
+template <class T >
+NumpyAnyArray
+pythonRidgeRegression(NumpyArray<2, T> A, NumpyArray<2, T> b, double lambda)
+{
+    NumpyArray<2, T, UnstridedArrayTag> res(Shape2(A.shape(1), 1));
+    
+    {
+        PyAllowThreads _pythread;
+        
+        ridgeRegression(A, b, res, lambda);
+    }
+    return res;
+}
+
+template <class T >
 python::tuple
 pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
                       bool nonNegative,
@@ -125,8 +167,6 @@ pythonlassoRegression(NumpyArray<2, T> A, NumpyArray<2, T> b,
 }
 
 
-// VIGRA_PYTHON_MULTITYPE_FUNCTOR(pythonConvexHull, pyconvexHull)
-
 void defineOptimization()
 {
     using namespace python;
@@ -135,10 +175,49 @@ void defineOptimization()
     
     NumpyArrayConverter<NumpyArray<2, double, UnstridedArrayTag> >();
 
+    def("leastSquares", registerConverters(&pythonLeastSquares<double>),
+        (arg("A"), arg("b")),
+        "Perform plain linear regression.\n"
+        "\n"
+        "For details see leastSquares_ in the vigra C++ documentation.\n\n");
+
+    def("nonnegativeLeastSquares", registerConverters(&pythonNonnegativeLeastSquares<double>),
+        (arg("A"), arg("b")),
+        "Perform linear regression where the solution is constrained to be non-negative.\n"
+        "\n"
+        "For details see nonnegativeLeastSquares_ in the vigra C++ documentation.\n\n");
+
+    def("ridgeRegression", registerConverters(&pythonRidgeRegression<double>),
+        (arg("A"), arg("b"), arg("lambda")),
+        "Perform linear regression with L2 regularization.\n"
+        "\n"
+        "'lambda' is the regularization parameter - the larger it is, the more\n"
+        "biased towards zero the solution will become.\n"
+        "\n"
+        "For details see ridgeRegression_ in the vigra C++ documentation.\n\n");
+
     def("lassoRegression", registerConverters(&pythonlassoRegression<double>),
         (arg("A"), arg("b"), 
          arg("nonNegative")=false, arg("lsq")=true, arg("lasso")=false, arg("maxSolutionCount")=0),
         "Perform linear regression with L1 regularization.\n"
+        "\n"
+        "If 'nonNegative' is 'True', the solution will be constrained to non-negative\n"
+        "values, otherwise values may have arbitrary sign (the default).\n"
+        "If 'lsq' is 'True', the algorithm will return the least squares solution\n"
+        "for each active set. If 'lasso' is 'True', the LASSO solution will be returned\n"
+        "for each active set. Both may be 'True' simultaneously.\n"
+        "If 'maxSolutionCount' is non-zero, atr most so many active sets will\n"
+        "be computed.\n"
+        "\n"
+        "The algorithm returns a tuple::\n\n"
+        "   (numActiveSets, activeSets, lsqSolutions, lassoSolutions)\n\n"
+        "where 'numActiveSets' specifies how many active sets have been computed,\n"
+        "'activeSets' is the list of all active sets (ordered by decreasing regularization),\n"
+        "and 'lsqSolutions' and 'lassoSolutions' are lists of the corresponding solutions\n"
+        "for each active set ('lsqSolutions' and 'lassoSolutions' will be 'None' when\n"
+        "the corresponding function argument was 'False'). An active set is a list of\n"
+        "indices of all variables whose values are non-zero in the corresponding\n"
+        "solution.\n"
         "\n"
         "For details see leastAngleRegression_ in the vigra C++ documentation.\n\n");
 }

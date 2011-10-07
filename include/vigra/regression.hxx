@@ -764,7 +764,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
        This function implements Least Angle Regression (LARS) as described in
 
        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-       B.Efron, T.Hastie, I.Johnstone, and R.Tibshirani: <em>"Least Angle Regression"</em>,
+       B.Efron, T.Hastie, I.Johnstone, and R.Tibshirani: <i>"Least Angle Regression"</i>,
        Annals of Statistics 32(2):407-499, 2004.
 
        It is an efficient algorithm to solve the L1-regularized least squares (LASSO) problem

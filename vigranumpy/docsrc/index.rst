@@ -344,6 +344,15 @@ The module vigra.geometry contains geometric primitives (such as polygons) and r
    :members:
 
 
+Optimization
+------------
+
+The module vigra.optimization provides functions for constrained and unconstrained linear regression.
+
+.. automodule:: vigra.optimization
+   :members:
+
+
 Machine Learning
 ----------------
 
