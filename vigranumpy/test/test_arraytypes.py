@@ -350,70 +350,70 @@ def checkCompatibility(obj, compatible):
             f = getattr(vt, n)
             shape, acopy, default_ordering, same_ordering = f(obj)
             
+            
             assert_equal(obj.shape, shape)
             
             assert_equal(obj.__class__, acopy.__class__)
             assert_equal(obj.shape, acopy.shape)
             if hasattr(obj, 'axistags'):
                 assert_equal(obj.axistags, acopy.axistags)
+            else:
+                assert(not hasattr(acopy, 'axistags'))
                 
             if n != "testAny":
-            
-                # test 'default_ordering'
-                assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                assert_equal(obj.shape, same_ordering.shape)
+                assert(obj.view(numpy.ndarray) == same_ordering.view(numpy.ndarray)).all()
                 
-                if n.startswith("testArray"):
-                    tags = arraytypes.VigraArray._empty_axistags(default_ordering.ndim)
-                elif default_ordering.axistags.channelIndex == default_ordering.ndim:
-                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim+1)
-                    tags.dropChannelAxis()
-                else:
-                    tags = arraytypes.VigraArray.defaultAxistags(default_ordering.ndim)
-                assert_equal(tags, default_ordering.axistags)
-
-                if hasattr(obj, 'axistags'):
-                    cobj = obj.transpose(obj.permutationToNormalOrder())
-                    cdefault = default_ordering.transpose(default_ordering.permutationToNormalOrder())
+                if not hasattr(obj, 'axistags'):
+                    assert_equal(numpy.ndarray, same_ordering.__class__)
+                    assert(not hasattr(same_ordering, 'axistags'))
                     
-                    assert (obj == default_ordering).all()
-                    
-                    if cobj.ndim > cdefault.ndim and cobj.shape[0] == 1:
-                        assert_equal(cobj.shape[1:], cdefault.shape)
-                    elif cobj.ndim < cdefault.ndim and cdefault.shape[0] == 1:
-                        assert_equal(cobj.shape, cdefault.shape[1:])
-                    else:
-                        assert_equal(cobj.shape, cdefault.shape)
-                else:
-                    if obj.ndim < default_ordering.ndim and default_ordering.shape[-1] == 1:
-                        assert_equal(obj.shape, default_ordering.shape[:-1])
-                    else:
+                    if n.startswith("testArray"):
+                        assert_equal(numpy.ndarray, default_ordering.__class__)
                         assert_equal(obj.shape, default_ordering.shape)
+                        assert(obj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
+                        assert(not hasattr(default_ordering, 'axistags'))
+                    else:
+                        assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                        assert_equal(arraytypes.VigraArray.defaultOrder, default_ordering.order)
+                        assert_equal(default_ordering.axistags, 
+                                     arraytypes.VigraArray.defaultAxistags(default_ordering.ndim))
                         
-                # test 'same_ordering'
-                assert_equal(obj.__class__, same_ordering.__class__)
-                    
-                cobj = obj
-                cdefault = same_ordering
-                
-                if hasattr(obj, 'axistags'):
-                    if cobj.ndim > cdefault.ndim:
-                        cobj = arraytypes.dropChannelAxis(cobj)
-                    elif cobj.ndim < cdefault.ndim:
-                        cdefault = arraytypes.dropChannelAxis(cdefault)
-                    assert_equal(cobj.axistags, cdefault.axistags)
+                        if obj.ndim == default_ordering.ndim:
+                            assert_equal(obj.shape, default_ordering.shape)
+                            assert(obj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
+                        else:
+                            assert_equal(obj.shape + (1,), default_ordering.shape)
+                            assert(obj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
+                     
                 else:
-                    if cobj.ndim > cdefault.ndim:
-                        cobj = cobj[...,0]
-                    elif cobj.ndim < cdefault.ndim:
-                        cdefault = cdefault[...,0]
-                
-                assert_equal(cobj.shape, cdefault.shape)
-                assert (cobj == cdefault).all()
+                    assert_equal(arraytypes.VigraArray, same_ordering.__class__)
+                    assert_equal(obj.axistags, same_ordering.axistags)
+                    
+                    if n.startswith("testArray"):
+                        assert_equal(numpy.ndarray, default_ordering.__class__)
+                        fobj = obj.transposeToNormalOrder()
+                        fshape = fobj.shape
+                        assert_equal(fshape, default_ordering.shape)
+                        assert(fobj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
+                        assert(not hasattr(default_ordering, 'axistags'))
+                    else:
+                        assert_equal(arraytypes.VigraArray, default_ordering.__class__)
+                        assert_equal(arraytypes.VigraArray.defaultOrder, default_ordering.order)
+                        dobj = obj.transposeToOrder(arraytypes.VigraArray.defaultOrder)
+                        dshape = dobj.shape
+                        assert_equal(default_ordering.axistags, 
+                                     arraytypes.VigraArray.defaultAxistags(default_ordering.ndim))
+                        if obj.ndim == default_ordering.ndim:
+                            assert_equal(dshape, default_ordering.shape)
+                            assert(dobj.view(numpy.ndarray) == default_ordering.view(numpy.ndarray)).all()
+                        else:
+                            assert_equal(dshape + (1,), default_ordering.shape)
+                            assert(fobj.view(numpy.ndarray) == default_ordering[...,0].view(numpy.ndarray)).all()
         except Exception:
             print "exception in %s with shape %s strides %s tags (%s)" % (n, obj.shape, obj.strides, 
                                             repr(getattr(obj, "axistags", "none")))
             raise
-        
         
     incompatible = allTests.difference(compatible)
     

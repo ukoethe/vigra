@@ -288,9 +288,11 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     template <class U>
     static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
     {
-        // we ignore the 'order' parameter, because we don't know the axis meaning
-        // in a plain array (use Singleband, Multiband, TinyVector etc. instead)
-        return TaggedShape(shape, PyAxisTags(detail::emptyAxistags(shape.size())));
+        // We ignore the 'order' parameter, because we don't know the axis meaning
+        // in a plain array (use Singleband, Multiband, TinyVector etc. instead).
+        // Since we also have no useful axistags in this case, we enforce
+        // the result array to be a plain numpy.ndarray by passing empty axistags.
+        return TaggedShape(shape, PyAxisTags());
     }
 
     // Adjust a TaggedShape that was created by another array to the properties of
@@ -578,8 +580,9 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
 
     static void finalizeTaggedShape(TaggedShape & tagged_shape)
     {
-        if(tagged_shape.axistags && 
-           !tagged_shape.axistags.hasChannelAxis() && tagged_shape.channelCount() == 1)
+        // When there is only one channel, and the axistags don't enforce an
+        // explicit channel axis, we return an array without explicit channel axis.
+        if(tagged_shape.channelCount() == 1 && !tagged_shape.axistags.hasChannelAxis())
         {
             tagged_shape.setChannelCount(0);
             vigra_precondition(tagged_shape.size() == N-1,
