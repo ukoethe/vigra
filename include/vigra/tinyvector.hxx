@@ -718,7 +718,9 @@ class TinyVector
     
     enum ReverseCopyTag { ReverseCopy };
 
-        /** Construction with constant value
+        /** Construction with constant value.
+        
+            Initializes all vector elements with the given value.
         */
     explicit TinyVector(value_type const & initial)
     : BaseType()
@@ -726,7 +728,9 @@ class TinyVector
         Loop::assignScalar(BaseType::begin(), initial);
     }
 
-        /** Construction with Diff2D (only implemented for 2D TinyVector)
+        /** Construction with Diff2D.
+        
+            Use only when <tt>SIZE == 2</tt>.
         */
     explicit TinyVector(Diff2D const & initial)
     : BaseType()
@@ -783,13 +787,24 @@ class TinyVector
         BaseType::data_[3] = i4;
         BaseType::data_[4] = i5;
     }
-       /** Default constructor (initializes all components with zero)
+    
+       /** Default constructor (initializes all elements with zero).
         */
     TinyVector()
     : BaseType()
     {
         Loop::assignScalar(BaseType::data_, NumericTraits<value_type>::zero());
     }
+
+        /** Construct without initializing the vector elements.
+        */
+    explicit TinyVector(SkipInitializationTag)
+    : BaseType()
+    {}
+
+    explicit TinyVector(detail::DontInit)
+    : BaseType()
+    {}
 
         /** Copy constructor.
         */
@@ -821,32 +836,6 @@ class TinyVector
         Loop::reverseAssign(BaseType::data_, data+SIZE-1);
     }
 
-        /** Copy assignment.
-        */
-    TinyVector & operator=(TinyVector const & r)
-    {
-        Loop::assign(BaseType::data_, r.data_);
-        return *this;
-    }
-
-        /** Assignment from Diff2D.
-        */
-    TinyVector & operator=(Diff2D const & r)
-    {
-        BaseType::data_[0] = detail::RequiresExplicitCast<T>::cast(r.x);
-        BaseType::data_[1] = detail::RequiresExplicitCast<T>::cast(r.y);
-        return *this;
-    }
-
-        /** Copy with type conversion.
-        */
-    template <class U>
-    TinyVector(TinyVector<U, SIZE> const & r)
-    : BaseType()
-    {
-        Loop::assignCast(BaseType::data_, r.begin());
-    }
-
         /** Copy with type conversion.
         */
     template <class U, class DATA, class DERIVED>
@@ -854,6 +843,14 @@ class TinyVector
     : BaseType()
     {
         Loop::assignCast(BaseType::data_, r.begin());
+    }
+
+        /** Copy assignment.
+        */
+    TinyVector & operator=(TinyVector const & r)
+    {
+        Loop::assign(BaseType::data_, r.data_);
+        return *this;
     }
 
         /** Copy assignment with type conversion.
@@ -865,13 +862,32 @@ class TinyVector
         return *this;
     }
 
-    explicit TinyVector(SkipInitializationTag)
-    : BaseType()
-    {}
+        /** Assignment from Diff2D.
+        
+            Use only when <tt>SIZE == 2</tt>.
+        */
+    TinyVector & operator=(Diff2D const & r)
+    {
+        BaseType::data_[0] = detail::RequiresExplicitCast<T>::cast(r.x);
+        BaseType::data_[1] = detail::RequiresExplicitCast<T>::cast(r.y);
+        return *this;
+    }
 
-    explicit TinyVector(detail::DontInit)
-    : BaseType()
-    {}
+        /** Copy from a TinyVector with a different number of elements.
+        
+            Only the first <tt>min(SIZE, USIZE)</tt> elements are copied.
+        */
+    template <class U, int USIZE, class DATA, class DERIVED>
+    TinyVector & copy(TinyVectorBase<U, USIZE, DATA, DERIVED> const & r)
+    {
+        static const int minSize = USIZE < SIZE
+                                        ? USIZE
+                                        : SIZE;
+        
+        typedef typename detail::LoopType<minSize>::type MinLoop;
+        MinLoop::assignCast(BaseType::data_, r.begin());
+        return *this;
+    }
 };
 
 /** \brief Wrapper for fixed size vectors.

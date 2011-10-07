@@ -155,6 +155,14 @@ struct TinyVectorTest
         fv = bv3;
         should(equalIter(bv3.begin(), bv3.end(), fv.begin()));
         should(equalVector(bv3, fv));
+
+        TinyVector<double, 5> fv5;
+        fv5.copy(fv3);
+        shouldEqual(fv5[0], fv3[0]);
+        shouldEqual(fv5[1], fv3[1]);
+        shouldEqual(fv5[2], fv3[2]);
+        shouldEqual(fv5[3], 0.0);
+        shouldEqual(fv5[4], 0.0);
     }
 
     void testComparison()
