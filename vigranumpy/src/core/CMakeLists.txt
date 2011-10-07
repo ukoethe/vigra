@@ -53,3 +53,7 @@ VIGRA_ADD_NUMPY_MODULE(noise SOURCES
 VIGRA_ADD_NUMPY_MODULE(geometry SOURCES
     geometry.cxx
   VIGRANUMPY)
+   
+VIGRA_ADD_NUMPY_MODULE(optimization SOURCES
+    optimization.cxx
+  VIGRANUMPY)

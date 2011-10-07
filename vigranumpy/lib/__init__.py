@@ -108,6 +108,7 @@ import learning
 import colors
 import noise
 import geometry
+import optimization
 
 sampling.ImagePyramid = arraytypes.ImagePyramid
 

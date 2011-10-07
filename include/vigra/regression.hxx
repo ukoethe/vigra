@@ -487,10 +487,12 @@ struct LarsData
     }
 };
 
-template <class T, class C1, class C2, class Array1, class Array2>
-unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
-                  Array1 & activeSets, Array2 * lars_solutions, Array2 * lsq_solutions,
-                  LeastAngleRegressionOptions const & options)
+template <class T, class C1, class C2, class Array1, class Array2, class Array3>
+unsigned int 
+leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
+                             Array1 & activeSets, 
+                             Array2 * lars_solutions, Array3 * lsq_solutions,
+                             LeastAngleRegressionOptions const & options)
 {
     using namespace vigra::functor;
 
@@ -610,23 +612,30 @@ unsigned int leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
                 ArrayVector<ArrayVector<MultiArrayIndex> > nnactiveSets;
                 LarsData<T, C1, C2> nnd(d, d.activeSetSize);
 
-                leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, (Array2*)0,
+                leastAngleRegressionMainLoop(nnd, nnactiveSets, &nnresults, (Array3*)0,
                                              LeastAngleRegressionOptions().leastSquaresSolutions(false).nnlasso());
-                Matrix<T> nnlsq_solution(d.activeSetSize, 1);
+                //Matrix<T> nnlsq_solution(d.activeSetSize, 1);
+                typename Array2::value_type nnlsq_solution(Shape(d.activeSetSize, 1));
                 for(unsigned int k=0; k<nnactiveSets.back().size(); ++k)
                 {
                     nnlsq_solution(nnactiveSets.back()[k],0) = nnresults.back()[k];
                 }
-                lsq_solutions->push_back(nnlsq_solution);
+                //lsq_solutions->push_back(nnlsq_solution);
+                lsq_solutions->push_back(typename Array3::value_type());
+                lsq_solutions->back() = nnlsq_solution;
             }
             else
             {
-                lsq_solutions->push_back(d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
+                //lsq_solutions->push_back(d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
+                lsq_solutions->push_back(typename Array3::value_type());
+                lsq_solutions->back() = d.next_lsq_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
             }
         }
         if(lars_solutions != 0)
         {
-            lars_solutions->push_back(d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
+            //lars_solutions->push_back(d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1)));
+            lars_solutions->push_back(typename Array2::value_type());
+            lars_solutions->back() = d.lars_solution.subarray(Shape(0,0), Shape(d.activeSetSize, 1));
         }
 
         // no further solutions possible
