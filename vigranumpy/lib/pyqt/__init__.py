@@ -35,5 +35,7 @@
 
 import quickdialog
 import imagewindow
+import overlays
+import viewer2svg
 
 from imagewindow import *
