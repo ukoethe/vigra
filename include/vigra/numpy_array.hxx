@@ -391,14 +391,19 @@ class NumpyAnyArray
 
         /**
          * Return the AxisTags of this array or a NULL pointer when the attribute
-           'axistags' is missing in the Python object.
+           'axistags' is missing in the Python object or this array has no data.
          */
     python_ptr axistags() const
     {
         static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-        python_ptr axistags(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
-        if(!axistags)
-            PyErr_Clear();
+        
+        python_ptr axistags;
+        if(pyObject())
+        {
+            axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
+            if(!axistags)
+                PyErr_Clear();
+        }
         return axistags;
     }
 
