@@ -573,7 +573,7 @@ template < class PixelType >
 python::tuple 
 pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
                    int neighborhood = 4,
-                   NumpyArray<2, Singleband<npy_uint32> > seeds = python::object(),
+                   NumpyArray<2, Singleband<npy_uint32> > seeds = NumpyArray<2, Singleband<npy_uint32> >(),
                    std::string method = "RegionGrowing", 
                    SRGType srgType = CompleteGrow, 
                    PixelType max_cost = 0.0, 
@@ -660,7 +660,7 @@ template < class PixelType >
 python::tuple 
 pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
                    int neighborhood = 6,
-                   NumpyArray<3, Singleband<npy_uint32> > seeds = python::object(),
+                   NumpyArray<3, Singleband<npy_uint32> > seeds = NumpyArray<3, Singleband<npy_uint32> >(),
                    std::string method = "RegionGrowing", 
                    SRGType srgType = CompleteGrow, 
                    PixelType max_cost = 0.0, 

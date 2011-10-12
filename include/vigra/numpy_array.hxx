@@ -1106,7 +1106,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
 
         this->m_stride /= sizeof(value_type);
         this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
-        vigra_precondition(checkInnerStride(Stride()),
+        vigra_precondition(this->checkInnerStride(Stride()),
             "NumpyArray<..., UnstridedArrayTag>::setupArrayView(): First dimension of given array is not unstrided (should never happen).");
 
     }
