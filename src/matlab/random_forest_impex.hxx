@@ -49,7 +49,7 @@ template<class T>
 void importRandomForest(vigra::RandomForest<T> &rf,ConstCellArray cells)
 {
     // read RF parameters
-    MultiArrayView<1, UInt32> e_param = getArray<UInt32>(cells[0]);
+    MultiArrayView<1, double> e_param = getArray<double>(cells[0]);
     rf.ext_param_.unserialize(e_param.data(), e_param.data()+ e_param.size());
 
     MultiArrayView<1, UInt32> opt = getArray<UInt32>(cells[1]);
@@ -81,7 +81,7 @@ exportRandomForest(RandomForest<T> const & rf, CellArray cells)
 {
     // write RF parameters
     int parameterCount = rf.ext_param_.serialized_size();
-    MultiArrayView<1, UInt32> parameters = createArray<UInt32>(parameterCount, cells[0]);
+    MultiArrayView<1, double> parameters = createArray<double>(parameterCount, cells[0]);
     rf.ext_param_.serialize(parameters.data(), parameters.data()+parameterCount);
 
 

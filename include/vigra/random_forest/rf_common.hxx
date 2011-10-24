@@ -692,7 +692,7 @@ public:
 
     size_t serialized_size() const
     {
-        return 9 + class_count_ *int(is_weighted_+1);
+        return 10 + class_count_ *int(is_weighted_+1);
     }
 
 
@@ -700,7 +700,7 @@ public:
     void unserialize(Iter const & begin, Iter const & end)
     {
         Iter iter = begin;
-        vigra_precondition(end - begin >= 9, 
+        vigra_precondition(end - begin >= 10,
                            "ProblemSpec::unserialize():"
                            "wrong number of parameters");
         #define PULL(item_, type_) item_ = type_(*iter); ++iter;
@@ -719,7 +719,7 @@ public:
         PULL(response_size_, int);
         if(is_weighted_)
         {
-            vigra_precondition(end - begin == 9 + 2*class_count_, 
+            vigra_precondition(end - begin == 10 + 2*class_count_,
                                "ProblemSpec::unserialize(): 2");
             class_weights_.insert(class_weights_.end(),
                                   iter, 
