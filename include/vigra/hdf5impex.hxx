@@ -2195,8 +2195,8 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     The array must have the correct number of dimensions and shape for the dataset 
     represented by 'info'. When the element type of 'array' differs from the stored element
     type, HDF5 will convert the type on the fly (except when the HDF5 version is 1.6 or below,
-    in which case an error will result). Multi-channel element types (i.e. \ref vigra::RGBValue
-    and \ref vigra::TinyVector) are recognized and handled correctly.
+    in which case an error will result). Multi-channel element types (i.e. \ref vigra::RGBValue,
+    \ref vigra::TinyVector, and \ref vigra::FFTWComplex) are recognized and handled correctly.
     
     <b> Declaration:</b>
     
@@ -2245,6 +2245,13 @@ template<unsigned int N, class T>
 inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> array)
 {
     readHDF5(info, array, detail::getH5DataType<T>(), 3);
+}
+
+// non-scalar (FFTWComplex) and unstrided target multi array
+template<unsigned int N, class T>
+inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, FFTWComplex<T>, UnstridedArrayTag> array)
+{
+    readHDF5(info, array, detail::getH5DataType<T>(), 2);
 }
 
 // unstrided target multi array
@@ -2523,7 +2530,8 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
     The number of dimensions, shape and element type of the stored dataset is automatically 
     determined from the properties of the given \a array. Strided arrays are stored in an
     unstrided way, i.e. in contiguous scan-order. Multi-channel element types 
-    (i.e. \ref vigra::RGBValue and \ref vigra::TinyVector) are recognized and handled correctly
+    (i.e. \ref vigra::RGBValue, \ref vigra::TinyVector and \ref vigra::FFTWComplex)
+    are recognized and handled correctly
     (in particular, the will form the innermost dimension of the stored dataset).
     \a pathInFile may contain '/'-separated group names, but must end with the name 
     of the dataset to be created.
@@ -2618,7 +2626,7 @@ inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiA
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
 }
 
-// non-scalar (RGBValue) and strided multi arrays
+// non-scalar (FFTWComplex) and strided multi arrays
 template<unsigned int N, class T>
 inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, StridedArrayTag> & array) 
 {
