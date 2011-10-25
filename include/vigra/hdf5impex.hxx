@@ -1988,6 +1988,9 @@ class HDF5File
 
         vigra_precondition(shape == array.shape(),
                            "HDF5File::read(): Array shape disagrees with dataset shape.");
+        if (offset)
+            vigra_precondition(dimshape[0] == numBandsOfType,
+                               "HDF5File::read(): Band count doesn't match destination array compound type.");
 
         // simply read in the data as is
         H5Dread( datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() ); // .data() possible since void pointer!
