@@ -588,6 +588,8 @@ class RandomForest
     {
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
+
+        #pragma omp parallel for schedule(dynamic)
         for(int k=0; k<features.shape(0); ++k)
             labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
     }
@@ -953,20 +955,23 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    Sampler<Random_t > sampler(preprocessor.strata().begin(),
-                               preprocessor.strata().end(),
-                               detail::make_sampler_opt(options_)
-                                        .sampleSize(ext_param().actual_msample_),
-                                    random);
+    
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
-    
+
+    #pragma omp parallel for schedule(dynamic)
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
-        //initialize First region/node/stack entry
+        Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                           preprocessor.strata().end(),
+                           detail::make_sampler_opt(options_)
+                                    .sampleSize(ext_param().actual_msample_),
+                                random);
+
         sampler
-            .sample();  
+            .sample();
+            
         StackEntry_t
             first_stack_entry(  sampler.sampledIndices().begin(),
                                 sampler.sampledIndices().end(),
@@ -982,6 +987,7 @@ void RandomForest<LabelType, PreprocessorTag>::
                                 stop,
                                 visitor,
                                 randint);
+
         visitor
             .visit_after_tree(  *this,
                                 preprocessor,
@@ -1222,6 +1228,7 @@ void RandomForest<LabelType, PreprocessorTag>
     }
     */
     //Classify for each row.
+    #pragma omp parallel for
     for(int row=0; row < rowCount(features); ++row)
     {
         ArrayVector<double>::const_iterator weights;

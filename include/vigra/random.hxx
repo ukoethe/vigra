@@ -140,12 +140,18 @@ struct RandomState<TT800>
 
     UInt32 get() const
     {
-        if(current_ == N)
-            generateNumbers<void>();
-            
-        UInt32 y = state_[current_++];
-        y ^= (y << 7) & 0x2b5b2500; 
-        y ^= (y << 15) & 0xdb8b0000; 
+		UInt32 y = 0;
+		
+                #pragma omp critical
+		{
+			if(current_ == N)
+				generateNumbers<void>();
+				
+			y = state_[current_++];
+		}
+		
+		y ^= (y << 7) & 0x2b5b2500; 
+		y ^= (y << 15) & 0xdb8b0000; 
         return y ^ (y >> 16);
     }
     
