@@ -9,6 +9,11 @@
 //#include <vigra/random_forest_hdf5_impex.hxx>
 
 #include <vigra/timing.hxx>
+
+#ifdef _OPENMP
+  #include <omp.h>
+#endif
+
 namespace vigra
 {
 namespace rf
@@ -16,12 +21,23 @@ namespace rf
 namespace visitors
 {
 class MatlabRandomForestProgressVisitor : public VisitorBase {
+    private:
+    volatile int numProcessedTrees;
+      
     public:
-    MatlabRandomForestProgressVisitor() : VisitorBase() {}
+    MatlabRandomForestProgressVisitor() : VisitorBase() { numProcessedTrees = 0; }
 
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index){
-        mexPrintf("%d of %d learned\n", index, rf.options().tree_count_); 
+        #pragma omp critical
+        numProcessedTrees++;
+	
+	int totalTrees = rf.options().tree_count_;
+	
+#ifdef _OPENMP
+	if (omp_get_thread_num() == 0)	// main thread?
+#endif
+        mexPrintf("%d of %d learned (%.1f%%)\n", numProcessedTrees, totalTrees, numProcessedTrees * 100.0 / totalTrees); 
     }
     
     template<class RF, class PR>
