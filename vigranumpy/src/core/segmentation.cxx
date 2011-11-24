@@ -822,7 +822,7 @@ void defineSegmentation()
         "the pixel neighborhood to be used and can be 4 (default) or 8.\n\n"
         "For details see labelImageWithBackground_ in the vigra C++ documentation.\n");
 
-    multidef("labelVolume", pyLabelVolume<npy_uint8, float>(),
+    multidef("labelVolume", pyLabelVolume<npy_uint8, npy_uint32, float>(),
         (arg("volume"), 
         arg("neighborhood")=6,
         arg("out")=python::object()),
@@ -831,7 +831,7 @@ void defineSegmentation()
         "\n"
         "For details see labelVolume_ in the vigra C++ documentation.\n");
 
-    multidef("labelVolumeWithBackground", pyLabelVolumeWithBackground<npy_uint8, float>(),
+    multidef("labelVolumeWithBackground", pyLabelVolumeWithBackground<npy_uint8, npy_uint32, float>(),
         (arg("volume"), 
          arg("neighborhood")=6, 
          arg("background_value")=0,
