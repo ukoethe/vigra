@@ -1871,6 +1871,32 @@ public:
 
 namespace detail {
 
+
+template <int K>
+struct CoordinateToScanOrder
+{
+    template <int N>
+    static MultiArrayIndex
+    exec(const TinyVector <MultiArrayIndex, N> &shape,
+         const TinyVector <MultiArrayIndex, N> & coordinate)
+    {
+        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
+    }
+};
+
+template <>
+struct CoordinateToScanOrder<1>
+{
+    template <int N>
+    static MultiArrayIndex
+    exec(const TinyVector <MultiArrayIndex, N> & /*shape*/,
+         const TinyVector <MultiArrayIndex, N> & coordinate)
+    {
+        return coordinate[N-1];
+    }
+};
+
+
 template <unsigned int M>
 struct MoveToScanOrderIndex
 {
@@ -2062,6 +2088,20 @@ class StridedScanOrderIterator
         return *this;
     }
 
+    //! overload to add a coord-tuple:
+    // it should be cheaper because the modulo-divisions are avoided
+    StridedScanOrderIterator & operator+=(const shape_type &coordOffset)
+    {
+        this->moveRelative(dot(coordOffset,this->strides_),
+			   detail::CoordinateToScanOrder<N>::exec(this->shape_, coordOffset),
+			   coordOffset);
+        return *this;
+    }
+    StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
+    {
+	return operator+=(-coordOffset);
+    }
+
     StridedScanOrderIterator & operator--()
     {
         base_type::operator--();
@@ -2119,6 +2159,19 @@ class StridedScanOrderIterator
     {
         return StridedScanOrderIterator(*this) -= d;
     }
+
+
+    StridedScanOrderIterator operator+(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) += coordOffset;
+    }
+
+    StridedScanOrderIterator operator-(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) -= coordOffset;
+    }
+
+
     
     MultiArrayIndex operator-(StridedScanOrderIterator const & r) const
     {
@@ -2255,6 +2308,22 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return *this;
     }
     
+    //! overload to add a coord-tuple:
+    StridedScanOrderIterator & operator+=(const shape_type &coordOffset)
+    {
+        this->moveRelative(dot(coordOffset,strides_), 
+			   detail::CoordinateToScanOrder<N>::exec(shape_, coordOffset),
+			   coordOffset);
+        return *this;
+    }
+
+    StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
+    {
+	return operator+=(-coordOffset);
+    }
+    
+
+
     StridedScanOrderIterator & operator--()
     {
         i_ -= strides_[level];
@@ -2329,6 +2398,16 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     operator-(MultiArrayIndex d) const
     {
         return StridedScanOrderIterator(*this) -= d;
+    }
+
+    StridedScanOrderIterator operator+(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) += coordOffset;
+    }
+
+    StridedScanOrderIterator operator-(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) -= coordOffset;
     }
     
     MultiArrayIndex
