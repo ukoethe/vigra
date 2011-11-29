@@ -937,7 +937,7 @@ void defineSegmentation()
        arg("seeds")=python::object(), 
        arg("method")="RegionGrowing",
        arg("terminate")=CompleteGrow,
-       arg("max_cost")=0.0,
+       arg("max_cost")=0,
        arg("out")=python::object()),
         "Compute the watersheds of a 2D image.\n"
         "\n"
@@ -992,7 +992,7 @@ void defineSegmentation()
        arg("seeds")=python::object(), 
        arg("method")="RegionGrowing",
        arg("terminate")=CompleteGrow,
-       arg("max_cost")=0.0,
+       arg("max_cost")=0,
        arg("out")=python::object()),
        "Likewise, compute watersheds of a volume.\n");
 }
