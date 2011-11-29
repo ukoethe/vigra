@@ -217,6 +217,73 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 /********************************************************/
 /*                                                      */
+/*             internalConvolveLineZeropad              */
+/*                                                      */
+/********************************************************/
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
+void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                                 DestIterator id, DestAccessor da,
+                                 KernelIterator kernel, KernelAccessor ka,
+                                 int kleft, int kright, 
+                                 int start = 0, int stop = 0)
+{
+    int w = std::distance( is, iend );
+
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
+
+    SrcIterator ibegin = is;
+    
+    if(stop == 0)
+        stop = w;
+    is += start;
+    
+    for(int x=start; x<stop; ++x, ++is, ++id)
+    {
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();
+
+        if(x < kright)
+        {
+            int x0 = x - kright;
+
+            SrcIterator iss = ibegin;
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else if(w-x <= -kleft)
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = iend;
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        else
+        {
+            SrcIterator iss = is + (-kright);
+            SrcIterator isend = is + (1 - kleft);
+            for(; iss != isend ; --ik, ++iss)
+            {
+                sum += ka(ik) * sa(iss);
+            }
+        }
+        
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
+    }
+}
+
+/********************************************************/
+/*                                                      */
 /*             internalConvolveLineReflect              */
 /*                                                      */
 /********************************************************/
@@ -637,6 +704,11 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                      " in mode BORDER_TREATMENT_CLIP.\n");
 
         internalConvolveLineClip(is, iend, sa, id, da, ik, ka, kleft, kright, norm, start, stop);
+        break;
+      }
+      case BORDER_TREATMENT_ZEROPAD:
+      {
+        internalConvolveLineZeropad(is, iend, sa, id, da, ik, ka, kleft, kright, start, stop);
         break;
       }
       default:
@@ -1483,15 +1555,63 @@ class Kernel1D
         initSymmetricGradient(one());
     }
 
+        /** Init as the 2-tap forward difference filter.
+             The filter values are
+             
+            \code
+            [1.0, -1.0]
+            \endcode
+             
+            (note that filters are reflected by the convolution algorithm,
+             and we get a forward difference after reflection).
+
+            Postconditions:
+            \code
+            1. left()  == -1
+            2. right() ==  0
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+          */
+    void initForwardDifference()
+    {
+        this->initExplicitly(-1, 0) = 1.0, -1.0;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
+        /** Init as the 2-tap backward difference filter.
+            The filter values are
+             
+            \code
+            [1.0, -1.0]
+            \endcode
+             
+            (note that filters are reflected by the convolution algorithm,
+             and we get a forward difference after reflection).
+
+            Postconditions:
+            \code
+            1. left()  == 0
+            2. right() ==  1
+            3. borderTreatment() == BORDER_TREATMENT_REFLECT
+            4. norm() == 1.0
+            \endcode
+          */
+    void initBackwardDifference()
+    {
+        this->initExplicitly(0, 1) = 1.0, -1.0;
+        this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
+    }
+
     void
     initSymmetricDifference(value_type norm );
 
         /** Init as the 3-tap symmetric difference filter
-             The filter values are
+            The filter values are
              
-             \code
-             [0.5, 0, -0.5]
-             \endcode
+            \code
+            [0.5, 0, -0.5]
+            \endcode
 
             Postconditions:
             \code
@@ -1510,9 +1630,9 @@ class Kernel1D
             Init the 3-tap second difference filter.
             The filter values are
              
-             \code
-             [1, -2, 1]
-             \endcode
+            \code
+            [1, -2, 1]
+            \endcode
 
             Postconditions:
             \code

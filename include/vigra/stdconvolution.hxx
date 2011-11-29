@@ -188,14 +188,16 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                         border == BORDER_TREATMENT_AVOID   ||
                         border == BORDER_TREATMENT_REFLECT ||
                         border == BORDER_TREATMENT_REPEAT  ||
-                        border == BORDER_TREATMENT_WRAP),
+                        border == BORDER_TREATMENT_WRAP    ||
+                        border == BORDER_TREATMENT_ZEROPAD),
                        "convolveImage():\n"
                        "  Border treatment must be one of follow treatments:\n"
                        "  - BORDER_TREATMENT_CLIP\n"
                        "  - BORDER_TREATMENT_AVOID\n"
                        "  - BORDER_TREATMENT_REFLECT\n"
                        "  - BORDER_TREATMENT_REPEAT\n"
-                       "  - BORDER_TREATMENT_WRAP\n");
+                       "  - BORDER_TREATMENT_WRAP\n"
+                       "  - BORDER_TREATMENT_ZEROPAD\n");
 
     vigra_precondition(kul.x <= 0 && kul.y <= 0,
                        "convolveImage(): coordinates of "
@@ -223,7 +225,7 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
     vigra_precondition(w >= std::max(klr.x, -kul.x) + 1 && h >= std::max(klr.y, -kul.y) + 1,
                        "convolveImage(): kernel larger than image.");
 
-    KernelSumType norm = NumericTraits<KernelSumType>::zero();
+    KernelSumType norm = KernelSumType();
     if(border == BORDER_TREATMENT_CLIP)
     {
         // calculate the sum of the kernel elements for renormalization
@@ -348,6 +350,25 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
                 }
                 
                 sum *= norm / ksum;
+            }
+            else if(border == BORDER_TREATMENT_ZEROPAD)
+            {
+                Diff2D diff;
+                for(int yk = klr.y; yk >= kul.y; --yk, --ykernel.y)
+                {
+                    diff.y = y - yk;
+                    if(diff.y < 0 || diff.y >= h)
+                        continue;
+                    typename KernelIterator::row_iterator xkernel  = ykernel.rowIterator();
+
+                    for(int xk = klr.x; xk >= kul.x; --xk, --xkernel)
+                    {
+                        diff.x = x - xk;
+                        if(diff.x < 0 || diff.x >= w)
+                            continue;
+                        sum += ak(xkernel) * src_acc(src_ul, diff);
+                    }
+                }
             }
             else if(border == BORDER_TREATMENT_AVOID)
             {

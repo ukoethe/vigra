@@ -219,7 +219,8 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
         for(x = 0; x < kernelw; ++x, ++is)
             old = TempType(as(is) + b * old);
     }
-    else if(border == BORDER_TREATMENT_CLIP)
+    else if(border == BORDER_TREATMENT_CLIP ||
+            border == BORDER_TREATMENT_ZEROPAD)
     {
         old = NumericTraits<TempType>::zero();
     }
@@ -254,7 +255,8 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
       for(x = 0; x < kernelw; ++x, --is)
           old = TempType(as(is) + b * old);
     }
-    else if(border == BORDER_TREATMENT_CLIP)
+    else if(border == BORDER_TREATMENT_CLIP ||
+            border == BORDER_TREATMENT_ZEROPAD)
     {
         old = NumericTraits<TempType>::zero();
     }
