@@ -2255,6 +2255,14 @@ class StridedScanOrderIterator
             --this->point_[level];
         }
     }
+    StridedScanOrderIterator & moveRelative(const MultiArrayIndex &pointerOffset,
+					    const MultiArrayIndex &indexOffset,
+					    const shape_type &coordOffset)
+    {
+	base_type::moveRelative(pointerOffset, indexOffset, coordOffset);
+	this->point_[level] += coordOffset[level];
+        return *this;
+    }
 };
 
 template <unsigned int N, class T, class REFERENCE, class POINTER>
@@ -2533,6 +2541,18 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
     {
         index_ = newIndex;
         detail::MoveToScanOrderIndex<N-1>::exec(newIndex, shape_, point_, i_, strides_, p2, strides2);
+    }
+
+    StridedScanOrderIterator & moveRelative(const MultiArrayIndex &pointerOffset,
+					    const MultiArrayIndex &indexOffset,
+					    const shape_type &coordOffset)
+    {
+	point_[level] += coordOffset[level];
+
+        index_+= indexOffset;
+	i_ += pointerOffset;
+	
+        return *this;
     }
 
     pointer i_;
