@@ -500,6 +500,7 @@ public:
         iterator3_t i1 = av.begin();
         iterator3_t i2 = av.begin();
         iterator3_t iend = av.end();
+	iterator3_t i3;
 
         shouldEqual(&i1[0], &a3(0,0,0));
         shouldEqual(&i1[1], &a3(1,0,0));
@@ -517,6 +518,14 @@ public:
         shouldEqual(&*(i1+7), &a3(1,0,1));
         shouldEqual(&*(i1+9), &a3(1,1,1));
 
+        shouldEqual(&*(i1+shape3_t(0,0,0)), &a3(0,0,0));
+        shouldEqual(&*(i1+shape3_t(1,0,0)), &a3(1,0,0));
+        shouldEqual(&*(i1+shape3_t(0,1,0)), &a3(0,1,0));
+        shouldEqual(&*(i1+shape3_t(1,1,0)), &a3(1,1,0));
+        shouldEqual(&*(i1+shape3_t(0,0,1)), &a3(0,0,1));
+        shouldEqual(&*(i1+shape3_t(1,0,1)), &a3(1,0,1));
+        shouldEqual(&*(i1+shape3_t(1,1,1)), &a3(1,1,1));
+
         shouldEqual(&*(iend-1), &a3(1,2,4));
         shouldEqual(&*(iend-2), &a3(0,2,4));
         shouldEqual(&*(iend-3), &a3(1,1,4));
@@ -524,12 +533,31 @@ public:
         shouldEqual(&*(iend-8), &a3(0,2,3));
         shouldEqual(&*(iend-10), &a3(0,1,3));
 
+	i3 = iend-1;
+	shouldEqual(&*(i3-shape3_t(0,0,0)), &a3(1,2,4));
+	shouldEqual(&*(i3-shape3_t(1,0,0)), &a3(0,2,4));
+        shouldEqual(&*(i3-shape3_t(0,1,0)), &a3(1,1,4));
+        shouldEqual(&*(i3-shape3_t(1,1,0)), &a3(0,1,4));
+	shouldEqual(&*(i3-shape3_t(0,0,1)), &a3(1,2,3));
+	shouldEqual(&*(i3-shape3_t(1,0,1)), &a3(0,2,3));
+	shouldEqual(&*(i3-shape3_t(1,1,1)), &a3(0,1,3));
+
         shouldEqual(&iend[-1], &a3(1,2,4));
         shouldEqual(&iend[-2], &a3(0,2,4));
         shouldEqual(&iend[-3], &a3(1,1,4));
         shouldEqual(&iend[-7], &a3(1,2,3));
         shouldEqual(&iend[-8], &a3(0,2,3));
         shouldEqual(&iend[-10], &a3(0,1,3));
+
+
+	i3 = i1;
+	i3 += shape3_t(0,0,1);
+	shouldEqual(i3.index(), 6);
+	shouldEqual(i3.point(), shape3_t(0,0,1));
+	i3 -= shape3_t(0,0,1);
+	shouldEqual(i3.index(), 0);
+	shouldEqual(i3.point(), shape3_t(0,0,0));
+	should(i3 == i1);
 
         unsigned int count = 0;
         shape3_t p;
