@@ -145,30 +145,6 @@ struct ScanOrderToCoordinate<1>
     }
 };
 
-template <int K>
-struct CoordinateToScanOrder
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
-    }
-};
-
-template <>
-struct CoordinateToScanOrder<1>
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-1];
-    }
-};
-
 
 template <class C>
 struct CoordinatesToOffest
