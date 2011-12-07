@@ -142,21 +142,22 @@ class RidgeSplit: public SplitBase<Tag>
         
         // calculate things that haven't been calculated yet. 
 //    std::cout << "start" << std::endl;
-        if(std::accumulate(region.classCounts().begin(),
-                           region.classCounts().end(), 0) != region.size())
-        {
-            RandomForestClassCounter<   MultiArrayView<2,T2, C2>, 
-                                        ArrayVector<double> >
-                counter(multiClassLabels, region.classCounts());
-            std::for_each(  region.begin(), region.end(), counter);
-            region.classCountsIsValid = true;
-        }
+        // calculate things that haven't been calculated yet.
+        detail::Correction<Tag>::exec(region, multiClassLabels);
 
+        //mexPrintf("Starting Counts: %d %d\n", (int)region.classCounts()[0], (int)region.classCounts()[1] );
 
         // Is the region pure already?
+#if 0
         region_gini_ = GiniCriterion::impurity(region.classCounts(),
                 region.size());
-        if(region_gini_ == 0 || region.size() < SB::ext_param_.actual_mtry_ || region.oob_size() < 2)
+#else
+               region_gini_ = bgfunc.loss_of_region(multiClassLabels,
+                                                     region.begin(),
+                                                     region.end(),
+                                                     region.classCounts());
+#endif
+        if(region_gini_ == SB::ext_param_.precision_|| region.size() < SB::ext_param_.actual_mtry_ || region.oob_size() < 2)
             return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
 
         // select columns  to be tried.
@@ -170,7 +171,7 @@ class RidgeSplit: public SplitBase<Tag>
       int nNumClasses=0;
       for(int n=0; n<(int)region.classCounts().size(); n++)
         nNumClasses+=((region.classCounts()[n]>0) ? 1:0);
-      
+
       //convert to binary case
       if(nNumClasses>2)
       {
@@ -226,7 +227,7 @@ class RidgeSplit: public SplitBase<Tag>
     
     
 //select submatrix of features for regression calculation
-    MultiArrayView<2, T, C> cVector;
+    //MultiArrayView<2, T, C> cVector( fShape(region.size()), 1 );
     MultiArray<2, T> xtrain(fShape(region.size(),SB::ext_param_.actual_mtry_));
     //we only want -1 and 1 for this
     MultiArray<2, double> regrLabels(dShape(region.size(),1));
@@ -236,7 +237,7 @@ class RidgeSplit: public SplitBase<Tag>
     MultiArray<2, double> stdMatrix(dShape(SB::ext_param_.actual_mtry_,1));
     for(int m=0; m<SB::ext_param_.actual_mtry_; m++)
     {
-        cVector=columnVector(features, splitColumns[m]);
+        MultiArrayView<2,T,C> cVector( columnVector(features, splitColumns[m]) );
         
         //centre and scale the data
         double dCurrFeatureColumnMean=0.0;
@@ -246,6 +247,8 @@ class RidgeSplit: public SplitBase<Tag>
         for(int n=0; n<region.size(); n++)
           dCurrFeatureColumnMean+=cVector[region[n]];
         dCurrFeatureColumnMean/=region.size();
+
+
         //calc scaling
         if(m_bDoScalingInTraining)
         {
@@ -257,6 +260,7 @@ class RidgeSplit: public SplitBase<Tag>
           //unbiased std estimator:
           dCurrFeatureColumnStd=sqrt(dCurrFeatureColumnStd/(region.size()-1));
         }
+
         //dCurrFeatureColumnStd is still 1.0 if we didn't want scaling
         stdMatrix(m,0)=dCurrFeatureColumnStd;
         
@@ -267,7 +271,9 @@ class RidgeSplit: public SplitBase<Tag>
         for(int n=0; n<region.size(); n++)
             xtrain(n,m)=(cVector[region[n]]-dCurrFeatureColumnMean)/dCurrFeatureColumnStd;
     }
-    
+
+    //return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
+
 //    std::cout << "middle" << std::endl;
     //get label vector (i.e. b)
     for(int n=0; n<region.size(); n++)
@@ -350,16 +356,27 @@ class RidgeSplit: public SplitBase<Tag>
           dCoeffVector(n,0)=regrCoef(n,nMaxRidgeSumAtLambdaInd)*stdMatrix(n,0);
         
         //calc norm
-        double dVnorm=columnVector(regrCoef,nMaxRidgeSumAtLambdaInd).norm();
+        //double dVnorm=columnVector(regrCoef,nMaxRidgeSumAtLambdaInd).norm();
+        double dVnorm=columnVector(dCoeffVector,0).norm();
 
         for(int n=0; n<SB::ext_param_.actual_mtry_; n++)
             node.weights()[n]=dCoeffVector(n,0)/dVnorm;
+#if 0
+        mexPrintf("Norm: %f\n", (float)dVnorm);
+        mexPrintf("W: ");
+        for(int n=0; n<SB::ext_param_.actual_mtry_; n++)
+            mexPrintf("%.2f ", (float)node.weights()[n]);
+        mexPrintf("\n");
+#endif
+
     //_normalise coeffs
     
     //save the columns
         node.column_data()[0]=SB::ext_param_.actual_mtry_;
-        for(int n=0; n<SB::ext_param_.actual_mtry_; n++)
+        for(int n=0; n<SB::ext_param_.actual_mtry_; n++){
             node.column_data()[n+1]=splitColumns[n];
+            //mexPrintf("Col: %d\n", splitColumns[n]);
+        }
 
     //assemble projection vector
         //careful here: "region" is a pointer to indices...
@@ -372,51 +389,83 @@ class RidgeSplit: public SplitBase<Tag>
             dDistanceFromHyperplane(region[n],0)=0.0;
             for (int m=0; m<SB::ext_param_.actual_mtry_; m++)
             {
+              Int32 Cc = splitColumns[m];
               dDistanceFromHyperplane(region[n],0)+=
-               features(region[n],m)*node.weights()[m];
+               features(region[n],Cc)*node.weights()[m];
             }
+            //mexPrintf("Dist %d: %.2f\n", region[n], dDistanceFromHyperplane(region[n],0));
         }
         for(int n=0; n<region.oob_size(); n++)
         {
             dDistanceFromHyperplane(region.oob_begin()[n],0)=0.0;
             for (int m=0; m<SB::ext_param_.actual_mtry_; m++)
             {
+              Int32 Cc = splitColumns[m];
               dDistanceFromHyperplane(region.oob_begin()[n],0)+=
-            features(region.oob_begin()[n],m)*node.weights()[m];
+            features(region.oob_begin()[n],Cc)*node.weights()[m];
             }
         }
         
     //calculate gini index
         bgfunc(dDistanceFromHyperplane,
-            labels, 
-            region.begin(), region.end(), 
-            region.classCounts());
-    
+            labels,
+               region.begin(), region.end(),
+               region.classCounts());
+
         // did not find any suitable split
-    if(closeAtTolerance(bgfunc.min_gini_, NumericTraits<double>::max()))
+    if(closeAtTolerance(bgfunc.min_gini_, region_gini_))
         return  SB::makeTerminalNode(features, multiClassLabels, region, randint);
-    
+
     //take gini threshold here due to scaling, normalisation, etc. of the coefficients
     node.intercept()    = bgfunc.min_threshold_;
+
+    //mexPrintf("Offset: %f\n\n", node.intercept() );
     SB::node_ = node;
-    
+
+
     childRegions[0].classCounts() = bgfunc.bestCurrentCounts[0];
     childRegions[1].classCounts() = bgfunc.bestCurrentCounts[1];
     childRegions[0].classCountsIsValid = true;
     childRegions[1].classCountsIsValid = true;
-    
-        // Save the ranges of the child stack entries.
+
+#if 1
+
+    // Save the ranges of the child stack entries.
     childRegions[0].setRange(   region.begin()  , region.begin() + bgfunc.min_index_   );
     childRegions[0].rule = region.rule;
     childRegions[0].rule.push_back(std::make_pair(1, 1.0));
     childRegions[1].setRange(   region.begin() + bgfunc.min_index_       , region.end()    );
     childRegions[1].rule = region.rule;
     childRegions[1].rule.push_back(std::make_pair(1, 1.0));
-    
+
+#else
+    SortSamplesByDimensions<MultiArrayView<2, T, C> >
+        sorter(dDistanceFromHyperplane, 0, bgfunc.min_threshold_);
+
+    IndexIterator bestSplit =
+        std::partition(region.begin(), region.end(), sorter);
+
+    childRegions[0].setRange(   region.begin()  , bestSplit       );
+    childRegions[0].rule = region.rule;
+    childRegions[0].rule.push_back(std::make_pair(1, 1.0));
+    childRegions[1].setRange(   bestSplit       , region.end()    );
+    childRegions[1].rule = region.rule;
+    childRegions[1].rule.push_back(std::make_pair(1, 1.0));
+#endif
+
+#if 0
+    mexPrintf("Counts: %d %d\n", (int)childRegions[0].classCounts()[0], (int)childRegions[0].classCounts()[1] );
+    mexPrintf("Counts: %d %d\n", (int)childRegions[1].classCounts()[0], (int)childRegions[1].classCounts()[1] );
+
+    mexPrintf("Example R0, %d: %f %f\n", childRegions[0][0], (float)features(childRegions[0][0],0), (float)features(childRegions[0][0],1) );
+    mexPrintf("Label R0: %f\n", (float) multiClassLabels(childRegions[0][0],0) );
+#endif
+
     //adjust oob ranges
 //    std::cout << "adjust oob" << std::endl;
     //sort the oobs
-      std::sort(region.oob_begin(), region.oob_end(), 
+    //Region regionCopy = region;
+      std::sort(region.oob_begin(), region.oob_end(),
             SortSamplesByDimensions< MultiArray<2, double> > (dDistanceFromHyperplane, 0));
             
       //find split index
@@ -430,7 +479,7 @@ class RidgeSplit: public SplitBase<Tag>
       childRegions[0].set_oob_range(   region.oob_begin()  , region.oob_begin() + nOOBindx   );
       childRegions[1].set_oob_range(   region.oob_begin() + nOOBindx , region.oob_end() );
 
-//    std::cout << "end" << std::endl;
+      //    std::cout << "end" << std::endl;
 //    outm2(region.oob_begin());outm2(nOOBindx);outm(region.oob_begin() + nOOBindx);
     //_adjust oob ranges
 

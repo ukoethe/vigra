@@ -63,6 +63,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     
     if(inputs.getBool("sample_classes_individually", v_default(false)))
         options.use_stratification(vigra::RF_EQUAL);
+
     options.min_split_node_size(static_cast<int>(inputs
             .getScalarMinMax<double>("min_split_node_size",
                                      v_default(1.0), 
@@ -123,7 +124,19 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
 
     RandomForest<inputLType> rf(options, ext_param);    
-    rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
+
+    bool useRidgeSplit = false;
+    if(inputs.getBool("use_ridge_split", v_default(false)))
+        useRidgeSplit = true;
+
+    if (useRidgeSplit)
+    {
+        vigra::GiniRidgeSplit ridgeSplit;
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err), ridgeSplit);
+    } else
+    {
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
+    }
 
     matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 
@@ -168,7 +181,7 @@ options     - a struct with the following possible fields (default will be used
                                     if a Scalar value is specified it is taken as the 
                                     absolute value. Otherwise use one of the Tokens
                                     'RF_SQRT', 'RF_LOG' or 'RF_ALL'
-
+    'use_ridge_split'               logical, default: false. If true then ridge split is used instead of orthogonal split
     'training_set_size'             Scalar, default: Not used
     'training_set_proportion'       Scalar, default: 1.0
                                     The last two options exclude each other. if training_set_size always overrides
