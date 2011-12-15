@@ -35,9 +35,13 @@ class MatlabRandomForestProgressVisitor : public VisitorBase {
 	int totalTrees = rf.options().tree_count_;
 	
 #ifdef _OPENMP
-	if (omp_get_thread_num() == 0)	// main thread?
+        if (omp_get_thread_num() == 0) {	// main thread?
 #endif
         mexPrintf("%d of %d learned (%.1f%%)\n", numProcessedTrees, totalTrees, numProcessedTrees * 100.0 / totalTrees); 
+#ifdef _OPENMP
+        mexEvalString("drawnow");
+      }
+#endif
     }
     
     template<class RF, class PR>
