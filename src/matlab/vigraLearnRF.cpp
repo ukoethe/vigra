@@ -106,8 +106,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     MultiArrayView<1, inputType>  weights 
         = inputs.getMultiArray<1, inputType>("weights", v_optional());
 
-    if(weights.size() != 0)
+    if(weights.size() != 0) {
         ext_param.class_weights(weights.data(), weights.data() + weights.size());
+        mexPrintf("Weights assigned\n");
+	}
 
     double var_imp_rep
         = inputs.getScalar<double>("importance_repetition",v_default(10));
@@ -128,13 +130,28 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     bool useRidgeSplit = false;
     if(inputs.getBool("use_ridge_split", v_default(false)))
         useRidgeSplit = true;
+        
+    bool useEntropy = false;
+    if(inputs.getBool("use_entropy_split", v_default(false)))
+        useEntropy = true;
+        
+    if (useEntropy && useRidgeSplit)
+		mexErrMsgTxt("Either use ridge or entropy split\n");
 
     if (useRidgeSplit)
     {
         vigra::GiniRidgeSplit ridgeSplit;
         rf.learn(features, labels, create_visitor(var_imp, progress, oob_err), ridgeSplit);
-    } else
+        mexPrintf("Using ridge split\n");
+    } else if( useEntropy ) 
     {
+		vigra::EntropySplit entropySplit;
+		mexPrintf("Using entropy split\n");
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err), entropySplit);
+	}
+    else
+    {
+		mexPrintf("Using default split\n");
         rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
     }
 

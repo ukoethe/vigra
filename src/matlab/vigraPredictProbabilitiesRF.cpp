@@ -46,12 +46,15 @@ using namespace visitors;
 
 void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     /* INPUT */
-    if (inputs.size() != 2)
-        mexErrMsgTxt("Two inputs required.");
+    if (inputs.size() < 2)
+        mexErrMsgTxt("At least two inputs required.");
 
     // get RF object
     RandomForest<> rf; 
     matlab::importRandomForest(rf, matlab::getCellArray(inputs[0]));
+    
+    rf.options_.predict_weighted_ = inputs.getBool("weight_with_number_of_samples", v_default(false));
+    mexPrintf("Predict weighted: %d\n", (int) rf.options_.predict_weighted_);
 
     // get feature matrix
     MultiArrayView<2, double> features = inputs.getMultiArray<2, double> ( 1, v_required());
