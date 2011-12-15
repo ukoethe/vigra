@@ -20,6 +20,20 @@
 #define outm(v) std::cout << (#v) << ": " << (v) << std::endl;
 #define outm2(v) std::cout << (#v) << ": " << (v) << ", ";
 
+#define RF_RIDGE_SPLIT_DEBUG_TIMINGS  0
+
+#if RF_RIDGE_SPLIT_DEBUG_TIMINGS
+    #include <time.h>
+    #include <omp.h>
+
+    #define RF_RIDGE_SPLIT_DEBUG_START_TIMER()     struct timespec _tstart; clock_gettime( CLOCK_REALTIME, &_tstart )
+    #define RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER(str)  do { if (omp_get_thread_num() != 0) break; struct timespec _tnow; clock_gettime( CLOCK_REALTIME, &_tnow ); mexPrintf("At %s, %f msec elapsed\n", str, (float) 1000.0* ( 1.0*(1.0*_tnow.tv_nsec - _tstart.tv_nsec*1.0)*1e-9 \
+                                                        + 1.0*_tnow.tv_sec - 1.0*_tstart.tv_sec )); _tstart = _tnow; } while(0)
+#else
+    #define RF_RIDGE_SPLIT_DEBUG_START_TIMER()
+    #define RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER(str)
+#endif
+
 namespace vigra
 {
 
@@ -139,6 +153,8 @@ class RidgeSplit: public SplitBase<Tag>
     typedef typename MultiArrayView <2, T, C>::difference_type fShape;
     typedef typename MultiArrayView <2, T2, C2>::difference_type lShape;
     typedef typename MultiArrayView <2, double>::difference_type dShape;
+
+    RF_RIDGE_SPLIT_DEBUG_START_TIMER();
         
         // calculate things that haven't been calculated yet. 
 //    std::cout << "start" << std::endl;
@@ -227,6 +243,9 @@ class RidgeSplit: public SplitBase<Tag>
     
     
 //select submatrix of features for regression calculation
+
+    RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Label preproc");
+
     //MultiArrayView<2, T, C> cVector( fShape(region.size()), 1 );
     MultiArray<2, T> xtrain(fShape(region.size(),SB::ext_param_.actual_mtry_));
     //we only want -1 and 1 for this
@@ -288,9 +307,15 @@ class RidgeSplit: public SplitBase<Tag>
     int nCounter=0;
     for(int nLambda=-5; nLambda<=5; nLambda++)
         dLambdas[nCounter++]=pow(10.0,nLambda);
+
+
+    RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Vec preproc");
+
     //destination vector for regression coefficients; use same type as for xtrain
     MultiArray<2, double> regrCoef(dShape(SB::ext_param_.actual_mtry_,11));
     ridgeRegressionSeries(xtrain,regrLabels,regrCoef,dLambdas);
+
+    RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Ridge reg");
     
     double dMaxRidgeSum=NumericTraits<double>::min();
     double dCurrRidgeSum;
@@ -345,6 +370,8 @@ class RidgeSplit: public SplitBase<Tag>
         }
     }
 
+    RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Best lambda");
+
 //    std::cout << "middle2" << std::endl;
         //create a Node for output
         Node<i_HyperplaneNode>   node(SB::ext_param_.actual_mtry_, SB::t_data, SB::p_data);
@@ -377,6 +404,9 @@ class RidgeSplit: public SplitBase<Tag>
             node.column_data()[n+1]=splitColumns[n];
             //mexPrintf("Col: %d\n", splitColumns[n]);
         }
+
+
+        RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Weighting");
 
     //assemble projection vector
         //careful here: "region" is a pointer to indices...
@@ -411,6 +441,8 @@ class RidgeSplit: public SplitBase<Tag>
             labels,
                region.begin(), region.end(),
                region.classCounts());
+
+    RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("Hyp dist");
 
         // did not find any suitable split
     if(closeAtTolerance(bgfunc.min_gini_, region_gini_))
@@ -482,6 +514,8 @@ class RidgeSplit: public SplitBase<Tag>
       //    std::cout << "end" << std::endl;
 //    outm2(region.oob_begin());outm2(nOOBindx);outm(region.oob_begin() + nOOBindx);
     //_adjust oob ranges
+
+      RF_RIDGE_SPLIT_DEBUG_UPDATE_TIMER("End");
 
     return i_HyperplaneNode;
     }
