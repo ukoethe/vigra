@@ -88,10 +88,12 @@ python::list
 pythonFindEdgelsFromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
                          double threshold) 
 {
-    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
-    cannyEdgelList(srcImageRange(grad), edgels);
-
+    {
+        PyAllowThreads _pythread;
+        cannyEdgelList(srcImageRange(grad), edgels);
+    }
+    
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -106,10 +108,12 @@ python::list
 pythonFindEdgels(NumpyArray<2, PixelType> image,
                  double scale, double threshold)
 {
-    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
-    cannyEdgelList(srcImageRange(image), edgels, scale);
-
+    {
+        PyAllowThreads _pythread;
+        cannyEdgelList(srcImageRange(image), edgels, scale);
+    }
+    
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -124,10 +128,12 @@ python::list
 pythonFindEdgels3x3FromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
                             double threshold) 
 {
-    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
-    cannyEdgelList3x3(srcImageRange(grad), edgels);
-
+    {
+        PyAllowThreads _pythread;
+        cannyEdgelList3x3(srcImageRange(grad), edgels);
+    }
+    
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
@@ -142,10 +148,11 @@ python::list
 pythonFindEdgels3x3(NumpyArray<2, PixelType> image,
                     double scale, double threshold)
 {
-    PyAllowThreads _pythread;
     std::vector<Edgel> edgels;
-    cannyEdgelList3x3(srcImageRange(image), edgels, scale);
-
+    {
+        PyAllowThreads _pythread;
+        cannyEdgelList3x3(srcImageRange(image), edgels, scale);
+    }
     python::list pyEdgels;
     for(unsigned int i = 0; i < edgels.size(); ++i)
     {
