@@ -105,7 +105,7 @@ pythonFindEdgelsFromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
 
 template < class PixelType>
 python::list
-pythonFindEdgels(NumpyArray<2, PixelType> image,
+pythonFindEdgels(NumpyArray<2, Singleband<PixelType> > image,
                  double scale, double threshold)
 {
     std::vector<Edgel> edgels;
@@ -145,7 +145,7 @@ pythonFindEdgels3x3FromGrad(NumpyArray<2, TinyVector<PixelType, 2> > grad,
 
 template < class PixelType>
 python::list
-pythonFindEdgels3x3(NumpyArray<2, PixelType> image,
+pythonFindEdgels3x3(NumpyArray<2, Singleband<PixelType> > image,
                     double scale, double threshold)
 {
     std::vector<Edgel> edgels;
