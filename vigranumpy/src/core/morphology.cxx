@@ -61,13 +61,15 @@ pythonDiscRankOrderFilter(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
             "discRankOrderFilter(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<image.shape(2); ++k)
-    { 
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        discRankOrderFilter(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
-                            destImage(bres), radius, rank);
+    {
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(2); ++k)
+        { 
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            discRankOrderFilter(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
+                                destImage(bres), radius, rank);
+        }
     }
     return res;
 }
@@ -90,17 +92,19 @@ pythonDiscRankOrderFilterWithMask(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
             "discRankOrderFilterWithMask(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<image.shape(2); ++k)
-    { 
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bmask = mask.bindOuter(mask.shape(2)==1?0:k);
-        discRankOrderFilterWithMask(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
-                                    srcImage(bmask),
-                                    destImage(bres), radius, rank);
+    {
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(2); ++k)
+        { 
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bmask = mask.bindOuter(mask.shape(2)==1?0:k);
+            discRankOrderFilterWithMask(srcImageRange(bimage,StandardValueAccessor<UInt8>()), 
+                                        srcImage(bmask),
+                                        destImage(bres), radius, rank);
+        }
     }
-
+    
     return res;
 }
 
@@ -142,15 +146,17 @@ pythonDiscOpening(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
             "discOpening(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<2,PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
-
-    for(int k=0; k<image.shape(2); ++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        discErosion(srcImageRange(bimage), destImage(tmp), radius);
-        discDilation(srcImageRange(tmp), destImage(bres), radius);
+        PyAllowThreads _pythread;
+        MultiArray<2,PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
+
+        for(int k=0; k<image.shape(2); ++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            discErosion(srcImageRange(bimage), destImage(tmp), radius);
+            discDilation(srcImageRange(tmp), destImage(bres), radius);
+        }
     }
     return res;
 }
@@ -166,15 +172,17 @@ pythonDiscClosing(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
             "discClosing(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<2,PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
-
-    for(int k=0; k<image.shape(2); ++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        discDilation(srcImageRange(bimage), destImage(tmp), radius);
-        discErosion(srcImageRange(tmp), destImage(bres), radius);
+        PyAllowThreads _pythread;
+        MultiArray<2,PixelType> tmp(MultiArrayShape<2>::type(image.shape(0), image.shape(1)));
+
+        for(int k=0; k<image.shape(2); ++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            discDilation(srcImageRange(bimage), destImage(tmp), radius);
+            discErosion(srcImageRange(tmp), destImage(bres), radius);
+        }
     }
     return res;
 }
@@ -188,12 +196,14 @@ pythonMultiBinaryErosion(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiBinaryErosion(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiBinaryErosion(srcMultiArrayRange(barray), destMultiArray(bres), radius);
+        PyAllowThreads _pythread;
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiBinaryErosion(srcMultiArrayRange(barray), destMultiArray(bres), radius);
+        }
     }
     return res;
 }
@@ -207,12 +217,14 @@ pythonMultiBinaryDilation(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiBinaryDilation(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiBinaryDilation(srcMultiArrayRange(barray), destMultiArray(bres), radius);
+        PyAllowThreads _pythread;
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiBinaryDilation(srcMultiArrayRange(barray), destMultiArray(bres), radius);
+        }
     }
     return res;
 }
@@ -226,15 +238,17 @@ pythonMultiBinaryOpening(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiBinaryOpening(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
-
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiBinaryErosion(srcMultiArrayRange(barray), destMultiArray(tmp), radius);
-        multiBinaryDilation(srcMultiArrayRange(tmp), destMultiArray(bres), radius);
+        PyAllowThreads _pythread;
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiBinaryErosion(srcMultiArrayRange(barray), destMultiArray(tmp), radius);
+            multiBinaryDilation(srcMultiArrayRange(tmp), destMultiArray(bres), radius);
+        }
     }
     return res;
 }
@@ -248,15 +262,17 @@ pythonMultiBinaryClosing(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiBinaryOpening(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
-
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiBinaryDilation(srcMultiArrayRange(barray), destMultiArray(tmp), radius);
-        multiBinaryErosion(srcMultiArrayRange(tmp), destMultiArray(bres), radius);
+        PyAllowThreads _pythread;
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiBinaryDilation(srcMultiArrayRange(barray), destMultiArray(tmp), radius);
+            multiBinaryErosion(srcMultiArrayRange(tmp), destMultiArray(bres), radius);
+        }
     }
     return res;
 }
@@ -270,12 +286,14 @@ pythonMultiGrayscaleErosion(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiGrayscaleErosion(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiGrayscaleErosion(srcMultiArrayRange(barray), destMultiArray(bres), sigma);
+        PyAllowThreads _pythread;
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiGrayscaleErosion(srcMultiArrayRange(barray), destMultiArray(bres), sigma);
+        }
     }
     return res;
 }
@@ -288,12 +306,14 @@ pythonMultiGrayscaleDilation(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiGrayscaleDilation(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiGrayscaleDilation(srcMultiArrayRange(barray), destMultiArray(bres), sigma);
+        PyAllowThreads _pythread;
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiGrayscaleDilation(srcMultiArrayRange(barray), destMultiArray(bres), sigma);
+        }
     }
     return res;
 }
@@ -307,15 +327,17 @@ pythonMultiGrayscaleOpening(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiGrayscaleOpening(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
-
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiGrayscaleErosion(srcMultiArrayRange(barray), destMultiArray(tmp), sigma);
-        multiGrayscaleDilation(srcMultiArrayRange(tmp), destMultiArray(bres), sigma);
+        PyAllowThreads _pythread;
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiGrayscaleErosion(srcMultiArrayRange(barray), destMultiArray(tmp), sigma);
+            multiGrayscaleDilation(srcMultiArrayRange(tmp), destMultiArray(bres), sigma);
+        }
     }
     return res;
 }
@@ -329,15 +351,17 @@ pythonMultiGrayscaleClosing(NumpyArray<dim, Multiband<PixelType> > array,
     res.reshapeIfEmpty(array.taggedShape(),
             "multiGrayscaleClosing(): Output image has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
-
-    for(int k=0; k<array.shape(dim-1); ++k)
     {
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        multiGrayscaleDilation(srcMultiArrayRange(barray), destMultiArray(tmp), sigma);
-        multiGrayscaleErosion(srcMultiArrayRange(tmp), destMultiArray(bres), sigma);
+        PyAllowThreads _pythread;
+        MultiArray<dim-1,PixelType> tmp(typename MultiArrayShape<dim-1>::type(array.shape().begin()));
+
+        for(int k=0; k<array.shape(dim-1); ++k)
+        {
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> barray = array.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            multiGrayscaleDilation(srcMultiArrayRange(barray), destMultiArray(tmp), sigma);
+            multiGrayscaleErosion(srcMultiArrayRange(tmp), destMultiArray(bres), sigma);
+        }
     }
     return res;
 }
@@ -368,16 +392,18 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(), 
             "distanceTransform2D(): Output array has wrong shape.");
     
-    PyAllowThreads _pythread;
-    if(background)
     {
-        distanceTransform(srcImageRange(image), destImage(res), 
-                          NumericTraits<PixelType>::zero(), norm);
-    }
-    else
-    {
-        distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()), 
-                          destImage(res), false, norm);
+        PyAllowThreads _pythread;
+        if(background)
+        {
+            distanceTransform(srcImageRange(image), destImage(res), 
+                              NumericTraits<PixelType>::zero(), norm);
+        }
+        else
+        {
+            distanceTransform(srcImageRange(image, detail::IsBackgroundAccessor<PixelType>()), 
+                              destImage(res), false, norm);
+        }
     }
     return res;
 }
@@ -391,8 +417,10 @@ pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume,
     res.reshapeIfEmpty(volume.taggedShape(), 
             "distanceTransform3D(): Output array has wrong shape.");
     
-    PyAllowThreads _pythread;
-    separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background);
+    {
+        PyAllowThreads _pythread;
+        separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background);
+    }
     return res;
 }
 

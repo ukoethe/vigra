@@ -143,11 +143,13 @@ pythonNonparametricNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image
     res.reshapeIfEmpty(image.taggedShape(),
             "nonparametricNoiseNormalization(): Output images has wrong dimensions");
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        nonparametricNoiseNormalization(srcImageRange(image),
-                                        destImage(res), noiseNormalizationOptions);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            nonparametricNoiseNormalization(srcImageRange(image),
+                                            destImage(res), noiseNormalizationOptions);
+        }
     }
     return res;
 }
@@ -175,13 +177,15 @@ pythonQuadraticNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType> > 
     res.reshapeIfEmpty(image.taggedShape(),
         "quadraticNoiseNormalizationEstimated(): Output images has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        quadraticNoiseNormalization(srcImageRange(bimage),
-                                    destImage(bres), noiseNormalizationOptions);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            quadraticNoiseNormalization(srcImageRange(bimage),
+                                        destImage(bres), noiseNormalizationOptions);
+        }
     }
     return res;
 }
@@ -209,13 +213,15 @@ pythonLinearNoiseNormalizationEstimated(NumpyArray<3, Multiband<PixelType> > ima
     res.reshapeIfEmpty(image.taggedShape(),
         "linearNoiseNormalizationEstimated(): Output images has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        linearNoiseNormalization(srcImageRange(bimage),
-                                 destImage(bres), noiseNormalizationOptions);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            linearNoiseNormalization(srcImageRange(bimage),
+                                     destImage(bres), noiseNormalizationOptions);
+        }
     }
     return res;
 }
@@ -230,12 +236,14 @@ pythonQuadraticNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
         "quadraticNoiseNormalization(): Output images has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        quadraticNoiseNormalization(srcImageRange(bimage), destImage(bres), a0, a1, a2);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            quadraticNoiseNormalization(srcImageRange(bimage), destImage(bres), a0, a1, a2);
+        }
     }
     
     return res;
@@ -250,13 +258,15 @@ pythonLinearNoiseNormalization(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape(),
             "linearNoiseNormalization(): Output images has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        linearNoiseNormalization(srcImageRange(bimage), destImage(bres),a0, a1);
-    } 
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            linearNoiseNormalization(srcImageRange(bimage), destImage(bres),a0, a1);
+        } 
+    }
     return res;
 }
 
