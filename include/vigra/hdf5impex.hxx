@@ -550,9 +550,20 @@ class HDF5File
         Open           // Open file. Create if not existing.
     };
 
-        /** \brief Create an HDF5File object.
+        /** \brief Default constructor.
 
-        Creates or opens HDF5 file at position filename. 
+        A file can later be opened via the open() function.
+        
+        If \a track_creation_times is non-zero, time tagging of datasets will be enabled (it is disabled
+        by default).
+        */
+    HDF5File(int track_creation_times = 0)
+    : track_time(track_creation_times)
+    {}
+
+        /** \brief Open or create an HDF5File object.
+
+        Creates or opens HDF5 file with given filename. 
         The current group is set to "/".
         
         Note that the HDF5File class is not copyable (the copy constructor is 
@@ -561,9 +572,7 @@ class HDF5File
     HDF5File(std::string filename, OpenMode mode, int track_creation_times = 0)
         : track_time(track_creation_times)
     {
-        std::string errorMessage = "HDF5File: Could not create file '" + filename + "'.";
-        fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
-        cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File(): Failed to open root group.");
+        open(filename, mode);
     }
 
         /** \brief The destructor flushes and closes the file.
@@ -583,9 +592,29 @@ class HDF5File
     void operator=(const HDF5File &);
 
   public:
+  
+        /** \brief Open or create the given file in the given mode and set the group to "/".
+            If another file is currently open, it is first closed.
+         */
+    void open(std::string filename, OpenMode mode)
+    {
+        close();
+        
+        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
+        fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
+        cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
+    }
 
-    /** \brief Change current group to "/".
-     */
+        /** \brief Close the current file.
+         */
+    void close()
+    {
+        bool success = cGroupHandle_.close() >= 0 && fileHandle_.close() >= 0;
+        vigra_postcondition(success, "HDF5File.close() failed.");
+    }
+
+        /** \brief Change current group to "/".
+         */
     inline void root()
     {
         std::string message = "HDF5File::root(): Could not open group '/'.";
