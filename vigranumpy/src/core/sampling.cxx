@@ -75,14 +75,16 @@ pythonResampleImage(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().resize(width, height),
                        "resampleImage(): Output images has wrong dimensions");
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        resampleImage(srcImageRange(bimage), destImage(bres), factor);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            resampleImage(srcImageRange(bimage), destImage(bres), factor);
+        }
     }
-
+    
     return res;
 }
 
@@ -125,12 +127,14 @@ pythonFixedRotateImage(NumpyArray<3, Multiband<PixelType> > image,
                      "rotateImage(): Output image has wrong dimensions");
     }
     
-    PyAllowThreads _pythread;    
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        rotateImage(srcImageRange(bimage),destImage(bres),degree);
+        PyAllowThreads _pythread;    
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            rotateImage(srcImageRange(bimage),destImage(bres),degree);
+        }
     }
     return res;
 }
@@ -172,48 +176,50 @@ pythonFreeRotateImageRadiant(NumpyArray<3, Multiband<PixelType> > image,
         rotationMatrix2DRadians(radiant, TinyVector<double,2>(0.0,0.0))*
         translationMatrix2D(TinyVector<double,2>(-image.shape(0)/2.0, -image.shape(1)/2.0));
 
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        switch (splineOrder)
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
         {
-        case 0:
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            switch (splineOrder)
             {
-                SplineImageView< 0, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-                break;
-            }
-        case 1:
-            {
-                SplineImageView< 1, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-                break;
-            }
-        case 2:
-            {
-                SplineImageView< 2, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-            }
-            break;
-        case 3:
-            { 
-                SplineImageView< 3, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-                break;
-            }
-        case 4:
-            {
-                SplineImageView< 4, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-                break;
-            }
-        case 5:
-            {
-                SplineImageView< 5, PixelType > spline(srcImageRange(bimage));
-                affineWarpImage(spline,destImageRange(bres),transform);
-                break;
+                case 0:
+                {
+                    SplineImageView< 0, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
+                case 1:
+                {
+                    SplineImageView< 1, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
+                case 2:
+                {
+                    SplineImageView< 2, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
+                case 3:
+                { 
+                    SplineImageView< 3, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
+                case 4:
+                {
+                    SplineImageView< 4, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
+                case 5:
+                {
+                    SplineImageView< 5, PixelType > spline(srcImageRange(bimage));
+                    affineWarpImage(spline,destImageRange(bres),transform);
+                    break;
+                }
             }
         }
     }
@@ -256,12 +262,14 @@ NumpyAnyArray pythonResizeImageNoInterpolation(NumpyArray<3, Multiband<PixelType
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        resizeImageNoInterpolation(srcImageRange(bimage),destImageRange(bres));
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            resizeImageNoInterpolation(srcImageRange(bimage),destImageRange(bres));
+        }
     }
     return res;
 }
@@ -273,12 +281,14 @@ NumpyAnyArray pythonResizeImageLinearInterpolation(NumpyArray<3, Multiband<Pixel
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        resizeImageLinearInterpolation(srcImageRange(bimage), destImageRange(bres));
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            resizeImageLinearInterpolation(srcImageRange(bimage), destImageRange(bres));
+        }
     }
     return res;
 }
@@ -298,55 +308,57 @@ pythonResizeImageSplineInterpolation(NumpyArray<dim, Multiband<PixelType> > imag
     
     pythonResizeImagePrepareOutput(image, destSize, res);
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(dim-1);++k)
     {
-        
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        switch (splineOrder)
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(dim-1);++k)
         {
-            case 0:
+            
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<dim-1, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            switch (splineOrder)
             {
-                BSpline< 0, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
-            }
-            case 1:
-            {
-                BSpline< 1, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
-            }
-            case 2:
-            {
-                BSpline< 2, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
-            }
-            case 3:
-            {
-                BSpline< 3, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
-            }
-            case 4:
-            {
-                BSpline< 4, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
-            }
-            case 5:
-            {
-                BSpline< 5, double > spline;
-                resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
-                                                    destMultiArrayRange(bres), spline);
-                break;
+                case 0:
+                {
+                    BSpline< 0, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
+                case 1:
+                {
+                    BSpline< 1, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
+                case 2:
+                {
+                    BSpline< 2, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
+                case 3:
+                {
+                    BSpline< 3, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
+                case 4:
+                {
+                    BSpline< 4, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
+                case 5:
+                {
+                    BSpline< 5, double > spline;
+                    resizeMultiArraySplineInterpolation(srcMultiArrayRange(bimage),
+                                                        destMultiArrayRange(bres), spline);
+                    break;
+                }
             }
         }
     }
@@ -360,14 +372,16 @@ NumpyAnyArray pythonResizeImageCatmullRomInterpolation(NumpyArray<3, Multiband<P
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
 
-        resizeImageCatmullRomInterpolation(srcImageRange(bimage),destImageRange(bres));
+            resizeImageCatmullRomInterpolation(srcImageRange(bimage),destImageRange(bres));
+        }
     }
     return res;
 }
@@ -379,13 +393,15 @@ NumpyAnyArray pythonResizeImageCoscotInterpolation(NumpyArray<3, Multiband<Pixel
 {
     pythonResizeImagePrepareOutput(image, destSize, res);
     
-    PyAllowThreads _pythread;
-    for(int k=0;k<image.shape(2);++k)
     {
-        
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        resizeImageCoscotInterpolation(srcImageRange(bimage),destImageRange(bres));
+        PyAllowThreads _pythread;
+        for(int k=0;k<image.shape(2);++k)
+        {
+            
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            resizeImageCoscotInterpolation(srcImageRange(bimage),destImageRange(bres));
+        }
     }
     return res;
 }
@@ -412,13 +428,15 @@ resamplingGaussian2D(NumpyArray<3, Multiband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().resize(width, height), 
              "resamplingGaussian2D(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    for(int k=0; k<image.shape(2); ++k)
     {
-        MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
-        MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
-        resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
-                smoothx, xratio, xoffset, smoothy, yratio, yoffset);
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(2); ++k)
+        {
+            MultiArrayView<2, PixelType, StridedArrayTag> bimage = image.bindOuter(k);
+            MultiArrayView<2, PixelType, StridedArrayTag> bres = res.bindOuter(k);
+            resamplingConvolveImage(srcImageRange(bimage), destImageRange(bres),
+                    smoothx, xratio, xoffset, smoothy, yratio, yoffset);
+        }
     }
     return res;
 }
@@ -452,14 +470,16 @@ SplineView_interpolatedImage(SplineView const & self, double xfactor, double yfa
     NumpyArray<2, Singleband<typename SplineView::value_type> > 
                                 res(MultiArrayShape<2>::type(wn, hn));
 
-    PyAllowThreads _pythread;
-    for(int yn = 0; yn < hn; ++yn)
     {
-        double yo = yn / yfactor;
-        for(int xn = 0; xn < wn; ++xn)
+        PyAllowThreads _pythread;
+        for(int yn = 0; yn < hn; ++yn)
         {
-            double xo = xn / xfactor;
-            res(xn, yn) = self(xo, yo, xorder, yorder);
+            double yo = yn / yfactor;
+            for(int xn = 0; xn < wn; ++xn)
+            {
+                double xo = xn / xfactor;
+                res(xn, yn) = self(xo, yo, xorder, yorder);
+            }
         }
     }
     return res;

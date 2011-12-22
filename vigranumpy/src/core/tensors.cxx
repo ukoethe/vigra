@@ -82,9 +82,10 @@ pythonGaussianGradientND(NumpyArray<ndim, Singleband<VoxelType> > array,
                        "gaussianGradient(): Output array has wrong shape.");
     }
 
-    PyAllowThreads _pythread;
-    gaussianGradientMultiArray(srcMultiArrayRange(array), destMultiArray(res), opt);
-
+    {
+        PyAllowThreads _pythread;
+        gaussianGradientMultiArray(srcMultiArrayRange(array), destMultiArray(res), opt);
+    }
     return res;
 }
 
@@ -108,18 +109,20 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > array,
           "gaussianGradientMagnitude(): Output array has wrong shape.");
     res.init(VoxelType());
     
-    PyAllowThreads _pythread;
-    MultiArray<sdim, TinyVector<VoxelType, sdim> > grad(tmpShape);
-    
-    for(int k=0; k<array.shape(sdim); ++k)
     {
-        MultiArrayView<sdim, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
-    
-        gaussianGradientMultiArray(srcMultiArrayRange(barray), destMultiArray(grad), opt);
-        combineTwoMultiArrays(srcMultiArrayRange(grad), srcMultiArray(res), destMultiArray(res), 
-                              squaredNorm(Arg1())+Arg2());
+        PyAllowThreads _pythread;
+        MultiArray<sdim, TinyVector<VoxelType, sdim> > grad(tmpShape);
+        
+        for(int k=0; k<array.shape(sdim); ++k)
+        {
+            MultiArrayView<sdim, VoxelType, StridedArrayTag> barray = array.bindOuter(k);
+        
+            gaussianGradientMultiArray(srcMultiArrayRange(barray), destMultiArray(grad), opt);
+            combineTwoMultiArrays(srcMultiArrayRange(grad), srcMultiArray(res), destMultiArray(res), 
+                                  squaredNorm(Arg1())+Arg2());
+        }
+        transformMultiArray(srcMultiArrayRange(res), destMultiArray(res), sqrt(Arg1()));
     }
-    transformMultiArray(srcMultiArrayRange(res), destMultiArray(res), sqrt(Arg1()));
     
     return res;
 }
@@ -135,9 +138,11 @@ pythonRieszTransformOfLOG2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription("Riesz transform"), 
               "rieszTransformOfLOG2D(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    rieszTransformOfLOG(srcImageRange(image), destImage(res), scale, xorder, yorder);
-     
+    {
+        PyAllowThreads _pythread;
+        rieszTransformOfLOG(srcImageRange(image), destImage(res), scale, xorder, yorder);
+    }
+    
     return res;
 }
 
@@ -160,16 +165,18 @@ pythonGaussianGradientMagnitudeND(NumpyArray<ndim, Multiband<VoxelType> > volume
     res.reshapeIfEmpty(volume.taggedShape().resize(tmpShape).setChannelDescription(description), 
              "gaussianGradientMagnitude(): Output array has wrong shape.");
     
-    PyAllowThreads _pythread;
-    MultiArray<sdim, TinyVector<VoxelType, sdim> > grad(tmpShape);
-    
-    for(int k=0; k<volume.shape(sdim); ++k)
     {
-        MultiArrayView<sdim, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
-        MultiArrayView<sdim, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
-    
-        gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), opt);
-        transformMultiArray(srcMultiArrayRange(grad), destMultiArray(bres), norm(Arg1()));
+        PyAllowThreads _pythread;
+        MultiArray<sdim, TinyVector<VoxelType, sdim> > grad(tmpShape);
+        
+        for(int k=0; k<volume.shape(sdim); ++k)
+        {
+            MultiArrayView<sdim, VoxelType, StridedArrayTag> bvolume = volume.bindOuter(k);
+            MultiArrayView<sdim, VoxelType, StridedArrayTag> bres = res.bindOuter(k);
+        
+            gaussianGradientMultiArray(srcMultiArrayRange(bvolume), destMultiArray(grad), opt);
+            transformMultiArray(srcMultiArrayRange(grad), destMultiArray(bres), norm(Arg1()));
+        }
     }
     
     return res;
@@ -233,8 +240,10 @@ pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
                  "symmetricGradient(): Output array has wrong shape.");
     }
     
-    PyAllowThreads _pythread;
-    symmetricGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), opt);
+    {
+        PyAllowThreads _pythread;
+        symmetricGradientMultiArray(srcMultiArrayRange(volume), destMultiArray(res), opt);
+    }
     return res;
 }
 
@@ -270,8 +279,10 @@ pythonHessianOfGaussianND(NumpyArray<N, Singleband<VoxelType> > array,
                "hessianOfGaussian(): Output array has wrong shape.");
     }
     
-    PyAllowThreads _pythread;
-    hessianOfGaussianMultiArray(srcMultiArrayRange(array), destMultiArray(res), opt);
+    {
+        PyAllowThreads _pythread;
+        hessianOfGaussianMultiArray(srcMultiArrayRange(array), destMultiArray(res), opt);
+    }
     return res;
 }
 
@@ -291,8 +302,10 @@ pythonHessianOfGaussian3D(NumpyArray<3, Singleband<VoxelType> > volume,
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
           "hessianOfGaussian(): Output array has wrong shape.");
     
-    PyAllowThreads _pythread;
-    hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
+    {
+        PyAllowThreads _pythread;
+        hessianOfGaussianMultiArray(srcMultiArrayRange(volume), destMultiArray(res), params());
+    }
     
     return res;
 }
@@ -312,8 +325,10 @@ pythonHessianOfGaussian2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
              "hessianOfGaussian(): Output array has wrong shape.");
     
-    PyAllowThreads _pythread;
-    hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), params());
+    {
+        PyAllowThreads _pythread;
+        hessianOfGaussianMultiArray(srcMultiArrayRange(image), destMultiArray(res), params());
+    }
     
     return res;
 }
@@ -354,21 +369,23 @@ pythonStructureTensor(NumpyArray<N, Multiband<PixelType> > array,
                      "structureTensor(): Output array has wrong shape.");
     }
     
-    PyAllowThreads _pythread;
-
-    MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(0); 
-    structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), opt);
-    
-    if(array.shape(sdim) > 1)
     {
-        MultiArray<sdim, TinyVector<PixelType, int(N*(N-1)/2)> > st(res.shape());
+        PyAllowThreads _pythread;
+
+        MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(0); 
+        structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(res), opt);
         
-        for(int b=1; b<array.shape(sdim); ++b)
+        if(array.shape(sdim) > 1)
         {
-            MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(b);
-            structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(st), opt);
-            combineTwoMultiArrays(srcMultiArrayRange(res), srcMultiArray(st), 
-                                  destMultiArray(res), Arg1() + Arg2());
+            MultiArray<sdim, TinyVector<PixelType, int(N*(N-1)/2)> > st(res.shape());
+            
+            for(int b=1; b<array.shape(sdim); ++b)
+            {
+                MultiArrayView<sdim, PixelType, StridedArrayTag> band = array.bindOuter(b);
+                structureTensorMultiArray(srcMultiArrayRange(band), destMultiArray(st), opt);
+                combineTwoMultiArrays(srcMultiArrayRange(res), srcMultiArray(st), 
+                                      destMultiArray(res), Arg1() + Arg2());
+            }
         }
     }
     
@@ -387,10 +404,11 @@ pythonBoundaryTensor2D(NumpyArray<2, Singleband<SrcPixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
            "boundaryTensor2D(): Output array has wrong shape.");    
 
-    PyAllowThreads _pythread;
-
-    boundaryTensor(srcImageRange(image), destImage(res), scale);
-     
+    {
+        PyAllowThreads _pythread;
+        boundaryTensor(srcImageRange(image), destImage(res), scale);
+    }
+    
     return res;
 }
 
@@ -405,9 +423,11 @@ pythonTensorEigenRepresentation2D(NumpyArray<2, TinyVector<SrcPixelType, 3> > im
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
                     "tensorEigenRepresentation2D(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    tensorEigenRepresentation(srcImageRange(image), destImage(res));
-     
+    {
+        PyAllowThreads _pythread;
+        tensorEigenRepresentation(srcImageRange(image), destImage(res));
+    }
+    
     return res;
 }
 
@@ -422,9 +442,11 @@ pythonVectorToTensor(NumpyArray<N, TinyVector<PixelType, int(N)> > array,
     res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
             "vectorToTensor(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    vectorToTensorMultiArray(srcMultiArrayRange(array), destMultiArray(res));
-     
+    {
+        PyAllowThreads _pythread;
+        vectorToTensorMultiArray(srcMultiArrayRange(array), destMultiArray(res));
+    }
+    
     return res;
 }
 
@@ -439,9 +461,11 @@ pythonTensorTrace(NumpyArray<N, TinyVector<PixelType, int(N*(N+1)/2)> > array,
     res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
            "tensorTrace(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    tensorTraceMultiArray(srcMultiArrayRange(array), destMultiArray(res));
-     
+    {
+        PyAllowThreads _pythread;
+        tensorTraceMultiArray(srcMultiArrayRange(array), destMultiArray(res));
+    }
+    
     return res;
 }
 
@@ -456,9 +480,11 @@ pythonTensorDeterminant(NumpyArray<N, TinyVector<PixelType, int(N*(N+1)/2)> > ar
     res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
                 "tensorDeterminant(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    tensorDeterminantMultiArray(srcMultiArrayRange(array), destMultiArray(res));
-     
+    {
+        PyAllowThreads _pythread;
+        tensorDeterminantMultiArray(srcMultiArrayRange(array), destMultiArray(res));
+    }
+    
     return res;
 }
 
@@ -473,8 +499,10 @@ pythonTensorEigenvalues(NumpyArray<N, TinyVector<PixelType, int(N*(N+1)/2)> > ar
     res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
                  "tensorEigenvalues(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    tensorEigenvaluesMultiArray(srcMultiArrayRange(array), destMultiArray(res));
+    {
+        PyAllowThreads _pythread;
+        tensorEigenvaluesMultiArray(srcMultiArrayRange(array), destMultiArray(res));
+    }
     
     return res;
 }
@@ -492,9 +520,11 @@ pythonHourGlassFilter2D(NumpyArray<2, TinyVector<SrcPixelType, 3> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "hourGlassFilter2D(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    hourGlassFilter(srcImageRange(image), destImage(res), sigma, rho);
-     
+    {
+        PyAllowThreads _pythread;
+        hourGlassFilter(srcImageRange(image), destImage(res), sigma, rho);
+    }
+    
     return res;
 }
 

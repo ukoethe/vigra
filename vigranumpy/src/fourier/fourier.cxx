@@ -85,9 +85,11 @@ pythonCreateGaborFilter(typename MultiArrayView<2,T>::difference_type shape,
     res.reshapeIfEmpty(TaggedShape(shape, NumpyAnyArray::defaultAxistags(3)).toFrequencyDomain(), 
             "createGaborFilter(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    createGaborFilter(destImageRange(res),
-                      orientation, centerFrequency, angularSigma, radialSigma);
+    {
+        PyAllowThreads _pythread;
+        createGaborFilter(destImageRange(res),
+                          orientation, centerFrequency, angularSigma, radialSigma);
+    }
     return res;
 }
 
@@ -140,12 +142,14 @@ pythonFourierTransform(NumpyArray<N, Multiband<FFTWComplex<float> > > in,
                                                                : -1),
             "fourierTransform(): Output has wrong shape.");
 
-    PyAllowThreads _pythread;
-    FFTWPlan<N-1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
-    
-    for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
     {
-        plan.execute(in.bindOuter(k), res.bindOuter(k));
+        PyAllowThreads _pythread;
+        FFTWPlan<N-1, float> plan(in.bindOuter(0), res.bindOuter(0), SIGN);
+        
+        for(MultiArrayIndex k=0; k<in.shape(N-1); ++k)
+        {
+            plan.execute(in.bindOuter(k), res.bindOuter(k));
+        }
     }
     return res;
 }
@@ -183,15 +187,17 @@ pythonFourierTransformR2C(NumpyArray<N, Multiband<float> > in,
     res.reshapeIfEmpty(in.taggedShape().toFrequencyDomain(),
             "fourierTransformR2C(): Output has wrong shape.");
         
-    PyAllowThreads _pythread;
-    // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
-        // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
-    res = in;
-    FFTWPlan<N-1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
-    
-    for(MultiArrayIndex k=0; k<res.shape(N-1); ++k)
     {
-        plan.execute(res.bindOuter(k), res.bindOuter(k));
+        PyAllowThreads _pythread;
+        // static_cast<typename NumpyArray<N, Multiband<FFTWComplex<float> > >::view_type &>(res) = 
+            // static_cast<typename NumpyArray<N, Multiband<float> >::view_type const &>(in);
+        res = in;
+        FFTWPlan<N-1, float> plan(res.bindOuter(0), res.bindOuter(0), FFTW_FORWARD);
+        
+        for(MultiArrayIndex k=0; k<res.shape(N-1); ++k)
+        {
+            plan.execute(res.bindOuter(k), res.bindOuter(k));
+        }
     }
     return res;
 }
