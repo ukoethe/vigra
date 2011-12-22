@@ -964,9 +964,9 @@ class NumpyArray
          * Returns false if the python object is not a compatible
          * numpy array (see isReferenceCompatible()).
          *
-         * The parameter \a strict is deprecated and will be ignored
+         * The second parameter ('strict') is deprecated and will be ignored.
          */
-    bool makeReference(PyObject *obj, bool strict = false)
+    bool makeReference(PyObject *obj, bool /* strict */ = false)
     {
         if(!isReferenceCompatible(obj))
             return false;
