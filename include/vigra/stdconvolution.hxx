@@ -244,7 +244,6 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
 
     DestIterator yd = dest_ul;
     SrcIterator ys = src_ul;
-    SrcIterator send = src_lr;
 
     // iterate over the interior part
     for(int y=0; y<h; ++y, ++ys.y, ++yd.y)
@@ -605,7 +604,7 @@ normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
             MaskIterator yym = xm + Diff2D(x0, y0);
             KernelIterator yk  = ki - Diff2D(x0, y0);
 
-            int xx, kernel_width, kernel_height;
+            int kernel_width, kernel_height;
             kernel_width = x1 - x0 + 1;
             kernel_height = y1 - y0 + 1;
             for(yy=0; yy<kernel_height; ++yy, ++yys.y, --yk.y, ++yym.y)

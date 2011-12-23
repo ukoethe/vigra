@@ -653,7 +653,6 @@ watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor
                     Neighborhood neighborhood)
 {
     SImage orientationImage(lowerrights - upperlefts);
-    SImage::traverser yo = orientationImage.upperLeft();
 
     prepareWatersheds(upperlefts, lowerrights, sa,
                      orientationImage.upperLeft(), orientationImage.accessor(), neighborhood);

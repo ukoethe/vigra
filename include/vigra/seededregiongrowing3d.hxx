@@ -302,7 +302,7 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                       Neighborhood,
                       double max_cost)
 {
-    SrcImageIterator srclr = srcul + shape;
+    //SrcImageIterator srclr = srcul + shape;
     //int w = srclr.x - srcul.x;
     int w = shape[0];
     //int h = srclr.y - srcul.y;
