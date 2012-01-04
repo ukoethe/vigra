@@ -1404,3 +1404,6 @@ def testUfuncs():
     bb = ufunc.add(255, a, b)
     assert bb is b
     assert (b == 510).all()
+
+def testUntaggedArrayConstruction():
+    vt.testUntaggedArrayConstruction()
