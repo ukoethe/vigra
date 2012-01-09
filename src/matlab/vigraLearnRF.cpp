@@ -117,8 +117,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     VariableImportanceVisitor   var_imp(static_cast<int>(var_imp_rep));
     OOB_Error                   oob_err;
     MatlabRandomForestProgressVisitor progress;
-    if(!outputs.isValid(2))
+    if(!outputs.isValid(3))
         var_imp.deactivate();
+
+    bool outputTreeDepth = true;
+    if(!outputs.isValid(2))
+        outputTreeDepth = false;
+
+    progress.setComputeMaxTreeDepth(outputTreeDepth);
 
 
     /***************************************************************************************************
@@ -159,12 +165,27 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
 
     outputs.createScalar<double> (1, v_optional(), oob_err.oob_breiman);
     MultiArrayView<2, double> vari 
-        = outputs.createMultiArray<2, double>(2, v_optional(), 
+        = outputs.createMultiArray<2, double>(3, v_optional(),
                             MultiArrayShape<2>::type(var_imp
                                                       .variable_importance_
                                                       .shape()));
     if(vari.size() != 0)
         vari = var_imp.variable_importance_;
+
+    // show tree depth
+    if (outputTreeDepth)
+    {
+        typedef MultiArray<2, double>::difference_type Shape;
+
+        MultiArrayView<2, double> vari
+            = outputs.createMultiArray<2, double>(2, v_optional(),
+                                                  Shape( progress.treeInfo.size(), 2 ));
+        for (int i=0; i < progress.treeInfo.size(); i++)
+        {
+            vari( i, 0 ) = progress.treeInfo[i].maxDepthLeft;
+            vari( i, 1 ) = progress.treeInfo[i].maxDepthRight;
+        }
+    }
 }
 
 
@@ -183,7 +204,8 @@ function RF = vigraLearnRF(features, labels) Trains a randomForest with Default 
 function RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
 function RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
 function [RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
-function [RF oob var_imp] = vigraLearnRF(...)       Outputs variable importance.
+function [RF oob trees_depth] = vigraLearnRF(...)       Outputs tree depth for each tree, left + right branches.
+function [RF oob trees_depth var_imp] = vigraLearnRF(...)       Outputs variable importance.
 
 features    - A Nxp Matrix with N samples containing p features
 labels      - A Nx1 Matrix with the corresponding Training labels
