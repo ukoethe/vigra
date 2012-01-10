@@ -352,6 +352,13 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
         return constructNumpyArrayFromData(shape, npyStride.begin(), 
                                                     ValuetypeTraits::typeCode, data);
     }
+    
+    static int orderFlag(std::string const & order)
+    {
+        if(order == "C")
+            return 0;
+        return 1;
+    }
 };
 
 /********************************************************/
@@ -392,6 +399,13 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
     {
         return isShapeCompatible(obj) && BaseType::isValuetypeCompatible(obj);
+    }
+    
+    static int orderFlag(std::string const & order)
+    {
+        vigra_precondition(order != "C",
+            "createArray(): Unstrided VIGRA arrays cannot have 'C' order.");
+        return 1;
     }
 };
 
@@ -486,6 +500,11 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
         {
             permute.erase(permute.begin());
         }
+    }
+    
+    static int orderFlag(std::string const & order)
+    {
+        return -1; // the flag is invalid, because the order is encoded in the axistags
     }
 };
 
@@ -661,6 +680,11 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
             permute[N-1] = channelIndex;
         }
     }
+    
+    static int orderFlag(std::string const & order)
+    {
+        return -1; // the flag is invalid, because the order is encoded in the axistags
+    }
 };
 
 /********************************************************/
@@ -817,6 +841,11 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
 
         return constructNumpyArrayFromData(npyShape, npyStride.begin(), 
                                                     ValuetypeTraits::typeCode, data);
+    }
+    
+    static int orderFlag(std::string const & order)
+    {
+        return -1; // the flag is invalid, because the order is encoded in the axistags
     }
 };
 
