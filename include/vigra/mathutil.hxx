@@ -309,6 +309,52 @@ typename NumericTraits<T>::Promote sq(T t)
 
 namespace detail {
 
+template <class V, unsigned>
+struct cond_mult
+{
+    static V call(const V & x, const V & y) { return x * y; }
+};
+template <class V>
+struct cond_mult<V, 0>
+{
+    static V call(const V &, const V & y) { return y; }
+};
+
+template <class V, unsigned n>
+struct power_static
+{
+    static V call(const V & x)
+    {
+        return n / 2
+            ? cond_mult<V, n & 1>::call(x, power_static<V, n / 2>::call(x * x))
+            : n & 1 ? x : V();
+    }
+};
+template <class V>
+struct power_static<V, 0>
+{
+    static V call(const V & x)
+    {
+        return V(1);
+    }
+};
+
+} // namespace detail
+
+    /*! Exponentiation to a positive integer power by squaring.
+
+        <b>\#include</b> \<vigra/mathutil.hxx\><br>
+        Namespace: vigra
+    */
+template <unsigned n, class V>
+inline V power(const V & x)
+{
+    return detail::power_static<V, n>::call(x);
+}
+//doxygen_overloaded_function(template <unsigned n, class V> power(const V & x))
+
+namespace detail {
+
 template <class T>
 class IntSquareRoot
 {

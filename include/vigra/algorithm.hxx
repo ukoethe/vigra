@@ -625,6 +625,20 @@ inline UInt32 concatenateChecksum(UInt32 checksum, const char * data, unsigned i
     return detail::checksumImpl(data, size, ~checksum);
 }
 
+template <class T>
+void updateMin(T & x, const T & y)
+{
+    using std::min;
+    x = min(x, y);
+}
+
+template <class T>
+void updateMax(T & x, const T & y)
+{
+    using std::max;
+    x = max(x, y);
+}
+
 
 //@}
 

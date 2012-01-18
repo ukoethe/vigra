@@ -65,7 +65,7 @@ namespace vigra {
     </th>
 </tr>
 <tr>
-    <td><tt>accessor(iter)</tt></td><td>convertible to <br><tt>Iterator::value_type const &</tt></td>
+    <td><tt>accessor(iter)</tt></td><td>convertible to <br><tt>Accessor::value_type const &</tt></td>
     <td>read data at the current position of the iterator</td>
 </tr>
 <tr>
