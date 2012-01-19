@@ -2465,6 +2465,13 @@ public:
       m_alloc(alloc)
     {}
 
+        /** construct with given length
+        
+            Use only for 1-dimensional arrays (<tt>N==1</tt>).
+         */
+    explicit MultiArray (difference_type_1 length,
+                         allocator_type const & alloc = allocator_type());
+
         /** construct with given shape
          */
     explicit MultiArray (const difference_type &shape,
@@ -2727,6 +2734,17 @@ public:
         return m_alloc;
     }
 };
+
+template <unsigned int N, class T, class A>
+MultiArray <N, T, A>::MultiArray (difference_type_1 length,
+                                  allocator_type const & alloc)
+: MultiArrayView <N, T> (difference_type(length),
+                         detail::defaultStride <1> (difference_type(length)),
+                         0),
+  m_alloc(alloc)
+{
+    allocate (this->m_ptr, this->elementCount (), T());
+}
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,

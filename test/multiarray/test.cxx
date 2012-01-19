@@ -454,6 +454,9 @@ public:
         typedef MultiArray <1, unsigned char> array1_t;
         array1_t a (s);
         should (a.shape (0) == 2);
+
+        array1_t b(4);
+        should (b.shape (0) == 4);
     }
 
     void test_second_ctor ()
