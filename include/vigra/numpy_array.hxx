@@ -46,14 +46,18 @@
 #include "numpy_array_traits.hxx"
 #include "numpy_array_taggedshape.hxx"
 
+// NumPy function called by NumPy’s import_array() macro (and our import_vigranumpy() below)
 int _import_array();
 
 namespace vigra {
 
 static inline void import_vigranumpy()
 {
+    // roughly equivalent to import_array():
     if(_import_array() < 0)
         pythonToCppException(0);
+
+    // in addition, import vigra.vigranumpycore:
     python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
     pythonToCppException(module);
 }
@@ -960,9 +964,9 @@ class NumpyArray
          * Returns false if the python object is not a compatible
          * numpy array (see isReferenceCompatible()).
          *
-         * The parameter \a strict is deprecated and will be ignored
+         * The second parameter ('strict') is deprecated and will be ignored.
          */
-    bool makeReference(PyObject *obj, bool strict = false)
+    bool makeReference(PyObject *obj, bool /* strict */ = false)
     {
         if(!isReferenceCompatible(obj))
             return false;

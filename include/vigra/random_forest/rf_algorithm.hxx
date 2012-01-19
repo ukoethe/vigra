@@ -801,7 +801,6 @@ public:
                        secondChild.columns_begin(),secondChild.columns_end(),
                        parent.columns_begin());
             //merge nodes in addr
-            int to_keep;
             int to_desc;
             int ii_keep;
             if(*parent.columns_begin() ==  *firstChild.columns_begin())
@@ -810,7 +809,6 @@ public:
                 parent.child(1) = (addr.begin()+jj_min)->first;
                 (addr.begin()+ii_min)->first = cur_addr;
                 ii_keep = ii_min;
-                to_keep = (addr.begin()+ii_min)->second;
                 to_desc = (addr.begin()+jj_min)->second;
                 addr.erase(addr.begin()+jj_min);
             }
@@ -820,7 +818,6 @@ public:
                 parent.child(0) = (addr.begin()+jj_min)->first;
                 (addr.begin()+jj_min)->first = cur_addr;
                 ii_keep = jj_min;
-                to_keep = (addr.begin()+jj_min)->second;
                 to_desc = (addr.begin()+ii_min)->second;
                 addr.erase(addr.begin()+ii_min);
             }

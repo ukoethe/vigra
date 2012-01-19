@@ -779,7 +779,7 @@ public:
 
         Image::ScanOrderIterator i = img.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
-        Image::Accessor acc = img.accessor ();
+        //Image::Accessor acc = img.accessor ();
 
         shouldEqualSequence(i, img.end(), i1);
 #endif

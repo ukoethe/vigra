@@ -286,7 +286,8 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     // the appropriate axistags object for that order and NumpyArray type.
     // (called in NumpyArray constructors via NumpyArray::init())
     template <class U>
-    static TaggedShape taggedShape(TinyVector<U, N> const & shape, std::string const & order = "")
+    static TaggedShape taggedShape(TinyVector<U, N> const & shape,
+                                   std::string const & /* order */ = "")
     {
         // We ignore the 'order' parameter, because we don't know the axis meaning
         // in a plain array (use Singleband, Multiband, TinyVector etc. instead).

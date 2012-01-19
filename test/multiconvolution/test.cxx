@@ -868,7 +868,7 @@ struct stma_f : public t_func
     }
 };
 
-const t_func *const new_test_alloc(double sigma, double outer, int test_nr)
+const t_func * new_test_alloc(double sigma, double outer, int test_nr)
 {
     switch (test_nr)
     {
@@ -900,7 +900,7 @@ const t_func *const new_test_alloc(double sigma, double outer, int test_nr)
     return 0;
 }
 
-const t_func *const new_test(double sigma, double outer, int test_nr,
+const t_func * new_test(double sigma, double outer, int test_nr,
                                                               logger & log_name)
 {
     const t_func *const test = new_test_alloc(sigma, outer, test_nr);
