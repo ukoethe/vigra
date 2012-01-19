@@ -415,6 +415,11 @@ public:
         subarray /= 2; // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0) - 1);
+
+        // test assignment from UInt8 => double (reproduces compiler crash in VisualStudio 2010)
+        MultiArray<2, UInt8> d1(Shape2(50, 100));
+        MultiArray<2, double> d2(d1.shape());
+        d2 = d1;
     }
 };
 

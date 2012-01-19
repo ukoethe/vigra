@@ -307,6 +307,7 @@ initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<
     }
 }
 
+// FIXME: the explicit overload for MultiIterator<1, UInt8, ... > works around a compiler crash in VisualStudio 2010
 #define VIGRA_COPY_MULTI_ARRAY_DATA(name, op) \
 template <class SrcIterator, class Shape, class DestIterator> \
 inline void \
@@ -319,6 +320,17 @@ name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt
     } \
 } \
  \
+template <class Ref, class Ptr, class Shape, class DestIterator> \
+inline void \
+name##MultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, DestIterator d, MetaInt<0>) \
+{ \
+    Ptr s = &(*si), send = s + shape[0]; \
+    for(; s < send; ++s, ++d) \
+    { \
+        *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
+    } \
+} \
+\
 template <class SrcIterator, class Shape, class DestIterator, int N> \
 void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>) \
@@ -365,6 +377,18 @@ inline void
 uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
 {
     SrcIterator send = s + shape[0];
+    for(; s < send; ++s, ++d)
+    {
+        a.construct(d, static_cast<T const &>(*s));
+    }
+}
+
+// FIXME: this overload works around a compiler crash in VisualStudio 2010
+template <class Ref, class Ptr, class Shape, class T, class ALLOC>
+inline void
+uninitializedCopyMultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
+{
+    Ptr s = &(*si), send = s + shape[0];
     for(; s < send; ++s, ++d)
     {
         a.construct(d, static_cast<T const &>(*s));
