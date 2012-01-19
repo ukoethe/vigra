@@ -284,7 +284,10 @@ pythonColorTransform(NumpyArray<N, TinyVector<PixelType, 3> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(Functor::targetColorSpace()),
         "colorTransform(): Output images has wrong dimensions");
 
-    transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), Functor());
+    {
+        PyAllowThreads _pythread;
+        transformMultiArray(srcMultiArrayRange(image), destMultiArray(res), Functor());
+    }
     return res;
 }
 
