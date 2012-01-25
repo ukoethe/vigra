@@ -5,12 +5,12 @@
 #include <sstream>
 #include "unittest.hxx"
 
-#include <vigra/multi_pointoperators.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/rgbvalue.hxx>
-#include <vigra/coordinate_iterator.hxx>
+#include "vigra/multi_pointoperators.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/rgbvalue.hxx"
+#include "vigra/coordinate_iterator.hxx"
 
-#include <vigra/object_features.hxx>
+#include "vigra/object_features.hxx"
 
 
 using namespace vigra;
@@ -366,7 +366,7 @@ struct CoordinateIteratorTestSuite : public vigra::test_suite
 };
 
 
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
     CoordinateIteratorTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));

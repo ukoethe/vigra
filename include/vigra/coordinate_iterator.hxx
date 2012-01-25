@@ -6,6 +6,7 @@
 #include "tinyvector.hxx"
 #include "numerictraits.hxx"
 #include "multi_iterator.hxx"
+#include "multi_array.hxx"
 
 namespace vigra {
 
