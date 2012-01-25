@@ -228,6 +228,15 @@ operator<<(std::ostream & os, const StridePairPointer<N, T> & x)
     return os;
 }
 
+namespace detail {
+
+template<class T>
+struct accumulable_coord_access;
+template<class T>
+struct accumulable_value_access;
+template<class T>
+struct accumulable_weighted_access;
+
 template<unsigned N, class T>
 struct accumulable_coord_access<StridePairPointer<N, T> >
 {
@@ -254,8 +263,6 @@ struct accumulable_weighted_access<StridePairPointer<N, T> >
         return v.value() * v.coord();
     }
 };
-
-namespace detail {
 
 template<class X>
 void dismember(X & r, const X & x, unsigned i)
@@ -447,6 +454,8 @@ struct CoordinateMultiIterator : public CoordinateStride<N>::iterator_type
     CoordinateMultiIterator(const base_type & x) : base_type(x) {}
 };
 
+namespace detail {
+
 template<unsigned N>
 struct CoordinateMultiRangeReturns
 {
@@ -461,18 +470,22 @@ struct CoordinateMultiRangeReturns
     typedef triple<iterator_type, stride_array_type, access_type> type;
 };
 
+} // namespace detail
+
 template <unsigned N>
-typename CoordinateMultiRangeReturns<N>::type
+typename detail::CoordinateMultiRangeReturns<N>::type
 coordinateMultiRange(const typename MultiArrayShape<N>::type & shape,
                      const TinyVector<double, N> & stride
                                                    = TinyVector<double, N>(1.0),
                      const TinyVector<double, N> & origin
                                                    = TinyVector<double, N>(0.0))
 {
-    typedef typename CoordinateMultiRangeReturns<N>::stride_type stride_type;
-    typedef typename CoordinateMultiRangeReturns<N>::access_type access_type;
+    typedef typename
+        detail::CoordinateMultiRangeReturns<N>::stride_type stride_type;
+    typedef typename
+        detail::CoordinateMultiRangeReturns<N>::access_type access_type;
 
-    return typename CoordinateMultiRangeReturns<N>::type
+    return typename detail::CoordinateMultiRangeReturns<N>::type
         (CoordinateMultiIterator<N>(stride_type(0, origin),
                                     stride_type(1, stride),
                                     shape),
