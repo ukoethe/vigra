@@ -65,6 +65,7 @@ struct SamplerTests
     SamplerTests()
     {}
 
+    void testIdentitySampling();
     void testSamplingWithoutReplacement();
     void testStratifiedSamplingWithoutReplacement();
     void testSamplingWithReplacement();
@@ -75,6 +76,20 @@ struct SamplerTests
     void testSamplingImpl(bool withReplacement);
     void testStratifiedSamplingImpl(bool withReplacement);
 };
+
+void SamplerTests::testIdentitySampling()
+{
+    Sampler<> sampler(0);
+    sampler.sample();
+
+    for(UInt32 k=0; k<20; ++k)
+        shouldEqual(k, sampler[k]);
+
+    sampler.sample();
+
+    for(UInt32 k=0; k<20; ++k)
+        shouldEqual(k, sampler[k]);
+}
 
 void SamplerTests::testSamplingWithoutReplacement()
 {
@@ -184,7 +199,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
     
     {
-        int  totalDataCount = strata.size();
+        std::size_t  totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(10).stratified());
         shouldEqual(sampler.totalCount(), totalDataCount);
@@ -230,7 +245,7 @@ void SamplerTests::testStratifiedSamplingImpl(bool withReplacement)
     }
 
     {
-        int totalDataCount = strata.size();
+        std::size_t totalDataCount = strata.size();
         Sampler<> sampler( strata.begin(), strata.end(), 
              SamplerOptions().withReplacement(withReplacement).sampleSize(9).stratified());
         sampler.sample();
@@ -409,6 +424,7 @@ struct SamplerTestSuite
     SamplerTestSuite()
     : vigra::test_suite("Sampler Test")
     {
+        add(testCase(&SamplerTests::testIdentitySampling));
         add(testCase(&SamplerTests::testSamplingWithoutReplacement));
         add(testCase(&SamplerTests::testStratifiedSamplingWithoutReplacement));
         add(testCase(&SamplerTests::testSamplingWithReplacement));

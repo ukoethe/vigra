@@ -248,13 +248,13 @@ class Sampler
 
   private:
     typedef std::map<IndexType, IndexArrayType> StrataIndicesType;
-    typedef std::map<IndexType, int> StrataSizesType;
+    typedef std::map<IndexType, IndexType> StrataSizesType;
     typedef ArrayVector     <bool>       IsUsedArrayType;
     typedef ArrayVectorView <bool>       IsUsedArrayViewType;
     
     static const int oobInvalid = -1;
 
-    int total_count_, sample_size_;
+    IndexType total_count_, sample_size_;
     mutable int current_oob_count_;
     StrataIndicesType     strata_indices_;
     StrataSizesType       strata_sample_size_;
@@ -268,8 +268,8 @@ class Sampler
     {
         // compute how many samples to take from each stratum
         // (may be unequal if sample_size_ is not a multiple of strataCount())
-        int strata_sample_size = (int)std::ceil(double(sample_size_) / strataCount());
-        int strata_total_count = strata_sample_size * strataCount();
+        IndexType strata_sample_size = (IndexType)std::ceil(double(sample_size_) / strataCount());
+        IndexType strata_total_count = strata_sample_size * strataCount();
 
         for(StrataIndicesType::iterator i = strata_indices_.begin(); 
              i != strata_indices_.end(); ++i)
@@ -292,7 +292,9 @@ class Sampler
             
             In each invocation of <tt>sample()</tt> below, it will sample
             indices according to the options passed. If no options are given, 
-            <tt>totalCount</tt> indices will be drawn with replacement.
+            <tt>totalCount</tt> indices will be drawn with replacement, unless
+            <tt>totalCount == 0</tt>, in which case randomization is completely
+            switched off such that <tt>sampler[k]</tt> simply returns k.
         */
     Sampler(UInt32 totalCount, SamplerOptions const & opt = SamplerOptions(), 
             Random const & rnd = Random(RandomSeed))
@@ -318,7 +320,8 @@ class Sampler
         for(int i=0; i<total_count_; ++i)
             strata_indices_[0][i] = i;
 
-        initStrataCount();
+        if(total_count_ > 0)
+            initStrataCount();
         //this is screwing up the random forest tests.
         //sample();
     }
@@ -374,9 +377,11 @@ class Sampler
 
         /** Return the k-th index in the current sample.
          */
-    IndexType operator[](int k) const
+    IndexType operator[](IndexType k) const
     {
-        return current_sample_[k];
+        return total_count_ > 0 
+                   ? current_sample_[k]
+                   : k;
     }
 
         /** Create a new sample.
@@ -408,7 +413,7 @@ class Sampler
             Will be 1 if no strata are given. Will be ignored when
             stratifiedSampling() is false.
          */
-    int strataCount() const
+    std::size_t strataCount() const
     {
         return strata_indices_.size();
     }
@@ -475,7 +480,7 @@ void Sampler<Random>::sample()
         for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
         {
             // do sampling with replacement in each strata and copy data.
-            int stratum_size = iter->second.size();
+            UInt32 stratum_size = iter->second.size();
             for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
             {
                 current_sample_[j] = iter->second[random_.uniformInt(stratum_size)];
@@ -491,7 +496,7 @@ void Sampler<Random>::sample()
         for(iter = strata_indices_.begin(); iter != strata_indices_.end(); ++iter)
         {
             // do sampling without replacement in each strata and copy data.
-            int stratum_size = iter->second.size();
+            UInt32 stratum_size = iter->second.size();
             for(int i = 0; i < (int)strata_sample_size_[iter->first]; ++i, ++j)
             {
                 std::swap(iter->second[i], iter->second[i+ random_.uniformInt(stratum_size - i)]);
