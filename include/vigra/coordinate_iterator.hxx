@@ -1,6 +1,8 @@
 #ifndef VIGRA_COORDINATE_ITERATOR_HXX
 #define VIGRA_COORDINATE_ITERATOR_HXX
 
+#include <complex>
+
 #include "tuple.hxx"
 #include "accessor.hxx"
 #include "tinyvector.hxx"
@@ -108,7 +110,7 @@ operator<<(std::ostream & os, const StridePair<N> & x)
 template<unsigned N>
 struct StridePairCoord : public TinyVector<double, N>
 {
-    typedef TinyVector<double, N>          entry_type;
+    typedef TinyVector<double, N> entry_type;
 
     StridePairCoord(const entry_type & c) : entry_type(c) {}
     StridePairCoord() {}
@@ -172,6 +174,7 @@ struct StridePairPointer : public StridePairCoord<N>
 {
     typedef const T*                          index_type;
     typedef StridePairCoord<N>                coord_type;
+    typedef typename coord_type::entry_type   coord_num_type;
     typedef StridePairPointer                 type;
     typedef type                              deref_type;
     typedef StridePairDiff<N>                 stride_type;
@@ -231,6 +234,35 @@ operator<<(std::ostream & os, const StridePairPointer<N, T> & x)
 
 namespace detail {
 
+template<class T, bool is_complex = NumericTraits<T>::isComplex::value,
+                  bool is_vector = !NumericTraits<T>::isScalar::value>
+struct weighted_abs
+{
+    static double get(const T & x)
+    {
+        return x;
+    }
+};
+
+template<class T>
+struct weighted_abs<T, true, false>
+{
+    static double get(const T & x)
+    {
+        using std::abs;
+        return abs(x);
+    }
+};
+
+template<class T, bool is_complex>
+struct weighted_abs<T, is_complex, true>
+{
+    static double get(const T & x)
+    {
+        return x.magnitude();
+    }
+};
+
 template<class T>
 struct accumulable_coord_access;
 template<class T>
@@ -242,7 +274,7 @@ template<unsigned N, class T>
 struct accumulable_coord_access<StridePairPointer<N, T> >
 {
     typedef StridePairPointer<N, T> accumulable_type;
-    typedef typename accumulable_type::coord_type type;
+    typedef typename accumulable_type::coord_num_type type;
     static const type & get(const accumulable_type & v) { return v.coord(); }
 };
 
@@ -258,10 +290,10 @@ template<unsigned N, class T>
 struct accumulable_weighted_access<StridePairPointer<N, T> >
 {
     typedef StridePairPointer<N, T> accumulable_type;
-    typedef T type;
+    typedef typename accumulable_type::coord_num_type type;
     static type get(const accumulable_type & v)
     {
-        return v.value() * v.coord();
+        return weighted_abs<T>::get(v.value()) * v.coord();
     }
 };
 

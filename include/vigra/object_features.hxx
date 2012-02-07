@@ -503,7 +503,7 @@ struct Moment2;
 template <class T>
 struct Mean
     : public detail::gen_mean_acc<T, detail::accumulable_value_access, Mean,
-                                     Moment2> {};
+                                     Moment2, Moment2> {};
 template <class T>
 struct Moment2
     : public detail::gen_sum_squared_diff_acc<T,
@@ -519,7 +519,7 @@ struct CoordMoment2;
 template <class T>
 struct CoordMean
     : public detail::gen_mean_acc<T, detail::accumulable_coord_access, 
-                                     CoordMean, CoordMoment2> {};
+                                     CoordMean, CoordMoment2, CoordMoment2> {};
 template <class T>
 struct CoordMoment2
     : public detail::gen_sum_squared_diff_acc<T,
@@ -535,7 +535,8 @@ struct WeightedMoment2;
 template <class T>
 struct WeightedMean
     : public detail::gen_mean_acc<T, detail::accumulable_weighted_access,
-                                     WeightedMean, WeightedMoment2> {};
+                                     WeightedMean, WeightedMoment2,
+                                                   WeightedMoment2> {};
 template <class T>
 struct WeightedMoment2
     : public detail::gen_sum_squared_diff_acc<T,
@@ -560,6 +561,7 @@ struct temp_mean
     template <class T>
     struct acc
         : public gen_mean_acc<T, ACCU_ACCESS, acc,
+                              temp_sum_squared_diff<ACCU_ACCESS>::template acc,
                               temp_sum_squared_diff<ACCU_ACCESS>::template acc>
     {};
 };
@@ -602,7 +604,7 @@ struct CoordVariance
                                           CoordMoment2> {};
 
 template <class T>
-struct weighted_variance_calc
+struct WeightedVariance
     : public detail::gen_variance_calc<T, detail::accumulable_weighted_access,
                                           WeightedMoment2> {};
 
@@ -707,7 +709,7 @@ struct gen_central_moment_acc2
 {
     static const unsigned number_of_passes = 2;
     // reset() and unimplemented variants
-    using numeric_accumulator_base<T>::operator();
+    using numeric_accumulator_base<T, typename CV<T>::type>::operator();
 
     template <class ACX> void updatePass1(ACX &, const T &) {} // pass 1
     
@@ -823,7 +825,7 @@ template <class T, template<class> class CV,
                    template<class> class M2_ACC2,
                    template<class> class M4_ACC2>
 struct gen_kurtosis_calc2
-    : public calculator_base<T>,
+    : public calculator_base<typename CV<T>::type>,
       public type_lists::implies_template<T, M2_ACC2, M4_ACC2>
 {
     template <class ACX>
@@ -861,7 +863,7 @@ struct gen_min_acc : public collector_base<T, typename CV<T>::type>
     typedef typename gen_min_acc::collector_base_type collector_base_type;
     void reset()
     {
-        this->value = NumericTraits<T>::max();
+        this->value = NumericTraits<typename CV<T>::type>::max();
     }
     gen_min_acc()
     {
@@ -890,7 +892,7 @@ struct gen_max_acc : public collector_base<T, typename CV<T>::type>
     typedef typename gen_max_acc::collector_base_type collector_base_type;
     void reset()
     {
-        this->value = NumericTraits<T>::min();
+        this->value = NumericTraits<typename CV<T>::type>::min();
     }
     gen_max_acc()
     {

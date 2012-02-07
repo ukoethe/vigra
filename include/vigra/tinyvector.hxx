@@ -1637,7 +1637,7 @@ prod(TinyVectorBase<V, SIZE, D1, D2> const & l)
     return res;
 }
 
-    /// cumulative sum of the vector's elements
+    /// cumulative product of the vector's elements
 template <class V, int SIZE, class D1, class D2>
 inline
 TinyVector<typename NumericTraits<V>::Promote, SIZE>
