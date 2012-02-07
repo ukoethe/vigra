@@ -141,6 +141,31 @@ kMeansPlusPlusInitialization(MultiArrayView<2, T1, Stride1> const & data,
     }
 }
 
+    /** \brief Option object for kMeans() clustering.
+    
+    */
+struct KMeansOptions
+{
+    unsigned int max_iterations, sample_size;
+    
+    KMeansOptions()
+    : max_iterations(100),
+      sample_size(0)
+    {}
+    
+    KMeansOptions & maxIterations(unsigned int n)
+    {
+        max_iterations = n;
+        return *this;
+    }
+    
+    KMeansOptions & sampleSize(unsigned int n)
+    {
+        sample_size = n;
+        return *this;
+    }
+};
+
     /** \brief Perform k-means clustering of an array.
     
         Array \a data holds the data to be clustered, and the array shape must be 
@@ -186,10 +211,11 @@ kMeansPlusPlusInitialization(MultiArrayView<2, T1, Stride1> const & data,
         See also: \ref kMeansRandomInitialization(), \ref kMeansPlusPlusInitialization()
     */
 template<class T1, class Stride1, class T2, class Stride2, class T3, class Stride3>
-void 
+unsigned int 
 kMeans(MultiArrayView<2, T1, Stride1> const & data, 
        MultiArrayView<1, T2, Stride2> & assignments,
-       MultiArrayView<2, T3, Stride3> & clusterCenters)
+       MultiArrayView<2, T3, Stride3> & clusterCenters,
+       KMeansOptions const & options = KMeansOptions())
 {
     using namespace multi_math;
 
@@ -202,26 +228,41 @@ kMeans(MultiArrayView<2, T1, Stride1> const & data,
       "kMeans(): Number of features mismatch between data and clusterCenter arrays.");
     vigra_precondition(numSamples == assignments.size(),
       "kMeans(): Number of samples mismatch between data and assignments arrays.");
+    // FIXME: support 64-bit int in the random number generators to get rid of this restriction
+    vigra_precondition(numSamples <= NumericTraits<UInt32>::max(),
+      "kMeans(): Number of samples must be less than 2^32."); 
+      
+    bool useMiniBatches = 0 < options.sample_size && options.sample_size < numSamples;
+    MultiArrayIndex numSelectedSamples = useMiniBatches
+                                           ? options.sample_size
+                                           : numSamples;
+    Sampler<> sampler(useMiniBatches
+                         ? numSamples
+                         : 0,
+                       SamplerOptions().sampleSize(numSelectedSamples));
     
     typedef typename NormTraits<MultiArrayView<2, T3, Stride3> >::SquaredNormType DistType;
     
     std::vector<MultiArrayIndex> clusterSizes(clusterCount);
     assignments.init(clusterCount+1);
     
-    int maxIter = 100, iter=0;
-    for(; iter<maxIter; ++iter)
+    unsigned int iter=0;
+    for(; iter<options.max_iterations; ++iter)
     {
         bool assignmentsChanged = false;
         
-        // assign all points to the nearest cluster
-        for(MultiArrayIndex s=0; s < numSamples; ++s)
+        sampler.sample();
+        
+        // assign selected points to the nearest cluster
+        for(MultiArrayIndex s=0; s < numSelectedSamples; ++s)
         {
             MultiArrayIndex nearestCluster = 0;
-            DistType minDist = sum(sq(columnVector(clusterCenters,0) - columnVector(data, s)), DistType());
+            MultiArrayIndex i = sampler[s];
+            DistType minDist = sum(sq(columnVector(clusterCenters,0) - columnVector(data, i)), DistType());
             
             for(MultiArrayIndex k=1; k<clusterCount; ++k)
             {
-                DistType dist = sum(sq(columnVector(clusterCenters,k) - columnVector(data, s)), DistType());
+                DistType dist = sum(sq(columnVector(clusterCenters,k) - columnVector(data, i)), DistType());
                 if(dist < minDist)
                 {
                     minDist = dist;
@@ -229,9 +270,9 @@ kMeans(MultiArrayView<2, T1, Stride1> const & data,
                 }
             }
             
-            if(assignments(s) != nearestCluster)
+            if(assignments(i) != nearestCluster)
             {
-                assignments(s) = nearestCluster;
+                assignments(i) = nearestCluster;
                 assignmentsChanged = true;
             }
         }
@@ -241,20 +282,24 @@ kMeans(MultiArrayView<2, T1, Stride1> const & data,
             break;
         
         // update cluster centers
-        clusterCenters.init(T3());
-        std::fill(clusterSizes.begin(), clusterSizes.end(), 0);
-        
-        for(MultiArrayIndex s=0; s < numSamples; ++s)
+        if(!useMiniBatches)
         {
-            columnVector(clusterCenters, (MultiArrayIndex)assignments(s)) += columnVector(data, s);
-            clusterSizes[(MultiArrayIndex)assignments(s)]++;
+            // standard algorithm: reset centers in every iteration
+            clusterCenters.init(T3());
+            std::fill(clusterSizes.begin(), clusterSizes.end(), 0);
         }
-        for(MultiArrayIndex k=0; k<clusterCount; ++k)
+        for(MultiArrayIndex s=0; s < numSelectedSamples; ++s)
         {
-            if(clusterSizes[k])
-                columnVector(clusterCenters, k) *= 1.0/clusterSizes(k);
+            MultiArrayIndex i = sampler[s];
+            MultiArrayIndex cluster = (MultiArrayIndex)assignments(i);
+            clusterSizes[cluster]++;
+            double learningRate = 1.0 / clusterSizes[cluster];
+            columnVector(clusterCenters, cluster) = (1.0 - learningRate)*columnVector(clusterCenters, cluster)
+                                                         + learningRate*columnVector(data, i);
         }
     }
+    
+    return iter;
 }
 
 }
