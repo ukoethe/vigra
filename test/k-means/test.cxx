@@ -188,7 +188,7 @@ public:
         MultiArray<2, double> expectedClusterCenters(Shape2(numFeatures, clusterCount), expClusterVals);
 
         kMeansRunTest(data, clusterCenters, expectedClusterCenters);
-        kMeansRunTest(data, clusterCenters, expectedClusterCenters, 1e-2,
+        kMeansRunTest(data, clusterCenters, expectedClusterCenters, 0.011,
                       KMeansOptions().maxIterations(1000).sampleSize(16));
     }
 
