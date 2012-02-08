@@ -468,31 +468,47 @@ struct NumericTraits<RGBValue<T, R, G, B> >
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef typename NumericTraits<T>::isSigned isSigned;
-    typedef VigraFalseType isOrdered;
+    typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
 
-    static Type zero() {
+    static Type zero()
+    {
         return Type(NumericTraits<T>::zero());
     }
-    static Type one() {
+    static Type one()
+    {
         return Type(NumericTraits<T>::one());
     }
-    static Type nonZero() {
+    static Type nonZero()
+    {
         return Type(NumericTraits<T>::nonZero());
     }
 
-    static Promote toPromote(Type const & v) {
+    static Type min()
+    {
+        return Type(NumericTraits<T>::min());
+    }
+    static Type max()
+    {
+        return Type(NumericTraits<T>::max());
+    }
+
+    static Promote toPromote(Type const & v)
+    {
         return Promote(v);
     }
-    static RealPromote toRealPromote(Type const & v) {
+    static RealPromote toRealPromote(Type const & v)
+    {
         return RealPromote(v);
     }
-    static Type fromPromote(Promote const & v) {
+    static Type fromPromote(Promote const & v)
+    {
       return Type(NumericTraits<T>::fromPromote(v.red()),
                   NumericTraits<T>::fromPromote(v.green()),
                   NumericTraits<T>::fromPromote(v.blue()));
     }
-    static Type fromRealPromote(RealPromote const & v) {
+    static Type fromRealPromote(RealPromote const & v)
+    {
         return Type(NumericTraits<T>::fromRealPromote(v.red()),
                     NumericTraits<T>::fromRealPromote(v.green()),
                     NumericTraits<T>::fromRealPromote(v.blue()));

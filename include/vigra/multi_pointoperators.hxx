@@ -44,6 +44,7 @@
 #include "inspectimage.hxx"
 #include "multi_array.hxx"
 #include "metaprogramming.hxx"
+#include "inspector_passes.hxx"
 
 
 
@@ -1509,11 +1510,27 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
 */
 doxygen_overloaded_function(template <...> void inspectMultiArray)
 
+template <class Iterator, class Shape, class Accessor>
+struct inspectMultiArray_binder
+{
+    Iterator      s;
+    const Shape & shape;
+    Accessor      a;
+    inspectMultiArray_binder(Iterator s_, const Shape & shape_, Accessor a_)
+        : s(s_), shape(shape_), a(a_) {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        inspectMultiArrayImpl(s, shape, a, f, MetaInt<Iterator::level>());
+    }
+};
+
 template <class Iterator, class Shape, class Accessor, class Functor>
 inline void
-inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f)
+inspectMultiArray(Iterator s, Shape const & shape, Accessor a, Functor & f)
 {
-    inspectMultiArrayImpl(s, shape, a, f, MetaInt<Iterator::level>());
+    inspectMultiArray_binder<Iterator, Shape, Accessor> g(s, shape, a);
+    detail::extra_passes_select(g, f);
 }
     
 template <class Iterator, class Shape, class Accessor, class Functor>
@@ -1625,14 +1642,37 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
 */
 doxygen_overloaded_function(template <...> void inspectTwoMultiArrays)
 
-template <class Iterator1, class Shape, class Accessor1, 
-          class Iterator2, class Accessor2, 
+template <class Iterator1, class Shape, class Accessor1,
+          class Iterator2, class Accessor2>
+struct inspectTwoMultiArrays_binder
+{
+    Iterator1     s1;
+    const Shape & shape;
+    Accessor1     a1;
+    Iterator2     s2;
+    Accessor2     a2;
+    inspectTwoMultiArrays_binder(Iterator1 s1_, const Shape & shape_,
+                                 Accessor1 a1_, Iterator2 s2_, Accessor2 a2_)
+        : s1(s1_), shape(shape_), a1(a1_), s2(s2_), a2(a2_) {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        inspectTwoMultiArraysImpl(s1, shape, a1, s2, a2, f,
+                                  MetaInt<Iterator1::level>());
+    }
+};
+    
+template <class Iterator1, class Shape, class Accessor1,
+          class Iterator2, class Accessor2,
           class Functor>
 inline void
 inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
                       Iterator2 s2, Accessor2 a2, Functor & f)
 {
-    inspectTwoMultiArraysImpl(s1, shape, a1, s2, a2, f, MetaInt<Iterator1::level>());
+    inspectTwoMultiArrays_binder<Iterator1, Shape, Accessor1,
+                                 Iterator2, Accessor2>
+        g(s1, shape, a1, s2, a2);
+    detail::extra_passes_select(g, f);
 }
     
 template <class Iterator1, class Shape, class Accessor1, 

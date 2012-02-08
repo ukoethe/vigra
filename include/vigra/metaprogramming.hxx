@@ -39,8 +39,15 @@
 #include "config.hxx"
 #include <climits>
 #include <limits>
+#include <algorithm>
 
 namespace vigra {
+
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
 
 template <int N>
 class MetaInt
@@ -433,59 +440,52 @@ struct UnqualifiedType<T const *>
 : public UnqualifiedType<T>
 {};
 
-
+template <bool, class T = void>
+struct enable_if {};
 template <class T>
-struct has_result_type
+struct enable_if<true, T> { typedef T type; };
+
+struct sfinae_void;
+
+template <class T, template<class> class USER>
+struct sfinae_test
 {
     typedef char falseResult[1];
     typedef char trueResult[2];
     
     static falseResult * test(...);
-    template <class U>
-    static trueResult * test(U *, typename U::result_type * = 0);
+    static trueResult * test(USER<sfinae_void>);
     
     enum { resultSize = sizeof(*test((T*)0)) };
     
     static const bool value = (resultSize == 2);
-    typedef typename 
+    typedef typename
         IfBool<value, VigraTrueType, VigraFalseType>::type
         type;
 };
 
 template <class T>
-struct has_value_type
+struct has_argument_type : public sfinae_test<T, has_argument_type>
 {
-    typedef char falseResult[1];
-    typedef char trueResult[2];
-    
-    static falseResult * test(...);
-    template <class U>
-    static trueResult * test(U *, typename U::value_type * = 0);
-    
-    enum { resultSize = sizeof(*test((T*)0)) };
-    
-    static const bool value = (resultSize == 2);
-    typedef typename 
-        IfBool<value, VigraTrueType, VigraFalseType>::type
-        type;
+	template <class U> has_argument_type(U*, typename U::argument_type* = 0);
 };
 
 template <class T>
-struct IsIterator
+struct has_result_type : public sfinae_test<T, has_result_type>
 {
-    typedef char falseResult[1];
-    typedef char trueResult[2];
-    
-    static falseResult * test(...);
-    template <class U>
-    static trueResult * test(U *, typename U::iterator_category * = 0);
-    
-    enum { resultSize = sizeof(*test((T*)0)) };
-    
-    static const bool value = (resultSize == 2);
-    typedef typename 
-        IfBool<value, VigraTrueType, VigraFalseType>::type
-        type;
+	template <class U> has_result_type(U*, typename U::result_type* = 0);
+};
+
+template <class T>
+struct has_value_type : public sfinae_test<T, has_value_type>
+{
+	template <class U> has_value_type(U*, typename U::value_type* = 0);
+};
+
+template <class T>
+struct IsIterator : public sfinae_test<T, IsIterator>
+{
+	template <class U> IsIterator(U*, typename U::iterator_category* = 0);
 };
 
 template <class T>
@@ -500,6 +500,24 @@ struct IsIterator<T const *>
 {
     static const bool value = true;
     typedef VigraTrueType type;
+};
+
+template <class T>
+struct has_real_promote_type : public sfinae_test<T, has_real_promote_type>
+{
+	template <class U>
+    has_real_promote_type(U*, typename U::real_promote_type* = 0);
+};
+
+template <class T, bool P = has_real_promote_type<T>::value>
+struct get_optional_real_promote
+{
+    typedef T type;
+};
+template <class T>
+struct get_optional_real_promote<T, true>
+{
+    typedef typename T::real_promote_type type;
 };
 
 template <class T>
@@ -519,6 +537,115 @@ struct IsArray
         IfBool<value, VigraTrueType, VigraFalseType>::type
         type;
 };
+
+
+template <class D, class B, class Z> inline
+D & static_cast_2(Z & z)
+{
+    return static_cast<D &>(static_cast<B &>(z));
+}
+
+template <class A>
+class copy_if_same_as
+{
+    const bool copied;
+    const A *const data;
+    copy_if_same_as(const copy_if_same_as &);
+    void operator=(const copy_if_same_as &);
+public:
+    copy_if_same_as(const A & x, const A & y)
+        : copied(&x == &y), data(copied ? new A(y) : &x) {}
+    ~copy_if_same_as()
+    {
+        if (copied)
+            delete data;
+    }
+    const A & operator()() const { return *data; }
+};
+
+
+template <class>
+struct true_test : public VigraTrueType {};
+
+template <class>
+struct false_test : VigraFalseType {};
+
+template <class PC, class T, class F>
+struct ChooseBool
+{
+    static const bool value = IfBool<PC::value, T, F>::type::value;
+};
+
+template <bool>
+struct choose_type
+{
+    template <class A, class B>
+    static const A & at(const A & a, const B &) { return a; }
+    template <class A, class B>
+    static       A & at(      A & a,       B &) { return a; }
+};
+template <>
+struct choose_type<false>
+{
+    template <class A, class B>
+    static const B & at(const A &, const B & b) { return b; }
+    template <class A, class B>
+    static       B & at(      A &,       B & b) { return b; }
+};
+
+template <class X>
+struct HasMetaLog2
+{
+    static const bool value =   !std::numeric_limits<X>::is_signed
+                              && std::numeric_limits<X>::is_integer;
+};
+template <class X>
+struct EnableMetaLog2
+    : public enable_if<HasMetaLog2<X>::value> {};
+template <class>
+class vigra_error_MetaLog2_accepts_only_unsigned_types_and_no_;
+
+// use a conforming template depth here (below 15 for up to 128 bits)
+template <class X = unsigned long,
+          X n = ~(X(0)), unsigned s = 1, unsigned t = 0, bool q = 1,
+          X m = 0, X z = 0, X u = 1, class = void>
+class MetaLog2
+    : public vigra_error_MetaLog2_accepts_only_unsigned_types_and_no_<X>
+{};
+template <class X, X n, unsigned s, unsigned t, bool q, X m, X z, X u>
+struct MetaLog2 <X, n, s, t, q, m, z, u, typename EnableMetaLog2<X>::type>
+{
+    static const unsigned value
+        = t + MetaLog2<X, (n >> s), s * (1 + q), s, !q, n / 2, z, u>::value;
+};
+template <class X, unsigned s, unsigned t, bool q, X m, X z, X u>
+struct MetaLog2<X, z, s, t, q, m, z, u, typename EnableMetaLog2<X>::type>
+{
+    static const unsigned value
+        = 1 + MetaLog2<X, m / 2, 2, 1, 1, 0, z, u>::value;
+};
+template <class X, unsigned s, unsigned t, bool q, X z, X u>
+struct MetaLog2<X, z, s, t, q, u, z, u, typename EnableMetaLog2<X>::type>
+{
+    static const unsigned value = 2;
+};
+template <class X, unsigned s, unsigned t, bool q, X z, X u>
+struct MetaLog2<X, z, s, t, q, z, z, u, typename EnableMetaLog2<X>::type>
+{
+    static const unsigned value = 1;
+};
+template <class X, X z, X u>
+struct MetaLog2<X, z, 1, 0, 1, z, z, u, typename EnableMetaLog2<X>::type>
+{
+    // A value of zero for MetaLog2<X, 0> is likely to cause most harm,
+    // such as division by zero or zero array sizes, this is actually indended.
+    static const unsigned value = 0;
+};
+
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 

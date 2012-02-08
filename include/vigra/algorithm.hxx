@@ -38,6 +38,7 @@
 
 #include "sized_int.hxx"
 #include "numerictraits.hxx"
+#include "inspector_passes.hxx"
 #include <algorithm>
 #include <functional>
 #include <iterator>
@@ -224,6 +225,70 @@ void linearSequence(Iterator first, Iterator last)
     linearSequence(first, last, NumericTraits<Value>::zero());
 }
 
+/** \brief Call an analyzing functor at every element of a sequence.
+
+    This function can be used to collect statistics of the sequence
+    <tt>[first, last)</tt> defined by these two input interators.
+    The results must be stored in the functor, which serves as a return
+    value.
+
+    <b> Declarations:</b>
+
+    \code
+    namespace vigra {
+        template <class InputIterator, class Functor>
+        void
+        inspectSequence(InputIterator first, InputIterator last, Functor & f);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/algorithm.hxx\><br>
+    Namespace: vigra
+
+    \code
+    std::vector array(100);
+
+    // init functor
+    vigra::FindMinMax<int> minmax;
+
+    vigra::inspectSequence(array.begin(), array.end(), minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+
+    \endcode
+
+*/
+doxygen_overloaded_function(template <...> void inspectSequence)
+
+namespace detail {
+
+template <class InputIterator>
+struct inspectSequence_binder
+{
+    InputIterator first;
+    InputIterator last;
+    inspectSequence_binder(InputIterator first_, InputIterator last_)
+        : first(first_), last(last_) {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        for (InputIterator i = first; i != last; ++i)
+            f(*i);
+    }
+};
+
+} // namespace detail
+
+template <class InputIterator, class Functor>
+inline void
+inspectSequence(InputIterator first, InputIterator last, Functor & f)
+{
+    detail::inspectSequence_binder<InputIterator> g(first, last);
+    detail::extra_passes_select(g, f);
+}
+   
 namespace detail {
 
 template <class Iterator, class Compare>
@@ -623,6 +688,20 @@ inline UInt32 concatenateChecksum(UInt32 checksum, const char * data, unsigned i
 {
     
     return detail::checksumImpl(data, size, ~checksum);
+}
+
+template <class T>
+void updateMin(T & x, const T & y)
+{
+    using std::min;
+    x = min(x, y);
+}
+
+template <class T>
+void updateMax(T & x, const T & y)
+{
+    using std::max;
+    x = max(x, y);
 }
 
 
