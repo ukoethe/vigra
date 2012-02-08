@@ -24,6 +24,8 @@
 #include "vigra/imageinfo.hxx"
 #include "vigra/functorexpression.hxx"
 
+#include "vigra/algorithm.hxx"
+
 using namespace vigra;
 
 // mask cl.exe shortcomings
@@ -1510,8 +1512,106 @@ void test5()
         }
         
     }
-
 }
+
+void test6()
+{
+    const unsigned m_size = 1200;
+    unsigned m_test[m_size];
+    *m_test = 2;
+    for (unsigned i = 1; i != m_size; ++i)
+    {
+        for (unsigned n = 1 + m_test[i - 1];; ++n)
+        {
+            unsigned j = 0;
+            for (; j != i; ++j)
+                if (n % m_test[j] == 0)
+                    break;
+            if (j == i)
+            {
+                m_test[i] = n;
+                break;
+            }
+        }
+    }
+    
+    typedef use_template_list<Accumulators, double,
+                              acc::Count,
+                              acc::Sum,
+                              acc::Mean,
+                              acc::Moment2,
+                              acc::Moment2_2Pass,
+                              acc::Moment3,
+                              acc::Moment4,
+                              acc::Variance,
+                              acc::UnbiasedVariance,
+                              acc::Skewness,
+                              acc::Kurtosis,
+                              acc::Min,
+                              acc::Max
+                             >
+        m_test_accumulators;
+
+    m_test_accumulators mt_0;
+    m_test_accumulators mt_1;
+    m_test_accumulators mt_2;
+    m_test_accumulators mt_a;
+    m_test_accumulators mt_b;
+    m_test_accumulators mt_c;
+    
+    inspectSequence(m_test, m_test + m_size, mt_0);
+
+    inspectSequence(m_test, m_test + m_size / 2, mt_1);
+    inspectSequence(m_test + m_size / 2, m_test + m_size, mt_2);
+    mt_1(mt_2); // merge 2 in 1
+
+    inspectSequence(m_test, m_test + m_size / 6, mt_a);
+    inspectSequence(m_test + m_size / 6, m_test + m_size / 5 * 4, mt_b);
+    inspectSequence(m_test + m_size / 5 * 4, m_test + m_size, mt_c);
+    // merge 3 in 1
+    mt_b(mt_a);
+    mt_a(mt_b, mt_c);
+
+    shouldEqualTolerance(get<acc::Count>(mt_0), get<acc::Count>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Count>(mt_0), get<acc::Count>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Sum>(mt_0), get<acc::Sum>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Sum>(mt_0), get<acc::Sum>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Mean>(mt_0), get<acc::Mean>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Mean>(mt_0), get<acc::Mean>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Moment2>(mt_0), get<acc::Moment2>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Moment2>(mt_0), get<acc::Moment2>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Moment2_2Pass>(mt_0), get<acc::Moment2_2Pass>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Moment2_2Pass>(mt_0), get<acc::Moment2_2Pass>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Moment3>(mt_0), get<acc::Moment3>(mt_1), 5e-14);
+    shouldEqualTolerance(get<acc::Moment3>(mt_0), get<acc::Moment3>(mt_a), 5e-14);
+
+    shouldEqualTolerance(get<acc::Moment4>(mt_0), get<acc::Moment4>(mt_1), 5e-14);
+    shouldEqualTolerance(get<acc::Moment4>(mt_0), get<acc::Moment4>(mt_a), 5e-14);
+
+    shouldEqualTolerance(get<acc::Variance>(mt_0), get<acc::Variance>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Variance>(mt_0), get<acc::Variance>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::UnbiasedVariance>(mt_0), get<acc::UnbiasedVariance>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::UnbiasedVariance>(mt_0), get<acc::UnbiasedVariance>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Skewness>(mt_0), get<acc::Skewness>(mt_1), 5e-14);
+    shouldEqualTolerance(get<acc::Skewness>(mt_0), get<acc::Skewness>(mt_a), 5e-14);
+
+    shouldEqualTolerance(get<acc::Kurtosis>(mt_0), get<acc::Kurtosis>(mt_1), 5e-14);
+    shouldEqualTolerance(get<acc::Kurtosis>(mt_0), get<acc::Kurtosis>(mt_a), 5e-14);
+
+    shouldEqualTolerance(get<acc::Min>(mt_0), get<acc::Min>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Min>(mt_0), get<acc::Min>(mt_a), 3e-15);
+
+    shouldEqualTolerance(get<acc::Max>(mt_0), get<acc::Max>(mt_1), 3e-15);
+    shouldEqualTolerance(get<acc::Max>(mt_0), get<acc::Max>(mt_a), 3e-15);
+}
+
 
 struct ObjectFeaturesTest1
 {
@@ -1520,6 +1620,7 @@ struct ObjectFeaturesTest1
     void run3() { test3(); }
     void run4() { test4(); }
     void run5() { test5(); }
+    void run6() { test6(); }
 };
 
 struct ObjectFeaturesTestSuite : public vigra::test_suite
@@ -1532,6 +1633,7 @@ struct ObjectFeaturesTestSuite : public vigra::test_suite
         add(testCase(&ObjectFeaturesTest1::run3));
         add(testCase(&ObjectFeaturesTest1::run4));
         add(testCase(&ObjectFeaturesTest1::run5));
+        add(testCase(&ObjectFeaturesTest1::run6));
     }
 };
 

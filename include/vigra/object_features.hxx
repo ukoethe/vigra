@@ -447,11 +447,11 @@ struct gen_sum_squared_diff_acc
     {
         double count_x = use<acc::Count>::val(x);
         double count_y = use<acc::Count>::val(y);
+        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
         this->set_val(  use<SELF>::val(x)
                       + use<SELF>::val(y)
                       + count_x * count_y / (count_x + count_y)
-                        * (use<MEAN>::val(x) - use<MEAN>::val(y))
-                        * (use<MEAN>::val(x) - use<MEAN>::val(y)));
+                        * power<2>(delta));
     }
 };
 
@@ -724,8 +724,8 @@ struct WeightedSum
 namespace detail {
 
 template <unsigned n, class T, template<class> class CV,
-                   template<class> class MEAN,
-                   template<class> class SELF>
+                               template<class> class MEAN,
+                               template<class> class SELF>
 struct gen_central_moment_acc2
     : public numeric_accumulator_base<T, typename CV<T>::type>,
       public type_lists::implies_template<T, MEAN>
@@ -742,66 +742,143 @@ struct gen_central_moment_acc2
         if (test_pass<ACX, 2>(pass))
             this->add_val(power<n>(CV<T>::get(v) - use<MEAN>::f_val(x)));
     }
+};
+
+template <class T, template<class> class CV,
+                   template<class> class MEAN,
+                   template<class> class SELF>
+struct gen_central_moment2_acc2
+    : public gen_central_moment_acc2<2, T, CV, MEAN, SELF>
+{
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
-    void operator()(const ACX & z, const ACX & x, const ACX & y)
+    void merge(const ACX & z, const ACX & x, const ACX & y)
     {
+        double count_x = use<acc::Count>::val(x);
+        double count_y = use<acc::Count>::val(y);
+        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
         this->set_val(  use<SELF>::val(x)
-                      + use<SELF>::val(y));
+                      + use<SELF>::val(y)
+                      + count_x * count_y / (count_x + count_y)
+                        * power<2>(delta));
     }
 };
 
-template <unsigned n, class T, template<class> class SELF>
-struct central_moment_acc2
-    : public gen_central_moment_acc2<n, T, accumulable_value_access,
-                                           acc::Mean, SELF> {};
-template <unsigned n, class T, template<class> class SELF>
-struct coord_central_moment_acc2
-    : public gen_central_moment_acc2<n, T, accumulable_coord_access,
-                                           acc::CoordMean, SELF> {};
-template <unsigned n, class T, template<class> class SELF>
-struct weighted_central_moment_acc2
-    : public gen_central_moment_acc2<n, T, accumulable_weighted_access,
-                                           acc::WeightedMean, SELF> {};
+template <class T, template<class> class CV,
+                   template<class> class MEAN,
+                   template<class> class MOMENT2,
+                   template<class> class SELF>
+struct gen_central_moment3_acc2
+    : public gen_central_moment_acc2<3, T, CV, MEAN, SELF>
+{
+    /** merge two statistics: z === *this <- (x, y)
+    */
+    template <class ACX>
+    void merge(const ACX & z, const ACX & x, const ACX & y)
+    {
+        double count_x = use<acc::Count>::val(x);
+        double count_y = use<acc::Count>::val(y);
+        double count = count_x + count_y;
+        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
+        this->set_val(  use<SELF>::val(x)
+                      + use<SELF>::val(y)
+                      + count_x * count_y * (count_x - count_y)
+                        * power<3>(delta) / power<2>(count)
+                      + 3 * (  count_x * use<MOMENT2>::val(y)
+                             - count_y * use<MOMENT2>::val(x)) * delta / count);
+    }
+};
+
+template <class T, template<class> class CV,
+                   template<class> class MEAN,
+                   template<class> class MOMENT2,
+                   template<class> class MOMENT3,
+                   template<class> class SELF>
+struct gen_central_moment4_acc2
+    : public gen_central_moment_acc2<4, T, CV, MEAN, SELF>
+{
+    /** merge two statistics: z === *this <- (x, y)
+    */
+    template <class ACX>
+    void merge(const ACX & z, const ACX & x, const ACX & y)
+    {
+        double count_x = use<acc::Count>::val(x);
+        double count_y = use<acc::Count>::val(y);
+        double count_x_2 = power<2>(use<acc::Count>::val(x));
+        double count_y_2 = power<2>(use<acc::Count>::val(y));
+        double count = count_x + count_y;
+        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
+        this->set_val(  use<SELF>::val(x)
+                      + use<SELF>::val(y)
+                      + count_x * count_y
+                        * (count_x_2 - count_x * count_y + count_y_2)
+                        * power<4>(delta) / power<3>(count)
+                      + 6 * (  count_x_2 * use<MOMENT2>::val(y)
+                             + count_y_2 * use<MOMENT2>::val(x))
+                          * power<2>(delta) / power<2>(count)
+                      + 4 * (  count_x * use<MOMENT3>::val(y)
+                             - count_y * use<MOMENT3>::val(x)) * delta / count);
+    }
+};
 
 } // namespace detail
 
 namespace acc {
 
 template <class T>
-struct Moment2_2Pass : public detail::central_moment_acc2<2, T,
-                                                         acc::Moment2_2Pass> {};
+struct Moment2_2Pass
+    : public detail::gen_central_moment2_acc2<T,
+                                              detail::accumulable_value_access,
+                                              Mean, Moment2_2Pass> {};
 template <class T>
-struct Moment3 : public detail::central_moment_acc2<3, T, Moment3> {};
-
+struct Moment3
+    : public detail::gen_central_moment3_acc2<T,
+                                              detail::accumulable_value_access,
+                                              Mean, Moment2_2Pass, Moment3> {};
 template <class T>
-struct Moment4 : public detail::central_moment_acc2<4, T, Moment4> {};
+struct Moment4
+    : public detail::gen_central_moment4_acc2<T,
+                                              detail::accumulable_value_access,
+                                              Mean, Moment2_2Pass, Moment3,
+                                              Moment4> {};
 
 template <class T>
 struct CoordMoment2_2Pass
-    : public detail::coord_central_moment_acc2<2, T, CoordMoment2> {};
-
+    : public detail::gen_central_moment2_acc2<T,
+                                              detail::accumulable_coord_access,
+                                              CoordMean, CoordMoment2_2Pass> {};
 template <class T>
 struct CoordMoment3
-    : public detail::coord_central_moment_acc2<3, T, CoordMoment3> {};
-
+    : public detail::gen_central_moment3_acc2<T,
+                                              detail::accumulable_coord_access,
+                                              CoordMean, CoordMoment2_2Pass,
+                                              CoordMoment3> {};
 template <class T>
 struct CoordMoment4
-    : public detail::coord_central_moment_acc2<4, T, CoordMoment4> {};
+    : public detail::gen_central_moment4_acc2<T,
+                                              detail::accumulable_coord_access,
+                                              CoordMean, CoordMoment2_2Pass,
+                                              CoordMoment3, CoordMoment4> {};
 
 template <class T>
 struct WeightedMoment2_2Pass
-    : public detail::weighted_central_moment_acc2<2, T, WeightedMoment2> {};
-
+    : public detail::gen_central_moment2_acc2<T,
+                                              detail::accumulable_weighted_access,
+                                              WeightedMean,
+                                              WeightedMoment2_2Pass> {};
 template <class T>
 struct WeightedMoment3
-    : public detail::weighted_central_moment_acc2<3, T, WeightedMoment3> {};
-
+    : public
+        detail::gen_central_moment3_acc2<T, detail::accumulable_weighted_access,
+                                         WeightedMean, WeightedMoment2_2Pass,
+                                         WeightedMoment3> {};
 template <class T>
 struct WeightedMoment4
-    : public detail::weighted_central_moment_acc2<4, T, WeightedMoment4> {};
-
+    : public
+        detail::gen_central_moment4_acc2<T, detail::accumulable_weighted_access,
+                                         WeightedMean, WeightedMoment2_2Pass,
+                                         WeightedMoment3, WeightedMoment4> {};
 } // namespace acc
 
 namespace detail {
@@ -969,6 +1046,13 @@ struct WeightedMax
 // -- end feature template classes --
 
 namespace detail {
+
+template <class T>
+struct std_accumulate_adder // proxy object for accu_context_base::operator+
+{
+    const T & v;
+    std_accumulate_adder(const T & v_) : v(v_) {}
+};
 
 struct BinderReset
 {
@@ -1342,6 +1426,23 @@ struct accu_context_base
         if (n < 2 || n > max_passes)
             vigra_fail("accu_context_base::pass_n(): inconsistent use.");
         return pass_n_dispatch(*this, n);
+    }
+
+    /** update for std::accumulate
+    */
+    std_accumulate_adder<T> operator+(const T & v)
+    {
+        return std_accumulate_adder<T>(v);
+    }
+    accu_context_base & operator=(std_accumulate_adder<T> & adder)
+    {
+        operator()(adder.v);
+        return *this;
+    }
+    accu_context_base & operator+=(const T & v)
+    {
+        operator()(v);
+        return *this;
     }
 
     /** merge two statistics: *this <- (x, y)

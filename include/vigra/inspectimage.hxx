@@ -207,7 +207,7 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, Functor & f)
 {
     inspectImage_binder<ImageIterator, Accessor> g(upperleft, lowerright, a);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator, class Accessor, class Functor>
@@ -364,7 +364,7 @@ inspectImageIf(ImageIterator upperleft,
     inspectImageIf_binder<ImageIterator, Accessor, MaskImageIterator,
                                                                    MaskAccessor>
         g(upperleft, lowerright, a, mask_upperleft, ma);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator, class Accessor,
@@ -520,7 +520,7 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
     inspectTwoImages_binder<ImageIterator1, Accessor1,
                             ImageIterator2, Accessor2>
         g(upperleft1, lowerright1, a1, upperleft2, a2);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator1, class Accessor1,
@@ -698,7 +698,7 @@ inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
                               ImageIterator2, Accessor2,
                               MaskImageIterator, MaskAccessor>
         g(upperleft1, lowerright1, a1, upperleft2, a2, mupperleft, mask);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator1, class Accessor1,
@@ -1879,7 +1879,7 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
 */
 template <class RegionStatistics, class LabelType = int>
 class ArrayOfRegionStatistics
-    : public get_extra_passes<RegionStatistics>
+    : public detail::get_extra_passes<RegionStatistics>
 {
     typedef std::vector<RegionStatistics> RegionArray;
 

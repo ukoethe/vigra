@@ -1530,7 +1530,7 @@ inline void
 inspectMultiArray(Iterator s, Shape const & shape, Accessor a, Functor & f)
 {
     inspectMultiArray_binder<Iterator, Shape, Accessor> g(s, shape, a);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
     
 template <class Iterator, class Shape, class Accessor, class Functor>
@@ -1672,7 +1672,7 @@ inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
     inspectTwoMultiArrays_binder<Iterator1, Shape, Accessor1,
                                  Iterator2, Accessor2>
         g(s1, shape, a1, s2, a2);
-    extra_passes_select(g, f);
+    detail::extra_passes_select(g, f);
 }
     
 template <class Iterator1, class Shape, class Accessor1, 

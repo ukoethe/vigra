@@ -7,6 +7,8 @@ namespace vigra {
 
 // test and accomodate for functors that require extra passes over arrays / etc.
 
+namespace detail {
+
 template <bool>
 struct extra_passes_selector
 {
@@ -69,6 +71,8 @@ extra_passes_select(Inspector g, Functor & f)
     g(f);
     extra_passes_selector<get_extra_passes<Functor>::value>::call(g, f);
 }
+
+} // namespace detail
 
 } // namespace vigra
 
