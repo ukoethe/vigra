@@ -24,8 +24,12 @@
 #include "vigra/imageinfo.hxx"
 #include "vigra/functorexpression.hxx"
 
-
 using namespace vigra;
+
+// mask cl.exe shortcomings
+#if defined(_MSC_VER)
+#pragma warning( disable : 4503 )
+#endif
 
 template <class X, unsigned N>
 TinyVector<X, N> & tab_assign(TinyVector<X, N> & x, const X y[N])
@@ -125,7 +129,7 @@ void test1()
     shouldEqual(get<acc::Count>(pix_acc), 100);
     shouldEqualTolerance(get<acc::Mean>(pix_acc), 49.5, 2e-15);
     shouldEqualTolerance(get<acc::Moment2>(pix_acc), 83325, 2e-15);
-    shouldEqualTolerance(get<acc::Moment2_2>(pix_acc), 83325, 2e-15);
+    shouldEqualTolerance(get<acc::Moment2_2Pass>(pix_acc), 83325, 2e-15);
     shouldEqualTolerance(get<acc::Variance>(pix_acc), 833.25, 2e-15);
     shouldEqualTolerance(get<acc::Skewness>(pix_acc), 0, 2e-15);
     shouldEqualTolerance(get<acc::Kurtosis>(pix_acc), 0.017997599759976, 2e-15);
@@ -143,13 +147,13 @@ void test2()
     shouldEqual(get<acc::Count>(cv_acc), 6);
     shouldEqual(get<acc::Sum>(cv_acc), 15);
     { TinyVector<double, 2> x(3, 6); shouldEqualSequence(x.begin(), x.end(), get<acc::CoordSum>(cv_acc).begin()); };
-    { TinyVector<double, 2> x(0.5, 1); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::CoordMean>(cv_acc).begin(), 2e-15); };;
-    { TinyVector<double, 2> x(1.5, 4); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::CoordMoment2>(cv_acc).begin(), 2e-15); };;
-    shouldEqualTolerance(get<acc::Mean>(cv_acc), 2.5, 2e-15);;
-    shouldEqualTolerance(get<acc::Moment2>(cv_acc), 17.5, 2e-15);;
-    { TinyVector<double, 2> x(9, 23); shouldEqualSequence(x.begin(), x.end(), get<acc::WeightedSum>(cv_acc).begin()); };;
-    { TinyVector<double, 2> x(1.5, 3.83333333333333); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::WeightedMean>(cv_acc).begin(), 2e-15); };;
-    { TinyVector<double, 2> x(21.5, 88.8333333333333); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::WeightedMoment2>(cv_acc).begin(), 2e-15); };;
+    { TinyVector<double, 2> x(0.5, 1); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::CoordMean>(cv_acc).begin(), 2e-15); };
+    { TinyVector<double, 2> x(1.5, 4); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::CoordMoment2>(cv_acc).begin(), 2e-15); };
+    shouldEqualTolerance(get<acc::Mean>(cv_acc), 2.5, 2e-15);
+    shouldEqualTolerance(get<acc::Moment2>(cv_acc), 17.5, 2e-15);
+    { TinyVector<double, 2> x(9, 23); shouldEqualSequence(x.begin(), x.end(), get<acc::WeightedSum>(cv_acc).begin()); };
+    { TinyVector<double, 2> x(1.5, 3.83333333333333); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::WeightedMean>(cv_acc).begin(), 2e-15); };
+    { TinyVector<double, 2> x(21.5, 88.8333333333333); shouldEqualSequenceTolerance(x.begin(), x.end(), get<acc::WeightedMoment2>(cv_acc).begin(), 2e-15); };
 
     rgb_type epstest = 1e-5;
     { TinyVector<double, 3> x(1e-05, 1e-05, 1e-05); shouldEqualSequenceTolerance(x.begin(), x.end(), epstest.begin(), 2e-15); };
@@ -168,8 +172,8 @@ struct gen_mean_from_sum_calc
     template <class ACX>
     void calculate(const ACX & x) const // calculator tuple == x.calculators
     {
-        this->value = detail::use<SUM>::val(x)
-                      / detail::use<acc::Count>::val(x);
+        this->set_val(detail::use<SUM>::val(x)
+                      / get<acc::Count>(x));
     }
 };
 template <class T>
@@ -279,7 +283,7 @@ struct virtual_mean_context
 template <class T>
 struct accumulators_mean_sum
     : public use_template_list<Accumulators, T, acc::Sum, mean_from_sum_calc,
-                               acc::Moment2_2, acc::Variance>
+                               acc::Moment2_2Pass, acc::Variance>
 {};
 
 template <class key, class data>
@@ -464,14 +468,14 @@ void test3()
     accumulators_colour_label<BImage::PixelType>  colour_0;
 
     virtual_mean_context<BImage::PixelType> virtual_meanest;
-    detail::use<acc::Mean>::set(virtual_meanest);
+    select<acc::Mean>(virtual_meanest);
 
     virtual_mean_context<BImage::PixelType> virtual_empty;
 
     accumulators_sq<BImage::PixelType> my_sq;
     accumulators_sq2<BImage::PixelType> my_sq2;
-
-    shouldEqual(detail::passes<1>::at_least<acc::Count<BImage::PixelType> >::value, 1);
+    // at least 1 inpect pass:
+    shouldEqual(detail::passes<1>::at_least<acc::Count<BImage::PixelType> >::value, true);
     shouldEqualTolerance(detail::passes<1>::at_least<acc::Variance<BImage::PixelType> >::value, 0, 2e-15);
     
     shouldEqualTolerance(detail::use<acc::Count>::f_val(my_sq), 0, 2e-15);
@@ -484,19 +488,19 @@ void test3()
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_c_mean_new), 0, 2e-15);
     shouldEqualTolerance(detail::use<acc::Count>::f_val(my_c_mean_bit), 0, 2e-15);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_c_mean_bit), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Count>::val(my_v_mean), 0, 2e-15); //getting virtual stuff
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);  //sets them, thus val
+    shouldEqualTolerance(get<acc::Count>(my_v_mean), 0, 2e-15); //getting virtual stuff
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);  //sets them, thus val
 
-    detail::use<acc::Count>::set(my_c_mean); // only use count...
-    detail::use<acc::Count>::set(my_c_mean_new); // only use count...
-    detail::use<acc::Count>::set(my_c_mean_bit); // only use count...
+    select<acc::Count>(my_c_mean); // only use count...
+    select<acc::Count>(my_c_mean_new); // only use count...
+    select<acc::Count>(my_c_mean_bit); // only use count...
     select<acc::Count>(my_v_mean); // only use count...
     
-    detail::use<acc::Mean>::set(test_c_mean);
-    detail::use<acc::Mean>::set(test_v_mean);
-    detail::use<acc::Count>::set(test_v_mean); // test idempotence
-    detail::use<acc::Mean>::set(test_c_mean_new);
-    detail::use<acc::Mean>::set(test_c_mean_bit);
+    select<acc::Mean>(test_c_mean);
+    select<acc::Mean>(test_v_mean);
+    select<acc::Count>(test_v_mean); // test idempotence
+    select<acc::Mean>(test_c_mean_new);
+    select<acc::Mean>(test_c_mean_bit);
 
     inspectImage(srcImageRange(img), averageAndVariance);
     inspectImage(srcImageRange(img), my_sq);
@@ -525,8 +529,8 @@ void test3()
     shouldEqual(detail::use<acc::Count>::f_val(my_sq2), 100);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_sq2), 49.5, 2e-15);
     shouldEqualTolerance(detail::use<acc::Moment2>::f_val(my_sq2), 83325, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(my_sq2), 833.25, 2e-15);
-    shouldEqualTolerance(detail::use<acc::UnbiasedVariance>::val(my_sq2), 841.666666666666, 2e-15);
+    shouldEqualTolerance(get<acc::Variance>(my_sq2), 833.25, 2e-15);
+    shouldEqualTolerance(get<acc::UnbiasedVariance>(my_sq2), 841.666666666666, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(my_sq), 100);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_sq), 49.5, 2e-15);
@@ -537,13 +541,17 @@ void test3()
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_mean), 49.5, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(my_c_mean), 100);
+    // mean must be zero as only count is selected
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_c_mean), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_c_mean_new), 100);
+    // mean must be zero as only count is selected
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_c_mean_new), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_c_mean_bit), 100);
+    // mean must be zero as only count is selected
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_c_mean_bit), 0, 2e-15);
-    shouldEqual(detail::use<acc::Count>::val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqual(get<acc::Count>(my_v_mean), 100);
+    // mean must be zero as only count is selected
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(test_mean), 100);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(test_mean), 49.5, 2e-15);
@@ -560,8 +568,9 @@ void test3()
     shouldEqual(detail::use<acc::Count>::f_val(virtual_meanest), 100);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(virtual_meanest), 49.5, 2e-15);
 
-    shouldEqualTolerance(detail::use<acc::Count>::val(virtual_empty), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(virtual_empty), 0, 2e-15);
+    // both must be zero as nothing is selected
+    shouldEqualTolerance(get<acc::Count>(virtual_empty), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(virtual_empty), 0, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
 
@@ -584,74 +593,78 @@ void test3()
     shouldEqual(detail::use<acc::Count>::f_val(my_mean4), 300);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_mean4), 49.5, 2e-15);
     my_mean4.reset();
+    // both must be zero as everything is reset
     shouldEqualTolerance(detail::use<acc::Count>::f_val(my_mean4), 0, 2e-15);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_mean4), 0, 2e-15);
 
+    // begin copy constructor tests.
     mean_context<BImage::PixelType> my_mean5;
     my_mean4.transfer_set_to(my_mean5);
 
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
 
     selected_accumulators_mean<BImage::PixelType> my_v_mean2 = my_v_mean;
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean2), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean2), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean2), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(test_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(test_v_mean), 49.5, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(test_v_mean), 49.5, 2e-15);
 
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean2), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean2), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean2), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
     my_v_mean2(test_v_mean);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean2), 200);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_v_mean2), 24.75, 2e-15); // not a bug, but a feature..
 
     shouldEqual(detail::use<acc::Count>::f_val(test_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(test_v_mean), 49.5, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(test_v_mean), 49.5, 2e-15);
 
-    shouldEqual(detail::use<acc::Count>::val(my_v_mean), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(my_v_mean), 0, 2e-15);
+    shouldEqual(get<acc::Count>(my_v_mean), 100);
+    shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
     my_v_mean(test_v_mean);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 200);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_v_mean), 24.75, 2e-15); // not a bug, but a feature..
 
     typedef selected_accumulators_mean<BImage::PixelType> cvmc;
     cvmc* my_v_mean3 = new cvmc(my_v_mean);
-    shouldEqual(detail::use<acc::Count>::val(*my_v_mean3), 200);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean3), 24.75, 2e-15);
+    shouldEqual(get<acc::Count>(*my_v_mean3), 200);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean3), 24.75, 2e-15);
     my_v_mean3->reset();
-    shouldEqualTolerance(detail::use<acc::Count>::val(*my_v_mean3), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean3), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Count>(*my_v_mean3), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean3), 0, 2e-15);
     (*my_v_mean3)(test_v_mean);
-    shouldEqual(detail::use<acc::Count>::val(*my_v_mean3), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean3), 49.5, 2e-15);
+    shouldEqual(get<acc::Count>(*my_v_mean3), 100);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean3), 49.5, 2e-15);
     cvmc* my_v_mean4 = new cvmc;
-    shouldEqualTolerance(detail::use<acc::Count>::val(*my_v_mean4), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean4), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Count>(*my_v_mean4), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean4), 0, 2e-15);
     cvmc* my_v_mean5 = new cvmc(*my_v_mean3);
     delete my_v_mean3;
-    shouldEqual(detail::use<acc::Count>::val(*my_v_mean5), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean5), 49.5, 2e-15);
+    shouldEqual(get<acc::Count>(*my_v_mean5), 100);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean5), 49.5, 2e-15);
     (*my_v_mean4)(*my_v_mean5, *my_v_mean5);
-    shouldEqual(detail::use<acc::Count>::val(*my_v_mean4), 200);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(*my_v_mean4), 49.5, 2e-15);
+    shouldEqual(get<acc::Count>(*my_v_mean4), 200);
+    shouldEqualTolerance(get<acc::Mean>(*my_v_mean4), 49.5, 2e-15);
+    // end copy constructor tests.
 
-    shouldEqual(detail::use<acc::Count>::val(mean_sum_0), 100);
-    shouldEqual(detail::use<acc::Sum>::val(mean_sum_0), 4950);
+    // calculator and member<> access function tests.
+    shouldEqual(get<acc::Count>(mean_sum_0), 100);
+    shouldEqual(get<acc::Sum>(mean_sum_0), 4950);
     shouldEqualTolerance(detail::use<mean_from_sum_calc>::c_val(mean_sum_0.calculators), 0, 2e-15);
     shouldEqualTolerance(detail::use<mean_from_sum_calc>::val(mean_sum_0), 49.5, 2e-15);
     shouldEqualTolerance(detail::use<mean_from_sum_calc>::c_val(mean_sum_0.calculators), 49.5, 2e-15);
     shouldEqual(accumulators_mean_sum<BImage::PixelType>::max_passes, 2);
-    shouldEqual(detail::use<acc::Moment2_2>::val(mean_sum_0), 83325);
+    shouldEqual(get<acc::Moment2_2Pass>(mean_sum_0), 83325);
 
     shouldEqualTolerance(detail::use<acc::Variance>::c_val(mean_sum_0.calculators), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(mean_sum_0), 833.25, 2e-15);
+    shouldEqualTolerance(get<acc::Variance>(mean_sum_0), 833.25, 2e-15);
     shouldEqualTolerance(detail::use<acc::Variance>::c_val(mean_sum_0.calculators), 833.25, 2e-15);
 
     shouldEqual(detail::use<colour_label_acc>::val(colour_0).count(), 100);
@@ -668,7 +681,7 @@ void test4()
 
 	typedef use_template_list<Accumulators, float,
                               mean_from_sum_calc,
-                              acc::Moment2_2, acc::Variance,
+                              acc::Moment2_2Pass, acc::Variance,
                               acc::Skewness, acc::Kurtosis>
         accumulators_mean_sum;
 
@@ -679,12 +692,12 @@ void test4()
         accumulators_minmax;
 
     accumulators_var test_acc;
-    test_acc(1.2);
-    test_acc(100.2);
+    test_acc(static_cast<float>(1.2));
+    test_acc(static_cast<float>(100.2));
     test_acc(1023);
-    shouldEqual(detail::use<acc::Count>::val(test_acc), 3);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(test_acc), 374.799987792969, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(test_acc), 211715.125, 2e-15);
+    shouldEqual(get<acc::Count>(test_acc), 3);
+    shouldEqualTolerance(get<acc::Mean>(test_acc), 374.799987792969, 3e-6);
+    shouldEqualTolerance(get<acc::Variance>(test_acc), 211715.125, 2e-6);
     
 	unsigned h = 19;
 	unsigned w = 10;
@@ -699,12 +712,12 @@ void test4()
 		{
 			if (i <= h / 2)
 			{
-				image(i, j) = 10 * i + j;
+				image(i, j) = static_cast<float>(10 * i + j);
 				labels(i, j) = 0;
 			}
 			else
 			{
-				image(i, j) = 1.234;
+				image(i, j) = static_cast<float>(1.234);
 				labels(i, j) = 1;
 
 			}
@@ -727,32 +740,32 @@ void test4()
 	inspectTwoMultiArrays(srcMultiArrayRange(image),
                                  srcMultiArray(labels), colour_aors);
 
-    shouldEqualTolerance(detail::use<acc::Min>::val(minmax[0]), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Max>::val(minmax[0]), 99, 2e-15);
-    shouldEqual(detail::use<acc::Count>::val(sum_aors[0]), 100);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(sum_aors[0]), 49.5, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Moment2>::val(sum_aors[0]), 83324.9921875, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(sum_aors[0]), 833.249938964844, 2e-15);
-    shouldEqual(detail::use<acc::Sum>::val(sum_aors[0]), 4950);
-    shouldEqualTolerance(detail::use<mean_from_sum_calc>::val(sum_aors[0]), 49.5, 2e-15);
-    shouldEqual(detail::use<acc::Moment2_2>::val(sum_aors[0]), 83325);
-    shouldEqualTolerance(detail::use<acc::Skewness>::val(sum_aors[0]), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Kurtosis>::val(sum_aors[0]), 0.0179976038634777, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(sum_v[0]), 49.5, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(sum_v[0]), 833.249938964844, 2e-15);
+    shouldEqualTolerance(get<acc::Min>(minmax[0]), 0, 2e-6);
+    shouldEqualTolerance(get<acc::Max>(minmax[0]), 99, 2e-6);
+    shouldEqual(get<acc::Count>(sum_aors[0]), 100);
+    shouldEqualTolerance(get<acc::Mean>(sum_aors[0]), 49.5, 2e-6);
+    shouldEqualTolerance(get<acc::Moment2>(sum_aors[0]), 83324.9921875, 2e-6);
+    shouldEqualTolerance(get<acc::Variance>(sum_aors[0]), 833.249938964844, 2e-6);
+    shouldEqual(get<acc::Sum>(sum_aors[0]), 4950);
+    shouldEqualTolerance(detail::use<mean_from_sum_calc>::val(sum_aors[0]), 49.5, 2e-6);
+    shouldEqual(get<acc::Moment2_2Pass>(sum_aors[0]), 83325);
+    shouldEqualTolerance(get<acc::Skewness>(sum_aors[0]), 0, 2e-6);
+    shouldEqualTolerance(get<acc::Kurtosis>(sum_aors[0]), 0.0179976038634777, 2e-6);
+    shouldEqualTolerance(get<acc::Mean>(sum_v[0]), 49.5, 2e-6);
+    shouldEqualTolerance(get<acc::Variance>(sum_v[0]), 833.249938964844, 2e-6);
     shouldEqual(detail::use<colour_label_acc>::val(colour_aors[0]).count(), 100);
 
-    shouldEqualTolerance(detail::use<acc::Min>::val(minmax[1]), 1.23399996757507, 3e-15);
-    shouldEqualTolerance(detail::use<acc::Max>::val(minmax[1]), 1.23399996757507, 3e-15);
-    shouldEqual(detail::use<acc::Count>::val(sum_aors[1]), 90);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(sum_aors[1]), 1.23399996757507, 3e-15);
-    shouldEqualTolerance(detail::use<acc::Moment2>::val(sum_aors[1]), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(sum_aors[1]), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Sum>::val(sum_aors[1]), 111.060066223145, 5e-15);
-    shouldEqualTolerance(detail::use<mean_from_sum_calc>::val(sum_aors[1]), 1.23400068283081, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Moment2_2>::val(sum_aors[1]), 0, 2e-15);
-    shouldEqualTolerance(detail::use<acc::Mean>::val(sum_v[1]), 1.23399996757507, 3e-15);
-    shouldEqualTolerance(detail::use<acc::Variance>::val(sum_v[1]), 0, 2e-15);
+    shouldEqualTolerance(get<acc::Min>(minmax[1]), 1.23399996757507, 3e-6);
+    shouldEqualTolerance(get<acc::Max>(minmax[1]), 1.23399996757507, 3e-6);
+    shouldEqual(get<acc::Count>(sum_aors[1]), 90);
+    shouldEqualTolerance(get<acc::Mean>(sum_aors[1]), 1.23399996757507, 3e-6);
+    shouldEqualTolerance(get<acc::Moment2>(sum_aors[1]), 0, 2e-6);
+    shouldEqualTolerance(get<acc::Variance>(sum_aors[1]), 0, 2e-6);
+    shouldEqualTolerance(get<acc::Sum>(sum_aors[1]), 111.060066223145, 5e-6);
+    shouldEqualTolerance(detail::use<mean_from_sum_calc>::val(sum_aors[1]), 1.23400068283081, 2e-6);
+    shouldEqualTolerance(get<acc::Moment2_2Pass>(sum_aors[1]), 0, 2e-6);
+    shouldEqualTolerance(get<acc::Mean>(sum_v[1]), 1.23399996757507, 3e-6);
+    shouldEqualTolerance(get<acc::Variance>(sum_v[1]), 0, 2e-6);
     shouldEqual(detail::use<colour_label_acc>::val(colour_aors[1]).count(), 1);
 }
 
@@ -792,7 +805,7 @@ void test5()
                        vigra::ImageExportInfo("of_gs.gif"));
 
 
-	typedef use_template_list<Accumulators, vpixel_type,
+	typedef use_template_list<Accumulators, StridePairPointer<2, vpixel_type>,
             acc::Variance,
             acc::UnbiasedVariance,
             acc::Skewness,
@@ -819,12 +832,12 @@ void test5()
 	vigra::ArrayOfRegionStatistics<accumulators_v2d> test_aors(c_count);
 
     shouldEqual(accumulators_v2d::max_passes, 2);
-    shouldEqual(acc::Moment2_2<vpixel_type>::number_of_passes, 2);
+    shouldEqual(acc::Moment2_2Pass<vpixel_type>::number_of_passes, 2);
     shouldEqual((type_lists::max_value<detail::passes_number, unsigned, accumulators_v2d::list_type>::value), 2);
     
     shouldEqual(vigra::ArrayOfRegionStatistics<accumulators_v2d>::max_passes, 2);
 
-    inspectTwoMultiArrays(srcMultiArrayRange(test_image),
+    inspectTwoMultiArrays(srcCoordinateMultiArrayRange(test_image),
                                  srcMultiArray(test_labels), test_aors);
 
 	for (unsigned k = 0; k != c_count; ++k)
@@ -846,7 +859,7 @@ void test5()
                 1301
             };
             double x = x_tab[(k)];
-            shouldEqual(nan_squash(detail::use<acc::Count>::val(test_aors[(k)])), x);
+            shouldEqual(nan_squash(get<acc::Count>(test_aors[(k)])), x);
         }
         {
             double x_tab[][3] =
@@ -866,7 +879,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Mean>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Mean>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][3] =
@@ -886,7 +899,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Moment2>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][3] =
@@ -906,7 +919,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Moment2_2>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
         }
 
         {
@@ -927,7 +940,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(const_cast<const accumulators_v2d &>(test_aors[(k)]))).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(const_cast<const accumulators_v2d &>(test_aors[(k)]))).begin(), 5e-15);
         }
 
         {
@@ -948,7 +961,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Variance>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][3] =
@@ -968,7 +981,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Skewness>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Skewness>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][3] =
@@ -988,7 +1001,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(detail::use<acc::Kurtosis>::val(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Kurtosis>(test_aors[(k)])).begin(), 5e-15);
         }
          
         {
@@ -1029,7 +1042,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 5e-15);
         }
 
         {
@@ -1050,7 +1063,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Min>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Min>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][3] =
@@ -1070,7 +1083,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Max>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Max>(test_aors[(k)])).begin(), 5e-15);
         }
         
         {
@@ -1091,7 +1104,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::UnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::UnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
         }
 
         {
@@ -1112,7 +1125,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMean>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMean>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1132,7 +1145,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordVariance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordVariance>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1152,7 +1165,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1172,7 +1185,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSkewness>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSkewness>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1192,7 +1205,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordKurtosis>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordKurtosis>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1212,7 +1225,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSum>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSum>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1232,7 +1245,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1252,7 +1265,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2_2>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1272,7 +1285,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMin>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMin>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1292,7 +1305,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMax>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMax>(test_aors[(k)])).begin(), 5e-15);
         }
 
         {
@@ -1313,7 +1326,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMean>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMean>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1333,7 +1346,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedVariance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedVariance>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1353,7 +1366,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1373,7 +1386,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSkewness>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSkewness>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1393,7 +1406,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedKurtosis>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedKurtosis>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1413,7 +1426,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSum>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSum>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1433,7 +1446,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1453,7 +1466,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2_2>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1473,7 +1486,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMin>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMin>(test_aors[(k)])).begin(), 5e-15);
         }
         {
             double x_tab[][2] =
@@ -1493,7 +1506,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMax>(test_aors[(k)])).begin(), 5e-15);;
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMax>(test_aors[(k)])).begin(), 5e-15);
         }
         
     }

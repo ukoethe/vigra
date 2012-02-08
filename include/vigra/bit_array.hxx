@@ -97,7 +97,7 @@ class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<WORD_TYPE>::type>
     bool test() const
     {
         typedef bit_index<pos> index;
-        return set_bits[index::word_pos] & index::bit_mask;
+        return (set_bits[index::word_pos] & index::bit_mask) != 0;
     }
 
     BitArray & set(unsigned pos, bool value = true)

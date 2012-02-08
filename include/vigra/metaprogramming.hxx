@@ -43,6 +43,12 @@
 
 namespace vigra {
 
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
+
 template <int N>
 class MetaInt
 {
@@ -636,6 +642,10 @@ struct MetaLog2<X, z, 1, 0, 1, z, z, u, typename EnableMetaLog2<X>::type>
     static const unsigned value = 0;
 };
 
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 

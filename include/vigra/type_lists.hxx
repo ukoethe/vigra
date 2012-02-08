@@ -11,6 +11,12 @@
 
 namespace vigra {
 
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
+
 namespace type_lists {
 
     struct nil; // end-of-list marker.
@@ -860,7 +866,7 @@ namespace type_lists {
     public:
         tuple_entry() : p(0) {}
         template <class TUPLE>
-        bool is_set(const TUPLE &) const { return p; }
+        bool is_set(const TUPLE &) const { return p != 0; }
 
     protected:
         void make_load()
@@ -1877,6 +1883,11 @@ namespace type_lists {
     };
 
 } // namespace type_lists
+
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 

@@ -12,6 +12,12 @@
 
 namespace vigra {
 
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
+
 namespace detail {
 
 template <unsigned n> // test the number of passes a feature requires
@@ -88,6 +94,22 @@ public:
     void reset()
     {
         this->value = result_type(); // guaranteed to be zero for built-in types
+    }
+    template <class X>
+    void set_val(const X & x)
+    {
+        this->value = static_cast<const result_type &>(x);
+    }
+    template <class X>
+    void add_val(const X & x)
+    {
+        this->value += static_cast<const result_type &>(x);
+    }
+    // variant for calculators
+    template <class X>
+    void set_val(const X & x) const
+    {
+        this->value = static_cast<const result_type &>(x);
     }
     feature_base()
     {
@@ -322,21 +344,21 @@ struct Count : public collector_base<T, double>
     template <class ACX>
     void updatePass1(ACX &, const T &)
     {
-        ++this->value;
+        this->add_val(1);
     }
     /** update using weighted input
      */
     template <class ACX>
     void updatePass1(ACX & x, const T &, double weight)
     {
-        this->value += weight;
+        this->add_val(weight);
     }
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value = use_d<Count>::val(x) + use_d<Count>::val(y);
+        this->set_val(use_d<Count>::val(x) + use_d<Count>::val(y));
     }
 };
 
@@ -358,9 +380,8 @@ struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v)
     {
-        this->value
-            += (CV<T>::get(v) - this->value)
-               / use<acc::Count>::f_val(accumulators);
+        this->add_val((CV<T>::get(v) - this->value)
+                      / use<acc::Count>::f_val(accumulators));
     }
     /** update average, using weighted input.
      * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
@@ -370,17 +391,17 @@ struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v, double weight)
     {
-        this->value += (CV<T>::get(v) - this->value) * weight
-                       / use<acc::Count>::f_val(accumulators);
+        this->add_val((CV<T>::get(v) - this->value) * weight
+                      / use<acc::Count>::f_val(accumulators));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value = (   use<acc::Count>::val(x) * use<SELF>::val(x)
+        this->set_val((   use<acc::Count>::val(x) * use<SELF>::val(x)
                         + use<acc::Count>::val(y) * use<SELF>::val(y)
-                      ) / use<acc::Count>::val(z);
+                      ) / use<acc::Count>::val(z));
     }
 };
 
@@ -399,9 +420,11 @@ struct gen_sum_squared_diff_acc
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v)
     {
-        result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
-        result_type t2 = t1 / use<acc::Count>::f_val(accumulators);
-        this->value += t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.0);
+        result_type t1 = static_cast<result_type>(
+                         CV<T>::get(v) - use<MEAN>::f_val(accumulators));
+        result_type t2 = static_cast<result_type>(
+                         t1 / use<acc::Count>::f_val(accumulators));
+        this->add_val(t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.0));
     }
     /** update sum of squared differences, using weighted input.
      * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
@@ -414,8 +437,8 @@ struct gen_sum_squared_diff_acc
         result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
         result_type t2 = t1 * weight / use<acc::Count>::f_val(accumulators);
         // count > weight is ensured by preceding acc::Count::operator() call
-        this->value
-            += t1 * t2 * (use<acc::Count>::f_val(accumulators) - weight);
+        this->add_val(t1 * t2
+                      * (use<acc::Count>::f_val(accumulators) - weight));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
@@ -424,11 +447,11 @@ struct gen_sum_squared_diff_acc
     {
         double count_x = use<acc::Count>::val(x);
         double count_y = use<acc::Count>::val(y);
-        this->value =   use<SELF>::val(x)
+        this->set_val(  use<SELF>::val(x)
                       + use<SELF>::val(y)
                       + count_x * count_y / (count_x + count_y)
                         * (use<MEAN>::val(x) - use<MEAN>::val(y))
-                        * (use<MEAN>::val(x) - use<MEAN>::val(y));
+                        * (use<MEAN>::val(x) - use<MEAN>::val(y)));
     }
 };
 
@@ -467,7 +490,7 @@ struct gen_covariance_acc
     {
 //         result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
 //         result_type t2 = t1 / use<acc::Count>::f_val(accumulators);
-//         this->value += t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.0);
+//         this->add_val(t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.));
     }
     /** update sum of squared differences, using weighted input.
      * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
@@ -480,8 +503,8 @@ struct gen_covariance_acc
 //         result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
 //         result_type t2 = t1 * weight / use<acc::Count>::f_val(accumulators);
 //         // count > weight is ensured by preceding acc::Count::operator() call
-//         this->value
-//             += t1 * t2 * (use<acc::Count>::f_val(accumulators) - weight);
+//         this->add_val(t1 * t2
+//                       * (use<acc::Count>::f_val(accumulators) - weight));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
@@ -585,8 +608,8 @@ struct gen_variance_calc
     template <class ACX>
     void calculate(const ACX & x) const // calculator tuple == x.calculators
     {
-        this->value = use<SUM_SQUARED_DIFF>::val(x)
-                           / use<acc::Count>::val(x);
+        this->set_val(use<SUM_SQUARED_DIFF>::val(x)
+                          / use<acc::Count>::val(x));
     }
 };
 
@@ -620,8 +643,8 @@ struct gen_unbiased_variance_calc
     template <class ACX>
     void calculate(const ACX & x) const
     {
-        this->value = use<SUM_SQUARED_DIFF>::val(x)
-                          / (use<acc::Count>::val(x) - 1.0);
+        this->set_val(use<SUM_SQUARED_DIFF>::val(x)
+                         / (use<acc::Count>::val(x) - 1.0));
     }
 };
 
@@ -657,7 +680,7 @@ struct gen_sum_acc : public numeric_accumulator_base<T, typename CV<T>::type>
     template <class ACX>
     void updatePass1(ACX &, const T & v)
     {
-        this->value += CV<T>::get(v);
+        this->add_val(CV<T>::get(v));
     }
     /** update average, using weighted input.
      * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
@@ -667,14 +690,14 @@ struct gen_sum_acc : public numeric_accumulator_base<T, typename CV<T>::type>
     template <class ACX>
     void updatePass1(ACX &, const T & v, double weight)
     {
-        this->value += CV<T>::get(v) * weight;
+        this->add_val(CV<T>::get(v) * weight);
     }
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value = use<SELF>::val(x) + use<SELF>::val(y);
+        this->set_val(use<SELF>::val(x) + use<SELF>::val(y));
     }
 };
 
@@ -717,15 +740,15 @@ struct gen_central_moment_acc2
     void updatePassN(ACX & x, const T & v, unsigned pass) // pass 2
     {
         if (test_pass<ACX, 2>(pass))
-            this->value += power<n>(CV<T>::get(v) - use<MEAN>::f_val(x));
+            this->add_val(power<n>(CV<T>::get(v) - use<MEAN>::f_val(x)));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
     void operator()(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value =   use<SELF>::val(x)
-                      + use<SELF>::val(y);
+        this->set_val(  use<SELF>::val(x)
+                      + use<SELF>::val(y));
     }
 };
 
@@ -747,8 +770,8 @@ struct weighted_central_moment_acc2
 namespace acc {
 
 template <class T>
-struct Moment2_2 : public detail::central_moment_acc2<2, T, acc::Moment2_2> {};
-
+struct Moment2_2Pass : public detail::central_moment_acc2<2, T,
+                                                         acc::Moment2_2Pass> {};
 template <class T>
 struct Moment3 : public detail::central_moment_acc2<3, T, Moment3> {};
 
@@ -756,7 +779,7 @@ template <class T>
 struct Moment4 : public detail::central_moment_acc2<4, T, Moment4> {};
 
 template <class T>
-struct CoordMoment2_2
+struct CoordMoment2_2Pass
     : public detail::coord_central_moment_acc2<2, T, CoordMoment2> {};
 
 template <class T>
@@ -768,7 +791,7 @@ struct CoordMoment4
     : public detail::coord_central_moment_acc2<4, T, CoordMoment4> {};
 
 template <class T>
-struct WeightedMoment2_2
+struct WeightedMoment2_2Pass
     : public detail::weighted_central_moment_acc2<2, T, WeightedMoment2> {};
 
 template <class T>
@@ -794,8 +817,8 @@ struct gen_skewness_calc2
     void calculate(const ACX & x) const
     {
         using std::sqrt;
-        this->value = use<M3_ACC2>::val(x)
-                      / sqrt(power<3>(use<M2_ACC2>::val(x)));
+        this->set_val(use<M3_ACC2>::val(x)
+                      / sqrt(power<3>(use<M2_ACC2>::val(x))));
     }
 };
 
@@ -806,15 +829,16 @@ namespace acc {
 template <class T>
 struct Skewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_value_access,
-                                           Moment2_2, Moment3> {};
+                                           Moment2_2Pass, Moment3> {};
 template <class T>
 struct CoordSkewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_coord_access,
-                                           CoordMoment2_2, CoordMoment3> {};
+                                           CoordMoment2_2Pass, CoordMoment3> {};
 template <class T>
 struct WeightedSkewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_weighted_access,
-                                           WeightedMoment2_2, WeightedMoment3>
+                                           WeightedMoment2_2Pass,
+                                           WeightedMoment3>
 {};
 
 } // namespace acc
@@ -831,7 +855,7 @@ struct gen_kurtosis_calc2
     template <class ACX>
     void calculate(const ACX & x) const
     {
-        this->value = use<M4_ACC2>::val(x) / power<2>(use<M2_ACC2>::val(x));
+        this->set_val(use<M4_ACC2>::val(x) / power<2>(use<M2_ACC2>::val(x)));
     }
 };
 
@@ -842,15 +866,16 @@ namespace acc {
 template <class T>
 struct Kurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_value_access,
-                                           Moment2_2, Moment4> {};
+                                           Moment2_2Pass, Moment4> {};
 template <class T>
 struct CoordKurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_coord_access,
-                                           CoordMoment2_2, CoordMoment4> {};
+                                           CoordMoment2_2Pass, CoordMoment4> {};
 template <class T>
 struct WeightedKurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_weighted_access,
-                                           WeightedMoment2_2, WeightedMoment4>
+                                           WeightedMoment2_2Pass,
+                                           WeightedMoment4>
 {};
 
 } // namespace acc
@@ -863,7 +888,7 @@ struct gen_min_acc : public collector_base<T, typename CV<T>::type>
     typedef typename gen_min_acc::collector_base_type collector_base_type;
     void reset()
     {
-        this->value = NumericTraits<typename CV<T>::type>::max();
+        this->set_val(NumericTraits<typename CV<T>::type>::max());
     }
     gen_min_acc()
     {
@@ -881,7 +906,7 @@ struct gen_min_acc : public collector_base<T, typename CV<T>::type>
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value = use<SELF>::val(x);
+        this->set_val(use<SELF>::val(x));
         updateMin(this->value, use<SELF>::val(y));
     }
 };
@@ -892,7 +917,7 @@ struct gen_max_acc : public collector_base<T, typename CV<T>::type>
     typedef typename gen_max_acc::collector_base_type collector_base_type;
     void reset()
     {
-        this->value = NumericTraits<typename CV<T>::type>::min();
+        this->set_val(NumericTraits<typename CV<T>::type>::min());
     }
     gen_max_acc()
     {
@@ -910,7 +935,7 @@ struct gen_max_acc : public collector_base<T, typename CV<T>::type>
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
-        this->value = use<SELF>::val(x);
+        this->set_val(use<SELF>::val(x));
         updateMax(this->value, use<SELF>::val(y));
     }
 };
@@ -1155,7 +1180,7 @@ struct accu_context_base
     typedef typename accu_context_base::list_type                 list_type;
     typedef typename accu_context_base::feature_context_base_type feature_cx;
     typedef          accu_context_base                            extra_passes;
-    typedef          feature_types<L>                             feature_lists;     
+    typedef          feature_types<L>                             feature_lists;
     static const unsigned max_passes = feature_lists::max_passes;
 
     // features that do not require even a single pass:
@@ -1418,6 +1443,10 @@ struct SelectedAccumulators
                                                                     type>
 {};
 
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 

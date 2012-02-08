@@ -59,6 +59,12 @@
 
 namespace vigra {
 
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
+
 using VIGRA_CSTD::abs;
 using VIGRA_CSTD::ceil;
 using VIGRA_CSTD::floor;
@@ -1714,6 +1720,10 @@ squaredNorm(TinyVector<V, SIZE> const & t)
 }
 //@}
 
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 #undef VIGRA_ASSERT_INSIDE

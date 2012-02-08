@@ -311,7 +311,7 @@ void dismember(StridePair<N> & r, const StridePair<N> & x, unsigned i)
 template<unsigned N>
 void dismember(StridePairDiff<N> & r, const StridePairDiff<N> & x, unsigned i)
 {
-    r.c = r[i] = x[i];
+    r.c = static_cast<MultiArrayIndex>(r[i] = x[i]);
 }
 
 template<unsigned N, class X>
