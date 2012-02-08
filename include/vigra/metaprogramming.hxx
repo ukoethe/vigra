@@ -467,25 +467,25 @@ struct sfinae_test
 template <class T>
 struct has_argument_type : public sfinae_test<T, has_argument_type>
 {
-	template <class U> has_argument_type(U*, typename U::argument_type* = 0);
+    template <class U> has_argument_type(U*, typename U::argument_type* = 0);
 };
 
 template <class T>
 struct has_result_type : public sfinae_test<T, has_result_type>
 {
-	template <class U> has_result_type(U*, typename U::result_type* = 0);
+    template <class U> has_result_type(U*, typename U::result_type* = 0);
 };
 
 template <class T>
 struct has_value_type : public sfinae_test<T, has_value_type>
 {
-	template <class U> has_value_type(U*, typename U::value_type* = 0);
+    template <class U> has_value_type(U*, typename U::value_type* = 0);
 };
 
 template <class T>
 struct IsIterator : public sfinae_test<T, IsIterator>
 {
-	template <class U> IsIterator(U*, typename U::iterator_category* = 0);
+    template <class U> IsIterator(U*, typename U::iterator_category* = 0);
 };
 
 template <class T>
@@ -505,7 +505,7 @@ struct IsIterator<T const *>
 template <class T>
 struct has_real_promote_type : public sfinae_test<T, has_real_promote_type>
 {
-	template <class U>
+    template <class U>
     has_real_promote_type(U*, typename U::real_promote_type* = 0);
 };
 

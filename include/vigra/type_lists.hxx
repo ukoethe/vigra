@@ -165,7 +165,7 @@ namespace type_lists {
     template <class T>
     struct has_first_rest : public sfinae_test<T, has_first_rest>
     {
-	    template <class U>
+        template <class U>
         has_first_rest(U*, typename U::first* = 0, typename U::rest* = 0);
     };
     template <bool P, class A>
@@ -558,17 +558,17 @@ namespace type_lists {
     template <class T>
     struct has_depends_on : public sfinae_test<T, has_depends_on>
     {
-	    template <class U> has_depends_on(U*, typename U::depends_on* = 0);
+        template <class U> has_depends_on(U*, typename U::depends_on* = 0);
     };
     template <class T>
     struct has_implies : public sfinae_test<T, has_implies>
     {
-	    template <class U> has_implies(U*, typename U::implies_types* = 0);
+        template <class U> has_implies(U*, typename U::implies_types* = 0);
     };
     template <class T>
     struct has_follows : public sfinae_test<T, has_follows>
     {
-	    template <class U> has_follows(U*, typename U::follows_types* = 0);
+        template <class U> has_follows(U*, typename U::follows_types* = 0);
     };
 
     // use empty list in case of lacking / faulty depends_on or implies_types:
@@ -1140,7 +1140,7 @@ namespace type_lists {
                   class, class, template<class> class S, unsigned>
         struct global_data : public plain_global_data
         {
-        	typedef global_data global_data_type;
+            typedef global_data global_data_type;
         };
         template <class QV, class TUPLE>
         static bool is_set(const QV &, const TUPLE &) { return true; }
@@ -1389,7 +1389,7 @@ namespace type_lists {
                   class, class, template<class> class S, unsigned>
         struct global_data : public plain_global_data
         {
-        	typedef global_data global_data_type;
+            typedef global_data global_data_type;
         };
         template <template<class, class, template<class> class M, unsigned>
                   class TBASE, class ITL, template<class> class TEST>
@@ -1457,7 +1457,7 @@ namespace type_lists {
                   class, class, template<class> class S, unsigned>
         struct global_data : public plain_global_data
         {
-        	typedef global_data global_data_type;
+            typedef global_data global_data_type;
         };
 
         template <class ITL>

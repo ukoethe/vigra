@@ -108,7 +108,7 @@ void test1()
         "(11.000, 8.000)",
         0
     };
-	(inspectMultiArray(coordinateMultiRange<2>(
+    (inspectMultiArray(coordinateMultiRange<2>(
                                c2_shape, c2_stride, c2_origin), echo_f(out_1)));
 
     StridePair<2>::coord_type c7_origin(10,  5.5);
@@ -139,7 +139,7 @@ void test1()
         "(10.857, 6.167)",
         0
     };
-	(inspectMultiArray(coordinateMultiRange<2>(
+    (inspectMultiArray(coordinateMultiRange<2>(
                                c7_shape, c7_stride, c7_origin), echo_f(out_2)));
 
     StridePair<3>::coord_type c3_origin(20,  -3,  1 / 3.0);
@@ -167,7 +167,7 @@ void test1()
         "(20.500, -2.882, 0.667)",
         0
     };
-	(inspectMultiArray(coordinateMultiRange<3>(
+    (inspectMultiArray(coordinateMultiRange<3>(
                                c3_shape, c3_stride, c3_origin), echo_f(out_3)));
 
     StridePair<2>::coord_type c0_stride(0.5, 0.25);
@@ -182,7 +182,7 @@ void test1()
         "(0.500, 0.500)",
         0
     };
-	(inspectMultiArray(coordinateMultiRange<2>(c0_shape, c0_stride),
+    (inspectMultiArray(coordinateMultiRange<2>(c0_shape, c0_stride),
                                 echo_f(out_4)));
 
     StridePair<2>::index_type c1_shape (  2,  3);
@@ -199,7 +199,7 @@ void test1()
     (inspectMultiArray(coordinateMultiRange<2>(c1_shape),
                                 echo_f(out_5)));
 
-	array_2d stride_image2(array_2d::size_type(2, 3));
+    array_2d stride_image2(array_2d::size_type(2, 3));
     initMultiArray(destMultiArrayRange(stride_image2), count());
     char_s out_6[] =
     {
@@ -214,7 +214,7 @@ void test1()
     (inspectMultiArray(srcCoordinateMultiArrayRange(stride_image2),
                                 echo_f(out_6)));
     
-	array_3d stride_image3(array_3d::size_type(2, 3, 4));
+    array_3d stride_image3(array_3d::size_type(2, 3, 4));
     initMultiArray(destMultiArrayRange(stride_image3), count());
     char_s out_7[] =
     {
@@ -247,7 +247,7 @@ void test1()
     (inspectMultiArray(srcCoordinateMultiArrayRange(stride_image3),
                                 echo_f(out_7)));
 
-	array_rgb image_rgb(array_2d::size_type(2, 3));
+    array_rgb image_rgb(array_2d::size_type(2, 3));
     initMultiArray(destMultiArrayRange(image_rgb), count());
     char_s out_8[] =
     {

@@ -40,7 +40,7 @@ struct extra_passes_selector<true>
 template <class T>
 struct has_extra_passes : public sfinae_test<T, has_extra_passes>
 {
-	template <class U> has_extra_passes(U*, typename U::extra_passes* = 0);
+    template <class U> has_extra_passes(U*, typename U::extra_passes* = 0);
 };
 
 template <class Functor, bool extra = has_extra_passes<Functor>::value>

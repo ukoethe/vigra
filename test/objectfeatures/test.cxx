@@ -121,12 +121,12 @@ void test1()
     pixel_accumulators pix_acc;
     yyy_test_accumulators yy_acc;
     
-	array_2d image(array_2d::size_type(10, 10));
+    array_2d image(array_2d::size_type(10, 10));
 
     for (unsigned i = 0; i != 100; ++i)
         image(i / 10, i % 10) = i;
 
-	inspectMultiArray(srcMultiArrayRange(image), pix_acc);
+    inspectMultiArray(srcMultiArrayRange(image), pix_acc);
 
     shouldEqual(get<acc::Count>(pix_acc), 100);
     shouldEqualTolerance(get<acc::Mean>(pix_acc), 49.5, 2e-15);
@@ -139,7 +139,7 @@ void test1()
 
 void test2()
 {
-	array_2d stride_image2(array_2d::size_type(2, 3));
+    array_2d stride_image2(array_2d::size_type(2, 3));
     initMultiArray(destMultiArrayRange(stride_image2), count());
 
     cv_test_accumulators cv_acc;
@@ -324,7 +324,7 @@ private:
     typedef typename gen_map::key_type       key_type;
     typedef typename gen_map::value_type     value_type;
     typedef typename gen_map::const_iterator const_iterator;
-	typedef          search                  reverse_type;
+    typedef          search                  reverse_type;
     typedef pair<id_type, bool> join_type;
 
     gen_map                   store_map;
@@ -679,18 +679,18 @@ void test3()
 
 void test4()
 {
-	typedef MultiArray<2, float> Array;
+    typedef MultiArray<2, float> Array;
 
-	typedef use_template_list<Accumulators, float,
+    typedef use_template_list<Accumulators, float,
                               mean_from_sum_calc,
                               acc::Moment2_2Pass, acc::Variance,
                               acc::Skewness, acc::Kurtosis>
         accumulators_mean_sum;
 
-	typedef use_template_list<Accumulators, float, acc::Variance>
+    typedef use_template_list<Accumulators, float, acc::Variance>
         accumulators_var;
 
-	typedef use_template_list<Accumulators, float, acc::Min, acc::Max>
+    typedef use_template_list<Accumulators, float, acc::Min, acc::Max>
         accumulators_minmax;
 
     accumulators_var test_acc;
@@ -701,45 +701,45 @@ void test4()
     shouldEqualTolerance(get<acc::Mean>(test_acc), 374.799987792969, 3e-6);
     shouldEqualTolerance(get<acc::Variance>(test_acc), 211715.125, 2e-6);
     
-	unsigned h = 19;
-	unsigned w = 10;
-	unsigned max_label = 2;
+    unsigned h = 19;
+    unsigned w = 10;
+    unsigned max_label = 2;
 
-	Array image(Array::size_type(h, w));
-	Array labels(Array::size_type(h, w));
+    Array image(Array::size_type(h, w));
+    Array labels(Array::size_type(h, w));
 
-	for (unsigned i = 0; i < h; ++i)
-	{
-		for (unsigned j = 0; j < w; ++j)
-		{
-			if (i <= h / 2)
-			{
-				image(i, j) = static_cast<float>(10 * i + j);
-				labels(i, j) = 0;
-			}
-			else
-			{
-				image(i, j) = static_cast<float>(1.234);
-				labels(i, j) = 1;
+    for (unsigned i = 0; i < h; ++i)
+    {
+        for (unsigned j = 0; j < w; ++j)
+        {
+            if (i <= h / 2)
+            {
+                image(i, j) = static_cast<float>(10 * i + j);
+                labels(i, j) = 0;
+            }
+            else
+            {
+                image(i, j) = static_cast<float>(1.234);
+                labels(i, j) = 1;
 
-			}
-		}
+            }
+        }
 
-	}
-	ArrayOfRegionStatistics<accumulators_minmax, float> minmax(max_label - 1);
-	ArrayOfRegionStatistics<accumulators_var, float>    sum_v(max_label - 1);
-	ArrayOfRegionStatistics<accumulators_mean_sum, float>
+    }
+    ArrayOfRegionStatistics<accumulators_minmax, float> minmax(max_label - 1);
+    ArrayOfRegionStatistics<accumulators_var, float>    sum_v(max_label - 1);
+    ArrayOfRegionStatistics<accumulators_mean_sum, float>
                                                         sum_aors(max_label - 1);
-	ArrayOfRegionStatistics<accumulators_colour_label<float>, float>
+    ArrayOfRegionStatistics<accumulators_colour_label<float>, float>
         colour_aors(max_label - 1);
 
-	inspectTwoMultiArrays(srcMultiArrayRange(image),
+    inspectTwoMultiArrays(srcMultiArrayRange(image),
                                  srcMultiArray(labels), minmax);
-	inspectTwoMultiArrays(srcMultiArrayRange(image),
+    inspectTwoMultiArrays(srcMultiArrayRange(image),
                                  srcMultiArray(labels), sum_aors);
-	inspectTwoMultiArrays(srcMultiArrayRange(image),
+    inspectTwoMultiArrays(srcMultiArrayRange(image),
                                  srcMultiArray(labels), sum_v);
-	inspectTwoMultiArrays(srcMultiArrayRange(image),
+    inspectTwoMultiArrays(srcMultiArrayRange(image),
                                  srcMultiArray(labels), colour_aors);
 
     shouldEqualTolerance(get<acc::Min>(minmax[0]), 0, 2e-6);
@@ -807,7 +807,7 @@ void test5()
                        vigra::ImageExportInfo("of_gs.gif"));
 
 
-	typedef use_template_list<Accumulators, StridePairPointer<2, vpixel_type>,
+    typedef use_template_list<Accumulators, StridePairPointer<2, vpixel_type>,
             acc::Variance,
             acc::UnbiasedVariance,
             acc::Skewness,
@@ -831,7 +831,7 @@ void test5()
             acc::WeightedMax>
         accumulators_v2d;
 
-	vigra::ArrayOfRegionStatistics<accumulators_v2d> test_aors(c_count);
+    vigra::ArrayOfRegionStatistics<accumulators_v2d> test_aors(c_count);
 
     shouldEqual(accumulators_v2d::max_passes, 2);
     shouldEqual(acc::Moment2_2Pass<vpixel_type>::number_of_passes, 2);
@@ -842,7 +842,7 @@ void test5()
     inspectTwoMultiArrays(srcCoordinateMultiArrayRange(test_image),
                                  srcMultiArray(test_labels), test_aors);
 
-	for (unsigned k = 0; k != c_count; ++k)
+    for (unsigned k = 0; k != c_count; ++k)
     {
         {
             double x_tab[] =
