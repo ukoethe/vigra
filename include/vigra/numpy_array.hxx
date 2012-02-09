@@ -642,11 +642,11 @@ class NumpyArray
 
         /** sequential (random access) iterator type
          */
-    typedef value_type * iterator;
+    typedef typename view_type::iterator iterator;
 
         /** sequential (random access) const iterator type
          */
-    typedef value_type * const_iterator;
+    typedef typename view_type::const_iterator const_iterator;
 
     using view_type::shape;   // resolve ambiguity of multiple inheritance
     using view_type::hasData; // resolve ambiguity of multiple inheritance
