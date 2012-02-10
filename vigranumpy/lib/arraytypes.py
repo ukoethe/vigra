@@ -114,15 +114,22 @@ def newaxis(axisinfo=AxisInfo()):
 def taggedView(array, axistags):
     '''
     Create a view to the given array with type :class:`~vigra.VigraArray` and the 
-    given axistags. This is a shorthand for::
+    given axistags. This is essentially a shorthand for::
     
         >>> view = array.view(vigra.VigraArray)
         >>> view.axistags = copy.copy(axistags)
+        
+    if axistags is an instance of AxisTags. Otherwise, the function first attempts
+    to convert the input to that type by calling VigraArray.defaultAxistags()
     '''
+    if not isinstance(axistags, AxisTags):
+        axistags = VigraArray.defaultAxistags(axistags)
+    else:
+        axistags = copy.copy(axistags)
     if array.ndim != len(axistags):
         raise RuntimeError('vigra.taggedView(): array.ndim must match len(axistags).')
     res = array.view(VigraArray)
-    res.axistags = copy.copy(axistags)
+    res.axistags = axistags
     return res
 
 def dropChannelAxis(array):
@@ -1261,9 +1268,12 @@ class VigraArray(numpy.ndarray):
         return _numpyarray_overloaded_function(numpy.ndarray.sum, self, axis, dtype, out)
             
     @_preserve_doc
-    def swapaxes(self, i, j):
+    def swapaxes(self, i, j, keepTags=False):
         '''
         Parameters 'i' and 'j' can also be ints (axis positions) or strings (axis keys).
+        
+        If 'keepsTags' is False, axistags are swapped like the axes, otherwise they remain
+        unchanged such that the swapped axes aquire a new meaning. 
         '''
         if type(i) == str:
             i = self.axistags.index(i)
@@ -1271,10 +1281,11 @@ class VigraArray(numpy.ndarray):
             j = self.axistags.index(j)
         res = numpy.ndarray.swapaxes(self, i, j)
         res.axistags = res._copy_axistags()
-        try:
-            res.axistags.swapaxes(i, j)
-        except:
-            res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
+        if not keepTags:
+            try:
+                res.axistags.swapaxes(i, j)
+            except:
+                res.axistags[i], res.axistags[j] = res.axistags[j], res.axistags[i]
         return res        
  
     @_preserve_doc
@@ -1291,9 +1302,16 @@ class VigraArray(numpy.ndarray):
             return numpy.ndarray.take(self, indices, axis, out, mode)
            
     @_preserve_doc
-    def transpose(self, *axes):
+    def transpose(self, *axes, **keepTags):
+        '''
+        An additional keyword parameter 'keepTags' can be provided (it has to be passed as an explicit
+        keyword parameter). If it is True, the axistags will remain unchanged such that the transposed 
+        axes aquire a new meaning. 
+        '''
+        keepTags = keepTags.get('keepTags', False)
         res = numpy.ndarray.transpose(self, *axes)
-        res.axistags = res._transpose_axistags(*axes)
+        if not keepTags:
+            res.axistags = res._transpose_axistags(*axes)
         return res
 
     @_preserve_doc

@@ -1095,6 +1095,16 @@ def testTaggedShape():
     assert_equal(res[5].shape, (20,10,3))
     assert_equal(res[5].axistags, resaxistags)
     assert_equal(res[5].axistags[2].description, "res6")
+    
+    a = numpy.zeros((3,4,5))
+    at = AxisTags(AxisInfo.x, AxisInfo.y, AxisInfo.z)
+    r = arraytypes.taggedView(a, at)
+    assert_equal(r.shape, (3,4,5))
+    assert_equal(r.axistags, at)
+    assert(r.axistags is not at)
+    r = arraytypes.taggedView(a, 'xyz')
+    assert_equal(r.shape, (3,4,5))
+    assert_equal(r.axistags, at)
  
 def testDeepcopy():
     a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
@@ -1222,6 +1232,11 @@ def testMethods():
     assert_equal(b.axistags[0], a.axistags[1])
     assert_equal(b.axistags[1], a.axistags[0])
     
+    b = a.swapaxes(0, 1, keepTags=True)
+    assert_equal(b.shape, (a.shape[1], a.shape[0]))
+    assert_equal(len(b.axistags), 2)
+    assert_equal(b.axistags, a.axistags)
+    
     rt = r.take([1,2])
     assert (rt == [1,2]).all()
     assert_equal(rt.axistags, arraytypes.AxisTags(1))
@@ -1230,7 +1245,29 @@ def testMethods():
     assert_equal(rt.axistags, rt.axistags)
     
     assert_equal(ones.var(dtype=numpy.longdouble), 0.0)
-    assert (ones.var(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()    
+    assert (ones.var(axis='x', dtype=numpy.longdouble) == [0.0]*a.shape[1]).all()
+    
+    a = arraytypes.Image((5,4,3))
+    b = a.transpose()
+    assert_equal(b.shape, (3,4,5))
+    assert_equal(len(b.axistags), len(a.axistags))
+    assert_equal(b.axistags[0], a.axistags[2])
+    assert_equal(b.axistags[1], a.axistags[1])
+    assert_equal(b.axistags[2], a.axistags[0])
+    b = a.transpose((1,2,0))
+    assert_equal(b.shape, (4,3,5))
+    assert_equal(len(b.axistags), len(a.axistags))
+    assert_equal(b.axistags[0], a.axistags[1])
+    assert_equal(b.axistags[1], a.axistags[2])
+    assert_equal(b.axistags[2], a.axistags[0])
+    b = a.transpose(keepTags=True)
+    assert_equal(b.shape, (3,4,5))
+    assert_equal(len(b.axistags), len(a.axistags))
+    assert_equal(b.axistags, a.axistags)
+    b = a.transpose((1,2,0), keepTags=True)
+    assert_equal(b.shape, (4,3,5))
+    assert_equal(len(b.axistags), len(a.axistags))
+    assert_equal(b.axistags, a.axistags)
     
 def testUfuncs():
     from numpy import bool, int8, uint8, int16, uint16, int32, uint32, int64, uint64
