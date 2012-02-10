@@ -457,6 +457,24 @@ SplineView_coefficientImage(SplineView const & self)
     return res;
 }
 
+template <class SplineView, class Coord>
+NumpyArray<2, Singleband<typename SplineView::value_type> >
+SplineView_remappedImage(
+      SplineView const & self,
+      NumpyArray<2, TinyVector<Coord, 2> > map,
+      NumpyArray<2, Singleband<typename SplineView::value_type> > res)
+{
+    res.reshapeIfEmpty(map.taggedShape().setChannelCount(1),
+      "SplineView.remappedImage(): shape mismatch between map and res.");
+
+    {
+         PyAllowThreads _pythread;
+         std::cerr << "SplineView_remappedImage\n";
+         //remapImage ( self , srcImageRange(map) , destImage(res) ) ;
+    }
+    return res;
+}
+
 template <class SplineView>
 NumpyArray<2, Singleband<typename SplineView::value_type> >
 SplineView_interpolatedImage(SplineView const & self, double xfactor, double yfactor, unsigned int xorder, unsigned int yorder)
@@ -537,12 +555,12 @@ VIGRA_SPLINE_GRADIMAGE(g2y)
 //       accept NumpyArray directly
 template <class SplineView>
 PyObject *
-SplineView_facetCoefficients(SplineView const & self, double x, double y)
+SplineView_facetCoefficientsOld(SplineView const & self, double x, double y)
 {
-    BasicImage<double> coeff;
+    BasicImage<typename SplineView::value_type> coeff;
     self.coefficientArray(x, y, coeff);
     
-    NumpyArray<2, double> res(MultiArrayShape<2>::type(coeff.width(), coeff.height()));
+    NumpyArray<2, typename SplineView::value_type> res(MultiArrayShape<2>::type(coeff.width(), coeff.height()));
     copyImage(srcImageRange(coeff), destImage(res));
     
     python_ptr module(PyImport_ImportModule("numpy"), python_ptr::keep_count);
@@ -553,25 +571,56 @@ SplineView_facetCoefficients(SplineView const & self, double x, double y)
     return PyArray_View(res.pyArray(), 0, (PyTypeObject *)matrix.get());
 }
 
+template <class SplineView>
+NumpyAnyArray
+SplineView_facetCoefficients(SplineView const & self, double x, double y)
+{
+    int size = SplineView::order + 1;
+    NumpyArray<2, typename SplineView::value_type> res(Shape2(size, size));
+    self.coefficientArray(x, y, res);
+    return res;
+}
+
 template <class SplineView, class T>
 SplineView *
-pySplineView(NumpyArray<2, Singleband<T> > const & img)
+pySplineView(NumpyArray<2, T> const & img)
 {
     return new SplineView(srcImageRange(img), 0);
 }
 
 template <class SplineView, class T>
 SplineView *
-pySplineView1(NumpyArray<2, Singleband<T> > const & img, bool skipPrefilter)
+pySplineView1(NumpyArray<2, T> const & img, bool skipPrefilter)
 {
     return new SplineView(srcImageRange(img), skipPrefilter);
 }
+
+template <class T>
+struct BindSplineConstructor;
+
+template <class T>
+struct BindSplineConstructor
+{
+    typedef Singleband<T> type;
+    typedef Singleband<npy_int32> int_type;
+    typedef Singleband<UInt8> byte_type;
+};
+
+template <class T, int N>
+struct BindSplineConstructor<TinyVector<T, N> >
+{
+    typedef TinyVector<T, N> type;
+    typedef TinyVector<npy_int32, N> int_type;
+    typedef TinyVector<UInt8, N> byte_type;
+};
 
 template <class SplineView>
 python::class_<SplineView> &
 defSplineView(char const * name)
 {
     using namespace python;
+
+    typedef typename SplineView::value_type T;
     
     docstring_options doc_options(true, true, false);
     
@@ -583,17 +632,17 @@ defSplineView(char const * name)
 
     static python::class_<SplineView> theclass(name, python::no_init);
     theclass
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, UInt8>)),
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, typename BindSplineConstructor<T>::byte_type>)),
              "Construct a SplineImageView for the given image::\n\n"
              "    SplineImageView(image, skipPrefilter = False)\n\n"
              "Currently, 'image' can have dtype numpy.uint8, numpy.int32, and numpy.float32. "
              "If 'skipPrefilter' is True, image values are directly used as spline "
              "coefficients, so that the view performs approximation rather than interploation.\n\n")
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, npy_int32>)))
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, float>)))
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, UInt8>)))
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, npy_int32>)))
-        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, float>)))
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, typename BindSplineConstructor<T>::int_type>)))
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView<SplineView, typename BindSplineConstructor<T>::type>)))
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, typename BindSplineConstructor<T>::byte_type>)))
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, typename BindSplineConstructor<T>::int_type>)))
+        .def("__init__", python::make_constructor(registerConverters(&pySplineView1<SplineView, typename BindSplineConstructor<T>::type>)))
         .def("size", &SplineView::shape)
         .def("shape", &SplineView::shape, "The shape of the underlying image.\n\n")
         .def("width", &SplineView::width, "The width of the underlying image.\n\n")
@@ -705,6 +754,7 @@ defSplineView(char const * name)
              "SplineImageView.g2yImage(2.0, 2.0) -> image\n\n"
              "creates an derivative image with two-fold oversampling in both directions.\n\n")
         .def("coefficientImage", &SplineView_coefficientImage<SplineView>)
+        .def("remappedImage", &SplineView_remappedImage<SplineView, float>, (arg("map"), arg("out") = object()))
         .def("interpolatedImage", &SplineView_interpolatedImage<SplineView>,
              (arg("xfactor") = 2.0, arg("yfactor") = 2.0, arg("xorder")=0, arg("yorder")=0),
              "Return an interpolated image or derivative image with the given sampling factors "
@@ -904,6 +954,7 @@ void defineSampling()
     defSplineView<SplineImageView<4, float> >("SplineImageView4");
     defSplineView<SplineImageView<5, float> >("SplineImageView5");
 
+    defSplineView<SplineImageView<3, TinyVector<float, 3> > >("SplineImageView3V3");
 }
 
 } // namespace vigra

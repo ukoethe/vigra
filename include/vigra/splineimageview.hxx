@@ -402,7 +402,7 @@ class SplineImageView
     }
 
         /** Get the array of polynomial coefficients for the facet containing
-            the point <tt>(x, y)</tt>. The array <tt>res</tt> will be resized to
+            the point <tt>(x, y)</tt>. The array <tt>res</tt> must have
             dimension <tt>(ORDER+1)x(ORDER+1)</tt>. From these coefficients, the
             value of the interpolated function can be calculated by the following
             algorithm
@@ -661,27 +661,27 @@ template <class Array>
 void
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
 {
+    typedef typename Array::value_type ResType;
     typename Spline::WeightMatrix & weights = Spline::weights();
-    double tmp[ksize_][ksize_];
+    ResType tmp[ksize_][ksize_];
 
     calculateIndices(x, y);
     for(int j=0; j<ksize_; ++j)
     {
         for(int i=0; i<ksize_; ++i)
         {
-            tmp[i][j] = 0.0;
+            tmp[i][j] = ResType();
             for(int k=0; k<ksize_; ++k)
             {
                 tmp[i][j] += weights[i][k]*image_(ix_[k], iy_[j]);
             }
        }
     }
-    res.resize(ksize_, ksize_);
     for(int j=0; j<ksize_; ++j)
     {
         for(int i=0; i<ksize_; ++i)
         {
-            res(i,j) = 0.0;
+            res(i,j) = ResType();
             for(int k=0; k<ksize_; ++k)
             {
                 res(i,j) += weights[j][k]*tmp[i][k];
@@ -957,7 +957,6 @@ class SplineImageView0Base
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const
     {
-        res.resize(1, 1);
         res(0, 0) = operator()(x,y);
     }
 
@@ -1568,7 +1567,6 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::coefficientArray(double 
 {
     int ix, iy, ix1, iy1;
     calculateIndices(x, y, ix, iy, ix1, iy1);
-    res.resize(2, 2);
     res(0,0) = internalIndexer_(ix,iy);
     res(1,0) = internalIndexer_(ix1,iy) - internalIndexer_(ix,iy);
     res(0,1) = internalIndexer_(ix,iy1) - internalIndexer_(ix,iy);

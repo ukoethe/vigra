@@ -1308,7 +1308,7 @@ struct SplineImageViewTest
         double dx = (N % 2) ? x - VIGRA_CSTD::floor(x) : x - VIGRA_CSTD::floor(x + 0.5),
                dy = (N % 2) ? y - VIGRA_CSTD::floor(y) : y - VIGRA_CSTD::floor(y + 0.5);
 
-        Image coefficients;
+        Image coefficients(N+1, N+1);
         SplineImageView<N, double> view(srcImageRange(img));
         // use the coefficients from a different point in the same facet -- should be the same!
         view.coefficientArray(x-0.1, y-0.1, coefficients);
