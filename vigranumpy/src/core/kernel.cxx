@@ -36,6 +36,7 @@
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfilters_PyArray_API
 #define NO_IMPORT_ARRAY
 
+#include <vigra/config.hxx>
 #include <Python.h>
 #include <iostream>
 #include <boost/python.hpp>

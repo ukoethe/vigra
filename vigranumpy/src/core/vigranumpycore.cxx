@@ -35,6 +35,7 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 
+#include <vigra/config.hxx>
 #include <Python.h>
 #include <iostream>
 #include <boost/python.hpp>

@@ -34,6 +34,7 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpytest_PyArray_API
+#include <vigra/config.hxx>
 #include <Python.h>
 #include <boost/python.hpp>
 #include <boost/python/signature.hpp>
