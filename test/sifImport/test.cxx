@@ -138,14 +138,21 @@ public:
         should (infoSIF.stacksize() == 3);
         should (infoSIF.width() == 4);
         should (infoSIF.height() == 5);
-        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), 1));
+        MultiArray<3,float> in_data_block(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), 1));
 
-        // compare
+        // import whole volume to MultiArray
+        MultiArray<3,float> in_data_volume(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+        readSIF(infoSIF, in_data_volume);
+
+        // compare with readBlock() function
         for (int i=0; i<infoSIF.stacksize(); ++i) {
-            readSIFBlock(infoSIF, Shape3(0,0,i), Shape3(4,5,1), in_data); // read one frame at a time
+            readSIFBlock(infoSIF, Shape3(0,0,i), Shape3(4,5,1), in_data_block); // read one frame at a time
+            should (in_data_block == in_data_volume.subarray(Shape3(0,0,i), Shape3(4,5,i+1)));
+
+            // additional check: compare values explicitly
             for (int xx=0; xx<infoSIF.width(); ++xx) {
                 for(int yy=0; yy<infoSIF.height(); ++yy) {
-                    should ( in_data(xx,yy) = (float)(xx | (yy<<4) | ((i+1)<<8)) );
+                    should ( in_data_block(xx,infoSIF.height()-1-yy) == (float)(xx | (yy<<4) | ((i+1)<<8)) );
                 }
             }
         }
