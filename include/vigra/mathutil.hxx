@@ -155,6 +155,28 @@ VIGRA_DEFINE_MISSING_ABS(signed long long)
 
 #undef VIGRA_DEFINE_MISSING_ABS
 
+// scalar dot is needed for generic functions that should work with
+// scalars and vectors alike
+
+#define VIGRA_DEFINE_SCALAR_DOT(T) \
+    inline NumericTraits<T>::Promote dot(T l, T r) { return l*r; }
+
+VIGRA_DEFINE_SCALAR_DOT(unsigned char)
+VIGRA_DEFINE_SCALAR_DOT(unsigned short)
+VIGRA_DEFINE_SCALAR_DOT(unsigned int)
+VIGRA_DEFINE_SCALAR_DOT(unsigned long)
+VIGRA_DEFINE_SCALAR_DOT(unsigned long long)
+VIGRA_DEFINE_SCALAR_DOT(signed char)
+VIGRA_DEFINE_SCALAR_DOT(signed short)
+VIGRA_DEFINE_SCALAR_DOT(signed int)
+VIGRA_DEFINE_SCALAR_DOT(signed long)
+VIGRA_DEFINE_SCALAR_DOT(signed long long)
+VIGRA_DEFINE_SCALAR_DOT(float)
+VIGRA_DEFINE_SCALAR_DOT(double)
+VIGRA_DEFINE_SCALAR_DOT(long double)
+
+#undef VIGRA_DEFINE_SCALAR_DOT
+
     /*! The rounding function.
 
         Defined for all floating point types. Rounds towards the nearest integer 
