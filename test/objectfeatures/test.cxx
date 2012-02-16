@@ -3,28 +3,31 @@
 #include <map>
 #include <set>
 
-#include "unittest.hxx"
+#include <unittest.hxx>
 
-#include "vigra/accessor.hxx"
-#include "vigra/tinyvector.hxx"
-#include "vigra/rgbvalue.hxx"
+#include <vigra/accessor.hxx>
+#include <vigra/tinyvector.hxx>
+#include <vigra/rgbvalue.hxx>
 
-#include "vigra/coordinate_iterator.hxx"
-#include "vigra/object_features.hxx"
+#include <vigra/coordinate_iterator.hxx>
+#include <vigra/object_features.hxx>
 
-#include "vigra/multi_pointoperators.hxx"
+#include <vigra/multi_pointoperators.hxx>
 
-#include "vigra/basicimage.hxx"
-#include "vigra/stdimage.hxx" // BImage
-#include "vigra/inspectimage.hxx" // FindAverageAndVariance
+#include <vigra/basicimage.hxx>
+#include <vigra/stdimage.hxx> // BImage
+#include <vigra/inspectimage.hxx> // FindAverageAndVariance
 
-#include "vigra/multi_array.hxx"
-#include "vigra/multi_convolution.hxx"
-#include "vigra/impex.hxx"
-#include "vigra/imageinfo.hxx"
-#include "vigra/functorexpression.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/multi_convolution.hxx>
+#include <vigra/impex.hxx>
+#include <vigra/imageinfo.hxx>
+#include <vigra/functorexpression.hxx>
 
-#include "vigra/algorithm.hxx"
+#include <vigra/algorithm.hxx>
+#include <vigra/histogram.hxx>
+#include <vigra/random.hxx>
+#include <vigra/convolution.hxx>
 
 using namespace vigra;
 
@@ -1623,10 +1626,114 @@ struct ObjectFeaturesTest1
     void run6() { test6(); }
 };
 
-struct ObjectFeaturesTestSuite : public vigra::test_suite
+struct HistogramTest
 {
-    ObjectFeaturesTestSuite()
-        : vigra::test_suite("ObjectFeaturesTestSuite")
+    ArrayVector<double> data;
+    
+    HistogramTest()
+    {
+        double d[] = { 
+            5.73,  5.45,  0.05,  8.52,  9.04,  4.29,  4.68,  9.65,  5.71,
+            6.11,  1.98,  9.13,  0.78,  6.82,  0.41,  9.77,  7.33,  2.89,
+            3.27,  4.85,  5.01,  1.86,  0.2 ,  0.62,  0.91,  5.19,  4.7 ,
+            5.63,  0.2 ,  1.78,  8.27,  4.3 ,  7.46,  1.12,  8.09,  8.67,
+            9.7 ,  2.94,  8.71,  2.07,  0.57,  6.71,  3.21,  8.23,  4.72,
+            5.49,  8.  ,  8.86,  8.59,  2.97,  7.65,  6.46,  4.13,  3.64,
+            8.74,  0.24,  9.55,  2.83,  1.69,  0.7 ,  2.27,  7.8 ,  3.04,
+            6.84,  1.15,  4.29,  6.5 ,  8.76,  8.17,  4.7 ,  7.76,  9.54,
+            4.58,  4.73,  2.37,  5.24,  1.23,  7.33,  4.54,  3.72,  2.41,
+            3.24,  6.05,  5.25,  7.09,  0.26,  8.8 ,  8.47,  2.39,  8.35,
+            5.57,  2.45,  4.83,  1.41,  1.46,  4.6 ,  3.34,  8.66,  3.5 ,  1.33
+        };
+       
+        data.insert(data.begin(), d, d + sizeof(d) / sizeof(double));
+    }
+    
+    void testHistogram()
+    {
+        const int binCount = 10;
+		Histogram<double, int> hist(0.0, 10.0, binCount);
+        for(unsigned int k=0; k < data.size(); ++k)
+            hist.add(data[k]);
+        
+		int ref[binCount] = { 11, 10, 10,  8, 14, 10,  7,  7, 16,  7 };
+		shouldEqualSequence(ref, ref + binCount, hist.data_.begin());
+
+		hist.reset();
+		shouldEqual(hist.data_, ArrayVector<double>(binCount));
+		
+		MultiArray<2, double> m(Shape2(1, binCount));
+		HistogramView<double, double> hv(0.0, 10.0, binCount, &m(0), m.stride(1));
+
+        for(unsigned int k=0; k < data.size(); ++k)
+            hv.add(data[k]);
+        
+		shouldEqualSequence(ref, ref + binCount, &m(0));
+    }
+    
+    void testKernelHistogram()
+    {
+        TrapezoidKernel<double> kernel;
+        double kernelRef[] = { 
+            0.0, 0.0625, 0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375,
+            0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,
+            0.4375, 0.375, 0.3125, 0.25, 0.1875, 0.125, 0.0625, 0.0 };
+            
+        int c = 0;
+        for(double k = -kernel.radius(); k <= kernel.radius(); k+=0.125, ++c)
+            shouldEqual(kernel[k], kernelRef[c]);
+ 
+        const int binCount = 10;
+		ArrayVector<double> hdata(binCount);
+		KernelHistogramView<double, TrapezoidKernel<double> > hist(0.0, 10.0, binCount, &hdata[0]);
+
+        hist.add(2.4);
+        hist.add(1.8);
+        
+        //hist.add(6.3);
+        hist.add(6.8);
+        
+        std::cerr << hdata << "\n";
+        
+        ArrayVector<std::pair<double, double> > modes;
+        hist.findModes(&modes);
+        std::cerr << modes << ", highest: " << hist.findMode() << "\n";
+    }
+    
+    void testChannelSmoothing()
+    {
+        ImageImportInfo info("../impex/lenna.xv");
+        MultiArray<2, UInt8> in(Shape2(info.width(), info.height())), out(in.shape());
+        importImage(info, destImage(in));
+        
+        MultiArray<2, TinyVector<float, 20> > hdata(in.shape());
+        KernelHistogramView<UInt8, TrapezoidKernel<float> > hist(0, 255, 20);
+        
+        MersenneTwister rand;
+        for(int k=0; k<in.size(); ++k)
+        {
+            if(rand.uniform() < 0.9)
+                continue;
+            hist.setData(hdata[k].begin());
+            hist.add(in[k]);
+        }
+        
+        gaussianSmoothing(srcImageRange(hdata), destImage(hdata), 2.0);
+        
+        for(int k=0; k<in.size(); ++k)
+        {
+            hist.setData(hdata[k].begin());
+            out[k] = hist.findMode();
+        }
+        
+        exportImage(srcImageRange(out), ImageExportInfo("res.png"));
+    }
+};
+
+struct FeaturesTestSuite : public vigra::test_suite
+{
+    FeaturesTestSuite()
+        : vigra::test_suite("FeaturesTestSuite")
     {
         add(testCase(&ObjectFeaturesTest1::run1));
         add(testCase(&ObjectFeaturesTest1::run2));
@@ -1634,13 +1741,17 @@ struct ObjectFeaturesTestSuite : public vigra::test_suite
         add(testCase(&ObjectFeaturesTest1::run4));
         add(testCase(&ObjectFeaturesTest1::run5));
         add(testCase(&ObjectFeaturesTest1::run6));
+        
+        add(testCase(&HistogramTest::testHistogram));
+        add(testCase(&HistogramTest::testKernelHistogram));
+        add(testCase(&HistogramTest::testChannelSmoothing));
     }
 };
 
 
 int main(int argc, char** argv)
 {
-    ObjectFeaturesTestSuite test;
+    FeaturesTestSuite test;
     const int failed = test.run(vigra::testsToBeExecuted(argc, argv));
     std::cout << test.report() << std::endl;
 
