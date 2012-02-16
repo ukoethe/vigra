@@ -89,6 +89,17 @@ std::string & operator<<(std::string & s, T const & t)
 
 } // namespace vigra
 
+namespace std {
+
+template <class T1, class T2>
+ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
+{
+    s << "(" << p.first << ", " << p.second << ")";
+    return s;
+}
+
+}
+
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.
 
