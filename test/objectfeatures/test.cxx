@@ -28,6 +28,7 @@
 #include <vigra/histogram.hxx>
 #include <vigra/random.hxx>
 #include <vigra/convolution.hxx>
+#include <vigra/accumulator.hxx>
 
 using namespace vigra;
 
@@ -36,6 +37,7 @@ using namespace vigra;
 #pragma warning( disable : 4503 )
 #endif
 
+#if 0
 template <class X, unsigned N>
 TinyVector<X, N> & tab_assign(TinyVector<X, N> & x, const X y[N])
 {
@@ -1748,6 +1750,85 @@ struct FeaturesTestSuite : public vigra::test_suite
     }
 };
 
+#endif
+
+struct AccumulatorTest
+{
+    AccumulatorTest()
+    {}
+    
+    void test1()
+    {
+        using namespace vigra::acc1;
+        
+        typedef Select<int, float>::type Selected;
+        
+        std::cerr << "bool: " << Contains<Selected, bool>::type::value << "\n";
+        std::cerr << "int: " << Contains<Selected, int>::type::value << "\n";
+        std::cerr << "float: " << Contains<Selected, float>::type::value << "\n";
+        std::cerr << "double: " << Contains<Selected, double>::type::value << "\n";
+
+		typedef AccumulatorList<double, Selected> Selected1;
+        
+        std::cerr << "bool: " << Contains<Selected1, bool>::type::value << "\n";
+        std::cerr << "int: " << Contains<Selected1, int>::type::value << "\n";
+        std::cerr << "float: " << Contains<Selected1, float>::type::value << "\n";
+        std::cerr << "double: " << Contains<Selected1, double>::type::value << "\n";
+    }
+    
+    void test2()
+    {
+        using namespace vigra::acc1;
+        
+        Accumulator<double, Select<Count> > a;
+
+		a(1.0);
+        a(2.0);
+        a(3.0);
+
+        std::cerr << "count(a): " << get<Count>(a) << "\n";
+
+        try 
+        {
+            get<Mean>(a);
+            failTest("get<Mean>() failed to throw exception");
+        }
+        catch(ContractViolation &) {}
+
+		Accumulator<double, Select<StdDev, Minimum> > b;
+        
+        b(1.0);
+        b(2.0);
+        b(3.0);
+        
+        std::cerr << "count(b): " << get<Count>(b) << "\n";
+        std::cerr << "min(b): " << get<Minimum>(b) << "\n";
+        std::cerr << "sum(b): " << get<Sum>(b) << "\n";
+        std::cerr << "mean(b): " << get<Mean>(b) << "\n";
+        std::cerr << "variance(b): " << get<Variance>(b) << "\n";
+        std::cerr << "stddev(b): " << get<StdDev>(b) << "\n";
+
+		Accumulator<double, SortedAccumulators> c;
+		activate<Count>(c);
+
+        c.dynamic(1.0);
+        c.dynamic(2.0);
+        c.dynamic(3.0);
+        
+        std::cerr << "count(c): " << get<Count>(c) << "\n";
+        std::cerr << "min(c): " << get<Minimum>(c) << "\n";
+	}
+};
+
+struct FeaturesTestSuite : public vigra::test_suite
+{
+    FeaturesTestSuite()
+        : vigra::test_suite("FeaturesTestSuite")
+    {
+//        add(testCase(&AccumulatorTest::test1));
+        add(testCase(&AccumulatorTest::test2));
+    }
+};
 
 int main(int argc, char** argv)
 {
