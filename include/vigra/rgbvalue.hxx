@@ -932,10 +932,9 @@ RGBValue<V, RIDX, GIDX, BIDX>
 min(RGBValue<V, RIDX, GIDX, BIDX> const & l,
     RGBValue<V, RIDX, GIDX, BIDX> const & r)
 {
+    typedef typename detail::LoopType<3>::type ltype;
     RGBValue<V, RIDX, GIDX, BIDX> res(l);
-    for(int k=0; k<3; ++k)
-        if(r[k] < res[k])
-            res[k] = r[k];
+    ltype::min(res.begin(), r.begin());
     return res;
 }
 
@@ -945,10 +944,9 @@ RGBValue<V, RIDX, GIDX, BIDX>
 max(RGBValue<V, RIDX, GIDX, BIDX> const & l,
     RGBValue<V, RIDX, GIDX, BIDX> const & r)
 {
+    typedef typename detail::LoopType<3>::type ltype;
     RGBValue<V, RIDX, GIDX, BIDX> res(l);
-    for(int k=0; k<3; ++k)
-        if(res[k] < r[k])
-            res[k] = r[k];
+    ltype::max(res.begin(), r.begin());
     return res;
 }
 

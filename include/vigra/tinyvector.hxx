@@ -90,6 +90,15 @@ namespace detail {
             (left[i]) OPER (right[i]);  \
     }
 
+#define VIGRA_EXEC_LOOP_MINMAX(NAME, OPER) \
+    template <class T1, class T2>  \
+    static void NAME(T1 * left, T2 const * right)  \
+    {  \
+        for(int i=0; i<LEVEL; ++i)  \
+            if(left[i] OPER right[i]) \
+                left[i] = right[i];  \
+    }
+
 #define VIGRA_EXEC_LOOP_SCALAR(NAME, OPER) \
     template <class T1, class T2>  \
     static void NAME(T1 * left, T2 right)  \
@@ -136,6 +145,9 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
     VIGRA_EXEC_LOOP_SCALAR(divScalar, /)
+    
+    VIGRA_EXEC_LOOP_MINMAX(min, >)
+    VIGRA_EXEC_LOOP_MINMAX(max, <)
 
     template <class T>
     static T const & minimum(T const * p)
@@ -294,6 +306,7 @@ struct UnrollScalarResult<1>
 };
 
 #undef VIGRA_EXEC_LOOP
+#undef VIGRA_EXEC_LOOP_MINMAX
 #undef VIGRA_EXEC_LOOP_SCALAR
 
 #define VIGRA_UNROLL_LOOP(NAME, OPER) \
@@ -301,6 +314,15 @@ struct UnrollScalarResult<1>
     static void NAME(T1 * left, T2 const * right)  \
     {  \
         (*left) OPER (*right);  \
+        UnrollLoop<LEVEL-1>::NAME(left+1, right+1); \
+    }
+
+#define VIGRA_UNROLL_LOOP_MINMAX(NAME, OPER) \
+    template <class T1, class T2>  \
+    static void NAME(T1 * left, T2 const * right)  \
+    {  \
+        if(*left OPER *right) \
+            *left = *right;  \
         UnrollLoop<LEVEL-1>::NAME(left+1, right+1); \
     }
 
@@ -351,6 +373,9 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
     VIGRA_UNROLL_LOOP_SCALAR(divScalar, /)
+    
+    VIGRA_UNROLL_LOOP_MINMAX(min, >)
+    VIGRA_UNROLL_LOOP_MINMAX(max, <)
 
     template <class T>
     static T const & minimum(T const * p)
@@ -403,6 +428,7 @@ struct UnrollLoop
 };
 
 #undef VIGRA_UNROLL_LOOP
+#undef VIGRA_UNROLL_LOOP_MINMAX
 #undef VIGRA_UNROLL_LOOP_SCALAR
 
 template <>
@@ -446,6 +472,10 @@ struct UnrollLoop<0>
     static bool notEqual(T1, T2) { return false; }
     template <class T1, class T2>
     static bool less(T1, T2) { return false; }
+    template <class T1, class T2>
+    static void min(T1, T2) {}
+    template <class T1, class T2>
+    static void max(T1, T2) {}
     template <class T>
     static T minimum(T const * p)
     {
@@ -1664,10 +1694,9 @@ TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
 min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(r[k] < res[k])
-            res[k] = r[k];
+    ltype::min(res.begin(), r.begin());
     return res;
 }
 
@@ -1678,10 +1707,9 @@ TinyVector<V1, SIZE>
 min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V1, SIZE, D1, D2> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(r[k] < res[k])
-            res[k] = r[k];
+    ltype::min(res.begin(), r.begin());
     return res;
 }
 
@@ -1691,10 +1719,9 @@ TinyVector<V1, SIZE>
 min(TinyVector<V1, SIZE> const & l,
     TinyVector<V1, SIZE> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(r[k] < res[k])
-            res[k] = r[k];
+    ltype::min(res.begin(), r.begin());
     return res;
 }
 
@@ -1716,10 +1743,9 @@ TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE>
 max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(res[k] < r[k])
-            res[k] = r[k];
+    ltype::max(res.begin(), r.begin());
     return res;
 }
 
@@ -1730,10 +1756,9 @@ TinyVector<V1, SIZE>
 max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V1, SIZE, D1, D2> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(res[k] < r[k])
-            res[k] = r[k];
+    ltype::max(res.begin(), r.begin());
     return res;
 }
 
@@ -1743,10 +1768,9 @@ TinyVector<V1, SIZE>
 max(TinyVector<V1, SIZE> const & l,
     TinyVector<V1, SIZE> const & r)
 {
+    typedef typename detail::LoopType<SIZE>::type ltype;
     TinyVector<V1, SIZE> res(l);
-    for(int k=0; k<SIZE; ++k)
-        if(res[k] < r[k])
-            res[k] = r[k];
+    ltype::max(res.begin(), r.begin());
     return res;
 }
 
