@@ -1655,6 +1655,8 @@ cumprod(TinyVectorBase<V, SIZE, D1, D2> const & l)
     return res;
 }
 
+using std::min;
+
     /// element-wise minimum
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
@@ -1663,6 +1665,33 @@ min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(r[k] < res[k])
+            res[k] = r[k];
+    return res;
+}
+
+// we also have to overload min for like-typed argument to prevent match of std::min()
+template <class V1, int SIZE, class D1, class D2>
+inline
+TinyVector<V1, SIZE>
+min(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V1, SIZE, D1, D2> const & r)
+{
+    TinyVector<V1, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(r[k] < res[k])
+            res[k] = r[k];
+    return res;
+}
+
+template <class V1, int SIZE>
+inline
+TinyVector<V1, SIZE>
+min(TinyVector<V1, SIZE> const & l,
+    TinyVector<V1, SIZE> const & r)
+{
+    TinyVector<V1, SIZE> res(l);
     for(int k=0; k<SIZE; ++k)
         if(r[k] < res[k])
             res[k] = r[k];
@@ -1678,6 +1707,8 @@ min(TinyVectorBase<V, SIZE, D1, D2> const & l)
     return l.minimum();
 }
 
+using std::max;
+
     /// element-wise maximum
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline
@@ -1686,6 +1717,33 @@ max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     TinyVector<typename PromoteTraits<V1, V2>::Promote, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(res[k] < r[k])
+            res[k] = r[k];
+    return res;
+}
+
+// we also have to overload max for like-typed argument to prevent match of std::max()
+template <class V1, int SIZE, class D1, class D2>
+inline
+TinyVector<V1, SIZE>
+max(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+    TinyVectorBase<V1, SIZE, D1, D2> const & r)
+{
+    TinyVector<V1, SIZE> res(l);
+    for(int k=0; k<SIZE; ++k)
+        if(res[k] < r[k])
+            res[k] = r[k];
+    return res;
+}
+
+template <class V1, int SIZE>
+inline
+TinyVector<V1, SIZE>
+max(TinyVector<V1, SIZE> const & l,
+    TinyVector<V1, SIZE> const & r)
+{
+    TinyVector<V1, SIZE> res(l);
     for(int k=0; k<SIZE; ++k)
         if(res[k] < r[k])
             res[k] = r[k];

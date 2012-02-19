@@ -925,6 +925,34 @@ floor(RGBValue<V, RIDX, GIDX, BIDX> const & r)
                                          floor(r.blue()));
 }
 
+// overload min and max to avoid that std:min() and std::max() match
+template <class V, unsigned int RIDX, unsigned int GIDX, unsigned int BIDX>
+inline
+RGBValue<V, RIDX, GIDX, BIDX>
+min(RGBValue<V, RIDX, GIDX, BIDX> const & l,
+    RGBValue<V, RIDX, GIDX, BIDX> const & r)
+{
+    RGBValue<V, RIDX, GIDX, BIDX> res(l);
+    for(int k=0; k<3; ++k)
+        if(r[k] < res[k])
+            res[k] = r[k];
+    return res;
+}
+
+template <class V, unsigned int RIDX, unsigned int GIDX, unsigned int BIDX>
+inline
+RGBValue<V, RIDX, GIDX, BIDX>
+max(RGBValue<V, RIDX, GIDX, BIDX> const & l,
+    RGBValue<V, RIDX, GIDX, BIDX> const & r)
+{
+    RGBValue<V, RIDX, GIDX, BIDX> res(l);
+    for(int k=0; k<3; ++k)
+        if(res[k] < r[k])
+            res[k] = r[k];
+    return res;
+}
+
+
 //@}
 
 /********************************************************/
