@@ -1759,7 +1759,8 @@ struct AccumulatorTest
     
     void test1()
     {
-        using namespace vigra::acc1;
+#if 0
+		using namespace vigra::acc1;
         
         typedef Select<int, float>::type Selected;
         
@@ -1774,12 +1775,33 @@ struct AccumulatorTest
         std::cerr << "int: " << Contains<Selected1, int>::type::value << "\n";
         std::cerr << "float: " << Contains<Selected1, float>::type::value << "\n";
         std::cerr << "double: " << Contains<Selected1, double>::type::value << "\n";
-    }
+#endif
+	}
     
     void test2()
     {
         using namespace vigra::acc1;
         
+#if 0
+		typedef AccumulatorNew<double, Select<Mean> > A;
+/*
+		std::cerr << "list: " << typeid(A::Accumulators).name() << "\n";
+		std::cerr << "head: " << typeid(A::Head).name() << "\n";
+		std::cerr << "tail: " << typeid(A::Tail).name() << "\n";
+		std::cerr << "tail::head: " << typeid(A::Tail::Head).name() << "\n";
+		std::cerr << "tail::tail: " << typeid(A::Tail::Tail).name() << "\n";
+		std::cerr << "accu: " << typeid(A::Base).name() << "\n";
+*/
+		typedef AccumulatorNew<double, Select<Mean> > AA;
+		std::cerr << "list: " << typeid(AA::Accumulators).name() << "\n";
+		std::cerr << "compose: " << typeid(AA::compose).name() << "\n";
+		std::cerr << "compose-base: " << typeid(AA::compose::BaseType).name() << "\n";
+		std::cerr << "compose: " << typeid(AA::BaseType).name() << "\n";
+		std::cerr << "accu: " << typeid(AA).name() << "\n";
+/*
+		std::cerr << "accu: " << typeid(AA::Base).name() << "\n";
+*/
+#endif
         Accumulator<double, Select<Count> > a;
 
 		a(1.0);
@@ -1808,15 +1830,20 @@ struct AccumulatorTest
         std::cerr << "variance(b): " << get<Variance>(b) << "\n";
         std::cerr << "stddev(b): " << get<StdDev>(b) << "\n";
 
-		Accumulator<double, SortedAccumulators> c;
+		DynamicAccumulator<double, Select<Mean> > c;
 		activate<Count>(c);
 
-        c.dynamic(1.0);
-        c.dynamic(2.0);
-        c.dynamic(3.0);
+        c(1.0);
+        c(2.0);
+        c(3.0);
         
         std::cerr << "count(c): " << get<Count>(c) << "\n";
-        std::cerr << "min(c): " << get<Minimum>(c) << "\n";
+        try 
+        {
+            get<Mean>(c);
+            failTest("get<Mean>() failed to throw exception");
+        }
+        catch(ContractViolation &) {}
 	}
 };
 

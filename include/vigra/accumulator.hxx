@@ -67,19 +67,19 @@ struct Contains<void, T>
 };
 
 template <class A, class Tail=void>
-struct Cons
+struct Push
 {
     typedef AccumulatorList<A, typename Tail::type> type;
 };
 
 template <class A>
-struct Cons<A, void>
+struct Push<A, void>
 {
     typedef AccumulatorList<A, void> type;
 };
 
 template <>
-struct Cons<void, void>
+struct Push<void, void>
 {
     typedef void type;
 };
@@ -91,7 +91,8 @@ template <class Head, class Tail, class List>
 struct Merge<AccumulatorList<Head, Tail>, List>
 {
     typedef typename Merge<Tail, List>::type Rest;
-    typedef AccumulatorList<Head, Rest> type;
+    typedef typename Contains<Rest, Head>::type HeadAlreadyInList;
+    typedef typename If<HeadAlreadyInList, Rest, AccumulatorList<Head, Rest> >::type type;
 };
 
 template <class List>
@@ -100,81 +101,273 @@ struct Merge<void, List>
     typedef List type;
 };
 
-template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
-          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
-          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
-struct Select
+template <class List>
+struct PushDependencies;
+
+template <class HEAD, class TAIL>
+struct PushDependencies<AccumulatorList<HEAD, TAIL> >
 {
-    typedef typename Cons<T01, Cons<T02, Cons<T03, Cons<T04, Cons<T05,
-                     Cons<T06, Cons<T07, Cons<T08, Cons<T09, Cons<T10,
-                     Cons<T11, Cons<T12, Cons<T13, Cons<T14, Cons<T15,
-                     Cons<T16, Cons<T17, Cons<T18, Cons<T19, Cons<T20
-                     > > > > > > > > > > > > > > > > > > > >::type type;
+    typedef typename PushDependencies<TAIL>::type TailWithDependencies;
+    typedef typename HEAD::Dependencies Dependencies; // must be of type Select<...>
+    typedef typename PushDependencies<typename Dependencies::type>::type HeadDependencies;
+    typedef AccumulatorList<HEAD, HeadDependencies> HeadWithDependencies;
+    typedef typename Merge<HeadWithDependencies, TailWithDependencies>::type type;
+    typedef typename type::Head Head;
+    typedef typename type::Tail Tail;
 };
 
-struct Nothing;
-
-template <class Tag, class AccuList>
-struct FindTag
+template <>
+struct PushDependencies<void>
 {
-    typedef typename IsSameType<Tag, typename AccuList::Tag>::type Found;
-    typedef typename If<Found, AccuList, typename FindTag<Tag, typename AccuList::BaseType>::type>::type type;
+    typedef void type;
+    typedef void Head;
+    typedef void Tail;
 };
 
-template <class Tag>
-struct FindTag<Tag, Nothing>
+struct AccumulatorBase 
 {
-    typedef VigraFalseType type;
-};
-
-template <class TAG, class AccuList>
-double get(AccuList const & a);
-
-template <class TAG, class AccuList>
-void activate(AccuList & a);
-
-struct Nothing 
-{
-	typedef Nothing Tag;
+	typedef AccumulatorBase Tag;
 
     template <class T>
 	void operator()(T const &)
     {}
     
     template <class T>
-	void dynamic(T const &)
-    {}
-    
-    template <class T>
     void operator()(T const &, double)
     {}
     
-    template <class T, class AccuList, class Selection>
-    struct Compose
+    double operator()() const
     {
-        typedef Nothing type;
-    };
+        vigra_precondition(false,
+            std::string("get(accumulator): attempt to access statistic '") << typeid(Tag).name() << "'.");
+        
+        return 0.0;
+    }
+    
+    void activate()
+    {}
 };
 
-#define VIGRA_COMPOSE_ACCUMULATOR(name) \
-template <class T, class AccuList, class Selection> \
-struct Compose \
-{ \
-    typedef typename Contains<Selection, name>::type SelectThis; \
-    typedef typename AccuList::Head NextType; \
-    typedef typename If<SelectThis, \
-	          typename Merge<Dependencies::type, Selection>::type, Selection>::type NewSelection; \
-    typedef typename NextType::template Compose<T, typename AccuList::Tail, NewSelection>::type BaseType; \
-    typedef typename If<SelectThis, Impl<T, BaseType>, BaseType>::type type; \
-}; \
- \
-template <class T, class Selection> \
-struct Compose<T, void, Selection> \
-{ \
-    typedef typename Contains<Selection, name>::type SelectThis; \
-    typedef typename If<SelectThis, Impl<T, Nothing>, Nothing>::type type; \
+template <class Tag, class Accumulator>
+struct LookupTag
+{
+    typedef typename IsSameType<Tag, typename Accumulator::Tag>::type Found;
+    typedef typename If<Found, Accumulator, typename LookupTag<Tag, typename Accumulator::BaseType>::type>::type type;
 };
+
+template <class Tag>
+struct LookupTag<Tag, AccumulatorBase>
+{
+    typedef AccumulatorBase type;
+};
+
+template <class Tag, class Accumulator>
+typename LookupTag<Tag, Accumulator>::type &
+cast(Accumulator & a)
+{
+    return static_cast<typename LookupTag<Tag, Accumulator>::type &>(a);
+}
+
+template <class Tag, class Accumulator>
+typename LookupTag<Tag, Accumulator>::type const &
+cast(Accumulator const & a)
+{
+    return static_cast<typename LookupTag<Tag, Accumulator>::type const &>(a);
+}
+
+template <class Tag, class Accumulator>
+double get(Accumulator const & a)
+{
+    return cast<Tag>(a)();
+}
+
+template <class Tag>
+double get(AccumulatorBase const & a)
+{
+    vigra_precondition(false,
+        std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+    return 0.0;
+}
+
+template <class Tag, class Accumulator>
+void activate(Accumulator & a)
+{
+    cast<Tag>(a).activate();
+}
+
+template <class Dependencies>
+struct ActivateDependencies
+{
+    template <class Accumulator>
+    static void exec(Accumulator & a)
+    {
+        activate<typename Dependencies::Head>(a);
+        ActivateDependencies<typename Dependencies::Tail>::exec(a);
+    }
+};
+
+template <>
+struct ActivateDependencies<void>
+{
+    template <class Accumulator>
+    static void exec(Accumulator & a)
+    {}
+};
+
+template <class T, class TAG, class BaseBase>
+struct DynamicAccumulatorWrapper
+: public TAG::template Impl<T, BaseBase>
+{
+    typedef TAG Tag;
+    typedef typename TAG::template Impl<T, BaseBase> Base;
+    
+    bool is_active_;
+    
+    DynamicAccumulatorWrapper()
+    : is_active_(false)
+    {}
+    
+    void activate()
+    {
+        is_active_ = true;
+        ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
+    }
+    
+	double operator()() const
+    {
+        vigra_precondition(is_active_,
+            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+        return Base::operator()();
+    }
+    
+    template <class T>
+	void operator()(T const & t)
+    {
+        if(is_active_)
+        {
+            Base::operator()(t);
+        }
+        else
+        {
+            BaseBase::operator()(t);
+        }
+    }
+    
+    template <class T>
+    void operator()(T const & t, double weight)
+    {
+        if(is_active_)
+        {
+            Base::operator()(t, weight);
+        }
+        else
+        {
+            BaseBase::operator()(t, weight);
+        }
+    }
+};
+
+template <class T, class Tag, class Accumulators>
+struct Compose
+{
+    typedef typename Compose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
+    typedef typename Tag::template Impl<T, BaseType> type;
+};
+
+template <class T, class Tag> 
+struct Compose<T, Tag, void> 
+{ 
+    typedef AccumulatorBase BaseType;
+    typedef typename Tag::template Impl<T, AccumulatorBase> type; 
+};
+
+template <class T, class Tag, class Accumulators>
+struct DynamicCompose
+{
+    typedef typename DynamicCompose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
+    typedef DynamicAccumulatorWrapper<T, Tag, BaseType> type;
+};
+
+template <class T, class Tag> 
+struct DynamicCompose<T, Tag, void> 
+{ 
+    typedef AccumulatorBase BaseType;
+    typedef DynamicAccumulatorWrapper<T, Tag, AccumulatorBase> type; 
+};
+
+template <class T, class Selected>
+struct Accumulator
+: public Compose<T, typename PushDependencies<typename Selected::type>::Head,
+                    typename PushDependencies<typename Selected::type>::Tail>::type
+{
+    typedef typename PushDependencies<typename Selected::type>::type Accumulators;
+    typedef typename Compose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
+    typedef VigraFalseType Tag;
+        
+    void operator()(T const & t)
+    {
+        BaseType::operator()(t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        BaseType::operator()(t, weight);
+    }
+};
+
+template <class T, class Selected>
+struct DynamicAccumulator
+: public DynamicCompose<T, typename PushDependencies<typename Selected::type>::Head,
+                           typename PushDependencies<typename Selected::type>::Tail>::type
+{
+    typedef typename PushDependencies<typename Selected::type>::type Accumulators;
+    typedef typename DynamicCompose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
+    typedef VigraFalseType Tag;
+        
+    void operator()(T const & t)
+    {
+        BaseType::operator()(t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        BaseType::operator()(t, weight);
+    }
+};
+
+template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
+          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
+          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+struct Select
+{
+    typedef typename Push<T19, T20>::type L19;
+    typedef typename Push<T18, L19>::type L18;
+    typedef typename Push<T17, L18>::type L17;
+    typedef typename Push<T16, L17>::type L16;
+    typedef typename Push<T15, L16>::type L15;
+    typedef typename Push<T14, L15>::type L14;
+    typedef typename Push<T13, L14>::type L13;
+    typedef typename Push<T12, L13>::type L12;
+    typedef typename Push<T11, L13>::type L11;
+    typedef typename Push<T10, L11>::type L10;
+    typedef typename Push<T09, L10>::type L09;
+    typedef typename Push<T08, L09>::type L08;
+    typedef typename Push<T07, L08>::type L07;
+    typedef typename Push<T06, L07>::type L06;
+    typedef typename Push<T05, L06>::type L05;
+    typedef typename Push<T04, L05>::type L04;
+    typedef typename Push<T03, L04>::type L03;
+    typedef typename Push<T02, L03>::type L02;
+    typedef typename Push<T01, L02>::type L01;
+    typedef L01 type;
+};
+
+/****************************************************************************/
+/*                                                                          */
+/*                        the actual accumulators                           */
+/*                                                                          */
+/****************************************************************************/
 
 struct Count
 {
@@ -189,24 +382,15 @@ struct Count
         typedef BASE BaseType;
 
         result_type count_;
-        bool is_active_;
         
         Impl()
-        : count_(0.0),
-          is_active_(false)
+        : count_(0.0)
         {}
         
         void operator()(T const & t)
         {
             BaseType::operator()(t);
             ++count_;
-        }
-        
-        void dynamic(T const & t)
-        {
-            BaseType::dynamic(t);
-            if(is_active_)
-                ++count_;
         }
         
         void operator()(T const & t, double weight)
@@ -219,14 +403,7 @@ struct Count
         {
             return count_;
         }
-        
-        void activate()
-        {
-            is_active_ = true;
-        }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(Count)
 };
 
 struct Minimum
@@ -242,24 +419,15 @@ struct Minimum
         typedef BASE BaseType;
 
         result_type min_;
-        bool is_active_;
         
         Impl()
-        : min_(NumericTraits<T>::max()),
-          is_active_(false)
+        : min_(NumericTraits<T>::max())
         {}
         
         void operator()(T const & t)
         {
             BaseType::operator()(t);
             min_ = std::min(min_, t);
-        }
-        
-        void dynamic(T const & t)
-        {
-            BaseType::dynamic(t);
-            if(is_active_)
-                min_ = std::min(min_, t);
         }
         
         void operator()(T const & t, double weight)
@@ -271,14 +439,7 @@ struct Minimum
         {
             return min_;
         }
-        
-        void activate()
-        {
-            is_active_ = true;
-        }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(Minimum)
 };
 
 struct Sum
@@ -294,19 +455,10 @@ struct Sum
         typedef BASE BaseType;
         
         result_type sum_;
-        bool is_active_;
         
         Impl()
-        : sum_(result_type()),
-          is_active_(false)
+        : sum_(result_type())
         {}
-        
-        void dynamic(T const & t)
-        {
-            BaseType::dynamic(t);
-            if(is_active_)
-                sum_ += t;
-        }
         
         void operator()(T const & t)
         {
@@ -324,14 +476,7 @@ struct Sum
         {
             return sum_;
         }
-        
-        void activate()
-        {
-            is_active_ = true;
-        }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(Sum)
 };
 
 struct Mean
@@ -346,40 +491,75 @@ struct Mean
         typedef Mean Tag;
         typedef BASE BaseType;
         
+        using BaseType::operator();
+        
+        result_type operator()() const
+        {
+            return get<Sum>(*this) / get<Count>(*this);
+        }
+    };
+};
+
+struct SumSquaredDifferences
+{
+    typedef Select<Mean, Count> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename NumericTraits<T>::RealPromote result_type;
+        typedef SumSquaredDifferences Tag;
+        typedef BASE BaseType;
+        
+        result_type sumOfSquaredDifferences_;
+        
+        Impl()
+        : sumOfSquaredDifferences_(result_type())
+        {}
+        
         void operator()(T const & t)
         {
-            BaseType::operator()(t);
-        }
-        
-        void dynamic(T const & t)
-        {
-            BaseType::dynamic(t);
+            if(get<Count>(*this) != 0.0)
+            {
+                result_type old_mean = get<Mean>(*this);
+                BaseType::operator()(t);
+                result_type t1 = t - old_mean;
+                result_type t2 = t1 / get<Count>(*this);
+                sumOfSquaredDifferences_ += (get<Count>(*this)-1.0)*t1*t2;
+            }
+            else
+            {
+                BaseType::operator()(t);
+            }
         }
         
         void operator()(T const & t, double weight)
         {
-            BaseType::operator()(t, weight);
+            if(get<Count>(*this) != 0.0)
+            {
+                result_type old_mean = get<Mean>(*this);
+                BaseType::operator()(t, weight);
+                result_type t1 = t - old_mean;
+                sumOfSquaredDifferences_ +=
+                    (t1 * t1 * weight / get<Count>(*this)) * (get<Count>(*this) - weight );
+            }
+            else
+            {
+                BaseType::operator()(t, weight);
+            }
         }
         
         result_type operator()() const
         {
-            return get<Count>(*this) > 0
-                       ? get<Sum>(*this) / get<Count>(*this)
-					   : result_type();
-        }
-        
-        void activate()
-        {
-            activate<Dependencies::type>(*this);
+            return sumOfSquaredDifferences_;
         }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(Mean)
 };
 
 struct Variance
 {
-    typedef Select<Mean> Dependencies;
+    typedef Select<SumSquaredDifferences, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -389,58 +569,13 @@ struct Variance
         typedef Variance Tag;
         typedef BASE BaseType;
         
-        result_type sumOfSquaredDifferences_;
-        bool is_active_;
-        
-        Impl()
-        : sumOfSquaredDifferences_(result_type()),
-          is_active_(false)
-        {}
-        
-        void operator()(T const & t)
-        {
-            result_type old_mean = get<Mean>(*this);
-            BaseType::operator()(t);
-            result_type t1 = t - old_mean;
-            result_type t2 = t1 / get<Count>(*this);
-            sumOfSquaredDifferences_ += (get<Count>(*this)-1.0)*t1*t2;
-        }
-        
-        void dynamic(T const & t)
-        {
-            result_type old_mean = get<Mean>(*this);
-            BaseType::dynamic(t);
-            if(is_active_)
-            {
-                result_type t1 = t - old_mean;
-                result_type t2 = t1 / get<Count>(*this);
-                sumOfSquaredDifferences_ += (get<Count>(*this)-1.0)*t1*t2;
-            }
-        }
-        
-        void operator()(T const & t, double weight)
-        {
-            result_type old_mean = get<Mean>(*this);
-            BaseType::operator()(t, weight);
-            result_type t1 = t - old_mean;
-            if(get<Count>(*this) > weight)
-                sumOfSquaredDifferences_ +=
-                    (t1 * t1 * weight / get<Count>(*this)) * (get<Count>(*this) - weight );
-        }
+        using BaseType::operator();
         
         result_type operator()() const
         {
-            // FIXME: also support unbiased variance
-            return sumOfSquaredDifferences_ / get<Count>(*this);
-        }
-        
-        void activate()
-        {
-            is_active_ = true;
+            return get<SumSquaredDifferences>(*this) / get<Count>(*this);
         }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(Variance)
 };
 
 struct StdDev
@@ -455,139 +590,14 @@ struct StdDev
         typedef StdDev Tag;
         typedef BASE BaseType;
         
-        void operator()(T const & t)
-        {
-            BaseType::operator()(t);
-        }
-        
-        void dynamic(T const & t)
-        {
-            BaseType::dynamic(t);
-        }
-        
-        void operator()(T const & t, double weight)
-        {
-            BaseType::operator()(t, weight);
-        }
+        using BaseType::operator();
         
         result_type operator()() const
         {
             return sqrt(get<Variance>(*this));
         }
-        
-        void activate()
-        {
-            activate<Dependencies::type>(*this);
-        }
     };
-    
-    VIGRA_COMPOSE_ACCUMULATOR(StdDev)
 };
-
-typedef Cons<StdDev, 
-        Cons<Variance, 
-        Cons<Mean, 
-        Cons<Sum, 
-        Cons<Minimum, 
-        Cons<Count> > > > > >::type SortedAccumulators;
-        
-template <class T, class Selected>
-struct Accumulator
-: public SortedAccumulators::Head::template 
-               Compose<T, typename SortedAccumulators::Tail, typename Selected::type>::type
-{
-    typedef typename SortedAccumulators::Head::template 
-               Compose<T, typename SortedAccumulators::Tail, typename Selected::type>::type BaseType;
-    typedef Nothing Tag;
-        
-    void operator()(T const & t)
-    {
-        BaseType::operator()(t);
-    }
-    
-    void dynamic(T const & t)
-    {
-        BaseType::dynamic(t);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        BaseType::operator()(t, weight);
-    }
-};
-        
-template <class Tag, class AccuType>
-struct GetImpl
-{
-    static double exec(AccuType const & a)
-    {
-        return a();
-    }
-};
-
-template <class Tag>
-struct GetImpl<Tag, VigraFalseType>
-{
-    template <class AccuType>
-    static double exec(AccuType const & a)
-    {
-        vigra_precondition(false,
-		 std::string("get(accumulator): attempt to access unselected statistic '") << typeid(Tag).name() << "'.");
-		return 0.0;
-    }
-};
-
-// FIXME: determine correct return type
-template <class Tag, class AccuList>
-double get(AccuList const & a)
-{
-    return GetImpl<Tag, typename FindTag<Tag, AccuList>::type>::exec(a);
-}
-
-template <class Tag, class AccuList, class AccuType=typename FindTag<Tag, AccuList>::type>
-struct ActivateImpl
-{
-    static void exec(AccuType & a)
-    {
-        a.activate();
-    }
-};
-
-template <class Tag, class AccuList>
-struct ActivateImpl<Tag, AccuList, VigraFalseType>
-{
-    template <class AccuType>
-    static void exec(AccuType & a)
-    {
-        vigra_precondition(false,
-		 std::string("activate(accumulator): attempt to access unselected statistic '") << typeid(Tag).name() << "'.");
-    }
-};
-
-template <class Head, class Tail, class AccuList>
-struct ActivateImpl<AccumulatorList<Head, Tail>, AccuList>
-{
-    template <class AccuType>
-    static void exec(AccuType & a)
-    {
-        activate<Head>(a);
-        ActivateImpl<Tail, AccuList>::exec(a);
-    }
-};
-
-template <class AccuList>
-struct ActivateImpl<void, AccuList>
-{
-    template <class AccuType>
-    static void exec(AccuType &)
-    {}
-};
-
-template <class Tag, class AccuList>
-void activate(AccuList & a)
-{
-    ActivateImpl<Tag, AccuList>::exec(a);
-}
 
 }} // namespace vigra::acc1
 
