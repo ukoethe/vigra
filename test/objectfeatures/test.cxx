@@ -30,6 +30,18 @@
 #include <vigra/convolution.hxx>
 #include <vigra/accumulator.hxx>
 
+namespace std {
+
+template <unsigned int N, class T, class Stride>
+ostream & operator<<(ostream & o, vigra::MultiArrayView<N, T, Stride> const & m)
+{
+	for(MultiArrayIndex k=0; k<m.size(); ++k)
+		o << m[k] << " ";
+	return o;
+}
+
+} // namespace std
+
 using namespace vigra;
 
 // mask cl.exe shortcomings
@@ -1778,77 +1790,143 @@ struct AccumulatorTest
 #endif
 	}
     
-    void test2()
+    void testScalar()
     {
         using namespace vigra::acc1;
         
-#if 0
-		typedef AccumulatorNew<double, Select<Mean> > A;
-/*
-		std::cerr << "list: " << typeid(A::Accumulators).name() << "\n";
-		std::cerr << "head: " << typeid(A::Head).name() << "\n";
-		std::cerr << "tail: " << typeid(A::Tail).name() << "\n";
-		std::cerr << "tail::head: " << typeid(A::Tail::Head).name() << "\n";
-		std::cerr << "tail::tail: " << typeid(A::Tail::Tail).name() << "\n";
-		std::cerr << "accu: " << typeid(A::Base).name() << "\n";
-*/
-		typedef AccumulatorNew<double, Select<Mean> > AA;
-		std::cerr << "list: " << typeid(AA::Accumulators).name() << "\n";
-		std::cerr << "compose: " << typeid(AA::compose).name() << "\n";
-		std::cerr << "compose-base: " << typeid(AA::compose::BaseType).name() << "\n";
-		std::cerr << "compose: " << typeid(AA::BaseType).name() << "\n";
-		std::cerr << "accu: " << typeid(AA).name() << "\n";
-/*
-		std::cerr << "accu: " << typeid(AA::Base).name() << "\n";
-*/
-#endif
-        Accumulator<double, Select<Count> > a;
+        { 
+			Accumulator<double, Select<Count> > a;
 
-		a(1.0);
-        a(2.0);
-        a(3.0);
+			a(1.0);
+			a(2.0);
+			a(3.0);
 
-        std::cerr << "count(a): " << get<Count>(a) << "\n";
+			shouldEqual(get<Count>(a), 3.0);
 
-        try 
-        {
-            get<Mean>(a);
-            failTest("get<Mean>() failed to throw exception");
-        }
-        catch(ContractViolation & c) 
-		{
-			std::cerr << c.what() << "\n";
+			try 
+			{
+				get<Mean>(a);
+				failTest("get<Mean>() failed to throw exception");
+			}
+			catch(ContractViolation & c) 
+			{
+				std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
+				std::string message(c.what());
+				should(0 == expected.compare(message.substr(0,expected.size())));
+			}
 		}
 
-		Accumulator<double, Select<StdDev, Minimum> > b;
-        
-        b(1.0);
-        b(2.0);
-        b(3.0);
-        
-        std::cerr << "count(b): " << get<Count>(b) << "\n";
-        std::cerr << "min(b): " << get<Minimum>(b) << "\n";
-        std::cerr << "sum(b): " << get<Sum>(b) << "\n";
-        std::cerr << "mean(b): " << get<Mean>(b) << "\n";
-        std::cerr << "variance(b): " << get<Variance>(b) << "\n";
-        std::cerr << "stddev(b): " << get<StdDev>(b) << "\n";
+        { 
+			Accumulator<double, Select<StdDev, Minimum> > a;
 
-		DynamicAccumulator<double, Select<Mean> > c;
-		activate<Count>(c);
+			a(1.0);
+			a(2.0);
+			a(3.0);
 
-        c(1.0);
-        c(2.0);
-        c(3.0);
-        
-        std::cerr << "count(c): " << get<Count>(c) << "\n";
-        try 
-        {
-            get<Mean>(c);
-            failTest("get<Mean>() failed to throw exception");
-        }
-        catch(ContractViolation & c) 
+			shouldEqual(get<Count>(a), 3.0);
+			shouldEqual(get<Minimum>(a), 1.0);
+			shouldEqual(get<Sum>(a), 6.0);
+			shouldEqual(get<Mean>(a), 2.0);
+			shouldEqual(get<Variance>(a), 2.0/3.0);
+			shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+		}
+
+        { 
+			DynamicAccumulator<double, Select<StdDev, Minimum> > a;
+			activate<Count>(a);
+
+			a(1.0);
+			a(2.0);
+			a(3.0);
+
+			shouldEqual(get<Count>(a), 3.0);
+
+			try 
+			{
+				get<Mean>(a);
+				failTest("get<Mean>() failed to throw exception");
+			}
+			catch(ContractViolation & c) 
+			{
+				std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
+				std::string message(c.what());
+				should(0 == expected.compare(message.substr(0,expected.size())));
+			}
+
+			a.reset();
+			activate<StdDev>(a);
+			activate<Minimum>(a);
+
+			a(1.0);
+			a(2.0);
+			a(3.0);
+
+			shouldEqual(get<Count>(a), 3.0);
+			shouldEqual(get<Minimum>(a), 1.0);
+			shouldEqual(get<Sum>(a), 6.0);
+			shouldEqual(get<Mean>(a), 2.0);
+			shouldEqual(get<Variance>(a), 2.0/3.0);
+			shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+		}
+	}
+
+    void testVector()
+    {
+        using namespace vigra::acc1;
+
 		{
-			std::cerr << c.what() << "\n";
+			typedef TinyVector<int, 3> V;
+ 			typedef Accumulator<V, Select<StdDev, Minimum> > A;
+			typedef LookupTag<Mean, A>::result_type W;
+			typedef LookupTag<Variance, A>::result_type Var;
+
+			A a;
+
+			a(V(1,1,1));
+			a(V(2,2,2));
+			a(V(3,3,3));
+
+			shouldEqual(get<Count>(a), 3.0);
+			shouldEqual(get<Minimum>(a), V(1,1,1));
+			shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
+			shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
+
+			Var variance(3,3);
+			variance.init(2.0/3.0);
+			shouldEqual(get<Variance>(a), variance);
+
+			Var stddev = sqrt(variance);
+			shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
+		}
+
+		{
+			typedef MultiArray<1, int> V;
+			typedef TinyVector<int, 3> T;
+			typedef Accumulator<V::view_type, Select<StdDev, Minimum> > A;
+			typedef LookupTag<Mean, A>::result_type W;
+			typedef TinyVector<W::value_type, 3> TW;
+			typedef LookupTag<Variance, A>::result_type Var;
+
+			A a;
+
+			Shape1 s(3);
+
+			a(V(s, T(1,1,1).begin()));
+			a(V(s, T(2,2,2).begin()));
+			a(V(s, T(3,3,3).begin()));
+
+			shouldEqual(get<Count>(a), 3.0);
+			shouldEqual(get<Minimum>(a), V(s, T(1,1,1).begin()));
+			shouldEqual(get<Sum>(a), W(s, TW(6.0,6.0,6.0).begin()));
+			shouldEqual(get<Mean>(a),  W(s, TW(2.0,2.0,2.0).begin()));
+#if 0
+			Var variance(3,3);
+			variance.init(2.0/3.0);
+			shouldEqual(get<Variance>(a), variance);
+
+			Var stddev = sqrt(variance);
+			shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
+#endif
 		}
 	}
 };
@@ -1858,8 +1936,8 @@ struct FeaturesTestSuite : public vigra::test_suite
     FeaturesTestSuite()
         : vigra::test_suite("FeaturesTestSuite")
     {
-//        add(testCase(&AccumulatorTest::test1));
-        add(testCase(&AccumulatorTest::test2));
+        add(testCase(&AccumulatorTest::testScalar));
+        add(testCase(&AccumulatorTest::testVector));
     }
 };
 
