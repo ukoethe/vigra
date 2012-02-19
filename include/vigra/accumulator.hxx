@@ -38,6 +38,7 @@
 
 #include "config.hxx"
 #include "metaprogramming.hxx"
+#include "mathutil.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -127,6 +128,8 @@ struct PushDependencies<void>
 struct AccumulatorBase 
 {
 	typedef AccumulatorBase Tag;
+    typedef void result_type;
+    typedef double second_argument_type;
 
     template <class T>
 	void operator()(T const &)
@@ -136,12 +139,10 @@ struct AccumulatorBase
     void operator()(T const &, double)
     {}
     
-    double operator()() const
+    void operator()() const
     {
         vigra_precondition(false,
             std::string("get(accumulator): attempt to access statistic '") << typeid(Tag).name() << "'.");
-        
-        return 0.0;
     }
     
     void activate()
@@ -153,12 +154,15 @@ struct LookupTag
 {
     typedef typename IsSameType<Tag, typename Accumulator::Tag>::type Found;
     typedef typename If<Found, Accumulator, typename LookupTag<Tag, typename Accumulator::BaseType>::type>::type type;
+    typedef typename If<Found, typename Accumulator::result_type, 
+                               typename LookupTag<Tag, typename Accumulator::BaseType>::result_type>::type result_type;
 };
 
 template <class Tag>
 struct LookupTag<Tag, AccumulatorBase>
 {
     typedef AccumulatorBase type;
+    typedef void result_type;
 };
 
 template <class Tag, class Accumulator>
@@ -176,17 +180,24 @@ cast(Accumulator const & a)
 }
 
 template <class Tag, class Accumulator>
-double get(Accumulator const & a)
+typename LookupTag<Tag, Accumulator>::result_type
+getImpl(Accumulator const & a)
 {
-    return cast<Tag>(a)();
+    return a();
 }
 
 template <class Tag>
-double get(AccumulatorBase const & a)
+void getImpl(AccumulatorBase const & a)
 {
     vigra_precondition(false,
         std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-    return 0.0;
+}
+
+template <class Tag, class Accumulator>
+typename LookupTag<Tag, Accumulator>::result_type
+get(Accumulator const & a)
+{
+    return getImpl<Tag>(cast<Tag>(a));
 }
 
 template <class Tag, class Accumulator>
@@ -221,6 +232,10 @@ struct DynamicAccumulatorWrapper
     typedef TAG Tag;
     typedef typename TAG::template Impl<T, BaseBase> Base;
     
+    typedef T argument_type;
+    typedef T first_argument_type;
+    typedef typename Base::result_type result_type;
+
     bool is_active_;
     
     DynamicAccumulatorWrapper()
@@ -233,7 +248,7 @@ struct DynamicAccumulatorWrapper
         ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
     }
     
-	double operator()() const
+	result_type operator()() const
     {
         vigra_precondition(is_active_,
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
@@ -304,15 +319,7 @@ struct Accumulator
     typedef typename Compose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
     typedef VigraFalseType Tag;
         
-    void operator()(T const & t)
-    {
-        BaseType::operator()(t);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        BaseType::operator()(t, weight);
-    }
+    using BaseType::operator();
 };
 
 template <class T, class Selected>
@@ -324,15 +331,7 @@ struct DynamicAccumulator
     typedef typename DynamicCompose<T, typename Accumulators::Head, typename Accumulators::Tail>::type BaseType;
     typedef VigraFalseType Tag;
         
-    void operator()(T const & t)
-    {
-        BaseType::operator()(t);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        BaseType::operator()(t, weight);
-    }
+    using BaseType::operator();
 };
 
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
@@ -377,10 +376,13 @@ struct Count
     struct Impl
     : public BASE
     {
-        typedef double result_type;
         typedef Count Tag;
         typedef BASE BaseType;
 
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef double result_type;
+        
         result_type count_;
         
         Impl()
@@ -414,9 +416,12 @@ struct Minimum
     struct Impl
     : public BASE
     {
-        typedef T result_type;
         typedef Minimum Tag;
         typedef BASE BaseType;
+
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef T result_type;
 
         result_type min_;
         
@@ -450,10 +455,13 @@ struct Sum
     struct Impl
     : public BASE
     {
-        typedef typename NumericTraits<T>::RealPromote result_type;
         typedef Sum Tag;
         typedef BASE BaseType;
         
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename NumericTraits<T>::RealPromote result_type;
+
         result_type sum_;
         
         Impl()
@@ -487,10 +495,13 @@ struct Mean
     struct Impl
     : public BASE
     {
-        typedef typename NumericTraits<T>::RealPromote result_type;
         typedef Mean Tag;
         typedef BASE BaseType;
         
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename NumericTraits<T>::RealPromote result_type;
+
         using BaseType::operator();
         
         result_type operator()() const
@@ -508,10 +519,13 @@ struct SumSquaredDifferences
     struct Impl
     : public BASE
     {
-        typedef typename NumericTraits<T>::RealPromote result_type;
         typedef SumSquaredDifferences Tag;
         typedef BASE BaseType;
         
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename NumericTraits<T>::RealPromote result_type;
+
         result_type sumOfSquaredDifferences_;
         
         Impl()
@@ -565,10 +579,13 @@ struct Variance
     struct Impl
     : public BASE
     {
-        typedef typename NumericTraits<T>::RealPromote result_type;
         typedef Variance Tag;
         typedef BASE BaseType;
         
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename NumericTraits<T>::RealPromote result_type;
+
         using BaseType::operator();
         
         result_type operator()() const
@@ -586,10 +603,13 @@ struct StdDev
     struct Impl
     : public BASE
     {
-        typedef typename NumericTraits<T>::RealPromote result_type;
         typedef StdDev Tag;
         typedef BASE BaseType;
         
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename NumericTraits<T>::RealPromote result_type;
+
         using BaseType::operator();
         
         result_type operator()() const

@@ -1815,7 +1815,10 @@ struct AccumulatorTest
             get<Mean>(a);
             failTest("get<Mean>() failed to throw exception");
         }
-        catch(ContractViolation &) {}
+        catch(ContractViolation & c) 
+		{
+			std::cerr << c.what() << "\n";
+		}
 
 		Accumulator<double, Select<StdDev, Minimum> > b;
         
@@ -1843,7 +1846,10 @@ struct AccumulatorTest
             get<Mean>(c);
             failTest("get<Mean>() failed to throw exception");
         }
-        catch(ContractViolation &) {}
+        catch(ContractViolation & c) 
+		{
+			std::cerr << c.what() << "\n";
+		}
 	}
 };
 
