@@ -88,6 +88,9 @@ struct AccumulatorBase
     typedef void result_type;
     typedef double second_argument_type;
 
+	void operator+=(AccumulatorBase const &)
+    {}
+    
     template <class T>
 	void operator()(T const &)
     {}
@@ -208,6 +211,18 @@ struct DynamicAccumulatorWrapper
         ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
     }
     
+    void operator+=(DynamicAccumulatorWrapper const & o)
+    {
+        if(is_active_)
+        {
+            Base::operator+=(o);
+        }
+        else
+        {
+            BaseBase::operator+=(o);
+        }
+    }
+    
 	result_type operator()() const
     {
         vigra_precondition(is_active_,
@@ -326,6 +341,12 @@ struct Count
             count_ = 0.0;
             BaseType::reset();
         }
+        
+        void operator+=(Impl const & o)
+        {
+            BaseType::operator+=(o);
+            count_ += o.count_;
+        }
     
         void operator()(T const & t)
         {
@@ -360,9 +381,10 @@ struct Minimum
             t = NumericTraits<U>::max();
         }
         
-        static void updateMin(type & t, U const & u)
+        template <class V>
+        static void updateMin(type & t, V const & v)
         {
-            t = std::min(t, u);
+            t = min(t, v);
         }
     };
     
@@ -376,15 +398,16 @@ struct Minimum
             type().swap(t);
         }
         
-        static void updateMin(type & t, MultiArrayView<N, U, Stride> const & u)
+        template <class V>
+        static void updateMin(type & t, V const & v)
         {
             using namespace multi_math;
             
             if(t.size() == 0)
             {
-                t.reshape(u.shape(), NumericTraits<U>::max());
+                t.reshape(v.shape(), NumericTraits<U>::max());
             }
-            t = min(t, u);
+            t = min(t, v);
         }
     };
     
@@ -413,6 +436,12 @@ struct Minimum
             BaseType::reset();
         }
     
+        void operator+=(Impl const & o)
+        {
+            BaseType::operator+=(o);
+            ResultTraits::updateMin(min_, o.min_);
+        }
+    
         void operator()(T const & t)
         {
             BaseType::operator()(t);
@@ -427,6 +456,98 @@ struct Minimum
         result_type operator()() const
         {
             return min_;
+        }
+    };
+};
+
+struct Maximum
+{
+    typedef Select<> Dependencies;
+    
+    template <class U>
+    struct Result
+    {
+        typedef U type;
+        
+        static void init(type & t)
+        {
+            t = NumericTraits<U>::min();
+        }
+        
+        template <class V>
+        static void updateMax(type & t, V const & v)
+        {
+            t = max(t, v);
+        }
+    };
+    
+    template <unsigned int N, class U, class Stride>
+    struct Result<MultiArrayView<N, U, Stride> >
+    {
+        typedef MultiArray<N, U> type;
+        
+        static void init(type & t)
+        {
+            type().swap(t);
+        }
+        
+        template <class V>
+        static void updateMax(type & t, V const & v)
+        {
+            using namespace multi_math;
+            
+            if(t.size() == 0)
+            {
+                t.reshape(v.shape(), NumericTraits<U>::min());
+            }
+            t = max(t, v);
+        }
+    };
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef Maximum Tag;
+        typedef BASE BaseType;
+        typedef Result<T> ResultTraits;
+
+        typedef T argument_type;
+        typedef T first_argument_type;
+        typedef typename ResultTraits::type result_type;
+
+        result_type max_;
+        
+        Impl()
+        {
+            ResultTraits::init(max_);
+        }
+        
+        void reset()
+        {
+            ResultTraits::init(max_);
+            BaseType::reset();
+        }
+    
+        void operator+=(Impl const & o)
+        {
+            ResultTraits::updateMax(max_, o.max_);
+        }
+    
+        void operator()(T const & t)
+        {
+            BaseType::operator()(t);
+            ResultTraits::updateMax(max_, t);
+        }
+        
+        void operator()(T const & t, double weight)
+        {
+            vigra_precondition(false, "Maximum accumulator does not support weights.");
+        }
+        
+        result_type operator()() const
+        {
+            return max_;
         }
     };
 };
@@ -491,6 +612,12 @@ struct Sum
         {
             ResultTraits::init(sum_);
             BaseType::reset();
+        }
+    
+        void operator+=(Impl const & o)
+        {
+            BaseType::operator+=(o);
+            sum_ += o.sum_;
         }
     
         void operator()(T const & t)
@@ -643,6 +770,18 @@ struct SumSquaredDifferences
             BaseType::reset();
         }
     
+        void operator+=(Impl const & o)
+        {
+            using namespace vigra::multi_math;            
+            typedef typename LookupTag<Mean, Impl>::result_type MeanResult;
+            MeanResult diff = get<Mean>(*this) - get<Mean>(o);
+            double weight = get<Count>(*this) * get<Count>(o) / (get<Count>(*this) + get<Count>(o));
+            sumOfSquaredDifferences_ += o.sumOfSquaredDifferences_ + weight * ResultTraits::prod(diff);
+            
+            // this must be last because the above computation needs the old values
+            BaseType::operator+=(o);
+        }
+    
         void operator()(T const & t)
         {
 			using namespace multi_math;
@@ -691,6 +830,8 @@ struct SumSquaredDifferences
         }
     };
 };
+
+typedef SumSquaredDifferences SSD;
 
 struct Variance
 {

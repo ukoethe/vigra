@@ -35,9 +35,9 @@ namespace std {
 template <unsigned int N, class T, class Stride>
 ostream & operator<<(ostream & o, vigra::MultiArrayView<N, T, Stride> const & m)
 {
-	for(MultiArrayIndex k=0; k<m.size(); ++k)
-		o << m[k] << " ";
-	return o;
+    for(MultiArrayIndex k=0; k<m.size(); ++k)
+        o << m[k] << " ";
+    return o;
 }
 
 } // namespace std
@@ -1666,23 +1666,23 @@ struct HistogramTest
     void testHistogram()
     {
         const int binCount = 10;
-		Histogram<double, int> hist(0.0, 10.0, binCount);
+        Histogram<double, int> hist(0.0, 10.0, binCount);
         for(unsigned int k=0; k < data.size(); ++k)
             hist.add(data[k]);
         
-		int ref[binCount] = { 11, 10, 10,  8, 14, 10,  7,  7, 16,  7 };
-		shouldEqualSequence(ref, ref + binCount, hist.data_.begin());
+        int ref[binCount] = { 11, 10, 10,  8, 14, 10,  7,  7, 16,  7 };
+        shouldEqualSequence(ref, ref + binCount, hist.data_.begin());
 
-		hist.reset();
-		shouldEqual(hist.data_, ArrayVector<double>(binCount));
-		
-		MultiArray<2, double> m(Shape2(1, binCount));
-		HistogramView<double, double> hv(0.0, 10.0, binCount, &m(0), m.stride(1));
+        hist.reset();
+        shouldEqual(hist.data_, ArrayVector<double>(binCount));
+        
+        MultiArray<2, double> m(Shape2(1, binCount));
+        HistogramView<double, double> hv(0.0, 10.0, binCount, &m(0), m.stride(1));
 
         for(unsigned int k=0; k < data.size(); ++k)
             hv.add(data[k]);
         
-		shouldEqualSequence(ref, ref + binCount, &m(0));
+        shouldEqualSequence(ref, ref + binCount, &m(0));
     }
     
     void testKernelHistogram()
@@ -1698,8 +1698,8 @@ struct HistogramTest
             shouldEqual(kernel[k], kernelRef[c]);
  
         const int binCount = 10;
-		ArrayVector<double> hdata(binCount);
-		KernelHistogramView<double, TrapezoidKernel<double> > hist(0.0, 10.0, binCount, &hdata[0]);
+        ArrayVector<double> hdata(binCount);
+        KernelHistogramView<double, TrapezoidKernel<double> > hist(0.0, 10.0, binCount, &hdata[0]);
 
         hist.add(2.4);
         hist.add(1.8);
@@ -1772,7 +1772,7 @@ struct AccumulatorTest
     void test1()
     {
 #if 0
-		using namespace vigra::acc1;
+        using namespace vigra::acc1;
         
         typedef Select<int, float>::type Selected;
         
@@ -1781,154 +1781,188 @@ struct AccumulatorTest
         std::cerr << "float: " << Contains<Selected, float>::type::value << "\n";
         std::cerr << "double: " << Contains<Selected, double>::type::value << "\n";
 
-		typedef AccumulatorList<double, Selected> Selected1;
+        typedef AccumulatorList<double, Selected> Selected1;
         
         std::cerr << "bool: " << Contains<Selected1, bool>::type::value << "\n";
         std::cerr << "int: " << Contains<Selected1, int>::type::value << "\n";
         std::cerr << "float: " << Contains<Selected1, float>::type::value << "\n";
         std::cerr << "double: " << Contains<Selected1, double>::type::value << "\n";
 #endif
-	}
+    }
     
     void testScalar()
     {
         using namespace vigra::acc1;
         
         { 
-			Accumulator<double, Select<Count> > a;
+            Accumulator<double, Select<Count> > a;
 
-			a(1.0);
-			a(2.0);
-			a(3.0);
+            a(1.0);
+            a(2.0);
+            a(3.0);
 
-			shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Count>(a), 3.0);
 
-			try 
-			{
-				get<Mean>(a);
-				failTest("get<Mean>() failed to throw exception");
-			}
-			catch(ContractViolation & c) 
-			{
-				std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
-				std::string message(c.what());
-				should(0 == expected.compare(message.substr(0,expected.size())));
-			}
-		}
-
-        { 
-			Accumulator<double, Select<StdDev, Minimum> > a;
-
-			a(1.0);
-			a(2.0);
-			a(3.0);
-
-			shouldEqual(get<Count>(a), 3.0);
-			shouldEqual(get<Minimum>(a), 1.0);
-			shouldEqual(get<Sum>(a), 6.0);
-			shouldEqual(get<Mean>(a), 2.0);
-			shouldEqual(get<Variance>(a), 2.0/3.0);
-			shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
-		}
+            try 
+            {
+                get<Mean>(a);
+                failTest("get<Mean>() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
+                std::string message(c.what());
+                should(0 == expected.compare(message.substr(0,expected.size())));
+            }
+        }
 
         { 
-			DynamicAccumulator<double, Select<StdDev, Minimum> > a;
-			activate<Count>(a);
+            Accumulator<double, Select<StdDev, Minimum, Maximum> > a;
 
-			a(1.0);
-			a(2.0);
-			a(3.0);
+            a(1.0);
+            a(2.0);
+            a(3.0);
 
-			shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Minimum>(a), 1.0);
+            shouldEqual(get<Maximum>(a), 3.0);
+            shouldEqual(get<Sum>(a), 6.0);
+            shouldEqual(get<Mean>(a), 2.0);
+            shouldEqual(get<Variance>(a), 2.0/3.0);
+            shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+        }
 
-			try 
-			{
-				get<Mean>(a);
-				failTest("get<Mean>() failed to throw exception");
-			}
-			catch(ContractViolation & c) 
-			{
-				std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
-				std::string message(c.what());
-				should(0 == expected.compare(message.substr(0,expected.size())));
-			}
+        { 
+            DynamicAccumulator<double, Select<StdDev, Minimum> > a;
+            activate<Count>(a);
 
-			a.reset();
-			activate<StdDev>(a);
-			activate<Minimum>(a);
+            a(1.0);
+            a(2.0);
+            a(3.0);
 
-			a(1.0);
-			a(2.0);
-			a(3.0);
+            shouldEqual(get<Count>(a), 3.0);
 
-			shouldEqual(get<Count>(a), 3.0);
-			shouldEqual(get<Minimum>(a), 1.0);
-			shouldEqual(get<Sum>(a), 6.0);
-			shouldEqual(get<Mean>(a), 2.0);
-			shouldEqual(get<Variance>(a), 2.0/3.0);
-			shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
-		}
-	}
+            try 
+            {
+                get<Mean>(a);
+                failTest("get<Mean>() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nget(accumulator): attempt to access inactive statistic");
+                std::string message(c.what());
+                should(0 == expected.compare(message.substr(0,expected.size())));
+            }
+
+            a.reset();
+            activate<StdDev>(a);
+            activate<Minimum>(a);
+
+            a(1.0);
+            a(2.0);
+            a(3.0);
+
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Minimum>(a), 1.0);
+            shouldEqual(get<Sum>(a), 6.0);
+            shouldEqual(get<Mean>(a), 2.0);
+            shouldEqual(get<Variance>(a), 2.0/3.0);
+            shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+        }
+    }
 
     void testVector()
     {
         using namespace vigra::acc1;
 
-		{
-			typedef TinyVector<int, 3> V;
- 			typedef Accumulator<V, Select<StdDev, Minimum> > A;
-			typedef LookupTag<Mean, A>::result_type W;
-			typedef LookupTag<Variance, A>::result_type Var;
+        {
+            typedef TinyVector<int, 3> V;
+            typedef Accumulator<V, Select<Variance, Minimum, Maximum> > A;
+            typedef LookupTag<Mean, A>::result_type W;
+            typedef LookupTag<Variance, A>::result_type Var;
 
-			A a;
+            A a;
 
-			a(V(1,1,1));
-			a(V(2,2,2));
-			a(V(3,3,3));
+            a(V(1,2,3));
+            a(V(2,3,1));
+            a(V(3,1,2));
 
-			shouldEqual(get<Count>(a), 3.0);
-			shouldEqual(get<Minimum>(a), V(1,1,1));
-			shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
-			shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Minimum>(a), V(1,1,1));
+            shouldEqual(get<Maximum>(a), V(3,3,3));
+            shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
+            shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
 
-			Var variance(3,3);
-			variance.init(2.0/3.0);
-			shouldEqual(get<Variance>(a), variance);
+            double varianceData[] = { 
+                2.0/3.0, -1.0/3.0, -1.0/3.0,
+               -1.0/3.0,  2.0/3.0, -1.0/3.0,
+               -1.0/3.0, -1.0/3.0,  2.0/3.0 };
+            Var variance(3,3, varianceData);
+            shouldEqual(get<Variance>(a), variance);
+        }
 
-			Var stddev = sqrt(variance);
-			shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
-		}
+        {
+            typedef MultiArray<1, int> V;
+            typedef TinyVector<int, 3> T;
+            typedef Accumulator<V::view_type, Select<StdDev, Minimum, Maximum> > A;
+            typedef LookupTag<Mean, A>::result_type W;
+            typedef TinyVector<W::value_type, 3> TW;
+            typedef LookupTag<Variance, A>::result_type Var;
 
-		{
-			typedef MultiArray<1, int> V;
-			typedef TinyVector<int, 3> T;
-			typedef Accumulator<V::view_type, Select<StdDev, Minimum> > A;
-			typedef LookupTag<Mean, A>::result_type W;
-			typedef TinyVector<W::value_type, 3> TW;
-			typedef LookupTag<Variance, A>::result_type Var;
+            A a;
 
-			A a;
+            Shape1 s(3);
 
-			Shape1 s(3);
+            a(V(s, T(1,1,1).begin()));
+            a(V(s, T(2,2,2).begin()));
+            a(V(s, T(3,3,3).begin()));
 
-			a(V(s, T(1,1,1).begin()));
-			a(V(s, T(2,2,2).begin()));
-			a(V(s, T(3,3,3).begin()));
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Minimum>(a), V(s, T(1,1,1).begin()));
+            shouldEqual(get<Maximum>(a), V(s, T(3,3,3).begin()));
+            shouldEqual(get<Sum>(a), W(s, TW(6.0,6.0,6.0).begin()));
+            shouldEqual(get<Mean>(a),  W(s, TW(2.0,2.0,2.0).begin()));
 
-			shouldEqual(get<Count>(a), 3.0);
-			shouldEqual(get<Minimum>(a), V(s, T(1,1,1).begin()));
-			shouldEqual(get<Sum>(a), W(s, TW(6.0,6.0,6.0).begin()));
-			shouldEqual(get<Mean>(a),  W(s, TW(2.0,2.0,2.0).begin()));
-#if 0
-			Var variance(3,3);
-			variance.init(2.0/3.0);
-			shouldEqual(get<Variance>(a), variance);
+            Var variance(3,3);
+            variance.init(2.0/3.0);
+            shouldEqual(get<Variance>(a), variance);
 
-			Var stddev = sqrt(variance);
-			shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
-#endif
-		}
-	}
+            Var stddev = sqrt(variance);
+            shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
+
+            a(V(s, T(0, 2, 4).begin()));
+            shouldEqual(get<Minimum>(a), V(s, T(0,1,1).begin()));
+            shouldEqual(get<Maximum>(a), V(s, T(3,3,4).begin()));
+        }
+    }
+
+    void testMerge()
+    {
+        using namespace vigra::acc1;
+        
+        typedef Accumulator<double, Select<StdDev, Minimum, Maximum> > A;
+
+        A a, b;
+
+        a(1.0);
+        a(2.0);
+        a(3.0);
+
+        b(4.0);
+        b(5.0);
+
+        a += b;
+
+        shouldEqual(get<Count>(a), 5.0);
+        shouldEqual(get<Minimum>(a), 1.0);
+        shouldEqual(get<Maximum>(a), 5.0);
+        shouldEqual(get<Sum>(a), 15.0);
+        shouldEqual(get<Mean>(a), 3.0);
+        shouldEqual(get<SSD>(a), 10.0);
+        shouldEqual(get<Variance>(a), 2.0);
+        shouldEqual(get<StdDev>(a), sqrt(2.0));
+
+    }
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -1938,6 +1972,7 @@ struct FeaturesTestSuite : public vigra::test_suite
     {
         add(testCase(&AccumulatorTest::testScalar));
         add(testCase(&AccumulatorTest::testVector));
+        add(testCase(&AccumulatorTest::testMerge));
     }
 };
 
