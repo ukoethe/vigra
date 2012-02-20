@@ -131,6 +131,13 @@ struct ExecLoop
             left[i] = detail::RequiresExplicitCast<T1>::cast(right);
     }
 
+    template <class T1, class T2>
+    static void power(T1 * left, T2 right)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            left[i] = detail::RequiresExplicitCast<T1>::cast(pow(left, right));
+    }
+
     VIGRA_EXEC_LOOP(assign, =)
     VIGRA_EXEC_LOOP(add, +=)
     VIGRA_EXEC_LOOP(sub, -=)
@@ -359,6 +366,13 @@ struct UnrollLoop
         UnrollLoop<LEVEL-1>::assignScalar(left+1, right);
     }
 
+    template <class T1, class T2>
+    static void power(T1 * left, T2 right)
+    {
+        *left = detail::RequiresExplicitCast<T1>::cast(pow(*left, right));
+        UnrollLoop<LEVEL-1>::power(left+1, right);
+    }
+
     VIGRA_UNROLL_LOOP(assign, =)
     VIGRA_UNROLL_LOOP(add, +=)
     VIGRA_UNROLL_LOOP(sub, -=)
@@ -442,6 +456,8 @@ struct UnrollLoop<0>
     static void assign(T1, T2) {}
     template <class T1, class T2>
     static void assignScalar(T1, T2) {}
+    template <class T1, class T2>
+    static void power(T1, T2) {}
     template <class T1, class T2>
     static void add(T1, T2) {}
     template <class T1, class T2>
@@ -1617,6 +1633,21 @@ sqrt(TinyVectorBase<V, SIZE, D1, D2> const & v)
     TinyVector<V, SIZE> res(detail::dontInit());
     typedef typename detail::LoopType<SIZE>::type ltype;
     ltype::sqrt(res.begin(), v.begin());
+    return res;
+}
+
+using std::pow;
+
+    /** Apply pow() function to each vector component.
+    */
+template <class V, int SIZE, class D1, class D2, class E>
+inline
+TinyVector<V, SIZE>
+pow(TinyVectorBase<V, SIZE, D1, D2> const & v, E exponent)
+{
+    TinyVector<V, SIZE> res(v);
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::power(res.begin(), exponent);
     return res;
 }
 
