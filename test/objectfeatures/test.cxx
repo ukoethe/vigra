@@ -1817,7 +1817,7 @@ struct AccumulatorTest
         }
 
         { 
-            Accumulator<double, Select<StdDev, Minimum, Maximum> > a;
+            Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum> > a;
 
             a(1.0);
             a(2.0);
@@ -1830,10 +1830,11 @@ struct AccumulatorTest
             shouldEqual(get<Mean>(a), 2.0);
             shouldEqual(get<Variance>(a), 2.0/3.0);
             shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+            shouldEqual(get<Covariance>(a), 2.0/3.0);
         }
 
         { 
-            DynamicAccumulator<double, Select<StdDev, Minimum> > a;
+            DynamicAccumulator<double, Select<Covariance, StdDev, Minimum> > a;
             activate<Count>(a);
 
             a(1.0);
@@ -1857,6 +1858,7 @@ struct AccumulatorTest
             a.reset();
             activate<StdDev>(a);
             activate<Minimum>(a);
+            activate<Covariance>(a);
 
             a(1.0);
             a(2.0);
@@ -1868,6 +1870,7 @@ struct AccumulatorTest
             shouldEqual(get<Mean>(a), 2.0);
             shouldEqual(get<Variance>(a), 2.0/3.0);
             shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
+            shouldEqual(get<Covariance>(a), 2.0/3.0);
         }
     }
 
@@ -1877,9 +1880,9 @@ struct AccumulatorTest
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<Variance, Minimum, Maximum> > A;
+            typedef Accumulator<V, Select<StdDev, Covariance, Minimum, Maximum> > A;
             typedef LookupTag<Mean, A>::result_type W;
-            typedef LookupTag<Variance, A>::result_type Var;
+            typedef LookupTag<Covariance, A>::result_type Var;
 
             A a;
 
@@ -1893,21 +1896,29 @@ struct AccumulatorTest
             shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
             shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
 
-            double varianceData[] = { 
+            W variance(2.0/3.0);
+            shouldEqual(get<Variance>(a), variance);
+
+            W stddev = sqrt(variance);
+            shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
+
+            double covarianceData[] = { 
                 2.0/3.0, -1.0/3.0, -1.0/3.0,
                -1.0/3.0,  2.0/3.0, -1.0/3.0,
                -1.0/3.0, -1.0/3.0,  2.0/3.0 };
-            Var variance(3,3, varianceData);
-            shouldEqual(get<Variance>(a), variance);
+            Var covariance(3,3, covarianceData);
+            shouldEqual(get<Covariance>(a), covariance);
         }
 
         {
+            using namespace vigra::multi_math;
+            
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
-            typedef Accumulator<V::view_type, Select<StdDev, Minimum, Maximum> > A;
+            typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum> > A;
             typedef LookupTag<Mean, A>::result_type W;
             typedef TinyVector<W::value_type, 3> TW;
-            typedef LookupTag<Variance, A>::result_type Var;
+            typedef LookupTag<Covariance, A>::result_type Var;
 
             A a;
 
@@ -1923,11 +1934,14 @@ struct AccumulatorTest
             shouldEqual(get<Sum>(a), W(s, TW(6.0,6.0,6.0).begin()));
             shouldEqual(get<Mean>(a),  W(s, TW(2.0,2.0,2.0).begin()));
 
-            Var variance(3,3);
-            variance.init(2.0/3.0);
+            Var covariance(3,3);
+            covariance.init(2.0/3.0);
+            shouldEqual(get<Covariance>(a), covariance);
+
+            W variance(s, 2.0/3.0);
             shouldEqual(get<Variance>(a), variance);
 
-            Var stddev = sqrt(variance);
+            W stddev = sqrt(variance);
             shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
 
             a(V(s, T(0, 2, 4).begin()));
@@ -1940,7 +1954,7 @@ struct AccumulatorTest
     {
         using namespace vigra::acc1;
         
-        typedef Accumulator<double, Select<StdDev, Minimum, Maximum> > A;
+        typedef Accumulator<double, Select<Covariance, Minimum, Maximum> > A;
 
         A a, b;
 
@@ -1958,9 +1972,9 @@ struct AccumulatorTest
         shouldEqual(get<Maximum>(a), 5.0);
         shouldEqual(get<Sum>(a), 15.0);
         shouldEqual(get<Mean>(a), 3.0);
-        shouldEqual(get<SSD>(a), 10.0);
-        shouldEqual(get<Variance>(a), 2.0);
-        shouldEqual(get<StdDev>(a), sqrt(2.0));
+//        shouldEqual(get<SSD>(a), 10.0);
+        shouldEqual(get<Covariance>(a), 2.0);
+//        shouldEqual(get<StdDev>(a), sqrt(2.0));
 
     }
 };
