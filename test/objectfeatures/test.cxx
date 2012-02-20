@@ -1903,7 +1903,7 @@ struct AccumulatorTest
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<StdDev, Covariance, Minimum, Maximum> > A;
+            typedef Accumulator<V, Select<StdDev, Covariance, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::result_type W;
             typedef LookupTag<Covariance, A>::result_type Var;
 
@@ -1913,11 +1913,16 @@ struct AccumulatorTest
             a(V(2,3,1));
             a(V(3,1,2));
 
+            a.updatePass2(V(1,2,3));
+            a.updatePass2(V(2,3,1));
+            a.updatePass2(V(3,1,2));
+
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<Minimum>(a), V(1,1,1));
             shouldEqual(get<Maximum>(a), V(3,3,3));
             shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
             shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
+            shouldEqual(get<CentralMoment<2> >(a), W(2.0,2.0,2.0));
 
             W variance(2.0/3.0);
             shouldEqual(get<Variance>(a), variance);
@@ -1938,7 +1943,7 @@ struct AccumulatorTest
             
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
-            typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum> > A;
+            typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::result_type W;
             typedef TinyVector<W::value_type, 3> TW;
             typedef LookupTag<Covariance, A>::result_type Var;
@@ -1947,15 +1952,22 @@ struct AccumulatorTest
 
             Shape1 s(3);
 
-            a(V(s, T(1,1,1).begin()));
-            a(V(s, T(2,2,2).begin()));
-            a(V(s, T(3,3,3).begin()));
+            V data[] = { V(s, 1), V(s, 2), V(s, 3) };
+
+            a(data[0]);
+            a(data[1]);
+            a(data[2]);
+
+            a.updatePass2(data[0]);
+            a.updatePass2(data[1]);
+            a.updatePass2(data[2]);
 
             shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<Minimum>(a), V(s, T(1,1,1).begin()));
-            shouldEqual(get<Maximum>(a), V(s, T(3,3,3).begin()));
-            shouldEqual(get<Sum>(a), W(s, TW(6.0,6.0,6.0).begin()));
-            shouldEqual(get<Mean>(a),  W(s, TW(2.0,2.0,2.0).begin()));
+            shouldEqual(get<Minimum>(a), V(s, 1));
+            shouldEqual(get<Maximum>(a), V(s, 3));
+            shouldEqual(get<Sum>(a), W(s, 6.0));
+            shouldEqual(get<Mean>(a),  W(s, 2.0));
+            shouldEqual(get<CentralMoment<2> >(a),  W(s, 2.0));
 
             Var covariance(3,3);
             covariance.init(2.0/3.0);
@@ -1977,7 +1989,7 @@ struct AccumulatorTest
     {
         using namespace vigra::acc1;
         
-        typedef Accumulator<double, Select<Covariance, Minimum, Maximum> > A;
+        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
 
         A a, b;
 
@@ -1988,6 +2000,13 @@ struct AccumulatorTest
         b(4.0);
         b(5.0);
 
+        a.updatePass2(1.0);
+        a.updatePass2(2.0);
+        a.updatePass2(3.0);
+
+        b.updatePass2(4.0);
+        b.updatePass2(5.0);
+
         a += b;
 
         shouldEqual(get<Count>(a), 5.0);
@@ -1995,10 +2014,10 @@ struct AccumulatorTest
         shouldEqual(get<Maximum>(a), 5.0);
         shouldEqual(get<Sum>(a), 15.0);
         shouldEqual(get<Mean>(a), 3.0);
-//        shouldEqual(get<SSD>(a), 10.0);
+        shouldEqual(get<SSD>(a), 10.0);
         shouldEqual(get<Covariance>(a), 2.0);
-//        shouldEqual(get<StdDev>(a), sqrt(2.0));
-
+        shouldEqual(get<StdDev>(a), sqrt(2.0));
+        shouldEqual(get<CentralMoment<2> >(a), 10.0);
     }
 };
 

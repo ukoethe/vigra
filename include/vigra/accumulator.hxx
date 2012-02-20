@@ -787,10 +787,82 @@ struct Mean
     };
 };
 
+namespace detail
+{
+
+template <unsigned int N>
+struct MergeCentralMoments
+{
+    template <class Left, class Right>
+    static void exec(Left &, Right const &)
+    {
+        vigra_precondition(false,
+            "CentralMoment<N>::operator+=(): not implemented for N > 4.");
+    }
+};
+
+template <>
+struct MergeCentralMoments<2u>
+{
+    template <class Left, class Right>
+    static void exec(Left & l, Right const & r)
+    {
+        using namespace vigra::multi_math;
+        double count_l = get<Count>(l);
+        double count_r = get<Count>(r);
+        double weight = count_l * count_r / (count_l + count_r);
+        l.moment_ += r.moment_ + weight * sq(get<Sum>(l) / count_l - get<Sum>(r) / count_r);
+    }
+};
+
+template <>
+struct MergeCentralMoments<3u>
+{
+    template <class Left, class Right>
+    static void exec(Left & l, Right const & r)
+    {
+        using namespace vigra::multi_math;
+        typedef typename AccumulatorTraits<T>::SumType SumType;
+        double count_l = get<Count>(l);
+        double count_r = get<Count>(r);
+        double count = count_l + count_r;
+        double weight = count_l * count_r * (count_l - count_r) / sq(count);
+        SumType delta = get<Sum>(l) / count_l - get<Sum>(r) / count_r;
+        l.moment_ += r.moment_ + weight * pow(delta, 3) +
+                       3.0 / count * delta * (count_l * get<CentralMoment<2> >(r)
+                                             - count_r * get<CentralMoment<2> >(l));
+    }
+};
+
+template <>
+struct MergeCentralMoments<4u>
+{
+    template <class Left, class Right>
+    static void exec(Left & l, Right const & r)
+    {
+        using namespace vigra::multi_math;
+        typedef typename AccumulatorTraits<T>::SumType SumType;
+        double count_l = get<Count>(l);
+        double count_r = get<Count>(r);
+        double count_l_2 = sq(count_l);
+        double count_r_2 = sq(count_r);
+        double count = count_l + count_r;
+        double weight = count_l * count_r * (count_l_2 - count_l * count_r + count_r_2) / pow(count, 3);
+        SumType delta = get<Sum>(l) / count_l - get<Sum>(r) / count_r;
+        l.moment_ += r.moment_ + weight * pow(delta, 4) +
+                      6.0 / sq(count) * sq(delta) * (  count_l_2 * get<CentralMoment<2> >(r)
+                                                     + count_r_2 * get<CentralMoment<2> >(l)) +
+                      4.0 / count * delta * (  count_l * get<CentralMoment<3> >(r)
+                                             - count_r * get<CentralMoment<3> >(l));
+    }
+};
+
+} // namsspace detail
+
 template <unsigned int N>
 struct CentralMoment
 {
-    typedef Select<Mean, Count> Dependencies;
+    typedef Select<Mean, Count, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
      
     template <class T, class BASE>
     struct Impl
@@ -834,8 +906,8 @@ struct CentralMoment
         
         void operator+=(Impl const & o)
         {
-            vigra_precondition(false,
-                "CentralMoment<N>::operator+=(): sorry, not implemented.");
+            detail::MergeCentralMoments<N>::exec(*this, o);
+            // this must be last because the above computation needs the old values
             BaseType::operator+=(o);
         }
     
