@@ -291,9 +291,6 @@ struct DynamicAccumulatorWrapper
     typedef TAG Tag;
     typedef typename TAG::template Impl<T, BaseBase> Base;
     
-    typedef typename Base::argument_type         argument_type;
-    typedef typename Base::first_argument_type   first_argument_type;
-    typedef typename Base::second_argument_type  second_argument_type;
     typedef typename Base::result_type           result_type;
     typedef typename Base::qualified_result_type qualified_result_type;
 
@@ -315,7 +312,8 @@ struct DynamicAccumulatorWrapper
             Base::reset();
         else
             BaseBase::reset();
-    }
+        is_active_ = false;
+   }
    
     unsigned int passesRequired() const
     {
@@ -523,9 +521,6 @@ struct Count
         typedef Count Tag;
         typedef BASE BaseType;
 
-        typedef typename BaseType::argument_type        argument_type;
-        typedef typename BaseType::first_argument_type  first_argument_type;
-        typedef typename BaseType::second_argument_type second_argument_type;
         typedef double                                  result_type;
         typedef double                                  qualified_result_type;
         
@@ -578,9 +573,6 @@ struct Minimum
         typedef BASE BaseType;
 
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename BaseType::argument_type            argument_type;
-        typedef typename BaseType::first_argument_type      first_argument_type;
-        typedef typename BaseType::second_argument_type     second_argument_type;
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
 
@@ -643,9 +635,6 @@ struct Maximum
         typedef BASE BaseType;
 
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename BaseType::argument_type            argument_type;
-        typedef typename BaseType::first_argument_type      first_argument_type;
-        typedef typename BaseType::second_argument_type     second_argument_type;
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
 
@@ -708,9 +697,6 @@ struct Sum
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename BaseType::argument_type            argument_type;
-        typedef typename BaseType::first_argument_type      first_argument_type;
-        typedef typename BaseType::second_argument_type     second_argument_type;
         typedef typename AccumulatorTraits<T>::SumType      result_type;
         typedef result_type const &                         qualified_result_type;
 
@@ -771,9 +757,6 @@ struct Mean
         typedef Mean Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type           argument_type;
-        typedef typename BaseType::first_argument_type     first_argument_type;
-        typedef typename BaseType::second_argument_type    second_argument_type;
         typedef typename LookupTag<Sum, Impl>::result_type result_type;
         typedef result_type                                qualified_result_type;
 
@@ -872,11 +855,8 @@ struct CentralMoment
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename BaseType::argument_type            argument_type;
-        typedef typename BaseType::first_argument_type      first_argument_type;
-        typedef typename BaseType::second_argument_type     second_argument_type;
         typedef typename AccumulatorTraits<T>::SumType      result_type;
-        typedef result_type const &                         qualified_result_type;
+        typedef result_type                                 qualified_result_type;
 
         result_type moment_;
         
@@ -929,7 +909,58 @@ struct CentralMoment
         
         qualified_result_type operator()() const
         {
-            return moment_ ;
+            using namespace vigra::multi_math;
+            return moment_ / get<Count>(*this);
+        }
+    };
+};
+
+struct Skewness
+{
+    typedef Select<CentralMoment<3> > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef Skewness Tag;
+        typedef BASE BaseType;
+        
+        typedef typename LookupTag<CentralMoment<3>, Impl>::result_type result_type;
+        typedef result_type                                             qualified_result_type;
+
+        using BaseType::operator();
+        
+        qualified_result_type operator()() const
+        {
+			using namespace multi_math;
+            return sqrt(get<Count>(*this)) * 
+                     cast<CentralMoment<3> >(*this).moment_ / pow(cast<CentralMoment<2> >(*this).moment_, 1.5);
+        }
+    };
+};
+
+struct Kurtosis
+{
+    typedef Select<CentralMoment<4> > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef Kurtosis Tag;
+        typedef BASE BaseType;
+        
+        typedef typename LookupTag<CentralMoment<4>, Impl>::result_type result_type;
+        typedef result_type                                             qualified_result_type;
+
+        using BaseType::operator();
+        
+        qualified_result_type operator()() const
+        {
+			using namespace multi_math;
+            return get<Count>(*this) * 
+                     cast<CentralMoment<4> >(*this).moment_ / sq(cast<CentralMoment<2> >(*this).moment_);
         }
     };
 };
@@ -946,9 +977,6 @@ struct SumSquaredDifferences
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type   element_type;
-        typedef typename BaseType::argument_type              argument_type;
-        typedef typename BaseType::first_argument_type        first_argument_type;
-        typedef typename BaseType::second_argument_type       second_argument_type;
         typedef typename AccumulatorTraits<T>::SumType        result_type;
         typedef result_type const &                           qualified_result_type;
        
@@ -1029,9 +1057,6 @@ struct Variance
         typedef Variance Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
@@ -1057,9 +1082,6 @@ struct StdDev
         typedef StdDev Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<Variance, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
@@ -1084,9 +1106,6 @@ struct UnbiasedVariance
         typedef UnbiasedVariance Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
@@ -1111,9 +1130,6 @@ struct UnbiasedStdDev
         typedef UnbiasedStdDev Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<Variance, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
@@ -1139,9 +1155,6 @@ struct ScatterMatrix
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type   element_type;
-        typedef typename BaseType::argument_type              argument_type;
-        typedef typename BaseType::first_argument_type        first_argument_type;
-        typedef typename BaseType::second_argument_type       second_argument_type;
         typedef typename AccumulatorTraits<T>::CovarianceType result_type;
         typedef result_type const &                           qualified_result_type;
        
@@ -1243,9 +1256,6 @@ struct Covariance
         typedef Covariance Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
@@ -1270,9 +1280,6 @@ struct UnbiasedCovariance
         typedef UnbiasedCovariance Tag;
         typedef BASE BaseType;
         
-        typedef typename BaseType::argument_type         argument_type;
-        typedef typename BaseType::first_argument_type   first_argument_type;
-        typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 

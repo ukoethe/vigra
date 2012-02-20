@@ -1819,29 +1819,33 @@ struct AccumulatorTest
         }
 
         { 
-            Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > a;
+            Accumulator<double, Select<Covariance, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > a;
 
             shouldEqual(2, a.passesRequired());
 
-            a(1.0);
-            a(2.0);
-            a(3.0);
+            double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
-            shouldEqual(get<Count>(a), 3.0);
+            for(int k=0; k<4; ++k)
+                a(data[k]);
+
+            shouldEqual(get<Count>(a), 4.0);
             shouldEqual(get<Minimum>(a), 1.0);
-            shouldEqual(get<Maximum>(a), 3.0);
-            shouldEqual(get<Sum>(a), 6.0);
-            shouldEqual(get<Mean>(a), 2.0);
-            shouldEqual(get<Variance>(a), 2.0/3.0);
-            shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
-            shouldEqual(get<Covariance>(a), 2.0/3.0);
+            shouldEqual(get<Maximum>(a), 5.0);
+            shouldEqual(get<Sum>(a), 11.0);
+            shouldEqual(get<Mean>(a), 2.75);
+            shouldEqualTolerance(get<UnbiasedVariance>(a), 2.9166666666666665, 1e-15);
+            shouldEqualTolerance(get<UnbiasedStdDev>(a), sqrt(2.9166666666666665), 1e-15);
+            shouldEqualTolerance(get<Variance>(a), 2.1875, 1e-15);
+            shouldEqualTolerance(get<StdDev>(a), sqrt(2.1875), 1e-15);
+            shouldEqualTolerance(get<Covariance>(a), 2.1875, 1e-15);
 
-            a.updatePass2(1.0);
-            a.updatePass2(2.0);
-            a.updatePass2(3.0);
+            for(int k=0; k<4; ++k)
+                a.updatePass2(data[k]);
 
-            shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<CentralMoment<2> >(a), 2.0);
+            shouldEqual(get<Count>(a), 4.0);
+            shouldEqualTolerance(get<CentralMoment<2> >(a),  2.1875, 1e-15);
+            shouldEqualTolerance(get<Skewness>(a), 0.43465075957466565, 1e-15);
+            shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
         }
 
         { 
@@ -1893,7 +1897,7 @@ struct AccumulatorTest
             a.updatePass2(3.0);
 
             shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<CentralMoment<2> >(a), 2.0);
+            shouldEqual(get<CentralMoment<2> >(a), 2.0/3.0);
         }
     }
 
@@ -1918,16 +1922,14 @@ struct AccumulatorTest
             a.updatePass2(V(3,1,2));
 
             shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<Minimum>(a), V(1,1,1));
-            shouldEqual(get<Maximum>(a), V(3,3,3));
-            shouldEqual(get<Sum>(a), W(6.0,6.0,6.0));
-            shouldEqual(get<Mean>(a), W(2.0,2.0,2.0));
-            shouldEqual(get<CentralMoment<2> >(a), W(2.0,2.0,2.0));
+            shouldEqual(get<Minimum>(a), V(1));
+            shouldEqual(get<Maximum>(a), V(3));
+            shouldEqual(get<Sum>(a), W(6.0));
+            shouldEqual(get<Mean>(a), W(2.0));
+            shouldEqual(get<CentralMoment<2> >(a), W(2.0/3.0));
+            shouldEqual(get<Variance>(a), W(2.0/3.0));
 
-            W variance(2.0/3.0);
-            shouldEqual(get<Variance>(a), variance);
-
-            W stddev = sqrt(variance);
+            W stddev = sqrt( W(2.0/3.0));
             shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
 
             double covarianceData[] = { 
@@ -1945,7 +1947,6 @@ struct AccumulatorTest
             typedef TinyVector<int, 3> T;
             typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::result_type W;
-            typedef TinyVector<W::value_type, 3> TW;
             typedef LookupTag<Covariance, A>::result_type Var;
 
             A a;
@@ -1967,7 +1968,7 @@ struct AccumulatorTest
             shouldEqual(get<Maximum>(a), V(s, 3));
             shouldEqual(get<Sum>(a), W(s, 6.0));
             shouldEqual(get<Mean>(a),  W(s, 2.0));
-            shouldEqual(get<CentralMoment<2> >(a),  W(s, 2.0));
+            shouldEqual(get<CentralMoment<2> >(a),  W(s, 2.0 / 3.0));
 
             Var covariance(3,3);
             covariance.init(2.0/3.0);
@@ -2015,9 +2016,10 @@ struct AccumulatorTest
         shouldEqual(get<Sum>(a), 15.0);
         shouldEqual(get<Mean>(a), 3.0);
         shouldEqual(get<SSD>(a), 10.0);
+        shouldEqual(get<Variance>(a), 2.0);
         shouldEqual(get<Covariance>(a), 2.0);
         shouldEqual(get<StdDev>(a), sqrt(2.0));
-        shouldEqual(get<CentralMoment<2> >(a), 10.0);
+        shouldEqual(get<CentralMoment<2> >(a), 2.0);
     }
 };
 
