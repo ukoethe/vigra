@@ -1004,36 +1004,28 @@ struct ScatterMatrix
     
         void operator()(T const & t)
         {
-            if(get<Count>(*this) != 0.0)
+            double old_count = get<Count>(*this);
+            if(old_count != 0.0)
             {
-                using namespace vigra::multi_math;            
-                diff_ = get<Sum>(*this) / get<Count>(*this) - t;
-
-                BaseType::operator()(t);
-
-                addWeightedOuterProduct(scatter_matrix_, diff_, adjustWeight());
+                using namespace vigra::multi_math;
+                diff_ = get<Sum>(*this) / old_count - t;
+                double weight = old_count / (old_count + 1.0);
+                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
             }
-            else
-            {
-                BaseType::operator()(t);
-            }
+            BaseType::operator()(t);
         }
         
         void operator()(T const & t, double weight)
         {
-            if(get<Count>(*this) != 0.0)
+            double old_count = get<Count>(*this);
+            if(old_count != 0.0)
             {
-                using namespace vigra::multi_math;            
-                diff_ = get<Sum>(*this) / get<Count>(*this) - t;
-
-                BaseType::operator()(t, weight);
-
-                addWeightedOuterProduct(scatter_matrix_, diff_, adjustWeight(weight));
+                using namespace vigra::multi_math;
+                diff_ = get<Sum>(*this) / old_count - t;
+                double weight = old_count / (old_count + weight) * weight;
+                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
             }
-            else
-            {
-                BaseType::operator()(t, weight);
-            }
+            BaseType::operator()(t, weight);
         }
         
         qualified_result_type operator()() const
@@ -1055,11 +1047,6 @@ struct ScatterMatrix
         {
             ssd += w*m*m;
         }
-        
-        double adjustWeight(double weight = 1.0)
-        {
-            return (get<Count>(*this) - weight) / get<Count>(*this) * weight;
-        }
     };
 };
 
@@ -1079,7 +1066,6 @@ struct Covariance
         typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
-
 
         using BaseType::operator();
         
@@ -1107,7 +1093,6 @@ struct UnbiasedCovariance
         typedef typename BaseType::second_argument_type  second_argument_type;
         typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
-
 
         using BaseType::operator();
         
