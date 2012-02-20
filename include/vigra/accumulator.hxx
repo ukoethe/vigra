@@ -166,6 +166,11 @@ struct AccumulatorBase
     void reset()
     {}
     
+    unsigned int passesRequired() const
+    {
+        return 1;
+    }
+
     template <class Shape>
     void reshape(Shape const &)
     {}
@@ -194,6 +199,12 @@ struct TypedAccumulatorBase
     {}
     
     void operator()(first_argument_type, second_argument_type)
+    {}
+    
+    void updatePass2(argument_type)
+    {}
+    
+    void updatePass2(first_argument_type, second_argument_type)
     {}
 };
 
@@ -306,6 +317,14 @@ struct DynamicAccumulatorWrapper
             BaseBase::reset();
     }
    
+    unsigned int passesRequired() const
+    {
+        if(is_active_)
+            return Base::passesRequired();
+        else
+            return BaseBase::passesRequired();
+    }
+        
     template <class Shape>
     void reshape(Shape const & s)
     {
@@ -344,6 +363,22 @@ struct DynamicAccumulatorWrapper
             Base::operator()(t, weight);
         else
             BaseBase::operator()(t, weight);
+    }
+    
+    void updatePass2(T const & t)
+    {
+        if(is_active_)
+            Base::updatePass2(t);
+        else
+            BaseBase::updatePass2(t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        if(is_active_)
+            Base::updatePass2(t, weight);
+        else
+            BaseBase::updatePass2(t, weight);
     }
 };
 
@@ -752,6 +787,81 @@ struct Mean
     };
 };
 
+template <unsigned int N>
+struct CentralMoment
+{
+    typedef Select<Mean, Count> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef CentralMoment<N> Tag;
+        typedef BASE BaseType;
+        
+        typedef typename AccumulatorTraits<T>::element_type element_type;
+        typedef typename BaseType::argument_type            argument_type;
+        typedef typename BaseType::first_argument_type      first_argument_type;
+        typedef typename BaseType::second_argument_type     second_argument_type;
+        typedef typename AccumulatorTraits<T>::SumType      result_type;
+        typedef result_type const &                         qualified_result_type;
+
+        result_type moment_;
+        
+        Impl()
+        {
+            moment_ = element_type();
+        }
+        
+        void reset()
+        {
+            moment_ = element_type();
+            BaseType::reset();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
+            ReshapeTraits<NeedReshape>::reshape(moment_, s, element_type());
+            BaseType::reshape(s);
+        }
+        
+        unsigned int passesRequired() const
+        {
+            return std::max(2u, BaseType::passesRequired());
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "CentralMoment<N>::operator+=(): sorry, not implemented.");
+            BaseType::operator+=(o);
+        }
+    
+        using BaseType::operator();
+        
+        void updatePass2(T const & t)
+        {
+            BaseType::updatePass2(t);
+            using namespace vigra::multi_math;            
+            moment_ += pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+        }
+        
+        void updatePass2(T const & t, double weight)
+        {
+            BaseType::updatePass2(t, weight);
+            using namespace vigra::multi_math;            
+            moment_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+        }
+        
+        qualified_result_type operator()() const
+        {
+            return moment_ ;
+        }
+    };
+};
+
 struct SumSquaredDifferences
 {
     typedef Select<Mean, Count> Dependencies;
@@ -1004,27 +1114,15 @@ struct ScatterMatrix
     
         void operator()(T const & t)
         {
-            double old_count = get<Count>(*this);
-            if(old_count != 0.0)
-            {
-                using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / old_count - t;
-                double weight = old_count / (old_count + 1.0);
-                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
-            }
+            compute(t);
+            // this must be last because the above computation needs the old values
             BaseType::operator()(t);
         }
         
         void operator()(T const & t, double weight)
         {
-            double old_count = get<Count>(*this);
-            if(old_count != 0.0)
-            {
-                using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / old_count - t;
-                double weight = old_count / (old_count + weight) * weight;
-                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
-            }
+            compute(t, weight);
+            // this must be last because the above computation needs the old values
             BaseType::operator()(t, weight);
         }
         
@@ -1046,6 +1144,18 @@ struct ScatterMatrix
         static void addWeightedOuterProduct(double & ssd, SumType const & m, double w)
         {
             ssd += w*m*m;
+        }
+        
+        void compute(T const & t, double weight = 1.0)
+        {
+            double old_count = get<Count>(*this);
+            if(old_count != 0.0)
+            {
+                using namespace vigra::multi_math;
+                diff_ = get<Sum>(*this) / old_count - t;
+                weight = old_count / (old_count + weight) * weight;
+                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
+            }
         }
     };
 };

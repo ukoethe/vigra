@@ -1797,6 +1797,8 @@ struct AccumulatorTest
         { 
             Accumulator<double, Select<Count> > a;
 
+            shouldEqual(1, a.passesRequired());
+
             a(1.0);
             a(2.0);
             a(3.0);
@@ -1817,7 +1819,9 @@ struct AccumulatorTest
         }
 
         { 
-            Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum> > a;
+            Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > a;
+
+            shouldEqual(2, a.passesRequired());
 
             a(1.0);
             a(2.0);
@@ -1831,11 +1835,20 @@ struct AccumulatorTest
             shouldEqual(get<Variance>(a), 2.0/3.0);
             shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
             shouldEqual(get<Covariance>(a), 2.0/3.0);
+
+            a.updatePass2(1.0);
+            a.updatePass2(2.0);
+            a.updatePass2(3.0);
+
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<CentralMoment<2> >(a), 2.0);
         }
 
         { 
-            DynamicAccumulator<double, Select<Covariance, StdDev, Minimum> > a;
+            DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
             activate<Count>(a);
+
+            shouldEqual(1, a.passesRequired());
 
             a(1.0);
             a(2.0);
@@ -1859,6 +1872,9 @@ struct AccumulatorTest
             activate<StdDev>(a);
             activate<Minimum>(a);
             activate<Covariance>(a);
+            activate<CentralMoment<2> >(a);
+
+            shouldEqual(2, a.passesRequired());
 
             a(1.0);
             a(2.0);
@@ -1871,6 +1887,13 @@ struct AccumulatorTest
             shouldEqual(get<Variance>(a), 2.0/3.0);
             shouldEqual(get<StdDev>(a), sqrt(2.0/3.0));
             shouldEqual(get<Covariance>(a), 2.0/3.0);
+
+            a.updatePass2(1.0);
+            a.updatePass2(2.0);
+            a.updatePass2(3.0);
+
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<CentralMoment<2> >(a), 2.0);
         }
     }
 
