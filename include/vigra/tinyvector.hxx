@@ -938,6 +938,14 @@ class TinyVector
         return *this;
     }
 
+        /** Assignment from scalar. Will set all entries to the given value.
+        */
+    TinyVector & operator=(value_type const & v)
+    {
+        Loop::assignScalar(BaseType::begin(), v);
+        return *this;
+    }
+
         /** Copy from a TinyVector with a different number of elements.
         
             Only the first <tt>min(SIZE, USIZE)</tt> elements are copied.

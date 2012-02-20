@@ -939,6 +939,13 @@ public:
         return *this;
     }
 
+        /** Assignment of a scalar. Equivalent to MultiArrayView::init(v).
+         */
+    MultiArrayView & operator=(value_type const & v)
+    {
+        return init(v);
+    }
+
         /** Add-assignment of a compatible MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
@@ -1206,7 +1213,8 @@ public:
     template <class U>
     MultiArrayView & init(const U & init)
     {
-        detail::copyScalarMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
+        if(hasData())
+            detail::copyScalarMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
         return *this;
     }
 
@@ -2560,6 +2568,14 @@ public:
     {
         this->copyOrReshape(rhs);
         return *this;
+    }
+
+        /** assignment from scalar.<br>
+            Equivalent to MultiArray::init(v).
+         */
+    MultiArray & operator=(value_type const & v)
+    {
+        return this->init(v);
     }
 
         /** Add-assignment from arbitrary MultiArrayView. Fails with

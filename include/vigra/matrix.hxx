@@ -301,6 +301,14 @@ class Matrix
         return *this;
     }
 
+        /** assignment from scalar.<br>
+            Equivalent to Matrix::init(v).
+         */
+    Matrix & operator=(value_type const & v)
+    {
+        return init(v);
+    }
+
          /** init elements with a constant
          */
     template <class U>
