@@ -42,6 +42,7 @@
 #include "utilities.hxx"
 #include "matrix.hxx"
 #include "multi_math.hxx"
+#include "eigensystem.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -60,14 +61,14 @@ struct Select
 {};
 
 template <class List>
-struct PushDependencies;
+struct AddDependencies;
 
 template <class HEAD, class TAIL>
-struct PushDependencies<TypeList<HEAD, TAIL> >
+struct AddDependencies<TypeList<HEAD, TAIL> >
 {
-    typedef typename PushDependencies<TAIL>::type TailWithDependencies;
+    typedef typename AddDependencies<TAIL>::type TailWithDependencies;
     typedef typename HEAD::Dependencies Dependencies; // must be of type Select<...>
-    typedef typename PushDependencies<typename Dependencies::type>::type HeadDependencies;
+    typedef typename AddDependencies<typename Dependencies::type>::type HeadDependencies;
     typedef TypeList<HEAD, HeadDependencies> HeadWithDependencies;
     typedef typename MergeUnique<HeadWithDependencies, TailWithDependencies>::type type;
     typedef typename type::Head Head;
@@ -75,7 +76,7 @@ struct PushDependencies<TypeList<HEAD, TAIL> >
 };
 
 template <>
-struct PushDependencies<void>
+struct AddDependencies<void>
 {
     typedef void type;
     typedef void Head;
@@ -88,9 +89,11 @@ struct AccumulatorTraits
     typedef T type;
     typedef T element_type;
     typedef T argument_type;
-    typedef T                                      MinmaxType;
-    typedef typename NumericTraits<T>::RealPromote SumType;
-    typedef typename NumericTraits<T>::RealPromote CovarianceType;
+    typedef typename NumericTraits<T>::RealPromote element_promote_type;
+    typedef T                     MinmaxType;
+    typedef element_promote_type  SumType;
+    typedef element_promote_type  FlatCovarianceType;
+    typedef element_promote_type  CovarianceType;
     
     typedef typename Select<>::type NeedReshape;
 };
@@ -101,9 +104,11 @@ struct AccumulatorTraits<TinyVector<T, N> >
     typedef TinyVector<T, N>         type;
     typedef T                        element_type;
     typedef TinyVector<T, N> const & argument_type;
-    typedef TinyVector<T, N>                                      MinmaxType;
-    typedef TinyVector<typename NumericTraits<T>::RealPromote, N> SumType;
-    typedef Matrix<typename NumericTraits<T>::RealPromote>        CovarianceType;
+    typedef typename NumericTraits<T>::RealPromote       element_promote_type;
+    typedef TinyVector<T, N>                             MinmaxType;
+    typedef TinyVector<element_promote_type, N>          SumType;
+    typedef TinyVector<element_promote_type, N*(N+1)/2>  FlatCovarianceType;
+    typedef Matrix<element_promote_type>                 CovarianceType;
     
     typedef typename Select<CovarianceType>::type NeedReshape;
 };
@@ -111,44 +116,41 @@ struct AccumulatorTraits<TinyVector<T, N> >
 template <unsigned int N, class T, class Stride>
 struct AccumulatorTraits<MultiArrayView<N, T, Stride> >
 {
-    typedef MultiArrayView<N, T, Stride>         type;
-    typedef T                                    element_type;
-    typedef MultiArrayView<N, T, Stride> const & argument_type;
-    typedef MultiArray<N, T>                                      MinmaxType;
-    typedef MultiArray<N, typename NumericTraits<T>::RealPromote> SumType;
-    typedef Matrix<typename NumericTraits<T>::RealPromote>        CovarianceType;
+    typedef MultiArrayView<N, T, Stride>            type;
+    typedef T                                       element_type;
+    typedef MultiArrayView<N, T, Stride> const &    argument_type;
+    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef MultiArray<N, T>                        MinmaxType;
+    typedef MultiArray<N, element_promote_type>     SumType;
+    typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
+    typedef Matrix<element_promote_type>            CovarianceType;
     
-    typedef typename Select<MinmaxType, SumType, CovarianceType>::type NeedReshape;
+    typedef typename Select<MinmaxType, SumType, FlatCovarianceType, CovarianceType>::type NeedReshape;
 };
 
-template <class NeedReshape>
-struct ReshapeTraits
-{
-    template <class Array, class Shape, class Initial>
-    static void reshape(Array & a, Shape const & s, Initial initial)
-    {
-        Array(s, initial).swap(a);
-    }
-    
-    template <class Array, class Shape, class Initial>
-    static void flatReshape(Array & a, Shape const & s, Initial initial)
-    {
-        MultiArrayIndex size = prod(s);
-        Array(size, size, initial).swap(a);
-    }
-};
+namespace detail {
 
-template <>
-struct ReshapeTraits<VigraFalseType>
+template <class T, class Shape>
+void reshapeImpl(T &, Shape const &)
+{}
+
+template <class T, class Shape, class Initial>
+void reshapeImpl(T &, Shape const &, Initial const & = T())
+{}
+
+template <unsigned int N, class T, class Alloc>
+void reshapeImpl(MultiArray<N, T, Alloc> & a, typename MultiArrayShape<N>::type const & s, T const & initial = T())
 {
-    template <class Array, class Shape, class Initial>
-    static void reshape(Array &, Shape const &, Initial)
-    {}
-    
-    template <class Array, class Shape, class Initial>
-    static void flatReshape(Array &, Shape const &, Initial)
-    {}
-};
+    MultiArray<N, T, Alloc>(s, initial).swap(a);
+}
+
+template <class T, class Alloc>
+void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T())
+{
+    Matrix<T, Alloc>(s, initial).swap(a);
+}
+
+} // namespace detail
 
 struct AccumulatorBase 
 {
@@ -294,6 +296,8 @@ struct DynamicAccumulatorWrapper
     typedef typename Base::result_type           result_type;
     typedef typename Base::qualified_result_type qualified_result_type;
 
+    // this helper class follows a simple principle: call the wrapped functionality in
+    // Base if is_active_ is true, but skip Base and call BaseBase otherwise
     bool is_active_;
     
     DynamicAccumulatorWrapper()
@@ -396,7 +400,7 @@ struct NeedsReshape<T, AccumulatorBase>
 };
 
 template <class T, class Base, class NeedsReshape=typename NeedsReshape<T, Base>::type>
-struct ReshapeAccumulator
+struct ReshapeHelper
 : public Base
 {
     typedef VigraFalseType Tag;
@@ -404,7 +408,7 @@ struct ReshapeAccumulator
     
     bool needs_reshape_;
     
-    ReshapeAccumulator()
+    ReshapeHelper()
     : needs_reshape_(true)
     {}
     
@@ -446,7 +450,7 @@ struct ReshapeAccumulator
 };
 
 template <class T, class Base>
-struct ReshapeAccumulator<T, Base, VigraFalseType>
+struct ReshapeHelper<T, Base, VigraFalseType>
 : public Base
 {
     typedef VigraFalseType Tag;
@@ -483,23 +487,23 @@ struct DynamicCompose<T, Tag, void>
 
 template <class T, class Selected>
 struct Accumulator
-: public ReshapeAccumulator<T, 
-                 typename Compose<T, typename PushDependencies<typename Selected::type>::Head,
-                                     typename PushDependencies<typename Selected::type>::Tail>::type>
+: public ReshapeHelper<T, 
+                 typename Compose<T, typename AddDependencies<typename Selected::type>::Head,
+                                     typename AddDependencies<typename Selected::type>::Tail>::type>
 {
-    typedef typename PushDependencies<typename Selected::type>::type Accumulators;
-    typedef typename ReshapeAccumulator<T, typename Compose<T, typename Accumulators::Head, 
+    typedef typename AddDependencies<typename Selected::type>::type Accumulators;
+    typedef typename ReshapeHelper<T, typename Compose<T, typename Accumulators::Head, 
                                                       typename Accumulators::Tail>::type> BaseType;
     typedef VigraFalseType Tag;
 };
 
 template <class T, class Selected>
 struct DynamicAccumulator
-: public ReshapeAccumulator<T, typename DynamicCompose<T, typename PushDependencies<typename Selected::type>::Head,
-                                                 typename PushDependencies<typename Selected::type>::Tail>::type>
+: public ReshapeHelper<T, typename DynamicCompose<T, typename AddDependencies<typename Selected::type>::Head,
+                                                 typename AddDependencies<typename Selected::type>::Tail>::type>
 {
-    typedef typename PushDependencies<typename Selected::type>::type Accumulators;
-    typedef typename ReshapeAccumulator<T, typename DynamicCompose<T, typename Accumulators::Head, 
+    typedef typename AddDependencies<typename Selected::type>::type Accumulators;
+    typedef typename ReshapeHelper<T, typename DynamicCompose<T, typename Accumulators::Head, 
                                                              typename Accumulators::Tail>::type> BaseType;
     typedef VigraFalseType Tag;
 };
@@ -510,8 +514,9 @@ struct DynamicAccumulator
 /*                                                                          */
 /****************************************************************************/
 
-struct Count
+class Count
 {
+  public:
     typedef Select<> Dependencies;
     
     template <class T, class BASE>
@@ -524,45 +529,46 @@ struct Count
         typedef double                                  result_type;
         typedef double                                  qualified_result_type;
         
-        result_type count_;
+        result_type value_;
         
         Impl()
-        : count_(0.0)
+        : value_(0.0)
         {}
         
         void reset()
         {
-            count_ = 0.0;
+            value_ = 0.0;
             BaseType::reset();
         }
         
         void operator+=(Impl const & o)
         {
             BaseType::operator+=(o);
-            count_ += o.count_;
+            value_ += o.value_;
         }
     
         void operator()(T const & t)
         {
             BaseType::operator()(t);
-            ++count_;
+            ++value_;
         }
         
         void operator()(T const & t, double weight)
         {
             BaseType::operator()(t, weight);
-            count_ += weight;
+            value_ += weight;
         }
         
         result_type operator()() const
         {
-            return count_;
+            return value_;
         }
     };
 };
 
-struct Minimum
+class Minimum
 {
+  public:
     typedef Select<> Dependencies;
     
     template <class T, class BASE>
@@ -576,24 +582,23 @@ struct Minimum
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
 
-        result_type min_;
+        result_type value_;
         
         Impl()
         {
-            min_ = NumericTraits<element_type>::max();
+            value_ = NumericTraits<element_type>::max();
         }
         
         void reset()
         {
-            min_ = NumericTraits<element_type>::max();
+            value_ = NumericTraits<element_type>::max();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            ReshapeTraits<NeedReshape>::reshape(min_, s, NumericTraits<element_type>::max());
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
             BaseType::reshape(s);
         }
         
@@ -601,14 +606,14 @@ struct Minimum
         {
             BaseType::operator+=(o);
             using namespace multi_math;
-            min_ = min(min_, o.min_);
+            value_ = min(value_, o.value_);
         }
     
         void operator()(T const & t)
         {
             BaseType::operator()(t);
             using namespace multi_math;
-            min_ = min(min_, t);
+            value_ = min(value_, t);
         }
         
         void operator()(T const & t, double weight)
@@ -618,13 +623,14 @@ struct Minimum
         
         qualified_result_type operator()() const
         {
-            return min_;
+            return value_;
         }
     };
 };
 
-struct Maximum
+class Maximum
 {
+  public:
     typedef Select<> Dependencies;
     
     template <class T, class BASE>
@@ -638,24 +644,23 @@ struct Maximum
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
 
-        result_type max_;
+        result_type value_;
         
         Impl()
         {
-            max_ = NumericTraits<element_type>::min();
+            value_ = NumericTraits<element_type>::min();
         }
         
         void reset()
         {
-            max_ = NumericTraits<element_type>::min();
+            value_ = NumericTraits<element_type>::min();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            ReshapeTraits<NeedReshape>::reshape(max_, s, NumericTraits<element_type>::min());
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
             BaseType::reshape(s);
         }
         
@@ -663,14 +668,14 @@ struct Maximum
         {
             BaseType::operator+=(o);
             using namespace multi_math;
-            max_ = max(max_, o.max_);
+            value_ = max(value_, o.value_);
         }
     
         void operator()(T const & t)
         {
             BaseType::operator()(t);
             using namespace multi_math;
-            max_ = max(max_, t);
+            value_ = max(value_, t);
         }
         
         void operator()(T const & t, double weight)
@@ -680,13 +685,14 @@ struct Maximum
         
         qualified_result_type operator()() const
         {
-            return max_;
+            return value_;
         }
     };
 };
 
-struct Sum
+class Sum
 {
+  public:
     typedef Select<> Dependencies;
      
     template <class T, class BASE>
@@ -696,58 +702,57 @@ struct Sum
         typedef Sum Tag;
         typedef BASE BaseType;
         
-        typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename AccumulatorTraits<T>::SumType      result_type;
-        typedef result_type const &                         qualified_result_type;
+        typedef typename AccumulatorTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorTraits<T>::SumType              result_type;
+        typedef result_type const &                                 qualified_result_type;
 
-        result_type sum_;
+        result_type value_;
         
         Impl()
-        {
-            sum_ = element_type();
-        }
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
         
         void reset()
         {
-            sum_ = element_type();
+            value_ = element_type();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            ReshapeTraits<NeedReshape>::reshape(sum_, s, element_type());
+            detail::reshapeImpl(value_, s);
             BaseType::reshape(s);
         }
         
         void operator+=(Impl const & o)
         {
             BaseType::operator+=(o);
-            sum_ += o.sum_;
+            value_ += o.value_;
         }
     
         void operator()(T const & t)
         {
             BaseType::operator()(t);
-            sum_ += t;
+            value_ += t;
         }
         
         void operator()(T const & t, double weight)
         {
             BaseType::operator()(t, weight);
-            sum_ += weight*t;
+            value_ += weight*t;
         }
         
         qualified_result_type operator()() const
         {
-            return sum_;
+            return value_;
         }
     };
 };
 
-struct Mean
+class Mean
 {
+  public:
     typedef Select<Sum, Count> Dependencies;
     
     template <class T, class BASE>
@@ -773,11 +778,21 @@ struct Mean
 namespace detail
 {
 
+template <class SSD, class Sum1, class Sum2> 
+void updateSSD(SSD & l, Sum1 const & s1, double n1, Sum2 const & s2, double n2 = 1.0)
+{
+    if(n1 != 0.0 && n2 != 0.0)
+    {
+        using namespace vigra::multi_math;
+        l += n1 * n2 / (n1 + n2) * sq(s1 / n1 - s2 / n2);
+    }
+}
+
 template <unsigned int N>
-struct MergeCentralMoments
+struct CentralMomentsHelper
 {
     template <class Left, class Right>
-    static void exec(Left &, Right const &)
+    static void merge(Left &, Right const &)
     {
         vigra_precondition(false,
             "CentralMoment<N>::operator+=(): not implemented for N > 4.");
@@ -785,66 +800,65 @@ struct MergeCentralMoments
 };
 
 template <>
-struct MergeCentralMoments<2u>
+struct CentralMomentsHelper<2u>
 {
-    template <class Left, class Right>
-    static void exec(Left & l, Right const & r)
+    template <class Accu>
+    static void merge(Accu & l, Accu const & r)
     {
-        using namespace vigra::multi_math;
-        double count_l = get<Count>(l);
-        double count_r = get<Count>(r);
-        double weight = count_l * count_r / (count_l + count_r);
-        l.moment_ += r.moment_ + weight * sq(get<Sum>(l) / count_l - get<Sum>(r) / count_r);
+        updateSSD(l.value_, get<Sum>(l), get<Count>(l), get<Sum>(r), get<Count>(r));
+        l.value_ += r.value_;
     }
 };
 
 template <>
-struct MergeCentralMoments<3u>
+struct CentralMomentsHelper<3u>
 {
-    template <class Left, class Right>
-    static void exec(Left & l, Right const & r)
+    template <class Accu>
+    static void merge(Accu & l, Accu const & r)
     {
         using namespace vigra::multi_math;
-        typedef typename AccumulatorTraits<T>::SumType SumType;
-        double count_l = get<Count>(l);
-        double count_r = get<Count>(r);
-        double count = count_l + count_r;
-        double weight = count_l * count_r * (count_l - count_r) / sq(count);
-        SumType delta = get<Sum>(l) / count_l - get<Sum>(r) / count_r;
-        l.moment_ += r.moment_ + weight * pow(delta, 3) +
-                       3.0 / count * delta * (count_l * get<CentralMoment<2> >(r)
-                                             - count_r * get<CentralMoment<2> >(l));
+        typedef typename LookupTag<Sum, Accu>::result_type SumType;
+        double n1 = get<Count>(l);
+        double n2 = get<Count>(r);
+        double n = n1 + n2;
+        double weight = n1 * n2 * (n1 - n2) / sq(n);
+        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+        l.value_ += r.value_ + weight * pow(delta, 3) +
+                       3.0 / n * delta * (  n1 * cast<CentralMoment<2> >(r).value_
+                                          - n2 * cast<CentralMoment<2> >(l).value_);
     }
 };
 
 template <>
-struct MergeCentralMoments<4u>
+struct CentralMomentsHelper<4u>
 {
-    template <class Left, class Right>
-    static void exec(Left & l, Right const & r)
+    template <class Accu>
+    static void merge(Accu & l, Accu const & r)
     {
         using namespace vigra::multi_math;
-        typedef typename AccumulatorTraits<T>::SumType SumType;
-        double count_l = get<Count>(l);
-        double count_r = get<Count>(r);
-        double count_l_2 = sq(count_l);
-        double count_r_2 = sq(count_r);
-        double count = count_l + count_r;
-        double weight = count_l * count_r * (count_l_2 - count_l * count_r + count_r_2) / pow(count, 3);
-        SumType delta = get<Sum>(l) / count_l - get<Sum>(r) / count_r;
-        l.moment_ += r.moment_ + weight * pow(delta, 4) +
-                      6.0 / sq(count) * sq(delta) * (  count_l_2 * get<CentralMoment<2> >(r)
-                                                     + count_r_2 * get<CentralMoment<2> >(l)) +
-                      4.0 / count * delta * (  count_l * get<CentralMoment<3> >(r)
-                                             - count_r * get<CentralMoment<3> >(l));
+        typedef typename LookupTag<Sum, Accu>::result_type SumType;
+        double n1 = get<Count>(l);
+        double n2 = get<Count>(r);
+        double n = n1 + n2;
+        double n1_2 = sq(n1);
+        double n2_2 = sq(n2);
+        double n_2 = sq(n);
+        double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
+        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+        l.value_ += r.value_ + weight * pow(delta, 4) +
+                      6.0 / n_2 * sq(delta) * (  n1_2 * cast<CentralMoment<2> >(r).value_
+                                               + n2_2 * cast<CentralMoment<2> >(l).value_ ) +
+                      4.0 / n * delta * (  n1 * cast<CentralMoment<3> >(r).value_
+                                         - n2 * cast<CentralMoment<3> >(l).value_);
     }
 };
 
 } // namsspace detail
 
 template <unsigned int N>
-struct CentralMoment
+class CentralMoment
 {
+  public:
     typedef Select<Mean, Count, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
      
     template <class T, class BASE>
@@ -854,28 +868,26 @@ struct CentralMoment
         typedef CentralMoment<N> Tag;
         typedef BASE BaseType;
         
-        typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename AccumulatorTraits<T>::SumType      result_type;
-        typedef result_type                                 qualified_result_type;
+        typedef typename AccumulatorTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorTraits<T>::SumType              result_type;
+        typedef result_type                                         qualified_result_type;
 
-        result_type moment_;
+        result_type value_;
         
         Impl()
-        {
-            moment_ = element_type();
-        }
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
         
         void reset()
         {
-            moment_ = element_type();
+            value_ = element_type();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            ReshapeTraits<NeedReshape>::reshape(moment_, s, element_type());
+            detail::reshapeImpl(value_, s);
             BaseType::reshape(s);
         }
         
@@ -886,7 +898,7 @@ struct CentralMoment
         
         void operator+=(Impl const & o)
         {
-            detail::MergeCentralMoments<N>::exec(*this, o);
+            detail::CentralMomentsHelper<N>::merge(*this, o);
             // this must be last because the above computation needs the old values
             BaseType::operator+=(o);
         }
@@ -897,26 +909,27 @@ struct CentralMoment
         {
             BaseType::updatePass2(t);
             using namespace vigra::multi_math;            
-            moment_ += pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+            value_ += pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
         }
         
         void updatePass2(T const & t, double weight)
         {
             BaseType::updatePass2(t, weight);
             using namespace vigra::multi_math;            
-            moment_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+            value_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
         }
         
         qualified_result_type operator()() const
         {
             using namespace vigra::multi_math;
-            return moment_ / get<Count>(*this);
+            return value_ / get<Count>(*this);
         }
     };
 };
 
-struct Skewness
+class Skewness
 {
+  public:
     typedef Select<CentralMoment<3> > Dependencies;
     
     template <class T, class BASE>
@@ -935,13 +948,14 @@ struct Skewness
         {
 			using namespace multi_math;
             return sqrt(get<Count>(*this)) * 
-                     cast<CentralMoment<3> >(*this).moment_ / pow(cast<CentralMoment<2> >(*this).moment_, 1.5);
+                     cast<CentralMoment<3> >(*this).value_ / pow(cast<CentralMoment<2> >(*this).value_, 1.5);
         }
     };
 };
 
-struct Kurtosis
+class Kurtosis
 {
+  public:
     typedef Select<CentralMoment<4> > Dependencies;
     
     template <class T, class BASE>
@@ -960,13 +974,14 @@ struct Kurtosis
         {
 			using namespace multi_math;
             return get<Count>(*this) * 
-                     cast<CentralMoment<4> >(*this).moment_ / sq(cast<CentralMoment<2> >(*this).moment_);
+                     cast<CentralMoment<4> >(*this).value_ / sq(cast<CentralMoment<2> >(*this).value_);
         }
     };
 };
 
-struct SumSquaredDifferences
+class SumSquaredDifferences
 {
+  public:
     typedef Select<Mean, Count> Dependencies;
     
     template <class T, class BASE>
@@ -976,78 +991,60 @@ struct SumSquaredDifferences
         typedef SumSquaredDifferences Tag;
         typedef BASE BaseType;
         
-        typedef typename AccumulatorTraits<T>::element_type   element_type;
-        typedef typename AccumulatorTraits<T>::SumType        result_type;
-        typedef result_type const &                           qualified_result_type;
+        typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorTraits<T>::SumType               result_type;
+        typedef result_type const &                                  qualified_result_type;
        
-        result_type sumOfSquaredDifferences_;
+        result_type value_;
         
         Impl()
-        {
-            sumOfSquaredDifferences_ = element_type();
-        }
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
         
         void reset()
         {
-            sumOfSquaredDifferences_ = element_type();
+            value_ = element_type();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            ReshapeTraits<NeedReshape>::reshape(sumOfSquaredDifferences_, s, element_type());
+            detail::reshapeImpl(value_, s);
             BaseType::reshape(s);
         }
         
         void operator+=(Impl const & o)
         {
-            using namespace vigra::multi_math;            
-
-            double weight = get<Count>(*this) * get<Count>(o) / (get<Count>(*this) + get<Count>(o));
-            sumOfSquaredDifferences_ += o.sumOfSquaredDifferences_ + 
-                                        weight * sq(get<Sum>(*this) / get<Count>(*this) - get<Sum>(o) / get<Count>(o));
-            
+            detail::CentralMomentsHelper<2>::merge(*this, o);
             // this must be last because the above computation needs the old values
             BaseType::operator+=(o);
         }
     
         void operator()(T const & t)
         {
-            double old_count = get<Count>(*this);
-            if(old_count != 0.0)
-            {
-                using namespace vigra::multi_math;
-                
-                sumOfSquaredDifferences_ += old_count / (old_count + 1.0) * sq(get<Sum>(*this) / old_count - t);
-            }
+            detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t);
             BaseType::operator()(t);
         }
         
         void operator()(T const & t, double weight)
         {
-            double old_count = get<Count>(*this);
-            if(old_count != 0.0)
-            {
-                using namespace vigra::multi_math;
-                
-                sumOfSquaredDifferences_ += old_count / (old_count + weight) * weight * sq(get<Sum>(*this) / old_count - t);
-            }
+            detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t, weight);
             BaseType::operator()(t, weight);
         }
         
         qualified_result_type operator()() const
         {
-            return sumOfSquaredDifferences_;
+            return value_;
         }
     };
 };
 
 typedef SumSquaredDifferences SSD;
 
-struct Variance
+class Variance
 {
+  public:
     typedef Select<SumSquaredDifferences, Count> Dependencies;
     
     template <class T, class BASE>
@@ -1071,8 +1068,9 @@ struct Variance
     };
 };
 
-struct StdDev
+class StdDev
 {
+  public:
     typedef Select<Variance> Dependencies;
     
     template <class T, class BASE>
@@ -1095,8 +1093,9 @@ struct StdDev
     };
 };
 
-struct UnbiasedVariance
+class UnbiasedVariance
 {
+  public:
     typedef Select<SumSquaredDifferences, Count> Dependencies;
     
     template <class T, class BASE>
@@ -1119,8 +1118,9 @@ struct UnbiasedVariance
     };
 };
 
-struct UnbiasedStdDev
+class UnbiasedStdDev
 {
+  public:
     typedef Select<UnbiasedVariance> Dependencies;
     
     template <class T, class BASE>
@@ -1143,56 +1143,92 @@ struct UnbiasedStdDev
     };
 };
 
-struct ScatterMatrix
+namespace detail {
+
+template <class Scatter, class Sum>
+void updateFlatScatterMatrix(Scatter & sc, Sum const & s, double w)
 {
+    int size = s.size();
+    for(MultiArrayIndex j=0, k=0; j<size; ++j)
+        for(MultiArrayIndex i=j; i<size; ++i, ++k)
+            sc[k] += w*s[i]*s[j];
+}
+
+template <class Sum>
+void updateFlatScatterMatrix(double & sc, Sum const & s, double w)
+{
+    sc += w*s*s;
+}
+
+template <class Cov, class Scatter>
+void flatScatterMatrixToCovariance(Cov & cov, Scatter const & sc, double n)
+{
+    int size = cov.shape(0), k=0;
+    for(MultiArrayIndex j=0; j<size; ++j)
+    {
+        cov(j,j) = sc[k++] / n;
+        for(MultiArrayIndex i=j+1; i<size; ++i)
+        {
+            cov(i,j) = sc[k++] / n;
+            cov(j,i) = cov(i,j);
+        }
+    }
+}
+
+template <class Scatter>
+void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
+{
+    cov = sc / n;
+}
+
+} // namespace detail
+
+// we only store the flattened upper triangular part of the scatter matrix
+class FlatScatterMatrix
+{
+  public:
     typedef Select<Mean, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        typedef ScatterMatrix Tag;
+        typedef FlatScatterMatrix Tag;
         typedef BASE BaseType;
         
-        typedef typename AccumulatorTraits<T>::element_type   element_type;
-        typedef typename AccumulatorTraits<T>::CovarianceType result_type;
-        typedef result_type const &                           qualified_result_type;
+        typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorTraits<T>::FlatCovarianceType    result_type;
+        typedef result_type const &                                  qualified_result_type;
        
         typedef typename AccumulatorTraits<T>::SumType        SumType;
 
-        result_type scatter_matrix_;
+        result_type value_;
         SumType     diff_;
         
         Impl()
-        {
-            scatter_matrix_ = element_type();
-        }
+        : value_(),  // call default constructor explicitly to ensure zero initialization
+          diff_()
+        {}
         
         void reset()
         {
-            scatter_matrix_ = element_type();
+            value_ = element_type();
             BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, result_type>::type NeedReshape;
-            // we always compute the scatter matrix from flattened arrays
-            ReshapeTraits<NeedReshape>::flatReshape(scatter_matrix_, s, element_type());
-            typedef typename Contains<typename AccumulatorTraits<T>::NeedReshape, SumType>::type SumNeedReshape;
-            ReshapeTraits<SumNeedReshape>::reshape(diff_, s, element_type());
+            int size = prod(s);
+            detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
+            detail::reshapeImpl(diff_, s);
             BaseType::reshape(s);
         }
         
         void operator+=(Impl const & o)
         {
-            using namespace vigra::multi_math;            
-            diff_ = get<Sum>(*this) / get<Count>(*this) - get<Sum>(o) / get<Count>(o);
-            double weight = get<Count>(*this) * get<Count>(o) / (get<Count>(*this) + get<Count>(o));
-            addWeightedOuterProduct(scatter_matrix_, diff_, weight);
-            scatter_matrix_ += o.scatter_matrix_;
-            
+            compute(get<Mean>(o), get<Count>(o));
+            value_ += o.value_;
             // this must be last because the above computation needs the old values
             BaseType::operator+=(o);
         }
@@ -1213,24 +1249,10 @@ struct ScatterMatrix
         
         qualified_result_type operator()() const
         {
-            return scatter_matrix_;
+            return value_;
         }
         
       private:
-        template <class SSD>
-        static void addWeightedOuterProduct(SSD & ssd, SumType const & m, double w)
-        {
-            int size = m.size();
-            for(MultiArrayIndex j=0; j<size; ++j)
-                for(MultiArrayIndex i=0; i<size; ++i)
-                    ssd(i,j) += w*m[i]*m[j];
-        }
-        
-        static void addWeightedOuterProduct(double & ssd, SumType const & m, double w)
-        {
-            ssd += w*m*m;
-        }
-        
         void compute(T const & t, double weight = 1.0)
         {
             double old_count = get<Count>(*this);
@@ -1239,15 +1261,16 @@ struct ScatterMatrix
                 using namespace vigra::multi_math;
                 diff_ = get<Sum>(*this) / old_count - t;
                 weight = old_count / (old_count + weight) * weight;
-                addWeightedOuterProduct(scatter_matrix_, diff_, weight);
+                detail::updateFlatScatterMatrix(value_, diff_, weight);
             }
         }
     };
 };
 
-struct Covariance
+class Covariance
 {
-    typedef Select<ScatterMatrix, Count> Dependencies;
+  public:
+    typedef Select<FlatScatterMatrix, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -1256,22 +1279,111 @@ struct Covariance
         typedef Covariance Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorTraits<T>::CovarianceType        result_type;
+        typedef result_type const &                                  qualified_result_type;
 
+        mutable result_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+            BaseType::reset();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(value_, Shape2(size,size));
+            BaseType::reshape(s);
+        }
+        
         using BaseType::operator();
         
         qualified_result_type operator()() const
         {
-			using namespace multi_math;
-            return get<ScatterMatrix>(*this) / get<Count>(*this);
+            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this));
+            return value_;
         }
     };
 };
 
-struct UnbiasedCovariance
+class CovarianceEigensystem
 {
-    typedef Select<ScatterMatrix, Count> Dependencies;
+  public:
+    typedef Select<Covariance> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef CovarianceEigensystem Tag;
+        typedef BASE BaseType;
+        
+        typedef typename AccumulatorTraits<T>::element_promote_type        element_type;
+        typedef typename AccumulatorTraits<T>::SumType                     EigenvalueType;
+        typedef typename AccumulatorTraits<T>::CovarianceType              EigenvectorType;
+        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
+        typedef result_type                                                qualified_result_type;
+
+        mutable EigenvalueType eigenvalues_;
+        mutable EigenvectorType eigenvectors_;
+        
+        Impl()
+        : eigenvalues_(),  // call default constructor explicitly to ensure zero initialization
+          eigenvectors_()
+        {}
+        
+        void reset()
+        {
+            eigenvalues_ = element_type();
+            eigenvectors_ = element_type();
+            BaseType::reset();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(eigenvalues_, Shape2(size,1));
+            detail::reshapeImpl(eigenvectors_, Shape2(size,size));
+            BaseType::reshape(s);
+        }
+        
+        using BaseType::operator();
+        
+        qualified_result_type operator()() const
+        {
+            compute(get<Covariance>(*this), eigenvalues_, eigenvectors_);
+            return result_type(eigenvalues_, eigenvectors_);
+        }
+        
+      private:
+        template <class Cov, class EW, class EV>
+        static void compute(Cov const & cov, EW & ew, EV & ev)
+        {
+            // create a view because EW could be a TinyVector
+            MultiArrayView<2, element_type> ewview(Shape2(cov.shape(0), 1), &ew[0]);
+            symmetricEigensystem(cov, ewview, ev);
+        }
+        
+        static void compute(double cov, double & ew, double & ev)
+        {
+            ew = cov;
+            ev = 1.0;
+        }
+    };
+};
+
+class UnbiasedCovariance
+{
+  public:
+    typedef Select<FlatScatterMatrix, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -1280,15 +1392,35 @@ struct UnbiasedCovariance
         typedef UnbiasedCovariance Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<ScatterMatrix, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename AccumulatorTraits<T>::CovarianceType result_type;
+        typedef result_type const &                           qualified_result_type;
 
+        mutable result_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+            BaseType::reset();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(value_, Shape2(size,size));
+            BaseType::reshape(s);
+        }
+        
         using BaseType::operator();
         
         qualified_result_type operator()() const
         {
-			using namespace multi_math;
-            return get<ScatterMatrix>(*this) / (get<Count>(*this) - 1.0);
+            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this)-1.0);
+            return value_;
         }
     };
 };

@@ -1819,7 +1819,7 @@ struct AccumulatorTest
         }
 
         { 
-            Accumulator<double, Select<Covariance, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > a;
+            Accumulator<double, Select<CovarianceEigensystem, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > a;
 
             shouldEqual(2, a.passesRequired());
 
@@ -1838,6 +1838,10 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Variance>(a), 2.1875, 1e-15);
             shouldEqualTolerance(get<StdDev>(a), sqrt(2.1875), 1e-15);
             shouldEqualTolerance(get<Covariance>(a), 2.1875, 1e-15);
+
+            std::pair<double, double> eigen = get<CovarianceEigensystem>(a);
+            shouldEqualTolerance(eigen.first, 2.1875, 1e-15);
+            shouldEqual(eigen.second, 1.0);
 
             for(int k=0; k<4; ++k)
                 a.updatePass2(data[k]);
@@ -1907,7 +1911,7 @@ struct AccumulatorTest
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<StdDev, Covariance, Minimum, Maximum, CentralMoment<2> > > A;
+            typedef Accumulator<V, Select<StdDev, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::result_type W;
             typedef LookupTag<Covariance, A>::result_type Var;
 
@@ -1938,6 +1942,17 @@ struct AccumulatorTest
                -1.0/3.0, -1.0/3.0,  2.0/3.0 };
             Var covariance(3,3, covarianceData);
             shouldEqual(get<Covariance>(a), covariance);
+
+            std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
+            W ew(1.0, 1.0, 0.0);
+            shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
+
+            double eigenvectorData[] = {
+                -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
+                 0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
+                 0.0               ,  0.816496580927726,  -0.5773502691896257 };
+            Var ev(3,3, eigenvectorData);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
         }
 
         {
@@ -1990,36 +2005,40 @@ struct AccumulatorTest
     {
         using namespace vigra::acc1;
         
-        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
+        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
 
         A a, b;
 
-        a(1.0);
-        a(2.0);
-        a(3.0);
+        double data[] = { 1.0, 2.0, 3.0, 4.0, 6.0 };
 
-        b(4.0);
-        b(5.0);
+        for(int k=0; k<3; ++k)
+            a(data[k]);
 
-        a.updatePass2(1.0);
-        a.updatePass2(2.0);
-        a.updatePass2(3.0);
+        for(int k=0; k<3; ++k)
+            a.updatePass2(data[k]);
 
-        b.updatePass2(4.0);
-        b.updatePass2(5.0);
+        for(int k=3; k<5; ++k)
+            b(data[k]);
+
+        for(int k=3; k<5; ++k)
+            b.updatePass2(data[k]);
 
         a += b;
 
         shouldEqual(get<Count>(a), 5.0);
         shouldEqual(get<Minimum>(a), 1.0);
-        shouldEqual(get<Maximum>(a), 5.0);
-        shouldEqual(get<Sum>(a), 15.0);
-        shouldEqual(get<Mean>(a), 3.0);
-        shouldEqual(get<SSD>(a), 10.0);
-        shouldEqual(get<Variance>(a), 2.0);
-        shouldEqual(get<Covariance>(a), 2.0);
-        shouldEqual(get<StdDev>(a), sqrt(2.0));
-        shouldEqual(get<CentralMoment<2> >(a), 2.0);
+        shouldEqual(get<Maximum>(a), 6.0);
+        shouldEqual(get<Sum>(a), 16.0);
+        shouldEqualTolerance(get<Mean>(a), 3.2, 1e-15);
+        shouldEqualTolerance(get<SSD>(a), 14.8, 1e-15);
+        shouldEqualTolerance(get<Variance>(a), 2.96, 1e-15);
+        shouldEqualTolerance(get<Covariance>(a), 2.96, 1e-15);
+        shouldEqualTolerance(get<StdDev>(a), sqrt(2.96), 1e-15);
+        shouldEqualTolerance(get<CentralMoment<2> >(a), 2.96, 1e-15);
+        shouldEqualTolerance(get<CentralMoment<3> >(a), 2.016, 1e-15);
+        shouldEqualTolerance(get<CentralMoment<4> >(a), 17.4752, 1e-15);
+        shouldEqualTolerance(get<Skewness>(a), 0.395870337343817, 1e-15);
+        shouldEqualTolerance(get<Kurtosis>(a), 1.9945215485756027, 1e-15);
     }
 };
 
