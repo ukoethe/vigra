@@ -675,10 +675,29 @@ struct Push
     typedef TypeList<A, typename Tail::type> type;
 };
 
+template <class Head, class Tail, class List>
+struct Push<TypeList<Head, Tail>, List>
+{
+    typedef typename Push<Tail, List>::type Rest;
+    typedef TypeList<Head, Rest> type;
+};
+
+template <class Head, class Tail>
+struct Push<TypeList<Head, Tail>, void>
+{
+    typedef TypeList<Head, Tail> type;
+};
+
 template <class A>
 struct Push<A, void>
 {
-    typedef TypeList<A, void> type;
+    typedef TypeList<A> type;
+};
+
+template <class A>
+struct Push<void, A>
+{
+    typedef A type;
 };
 
 template <>
@@ -687,37 +706,43 @@ struct Push<void, void>
     typedef void type;
 };
 
-template <class List1, class List2>
-struct Merge;
-
-template <class Head, class Tail, class List>
-struct Merge<TypeList<Head, Tail>, List>
+template <class A, class Tail=void>
+struct PushUnique
 {
-    typedef typename Merge<Tail, List>::type Rest;
-    typedef TypeList<Head, Rest> type;
+    typedef typename Contains<Tail, A>::type AlreadyInList;
+    typedef typename If<AlreadyInList, typename Tail::type, TypeList<A, typename Tail::type> >::type type;
 };
 
-template <class List>
-struct Merge<void, List>
-{
-    typedef List type;
-};
-
-template <class List1, class List2>
-struct MergeUnique;
-
 template <class Head, class Tail, class List>
-struct MergeUnique<TypeList<Head, Tail>, List>
+struct PushUnique<TypeList<Head, Tail>, List>
 {
-    typedef typename MergeUnique<Tail, List>::type Rest;
+    typedef typename PushUnique<Tail, List>::type Rest;
     typedef typename Contains<Rest, Head>::type HeadAlreadyInList;
     typedef typename If<HeadAlreadyInList, Rest, TypeList<Head, Rest> >::type type;
 };
 
-template <class List>
-struct MergeUnique<void, List>
+template <class Head, class Tail>
+struct PushUnique<TypeList<Head, Tail>, void>
 {
-    typedef List type;
+    typedef TypeList<Head, Tail> type;
+};
+
+template <class A>
+struct PushUnique<A, void>
+{
+    typedef TypeList<A> type;
+};
+
+template <class A>
+struct PushUnique<void, A>
+{
+    typedef A type;
+};
+
+template <>
+struct PushUnique<void, void>
+{
+    typedef void type;
 };
 
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
@@ -745,6 +770,34 @@ struct MakeTypeList
     typedef typename Push<T03, L04>::type L03;
     typedef typename Push<T02, L03>::type L02;
     typedef typename Push<T01, L02>::type L01;
+    typedef L01 type;
+};
+
+template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
+          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
+          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+struct MakeTypeListUnique
+{
+    typedef typename PushUnique<T19, T20>::type L19;
+    typedef typename PushUnique<T18, L19>::type L18;
+    typedef typename PushUnique<T17, L18>::type L17;
+    typedef typename PushUnique<T16, L17>::type L16;
+    typedef typename PushUnique<T15, L16>::type L15;
+    typedef typename PushUnique<T14, L15>::type L14;
+    typedef typename PushUnique<T13, L14>::type L13;
+    typedef typename PushUnique<T12, L13>::type L12;
+    typedef typename PushUnique<T11, L13>::type L11;
+    typedef typename PushUnique<T10, L11>::type L10;
+    typedef typename PushUnique<T09, L10>::type L09;
+    typedef typename PushUnique<T08, L09>::type L08;
+    typedef typename PushUnique<T07, L08>::type L07;
+    typedef typename PushUnique<T06, L07>::type L06;
+    typedef typename PushUnique<T05, L06>::type L05;
+    typedef typename PushUnique<T04, L05>::type L04;
+    typedef typename PushUnique<T03, L04>::type L03;
+    typedef typename PushUnique<T02, L03>::type L02;
+    typedef typename PushUnique<T01, L02>::type L01;
     typedef L01 type;
 };
 

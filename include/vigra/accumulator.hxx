@@ -135,17 +135,19 @@ namespace detail {
     // Insert the dependencies of the selected functors into the TypeList and sort
     // the list such that dependencies come after the functors using them. Make sure 
     // that each functor is contained only once.
-template <class List>
-struct AddDependencies;
+template <class T>
+struct AddDependencies
+{
+    typedef typename AddDependencies<typename T::type>::type type;
+};
 
 template <class HEAD, class TAIL>
 struct AddDependencies<TypeList<HEAD, TAIL> >
 {
-    typedef typename AddDependencies<TAIL>::type TailWithDependencies;
-    typedef typename HEAD::Dependencies Dependencies; // must be of type Select<...>
-    typedef typename AddDependencies<typename Dependencies::type>::type HeadDependencies;
-    typedef TypeList<HEAD, HeadDependencies> HeadWithDependencies;
-    typedef typename MergeUnique<HeadWithDependencies, TailWithDependencies>::type type;
+    typedef typename AddDependencies<TAIL>::type                                   TailWithDependencies;
+    typedef typename AddDependencies<typename HEAD::Dependencies>::type            HeadDependencies;
+    typedef TypeList<HEAD, HeadDependencies>                                       HeadWithDependencies;
+    typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  type;
     typedef typename type::Head Head;
     typedef typename type::Tail Tail;
 };
@@ -322,10 +324,10 @@ struct NeedsReshape<AccumulatorBase, AccumulatorBase::result_type>
     typedef VigraFalseType type;
 };
 
-    // This accumulator is inserted on top of the chain to call reshape() when the first 
-    // data item arrives. This is necessary if the shape of the result depends on the
-    // shape of the input and cannot be determined at compile time. The above 
-    // NeedsReshape traits specify the types where this applies. If the chain
+    // This accumulator is inserted on top of an accumulator chain to call reshape() 
+    // when the first data item arrives. This is necessary if the shape of the result 
+    // depends on the shape of the input and cannot be determined at compile time. 
+    // The above NeedsReshape traits specify the types where this applies. If the chain
     // doesn't contain such types, ReshapeHelper will expand into a do-nothing version.
 template <class T, class Base, class NeedsReshape=typename NeedsReshape<Base>::type>
 struct ReshapeHelper
@@ -415,7 +417,7 @@ struct DynamicCompose<T, void, level>
     typedef TypedAccumulatorBase<T, level+1> type; 
 };
 
-} // namsepace detail
+} // namespace detail
 
     // create an accumulator chain containing the Selected statistics and their dependencies
 template <class T, class Selected>
@@ -424,7 +426,7 @@ struct Accumulator
            typename detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type>
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
-    typedef detail::ReshapeHelper<T, typename detail::Compose<T, Accumulators>::type> BaseType;
+    typedef typename detail::Compose<T, Accumulators>::type BaseType;
     typedef VigraFalseType Tag;
 };
 
@@ -436,7 +438,7 @@ struct DynamicAccumulator
            typename detail::DynamicCompose<T, typename detail::AddDependencies<typename Selected::type>::type>::type>
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
-    typedef detail::ReshapeHelper<T, typename detail::DynamicCompose<T, Accumulators>::type> BaseType;
+    typedef typename detail::DynamicCompose<T, Accumulators>::type BaseType;
     typedef VigraFalseType Tag;
 };
 
