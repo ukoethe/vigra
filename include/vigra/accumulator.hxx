@@ -549,11 +549,12 @@ template <class Tag, class Accumulator>
 struct LookupTag
 {
     typedef typename IsSameType<Tag, typename Accumulator::Tag>::type Found;
-    typedef typename If<Found, Accumulator, typename LookupTag<Tag, typename Accumulator::BaseType>::type>::type type;
-    // FIXME !!!!!!!!!!!!!!!!!!!!!!!!
-    // typedef typename If<Found, typename Accumulator::qualified_result_type, 
+    typedef LookupTag<Tag, typename Accumulator::BaseType> Base;
+    typedef typename If<Found, Accumulator, typename Base::type>::type type;
     typedef typename If<Found, typename Accumulator::result_type, 
-                               typename LookupTag<Tag, typename Accumulator::BaseType>::result_type>::type result_type;
+                               typename Base::result_type>::type result_type;
+    typedef typename If<Found, typename Accumulator::qualified_result_type, 
+                               typename Base::qualified_result_type>::type qualified_result_type;
 };
 
 template <class Tag>
@@ -561,6 +562,7 @@ struct LookupTag<Tag, AccumulatorBase>
 {
     typedef AccumulatorBase type;
     typedef void result_type;
+    typedef void qualified_result_type;
 };
 
     // cast an accumulator chain to the type specified by Tag
@@ -581,7 +583,7 @@ cast(Accumulator const & a)
 namespace detail {
 
 template <class Tag, class Accumulator>
-typename LookupTag<Tag, Accumulator>::result_type
+typename LookupTag<Tag, Accumulator>::qualified_result_type
 getImpl(Accumulator const & a)
 {
     return a();
@@ -598,7 +600,7 @@ void getImpl(AccumulatorBase const & a)
 
     // get the result of the accumulator specified by Tag
 template <class Tag, class Accumulator>
-typename LookupTag<Tag, Accumulator>::result_type
+typename LookupTag<Tag, Accumulator>::qualified_result_type
 get(Accumulator const & a)
 {
     return detail::getImpl<Tag>(cast<Tag>(a));
