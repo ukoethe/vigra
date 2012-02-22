@@ -10,9 +10,9 @@ namespace vigra {
 template <class> // undefined class to provoke usable error messages
 class vigra_error_BitArray_accepts_only_unsigned_underlying_types_and_no_;
 
-template <class X> // bitwise operators do not necessarily work for bool
+template <unsigned SIZE, class X> // bitwise operators do not necessarily work for bool
 struct EnableBitArray
-    : public enable_if<HasMetaLog2<X>::value && !IsSameType<X, bool>::value> {};
+    : public enable_if<(HasMetaLog2<X>::value && !IsSameType<X, bool>::value && SIZE > 0)> {};
 
 // BitArray: a minimal subset of std::bitset with the extension of compile-time
 // access functions set<unsigned>(), test<unsigned>(), reset<unsigned>(), and
@@ -27,7 +27,7 @@ class BitArray
 {};
 
 template <unsigned SIZE, class WORD_TYPE>
-class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<WORD_TYPE>::type>
+class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<SIZE, WORD_TYPE>::type>
 {
     // 'unsigned' will be the most efficent word type for most CPUs,
     // since very long immediates such as a possible 64 bit 'unsigned long'
@@ -309,7 +309,8 @@ class BitArray<SIZE, WORD_TYPE, typename EnableBitArray<WORD_TYPE>::type>
 template <class WORD_TYPE>
 class BitArray<0, WORD_TYPE>
 {
-    bool error[-(long int)sizeof(WORD_TYPE)];
+//    bool error[-(long int)sizeof(WORD_TYPE)];
+    void clear() {}
 };
 
 } // namespace vigra
