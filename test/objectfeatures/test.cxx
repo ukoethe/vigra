@@ -1771,8 +1771,36 @@ struct AccumulatorTest
     
     void test1()
     {
-#if 0
         using namespace vigra::acc1;
+
+        typedef CoupledPointer<2, double> V;
+        typedef CoupledAccumulator<V, Simple<0, Select<Mean> >, Simple<1, Select<Mean> >, Weighted<0, 1, Select<Mean> > > A;
+
+        A a;
+
+        std::cerr << typeid(cast<0, Mean>(a)).name() << " cast\n";
+        std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
+        std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
+
+        a(V(Shape2(1,1), 1.0));
+        a(V(Shape2(2,2), 1.0));
+        a(V(Shape2(3,3), 3.0));
+
+        std::cerr << get<0, Count>(a) << " count0\n";
+        std::cerr << get<1, Count>(a) << " count1\n";
+        std::cerr << get<2, Count>(a) << " count2\n";
+
+        std::cerr << get<0, Sum>(a) << " sum0\n";
+        std::cerr << get<1, Sum>(a) << " sum1\n";
+        std::cerr << get<2, Sum>(a) << " sum2\n";
+
+        std::cerr << get<0, Mean>(a) << " Mean 0\n";
+        std::cerr << get<1, Mean>(a) << " Mean 1\n";
+        std::cerr << get<2, Mean>(a) << " Mean 2\n";
+
+#if 0
+        std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
+        std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
         
         typedef Select<int, float>::type Selected;
         
@@ -2047,6 +2075,7 @@ struct FeaturesTestSuite : public vigra::test_suite
     FeaturesTestSuite()
         : vigra::test_suite("FeaturesTestSuite")
     {
+        add(testCase(&AccumulatorTest::test1));
         add(testCase(&AccumulatorTest::testScalar));
         add(testCase(&AccumulatorTest::testVector));
         add(testCase(&AccumulatorTest::testMerge));

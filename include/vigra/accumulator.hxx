@@ -51,6 +51,7 @@ namespace vigra {
 
 namespace acc1 {
 
+    // this class closes an accumulator chain
 struct AccumulatorBase 
 {
 	typedef AccumulatorBase Tag;
@@ -119,6 +120,107 @@ struct TypedAccumulatorBase
     void updatePass2(first_argument_type, second_argument_type)
     {}
 };
+
+// class Count;
+
+// template <class TAG = void>
+// class Coord;
+
+// template <class Accumulators>
+// struct CoordDependencies
+// {
+    // typedef typename Push<typename Coord<typename Accumulators::Head>::type, 
+                          // typename CoordDependencies<typename Accumulators::Tail>::type>::type type;
+// };
+
+// template <>
+// struct CoordDependencies<void>
+// {
+    // typedef void type;
+// };
+
+// template <class TAG>
+// class Coord
+// {
+  // public:
+  
+    // typedef typename CoordDependencies<typename TAG::Dependencies::type>::type Dependencies;
+    // typedef Coord<TAG> type;
+    
+    // template<class U, class Base>
+    // struct Impl
+    // : public TAG::template Impl<typename U::CoordType, Base>
+    // {
+        // typedef Coord<TAG> Tag;
+        // typedef Base BaseType;
+        // typedef typename TAG::template Impl<typename U::CoordType, Base> WrappedType;
+    // };
+// };
+
+// template <>
+// class Coord<Count>
+// {
+  // public:
+    // typedef Count type;
+// };
+
+// template <>
+// class Coord<void>
+// {
+  // public:
+    // typedef void type;
+// };
+
+// struct Coupled
+// {
+    // typedef Shape2 CoordType;
+    // typedef double DataType;
+// };
+
+// template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
+          // class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
+          // class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
+          // class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+// class UseCoord
+// : public MakeTypeList<typename Coord<T01>::type, typename Coord<T02>::type, typename Coord<T03>::type, 
+                      // typename Coord<T04>::type, typename Coord<T05>::type, typename Coord<T06>::type, 
+                      // typename Coord<T07>::type, typename Coord<T08>::type, typename Coord<T09>::type, 
+                      // typename Coord<T10>::type, typename Coord<T11>::type, typename Coord<T12>::type, 
+                      // typename Coord<T13>::type, typename Coord<T14>::type, typename Coord<T15>::type, 
+                      // typename Coord<T16>::type, typename Coord<T17>::type, typename Coord<T18>::type, 
+                      // typename Coord<T19>::type, typename Coord<T20>::type >
+// {};
+
+// template <class T>
+// struct Expand
+// {
+    // typedef T type;
+// };
+
+// template <class T01, class T02, class T03, class T04, class T05,
+          // class T06, class T07, class T08, class T09, class T10,
+          // class T11, class T12, class T13, class T14, class T15,
+          // class T16, class T17, class T18, class T19, class T20>
+// struct Expand<UseCoord<T01, T02, T03, T04, T05, T06, T07, T08, T09, T10,
+                  // T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> >
+// : public UseCoord<T01, T02, T03, T04, T05, T06, T07, T08, T09, T10,
+                  // T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
+// {};
+
+    // // Select is a synonym for MakeTypeList
+// template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
+          // class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
+          // class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
+          // class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+// struct Select
+// : public MakeTypeList<typename Expand<T01>::type, typename Expand<T02>::type, typename Expand<T03>::type, 
+                      // typename Expand<T04>::type, typename Expand<T05>::type, typename Expand<T06>::type, 
+                      // typename Expand<T07>::type, typename Expand<T08>::type, typename Expand<T09>::type, 
+                      // typename Expand<T10>::type, typename Expand<T11>::type, typename Expand<T12>::type, 
+                      // typename Expand<T13>::type, typename Expand<T14>::type, typename Expand<T15>::type, 
+                      // typename Expand<T16>::type, typename Expand<T17>::type, typename Expand<T18>::type, 
+                      // typename Expand<T19>::type, typename Expand<T20>::type >
+// {};
 
     // Select is a synonym for MakeTypeList
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
@@ -448,6 +550,8 @@ struct LookupTag
 {
     typedef typename IsSameType<Tag, typename Accumulator::Tag>::type Found;
     typedef typename If<Found, Accumulator, typename LookupTag<Tag, typename Accumulator::BaseType>::type>::type type;
+    // FIXME !!!!!!!!!!!!!!!!!!!!!!!!
+    // typedef typename If<Found, typename Accumulator::qualified_result_type, 
     typedef typename If<Found, typename Accumulator::result_type, 
                                typename LookupTag<Tag, typename Accumulator::BaseType>::result_type>::type result_type;
 };
@@ -506,6 +610,226 @@ void activate(Accumulator & a)
 {
     cast<Tag>(a).activate();
 }
+
+#if 0
+Accumulator<StridedPairPointer<...>, Bind<Data, Select<...> >,    // data statistics
+                                     Bind<Coord, Select<...> >,    // coordinate statstics
+                                     Bind<Coord, Data, Select<...> >  // weighted coordinate statistics
+CoupledAccumulator<StridedTriplePointer<...>, Bind<1, Select<...> >,    // data statistics
+                                            Bind<0, Select<...> >,    // coordinate statstics
+                                            Bind<0, 1, Select<...> >  // weighted coordinate statistics
+                                            Bind<1, 2, Select<...> >  // weighted data statistics
+#endif
+
+template <unsigned N, class T>
+struct CoupledPointer
+{
+    typedef typename MultiArrayShape<N>::type Coord;
+    typedef T value_type;
+    
+    Coord coord_;
+    value_type value_;
+    
+    CoupledPointer(Coord const & c, value_type v)
+    : coord_(c),
+      value_(v)
+    {}
+};
+
+template <class Handle, unsigned index>
+struct CoupledHandleTraits
+{
+    typedef void type;
+};
+
+template <unsigned N, class T>
+struct CoupledHandleTraits<CoupledPointer<N, T>, 0>
+{
+    typedef typename MultiArrayShape<N>::type type;
+    static type exec(CoupledPointer<N, T> const & c)
+    {
+        return c.coord_;
+    }
+};
+
+template <unsigned N, class T>
+struct CoupledHandleTraits<CoupledPointer<N, T>, 1>
+{
+    typedef T type;
+    static type exec(CoupledPointer<N, T> const & c)
+    {
+        return c.value_;
+    }
+};
+
+template <unsigned INDEX, unsigned N, class T>
+typename CoupledHandleTraits<CoupledPointer<N, T>, INDEX>::type
+get(CoupledPointer<N, T> const & c)
+{
+    return CoupledHandleTraits<CoupledPointer<N, T>, INDEX>::exec(c);
+}
+
+template <unsigned INDEX, class Selected>
+struct Simple
+{
+    static const unsigned index = INDEX;
+    typedef VigraFalseType IsWeighted;
+    typedef Selected Accumulators;
+};
+
+template <unsigned INDEX, unsigned WEIGHT_INDEX, class Selected>
+struct Weighted
+{
+    static const unsigned index = INDEX;
+    static const unsigned weight_index = WEIGHT_INDEX;
+    typedef VigraTrueType IsWeighted;
+    typedef Selected Accumulators;
+};
+
+template <class A, class IsWeighted=typename A::IsWeighted>
+struct CallSelector
+{
+    template <class Accumulator, class CoupledHandle>
+    static void pass1(Accumulator & a, CoupledHandle const & h)
+    {
+        a(get<A::index>(h));
+    }
+    template <class Accumulator, class CoupledHandle>
+    static void pass2(Accumulator & a, CoupledHandle const & h)
+    {
+        a.updatePass2(get<A::index>(h));
+    }
+};
+
+template <class A>
+struct CallSelector<A, VigraTrueType>
+{
+    template <class Accumulator, class CoupledHandle>
+    static void pass1(Accumulator & a, CoupledHandle const & h)
+    {
+        a(get<A::index>(h), get<A::weight_index>(h));
+    }
+    template <class Accumulator, class CoupledHandle>
+    static void pass2(Accumulator & a, CoupledHandle const & h)
+    {
+        a.updatePass2(get<A::index>(h), get<A::weight_index>(h));
+    }
+};
+
+template <class CoupledHandle, class Selected, int LEVEL>
+struct ComposeCoupledAccumulator;
+
+template <class CoupledHandle, class Head, class Tail, int LEVEL>
+struct ComposeCoupledAccumulator<CoupledHandle, TypeList<Head, Tail>, LEVEL>
+: public ComposeCoupledAccumulator<CoupledHandle, Tail, LEVEL+1>
+{
+    typedef ComposeCoupledAccumulator<CoupledHandle, Tail, LEVEL+1> BaseType;
+    
+    static const unsigned index = Head::index;
+    static const int level = LEVEL;
+    typedef typename CoupledHandleTraits<CoupledHandle, index>::type DataType;
+    typedef Accumulator<DataType, typename Head::Accumulators> AccumulatorType;
+    
+    AccumulatorType value_;
+    
+    unsigned int passesRequired() const
+    {
+        return std::max(BaseType::passesRequired(), value_.passesRequired());
+    }
+    
+    void operator+=(ComposeCoupledAccumulator const & o)
+    {
+        value_ += o.value_;
+        BaseType::operator+=(o);
+    }
+    
+    void operator()(CoupledHandle const & h)
+    {
+        CallSelector<Head>::pass1(value_, h);
+        BaseType::operator()(h);
+    }
+    
+    void updatePass2(CoupledHandle const & h)
+    {
+        CallSelector<Head>::pass2(value_, h);
+        BaseType::updatePass2(h);
+    }
+    
+    void reset()
+    {
+        value_.reset();
+        BaseType::reset();
+    }
+};
+
+template <class CoupledHandle, int LEVEL>
+struct ComposeCoupledAccumulator<CoupledHandle, void, LEVEL>
+{
+    unsigned int passesRequired() const
+    {
+        return 0;
+    }
+    
+    void operator+=(ComposeCoupledAccumulator const &)
+    {}
+    
+    void operator()(CoupledHandle const &)
+    {}
+    
+    void updatePass2(CoupledHandle const &)
+    {}
+    
+    void reset()
+    {}
+};
+
+template <class CoupledHandle, class A1=void, class A2=void, class A3=void, class A4=void, class A5=void>
+struct CoupledAccumulator
+: public ComposeCoupledAccumulator<CoupledHandle, typename MakeTypeList<A1, A2, A3, A4, A5>::type, 0>
+{
+    static const int level = -1;
+    typedef ComposeCoupledAccumulator<CoupledHandle, typename MakeTypeList<A1, A2, A3, A4, A5>::type, 0> BaseType;
+};
+
+// template<int LEVEL, class Tag, class CoupledHandle, class Selected>
+// typename LookupTag<Tag, typename ComposeCoupledAccumulator<CoupledHandle, Selected, LEVEL>::AccumulatorType>::type const &
+// cast(ComposeCoupledAccumulator<CoupledHandle, Selected, LEVEL> const & a)
+// {
+    // return cast<Tag>(a.value_);
+// }
+
+template <int LEVEL, class Accumulator>
+struct LookupLevel
+{
+    typedef typename IfBool<(LEVEL == Accumulator::level), 
+               Accumulator, typename LookupLevel<LEVEL, typename Accumulator::BaseType>::type>::type type;
+};
+
+template <int LEVEL, class T, int ACTUAL_LEVEL>
+struct LookupLevel<LEVEL, ComposeCoupledAccumulator<T,void,ACTUAL_LEVEL> >
+{
+    typedef void type;
+};
+
+template<int LEVEL, class Tag, class CoupledHandle, class A1, class A2, class A3, class A4, class A5>
+typename LookupTag<Tag, typename LookupLevel<LEVEL, 
+         CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> >::type::AccumulatorType>::type const &
+cast(CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> const & a)
+{
+    typedef typename LookupLevel<LEVEL, CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> >::type LevelType;
+    return cast<Tag>(((LevelType const &)a).value_);
+}
+
+template<int LEVEL, class Tag, class CoupledHandle, class A1, class A2, class A3, class A4, class A5>
+typename LookupTag<Tag, typename LookupLevel<LEVEL, 
+         CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> >::type::AccumulatorType>::result_type
+get(CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> const & a)
+{
+    typedef typename LookupLevel<LEVEL, CoupledAccumulator<CoupledHandle, A1, A2, A3, A4, A5> >::type LevelType;
+    return get<Tag>(((LevelType const &)a).value_);
+}
+
+//#endif
 
 /****************************************************************************/
 /*                                                                          */
