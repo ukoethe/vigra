@@ -155,7 +155,7 @@ public:
 	*/
 	
 	// Generate Test volumes
-	int mxsize[3] = {200, 100, 100};	
+	int mxsize[3] = {30, 30, 30};	
 	MultiArrayShape<3>::type shape(mxsize[0], mxsize[1],mxsize[2]); 
 	MultiArray<3,double> testvol_1(shape), testvol_2(shape), testvol_3(shape);
 	MultiArray<3,float> testvol_1_fl(shape);
@@ -191,34 +191,18 @@ public:
 		bool normalize_descriptor=0;
 		bool normalize_sl=0;
 		
-
-	boost::posix_time::ptime cl_start,cl_step, cl_end;
-	boost::posix_time::time_duration msdiff;
-	
 		MultiArrayShape<5>::type shape_test1_full(mxsize[0], mxsize[1], mxsize[2],nbands,filterlevels); 
 		MultiArray<5,double> hog_res1_full(shape_test1_full);	
 
-cl_start = boost::posix_time::microsec_clock::local_time();
-
 		hogdesc3d(testvol_1,hog_res1_full,filterlevels,nbands, ignore_sign, normalize_descriptor, normalize_sl);
 
-cl_end = boost::posix_time::microsec_clock::local_time();
-msdiff = cl_end-cl_start;
-std::cout << " Time: " << double(msdiff.total_milliseconds())/1000 << std::endl;
-		
-		MultiArrayShape<2>::type shape_points(80000, 3); 
+		MultiArrayShape<2>::type shape_points(1, 3); 
 		MultiArray<2,int> spoints(shape_points);
 		spoints(0,0) = 15; spoints(0,1) = 15; spoints(0,2) = 15;
 		MultiArrayShape<3>::type shape_test1_samp(spoints.shape(0), nbands, filterlevels); 
 		MultiArray<3,double> hog_res1_samp(shape_test1_samp);	
 
-cl_start = boost::posix_time::microsec_clock::local_time();
-
 		hogdesc3d_samp(testvol_1,hog_res1_samp,spoints,filterlevels,nbands, ignore_sign, normalize_descriptor, normalize_sl);
-		
-cl_end = boost::posix_time::microsec_clock::local_time();
-msdiff = cl_end-cl_start;
-std::cout << " Time: " << double(msdiff.total_milliseconds())/1000 << std::endl;
 		
 		for (int k=0;k<filterlevels;k++)
 			for (int m=0;m<nbands;m++)
