@@ -85,6 +85,10 @@ struct AccumulatorBase
     template <class Shape>
     void reshape(Shape const &)
     {}
+
+    template <class Shape>
+    void resize(Shape const &)
+    {}
 };
 
 template <class T, unsigned LEVEL=0>
@@ -277,6 +281,171 @@ struct AddDependencies<void>
     typedef void Tail;
 };
 
+template <class TAG>
+struct Dynamic;
+
+template <class T, class Wrapped>
+struct ReshapeConfig
+{
+    template <class A, class Shape>
+    static void reshape(A & a, Shape const & s)
+    {}
+};
+
+template <unsigned int N, class T, class Alloc, class Wrapped>
+struct ReshapeConfig<MultiArray<N, T, Alloc>, Wrapped>
+{
+    template <class A, class Shape>
+    static void reshape(A & a, Shape const & s)
+    {
+        ((Wrapped &)a).reshape(s);
+    }
+};
+
+template <class T, class Alloc, class Wrapped>
+struct ReshapeConfig<Matrix<T, Alloc>, Wrapped>
+{
+    template <class A, class Shape>
+    static void reshape(A & a, Shape const & s)
+    {
+        ((Wrapped &)a).reshape(s);
+    }
+};
+
+template <class T, class TAG, class BaseBase, unsigned LEVEL>
+struct Config
+: public ReshapeConfig<typename TAG::template Impl<T, BaseBase>::value_type, typename TAG::template Impl<T, BaseBase> >
+{
+    typedef TAG Tag;
+    typedef typename TAG::template Impl<T, BaseBase> Wrapped;
+    typedef typename BaseBase BaseType;
+    typedef T const & argument_type;
+    typedef typename Wrapped::result_type result_type;
+    static const unsigned level = LEVEL;
+    
+    template <class A>
+    static result_type get(A const & a)
+    {
+        return ((Wrapped &)a)();
+    }
+    
+    template <class A>
+    static void reset(A & a)
+    {
+        ((Wrapped &)a).reset();
+    }
+   
+    template <class A>
+    static unsigned int passCount(A const & a)
+    {
+        return ((Wrapped const &)a).passesRequired();
+    }
+        
+    template <class A>
+    static void merge(A & a, A const & o)
+    {
+        ((Wrapped &)a).merge(o);
+    }
+    
+    template <class A>
+	static void pass1(A & a, argument_type t)
+    {
+        ((Wrapped &)a).updatePass1(t);
+    }
+    
+    template <class A>
+    static void pass1(A & a, argument_type t, double weight)
+    {
+        ((Wrapped &)a).updatePass1(t, weight);
+    }
+    
+    template <class A>
+    static void pass2(A & a, argument_type t)
+    {
+        ((Wrapped &)a).updatePass2(t);
+    }
+    
+    template <class A>
+    static void pass2(A & a, argument_type t, double weight)
+    {
+        ((Wrapped &)a).updatePass2(t, weight);
+    }
+};
+
+template <class CONFIG>
+struct RecurseAfter
+: public CONFIG
+{
+    typedef CONFIG Base;
+    typedef typename CONFIG::BaseType BaseBase;
+    typedef typename CONFIG::argument_type argument_type;
+    
+    template <class A>
+    static void activate(A & a)
+    {
+        Base::activate(a);
+        ((BaseBase &)a).activate();
+    }
+    
+    template <class A>
+    static void reset(A & a)
+    {
+        Base::reset(a);
+        ((BaseBase &)a).reset();
+    }
+   
+    template <class A>
+    static unsigned int passCount(A const & a)
+    {
+        unsigned int p1 = Base::passCount(a);
+        unsigned int p2 = ((BaseBase &)a).passCount();
+        return std::max(p1, p2);
+    }
+        
+    template <class A, class Shape>
+    static void reshape(A & a, Shape const & s)
+    {
+        Base::reshape(a, s);
+        ((BaseBase &)a).resize(s);
+    }
+   
+    template <class A>
+    static void merge(A & a, A const & o)
+    {
+        Base::merge(a, o);
+        ((BaseBase &)a).operator+=(o);
+    }
+    
+    template <class A>
+	static void pass1(A & a, argument_type t)
+    {
+        Base::pass1(a, t);
+        ((BaseBase &)a).pass1(t);
+    }
+    
+    template <class A>
+    static void pass1(A & a, argument_type t, double weight)
+    {
+        Base::pass1(a, t, weight);
+        ((BaseBase &)a).pass1(t, weight);
+    }
+    
+    template <class A>
+    static void pass2(A & a, argument_type t)
+    {
+        Base::pass2(a, t);
+        ((BaseBase &)a).pass2(t);
+    }
+    
+    template <class A>
+    static void pass2(A & a, argument_type t, double weight)
+    {
+        Base::pass2(a, t, weight);
+        ((BaseBase &)a).pass2(t, weight);
+    }
+};
+
+
     // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
     // activate() must also be called for Tag's dependencies).
 template <class Dependencies>
@@ -298,187 +467,158 @@ struct ActivateDependencies<void>
     {}
 };
 
-    // This helper class adds dynamic (runtime) activation to the 
-    // accumulator specified by TAG. It follows a simple principle: call 
-    // the wrapped functionality in Base if the accumulator is active, but skip 
-    // Base and call BaseBase otherwise. The activation flags are stored in 
-    // TypedAccumulatorBase::active_accumulators_.
 template <class T, class TAG, class BaseBase, unsigned LEVEL>
-struct DynamicAccumulatorWrapper
-: public TAG::template Impl<T, BaseBase>
+struct Config<T, Dynamic<TAG>, BaseBase, LEVEL>
+: public ReshapeConfig<typename TAG::template Impl<T, BaseBase>::value_type, typename TAG::template Impl<T, BaseBase> >
 {
-    static const unsigned level = LEVEL;
-
     typedef TAG Tag;
     typedef typename TAG::template Impl<T, BaseBase> Wrapped;
-    typedef BaseBase BaseType;
+    typedef typename BaseBase BaseType;
+    typedef T const & argument_type;
+    typedef typename Wrapped::result_type result_type;
+    static const unsigned level = LEVEL;
     
-    typedef typename Wrapped::value_type   value_type;
-    typedef typename Wrapped::result_type  result_type;
-
-    void activate()
+    template <class A>
+    static result_type get(A const & a)
     {
-        this->active_accumulators_.set<LEVEL>();
-        ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
+        vigra_precondition(a.active_accumulators_.test<LEVEL>(),
+            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+        return ((Wrapped &)a)();
     }
-     
-    void reset()
+    
+    template <class A>
+    static void activate(A & a)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::reset();
-        BaseBase::reset();
+        a.active_accumulators_.set<LEVEL>();
+        ActivateDependencies<typename Tag::Dependencies::type>::exec(a);
+    }
+    
+    template <class A>
+    static void reset(A & a)
+    {
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).reset();
     }
    
-    unsigned int passCount() const
+    template <class A>
+    static unsigned int passCount(A const & a)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            return std::max(Wrapped::passesRequired(), BaseBase::passCount());
+        if(a.active_accumulators_.test<LEVEL>())
+            return ((Wrapped const &)a).passesRequired();
         else
-            return BaseBase::passCount();
+            return 0;
     }
         
-    template <class Shape>
-    void reshape(Shape const & s)
+    template <class A, class Shape>
+    static void reshape(A & a, Shape const & s)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::reshape(s);
-        BaseBase::reshape(s);
+        if(a.active_accumulators_.test<LEVEL>())
+            ReshapeConfig<typename TAG::template Impl<T, BaseBase>::value_type>::reshape(a, s);
     }
    
-    void operator+=(DynamicAccumulatorWrapper const & o)
+    template <class A>
+    static void merge(A & a, A const & o)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::merge(o);
-        BaseBase::operator+=(o);
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).merge(o);
     }
     
-	result_type operator()() const
+    template <class A>
+	static void pass1(A & a, argument_type t)
     {
-        vigra_precondition(this->active_accumulators_.test<LEVEL>(),
-            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-        return Wrapped::operator()();
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).updatePass1(t);
     }
     
-	void pass1(T const & t)
+    template <class A>
+    static void pass1(A & a, argument_type t, double weight)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::updatePass1(t);
-        BaseBase::pass1(t);
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).updatePass1(t, weight);
     }
     
-    void pass1(T const & t, double weight)
+    template <class A>
+    static void pass2(A & a, argument_type t)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::updatePass1(t, weight);
-        BaseBase::pass1(t, weight);
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).updatePass2(t);
     }
     
-    void pass2(T const & t)
+    template <class A>
+    static void pass2(A & a, argument_type t, double weight)
     {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::updatePass2(t);
-        BaseBase::pass2(t);
+        if(a.active_accumulators_.test<LEVEL>())
+            ((Wrapped &)a).updatePass2(t, weight);
     }
-    
-    void pass2(T const & t, double weight)
-    {
-        if(this->active_accumulators_.test<LEVEL>())
-            Wrapped::updatePass2(t, weight);
-        BaseBase::pass2(t, weight);
-    }
-    
-	void updatePass1(T const &)
-    {}
-    
-    void updatePass1(T const &, double)
-    {}
-    
-    void updatePass2(T const &)
-    {}
-    
-    void updatePass2(T const &, double)
-    {}
-    
-    void merge(DynamicAccumulatorWrapper const &)
-    {}
 };
 
-template <class T, class TAG, class BaseBase, unsigned LEVEL>
-struct AccumulatorWrapper
-: public TAG::template Impl<T, BaseBase>
+template <class CONFIG>
+struct Wrapper
+: public CONFIG::Wrapped
 {
-    static const unsigned level = LEVEL;
-
-    // typedef typename Config::Tag Tag;
-    typedef TAG Tag;
-    typedef typename TAG::template Impl<T, BaseBase> Wrapped;
-    typedef BaseBase BaseType;
+    typedef typename CONFIG::Tag Tag;
+    typedef typename CONFIG::BaseType BaseType;
+    typedef typename CONFIG::argument_type argument_type;
+    typedef typename CONFIG::result_type result_type;
     
-    typedef typename Wrapped::value_type   value_type;
-    typedef typename Wrapped::result_type  result_type;
+    void activate()
+    {
+        CONFIG::activate(*this);
+    }
     
     void reset()
     {
-        Wrapped::reset();
-        BaseBase::reset();
+        CONFIG::reset(*this);
     }
    
     unsigned int passCount() const
     {
-        return std::max(Wrapped::passesRequired(), BaseBase::passCount());
+        return CONFIG::passCount(*this);
     }
         
     template <class Shape>
-    void reshape(Shape const & s)
+    void resize(Shape const & s)
     {
-        Wrapped::reshape(s);
-        BaseBase::reshape(s);
+        CONFIG::reshape(*this, s);
+    }
+    
+    result_type operator()() const
+    {
+        return CONFIG::get(*this);
     }
    
-    void operator+=(AccumulatorWrapper const & o)
+    void operator+=(Wrapper const & o)
     {
-        Wrapped::merge(o);
-        BaseBase::operator+=(o);
+        CONFIG::merge(*this, o);
     }
     
-	void pass1(T const & t)
+	void pass1(argument_type t)
     {
-        Wrapped::updatePass1(t);
-        BaseBase::pass1(t);
+        CONFIG::pass1(*this, t);
     }
     
-    void pass1(T const & t, double weight)
+    void pass1(argument_type t, double weight)
     {
-        Wrapped::updatePass1(t, weight);
-        BaseBase::pass1(t, weight);
+        CONFIG::pass1(*this, t, weight);
     }
     
-    void pass2(T const & t)
+    void pass2(argument_type t)
     {
-        Wrapped::updatePass2(t);
-        BaseBase::pass2(t);
+        CONFIG::pass2(*this, t);
     }
     
-    void pass2(T const & t, double weight)
+    void pass2(argument_type t, double weight)
     {
-        Wrapped::updatePass2(t, weight);
-        BaseBase::pass2(t, weight);
+        CONFIG::pass2(*this, t, weight);
     }
     
-	void updatePass1(T const &)
-    {}
-    
-    void updatePass1(T const &, double)
-    {}
-    
-    void updatePass2(T const &)
-    {}
-    
-    void updatePass2(T const &, double)
-    {}
-    
-    void merge(AccumulatorWrapper const &)
-    {}
+        // make sure that children do not inherit active versions of these functions
+    void updatePass1(argument_type) {}
+    void updatePass1(argument_type, double) {}
+    void updatePass2(argument_type) {}
+    void updatePass2(argument_type, double) {}
+    void merge(Wrapper const &) {}
+    template <class Shape> void reshape(Shape const & s) {}
 };
 
     // Generic reshape function (expands to a no-op when T has fixed shape, and to
@@ -550,7 +690,7 @@ struct ReshapeHelper
     {
         if(needs_reshape_)
         {
-            BASE::reshape(shape(t));
+            BASE::resize(shape(t));
             needs_reshape_ = false;
         }
         BASE::pass1(t);
@@ -560,7 +700,7 @@ struct ReshapeHelper
     {
         if(needs_reshape_)
         {
-            BASE::reshape(shape(t));
+            BASE::resize(shape(t));
             needs_reshape_ = false;
         }
         BASE::pass1(t, weight);
@@ -601,13 +741,28 @@ struct ReshapeHelper<T, BASE, VigraFalseType>
     }
 };
 
+#if 0
+template <class T, class TAG, class BASE, unsigned LEVEL>
+struct SelectConfig
+{
+    typedef RecurseAfter<Config<T, TAG, BASE, LEVEL> > type;
+};
+
+template <class T, class TAG, class BASE, unsigned LEVEL>
+struct SelectWrapper<T, Dynamic<TAG>, BASE, LEVEL>
+{
+    typedef DynamicAccumulatorWrapper<T, TAG, BASE, LEVEL> Wrapper;
+    typedef RecurseAfter<T, Wrapper, BASE, LEVEL> type;
+};
+#endif
+
     // helper classes to create an accumulator chain from a TypeList
 template <class T, class Accumulators, unsigned level=0>
 struct Compose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef AccumulatorWrapper<T, Tag, BaseType, level> type;
+    typedef Wrapper<RecurseAfter<Config<T, Tag, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
@@ -622,7 +777,7 @@ struct DynamicCompose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename DynamicCompose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef DynamicAccumulatorWrapper<T, Tag, BaseType, level> type;
+    typedef Wrapper<RecurseAfter<Config<T, Dynamic<Tag>, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
@@ -1026,14 +1181,19 @@ class Count
     struct Impl
     : public BASE
     {
-        typedef Count Tag;
-        typedef BASE BaseType;
-        
+            // All accumulators must contain appropriate versions of these typedefs.
+        typedef Count  Tag;
+        typedef BASE   BaseType;
         typedef double value_type;
         typedef double result_type;
         
         value_type value_;
         
+            // All accumulators must implement a default constructor, reset(), merge() 
+            // and operator()(). The default constructor must initialize the data.
+            // If the shape of value_ can only be determined at runtime, reshape() 
+            // must be implemented as well, resizing and initializing the data 
+            // appropriately (see class Minimum below).
         Impl()
         : value_(0.0)
         {}
@@ -1047,7 +1207,17 @@ class Count
         {
             value_ += o.value_;
         }
-    
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+
+            // All accumulators must implement either updatePass1() or updatePass2().
+            // In the latter case, passesRequired() must be implemented as well, returning 2.
+            // It is also possible to implement both update functions and decide at runtime
+            // which one to use (e.g. depending on some initialization function). The
+            // result of passesRequired() should then reflect this choice.
         void updatePass1(T const & t)
         {
             ++value_;
@@ -1056,11 +1226,6 @@ class Count
         void updatePass1(T const & t, double weight)
         {
             value_ += weight;
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
         }
     };
 };
@@ -1278,6 +1443,55 @@ class Mean
     };
 };
 
+class Centralize
+{
+  public:
+    typedef Select<Mean> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef Centralize Tag;
+        typedef BASE BaseType;
+        typedef typename AccumulatorTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        void updatePass2(T const & t)
+        {
+            value_ = t - get<Mean>(*this);
+        }
+        
+        void updatePass2(T const & t, double)
+        {
+            value_ = t - get<Mean>(*this);
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
 namespace detail
 {
 
@@ -1317,44 +1531,51 @@ template <>
 struct CentralMomentsHelper<3u>
 {
     template <class Accu>
-    static void merge(Accu & l, Accu const & r)
-    {
-        using namespace vigra::multi_math;
-        typedef typename LookupTag<Sum, Accu>::value_type SumType;
-        double n1 = get<Count>(l);
-        double n2 = get<Count>(r);
-        double n = n1 + n2;
-        double weight = n1 * n2 * (n1 - n2) / sq(n);
-        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
-        l.value_ += r.value_ + weight * pow(delta, 3) +
-                       3.0 / n * delta * (  n1 * cast<CentralMoment<2> >(r).value_
-                                          - n2 * cast<CentralMoment<2> >(l).value_);
-    }
+    static void merge(Accu & l, Accu const & r);
 };
+
+template <class Accu>
+void CentralMomentsHelper<3u>::merge(Accu & l, Accu const & r)
+{
+    using namespace vigra::multi_math;
+    typedef typename LookupTag<Sum, Accu>::value_type SumType;
+    double n1 = get<Count>(l);
+    double n2 = get<Count>(r);
+    double n = n1 + n2;
+    double weight = n1 * n2 * (n1 - n2) / sq(n);
+    SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+    l.value_ += r.value_ + weight * pow(delta, 3) +
+                   3.0 / n * delta * (  n1 * cast<CentralMoment<2> >(r).value_
+                                      - n2 * cast<CentralMoment<2> >(l).value_);
+}
+
 
 template <>
 struct CentralMomentsHelper<4u>
 {
     template <class Accu>
-    static void merge(Accu & l, Accu const & r)
-    {
-        using namespace vigra::multi_math;
-        typedef typename LookupTag<Sum, Accu>::value_type SumType;
-        double n1 = get<Count>(l);
-        double n2 = get<Count>(r);
-        double n = n1 + n2;
-        double n1_2 = sq(n1);
-        double n2_2 = sq(n2);
-        double n_2 = sq(n);
-        double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
-        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
-        l.value_ += r.value_ + weight * pow(delta, 4) +
-                      6.0 / n_2 * sq(delta) * (  n1_2 * cast<CentralMoment<2> >(r).value_
-                                               + n2_2 * cast<CentralMoment<2> >(l).value_ ) +
-                      4.0 / n * delta * (  n1 * cast<CentralMoment<3> >(r).value_
-                                         - n2 * cast<CentralMoment<3> >(l).value_);
-    }
+    static void merge(Accu & l, Accu const & r);
 };
+
+template <class Accu>
+void CentralMomentsHelper<4u>::merge(Accu & l, Accu const & r)
+{
+    using namespace vigra::multi_math;
+    typedef typename LookupTag<Sum, Accu>::value_type SumType;
+    double n1 = get<Count>(l);
+    double n2 = get<Count>(r);
+    double n = n1 + n2;
+    double n1_2 = sq(n1);
+    double n2_2 = sq(n2);
+    double n_2 = sq(n);
+    double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
+    SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+    l.value_ += r.value_ + weight * pow(delta, 4) +
+                  6.0 / n_2 * sq(delta) * (  n1_2 * cast<CentralMoment<2> >(r).value_
+                                           + n2_2 * cast<CentralMoment<2> >(l).value_ ) +
+                  4.0 / n * delta * (  n1 * cast<CentralMoment<3> >(r).value_
+                                     - n2 * cast<CentralMoment<3> >(l).value_);
+}
 
 } // namsspace detail
 
@@ -1795,8 +2016,8 @@ class CovarianceEigensystem
         typedef typename AccumulatorTraits<T>::element_promote_type        element_type;
         typedef typename AccumulatorTraits<T>::SumType                     EigenvalueType;
         typedef typename AccumulatorTraits<T>::CovarianceType              EigenvectorType;
-        typedef std::pair<EigenvalueType const &, EigenvectorType const &> value_type;
-        typedef value_type                                                 result_type;
+        typedef EigenvectorType                                            value_type;
+        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
 
         mutable EigenvalueType eigenvalues_;
         mutable EigenvectorType eigenvectors_;

@@ -1799,6 +1799,7 @@ struct AccumulatorTest
         std::cerr << get<1, Mean>(a) << " Mean 1\n";
         std::cerr << get<2, Mean>(a) << " Mean 2\n";
 
+#if 0
         std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
         std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
         
@@ -1815,6 +1816,7 @@ struct AccumulatorTest
         std::cerr << "int: " << Contains<Selected1, int>::type::value << "\n";
         std::cerr << "float: " << Contains<Selected1, float>::type::value << "\n";
         std::cerr << "double: " << Contains<Selected1, double>::type::value << "\n";
+#endif
 #endif
     }
     
@@ -1850,6 +1852,7 @@ struct AccumulatorTest
             typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
 
             A a;
+#if 1
 
             shouldEqual(2, a.passesRequired());
             shouldEqual(18, (LookupTag<AccumulatorBase, A>::type::level));
@@ -1881,8 +1884,9 @@ struct AccumulatorTest
             shouldEqualTolerance(get<CentralMoment<2> >(a),  2.1875, 1e-15);
             shouldEqualTolerance(get<Skewness>(a), 0.43465075957466565, 1e-15);
             shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
+#endif
         }
-
+#if 1
         { 
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
             activate<Count>(a);
@@ -1934,10 +1938,12 @@ struct AccumulatorTest
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<CentralMoment<2> >(a), 2.0/3.0);
         }
+#endif
     }
 
     void testVector()
     {
+#if 1
         using namespace vigra::acc1;
 
         {
@@ -1951,6 +1957,7 @@ struct AccumulatorTest
             a(V(1,2,3));
             a(V(2,3,1));
             a(V(3,1,2));
+#if 1
 
             a.updatePass2(V(1,2,3));
             a.updatePass2(V(2,3,1));
@@ -1973,7 +1980,6 @@ struct AccumulatorTest
                -1.0/3.0, -1.0/3.0,  2.0/3.0 };
             Var covariance(3,3, covarianceData);
             shouldEqual(get<Covariance>(a), covariance);
-
             std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
             W ew(1.0, 1.0, 0.0);
             shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
@@ -1984,8 +1990,9 @@ struct AccumulatorTest
                  0.0               ,  0.816496580927726,  -0.5773502691896257 };
             Var ev(3,3, eigenvectorData);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
+#endif
         }
-
+#if 1
         {
             using namespace vigra::multi_math;
             
@@ -2030,10 +2037,13 @@ struct AccumulatorTest
             shouldEqual(get<Minimum>(a), V(s, T(0,1,1).begin()));
             shouldEqual(get<Maximum>(a), V(s, T(3,3,4).begin()));
         }
+#endif
+#endif
     }
 
     void testMerge()
     {
+#if 0
         using namespace vigra::acc1;
         
         typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
@@ -2070,6 +2080,7 @@ struct AccumulatorTest
         shouldEqualTolerance(get<CentralMoment<4> >(a), 17.4752, 1e-15);
         shouldEqualTolerance(get<Skewness>(a), 0.395870337343817, 1e-15);
         shouldEqualTolerance(get<Kurtosis>(a), 1.9945215485756027, 1e-15);
+#endif
     }
 };
 
