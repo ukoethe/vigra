@@ -1943,8 +1943,8 @@ struct AccumulatorTest
         {
             typedef TinyVector<int, 3> V;
             typedef Accumulator<V, Select<StdDev, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2> > > A;
-            typedef LookupTag<Mean, A>::result_type W;
-            typedef LookupTag<Covariance, A>::result_type Var;
+            typedef LookupTag<Mean, A>::value_type W;
+            typedef LookupTag<Covariance, A>::value_type Var;
 
             A a;
 
@@ -1992,8 +1992,8 @@ struct AccumulatorTest
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
             typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
-            typedef LookupTag<Mean, A>::result_type W;
-            typedef LookupTag<Covariance, A>::result_type Var;
+            typedef LookupTag<Mean, A>::value_type W;
+            typedef LookupTag<Covariance, A>::value_type Var;
 
             A a;
 

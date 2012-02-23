@@ -55,10 +55,10 @@ namespace acc1 {
 struct AccumulatorBase 
 {
 	typedef AccumulatorBase Tag;
-    typedef void                                       result_type;
-        // 'qualified_result_type' can be 'result_type' or 'result_type const &'
+    typedef void            value_type;
+        // 'result_type' can be 'value_type' or 'value_type const &'
         // depending on the return value of operator()()
-    typedef void                                       qualified_result_type;
+    typedef void            result_type;
     
     void operator()() const
     {
@@ -313,8 +313,8 @@ struct DynamicAccumulatorWrapper
     typedef typename TAG::template Impl<T, BaseBase> Wrapped;
     typedef BaseBase BaseType;
     
-    typedef typename Wrapped::result_type           result_type;
-    typedef typename Wrapped::qualified_result_type qualified_result_type;
+    typedef typename Wrapped::value_type   value_type;
+    typedef typename Wrapped::result_type  result_type;
 
     void activate()
     {
@@ -352,7 +352,7 @@ struct DynamicAccumulatorWrapper
         BaseBase::operator+=(o);
     }
     
-	qualified_result_type operator()() const
+	result_type operator()() const
     {
         vigra_precondition(this->active_accumulators_.test<LEVEL>(),
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
@@ -413,6 +413,9 @@ struct AccumulatorWrapper
     typedef TAG Tag;
     typedef typename TAG::template Impl<T, BaseBase> Wrapped;
     typedef BaseBase BaseType;
+    
+    typedef typename Wrapped::value_type   value_type;
+    typedef typename Wrapped::result_type  result_type;
     
     void reset()
     {
@@ -501,7 +504,7 @@ void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T()
 }
 
     // check if the accumulator chain A contains result_types that require runtime reshape
-template <class A, class ResultType = typename A::result_type>
+template <class A, class ResultType = typename A::value_type>
 struct NeedsReshape
 {
     typedef typename NeedsReshape<typename A::BaseType>::type type;
@@ -520,7 +523,7 @@ struct NeedsReshape<A, Matrix<T> >
 };
 
 template <>
-struct NeedsReshape<AccumulatorBase, AccumulatorBase::result_type>
+struct NeedsReshape<AccumulatorBase, AccumulatorBase::value_type>
 {
     typedef VigraFalseType type;
 };
@@ -535,7 +538,7 @@ struct ReshapeHelper
 : public BASE
 {
     typedef VigraFalseType Tag;
-    typedef BASE BaseType;
+    typedef BASE           BaseType;
     
     bool needs_reshape_;
     
@@ -583,7 +586,7 @@ struct ReshapeHelper<T, BASE, VigraFalseType>
 : public BASE
 {
     typedef VigraFalseType Tag;
-    typedef BASE BaseType;
+    typedef BASE           BaseType;
 
     using BASE::operator();
 
@@ -598,22 +601,7 @@ struct ReshapeHelper<T, BASE, VigraFalseType>
     }
 };
 
-    // // helper classes to create an accumulator chain from a TypeList
-// template <class T, class Accumulators>
-// struct Compose
-// {
-    // typedef typename Accumulators::Head Tag; 
-    // typedef typename Compose<T, typename Accumulators::Tail>::type BaseType;
-    // typedef typename Tag::template Impl<T, BaseType> type;
-// };
-
-// template <class T> 
-// struct Compose<T, void> 
-// { 
-    // typedef TypedAccumulatorBase<T> type; 
-// };
-
-    // helper classes to create a dynamic accumulator chain from a TypeList
+    // helper classes to create an accumulator chain from a TypeList
 template <class T, class Accumulators, unsigned level=0>
 struct Compose
 {
@@ -705,18 +693,18 @@ struct LookupTag
     typedef typename IsSameType<Tag, typename Accumulator::Tag>::type Found;
     typedef LookupTag<Tag, typename Accumulator::BaseType> Base;
     typedef typename If<Found, Accumulator, typename Base::type>::type type;
+    typedef typename If<Found, typename Accumulator::value_type, 
+                               typename Base::value_type>::type value_type;
     typedef typename If<Found, typename Accumulator::result_type, 
                                typename Base::result_type>::type result_type;
-    typedef typename If<Found, typename Accumulator::qualified_result_type, 
-                               typename Base::qualified_result_type>::type qualified_result_type;
 };
 
 template <class Tag>
 struct LookupTag<Tag, AccumulatorBase>
 {
     typedef AccumulatorBase type;
+    typedef void value_type;
     typedef void result_type;
-    typedef void qualified_result_type;
 };
 
     // cast an accumulator chain to the type specified by Tag
@@ -737,7 +725,7 @@ cast(Accumulator const & a)
 namespace detail {
 
 template <class Tag, class Accumulator>
-typename LookupTag<Tag, Accumulator>::qualified_result_type
+typename LookupTag<Tag, Accumulator>::result_type
 getImpl(Accumulator const & a)
 {
     return a();
@@ -754,7 +742,7 @@ void getImpl(AccumulatorBase const & a)
 
     // get the result of the accumulator specified by Tag
 template <class Tag, class Accumulator>
-typename LookupTag<Tag, Accumulator>::qualified_result_type
+typename LookupTag<Tag, Accumulator>::result_type
 get(Accumulator const & a)
 {
     return detail::getImpl<Tag>(cast<Tag>(a));
@@ -1041,10 +1029,10 @@ class Count
         typedef Count Tag;
         typedef BASE BaseType;
         
+        typedef double value_type;
         typedef double result_type;
-        typedef double qualified_result_type;
         
-        result_type value_;
+        value_type value_;
         
         Impl()
         : value_(0.0)
@@ -1090,10 +1078,10 @@ class Minimum
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
-        typedef result_type const &                         qualified_result_type;
+        typedef typename AccumulatorTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                          result_type;
 
-        result_type value_;
+        value_type value_;
         
         Impl()
         {
@@ -1128,7 +1116,7 @@ class Minimum
             vigra_precondition(false, "Minimum accumulator does not support weights.");
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             return value_;
         }
@@ -1148,10 +1136,10 @@ class Maximum
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_type element_type;
-        typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
-        typedef result_type const &                         qualified_result_type;
+        typedef typename AccumulatorTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                          result_type;
 
-        result_type value_;
+        value_type value_;
         
         Impl()
         {
@@ -1186,7 +1174,7 @@ class Maximum
             vigra_precondition(false, "Maximum accumulator does not support weights.");
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             return value_;
         }
@@ -1206,10 +1194,10 @@ class Sum
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorTraits<T>::SumType              result_type;
-        typedef result_type const &                                 qualified_result_type;
+        typedef typename AccumulatorTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
 
-        result_type value_;
+        value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1241,7 +1229,7 @@ class Sum
             value_ += weight*t;
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             return value_;
         }
@@ -1261,10 +1249,10 @@ class Mean
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorTraits<T>::SumType              result_type;
-        typedef result_type const &                                 qualified_result_type;
+        typedef typename AccumulatorTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
 
-        mutable result_type value_;
+        mutable value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1281,7 +1269,7 @@ class Mean
             detail::reshapeImpl(value_, s);
         }
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             value_ = get<Sum>(*this) / get<Count>(*this);
@@ -1332,7 +1320,7 @@ struct CentralMomentsHelper<3u>
     static void merge(Accu & l, Accu const & r)
     {
         using namespace vigra::multi_math;
-        typedef typename LookupTag<Sum, Accu>::result_type SumType;
+        typedef typename LookupTag<Sum, Accu>::value_type SumType;
         double n1 = get<Count>(l);
         double n2 = get<Count>(r);
         double n = n1 + n2;
@@ -1351,7 +1339,7 @@ struct CentralMomentsHelper<4u>
     static void merge(Accu & l, Accu const & r)
     {
         using namespace vigra::multi_math;
-        typedef typename LookupTag<Sum, Accu>::result_type SumType;
+        typedef typename LookupTag<Sum, Accu>::value_type SumType;
         double n1 = get<Count>(l);
         double n2 = get<Count>(r);
         double n = n1 + n2;
@@ -1385,10 +1373,10 @@ class CentralMoment
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorTraits<T>::SumType              result_type;
-        typedef result_type                                         qualified_result_type;
+        typedef typename AccumulatorTraits<T>::SumType              value_type;
+        typedef value_type                                          result_type;
 
-        result_type value_;
+        value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1427,7 +1415,7 @@ class CentralMoment
             value_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             using namespace vigra::multi_math;
             return value_ / get<Count>(*this);
@@ -1447,10 +1435,10 @@ class Skewness
         typedef Skewness Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<CentralMoment<3>, Impl>::result_type result_type;
-        typedef result_type                                             qualified_result_type;
+        typedef typename LookupTag<CentralMoment<3>, Impl>::value_type value_type;
+        typedef value_type                                             result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return sqrt(get<Count>(*this)) * 
@@ -1471,10 +1459,10 @@ class Kurtosis
         typedef Kurtosis Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<CentralMoment<4>, Impl>::result_type result_type;
-        typedef result_type                                             qualified_result_type;
+        typedef typename LookupTag<CentralMoment<4>, Impl>::value_type value_type;
+        typedef value_type                                             result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return get<Count>(*this) * 
@@ -1497,10 +1485,10 @@ class SumSquaredDifferences
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorTraits<T>::SumType               result_type;
-        typedef result_type const &                                  qualified_result_type;
+        typedef typename AccumulatorTraits<T>::SumType               value_type;
+        typedef value_type const &                                   result_type;
        
-        result_type value_;
+        value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1532,7 +1520,7 @@ class SumSquaredDifferences
             detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t, weight);
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             return value_;
         }
@@ -1553,10 +1541,10 @@ class Variance
         typedef Variance Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename LookupTag<SumSquaredDifferences, Impl>::value_type value_type;
+        typedef value_type                                                  result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return get<SumSquaredDifferences>(*this) / get<Count>(*this);
@@ -1576,10 +1564,10 @@ class StdDev
         typedef StdDev Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<Variance, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename LookupTag<Variance, Impl>::value_type value_type;
+        typedef value_type                                     result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return sqrt(get<SumSquaredDifferences>(*this) / get<Count>(*this));
@@ -1599,10 +1587,10 @@ class UnbiasedVariance
         typedef UnbiasedVariance Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename LookupTag<SumSquaredDifferences, Impl>::value_type value_type;
+        typedef value_type                                                  result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return get<SumSquaredDifferences>(*this) / (get<Count>(*this) - 1.0);
@@ -1622,10 +1610,10 @@ class UnbiasedStdDev
         typedef UnbiasedStdDev Tag;
         typedef BASE BaseType;
         
-        typedef typename LookupTag<Variance, Impl>::result_type result_type;
-        typedef result_type                              qualified_result_type;
+        typedef typename LookupTag<Variance, Impl>::value_type value_type;
+        typedef value_type                                     result_type;
 
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
 			using namespace multi_math;
             return sqrt(get<SumSquaredDifferences>(*this) / (get<Count>(*this) - 1.0));
@@ -1688,12 +1676,12 @@ class FlatScatterMatrix
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorTraits<T>::FlatCovarianceType    result_type;
-        typedef result_type const &                                  qualified_result_type;
+        typedef typename AccumulatorTraits<T>::FlatCovarianceType    value_type;
+        typedef value_type const &                                   result_type;
        
         typedef typename AccumulatorTraits<T>::SumType        SumType;
 
-        result_type value_;
+        value_type value_;
         SumType     diff_;
         
         Impl()
@@ -1730,7 +1718,7 @@ class FlatScatterMatrix
             compute(t, weight);
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             return value_;
         }
@@ -1763,10 +1751,10 @@ class Covariance
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorTraits<T>::CovarianceType        result_type;
-        typedef result_type const &                                  qualified_result_type;
+        typedef typename AccumulatorTraits<T>::CovarianceType        value_type;
+        typedef value_type const &                                   result_type;
 
-        mutable result_type value_;
+        mutable value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1784,7 +1772,7 @@ class Covariance
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this));
             return value_;
@@ -1807,8 +1795,8 @@ class CovarianceEigensystem
         typedef typename AccumulatorTraits<T>::element_promote_type        element_type;
         typedef typename AccumulatorTraits<T>::SumType                     EigenvalueType;
         typedef typename AccumulatorTraits<T>::CovarianceType              EigenvectorType;
-        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
-        typedef result_type                                                qualified_result_type;
+        typedef std::pair<EigenvalueType const &, EigenvectorType const &> value_type;
+        typedef value_type                                                 result_type;
 
         mutable EigenvalueType eigenvalues_;
         mutable EigenvectorType eigenvectors_;
@@ -1832,7 +1820,7 @@ class CovarianceEigensystem
             detail::reshapeImpl(eigenvectors_, Shape2(size,size));
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             compute(get<Covariance>(*this), eigenvalues_, eigenvectors_);
             return result_type(eigenvalues_, eigenvectors_);
@@ -1868,10 +1856,10 @@ class UnbiasedCovariance
         typedef BASE BaseType;
         
         typedef typename AccumulatorTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorTraits<T>::CovarianceType        result_type;
-        typedef result_type const &                                  qualified_result_type;
+        typedef typename AccumulatorTraits<T>::CovarianceType        value_type;
+        typedef value_type const &                                   result_type;
 
-        mutable result_type value_;
+        mutable value_type value_;
         
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
@@ -1889,7 +1877,7 @@ class UnbiasedCovariance
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
-        qualified_result_type operator()() const
+        result_type operator()() const
         {
             detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this)-1.0);
             return value_;
