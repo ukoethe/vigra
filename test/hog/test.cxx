@@ -34,28 +34,10 @@
 /************************************************************************/
 #define HOG_TEST 1
 
-#ifdef _MSC_VER
-# pragma warning (disable : 4244)
-#endif
-
 #include <iostream>
-#include <fstream>
-#include <functional>
-#include <cmath>
 #include <vigra/hog3d.hxx>
 #include <vigra/multi_distance.hxx>
 #include <unittest.hxx>
-#include <vector>
-#include <limits>
-//#include "test_data.hxx"
-
-#include <stdlib.h>
-
-
-#include "boost/date_time/posix_time/posix_time.hpp"  // for time measurement; clock_t gives only CPU Clock cycles !
-#include <boost/thread/thread.hpp> 
-
-
 
 using namespace vigra;
 
