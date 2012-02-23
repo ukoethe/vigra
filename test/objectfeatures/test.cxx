@@ -1771,6 +1771,7 @@ struct AccumulatorTest
     
     void test1()
     {
+#if 0
         using namespace vigra::acc1;
 
         typedef CoupledPointer<2, double> V;
@@ -1798,7 +1799,6 @@ struct AccumulatorTest
         std::cerr << get<1, Mean>(a) << " Mean 1\n";
         std::cerr << get<2, Mean>(a) << " Mean 2\n";
 
-#if 0
         std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
         std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
         
@@ -1847,9 +1847,12 @@ struct AccumulatorTest
         }
 
         { 
-            Accumulator<double, Select<CovarianceEigensystem, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > a;
+            typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
+
+            A a;
 
             shouldEqual(2, a.passesRequired());
+            shouldEqual(18, (LookupTag<AccumulatorBase, A>::type::level));
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 

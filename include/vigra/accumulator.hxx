@@ -72,6 +72,11 @@ struct AccumulatorBase
     void reset()
     {}
     
+    unsigned int passCount() const
+    {
+        return 1;
+    }
+
     unsigned int passesRequired() const
     {
         return 1;
@@ -106,12 +111,22 @@ struct TypedAccumulatorBase
 	void operator+=(TypedAccumulatorBase const &)
     {}
     
-    using BaseType::operator();
-    
-	void operator()(argument_type)
+	void pass1(argument_type)
     {}
     
-    void operator()(first_argument_type, second_argument_type)
+    void pass1(first_argument_type, second_argument_type)
+    {}
+    
+    void pass2(argument_type)
+    {}
+    
+    void pass2(first_argument_type, second_argument_type)
+    {}
+    
+	void updatePass1(argument_type)
+    {}
+    
+    void updatePass1(first_argument_type, second_argument_type)
     {}
     
     void updatePass2(argument_type)
@@ -295,10 +310,11 @@ struct DynamicAccumulatorWrapper
     static const unsigned level = LEVEL;
 
     typedef TAG Tag;
-    typedef typename TAG::template Impl<T, BaseBase> Base;
+    typedef typename TAG::template Impl<T, BaseBase> Wrapped;
+    typedef BaseBase BaseType;
     
-    typedef typename Base::result_type           result_type;
-    typedef typename Base::qualified_result_type qualified_result_type;
+    typedef typename Wrapped::result_type           result_type;
+    typedef typename Wrapped::qualified_result_type qualified_result_type;
 
     void activate()
     {
@@ -309,74 +325,157 @@ struct DynamicAccumulatorWrapper
     void reset()
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::reset();
-        else
-            BaseBase::reset();
+            Wrapped::reset();
+        BaseBase::reset();
     }
    
-    unsigned int passesRequired() const
+    unsigned int passCount() const
     {
         if(this->active_accumulators_.test<LEVEL>())
-            return Base::passesRequired();
+            return std::max(Wrapped::passesRequired(), BaseBase::passCount());
         else
-            return BaseBase::passesRequired();
+            return BaseBase::passCount();
     }
         
     template <class Shape>
     void reshape(Shape const & s)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::reshape(s);
-        else
-            BaseBase::reshape(s);
+            Wrapped::reshape(s);
+        BaseBase::reshape(s);
     }
    
     void operator+=(DynamicAccumulatorWrapper const & o)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::operator+=(o);
-        else
-            BaseBase::operator+=(o);
+            Wrapped::merge(o);
+        BaseBase::operator+=(o);
     }
     
 	qualified_result_type operator()() const
     {
         vigra_precondition(this->active_accumulators_.test<LEVEL>(),
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-        return Base::operator()();
+        return Wrapped::operator()();
     }
     
-	void operator()(T const & t)
+	void pass1(T const & t)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::operator()(t);
-        else
-            BaseBase::operator()(t);
+            Wrapped::updatePass1(t);
+        BaseBase::pass1(t);
     }
     
-    void operator()(T const & t, double weight)
+    void pass1(T const & t, double weight)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::operator()(t, weight);
-        else
-            BaseBase::operator()(t, weight);
+            Wrapped::updatePass1(t, weight);
+        BaseBase::pass1(t, weight);
     }
     
-    void updatePass2(T const & t)
+    void pass2(T const & t)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::updatePass2(t);
-        else
-            BaseBase::updatePass2(t);
+            Wrapped::updatePass2(t);
+        BaseBase::pass2(t);
     }
     
-    void updatePass2(T const & t, double weight)
+    void pass2(T const & t, double weight)
     {
         if(this->active_accumulators_.test<LEVEL>())
-            Base::updatePass2(t, weight);
-        else
-            BaseBase::updatePass2(t, weight);
+            Wrapped::updatePass2(t, weight);
+        BaseBase::pass2(t, weight);
     }
+    
+	void updatePass1(T const &)
+    {}
+    
+    void updatePass1(T const &, double)
+    {}
+    
+    void updatePass2(T const &)
+    {}
+    
+    void updatePass2(T const &, double)
+    {}
+    
+    void merge(DynamicAccumulatorWrapper const &)
+    {}
+};
+
+template <class T, class TAG, class BaseBase, unsigned LEVEL>
+struct AccumulatorWrapper
+: public TAG::template Impl<T, BaseBase>
+{
+    static const unsigned level = LEVEL;
+
+    // typedef typename Config::Tag Tag;
+    typedef TAG Tag;
+    typedef typename TAG::template Impl<T, BaseBase> Wrapped;
+    typedef BaseBase BaseType;
+    
+    void reset()
+    {
+        Wrapped::reset();
+        BaseBase::reset();
+    }
+   
+    unsigned int passCount() const
+    {
+        return std::max(Wrapped::passesRequired(), BaseBase::passCount());
+    }
+        
+    template <class Shape>
+    void reshape(Shape const & s)
+    {
+        Wrapped::reshape(s);
+        BaseBase::reshape(s);
+    }
+   
+    void operator+=(AccumulatorWrapper const & o)
+    {
+        Wrapped::merge(o);
+        BaseBase::operator+=(o);
+    }
+    
+	void pass1(T const & t)
+    {
+        Wrapped::updatePass1(t);
+        BaseBase::pass1(t);
+    }
+    
+    void pass1(T const & t, double weight)
+    {
+        Wrapped::updatePass1(t, weight);
+        BaseBase::pass1(t, weight);
+    }
+    
+    void pass2(T const & t)
+    {
+        Wrapped::updatePass2(t);
+        BaseBase::pass2(t);
+    }
+    
+    void pass2(T const & t, double weight)
+    {
+        Wrapped::updatePass2(t, weight);
+        BaseBase::pass2(t, weight);
+    }
+    
+	void updatePass1(T const &)
+    {}
+    
+    void updatePass1(T const &, double)
+    {}
+    
+    void updatePass2(T const &)
+    {}
+    
+    void updatePass2(T const &, double)
+    {}
+    
+    void merge(AccumulatorWrapper const &)
+    {}
 };
 
     // Generic reshape function (expands to a no-op when T has fixed shape, and to
@@ -431,12 +530,12 @@ struct NeedsReshape<AccumulatorBase, AccumulatorBase::result_type>
     // depends on the shape of the input and cannot be determined at compile time. 
     // The above NeedsReshape traits specify the types where this applies. If the chain
     // doesn't contain such types, ReshapeHelper will expand into a do-nothing version.
-template <class T, class Base, class NeedsReshape=typename NeedsReshape<Base>::type>
+template <class T, class BASE, class NeedsReshape=typename NeedsReshape<BASE>::type>
 struct ReshapeHelper
-: public Base
+: public BASE
 {
     typedef VigraFalseType Tag;
-    typedef Base BaseType;
+    typedef BASE BaseType;
     
     bool needs_reshape_;
     
@@ -444,26 +543,24 @@ struct ReshapeHelper
     : needs_reshape_(true)
     {}
     
-    using Base::operator();
-    
 	void operator()(T const & t)
     {
         if(needs_reshape_)
         {
-            Base::reshape(shape(t));
+            BASE::reshape(shape(t));
             needs_reshape_ = false;
         }
-        Base::operator()(t);
+        BASE::pass1(t);
     }
     
     void operator()(T const & t, double weight)
     {
         if(needs_reshape_)
         {
-            Base::reshape(shape(t));
+            BASE::reshape(shape(t));
             needs_reshape_ = false;
         }
-        Base::operator()(t, weight);
+        BASE::pass1(t, weight);
     }
     
     template <unsigned int N, class U, class Stride>
@@ -481,27 +578,54 @@ struct ReshapeHelper
     }
 };
 
-template <class T, class Base>
-struct ReshapeHelper<T, Base, VigraFalseType>
-: public Base
+template <class T, class BASE>
+struct ReshapeHelper<T, BASE, VigraFalseType>
+: public BASE
 {
     typedef VigraFalseType Tag;
-    typedef Base BaseType;
+    typedef BASE BaseType;
+
+    using BASE::operator();
+
+	void operator()(T const & t)
+    {
+        BASE::pass1(t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        BASE::pass1(t, weight);
+    }
 };
 
-    // helper classes to create an accumulator chain from a TypeList
-template <class T, class Accumulators>
+    // // helper classes to create an accumulator chain from a TypeList
+// template <class T, class Accumulators>
+// struct Compose
+// {
+    // typedef typename Accumulators::Head Tag; 
+    // typedef typename Compose<T, typename Accumulators::Tail>::type BaseType;
+    // typedef typename Tag::template Impl<T, BaseType> type;
+// };
+
+// template <class T> 
+// struct Compose<T, void> 
+// { 
+    // typedef TypedAccumulatorBase<T> type; 
+// };
+
+    // helper classes to create a dynamic accumulator chain from a TypeList
+template <class T, class Accumulators, unsigned level=0>
 struct Compose
 {
     typedef typename Accumulators::Head Tag; 
-    typedef typename Compose<T, typename Accumulators::Tail>::type BaseType;
-    typedef typename Tag::template Impl<T, BaseType> type;
+    typedef typename Compose<T, typename Accumulators::Tail, level+1>::type BaseType;
+    typedef AccumulatorWrapper<T, Tag, BaseType, level> type;
 };
 
-template <class T> 
-struct Compose<T, void> 
+template <class T, unsigned level> 
+struct Compose<T, void, level> 
 { 
-    typedef TypedAccumulatorBase<T> type; 
+    typedef TypedAccumulatorBase<T, level> type; 
 };
 
     // helper classes to create a dynamic accumulator chain from a TypeList
@@ -516,7 +640,7 @@ struct DynamicCompose
 template <class T, unsigned level> 
 struct DynamicCompose<T, void, level> 
 { 
-    typedef TypedAccumulatorBase<T, level+1> type; 
+    typedef TypedAccumulatorBase<T, level> type; 
 };
 
 } // namespace detail
@@ -530,6 +654,21 @@ struct Accumulator
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
     typedef typename detail::Compose<T, Accumulators>::type BaseType;
     typedef VigraFalseType Tag;
+
+	void updatePass2(T const & t)
+    {
+        BaseType::pass2(t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        BaseType::pass2(t, weight);
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return BaseType::passCount();
+    }
 };
 
     // create a dynamic accumulator chain containing the Selected statistics and their dependencies.
@@ -542,6 +681,21 @@ struct DynamicAccumulator
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
     typedef typename detail::DynamicCompose<T, Accumulators>::type BaseType;
     typedef VigraFalseType Tag;
+
+	void updatePass2(T const & t)
+    {
+        BaseType::pass2(t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        BaseType::pass2(t, weight);
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return BaseType::passCount();
+    }
 };
 
     // find the type in an accumulator chain holding the given Tag
@@ -886,7 +1040,7 @@ class Count
     {
         typedef Count Tag;
         typedef BASE BaseType;
-
+        
         typedef double result_type;
         typedef double qualified_result_type;
         
@@ -899,24 +1053,20 @@ class Count
         void reset()
         {
             value_ = 0.0;
-            BaseType::reset();
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
-            BaseType::operator+=(o);
             value_ += o.value_;
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
-            BaseType::operator()(t);
             ++value_;
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
-            BaseType::operator()(t, weight);
             value_ += weight;
         }
         
@@ -938,7 +1088,7 @@ class Minimum
     {
         typedef Minimum Tag;
         typedef BASE BaseType;
-
+        
         typedef typename AccumulatorTraits<T>::element_type element_type;
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
@@ -953,31 +1103,27 @@ class Minimum
         void reset()
         {
             value_ = NumericTraits<element_type>::max();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
-            BaseType::reshape(s);
         }
         
-       void operator+=(Impl const & o)
+       void merge(Impl const & o)
         {
-            BaseType::operator+=(o);
             using namespace multi_math;
             value_ = min(value_, o.value_);
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
-            BaseType::operator()(t);
             using namespace multi_math;
             value_ = min(value_, t);
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
             vigra_precondition(false, "Minimum accumulator does not support weights.");
         }
@@ -1000,7 +1146,7 @@ class Maximum
     {
         typedef Maximum Tag;
         typedef BASE BaseType;
-
+        
         typedef typename AccumulatorTraits<T>::element_type element_type;
         typedef typename AccumulatorTraits<T>::MinmaxType   result_type;
         typedef result_type const &                         qualified_result_type;
@@ -1015,31 +1161,27 @@ class Maximum
         void reset()
         {
             value_ = NumericTraits<element_type>::min();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
-            BaseType::reshape(s);
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
-            BaseType::operator+=(o);
             using namespace multi_math;
             value_ = max(value_, o.value_);
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
-            BaseType::operator()(t);
             using namespace multi_math;
             value_ = max(value_, t);
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
             vigra_precondition(false, "Maximum accumulator does not support weights.");
         }
@@ -1076,31 +1218,26 @@ class Sum
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s);
-            BaseType::reshape(s);
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
-            BaseType::operator+=(o);
             value_ += o.value_;
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
-            BaseType::operator()(t);
             value_ += t;
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
-            BaseType::operator()(t, weight);
             value_ += weight*t;
         }
         
@@ -1136,18 +1273,14 @@ class Mean
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s);
-            BaseType::reshape(s);
         }
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1177,7 +1310,7 @@ struct CentralMomentsHelper
     static void merge(Left &, Right const &)
     {
         vigra_precondition(false,
-            "CentralMoment<N>::operator+=(): not implemented for N > 4.");
+            "CentralMoment<N>::merge(): not implemented for N > 4.");
     }
 };
 
@@ -1242,6 +1375,7 @@ class CentralMoment
 {
   public:
     typedef Select<Mean, Count, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
+    typedef VigraTrueType RecurseAfter;
      
     template <class T, class BASE>
     struct Impl
@@ -1263,40 +1397,32 @@ class CentralMoment
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s);
-            BaseType::reshape(s);
         }
         
         unsigned int passesRequired() const
         {
-            return std::max(2u, BaseType::passesRequired());
+            return 2u;
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
             detail::CentralMomentsHelper<N>::merge(*this, o);
-            // this must be last because the above computation needs the old values
-            BaseType::operator+=(o);
         }
     
-        using BaseType::operator();
-        
         void updatePass2(T const & t)
         {
-            BaseType::updatePass2(t);
             using namespace vigra::multi_math;            
             value_ += pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
         }
         
         void updatePass2(T const & t, double weight)
         {
-            BaseType::updatePass2(t, weight);
             using namespace vigra::multi_math;            
             value_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
         }
@@ -1324,8 +1450,6 @@ class Skewness
         typedef typename LookupTag<CentralMoment<3>, Impl>::result_type result_type;
         typedef result_type                                             qualified_result_type;
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1350,8 +1474,6 @@ class Kurtosis
         typedef typename LookupTag<CentralMoment<4>, Impl>::result_type result_type;
         typedef result_type                                             qualified_result_type;
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1365,6 +1487,7 @@ class SumSquaredDifferences
 {
   public:
     typedef Select<Mean, Count> Dependencies;
+    typedef VigraTrueType RecurseAfter;
     
     template <class T, class BASE>
     struct Impl
@@ -1386,33 +1509,27 @@ class SumSquaredDifferences
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             detail::reshapeImpl(value_, s);
-            BaseType::reshape(s);
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
             detail::CentralMomentsHelper<2>::merge(*this, o);
-            // this must be last because the above computation needs the old values
-            BaseType::operator+=(o);
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
             detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t);
-            BaseType::operator()(t);
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
             detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t, weight);
-            BaseType::operator()(t, weight);
         }
         
         qualified_result_type operator()() const
@@ -1439,9 +1556,6 @@ class Variance
         typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
-
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1465,8 +1579,6 @@ class StdDev
         typedef typename LookupTag<Variance, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1490,8 +1602,6 @@ class UnbiasedVariance
         typedef typename LookupTag<SumSquaredDifferences, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1515,8 +1625,6 @@ class UnbiasedStdDev
         typedef typename LookupTag<Variance, Impl>::result_type result_type;
         typedef result_type                              qualified_result_type;
 
-        using BaseType::operator();
-        
         qualified_result_type operator()() const
         {
 			using namespace multi_math;
@@ -1570,6 +1678,7 @@ class FlatScatterMatrix
 {
   public:
     typedef Select<Mean, Count> Dependencies;
+    typedef VigraTrueType RecurseAfter;
     
     template <class T, class BASE>
     struct Impl
@@ -1595,7 +1704,6 @@ class FlatScatterMatrix
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
@@ -1604,29 +1712,22 @@ class FlatScatterMatrix
             int size = prod(s);
             detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
             detail::reshapeImpl(diff_, s);
-            BaseType::reshape(s);
         }
         
-        void operator+=(Impl const & o)
+        void merge(Impl const & o)
         {
             compute(get<Mean>(o), get<Count>(o));
             value_ += o.value_;
-            // this must be last because the above computation needs the old values
-            BaseType::operator+=(o);
         }
     
-        void operator()(T const & t)
+        void updatePass1(T const & t)
         {
             compute(t);
-            // this must be last because the above computation needs the old values
-            BaseType::operator()(t);
         }
         
-        void operator()(T const & t, double weight)
+        void updatePass1(T const & t, double weight)
         {
             compute(t, weight);
-            // this must be last because the above computation needs the old values
-            BaseType::operator()(t, weight);
         }
         
         qualified_result_type operator()() const
@@ -1674,7 +1775,6 @@ class Covariance
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
@@ -1682,10 +1782,7 @@ class Covariance
         {
             int size = prod(s);
             detail::reshapeImpl(value_, Shape2(size,size));
-            BaseType::reshape(s);
         }
-        
-        using BaseType::operator();
         
         qualified_result_type operator()() const
         {
@@ -1725,7 +1822,6 @@ class CovarianceEigensystem
         {
             eigenvalues_ = element_type();
             eigenvectors_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
@@ -1734,10 +1830,7 @@ class CovarianceEigensystem
             int size = prod(s);
             detail::reshapeImpl(eigenvalues_, Shape2(size,1));
             detail::reshapeImpl(eigenvectors_, Shape2(size,size));
-            BaseType::reshape(s);
         }
-        
-        using BaseType::operator();
         
         qualified_result_type operator()() const
         {
@@ -1787,7 +1880,6 @@ class UnbiasedCovariance
         void reset()
         {
             value_ = element_type();
-            BaseType::reset();
         }
     
         template <class Shape>
@@ -1795,10 +1887,7 @@ class UnbiasedCovariance
         {
             int size = prod(s);
             detail::reshapeImpl(value_, Shape2(size,size));
-            BaseType::reshape(s);
         }
-        
-        using BaseType::operator();
         
         qualified_result_type operator()() const
         {
