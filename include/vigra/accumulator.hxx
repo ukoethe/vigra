@@ -60,7 +60,6 @@ struct AccumulatorBase
     typedef double         second_argument_type;
     
     static const unsigned int workInPass = 1;
-    static const int level = NEXT::level+1;
     
     NEXT next_;
     

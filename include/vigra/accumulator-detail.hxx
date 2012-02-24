@@ -51,8 +51,35 @@ struct None
 {
     typedef None Tag;
     typedef void value_type;
+    typedef void result_type;
     static const unsigned int workInPass = 0; 
-    static const int level = -1; 
+    static const int level = -1;
+    
+    template <class T>
+    void operator()(T const &) {}
+    template <class T>
+    void operator()(T const &, double) {}
+    
+    template <class T>
+    void updatePass2(T const &) {}
+    template <class T>
+    void updatePass2(T const &, double) {}
+    
+    template <class T>
+    void operator+=(T const &) {}
+    
+    template <class T>
+    void resize(T const &) {}
+    
+    void reset() {}
+    
+    void activate() {}
+    bool isActive() const { return false; }
+    
+    unsigned int passesRequired() const
+    {
+        return 0;
+    }
 };
 
 template <class T, class TAG, class NEXT=None>
@@ -144,6 +171,15 @@ struct AddDependencies<void>
     typedef void Tail;
 };
 
+template <unsigned LEVEL>
+struct ActivationFlags
+: public None
+{
+    typedef None BaseType;
+    static const unsigned level = LEVEL;
+    BitArray<level> active_accumulators_;
+};
+
     // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
     // activate() must also be called for Tag's dependencies).
 template <class Dependencies>
@@ -165,87 +201,178 @@ struct ActivateDependencies<void>
     {}
 };
 
-template <class A, unsigned CurrentPass, unsigned WorkPass=A::workInPass>
-struct UpdateImpl
+template <class A, unsigned CurrentPass, int Dynamic, unsigned WorkPass=A::workInPass>
+struct WrapperImpl
 {
     template <class T>
     static void exec(A & a, T const & t)
-    {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t);
-    }
+    {}
 
     template <class T>
     static void exec(A & a, T const & t, double weight)
-    {
-        UpdateImpl<typename A::BaseType>::exec(a.next_, t, weight);
-    }
-    
-    template <class T, unsigned int N>
-    static void exec(A & a, T const & t, BitArray<N> const & active)
-    {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, active);
-    }
-
-    template <class T, unsigned int N>
-    static void exec(A & a, T const & t, double weight, BitArray<N> const & active)
-    {
-        UpdateImpl<typename A::BaseType>::exec(a.next_, t, weight, active);
-    }
+    {}
 };
 
 template <class A, unsigned CurrentPass>
-struct UpdateImpl<A, CurrentPass, CurrentPass>
+struct WrapperImpl<A, CurrentPass, -1, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
     {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t);
         a.update(t);
     }
 
     template <class T>
     static void exec(A & a, T const & t, double weight)
     {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, weight);
         a.update(t, weight);
     }
-    
-    template <class T, unsigned int N>
-    static void exec(A & a, T const & t, BitArray<N> const & active)
+
+    static void merge(A & a, A const & o)
     {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, active);
-        if(active.test<A::level>())
-            a.update(t);
+        a.merge(o);
     }
 
-    template <class T, unsigned int N>
-    static void exec(A & a, T const & t, double weight, BitArray<N> const & active)
+    template <class Shape>
+    static void resize(A & a, Shape const & o)
     {
-        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, weight, active);
-        if(active.test<A::level>())
-            a.update(t, weight);
+        a.reshape(o);
+    }
+    
+    static unsigned int passesRequired(A const & a)
+    {
+        return std::max(A::workInPass, a.next_.passesRequired());
     }
 };
 
-template <unsigned CurrentPass, unsigned WorkPass>
-struct UpdateImpl<None, CurrentPass, WorkPass>
+template <class A, unsigned CurrentPass, unsigned Dynamic>
+struct WrapperImpl<A, CurrentPass, Dynamic, CurrentPass>
 {
     template <class T>
-    static void exec(None &, T const &)
-    {}
+    static void exec(A & a, T const & t)
+    {
+        if(isActive<typename A::Tag>(a))
+            a.update(t);
+    }
 
     template <class T>
-    static void exec(None &, T const &, double)
-    {}
-    
-    
-    template <class T, unsigned int N>
-    static void exec(None &, T const &, BitArray<N> const &)
-    {}
+    static void exec(A & a, T const & t, double weight)
+    {
+        if(isActive<typename A::Tag>(a))
+            a.update(t, weight);
+    }
 
-    template <class T, unsigned int N>
-    static void exec(None &, T const &, double, BitArray<N> const &)
-    {}
+    static void merge(A & a, A const & o)
+    {
+        if(isActive<typename A::Tag>(a))
+            a.merge(o);
+    }
+
+    template <class Shape>
+    static void resize(A & a, Shape const & o)
+    {
+        if(isActive<typename A::Tag>(a))
+            a.reshape(o);
+    }
+    
+    static unsigned int passesRequired(A const & a)
+    {
+        return isActive<typename A::Tag>(a)
+                   ? std::max(A::workInPass, a.next_.passesRequired())
+                   : a.next_.passesRequired();
+    }
+};
+
+template <class T, class A, int Dynamic=-1>
+struct Wrapper
+: public A
+{
+    void activate()
+    {
+        activateImpl<Dynamic>(*this);
+        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
+    }
+    
+    bool isActive() const
+    {
+        return isActiveImpl<Dynamic>(*this);
+    }
+    
+    template <class Shape>
+    void resize(Shape const & s)
+    {
+        this->next_.resize(s);
+        WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::resize(*this, s);
+    }
+    
+    void reset()
+    {
+        this->next_.reset();
+        ((A *)this)->reset();
+    }
+    
+    using A::operator();
+    
+    void operator()(T const & t)
+    {
+        this->next_(t);
+        WrapperImpl<Wrapper, 1, Dynamic>::exec(*this, t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        this->next_(t, weight);
+        WrapperImpl<Wrapper, 1, Dynamic>::exec(*this, t, weight);
+    }
+    
+    void updatePass2(T const & t)
+    {
+        this->next_.updatePass2(t);
+        WrapperImpl<Wrapper, 2, Dynamic>::exec(*this, t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        this->next_.updatePass2(t, weight);
+        WrapperImpl<Wrapper, 2, Dynamic>::exec(*this, t, weight);
+    }
+    
+    void operator+=(Wrapper const & o)
+    {
+        WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::merge(*this, o);
+        this->next_ += o.next_;
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::passesRequired(*this);
+    }
+    
+  private:
+  
+    template <int which, class A>
+    static void activateImpl(A & a)
+    {
+        activateImpl<which>(a.next_);
+    }
+  
+    template <int which, int level>
+    static void activateImpl(ActivationFlags<level> & a)
+    {
+        a.active_accumulators_.set<which>();
+    }
+  
+    template <int which, class A>
+    static bool isActiveImpl(A const & a)
+    {
+        return isActiveImpl<which>(a.next_);
+    }
+  
+    template <int which, int level>
+    static bool isActiveImpl(ActivationFlags<level> const & a)
+    {
+        return a.active_accumulators_.test<which>();
+    }
 };
 
 template <class Tag, class FromTag>
@@ -263,6 +390,11 @@ struct CastImpl
     get(A const & a)
     {
         return CastImpl<Tag, typename A::BaseType::Tag>::get(a.next_);
+    }
+    
+    static None & cast(None & a)
+    {
+        return a;
     }
     
     static None const & cast(None const & a)
@@ -361,44 +493,11 @@ struct ReshapeImpl
     {
         if(!done_)
         {
-            exec(a, shape(t));
+            a.resize(shape(t));
             done_ = true;
         }
     }
-    
-    template <class A, class T, unsigned N>
-    void operator()(A & a, T const & t, BitArray<N> const & active)
-    {
-        if(!done_)
-        {
-            exec(a, shape(t), active);
-            done_ = true;
-        }
-    }
-    
-    template <class A, class Shape>
-    void exec(A & a, Shape const & s)
-    {
-        exec(a.next_, s);
-        a.reshape(s);
-    }
-
-    template <class A, class Shape, unsigned N>
-    void exec(A & a, Shape const & s, BitArray<N> const & active)
-    {
-        exec(a.next_, s, active);
-        if(active.test<A.level>())
-            a.reshape(s);
-    }
-
-    template <class Shape>
-    static void exec(None & a, Shape const & s)
-    {}
-    
-    template <class Shape, unsigned N>
-    static void exec(None & a, Shape const & s, BitArray<N> const &)
-    {}
-    
+        
     template <unsigned int N, class U, class Stride>
     typename MultiArrayShape<N>::type
     shape(MultiArrayView<N, U, Stride> const & a)
@@ -420,191 +519,67 @@ struct ReshapeImpl<VigraFalseType>
     template <class A, class T>
     void operator()(A &, T const &)
     {}
-    
-    template <class A, class T, unsigned N>
-    void operator()(A &, T const &, BitArray<N> const &)
-    {}
 };
 
     // helper classes to create an accumulator chain from a TypeList
-template <class T, class Accumulators, unsigned level=0>
+    // if level = 0,  a dynamic accumulator will be created
+    // if level = -1, a plain accumulator will be created
+template <class T, class Accumulators, int level = -1>
 struct Compose
 {
+    static const int nextLevel = level < 0 ? level : level + 1;
     typedef typename Accumulators::Head Tag; 
-    typedef Compose<T, typename Accumulators::Tail, level+1> ComposeType;
-    typedef typename ComposeType::type BaseType;
-    typedef typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >  type;
-    static const unsigned passes = ComposeType::passes < type::workInPass ? type::workInPass : ComposeType::passes;
+    typedef typename Compose<T, typename Accumulators::Tail, nextLevel>::type BaseType;
+    typedef Wrapper<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> > , level>  type;
 };
 
-template <class T, unsigned level> 
-struct Compose<T, void, level> 
+template <class T> 
+struct Compose<T, void, -1> 
 { 
     typedef None type;
+};
+
+template <class T, int level> 
+struct Compose<T, void, level> 
+{ 
+    typedef ActivationFlags<level> type;
     static const unsigned passes = 0;
 };
 
 } // namespace detail 
 
-    // create an accumulator chain containing the Selected statistics and their dependencies
-template <class T, class Selected>
+    // Create an accumulator chain containing the Selected statistics and their dependencies.
+template <class T, class Selected, int Dynamic = -1>
 struct Accumulator
-: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type
+: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, Dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::Compose<T, AccumulatorTags> ComposeAccumulators;
+    typedef detail::Compose<T, AccumulatorTags, Dynamic> ComposeAccumulators;
     typedef typename ComposeAccumulators::type Accumulators;
 
-    static const int level = Accumulators::level + 1;
-    
     detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
 
-    void operator+=(Accumulator const & o)
-    {
-        mergeImpl(*this, o);
-    }
-    
-    void reset()
-    {
-        resetImpl(*this);
-    }
-    
     using Accumulators::operator();
 
 	void operator()(T const & t)
     {
         reshape_(*this, t);
-        detail::UpdateImpl<Accumulators, 1>::exec(*this, t);
+        Accumulators::operator()(t);
     }
     
     void operator()(T const & t, double weight)
     {
         reshape_(*this, t);
-        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, weight);
+        Accumulators::operator()(t, weight);
     }
-    
-    void updatePass2(T const & t)
-    {
-        detail::UpdateImpl<Accumulators, 2>::exec(*this, t);
-    }
-    
-    void updatePass2(T const & t, double weight)
-    {
-        detail::UpdateImpl<Accumulators, 2>::exec(*this, t, weight);
-    }
-    
-    unsigned int passesRequired() const
-    {
-        return ComposeAccumulators::passes;
-    }
-    
-  private:
-    template <class A>
-    static void resetImpl(A & a)
-    {
-        resetImpl(a.next_);
-        a.reset();
-    }
-    
-    static void resetImpl(None &)
-    {}
-    
-    template <class A>
-    static void mergeImpl(A & a, A const & o)
-    {
-        a.merge(o);
-        mergeImpl(a.next_, o.next_);
-    }
-    
-    static void mergeImpl(None &, None const &)
-    {}
 };
 
+    // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
+    // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
 struct DynamicAccumulator
-: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type
-{
-    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::Compose<T, AccumulatorTags> ComposeAccumulators;
-    typedef typename ComposeAccumulators::type Accumulators;
-
-    static const int level = Accumulators::level + 1;
-    
-    detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
-    BitArray<level> active_accumulators_;
-
-    void operator+=(DynamicAccumulator const & o)
-    {
-        mergeImpl((Accumulators&)*this, (Accumulators const&)o, active_accumulators_);
-    }
-    
-    void reset()
-    {
-        resetImpl((Accumulators &)*this, active_accumulators_);
-        active_accumulators_.clear();
-    }
-    
-    // typename Accumulators::result_type
-    // operator()() const
-    // {
-        // vigra_precondition(active_accumulators_.test<Accumulators::level>(),
-            // std::string("DynamicAccumulator::operator(): attempt to access inactive staticstic '")
-            // << typeid(typename Accumulators::Tag).name() << "'.");
-        // return ((Accumulators const &)*this)();
-    // }
-    
-    using Accumulators::operator();
-
-	void operator()(T const & t)
-    {
-        reshape_((Accumulators &)*this, t, active_accumulators_);
-        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, active_accumulators_);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        reshape_((Accumulators &)*this, t, active_accumulators_);
-        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, weight, active_accumulators_);
-    }
-    
-    void updatePass2(T const & t)
-    {
-        detail::UpdateImpl<Accumulators, 2>::exec(*this, t, active_accumulators_);
-    }
-    
-    void updatePass2(T const & t, double weight)
-    {
-        detail::UpdateImpl<Accumulators, 2>::exec(*this, t, weight, active_accumulators_);
-    }
-    
-    unsigned int passesRequired() const
-    {
-        return ComposeAccumulators::passes;
-    }
-    
-  private:
-    template <class A>
-    static void resetImpl(A & a, BitArray<level> const & active)
-    {
-        resetImpl(a.next_, active);
-        if(active.test<A::level>())
-            a.reset();
-    }
-    
-    static void resetImpl(None &, BitArray<level> const &)
-    {}
-    
-    template <class A>
-    static void mergeImpl(A & a, A const & o, BitArray<level> const & active)
-    {
-        if(active.test<A.level>())
-            a.merge(o);
-        mergeImpl(a.next_, o.next_, active);
-    }
-    
-    static void mergeImpl(None &, None const &, BitArray<level> const &)
-    {}
-};
+: public Accumulator<T, Selected, 0>
+{};
 
     // cast an accumulator chain to the type specified by Tag
 template <class Tag, class A>
@@ -626,10 +601,9 @@ template <class Tag, class T, class Selected>
 typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::result_type
 get(DynamicAccumulator<T, Selected> const & a)
 {
-    typedef typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::type A;
-    vigra_precondition(a.active_accumulators_.test<A::level>(),
+    vigra_precondition(isActive<Tag>(a),
         std::string("get(accumulator): attempt to access inactive statistic '")
-                             << typeid(typename A::Tag).name() << "'.");
+                             << typeid(Tag).name() << "'.");
     return detail::CastImpl<Tag, typename DynamicAccumulator<T, Selected>::Tag>::get(a);
 }
 
@@ -638,14 +612,16 @@ template <class Tag, class A>
 void
 activate(A & a)
 {
-    typedef typename LookupTag<Tag, A>::type Accumulator;
-    a.active_accumulators_.set<Accumulator::level>();
-    detail::ActivateDependencies<typename Accumulator::Tag::Dependencies::type>::exec(a);
+    cast<Tag>(a).activate();
 }
 
-void
-activate(None &)
-{}
+    // activate the dynamic accumulator specified by Tag
+template <class Tag, class A>
+bool
+isActive(A const & a)
+{
+    return cast<Tag>(a).isActive();
+}
 
 namespace detail {
 

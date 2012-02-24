@@ -1852,6 +1852,7 @@ struct AccumulatorTest
         using namespace vigra::acc1;
         
         { 
+#if 1
             Accumulator<double, Select<Count> > a;
 
             shouldEqual(1, a.passesRequired());
@@ -1873,6 +1874,7 @@ struct AccumulatorTest
                 std::string message(c.what());
                 should(0 == expected.compare(message.substr(0,expected.size())));
             }
+#endif
         }
 
         { 
@@ -1883,7 +1885,7 @@ struct AccumulatorTest
 #if 1
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(19, A::level);
+//            shouldEqual(19, A::level);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -1914,20 +1916,20 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
 #endif
         }
-#if 1
+
         { 
+#if 1
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
             activate<Count>(a);
-
-//            shouldEqual(1, a.passesRequired());
+            should(isActive<Count>(a));
+            should(!isActive<Covariance>(a));
+            shouldEqual(1, a.passesRequired());
 
             a(1.0);
             a(2.0);
             a(3.0);
 
-            shouldEqual(true, true);
             shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(true, true);
 
             try 
             {
@@ -1942,12 +1944,22 @@ struct AccumulatorTest
             }
 
             a.reset();
-            activate<StdDev>(a);
+
             activate<Minimum>(a);
+            activate<StdDev>(a);
             activate<Covariance>(a);
             activate<CentralMoment<2> >(a);
 
-//            shouldEqual(2, a.passesRequired());
+            should(isActive<Count>(a));
+            should(isActive<Minimum>(a));
+            should(isActive<Sum>(a));
+            should(isActive<Mean>(a));
+            should(isActive<Variance>(a));
+            should(isActive<StdDev>(a));
+            should(isActive<CentralMoment<2> >(a));
+            should(isActive<Covariance>(a));
+
+            shouldEqual(2, a.passesRequired());
 
             a(1.0);
             a(2.0);
@@ -1967,8 +1979,8 @@ struct AccumulatorTest
 
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<CentralMoment<2> >(a), 2.0/3.0);
-        }
 #endif
+        }
 #endif
     }
 
