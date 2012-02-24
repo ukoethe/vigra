@@ -52,6 +52,7 @@ struct None
     typedef None Tag;
     typedef void value_type;
     static const unsigned int workInPass = 0; 
+    static const int level = -1; 
 };
 
 template <class T, class TAG, class NEXT=None>
@@ -143,6 +144,27 @@ struct AddDependencies<void>
     typedef void Tail;
 };
 
+    // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
+    // activate() must also be called for Tag's dependencies).
+template <class Dependencies>
+struct ActivateDependencies
+{
+    template <class Accumulator>
+    static void exec(Accumulator & a)
+    {
+        activate<typename Dependencies::Head>(a);
+        ActivateDependencies<typename Dependencies::Tail>::exec(a);
+    }
+};
+
+template <>
+struct ActivateDependencies<void>
+{
+    template <class Accumulator>
+    static void exec(Accumulator & a)
+    {}
+};
+
 template <class A, unsigned CurrentPass, unsigned WorkPass=A::workInPass>
 struct UpdateImpl
 {
@@ -156,6 +178,18 @@ struct UpdateImpl
     static void exec(A & a, T const & t, double weight)
     {
         UpdateImpl<typename A::BaseType>::exec(a.next_, t, weight);
+    }
+    
+    template <class T, unsigned int N>
+    static void exec(A & a, T const & t, BitArray<N> const & active)
+    {
+        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, active);
+    }
+
+    template <class T, unsigned int N>
+    static void exec(A & a, T const & t, double weight, BitArray<N> const & active)
+    {
+        UpdateImpl<typename A::BaseType>::exec(a.next_, t, weight, active);
     }
 };
 
@@ -175,6 +209,22 @@ struct UpdateImpl<A, CurrentPass, CurrentPass>
         UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, weight);
         a.update(t, weight);
     }
+    
+    template <class T, unsigned int N>
+    static void exec(A & a, T const & t, BitArray<N> const & active)
+    {
+        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, active);
+        if(active.test<A::level>())
+            a.update(t);
+    }
+
+    template <class T, unsigned int N>
+    static void exec(A & a, T const & t, double weight, BitArray<N> const & active)
+    {
+        UpdateImpl<typename A::BaseType, CurrentPass>::exec(a.next_, t, weight, active);
+        if(active.test<A::level>())
+            a.update(t, weight);
+    }
 };
 
 template <unsigned CurrentPass, unsigned WorkPass>
@@ -187,43 +237,14 @@ struct UpdateImpl<None, CurrentPass, WorkPass>
     template <class T>
     static void exec(None &, T const &, double)
     {}
-};
-
-template <class A>
-struct MergeImpl
-{
-    static void exec(A & a, A const & o)
-    {
-        a.merge(o);
-        MergeImpl<typename A::BaseType>::exec(a.next_, o.next_);
-    }
-    static void exec(None & a, None const & o)
+    
+    
+    template <class T, unsigned int N>
+    static void exec(None &, T const &, BitArray<N> const &)
     {}
-};
 
-template <>
-struct MergeImpl<None>
-{
-    static void exec(None & a, None const & o)
-    {}
-};
-
-template <class A>
-struct ReshapeImpl
-{
-    template <class Shape>
-    static void exec(A & a, Shape const & s)
-    {
-        ReshapeImpl<typename A::BaseType>::exec(a.next_, s);
-        a.reshape(s);
-    }
-};
-
-template <>
-struct ReshapeImpl<None>
-{
-    template <class Shape>
-    static void exec(None & a, Shape const & s)
+    template <class T, unsigned int N>
+    static void exec(None &, T const &, double, BitArray<N> const &)
     {}
 };
 
@@ -236,6 +257,7 @@ struct CastImpl
     {
         return CastImpl<Tag, typename A::BaseType::Tag>::cast(a.next_);
     }
+    
     template <class A>
     static typename LookupTag<Tag, A>::result_type
     get(A const & a)
@@ -247,6 +269,7 @@ struct CastImpl
     {
         return a;
     }
+    
     static void get(None const & a)
     {
         vigra_precondition(false,
@@ -263,6 +286,7 @@ struct CastImpl<Tag, Tag>
     {
         return a;
     }
+    
     template <class A>
     static typename LookupTag<Tag, A>::result_type
     get(A const & a)
@@ -318,45 +342,62 @@ struct NeedsReshape<None, None::value_type>
     typedef VigraFalseType type;
 };
 
-    // This accumulator is inserted on top of an accumulator chain to call reshape() 
+    // This functor is inserted on top of an accumulator chain to call reshape() 
     // when the first data item arrives. This is necessary if the shape of the result 
     // depends on the shape of the input and cannot be determined at compile time. 
     // The above NeedsReshape traits specify the types where this applies. If the chain
-    // doesn't contain such types, ReshapeHelper will expand into a do-nothing version.
-template <class T, class BASE, class NeedsReshape=typename NeedsReshape<BASE>::type>
-struct ReshapeHelper
-: public BASE
+    // doesn't contain such types, ReshapeImpl will expand into a do-nothing version.
+template <class NeedsReshape>
+struct ReshapeImpl
 {
-    // typedef VigraFalseType Tag;
-    // typedef BASE           BaseType;
+    bool done_;
     
-    bool needs_reshape_;
-    
-    ReshapeHelper()
-    : needs_reshape_(true)
+    ReshapeImpl()
+    : done_(false)
     {}
     
-    using BASE::operator();
-
-	void operator()(T const & t)
+    template <class A, class T>
+    void operator()(A & a, T const & t)
     {
-        if(needs_reshape_)
+        if(!done_)
         {
-            detail::ReshapeImpl<BASE>::exec(*this, shape(t));
-            needs_reshape_ = false;
+            exec(a, shape(t));
+            done_ = true;
         }
-        detail::UpdateImpl<BASE, 1>::exec(*this, t);
     }
     
-    void operator()(T const & t, double weight)
+    template <class A, class T, unsigned N>
+    void operator()(A & a, T const & t, BitArray<N> const & active)
     {
-        if(needs_reshape_)
+        if(!done_)
         {
-            detail::ReshapeImpl<BASE>::exec(*this, shape(t));
-            needs_reshape_ = false;
+            exec(a, shape(t), active);
+            done_ = true;
         }
-        detail::UpdateImpl<BASE, 1>::exec(*this, t, weight);
     }
+    
+    template <class A, class Shape>
+    void exec(A & a, Shape const & s)
+    {
+        exec(a.next_, s);
+        a.reshape(s);
+    }
+
+    template <class A, class Shape, unsigned N>
+    void exec(A & a, Shape const & s, BitArray<N> const & active)
+    {
+        exec(a.next_, s, active);
+        if(active.test<A.level>())
+            a.reshape(s);
+    }
+
+    template <class Shape>
+    static void exec(None & a, Shape const & s)
+    {}
+    
+    template <class Shape, unsigned N>
+    static void exec(None & a, Shape const & s, BitArray<N> const &)
+    {}
     
     template <unsigned int N, class U, class Stride>
     typename MultiArrayShape<N>::type
@@ -367,30 +408,22 @@ struct ReshapeHelper
     
     template <class U, int N>
     Shape1
-    shape(TinyVector<U, N> const & a)
+    shape(TinyVector<U, N> const &)
     {
         return Shape1(N);
     }
 };
 
-template <class T, class BASE>
-struct ReshapeHelper<T, BASE, VigraFalseType>
-: public BASE
+template <>
+struct ReshapeImpl<VigraFalseType>
 {
-    // typedef VigraFalseType Tag;
-    // typedef BASE           BaseType;
-
-    using BASE::operator();
-
-	void operator()(T const & t)
-    {
-        detail::UpdateImpl<BASE, 1>::exec(*this, t);
-    }
+    template <class A, class T>
+    void operator()(A &, T const &)
+    {}
     
-    void operator()(T const & t, double weight)
-    {
-        detail::UpdateImpl<BASE, 1>::exec(*this, t, weight);
-    }
+    template <class A, class T, unsigned N>
+    void operator()(A &, T const &, BitArray<N> const &)
+    {}
 };
 
     // helper classes to create an accumulator chain from a TypeList
@@ -413,35 +446,41 @@ struct Compose<T, void, level>
 
 } // namespace detail 
 
-    // cast an accumulator chain to the type specified by Tag
-template <class Tag, class A>
-typename LookupTag<Tag, A>::reference
-cast(A & a)
-{
-    return detail::CastImpl<Tag, typename A::Tag>::cast(a);
-}
-
-    // get the result of the accumulator specified by Tag
-template <class Tag, class A>
-typename LookupTag<Tag, A>::result_type
-get(A const & a)
-{
-    return detail::CastImpl<Tag, typename A::Tag>::get(a);
-}
-
     // create an accumulator chain containing the Selected statistics and their dependencies
 template <class T, class Selected>
 struct Accumulator
-: public detail::ReshapeHelper<T, typename detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type>
+: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
     typedef detail::Compose<T, AccumulatorTags> ComposeAccumulators;
     typedef typename ComposeAccumulators::type Accumulators;
-//    typedef VigraFalseType Tag;
 
-    void operator+=(Accumulator const & t)
+    static const int level = Accumulators::level + 1;
+    
+    detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
+
+    void operator+=(Accumulator const & o)
     {
-        detail::MergeImpl<Accumulators>::exec(*this, t);
+        mergeImpl(*this, o);
+    }
+    
+    void reset()
+    {
+        resetImpl(*this);
+    }
+    
+    using Accumulators::operator();
+
+	void operator()(T const & t)
+    {
+        reshape_(*this, t);
+        detail::UpdateImpl<Accumulators, 1>::exec(*this, t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        reshape_(*this, t);
+        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, weight);
     }
     
     void updatePass2(T const & t)
@@ -458,7 +497,155 @@ struct Accumulator
     {
         return ComposeAccumulators::passes;
     }
+    
+  private:
+    template <class A>
+    static void resetImpl(A & a)
+    {
+        resetImpl(a.next_);
+        a.reset();
+    }
+    
+    static void resetImpl(None &)
+    {}
+    
+    template <class A>
+    static void mergeImpl(A & a, A const & o)
+    {
+        a.merge(o);
+        mergeImpl(a.next_, o.next_);
+    }
+    
+    static void mergeImpl(None &, None const &)
+    {}
 };
+
+template <class T, class Selected>
+struct DynamicAccumulator
+: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type
+{
+    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
+    typedef detail::Compose<T, AccumulatorTags> ComposeAccumulators;
+    typedef typename ComposeAccumulators::type Accumulators;
+
+    static const int level = Accumulators::level + 1;
+    
+    detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
+    BitArray<level> active_accumulators_;
+
+    void operator+=(DynamicAccumulator const & o)
+    {
+        mergeImpl((Accumulators&)*this, (Accumulators const&)o, active_accumulators_);
+    }
+    
+    void reset()
+    {
+        resetImpl((Accumulators &)*this, active_accumulators_);
+        active_accumulators_.clear();
+    }
+    
+    // typename Accumulators::result_type
+    // operator()() const
+    // {
+        // vigra_precondition(active_accumulators_.test<Accumulators::level>(),
+            // std::string("DynamicAccumulator::operator(): attempt to access inactive staticstic '")
+            // << typeid(typename Accumulators::Tag).name() << "'.");
+        // return ((Accumulators const &)*this)();
+    // }
+    
+    using Accumulators::operator();
+
+	void operator()(T const & t)
+    {
+        reshape_((Accumulators &)*this, t, active_accumulators_);
+        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, active_accumulators_);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        reshape_((Accumulators &)*this, t, active_accumulators_);
+        detail::UpdateImpl<Accumulators, 1>::exec(*this, t, weight, active_accumulators_);
+    }
+    
+    void updatePass2(T const & t)
+    {
+        detail::UpdateImpl<Accumulators, 2>::exec(*this, t, active_accumulators_);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        detail::UpdateImpl<Accumulators, 2>::exec(*this, t, weight, active_accumulators_);
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return ComposeAccumulators::passes;
+    }
+    
+  private:
+    template <class A>
+    static void resetImpl(A & a, BitArray<level> const & active)
+    {
+        resetImpl(a.next_, active);
+        if(active.test<A::level>())
+            a.reset();
+    }
+    
+    static void resetImpl(None &, BitArray<level> const &)
+    {}
+    
+    template <class A>
+    static void mergeImpl(A & a, A const & o, BitArray<level> const & active)
+    {
+        if(active.test<A.level>())
+            a.merge(o);
+        mergeImpl(a.next_, o.next_, active);
+    }
+    
+    static void mergeImpl(None &, None const &, BitArray<level> const &)
+    {}
+};
+
+    // cast an accumulator chain to the type specified by Tag
+template <class Tag, class A>
+typename LookupTag<Tag, A>::reference
+cast(A & a)
+{
+    return detail::CastImpl<Tag, typename A::Tag>::cast(a);
+}
+
+    // get the result of the accumulator specified by Tag
+template <class Tag, class A>
+typename LookupTag<Tag, A>::result_type
+get(A const & a)
+{
+    return detail::CastImpl<Tag, typename A::Tag>::get(a);
+}
+
+template <class Tag, class T, class Selected>
+typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::result_type
+get(DynamicAccumulator<T, Selected> const & a)
+{
+    typedef typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::type A;
+    vigra_precondition(a.active_accumulators_.test<A::level>(),
+        std::string("get(accumulator): attempt to access inactive staticstic '")
+                             << typeid(typename A::Tag).name() << "'.");
+    return detail::CastImpl<Tag, typename A::Tag>::get(a);
+}
+
+    // activate the dynamic accumulator specified by Tag
+template <class Tag, class A>
+void
+activate(A & a)
+{
+    typedef typename LookupTag<Tag, A>::type Accumulator;
+    a.active_accumulators_.set<Accumulator::level>();
+    detail::ActivateDependencies<typename Accumulator::Tag::Dependencies::type>::exec(a);
+}
+
+void
+activate(None &)
+{}
 
 namespace detail {
 
@@ -1045,7 +1232,7 @@ struct DynamicCompose<T, void, level>
     // create an accumulator chain containing the Selected statistics and their dependencies
 template <class T, class Selected>
 struct Accumulator
-: public detail::ReshapeHelper<T, 
+: public detail::ReshapeImpl<T, 
            typename detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type>::type>
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
@@ -1072,7 +1259,7 @@ struct Accumulator
     // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
 struct DynamicAccumulator
-: public detail::ReshapeHelper<T, 
+: public detail::ReshapeImpl<T, 
            typename detail::DynamicCompose<T, typename detail::AddDependencies<typename Selected::type>::type>::type>
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type Accumulators;
@@ -1118,13 +1305,6 @@ struct LookupTag<Tag, None>
     typedef void result_type;
 };
 #endif
-
-    // activate the dynamic accumulator specified by Tag
-template <class Tag, class Accumulator>
-void activate(Accumulator & a)
-{
-    cast<Tag>(a).activate();
-}
 
 #if 0
 Accumulator<StridedPairPointer<...>, Bind<Data, Select<...> >,    // data statistics
