@@ -351,14 +351,17 @@ class Mean
         typedef value_type const &                                  result_type;
 
         mutable value_type value_;
+        mutable bool is_dirty_;
         
         Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
+        : value_(),  // call default constructor explicitly to ensure zero initialization
+          is_dirty_(false)
         {}
         
         void reset()
         {
             value_ = element_type();
+            is_dirty_ = false;
         }
     
         template <class Shape>
@@ -367,16 +370,34 @@ class Mean
             detail::reshapeImpl(value_, s);
         }
 
+        void merge(Impl const &)
+        {
+            is_dirty_ = true;
+        }
+    
+        void update(T const &)
+        {
+            is_dirty_ = true;
+        }
+        
+        void update(T const & t, double)
+        {
+            is_dirty_ = true;
+        }
+        
         result_type operator()() const
         {
-			using namespace multi_math;
-            value_ = get<Sum>(*this) / get<Count>(*this);
+			if(is_dirty_)
+            {
+                using namespace multi_math;
+                value_ = get<Sum>(*this) / get<Count>(*this);
+                is_dirty_ = false;
+            }
             return value_;
         }
     };
 };
 
-#if 0
 class Centralize
 {
   public:
@@ -386,8 +407,8 @@ class Centralize
     struct Impl
     : public BASE
     {
-        typedef Centralize Tag;
-        typedef BASE BaseType;
+        static const unsigned int workInPass = 2;
+        
         typedef typename AccumulatorTraits<T>::element_promote_type element_type;
         typedef typename AccumulatorTraits<T>::SumType              value_type;
         typedef value_type const &                                  result_type;
@@ -409,13 +430,15 @@ class Centralize
             detail::reshapeImpl(value_, s);
         }
         
-        void updatePass2(T const & t)
+        void update(T const & t)
         {
+            using namespace vigra::multi_math;
             value_ = t - get<Mean>(*this);
         }
         
-        void updatePass2(T const & t, double)
+        void update(T const & t, double)
         {
+            using namespace vigra::multi_math;
             value_ = t - get<Mean>(*this);
         }
         
@@ -425,7 +448,6 @@ class Centralize
         }
     };
 };
-#endif
 
 namespace detail
 {
@@ -488,7 +510,6 @@ void CentralMomentsHelper<3u>::merge(Accu & l, Accu const & r)
     }
 }
 
-
 template <>
 struct CentralMomentsHelper<4u>
 {
@@ -528,7 +549,7 @@ template <unsigned int N>
 class CentralMoment
 {
   public:
-    typedef Select<Mean, Count, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
+    typedef Select<Centralize, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
      
     template <class T, class BASE>
     struct Impl
@@ -565,13 +586,13 @@ class CentralMoment
         void update(T const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+            value_ += pow(get<Centralize>(*this), (int)N);
         }
         
         void update(T const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(t - get<Sum>(*this) / get<Count>(*this), (int)N);
+            value_ += weight*pow(get<Centralize>(*this), (int)N);
         }
         
         result_type operator()() const
