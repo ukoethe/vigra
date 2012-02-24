@@ -1914,7 +1914,7 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
 #endif
         }
-#if 0
+#if 1
         { 
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
             activate<Count>(a);

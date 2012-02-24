@@ -628,9 +628,9 @@ get(DynamicAccumulator<T, Selected> const & a)
 {
     typedef typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::type A;
     vigra_precondition(a.active_accumulators_.test<A::level>(),
-        std::string("get(accumulator): attempt to access inactive staticstic '")
+        std::string("get(accumulator): attempt to access inactive statistic '")
                              << typeid(typename A::Tag).name() << "'.");
-    return detail::CastImpl<Tag, typename A::Tag>::get(a);
+    return detail::CastImpl<Tag, typename DynamicAccumulator<T, Selected>::Tag>::get(a);
 }
 
     // activate the dynamic accumulator specified by Tag
