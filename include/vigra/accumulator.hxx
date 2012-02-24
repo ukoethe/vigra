@@ -373,7 +373,7 @@ struct Config
 };
 
 template <class CONFIG>
-struct RecurseAfter
+struct RecurseBefore
 : public CONFIG
 {
     typedef CONFIG Base;
@@ -419,29 +419,29 @@ struct RecurseAfter
     template <class A>
 	static void pass1(A & a, argument_type t)
     {
-        Base::pass1(a, t);
         ((BaseBase &)a).pass1(t);
+        Base::pass1(a, t);
     }
     
     template <class A>
     static void pass1(A & a, argument_type t, double weight)
     {
-        Base::pass1(a, t, weight);
         ((BaseBase &)a).pass1(t, weight);
+        Base::pass1(a, t, weight);
     }
     
     template <class A>
     static void pass2(A & a, argument_type t)
     {
-        Base::pass2(a, t);
         ((BaseBase &)a).pass2(t);
+        Base::pass2(a, t);
     }
     
     template <class A>
     static void pass2(A & a, argument_type t, double weight)
     {
-        Base::pass2(a, t, weight);
         ((BaseBase &)a).pass2(t, weight);
+        Base::pass2(a, t, weight);
     }
 };
 
@@ -745,14 +745,14 @@ struct ReshapeHelper<T, BASE, VigraFalseType>
 template <class T, class TAG, class BASE, unsigned LEVEL>
 struct SelectConfig
 {
-    typedef RecurseAfter<Config<T, TAG, BASE, LEVEL> > type;
+    typedef RecurseBefore<Config<T, TAG, BASE, LEVEL> > type;
 };
 
 template <class T, class TAG, class BASE, unsigned LEVEL>
 struct SelectWrapper<T, Dynamic<TAG>, BASE, LEVEL>
 {
     typedef DynamicAccumulatorWrapper<T, TAG, BASE, LEVEL> Wrapper;
-    typedef RecurseAfter<T, Wrapper, BASE, LEVEL> type;
+    typedef RecurseBefore<T, Wrapper, BASE, LEVEL> type;
 };
 #endif
 
@@ -762,7 +762,7 @@ struct Compose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef Wrapper<RecurseAfter<Config<T, Tag, BaseType, level> > > type;
+    typedef Wrapper<RecurseBefore<Config<T, Tag, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
@@ -777,7 +777,7 @@ struct DynamicCompose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename DynamicCompose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef Wrapper<RecurseAfter<Config<T, Dynamic<Tag>, BaseType, level> > > type;
+    typedef Wrapper<RecurseBefore<Config<T, Dynamic<Tag>, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
@@ -1495,16 +1495,6 @@ class Centralize
 namespace detail
 {
 
-template <class SSD, class Sum1, class Sum2> 
-void updateSSD(SSD & l, Sum1 const & s1, double n1, Sum2 const & s2, double n2 = 1.0)
-{
-    if(n1 != 0.0 && n2 != 0.0)
-    {
-        using namespace vigra::multi_math;
-        l += n1 * n2 / (n1 + n2) * sq(s1 / n1 - s2 / n2);
-    }
-}
-
 template <unsigned int N>
 struct CentralMomentsHelper
 {
@@ -1522,8 +1512,16 @@ struct CentralMomentsHelper<2u>
     template <class Accu>
     static void merge(Accu & l, Accu const & r)
     {
-        updateSSD(l.value_, get<Sum>(l), get<Count>(l), get<Sum>(r), get<Count>(r));
-        l.value_ += r.value_;
+        using namespace vigra::multi_math;
+        double n1 = get<Count>(l), n2 = get<Count>(r);
+        if(n1 == 0.0)
+        {
+            l.value_ = r.value_;
+        }
+        else if(n2 != 0.0)
+        {
+            l.value_ += r.value_ + n1 * n2 / (n1 + n2) * sq(get<Sum>(l) / n1 - get<Sum>(r) / n2);
+        }
     }
 };
 
@@ -1539,14 +1537,20 @@ void CentralMomentsHelper<3u>::merge(Accu & l, Accu const & r)
 {
     using namespace vigra::multi_math;
     typedef typename LookupTag<Sum, Accu>::value_type SumType;
-    double n1 = get<Count>(l);
-    double n2 = get<Count>(r);
-    double n = n1 + n2;
-    double weight = n1 * n2 * (n1 - n2) / sq(n);
-    SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
-    l.value_ += r.value_ + weight * pow(delta, 3) +
-                   3.0 / n * delta * (  n1 * cast<CentralMoment<2> >(r).value_
-                                      - n2 * cast<CentralMoment<2> >(l).value_);
+    double n1 = get<Count>(l), n2 = get<Count>(r);
+    if(n1 == 0.0)
+    {
+        l.value_ = r.value_;
+    }
+    else if(n2 != 0.0)
+    {
+        double n = n1 + n2;
+        double weight = n1 * n2 * (n1 - n2) / sq(n);
+        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+        l.value_ += r.value_ + weight * pow(delta, 3) +
+                       3.0 / n * delta * (  n1 * cast<CentralMoment<2> >(r).value_
+                                          - n2 * cast<CentralMoment<2> >(l).value_);
+    }
 }
 
 
@@ -1562,19 +1566,25 @@ void CentralMomentsHelper<4u>::merge(Accu & l, Accu const & r)
 {
     using namespace vigra::multi_math;
     typedef typename LookupTag<Sum, Accu>::value_type SumType;
-    double n1 = get<Count>(l);
-    double n2 = get<Count>(r);
-    double n = n1 + n2;
-    double n1_2 = sq(n1);
-    double n2_2 = sq(n2);
-    double n_2 = sq(n);
-    double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
-    SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
-    l.value_ += r.value_ + weight * pow(delta, 4) +
-                  6.0 / n_2 * sq(delta) * (  n1_2 * cast<CentralMoment<2> >(r).value_
-                                           + n2_2 * cast<CentralMoment<2> >(l).value_ ) +
-                  4.0 / n * delta * (  n1 * cast<CentralMoment<3> >(r).value_
-                                     - n2 * cast<CentralMoment<3> >(l).value_);
+    double n1 = get<Count>(l), n2 = get<Count>(r);
+    if(n1 == 0.0)
+    {
+        l.value_ = r.value_;
+    }
+    else if(n2 != 0.0)
+    {
+        double n = n1 + n2;
+        double n1_2 = sq(n1);
+        double n2_2 = sq(n2);
+        double n_2 = sq(n);
+        double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
+        SumType delta = get<Sum>(r) / n2 - get<Sum>(l) / n1;
+        l.value_ += r.value_ + weight * pow(delta, 4) +
+                      6.0 / n_2 * sq(delta) * (  n1_2 * cast<CentralMoment<2> >(r).value_
+                                               + n2_2 * cast<CentralMoment<2> >(l).value_ ) +
+                      4.0 / n * delta * (  n1 * cast<CentralMoment<3> >(r).value_
+                                         - n2 * cast<CentralMoment<3> >(l).value_);
+    }
 }
 
 } // namsspace detail
@@ -1584,7 +1594,7 @@ class CentralMoment
 {
   public:
     typedef Select<Mean, Count, typename IfBool<(N > 2), CentralMoment<N-1>, void>::type > Dependencies;
-    typedef VigraTrueType RecurseAfter;
+    typedef VigraTrueType RecurseBefore;
      
     template <class T, class BASE>
     struct Impl
@@ -1696,7 +1706,7 @@ class SumSquaredDifferences
 {
   public:
     typedef Select<Mean, Count> Dependencies;
-    typedef VigraTrueType RecurseAfter;
+    typedef VigraTrueType RecurseBefore;
     
     template <class T, class BASE>
     struct Impl
@@ -1733,12 +1743,22 @@ class SumSquaredDifferences
     
         void updatePass1(T const & t)
         {
-            detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t);
+            double n = get<Count>(*this);
+            if(n > 1.0)
+            {
+                using namespace vigra::multi_math;
+                value_ += n / (n - 1.0) * sq(get<Sum>(*this) / n - t);
+            }
         }
         
         void updatePass1(T const & t, double weight)
         {
-            detail::updateSSD(value_, get<Sum>(*this), get<Count>(*this), t, weight);
+            double n = get<Count>(*this);
+            if(n > weight)
+            {
+                using namespace vigra::multi_math;
+                value_ += n / (n - weight) * sq(get<Sum>(*this) / n - t);
+            }
         }
         
         result_type operator()() const
@@ -1887,7 +1907,7 @@ class FlatScatterMatrix
 {
   public:
     typedef Select<Mean, Count> Dependencies;
-    typedef VigraTrueType RecurseAfter;
+    typedef VigraTrueType RecurseBefore;
     
     template <class T, class BASE>
     struct Impl
@@ -1947,13 +1967,12 @@ class FlatScatterMatrix
       private:
         void compute(T const & t, double weight = 1.0)
         {
-            double old_count = get<Count>(*this);
-            if(old_count != 0.0)
+            double n = get<Count>(*this);
+            if(n > weight)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / old_count - t;
-                weight = old_count / (old_count + weight) * weight;
-                detail::updateFlatScatterMatrix(value_, diff_, weight);
+                diff_ = get<Sum>(*this) / n - t;
+                detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
         }
     };
