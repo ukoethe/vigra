@@ -1771,7 +1771,33 @@ struct AccumulatorTest
     
     void test1()
     {
+        using namespace vigra::acc1;
+
+//        typedef Count::Impl<double, AccumulatorBase<double, Count> > A;
+        typedef Accumulator<double, Select<Count, Maximum, Minimum, Mean, Variance, CovarianceEigensystem, Skewness, Kurtosis> > A;
+        A a;
+
+        a(1.0);
+        a(2.0);
+        a(3.0);
+        a.updatePass2(1.0);
+        a.updatePass2(2.0);
+        a.updatePass2(3.0);
+
+        std::cerr << get<Count>(a) << " count\n";
+        std::cerr << get<Minimum>(a) << " Minimum\n";
+        std::cerr << get<Maximum>(a) << " Maximum\n";
+        std::cerr << get<Sum>(a) << " Sum\n";
+        std::cerr << get<Mean>(a) << " Mean\n";
+        std::cerr << get<SSD>(a) << " SSD\n";
+        std::cerr << get<Variance>(a) << " Variance\n";
+        std::cerr << get<Covariance>(a) << " Covariance\n";
+        std::cerr << get<CovarianceEigensystem>(a).first << " CovarianceEigensystem\n";
+        std::cerr << get<CovarianceEigensystem>(a).second << " CovarianceEigensystem\n";
+        std::cerr << get<Skewness>(a) << " Skewness\n";
+        std::cerr << get<Kurtosis>(a) << " Kurtosis\n";
 #if 0
+
         using namespace vigra::acc1;
 
         typedef CoupledPointer<2, double> V;
@@ -1822,6 +1848,7 @@ struct AccumulatorTest
     
     void testScalar()
     {
+#if 1
         using namespace vigra::acc1;
         
         { 
@@ -1855,7 +1882,7 @@ struct AccumulatorTest
 #if 1
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(18, (LookupTag<AccumulatorBase, A>::type::level));
+//            shouldEqual(18, (LookupTag<AccumulatorBase, A>::type::level));
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -1886,7 +1913,7 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
 #endif
         }
-#if 1
+#if 0
         { 
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
             activate<Count>(a);
@@ -1938,6 +1965,7 @@ struct AccumulatorTest
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<CentralMoment<2> >(a), 2.0/3.0);
         }
+#endif
 #endif
     }
 
@@ -2043,7 +2071,7 @@ struct AccumulatorTest
 
     void testMerge()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         
         typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
@@ -2073,8 +2101,9 @@ struct AccumulatorTest
         shouldEqualTolerance(get<Mean>(a), 3.2, 1e-15);
         shouldEqualTolerance(get<SSD>(a), 14.8, 1e-15);
         shouldEqualTolerance(get<Variance>(a), 2.96, 1e-15);
-        shouldEqualTolerance(get<Covariance>(a), 2.96, 1e-15);
         shouldEqualTolerance(get<StdDev>(a), sqrt(2.96), 1e-15);
+        shouldEqualTolerance(get<FlatScatterMatrix>(a), 14.8, 1e-15);
+        shouldEqualTolerance(get<Covariance>(a), 2.96, 1e-15);
         shouldEqualTolerance(get<CentralMoment<2> >(a), 2.96, 1e-15);
         shouldEqualTolerance(get<CentralMoment<3> >(a), 2.016, 1e-15);
         shouldEqualTolerance(get<CentralMoment<4> >(a), 17.4752, 1e-15);
