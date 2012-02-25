@@ -309,7 +309,7 @@ struct Wrapper
     void reset()
     {
         this->next_.reset();
-        ((A *)this)->reset();
+        A::reset();
     }
     
     using A::operator();
@@ -491,8 +491,8 @@ struct ReshapeImpl<VigraFalseType>
 };
 
     // helper classes to create an accumulator chain from a TypeList
-    // if level = 0,  a dynamic accumulator will be created
-    // if level = -1, a plain accumulator will be created
+    // if dynamic=true,  a dynamic accumulator will be created
+    // if dynamic=false, a plain accumulator will be created
 template <class T, class Accumulators, bool dynamic=false, unsigned level = 0>
 struct Compose
 {
@@ -521,56 +521,55 @@ struct Accumulator
 : public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::Compose<T, AccumulatorTags, dynamic> ComposeAccumulators;
-    typedef typename ComposeAccumulators::type Accumulators;
+    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type Accumulators;
 
     detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
 
-    using Accumulators::operator();
-	
     template <unsigned N>
-    void pass(T const & t)
+    void update(T const & t)
     {
         reshape_(*this, t, MetaInt<N>());
         Accumulators::pass<N>(t);
     }
     
     template <unsigned N>
-    void pass(T const & t, double weight)
+    void update(T const & t, double weight)
     {
         reshape_(*this, t, MetaInt<N>());
         Accumulators::pass<N>(t, weight);
     }
 
+    using Accumulators::operator();
+	
 	void operator()(T const & t)
     {
-        pass<1>(t);
+        update<1>(t);
     }
     
     void operator()(T const & t, double weight)
     {
-        pass<1>(t, weight);
+        update<1>(t, weight);
     }
 
 	void updatePass2(T const & t)
     {
-        pass<2>(t);
+        update<2>(t);
     }
     
     void updatePass2(T const & t, double weight)
     {
-        pass<2>(t, weight);
+        update<2>(t, weight);
     }
 
 	void updatePassN(T const & t, unsigned int N)
     {
         switch (N)
         {
-            case 1: pass<1>(t); break;
-            case 2: pass<2>(t); break;
-            case 3: pass<3>(t); break;
-            case 4: pass<4>(t); break;
-            case 5: pass<5>(t); break;
+            case 1: update<1>(t); break;
+            case 2: update<2>(t); break;
+            case 3: update<3>(t); break;
+            case 4: update<4>(t); break;
+            case 5: update<5>(t); break;
             default:
                 vigra_precondition(false,
                      "Accumulator::updatePassN(): 0 < N < 6 required.");
@@ -581,11 +580,11 @@ struct Accumulator
     {
         switch (N)
         {
-            case 1: pass<1>(t, weight); break;
-            case 2: pass<2>(t, weight); break;
-            case 3: pass<3>(t, weight); break;
-            case 4: pass<4>(t, weight); break;
-            case 5: pass<5>(t, weight); break;
+            case 1: update<1>(t, weight); break;
+            case 2: update<2>(t, weight); break;
+            case 3: update<3>(t, weight); break;
+            case 4: update<4>(t, weight); break;
+            case 5: update<5>(t, weight); break;
             default:
                 vigra_precondition(false,
                      "Accumulator::updatePassN(): 0 < N < 6 required.");
