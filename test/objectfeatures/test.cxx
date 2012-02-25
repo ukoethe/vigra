@@ -1885,7 +1885,7 @@ struct AccumulatorTest
 #if 1
 
             shouldEqual(2, a.passesRequired());
-//            shouldEqual(19, A::level);
+            shouldEqual(18, A::index);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -1944,6 +1944,7 @@ struct AccumulatorTest
             }
 
             a.reset();
+            should(!isActive<Count>(a));
 
             activate<Minimum>(a);
             activate<StdDev>(a);

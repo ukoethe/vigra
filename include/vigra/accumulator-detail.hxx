@@ -95,6 +95,14 @@ struct Select
                       T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
 {};
 
+namespace detail {
+
+template <bool dynamic, unsigned LEVEL>
+struct AccumulatorFlags;
+
+}
+
+
 template <class Tag, class A, class FromTag=typename A::Tag>
 struct LookupTag
 : public LookupTag<Tag, typename A::BaseType>
@@ -141,6 +149,24 @@ struct LookupTag<Tag, None const, FromTag>
     typedef void result_type;
 };
 
+template <class Tag, bool dynamic, unsigned level, class FromTag>
+struct LookupTag<Tag, detail::AccumulatorFlags<dynamic, level>, FromTag>
+{
+    typedef None type;
+    typedef None & reference;
+    typedef void value_type;
+    typedef void result_type;
+};
+
+template <class Tag, bool dynamic, unsigned level, class FromTag>
+struct LookupTag<Tag, detail::AccumulatorFlags<dynamic, level> const, FromTag>
+{
+    typedef None const type;
+    typedef None const & reference;
+    typedef void value_type;
+    typedef void result_type;
+};
+
 namespace detail {
 
     // Insert the dependencies of the selected functors into the TypeList and sort
@@ -171,14 +197,12 @@ struct AddDependencies<void>
     typedef void Tail;
 };
 
-template <unsigned LEVEL>
-struct ActivationFlags
-: public None
+template <bool dynamic, unsigned LEVEL>
+struct AccumulatorFlags
+: public AccumulatorFlags<false, LEVEL>
 {
-    typedef None BaseType;
-    static const unsigned level = LEVEL;
-    BitArray<level> active_accumulators_;
-    
+    BitArray<LEVEL> active_accumulators_;
+   
     template <int which>
     void activateImpl()
     {
@@ -189,6 +213,39 @@ struct ActivationFlags
     bool isActiveImpl() const
     {
         return active_accumulators_.test<which>();
+    }
+    
+    void reset()
+    {
+        active_accumulators_.clear();
+    }
+};
+
+template <unsigned LEVEL>
+struct AccumulatorFlags<false, LEVEL>
+: public None
+{
+    typedef None BaseType;
+    static const unsigned level = LEVEL;
+    
+    mutable BitArray<LEVEL> is_dirty_;
+    
+    template <int which>
+    void setDirtyImpl() const
+    {
+        is_dirty_.set<which>();
+    }
+    
+    template <int which>
+    void setCleanImpl() const
+    {
+        is_dirty_.reset<which>();
+    }
+    
+    template <int which>
+    bool isDirtyImpl() const
+    {
+        return is_dirty_.test<which>();
     }
 };
 
@@ -357,6 +414,25 @@ struct CastImpl
         return CastImpl<Tag, typename A::BaseType::Tag>::get(a.next_);
     }
     
+    template <bool dynamic, unsigned LEVEL>
+    static AccumulatorFlags<dynamic, LEVEL> & cast(AccumulatorFlags<dynamic, LEVEL> & a)
+    {
+        return a;
+    }
+    
+    template <bool dynamic, unsigned LEVEL>
+    static AccumulatorFlags<dynamic, LEVEL> const & cast(AccumulatorFlags<dynamic, LEVEL> const & a)
+    {
+        return a;
+    }
+    
+    template <bool dynamic, unsigned LEVEL>
+    static void get(AccumulatorFlags<dynamic, LEVEL> const & a)
+    {
+        vigra_precondition(false,
+            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+    }
+    
     static None & cast(None & a)
     {
         return a;
@@ -501,16 +577,10 @@ struct Compose
     typedef Wrapper<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T, unsigned level>
-struct Compose<T, void, false, level> 
+template <class T, bool dynamic, unsigned level>
+struct Compose<T, void, dynamic, level> 
 { 
-    typedef None type;
-};
-
-template <class T, unsigned level> 
-struct Compose<T, void, true, level> 
-{ 
-    typedef ActivationFlags<level> type;
+    typedef AccumulatorFlags<dynamic, level> type;
 };
 
 } // namespace detail 

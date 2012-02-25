@@ -89,6 +89,39 @@ struct AccumulatorBase
         return next_.isActiveImpl<INDEX>();
     }
     
+    void setDirty() const
+    {
+        next_.setDirtyImpl<index>();
+    }
+    
+    template <int INDEX>
+    void setDirtyImpl() const
+    {
+        next_.setDirtyImpl<INDEX>();
+    }
+    
+    void setClean() const
+    {
+        next_.setCleanImpl<index>();
+    }
+    
+    template <int INDEX>
+    void setCleanImpl() const
+    {
+        next_.setCleanImpl<INDEX>();
+    }
+    
+    bool isDirty() const
+    {
+        return next_.isDirtyImpl<index>();
+    }
+    
+    template <int INDEX>
+    bool isDirtyImpl() const
+    {
+        return next_.isDirtyImpl<INDEX>();
+    }
+    
     void reset()
     {}
     
@@ -172,9 +205,10 @@ class Normalize;
 typedef Normalize<Sum, true> Mean;
 typedef Normalize<SumOfSquares, false, RootDivideByCount> RootMeanSquares;
 
+    // FIXME: this may pose problems to modifier reordering
 template <unsigned N>
 class Moment
-: Normalize<PowerSum<N>, true>
+: Normalize<PowerSum<N>, true> 
 {};
 
 class SumOfSquaredDifferences;
@@ -201,6 +235,7 @@ class Central;
 template <unsigned N>
 class Central<PowerSum<N> >;
 
+    // FIXME: this may pose problems to modifier reordering
 template <unsigned N>
 class Central<Moment<N> >
 : Normalize<Central<PowerSum<N> >, true>
@@ -247,8 +282,8 @@ class Minimum;
 class Maximum;
 
 template <unsigned Percent>
-class Quantile;
-typedef Quantile<50> Median;
+class IncrementalQuantile;
+typedef IncrementalQuantile<50> IncrementalMedian;
 
     // last-seen-value accumulator that maps [min, max] to another range (e.g. for histogram creation)
 template <class A>
@@ -262,6 +297,10 @@ class Histogram;
     // specify number of bins at runtime when BinCount=0
 template <>
 class Histogram<0>;
+
+template <unsigned Percent, unsigned BinCount>
+class HistogramQuantile;
+typedef HistogramQuantile<50> HistogramMedian;
 
 /*
 important notes on modifiers:
@@ -278,6 +317,7 @@ important notes on modifiers:
  * certain accumulators must remain unchanged when wrapped in certain modifiers: 
     * Count: always
     * Centralize, PricipleProjection sometimes
+ * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
 
 #endif
@@ -514,17 +554,15 @@ class Mean
         typedef value_type const &                                  result_type;
 
         mutable value_type value_;
-        mutable bool is_dirty_;
         
         Impl()
-        : value_(),  // call default constructor explicitly to ensure zero initialization
-          is_dirty_(false)
+        : value_()  // call default constructor explicitly to ensure zero initialization
         {}
         
         void reset()
         {
             value_ = element_type();
-            is_dirty_ = false;
+            this->setClean();
         }
     
         template <class Shape>
@@ -535,26 +573,26 @@ class Mean
 
         void merge(Impl const &)
         {
-            is_dirty_ = true;
+            this->setDirty();
         }
     
         void update(T const &)
         {
-            is_dirty_ = true;
+            this->setDirty();
         }
         
         void update(T const & t, double)
         {
-            is_dirty_ = true;
-        }
+             this->setDirty();
+       }
         
         result_type operator()() const
         {
-			if(is_dirty_)
+			if(this->isDirty())
             {
                 using namespace multi_math;
                 value_ = get<Sum>(*this) / get<Count>(*this);
-                is_dirty_ = false;
+                this->setClean();
             }
             return value_;
         }
