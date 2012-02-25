@@ -1773,11 +1773,30 @@ struct AccumulatorTest
     {
         using namespace vigra::acc1;
 
+        typedef Central<Normalize<Coord<Sum> > > T1;
+//        typedef Central<Normalize<Sum > > T1;
+        typedef Coord<Normalize<Principal<Sum> > > T2;
+//        typedef Central<Normalize<Principal<Mean> > > Tag;
+//        typedef Normalize<Mean> Tag;
+
+        typedef acc1::detail::SortModifiers<T1>::type S1;
+        typedef acc1::detail::SortModifiers<T2>::type S2;
+
+        std::cerr << typeid(S1).name() << "\n";
+        std::cerr << typeid(S2).name() << "\n";
+
+        typedef acc1::detail::ContainsModifier<S1, Coord<PowerSum<2> > >::type Contains;
+
+        std::cerr << typeid(Contains).name() << "\n";
+
+        typedef acc1::detail::TransferModifiers<S2, Select<Count, Mean, Coord<PowerSum<2> > >::type>::type Trans;
+
+        std::cerr << typeid(Trans).name() << "\n";
+#if 0
         typedef Accumulator<double, Select<Count, Maximum, Minimum, Mean, Variance, CovarianceEigensystem, Skewness, Kurtosis> > A;
 
         A a;
 
-#if 0
         a(1.0);
         a(2.0);
         a(3.0);
@@ -1848,7 +1867,7 @@ struct AccumulatorTest
     
     void testScalar()
     {
-#if 1
+#if 0
         using namespace vigra::acc1;
         
         { 
@@ -1991,7 +2010,7 @@ struct AccumulatorTest
 
     void testVector()
     {
-#if 1
+#if 0
         using namespace vigra::acc1;
 
         {
@@ -2091,7 +2110,7 @@ struct AccumulatorTest
 
     void testMerge()
     {
-#if 1
+#if 0
         using namespace vigra::acc1;
         
         typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;

@@ -175,6 +175,201 @@ struct AccumulatorTraits<MultiArrayView<N, T, Stride> >
     typedef Matrix<element_promote_type>            CovarianceType;
 };
 
+
+struct DivideByCount;
+struct RootDivideByCount;
+struct DivideUnbiased;
+struct RootDivideUnbiased;
+struct NormalizeCovariance;
+struct NormalizeCovarianceUnbiased;
+    // Normalization modifier
+    // FIXME: figure out when caching is appropriate
+template <class A, bool CacheResult=true, class NormlizationFunctor=DivideByCount>
+class Normalize {};
+
+    // modifier that forwards data after applying Centralize
+template <class A>
+class Central {};
+
+    // modifier that forwards data after applying PrincipalProjection
+template <class A>
+class Principal {};
+
+    // data access modifier that forwards the coordinate part of a compound data type
+template <class A>
+class Coord {};
+
+    // data access modifier that forwards data/weight pairs from a compound data type
+template <class A>
+class Weighted {};
+
+    // data access modifier that forwards coordinate/weight pairs from a compound data type
+template <class A>
+class WeightedCoord {};
+
+template <class A>
+struct ModifierTraits
+{
+    typedef A type;
+    typedef void ContainedTag;
+    static const int priority = INT_MAX;
+};
+
+template <class A, bool CacheResult, class NormlizationFunctor>
+struct ModifierTraits<Normalize<A, CacheResult, NormlizationFunctor> >
+{
+    typedef Normalize<A, CacheResult, NormlizationFunctor> type;
+    typedef A ContainedTag;
+    static const int priority = 20;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef Normalize<T, CacheResult, NormlizationFunctor> type;
+    };
+};
+
+template <class A>
+struct ModifierTraits<Central<A> >
+{
+    typedef Central<A> type;
+    typedef A ContainedTag;
+    static const int priority = 10;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef Central<T> type;
+    };
+};
+
+template <class A>
+struct ModifierTraits<Principal<A> >
+{
+    typedef Principal<A> type;
+    typedef A ContainedTag;
+    static const int priority = 10;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef Principal<T> type;
+    };
+};
+
+template <class A>
+struct ModifierTraits<Coord<A> >
+{
+    typedef Coord<A> type;
+    typedef A ContainedTag;
+    static const int priority = 0;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef Coord<T> type;
+    };
+};
+
+template <class A>
+struct ModifierTraits<Weighted<A> >
+{
+    typedef Weighted<A> type;
+    typedef A ContainedTag;
+    static const int priority = 0;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef Weighted<T> type;
+    };
+};
+
+template <class A>
+struct ModifierTraits<WeightedCoord<A> >
+{
+    typedef WeightedCoord<A> type;
+    typedef A ContainedTag;
+    static const int priority = 0;
+    
+    template <class T>
+    struct rebind
+    {
+        typedef WeightedCoord<T> type;
+    };
+};
+
+template <class From, class To>
+struct DontTransferModifier
+{
+    typedef VigraFalseType type;
+};
+
+template <class A, bool CacheResult, class NormlizationFunctor, class To>
+struct DontTransferModifier<Normalize<A, CacheResult, NormlizationFunctor>, To>
+{
+    typedef VigraTrueType type;
+};
+
+#if 1
+template <unsigned N>
+class PowerSum;
+typedef PowerSum<0> Count;
+typedef PowerSum<1> Sum;
+typedef Normalize<Sum, true> Mean;
+class Centralize;
+class PrincipalProjection;
+class RangeMapping;
+class SumOfSquaredDifferences;
+typedef SumOfSquaredDifferences SSD;
+typedef Normalize<SSD, false> Variance;
+typedef Normalize<SSD, false, RootDivideByCount> StdDev;
+typedef Normalize<SSD, false, DivideUnbiased> UnbiasedVariance;
+typedef Normalize<SSD, false, RootDivideUnbiased> UnbiasedStdDev;
+class FlatScatterMatrix;
+typedef Normalize<FlatScatterMatrix, true, NormalizeCovariance> Covariance;
+typedef Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> UnbiasedCovariance;
+class CovarianceEigensystem;
+class PrincipalAxes;
+class Skewness;
+class Kurtosis;
+
+#define VIGRA_DONT_TRANSFER1(FROM, TO)\
+template <class A> \
+struct DontTransferModifier<FROM<A>, TO> \
+{\
+    typedef VigraTrueType type; \
+}; 
+
+#define VIGRA_DONT_TRANSFER(TO) \
+    VIGRA_DONT_TRANSFER1(Central, TO) \
+    VIGRA_DONT_TRANSFER1(Principal, TO)
+
+VIGRA_DONT_TRANSFER(Count)
+VIGRA_DONT_TRANSFER1(Coord, Count)
+
+VIGRA_DONT_TRANSFER(Centralize)
+VIGRA_DONT_TRANSFER(PrincipalProjection)
+VIGRA_DONT_TRANSFER(RangeMapping)
+VIGRA_DONT_TRANSFER(SumOfSquaredDifferences)
+VIGRA_DONT_TRANSFER(FlatScatterMatrix)
+VIGRA_DONT_TRANSFER(Covariance)
+VIGRA_DONT_TRANSFER(UnbiasedCovariance)
+VIGRA_DONT_TRANSFER(CovarianceEigensystem)
+VIGRA_DONT_TRANSFER(PrincipalAxes)
+
+VIGRA_DONT_TRANSFER1(Central, Variance)
+VIGRA_DONT_TRANSFER1(Central, StdDev)
+VIGRA_DONT_TRANSFER1(Central, UnbiasedVariance)
+VIGRA_DONT_TRANSFER1(Central, UnbiasedStdDev)
+VIGRA_DONT_TRANSFER1(Central, Skewness)
+VIGRA_DONT_TRANSFER1(Central, Kurtosis)
+
+#undef VIGRA_DONT_TRANSFER1
+#undef VIGRA_DONT_TRANSFER
+
+#endif
+
 /****************************************************************************/
 /*                                                                          */
 /*                        the actual accumulators                           */
@@ -329,6 +524,7 @@ important notes on modifiers:
 
 #endif
 
+#if 0
 class Count
 {
   public:
@@ -1260,6 +1456,8 @@ class UnbiasedCovariance
         }
     };
 };
+
+#endif
 
 }} // namespace vigra::acc1
 

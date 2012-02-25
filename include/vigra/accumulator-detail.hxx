@@ -40,6 +40,7 @@
 #include "metaprogramming.hxx"
 #include "matrix.hxx"
 #include "bit_array.hxx"
+#include "static_assert.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -96,7 +97,148 @@ struct Select
                       T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
 {};
 
+template <class A>
+struct ModifierTraits;
+
+template <class From, class To>
+struct DontTransferModifier;
+
 namespace detail {
+
+template <int N1, int N2>
+struct Less
+{
+    static const bool value = N1 < N2;
+};
+
+template <class T1, int Priority1, class T2, int Priority2>
+struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined {};
+
+template <class T1, int Priority, class T2>
+struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<T1, Priority, T2, Priority>;
+
+template <class TAG, int BOUND=INT_MIN, bool SKIP=Less<ModifierTraits<TAG>::priority, BOUND>::value, 
+          class Contained=typename ModifierTraits<TAG>::ContainedTag>
+struct LowestPriority
+: public Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<
+                 typename LowestPriority<Contained, BOUND>::type, LowestPriority<Contained, BOUND>::priority,
+                 typename ModifierTraits<TAG>::type, ModifierTraits<TAG>::priority>
+{
+    typedef typename LowestPriority<Contained, BOUND>::type BestContained;
+    static const int P1 = LowestPriority<Contained, BOUND>::priority;
+    static const int P2 = ModifierTraits<TAG>::priority;
+    static const int priority = P1 < P2 ? P1 : P2;    
+    typedef typename IfBool<(P1 < P2), BestContained, TAG>::type type;
+};
+
+template <class TAG, int BOUND, class Contained>
+struct LowestPriority<TAG, BOUND, true, Contained>
+{
+    typedef typename LowestPriority<Contained, BOUND>::type type;
+    static const int priority = LowestPriority<Contained, BOUND>::priority;
+};
+
+template <class TAG, int BOUND, bool SKIP>
+struct LowestPriority<TAG, BOUND, SKIP, void>
+{
+    typedef TAG type;
+    static const int priority = ModifierTraits<TAG>::priority;
+};
+
+template <class TAG, int BOUND=INT_MIN, int PRIORITY=LowestPriority<TAG, BOUND>::priority>
+struct SortModifiers
+{
+    typedef ModifierTraits<typename LowestPriority<TAG, BOUND>::type> Traits;
+    typedef typename Traits::template rebind<typename SortModifiers<TAG, PRIORITY+1>::type>::type type;
+};
+
+template <class TAG, int BOUND>
+struct SortModifiers<TAG, BOUND, INT_MAX>
+{
+    typedef typename LowestPriority<TAG, BOUND>::type type;
+};
+
+template <class T1, class T2, 
+          class Next=typename ModifierTraits<T1>::ContainedTag,
+          class Contained=typename ModifierTraits<T2>::ContainedTag>
+struct ContainsModifier
+{
+    typedef typename IsSameType<typename ModifierTraits<T1>::template rebind<Contained>::type, T2>::type Same;
+    typedef typename Or<Same, typename ContainsModifier<T1, Contained>::type>::type type;
+};
+
+template <class T1, class T2, class Next>
+struct ContainsModifier<T1, T2, Next, void>
+{
+    typedef VigraFalseType type;
+};
+
+template <class T1, class T2, class Next>
+struct ContainsModifier<T1, T2, void, Next>
+{
+    typedef VigraFalseType type;
+};
+
+template <class T1, class T2>
+struct ContainsModifier<T1, T2, void, void>
+{
+    typedef VigraFalseType type;
+};
+
+template <class From, class To, class Next=typename ModifierTraits<To>::ContainedTag>
+struct ForbiddenTransfer
+{
+    typedef typename Or<typename DontTransferModifier<From, To>::type,
+                        typename ForbiddenTransfer<From, Next>::type>::type type;
+};
+
+template <class From, class To>
+struct ForbiddenTransfer<From, To, void>
+{
+    typedef typename DontTransferModifier<From, To>::type type;
+};
+
+template <class From, class To, class Next=typename ModifierTraits<From>::ContainedTag,
+         class Dont=typename Or<typename ContainsModifier<From,To>::type,
+                                typename ForbiddenTransfer<From, To>::type>::type>
+struct TransferModifiersImpl
+{
+    typedef typename TransferModifiersImpl<Next, To>::type Inner;
+    typedef typename ModifierTraits<From>::template rebind<Inner>::type type;
+};
+
+template <class From, class To, class Next>
+struct TransferModifiersImpl<From, To, Next, VigraTrueType>
+{
+    typedef typename TransferModifiersImpl<Next, To>::type Inner;
+    typedef Inner type;
+};
+
+template <class From, class To, class Contains>
+struct TransferModifiersImpl<From, To, void, Contains>
+{
+    typedef To type;
+};
+
+template <class From, class To>
+struct TransferModifiers
+{
+    typedef typename TransferModifiersImpl<From, To>::type Unsorted;
+    typedef typename SortModifiers<Unsorted>::type type;
+};
+
+template <class From, class Head, class Tail>
+struct TransferModifiers<From, TypeList<Head, Tail> >
+{
+    typedef TypeList<typename TransferModifiers<From, Head>::type,
+                     typename TransferModifiers<From, Tail>::type> type;
+};
+
+template <class From>
+struct TransferModifiers<From, void>
+{
+    typedef void type;
+};
 
     // Insert the dependencies of the selected functors into the TypeList and sort
     // the list such that dependencies come after the functors using them. Make sure 
@@ -200,7 +342,7 @@ struct ActivateDependencies<void>
 };
 
 template <class A, unsigned CurrentPass, bool Dynamic, unsigned WorkPass=A::workInPass>
-struct WrapperImpl
+struct DecoratorImpl
 {
     template <class T>
     static void exec(A & a, T const & t)
@@ -212,7 +354,7 @@ struct WrapperImpl
 };
 
 template <class A, unsigned CurrentPass>
-struct WrapperImpl<A, CurrentPass, false, CurrentPass>
+struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
@@ -249,7 +391,7 @@ struct WrapperImpl<A, CurrentPass, false, CurrentPass>
 };
 
 template <class A, unsigned CurrentPass, bool Dynamic>
-struct WrapperImpl<A, CurrentPass, Dynamic, CurrentPass>
+struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
@@ -295,18 +437,18 @@ struct WrapperImpl<A, CurrentPass, Dynamic, CurrentPass>
 };
 
 template <class T, class A, bool Dynamic, unsigned level>
-struct Wrapper
+struct Decorator
 : public A
 {
-    typedef Wrapper type;
-    typedef Wrapper & reference;
-    typedef Wrapper const & const_reference;
+    typedef Decorator type;
+    typedef Decorator & reference;
+    typedef Decorator const & const_reference;
     
     template <class Shape>
     void resize(Shape const & s)
     {
         this->next_.resize(s);
-        WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::resize(*this, s);
+        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::resize(*this, s);
     }
     
     void reset()
@@ -317,32 +459,32 @@ struct Wrapper
     
     typename A::result_type operator()() const
     {
-        return WrapperImpl<A, A::workInPass, Dynamic>::get(*this);
+        return DecoratorImpl<A, A::workInPass, Dynamic>::get(*this);
     }
     
     template <unsigned N>
     void pass(T const & t)
     {
         this->next_.pass<N>(t);
-        WrapperImpl<Wrapper, N, Dynamic>::exec(*this, t);
+        DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t);
     }
     
     template <unsigned N>
     void pass(T const & t, double weight)
     {
         this->next_.pass<N>(t, weight);
-        WrapperImpl<Wrapper, N, Dynamic>::exec(*this, t, weight);
+        DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t, weight);
     }
     
-    void operator+=(Wrapper const & o)
+    void operator+=(Decorator const & o)
     {
-        WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::merge(*this, o);
+        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::merge(*this, o);
         this->next_ += o.next_;
     }
     
     unsigned int passesRequired() const
     {
-        return WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::passesRequired(*this);
+        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(*this);
     }
 };
 
@@ -460,7 +602,7 @@ struct Compose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
-    typedef Wrapper<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
+    typedef Decorator<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
 
 template <class T, bool dynamic, unsigned level>
@@ -596,11 +738,9 @@ struct LookupTag<Tag, A, Tag>
 
 template <class Tag, class A>
 struct LookupTag<Tag, A const, Tag>
+: public LookupTag<Tag, A, Tag>
 {
-    typedef A type;
     typedef A const & reference;
-    typedef typename A::value_type value_type;
-    typedef typename A::result_type result_type;
 };
 
 template <class Tag, class A>
@@ -1168,7 +1308,7 @@ struct Config<T, Dynamic<TAG>, BaseBase, LEVEL>
 };
 
 template <class CONFIG>
-struct Wrapper
+struct Decorator
 : public CONFIG::Wrapped
 {
     typedef typename CONFIG::Tag Tag;
@@ -1202,7 +1342,7 @@ struct Wrapper
         return CONFIG::get(*this);
     }
    
-    void operator+=(Wrapper const & o)
+    void operator+=(Decorator const & o)
     {
         CONFIG::merge(*this, o);
     }
@@ -1232,7 +1372,7 @@ struct Wrapper
     void updatePass1(argument_type, double) {}
     void updatePass2(argument_type) {}
     void updatePass2(argument_type, double) {}
-    void merge(Wrapper const &) {}
+    void merge(Decorator const &) {}
     template <class Shape> void reshape(Shape const & s) {}
 };
 #if 0
@@ -1243,10 +1383,10 @@ struct SelectConfig
 };
 
 template <class T, class TAG, class BASE, unsigned LEVEL>
-struct SelectWrapper<T, Dynamic<TAG>, BASE, LEVEL>
+struct SelectDecorator<T, Dynamic<TAG>, BASE, LEVEL>
 {
-    typedef DynamicAccumulatorWrapper<T, TAG, BASE, LEVEL> Wrapper;
-    typedef RecurseBefore<T, Wrapper, BASE, LEVEL> type;
+    typedef DynamicAccumulatorDecorator<T, TAG, BASE, LEVEL> Decorator;
+    typedef RecurseBefore<T, Decorator, BASE, LEVEL> type;
 };
 #endif
 
@@ -1256,7 +1396,7 @@ struct Compose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef Wrapper<RecurseBefore<Config<T, Tag, BaseType, level> > > type;
+    typedef Decorator<RecurseBefore<Config<T, Tag, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
@@ -1271,7 +1411,7 @@ struct DynamicCompose
 {
     typedef typename Accumulators::Head Tag; 
     typedef typename DynamicCompose<T, typename Accumulators::Tail, level+1>::type BaseType;
-    typedef Wrapper<RecurseBefore<Config<T, Dynamic<Tag>, BaseType, level> > > type;
+    typedef Decorator<RecurseBefore<Config<T, Dynamic<Tag>, BaseType, level> > > type;
 };
 
 template <class T, unsigned level> 
