@@ -432,22 +432,6 @@ struct CastImpl
         vigra_precondition(false,
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
     }
-    
-    static None & cast(None & a)
-    {
-        return a;
-    }
-    
-    static None const & cast(None const & a)
-    {
-        return a;
-    }
-    
-    static void get(None const & a)
-    {
-        vigra_precondition(false,
-            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-    }
 };
 
 template <class Tag>

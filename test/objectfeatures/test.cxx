@@ -1920,6 +1920,9 @@ struct AccumulatorTest
         { 
 #if 1
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
+
+            shouldEqual(0, a.passesRequired());
+
             activate<Count>(a);
             should(isActive<Count>(a));
             should(!isActive<Covariance>(a));
@@ -1944,6 +1947,7 @@ struct AccumulatorTest
             }
 
             a.reset();
+            shouldEqual(0, a.passesRequired());
             should(!isActive<Count>(a));
 
             activate<Minimum>(a);
