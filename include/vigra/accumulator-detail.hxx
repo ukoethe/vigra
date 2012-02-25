@@ -407,6 +407,11 @@ struct ReshapeImpl
     : done_(false)
     {}
     
+    void reset()
+    {
+        done_ = false;
+    }
+    
     template <class A, class T>
     void operator()(A & a, T const & t, MetaInt<1>)
     {
@@ -439,6 +444,9 @@ struct ReshapeImpl
 template <>
 struct ReshapeImpl<VigraFalseType>
 {
+    void reset()
+    {}
+
     template <class A, class T, unsigned N>
     void operator()(A &, T const &, MetaInt<N>)
     {}
@@ -478,6 +486,12 @@ struct Accumulator
     typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type Accumulators;
 
     detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
+    
+    void reset()
+    {
+        reshape_.reset();
+        Accumulators::reset();
+    }
 
     template <unsigned N>
     void update(T const & t)
@@ -566,9 +580,9 @@ struct LookupTag
 
 template <class Tag, class A, class FromTag>
 struct LookupTag<Tag, A const, FromTag>
-: public LookupTag<Tag, typename UnqualifiedType<A>::type>
+: public LookupTag<Tag, A>
 {
-    typedef typename LookupTag<Tag, typename UnqualifiedType<A>::type>::type const & reference;
+    typedef typename LookupTag<Tag, A>::type const & reference;
 };
 
 template <class Tag, class A>
