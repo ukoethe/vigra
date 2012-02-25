@@ -222,6 +222,7 @@ class FlatScatterMatrix;
 typedef Normalize<FlatScatterMatrix, true, NormalizeCovariance> Covariance;
 typedef Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> UnbiasedCovariance;
 class CovarianceEigensystem;
+class PrincipalAxes;
 
     // last-seen-value accumulator that applies centralization
 class Centralize;
@@ -244,26 +245,26 @@ class Central<Moment<N> >
 class Skewness;
 class Kurtosis;
 
-    // last-seen-value accumulator that applies principle projection
-class PrincipleProjection;
+    // last-seen-value accumulator that applies principal projection
+class PrincipalProjection;
 
-    // modifier that forwards data after applying PrincipleProjection
+    // modifier that forwards data after applying PrincipalProjection
 template <class A>
-class Principle;
+class Principal;
 
     // explicitly specialize to use 1-pass CovarianceEigensystem
 template<>
-class Principle<Variance>;
+class Principal<Variance>;
 template<>
-class Principle<StdDev>;
+class Principal<StdDev>;
 template<>
-class Principle<UnbiasedVariance>;
+class Principal<UnbiasedVariance>;
 template<>
-class Principle<UnbiasedStdDev>;
+class Principal<UnbiasedStdDev>;
 
 template <unsigned N>
-class Principle<Moment<N> >
-: Normalize<Principle<PowerSum<N> >, true>
+class Principal<Moment<N> >
+: Normalize<Principal<PowerSum<N> >, true>
 {};
 
     // data access modifier that forwards the coordinate part of a compound data type
@@ -278,12 +279,12 @@ class Weighted;
 template <class A>
 class WeightedCoord;
 
-class Minimum;
-class Maximum;
-
 template <unsigned Percent>
 class IncrementalQuantile;
-typedef IncrementalQuantile<50> IncrementalMedian;
+
+typedef IncrementalQuantile<0>   Minimum;
+typedef IncrementalQuantile<50>  IncrementalMedian;
+typedef IncrementalQuantile<100> Maximum;
 
     // last-seen-value accumulator that maps [min, max] to another range (e.g. for histogram creation)
 template <class A>
@@ -302,11 +303,15 @@ template <unsigned Percent, unsigned BinCount>
 class HistogramQuantile;
 typedef HistogramQuantile<50> HistogramMedian;
 
+template <unsigned NDim>
+class MultiHistogram;
+
 /*
 important notes on modifiers:
  * upon accumulator creation, reorder modifiers so that data access is innermost, 
    and normalization is outermost, e.g.:
-        Normalize<Principle<Coord<Skewness> > >
+        Normalize<Principal<Coord<Skewness> > >
+   this mcould be done using priority traits
  * automatically transfer modifiers to dependencies as appropriate
  * automatically adjust modifiers for lookup (cast and get) of dependent accumulators
  * modifiers must adjust workInPass for the contained accumulator as appropriate

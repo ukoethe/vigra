@@ -47,9 +47,9 @@ namespace vigra {
 
 namespace acc1 {
 
-struct None 
+struct AccumulatorEnd 
 {
-    typedef None Tag;
+    typedef AccumulatorEnd Tag;
     typedef void value_type;
     typedef void result_type;
     static const unsigned int workInPass = 0; 
@@ -59,6 +59,7 @@ struct None
     void operator()(T const &) {}
     template <class T>
     void operator()(T const &, double) {}
+    void operator()() const {}
     
     template <unsigned, class T>
     void pass(T const &) {}
@@ -82,7 +83,7 @@ struct None
     }
 };
 
-template <class T, class TAG, class NEXT=None>
+template <class T, class TAG, class NEXT=AccumulatorEnd>
 struct AccumulatorBase;
 
     // Select is a synonym for MakeTypeList
@@ -95,14 +96,6 @@ struct Select
                       T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
 {};
 
-namespace detail {
-
-template <bool dynamic, unsigned LEVEL>
-struct AccumulatorFlags;
-
-}
-
-
 template <class Tag, class A, class FromTag=typename A::Tag>
 struct LookupTag
 : public LookupTag<Tag, typename A::BaseType>
@@ -110,8 +103,10 @@ struct LookupTag
 
 template <class Tag, class A, class FromTag>
 struct LookupTag<Tag, A const, FromTag>
-: public LookupTag<Tag, typename A::BaseType const>
-{};
+: public LookupTag<Tag, typename UnqualifiedType<A>::type>
+{
+    typedef typename LookupTag<Tag, typename UnqualifiedType<A>::type>::type const & reference;
+};
 
 template <class Tag, class A>
 struct LookupTag<Tag, A, Tag>
@@ -125,44 +120,17 @@ struct LookupTag<Tag, A, Tag>
 template <class Tag, class A>
 struct LookupTag<Tag, A const, Tag>
 {
-    typedef A const type;
+    typedef A type;
     typedef A const & reference;
     typedef typename A::value_type value_type;
     typedef typename A::result_type result_type;
 };
 
-template <class Tag, class FromTag>
-struct LookupTag<Tag, None, FromTag>
+template <class Tag, class A>
+struct LookupTag<Tag, A, AccumulatorEnd>
 {
-    typedef None type;
-    typedef None & reference;
-    typedef void value_type;
-    typedef void result_type;
-};
-
-template <class Tag, class FromTag>
-struct LookupTag<Tag, None const, FromTag>
-{
-    typedef None const type;
-    typedef None const & reference;
-    typedef void value_type;
-    typedef void result_type;
-};
-
-template <class Tag, bool dynamic, unsigned level, class FromTag>
-struct LookupTag<Tag, detail::AccumulatorFlags<dynamic, level>, FromTag>
-{
-    typedef None type;
-    typedef None & reference;
-    typedef void value_type;
-    typedef void result_type;
-};
-
-template <class Tag, bool dynamic, unsigned level, class FromTag>
-struct LookupTag<Tag, detail::AccumulatorFlags<dynamic, level> const, FromTag>
-{
-    typedef None const type;
-    typedef None const & reference;
+    typedef A type;
+    typedef A & reference;
     typedef void value_type;
     typedef void result_type;
 };
@@ -223,9 +191,9 @@ struct AccumulatorFlags
 
 template <unsigned LEVEL>
 struct AccumulatorFlags<false, LEVEL>
-: public None
+: public AccumulatorEnd
 {
-    typedef None BaseType;
+    typedef AccumulatorEnd BaseType;
     static const unsigned level = LEVEL;
     
     mutable BitArray<LEVEL> is_dirty_;
@@ -297,6 +265,11 @@ struct WrapperImpl<A, CurrentPass, false, CurrentPass>
         a.update(t, weight);
     }
 
+    static typename A::result_type get(A const & a)
+    {
+        return a();
+    }
+
     static void merge(A & a, A const & o)
     {
         a.merge(o);
@@ -331,6 +304,14 @@ struct WrapperImpl<A, CurrentPass, Dynamic, CurrentPass>
             a.update(t, weight);
     }
 
+    static typename A::result_type get(A const & a)
+    {
+        vigra_precondition(a.isActive(),
+            std::string("get(accumulator): attempt to access inactive statistic '")
+                                 << typeid(A::Tag).name() << "'.");
+        return a();
+    }
+
     static void merge(A & a, A const & o)
     {
         if(a.isActive())
@@ -356,6 +337,10 @@ template <class T, class A, bool Dynamic, unsigned level>
 struct Wrapper
 : public A
 {
+    typedef Wrapper type;
+    typedef Wrapper & reference;
+    typedef Wrapper const & const_reference;
+    
     template <class Shape>
     void resize(Shape const & s)
     {
@@ -369,7 +354,10 @@ struct Wrapper
         A::reset();
     }
     
-    using A::operator();
+    typename A::result_type operator()() const
+    {
+        return WrapperImpl<A, A::workInPass, Dynamic>::get(*this);
+    }
     
     template <unsigned N>
     void pass(T const & t)
@@ -413,25 +401,6 @@ struct CastImpl
     {
         return CastImpl<Tag, typename A::BaseType::Tag>::get(a.next_);
     }
-    
-    template <bool dynamic, unsigned LEVEL>
-    static AccumulatorFlags<dynamic, LEVEL> & cast(AccumulatorFlags<dynamic, LEVEL> & a)
-    {
-        return a;
-    }
-    
-    template <bool dynamic, unsigned LEVEL>
-    static AccumulatorFlags<dynamic, LEVEL> const & cast(AccumulatorFlags<dynamic, LEVEL> const & a)
-    {
-        return a;
-    }
-    
-    template <bool dynamic, unsigned LEVEL>
-    static void get(AccumulatorFlags<dynamic, LEVEL> const & a)
-    {
-        vigra_precondition(false,
-            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-    }
 };
 
 template <class Tag>
@@ -449,6 +418,25 @@ struct CastImpl<Tag, Tag>
     get(A const & a)
     {
         return a();
+    }
+};
+
+template <class Tag>
+struct CastImpl<Tag, AccumulatorEnd>
+{
+    template <class A>
+    static typename LookupTag<Tag, A>::reference
+    cast(A & a)
+    {
+        return a;
+    }
+    
+    template <class A>
+    static void
+    get(A const & a)
+    {
+        vigra_precondition(false,
+            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
     }
 };
 
@@ -494,7 +482,7 @@ struct NeedsReshape<A, Matrix<T> >
 };
 
 template <>
-struct NeedsReshape<None, None::value_type>
+struct NeedsReshape<AccumulatorEnd, AccumulatorEnd::value_type>
 {
     typedef VigraFalseType type;
 };
@@ -667,16 +655,6 @@ typename LookupTag<Tag, A>::result_type
 get(A const & a)
 {
     return detail::CastImpl<Tag, typename A::Tag>::get(a);
-}
-
-template <class Tag, class T, class Selected>
-typename LookupTag<Tag, DynamicAccumulator<T, Selected> >::result_type
-get(DynamicAccumulator<T, Selected> const & a)
-{
-    vigra_precondition(isActive<Tag>(a),
-        std::string("get(accumulator): attempt to access inactive statistic '")
-                             << typeid(Tag).name() << "'.");
-    return detail::CastImpl<Tag, typename DynamicAccumulator<T, Selected>::Tag>::get(a);
 }
 
     // activate the dynamic accumulator specified by Tag
@@ -1346,9 +1324,9 @@ struct LookupTag
 };
 
 template <class Tag>
-struct LookupTag<Tag, None>
+struct LookupTag<Tag, AccumulatorEnd>
 {
-    typedef None type;
+    typedef AccumulatorEnd type;
     typedef void value_type;
     typedef void result_type;
 };
