@@ -54,14 +54,40 @@ template <class T, class TAG, class NEXT>
 struct AccumulatorBase 
 {
 	typedef TAG            Tag;
+        // FIXME: this will become more sophisticated to support modifiers
+    typedef typename Tag::Dependencies::type Dependencies;
 	typedef NEXT           BaseType;
     typedef T const &      argument_type;
     typedef argument_type  first_argument_type;
     typedef double         second_argument_type;
     
     static const unsigned int workInPass = 1;
+    static const int index = NEXT::index + 1;
     
     NEXT next_;
+    
+    void activate()
+    {
+        next_.activateImpl<index>();
+        detail::ActivateDependencies<Dependencies>::exec(*this);
+    }
+    
+    template <int INDEX>
+    void activateImpl()
+    {
+        next_.activateImpl<INDEX>();
+    }
+    
+    bool isActive() const
+    {
+        return next_.isActiveImpl<index>();
+    }
+    
+    template <int INDEX>
+    bool isActiveImpl() const
+    {
+        return next_.isActiveImpl<INDEX>();
+    }
     
     void reset()
     {}
@@ -121,6 +147,140 @@ struct AccumulatorTraits<MultiArrayView<N, T, Stride> >
 /*                        the actual accumulators                           */
 /*                                                                          */
 /****************************************************************************/
+
+#if 0
+
+template <unsigned N>
+class PowerSum;
+
+typedef PowerSum<0> Count;
+typedef PowerSum<1> Sum;
+typedef PowerSum<2> SumOfSquares;
+
+    // normalization functors
+struct DivideByCount;
+struct RootDivideByCount;
+struct DivideUnbiased;
+struct RootDivideUnbiased;
+struct NormalizeCovariance;
+struct NormalizeCovarianceUnbiased;
+    // Normalization modifier
+    // FIXME: figure out when caching is appropriate
+template <class A, bool CacheResult, class NormlizationFunctor=DivideByCount>
+class Normalize;
+
+typedef Normalize<Sum, true> Mean;
+typedef Normalize<SumOfSquares, false, RootDivideByCount> RootMeanSquares;
+
+template <unsigned N>
+class Moment
+: Normalize<PowerSum<N>, true>
+{};
+
+class SumOfSquaredDifferences;
+typedef SumOfSquaredDifferences SSD;
+typedef Normalize<SSD, false> Variance;
+typedef Normalize<SSD, false, RootDivideByCount> StdDev;
+typedef Normalize<SSD, false, DivideUnbiased> UnbiasedVariance;
+typedef Normalize<SSD, false, RootDivideUnbiased> UnbiasedStdDev;
+
+class FlatScatterMatrix;
+typedef Normalize<FlatScatterMatrix, true, NormalizeCovariance> Covariance;
+typedef Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> UnbiasedCovariance;
+class CovarianceEigensystem;
+
+    // last-seen-value accumulator that applies centralization
+class Centralize;
+
+    // modifier that forwards data after applying Centralize
+template <class A>
+class Central;
+
+    // explicitly specialize to implement merge functions
+    // (standard centralize accumulators will not support merge)
+template <unsigned N>
+class Central<PowerSum<N> >;
+
+template <unsigned N>
+class Central<Moment<N> >
+: Normalize<Central<PowerSum<N> >, true>
+{};
+
+class Skewness;
+class Kurtosis;
+
+    // last-seen-value accumulator that applies principle projection
+class PrincipleProjection;
+
+    // modifier that forwards data after applying PrincipleProjection
+template <class A>
+class Principle;
+
+    // explicitly specialize to use 1-pass CovarianceEigensystem
+template<>
+class Principle<Variance>;
+template<>
+class Principle<StdDev>;
+template<>
+class Principle<UnbiasedVariance>;
+template<>
+class Principle<UnbiasedStdDev>;
+
+template <unsigned N>
+class Principle<Moment<N> >
+: Normalize<Principle<PowerSum<N> >, true>
+{};
+
+    // data access modifier that forwards the coordinate part of a compound data type
+template <class A>
+class Coord;
+
+    // data access modifier that forwards data/weight pairs from a compound data type
+template <class A>
+class Weighted;
+
+    // data access modifier that forwards coordinate/weight pairs from a compound data type
+template <class A>
+class WeightedCoord;
+
+class Minimum;
+class Maximum;
+
+template <unsigned Percent>
+class Quantile;
+typedef Quantile<50> Median;
+
+    // last-seen-value accumulator that maps [min, max] to another range (e.g. for histogram creation)
+template <class A>
+class RangeMapping;
+
+    // works in 2-pass mode when RangeMapping is calculated from data
+    // and in 1-pass mode when RangeMapping is given by the user.
+template <unsigned BinCount>
+class Histogram;
+
+    // specify number of bins at runtime when BinCount=0
+template <>
+class Histogram<0>;
+
+/*
+important notes on modifiers:
+ * upon accumulator creation, reorder modifiers so that data access is innermost, 
+   and normalization is outermost, e.g.:
+        Normalize<Principle<Coord<Skewness> > >
+ * automatically transfer modifiers to dependencies as appropriate
+ * automatically adjust modifiers for lookup (cast and get) of dependent accumulators
+ * modifiers must adjust workInPass for the contained accumulator as appropriate
+ * we may implement convenience versions of Select that apply a modifier to all 
+   contained tags at once
+ * make sure that weighted accumulators have their own Count object when used together
+   with unweighted ones (or disallow combination of weighted and unweighted processing)
+ * certain accumulators must remain unchanged when wrapped in certain modifiers: 
+    * Count: always
+    * Centralize, PricipleProjection sometimes
+*/
+
+#endif
 
 class Count
 {

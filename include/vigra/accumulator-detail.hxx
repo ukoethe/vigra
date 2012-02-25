@@ -53,17 +53,17 @@ struct None
     typedef void value_type;
     typedef void result_type;
     static const unsigned int workInPass = 0; 
-    static const int level = -1;
+    static const int index = -1;
     
     template <class T>
     void operator()(T const &) {}
     template <class T>
     void operator()(T const &, double) {}
     
-    template <class T>
-    void updatePass2(T const &) {}
-    template <class T>
-    void updatePass2(T const &, double) {}
+    template <unsigned, class T>
+    void pass(T const &) {}
+    template <unsigned, class T>
+    void pass(T const &, double) {}
     
     template <class T>
     void operator+=(T const &) {}
@@ -178,6 +178,18 @@ struct ActivationFlags
     typedef None BaseType;
     static const unsigned level = LEVEL;
     BitArray<level> active_accumulators_;
+    
+    template <int which>
+    void activateImpl()
+    {
+        active_accumulators_.set<which>();
+    }
+    
+    template <int which>
+    bool isActiveImpl() const
+    {
+        return active_accumulators_.test<which>();
+    }
 };
 
     // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
@@ -201,7 +213,7 @@ struct ActivateDependencies<void>
     {}
 };
 
-template <class A, unsigned CurrentPass, int Dynamic, unsigned WorkPass=A::workInPass>
+template <class A, unsigned CurrentPass, bool Dynamic, unsigned WorkPass=A::workInPass>
 struct WrapperImpl
 {
     template <class T>
@@ -214,7 +226,7 @@ struct WrapperImpl
 };
 
 template <class A, unsigned CurrentPass>
-struct WrapperImpl<A, CurrentPass, -1, CurrentPass>
+struct WrapperImpl<A, CurrentPass, false, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
@@ -245,59 +257,48 @@ struct WrapperImpl<A, CurrentPass, -1, CurrentPass>
     }
 };
 
-template <class A, unsigned CurrentPass, unsigned Dynamic>
+template <class A, unsigned CurrentPass, bool Dynamic>
 struct WrapperImpl<A, CurrentPass, Dynamic, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
     {
-        if(isActive<typename A::Tag>(a))
+        if(a.isActive())
             a.update(t);
     }
 
     template <class T>
     static void exec(A & a, T const & t, double weight)
     {
-        if(isActive<typename A::Tag>(a))
+        if(a.isActive())
             a.update(t, weight);
     }
 
     static void merge(A & a, A const & o)
     {
-        if(isActive<typename A::Tag>(a))
+        if(a.isActive())
             a.merge(o);
     }
 
     template <class Shape>
     static void resize(A & a, Shape const & o)
     {
-        if(isActive<typename A::Tag>(a))
+        if(a.isActive())
             a.reshape(o);
     }
     
     static unsigned int passesRequired(A const & a)
     {
-        return isActive<typename A::Tag>(a)
+        return a.isActive()
                    ? std::max(A::workInPass, a.next_.passesRequired())
                    : a.next_.passesRequired();
     }
 };
 
-template <class T, class A, int Dynamic=-1>
+template <class T, class A, bool Dynamic, unsigned level>
 struct Wrapper
 : public A
 {
-    void activate()
-    {
-        activateImpl<Dynamic>(*this);
-        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
-    }
-    
-    bool isActive() const
-    {
-        return isActiveImpl<Dynamic>(*this);
-    }
-    
     template <class Shape>
     void resize(Shape const & s)
     {
@@ -313,28 +314,18 @@ struct Wrapper
     
     using A::operator();
     
-    void operator()(T const & t)
+    template <unsigned N>
+    void pass(T const & t)
     {
-        this->next_(t);
-        WrapperImpl<Wrapper, 1, Dynamic>::exec(*this, t);
+        this->next_.pass<N>(t);
+        WrapperImpl<Wrapper, N, Dynamic>::exec(*this, t);
     }
     
-    void operator()(T const & t, double weight)
+    template <unsigned N>
+    void pass(T const & t, double weight)
     {
-        this->next_(t, weight);
-        WrapperImpl<Wrapper, 1, Dynamic>::exec(*this, t, weight);
-    }
-    
-    void updatePass2(T const & t)
-    {
-        this->next_.updatePass2(t);
-        WrapperImpl<Wrapper, 2, Dynamic>::exec(*this, t);
-    }
-    
-    void updatePass2(T const & t, double weight)
-    {
-        this->next_.updatePass2(t, weight);
-        WrapperImpl<Wrapper, 2, Dynamic>::exec(*this, t, weight);
+        this->next_.pass<N>(t, weight);
+        WrapperImpl<Wrapper, N, Dynamic>::exec(*this, t, weight);
     }
     
     void operator+=(Wrapper const & o)
@@ -346,32 +337,6 @@ struct Wrapper
     unsigned int passesRequired() const
     {
         return WrapperImpl<Wrapper, Wrapper::workInPass, Dynamic>::passesRequired(*this);
-    }
-    
-  private:
-  
-    template <int which, class A>
-    static void activateImpl(A & a)
-    {
-        activateImpl<which>(a.next_);
-    }
-  
-    template <int which, int level>
-    static void activateImpl(ActivationFlags<level> & a)
-    {
-        a.active_accumulators_.set<which>();
-    }
-  
-    template <int which, class A>
-    static bool isActiveImpl(A const & a)
-    {
-        return isActiveImpl<which>(a.next_);
-    }
-  
-    template <int which, int level>
-    static bool isActiveImpl(ActivationFlags<level> const & a)
-    {
-        return a.active_accumulators_.test<which>();
     }
 };
 
@@ -489,7 +454,7 @@ struct ReshapeImpl
     {}
     
     template <class A, class T>
-    void operator()(A & a, T const & t)
+    void operator()(A & a, T const & t, MetaInt<1>)
     {
         if(!done_)
         {
@@ -497,6 +462,10 @@ struct ReshapeImpl
             done_ = true;
         }
     }
+    
+    template <class A, class T, unsigned N>
+    void operator()(A & a, T const & t, MetaInt<N>)
+    {}
         
     template <unsigned int N, class U, class Stride>
     typename MultiArrayShape<N>::type
@@ -516,61 +485,111 @@ struct ReshapeImpl
 template <>
 struct ReshapeImpl<VigraFalseType>
 {
-    template <class A, class T>
-    void operator()(A &, T const &)
+    template <class A, class T, unsigned N>
+    void operator()(A &, T const &, MetaInt<N>)
     {}
 };
 
     // helper classes to create an accumulator chain from a TypeList
     // if level = 0,  a dynamic accumulator will be created
     // if level = -1, a plain accumulator will be created
-template <class T, class Accumulators, int level = -1>
+template <class T, class Accumulators, bool dynamic=false, unsigned level = 0>
 struct Compose
 {
-    static const int nextLevel = level < 0 ? level : level + 1;
     typedef typename Accumulators::Head Tag; 
-    typedef typename Compose<T, typename Accumulators::Tail, nextLevel>::type BaseType;
-    typedef Wrapper<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> > , level>  type;
+    typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
+    typedef Wrapper<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T> 
-struct Compose<T, void, -1> 
+template <class T, unsigned level>
+struct Compose<T, void, false, level> 
 { 
     typedef None type;
 };
 
-template <class T, int level> 
-struct Compose<T, void, level> 
+template <class T, unsigned level> 
+struct Compose<T, void, true, level> 
 { 
     typedef ActivationFlags<level> type;
-    static const unsigned passes = 0;
 };
 
 } // namespace detail 
 
     // Create an accumulator chain containing the Selected statistics and their dependencies.
-template <class T, class Selected, int Dynamic = -1>
+template <class T, class Selected, bool dynamic = false>
 struct Accumulator
-: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, Dynamic>::type
+: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::Compose<T, AccumulatorTags, Dynamic> ComposeAccumulators;
+    typedef detail::Compose<T, AccumulatorTags, dynamic> ComposeAccumulators;
     typedef typename ComposeAccumulators::type Accumulators;
 
     detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
 
     using Accumulators::operator();
+	
+    template <unsigned N>
+    void pass(T const & t)
+    {
+        reshape_(*this, t, MetaInt<N>());
+        Accumulators::pass<N>(t);
+    }
+    
+    template <unsigned N>
+    void pass(T const & t, double weight)
+    {
+        reshape_(*this, t, MetaInt<N>());
+        Accumulators::pass<N>(t, weight);
+    }
 
 	void operator()(T const & t)
     {
-        reshape_(*this, t);
-        Accumulators::operator()(t);
+        pass<1>(t);
     }
     
     void operator()(T const & t, double weight)
     {
-        reshape_(*this, t);
-        Accumulators::operator()(t, weight);
+        pass<1>(t, weight);
+    }
+
+	void updatePass2(T const & t)
+    {
+        pass<2>(t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        pass<2>(t, weight);
+    }
+
+	void updatePassN(T const & t, unsigned int N)
+    {
+        switch (N)
+        {
+            case 1: pass<1>(t); break;
+            case 2: pass<2>(t); break;
+            case 3: pass<3>(t); break;
+            case 4: pass<4>(t); break;
+            case 5: pass<5>(t); break;
+            default:
+                vigra_precondition(false,
+                     "Accumulator::updatePassN(): 0 < N < 6 required.");
+        }
+    }
+    
+	void updatePassN(T const & tt, double weight, unsigned int N)
+    {
+        switch (N)
+        {
+            case 1: pass<1>(t, weight); break;
+            case 2: pass<2>(t, weight); break;
+            case 3: pass<3>(t, weight); break;
+            case 4: pass<4>(t, weight); break;
+            case 5: pass<5>(t, weight); break;
+            default:
+                vigra_precondition(false,
+                     "Accumulator::updatePassN(): 0 < N < 6 required.");
+        }
     }
 };
 
@@ -578,7 +597,7 @@ struct Accumulator
     // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
 struct DynamicAccumulator
-: public Accumulator<T, Selected, 0>
+: public Accumulator<T, Selected, true>
 {};
 
     // cast an accumulator chain to the type specified by Tag
