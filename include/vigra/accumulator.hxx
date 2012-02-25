@@ -306,6 +306,8 @@ typedef HistogramQuantile<50> HistogramMedian;
 template <unsigned NDim>
 class MultiHistogram;
 
+class AccumulatorArray;
+
 /*
 important notes on modifiers:
  * upon accumulator creation, reorder modifiers so that data access is innermost, 

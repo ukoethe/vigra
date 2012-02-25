@@ -96,45 +96,6 @@ struct Select
                       T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>
 {};
 
-template <class Tag, class A, class FromTag=typename A::Tag>
-struct LookupTag
-: public LookupTag<Tag, typename A::BaseType>
-{};
-
-template <class Tag, class A, class FromTag>
-struct LookupTag<Tag, A const, FromTag>
-: public LookupTag<Tag, typename UnqualifiedType<A>::type>
-{
-    typedef typename LookupTag<Tag, typename UnqualifiedType<A>::type>::type const & reference;
-};
-
-template <class Tag, class A>
-struct LookupTag<Tag, A, Tag>
-{
-    typedef A type;
-    typedef A & reference;
-    typedef typename A::value_type value_type;
-    typedef typename A::result_type result_type;
-};
-
-template <class Tag, class A>
-struct LookupTag<Tag, A const, Tag>
-{
-    typedef A type;
-    typedef A const & reference;
-    typedef typename A::value_type value_type;
-    typedef typename A::result_type result_type;
-};
-
-template <class Tag, class A>
-struct LookupTag<Tag, A, AccumulatorEnd>
-{
-    typedef A type;
-    typedef A & reference;
-    typedef void value_type;
-    typedef void result_type;
-};
-
 namespace detail {
 
     // Insert the dependencies of the selected functors into the TypeList and sort
@@ -385,61 +346,6 @@ struct Wrapper
     }
 };
 
-template <class Tag, class FromTag>
-struct CastImpl
-{
-    template <class A>
-    static typename LookupTag<Tag, A>::reference
-    cast(A & a)
-    {
-        return CastImpl<Tag, typename A::BaseType::Tag>::cast(a.next_);
-    }
-    
-    template <class A>
-    static typename LookupTag<Tag, A>::result_type
-    get(A const & a)
-    {
-        return CastImpl<Tag, typename A::BaseType::Tag>::get(a.next_);
-    }
-};
-
-template <class Tag>
-struct CastImpl<Tag, Tag>
-{
-    template <class A>
-    static typename LookupTag<Tag, A>::reference
-    cast(A & a)
-    {
-        return a;
-    }
-    
-    template <class A>
-    static typename LookupTag<Tag, A>::result_type
-    get(A const & a)
-    {
-        return a();
-    }
-};
-
-template <class Tag>
-struct CastImpl<Tag, AccumulatorEnd>
-{
-    template <class A>
-    static typename LookupTag<Tag, A>::reference
-    cast(A & a)
-    {
-        return a;
-    }
-    
-    template <class A>
-    static void
-    get(A const & a)
-    {
-        vigra_precondition(false,
-            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-    }
-};
-
     // Generic reshape function (expands to a no-op when T has fixed shape, and to
     // the appropriate specialized call otherwise). Shape is an instance of MultiArrayShape<N>::type.
 template <class T, class Shape>
@@ -557,6 +463,12 @@ struct Compose<T, void, dynamic, level>
 
 } // namespace detail 
 
+/****************************************************************************/
+/*                                                                          */
+/*                            accumulator chain                             */
+/*                                                                          */
+/****************************************************************************/
+
     // Create an accumulator chain containing the Selected statistics and their dependencies.
 template <class T, class Selected, bool dynamic = false>
 struct Accumulator
@@ -640,6 +552,110 @@ template <class T, class Selected>
 struct DynamicAccumulator
 : public Accumulator<T, Selected, true>
 {};
+
+/****************************************************************************/
+/*                                                                          */
+/*                        generic access functions                          */
+/*                                                                          */
+/****************************************************************************/
+
+template <class Tag, class A, class FromTag=typename A::Tag>
+struct LookupTag
+: public LookupTag<Tag, typename A::BaseType>
+{};
+
+template <class Tag, class A, class FromTag>
+struct LookupTag<Tag, A const, FromTag>
+: public LookupTag<Tag, typename UnqualifiedType<A>::type>
+{
+    typedef typename LookupTag<Tag, typename UnqualifiedType<A>::type>::type const & reference;
+};
+
+template <class Tag, class A>
+struct LookupTag<Tag, A, Tag>
+{
+    typedef A type;
+    typedef A & reference;
+    typedef typename A::value_type value_type;
+    typedef typename A::result_type result_type;
+};
+
+template <class Tag, class A>
+struct LookupTag<Tag, A const, Tag>
+{
+    typedef A type;
+    typedef A const & reference;
+    typedef typename A::value_type value_type;
+    typedef typename A::result_type result_type;
+};
+
+template <class Tag, class A>
+struct LookupTag<Tag, A, AccumulatorEnd>
+{
+    typedef A type;
+    typedef A & reference;
+    typedef void value_type;
+    typedef void result_type;
+};
+
+namespace detail {
+
+template <class Tag, class FromTag>
+struct CastImpl
+{
+    template <class A>
+    static typename LookupTag<Tag, A>::reference
+    cast(A & a)
+    {
+        return CastImpl<Tag, typename A::BaseType::Tag>::cast(a.next_);
+    }
+    
+    template <class A>
+    static typename LookupTag<Tag, A>::result_type
+    get(A const & a)
+    {
+        return CastImpl<Tag, typename A::BaseType::Tag>::get(a.next_);
+    }
+};
+
+template <class Tag>
+struct CastImpl<Tag, Tag>
+{
+    template <class A>
+    static typename LookupTag<Tag, A>::reference
+    cast(A & a)
+    {
+        return a;
+    }
+    
+    template <class A>
+    static typename LookupTag<Tag, A>::result_type
+    get(A const & a)
+    {
+        return a();
+    }
+};
+
+template <class Tag>
+struct CastImpl<Tag, AccumulatorEnd>
+{
+    template <class A>
+    static typename LookupTag<Tag, A>::reference
+    cast(A & a)
+    {
+        return a;
+    }
+    
+    template <class A>
+    static void
+    get(A const & a)
+    {
+        vigra_precondition(false,
+            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+    }
+};
+
+} // namespace detail
 
     // cast an accumulator chain to the type specified by Tag
 template <class Tag, class A>
