@@ -48,6 +48,8 @@ namespace vigra {
 
 namespace acc1 {
 
+struct AccumulatorBegin;
+
 struct AccumulatorEnd 
 {
     typedef AccumulatorEnd Tag;
@@ -554,6 +556,16 @@ struct ReshapeImpl
         done_ = false;
     }
     
+    template <class A, class Shape>
+    void operator()(A & a, Shape const & s)
+    {
+        if(!done_)
+        {
+            a.resize(s);
+            done_ = true;
+        }
+    }
+    
     template <class A, class T>
     void operator()(A & a, T const & t, MetaInt<1>)
     {
@@ -565,7 +577,7 @@ struct ReshapeImpl
     }
     
     template <class A, class T, unsigned N>
-    void operator()(A & a, T const & t, MetaInt<N>)
+    void operator()(A &, T const &, MetaInt<N>)
     {}
         
     template <unsigned int N, class U, class Stride>
@@ -587,6 +599,10 @@ template <>
 struct ReshapeImpl<VigraFalseType>
 {
     void reset()
+    {}
+
+    template <class A, class Shape>
+    void operator()(A &, Shape const &)
     {}
 
     template <class A, class T, unsigned N>
@@ -625,31 +641,53 @@ struct Accumulator
 : public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type Accumulators;
+    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type BaseType;
+    
+    typedef AccumulatorBegin                         Tag;
+    typedef typename BaseType::argument_type         argument_type;
+    typedef typename BaseType::first_argument_type   first_argument_type;
+    typedef typename BaseType::second_argument_type  second_argument_type;
+    typedef typename BaseType::result_type           result_type;
 
-    detail::ReshapeImpl<typename detail::NeedsReshape<Accumulators>::type> reshape_;
+    BaseType next_;
+    detail::ReshapeImpl<typename detail::NeedsReshape<BaseType>::type> reshape_;
     
     void reset()
     {
         reshape_.reset();
-        Accumulators::reset();
+        next_.reset();
+    }
+    
+    template <class Shape>
+    void reshape(Shape const & s)
+    {
+        reshape_.reset();
+        reshape_(next_, s);
     }
 
     template <unsigned N>
     void update(T const & t)
     {
-        reshape_(*this, t, MetaInt<N>());
-        Accumulators::pass<N>(t);
+        reshape_(next_, t, MetaInt<N>());
+        next_.pass<N>(t);
     }
     
     template <unsigned N>
     void update(T const & t, double weight)
     {
         reshape_(*this, t, MetaInt<N>());
-        Accumulators::pass<N>(t, weight);
+        next_.pass<N>(t, weight);
+    }
+    
+    void operator+=(Accumulator const & o)
+    {
+        next_ += o.next_;
     }
 
-    using Accumulators::operator();
+    result_type operator()() const
+    {
+        return next_();
+    }
 	
 	void operator()(T const & t)
     {
@@ -699,6 +737,11 @@ struct Accumulator
                 vigra_precondition(false,
                      "Accumulator::updatePassN(): 0 < N < 6 required.");
         }
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return next_.passesRequired();
     }
 };
 
