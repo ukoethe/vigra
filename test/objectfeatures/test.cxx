@@ -1769,8 +1769,130 @@ struct AccumulatorTest
     AccumulatorTest()
     {}
     
+    void testStandardizeTag()
+    {
+        using namespace vigra::acc1;
+
+            // count
+        should((IsSameType<StandardizeTag<Count>::type,
+                           Count>::value));
+        should((IsSameType<StandardizeTag<Central<Count> >::type,
+                           Count>::value));
+        should((IsSameType<StandardizeTag<Principal<Count> >::type,
+                           Count>::value));
+        should((IsSameType<StandardizeTag<Coord<Count> >::type,
+                           Count>::value));
+        should((IsSameType<StandardizeTag<Weighted<Count> >::type,
+                           Weighted<Count> >::value));
+        should((IsSameType<StandardizeTag<CoordWeighted<Count> >::type,
+                           Weighted<Count> >::value));
+        should((IsSameType<StandardizeTag<Coord<Central<Count> > >::type,
+                           Count>::value));
+
+            // sum 
+        should((IsSameType<StandardizeTag<Sum>::type,
+                           Sum>::value));
+        should((IsSameType<StandardizeTag<Central<Sum> >::type,
+                           Central<Sum> >::value));
+        should((IsSameType<StandardizeTag<Weighted<Central<Sum> > >::type,
+                           Weighted<Central<Sum> > >::value));
+        should((IsSameType<StandardizeTag<Central<Weighted<Sum> > >::type,
+                           Weighted<Central<Sum> > >::value));
+
+            // mean
+        should((IsSameType<StandardizeTag<Mean>::type,
+                           Mean>::value));
+
+        typedef AccumulatorTraits<Mean>::rebind<Principal<Sum> >::type PrincipalMean;
+        should((IsSameType<StandardizeTag<Principal<Mean> >::type,
+                           PrincipalMean >::value));
+        should((IsSameType<StandardizeTag<Weighted<Principal<Mean> > >::type,
+                           Weighted<PrincipalMean> >::value));
+        should((IsSameType<StandardizeTag<Principal<Weighted<Mean> > >::type,
+                           Weighted<PrincipalMean> >::value));
+
+            // moment
+        should((IsSameType<StandardizeTag<Moment<2> >::type,
+                           Normalize<PowerSum<2> > >::value));
+        should((IsSameType<StandardizeTag<Central<Moment<2> > >::type,
+                           Normalize<Central<PowerSum<2> > > >::value));
+        should((IsSameType<StandardizeTag<Coord<Central<Moment<2> > > >::type,
+                           Coord<Normalize<Central<PowerSum<2> > > > >::value));
+        should((IsSameType<StandardizeTag<Central<Coord<Moment<2> > > >::type,
+                           Coord<Normalize<Central<PowerSum<2> > > > >::value));
+
+        should((IsSameType<StandardizeTag<Principal<Moment<2> > >::type,
+                           Normalize<Principal<PowerSum<2> > > >::value));
+        should((IsSameType<StandardizeTag<Coord<Principal<Moment<2> > > >::type,
+                           Coord<Normalize<Principal<PowerSum<2> > > > >::value));
+        should((IsSameType<StandardizeTag<Principal<Coord<Moment<2> > > >::type,
+                           Coord<Normalize<Principal<PowerSum<2> > > > >::value));
+
+        should((IsSameType<StandardizeTag<Moment<3> >::type,
+                           Normalize<PowerSum<3> > >::value));
+        should((IsSameType<StandardizeTag<Principal<Moment<3> > >::type,
+                           Normalize<Principal<PowerSum<3> > > >::value));
+        should((IsSameType<StandardizeTag<Central<Moment<3> > >::type,
+                           Normalize<Central<PowerSum<3> > > >::value));
+
+            // SumOfSquaredDifferences
+        should((IsSameType<StandardizeTag<SumOfSquaredDifferences>::type,
+                           Central<PowerSum<2> > >::value));
+        should((IsSameType<StandardizeTag<Weighted<SSD> >::type,
+                           Weighted<Central<PowerSum<2> > > >::value));
+
+            // variance
+        typedef Normalize<Central<PowerSum<2> > > CentralVarianceDesired;
+        typedef Normalize<Principal<PowerSum<2> > > PrincipalVarianceDesired;
+        should((IsSameType<StandardizeTag<Variance>::type,
+                           CentralVarianceDesired >::value));
+        should((IsSameType<StandardizeTag<Variance>::type,
+                           StandardizeTag<Central<Moment<2> > >::type >::value));
+        should((IsSameType<StandardizeTag<Principal<Variance> >::type,
+                           PrincipalVarianceDesired >::value));
+        should((IsSameType<StandardizeTag<Principal<Variance> >::type,
+                           StandardizeTag<Principal<Moment<2> > >::type >::value));
+        should((IsSameType<StandardizeTag<Coord<Central<Variance> > >::type,
+                           Coord<CentralVarianceDesired> >::value));
+        should((IsSameType<StandardizeTag<Central<Coord<Variance> > >::type,
+                           Coord<CentralVarianceDesired> >::value));
+        should((IsSameType<StandardizeTag<Coord<Principal<Variance> > >::type,
+                           Coord<PrincipalVarianceDesired> >::value));
+        should((IsSameType<StandardizeTag<Principal<Coord<Variance> > >::type,
+                           Coord<PrincipalVarianceDesired> >::value));
+
+            // std dev
+        typedef Normalize<Central<PowerSum<2> >, false, RootDivideByCount> CentralStdDevDesired;
+        typedef Normalize<Principal<PowerSum<2> >, false, RootDivideByCount> PrincipalStdDevDesired;
+        should((IsSameType<StandardizeTag<StdDev>::type,
+                           CentralStdDevDesired>::value));
+        should((IsSameType<StandardizeTag<Principal<StdDev> >::type,
+                           PrincipalStdDevDesired>::value));
+        should((IsSameType<StandardizeTag<Coord<Central<StdDev> > >::type,
+                           Coord<CentralStdDevDesired> >::value));
+        should((IsSameType<StandardizeTag<Central<Coord<StdDev> > >::type,
+                           Coord<CentralStdDevDesired> >::value));
+        should((IsSameType<StandardizeTag<Coord<Principal<StdDev> > >::type,
+                           Coord<PrincipalStdDevDesired> >::value));
+        should((IsSameType<StandardizeTag<Principal<Coord<StdDev> > >::type,
+                           Coord<PrincipalStdDevDesired> >::value));
+
+            // skewness
+        should((IsSameType<StandardizeTag<Skewness>::type,
+                           Central<SkewnessImpl> >::value));
+        should((IsSameType<StandardizeTag<Coord<Skewness> >::type,
+                           Coord<Central<SkewnessImpl> > >::value));
+        should((IsSameType<StandardizeTag<Principal<Skewness> >::type,
+                           Principal<SkewnessImpl> >::value));
+        should((IsSameType<StandardizeTag<Coord<Principal<Skewness> > >::type,
+                           Coord<Principal<SkewnessImpl> > >::value));
+        should((IsSameType<StandardizeTag<Principal<Coord<Skewness> > >::type,
+                           Coord<Principal<SkewnessImpl> > >::value));
+    }
+
     void test1()
     {
+#if 0
         using namespace vigra::acc1;
 
         typedef Central<Normalize<Coord<Sum> > > T1;
@@ -1792,6 +1914,7 @@ struct AccumulatorTest
         typedef acc1::detail::TransferModifiers<S2, Select<Count, Mean, Coord<PowerSum<2> > >::type>::type Trans;
 
         std::cerr << typeid(Trans).name() << "\n";
+#endif
 #if 0
         typedef Accumulator<double, Select<Count, Maximum, Minimum, Mean, Variance, CovarianceEigensystem, Skewness, Kurtosis> > A;
 
@@ -1872,14 +1995,15 @@ struct AccumulatorTest
         
         { 
 #if 1
-            Accumulator<double, Select<Count> > a;
+            typedef Accumulator<double, Select<Count> > A;
+            A a;
 
             shouldEqual(1, a.passesRequired());
 
             a(1.0);
             a(2.0);
             a(3.0);
-
+            
             shouldEqual(get<Count>(a), 3.0);
 
             try 
@@ -2158,6 +2282,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         : vigra::test_suite("FeaturesTestSuite")
     {
         add(testCase(&AccumulatorTest::test1));
+        add(testCase(&AccumulatorTest::testStandardizeTag));
         add(testCase(&AccumulatorTest::testScalar));
         add(testCase(&AccumulatorTest::testVector));
         add(testCase(&AccumulatorTest::testMerge));

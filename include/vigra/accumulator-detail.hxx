@@ -100,7 +100,7 @@ struct Select
 {};
 
 template <class A>
-struct ModifierTraits;
+struct AccumulatorTraits;
 
 template <class From, class To>
 struct DontTransferModifier;
@@ -119,16 +119,16 @@ struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined {};
 template <class T1, int Priority, class T2>
 struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<T1, Priority, T2, Priority>;
 
-template <class TAG, int BOUND=INT_MIN, bool SKIP=Less<ModifierTraits<TAG>::priority, BOUND>::value, 
-          class Contained=typename ModifierTraits<TAG>::ContainedTag>
+template <class TAG, int BOUND=INT_MIN, bool SKIP=Less<AccumulatorTraits<TAG>::priority, BOUND>::value, 
+          class Contained=typename AccumulatorTraits<TAG>::ContainedTag>
 struct LowestPriority
 : public Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<
                  typename LowestPriority<Contained, BOUND>::type, LowestPriority<Contained, BOUND>::priority,
-                 typename ModifierTraits<TAG>::type, ModifierTraits<TAG>::priority>
+                 typename AccumulatorTraits<TAG>::type, AccumulatorTraits<TAG>::priority>
 {
     typedef typename LowestPriority<Contained, BOUND>::type BestContained;
     static const int P1 = LowestPriority<Contained, BOUND>::priority;
-    static const int P2 = ModifierTraits<TAG>::priority;
+    static const int P2 = AccumulatorTraits<TAG>::priority;
     static const int priority = P1 < P2 ? P1 : P2;    
     typedef typename IfBool<(P1 < P2), BestContained, TAG>::type type;
 };
@@ -144,13 +144,13 @@ template <class TAG, int BOUND, bool SKIP>
 struct LowestPriority<TAG, BOUND, SKIP, void>
 {
     typedef TAG type;
-    static const int priority = ModifierTraits<TAG>::priority;
+    static const int priority = AccumulatorTraits<TAG>::priority;
 };
 
 template <class TAG, int BOUND=INT_MIN, int PRIORITY=LowestPriority<TAG, BOUND>::priority>
 struct SortModifiers
 {
-    typedef ModifierTraits<typename LowestPriority<TAG, BOUND>::type> Traits;
+    typedef AccumulatorTraits<typename LowestPriority<TAG, BOUND>::type> Traits;
     typedef typename Traits::template rebind<typename SortModifiers<TAG, PRIORITY+1>::type>::type type;
 };
 
@@ -161,11 +161,11 @@ struct SortModifiers<TAG, BOUND, INT_MAX>
 };
 
 template <class T1, class T2, 
-          class Next=typename ModifierTraits<T1>::ContainedTag,
-          class Contained=typename ModifierTraits<T2>::ContainedTag>
+          class Next=typename AccumulatorTraits<T1>::ContainedTag,
+          class Contained=typename AccumulatorTraits<T2>::ContainedTag>
 struct ContainsModifier
 {
-    typedef typename IsSameType<typename ModifierTraits<T1>::template rebind<Contained>::type, T2>::type Same;
+    typedef typename IsSameType<typename AccumulatorTraits<T1>::template rebind<Contained>::type, T2>::type Same;
     typedef typename Or<Same, typename ContainsModifier<T1, Contained>::type>::type type;
 };
 
@@ -187,7 +187,7 @@ struct ContainsModifier<T1, T2, void, void>
     typedef VigraFalseType type;
 };
 
-template <class From, class To, class Next=typename ModifierTraits<To>::ContainedTag>
+template <class From, class To, class Next=typename AccumulatorTraits<To>::ContainedTag>
 struct ForbiddenTransfer
 {
     typedef typename Or<typename DontTransferModifier<From, To>::type,
@@ -200,13 +200,13 @@ struct ForbiddenTransfer<From, To, void>
     typedef typename DontTransferModifier<From, To>::type type;
 };
 
-template <class From, class To, class Next=typename ModifierTraits<From>::ContainedTag,
+template <class From, class To, class Next=typename AccumulatorTraits<From>::ContainedTag,
          class Dont=typename Or<typename ContainsModifier<From,To>::type,
                                 typename ForbiddenTransfer<From, To>::type>::type>
 struct TransferModifiersImpl
 {
     typedef typename TransferModifiersImpl<Next, To>::type Inner;
-    typedef typename ModifierTraits<From>::template rebind<Inner>::type type;
+    typedef typename AccumulatorTraits<From>::template rebind<Inner>::type type;
 };
 
 template <class From, class To, class Next>
