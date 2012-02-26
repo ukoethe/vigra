@@ -1890,8 +1890,55 @@ struct AccumulatorTest
                            Coord<Principal<SkewnessImpl> > >::value));
     }
 
+    void testTagTransfer()
+    {
+          using namespace vigra::acc1;
+          
+          typedef Select<Count, Sum, Mean, Variance>::type Target;
+
+          should((IsSameType<TransferModifiers<Sum, Target>::type,
+                             Target>::value));
+
+          typedef Select<Count, Coord<Sum>, Coord<Mean>, Coord<Variance> >::type Desired1;
+          should((IsSameType<TransferModifiers<Coord<Sum>, Target>::type,
+                             Desired1>::value));
+
+          typedef Select<Count, Principal<Sum>, Principal<Mean>, Principal<Variance> >::type Desired2;
+          should((IsSameType<TransferModifiers<Principal<Sum>, Target>::type,
+                             Desired2>::value));
+
+          typedef Select<Count, Coord<Principal<Sum> >, Coord<Principal<Mean> >, Coord<Principal<Variance> > >::type Desired3;
+          should((IsSameType<TransferModifiers<Coord<Principal<Sum> >, Target>::type,
+                             Desired3>::value));
+    }
+
     void test1()
     {
+        using namespace vigra::acc1;
+
+#if 1
+        typedef Accumulator<double, Select<Mean, Minimum, Maximum, Moment<2>, Variance, Central<PowerSum<4> > > > A;
+        A a;
+
+        a(1.0);
+        a(2.0);
+        a(3.0);
+
+        a.updatePass2(1.0);
+        a.updatePass2(2.0);
+        a.updatePass2(3.0);
+
+        std::cerr << get<Count>(a) << " count\n";
+        std::cerr << get<Mean>(a) << " Mean\n";
+        std::cerr << get<Minimum>(a) << " Minimum\n";
+        std::cerr << get<Maximum>(a) << " Maximum\n";
+        std::cerr << get<Moment<2> >(a) << " Moment<2>=4.67? \n";
+        std::cerr << get<SSD>(a) << " SSD=2? \n";
+        std::cerr << get<Variance>(a) << " Variance=0.667? \n";
+        std::cerr << get<Central<PowerSum<3> > >(a) << " Central<PowerSum<3>=0? \n";
+        std::cerr << get<Central<PowerSum<4> > >(a) << " Central<PowerSum<4>=2? \n";
+//        std::cerr << get<Central<Moment<3> >(a) << " Central<Moment<3>=1? \n";
+#endif
 #if 0
         using namespace vigra::acc1;
 
@@ -2283,6 +2330,7 @@ struct FeaturesTestSuite : public vigra::test_suite
     {
         add(testCase(&AccumulatorTest::test1));
         add(testCase(&AccumulatorTest::testStandardizeTag));
+        add(testCase(&AccumulatorTest::testTagTransfer));
         add(testCase(&AccumulatorTest::testScalar));
         add(testCase(&AccumulatorTest::testVector));
         add(testCase(&AccumulatorTest::testMerge));
