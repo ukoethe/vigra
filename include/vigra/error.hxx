@@ -204,7 +204,9 @@ class InvariantViolation : public ContractViolation
     {}
 };
 
-#ifndef NDEBUG
+//#ifndef NDEBUG
+
+#if 1
 
 inline
 void throw_invariant_error(bool predicate, char const * message, char const * file, int line)

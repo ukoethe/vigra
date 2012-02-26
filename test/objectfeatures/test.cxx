@@ -1896,19 +1896,19 @@ struct AccumulatorTest
           
           typedef Select<Count, Sum, Mean, Variance>::type Target;
 
-          should((IsSameType<TransferModifiers<Sum, Target>::type,
+          should((IsSameType<TransferModifiers<Minimum, Target>::type,
                              Target>::value));
 
           typedef Select<Count, Coord<Sum>, Coord<Mean>, Coord<Variance> >::type Desired1;
-          should((IsSameType<TransferModifiers<Coord<Sum>, Target>::type,
+          should((IsSameType<TransferModifiers<Coord<Minimum>, Target>::type,
                              Desired1>::value));
 
-          typedef Select<Count, Principal<Sum>, Principal<Mean>, Principal<Variance> >::type Desired2;
-          should((IsSameType<TransferModifiers<Principal<Sum>, Target>::type,
+          typedef Select<Count, Sum, Mean, Principal<Variance> >::type Desired2;
+          should((IsSameType<TransferModifiers<Principal<Minimum>, Target>::type,
                              Desired2>::value));
 
-          typedef Select<Count, Coord<Principal<Sum> >, Coord<Principal<Mean> >, Coord<Principal<Variance> > >::type Desired3;
-          should((IsSameType<TransferModifiers<Coord<Principal<Sum> >, Target>::type,
+          typedef Select<Count, Coord<Sum>, Coord<Mean>, Coord<Principal<Variance> > >::type Desired3;
+          should((IsSameType<TransferModifiers<Coord<Principal<Minimum> >, Target>::type,
                              Desired3>::value));
     }
 
@@ -1916,8 +1916,39 @@ struct AccumulatorTest
     {
         using namespace vigra::acc1;
 
-#if 1
-        typedef Accumulator<double, Select<Mean, Minimum, Maximum, Moment<2>, Variance, Central<PowerSum<4> > > > A;
+#if 0
+        typedef Accumulator<double, 
+                            Select<Count, Mean, Minimum, Maximum, Moment<2>, // Variance, 
+                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
+                                   StdDev, UnbiasedStdDev, UnbiasedVariance
+                                  > > A;
+        typedef Accumulator<double, 
+                            Select<Count, Mean, Minimum, Maximum, Moment<2>, // Variance, 
+                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
+                                   Select<StdDev, UnbiasedStdDev, UnbiasedVariance>::type
+                                  > > B;
+        A a;
+
+        a(1.0);
+        a(2.0);
+        a(3.0);
+
+        std::cerr << get<UnbiasedVariance>(a) << " UnbiasedStdDev=1? \n";
+
+        std::cerr << typeid(LookupTag<Mean, A>::type).name() << "\n";
+        std::cerr << typeid(TransferModifiers<LookupTag<Mean, A>::type, Sum>::type).name() << "\n";
+#endif
+#if 0
+        typedef Accumulator<double, 
+                            Select<Mean, Minimum, Maximum, Moment<2>, Variance, 
+                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
+                                   StdDev, UnbiasedStdDev, UnbiasedVariance, Covariance, UnbiasedCovariance, CovarianceEigensystem
+                                  > > A;
+        std::cerr << typeid(LookupTag<Central<PowerSum<2> >, A>::type).name() << "\n";
+        typedef LookupTag<Central<PowerSum<2> >, A>::type T;
+        std::cerr << typeid(T::Tag).name() << "\n";
+        std::cerr << typeid(TransferModifiers<LookupTag<T::Tag, A>::type, Sum>::type).name() << "\n";
+
         A a;
 
         a(1.0);
@@ -1935,9 +1966,20 @@ struct AccumulatorTest
         std::cerr << get<Moment<2> >(a) << " Moment<2>=4.67? \n";
         std::cerr << get<SSD>(a) << " SSD=2? \n";
         std::cerr << get<Variance>(a) << " Variance=0.667? \n";
-        std::cerr << get<Central<PowerSum<3> > >(a) << " Central<PowerSum<3>=0? \n";
-        std::cerr << get<Central<PowerSum<4> > >(a) << " Central<PowerSum<4>=2? \n";
-//        std::cerr << get<Central<Moment<3> >(a) << " Central<Moment<3>=1? \n";
+        std::cerr << get<StdDev>(a) << " StdDev=0.816? \n";
+        std::cerr << get<UnbiasedVariance>(a) << " UnbiasedVariance=1? \n";
+        std::cerr << get<UnbiasedStdDev>(a) << " UnbiasedStdDev=1? \n";
+        std::cerr << get<Central<PowerSum<3> > >(a) << " Central<PowerSum<3>>=0? \n";
+        std::cerr << get<Central<PowerSum<4> > >(a) << " Central<PowerSum<4>>=2? \n";
+        std::cerr << get<Central<Moment<3> > >(a) << " Central<Moment<3>>=0? \n";
+        std::cerr << get<Central<Moment<4> > >(a) << " Central<Moment<4>>=0.667? \n";
+        std::cerr << get<Skewness>(a) << " Skewness\n";
+        std::cerr << get<Kurtosis>(a) << " Kurtosis\n";
+        std::cerr << get<FlatScatterMatrix>(a) << " FlatScatterMatrix\n";
+        std::cerr << get<Covariance>(a) << " Covariance\n";
+        std::cerr << get<UnbiasedCovariance>(a) << " UnbiasedCovariance\n";
+        std::cerr << get<CovarianceEigensystem>(a).first << " Covariance Eigenvalues\n";
+        std::cerr << get<CovarianceEigensystem>(a).second << " Covariance Eigenvectors\n";
 #endif
 #if 0
         using namespace vigra::acc1;
@@ -2037,7 +2079,7 @@ struct AccumulatorTest
     
     void testScalar()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         
         { 
@@ -2068,14 +2110,15 @@ struct AccumulatorTest
         }
 
         { 
-            typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedStdDev, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
+            typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
+                                               Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
 
             A a;
 
 #if 1
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(18, A::index);
+            shouldEqual(17, A::index);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -2108,7 +2151,7 @@ struct AccumulatorTest
         }
 
         { 
-#if 1
+#if 0
             DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
 
             shouldEqual(0, a.passesRequired());
@@ -2181,12 +2224,12 @@ struct AccumulatorTest
 
     void testVector()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<StdDev, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2> > > A;
+            typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
 
@@ -2230,13 +2273,13 @@ struct AccumulatorTest
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
 #endif
         }
-#if 1
+#if 0
         {
             using namespace vigra::multi_math;
             
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
-            typedef Accumulator<V::view_type, Select<Covariance, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
+            typedef Accumulator<V::view_type, Select<Covariance, Mean, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
 

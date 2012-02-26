@@ -36,6 +36,10 @@
 #ifndef VIGRA_ACCUMULATOR_HXX
 #define VIGRA_ACCUMULATOR_HXX
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4503)
+#endif
+
 //#include "accumulator-detail.hxx"
 #include "config.hxx"
 #include "metaprogramming.hxx"
@@ -127,6 +131,13 @@ struct LowestPriority<TAG, BOUND, true, Contained>
 
 template <class TAG, int BOUND, bool SKIP>
 struct LowestPriority<TAG, BOUND, SKIP, void>
+{
+    typedef TAG type;
+    static const int priority = AccumulatorTraits<TAG>::priority;
+};
+
+template <class TAG, int BOUND>
+struct LowestPriority<TAG, BOUND, true, void>
 {
     typedef TAG type;
     static const int priority = AccumulatorTraits<TAG>::priority;
@@ -425,6 +436,15 @@ VIGRA_SIMPLE_SYNONYM(Central<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(SSD,
 VIGRA_SIMPLE_SYNONYM(UnbiasedStdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideUnbiased))
 VIGRA_SIMPLE_SYNONYM(Central<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideUnbiased))
 
+template <unsigned N>
+class CentralMoment;
+
+template <unsigned N>
+struct Synonym<CentralMoment<N> >
+{
+    typedef Central<Moment<N> > type;
+};
+
     // explicitly specialize Central<PowerSum<3> > and Central<PowerSum<4> > to implement 
     // merge functions (standard centralize accumulators do not support merge)
 template <>
@@ -446,6 +466,30 @@ typedef Central<FlatScatterMatrixImpl> FlatScatterMatrix;
 class CovarianceEigensystemImpl;
 typedef Central<CovarianceEigensystemImpl> CovarianceEigensystem;
 
+
+// FIXME: Central<Skewness> would be nicer than Central<SkewnessImpl>
+// class Skewness;
+// template <>
+// class Central<Skewness>;
+
+// template <>
+// struct AccumulatorTraits<Central<Skewness> >
+// {
+    // typedef void Contained;
+    // typedef Central<Skewness> type;
+    // static const int priority = AccumulatorTraits<Central<void> >::priority;
+
+    // template <class T>
+    // struct rebind
+    // {
+        // typedef Central<T> type;
+    // };
+
+// };
+
+// VIGRA_SIMPLE_SYNONYM(Skewness, Central<Skewness>)
+
+
 typedef Normalize<FlatScatterMatrix, true, NormalizeCovariance>         Covariance;
 typedef Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> UnbiasedCovariance;
 
@@ -458,8 +502,14 @@ VIGRA_SIMPLE_SYNONYM(Principal<Variance>, Principal<Moment<2> >)
 VIGRA_SIMPLE_SYNONYM(Principal<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, RootDivideByCount))
 VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, DivideUnbiased))
 VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, RootDivideUnbiased))
+
+// template <>
+// class Principal<Skewness>;
+// template <>
+// class Principal<Kurtosis>;
+
 VIGRA_SIMPLE_SYNONYM(Principal<Skewness>, Principal<SkewnessImpl>)
-VIGRA_SIMPLE_SYNONYM(Principal<Kurtosis>, Principal<Kurtosis>)
+VIGRA_SIMPLE_SYNONYM(Principal<Kurtosis>, Principal<KurtosisImpl>)
 
 template <unsigned Percent>
 class IncrementalQuantile;
@@ -563,6 +613,9 @@ struct DontTransferModifier<FROM<A>, TO> \
 VIGRA_DONT_TRANSFER(Coord, Count)
 VIGRA_DONT_TRANSFER(Central, Count)
 VIGRA_DONT_TRANSFER(Principal, Count)
+
+VIGRA_DONT_TRANSFER(Central, Sum)
+VIGRA_DONT_TRANSFER(Principal, Sum)
 
     // modifying accumulators themselves must not be modified
 VIGRA_DONT_TRANSFER(Central, Centralize)
@@ -719,7 +772,7 @@ struct AccumulatorEnd
 {
     typedef AccumulatorEnd Tag;
     typedef void value_type;
-    typedef void result_type;
+    typedef bool result_type;
     static const unsigned int workInPass = 0; 
     static const int index = -1;
     
@@ -727,7 +780,7 @@ struct AccumulatorEnd
     void operator()(T const &) {}
     template <class T>
     void operator()(T const &, double) {}
-    void operator()() const {}
+    bool operator()() const { return false; }
     
     template <unsigned, class T>
     void pass(T const &) {}
@@ -1307,8 +1360,8 @@ struct LookupTagImpl<Tag, A, AccumulatorEnd>
 {
     typedef A type;
     typedef A & reference;
-    typedef void value_type;
-    typedef void result_type;
+    typedef typename A::value_type value_type;
+    typedef typename A::result_type result_type;
 };
 
 } // namespace detail
@@ -1367,11 +1420,12 @@ struct CastImpl<Tag, AccumulatorEnd>
     }
     
     template <class A>
-    static void
+    static bool
     get(A const & a)
     {
         vigra_precondition(false,
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
+        return false;
     }
 };
 
@@ -1872,6 +1926,87 @@ struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, DivideByCount>
     }
 };
 
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, RootDivideByCount>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
+{
+    result_type operator()() const
+    {
+        if(this->isDirty())
+        {
+            using namespace multi_math;
+            value_ = sqrt(get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this));
+            this->setClean();
+        }
+        return value_;
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, RootDivideByCount>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
+{
+    result_type operator()() const
+    {
+        using namespace multi_math;
+        return sqrt(get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this));
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, DivideUnbiased>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
+{
+    result_type operator()() const
+    {
+        if(this->isDirty())
+        {
+            using namespace multi_math;
+            value_ = get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0);
+            this->setClean();
+        }
+        return value_;
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, DivideUnbiased>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
+{
+    result_type operator()() const
+    {
+        using namespace multi_math;
+        return get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0);
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, RootDivideUnbiased>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
+{
+    result_type operator()() const
+    {
+        if(this->isDirty())
+        {
+            using namespace multi_math;
+            value_ = sqrt(get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0));
+            this->setClean();
+        }
+        return value_;
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, RootDivideUnbiased>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
+{
+    result_type operator()() const
+    {
+        using namespace multi_math;
+        return sqrt(get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0));
+    }
+};
+
 template <class A, bool CacheResult, class NormlizationMethod>
 class Normalize 
 {
@@ -1894,6 +2029,8 @@ class Centralize
     struct Impl
     : public BASE
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Mean>::type    MeanTag;
+        
         static const unsigned int workInPass = 2;
         
         typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
@@ -1920,13 +2057,13 @@ class Centralize
         void update(T const & t)
         {
             using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
+            value_ = t - get<MeanTag>(*this);
         }
         
         void update(T const & t, double)
         {
             using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
+            value_ = t - get<MeanTag>(*this);
         }
         
         result_type operator()() const
@@ -2044,42 +2181,46 @@ class Central<PowerSum<2> >
     struct Impl
     : public PowerSumNImpl<T, BASE>
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Sum>::type    SumTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type  CountTag;
+
         void merge(Impl const & o)
         {
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = get<CountTag>(*this), n2 = get<CountTag>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
             }
             else if(n2 != 0.0)
             {
-                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(get<Sum>(*this) / n1 - get<Sum>(o) / n2);
+                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(get<SumTag>(*this) / n1 - get<SumTag>(o) / n2);
             }
         }
     
         void update(T const & t)
         {
-            double n = get<Count>(*this);
+            double n = get<CountTag>(*this);
             if(n > 1.0)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - 1.0) * sq(get<Sum>(*this) / n - t);
+                value_ += n / (n - 1.0) * sq(get<SumTag>(*this) / n - t);
             }
         }
         
         void update(T const & t, double weight)
         {
-            double n = get<Count>(*this);
+            double n = get<CountTag>(*this);
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - weight) * sq(get<Sum>(*this) / n - t);
+                value_ += n / (n - weight) * sq(get<SumTag>(*this) / n - t);
             }
         }
     };
 };
 
+    // FIXME: automatic forwarding of dependencies to Central<Moment<3> > doesn't work
 template <>
 class Central<PowerSum<3> >
 {
@@ -2090,12 +2231,17 @@ class Central<PowerSum<3> >
     struct Impl
     : public PowerSumNImpl<T, BASE>
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Sum>::type    SumTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<2> > >::type    Sum2Tag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type  CountTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Centralize>::type  CentralizeTag;
+
         static const unsigned int workInPass = 2;
         
         void merge(Impl const & o)
         {
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = get<CountTag>(*this), n2 = get<CountTag>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
@@ -2104,23 +2250,22 @@ class Central<PowerSum<3> >
             {
                 double n = n1 + n2;
                 double weight = n1 * n2 * (n1 - n2) / sq(n);
-                value_type delta = get<Sum>(o) / n2 - get<Sum>(*this) / n1;
+                value_type delta = get<SumTag>(o) / n2 - get<SumTag>(*this) / n1;
                 this->value_ += o.value_ + weight * pow(delta, 3) +
-                               3.0 / n * delta * (  n1 * get<Central<PowerSum<2> > >(o)
-                                                  - n2 * get<Central<PowerSum<2> > >(*this));
+                               3.0 / n * delta * (n1 * get<Sum2Tag>(o) - n2 * get<Sum2Tag>(*this));
             }
         }
     
         void update(T const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), 3);
+            value_ += pow(get<CentralizeTag>(*this), 3);
         }
         
         void update(T const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), 3);
+            value_ += weight*pow(get<CentralizeTag>(*this), 3);
         }
     };
 };
@@ -2135,12 +2280,18 @@ class Central<PowerSum<4> >
     struct Impl
     : public PowerSumNImpl<T, BASE>
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Sum>::type    SumTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<2> > >::type    Sum2Tag;
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<3> > >::type    Sum3Tag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type  CountTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Centralize>::type  CentralizeTag;
+
         static const unsigned int workInPass = 2;
         
         void merge(Impl const & o)
         {
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = get<CountTag>(*this), n2 = get<CountTag>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
@@ -2152,25 +2303,23 @@ class Central<PowerSum<4> >
                 double n2_2 = sq(n2);
                 double n_2 = sq(n);
                 double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
-                value_type delta = get<Sum>(o) / n2 - get<Sum>(*this) / n1;
+                value_type delta = get<SumTag>(o) / n2 - get<SumTag>(*this) / n1;
                 this->value_ += o.value_ + weight * pow(delta, 4) +
-                              6.0 / n_2 * sq(delta) * (  n1_2 * get<Central<PowerSum<2> > >(o)
-                                                       + n2_2 * get<Central<PowerSum<2> > >(*this) ) +
-                              4.0 / n * delta * (  n1 * get<Central<PowerSum<3> > >(o)
-                                                 - n2 * get<Central<PowerSum<3> > >(*this));
+                              6.0 / n_2 * sq(delta) * (n1_2 * get<Sum2Tag>(o) + n2_2 * get<Sum2Tag>(*this)) +
+                              4.0 / n * delta * (n1 * get<Sum3Tag>(o) - n2 * get<Sum3Tag>(*this));
             }
         }
     
         void update(T const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), 4);
+            value_ += pow(get<CentralizeTag>(*this), 4);
         }
         
         void update(T const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), 4);
+            value_ += weight*pow(get<CentralizeTag>(*this), 4);
         }
     };
 };
@@ -2185,6 +2334,8 @@ class Central<PowerSum<N> >
     struct Impl
     : public PowerSumNImpl<T, BASE>
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Centralize>::type  CentralizeTag;
+        
         static const unsigned int workInPass = 2;
         
         void merge(Impl const & o)
@@ -2196,64 +2347,72 @@ class Central<PowerSum<N> >
         void update(T const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), (int)N);
+            value_ += pow(get<CentralizeTag>(*this), (int)N);
         }
         
         void update(T const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), (int)N);
+            value_ += weight*pow(get<CentralizeTag>(*this), (int)N);
+        }
+    };
+};
+
+template <>
+class Central<SkewnessImpl>
+{
+  public:
+    typedef Select<Central<PowerSum<2> >, Central<PowerSum<3> > > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<3> > >::type Sum3;
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<2> > >::type Sum2;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+        static const unsigned int workInPass = 2;
+        
+        typedef typename LookupTag<Sum3, BASE>::value_type   value_type;
+        typedef value_type                                   result_type;
+
+        result_type operator()() const
+        {
+			using namespace multi_math;
+            return sqrt(get<CountTag>(*this)) * get<Sum3>(*this) / pow(get<Sum2>(*this), 1.5);
+        }
+    };
+};
+
+template <>
+class Central<KurtosisImpl>
+{
+  public:
+    typedef Select<Central<PowerSum<2> >, Central<PowerSum<4> > > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<4> > >::type Sum4;
+        typedef typename TransferModifiers<typename BASE::Tag, Central<PowerSum<2> > >::type Sum2;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+        static const unsigned int workInPass = 2;
+        
+        typedef typename LookupTag<Sum4, BASE>::value_type value_type;
+        typedef value_type                                 result_type;
+
+        result_type operator()() const
+        {
+			using namespace multi_math;
+            return get<CountTag>(*this) * get<Sum4>(*this) / sq(get<Sum2>(*this));
         }
     };
 };
 
 #if 0
-
-class Skewness
-{
-  public:
-    typedef Select<CentralMoment<3> > Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        static const unsigned int workInPass = 2;
-        
-        typedef typename LookupTag<CentralMoment<3>, BASE>::value_type value_type;
-        typedef value_type                                             result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return sqrt(get<Count>(*this)) * 
-                     cast<CentralMoment<3> >(*this).value_ / pow(cast<CentralMoment<2> >(*this).value_, 1.5);
-        }
-    };
-};
-
-class Kurtosis
-{
-  public:
-    typedef Select<CentralMoment<4> > Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        static const unsigned int workInPass = 2;
-        
-        typedef typename LookupTag<CentralMoment<4>, BASE>::value_type value_type;
-        typedef value_type                                             result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return get<Count>(*this) * 
-                     cast<CentralMoment<4> >(*this).value_ / sq(cast<CentralMoment<2> >(*this).value_);
-        }
-    };
-};
 
 class SumSquaredDifferences
 {
@@ -2399,6 +2558,8 @@ class UnbiasedStdDev
     };
 };
 
+#endif
+
 namespace detail {
 
 template <class Scatter, class Sum>
@@ -2440,15 +2601,19 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
 } // namespace detail
 
 // we only store the flattened upper triangular part of the scatter matrix
-class FlatScatterMatrix
+template <>
+class Central<FlatScatterMatrixImpl>
 {
   public:
-    typedef Select<Mean, Count> Dependencies;
+    typedef Select<Sum, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
+        typedef typename TransferModifiers<typename BASE::Tag, Sum>::type SumTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
         typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
         typedef typename AccumulatorResultTraits<T>::FlatCovarianceType    value_type;
         typedef value_type const &                                   result_type;
@@ -2478,7 +2643,7 @@ class FlatScatterMatrix
         
         void merge(Impl const & o)
         {
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = get<CountTag>(*this), n2 = get<CountTag>(o);
             if(n1 == 0.0)
             {
                 value_ = o.value_;
@@ -2486,7 +2651,7 @@ class FlatScatterMatrix
             else if(n2 != 0.0)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / n1 - get<Sum>(o) / n2;
+                diff_ = get<SumTag>(*this) / n1 - get<SumTag>(o) / n2;
                 detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
                 value_ += o.value_;
             }
@@ -2510,16 +2675,145 @@ class FlatScatterMatrix
       private:
         void compute(T const & t, double weight = 1.0)
         {
-            double n = get<Count>(*this);
+            double n = get<CountTag>(*this);
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / n - t;
+                diff_ = get<SumTag>(*this) / n - t;
                 detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
         }
     };
 };
+
+#if 0
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, NormalizeCovariance>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
+{
+    result_type operator()() const
+    {
+        if(this->isDirty())
+        {
+            typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
+            typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+            using namespace multi_math;
+            detail::flatScatterMatrixToCovariance(value_, get<FSM>(*this), get<CountTag>(*this));
+            this->setClean();
+        }
+        return value_;
+    }
+};
+
+template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
+struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, NormalizeCovarianceUnbiased>
+: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
+{
+    result_type operator()() const
+    {
+        if(this->isDirty())
+        {
+            typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
+            typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+            using namespace multi_math;
+            detail::flatScatterMatrixToCovariance(value_, get<FSM>(*this), get<CountTag>(*this) - 1.0);
+            this->setClean();
+        }
+        return value_;
+    }
+};
+
+#endif
+
+template <>
+class Normalize<FlatScatterMatrix, true, NormalizeCovariance> // == Covariance
+{
+  public:
+    typedef Select<FlatScatterMatrix, Count> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorResultTraits<T>::CovarianceType        value_type;
+        typedef value_type const &                                   result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(value_, Shape2(size,size));
+        }
+        
+        result_type operator()() const
+        {
+            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this));
+            return value_;
+        }
+    };
+};
+
+template <>
+class Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> // == UnbiasedCovariance
+{
+  public:
+    typedef Select<FlatScatterMatrix, Count> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorResultTraits<T>::CovarianceType        value_type;
+        typedef value_type const &                                   result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(value_, Shape2(size,size));
+        }
+        
+        result_type operator()() const
+        {
+            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this) - 1.0);
+            return value_;
+        }
+    };
+};
+
+#if 0
 
 class Covariance
 {
@@ -2556,66 +2850,6 @@ class Covariance
         {
             detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this));
             return value_;
-        }
-    };
-};
-
-class CovarianceEigensystem
-{
-  public:
-    typedef Select<Covariance> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_promote_type        element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType                     EigenvalueType;
-        typedef typename AccumulatorResultTraits<T>::CovarianceType              EigenvectorType;
-        typedef EigenvectorType                                            value_type;
-        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
-
-        mutable EigenvalueType eigenvalues_;
-        mutable EigenvectorType eigenvectors_;
-        
-        Impl()
-        : eigenvalues_(),  // call default constructor explicitly to ensure zero initialization
-          eigenvectors_()
-        {}
-        
-        void reset()
-        {
-            eigenvalues_ = element_type();
-            eigenvectors_ = element_type();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            int size = prod(s);
-            detail::reshapeImpl(eigenvalues_, Shape2(size,1));
-            detail::reshapeImpl(eigenvectors_, Shape2(size,size));
-        }
-        
-        result_type operator()() const
-        {
-            compute(get<Covariance>(*this), eigenvalues_, eigenvectors_);
-            return result_type(eigenvalues_, eigenvectors_);
-        }
-        
-      private:
-        template <class Cov, class EW, class EV>
-        static void compute(Cov const & cov, EW & ew, EV & ev)
-        {
-            // create a view because EW could be a TinyVector
-            MultiArrayView<2, element_type> ewview(Shape2(cov.shape(0), 1), &ew[0]);
-            symmetricEigensystem(cov, ewview, ev);
-        }
-        
-        static void compute(double cov, double & ew, double & ev)
-        {
-            ew = cov;
-            ev = 1.0;
         }
     };
 };
@@ -2660,6 +2894,69 @@ class UnbiasedCovariance
 };
 
 #endif
+
+template <>
+class Central<CovarianceEigensystemImpl>
+{
+  public:
+    typedef Select<Covariance> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, Covariance>::type CovarianceTag;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type        element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType                     EigenvalueType;
+        typedef typename AccumulatorResultTraits<T>::CovarianceType              EigenvectorType;
+        typedef EigenvectorType                                            value_type;
+        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
+
+        mutable EigenvalueType eigenvalues_;
+        mutable EigenvectorType eigenvectors_;
+        
+        Impl()
+        : eigenvalues_(),  // call default constructor explicitly to ensure zero initialization
+          eigenvectors_()
+        {}
+        
+        void reset()
+        {
+            eigenvalues_ = element_type();
+            eigenvectors_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(eigenvalues_, Shape2(size,1));
+            detail::reshapeImpl(eigenvectors_, Shape2(size,size));
+        }
+        
+        result_type operator()() const
+        {
+            compute(get<CovarianceTag>(*this), eigenvalues_, eigenvectors_);
+            return result_type(eigenvalues_, eigenvectors_);
+        }
+        
+      private:
+        template <class Cov, class EW, class EV>
+        static void compute(Cov const & cov, EW & ew, EV & ev)
+        {
+            // create a view because EW could be a TinyVector
+            MultiArrayView<2, element_type> ewview(Shape2(cov.shape(0), 1), &ew[0]);
+            symmetricEigensystem(cov, ewview, ev);
+        }
+        
+        static void compute(double cov, double & ew, double & ev)
+        {
+            ew = cov;
+            ev = 1.0;
+        }
+    };
+};
 
 }} // namespace vigra::acc1
 
