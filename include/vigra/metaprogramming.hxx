@@ -759,7 +759,7 @@ struct MakeTypeList
     typedef typename Push<T14, L15>::type L14;
     typedef typename Push<T13, L14>::type L13;
     typedef typename Push<T12, L13>::type L12;
-    typedef typename Push<T11, L13>::type L11;
+    typedef typename Push<T11, L12>::type L11;
     typedef typename Push<T10, L11>::type L10;
     typedef typename Push<T09, L10>::type L09;
     typedef typename Push<T08, L09>::type L08;
@@ -787,7 +787,7 @@ struct MakeTypeListUnique
     typedef typename PushUnique<T14, L15>::type L14;
     typedef typename PushUnique<T13, L14>::type L13;
     typedef typename PushUnique<T12, L13>::type L12;
-    typedef typename PushUnique<T11, L13>::type L11;
+    typedef typename PushUnique<T11, L12>::type L11;
     typedef typename PushUnique<T10, L11>::type L10;
     typedef typename PushUnique<T09, L10>::type L09;
     typedef typename PushUnique<T08, L09>::type L08;
