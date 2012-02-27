@@ -1862,8 +1862,8 @@ struct AccumulatorTest
                            Coord<PrincipalVarianceDesired> >::value));
 
             // std dev
-        typedef Normalize<Central<PowerSum<2> >, false, RootDivideByCount> CentralStdDevDesired;
-        typedef Normalize<Principal<PowerSum<2> >, false, RootDivideByCount> PrincipalStdDevDesired;
+        typedef Normalize<Central<PowerSum<2> >, RootDivideByCount> CentralStdDevDesired;
+        typedef Normalize<Principal<PowerSum<2> >, RootDivideByCount> PrincipalStdDevDesired;
         should((IsSameType<StandardizeTag<StdDev>::type,
                            CentralStdDevDesired>::value));
         should((IsSameType<StandardizeTag<Principal<StdDev> >::type,
@@ -2109,13 +2109,13 @@ struct AccumulatorTest
 #endif
         }
 
-        { 
+        {
+#if 1
             typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
 
             A a;
 
-#if 1
 
             shouldEqual(2, a.passesRequired());
             shouldEqual(17, A::index);
@@ -2151,8 +2151,8 @@ struct AccumulatorTest
         }
 
         { 
-#if 0
-            DynamicAccumulator<double, Select<Covariance, StdDev, Minimum, CentralMoment<2> > > a;
+#if 1
+            DynamicAccumulator<double, Select<Mean, Covariance, StdDev, Minimum, CentralMoment<4> > > a;
 
             shouldEqual(0, a.passesRequired());
 
@@ -2184,9 +2184,10 @@ struct AccumulatorTest
             should(!isActive<Count>(a));
 
             activate<Minimum>(a);
+            activate<Mean>(a);
             activate<StdDev>(a);
             activate<Covariance>(a);
-            activate<CentralMoment<2> >(a);
+            activate<CentralMoment<4> >(a);
 
             should(isActive<Count>(a));
             should(isActive<Minimum>(a));
@@ -2194,7 +2195,7 @@ struct AccumulatorTest
             should(isActive<Mean>(a));
             should(isActive<Variance>(a));
             should(isActive<StdDev>(a));
-            should(isActive<CentralMoment<2> >(a));
+            should(isActive<CentralMoment<4> >(a));
             should(isActive<Covariance>(a));
 
             shouldEqual(2, a.passesRequired());
@@ -2216,7 +2217,7 @@ struct AccumulatorTest
             a.updatePass2(3.0);
 
             shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<CentralMoment<2> >(a), 2.0/3.0);
+            shouldEqual(get<CentralMoment<4> >(a), 2.0/3.0);
 #endif
         }
 #endif
@@ -2273,7 +2274,7 @@ struct AccumulatorTest
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
 #endif
         }
-#if 0
+#if 1
         {
             using namespace vigra::multi_math;
             
@@ -2324,10 +2325,11 @@ struct AccumulatorTest
 
     void testMerge()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         
-        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis> > A;
+        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis, 
+                                           CentralMoment<3>, CentralMoment<4> > > A;
 
         A a, b;
 

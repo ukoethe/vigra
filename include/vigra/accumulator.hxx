@@ -271,20 +271,20 @@ struct AccumulatorTraits<Principal<A> >
     // FIXME: figure out when caching is appropriate
 struct DivideByCount;
 
-template <class A, bool CacheResult=true, class NormlizationMethod=DivideByCount>
+template <class A, class NormlizationMethod=DivideByCount>
 class Normalize;
 
-template <class A, bool CacheResult, class NormlizationMethod>
-struct AccumulatorTraits<Normalize<A, CacheResult, NormlizationMethod> >
+template <class A, class NormlizationMethod>
+struct AccumulatorTraits<Normalize<A, NormlizationMethod> >
 {
     typedef A Contained;
-    typedef Normalize<Contained, CacheResult, NormlizationMethod> type;
+    typedef Normalize<Contained, NormlizationMethod> type;
     static const int priority = 10;
     
     template <class T>
     struct rebind
     {
-        typedef Normalize<T, CacheResult, NormlizationMethod> type;
+        typedef Normalize<T, NormlizationMethod> type;
     };
 };
 
@@ -376,8 +376,8 @@ VIGRA_SIMPLE_SYNONYM(Principal<Count>, Count)
 VIGRA_SIMPLE_SYNONYM(Coord<Count>, Count)
 VIGRA_SIMPLE_SYNONYM(CoordWeighted<Count>, Weighted<Count>)
 
-template <bool CacheResult, class NormlizationMethod>
-struct Synonym<Normalize<Count, CacheResult, NormlizationMethod> >
+template <class NormlizationMethod>
+struct Synonym<Normalize<Count, NormlizationMethod> >
 {
     typedef Count type;
 };
@@ -393,11 +393,9 @@ typedef PowerSum<2> SumOfSquares;
 struct RootDivideByCount;
 struct DivideUnbiased;
 struct RootDivideUnbiased;
-struct NormalizeCovariance;
-struct NormalizeCovarianceUnbiased;
 
-typedef Normalize<Sum, true>                               Mean;
-typedef Normalize<SumOfSquares, false, RootDivideByCount>  RootMeanSquares;
+typedef Normalize<Sum>                              Mean;
+typedef Normalize<SumOfSquares, RootDivideByCount>  RootMeanSquares;
 
 template <unsigned N>
 class Moment;
@@ -405,11 +403,11 @@ class Moment;
 template <unsigned N>
 struct Synonym<Moment<N> >
 {
-    typedef Normalize<PowerSum<N>, true> type;
+    typedef Normalize<PowerSum<N> > type;
 };
 
     // explicitly specialize Central<PowerSum<2> > to use incremental algorithms
-    // (standard centralize accumulators use two passes)
+    // (standard centralized accumulators use two passes)
 template <>
 class Central<PowerSum<2> >;
 
@@ -424,17 +422,17 @@ class UnbiasedStdDev;
 VIGRA_SIMPLE_SYNONYM(Variance, Central<Moment<2> >)
 VIGRA_SIMPLE_SYNONYM(Central<Variance>, Variance)
 
-#define VIGRA_NORMALIZE_REPLACEMENT(INNER, CACHE, METHOD) \
-    Normalize<INNER, CACHE, METHOD>
+#define VIGRA_NORMALIZE_REPLACEMENT(INNER, METHOD) \
+    Normalize<INNER, METHOD>
 
-VIGRA_SIMPLE_SYNONYM(StdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideByCount))
-VIGRA_SIMPLE_SYNONYM(Central<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideByCount))
+VIGRA_SIMPLE_SYNONYM(StdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideByCount))
+VIGRA_SIMPLE_SYNONYM(Central<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideByCount))
 
-VIGRA_SIMPLE_SYNONYM(UnbiasedVariance, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, DivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Central<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, DivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(UnbiasedVariance, VIGRA_NORMALIZE_REPLACEMENT(SSD, DivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(Central<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(SSD, DivideUnbiased))
 
-VIGRA_SIMPLE_SYNONYM(UnbiasedStdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Central<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, false, RootDivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(UnbiasedStdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(Central<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideUnbiased))
 
 template <unsigned N>
 class CentralMoment;
@@ -490,8 +488,8 @@ typedef Central<CovarianceEigensystemImpl> CovarianceEigensystem;
 // VIGRA_SIMPLE_SYNONYM(Skewness, Central<Skewness>)
 
 
-typedef Normalize<FlatScatterMatrix, true, NormalizeCovariance>         Covariance;
-typedef Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> UnbiasedCovariance;
+typedef Normalize<FlatScatterMatrix>         Covariance;
+typedef Normalize<FlatScatterMatrix, DivideUnbiased> UnbiasedCovariance;
 
     // explicitly specialize Principal<PowerSum<2> > and Principal<Axes> to access 
     // CovarianceEigensystem directly
@@ -499,9 +497,9 @@ template <> class Principal<PowerSum<2> >;
 template <> class Principal<Axes>;
 
 VIGRA_SIMPLE_SYNONYM(Principal<Variance>, Principal<Moment<2> >)
-VIGRA_SIMPLE_SYNONYM(Principal<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, RootDivideByCount))
-VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, DivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, false, RootDivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(Principal<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideByCount))
+VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, DivideUnbiased))
+VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideUnbiased))
 
 // template <>
 // class Principal<Skewness>;
@@ -595,8 +593,8 @@ struct DontTransferModifier
 };
 
     // normalization rule: never transfer normalization
-template <class A, bool CacheResult, class NormlizationFunctor, class To>
-struct DontTransferModifier<Normalize<A, CacheResult, NormlizationFunctor>, To>
+template <class A, class NormlizationFunctor, class To>
+struct DontTransferModifier<Normalize<A, NormlizationFunctor>, To>
 {
     typedef VigraTrueType type;
 };
@@ -1658,6 +1656,7 @@ struct PowerSumNImpl
     }
 };
 
+// Count
 template <>
 class PowerSum<0>
 {
@@ -1680,6 +1679,7 @@ class PowerSum<0>
     };
 };
 
+// Sum
 template <>
 class PowerSum<1>
 {
@@ -1838,19 +1838,18 @@ class IncrementalQuantile<100>
     };
 };
 
-template <class T, class BASE, class SOURCE_TAG, bool CacheResult>
-struct NormalizeBaseImpl
+template <class T, class BASE, 
+          class VALUE_TYPE = typename AccumulatorResultTraits<T>::SumType>
+struct CachedResultBase
 : public BASE
 {
-    typedef typename LookupTag<SOURCE_TAG, BASE>::value_type   SourceValueType;
-    typedef AccumulatorResultTraits<SourceValueType>           SourceResults;
-    typedef typename SourceResults::element_promote_type       element_type;
-    typedef typename SourceResults::SumType                    value_type;
+    typedef typename AccumulatorResultTraits<T>::element_type  element_type;
+    typedef VALUE_TYPE                                         value_type;
     typedef value_type const &                                 result_type;
 
     mutable value_type value_;
     
-    NormalizeBaseImpl()
+    CachedResultBase()
     : value_()  // call default constructor explicitly to ensure zero initialization
     {}
     
@@ -1866,7 +1865,7 @@ struct NormalizeBaseImpl
         detail::reshapeImpl(value_, s);
     }
 
-    void merge(NormalizeBaseImpl const &)
+    void merge(CachedResultBase const &)
     {
         this->setDirty();
     }
@@ -1882,142 +1881,106 @@ struct NormalizeBaseImpl
     }
 };
 
-template <class T, class BASE, class SOURCE_TAG>
-struct NormalizeBaseImpl<T, BASE, SOURCE_TAG, /* CacheResult */ false>
-: public BASE
-{
-    typedef typename TransferModifiers<typename BASE::Tag, SOURCE_TAG>::type SourceTag;
-    typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
-    typedef typename LookupTag<SourceTag, BASE>::value_type                  SourceValueType;
-    typedef AccumulatorResultTraits<SourceValueType>                         SourceResults;
-    typedef typename SourceResults::element_promote_type                     element_type;
-    typedef typename SourceResults::SumType                                  value_type;
-    typedef value_type                                                       result_type;
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG,
-          bool CacheResult=true, class NormlizationMethod=DivideByCount>
-struct NormalizeImpl;
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, DivideByCount>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
-{
-    result_type operator()() const
-    {
-        if(this->isDirty())
-        {
-            using namespace multi_math;
-            value_ = get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this);
-            this->setClean();
-        }
-        return value_;
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, DivideByCount>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
-{
-    result_type operator()() const
-    {
-        using namespace multi_math;
-        return get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this);
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, RootDivideByCount>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
-{
-    result_type operator()() const
-    {
-        if(this->isDirty())
-        {
-            using namespace multi_math;
-            value_ = sqrt(get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this));
-            this->setClean();
-        }
-        return value_;
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, RootDivideByCount>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
-{
-    result_type operator()() const
-    {
-        using namespace multi_math;
-        return sqrt(get<SOURCE_TAG>(*this) / get<COUNT_TAG>(*this));
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, DivideUnbiased>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
-{
-    result_type operator()() const
-    {
-        if(this->isDirty())
-        {
-            using namespace multi_math;
-            value_ = get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0);
-            this->setClean();
-        }
-        return value_;
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, DivideUnbiased>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
-{
-    result_type operator()() const
-    {
-        using namespace multi_math;
-        return get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0);
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, RootDivideUnbiased>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, true>
-{
-    result_type operator()() const
-    {
-        if(this->isDirty())
-        {
-            using namespace multi_math;
-            value_ = sqrt(get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0));
-            this->setClean();
-        }
-        return value_;
-    }
-};
-
-template <class T, class BASE, class SOURCE_TAG, class COUNT_TAG>
-struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, false, RootDivideUnbiased>
-: public NormalizeBaseImpl<T, BASE, SOURCE_TAG, false>
-{
-    result_type operator()() const
-    {
-        using namespace multi_math;
-        return sqrt(get<SOURCE_TAG>(*this) / (get<COUNT_TAG>(*this) - 1.0));
-    }
-};
-
-template <class A, bool CacheResult, class NormlizationMethod>
-class Normalize 
+// cached Mean and Variance
+template <class TAG>
+class Normalize<TAG, DivideByCount>
 {
   public:
-    typedef typename TransferModifiers<A, Count>::type CountTag;
-    typedef Select<A, CountTag> Dependencies;
+    typedef Select<TAG, Count> Dependencies;
+  
+    template <class T, class BASE>
+    struct Impl
+    : public CachedResultBase<T, BASE> 
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, TAG>::type    TargetTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type  CountTag;
+        
+        result_type operator()() const
+        {
+            if(this->isDirty())
+            {
+                using namespace multi_math;
+                value_ = get<TargetTag>(*this) / get<CountTag>(*this);
+                this->setClean();
+            }
+            return value_;
+        }
+    };
+};
+
+// UnbiasedVariance
+template <class TAG>
+class Normalize<TAG, DivideUnbiased>
+{
+  public:
+    typedef Select<TAG, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
-    : public NormalizeImpl<T, BASE, A, CountTag, CacheResult, NormlizationMethod>
-    {};
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, TAG>::type    TargetTag;
+        typedef typename TransferModifiers<typename BASE::Tag, Count>::type  CountTag;
+
+        typedef typename LookupTag<TargetTag, BASE>::value_type  value_type;
+        typedef value_type                                       result_type;
+        
+        result_type operator()() const
+        {
+            using namespace multi_math;
+            return get<TargetTag>(*this) / (get<CountTag>(*this) - 1.0);
+        }
+    };
+};
+
+// RootMeanSquares and StdDev
+template <class TAG>
+class Normalize<TAG, RootDivideByCount>
+{
+  public:
+    typedef Normalize<TAG, DivideByCount> TargetTag;
+    typedef Select<TargetTag> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, TargetTag>::type  Target;
+
+        typedef typename LookupTag<TargetTag, BASE>::value_type  value_type;
+        typedef value_type                                       result_type;
+        
+        result_type operator()() const
+        {
+            using namespace multi_math;
+            return sqrt(get<Target>(*this));
+        }
+    };
+};
+
+// UnbiasedStdDev
+template <class TAG>
+class Normalize<TAG, RootDivideUnbiased>
+{
+  public:
+    typedef Normalize<TAG, DivideUnbiased> TargetTag;
+    typedef Select<TargetTag> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename TransferModifiers<typename BASE::Tag, TargetTag>::type  Target;
+
+        typedef typename LookupTag<TargetTag, BASE>::value_type  value_type;
+        typedef value_type                                       result_type;
+        
+        result_type operator()() const
+        {
+            using namespace multi_math;
+            return sqrt(get<Target>(*this));
+        }
+    };
 };
 
 class Centralize
@@ -2412,154 +2375,6 @@ class Central<KurtosisImpl>
     };
 };
 
-#if 0
-
-class SumSquaredDifferences
-{
-  public:
-    typedef Select<Mean, Count> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType               value_type;
-        typedef value_type const &                                   result_type;
-       
-        value_type value_;
-        
-        Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
-        {}
-        
-        void reset()
-        {
-            value_ = element_type();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            detail::reshapeImpl(value_, s);
-        }
-        
-        void merge(Impl const & o)
-        {
-            detail::CentralMomentsHelper<2>::merge(*this, o);
-        }
-    
-        void update(T const & t)
-        {
-            double n = get<Count>(*this);
-            if(n > 1.0)
-            {
-                using namespace vigra::multi_math;
-                value_ += n / (n - 1.0) * sq(get<Sum>(*this) / n - t);
-            }
-        }
-        
-        void update(T const & t, double weight)
-        {
-            double n = get<Count>(*this);
-            if(n > weight)
-            {
-                using namespace vigra::multi_math;
-                value_ += n / (n - weight) * sq(get<Sum>(*this) / n - t);
-            }
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
-        }
-    };
-};
-
-typedef SumSquaredDifferences SSD;
-
-class Variance
-{
-  public:
-    typedef Select<SumSquaredDifferences, Count> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename LookupTag<SumSquaredDifferences, BASE>::value_type value_type;
-        typedef value_type                                                  result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return get<SumSquaredDifferences>(*this) / get<Count>(*this);
-        }
-    };
-};
-
-class StdDev
-{
-  public:
-    typedef Select<Variance> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename LookupTag<Variance, BASE>::value_type value_type;
-        typedef value_type                                     result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return sqrt(get<SumSquaredDifferences>(*this) / get<Count>(*this));
-        }
-    };
-};
-
-class UnbiasedVariance
-{
-  public:
-    typedef Select<SumSquaredDifferences, Count> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename LookupTag<SumSquaredDifferences, BASE>::value_type value_type;
-        typedef value_type                                                  result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return get<SumSquaredDifferences>(*this) / (get<Count>(*this) - 1.0);
-        }
-    };
-};
-
-class UnbiasedStdDev
-{
-  public:
-    typedef Select<UnbiasedVariance> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename LookupTag<Variance, BASE>::value_type value_type;
-        typedef value_type                                     result_type;
-
-        result_type operator()() const
-        {
-			using namespace multi_math;
-            return sqrt(get<SumSquaredDifferences>(*this) / (get<Count>(*this) - 1.0));
-        }
-    };
-};
-
-#endif
-
 namespace detail {
 
 template <class Scatter, class Sum>
@@ -2727,34 +2542,21 @@ struct NormalizeImpl<T, BASE, SOURCE_TAG, COUNT_TAG, true, NormalizeCovarianceUn
 
 #endif
 
+// Covariance
 template <>
-class Normalize<FlatScatterMatrix, true, NormalizeCovariance> // == Covariance
+class Normalize<FlatScatterMatrix, DivideByCount>
 {
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
-    : public BASE
+    : public CachedResultBase<T, BASE,
+                              typename AccumulatorResultTraits<T>::CovarianceType>
     {
         typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
         typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
         
-        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorResultTraits<T>::CovarianceType        value_type;
-        typedef value_type const &                                   result_type;
-
-        mutable value_type value_;
-        
-        Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
-        {}
-        
-        void reset()
-        {
-            value_ = element_type();
-        }
-    
         template <class Shape>
         void reshape(Shape const & s)
         {
@@ -2764,40 +2566,31 @@ class Normalize<FlatScatterMatrix, true, NormalizeCovariance> // == Covariance
         
         result_type operator()() const
         {
-            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this));
+            if(this->isDirty())
+            {
+                detail::flatScatterMatrixToCovariance(value_, get<FSM>(*this), get<CountTag>(*this));
+                this->setClean();
+            }
             return value_;
         }
     };
 };
 
+// UnbiasedCovariance
 template <>
-class Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> // == UnbiasedCovariance
+class Normalize<FlatScatterMatrix, DivideUnbiased>
 {
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
-    : public BASE
+    : public CachedResultBase<T, BASE,
+                              typename AccumulatorResultTraits<T>::CovarianceType>
     {
         typedef typename TransferModifiers<typename BASE::Tag, FlatScatterMatrix>::type FSM;
         typedef typename TransferModifiers<typename BASE::Tag, Count>::type      CountTag;
         
-        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorResultTraits<T>::CovarianceType        value_type;
-        typedef value_type const &                                   result_type;
-
-        mutable value_type value_;
-        
-        Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
-        {}
-        
-        void reset()
-        {
-            value_ = element_type();
-        }
-    
         template <class Shape>
         void reshape(Shape const & s)
         {
@@ -2807,7 +2600,11 @@ class Normalize<FlatScatterMatrix, true, NormalizeCovarianceUnbiased> // == Unbi
         
         result_type operator()() const
         {
-            detail::flatScatterMatrixToCovariance(value_, cast<FlatScatterMatrix>(*this).value_, get<Count>(*this) - 1.0);
+            if(this->isDirty())
+            {
+                detail::flatScatterMatrixToCovariance(value_, get<FSM>(*this), get<CountTag>(*this) - 1.0);
+                this->setClean();
+            }
             return value_;
         }
     };
