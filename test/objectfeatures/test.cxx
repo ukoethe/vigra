@@ -1915,7 +1915,25 @@ struct AccumulatorTest
     void test1()
     {
         using namespace vigra::acc1;
+#if 0
 
+        //typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
+        //                                    Variance, StdDev, Maximum, Skewness, Kurtosis, Minimum> > A;
+
+        typedef Accumulator<double, Select<Central<Moment<2> >, Minimum> > A;
+
+        std::cerr << typeid(A::Tag).name() << "\n";
+        std::cerr << typeid(LookupTag<Minimum, A>::type).name() << "\n";
+        std::cerr << IsSameType<LookupTag<Minimum, A>::type, LookupTag2<Minimum, A>::type>::value << "\n";
+        std::cerr << typeid(acc1::detail::LookupTagImpl<StandardizeTag<Minimum>::type, A>::result_type).name() << "\n";
+        std::cerr << typeid(acc1::detail::LookupTagImpl<TransferModifiers<A::Tag, StandardizeTag<Minimum>::type>::type, A>::result_type).name() << "\n";
+
+        A a;
+
+        double const & b = cast<Minimum>(a)();
+
+//        get<Minimum>(a);
+#endif
 #if 0
         typedef Accumulator<double, 
                             Select<Count, Mean, Minimum, Maximum, Moment<2>, // Variance, 
