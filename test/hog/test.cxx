@@ -39,6 +39,8 @@
 #include <vigra/multi_distance.hxx>
 #include <unittest.hxx>
 
+#include <time.h>
+
 using namespace vigra;
 
 
@@ -67,8 +69,8 @@ public:
 	sobelx(:,:,1) = [1 2 1;2 4 2;1 2 1];      sobelx(:,:,2) = [0 0 0; 0 0 0; 0 0 0];    sobelx(:,:,3) = [-1 -2 -1;-2 -4 -2;-1 -2 -1];
 	sobely(:,:,1) = [1 2 1; 0 0 0; -1 -2 -1]; sobely(:,:,2) = [2 4 2; 0 0 0; -2 -4 -2]; sobely(:,:,3) = [1 2 1; 0 0 0; -1 -2 -1];
 	sobelz(:,:,1) = [1 0 -1; 2 0 -2; 1 0 -1]; sobelz(:,:,2) = [2 0 -2; 4 0 -4; 2 0 -2]; sobelz(:,:,3) = [1 0 -1;  2 0 -2 ; 1 0 -1];
-	a1 = sobelx .* t; a2 = sobely .* t; a3 = sobelz .* t;
-	sum(a1(:)).^2 + sum(a2(:)).^2 + sum(a3(:)).^2
+	a1 = sobelx .* t; a2 = sobely .* t; a3 = sobelz .* t; %manually convolve for point t(2,2,2)
+	sum(a1(:)).^2 + sum(a2(:)).^2 + sum(a3(:)).^2    %get squared gradient magnitude
 	
 	*** Test volume 2:
 	Same as Test volume 1 except that the edge voxel is (30,30,30), the gradient vector thus becomes (-1,-1,-1)
@@ -77,7 +79,10 @@ public:
 	Create a 30x30x30 Volume V and initialize with zero. Let Voxel (15,15,15) be an edge voxel in V.
 	Apply the distance transform (using the euclidean distance) on volume V.
 	
-
+	*** Test volume 4:
+	Create a 30x30x30 Volume V with random numbers in the range of 1 to 100.
+	
+	
 	PERFORM TESTS:
 	
 	The following test computes the 3DHOG descriptor on the voxel (15,15,15) with both methods (computation on whole volume, computation on sampling points), 
@@ -133,15 +138,17 @@ public:
 	
 	G) Test B1 is repeated for float and double. We expect double and float results to be equal.
 
-	
+	H) Both functions return the same result on a volume with randomly generated numbers
 	*/
 	
 	// Generate Test volumes
 	int mxsize[3] = {30, 30, 30};	
 	MultiArrayShape<3>::type shape(mxsize[0], mxsize[1],mxsize[2]); 
-	MultiArray<3,double> testvol_1(shape), testvol_2(shape), testvol_3(shape);
+	MultiArray<3,double> testvol_1(shape), testvol_2(shape), testvol_3(shape), testvol_4(shape);
 	MultiArray<3,float> testvol_1_fl(shape);
 	
+	srand ( time(NULL) );
+	  
 	for (int xi=0;xi<mxsize[0];xi++)
 		for (int yi=0;yi<mxsize[1];yi++)
 			for (int zi=0;zi<mxsize[2];zi++)
@@ -150,6 +157,8 @@ public:
 				testvol_1_fl(xi,yi,zi)=xi+yi+zi;
 				
 				testvol_2(xi,yi,zi) = (29-xi)+(29-yi)+(29-zi);
+				
+				testvol_4(xi,yi,zi) = rand()  % 100 + 1;
 			}
 			
 	testvol_3(15,15,15) = 1;
@@ -166,7 +175,7 @@ public:
 	double eps = 1e-10;
 	double eps_dpsp = 1e-4; // for double-single precision comparison
 	
-	// Test B1 / A
+	// Test B1, A
 		int filterlevels = 3 ;
 		int nbands = 6;
 		bool ignore_sign=0;
@@ -195,7 +204,7 @@ public:
 				shouldEqualTolerance(hog_res1_full(15,15,15,m,k),resB1[k*nbands + m], eps);	
 			}
 			
-	// Test B2 / A
+	// Test B2, A
 		nbands = 12;
 		MultiArrayShape<5>::type shape_test2_full(mxsize[0], mxsize[1], mxsize[2],nbands,filterlevels); 
 		MultiArray<5,double> hog_res2_full(shape_test2_full);	
@@ -214,7 +223,7 @@ public:
 				shouldEqualTolerance(hog_res2_full(15,15,15,m,k),resB2[k*nbands + m], eps);	
 			}
 			
-	// Test B3 / A
+	// Test B3, A
 		nbands = 20;
 		MultiArrayShape<5>::type shape_test3_full(mxsize[0], mxsize[1], mxsize[2],nbands,filterlevels); 
 		MultiArray<5,double> hog_res3_full(shape_test3_full);	
@@ -233,7 +242,7 @@ public:
 				shouldEqualTolerance(hog_res3_full(15,15,15,m,k),resB3[k*nbands + m], eps);	
 			}
 			
-	// Test C / A
+	// Test C, A
 	
 		nbands = 6;
 		int nbands_true=nbands/2; // every two opposing bands are combined
@@ -380,6 +389,25 @@ public:
 			}
 	
 		
+	//Test H	
+		filterlevels = 4 ;
+		nbands = 20;
+		
+		MultiArrayShape<5>::type shape_test9_full(mxsize[0], mxsize[1], mxsize[2],nbands,filterlevels); 
+		MultiArray<5,double> hog_res9_full(shape_test9_full);	
+		hogdesc3d(testvol_4,hog_res9_full,filterlevels,nbands, ignore_sign, normalize_descriptor, normalize_sl);
+		
+		MultiArrayShape<3>::type shape_test9_samp(spoints.shape(0), nbands, filterlevels); 
+		MultiArray<3,double> hog_res9_samp(shape_test9_samp);	
+		hogdesc3d_samp	(testvol_4,hog_res9_samp,spoints,filterlevels,nbands, ignore_sign, normalize_descriptor, normalize_sl);
+	
+		for (int k=0;k<filterlevels;k++)
+			for (int m=0;m<nbands;m++)
+			{
+				// TEST H
+				shouldEqualTolerance(hog_res9_full(15,15,15,m,k),hog_res9_samp(0,m,k), eps);	
+			}
+
 	//printf("%.15g ?= %.15g\n", hog_res4_full(15,15,15,m,k),hog_res4_samp(0,m,k));
     }
 
