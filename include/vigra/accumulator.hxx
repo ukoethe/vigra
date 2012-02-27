@@ -729,10 +729,6 @@ struct AccumulatorEnd
     static const unsigned int workInPass = 0; 
     static const int index = -1;
     
-    template <class T>
-    void operator()(T const &) {}
-    template <class T>
-    void operator()(T const &, double) {}
     bool operator()() const { return false; }
     
     template <unsigned, class T>
@@ -741,7 +737,7 @@ struct AccumulatorEnd
     void pass(T const &, double) {}
     
     template <class T>
-    void operator+=(T const &) {}
+    void merge(T const &) {}
     
     template <class T>
     void resize(T const &) {}
@@ -897,7 +893,7 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
 
     static void merge(A & a, A const & o)
     {
-        a.merge(o);
+        a += o;
     }
 
     template <class Shape>
@@ -940,7 +936,7 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
     static void merge(A & a, A const & o)
     {
         if(a.isActive())
-            a.merge(o);
+            a += o;
     }
 
     template <class Shape>
@@ -998,10 +994,10 @@ struct Decorator
         DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t, weight);
     }
     
-    void operator+=(Decorator const & o)
+    void merge(Decorator const & o)
     {
         DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::merge(*this, o);
-        this->next_ += o.next_;
+        this->next_.merge(o.next_);
     }
     
     unsigned int passesRequired() const
@@ -1201,7 +1197,12 @@ struct Accumulator
     
     void operator+=(Accumulator const & o)
     {
-        next_ += o.next_;
+        merge(o);
+    }
+    
+    void merge(Accumulator const & o)
+    {
+        next_.merge(o.next_);
     }
 
     result_type operator()() const
@@ -1515,7 +1516,7 @@ struct AccumulatorBase
     void reshape(Shape const &)
     {}
     
-	void merge(AccumulatorBase const &)
+	void operator+=(AccumulatorBase const &)
     {}
     
 	void update(argument_type)
@@ -1607,7 +1608,7 @@ struct SumBaseImpl
         detail::reshapeImpl(value_, s);
     }
     
-    void merge(SumBaseImpl const & o)
+    void operator+=(SumBaseImpl const & o)
     {
         value_ += o.value_;
     }
@@ -1743,7 +1744,7 @@ class IncrementalQuantile<0>
             detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
         }
         
-       void merge(Impl const & o)
+       void operator+=(Impl const & o)
         {
             using namespace multi_math;
             value_ = min(value_, o.value_);
@@ -1799,7 +1800,7 @@ class IncrementalQuantile<100>
             detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
         }
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             using namespace multi_math;
             value_ = max(value_, o.value_);
@@ -1850,7 +1851,7 @@ struct CachedResultBase
         detail::reshapeImpl(value_, s);
     }
 
-    void merge(CachedResultBase const &)
+    void operator+=(CachedResultBase const &)
     {
         this->setDirty();
     }
@@ -2019,7 +2020,7 @@ class Central<PowerSum<2> >
     struct Impl
     : public SumBaseImpl<T, BASE>
     {
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             using namespace vigra::multi_math;
             double n1 = get<Count>(*this), n2 = get<Count>(o);
@@ -2068,7 +2069,7 @@ class Central<PowerSum<3> >
     {
         static const unsigned int workInPass = 2;
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             typedef Central<PowerSum<2> > Sum2Tag;
             
@@ -2114,7 +2115,7 @@ class Central<PowerSum<4> >
     {
         static const unsigned int workInPass = 2;
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             typedef Central<PowerSum<2> > Sum2Tag;
             typedef Central<PowerSum<3> > Sum3Tag;
@@ -2165,10 +2166,10 @@ class Central<PowerSum<N> >
     {
         static const unsigned int workInPass = 2;
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             vigra_precondition(false,
-                "Central<PowerSum<N> >::merge(): not implemented for N > 4.");
+                "Central<PowerSum<N> >::operator+=(): not implemented for N > 4.");
         }
     
         void update(T const & t)
@@ -2197,10 +2198,10 @@ class Central<AbsSum>
     {
         static const unsigned int workInPass = 2;
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             vigra_precondition(false,
-                "Central<AbsSum>::merge(): not supported.");
+                "Central<AbsSum>::operator+=(): not supported.");
         }
     
         void update(T const & t)
@@ -2347,7 +2348,7 @@ class Central<FlatScatterMatrixImpl>
             detail::reshapeImpl(diff_, s);
         }
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             double n1 = get<Count>(*this), n2 = get<Count>(o);
             if(n1 == 0.0)
@@ -2477,7 +2478,7 @@ class Central<CovarianceEigensystemImpl>
         : value_()
         {}
         
-        void merge(Impl const &)
+        void operator+=(Impl const &)
         {
             this->setDirty();
         }
@@ -2590,10 +2591,10 @@ class Principal<AbsSum>
     {
         static const unsigned int workInPass = 2;
         
-        void merge(Impl const & o)
+        void operator+=(Impl const & o)
         {
             vigra_precondition(false,
-                "Principal<AbsSum>::merge(): not supported.");
+                "Principal<AbsSum>::operator+=(): not supported.");
         }
     
         void update(T const & t)
