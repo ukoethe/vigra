@@ -89,8 +89,6 @@ struct AccumulatorTraits
 
 namespace detail  {
 
-// FIXME: this should be refactored
-
 template <int N1, int N2>
 struct Less
 {
@@ -200,18 +198,168 @@ struct SortRaw<TAG, BOUND, INT_MAX>
     typedef typename LowestPriorityRaw<TAG, BOUND>::type type;
 };
 
+template <class Head, class Tail=typename AccumulatorTraits<Head>::Contained>
+struct ModifierToList
+{
+    typedef TypeList<AccumulatorTraits<Head>, typename ModifierToList<Tail>::type> type;
+};
+
+template <class Head>
+struct ModifierToList<Head, void>
+{
+    typedef TypeList<AccumulatorTraits<Head> > type;
+};
+
+template <class Head, class Expanded=typename ExpandSynonym<Head>::type,
+          class Tail=typename AccumulatorTraits<Head>::Contained>
+struct ExpandedModifierToList
+: ExpandedModifierToList<Expanded>
+{};
+
+template <class Head, class Tail>
+struct ExpandedModifierToList<Head, Head, Tail>
+{
+    typedef TypeList<AccumulatorTraits<Head>, typename ExpandedModifierToList<Tail>::type> type;
+};
+
+template <class Head>
+struct ExpandedModifierToList<Head, Head, void>
+{
+    typedef TypeList<AccumulatorTraits<Head> > type;
+};
+
+template <class List, class Tail=typename List::Tail>
+struct ListToModifier
+{
+    typedef typename List::Head::template rebind<typename ListToModifier<Tail>::type>::type type;
+};
+
+template <class List>
+struct ListToModifier<List, void>
+{
+    typedef typename List::Head::type type;
+};
+
+// template <class T1, int Priority1, class T2, int Priority2>
+// struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined {};
+
+// template <class T1, int Priority, class T2>
+// struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<T1, Priority, T2, Priority>;
+
+template <class List, class Tail=typename List::Tail>
+struct ListToExpandedModifier
+// : public Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<
+          // typename List::Head::type, List::Head::priority,
+          // typename ListToExpandedModifier<Tail>::type,
+          // AccumulatorTraits<typename ListToExpandedModifier<Tail>::type>::priority>
+{
+    typedef typename List::Head::template rebind<typename ListToExpandedModifier<Tail>::type>::type RawType;
+    typedef typename ExpandSynonym<RawType>::type type;
+};
+
+template <class List>
+struct ListToExpandedModifier<List, void>
+{
+    typedef typename List::Head::type type;
+};
+
+template <class List, class Tail=typename List::Tail>
+struct SmallestModifier
+{
+    typedef SmallestModifier<Tail> Rest;
+    static const int head = List::Head::priority;
+    static const int rest = Rest::type::priority;
+    typedef typename IfBool<(head < rest), typename List::Head, typename Rest::type>::type type;
+};
+
+template <class List>
+struct SmallestModifier<List, void>
+{
+    typedef typename List::Head type;
+};
+
+// template <class List, int limit, bool skip=Less<List::Head::priority,limit>::value, 
+         // class Tail=typename List::Tail>
+// struct SmallestModifier
+// {
+    // typedef SmallestModifier<Tail, limit> Rest;
+    // static const int head = List::Head::priority;
+    // static const int rest = Rest::type::priority;
+    // typedef typename IfBool<(head < rest), typename List::Head, typename Rest::type>::type type;
+    // static const int priority = type::priority;
+// };
+
+// template <class List, int limit, class Tail>
+// struct SmallestModifier<List, limit, true, Tail>
+// : public SmallestModifier<Tail, limit>
+// {};
+
+// template <class List, int limit>
+// struct SmallestModifier<List, limit, false, void>
+// {
+    // typedef typename List::Head type;
+    // static const int priority = type::priority;
+// };
+
+// template <class List, int limit>
+// struct SmallestModifier<List, limit, true, void>
+// {
+    // typedef void type;
+    // static const int priority = INT_MAX;
+// };
+
+template <class List>
+struct SortModifier
+{
+    typedef typename SmallestModifier<List>::type smallest;
+    typedef TypeList<smallest, typename SortModifier<typename Remove<List, smallest>::type>::type> type;
+};
+
+template <>
+struct SortModifier<void>
+{
+    typedef void type;
+};
+
+// template <class List, int limit=INT_MIN>
+// struct SortModifier
+// {
+    // typedef SmallestModifier<List, limit> NewHead;
+    // static const int new_limit = NewHead::priority + 1;
+    // typedef TypeList<typename NewHead::type, 
+                     // typename SortModifier<typename Remove<List, typename NewHead::type>::type, new_limit>::type> type;
+// };
+
+// template <int limit>
+// struct SortModifier<void, limit>
+// {
+    // static const int priority = INT_MAX-1;
+    // typedef void type;
+// };
+
+    // SortRaw replacement doesn't work because the old version has the special property
+    // that it only takes the first one from a run of like-priority modifiers. This is
+    // important for modifier transfer to change Principal<Central<Variance>> into Principal<Variance>.
+template<class T>
+struct SortRawNew
+{
+    typedef typename detail::ListToModifier<typename detail::SortModifier<typename detail::ModifierToList<T>::type>::type>::type type;
+};
+
 } // namespace detail
 
 template <class T>
 struct StandardizeTag
 {
         // since synonyms are only defined for the canonical order,
-        // we must first sort without synonym expansion
-    typedef typename detail::SortRaw<T>::type RawSorted;
-    typedef typename ExpandSynonym<RawSorted>::type Expanded;
-    typedef typename detail::SortModifiers<Expanded>::type type;
+        // we must first sort without synonym expansion, and then again with expansion
+    typedef typename detail::ListToModifier<
+                typename detail::SortModifier<
+                    typename detail::ModifierToList<T>::type>::type>::type RawSorted;
+    typedef typename detail::ListToExpandedModifier<
+                typename detail::SortModifier<
+                    typename detail::ExpandedModifierToList<RawSorted>::type>::type>::type type;
 };
-
 
 /****************************************************************************/
 /*                                                                          */
@@ -586,6 +734,8 @@ VIGRA_DONT_TRANSFER(Principal, CovarianceEigensystem)
 
 namespace detail {
 
+// FIXME: this should be refactored
+
 template <class T1, class T2, 
           class Next=typename AccumulatorTraits<T1>::Contained,
           class Contained=typename AccumulatorTraits<T2>::Contained>
@@ -816,6 +966,7 @@ struct AccumulatorFlags<false, LEVEL>
 template <class T>
 struct AddDependencies
 {
+        // transform Selected<...> into TypeList<...>
     typedef typename AddDependencies<typename T::type>::type type;
 };
 
@@ -826,16 +977,12 @@ struct AddDependencies<TypeList<HEAD, TAIL> >
     typedef typename AddDependencies<typename HEAD::Dependencies>::type            HeadDependencies;
     typedef TypeList<HEAD, HeadDependencies>                                       HeadWithDependencies;
     typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  type;
-    typedef typename type::Head Head;
-    typedef typename type::Tail Tail;
 };
 
 template <>
 struct AddDependencies<void>
 {
     typedef void type;
-    typedef void Head;
-    typedef void Tail;
 };
 
     // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
@@ -1304,13 +1451,6 @@ struct LookupTagImpl<TAG, A, TAG>
 };
 
 template <class TAG, class A>
-struct LookupTagImpl<TAG, A const, TAG>
-: public LookupTagImpl<TAG, A, TAG>
-{
-    typedef A const & reference;
-};
-
-template <class TAG, class A>
 struct LookupTagImpl<TAG, A, AccumulatorEnd>
 {
     typedef TAG Tag;
@@ -1334,9 +1474,9 @@ template <class Tag, class FromTag, class reference>
 struct CastImpl
 {
     template <class A>
-    static reference cast(A & a)
+    static reference exec(A & a)
     {
-        return CastImpl<Tag, typename A::BaseType::Tag, reference>::cast(a.next_);
+        return CastImpl<Tag, typename A::BaseType::Tag, reference>::exec(a.next_);
     }
 };
 
@@ -1344,7 +1484,7 @@ template <class Tag, class reference>
 struct CastImpl<Tag, Tag, reference>
 {
     template <class A>
-    static reference cast(A & a)
+    static reference exec(A & a)
     {
         return a;
     }
@@ -1354,7 +1494,7 @@ template <class Tag, class reference>
 struct CastImpl<Tag, AccumulatorEnd, reference>
 {
     template <class A>
-    static reference cast(A & a)
+    static reference exec(A & a)
     {
         return a;
     }
@@ -1364,9 +1504,9 @@ template <class Tag, class FromTag, class result_type>
 struct GetImpl
 {
     template <class A>
-    static result_type get(A const & a)
+    static result_type exec(A const & a)
     {
-        return GetImpl<Tag, typename A::BaseType::Tag, result_type>::get(a.next_);
+        return GetImpl<Tag, typename A::BaseType::Tag, result_type>::exec(a.next_);
     }
 };
 
@@ -1374,7 +1514,7 @@ template <class Tag, class result_type>
 struct GetImpl<Tag, Tag, result_type>
 {
     template <class A>
-    static result_type get(A const & a)
+    static result_type exec(A const & a)
     {
         return a();
     }
@@ -1384,7 +1524,7 @@ template <class Tag, class result_type>
 struct GetImpl<Tag, AccumulatorEnd, result_type>
 {
     template <class A>
-    static bool get(A const & a)
+    static bool exec(A const & a)
     {
         vigra_precondition(false,
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
@@ -1401,7 +1541,7 @@ cast(A & a)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::reference reference;
-    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::cast(a);
+    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
 }
 
     // get the result of the accumulator specified by Tag
@@ -1411,7 +1551,7 @@ get(A const & a)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::result_type result_type;
-    return detail::GetImpl<StandardizedTag, typename A::Tag, result_type>::get(a);
+    return detail::GetImpl<StandardizedTag, typename A::Tag, result_type>::exec(a);
 }
 
     // activate the dynamic accumulator specified by Tag

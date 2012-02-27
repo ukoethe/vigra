@@ -1903,6 +1903,7 @@ struct AccumulatorTest
           should((IsSameType<TransferModifiers<Coord<Minimum>, Target>::type,
                              Desired1>::value));
 
+//          std::cerr << typeid(TransferModifiers<Principal<Minimum>, Target>::type).name() << "\n";
           typedef Select<Count, Sum, Mean, Principal<Variance> >::type Desired2;
           should((IsSameType<TransferModifiers<Principal<Minimum>, Target>::type,
                              Desired2>::value));
@@ -1914,184 +1915,33 @@ struct AccumulatorTest
 
     void test1()
     {
-        using namespace vigra::acc1;
-#if 0
-
-        //typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
-        //                                    Variance, StdDev, Maximum, Skewness, Kurtosis, Minimum> > A;
-
-        typedef Accumulator<double, Select<Central<Moment<2> >, Minimum> > A;
-
-        std::cerr << typeid(A::Tag).name() << "\n";
-        std::cerr << typeid(LookupTag<Minimum, A>::type).name() << "\n";
-        std::cerr << IsSameType<LookupTag<Minimum, A>::type, LookupTag2<Minimum, A>::type>::value << "\n";
-        std::cerr << typeid(acc1::detail::LookupTagImpl<StandardizeTag<Minimum>::type, A>::result_type).name() << "\n";
-        std::cerr << typeid(acc1::detail::LookupTagImpl<TransferModifiers<A::Tag, StandardizeTag<Minimum>::type>::type, A>::result_type).name() << "\n";
-
-        A a;
-
-        double const & b = cast<Minimum>(a)();
-
-//        get<Minimum>(a);
-#endif
-#if 0
-        typedef Accumulator<double, 
-                            Select<Count, Mean, Minimum, Maximum, Moment<2>, // Variance, 
-                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
-                                   StdDev, UnbiasedStdDev, UnbiasedVariance
-                                  > > A;
-        typedef Accumulator<double, 
-                            Select<Count, Mean, Minimum, Maximum, Moment<2>, // Variance, 
-                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
-                                   Select<StdDev, UnbiasedStdDev, UnbiasedVariance>::type
-                                  > > B;
-        A a;
-
-        a(1.0);
-        a(2.0);
-        a(3.0);
-
-        std::cerr << get<UnbiasedVariance>(a) << " UnbiasedStdDev=1? \n";
-
-        std::cerr << typeid(LookupTag<Mean, A>::type).name() << "\n";
-        std::cerr << typeid(TransferModifiers<LookupTag<Mean, A>::type, Sum>::type).name() << "\n";
-#endif
-#if 0
-        typedef Accumulator<double, 
-                            Select<Mean, Minimum, Maximum, Moment<2>, Variance, 
-                                   Central<Moment<3> >, Central<Moment<4> >, Skewness, Kurtosis,
-                                   StdDev, UnbiasedStdDev, UnbiasedVariance, Covariance, UnbiasedCovariance, CovarianceEigensystem
-                                  > > A;
-        std::cerr << typeid(LookupTag<Central<PowerSum<2> >, A>::type).name() << "\n";
-        typedef LookupTag<Central<PowerSum<2> >, A>::type T;
-        std::cerr << typeid(T::Tag).name() << "\n";
-        std::cerr << typeid(TransferModifiers<LookupTag<T::Tag, A>::type, Sum>::type).name() << "\n";
-
-        A a;
-
-        a(1.0);
-        a(2.0);
-        a(3.0);
-
-        a.updatePass2(1.0);
-        a.updatePass2(2.0);
-        a.updatePass2(3.0);
-
-        std::cerr << get<Count>(a) << " count\n";
-        std::cerr << get<Mean>(a) << " Mean\n";
-        std::cerr << get<Minimum>(a) << " Minimum\n";
-        std::cerr << get<Maximum>(a) << " Maximum\n";
-        std::cerr << get<Moment<2> >(a) << " Moment<2>=4.67? \n";
-        std::cerr << get<SSD>(a) << " SSD=2? \n";
-        std::cerr << get<Variance>(a) << " Variance=0.667? \n";
-        std::cerr << get<StdDev>(a) << " StdDev=0.816? \n";
-        std::cerr << get<UnbiasedVariance>(a) << " UnbiasedVariance=1? \n";
-        std::cerr << get<UnbiasedStdDev>(a) << " UnbiasedStdDev=1? \n";
-        std::cerr << get<Central<PowerSum<3> > >(a) << " Central<PowerSum<3>>=0? \n";
-        std::cerr << get<Central<PowerSum<4> > >(a) << " Central<PowerSum<4>>=2? \n";
-        std::cerr << get<Central<Moment<3> > >(a) << " Central<Moment<3>>=0? \n";
-        std::cerr << get<Central<Moment<4> > >(a) << " Central<Moment<4>>=0.667? \n";
-        std::cerr << get<Skewness>(a) << " Skewness\n";
-        std::cerr << get<Kurtosis>(a) << " Kurtosis\n";
-        std::cerr << get<FlatScatterMatrix>(a) << " FlatScatterMatrix\n";
-        std::cerr << get<Covariance>(a) << " Covariance\n";
-        std::cerr << get<UnbiasedCovariance>(a) << " UnbiasedCovariance\n";
-        std::cerr << get<CovarianceEigensystem>(a).first << " Covariance Eigenvalues\n";
-        std::cerr << get<CovarianceEigensystem>(a).second << " Covariance Eigenvectors\n";
-#endif
 #if 0
         using namespace vigra::acc1;
+        using namespace vigra::acc1::detail;
 
-        typedef Central<Normalize<Coord<Sum> > > T1;
-//        typedef Central<Normalize<Sum > > T1;
-        typedef Coord<Normalize<Principal<Sum> > > T2;
-//        typedef Central<Normalize<Principal<Mean> > > Tag;
-//        typedef Normalize<Mean> Tag;
+        //typedef Coord<Normalize<Central<AbsSum>>> A;
 
-        typedef acc1::detail::SortModifiers<T1>::type S1;
-        typedef acc1::detail::SortModifiers<T2>::type S2;
+        //typedef Select<int, double, bool, short>::type L;
 
-        std::cerr << typeid(S1).name() << "\n";
-        std::cerr << typeid(S2).name() << "\n";
+        //std::cerr << typeid(Remove<L, int>::type).name() << "\n";
+        //std::cerr << typeid(Remove<L, double>::type).name() << "\n";
+        //std::cerr << typeid(Remove<L, bool>::type).name() << "\n";
+        //std::cerr << typeid(Remove<L, short>::type).name() << "\n";
+        //std::cerr << typeid(Remove<L, void>::type).name() << "\n";
 
-        typedef acc1::detail::ContainsModifier<S1, Coord<PowerSum<2> > >::type Contains;
+        typedef Coord<Normalize<Central<AbsSum>>> A1;
+        typedef Normalize<Central<Coord<AbsSum>>> A2;
+        typedef Central<Normalize<Coord<AbsSum>>> A3;
+        typedef ModifierToList<A2>::type B;
+        typedef ListToModifier<Sort<ModifierToList<A1>::type>::type>::type C1;
+        typedef ListToModifier<Sort<ModifierToList<A2>::type>::type>::type C2;
+        typedef ListToModifier<Sort<ModifierToList<A3>::type>::type>::type C3;
 
-        std::cerr << typeid(Contains).name() << "\n";
 
-        typedef acc1::detail::TransferModifiers<S2, Select<Count, Mean, Coord<PowerSum<2> > >::type>::type Trans;
-
-        std::cerr << typeid(Trans).name() << "\n";
-#endif
-#if 0
-        typedef Accumulator<double, Select<Count, Maximum, Minimum, Mean, Variance, CovarianceEigensystem, Skewness, Kurtosis> > A;
-
-        A a;
-
-        a(1.0);
-        a(2.0);
-        a(3.0);
-        a.updatePass2(1.0);
-        a.updatePass2(2.0);
-        a.updatePass2(3.0);
-
-        std::cerr << get<Count>(a) << " count\n";
-        std::cerr << get<Minimum>(a) << " Minimum\n";
-        std::cerr << get<Maximum>(a) << " Maximum\n";
-        std::cerr << get<Sum>(a) << " Sum\n";
-        std::cerr << get<Mean>(a) << " Mean\n";
-        std::cerr << get<SSD>(a) << " SSD\n";
-        std::cerr << get<Variance>(a) << " Variance\n";
-        std::cerr << get<Covariance>(a) << " Covariance\n";
-        std::cerr << get<CovarianceEigensystem>(a).first << " CovarianceEigensystem\n";
-        std::cerr << get<CovarianceEigensystem>(a).second << " CovarianceEigensystem\n";
-        std::cerr << get<Skewness>(a) << " Skewness\n";
-        std::cerr << get<Kurtosis>(a) << " Kurtosis\n";
-
-        using namespace vigra::acc1;
-
-        typedef CoupledPointer<2, double> V;
-        typedef CoupledAccumulator<V, Simple<0, Select<Mean> >, Simple<1, Select<Mean> >, Weighted<0, 1, Select<Mean> > > A;
-
-        A a;
-
-        std::cerr << typeid(cast<0, Mean>(a)).name() << " cast\n";
-        std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
-        std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
-
-        a(V(Shape2(1,1), 1.0));
-        a(V(Shape2(2,2), 1.0));
-        a(V(Shape2(3,3), 3.0));
-
-        std::cerr << get<0, Count>(a) << " count0\n";
-        std::cerr << get<1, Count>(a) << " count1\n";
-        std::cerr << get<2, Count>(a) << " count2\n";
-
-        std::cerr << get<0, Sum>(a) << " sum0\n";
-        std::cerr << get<1, Sum>(a) << " sum1\n";
-        std::cerr << get<2, Sum>(a) << " sum2\n";
-
-        std::cerr << get<0, Mean>(a) << " Mean 0\n";
-        std::cerr << get<1, Mean>(a) << " Mean 1\n";
-        std::cerr << get<2, Mean>(a) << " Mean 2\n";
-
-#if 0
-        std::cerr << typeid(cast<1, Mean>(a)).name() << " cast\n";
-        std::cerr << typeid(cast<2, Mean>(a)).name() << " cast\n";
-        
-        typedef Select<int, float>::type Selected;
-        
-        std::cerr << "bool: " << Contains<Selected, bool>::type::value << "\n";
-        std::cerr << "int: " << Contains<Selected, int>::type::value << "\n";
-        std::cerr << "float: " << Contains<Selected, float>::type::value << "\n";
-        std::cerr << "double: " << Contains<Selected, double>::type::value << "\n";
-
-        typedef AccumulatorList<double, Selected> Selected1;
-        
-        std::cerr << "bool: " << Contains<Selected1, bool>::type::value << "\n";
-        std::cerr << "int: " << Contains<Selected1, int>::type::value << "\n";
-        std::cerr << "float: " << Contains<Selected1, float>::type::value << "\n";
-        std::cerr << "double: " << Contains<Selected1, double>::type::value << "\n";
-#endif
+        std::cerr << IsSameType<C1, C2>::value << " " << IsSameType<C1, C3>::value << "\n";
+        std::cerr << typeid(B).name() << "\n";
+        std::cerr << typeid(C1).name() << "\n";
+//        std::cerr << typeid(Sort<B>::type).name() << "\n";
 #endif
     }
     
