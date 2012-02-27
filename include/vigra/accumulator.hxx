@@ -1860,7 +1860,7 @@ struct CachedResultBase
         this->setDirty();
     }
     
-    void update(T const & t, double)
+    void update(T const &, double)
     {
          this->setDirty();
     }
@@ -2013,7 +2013,7 @@ template <>
 class Central<PowerSum<2> >
 {
   public:
-    typedef Select<Sum, Count> Dependencies;
+    typedef Select<Mean, Count> Dependencies;
      
     template <class T, class BASE>
     struct Impl
@@ -2029,7 +2029,7 @@ class Central<PowerSum<2> >
             }
             else if(n2 != 0.0)
             {
-                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(get<Sum>(*this) / n1 - get<Sum>(o) / n2);
+                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(get<Mean>(*this) - get<Mean>(o));
             }
         }
     
@@ -2039,7 +2039,7 @@ class Central<PowerSum<2> >
             if(n > 1.0)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - 1.0) * sq(get<Sum>(*this) / n - t);
+                value_ += n / (n - 1.0) * sq(get<Mean>(*this) - t);
             }
         }
         
@@ -2049,7 +2049,7 @@ class Central<PowerSum<2> >
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - weight) * sq(get<Sum>(*this) / n - t);
+                value_ += n / (n - weight) * sq(get<Mean>(*this) - t);
             }
         }
     };
@@ -2060,7 +2060,7 @@ template <>
 class Central<PowerSum<3> >
 {
   public:
-    typedef Select<Centralize, Central<PowerSum<2> > > Dependencies;
+    typedef Select<Centralize, Count, Mean, Central<PowerSum<2> > > Dependencies;
      
     template <class T, class BASE>
     struct Impl
@@ -2082,7 +2082,7 @@ class Central<PowerSum<3> >
             {
                 double n = n1 + n2;
                 double weight = n1 * n2 * (n1 - n2) / sq(n);
-                value_type delta = get<Sum>(o) / n2 - get<Sum>(*this) / n1;
+                value_type delta = get<Mean>(o) - get<Mean>(*this);
                 this->value_ += o.value_ + weight * pow(delta, 3) +
                                3.0 / n * delta * (n1 * get<Sum2Tag>(o) - n2 * get<Sum2Tag>(*this));
             }
@@ -2132,7 +2132,7 @@ class Central<PowerSum<4> >
                 double n2_2 = sq(n2);
                 double n_2 = sq(n);
                 double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
-                value_type delta = get<Sum>(o) / n2 - get<Sum>(*this) / n1;
+                value_type delta = get<Mean>(o) - get<Mean>(*this);
                 this->value_ += o.value_ + weight * pow(delta, 4) +
                               6.0 / n_2 * sq(delta) * (n1_2 * get<Sum2Tag>(o) + n2_2 * get<Sum2Tag>(*this)) +
                               4.0 / n * delta * (n1 * get<Sum3Tag>(o) - n2 * get<Sum3Tag>(*this));
@@ -2314,7 +2314,7 @@ template <>
 class Central<FlatScatterMatrixImpl>
 {
   public:
-    typedef Select<Sum, Count> Dependencies;
+    typedef Select<Mean, Count> Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -2357,7 +2357,7 @@ class Central<FlatScatterMatrixImpl>
             else if(n2 != 0.0)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / n1 - get<Sum>(o) / n2;
+                diff_ = get<Mean>(*this) - get<Mean>(o);
                 detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
                 value_ += o.value_;
             }
@@ -2385,7 +2385,7 @@ class Central<FlatScatterMatrixImpl>
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Sum>(*this) / n - t;
+                diff_ = get<Mean>(*this) - t;
                 detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
         }
@@ -2465,38 +2465,56 @@ class Central<CovarianceEigensystemImpl>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_promote_type        element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType                     EigenvalueType;
-        typedef typename AccumulatorResultTraits<T>::CovarianceType              EigenvectorType;
-        typedef EigenvectorType                                            value_type;
-        typedef std::pair<EigenvalueType const &, EigenvectorType const &> result_type;
+        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType               EigenvalueType;
+        typedef typename AccumulatorResultTraits<T>::CovarianceType        EigenvectorType;
+        typedef std::pair<EigenvalueType, EigenvectorType>                 value_type;
+        typedef value_type const &                                         result_type;
 
-        mutable EigenvalueType eigenvalues_;
-        mutable EigenvectorType eigenvectors_;
+        mutable value_type value_;
         
         Impl()
-        : eigenvalues_(),  // call default constructor explicitly to ensure zero initialization
-          eigenvectors_()
+        : value_()
         {}
         
+        void merge(Impl const &)
+        {
+            this->setDirty();
+        }
+
+        void update(T const &)
+        {
+            this->setDirty();
+        }
+        
+        void update(T const &, double)
+        {
+             this->setDirty();
+        }
+
         void reset()
         {
-            eigenvalues_ = element_type();
-            eigenvectors_ = element_type();
+            value_.first = element_type();
+            value_.second = element_type();
+            this->setClean();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(eigenvalues_, Shape2(size,1));
-            detail::reshapeImpl(eigenvectors_, Shape2(size,size));
+            detail::reshapeImpl(value_.first, Shape2(size,1));
+            detail::reshapeImpl(value_.second, Shape2(size,size));
         }
         
         result_type operator()() const
         {
-            compute(get<Covariance>(*this), eigenvalues_, eigenvectors_);
-            return result_type(eigenvalues_, eigenvectors_);
+            if(this->isDirty())
+            {
+                compute(get<Covariance>(*this), value_.first, value_.second);
+                this->setClean();
+            }
+            return value_;
         }
         
       private:
