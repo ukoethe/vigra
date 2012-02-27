@@ -657,16 +657,45 @@ struct TypeList
 };
 
 template <class List, class T>
-struct Contains
+struct Contains;
+
+template <class Head, class Tail, class T>
+struct Contains<TypeList<Head, Tail>, T>
 {
-    typedef typename IsSameType<typename List::Head, T>::type Found;
-    typedef typename If<Found, VigraTrueType, typename Contains<typename List::Tail, T>::type>::type type;
+    typedef typename Contains<Tail, T>::type type;
+};
+
+template <class Head, class Tail>
+struct Contains<TypeList<Head, Tail>, Head>
+{
+    typedef VigraTrueType type;
 };
 
 template <class T>
 struct Contains<void, T>
 {
     typedef VigraFalseType type;
+};
+
+template <class List, class T>
+struct Remove;
+
+template <class Head, class Tail, class T>
+struct Remove<TypeList<Head, Tail>, T>
+{
+    typedef TypeList<Head, typename Remove<Tail, T>::type> type;
+};
+
+template <class Head, class Tail>
+struct Remove<TypeList<Head, Tail>, Head>
+{
+    typedef Tail type;
+};
+
+template <class T>
+struct Remove<void, T>
+{
+    typedef void type;
 };
 
 template <class A, class Tail=void>
