@@ -466,23 +466,34 @@ typedef Central<CovarianceEigensystemImpl> CovarianceEigensystem;
 typedef Normalize<FlatScatterMatrix>         Covariance;
 typedef Normalize<FlatScatterMatrix, DivideUnbiased> UnbiasedCovariance;
 
-    // explicitly specialize Principal<PowerSum<2> > and Principal<Axes> to access 
-    // CovarianceEigensystem directly
+    // explicitly specialize Principal<PowerSum<2> >, Principal<Variance>, and 
+    // Principal<Axes> to access  CovarianceEigensystem directly
 template <> class Principal<PowerSum<2> >;
+template <> class Normalize<Principal<PowerSum<2> > >;
 template <> class Principal<Axes>;
 
 VIGRA_SIMPLE_SYNONYM(Principal<Variance>, Principal<Moment<2> >)
 VIGRA_SIMPLE_SYNONYM(Principal<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideByCount))
 VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, DivideUnbiased))
 VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideUnbiased))
-
-// template <>
-// class Principal<Skewness>;
-// template <>
-// class Principal<Kurtosis>;
-
 VIGRA_SIMPLE_SYNONYM(Principal<Skewness>, Principal<SkewnessImpl>)
 VIGRA_SIMPLE_SYNONYM(Principal<Kurtosis>, Principal<KurtosisImpl>)
+
+    // sum of absolute values
+class AbsSum;
+
+    // explicitly specialize Central<AbsSum> and Principal<AbsSum> because 
+    // they need two passes
+template <>
+class Central<AbsSum>;
+
+typedef Central<AbsSum> SumOfAbsDifferences;
+
+class MeanAbsoluteDeviation;
+VIGRA_SIMPLE_SYNONYM(MeanAbsoluteDeviation, Normalize<SumOfAbsDifferences>)
+
+template <>
+class Principal<AbsSum>;
 
 template <unsigned Percent>
 class IncrementalQuantile;
@@ -565,6 +576,11 @@ VIGRA_DONT_TRANSFER(Central, RangeMapping)
 VIGRA_DONT_TRANSFER(Principal, Centralize)
 VIGRA_DONT_TRANSFER(Principal, PrincipalProjection)
 VIGRA_DONT_TRANSFER(Principal, RangeMapping)
+
+    // covariances are inherently central
+VIGRA_DONT_TRANSFER(Principal, Covariance)
+VIGRA_DONT_TRANSFER(Principal, UnbiasedCovariance)
+VIGRA_DONT_TRANSFER(Principal, CovarianceEigensystem)
 
 #undef VIGRA_DONT_TRANSFER
 
@@ -1567,7 +1583,7 @@ important notes on modifiers:
 template <class T, class BASE, 
          class ElementType=typename AccumulatorResultTraits<T>::element_promote_type, 
          class SumType=typename AccumulatorResultTraits<T>::SumType>
-struct PowerSumNImpl
+struct SumBaseImpl
 : public BASE
 {
     typedef ElementType         element_type;
@@ -1576,7 +1592,7 @@ struct PowerSumNImpl
 
     value_type value_;
     
-    PowerSumNImpl()
+    SumBaseImpl()
     : value_()  // call default constructor explicitly to ensure zero initialization
     {}
     
@@ -1591,7 +1607,7 @@ struct PowerSumNImpl
         detail::reshapeImpl(value_, s);
     }
     
-    void merge(PowerSumNImpl const & o)
+    void merge(SumBaseImpl const & o)
     {
         value_ += o.value_;
     }
@@ -1611,7 +1627,7 @@ class PowerSum<0>
     
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE, double, double>
+    : public SumBaseImpl<T, BASE, double, double>
     {
         void update(T const & t)
         {
@@ -1634,7 +1650,7 @@ class PowerSum<1>
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         void update(T const & t)
         {
@@ -1656,7 +1672,7 @@ class PowerSum<N>
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         void update(T const & t)
         {
@@ -1668,6 +1684,29 @@ class PowerSum<N>
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(t, (int)N);
+        }
+    };
+};
+
+class AbsSum
+{
+  public:
+    typedef Select<> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public SumBaseImpl<T, BASE>
+    {
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;            
+            value_ += abs(t);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            using namespace vigra::multi_math;            
+            value_ += weight*abs(t);
         }
     };
 };
@@ -1978,7 +2017,7 @@ class Central<PowerSum<2> >
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         void merge(Impl const & o)
         {
@@ -2025,7 +2064,7 @@ class Central<PowerSum<3> >
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         static const unsigned int workInPass = 2;
         
@@ -2071,7 +2110,7 @@ class Central<PowerSum<4> >
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         static const unsigned int workInPass = 2;
         
@@ -2122,7 +2161,7 @@ class Central<PowerSum<N> >
      
     template <class T, class BASE>
     struct Impl
-    : public PowerSumNImpl<T, BASE>
+    : public SumBaseImpl<T, BASE>
     {
         static const unsigned int workInPass = 2;
         
@@ -2142,6 +2181,38 @@ class Central<PowerSum<N> >
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(get<Centralize>(*this), (int)N);
+        }
+    };
+};
+
+template <>
+class Central<AbsSum>
+{
+  public:
+    typedef Select<Centralize> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public SumBaseImpl<T, BASE>
+    {
+        static const unsigned int workInPass = 2;
+        
+        void merge(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Central<AbsSum>::merge(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;            
+            value_ += abs(get<Centralize>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            using namespace vigra::multi_math;            
+            value_ += weight*abs(get<Centralize>(*this));
         }
     };
 };
@@ -2383,6 +2454,7 @@ class Normalize<FlatScatterMatrix, DivideUnbiased>
     };
 };
 
+// CovarianceEigensystem
 template <>
 class Central<CovarianceEigensystemImpl>
 {
@@ -2440,6 +2512,82 @@ class Central<CovarianceEigensystemImpl>
         {
             ew = cov;
             ev = 1.0;
+        }
+    };
+};
+
+// covariance eigenvalues
+template <>
+class Principal<PowerSum<2> >
+{
+  public:
+    typedef Select<CovarianceEigensystem, Count> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvalueType value_type;
+        typedef value_type result_type;
+        
+        result_type operator()() const
+        {
+            using namespace vigra::multi_math;            
+            return get<Count>(*this)*get<CovarianceEigensystem>(*this).first;
+        }
+    };
+};
+
+// Principal<Variance> == covariance eigenvalues
+template <>
+class Normalize<Principal<PowerSum<2> > >
+{
+  public:
+    typedef Select<CovarianceEigensystem> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvalueType value_type;
+        typedef value_type const & result_type;
+        
+        result_type operator()() const
+        {
+            using namespace vigra::multi_math;            
+            return get<CovarianceEigensystem>(*this).first;
+        }
+    };
+};
+
+template <>
+class Principal<AbsSum>
+{
+  public:
+    typedef Select<PrincipalProjection> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public SumBaseImpl<T, BASE>
+    {
+        static const unsigned int workInPass = 2;
+        
+        void merge(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Principal<AbsSum>::merge(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;            
+            value_ += abs(get<PrincipalProjection>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            using namespace vigra::multi_math;            
+            value_ += weight*abs(get<PrincipalProjection>(*this));
         }
     };
 };
