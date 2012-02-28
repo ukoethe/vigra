@@ -89,6 +89,8 @@ struct AccumulatorTraits
 
 namespace detail  {
 
+// FIXME: this should be refactored
+
 template <int N1, int N2>
 struct Less
 {
@@ -198,167 +200,16 @@ struct SortRaw<TAG, BOUND, INT_MAX>
     typedef typename LowestPriorityRaw<TAG, BOUND>::type type;
 };
 
-template <class Head, class Tail=typename AccumulatorTraits<Head>::Contained>
-struct ModifierToList
-{
-    typedef TypeList<AccumulatorTraits<Head>, typename ModifierToList<Tail>::type> type;
-};
-
-template <class Head>
-struct ModifierToList<Head, void>
-{
-    typedef TypeList<AccumulatorTraits<Head> > type;
-};
-
-template <class Head, class Expanded=typename ExpandSynonym<Head>::type,
-          class Tail=typename AccumulatorTraits<Head>::Contained>
-struct ExpandedModifierToList
-: ExpandedModifierToList<Expanded>
-{};
-
-template <class Head, class Tail>
-struct ExpandedModifierToList<Head, Head, Tail>
-{
-    typedef TypeList<AccumulatorTraits<Head>, typename ExpandedModifierToList<Tail>::type> type;
-};
-
-template <class Head>
-struct ExpandedModifierToList<Head, Head, void>
-{
-    typedef TypeList<AccumulatorTraits<Head> > type;
-};
-
-template <class List, class Tail=typename List::Tail>
-struct ListToModifier
-{
-    typedef typename List::Head::template rebind<typename ListToModifier<Tail>::type>::type type;
-};
-
-template <class List>
-struct ListToModifier<List, void>
-{
-    typedef typename List::Head::type type;
-};
-
-// template <class T1, int Priority1, class T2, int Priority2>
-// struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined {};
-
-// template <class T1, int Priority, class T2>
-// struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<T1, Priority, T2, Priority>;
-
-template <class List, class Tail=typename List::Tail>
-struct ListToExpandedModifier
-// : public Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<
-          // typename List::Head::type, List::Head::priority,
-          // typename ListToExpandedModifier<Tail>::type,
-          // AccumulatorTraits<typename ListToExpandedModifier<Tail>::type>::priority>
-{
-    typedef typename List::Head::template rebind<typename ListToExpandedModifier<Tail>::type>::type RawType;
-    typedef typename ExpandSynonym<RawType>::type type;
-};
-
-template <class List>
-struct ListToExpandedModifier<List, void>
-{
-    typedef typename List::Head::type type;
-};
-
-template <class List, class Tail=typename List::Tail>
-struct SmallestModifier
-{
-    typedef SmallestModifier<Tail> Rest;
-    static const int head = List::Head::priority;
-    static const int rest = Rest::type::priority;
-    typedef typename IfBool<(head < rest), typename List::Head, typename Rest::type>::type type;
-};
-
-template <class List>
-struct SmallestModifier<List, void>
-{
-    typedef typename List::Head type;
-};
-
-// template <class List, int limit, bool skip=Less<List::Head::priority,limit>::value, 
-         // class Tail=typename List::Tail>
-// struct SmallestModifier
-// {
-    // typedef SmallestModifier<Tail, limit> Rest;
-    // static const int head = List::Head::priority;
-    // static const int rest = Rest::type::priority;
-    // typedef typename IfBool<(head < rest), typename List::Head, typename Rest::type>::type type;
-    // static const int priority = type::priority;
-// };
-
-// template <class List, int limit, class Tail>
-// struct SmallestModifier<List, limit, true, Tail>
-// : public SmallestModifier<Tail, limit>
-// {};
-
-// template <class List, int limit>
-// struct SmallestModifier<List, limit, false, void>
-// {
-    // typedef typename List::Head type;
-    // static const int priority = type::priority;
-// };
-
-// template <class List, int limit>
-// struct SmallestModifier<List, limit, true, void>
-// {
-    // typedef void type;
-    // static const int priority = INT_MAX;
-// };
-
-template <class List>
-struct SortModifier
-{
-    typedef typename SmallestModifier<List>::type smallest;
-    typedef TypeList<smallest, typename SortModifier<typename Remove<List, smallest>::type>::type> type;
-};
-
-template <>
-struct SortModifier<void>
-{
-    typedef void type;
-};
-
-// template <class List, int limit=INT_MIN>
-// struct SortModifier
-// {
-    // typedef SmallestModifier<List, limit> NewHead;
-    // static const int new_limit = NewHead::priority + 1;
-    // typedef TypeList<typename NewHead::type, 
-                     // typename SortModifier<typename Remove<List, typename NewHead::type>::type, new_limit>::type> type;
-// };
-
-// template <int limit>
-// struct SortModifier<void, limit>
-// {
-    // static const int priority = INT_MAX-1;
-    // typedef void type;
-// };
-
-    // SortRaw replacement doesn't work because the old version has the special property
-    // that it only takes the first one from a run of like-priority modifiers. This is
-    // important for modifier transfer to change Principal<Central<Variance>> into Principal<Variance>.
-template<class T>
-struct SortRawNew
-{
-    typedef typename detail::ListToModifier<typename detail::SortModifier<typename detail::ModifierToList<T>::type>::type>::type type;
-};
-
 } // namespace detail
 
 template <class T>
 struct StandardizeTag
 {
         // since synonyms are only defined for the canonical order,
-        // we must first sort without synonym expansion, and then again with expansion
-    typedef typename detail::ListToModifier<
-                typename detail::SortModifier<
-                    typename detail::ModifierToList<T>::type>::type>::type RawSorted;
-    typedef typename detail::ListToExpandedModifier<
-                typename detail::SortModifier<
-                    typename detail::ExpandedModifierToList<RawSorted>::type>::type>::type type;
+        // we must first sort without synonym expansion
+    typedef typename detail::SortRaw<T>::type RawSorted;
+    typedef typename ExpandSynonym<RawSorted>::type Expanded;
+    typedef typename detail::SortModifiers<Expanded>::type type;
 };
 
 /****************************************************************************/
