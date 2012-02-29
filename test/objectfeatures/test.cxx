@@ -1995,7 +1995,7 @@ struct AccumulatorTest
     
     void testScalar()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         
         { 
@@ -2029,14 +2029,15 @@ struct AccumulatorTest
 #if 1
             typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
-                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, Principal<Variance>
+                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation // , Principal<Variance>
                                               > > A;
 
             A a;
 
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(21, A::index);
+//            shouldEqual(21, A::index);
+            shouldEqual(20, A::index);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -2058,7 +2059,7 @@ struct AccumulatorTest
             std::pair<double, double> eigen = get<CovarianceEigensystem>(a);
             shouldEqualTolerance(eigen.first, 2.1875, 1e-15);
             shouldEqual(eigen.second, 1.0);
-            shouldEqualTolerance(get<Principal<Variance> >(a), 2.1875, 1e-15);
+ //           shouldEqualTolerance(get<Principal<Variance> >(a), 2.1875, 1e-15);
 
             for(int k=0; k<4; ++k)
                 a.updatePass2(data[k]);
@@ -2147,13 +2148,13 @@ struct AccumulatorTest
 
     void testVector()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
 
         {
             typedef TinyVector<int, 3> V;
             typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2>,
-                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, Principal<Variance> 
+                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation // , Principal<Variance> 
                                           > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
@@ -2192,7 +2193,7 @@ struct AccumulatorTest
             std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
             W ew(1.0, 1.0, 0.0); 
             shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
-            shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Principal<Variance> >(a).begin(), 1e-15);
+//            shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Principal<Variance> >(a).begin(), 1e-15);
 
             double eigenvectorData[] = {
                 -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
@@ -2253,7 +2254,7 @@ struct AccumulatorTest
 
     void testMerge()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         
         typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis, 

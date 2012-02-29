@@ -75,6 +75,8 @@ template <unsigned NDim> class MultiHistogram; // multi-dimensional histogram
 class AccumulatorArray;                        // one accumulator for each region (may be better implemented by other means)
 
 class CachePreparedData;                       // cache the prepared (centralized, whitened etc.) version of the last data value 
+class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
+
 
 /* 
 Quantiles other than minimum and maximum require more thought:
@@ -141,6 +143,7 @@ typedef RootDivideByCount<SumOfSquares>             RootMeanSquares;
 // actual definition (desired behavior is realised by rules below)
 //
 template <unsigned N> class                         Moment;  
+template <unsigned N> class                         CentralMoment;  
 
 typedef Central<PowerSum<2> >                       SumOfSquaredDifferences;
 typedef SumOfSquaredDifferences                     SSD;
@@ -360,6 +363,13 @@ template <unsigned N>
 struct ModifierRule<Moment<N> >
 {
     typedef DivideByCount<PowerSum<N> > type;
+};
+
+    // expand the CentralMoment<N> synonym
+template <unsigned N>
+struct ModifierRule<CentralMoment<N> >
+{
+    typedef DivideByCount<Central<PowerSum<N> > > type;
 };
 
     // reduce even absolute powers to plain powers

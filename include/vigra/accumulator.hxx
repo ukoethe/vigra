@@ -54,667 +54,9 @@
 #include <algorithm>
 #include <iostream>
 
-#if 0
 namespace vigra {
 
 namespace acc1 {
-
-struct AccumulatorBegin;
-struct AccumulatorEnd;
-
-    // a poor man's replacement for template typedefs
-template <class A>
-struct Synonym
-{
-    typedef A type;
-};
-
-template <class A, class B=typename Synonym<A>::type>
-struct ExpandSynonym
-{
-    typedef typename ExpandSynonym<B>::type type;
-};
-
-template <class A>
-struct ExpandSynonym<A, A>
-{
-    typedef A type;
-};
-
-template <class A>
-struct AccumulatorTraits
-{
-    typedef A type;
-    typedef void Contained;
-    static const int priority = INT_MAX;
-};
-
-namespace detail  {
-
-// FIXME: this should be refactored
-
-template <int N1, int N2>
-struct Less
-{
-    static const bool value = N1 < N2;
-};
-
-template <class T1, int Priority1, class T2, int Priority2>
-struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined {};
-
-template <class T1, int Priority, class T2>
-struct Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<T1, Priority, T2, Priority>;
-
-template <class TAG, 
-          int BOUND=INT_MIN, 
-          bool SKIP=Less<AccumulatorTraits<TAG>::priority, BOUND>::value, 
-          class Contained=typename ExpandSynonym<typename AccumulatorTraits<TAG>::Contained>::type>
-struct LowestPriority
-: public Accumulator___Tag_modifiers_with_same_priority_may_not_be_combined<
-                 typename LowestPriority<Contained, BOUND>::type, 
-                 LowestPriority<Contained, BOUND>::priority,
-                 TAG, 
-                 AccumulatorTraits<TAG>::priority>
-{
-    typedef typename LowestPriority<Contained, BOUND>::type BestContained;
-    static const int P1 = LowestPriority<Contained, BOUND>::priority;
-    static const int P2 = AccumulatorTraits<TAG>::priority;
-    static const int priority = P1 < P2 ? P1 : P2;    
-    typedef typename IfBool<(P1 < P2), BestContained, TAG>::type type;
-};
-
-template <class TAG, int BOUND, class Contained>
-struct LowestPriority<TAG, BOUND, true, Contained>
-{
-    typedef typename LowestPriority<Contained, BOUND>::type type;
-    static const int priority = LowestPriority<Contained, BOUND>::priority;
-};
-
-template <class TAG, int BOUND, bool SKIP>
-struct LowestPriority<TAG, BOUND, SKIP, void>
-{
-    typedef TAG type;
-    static const int priority = AccumulatorTraits<TAG>::priority;
-};
-
-template <class TAG, int BOUND>
-struct LowestPriority<TAG, BOUND, true, void>
-{
-    typedef TAG type;
-    static const int priority = AccumulatorTraits<TAG>::priority;
-};
-
-template <class TAG, 
-          int BOUND=INT_MIN, 
-          int PRIORITY=LowestPriority<TAG, BOUND>::priority>
-struct SortModifiers
-{
-    typedef AccumulatorTraits<typename LowestPriority<TAG, BOUND>::type> Traits;
-    typedef typename Traits::template rebind<typename SortModifiers<TAG, PRIORITY+1>::type>::type RawType;
-    typedef typename ExpandSynonym<RawType>::type type;
-};
-
-template <class TAG, int BOUND>
-struct SortModifiers<TAG, BOUND, INT_MAX>
-{
-    typedef typename LowestPriority<TAG, BOUND>::type type;
-};
-
-template <class TAG, 
-          int BOUND=INT_MIN, 
-          bool SKIP=Less<AccumulatorTraits<TAG>::priority, BOUND>::value, 
-          class Contained=typename AccumulatorTraits<TAG>::Contained>
-struct LowestPriorityRaw
-{
-    typedef typename LowestPriorityRaw<Contained, BOUND>::type BestContained;
-    static const int P1 = LowestPriorityRaw<Contained, BOUND>::priority;
-    static const int P2 = AccumulatorTraits<TAG>::priority;
-    static const int priority = P1 < P2 ? P1 : P2;    
-    typedef typename IfBool<(P1 < P2), BestContained, TAG>::type type;
-};
-
-template <class TAG, int BOUND, class Contained>
-struct LowestPriorityRaw<TAG, BOUND, true, Contained>
-{
-    typedef typename LowestPriorityRaw<Contained, BOUND>::type type;
-    static const int priority = LowestPriorityRaw<Contained, BOUND>::priority;
-};
-
-template <class TAG, int BOUND, bool SKIP>
-struct LowestPriorityRaw<TAG, BOUND, SKIP, void>
-{
-    typedef TAG type;
-    static const int priority = AccumulatorTraits<TAG>::priority;
-};
-
-template <class TAG, 
-          int BOUND=INT_MIN, 
-          int PRIORITY=LowestPriorityRaw<TAG, BOUND>::priority>
-struct SortRaw
-{
-    typedef AccumulatorTraits<typename LowestPriorityRaw<TAG, BOUND>::type> Traits;
-    typedef typename Traits::template rebind<typename SortRaw<TAG, PRIORITY+1>::type>::type type;
-};
-
-template <class TAG, int BOUND>
-struct SortRaw<TAG, BOUND, INT_MAX>
-{
-    typedef typename LowestPriorityRaw<TAG, BOUND>::type type;
-};
-
-} // namespace detail
-
-template <class T>
-struct StandardizeTag
-{
-        // since synonyms are only defined for the canonical order,
-        // we must first sort without synonym expansion
-    typedef typename detail::SortRaw<T>::type RawSorted;
-    typedef typename ExpandSynonym<RawSorted>::type Expanded;
-    typedef typename detail::SortModifiers<Expanded>::type type;
-};
-
-/****************************************************************************/
-/*                                                                          */
-/*                          accumulator modifiers                           */
-/*                                                                          */
-/****************************************************************************/
-
-    // AccumulatorTraits::priority determines the modifier order.
-    // Priorities have been choosen so that the canonical ascending order will be
-    //     Coord< Normalize< Central< Plain > > >
-    // This order is important for modifier transfer to work correctly.
-    
-    // modifier that forwards data after applying Centralize
-template <class A>
-class Central {};
-
-    // last-seen-value accumulator that actually performs the centralization
-class Centralize;
-
-template <class A>
-struct AccumulatorTraits<Central<A> >
-{
-    typedef A Contained;
-    typedef Central<A> type;
-    static const int priority = 20;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef Central<T> type;
-    };
-};
-
-    // modifier that forwards data after applying PrincipalProjection
-template <class A>
-class Principal {};
-
-    // last-seen-value accumulator that applies principal projection
-class PrincipalProjection;
-
-template <class A>
-struct AccumulatorTraits<Principal<A> >
-{
-    typedef A Contained;
-    typedef Principal<A> type;
-    static const int priority = 20;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef Principal<T> type;
-    };
-};
-
-    // Standard normalization method and normalization modifier
-    // FIXME: figure out when caching is appropriate
-struct DivideByCount;
-
-template <class A, class NormlizationMethod=DivideByCount>
-class Normalize;
-
-template <class A, class NormlizationMethod>
-struct AccumulatorTraits<Normalize<A, NormlizationMethod> >
-{
-    typedef A Contained;
-    typedef Normalize<Contained, NormlizationMethod> type;
-    static const int priority = 10;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef Normalize<T, NormlizationMethod> type;
-    };
-};
-
-    // data access modifier that forwards the coordinate part of a compound data type
-template <class A>
-class Coord {};
-
-template <class A>
-struct AccumulatorTraits<Coord<A> >
-{
-    typedef A Contained;
-    typedef Coord<Contained> type;
-    static const int priority = 0;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef Coord<T> type;
-    };
-};
-
-    // data access modifier that forwards data/weight pairs from a compound data type
-template <class A>
-class Weighted {};
-
-template <class A>
-struct AccumulatorTraits<Weighted<A> >
-{
-    typedef A Contained;
-    typedef Weighted<Contained> type;
-    static const int priority = 0;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef Weighted<T> type;
-    };
-};
-
-    // data access modifier that forwards coordinate/weight pairs from a compound data type
-template <class A>
-class CoordWeighted {};
-
-template <class A>
-struct AccumulatorTraits<CoordWeighted<A> >
-{
-    typedef A Contained;
-    typedef CoordWeighted<Contained>  type;
-    static const int priority = 0;
-    
-    template <class T>
-    struct rebind
-    {
-        typedef CoordWeighted<T> type;
-    };
-};
-
-/****************************************************************************/
-/*                                                                          */
-/*                     accumulators to be implemented                       */
-/*                     and their relationships                              */
-/*                                                                          */
-/****************************************************************************/
-
-    // returns an identity matrix of appropriate size
-class Axes;
-
-    // sum over the power of values
-template <unsigned N>
-class PowerSum;
-
-    // explicitly specialize PowerSum<0> to always use value_type=double, 
-    // regardless of the data type
-template <>
-class PowerSum<0>;
-
-typedef PowerSum<0> Count;
-
-#define VIGRA_SIMPLE_SYNONYM(TAG, REPLACEMENT) \
-template <> \
-struct Synonym<TAG > \
-{ \
-    typedef REPLACEMENT type; \
-};
-
-    // Count ignores all modifers except for Weighted<>
-VIGRA_SIMPLE_SYNONYM(Central<Count>, Count)
-VIGRA_SIMPLE_SYNONYM(Principal<Count>, Count)
-VIGRA_SIMPLE_SYNONYM(Coord<Count>, Count)
-VIGRA_SIMPLE_SYNONYM(CoordWeighted<Count>, Weighted<Count>)
-
-template <class NormlizationMethod>
-struct Synonym<Normalize<Count, NormlizationMethod> >
-{
-    typedef Count type;
-};
-
-    // explicitly specialize PowerSum<1> to get rid of pow(value, 1)
-template <>
-class PowerSum<1>;
-typedef PowerSum<1> Sum;
-
-typedef PowerSum<2> SumOfSquares;
-
-    // more normalization methods
-struct RootDivideByCount;
-struct DivideUnbiased;
-struct RootDivideUnbiased;
-
-typedef Normalize<Sum>                              Mean;
-typedef Normalize<SumOfSquares, RootDivideByCount>  RootMeanSquares;
-
-template <unsigned N>
-class Moment;
-
-template <unsigned N>
-struct Synonym<Moment<N> >
-{
-    typedef Normalize<PowerSum<N> > type;
-};
-
-    // explicitly specialize Central<PowerSum<2> > to use incremental algorithms
-    // (standard centralized accumulators use two passes)
-template <>
-class Central<PowerSum<2> >;
-
-typedef Central<PowerSum<2> > SumOfSquaredDifferences;
-typedef Central<PowerSum<2> > SSD;
-
-class Variance;
-class StdDev;
-class UnbiasedVariance;
-class UnbiasedStdDev;
-
-VIGRA_SIMPLE_SYNONYM(Variance, Central<Moment<2> >)
-VIGRA_SIMPLE_SYNONYM(Central<Variance>, Variance)
-
-#define VIGRA_NORMALIZE_REPLACEMENT(INNER, METHOD) \
-    Normalize<INNER, METHOD>
-
-VIGRA_SIMPLE_SYNONYM(StdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideByCount))
-VIGRA_SIMPLE_SYNONYM(Central<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideByCount))
-
-VIGRA_SIMPLE_SYNONYM(UnbiasedVariance, VIGRA_NORMALIZE_REPLACEMENT(SSD, DivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Central<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(SSD, DivideUnbiased))
-
-VIGRA_SIMPLE_SYNONYM(UnbiasedStdDev, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Central<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(SSD, RootDivideUnbiased))
-
-template <unsigned N>
-class CentralMoment;
-
-template <unsigned N>
-struct Synonym<CentralMoment<N> >
-{
-    typedef Central<Moment<N> > type;
-};
-
-    // explicitly specialize Central<PowerSum<3> > and Central<PowerSum<4> > to implement 
-    // merge functions (standard centralized accumulators do not support merge)
-template <>
-class Central<PowerSum<3> >;
-template <>
-class Central<PowerSum<4> >;
-
-    // make sure that inherently centralized accumulators contain
-    // the Central<> modifier
-class SkewnessImpl;
-typedef Central<SkewnessImpl> Skewness;
-
-class KurtosisImpl;
-typedef Central<KurtosisImpl> Kurtosis;
-
-class FlatScatterMatrixImpl;
-typedef Central<FlatScatterMatrixImpl> FlatScatterMatrix;
-
-class CovarianceEigensystemImpl;
-typedef Central<CovarianceEigensystemImpl> CovarianceEigensystem;
-
-typedef Normalize<FlatScatterMatrix>         Covariance;
-typedef Normalize<FlatScatterMatrix, DivideUnbiased> UnbiasedCovariance;
-
-    // explicitly specialize Principal<PowerSum<2> >, Principal<Variance>, and 
-    // Principal<Axes> to access  CovarianceEigensystem directly
-template <> class Principal<PowerSum<2> >;
-template <> class Normalize<Principal<PowerSum<2> > >;
-template <> class Principal<Axes>;
-
-VIGRA_SIMPLE_SYNONYM(Principal<Variance>, Principal<Moment<2> >)
-VIGRA_SIMPLE_SYNONYM(Principal<StdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideByCount))
-VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedVariance>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, DivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Principal<UnbiasedStdDev>, VIGRA_NORMALIZE_REPLACEMENT(Principal<PowerSum<2> >, RootDivideUnbiased))
-VIGRA_SIMPLE_SYNONYM(Principal<Skewness>, Principal<SkewnessImpl>)
-VIGRA_SIMPLE_SYNONYM(Principal<Kurtosis>, Principal<KurtosisImpl>)
-
-    // sum of absolute values
-class AbsSum;
-
-    // explicitly specialize Central<AbsSum> and Principal<AbsSum> because 
-    // they need two passes
-template <>
-class Central<AbsSum>;
-
-typedef Central<AbsSum> SumOfAbsDifferences;
-
-class MeanAbsoluteDeviation;
-VIGRA_SIMPLE_SYNONYM(MeanAbsoluteDeviation, Normalize<SumOfAbsDifferences>)
-
-template <>
-class Principal<AbsSum>;
-
-template <unsigned Percent>
-class IncrementalQuantile;
-
-typedef IncrementalQuantile<0>   Minimum;
-typedef IncrementalQuantile<50>  IncrementalMedian;
-typedef IncrementalQuantile<100> Maximum;
-
-    // last-seen-value accumulator that maps [min, max] to another range (e.g. for histogram creation)
-class RangeMapping;
-
-    // works in 2-pass mode when RangeMapping is calculated from data
-    // and in 1-pass mode when RangeMapping is given by the user.
-template <unsigned BinCount>
-class Histogram;
-
-    // specify number of bins at runtime when BinCount=0
-template <>
-class Histogram<0>;
-
-template <unsigned Percent, unsigned BinCount>
-class HistogramQuantile;
-
-template <unsigned NDim>
-class MultiHistogram;
-
-class AccumulatorArray;
-
-#undef VIGRA_SIMPLE_SYNONYM
-#undef VIGRA_NORMALIZE_REPLACEMENT
-
-/****************************************************************************/
-/*                                                                          */
-/*                rules to transfer modifiers to dependencies               */
-/*                                                                          */
-/****************************************************************************/
-
-    // basic rule: transfer all modifiers
-template <class From, class To>
-struct DontTransferModifier
-{
-    typedef VigraFalseType type;
-};
-
-    // chain begin rule: never transfer anything to AccumulatorBegin
-template <class From>
-struct DontTransferModifier<From, AccumulatorBegin>
-{
-    typedef VigraFalseType type;
-};
-
-    // normalization rule: never transfer normalization
-template <class A, class NormlizationFunctor, class To>
-struct DontTransferModifier<Normalize<A, NormlizationFunctor>, To>
-{
-    typedef VigraTrueType type;
-};
-
-    // specific rules
-#define VIGRA_DONT_TRANSFER(FROM, TO)\
-template <class A> \
-struct DontTransferModifier<FROM<A>, TO> \
-{\
-    typedef VigraTrueType type; \
-}; 
-
-    // counting is always the same
-VIGRA_DONT_TRANSFER(Coord, Count)
-VIGRA_DONT_TRANSFER(Central, Count)
-VIGRA_DONT_TRANSFER(Principal, Count)
-
-    // Centralized sums are identical to zero
-VIGRA_DONT_TRANSFER(Central, Sum)
-VIGRA_DONT_TRANSFER(Principal, Sum)
-
-    // modifying accumulators themselves must not be modified
-VIGRA_DONT_TRANSFER(Central, Centralize)
-VIGRA_DONT_TRANSFER(Central, PrincipalProjection)
-VIGRA_DONT_TRANSFER(Central, RangeMapping)
-VIGRA_DONT_TRANSFER(Principal, Centralize)
-VIGRA_DONT_TRANSFER(Principal, PrincipalProjection)
-VIGRA_DONT_TRANSFER(Principal, RangeMapping)
-
-    // covariances are inherently central
-VIGRA_DONT_TRANSFER(Principal, Covariance)
-VIGRA_DONT_TRANSFER(Principal, UnbiasedCovariance)
-VIGRA_DONT_TRANSFER(Principal, CovarianceEigensystem)
-
-#undef VIGRA_DONT_TRANSFER
-
-namespace detail {
-
-// FIXME: this should be refactored
-
-template <class T1, class T2, 
-          class Next=typename AccumulatorTraits<T1>::Contained,
-          class Contained=typename AccumulatorTraits<T2>::Contained>
-struct ContainsModifier
-{
-    typedef typename IsSameType<typename AccumulatorTraits<T1>::template rebind<Contained>::type, T2>::type Same;
-    typedef typename Or<Same, typename ContainsModifier<T1, Contained>::type>::type type;
-};
-
-template <class T1, class T2, class Next>
-struct ContainsModifier<T1, T2, Next, void>
-{
-    typedef VigraFalseType type;
-};
-
-template <class T1, class T2, class Next>
-struct ContainsModifier<T1, T2, void, Next>
-{
-    typedef VigraFalseType type;
-};
-
-template <class T1, class T2>
-struct ContainsModifier<T1, T2, void, void>
-{
-    typedef VigraFalseType type;
-};
-
-template <class From, class To, class Next=typename AccumulatorTraits<To>::Contained>
-struct ForbiddenTransfer
-{
-    typedef typename Or<typename DontTransferModifier<From, To>::type,
-                        typename ForbiddenTransfer<From, Next>::type>::type type;
-};
-
-template <class From, class To>
-struct ForbiddenTransfer<From, To, void>
-{
-    typedef typename DontTransferModifier<From, To>::type type;
-};
-
-template <class From, class To, class Next=typename AccumulatorTraits<From>::Contained,
-         class Dont=typename Or<typename ContainsModifier<From,To>::type,
-                                typename ForbiddenTransfer<From, To>::type>::type>
-struct TransferModifiersImpl
-{
-    typedef typename TransferModifiersImpl<Next, To>::type Inner;
-    typedef typename AccumulatorTraits<From>::template rebind<Inner>::type type;
-};
-
-template <class From, class To, class Next>
-struct TransferModifiersImpl<From, To, Next, VigraTrueType>
-{
-    typedef typename TransferModifiersImpl<Next, To>::type Inner;
-    typedef Inner type;
-};
-
-template <class From, class To, class Contains>
-struct TransferModifiersImpl<From, To, void, Contains>
-{
-    typedef To type;
-};
-
-template<class A, class Next=typename AccumulatorTraits<A>::Contained >
-struct RemoveCentralPrincipalPairs
-{
-    typedef typename RemoveCentralPrincipalPairs<Next>::type Cleaned;
-    typedef typename AccumulatorTraits<A>::template rebind<Cleaned>::type type;
-};
-
-template<class A>
-struct RemoveCentralPrincipalPairs<Principal<Central<A> >, Central<A> >
-{
-    typedef Principal<A> type;
-};
-
-template<class A>
-struct RemoveCentralPrincipalPairs<Central<Principal<A> >, Principal<A> >
-{
-    typedef Central<A> type;
-};
-
-template<class A>
-struct RemoveCentralPrincipalPairs<A, void >
-{
-    typedef A type;
-};
-
-} // namespace detail
-
-template <class From, class To>
-struct TransferModifiers
-{
-    typedef typename detail::TransferModifiersImpl<From, To>::type Unsorted;
-    typedef typename detail::SortRaw<Unsorted>::type Sorted;
-    typedef typename detail::RemoveCentralPrincipalPairs<Sorted>::type Cleaned;
-    typedef typename StandardizeTag<Cleaned>::type type;
-};
-
-template <class From, class Head, class Tail>
-struct TransferModifiers<From, TypeList<Head, Tail> >
-{
-    typedef TypeList<typename TransferModifiers<From, Head>::type,
-                     typename TransferModifiers<From, Tail>::type> type;
-};
-
-template <class From>
-struct TransferModifiers<From, void>
-{
-    typedef void type;
-};
-
-    // Select is a synonym for MakeTypeList
-template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
-          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
-          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
-struct Select
-: public MakeTypeList<
-    typename StandardizeTag<T01>::type, typename StandardizeTag<T02>::type, typename StandardizeTag<T03>::type, 
-    typename StandardizeTag<T04>::type, typename StandardizeTag<T05>::type, typename StandardizeTag<T06>::type, 
-    typename StandardizeTag<T07>::type, typename StandardizeTag<T08>::type, typename StandardizeTag<T09>::type, 
-    typename StandardizeTag<T10>::type, typename StandardizeTag<T11>::type, typename StandardizeTag<T12>::type, 
-    typename StandardizeTag<T13>::type, typename StandardizeTag<T14>::type, typename StandardizeTag<T15>::type, 
-    typename StandardizeTag<T16>::type, typename StandardizeTag<T17>::type, typename StandardizeTag<T18>::type, 
-    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type >
-{};
 
 /****************************************************************************/
 /*                                                                          */
@@ -1682,7 +1024,8 @@ class PowerSum<N>
     };
 };
 
-class AbsSum
+template <>
+class AbsPowerSum<1>
 {
   public:
     typedef Select<> Dependencies;
@@ -1705,8 +1048,32 @@ class AbsSum
     };
 };
 
+template <unsigned N>
+class AbsPowerSum<N>
+{
+  public:
+    typedef Select<> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public SumBaseImpl<T, BASE>
+    {
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;            
+            value_ += pow(abs(t), (int)N);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            using namespace vigra::multi_math;            
+            value_ += weight*pow(abs(t), (int)N);
+        }
+    };
+};
+
 template <>
-class IncrementalQuantile<0>
+class Quantile<0>
 {
   public:
     typedef Select<> Dependencies;
@@ -1762,7 +1129,7 @@ class IncrementalQuantile<0>
 };
 
 template <>
-class IncrementalQuantile<100>
+class Quantile<100>
 {
   public:
     typedef Select<> Dependencies;
@@ -1862,7 +1229,7 @@ struct CachedResultBase
 
 // cached Mean and Variance
 template <class TAG>
-class Normalize<TAG, DivideByCount>
+class DivideByCount
 {
   public:
     typedef Select<TAG, Count> Dependencies;
@@ -1886,7 +1253,7 @@ class Normalize<TAG, DivideByCount>
 
 // UnbiasedVariance
 template <class TAG>
-class Normalize<TAG, DivideUnbiased>
+class DivideUnbiased
 {
   public:
     typedef Select<TAG, Count> Dependencies;
@@ -1908,10 +1275,10 @@ class Normalize<TAG, DivideUnbiased>
 
 // RootMeanSquares and StdDev
 template <class TAG>
-class Normalize<TAG, RootDivideByCount>
+class RootDivideByCount
 {
   public:
-    typedef Normalize<TAG, DivideByCount> TargetTag;
+    typedef DivideByCount<TAG> TargetTag;
     typedef Select<TargetTag> Dependencies;
     
     template <class T, class BASE>
@@ -1931,10 +1298,10 @@ class Normalize<TAG, RootDivideByCount>
 
 // UnbiasedStdDev
 template <class TAG>
-class Normalize<TAG, RootDivideUnbiased>
+class RootDivideUnbiased
 {
   public:
-    typedef Normalize<TAG, DivideUnbiased> TargetTag;
+    typedef DivideUnbiased<TAG> TargetTag;
     typedef Select<TargetTag> Dependencies;
     
     template <class T, class BASE>
@@ -1952,7 +1319,9 @@ class Normalize<TAG, RootDivideUnbiased>
     };
 };
 
-class Centralize
+// Centralize
+template <>
+class Central<CachePreparedData> 
 {
   public:
     typedef Select<Mean> Dependencies;
@@ -2147,6 +1516,9 @@ class Central<PowerSum<4> >
     };
 };
 
+// FIXME: we can get rid of this redundancy when we introduce get<PlainData>,
+//        which will be transfered to get<Centralize> automatically
+//        but be aware that we must not do this substitution for inherently Central accumulators
 template <unsigned int N>
 class Central<PowerSum<N> >
 {
@@ -2388,7 +1760,7 @@ class Central<FlatScatterMatrixImpl>
 
 // Covariance
 template <>
-class Normalize<FlatScatterMatrix, DivideByCount>
+class DivideByCount<FlatScatterMatrix>
 {
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
@@ -2419,7 +1791,7 @@ class Normalize<FlatScatterMatrix, DivideByCount>
 
 // UnbiasedCovariance
 template <>
-class Normalize<FlatScatterMatrix, DivideUnbiased>
+class DivideUnbiased<FlatScatterMatrix>
 {
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
@@ -2552,7 +1924,7 @@ class Principal<PowerSum<2> >
 
 // Principal<Variance> == covariance eigenvalues
 template <>
-class Normalize<Principal<PowerSum<2> > >
+class DivideByCount<Principal<PowerSum<2> > >
 {
   public:
     typedef Select<CovarianceEigensystem> Dependencies;
@@ -2605,7 +1977,5 @@ class Principal<AbsSum>
 };
 
 }} // namespace vigra::acc1
-
-#endif
 
 #endif // VIGRA_ACCUMULATOR_HXX
