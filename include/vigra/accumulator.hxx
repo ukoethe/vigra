@@ -64,6 +64,22 @@ namespace acc1 {
 /*                                                                          */
 /****************************************************************************/
 
+    // Select is a wrapper for MakeTypeList that additionally performs tag standardization
+template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
+          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
+          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+struct Select
+: public MakeTypeList<
+    typename StandardizeTag<T01>::type, typename StandardizeTag<T02>::type, typename StandardizeTag<T03>::type, 
+    typename StandardizeTag<T04>::type, typename StandardizeTag<T05>::type, typename StandardizeTag<T06>::type, 
+    typename StandardizeTag<T07>::type, typename StandardizeTag<T08>::type, typename StandardizeTag<T09>::type, 
+    typename StandardizeTag<T10>::type, typename StandardizeTag<T11>::type, typename StandardizeTag<T12>::type, 
+    typename StandardizeTag<T13>::type, typename StandardizeTag<T14>::type, typename StandardizeTag<T15>::type, 
+    typename StandardizeTag<T16>::type, typename StandardizeTag<T17>::type, typename StandardizeTag<T18>::type, 
+    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type >
+{};
+
 struct AccumulatorBegin;
 
 struct AccumulatorEnd 
@@ -915,6 +931,42 @@ important notes on modifiers:
     * FlatScatterMatrixImpl, CovarianceEigensystemImpl: Principal and Whitened
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
+
+class Axes
+{
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef double              element_type;
+        typedef Matrix<double>      value_type;
+        typedef value_type const &  result_type;
+
+        value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
 
 template <class T, class BASE, 
          class ElementType=typename AccumulatorResultTraits<T>::element_promote_type, 
@@ -1940,6 +1992,27 @@ class DivideByCount<Principal<PowerSum<2> > >
         {
             using namespace vigra::multi_math;            
             return get<CovarianceEigensystem>(*this).first;
+        }
+    };
+};
+
+// Principal<Variance> == covariance eigenvectors
+template <>
+class Principal<Axes>
+{
+  public:
+    typedef Select<CovarianceEigensystem> Dependencies;
+     
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvectorType value_type;
+        typedef value_type const & result_type;
+        
+        result_type operator()() const
+        {
+            return get<CovarianceEigensystem>(*this).second;
         }
     };
 };

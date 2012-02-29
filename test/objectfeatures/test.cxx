@@ -1897,6 +1897,11 @@ struct AccumulatorTest
                            PowerSum<2> >::value));
         should((IsSameType<StandardizeTag<AbsPowerSum<3> >::type,
                            AbsPowerSum<3> >::value));
+
+        should((IsSameType<StandardizeTag<Central<Axes> >::type,
+                           Axes>::value));
+        should((IsSameType<StandardizeTag<Principal<Axes> >::type,
+                           Principal<Axes> >::value));
     }
 
     template <class SOURCE, class REFERENCE>
@@ -2034,14 +2039,15 @@ struct AccumulatorTest
 #if 1
             typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
-                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation , Principal<Variance>
+                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
+                                               Principal<Variance>, Principal<Axes>
                                               > > A;
 
             A a;
 
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(21, A::index);
+            shouldEqual(22, A::index);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -2064,6 +2070,7 @@ struct AccumulatorTest
             shouldEqualTolerance(eigen.first, 2.1875, 1e-15);
             shouldEqual(eigen.second, 1.0);
             shouldEqualTolerance(get<Principal<Variance> >(a), 2.1875, 1e-15);
+            shouldEqual(get<Principal<Axes> >(a), 1.0);
 
             for(int k=0; k<4; ++k)
                 a.updatePass2(data[k]);
@@ -2158,7 +2165,8 @@ struct AccumulatorTest
         {
             typedef TinyVector<int, 3> V;
             typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2>,
-                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, Principal<Variance> 
+                                          AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
+                                          Principal<Variance>, Principal<Axes>
                                           > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
@@ -2205,6 +2213,7 @@ struct AccumulatorTest
                  0.0               ,  0.816496580927726,  -0.5773502691896257 };
             Var ev(3,3, eigenvectorData);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<Axes> >(a).begin(), 1e-15);
 #endif
         }
 #if 1

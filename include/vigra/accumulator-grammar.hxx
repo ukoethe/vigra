@@ -76,7 +76,7 @@ class AccumulatorArray;                        // one accumulator for each regio
 
 class CachePreparedData;                       // cache the prepared (centralized, whitened etc.) version of the last data value 
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
-
+class PlainData;                               // use data "as-is" (useful for automatic transformation to other access methods)
 
 /* 
 Quantiles other than minimum and maximum require more thought:
@@ -211,23 +211,6 @@ struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined
     : public Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>
 {};
 
-
-    // Select is a synonym for MakeTypeList
-template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
-          class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
-          class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
-struct Select
-: public MakeTypeList<
-    typename StandardizeTag<T01>::type, typename StandardizeTag<T02>::type, typename StandardizeTag<T03>::type, 
-    typename StandardizeTag<T04>::type, typename StandardizeTag<T05>::type, typename StandardizeTag<T06>::type, 
-    typename StandardizeTag<T07>::type, typename StandardizeTag<T08>::type, typename StandardizeTag<T09>::type, 
-    typename StandardizeTag<T10>::type, typename StandardizeTag<T11>::type, typename StandardizeTag<T12>::type, 
-    typename StandardizeTag<T13>::type, typename StandardizeTag<T14>::type, typename StandardizeTag<T15>::type, 
-    typename StandardizeTag<T16>::type, typename StandardizeTag<T17>::type, typename StandardizeTag<T18>::type, 
-    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type >
-{};
-
 namespace detail {
 
 enum { MinPriority = 1, 
@@ -291,7 +274,7 @@ struct ModifierCompareToInner<B<A> >
 template <class A, int compare=ModifierCompareToInner<A>::value>
 struct ModifierOrder;
 
-    // do nothing of the order is correct (compare == -1)
+    // do nothing if the order is correct (compare == -1)
 template <class A>
 struct ModifierOrder<A, -1>
 {
@@ -336,6 +319,19 @@ template <class A, template <class> class B>
 struct ModifierRule<B<A> >
 {
     typedef typename ModifierOrder<B<typename StandardizeTag<A>::type> >::type type;
+};
+
+    // reduce axes data preparation modifiers
+template <>
+struct ModifierRule<Central<Axes> >
+{
+    typedef Axes type;
+};
+
+template <>
+struct ModifierRule<Whitened<Axes> >
+{
+    typedef Principal<Axes> type;
 };
 
     // counting modified data is the same as counting data ...
