@@ -40,6 +40,7 @@
 #pragma warning (disable: 4503)
 #endif
 
+#include "accumulator-grammar.hxx"
 //#include "accumulator-detail.hxx"
 #include "config.hxx"
 #include "metaprogramming.hxx"
@@ -53,6 +54,7 @@
 #include <algorithm>
 #include <iostream>
 
+#if 0
 namespace vigra {
 
 namespace acc1 {
@@ -2603,5 +2605,7 @@ class Principal<AbsSum>
 };
 
 }} // namespace vigra::acc1
+
+#endif
 
 #endif // VIGRA_ACCUMULATOR_HXX
