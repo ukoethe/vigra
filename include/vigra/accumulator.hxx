@@ -899,20 +899,20 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 
 /*
 important notes on modifiers:
- * upon accumulator creation, reorder modifiers so that data access is innermost, 
-   and normalization is outermost, e.g.:
-        Normalize<Principal<Coord<Skewness> > >
-   this mcould be done using priority traits
- * automatically transfer modifiers to dependencies as appropriate
- * automatically adjust modifiers for lookup (cast and get) of dependent accumulators
+ * upon accumulator creation, modifiers are reordered so that data preparation is innermost, 
+   and data access is outermost, e.g.:
+        Coord<DivideByCount<Principal<PowerSum<2> > > >
+ * modifiers are automatically transfered to dependencies as appropriate
+ * modifiers for lookup (cast and get) of dependent accumulators are automatically adjusted
  * modifiers must adjust workInPass for the contained accumulator as appropriate
  * we may implement convenience versions of Select that apply a modifier to all 
    contained tags at once
- * make sure that weighted accumulators have their own Count object when used together
-   with unweighted ones (or disallow combination of weighted and unweighted processing)
+ * weighted accumulators have their own Count object when used together
+   with unweighted ones (this is as yet untested - FIXME)
  * certain accumulators must remain unchanged when wrapped in certain modifiers: 
-    * Count: always
-    * Centralize, PricipleProjection sometimes
+    * Count: always except for Weighted<Count> and CoordWeighted<Count>
+    * Sum: data preparation modifiers
+    * FlatScatterMatrixImpl, CovarianceEigensystemImpl: Principal and Whitened
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
 

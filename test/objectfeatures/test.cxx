@@ -1959,6 +1959,11 @@ struct AccumulatorTest
           typedef Select<Weighted<Count>, CoordWeighted<Sum>, CoordWeighted<Mean>, CoordWeighted<Principal<Variance> > >::type Desired5;
           should((IsSameType<TransferModifiers<Principal<Coord<Weighted<Minimum> > >, Target>::type,
                              Desired5>::value));
+
+          should((IsSameType<TransferModifiers<Principal<Minimum>, Centralize>::type,
+                             PrincipalProjection>::value));
+          should((IsSameType<TransferModifiers<Principal<Weighted<Coord<Minimum> > >, Centralize>::type,
+                             CoordWeighted<PrincipalProjection> >::value));
     }
 
     void test1()

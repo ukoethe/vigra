@@ -478,29 +478,22 @@ struct LongModifierRule<DefaultModifier<A> >
     typedef A type;
 };
 
-template <>
-struct LongModifierRule<Central<Sum> >
-{
-    typedef Sum type;
+#define VIGRA_DROP_DATA_PREPARATION_MODIFIERS(SOURCE, TARGET) \
+template <> \
+struct LongModifierRule<SOURCE > \
+{ \
+    typedef TARGET type; \
 };
 
-template <>
-struct LongModifierRule<Principal<Sum> >
-{
-    typedef Sum type;
-};
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Central<Sum>, Sum)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<Sum>, Sum)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<Sum>, Sum)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrixImpl>, FlatScatterMatrix)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrixImpl>, FlatScatterMatrix)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<CovarianceEigensystemImpl>, CovarianceEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<CovarianceEigensystemImpl>, CovarianceEigensystem)
 
-template <>
-struct LongModifierRule<Whitened<Sum> >
-{
-    typedef Sum type;
-};
-
-template <>
-struct LongModifierRule<Principal<CovarianceEigensystemImpl> >
-{
-    typedef CovarianceEigensystem type;
-};
+#undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 
 template <class A>
 struct CheckSubstitutionFlag
