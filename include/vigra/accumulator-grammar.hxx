@@ -496,6 +496,12 @@ struct LongModifierRule<Whitened<Sum> >
     typedef Sum type;
 };
 
+template <>
+struct LongModifierRule<Principal<CovarianceEigensystemImpl> >
+{
+    typedef CovarianceEigensystem type;
+};
+
 template <class A>
 struct CheckSubstitutionFlag
 {
