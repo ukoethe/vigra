@@ -59,10 +59,10 @@ class Axes;                                    // returns an identity matrix of 
 template <unsigned N> class PowerSum;          // sum over powers of values
 template <unsigned N> class AbsPowerSum;       // sum over powers of absolute values
 
-class SkewnessImpl;                            // skewness
-class KurtosisImpl;                            // kurtosis
-class FlatScatterMatrixImpl;                   // flattened upper-triangular part of the scatter matrix
-class CovarianceEigensystemImpl;               // eigenvalues and eigenvectors of the covariance matrix
+class Skewness;                                // skewness
+class Kurtosis;                                // kurtosis
+class FlatScatterMatrix;                       // flattened upper-triangular part of the scatter matrix
+class CovarianceEigensystem;                   // eigenvalues and eigenvectors of the covariance matrix
 
 template <unsigned Percent> class  Quantile;   // quantiles (including minimum and maximum)
 template <unsigned BinCount> class Histogram;  // histogram with fixed number of bins
@@ -153,13 +153,8 @@ typedef RootDivideByCount<Central<PowerSum<2> > >   StdDev;
 typedef DivideUnbiased<Central<PowerSum<2> > >      UnbiasedVariance;
 typedef RootDivideUnbiased<Central<PowerSum<2> > >  UnbiasedStdDev;
 
-typedef Central<SkewnessImpl>                       Skewness;
-typedef Central<KurtosisImpl>                       Kurtosis;
-
-typedef Central<FlatScatterMatrixImpl>              FlatScatterMatrix;
 typedef DivideByCount<FlatScatterMatrix>            Covariance;
 typedef DivideUnbiased<FlatScatterMatrix>           UnbiasedCovariance;
-typedef Central<CovarianceEigensystemImpl>          CovarianceEigensystem;
 
 typedef AbsPowerSum<1>                              AbsSum;
 typedef Central<AbsSum>                             SumOfAbsDifferences;
@@ -321,53 +316,40 @@ struct ModifierRule<B<A> >
     typedef typename ModifierOrder<B<typename StandardizeTag<A>::type> >::type type;
 };
 
-    // reduce axes data preparation modifiers
-template <>
-struct ModifierRule<Central<Axes> >
-{
-    typedef Axes type;
+    // poor man's implementation of template typedef
+#define VIGRA_REDUCE_MODFIERS(TEMPLATE, SOURCE, TARGET) \
+template <TEMPLATE > \
+struct ModifierRule<SOURCE > \
+{ \
+    typedef TARGET type; \
 };
 
-template <>
-struct ModifierRule<Whitened<Axes> >
-{
-    typedef Principal<Axes> type;
-};
+#define VIGRA_VOID
 
-    // counting modified data is the same as counting data ...
-template <template <class> class A>
-struct ModifierRule<A<Count> >
-{
-    typedef Count type;
-};
+    // centralizing doesn't change the axes
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Axes>, Axes)
+    // whitened axes are the same as principal axes
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Whitened<Axes>, Principal<Axes>)
 
-    // ... except for weighted data
-template <>
-struct ModifierRule<Weighted<Count> >
-{
-    typedef Weighted<Count> type;
-};
+    // counting modified data is the same as counting data, except for weighted data
+VIGRA_REDUCE_MODFIERS(template <class> class A, A<Count>, Count)
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
 
-template <>
-struct ModifierRule<CoordWeighted<Count> >
-{
-    typedef Weighted<Count> type;
-};
+    // reduce the Moment<N> and CentralMoment<N> synonyms
+VIGRA_REDUCE_MODFIERS(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)
+VIGRA_REDUCE_MODFIERS(unsigned N, CentralMoment<N>, DivideByCount<Central<PowerSum<N> > >)
 
-    // expand the Moment<N> synonym
-template <unsigned N>
-struct ModifierRule<Moment<N> >
-{
-    typedef DivideByCount<PowerSum<N> > type;
-};
+    // reduce statistics that are inherently centered
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Skewness>, Skewness)
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Kurtosis>, Kurtosis)
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<FlatScatterMatrix>, FlatScatterMatrix)
+VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<CovarianceEigensystem>, CovarianceEigensystem)
 
-    // expand the CentralMoment<N> synonym
-template <unsigned N>
-struct ModifierRule<CentralMoment<N> >
-{
-    typedef DivideByCount<Central<PowerSum<N> > > type;
-};
-
+    // reductions to CoordWeighted<A>
+VIGRA_REDUCE_MODFIERS(class A, Weighted<Coord<A> >, CoordWeighted<A>)
+VIGRA_REDUCE_MODFIERS(class A, Coord<Weighted<A> >, CoordWeighted<A>)
+ 
     // reduce even absolute powers to plain powers
 template <unsigned N>
 struct ModifierRule<AbsPowerSum<N> >
@@ -375,18 +357,8 @@ struct ModifierRule<AbsPowerSum<N> >
     typedef typename IfBool<(N % 2 == 0), PowerSum<N>, AbsPowerSum<N> >::type type;
 };
 
-    // reductions to CoordWeighted<A>
-template <class A>
-struct ModifierRule<Weighted<Coord<A> > >
-{
-    typedef CoordWeighted<A> type;
-};
-
-template <class A>
-struct ModifierRule<Coord<Weighted<A> > >
-{
-    typedef CoordWeighted<A> type;
-};
+#undef VIGRA_VOID
+#undef VIGRA_REDUCE_MODFIERS
 
 } // namespace detail
 
@@ -484,10 +456,10 @@ struct LongModifierRule<SOURCE > \
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Central<Sum>, Sum)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<Sum>, Sum)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<Sum>, Sum)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrixImpl>, FlatScatterMatrix)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrixImpl>, FlatScatterMatrix)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<CovarianceEigensystemImpl>, CovarianceEigensystem)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<CovarianceEigensystemImpl>, CovarianceEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrix>, FlatScatterMatrix)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrix>, FlatScatterMatrix)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<CovarianceEigensystem>, CovarianceEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<CovarianceEigensystem>, CovarianceEigensystem)
 
 #undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 

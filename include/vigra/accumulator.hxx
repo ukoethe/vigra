@@ -1635,8 +1635,7 @@ class Central<AbsSum>
     };
 };
 
-template <>
-class Central<SkewnessImpl>
+class Skewness
 {
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<3> > > Dependencies;
@@ -1661,8 +1660,7 @@ class Central<SkewnessImpl>
     };
 };
 
-template <>
-class Central<KurtosisImpl>
+class Kurtosis
 {
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<4> > > Dependencies;
@@ -1728,8 +1726,7 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
 } // namespace detail
 
 // we only store the flattened upper triangular part of the scatter matrix
-template <>
-class Central<FlatScatterMatrixImpl>
+class FlatScatterMatrix
 {
   public:
     typedef Select<Mean, Count> Dependencies;
@@ -1873,8 +1870,7 @@ class DivideUnbiased<FlatScatterMatrix>
 };
 
 // CovarianceEigensystem
-template <>
-class Central<CovarianceEigensystemImpl>
+class CovarianceEigensystem
 {
   public:
     typedef Select<Covariance> Dependencies;

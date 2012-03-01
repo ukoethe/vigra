@@ -1878,15 +1878,15 @@ struct AccumulatorTest
 
             // skewness
         should((IsSameType<StandardizeTag<Skewness>::type,
-                           Central<SkewnessImpl> >::value));
+                           Skewness >::value));
         should((IsSameType<StandardizeTag<Coord<Skewness> >::type,
-                           Coord<Central<SkewnessImpl> > >::value));
+                           Coord<Skewness> >::value));
         should((IsSameType<StandardizeTag<Principal<Skewness> >::type,
-                           Principal<SkewnessImpl> >::value));
+                           Principal<Skewness> >::value));
         should((IsSameType<StandardizeTag<Coord<Principal<Skewness> > >::type,
-                           Coord<Principal<SkewnessImpl> > >::value));
+                           Coord<Principal<Skewness> > >::value));
         should((IsSameType<StandardizeTag<Principal<Coord<Skewness> > >::type,
-                           Coord<Principal<SkewnessImpl> > >::value));
+                           Coord<Principal<Skewness> > >::value));
 
             // AbsPowerSum
         should((IsSameType<StandardizeTag<AbsSum>::type,
