@@ -932,7 +932,7 @@ important notes on modifiers:
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
 
-class Axes
+class CoordinateSystem
 {
     typedef Select<> Dependencies;
     
@@ -1994,7 +1994,7 @@ class DivideByCount<Principal<PowerSum<2> > >
 
 // Principal<Variance> == covariance eigenvectors
 template <>
-class Principal<Axes>
+class Principal<CoordinateSystem>
 {
   public:
     typedef Select<CovarianceEigensystem> Dependencies;

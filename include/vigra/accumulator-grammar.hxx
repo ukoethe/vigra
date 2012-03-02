@@ -54,7 +54,7 @@ namespace acc1 {
 /**************************************************************************/
     
    
-class Axes;                                    // returns an identity matrix of appropriate size
+class CoordinateSystem;                        // returns an identity matrix of appropriate size
 
 template <unsigned N> class PowerSum;          // sum over powers of values
 template <unsigned N> class AbsPowerSum;       // sum over powers of absolute values
@@ -124,7 +124,7 @@ template <class A> class Whitened;   // transform to principal coordinates and s
 
 /**************************************************************************/
 /*                                                                        */
-/*                              synonyms                                  */
+/*                   alias names for important features                   */
 /*                                                                        */
 /**************************************************************************/
 
@@ -159,6 +159,14 @@ typedef DivideUnbiased<FlatScatterMatrix>           UnbiasedCovariance;
 typedef AbsPowerSum<1>                              AbsSum;
 typedef Central<AbsSum>                             SumOfAbsDifferences;
 typedef DivideByCount<SumOfAbsDifferences>          MeanAbsoluteDeviation;
+
+typedef Coord<Mean>                                 GeometricCenter;
+typedef Coord<Principal<StdDev> >                   PrincipalRadii;
+typedef Coord<Principal<CoordinateSystem> >         PrincipalCoordSystem;
+
+typedef CoordWeighted<Mean>                         CenterOfMass;
+typedef CoordWeighted<Principal<Variance> >         MomentsOfInertia;
+typedef CoordWeighted<Principal<CoordinateSystem> > CoordSystemOfInertia;
 
 typedef Quantile<0>                                 Minimum;
 typedef Quantile<100>                               Maximum;
@@ -200,7 +208,7 @@ struct StandardizeTag<A, A>
     typedef A type;
 };
 
-    // fail when the tag spec was non-conforming 
+    // ... or fail when the tag spec was non-conforming 
 template <class A, class B>
 struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined<B> >
     : public Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>
@@ -302,12 +310,14 @@ VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Central)
 VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Central)
 VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Principal)
 
-    // drop one modifier when duplication occurs
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Central, Central)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Principal)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Whitened)
-
 #undef VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS
+
+    // drop duplicates
+template <class A, template <class> class B>
+struct ModifierRule<B<B<A> > >
+{
+    typedef B<A> type;
+};
 
     // recurse down the modifier chain
 template <class A, template <class> class B>
@@ -316,8 +326,10 @@ struct ModifierRule<B<A> >
     typedef typename ModifierOrder<B<typename StandardizeTag<A>::type> >::type type;
 };
 
-    // poor man's implementation of template typedef
-#define VIGRA_REDUCE_MODFIERS(TEMPLATE, SOURCE, TARGET) \
+    // reduce the SOURCE modifier to the TARGET modifier,
+    // using the given TEMPLATE arguments
+    // (this is a work-around for the lack of templated typedef in C++)
+#define VIGRA_REDUCE_MODFIER(TEMPLATE, SOURCE, TARGET) \
 template <TEMPLATE > \
 struct ModifierRule<SOURCE > \
 { \
@@ -326,29 +338,29 @@ struct ModifierRule<SOURCE > \
 
 #define VIGRA_VOID
 
-    // centralizing doesn't change the axes
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Axes>, Axes)
-    // whitened axes are the same as principal axes
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Whitened<Axes>, Principal<Axes>)
+    // centralizing doesn't change the CoordinateSystem
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CoordinateSystem>, CoordinateSystem)
+    // whitened CoordinateSystem are the same as principal CoordinateSystem
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<CoordinateSystem>, Principal<CoordinateSystem>)
 
     // counting modified data is the same as counting data, except for weighted data
-VIGRA_REDUCE_MODFIERS(template <class> class A, A<Count>, Count)
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
+VIGRA_REDUCE_MODFIER(template <class> class A, A<Count>, Count)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
 
-    // reduce the Moment<N> and CentralMoment<N> synonyms
-VIGRA_REDUCE_MODFIERS(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)
-VIGRA_REDUCE_MODFIERS(unsigned N, CentralMoment<N>, DivideByCount<Central<PowerSum<N> > >)
+    // reduce the Moment<N> and CentralMoment<N> aliases
+VIGRA_REDUCE_MODFIER(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)
+VIGRA_REDUCE_MODFIER(unsigned N, CentralMoment<N>, DivideByCount<Central<PowerSum<N> > >)
 
     // reduce statistics that are inherently centered
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Skewness>, Skewness)
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<Kurtosis>, Kurtosis)
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<FlatScatterMatrix>, FlatScatterMatrix)
-VIGRA_REDUCE_MODFIERS(VIGRA_VOID, Central<CovarianceEigensystem>, CovarianceEigensystem)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Skewness>, Skewness)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Kurtosis>, Kurtosis)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<FlatScatterMatrix>, FlatScatterMatrix)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CovarianceEigensystem>, CovarianceEigensystem)
 
     // reductions to CoordWeighted<A>
-VIGRA_REDUCE_MODFIERS(class A, Weighted<Coord<A> >, CoordWeighted<A>)
-VIGRA_REDUCE_MODFIERS(class A, Coord<Weighted<A> >, CoordWeighted<A>)
+VIGRA_REDUCE_MODFIER(class A, Weighted<Coord<A> >, CoordWeighted<A>)
+VIGRA_REDUCE_MODFIER(class A, Coord<Weighted<A> >, CoordWeighted<A>)
  
     // reduce even absolute powers to plain powers
 template <unsigned N>
@@ -358,7 +370,7 @@ struct ModifierRule<AbsPowerSum<N> >
 };
 
 #undef VIGRA_VOID
-#undef VIGRA_REDUCE_MODFIERS
+#undef VIGRA_REDUCE_MODFIER
 
 } // namespace detail
 
