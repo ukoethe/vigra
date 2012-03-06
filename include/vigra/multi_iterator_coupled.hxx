@@ -522,9 +522,6 @@ class CoupledScanOrderIterator
     using base_type::neighborhoodType;
     using base_type::get;
 
-    // using base_type::top;
-    // using base_type::get;
-
   protected:
     void reset()
     {

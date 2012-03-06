@@ -48,6 +48,7 @@
 #include "static_assert.hxx"
 #include "mathutil.hxx"
 #include "utilities.hxx"
+#include "multi_iterator_coupled.hxx"
 #include "matrix.hxx"
 #include "multi_math.hxx"
 #include "eigensystem.hxx"
@@ -147,7 +148,7 @@ template <unsigned LEVEL>
 struct AccumulatorFlags<false, LEVEL>
 : public AccumulatorEnd
 {
-    typedef AccumulatorEnd BaseType;
+    typedef AccumulatorEnd InternalBaseType;
     static const unsigned level = LEVEL;
     
     mutable BitArray<LEVEL> is_dirty_;
@@ -169,6 +170,13 @@ struct AccumulatorFlags<false, LEVEL>
     {
         return is_dirty_.test<which>();
     }
+};
+
+template <class T>
+struct HasDependencies : public sfinae_test<T, HasDependencies>
+{
+    template <class U>
+    HasDependencies(U*, typename U::Dependencies* = 0);
 };
 
     // Insert the dependencies of the selected functors into the TypeList and sort
@@ -390,7 +398,7 @@ void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T()
 template <class A, class ResultType = typename A::value_type>
 struct NeedsReshape
 {
-    typedef typename NeedsReshape<typename A::BaseType>::type type;
+    typedef typename NeedsReshape<typename A::InternalBaseType>::type type;
 };
 
 template <class A, unsigned int N, class T, class Alloc>
@@ -484,13 +492,89 @@ struct ReshapeImpl<VigraFalseType>
     {}
 };
 
+template <class TAG, class HANDLE>
+struct DataAccessTraits;
+
+template <class TAG, class T, class NEXT>
+struct DataAccessTraits<TAG, CoupledHandle<T, NEXT> >
+{
+    typedef typename CoupledHandleCast<1, CoupledHandle<T, NEXT> >::type::value_type value_type;
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        using BASE::update;
+        
+        void update(CoupledHandle<T, NEXT> const & t)
+        {
+            BASE::update(get<1>(t));
+        }
+    };
+};
+
+template <class TAG, class T, class NEXT>
+struct DataAccessTraits<Weighted<TAG>, CoupledHandle<T, NEXT> >
+{
+    typedef typename CoupledHandleCast<1, CoupledHandle<T, NEXT> >::type::value_type value_type;
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        using BASE::update;
+        
+        void update(CoupledHandle<T, NEXT> const & t)
+        {
+            BASE::update(get<1>(t), get<2>(t));
+        }
+    };
+};
+
+template <class TAG, class T, class NEXT>
+struct DataAccessTraits<Coord<TAG>, CoupledHandle<T, NEXT> >
+{
+    typedef typename CoupledHandleCast<0, CoupledHandle<T, NEXT> >::type::value_type value_type;
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        using BASE::update;
+        
+        void update(CoupledHandle<T, NEXT> const & t)
+        {
+            BASE::update(get<0>(t));
+        }
+    };
+};
+
+template <class TAG, class T, class NEXT>
+struct DataAccessTraits<CoordWeighted<TAG>, CoupledHandle<T, NEXT> >
+{
+    typedef typename CoupledHandleCast<0, CoupledHandle<T, NEXT> >::type::value_type value_type;
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        using BASE::update;
+        
+        void update(CoupledHandle<T, NEXT> const & t)
+        {
+            BASE::update(get<0>(t), get<1>(t));
+        }
+    };
+};
+
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
     // if dynamic=false, a plain accumulator will be created
 template <class T, class Accumulators, bool dynamic=false, unsigned level = 0>
 struct Compose
 {
-    typedef typename Accumulators::Head Tag; 
+//    typedef typename Accumulators::Head Tag; 
+    typedef typename StandardizeTag<typename Accumulators::Head>::type Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
     typedef Decorator<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
@@ -515,16 +599,16 @@ struct Accumulator
 : public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type BaseType;
+    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type InternalBaseType;
     
     typedef AccumulatorBegin                         Tag;
-    typedef typename BaseType::argument_type         argument_type;
-    typedef typename BaseType::first_argument_type   first_argument_type;
-    typedef typename BaseType::second_argument_type  second_argument_type;
-    typedef typename BaseType::result_type           result_type;
+    typedef typename InternalBaseType::argument_type         argument_type;
+    typedef typename InternalBaseType::first_argument_type   first_argument_type;
+    typedef typename InternalBaseType::second_argument_type  second_argument_type;
+    typedef typename InternalBaseType::result_type           result_type;
 
-    BaseType next_;
-    detail::ReshapeImpl<typename detail::NeedsReshape<BaseType>::type> reshape_;
+    InternalBaseType next_;
+    detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
     
     void reset()
     {
@@ -641,7 +725,7 @@ namespace detail {
 
 template <class TAG, class A, class FromTag=typename A::Tag>
 struct LookupTagImpl
-: public LookupTagImpl<TAG, typename A::BaseType>
+: public LookupTagImpl<TAG, typename A::InternalBaseType>
 {};
 
 template <class TAG, class A, class FromTag>
@@ -661,14 +745,27 @@ struct LookupTagImpl<TAG, A, TAG>
     typedef typename A::result_type result_type;
 };
 
+template <class TAG>
+struct Error__Attempt_to_access_inactive_statistic;
+
+// template <class TAG, class A>
+// struct LookupTagImpl<TAG, A, AccumulatorEnd>
+// {
+    // typedef TAG Tag;
+    // typedef A type;
+    // typedef A & reference;
+    // typedef typename A::value_type value_type;
+    // typedef typename A::result_type result_type;
+// };
+
 template <class TAG, class A>
 struct LookupTagImpl<TAG, A, AccumulatorEnd>
 {
     typedef TAG Tag;
     typedef A type;
     typedef A & reference;
-    typedef typename A::value_type value_type;
-    typedef typename A::result_type result_type;
+    typedef Error__Attempt_to_access_inactive_statistic<TAG> value_type;
+    typedef Error__Attempt_to_access_inactive_statistic<TAG> result_type;
 };
 
 } // namespace detail
@@ -687,7 +784,7 @@ struct CastImpl
     template <class A>
     static reference exec(A & a)
     {
-        return CastImpl<Tag, typename A::BaseType::Tag, reference>::exec(a.next_);
+        return CastImpl<Tag, typename A::InternalBaseType::Tag, reference>::exec(a.next_);
     }
 };
 
@@ -717,7 +814,7 @@ struct GetImpl
     template <class A>
     static result_type exec(A const & a)
     {
-        return GetImpl<Tag, typename A::BaseType::Tag, result_type>::exec(a.next_);
+        return GetImpl<Tag, typename A::InternalBaseType::Tag, result_type>::exec(a.next_);
     }
 };
 
@@ -741,6 +838,13 @@ struct GetImpl<Tag, AccumulatorEnd, result_type>
             std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
         return false;
     }
+};
+
+template <class Tag, class A>
+struct GetImpl<Tag, A, Error__Attempt_to_access_inactive_statistic<Tag> >
+{
+    static Error__Attempt_to_access_inactive_statistic<Tag> exec(A const & a)
+    {}
 };
 
 } // namespace detail
@@ -792,9 +896,7 @@ template <class T, class TAG, class NEXT>
 struct AccumulatorBase 
 {
 	typedef TAG            Tag;
-        // FIXME: this will become more sophisticated to support modifiers
-    typedef typename TransferModifiers<TAG, typename Tag::Dependencies::type>::type Dependencies;
-	typedef NEXT           BaseType;
+	typedef NEXT           InternalBaseType;
     typedef T const &      argument_type;
     typedef argument_type  first_argument_type;
     typedef double         second_argument_type;
@@ -807,7 +909,7 @@ struct AccumulatorBase
     void activate()
     {
         next_.activateImpl<index>();
-        detail::ActivateDependencies<Dependencies>::exec(*this);
+        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
     }
     
     template <int INDEX>
@@ -934,6 +1036,7 @@ important notes on modifiers:
 
 class CoordinateSystem
 {
+  public:
     typedef Select<> Dependencies;
     
     template <class T, class BASE>
@@ -2044,6 +2147,30 @@ class Principal<AbsSum>
         }
     };
 };
+
+template <class TAG>
+class Coord
+{
+  public:
+    typedef typename TransferModifiers<Coord<TAG>, typename TAG::Dependencies::type>::type Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TAG::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    {
+        typedef typename TAG::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::update;
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::update(get<0>(t));
+        }
+    };
+};
+
+
 
 }} // namespace vigra::acc1
 
