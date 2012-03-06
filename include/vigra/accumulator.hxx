@@ -1424,59 +1424,6 @@ class RootDivideUnbiased
     };
 };
 
-// Centralize
-template <>
-class Central<CachePreparedData> 
-{
-  public:
-    typedef Select<Mean> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        static const unsigned int workInPass = 2;
-        
-        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
-        typedef value_type const &                                  result_type;
-
-        mutable value_type value_;
-        
-        Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
-        {}
-        
-        void reset()
-        {
-            value_ = element_type();
-        }
-    
-        template <class DATA>
-        void reshape(DATA const & d)
-        {
-            detail::reshapeImpl(value_, detail::shape(d));
-        }
-        
-        void update(T const & t)
-        {
-            using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
-        }
-        
-        void update(T const & t, double)
-        {
-            using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
-        }
-    };
-};
-
 template <>
 class Central<PowerSum<2> >
 {
@@ -1523,7 +1470,6 @@ class Central<PowerSum<2> >
     };
 };
 
-    // FIXME: automatic forwarding of dependencies to Central<Moment<3> > doesn't work
 template <>
 class Central<PowerSum<3> >
 {
@@ -1617,73 +1563,6 @@ class Central<PowerSum<4> >
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(get<Centralize>(*this), 4);
-        }
-    };
-};
-
-// FIXME: we can get rid of this redundancy when we introduce get<PlainData>,
-//        which will be transfered to get<Centralize> automatically
-//        but be aware that we must not do this substitution for inherently Central accumulators
-template <unsigned int N>
-class Central<PowerSum<N> >
-{
-  public:
-    typedef Select<Centralize> Dependencies;
-     
-    template <class T, class BASE>
-    struct Impl
-    : public SumBaseImpl<T, BASE>
-    {
-        static const unsigned int workInPass = 2;
-        
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(false,
-                "Central<PowerSum<N> >::operator+=(): not implemented for N > 4.");
-        }
-    
-        void update(T const & t)
-        {
-            using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), (int)N);
-        }
-        
-        void update(T const & t, double weight)
-        {
-            using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), (int)N);
-        }
-    };
-};
-
-template <>
-class Central<AbsSum>
-{
-  public:
-    typedef Select<Centralize> Dependencies;
-     
-    template <class T, class BASE>
-    struct Impl
-    : public SumBaseImpl<T, BASE>
-    {
-        static const unsigned int workInPass = 2;
-        
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(false,
-                "Central<AbsSum>::operator+=(): not supported.");
-        }
-    
-        void update(T const & t)
-        {
-            using namespace vigra::multi_math;            
-            value_ += abs(get<Centralize>(*this));
-        }
-        
-        void update(T const & t, double weight)
-        {
-            using namespace vigra::multi_math;            
-            value_ += weight*abs(get<Centralize>(*this));
         }
     };
 };
@@ -2214,6 +2093,216 @@ class CoordWeighted
             // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
             // ImplType::update(get<0>(t), get<1>(t));
             ImplType::update(get<0>(t), *t);
+        }
+    };
+};
+
+// Centralize by subtracting the mean and cache the result
+class Centralize
+{
+  public:
+    typedef Select<Mean> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class DATA>
+        void reshape(DATA const & d)
+        {
+            detail::reshapeImpl(value_, detail::shape(d));
+        }
+        
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;
+            value_ = t - get<Mean>(*this);
+        }
+        
+        void update(T const & t, double)
+        {
+            update(t);
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+    // alternative implementation without caching 
+    //
+// template <class TAG>
+// class Central
+// {
+  // public:
+    // typedef typename StandardizeTag<TAG>::type TargetTag;
+    // typedef TypeList<Mean, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    
+    // template <class T, class BASE>
+    // struct Impl
+    // : public TargetTag::template Impl<T, BASE>
+    // {
+        // typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        
+        // static const unsigned int workInPass = 2;
+        
+        // void operator+=(Impl const & o)
+        // {
+            // vigra_precondition(false,
+                // "Central<...>::operator+=(): not supported.");
+        // }
+    
+        // void update(T const & t)
+        // {
+            // ImplType::update(t - get<Mean>(*this));
+        // }
+        
+        // void update(T const & t, double weight)
+        // {
+            // ImplType::update(t - get<Mean>(*this), weight);
+        // }
+    // };
+// };
+
+template <class TAG>
+class Central
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef TypeList<Centralize, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<T, BASE>
+    {
+        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        
+        static const unsigned int workInPass = 2;
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Central<...>::operator+=(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            ImplType::update(get<Centralize>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            ImplType::update(get<Centralize>(*this), weight);
+        }
+    };
+};
+
+// Compute principal projection and cache the result
+class PrincipalProjection
+{
+  public:
+    typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class DATA>
+        void reshape(DATA const & d)
+        {
+            detail::reshapeImpl(value_, detail::shape(d));
+        }
+        
+        void update(T const & t)
+        {
+            using namespace vigra::multi_math;
+            for(unsigned int k=0; k<t.size(); ++k)
+            {
+                value_[k] = get<Principal<CoordinateSystem> >(*this)(0, k)*get<Centralize>(*this)[0];
+                for(unsigned int d=1; d<t.size(); ++d)
+                    value_[k] += get<Principal<CoordinateSystem> >(*this)(d, k)*get<Centralize>(*this)[d];
+            }
+            std::cerr << "PrincipalProjection(" << t << ") = " << value_ << "\n";
+        }
+        
+        void update(T const & t, double)
+        {
+            update(t);
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+template <class TAG>
+class Principal
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef TypeList<PrincipalProjection, 
+                 typename TransferModifiers<Principal<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<T, BASE>
+    {
+        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        
+        static const unsigned int workInPass = 2;
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Principal<...>::operator+=(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            ImplType::update(get<PrincipalProjection>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            ImplType::update(get<PrincipalProjection>(*this), weight);
         }
     };
 };

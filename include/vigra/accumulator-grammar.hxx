@@ -74,7 +74,9 @@ template <unsigned NDim> class MultiHistogram; // multi-dimensional histogram
 
 class AccumulatorArray;                        // one accumulator for each region (may be better implemented by other means)
 
-class CachePreparedData;                       // cache the prepared (centralized, whitened etc.) version of the last data value 
+class Centralize;                              // cache centralized values
+class PrincipalProjection;                     // cache values after principal projection
+class Whiten;                                  // cache values after whitening
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
 class PlainData;                               // use data "as-is" (useful for automatic transformation to other access methods)
 
@@ -113,9 +115,9 @@ template <class A>    class DivideUnbiased;      //  A / (count - 1)
 template <class A>    class RootDivideUnbiased;  //  sqrt(A / (count - 1))
 
     // data access
-template <class A> class Coord;          // use pixel coordinate instead of pixel value
-template <class A> class Weighted;       // use (value, weight) pairs
-template <class A> class CoordWeighted;  // use (coord, weight) pairs
+template <class A> class Coord;          // use pixel coordinate instead of pixel value (index 0 of CoupledHandle)
+template <class A> class Weighted;       // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
+template <class A> class CoordWeighted;  // use (coord, weight) pairs(index 0 and end of CoupledHandle)
 template <class A> class DataFromHandle; // extract data from index 1 of a CoupledHandle
 
     // data preparation
@@ -172,9 +174,9 @@ typedef CoordWeighted<Principal<CoordinateSystem> > CoordSystemOfInertia;
 typedef Quantile<0>                                 Minimum;
 typedef Quantile<100>                               Maximum;
 
-typedef Central<CachePreparedData>                  Centralize;
-typedef Principal<CachePreparedData>                PrincipalProjection;
-typedef Whitened<CachePreparedData>                 Whiten;
+// typedef Central<CachePreparedData>                  Centralize;
+// typedef Principal<CachePreparedData>                PrincipalProjection;
+// typedef Whitened<CachePreparedData>                 Whiten;
 
 /**************************************************************************/
 /*                                                                        */
@@ -388,10 +390,17 @@ VIGRA_REDUCE_MODFIER(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)
 VIGRA_REDUCE_MODFIER(unsigned N, CentralMoment<N>, DivideByCount<Central<PowerSum<N> > >)
 
     // reduce statistics that are inherently centered
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Centralize>, Centralize)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Skewness>, Skewness)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Kurtosis>, Kurtosis)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<FlatScatterMatrix>, FlatScatterMatrix)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CovarianceEigensystem>, CovarianceEigensystem)
+
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Principal<Centralize>, PrincipalProjection)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Centralize>, Whiten)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Principal<PrincipalProjection>, PrincipalProjection)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<PrincipalProjection>, Whiten)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Whiten>, Whiten)
 
     // reductions to CoordWeighted<A>
 VIGRA_REDUCE_MODFIER(class A, Weighted<Coord<A> >, CoordWeighted<A>)

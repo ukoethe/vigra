@@ -2173,7 +2173,7 @@ struct AccumulatorTest
             typedef TinyVector<int, 3> V;
             typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2>,
                                           AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
-                                          Principal<Variance>, Principal<CoordinateSystem>
+                                          Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>
                                           > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
@@ -2221,6 +2221,8 @@ struct AccumulatorTest
             Var ev(3,3, eigenvectorData);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-15);
+
+            std::cerr << get<Principal<Sum> >(a) << " Principal<Sum>\n";
 #endif
         }
 #if 1
