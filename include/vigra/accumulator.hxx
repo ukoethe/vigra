@@ -262,10 +262,10 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
         a += o;
     }
 
-    template <class Shape>
-    static void resize(A & a, Shape const & o)
+    template <class T>
+    static void resize(A & a, T const & t)
     {
-        a.reshape(o);
+        a.reshape(t);
     }
     
     static unsigned int passesRequired(A const & a)
@@ -305,11 +305,11 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
             a += o;
     }
 
-    template <class Shape>
-    static void resize(A & a, Shape const & o)
+    template <class T>
+    static void resize(A & a, T const & t)
     {
         if(a.isActive())
-            a.reshape(o);
+            a.reshape(t);
     }
     
     static unsigned int passesRequired(A const & a)
@@ -328,11 +328,11 @@ struct Decorator
     typedef Decorator & reference;
     typedef Decorator const & const_reference;
     
-    template <class Shape>
-    void resize(Shape const & s)
+    template <class T>
+    void resize(T const & t)
     {
-        this->next_.resize(s);
-        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::resize(*this, s);
+        this->next_.resize(t);
+        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::resize(*this, t);
     }
     
     void reset()
@@ -419,6 +419,23 @@ struct NeedsReshape<AccumulatorEnd, AccumulatorEnd::value_type>
     typedef VigraFalseType type;
 };
 
+template <unsigned int N, class T, class Stride>
+inline typename MultiArrayShape<N>::type
+shape(MultiArrayView<N, T, Stride> const & a)
+{
+    return a.shape();
+}
+
+template <class T, int N>
+inline Shape1
+shape(TinyVector<T, N> const &)
+{
+    return Shape1(N);
+}
+
+
+// FIXME: replace this with an init function that is called at the beginning of each pass?
+
     // This functor is inserted on top of an accumulator chain to call reshape() 
     // when the first data item arrives. This is necessary if the shape of the result 
     // depends on the shape of the input and cannot be determined at compile time. 
@@ -438,12 +455,12 @@ struct ReshapeImpl
         done_ = false;
     }
     
-    template <class A, class Shape>
-    void operator()(A & a, Shape const & s)
+    template <class A, class T>
+    void operator()(A & a, T const & t)
     {
         if(!done_)
         {
-            a.resize(s);
+            a.resize(t);
             done_ = true;
         }
     }
@@ -453,7 +470,7 @@ struct ReshapeImpl
     {
         if(!done_)
         {
-            a.resize(shape(t));
+            a.resize(t);
             done_ = true;
         }
     }
@@ -461,20 +478,6 @@ struct ReshapeImpl
     template <class A, class T, unsigned N>
     void operator()(A &, T const &, MetaInt<N>)
     {}
-        
-    template <unsigned int N, class U, class Stride>
-    typename MultiArrayShape<N>::type
-    shape(MultiArrayView<N, U, Stride> const & a)
-    {
-        return a.shape();
-    }
-    
-    template <class U, int N>
-    Shape1
-    shape(TinyVector<U, N> const &)
-    {
-        return Shape1(N);
-    }
 };
 
 template <>
@@ -492,89 +495,13 @@ struct ReshapeImpl<VigraFalseType>
     {}
 };
 
-template <class TAG, class HANDLE>
-struct DataAccessTraits;
-
-template <class TAG, class T, class NEXT>
-struct DataAccessTraits<TAG, CoupledHandle<T, NEXT> >
-{
-    typedef typename CoupledHandleCast<1, CoupledHandle<T, NEXT> >::type::value_type value_type;
-    
-    template <class BASE>
-    struct Impl
-    : public BASE
-    {
-        using BASE::update;
-        
-        void update(CoupledHandle<T, NEXT> const & t)
-        {
-            BASE::update(get<1>(t));
-        }
-    };
-};
-
-template <class TAG, class T, class NEXT>
-struct DataAccessTraits<Weighted<TAG>, CoupledHandle<T, NEXT> >
-{
-    typedef typename CoupledHandleCast<1, CoupledHandle<T, NEXT> >::type::value_type value_type;
-    
-    template <class BASE>
-    struct Impl
-    : public BASE
-    {
-        using BASE::update;
-        
-        void update(CoupledHandle<T, NEXT> const & t)
-        {
-            BASE::update(get<1>(t), get<2>(t));
-        }
-    };
-};
-
-template <class TAG, class T, class NEXT>
-struct DataAccessTraits<Coord<TAG>, CoupledHandle<T, NEXT> >
-{
-    typedef typename CoupledHandleCast<0, CoupledHandle<T, NEXT> >::type::value_type value_type;
-    
-    template <class BASE>
-    struct Impl
-    : public BASE
-    {
-        using BASE::update;
-        
-        void update(CoupledHandle<T, NEXT> const & t)
-        {
-            BASE::update(get<0>(t));
-        }
-    };
-};
-
-template <class TAG, class T, class NEXT>
-struct DataAccessTraits<CoordWeighted<TAG>, CoupledHandle<T, NEXT> >
-{
-    typedef typename CoupledHandleCast<0, CoupledHandle<T, NEXT> >::type::value_type value_type;
-    
-    template <class BASE>
-    struct Impl
-    : public BASE
-    {
-        using BASE::update;
-        
-        void update(CoupledHandle<T, NEXT> const & t)
-        {
-            BASE::update(get<0>(t), get<1>(t));
-        }
-    };
-};
-
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
     // if dynamic=false, a plain accumulator will be created
 template <class T, class Accumulators, bool dynamic=false, unsigned level = 0>
 struct Compose
 {
-//    typedef typename Accumulators::Head Tag; 
-    typedef typename StandardizeTag<typename Accumulators::Head>::type Tag; 
+    typedef typename Accumulators::Head Tag; 
     typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
     typedef Decorator<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
@@ -616,12 +543,12 @@ struct Accumulator
         next_.reset();
     }
     
-    template <class Shape>
-    void reshape(Shape const & s)
-    {
-        reshape_.reset();
-        reshape_(next_, s);
-    }
+    // template <class Shape>
+    // void reshape(Shape const & s)
+    // {
+        // reshape_.reset();
+        // reshape_(next_, s);
+    // }
 
     template <unsigned N>
     void update(T const & t)
@@ -965,8 +892,8 @@ struct AccumulatorBase
     void reset()
     {}
     
-    template <class Shape>
-    void reshape(Shape const &)
+    template <class DATA>
+    void reshape(DATA const &)
     {}
     
 	void operator+=(AccumulatorBase const &)
@@ -1058,10 +985,10 @@ class CoordinateSystem
             value_ = element_type();
         }
 
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            detail::reshapeImpl(value_, s);
+            detail::reshapeImpl(value_, detail::shape(d));
         }
         
         result_type operator()() const
@@ -1092,10 +1019,10 @@ struct SumBaseImpl
         value_ = element_type();
     }
 
-    template <class Shape>
-    void reshape(Shape const & s)
+    template <class DATA>
+    void reshape(DATA const & d)
     {
-        detail::reshapeImpl(value_, s);
+        detail::reshapeImpl(value_, detail::shape(d));
     }
     
     void operator+=(SumBaseImpl const & o)
@@ -1120,6 +1047,10 @@ class PowerSum<0>
     struct Impl
     : public SumBaseImpl<T, BASE, double, double>
     {
+        template <class DATA>
+        void reshape(DATA const &)
+        {}
+    
         void update(T const & t)
         {
             ++value_;
@@ -1253,13 +1184,13 @@ class Quantile<0>
             value_ = NumericTraits<element_type>::max();
         }
     
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
+            detail::reshapeImpl(value_, detail::shape(d), NumericTraits<element_type>::max());
         }
         
-       void operator+=(Impl const & o)
+        void operator+=(Impl const & o)
         {
             using namespace multi_math;
             value_ = min(value_, o.value_);
@@ -1309,10 +1240,10 @@ class Quantile<100>
             value_ = NumericTraits<element_type>::min();
         }
     
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
+            detail::reshapeImpl(value_, detail::shape(d), NumericTraits<element_type>::min());
         }
         
         void operator+=(Impl const & o)
@@ -1360,10 +1291,10 @@ struct CachedResultBase
         this->setClean();
     }
 
-    template <class Shape>
-    void reshape(Shape const & s)
+    template <class DATA>
+    void reshape(DATA const & d)
     {
-        detail::reshapeImpl(value_, s);
+        detail::reshapeImpl(value_, detail::shape(d));
     }
 
     void operator+=(CachedResultBase const &)
@@ -1502,10 +1433,10 @@ class Central<CachePreparedData>
             value_ = element_type();
         }
     
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            detail::reshapeImpl(value_, s);
+            detail::reshapeImpl(value_, detail::shape(d));
         }
         
         void update(T const & t)
@@ -1857,12 +1788,12 @@ class FlatScatterMatrix
             value_ = element_type();
         }
     
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            int size = prod(s);
+            int size = prod(detail::shape(d));
             detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
-            detail::reshapeImpl(diff_, s);
+            detail::reshapeImpl(diff_, detail::shape(d));
         }
         
         void operator+=(Impl const & o)
@@ -1922,10 +1853,10 @@ class DivideByCount<FlatScatterMatrix>
     : public CachedResultBase<T, BASE,
                               typename AccumulatorResultTraits<T>::CovarianceType>
     {
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            int size = prod(s);
+            int size = prod(detail::shape(d));
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
@@ -1953,10 +1884,10 @@ class DivideUnbiased<FlatScatterMatrix>
     : public CachedResultBase<T, BASE,
                               typename AccumulatorResultTraits<T>::CovarianceType>
     {
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & s)
         {
-            int size = prod(s);
+            int size = prod(detail::shape(d));
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
@@ -2016,10 +1947,10 @@ class CovarianceEigensystem
             this->setClean();
         }
     
-        template <class Shape>
-        void reshape(Shape const & s)
+        template <class DATA>
+        void reshape(DATA const & d)
         {
-            int size = prod(s);
+            int size = prod(detail::shape(d));
             detail::reshapeImpl(value_.first, Shape2(size,1));
             detail::reshapeImpl(value_.second, Shape2(size,size));
         }
@@ -2095,7 +2026,7 @@ class DivideByCount<Principal<PowerSum<2> > >
     };
 };
 
-// Principal<Variance> == covariance eigenvectors
+// Principal<CoordinateSystem> == covariance eigenvectors
 template <>
 class Principal<CoordinateSystem>
 {
@@ -2149,18 +2080,56 @@ class Principal<AbsSum>
 };
 
 template <class TAG>
-class Coord
+class Weighted
 {
   public:
-    typedef typename TransferModifiers<Coord<TAG>, typename TAG::Dependencies::type>::type Dependencies;
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename TransferModifiers<Weighted<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
     
     template <class T, class BASE>
     struct Impl
-    : public TAG::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
     {
-        typedef typename TAG::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
         
         using ImplType::update;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(get<1>(t));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
+            // ImplType::update(get<1>(t), get<2>(t));
+            ImplType::update(get<1>(t), *t);
+        }
+    };
+};
+
+template <class TAG>
+class Coord
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename TransferModifiers<Coord<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::update;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(get<0>(t));
+        }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
@@ -2170,7 +2139,36 @@ class Coord
     };
 };
 
-
+template <class TAG>
+class CoordWeighted
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename TransferModifiers<CoordWeighted<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::update;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(get<0>(t));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
+            // ImplType::update(get<0>(t), get<1>(t));
+            ImplType::update(get<0>(t), *t);
+        }
+    };
+};
 
 }} // namespace vigra::acc1
 

@@ -2314,15 +2314,15 @@ struct AccumulatorTest
         using namespace vigra::acc1;
 
         {
+#if 1
             typedef CoupledIteratorType<3>::type Iterator;
             typedef Iterator::value_type Handle;
-            typedef CoupledHandleCast<0, Handle>::type::value_type V;
+            typedef Shape3 V;
 
-            typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>
+            typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
+                                               Coord<Principal<Variance> >, Coord<Principal<CoordinateSystem> >,
+                                               Coord<AbsSum>, Coord<MeanAbsoluteDeviation>
                                           > > A;
-            //typedef Accumulator<Handle, Select<Count, Coord<StdDev>, Coord<Mean>, Coord<Minimum>, Coord<Maximum>, Coord<Covariance>
-            //                                   , Coord<MeanAbsoluteDeviation>
-            //                              > > A;
 
             typedef LookupTag<Coord<Mean>, A>::value_type W;
             typedef LookupTag<Coord<Covariance>, A>::value_type Var;
@@ -2331,58 +2331,84 @@ struct AccumulatorTest
 
             Iterator i = createCoupledIterator(V(4,4,4));
 
-            //typedef LookupTag<Coord<Mean>, A>::value_type W;
-            //std::cerr << typeid(A::BaseType).name() << "\n";
-            //std::cerr << typeid(W).name() << "\n";
-            //std::cerr << typeid(LookupTag<Coord<Minimum>, A>::type).name() << "\n";
-            //std::cerr << typeid(LookupTag<Coord<Minimum>, A>::Tag).name() << "\n";
-            ////std::cerr << typeid(get<Count>(a)).name() << "\n";
-            ////std::cerr << typeid(cast<Count>(a)).name() << "\n";
-            //std::cerr << typeid(StandardizeTag<Coord<Minimum>>::type).name() << "\n";
-            //std::cerr << get<Coord<Minimum>>(a) << "\n";
-            //std::cerr << get<Count>(a) << "\n";
-#if 1
-
             a(*(i+V(1,2,3)));
             a(*(i+V(2,3,1)));
             a(*(i+V(3,1,2)));
 
-            //a.updatePass2(V(1,2,3));
-            //a.updatePass2(V(2,3,1));
-            //a.updatePass2(V(3,1,2));
+            a.updatePass2(*(i+V(1,2,3)));
+            a.updatePass2(*(i+V(2,3,1)));
+            a.updatePass2(*(i+V(3,1,2)));
 
             shouldEqual(get<Count>(a), 3.0);
             shouldEqual(get<Coord<Minimum> >(a), V(1));
             shouldEqual(get<Coord<Maximum> >(a), V(3));
             shouldEqual(get<Coord<Sum> >(a), W(6.0));
-            //shouldEqual(get<AbsSum>(a), W(6.0));
+            shouldEqual(get<Coord<AbsSum> >(a), W(6.0));
             shouldEqual(get<Coord<Mean> >(a), W(2.0));
             shouldEqual(get<Coord<CentralMoment<2> > >(a), W(2.0/3.0));
             shouldEqual(get<Coord<Variance> >(a), W(2.0/3.0));
-            //shouldEqual(get<SumOfAbsDifferences>(a), W(2.0));
-            //shouldEqual(get<MeanAbsoluteDeviation>(a), W(2.0/3.0));
+            shouldEqual(get<Coord<SumOfAbsDifferences> >(a), W(2.0));
+            shouldEqual(get<Coord<MeanAbsoluteDeviation> >(a), W(2.0/3.0));
 
             W stddev = sqrt( W(2.0/3.0));
             shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<Coord<StdDev> >(a).data(), 1e-15);
 
-            //double covarianceData[] = { 
-            //    2.0/3.0, -1.0/3.0, -1.0/3.0,
-            //   -1.0/3.0,  2.0/3.0, -1.0/3.0,
-            //   -1.0/3.0, -1.0/3.0,  2.0/3.0 };
-            //Var covariance(3,3, covarianceData);
-            //shouldEqual(get<Coord<Covariance> >(a), covariance);
-            //std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
-            //W ew(1.0, 1.0, 0.0); 
-            //shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
-            //shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Principal<Variance> >(a).begin(), 1e-15);
+            double covarianceData[] = { 
+                2.0/3.0, -1.0/3.0, -1.0/3.0,
+               -1.0/3.0,  2.0/3.0, -1.0/3.0,
+               -1.0/3.0, -1.0/3.0,  2.0/3.0 };
+            Var covariance(3,3, covarianceData);
+            shouldEqual(get<Coord<Covariance> >(a), covariance);
+            std::pair<W const &, Var const &> eigen = get<Coord<CovarianceEigensystem> >(a);
+            W ew(1.0, 1.0, 0.0); 
+            shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
+            shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Coord<Principal<Variance> > >(a).begin(), 1e-15);
 
-            //double eigenvectorData[] = {
-            //    -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
-            //     0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
-            //     0.0               ,  0.816496580927726,  -0.5773502691896257 };
-            //Var ev(3,3, eigenvectorData);
-            //shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
-            //shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-15);
+            double eigenvectorData[] = {
+                -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
+                 0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
+                 0.0               ,  0.816496580927726,  -0.5773502691896257 };
+            Var ev(3,3, eigenvectorData);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Coord<Principal<CoordinateSystem> > >(a).begin(), 1e-15);
+#endif
+        }
+
+        {
+#if 1
+            typedef CoupledIteratorType<3, double, double>::type Iterator;
+            typedef Iterator::value_type Handle;
+            typedef Shape3 V;
+
+            typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, 
+                                               CoordWeighted<Mean>, Weighted<Mean>
+                                          > > A;
+
+            typedef LookupTag<Coord<Mean>, A>::value_type W;
+            
+            A a;
+
+            MultiArray<3, double> data(Shape3(4,4,4), 1.0);
+            data(1,2,3) = 0.5;
+            data(3,1,2) = 4.0;
+            MultiArray<3, double> weights(Shape3(4,4,4), 1.0);
+            weights(1,2,3) = 0.5;
+            weights(3,1,2) = 0.25;
+
+            Iterator i = createCoupledIterator(data, weights);
+
+            a(*(i+V(1,2,3)));
+            a(*(i+V(2,3,1)));
+            a(*(i+V(3,1,2)));
+
+            shouldEqual(get<Count>(a), 3.0);
+            shouldEqual(get<Coord<Minimum> >(a), V(1));
+            shouldEqual(get<Coord<Maximum> >(a), V(3));
+            shouldEqual(get<Coord<Mean> >(a), W(2.0));
+            shouldEqualTolerance(get<Weighted<Mean> >(a), 1.2857142857142858, 1e-15);
+            W coordWeightedMean(1.8571428571428572, 2.4285714285714284,  1.7142857142857142);
+            shouldEqualSequenceTolerance(coordWeightedMean.begin(), coordWeightedMean.end(), 
+                                         get<CoordWeighted<Mean> >(a).begin(), 1e-15);
 #endif
         }
     }
