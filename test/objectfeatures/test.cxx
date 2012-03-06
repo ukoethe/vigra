@@ -2222,7 +2222,8 @@ struct AccumulatorTest
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-15);
 
-            std::cerr << get<Principal<Sum> >(a) << " Principal<Sum>\n";
+            W zero;
+            shouldEqualSequenceTolerance(zero.begin(), zero.end(), get<Principal<Sum> >(a).begin(), 1e-15);
 #endif
         }
 #if 1

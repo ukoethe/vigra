@@ -424,6 +424,8 @@ struct ModifierRule<AbsPowerSum<N> >
 /*                                                                        */
 /**************************************************************************/
 
+struct AccumulatorBegin;
+
 namespace detail {
 
 template <class A>
@@ -570,6 +572,24 @@ struct TransferModifiers<A, TypeList<HEAD, TAIL> >
 
 template <class A>
 struct TransferModifiers<A, void>
+{
+    typedef void type;
+};
+
+template <class B>
+struct TransferModifiers<AccumulatorBegin, B>
+{
+    typedef B type;
+};
+
+template <class HEAD, class TAIL>
+struct TransferModifiers<AccumulatorBegin, TypeList<HEAD, TAIL> >
+{
+    typedef TypeList<HEAD, TAIL> type;
+};
+
+template <>
+struct TransferModifiers<AccumulatorBegin, void>
 {
     typedef void type;
 };

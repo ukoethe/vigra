@@ -2192,9 +2192,9 @@ class Central
     
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<T, BASE>
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
     {
-        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
         
         static const unsigned int workInPass = 2;
         
@@ -2258,7 +2258,6 @@ class PrincipalProjection
                 for(unsigned int d=1; d<t.size(); ++d)
                     value_[k] += get<Principal<CoordinateSystem> >(*this)(d, k)*get<Centralize>(*this)[d];
             }
-            std::cerr << "PrincipalProjection(" << t << ") = " << value_ << "\n";
         }
         
         void update(T const & t, double)
@@ -2283,9 +2282,9 @@ class Principal
     
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<T, BASE>
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
     {
-        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
         
         static const unsigned int workInPass = 2;
         
