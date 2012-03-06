@@ -245,7 +245,7 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     {
         a.update(t);
     }
-
+    
     template <class T>
     static void exec(A & a, T const & t, double weight)
     {
@@ -508,6 +508,25 @@ struct Compose
 
 template <class T, bool dynamic, unsigned level>
 struct Compose<T, void, dynamic, level> 
+{ 
+    typedef AccumulatorFlags<dynamic, level> type;
+};
+
+template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level>
+struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level>
+{
+    typedef CoupledHandle<T, NEXT> Handle;
+    typedef typename Accumulators::Head Tag;
+    typedef typename StandardizeTag<
+                           typename If<typename HasModifierPriority<Tag, AccessDataPriority>::type,
+                                       Tag,
+                                       DataFromHandle<Tag> >::type>::type WrappedTag; 
+    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
+    typedef Decorator<Handle, typename WrappedTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
+};
+
+template <class T, class NEXT, bool dynamic, unsigned level>
+struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level> 
 { 
     typedef AccumulatorFlags<dynamic, level> type;
 };
@@ -2075,6 +2094,35 @@ class Principal<AbsSum>
         {
             using namespace vigra::multi_math;            
             value_ += weight*abs(get<PrincipalProjection>(*this));
+        }
+    };
+};
+
+template <class TAG>
+class DataFromHandle
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename TargetTag::Dependencies Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::update;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(get<1>(t));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::update(get<1>(t));
         }
     };
 };

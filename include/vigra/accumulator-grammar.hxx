@@ -116,6 +116,7 @@ template <class A>    class RootDivideUnbiased;  //  sqrt(A / (count - 1))
 template <class A> class Coord;          // use pixel coordinate instead of pixel value
 template <class A> class Weighted;       // use (value, weight) pairs
 template <class A> class CoordWeighted;  // use (coord, weight) pairs
+template <class A> class DataFromHandle; // extract data from index 1 of a CoupledHandle
 
     // data preparation
 template <class A> class Central;    // subtract mean
@@ -240,6 +241,7 @@ struct ModifierPriority<MODIFIER<A> > \
 VIGRA_MODIFIER_PRIORITY(Coord, AccessDataPriority)
 VIGRA_MODIFIER_PRIORITY(Weighted, AccessDataPriority)
 VIGRA_MODIFIER_PRIORITY(CoordWeighted, AccessDataPriority)
+VIGRA_MODIFIER_PRIORITY(DataFromHandle, AccessDataPriority)
 
 VIGRA_MODIFIER_PRIORITY(DivideByCount, NormalizePriority)
 VIGRA_MODIFIER_PRIORITY(RootDivideByCount, NormalizePriority)
@@ -251,6 +253,34 @@ VIGRA_MODIFIER_PRIORITY(Principal, PrepareDataPriority)
 VIGRA_MODIFIER_PRIORITY(Whitened, PrepareDataPriority)
 
 #undef VIGRA_MODIFIER_PRIORITY
+
+template <class A, int TARGET_PRIORITY, int PRIORITY=ModifierPriority<A>::value>
+struct HasModifierPriority
+{
+    typedef VigraFalseType type;
+    static const bool value = false;
+};
+
+template <class A, int TARGET_PRIORITY>
+struct HasModifierPriority<A, TARGET_PRIORITY, TARGET_PRIORITY>
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <class A, template <class> class B, int TARGET_PRIORITY, int PRIORITY>
+struct HasModifierPriority<B<A>, TARGET_PRIORITY, PRIORITY>
+{
+    typedef typename HasModifierPriority<A, TARGET_PRIORITY, PRIORITY>::type type;
+    static const bool value = HasModifierPriority<A, TARGET_PRIORITY, PRIORITY>::value;
+};
+
+template <class A, template <class> class B, int TARGET_PRIORITY>
+struct HasModifierPriority<B<A>, TARGET_PRIORITY, TARGET_PRIORITY>
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
 
     // three-way compare 
 template <class A, class B>
@@ -304,6 +334,11 @@ struct ModifierOrder<OUTER<INNER<A > >, 0> \
 { \
     typedef OUTER<A > type; \
 };
+
+    // drop duplicates
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Central, Central)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Principal)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Whitened)
 
     // the strongest data preparation modifier takes precendence
 VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Central)

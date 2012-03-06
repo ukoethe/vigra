@@ -1898,10 +1898,17 @@ struct AccumulatorTest
         should((IsSameType<StandardizeTag<AbsPowerSum<3> >::type,
                            AbsPowerSum<3> >::value));
 
+            // CoordinateSystem 
         should((IsSameType<StandardizeTag<Central<CoordinateSystem> >::type,
                            CoordinateSystem>::value));
         should((IsSameType<StandardizeTag<Principal<CoordinateSystem> >::type,
                            Principal<CoordinateSystem> >::value));
+
+            // HasModifierPriority
+        using namespace vigra::acc1::detail;
+        should((HasModifierPriority<StandardizeTag<Count>::type, AccumulatorPriority>::value));
+        should(!(HasModifierPriority<StandardizeTag<Count>::type, AccessDataPriority>::value));
+        should((HasModifierPriority<StandardizeTag<Weighted<Count> >::type, AccessDataPriority>::value));
     }
 
     template <class SOURCE, class REFERENCE>
@@ -2381,7 +2388,7 @@ struct AccumulatorTest
             typedef Shape3 V;
 
             typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, 
-                                               CoordWeighted<Mean>, Weighted<Mean>
+                                               CoordWeighted<Mean>, Weighted<Mean>, Mean
                                           > > A;
 
             typedef LookupTag<Coord<Mean>, A>::value_type W;
@@ -2406,6 +2413,7 @@ struct AccumulatorTest
             shouldEqual(get<Coord<Maximum> >(a), V(3));
             shouldEqual(get<Coord<Mean> >(a), W(2.0));
             shouldEqualTolerance(get<Weighted<Mean> >(a), 1.2857142857142858, 1e-15);
+            shouldEqualTolerance(get<Mean>(a), 1.8333333333333333, 1e-15);
             W coordWeightedMean(1.8571428571428572, 2.4285714285714284,  1.7142857142857142);
             shouldEqualSequenceTolerance(coordWeightedMean.begin(), coordWeightedMean.end(), 
                                          get<CoordWeighted<Mean> >(a).begin(), 1e-15);
