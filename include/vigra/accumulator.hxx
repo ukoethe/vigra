@@ -460,13 +460,34 @@ struct ReshapeImpl
     {
         if(!done_)
         {
-            a.resize(t);
+            a.resize(shape(t));
             done_ = true;
         }
     }
     
     template <class A, class T>
     void operator()(A & a, T const & t, MetaInt<1>)
+    {
+        if(!done_)
+        {
+            a.resize(shape(t));
+            done_ = true;
+        }
+    }
+    
+    
+    template <class A, class T, class NEXT>
+    void operator()(A & a, CoupledHandle<T, NEXT> const & t)
+    {
+        if(!done_)
+        {
+            a.resize(t);
+            done_ = true;
+        }
+    }
+    
+    template <class A, class T, class NEXT>
+    void operator()(A & a, CoupledHandle<T, NEXT> const & t, MetaInt<1>)
     {
         if(!done_)
         {
@@ -486,8 +507,8 @@ struct ReshapeImpl<VigraFalseType>
     void reset()
     {}
 
-    template <class A, class Shape>
-    void operator()(A &, Shape const &)
+    template <class A, class T>
+    void operator()(A &, T const &)
     {}
 
     template <class A, class T, unsigned N>
@@ -562,12 +583,12 @@ struct Accumulator
         next_.reset();
     }
     
-    // template <class Shape>
-    // void reshape(Shape const & s)
-    // {
-        // reshape_.reset();
-        // reshape_(next_, s);
-    // }
+    template <class Shape>
+    void reshape(Shape const & s)
+    {
+        reshape_.reset();
+        reshape_(next_, s);
+    }
 
     template <unsigned N>
     void update(T const & t)
@@ -911,8 +932,8 @@ struct AccumulatorBase
     void reset()
     {}
     
-    template <class DATA>
-    void reshape(DATA const &)
+    template <class Shape>
+    void reshape(Shape const &)
     {}
     
 	void operator+=(AccumulatorBase const &)
@@ -1004,10 +1025,10 @@ class CoordinateSystem
             value_ = element_type();
         }
 
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, detail::shape(d));
+            detail::reshapeImpl(value_, s);
         }
         
         result_type operator()() const
@@ -1038,10 +1059,10 @@ struct SumBaseImpl
         value_ = element_type();
     }
 
-    template <class DATA>
-    void reshape(DATA const & d)
+    template <class Shape>
+    void reshape(Shape const & s)
     {
-        detail::reshapeImpl(value_, detail::shape(d));
+        detail::reshapeImpl(value_, s);
     }
     
     void operator+=(SumBaseImpl const & o)
@@ -1066,8 +1087,8 @@ class PowerSum<0>
     struct Impl
     : public SumBaseImpl<T, BASE, double, double>
     {
-        template <class DATA>
-        void reshape(DATA const &)
+        template <class Shape>
+        void reshape(Shape const &)
         {}
     
         void update(T const & t)
@@ -1203,10 +1224,10 @@ class Quantile<0>
             value_ = NumericTraits<element_type>::max();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, detail::shape(d), NumericTraits<element_type>::max());
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
         }
         
         void operator+=(Impl const & o)
@@ -1259,10 +1280,10 @@ class Quantile<100>
             value_ = NumericTraits<element_type>::min();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, detail::shape(d), NumericTraits<element_type>::min());
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
         }
         
         void operator+=(Impl const & o)
@@ -1310,10 +1331,10 @@ struct CachedResultBase
         this->setClean();
     }
 
-    template <class DATA>
-    void reshape(DATA const & d)
+    template <class Shape>
+    void reshape(Shape const & s)
     {
-        detail::reshapeImpl(value_, detail::shape(d));
+        detail::reshapeImpl(value_, s);
     }
 
     void operator+=(CachedResultBase const &)
@@ -1686,12 +1707,12 @@ class FlatScatterMatrix
             value_ = element_type();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            int size = prod(detail::shape(d));
+            int size = prod(s);
             detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
-            detail::reshapeImpl(diff_, detail::shape(d));
+            detail::reshapeImpl(diff_, s);
         }
         
         void operator+=(Impl const & o)
@@ -1751,10 +1772,10 @@ class DivideByCount<FlatScatterMatrix>
     : public CachedResultBase<T, BASE,
                               typename AccumulatorResultTraits<T>::CovarianceType>
     {
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            int size = prod(detail::shape(d));
+            int size = prod(s);
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
@@ -1782,10 +1803,10 @@ class DivideUnbiased<FlatScatterMatrix>
     : public CachedResultBase<T, BASE,
                               typename AccumulatorResultTraits<T>::CovarianceType>
     {
-        template <class DATA>
-        void reshape(DATA const & s)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            int size = prod(detail::shape(d));
+            int size = prod(s);
             detail::reshapeImpl(value_, Shape2(size,size));
         }
         
@@ -1845,10 +1866,10 @@ class CovarianceEigensystem
             this->setClean();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            int size = prod(detail::shape(d));
+            int size = prod(s);
             detail::reshapeImpl(value_.first, Shape2(size,1));
             detail::reshapeImpl(value_.second, Shape2(size,size));
         }
@@ -1990,12 +2011,13 @@ class DataFromHandle
     {
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
         
+        using ImplType::reshape;
         using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(get<1>(t));
+            ImplType::reshape(detail::shape(get<1>(t)));
         }
         
         template <class U, class NEXT>
@@ -2019,12 +2041,13 @@ class Weighted
     {
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
         
+        using ImplType::reshape;
         using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(get<1>(t));
+            ImplType::reshape(detail::shape(get<1>(t)));
         }
         
         template <class U, class NEXT>
@@ -2050,12 +2073,13 @@ class Coord
     {
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
         
+        using ImplType::reshape;
         using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(get<0>(t));
+            ImplType::reshape(detail::shape(get<0>(t)));
         }
         
         template <class U, class NEXT>
@@ -2079,12 +2103,13 @@ class CoordWeighted
     {
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
         
+        using ImplType::reshape;
         using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(get<0>(t));
+            ImplType::reshape(detail::shape(get<0>(t)));
         }
         
         template <class U, class NEXT>
@@ -2124,10 +2149,10 @@ class Centralize
             value_ = element_type();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, detail::shape(d));
+            detail::reshapeImpl(value_, s);
         }
         
         void update(T const & t)
@@ -2243,10 +2268,10 @@ class PrincipalProjection
             value_ = element_type();
         }
     
-        template <class DATA>
-        void reshape(DATA const & d)
+        template <class Shape>
+        void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, detail::shape(d));
+            detail::reshapeImpl(value_, s);
         }
         
         void update(T const & t)
