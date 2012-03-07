@@ -2473,49 +2473,19 @@ struct AccumulatorTest
         }
 
         {
-//#if 1
+#if 1
             typedef CoupledIteratorType<3, double, double>::type Iterator;
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
             typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
-                                               Weighted<Mean>, CoordWeighted<Mean>
+                                               Weighted<Mean>, CoordWeighted<Mean>,
+                                               Weighted<ArgMinWeight>, Weighted<ArgMaxWeight>,
+                                               Weighted<Coord<ArgMinWeight> >, Weighted<Coord<ArgMaxWeight> >
                                           > > A;
             
-            //typedef StandardizeTag<Weighted<Coord<Mean>>>::type WM;
-            //std::cerr << typeid(WM).name() << "\n";
-            //std::cerr << typeid(WM::Dependencies).name() << "\n";
-            //typedef Select<Weighted<Coord<Mean>>>::type Selected;
-            //std::cerr << typeid(Selected).name() << "\n";
-
-            //typedef StandardizeTag<Weighted<Coord<Sum>>>::type WM;
-            //std::cerr << typeid(WM).name() << "\n";
-            //std::cerr << typeid(WM::Dependencies).name() << "\n";
-            //typedef Select<Weighted<Coord<Sum>>>::type Selected;
-            //std::cerr << typeid(Selected).name() << "\n";
-
-            //typedef StandardizeTag<Coord<Sum>>::type WM;
-            //std::cerr << typeid(WM).name() << "\n";
-            //std::cerr << typeid(WM::Dependencies).name() << "\n";
-            //typedef Select<Coord<Sum>>::type Selected;
-            //std::cerr << typeid(Selected).name() << "\n";
-            //typedef TransferModifiers<Weighted<Sum>, void>::type TM;
-            //std::cerr << typeid(TM).name() << "\n";
-
-            //typedef acc1::detail::AddDependencies<WM::Dependencies>::type Deps;
-            //std::cerr << typeid(Deps).name() << "\n";
-//            typedef acc1::detail::AddDependencies<Selected>::type AccumulatorTags;
-//            std::cerr << typeid(AccumulatorTags).name() << "\n";
-
             A a;
             
-            //typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
-            //                                   Weighted<Mean>, CoordWeighted<Mean>
-            //                              > > A;
-
-            //A a;
-
-#if 1
             typedef LookupTag<Coord<Mean>, A>::value_type W;
             
             MultiArray<3, double> data(Shape3(4,4,4), 1.0);
@@ -2538,8 +2508,11 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Weighted<Mean> >(a), 1.2857142857142858, 1e-15);
             shouldEqualTolerance(get<Mean>(a), 1.8333333333333333, 1e-15);
             W coordWeightedMean(1.8571428571428572, 2.4285714285714284,  1.7142857142857142);
-            shouldEqualSequenceTolerance(coordWeightedMean.begin(), coordWeightedMean.end(), 
-                                         get<CoordWeighted<Mean> >(a).begin(), 1e-15);
+            shouldEqualTolerance(coordWeightedMean, get<CoordWeighted<Mean> >(a), W(1e-15));
+            shouldEqual(4.0, get<Weighted<ArgMinWeight> >(a));
+            shouldEqual(1.0, get<Weighted<ArgMaxWeight> >(a));
+            shouldEqual(V(3,1,2), get<CoordWeighted<ArgMinWeight> >(a));
+            shouldEqual(V(2,3,1), get<CoordWeighted<ArgMaxWeight> >(a));
 #endif
         }
     }

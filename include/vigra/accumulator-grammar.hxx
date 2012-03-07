@@ -64,6 +64,9 @@ class Kurtosis;                                // kurtosis
 class FlatScatterMatrix;                       // flattened upper-triangular part of the scatter matrix
 class ScatterMatrixEigensystem;                // eigenvalues and eigenvectors of the scatter matrix
 
+class ArgMinWeight;                            // store the value (or coordinate) where weight was minimal
+class ArgMaxWeight;                            // store the value (or coordinate) where weight was maximal
+
 template <unsigned Percent> class  Quantile;   // quantiles (including minimum and maximum)
 template <unsigned BinCount> class Histogram;  // histogram with fixed number of bins
 template <>  class Histogram<0>;               // histogram where number of bins is specified at runtime

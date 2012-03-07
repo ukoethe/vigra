@@ -1223,7 +1223,7 @@ class Quantile<0>
     {
         typedef typename AccumulatorResultTraits<T>::element_type element_type;
         typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                          result_type;
+        typedef value_type const &                                result_type;
 
         value_type value_;
         
@@ -1279,7 +1279,7 @@ class Quantile<100>
     {
         typedef typename AccumulatorResultTraits<T>::element_type element_type;
         typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                          result_type;
+        typedef value_type const &                                result_type;
 
         value_type value_;
         
@@ -1314,6 +1314,134 @@ class Quantile<100>
         void update(T const & t, double weight)
         {
             vigra_precondition(false, "Maximum accumulator does not support weights.");
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+class ArgMinWeight
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
+
+        double min_weight_;
+        value_type value_;
+        
+        Impl()
+        : min_weight_(NumericTraits<double>::max()),
+          value_()
+        {}
+        
+        void reset()
+        {
+            min_weight_ = NumericTraits<double>::max();
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            using namespace multi_math;
+            if(o.min_weight_ < min_weight_)
+            {
+                min_weight_ = o.min_weight_;
+                value_ = o.value_;
+            }
+        }
+    
+        void update(T const & t)
+        {
+            vigra_precondition(false, "ArgMinWeight::update() needs weights.");
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(weight < min_weight_)
+            {
+                min_weight_ = weight;
+                value_ = t;
+            }
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+class ArgMaxWeight
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
+
+        double max_weight_;
+        value_type value_;
+        
+        Impl()
+        : max_weight_(NumericTraits<double>::min()),
+          value_()
+        {}
+        
+        void reset()
+        {
+            max_weight_ = NumericTraits<double>::min();
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            using namespace multi_math;
+            if(o.max_weight_ > max_weight_)
+            {
+                max_weight_ = o.max_weight_;
+                value_ = o.value_;
+            }
+        }
+    
+        void update(T const & t)
+        {
+            vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(weight > max_weight_)
+            {
+                max_weight_ = weight;
+                value_ = t;
+            }
         }
         
         result_type operator()() const
