@@ -1916,7 +1916,7 @@ struct AccumulatorTest
         using namespace vigra::acc1::detail;
         should((HasModifierPriority<StandardizeTag<Count>::type, AccumulatorPriority>::value));
         should(!(HasModifierPriority<StandardizeTag<Count>::type, AccessDataPriority>::value));
-        should((HasModifierPriority<StandardizeTag<Weighted<Count> >::type, AccessDataPriority>::value));
+        should((HasModifierPriority<StandardizeTag<Weighted<Count> >::type, WeightingPriority>::value));
     }
 
     template <class SOURCE, class REFERENCE>
@@ -1939,20 +1939,23 @@ struct AccumulatorTest
         using namespace vigra::acc1;
 
 #define TEST_LONG_FORM(SOURCE, TARGET) testLongFormImpl<SOURCE, TARGET >(#SOURCE)
-
+#define DM DefaultModifier
         {
             using namespace vigra::acc1::detail;
-            TEST_LONG_FORM(Minimum, DefaultModifier<DefaultModifier<DefaultModifier<Minimum> > >);
-            TEST_LONG_FORM(Principal<Minimum>, DefaultModifier<DefaultModifier<Principal<Minimum> > >);
-            TEST_LONG_FORM(Weighted<Coord<Principal<Minimum> > >, CoordWeighted<DefaultModifier<Principal<Minimum> > >);
-            TEST_LONG_FORM(Mean, DefaultModifier<DivideByCount<DefaultModifier<Sum> > >);
-            TEST_LONG_FORM(Coord<Mean>, Coord<DivideByCount<DefaultModifier<Sum> > >);
-            TEST_LONG_FORM(Count, DefaultModifier<DefaultModifier<DefaultModifier<Count> > >);
-            TEST_LONG_FORM(Weighted<Count>, Weighted<DefaultModifier<DefaultModifier<Count> > >);
-            TEST_LONG_FORM(Coord<Count>, DefaultModifier<DefaultModifier<DefaultModifier<Count> > >);
-            TEST_LONG_FORM(Principal<Variance>, DefaultModifier<DivideByCount<Principal<PowerSum<2> > > >);
+
+
+            TEST_LONG_FORM(Minimum, DM<DM<DM<DM<Minimum> > > >);
+            TEST_LONG_FORM(Principal<Minimum>, DM<DM<DM<Principal<Minimum> > > >);
+            TEST_LONG_FORM(Weighted<Coord<Principal<Minimum> > >, Weighted<Coord<DM<Principal<Minimum> > > >);
+            TEST_LONG_FORM(Mean, DM< DM<DivideByCount<DM<Sum> > > >);
+            TEST_LONG_FORM(Coord<Mean>,  DM<Coord<DivideByCount<DefaultModifier<Sum> > > >);
+            TEST_LONG_FORM(Count, DM<DM<DM<DM<Count> > > >);
+            TEST_LONG_FORM(Weighted<Count>, Weighted<DM<DM<DM<Count> > > >);
+            TEST_LONG_FORM(Coord<Count>,  DM<DM<DM<DM<Count> > > >);
+            TEST_LONG_FORM(Principal<Variance>,  DM<DM<DivideByCount<Principal<PowerSum<2> > > > >);
         }
 #undef TEST_LONG_FORM
+#undef DM
           
           typedef Select<Count, Sum, Mean, Variance>::type Target;
 
@@ -1983,7 +1986,7 @@ struct AccumulatorTest
           should((IsSameType<TransferModifiers<Principal<Minimum>, Centralize>::type,
                              PrincipalProjection>::value));
           should((IsSameType<TransferModifiers<Principal<Weighted<Coord<Minimum> > >, Centralize>::type,
-                             CoordWeighted<PrincipalProjection> >::value));
+                             Weighted<Coord<PrincipalProjection> > >::value));
     }
 
     void test1()
@@ -2063,7 +2066,7 @@ struct AccumulatorTest
 
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(24, A::index);
+            shouldEqual(24, A::staticSize);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -2405,19 +2408,51 @@ struct AccumulatorTest
         }
 
         {
-#if 1
+//#if 1
             typedef CoupledIteratorType<3, double, double>::type Iterator;
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
-            typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, 
-                                               CoordWeighted<Mean>, Weighted<Mean>, Mean
+            typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
+                                               Weighted<Mean>, CoordWeighted<Mean>
                                           > > A;
+            
+            //typedef StandardizeTag<Weighted<Coord<Mean>>>::type WM;
+            //std::cerr << typeid(WM).name() << "\n";
+            //std::cerr << typeid(WM::Dependencies).name() << "\n";
+            //typedef Select<Weighted<Coord<Mean>>>::type Selected;
+            //std::cerr << typeid(Selected).name() << "\n";
 
+            //typedef StandardizeTag<Weighted<Coord<Sum>>>::type WM;
+            //std::cerr << typeid(WM).name() << "\n";
+            //std::cerr << typeid(WM::Dependencies).name() << "\n";
+            //typedef Select<Weighted<Coord<Sum>>>::type Selected;
+            //std::cerr << typeid(Selected).name() << "\n";
+
+            //typedef StandardizeTag<Coord<Sum>>::type WM;
+            //std::cerr << typeid(WM).name() << "\n";
+            //std::cerr << typeid(WM::Dependencies).name() << "\n";
+            //typedef Select<Coord<Sum>>::type Selected;
+            //std::cerr << typeid(Selected).name() << "\n";
+            //typedef TransferModifiers<Weighted<Sum>, void>::type TM;
+            //std::cerr << typeid(TM).name() << "\n";
+
+            //typedef acc1::detail::AddDependencies<WM::Dependencies>::type Deps;
+            //std::cerr << typeid(Deps).name() << "\n";
+//            typedef acc1::detail::AddDependencies<Selected>::type AccumulatorTags;
+//            std::cerr << typeid(AccumulatorTags).name() << "\n";
+
+            A a;
+            
+            //typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
+            //                                   Weighted<Mean>, CoordWeighted<Mean>
+            //                              > > A;
+
+            //A a;
+
+#if 1
             typedef LookupTag<Coord<Mean>, A>::value_type W;
             
-            A a;
-
             MultiArray<3, double> data(Shape3(4,4,4), 1.0);
             data(1,2,3) = 0.5;
             data(3,1,2) = 4.0;

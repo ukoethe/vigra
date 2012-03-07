@@ -78,7 +78,6 @@ class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
 class Whiten;                                  // cache values after whitening
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
-class PlainData;                               // use data "as-is" (useful for automatic transformation to other access methods)
 
 /* 
 Quantiles other than minimum and maximum require more thought:
@@ -175,10 +174,6 @@ typedef CoordWeighted<Principal<CoordinateSystem> > CoordSystemOfInertia;
 typedef Quantile<0>                                 Minimum;
 typedef Quantile<100>                               Maximum;
 
-// typedef Central<CachePreparedData>                  Centralize;
-// typedef Principal<CachePreparedData>                PrincipalProjection;
-// typedef Whitened<CachePreparedData>                 Whiten;
-
 /**************************************************************************/
 /*                                                                        */
 /*                        Tag standardization rules                       */
@@ -221,12 +216,13 @@ struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined
 namespace detail {
 
 enum { MinPriority = 1, 
-       AccumulatorPriority = 8,
-       PrepareDataPriority = 4,
-       NormalizePriority = 2,
-       AccessDataPriority = 1,
-       MaxPriority = 8,
-       SubstitutionMask = PrepareDataPriority | AccessDataPriority };
+       AccumulatorPriority = 16,
+       PrepareDataPriority = 8,
+       NormalizePriority = 4,
+       AccessDataPriority = 2,
+       WeightingPriority = 1,
+       MaxPriority = 16,
+       SubstitutionMask = PrepareDataPriority | AccessDataPriority | WeightingPriority };
 
 template <class A>
 struct ModifierPriority
@@ -241,9 +237,9 @@ struct ModifierPriority<MODIFIER<A> > \
     static const int value = VALUE; \
 };
 
+VIGRA_MODIFIER_PRIORITY(Weighted, WeightingPriority)
+
 VIGRA_MODIFIER_PRIORITY(Coord, AccessDataPriority)
-VIGRA_MODIFIER_PRIORITY(Weighted, AccessDataPriority)
-VIGRA_MODIFIER_PRIORITY(CoordWeighted, AccessDataPriority)
 VIGRA_MODIFIER_PRIORITY(DataFromHandle, AccessDataPriority)
 
 VIGRA_MODIFIER_PRIORITY(DivideByCount, NormalizePriority)
@@ -331,22 +327,25 @@ struct ModifierOrder<C<B<A> >, 1>
     typedef B<C<A> > type;
 };
 
-#define VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(OUTER, INNER) \
+#define VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(OUTER, INNER, RESULT) \
 template <class A> \
 struct ModifierOrder<OUTER<INNER<A > >, 0> \
 { \
-    typedef OUTER<A > type; \
+    typedef RESULT<A > type; \
 };
 
     // drop duplicates
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Central, Central)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Principal)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Whitened)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Central, Central, Central)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Principal, Principal)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Whitened, Whitened)
 
     // the strongest data preparation modifier takes precendence
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Central)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Central)
-VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Principal)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Principal, Central, Principal)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Central, Whitened)
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(Whitened, Principal, Whitened)
+
+    // Coord takes precendence over DataFromHandle
+VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS(DataFromHandle, Coord, Coord)
 
 #undef VIGRA_CLEANUP_DATA_PREPARATION_MODIFIERS
 
@@ -386,9 +385,10 @@ VIGRA_REDUCE_MODFIER(template <class> class A, A<Count>, Count)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
 
-    // reduce the Moment<N> and CentralMoment<N> aliases
+    // reduce aliases that typedef can't handle
 VIGRA_REDUCE_MODFIER(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)
 VIGRA_REDUCE_MODFIER(unsigned N, CentralMoment<N>, DivideByCount<Central<PowerSum<N> > >)
+VIGRA_REDUCE_MODFIER(class A, CoordWeighted<A>, Weighted<Coord<A> >)
 
     // reduce statistics that are inherently centered
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Centralize>, Centralize)
@@ -403,10 +403,6 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Principal<PrincipalProjection>, PrincipalProjec
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<PrincipalProjection>, Whiten)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Whiten>, Whiten)
 
-    // reductions to CoordWeighted<A>
-VIGRA_REDUCE_MODFIER(class A, Weighted<Coord<A> >, CoordWeighted<A>)
-VIGRA_REDUCE_MODFIER(class A, Coord<Weighted<A> >, CoordWeighted<A>)
- 
     // reduce even absolute powers to plain powers
 template <unsigned N>
 struct ModifierRule<AbsPowerSum<N> >
@@ -424,8 +420,6 @@ struct ModifierRule<AbsPowerSum<N> >
 /*                           Tag transfer rules                           */
 /*                                                                        */
 /**************************************************************************/
-
-struct AccumulatorBegin;
 
 namespace detail {
 
@@ -544,6 +538,12 @@ struct SubstituteModifiers<A1<A0>, B1<B0>, true>
     typedef A1<typename SubstituteModifiers<A0, B0>::type> type;
 };
 
+template <class A0, class B0, template <class> class B1>
+struct SubstituteModifiers<DefaultModifier<A0>, B1<B0>, true>
+{
+    typedef B1<typename SubstituteModifiers<A0, B0>::type> type;
+};
+
 template <class A0, template <class> class A1, class B0, template <class> class B1>
 struct SubstituteModifiers<A1<A0>, B1<B0>, false>
 {
@@ -577,20 +577,20 @@ struct TransferModifiers<A, void>
     typedef void type;
 };
 
-template <class B>
-struct TransferModifiers<AccumulatorBegin, B>
+template <class A>
+struct StandardizeDependencies
 {
-    typedef B type;
+    typedef typename A::type type;
 };
 
 template <class HEAD, class TAIL>
-struct TransferModifiers<AccumulatorBegin, TypeList<HEAD, TAIL> >
+struct StandardizeDependencies<TypeList<HEAD, TAIL> >
 {
     typedef TypeList<HEAD, TAIL> type;
 };
 
 template <>
-struct TransferModifiers<AccumulatorBegin, void>
+struct StandardizeDependencies<void>
 {
     typedef void type;
 };

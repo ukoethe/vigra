@@ -183,17 +183,14 @@ struct HasDependencies : public sfinae_test<T, HasDependencies>
     // the list such that dependencies come after the functors using them. Make sure 
     // that each functor is contained only once.
 template <class T>
-struct AddDependencies
-{
-        // transform Selected<...> into TypeList<...>
-    typedef typename AddDependencies<typename T::type>::type type;
-};
+struct AddDependencies;
 
 template <class HEAD, class TAIL>
 struct AddDependencies<TypeList<HEAD, TAIL> >
 {
     typedef typename AddDependencies<TAIL>::type                                   TailWithDependencies;
-    typedef typename AddDependencies<typename HEAD::Dependencies>::type            HeadDependencies;
+    typedef typename StandardizeDependencies<typename HEAD::Dependencies>::type    StandardDependencies;
+    typedef typename AddDependencies<StandardDependencies>::type                   HeadDependencies;
     typedef TypeList<HEAD, HeadDependencies>                                       HeadWithDependencies;
     typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  type;
 };
@@ -538,12 +535,11 @@ struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level>
 {
     typedef CoupledHandle<T, NEXT> Handle;
     typedef typename Accumulators::Head Tag;
-    typedef typename StandardizeTag<
-                           typename If<typename HasModifierPriority<Tag, AccessDataPriority>::type,
-                                       Tag,
-                                       DataFromHandle<Tag> >::type>::type WrappedTag; 
+    typedef typename StandardizeTag<DataFromHandle<Tag> >::type WrappedTag;
     typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
-    typedef Decorator<Handle, typename WrappedTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
+    typedef typename If<typename HasModifierPriority<Tag, AccessDataPriority>::type,
+                                 Tag, WrappedTag>::type UseTag; 
+    typedef Decorator<Handle, typename UseTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
 };
 
 template <class T, class NEXT, bool dynamic, unsigned level>
@@ -563,7 +559,6 @@ struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level>
     // Create an accumulator chain containing the Selected statistics and their dependencies.
 template <class T, class Selected, bool dynamic = false>
 struct Accumulator
-: public detail::Compose<T, typename detail::AddDependencies<typename Selected::type>::type, dynamic>::type
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
     typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type InternalBaseType;
@@ -573,6 +568,8 @@ struct Accumulator
     typedef typename InternalBaseType::first_argument_type   first_argument_type;
     typedef typename InternalBaseType::second_argument_type  second_argument_type;
     typedef typename InternalBaseType::result_type           result_type;
+    
+    static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
     detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
@@ -737,10 +734,18 @@ struct LookupTagImpl<TAG, A, AccumulatorEnd>
 
 } // namespace detail
 
-template <class Tag, class A>
+    // If called from an inner accumulator, transfer TargetTag's modifiers.
+    // This ensures that dependencies are used with matching modifiers.
+template <class Tag, class A, class TargetTag=typename A::Tag>
 struct LookupTag
-: public detail::LookupTagImpl<typename TransferModifiers<typename A::Tag, 
+: public detail::LookupTagImpl<typename TransferModifiers<TargetTag, 
                                                          typename StandardizeTag<Tag>::type>::type, A>
+{}; 
+
+    // If called from the main accumulator chain, use target tags verbatim (after standardization).
+template <class Tag, class A>
+struct LookupTag<Tag, A, AccumulatorBegin>
+: public detail::LookupTagImpl<typename StandardizeTag<Tag>::type, A>
 {}; 
 
 namespace detail {
@@ -2132,7 +2137,6 @@ class DataFromHandle
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
         
         using ImplType::reshape;
-        using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
@@ -2145,37 +2149,11 @@ class DataFromHandle
         {
             ImplType::update(get<1>(t));
         }
-    };
-};
-
-template <class TAG>
-class Weighted
-{
-  public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef typename TransferModifiers<Weighted<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
-    {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
-        
-        using ImplType::reshape;
-        using ImplType::update;
         
         template <class U, class NEXT>
-        void reshape(CoupledHandle<U, NEXT> const & t)
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::reshape(detail::shape(get<1>(t)));
-        }
-        
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t)
-        {
-            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
-            // ImplType::update(get<1>(t), get<2>(t));
-            ImplType::update(get<1>(t), *t);
+            ImplType::update(get<1>(t), weight);
         }
     };
 };
@@ -2184,8 +2162,9 @@ template <class TAG>
 class Coord
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef typename TransferModifiers<Coord<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
+    typedef typename StandardizeTag<TAG>::type                                        TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
+    typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -2194,7 +2173,6 @@ class Coord
         typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
         
         using ImplType::reshape;
-        using ImplType::update;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
@@ -2207,37 +2185,35 @@ class Coord
         {
             ImplType::update(get<0>(t));
         }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        {
+            ImplType::update(get<0>(t), weight);
+        }
     };
 };
 
 template <class TAG>
-class CoordWeighted
+class Weighted
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef typename TransferModifiers<CoordWeighted<TargetTag>, typename TargetTag::Dependencies::type>::type Dependencies;
+    typedef typename StandardizeTag<TAG>::type                                         TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
+    typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
     
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    : public TargetTag::template Impl<T, BASE>
     {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
-        
-        using ImplType::reshape;
-        using ImplType::update;
-        
-        template <class U, class NEXT>
-        void reshape(CoupledHandle<U, NEXT> const & t)
-        {
-            ImplType::reshape(detail::shape(get<0>(t)));
-        }
-        
+        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+                
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
             // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
-            // ImplType::update(get<0>(t), get<1>(t));
-            ImplType::update(get<0>(t), *t);
+            // ImplType::update(t, get<2>(t));
+            ImplType::update(t, (double)*t);
         }
     };
 };
@@ -2297,8 +2273,10 @@ template <class TAG>
 class Central
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef TypeList<Centralize, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    typedef typename StandardizeTag<TAG>::type                                           TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type     TargetDependencies;
+    typedef TypeList<Centralize, 
+              typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -2421,9 +2399,10 @@ template <class TAG>
 class Principal
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename StandardizeTag<TAG>::type                                                TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type          TargetDependencies;
     typedef TypeList<PrincipalProjection, 
-                 typename TransferModifiers<Principal<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+                 typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
     
     template <class T, class BASE>
     struct Impl
