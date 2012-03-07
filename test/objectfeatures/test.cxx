@@ -2190,57 +2190,60 @@ struct AccumulatorTest
             typedef TinyVector<int, 3> V;
             typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Covariance, Minimum, Maximum, CentralMoment<2>,
                                           AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
-                                          Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>
+                                          Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>,
+                                          Principal<Minimum>, Principal<Maximum>, Principal<Skewness>, Principal<Kurtosis>, Principal<SumOfAbsDifferences>
                                           > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
 
             A a;
 
-            a(V(1,2,3));
-            a(V(2,3,1));
-            a(V(3,1,2));
+            static const int SIZE = 4;
+            V d[SIZE] = { V(1,2,3), V(2,3,0), V(3,4,2), V(2,1,2) };
 #if 1
 
-            a.updatePass2(V(1,2,3));
-            a.updatePass2(V(2,3,1));
-            a.updatePass2(V(3,1,2));
+            for(int k=0; k<SIZE; ++k)
+                a(d[k]);
+            for(int k=0; k<SIZE; ++k)
+                a.updatePass2(d[k]);
 
-            shouldEqual(get<Count>(a), 3.0);
-            shouldEqual(get<Minimum>(a), V(1));
-            shouldEqual(get<Maximum>(a), V(3));
-            shouldEqual(get<Sum>(a), W(6.0));
-            shouldEqual(get<AbsSum>(a), W(6.0));
-            shouldEqual(get<Mean>(a), W(2.0));
-            shouldEqual(get<CentralMoment<2> >(a), W(2.0/3.0));
-            shouldEqual(get<Variance>(a), W(2.0/3.0));
-            shouldEqual(get<SumOfAbsDifferences>(a), W(2.0));
-            shouldEqual(get<MeanAbsoluteDeviation>(a), W(2.0/3.0));
-
-            W stddev = sqrt( W(2.0/3.0));
-            shouldEqualSequenceTolerance(stddev.data(), stddev.data()+stddev.size(), get<StdDev>(a).data(), 1e-15);
+            shouldEqual(get<Count>(a), 4.0);
+            shouldEqual(get<Minimum>(a), V(1,1,0));
+            shouldEqual(get<Maximum>(a), V(3,4,3));
+            shouldEqual(get<Sum>(a), W(8.0, 10.0, 7.0));
+            shouldEqual(get<AbsSum>(a), W(8.0, 10.0, 7.0));
+            shouldEqual(get<Mean>(a), W(2.0, 2.5, 7.0/4.0));
+            shouldEqual(get<CentralMoment<2> >(a), W(0.5, 1.25, 1.1875));
+            shouldEqual(get<Variance>(a),  W(0.5, 1.25, 1.1875));
+            shouldEqualTolerance(sqrt(W(0.5, 1.25, 1.1875)), get<StdDev>(a), W(1e-15));
+            shouldEqualTolerance(get<SumOfAbsDifferences>(a), W(2.0, 4.0, 3.5), W(1e-15));
+            shouldEqualTolerance(get<MeanAbsoluteDeviation>(a), W(0.5, 1.0, 7.0/8.0), W(1e-15));
 
             double covarianceData[] = { 
-                2.0/3.0, -1.0/3.0, -1.0/3.0,
-               -1.0/3.0,  2.0/3.0, -1.0/3.0,
-               -1.0/3.0, -1.0/3.0,  2.0/3.0 };
+                0.5,   0.5,  -0.25,
+                0.5,   1.25, -0.375,
+               -0.25, -0.375, 1.1875 };
             Var covariance(3,3, covarianceData);
             shouldEqual(get<Covariance>(a), covariance);
             std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
-            W ew(1.0, 1.0, 0.0); 
-            shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
-            shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Principal<Variance> >(a).begin(), 1e-15);
+            W ew(1.8181423035878563, 0.87335382939336145, 0.24600386701878226); 
+            shouldEqualTolerance(ew, eigen.first, W(1e-15));
+            shouldEqualTolerance(ew, get<Principal<Variance> >(a), W(1e-15));
 
             double eigenvectorData[] = {
-                -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
-                 0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
-                 0.0               ,  0.816496580927726,  -0.5773502691896257 };
+                -0.38281255664062192, -0.19398130489891852, -0.90323075668844639,
+                -0.71942795069852928, -0.55075408575738086,  0.42319423528123123,
+                 0.57954979961344579,- 0.81181351945583191, -0.071280006991795777 };
             Var ev(3,3, eigenvectorData);
-            shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
-            shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-14);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-14);
 
-            W zero;
-            shouldEqualSequenceTolerance(zero.begin(), zero.end(), get<Principal<Sum> >(a).begin(), 1e-15);
+            shouldEqualTolerance(get<Principal<Sum> >(a), W(0.0), W(1e-15));
+            shouldEqualTolerance(get<Principal<Minimum> >(a), W(-1.3739261246727945, -1.2230658133989472, -0.6526113546697957), W(1e-15));
+            shouldEqualTolerance(get<Principal<Maximum> >(a), W(1.4669637815066938,  1.1452966161690161, 0.60253363030808593), W(1e-15));
+            shouldEqualTolerance(get<Principal<Skewness> >(a), W(0.01148108748350361, -0.07581454384153662, -0.09140344434535799), W(1e-14));
+            shouldEqualTolerance(get<Principal<Kurtosis> >(a), W(1.0170605873540604, 1.3758036453124218, 1.3744145653301785), W(1e-14));
+            shouldEqualTolerance(get<Principal<SumOfAbsDifferences> >(a), W(5.3819863149157, 3.5369487298822575, 1.8777415203686885), W(1e-14));
 #endif
         }
 #if 1
@@ -2289,6 +2292,68 @@ struct AccumulatorTest
             shouldEqual(get<Maximum>(a), V(s, T(3,3,4).begin()));
         }
 #endif
+        {
+#if 1
+            typedef TinyVector<double, 2> V;
+            static const int SIZE = 20;
+
+            V data[SIZE] = {
+                V(1.88417085437108889, 3.10984300178095197),
+                V(3.22221249967652135, 4.62610895051767734),
+                V(5.02965943418706019, 3.61409282557627254),
+                V(1.99001871343947201, 0.44572597781938073),
+                V(0.82190895017090260, 1.52581824695525770),
+                V(1.79509471114960295, 4.54126165421070915),
+                V(0.63954006398369945, 4.03816177019905265),
+                V(-1.19055182745611221, 3.05473509195811443),
+                V(1.60460514736327031, 2.39320817128161423),
+                V(-1.26828508191601941, 3.08007018243650110),
+                V(2.67471223051054885, 2.36574957680121889),
+                V(2.54777120650106648, 3.00252905176459528),
+                V(-0.49276533572213554, -1.13913810037296859),
+                V(3.08185249197166877, 2.61911514709572302),
+                V(-3.21266705448485190, 0.62656641585875028),
+                V(1.25495155317623874, 0.46593677346153228),
+                V(0.71219264300245499, 2.68491068466799110),
+                V(0.91993307568972671, 1.99693758751466821),
+                V(2.11157305527596195, -1.11069145843301786),
+                V(0.10242024165277441, 2.44449590189711241)
+            };
+
+            typedef Accumulator<V, Select<Mean, Covariance, Central<Sum>,
+                                          Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>
+                                          > > A;
+            typedef LookupTag<Covariance, A>::value_type Var;
+
+            A a;
+
+            for(int k=0; k<SIZE; ++k)
+                a(data[k]);
+
+            for(int k=0; k<SIZE; ++k)
+                a.updatePass2(data[k]);
+
+
+            shouldEqual(get<Count>(a), (double)SIZE);
+            shouldEqualTolerance(get<Mean>(a), V(1.2114173786271469, 2.2192718726495571), V(1e-15));
+            shouldEqualTolerance(get<Central<Sum> >(a), V(0.0),  V(1e-14));
+            shouldEqualTolerance(get<Principal<Sum> >(a), V(0.0),  V(1e-14));
+
+            double covarianceData[] = {
+                 3.24260523085696217,  0.85916467806966068,
+                 0.85916467806966068,  2.57086707635742417 };
+            Var cov(2,2, covarianceData);
+            shouldEqualSequenceTolerance(cov.begin(), cov.end(), get<Covariance>(a).begin(), 1e-15);
+
+            shouldEqualTolerance(get<Principal<Variance> >(a), V(3.82921757948803698, 1.98425472772634914), V(1e-15));
+
+            double eigenvectorData[] = {
+                 0.82586108137035807,  0.56387363325286188,
+                 0.56387363325286188, -0.82586108137035807 };
+            Var ev(2,2, eigenvectorData);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Principal<CoordinateSystem> >(a).begin(), 1e-15);
+#endif
+        }
 #endif
     }
 
