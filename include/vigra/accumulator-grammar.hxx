@@ -62,7 +62,7 @@ template <unsigned N> class AbsPowerSum;       // sum over powers of absolute va
 class Skewness;                                // skewness
 class Kurtosis;                                // kurtosis
 class FlatScatterMatrix;                       // flattened upper-triangular part of the scatter matrix
-class CovarianceEigensystem;                   // eigenvalues and eigenvectors of the covariance matrix
+class ScatterMatrixEigensystem;                // eigenvalues and eigenvectors of the scatter matrix
 
 template <unsigned Percent> class  Quantile;   // quantiles (including minimum and maximum)
 template <unsigned BinCount> class Histogram;  // histogram with fixed number of bins
@@ -115,10 +115,10 @@ template <class A>    class DivideUnbiased;      //  A / (count - 1)
 template <class A>    class RootDivideUnbiased;  //  sqrt(A / (count - 1))
 
     // data access
-template <class A> class Coord;          // use pixel coordinate instead of pixel value (index 0 of CoupledHandle)
-template <class A> class Weighted;       // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
-template <class A> class CoordWeighted;  // use (coord, weight) pairs(index 0 and end of CoupledHandle)
-template <class A> class DataFromHandle; // extract data from index 1 of a CoupledHandle
+template <class A> class Coord;           // use pixel coordinate instead of pixel value (index 0 of CoupledHandle)
+template <class A> class Weighted;        // use (value, weight) pairs (index 1 and 2 of CoupledHandle)
+template <class A> class CoordWeighted;   // use (coord, weight) pairs(index 0 and end of CoupledHandle)
+template <class A> class DataFromHandle;  // extract data from index 1 of a CoupledHandle
 
     // data preparation
 template <class A> class Central;    // subtract mean
@@ -158,6 +158,7 @@ typedef RootDivideUnbiased<Central<PowerSum<2> > >  UnbiasedStdDev;
 
 typedef DivideByCount<FlatScatterMatrix>            Covariance;
 typedef DivideUnbiased<FlatScatterMatrix>           UnbiasedCovariance;
+typedef DivideByCount<ScatterMatrixEigensystem>     CovarianceEigensystem;
 
 typedef AbsPowerSum<1>                              AbsSum;
 typedef Central<AbsSum>                             SumOfAbsDifferences;
@@ -394,7 +395,7 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Centralize>, Centralize)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Skewness>, Skewness)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<Kurtosis>, Kurtosis)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<FlatScatterMatrix>, FlatScatterMatrix)
-VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CovarianceEigensystem>, CovarianceEigensystem)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
 
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Principal<Centralize>, PrincipalProjection)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<Centralize>, Whiten)
@@ -516,8 +517,8 @@ VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<Sum>, Sum)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<Sum>, Sum)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<FlatScatterMatrix>, FlatScatterMatrix)
 VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<FlatScatterMatrix>, FlatScatterMatrix)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<CovarianceEigensystem>, CovarianceEigensystem)
-VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<CovarianceEigensystem>, CovarianceEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Principal<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
+VIGRA_DROP_DATA_PREPARATION_MODIFIERS(Whitened<ScatterMatrixEigensystem>, ScatterMatrixEigensystem)
 
 #undef VIGRA_DROP_DATA_PREPARATION_MODIFIERS
 

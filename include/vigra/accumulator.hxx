@@ -862,7 +862,8 @@ isActive(A const & a)
 template <class T, class TAG, class NEXT>
 struct AccumulatorBase 
 {
-	typedef TAG            Tag;
+	typedef AccumulatorBase<T, TAG, NEXT> ThisType;
+    typedef TAG            Tag;
 	typedef NEXT           InternalBaseType;
     typedef T const &      argument_type;
     typedef argument_type  first_argument_type;
@@ -944,6 +945,13 @@ struct AccumulatorBase
     
     void update(first_argument_type, second_argument_type)
     {}
+    
+    template <class TargetTag>
+    typename LookupTag<TargetTag, ThisType>::result_type
+    forwardGet() const
+    {
+        return get<TargetTag>(*this);
+    }
 };
 
 template <class T>
@@ -1656,6 +1664,27 @@ void updateFlatScatterMatrix(double & sc, Sum const & s, double w)
 }
 
 template <class Cov, class Scatter>
+void flatScatterMatrixToScatterMatrix(Cov & cov, Scatter const & sc)
+{
+    int size = cov.shape(0), k=0;
+    for(MultiArrayIndex j=0; j<size; ++j)
+    {
+        cov(j,j) = sc[k++];
+        for(MultiArrayIndex i=j+1; i<size; ++i)
+        {
+            cov(i,j) = sc[k++];
+            cov(j,i) = cov(i,j);
+        }
+    }
+}
+
+template <class Scatter>
+void flatScatterMatrixToScatterMatrix(double & cov, Scatter const & sc)
+{
+    cov = sc;
+}
+
+template <class Cov, class Scatter>
 void flatScatterMatrixToCovariance(Cov & cov, Scatter const & sc, double n)
 {
     int size = cov.shape(0), k=0;
@@ -1822,11 +1851,10 @@ class DivideUnbiased<FlatScatterMatrix>
     };
 };
 
-// CovarianceEigensystem
-class CovarianceEigensystem
+class ScatterMatrixEigensystem
 {
   public:
-    typedef Select<Covariance> Dependencies;
+    typedef Select<FlatScatterMatrix> Dependencies;
     
     template <class T, class BASE>
     struct Impl
@@ -1878,69 +1906,193 @@ class CovarianceEigensystem
         {
             if(this->isDirty())
             {
-                compute(get<Covariance>(*this), value_.first, value_.second);
+                compute(get<FlatScatterMatrix>(*this), value_.first, value_.second);
                 this->setClean();
             }
             return value_;
         }
         
       private:
-        template <class Cov, class EW, class EV>
-        static void compute(Cov const & cov, EW & ew, EV & ev)
+        template <class Flat, class EW, class EV>
+        static void compute(Flat const & flatScatter, EW & ew, EV & ev)
         {
+            EigenvectorType scatter(ev.shape());
+            detail::flatScatterMatrixToScatterMatrix(scatter, flatScatter);
             // create a view because EW could be a TinyVector
-            MultiArrayView<2, element_type> ewview(Shape2(cov.shape(0), 1), &ew[0]);
-            symmetricEigensystem(cov, ewview, ev);
+            MultiArrayView<2, element_type> ewview(Shape2(ev.shape(0), 1), &ew[0]);
+            symmetricEigensystem(scatter, ewview, ev);
         }
         
-        static void compute(double cov, double & ew, double & ev)
+        static void compute(double v, double & ew, double & ev)
         {
-            ew = cov;
+            ew = v;
             ev = 1.0;
         }
     };
 };
+
+// CovarianceEigensystem
+template <>
+class DivideByCount<ScatterMatrixEigensystem>
+{
+  public:
+    typedef Select<ScatterMatrixEigensystem, Count> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type  SMImpl;
+        typedef typename SMImpl::element_type                             element_type;
+        typedef typename SMImpl::EigenvalueType                           EigenvalueType;
+        typedef typename SMImpl::EigenvectorType                          EigenvectorType;
+        typedef std::pair<EigenvalueType, EigenvectorType const &>        value_type;
+        typedef value_type const &                                        result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_(EigenvalueType(), BASE::forwardGet<ScatterMatrixEigensystem>().second)
+        {}
+        
+        void operator+=(Impl const &)
+        {
+            this->setDirty();
+        }
+
+        void update(T const &)
+        {
+            this->setDirty();
+        }
+        
+        void update(T const &, double)
+        {
+             this->setDirty();
+        }
+
+        void reset()
+        {
+            value_.first = element_type();
+            this->setClean();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            int size = prod(s);
+            detail::reshapeImpl(value_.first, Shape2(size,1));
+        }
+        
+        result_type operator()() const
+        {
+            if(this->isDirty())
+            {
+                value_.first = get<ScatterMatrixEigensystem>(*this).first / get<Count>(*this);
+                this->setClean();
+            }
+            return value_;
+        }
+    };
+};
+
+// alternative implementation of CovarianceEigensystem - solve eigensystem directly
+//
+// template <>
+// class DivideByCount<ScatterMatrixEigensystem>
+// {
+  // public:
+    // typedef Select<Covariance> Dependencies;
+    
+    // template <class T, class BASE>
+    // struct Impl
+    // : public BASE
+    // {
+        // typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
+        // typedef typename AccumulatorResultTraits<T>::SumType               EigenvalueType;
+        // typedef typename AccumulatorResultTraits<T>::CovarianceType        EigenvectorType;
+        // typedef std::pair<EigenvalueType, EigenvectorType>                 value_type;
+        // typedef value_type const &                                         result_type;
+
+        // mutable value_type value_;
+        
+        // Impl()
+        // : value_()
+        // {}
+        
+        // void operator+=(Impl const &)
+        // {
+            // this->setDirty();
+        // }
+
+        // void update(T const &)
+        // {
+            // this->setDirty();
+        // }
+        
+        // void update(T const &, double)
+        // {
+             // this->setDirty();
+        // }
+
+        // void reset()
+        // {
+            // value_.first = element_type();
+            // value_.second = element_type();
+            // this->setClean();
+        // }
+    
+        // template <class Shape>
+        // void reshape(Shape const & s)
+        // {
+            // int size = prod(s);
+            // detail::reshapeImpl(value_.first, Shape2(size,1));
+            // detail::reshapeImpl(value_.second, Shape2(size,size));
+        // }
+        
+        // result_type operator()() const
+        // {
+            // if(this->isDirty())
+            // {
+                // compute(get<Covariance>(*this), value_.first, value_.second);
+                // this->setClean();
+            // }
+            // return value_;
+        // }
+        
+      // private:
+        // template <class Cov, class EW, class EV>
+        // static void compute(Cov const & cov, EW & ew, EV & ev)
+        // {
+            // // create a view because EW could be a TinyVector
+            // MultiArrayView<2, element_type> ewview(Shape2(cov.shape(0), 1), &ew[0]);
+            // symmetricEigensystem(cov, ewview, ev);
+        // }
+        
+        // static void compute(double cov, double & ew, double & ev)
+        // {
+            // ew = cov;
+            // ev = 1.0;
+        // }
+    // };
+// };
 
 // covariance eigenvalues
 template <>
 class Principal<PowerSum<2> >
 {
   public:
-    typedef Select<CovarianceEigensystem, Count> Dependencies;
+    typedef Select<ScatterMatrixEigensystem> Dependencies;
      
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvalueType value_type;
-        typedef value_type result_type;
-        
-        result_type operator()() const
-        {
-            using namespace vigra::multi_math;            
-            return get<Count>(*this)*get<CovarianceEigensystem>(*this).first;
-        }
-    };
-};
-
-// Principal<Variance> == covariance eigenvalues
-template <>
-class DivideByCount<Principal<PowerSum<2> > >
-{
-  public:
-    typedef Select<CovarianceEigensystem> Dependencies;
-     
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvalueType value_type;
+        typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type::EigenvalueType value_type;
         typedef value_type const & result_type;
         
         result_type operator()() const
         {
-            using namespace vigra::multi_math;            
-            return get<CovarianceEigensystem>(*this).first;
+            return get<ScatterMatrixEigensystem>(*this).first;
         }
     };
 };
@@ -1950,50 +2102,18 @@ template <>
 class Principal<CoordinateSystem>
 {
   public:
-    typedef Select<CovarianceEigensystem> Dependencies;
+    typedef Select<ScatterMatrixEigensystem> Dependencies;
      
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename LookupTag<CovarianceEigensystem, BASE>::type::EigenvectorType value_type;
+        typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type::EigenvectorType value_type;
         typedef value_type const & result_type;
         
         result_type operator()() const
         {
-            return get<CovarianceEigensystem>(*this).second;
-        }
-    };
-};
-
-template <>
-class Principal<AbsSum>
-{
-  public:
-    typedef Select<PrincipalProjection> Dependencies;
-     
-    template <class T, class BASE>
-    struct Impl
-    : public SumBaseImpl<T, BASE>
-    {
-        static const unsigned int workInPass = 2;
-        
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(false,
-                "Principal<AbsSum>::operator+=(): not supported.");
-        }
-    
-        void update(T const & t)
-        {
-            using namespace vigra::multi_math;            
-            value_ += abs(get<PrincipalProjection>(*this));
-        }
-        
-        void update(T const & t, double weight)
-        {
-            using namespace vigra::multi_math;            
-            value_ += weight*abs(get<PrincipalProjection>(*this));
+            return get<ScatterMatrixEigensystem>(*this).second;
         }
     };
 };
@@ -2173,6 +2293,39 @@ class Centralize
     };
 };
 
+template <class TAG>
+class Central
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef TypeList<Centralize, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        
+        static const unsigned int workInPass = 2;
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Central<...>::operator+=(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            ImplType::update(get<Centralize>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            ImplType::update(get<Centralize>(*this), weight);
+        }
+    };
+};
+
     // alternative implementation without caching 
     //
 // template <class TAG>
@@ -2207,39 +2360,6 @@ class Centralize
         // }
     // };
 // };
-
-template <class TAG>
-class Central
-{
-  public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef TypeList<Centralize, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
-    {
-        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
-        
-        static const unsigned int workInPass = 2;
-        
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(false,
-                "Central<...>::operator+=(): not supported.");
-        }
-    
-        void update(T const & t)
-        {
-            ImplType::update(get<Centralize>(*this));
-        }
-        
-        void update(T const & t, double weight)
-        {
-            ImplType::update(get<Centralize>(*this), weight);
-        }
-    };
-};
 
 // Compute principal projection and cache the result
 class PrincipalProjection

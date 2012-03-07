@@ -1898,6 +1898,14 @@ struct AccumulatorTest
         should((IsSameType<StandardizeTag<AbsPowerSum<3> >::type,
                            AbsPowerSum<3> >::value));
 
+            // CovarianceEigensystem
+        should((IsSameType<StandardizeTag<CovarianceEigensystem>::type,
+                           DivideByCount<ScatterMatrixEigensystem> >::value));
+        should((IsSameType<StandardizeTag<Central<CovarianceEigensystem> >::type,
+                           DivideByCount<ScatterMatrixEigensystem> >::value));
+        should((IsSameType<StandardizeTag<Coord<CovarianceEigensystem> >::type,
+                           Coord<DivideByCount<ScatterMatrixEigensystem> > >::value));
+
             // CoordinateSystem 
         should((IsSameType<StandardizeTag<Central<CoordinateSystem> >::type,
                            CoordinateSystem>::value));
@@ -2028,6 +2036,7 @@ struct AccumulatorTest
             
             shouldEqual(get<Count>(a), 3.0);
 
+            // Semantics changed: this error now triggers a static assertion
             //try 
             //{
             //    get<Mean>(a);
@@ -2044,7 +2053,7 @@ struct AccumulatorTest
 
         {
 #if 1
-            typedef Accumulator<double, Select<CovarianceEigensystem, UnbiasedVariance,  UnbiasedStdDev, 
+            typedef Accumulator<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev, 
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
                                                AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
                                                Principal<Variance>, Principal<CoordinateSystem>
@@ -2054,7 +2063,7 @@ struct AccumulatorTest
 
 
             shouldEqual(2, a.passesRequired());
-            shouldEqual(22, A::index);
+            shouldEqual(24, A::index);
 
             double data[] = { 1.0, 2.0, 3.0, 5.0 };
 
@@ -2073,10 +2082,15 @@ struct AccumulatorTest
             shouldEqualTolerance(get<StdDev>(a), sqrt(2.1875), 1e-15);
             shouldEqualTolerance(get<Covariance>(a), 2.1875, 1e-15);
 
+            std::pair<double, double> seigen = get<ScatterMatrixEigensystem>(a);
+            shouldEqual(seigen.first, 8.75);
+            shouldEqual(seigen.second, 1.0);
+
             std::pair<double, double> eigen = get<CovarianceEigensystem>(a);
-            shouldEqualTolerance(eigen.first, 2.1875, 1e-15);
+            shouldEqual(eigen.first, 2.1875);
             shouldEqual(eigen.second, 1.0);
-            shouldEqualTolerance(get<Principal<Variance> >(a), 2.1875, 1e-15);
+
+            shouldEqual(get<Principal<Variance> >(a), 2.1875);
             shouldEqual(get<Principal<CoordinateSystem> >(a), 1.0);
 
             for(int k=0; k<4; ++k)
@@ -2171,7 +2185,7 @@ struct AccumulatorTest
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Minimum, Maximum, CentralMoment<2>,
+            typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Covariance, Minimum, Maximum, CentralMoment<2>,
                                           AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
                                           Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>
                                           > > A;
@@ -2331,7 +2345,7 @@ struct AccumulatorTest
 
             typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
                                                Coord<Principal<Variance> >, Coord<Principal<CoordinateSystem> >,
-                                               Coord<AbsSum>, Coord<MeanAbsoluteDeviation>
+                                               Coord<AbsSum>, Coord<MeanAbsoluteDeviation>, Coord<CovarianceEigensystem>
                                           > > A;
 
             typedef LookupTag<Coord<Mean>, A>::value_type W;
@@ -2369,17 +2383,23 @@ struct AccumulatorTest
                -1.0/3.0, -1.0/3.0,  2.0/3.0 };
             Var covariance(3,3, covarianceData);
             shouldEqual(get<Coord<Covariance> >(a), covariance);
-            std::pair<W const &, Var const &> eigen = get<Coord<CovarianceEigensystem> >(a);
+
+            W sew(3.0, 3.0, 0.0); 
+            std::pair<W const &, Var const &> seigen = get<Coord<ScatterMatrixEigensystem> >(a);
+            shouldEqualSequenceTolerance(sew.begin(), sew.end(), seigen.first.begin(), 1e-15);
+
             W ew(1.0, 1.0, 0.0); 
+            std::pair<W const &, Var const &> eigen = get<Coord<CovarianceEigensystem> >(a);
             shouldEqualSequenceTolerance(ew.begin(), ew.end(), eigen.first.begin(), 1e-15);
-            shouldEqualSequenceTolerance(ew.begin(), ew.end(), get<Coord<Principal<Variance> > >(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(ew.begin(), ew.end(), 
+                                         get<Coord<Principal<Variance> > >(a).begin(), 1e-15);
 
             double eigenvectorData[] = {
                 -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
                  0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
                  0.0               ,  0.816496580927726,  -0.5773502691896257 };
             Var ev(3,3, eigenvectorData);
-            shouldEqualSequenceTolerance(ev.begin(), ev.end(), eigen.second.begin(), 1e-15);
+            shouldEqualSequenceTolerance(ev.begin(), ev.end(), seigen.second.begin(), 1e-15);
             shouldEqualSequenceTolerance(ev.begin(), ev.end(), get<Coord<Principal<CoordinateSystem> > >(a).begin(), 1e-15);
 #endif
         }
