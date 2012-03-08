@@ -92,6 +92,7 @@ struct AccumulatorEnd
     static const int index = -1;
     
     bool operator()() const { return false; }
+    bool get() const { return false; }
     
     template <unsigned, class T>
     void pass(T const &) {}
@@ -338,7 +339,7 @@ struct Decorator
         A::reset();
     }
     
-    typename A::result_type operator()() const
+    typename A::result_type get() const
     {
         return DecoratorImpl<A, A::workInPass, Dynamic>::get(*this);
     }
@@ -613,7 +614,7 @@ struct Accumulator
 
     result_type operator()() const
     {
-        return next_();
+        return next_.get();
     }
 	
 	void operator()(T const & t)
@@ -796,7 +797,7 @@ struct GetImpl<Tag, Tag, result_type>
     template <class A>
     static result_type exec(A const & a)
     {
-        return a();
+        return a.get();
     }
 };
 
@@ -2379,15 +2380,21 @@ class Centralize
             detail::reshapeImpl(value_, s);
         }
         
-        void update(T const & t)
+        void update(T const & t) const
         {
             using namespace vigra::multi_math;
             value_ = t - get<Mean>(*this);
         }
         
-        void update(T const & t, double)
+        void update(T const & t, double) const
         {
             update(t);
+        }
+        
+        result_type operator()(T const & t) const
+        {
+            update(t);
+            return value_;
         }
         
         result_type operator()() const
@@ -2500,9 +2507,8 @@ class PrincipalProjection
             detail::reshapeImpl(value_, s);
         }
         
-        void update(T const & t)
+        void update(T const & t) const
         {
-            using namespace vigra::multi_math;
             for(unsigned int k=0; k<t.size(); ++k)
             {
                 value_[k] = get<Principal<CoordinateSystem> >(*this)(0, k)*get<Centralize>(*this)[0];
@@ -2511,9 +2517,16 @@ class PrincipalProjection
             }
         }
         
-        void update(T const & t, double)
+        void update(T const & t, double) const
         {
             update(t);
+        }
+        
+        result_type operator()(T const & t) const
+        {
+            cast<Centralize>(*this).update(t);
+            update(t);
+            return value_;
         }
         
         result_type operator()() const
