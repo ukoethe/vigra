@@ -218,6 +218,8 @@ struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined
 
 namespace detail {
 
+    // Assign priorities to modifiers to determine their standard order (by ascending priority).
+    // SubstitutionMask determines which modifiers may be automatically transferred to dependencies.
 enum { MinPriority = 1, 
        AccumulatorPriority = 16,
        PrepareDataPriority = 8,
@@ -256,6 +258,7 @@ VIGRA_MODIFIER_PRIORITY(Whitened, PrepareDataPriority)
 
 #undef VIGRA_MODIFIER_PRIORITY
 
+    // check if the tag A contains a modifier with TARGET_PRIORITY
 template <class A, int TARGET_PRIORITY, int PRIORITY=ModifierPriority<A>::value>
 struct HasModifierPriority
 {
@@ -272,10 +275,8 @@ struct HasModifierPriority<A, TARGET_PRIORITY, TARGET_PRIORITY>
 
 template <class A, template <class> class B, int TARGET_PRIORITY, int PRIORITY>
 struct HasModifierPriority<B<A>, TARGET_PRIORITY, PRIORITY>
-{
-    typedef typename HasModifierPriority<A, TARGET_PRIORITY, PRIORITY>::type type;
-    static const bool value = HasModifierPriority<A, TARGET_PRIORITY, PRIORITY>::value;
-};
+: public HasModifierPriority<A, TARGET_PRIORITY>
+{};
 
 template <class A, template <class> class B, int TARGET_PRIORITY>
 struct HasModifierPriority<B<A>, TARGET_PRIORITY, TARGET_PRIORITY>
@@ -305,7 +306,7 @@ struct ModifierCompareToInner<B<A> >
 : public ModifierCompare<B<A>, A>
 {};
 
-    // modifers are sorted by ascending priority
+    // sort modifiers by ascending priority
 template <class A, int compare=ModifierCompareToInner<A>::value>
 struct ModifierOrder;
 
@@ -415,6 +416,32 @@ struct ModifierRule<AbsPowerSum<N> >
 
 #undef VIGRA_VOID
 #undef VIGRA_REDUCE_MODFIER
+
+template <class A>
+struct ShouldBeWeighted
+{
+    typedef VigraFalseType type;
+    static const bool value = false;
+};
+
+template <>
+struct ShouldBeWeighted<ArgMinWeight>
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <>
+struct ShouldBeWeighted<ArgMaxWeight>
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <class A, template <class> class B>
+struct ShouldBeWeighted<B<A> >
+: public ShouldBeWeighted<A>
+{};
 
 } // namespace detail
 

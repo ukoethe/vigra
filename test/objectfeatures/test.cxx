@@ -2526,8 +2526,8 @@ struct AccumulatorTest
 
             typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
                                                Weighted<Mean>, CoordWeighted<Mean>,
-                                               Weighted<ArgMinWeight>, Weighted<ArgMaxWeight>,
-                                               Weighted<Coord<ArgMinWeight> >, Weighted<Coord<ArgMaxWeight> >
+                                               ArgMinWeight, ArgMaxWeight,
+                                               Coord<ArgMinWeight>, Coord<ArgMaxWeight>
                                           > > A;
             
             A a;
@@ -2555,10 +2555,10 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Mean>(a), 1.8333333333333333, 1e-15);
             W coordWeightedMean(1.8571428571428572, 2.4285714285714284,  1.7142857142857142);
             shouldEqualTolerance(coordWeightedMean, get<CoordWeighted<Mean> >(a), W(1e-15));
-            shouldEqual(4.0, get<Weighted<ArgMinWeight> >(a));
-            shouldEqual(1.0, get<Weighted<ArgMaxWeight> >(a));
-            shouldEqual(V(3,1,2), get<CoordWeighted<ArgMinWeight> >(a));
-            shouldEqual(V(2,3,1), get<CoordWeighted<ArgMaxWeight> >(a));
+            shouldEqual(4.0, get<ArgMinWeight>(a));
+            shouldEqual(1.0, get<ArgMaxWeight>(a));
+            shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(a));
+            shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
 #endif
         }
     }

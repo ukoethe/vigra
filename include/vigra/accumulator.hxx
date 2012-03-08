@@ -535,11 +535,12 @@ template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level>
 struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level>
 {
     typedef CoupledHandle<T, NEXT> Handle;
+    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
+
     typedef typename Accumulators::Head Tag;
     typedef typename StandardizeTag<DataFromHandle<Tag> >::type WrappedTag;
-    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
-    typedef typename If<typename HasModifierPriority<Tag, AccessDataPriority>::type,
-                                 Tag, WrappedTag>::type UseTag; 
+    typedef typename IfBool<(!HasModifierPriority<WrappedTag, WeightingPriority>::value && ShouldBeWeighted<WrappedTag>::value),
+                             Weighted<WrappedTag>, WrappedTag>::type UseTag;
     typedef Decorator<Handle, typename UseTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
 };
 
