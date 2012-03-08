@@ -861,7 +861,49 @@ isActive(A const & a)
 
 /****************************************************************************/
 /*                                                                          */
-/*                        the actual accumulators                           */
+/*                          AccumulatorResultTraits                         */
+/*                                                                          */
+/****************************************************************************/
+
+template <class T>
+struct AccumulatorResultTraits
+{
+    typedef T                                       type;
+    typedef T                                       element_type;
+    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef T                                       MinmaxType;
+    typedef element_promote_type                    SumType;
+    typedef element_promote_type                    FlatCovarianceType;
+    typedef element_promote_type                    CovarianceType;
+};
+
+template <class T, int N>
+struct AccumulatorResultTraits<TinyVector<T, N> >
+{
+    typedef TinyVector<T, N>                             type;
+    typedef T                                            element_type;
+    typedef typename NumericTraits<T>::RealPromote       element_promote_type;
+    typedef TinyVector<T, N>                             MinmaxType;
+    typedef TinyVector<element_promote_type, N>          SumType;
+    typedef TinyVector<element_promote_type, N*(N+1)/2>  FlatCovarianceType;
+    typedef Matrix<element_promote_type>                 CovarianceType;
+};
+
+template <unsigned int N, class T, class Stride>
+struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
+{
+    typedef MultiArrayView<N, T, Stride>            type;
+    typedef T                                       element_type;
+    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef MultiArray<N, T>                        MinmaxType;
+    typedef MultiArray<N, element_promote_type>     SumType;
+    typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
+    typedef Matrix<element_promote_type>            CovarianceType;
+};
+
+/****************************************************************************/
+/*                                                                          */
+/*                   generic base and decorator classes                     */
 /*                                                                          */
 /****************************************************************************/
 
@@ -961,40 +1003,323 @@ struct AccumulatorBase
     }
 };
 
-template <class T>
-struct AccumulatorResultTraits
+template <class TAG>
+class DataFromHandle
 {
-    typedef T                                       type;
-    typedef T                                       element_type;
-    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
-    typedef T                                       MinmaxType;
-    typedef element_promote_type                    SumType;
-    typedef element_promote_type                    FlatCovarianceType;
-    typedef element_promote_type                    CovarianceType;
+  public:
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename TargetTag::Dependencies Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::reshape;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(detail::shape(get<1>(t)));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::update(get<1>(t));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        {
+            ImplType::update(get<1>(t), weight);
+        }
+    };
 };
 
-template <class T, int N>
-struct AccumulatorResultTraits<TinyVector<T, N> >
+template <class TAG>
+class Coord
 {
-    typedef TinyVector<T, N>                             type;
-    typedef T                                            element_type;
-    typedef typename NumericTraits<T>::RealPromote       element_promote_type;
-    typedef TinyVector<T, N>                             MinmaxType;
-    typedef TinyVector<element_promote_type, N>          SumType;
-    typedef TinyVector<element_promote_type, N*(N+1)/2>  FlatCovarianceType;
-    typedef Matrix<element_promote_type>                 CovarianceType;
+  public:
+    typedef typename StandardizeTag<TAG>::type                                        TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
+    typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        
+        using ImplType::reshape;
+        
+        template <class U, class NEXT>
+        void reshape(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::reshape(detail::shape(get<0>(t)));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            ImplType::update(get<0>(t));
+        }
+        
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t, double weight)
+        {
+            ImplType::update(get<0>(t), weight);
+        }
+    };
 };
 
-template <unsigned int N, class T, class Stride>
-struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
+template <class TAG>
+class Weighted
 {
-    typedef MultiArrayView<N, T, Stride>            type;
-    typedef T                                       element_type;
-    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
-    typedef MultiArray<N, T>                        MinmaxType;
-    typedef MultiArray<N, element_promote_type>     SumType;
-    typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
-    typedef Matrix<element_promote_type>            CovarianceType;
+  public:
+    typedef typename StandardizeTag<TAG>::type                                         TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
+    typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<T, BASE>
+    {
+        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+                
+        template <class U, class NEXT>
+        void update(CoupledHandle<U, NEXT> const & t)
+        {
+            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
+            // ImplType::update(t, get<2>(t));
+            ImplType::update(t, (double)*t);
+        }
+    };
+};
+
+// Centralize by subtracting the mean and cache the result
+class Centralize
+{
+  public:
+    typedef Select<Mean> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        void update(T const & t) const
+        {
+            using namespace vigra::multi_math;
+            value_ = t - get<Mean>(*this);
+        }
+        
+        void update(T const & t, double) const
+        {
+            update(t);
+        }
+        
+        result_type operator()(T const & t) const
+        {
+            update(t);
+            return value_;
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+template <class TAG>
+class Central
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type                                           TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type     TargetDependencies;
+    typedef TypeList<Centralize, 
+              typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        
+        static const unsigned int workInPass = 2;
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Central<...>::operator+=(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            ImplType::update(get<Centralize>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            ImplType::update(get<Centralize>(*this), weight);
+        }
+    };
+};
+
+    // alternative implementation without caching 
+    //
+// template <class TAG>
+// class Central
+// {
+  // public:
+    // typedef typename StandardizeTag<TAG>::type TargetTag;
+    // typedef TypeList<Mean, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
+    
+    // template <class T, class BASE>
+    // struct Impl
+    // : public TargetTag::template Impl<T, BASE>
+    // {
+        // typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        
+        // static const unsigned int workInPass = 2;
+        
+        // void operator+=(Impl const & o)
+        // {
+            // vigra_precondition(false,
+                // "Central<...>::operator+=(): not supported.");
+        // }
+    
+        // void update(T const & t)
+        // {
+            // ImplType::update(t - get<Mean>(*this));
+        // }
+        
+        // void update(T const & t, double weight)
+        // {
+            // ImplType::update(t - get<Mean>(*this), weight);
+        // }
+    // };
+// };
+
+// Compute principal projection and cache the result
+class PrincipalProjection
+{
+  public:
+    typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef value_type const &                                  result_type;
+
+        mutable value_type value_;
+        
+        Impl()
+        : value_()  // call default constructor explicitly to ensure zero initialization
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
+        }
+        
+        void update(T const & t) const
+        {
+            for(unsigned int k=0; k<t.size(); ++k)
+            {
+                value_[k] = get<Principal<CoordinateSystem> >(*this)(0, k)*get<Centralize>(*this)[0];
+                for(unsigned int d=1; d<t.size(); ++d)
+                    value_[k] += get<Principal<CoordinateSystem> >(*this)(d, k)*get<Centralize>(*this)[d];
+            }
+        }
+        
+        void update(T const & t, double) const
+        {
+            update(t);
+        }
+        
+        result_type operator()(T const & t) const
+        {
+            getAccumulator<Centralize>(*this).update(t);
+            update(t);
+            return value_;
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+template <class TAG>
+class Principal
+{
+  public:
+    typedef typename StandardizeTag<TAG>::type                                                TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type          TargetDependencies;
+    typedef TypeList<PrincipalProjection, 
+                 typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    {
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        
+        static const unsigned int workInPass = 2;
+        
+        void operator+=(Impl const & o)
+        {
+            vigra_precondition(false,
+                "Principal<...>::operator+=(): not supported.");
+        }
+    
+        void update(T const & t)
+        {
+            ImplType::update(get<PrincipalProjection>(*this));
+        }
+        
+        void update(T const & t, double weight)
+        {
+            ImplType::update(get<PrincipalProjection>(*this), weight);
+        }
+    };
 };
 
 /*
@@ -1015,6 +1340,12 @@ important notes on modifiers:
     * FlatScatterMatrixImpl, CovarianceEigensystemImpl: Principal and Whitened
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
+
+/****************************************************************************/
+/*                                                                          */
+/*                        the actual accumulators                           */
+/*                                                                          */
+/****************************************************************************/
 
 class CoordinateSystem
 {
@@ -1209,246 +1540,6 @@ class AbsPowerSum<N>
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(abs(t), (int)N);
-        }
-    };
-};
-
-template <>
-class Quantile<0>
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                                result_type;
-
-        value_type value_;
-        
-        Impl()
-        {
-            value_ = NumericTraits<element_type>::max();
-        }
-        
-        void reset()
-        {
-            value_ = NumericTraits<element_type>::max();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
-        }
-        
-        void operator+=(Impl const & o)
-        {
-            using namespace multi_math;
-            value_ = min(value_, o.value_);
-        }
-    
-        void update(T const & t)
-        {
-            using namespace multi_math;
-            value_ = min(value_, t);
-        }
-        
-        void update(T const & t, double weight)
-        {
-            vigra_precondition(false, "Minimum accumulator does not support weights.");
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
-        }
-    };
-};
-
-template <>
-class Quantile<100>
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                                result_type;
-
-        value_type value_;
-        
-        Impl()
-        {
-            value_ = NumericTraits<element_type>::min();
-        }
-        
-        void reset()
-        {
-            value_ = NumericTraits<element_type>::min();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
-        }
-        
-        void operator+=(Impl const & o)
-        {
-            using namespace multi_math;
-            value_ = max(value_, o.value_);
-        }
-    
-        void update(T const & t)
-        {
-            using namespace multi_math;
-            value_ = max(value_, t);
-        }
-        
-        void update(T const & t, double weight)
-        {
-            vigra_precondition(false, "Maximum accumulator does not support weights.");
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
-        }
-    };
-};
-
-class ArgMinWeight
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                                result_type;
-
-        double min_weight_;
-        value_type value_;
-        
-        Impl()
-        : min_weight_(NumericTraits<double>::max()),
-          value_()
-        {}
-        
-        void reset()
-        {
-            min_weight_ = NumericTraits<double>::max();
-            value_ = element_type();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            detail::reshapeImpl(value_, s);
-        }
-        
-        void operator+=(Impl const & o)
-        {
-            using namespace multi_math;
-            if(o.min_weight_ < min_weight_)
-            {
-                min_weight_ = o.min_weight_;
-                value_ = o.value_;
-            }
-        }
-    
-        void update(T const & t)
-        {
-            vigra_precondition(false, "ArgMinWeight::update() needs weights.");
-        }
-        
-        void update(T const & t, double weight)
-        {
-            if(weight < min_weight_)
-            {
-                min_weight_ = weight;
-                value_ = t;
-            }
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
-        }
-    };
-};
-
-class ArgMaxWeight
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
-        typedef value_type const &                                result_type;
-
-        double max_weight_;
-        value_type value_;
-        
-        Impl()
-        : max_weight_(NumericTraits<double>::min()),
-          value_()
-        {}
-        
-        void reset()
-        {
-            max_weight_ = NumericTraits<double>::min();
-            value_ = element_type();
-        }
-    
-        template <class Shape>
-        void reshape(Shape const & s)
-        {
-            detail::reshapeImpl(value_, s);
-        }
-        
-        void operator+=(Impl const & o)
-        {
-            using namespace multi_math;
-            if(o.max_weight_ > max_weight_)
-            {
-                max_weight_ = o.max_weight_;
-                value_ = o.value_;
-            }
-        }
-    
-        void update(T const & t)
-        {
-            vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
-        }
-        
-        void update(T const & t, double weight)
-        {
-            if(weight > max_weight_)
-            {
-                max_weight_ = weight;
-                value_ = t;
-            }
-        }
-        
-        result_type operator()() const
-        {
-            return value_;
         }
     };
 };
@@ -2253,149 +2344,53 @@ class Principal<CoordinateSystem>
     };
 };
 
-template <class TAG>
-class DataFromHandle
+template <>
+class Quantile<0>
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef typename TargetTag::Dependencies Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
-    {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
-        
-        using ImplType::reshape;
-        
-        template <class U, class NEXT>
-        void reshape(CoupledHandle<U, NEXT> const & t)
-        {
-            ImplType::reshape(detail::shape(get<1>(t)));
-        }
-        
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t)
-        {
-            ImplType::update(get<1>(t));
-        }
-        
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
-        {
-            ImplType::update(get<1>(t), weight);
-        }
-    };
-};
-
-template <class TAG>
-class Coord
-{
-  public:
-    typedef typename StandardizeTag<TAG>::type                                        TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
-    typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
-    {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
-        
-        using ImplType::reshape;
-        
-        template <class U, class NEXT>
-        void reshape(CoupledHandle<U, NEXT> const & t)
-        {
-            ImplType::reshape(detail::shape(get<0>(t)));
-        }
-        
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t)
-        {
-            ImplType::update(get<0>(t));
-        }
-        
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t, double weight)
-        {
-            ImplType::update(get<0>(t), weight);
-        }
-    };
-};
-
-template <class TAG>
-class Weighted
-{
-  public:
-    typedef typename StandardizeTag<TAG>::type                                         TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
-    typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<T, BASE>
-    {
-        typedef typename TargetTag::template Impl<T, BASE> ImplType;
-                
-        template <class U, class NEXT>
-        void update(CoupledHandle<U, NEXT> const & t)
-        {
-            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
-            // ImplType::update(t, get<2>(t));
-            ImplType::update(t, (double)*t);
-        }
-    };
-};
-
-// Centralize by subtracting the mean and cache the result
-class Centralize
-{
-  public:
-    typedef Select<Mean> Dependencies;
+    typedef Select<> Dependencies;
     
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        static const unsigned int workInPass = 2;
-        
-        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
-        typedef value_type const &                                  result_type;
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
 
-        mutable value_type value_;
+        value_type value_;
         
         Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
-        {}
+        {
+            value_ = NumericTraits<element_type>::max();
+        }
         
         void reset()
         {
-            value_ = element_type();
+            value_ = NumericTraits<element_type>::max();
         }
     
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
         }
         
-        void update(T const & t) const
+        void operator+=(Impl const & o)
         {
-            using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
+            using namespace multi_math;
+            value_ = min(value_, o.value_);
+        }
+    
+        void update(T const & t)
+        {
+            using namespace multi_math;
+            value_ = min(value_, t);
         }
         
-        void update(T const & t, double) const
+        void update(T const & t, double weight)
         {
-            update(t);
-        }
-        
-        result_type operator()(T const & t) const
-        {
-            update(t);
-            return value_;
+            vigra_precondition(false, "Minimum accumulator does not support weights.");
         }
         
         result_type operator()() const
@@ -2405,100 +2400,86 @@ class Centralize
     };
 };
 
-template <class TAG>
-class Central
+template <>
+class Quantile<100>
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                           TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type     TargetDependencies;
-    typedef TypeList<Centralize, 
-              typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
-    {
-        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
-        
-        static const unsigned int workInPass = 2;
-        
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(false,
-                "Central<...>::operator+=(): not supported.");
-        }
-    
-        void update(T const & t)
-        {
-            ImplType::update(get<Centralize>(*this));
-        }
-        
-        void update(T const & t, double weight)
-        {
-            ImplType::update(get<Centralize>(*this), weight);
-        }
-    };
-};
-
-    // alternative implementation without caching 
-    //
-// template <class TAG>
-// class Central
-// {
-  // public:
-    // typedef typename StandardizeTag<TAG>::type TargetTag;
-    // typedef TypeList<Mean, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
-    
-    // template <class T, class BASE>
-    // struct Impl
-    // : public TargetTag::template Impl<T, BASE>
-    // {
-        // typedef typename TargetTag::template Impl<T, BASE> ImplType;
-        
-        // static const unsigned int workInPass = 2;
-        
-        // void operator+=(Impl const & o)
-        // {
-            // vigra_precondition(false,
-                // "Central<...>::operator+=(): not supported.");
-        // }
-    
-        // void update(T const & t)
-        // {
-            // ImplType::update(t - get<Mean>(*this));
-        // }
-        
-        // void update(T const & t, double weight)
-        // {
-            // ImplType::update(t - get<Mean>(*this), weight);
-        // }
-    // };
-// };
-
-// Compute principal projection and cache the result
-class PrincipalProjection
-{
-  public:
-    typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
+    typedef Select<> Dependencies;
     
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        static const unsigned int workInPass = 2;
-        
-        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
-        typedef value_type const &                                  result_type;
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
 
-        mutable value_type value_;
+        value_type value_;
         
         Impl()
-        : value_()  // call default constructor explicitly to ensure zero initialization
+        {
+            value_ = NumericTraits<element_type>::min();
+        }
+        
+        void reset()
+        {
+            value_ = NumericTraits<element_type>::min();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
+        }
+        
+        void operator+=(Impl const & o)
+        {
+            using namespace multi_math;
+            value_ = max(value_, o.value_);
+        }
+    
+        void update(T const & t)
+        {
+            using namespace multi_math;
+            value_ = max(value_, t);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            vigra_precondition(false, "Maximum accumulator does not support weights.");
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+class ArgMinWeight
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
+
+        double min_weight_;
+        value_type value_;
+        
+        Impl()
+        : min_weight_(NumericTraits<double>::max()),
+          value_()
         {}
         
         void reset()
         {
+            min_weight_ = NumericTraits<double>::max();
             value_ = element_type();
         }
     
@@ -2508,26 +2489,92 @@ class PrincipalProjection
             detail::reshapeImpl(value_, s);
         }
         
-        void update(T const & t) const
+        void operator+=(Impl const & o)
         {
-            for(unsigned int k=0; k<t.size(); ++k)
+            using namespace multi_math;
+            if(o.min_weight_ < min_weight_)
             {
-                value_[k] = get<Principal<CoordinateSystem> >(*this)(0, k)*get<Centralize>(*this)[0];
-                for(unsigned int d=1; d<t.size(); ++d)
-                    value_[k] += get<Principal<CoordinateSystem> >(*this)(d, k)*get<Centralize>(*this)[d];
+                min_weight_ = o.min_weight_;
+                value_ = o.value_;
+            }
+        }
+    
+        void update(T const & t)
+        {
+            vigra_precondition(false, "ArgMinWeight::update() needs weights.");
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(weight < min_weight_)
+            {
+                min_weight_ = weight;
+                value_ = t;
             }
         }
         
-        void update(T const & t, double) const
+        result_type operator()() const
         {
-            update(t);
+            return value_;
+        }
+    };
+};
+
+class ArgMaxWeight
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef typename AccumulatorResultTraits<T>::element_type element_type;
+        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef value_type const &                                result_type;
+
+        double max_weight_;
+        value_type value_;
+        
+        Impl()
+        : max_weight_(NumericTraits<double>::min()),
+          value_()
+        {}
+        
+        void reset()
+        {
+            max_weight_ = NumericTraits<double>::min();
+            value_ = element_type();
+        }
+    
+        template <class Shape>
+        void reshape(Shape const & s)
+        {
+            detail::reshapeImpl(value_, s);
         }
         
-        result_type operator()(T const & t) const
+        void operator+=(Impl const & o)
         {
-            getAccumulator<Centralize>(*this).update(t);
-            update(t);
-            return value_;
+            using namespace multi_math;
+            if(o.max_weight_ > max_weight_)
+            {
+                max_weight_ = o.max_weight_;
+                value_ = o.value_;
+            }
+        }
+    
+        void update(T const & t)
+        {
+            vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(weight > max_weight_)
+            {
+                max_weight_ = weight;
+                value_ = t;
+            }
         }
         
         result_type operator()() const
@@ -2537,37 +2584,282 @@ class PrincipalProjection
     };
 };
 
-template <class TAG>
-class Principal
+struct IdentityMapping
+{
+    static const int workInPass = 1;
+    
+    template <class T>
+    T const & operator()(T const & t) const
+    {
+        return t;
+    }
+    
+    template <class T>
+    T const & inverse(T const & t) const
+    {
+        return t;
+    }
+    
+    void reset()
+    {}
+    
+    bool operator==(IdentityMapping const &) const
+    {
+        return true;
+    }
+};
+
+struct LinearMapping
+{
+    static const int workInPass = 1;
+    
+    double scale_, inverse_scale_, offset_;
+    
+    LinearMapping()
+    : scale_(),
+      inverse_scale_(),
+      offset_()
+    {}
+    
+    void setParameters(double scale, double offset)
+    {
+        scale_ = scale;
+        inverse_scale_ = 1.0 / scale;
+        offset_ = offset;
+    }
+    
+    template <class T>
+    T const & operator()(T const & t) const
+    {
+        return scale_ * (t - offset_);
+    }
+    
+    template <class T>
+    T const & inverse(T const & t) const
+    {
+        return t * inverse_scale_ + offset_;
+    }
+    
+    void reset()
+    {
+        scale_ = 0.0;
+        inverse_scale_ = 0.0;
+        offset_ = 0.0;
+    }
+    
+    bool operator==(LinearMapping const & o) const
+    {
+        return scale_ == o.scale_ && offset_ == o.offset_;
+    }
+};
+
+// struct AutoMapping
+// {
+    // static const int workInPass = 2;
+    
+    // double scale_, offset_;
+    
+    // LinearMapping()
+    // : scale_(),
+      // offset_()
+    // {}
+    
+    // void setParameters(double scale, double offset)
+    // {
+        // scale_ = scale;
+        // offset_ = offset;
+    // }
+    
+    // template <class T>
+    // T const & operator()(T const & t) const
+    // {
+        // return scale_ * (t - offset_);
+    // }
+    
+    // void reset()
+    // {
+        // scale_ = 0.0;
+        // offset_ = 0.0;
+    // }
+// };
+
+template <int BinCount, class MappingFunctor>
+class Histogram
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                                TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type          TargetDependencies;
-    typedef TypeList<PrincipalProjection, 
-                 typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
+    
+    typedef Select<> Dependencies;
+    
+    static const int binCount = BinCount;
+    static const int workInPass = MappingFunctor::workInPass;
     
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    : public BASE
     {
-        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        typedef double                        element_type;
+        typedef TinyVector<double, BinCount>  value_type;
+        typedef value_type const &            result_type;
         
-        static const unsigned int workInPass = 2;
+        static const int workInPass = MappingFunctor::workInPass;
         
+        value_type value_;
+        double left_outliers, right_outliers;
+        MappingFunctor mapItem;
+        
+        Impl()
+        : value_(),
+          left_outliers(), 
+          right_outliers(),
+          mapItem()
+        {}
+        
+        void reset()
+        {
+            value_ = element_type();
+            left_outliers = 0.0;
+            right_outliers = 0.0;
+            mapItem.reset();
+        }
+    
         void operator+=(Impl const & o)
         {
-            vigra_precondition(false,
-                "Principal<...>::operator+=(): not supported.");
+            vigra_precondition(mapItem == o.mapItem,
+                "Histogram::operator+=(): cannot merge histograms with different data mapping.");
+            
+            value_ += o.value_;
         }
     
         void update(T const & t)
         {
-            ImplType::update(get<PrincipalProjection>(*this));
+            double m = mapItem(t);
+            int index =  (m == (double)binCount)
+                           ? (int)m - 1
+                           : (int)m;
+            if(index < 0)
+                ++left_outliers;
+            else if(index > BinCount)
+                ++right_outliers;
+            else
+                ++value_[index];
         }
         
         void update(T const & t, double weight)
         {
-            ImplType::update(get<PrincipalProjection>(*this), weight);
+            double m = mapItem(t);
+            int index =  (m == (double)binCount)
+                           ? (int)m - 1
+                           : (int)m;
+            if(index < 0)
+                left_outliers += weight;
+            else if(index >= BinCount)
+                right_outliers += weight;
+            else
+                value_[index] += weight;
+        }
+        
+        result_type operator()() const
+        {
+            return value_;
+        }
+    };
+};
+
+template <class Hist>
+class DivideByCount<CumulativeHistogram<Hist> >
+{
+  public:
+    
+    typedef typename StandardizeTag<Hist>::type HistogramTag;
+    typedef Select<HistogramTag, Count> Dependencies;
+    
+    static const int workInPass = HistogramTag::workInPass;
+    static const int binCount = HistogramTag::binCount;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public CachedResultBase<T, BASE, TinyVector<double, HistogramTag::binCount> >
+    {
+        static const int workInPass = HistogramTag::workInPass;
+        
+        mutable double left_outliers;
+        
+        result_type operator()() const
+        {
+            if(this->isDirty())
+            {
+                left_outliers = getAccumulator<HistogramTag>(*this).left_outliers / get<Count>(*this);
+                value_[0] = left_outliers + get<HistogramTag>(*this)[0] / get<Count>(*this);
+                for(int k=1; k<binCount-1; ++k)
+                    value_[k] = value_[k-1] + get<HistogramTag>(*this)[k] / get<Count>(*this);
+                if(getAccumulator<HistogramTag>(*this).right_outliers == 0.0)
+                    value_[binCount-1] = 1.0;  // get rid of rounding errors
+                else
+                    value_[binCount-1] = value_[binCount-2] + get<HistogramTag>(*this)[binCount-1] / get<Count>(*this);
+                this->setClean();
+            }
+            return value_;
+        }
+    };
+};
+
+template <unsigned Percent, class Hist> 
+class HistogramQuantile
+{
+  public:
+    
+    typedef typename StandardizeTag<DivideByCount<CumulativeHistogram<Hist> > >::type CumulativeTag;
+    typedef typename CumulativeTag::HistogramTag HistogramTag;
+    typedef Select<CumulativeTag> Dependencies;
+
+    static const int binCount = CumulativeTag::binCount;
+    static const int workInPass = CumulativeTag::workInPass;
+   
+    template <class T, class BASE>
+    struct Impl
+    : public CachedResultBase<T, BASE, double>
+    {
+        static const int workInPass = CumulativeTag::workInPass;
+        
+        double quantile_;
+        
+        Impl()
+        : quantile_(Percent / 100.0)
+        {}
+        
+        result_type operator()() const
+        {
+            if(this->isDirty())
+            {
+                typename LookupTag<CumulativeTag, BASE>::result_type hist = get<CumulativeTag>(*this);
+                
+                if(hist[0] > quantile_)
+                {
+                    double left_outliers = getAccumulator<CumulativeTag>(*this).left_outliers;
+                    if(left_outliers > quantile_)
+                        value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(0.0);
+                    else
+                    {
+                        double t = (quantile_ - left_outliers) / (hist[0] - left_outliers);
+                        value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(t);
+                    }
+                }
+                else if(hist[binCount-1] < quantile_)
+                {
+                    value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(binCount);
+                }
+                else
+                {
+                    int k = 1;
+                    for(; k<binCount; ++k)
+                        if(hist[k] > quantile_)
+                            break;
+                    double t = (quantile_ - hist[k-1]) / (hist[k] - hist[k-1]) + k;
+                    value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(t);
+                }
+                this->setClean();
+            }
+            return value_;
         }
     };
 };

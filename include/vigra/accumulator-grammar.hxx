@@ -68,10 +68,16 @@ class ArgMinWeight;                            // store the value (or coordinate
 class ArgMaxWeight;                            // store the value (or coordinate) where weight was maximal
 
 template <unsigned Percent> class  Quantile;   // quantiles (including minimum and maximum)
-template <unsigned BinCount> class Histogram;  // histogram with fixed number of bins
-template <>  class Histogram<0>;               // histogram where number of bins is specified at runtime
+template <int BinCount, class MappingFunctor> 
+class Histogram;                               // histogram with fixed number of bins
+template <class Hist>
+class CumulativeHistogram;                     // cumulative histogram with fixed number of bins
 template <unsigned Percent, class Hist> 
 class HistogramQuantile;                       // quantiles computed from Histogram
+
+//template <>  class Histogram<0>;               // histogram where number of bins is specified at runtime
+
+
 template <unsigned NDim> class MultiHistogram; // multi-dimensional histogram
                                                // (always specify number of bins at runtime)
 
@@ -256,6 +262,8 @@ VIGRA_MODIFIER_PRIORITY(Central, PrepareDataPriority)
 VIGRA_MODIFIER_PRIORITY(Principal, PrepareDataPriority)
 VIGRA_MODIFIER_PRIORITY(Whitened, PrepareDataPriority)
 
+VIGRA_MODIFIER_PRIORITY(CumulativeHistogram, AccumulatorPriority)
+
 #undef VIGRA_MODIFIER_PRIORITY
 
     // check if the tag A contains a modifier with TARGET_PRIORITY
@@ -360,12 +368,27 @@ struct ModifierRule<B<B<A> > >
     typedef B<A> type;
 };
 
-    // recurse down the modifier chain
-template <class A, template <class> class B>
-struct ModifierRule<B<A> >
+template <class A, int PRIORITY=ModifierPriority<A>::value>
+struct RecurseModifier;
+
+template <class A, template <class> class B, int PRIORITY>
+struct RecurseModifier<B<A>, PRIORITY>
 {
     typedef typename ModifierOrder<B<typename StandardizeTag<A>::type> >::type type;
 };
+
+template <class A, template <class> class B>
+struct RecurseModifier<B<A>, AccumulatorPriority>
+{
+    typedef B<A> type;
+};
+
+    // recurse down the modifier chain, but only of B is actually a modifier,
+    // and not a templated base accumulator (i.e. has AccumulatorPriority)
+template <class A, template <class> class B>
+struct ModifierRule<B<A> >
+: public RecurseModifier<B<A> >
+{};
 
     // reduce the SOURCE modifier to the TARGET modifier,
     // using the given TEMPLATE arguments
@@ -481,6 +504,12 @@ template <class A, int TargetPriority>
 struct TagLongForm<A, TargetPriority, MaxPriority>
 {
     typedef typename InsertDefaultModifier<A, TargetPriority>::type type;
+};
+
+template <class A, template <class> class B, int TargetPriority>
+struct TagLongForm<B<A>, TargetPriority, MaxPriority>
+{
+    typedef typename InsertDefaultModifier<B<A>, TargetPriority>::type type;
 };
 
 template <class A, template <class> class B, int TargetPriority, int Priority>

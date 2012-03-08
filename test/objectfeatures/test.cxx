@@ -25,7 +25,6 @@
 #include <vigra/functorexpression.hxx>
 
 #include <vigra/algorithm.hxx>
-#include <vigra/histogram.hxx>
 #include <vigra/random.hxx>
 #include <vigra/convolution.hxx>
 #include <vigra/accumulator.hxx>
@@ -2562,6 +2561,30 @@ struct AccumulatorTest
 #endif
         }
     }
+
+    void testHistogram()
+    {
+        using namespace vigra::acc1;
+        {
+#if 1
+            typedef Histogram<10, IdentityMapping> Hist;
+            typedef AccumulatorChain<int, Select<Hist, HistogramQuantile<0, Hist>, HistogramQuantile<50, Hist>, HistogramQuantile<100, Hist>
+                                    > > A;
+            A a;
+
+            static const int SIZE = 30;
+            int data[SIZE] = {4, 3, 2, 2, 2, 0, 3, 6, 8, 8, 4, 0, 2, 0, 2, 8, 7, 8, 6, 0, 9, 3, 7, 0, 9, 5, 9, 9, 2, 4};
+
+            for(int k=0; k<SIZE; ++k)
+                a(data[k]);
+            std::cerr << get<Hist>(a) << "\n";
+            std::cerr << get<DivideByCount<CumulativeHistogram<Hist>>>(a) << "\n";
+            std::cerr << get<HistogramQuantile<0, Hist> >(a) << "\n";
+            std::cerr << get<HistogramQuantile<50, Hist> >(a) << "\n";
+            std::cerr << get<HistogramQuantile<100, Hist> >(a) << "\n";
+#endif
+        }
+    }
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -2576,6 +2599,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testVector));
         add(testCase(&AccumulatorTest::testMerge));
         add(testCase(&AccumulatorTest::testCoordAccess));
+        add(testCase(&AccumulatorTest::testHistogram));
     }
 };
 
