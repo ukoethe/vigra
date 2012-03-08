@@ -2028,7 +2028,7 @@ struct AccumulatorTest
         
         { 
 #if 1
-            typedef Accumulator<double, Select<Count> > A;
+            typedef AccumulatorChain<double, Select<Count> > A;
             A a;
 
             shouldEqual(1, a.passesRequired());
@@ -2056,7 +2056,7 @@ struct AccumulatorTest
 
         {
 #if 1
-            typedef Accumulator<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev, 
+            typedef AccumulatorChain<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev, 
                                                Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
                                                AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
                                                Principal<Variance>, Principal<CoordinateSystem>
@@ -2110,7 +2110,7 @@ struct AccumulatorTest
 
         { 
 #if 1
-            DynamicAccumulator<double, Select<Mean, Covariance, StdDev, Minimum, CentralMoment<4> > > a;
+            DynamicAccumulatorChain<double, Select<Mean, Covariance, StdDev, Minimum, CentralMoment<4> > > a;
 
             shouldEqual(0, a.passesRequired());
 
@@ -2188,7 +2188,7 @@ struct AccumulatorTest
 
         {
             typedef TinyVector<int, 3> V;
-            typedef Accumulator<V, Select<StdDev, Mean, CovarianceEigensystem, Covariance, Minimum, Maximum, CentralMoment<2>,
+            typedef AccumulatorChain<V, Select<StdDev, Mean, CovarianceEigensystem, Covariance, Minimum, Maximum, CentralMoment<2>,
                                           AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
                                           Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>,
                                           Principal<Minimum>, Principal<Maximum>, Principal<Skewness>, Principal<Kurtosis>, Principal<SumOfAbsDifferences>
@@ -2253,7 +2253,7 @@ struct AccumulatorTest
             
             typedef MultiArray<1, int> V;
             typedef TinyVector<int, 3> T;
-            typedef Accumulator<V::view_type, Select<Covariance, Mean, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
+            typedef AccumulatorChain<V::view_type, Select<Covariance, Mean, StdDev, Minimum, Maximum, CentralMoment<2> > > A;
             typedef LookupTag<Mean, A>::value_type W;
             typedef LookupTag<Covariance, A>::value_type Var;
 
@@ -2321,7 +2321,7 @@ struct AccumulatorTest
                 V(0.10242024165277441, 2.44449590189711241)
             };
 
-            typedef Accumulator<V, Select<Mean, Variance, Covariance, Central<Sum>,
+            typedef AccumulatorChain<V, Select<Mean, Variance, Covariance, Central<Sum>,
                                           Principal<Variance>, Principal<CoordinateSystem>, Principal<Sum>
                                           > > A;
             typedef LookupTag<Covariance, A>::value_type Var;
@@ -2381,7 +2381,7 @@ struct AccumulatorTest
             };
 
             for(int k=0; k<SIZE; ++k)
-                shouldEqualTolerance(principal[k], cast<PrincipalProjection>(a)(data[k]), V(1e-14));
+                shouldEqualTolerance(principal[k], getAccumulator<PrincipalProjection>(a)(data[k]), V(1e-14));
 
                 // check that statistics of points in principal representation have expected properties
             a.reset();
@@ -2408,7 +2408,7 @@ struct AccumulatorTest
 #if 1
         using namespace vigra::acc1;
         
-        typedef Accumulator<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis, 
+        typedef AccumulatorChain<double, Select<Covariance, StdDev, Minimum, Maximum, Skewness, Kurtosis, 
                                            CentralMoment<3>, CentralMoment<4> > > A;
 
         A a, b;
@@ -2457,7 +2457,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
-            typedef Accumulator<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
+            typedef AccumulatorChain<Handle, Select<Coord<Maximum>, Coord<Minimum>, Coord<Mean>, Coord<StdDev>, Coord<Covariance>,
                                                Coord<Principal<Variance> >, Coord<Principal<CoordinateSystem> >,
                                                Coord<AbsSum>, Coord<MeanAbsoluteDeviation>, Coord<CovarianceEigensystem>
                                           > > A;
@@ -2524,7 +2524,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape3 V;
 
-            typedef Accumulator<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
+            typedef AccumulatorChain<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
                                                Weighted<Mean>, CoordWeighted<Mean>,
                                                ArgMinWeight, ArgMaxWeight,
                                                Coord<ArgMinWeight>, Coord<ArgMaxWeight>

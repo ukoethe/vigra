@@ -560,7 +560,7 @@ struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level>
 
     // Create an accumulator chain containing the Selected statistics and their dependencies.
 template <class T, class Selected, bool dynamic = false>
-struct Accumulator
+struct AccumulatorChain
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
     typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type InternalBaseType;
@@ -603,12 +603,12 @@ struct Accumulator
         next_.pass<N>(t, weight);
     }
     
-    void operator+=(Accumulator const & o)
+    void operator+=(AccumulatorChain const & o)
     {
         merge(o);
     }
     
-    void merge(Accumulator const & o)
+    void merge(AccumulatorChain const & o)
     {
         next_.merge(o.next_);
     }
@@ -649,7 +649,7 @@ struct Accumulator
             case 5: update<5>(t); break;
             default:
                 vigra_precondition(false,
-                     "Accumulator::updatePassN(): 0 < N < 6 required.");
+                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
     
@@ -664,7 +664,7 @@ struct Accumulator
             case 5: update<5>(t, weight); break;
             default:
                 vigra_precondition(false,
-                     "Accumulator::updatePassN(): 0 < N < 6 required.");
+                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
     
@@ -677,8 +677,8 @@ struct Accumulator
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
-struct DynamicAccumulator
-: public Accumulator<T, Selected, true>
+struct DynamicAccumulatorChain
+: public AccumulatorChain<T, Selected, true>
 {};
 
 /****************************************************************************/
@@ -826,7 +826,7 @@ struct GetImpl<Tag, A, Error__Attempt_to_access_inactive_statistic<Tag> >
     // cast an accumulator chain to the type specified by Tag
 template <class TAG, class A>
 typename LookupTag<TAG, A>::reference
-cast(A & a)
+getAccumulator(A & a)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::reference reference;
@@ -848,7 +848,7 @@ template <class Tag, class A>
 void
 activate(A & a)
 {
-    cast<Tag>(a).activate();
+    getAccumulator<Tag>(a).activate();
 }
 
     // activate the dynamic accumulator specified by Tag
@@ -856,7 +856,7 @@ template <class Tag, class A>
 bool
 isActive(A const & a)
 {
-    return cast<Tag>(a).isActive();
+    return getAccumulator<Tag>(a).isActive();
 }
 
 /****************************************************************************/
@@ -1003,7 +1003,7 @@ important notes on modifiers:
    and data access is outermost, e.g.:
         Coord<DivideByCount<Principal<PowerSum<2> > > >
  * modifiers are automatically transfered to dependencies as appropriate
- * modifiers for lookup (cast and get) of dependent accumulators are automatically adjusted
+ * modifiers for lookup (getAccumulator and get) of dependent accumulators are automatically adjusted
  * modifiers must adjust workInPass for the contained accumulator as appropriate
  * we may implement convenience versions of Select that apply a modifier to all 
    contained tags at once
@@ -2525,7 +2525,7 @@ class PrincipalProjection
         
         result_type operator()(T const & t) const
         {
-            cast<Centralize>(*this).update(t);
+            getAccumulator<Centralize>(*this).update(t);
             update(t);
             return value_;
         }
