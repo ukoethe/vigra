@@ -2570,7 +2570,8 @@ struct AccumulatorTest
             static const int SIZE = 30, HSIZE = 10;
 
             typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE> >, StandardQuantiles<AutoRangeHistogram<HSIZE> >,
-                                                 StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >
+                                                 StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >,
+                                                 DivideByCount<UserRangeHistogram<HSIZE> >
                                     > > A;
             A a;
 
@@ -2592,12 +2593,15 @@ struct AccumulatorTest
             for(int k=0; k<SIZE; ++k)
                 a.updatePass2(data[k]);
 
-            double h[HSIZE] = { 5, 0, 6, 3, 3, 1, 2, 2, 4, 4 };
+            double h[HSIZE] = { 5.0, 0.0, 6.0, 3.0, 3.0, 1.0, 2.0, 2.0, 4.0, 4.0 };
 
             shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE>>(a).begin());
             shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE>>(a).begin());
             shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE>>(a).begin());
             shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0>>(a).begin());
+
+            double density[HSIZE] = { 5.0/30.0, 0.0, 6.0/30.0, 3.0/30.0, 3.0/30.0, 1.0/30.0, 2.0/30.0, 2.0/30.0, 4.0/30.0, 4.0/30.0 };
+            shouldEqualSequence(density, density+HSIZE, get<DivideByCount<UserRangeHistogram<HSIZE>>>(a).begin());
 
             static const int QSIZE = LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE>>, A>::value_type::static_size;
             shouldEqual(QSIZE, 7);

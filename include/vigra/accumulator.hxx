@@ -1566,8 +1566,7 @@ class AbsPowerSum<N>
     };
 };
 
-template <class T, class BASE, 
-          class VALUE_TYPE = typename AccumulatorResultTraits<T>::SumType>
+template <class T, class BASE, class VALUE_TYPE>
 struct CachedResultBase
 : public BASE
 {
@@ -1614,18 +1613,19 @@ template <class TAG>
 class DivideByCount
 {
   public:
-    typedef Select<TAG, Count> Dependencies;
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef Select<TargetTag, Count> Dependencies;
   
     template <class T, class BASE>
     struct Impl
-    : public CachedResultBase<T, BASE> 
+    : public CachedResultBase<T, BASE, typename LookupTag<TargetTag, BASE>::value_type> 
     {
         result_type operator()() const
         {
             if(this->isDirty())
             {
                 using namespace multi_math;
-                value_ = get<TAG>(*this) / get<Count>(*this);
+                value_ = get<TargetTag>(*this) / get<Count>(*this);
                 this->setClean();
             }
             return value_;
@@ -1638,19 +1638,20 @@ template <class TAG>
 class DivideUnbiased
 {
   public:
-    typedef Select<TAG, Count> Dependencies;
-    
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef Select<TargetTag, Count> Dependencies;
+      
     template <class T, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename LookupTag<TAG, BASE>::value_type  value_type;
+        typedef typename LookupTag<TargetTag, BASE>::value_type  value_type;
         typedef value_type                                 result_type;
         
         result_type operator()() const
         {
             using namespace multi_math;
-            return get<TAG>(*this) / (get<Count>(*this) - 1.0);
+            return get<TargetTag>(*this) / (get<Count>(*this) - 1.0);
         }
     };
 };
@@ -1660,7 +1661,7 @@ template <class TAG>
 class RootDivideByCount
 {
   public:
-    typedef DivideByCount<TAG> TargetTag;
+    typedef typename StandardizeTag<DivideByCount<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
     template <class T, class BASE>
@@ -1683,7 +1684,7 @@ template <class TAG>
 class RootDivideUnbiased
 {
   public:
-    typedef DivideUnbiased<TAG> TargetTag;
+    typedef typename StandardizeTag<DivideUnbiased<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
     template <class T, class BASE>
