@@ -2569,9 +2569,10 @@ struct AccumulatorTest
 #if 1
             static const int SIZE = 30, HSIZE = 10;
 
-            typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE> >, StandardQuantiles<AutoRangeHistogram<HSIZE> >,
-                                                 StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >,
-                                                 DivideByCount<UserRangeHistogram<HSIZE> >
+            typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE>>, StandardQuantiles<AutoRangeHistogram<HSIZE>>,
+                                                 StandardQuantiles<IntegerHistogram<HSIZE>>, StandardQuantiles<IntegerHistogram<0>>,
+                                                 DivideByCount<UserRangeHistogram<HSIZE>>, StandardQuantiles<UserRangeHistogram<HSIZE+2>>,
+                                                 StandardQuantiles<UserRangeHistogram<3>>, StandardQuantiles<IntegerHistogram<HSIZE+2>>
                                     > > A;
             A a;
 
@@ -2579,8 +2580,10 @@ struct AccumulatorTest
             // the same sorted:
             // int data[SIZE] = {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9};
 
-            getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-0.5, 9.5);
-            getAccumulator<IntegerHistogram<0> >(a).setBinCount(HSIZE);
+            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-0.5, 9.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-1.5, 10.5);
+            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-20.0, 30.0);  // all data in one bin
+            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
 
             shouldEqual(HSIZE, get<IntegerHistogram<HSIZE>>(a).size());
             shouldEqual(HSIZE, get<UserRangeHistogram<HSIZE>>(a).size());
@@ -2603,22 +2606,30 @@ struct AccumulatorTest
             double density[HSIZE] = { 5.0/30.0, 0.0, 6.0/30.0, 3.0/30.0, 3.0/30.0, 1.0/30.0, 2.0/30.0, 2.0/30.0, 4.0/30.0, 4.0/30.0 };
             shouldEqualSequence(density, density+HSIZE, get<DivideByCount<UserRangeHistogram<HSIZE>>>(a).begin());
 
-            static const int QSIZE = LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE>>, A>::value_type::static_size;
+            typedef LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE>>, A>::value_type QuantileVector;
+            static const int QSIZE = QuantileVector::static_size;
             shouldEqual(QSIZE, 7);
+
             double quser[QSIZE] = { 0.0, 0.3, 1.9166666666666666, 3.833333333333333, 7.625, 8.625, 9.0 };
             shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE+2>>>(a).begin(), 1e-15);
+
+            double q_onebin[QSIZE] = { 0.0, 0.9, 2.25, 4.5, 6.75, 8.1, 9.0 };
+            shouldEqualSequenceTolerance(q_onebin, q_onebin+QSIZE, get<StandardQuantiles<UserRangeHistogram<3>>>(a).begin(), 1e-14);
             
-            double qauto[QSIZE] = { 0.0, 0.53999999999999999, 2.1749999999999999, 3.8999999999999999, 7.3124999999999999, 8.3249999999999999, 9.0 };
+            double qauto[QSIZE] = { 0.0, 0.54, 2.175, 3.9, 7.3125, 8.325, 9.0 };
             shouldEqualSequenceTolerance(qauto, qauto+QSIZE, get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
             
             double qint[QSIZE] = { 0.0, 0.0, 2.0, 4.0, 7.75, 9.0, 9.0 };
             shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<HSIZE>>>(a).begin());
             shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<0>>>(a).begin());
 
-                // repeat test with negated data => quantiles should be negated
+                // repeat test with negated data => quantiles should be negated, but otherwise the same as before
             a.reset();
 
             getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-9.5, 0.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-10.5, 1.5);
+            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-30.0, 20.0);
             getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
 
             for(int k=0; k<SIZE; ++k)
@@ -2640,6 +2651,23 @@ struct AccumulatorTest
             
             std::reverse(qauto, qauto+QSIZE);
             shouldEqualSequenceTolerance(qauto, qauto+QSIZE, (-get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a)).begin(), 1e-14);
+
+                // repeat test with data shifted by one (test behavior of IntegerHistogram with empty bins at the ends)
+            a.reset();
+
+            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-0.5, 9.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-1.5, 10.5);
+            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-20.0, 30.0);  // all data in one bin
+            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE+2);
+
+            for(int k=0; k<SIZE; ++k)
+                a(1+data[k]);
+
+            for(int k=0; k<SIZE; ++k)
+                a.updatePass2(1+data[k]);
+
+            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<HSIZE+2>>>(a)-QuantileVector(1.0)).begin());
+            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<0>>>(a)-QuantileVector(1.0)).begin());
 #endif
         }
     }

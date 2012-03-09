@@ -2760,60 +2760,83 @@ class RangeHistogramBase
         return inverse_scale_ * t + offset_;
     }
     
-    void computeStandardQuantiles(double minimum, double maximum, double count, TinyVector<double, 7> & res) const
+    template <class ArrayLike>
+    void computeStandardQuantiles(double minimum, double maximum, double count, 
+                                  ArrayLike const & desiredQuantiles, ArrayLike & res) const
     {
-        res[0] = minimum;
-        res[6] = maximum;
-        
+        ArrayVector<double> keypoints, cumhist;
         double mappedMinimum = mapItem(minimum);
         double mappedMaximum = mapItem(maximum);
-        double counts[5] = { 0.1*count, 0.25*count, 0.5*count, 0.75*count, 0.9*count };
         
-        int currentBin = 0, size = (int)this->value_.size();
-        double cumulative1 = this->left_outliers,
-               cumulative2 = this->value_[currentBin] + cumulative1;
+        keypoints.push_back(mappedMinimum);
+        cumhist.push_back(0.0);
         
-        int quantile = 0;
-        while(quantile < 5)
+        if(this->left_outliers > 0.0)
         {
-            if(cumulative2 == counts[quantile])
+            keypoints.push_back(0.0);
+            cumhist.push_back(left_outliers);
+        }
+        
+        int size = (int)this->value_.size();
+        double cumulative = left_outliers;
+        for(int k=0; k<size; ++k)
+        {
+            if(this->value_[k] > 0.0)
             {
-                res[quantile+1] = mapItemInverse((double)(currentBin +1));
-                ++quantile;
+                if(keypoints.back() <= k)
+                {
+                    keypoints.push_back(k);
+                    cumhist.push_back(cumulative);
+                }
+                cumulative += this->value_[k];
+                keypoints.push_back(k+1);
+                cumhist.push_back(cumulative);
             }
-            else if(cumulative2 > counts[quantile])
+        }
+        
+        if(this->right_outliers > 0.0)
+        {
+            if(keypoints.back() != size)
             {
-                double t;
-                if(cumulative1 > counts[quantile]) // in left_outlier bin
-                {
-                    t = (1.0 - counts[quantile] / cumulative1) * mappedMinimum;
-                }
-                else if(cumulative1 == 0.0)     // in first regular bin, no left outliers
-                {
-                    t = counts[quantile] / cumulative2 * (currentBin + 1 - mappedMinimum) + mappedMinimum;
-                }
-                else if(currentBin == size-1 && this->right_outliers == 0.0)  // in last bin, no right outliers
-                {
-                    t = (counts[quantile] - cumulative1) / this->value_[currentBin] * (mappedMaximum - currentBin) + currentBin;
-                }
-                else // standard case
-                {
-                    t = (counts[quantile] - cumulative1) / this->value_[currentBin] + currentBin;
-                }
-                res[quantile+1] = mapItemInverse(t);
-                ++quantile;
+                keypoints.push_back(size);
+                cumhist.push_back(cumulative);
             }
-            else if(currentBin == size-1) // in right outlier bin
+            keypoints.push_back(mappedMaximum);
+            cumhist.push_back(count);
+        }
+        else
+        {
+            keypoints.back() = mappedMaximum;
+            cumhist.back() = count;
+        }
+        
+        int quantile = 0, end = (int)desiredQuantiles.size();
+        
+        if(desiredQuantiles[0] == 0.0)
+        {
+            res[0] = minimum;
+            ++quantile;
+        }
+        if(desiredQuantiles[end-1] == 1.0)
+        {
+            res[end-1] = maximum;
+            --end;
+        }
+        
+        int point = 0;
+        double qcount = count * desiredQuantiles[quantile];
+        while(quantile < end)
+        {
+            if(cumhist[point] < qcount && cumhist[point+1] >= qcount)
             {
-                double t = (counts[quantile] - cumulative2) / this->right_outliers * (mappedMaximum - size) + size;
-                res[quantile+1] = mapItemInverse(t);
+                double t = (qcount - cumhist[point]) / (cumhist[point+1] - cumhist[point]) * (keypoints[point+1] - keypoints[point]);
+                res[quantile] = mapItemInverse(t + keypoints[point]);
                 ++quantile;
+                qcount = count * desiredQuantiles[quantile];
             }
             else
             {
-                ++currentBin;
-                cumulative1 = cumulative2;
-                cumulative2 += this->value_[currentBin];
+                ++point;
             }
         }
     }
@@ -2842,57 +2865,67 @@ class IntegerHistogram
         
         void update(int index, double weight)
         {
-            if(index < 0)
-                left_outliers += weight;
-            else if(index >= (int)this->value_.size())
-                right_outliers += weight;
-            else
-                value_[index] += weight;
+            // cannot compute quantile from weighted integer histograms,
+            // so force people to use UserRangeHistogram or AutoRangeHistogram
+            vigra_precondition(false, "IntegerHistogram::update(): weighted histograms not supported, use another histogram type.");
         }
     
-        void computeStandardQuantiles(double minimum, double maximum, double count, TinyVector<double, 7> & res) const
+        template <class ArrayLike>
+        void computeStandardQuantiles(double minimum, double maximum, double count, 
+                                      ArrayLike const & desiredQuantiles, ArrayLike & res) const
         {
-            res[0] = minimum;
-            res[6] = maximum;
+            int quantile = 0, end = (int)desiredQuantiles.size();
             
-            count -= 1.0; // FIXME: this should be count -= get<AverageWeight>(*this)
+            if(desiredQuantiles[0] == 0.0)
+            {
+                res[0] = minimum;
+                ++quantile;
+            }
+            if(desiredQuantiles[end-1] == 1.0)
+            {
+                res[end-1] = maximum;
+                --end;
+            }
             
-            // add a to the quantiles to account for the fact that counting
-            // corresponds to 1-based indexing (one element == index 1)
-            TinyVector<double, 5> counts(0.1*count+1.0, 0.25*count+1.0, 0.5*count+1.0, 0.75*count+1.0, 0.9*count+1.0);
-            
+            count -= 1.0;
             int currentBin = 0, size = (int)this->value_.size();
             double cumulative1 = this->left_outliers,
                    cumulative2 = this->value_[currentBin] + cumulative1;
             
-            int quantile = 0;
-            while(quantile < 5)
+            // add a to the quantiles to account for the fact that counting
+            // corresponds to 1-based indexing (one element == index 1)
+            double qcount = desiredQuantiles[quantile]*count + 1.0;
+            
+            while(quantile < end)
             {
-                if(cumulative2 == counts[quantile])
+                if(cumulative2 == qcount)
                 {
-                    res[quantile+1] = currentBin;
+                    res[quantile] = currentBin;
                     ++quantile;
+                    qcount = desiredQuantiles[quantile]*count + 1.0;
                 }
-                else if(cumulative2 > counts[quantile])
+                else if(cumulative2 > qcount)
                 {
-                    if(cumulative1 > counts[quantile]) // in left_outlier bin
+                    if(cumulative1 > qcount) // in left_outlier bin
                     {
-                        res[quantile+1] = minimum;
+                        res[quantile] = minimum;
                     }
-                    if(cumulative1 + 1.0 > counts[quantile]) // between bins
+                    if(cumulative1 + 1.0 > qcount) // between bins
                     {
-                        res[quantile+1] = currentBin - 1 + counts[quantile] - std::floor(counts[quantile]);
+                        res[quantile] = currentBin - 1 + qcount - std::floor(qcount);
                     }
                     else // standard case
                     {
-                        res[quantile+1] = currentBin;
+                        res[quantile] = currentBin;
                     }
                     ++quantile;
+                    qcount = desiredQuantiles[quantile]*count + 1.0;
                 }
                 else if(currentBin == size-1) // in right outlier bin
                 {
-                    res[quantile+1] = maximum;
+                    res[quantile] = maximum;
                     ++quantile;
+                    qcount = desiredQuantiles[quantile]*count + 1.0;
                 }
                 else
                 {
@@ -2977,8 +3010,10 @@ class StandardQuantiles
         {
             if(this->isDirty())
             {
+                static const double desiredQuantiles[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0 };
                 getAccumulator<HistogramTag>(*this).computeStandardQuantiles(get<Minimum>(*this), get<Maximum>(*this), 
-                                                                             get<Count>(*this), this->value_);
+                                                                             get<Count>(*this), value_type(desiredQuantiles), 
+                                                                             this->value_);
                 this->setClean();
             }
             return this->value_;
