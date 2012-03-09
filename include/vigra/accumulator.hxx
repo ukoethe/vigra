@@ -419,18 +419,40 @@ struct NeedsReshape<AccumulatorEnd, AccumulatorEnd::value_type>
 
 template <unsigned int N, class T, class Stride>
 inline typename MultiArrayShape<N>::type
-shape(MultiArrayView<N, T, Stride> const & a)
+shapeOf(MultiArrayView<N, T, Stride> const & a)
 {
     return a.shape();
 }
 
 template <class T, int N>
 inline Shape1
-shape(TinyVector<T, N> const &)
+shapeOf(TinyVector<T, N> const &)
 {
     return Shape1(N);
 }
 
+#define VIGRA_SHAPE_OF(type) \
+inline Shape1 \
+shapeOf(type) \
+{ \
+    return Shape1(1); \
+}
+
+VIGRA_SHAPE_OF(unsigned char)
+VIGRA_SHAPE_OF(signed char)
+VIGRA_SHAPE_OF(unsigned short)
+VIGRA_SHAPE_OF(short)
+VIGRA_SHAPE_OF(unsigned int)
+VIGRA_SHAPE_OF(int)
+VIGRA_SHAPE_OF(unsigned long)
+VIGRA_SHAPE_OF(long)
+VIGRA_SHAPE_OF(unsigned long long)
+VIGRA_SHAPE_OF(long long)
+VIGRA_SHAPE_OF(float)
+VIGRA_SHAPE_OF(double)
+VIGRA_SHAPE_OF(long double)
+
+#undef VIGRA_SHAPE_OF
 
 // FIXME: replace this with an init function that is called at the beginning of each pass?
 
@@ -458,7 +480,7 @@ struct ReshapeImpl
     {
         if(!done_)
         {
-            a.resize(shape(t));
+            a.resize(shapeOf(t));
             done_ = true;
         }
     }
@@ -468,7 +490,7 @@ struct ReshapeImpl
     {
         if(!done_)
         {
-            a.resize(shape(t));
+            a.resize(shapeOf(t));
             done_ = true;
         }
     }
@@ -1021,7 +1043,7 @@ class DataFromHandle
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shape(get<1>(t)));
+            ImplType::reshape(detail::shapeOf(get<1>(t)));
         }
         
         template <class U, class NEXT>
@@ -1057,7 +1079,7 @@ class Coord
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shape(get<0>(t)));
+            ImplType::reshape(detail::shapeOf(get<0>(t)));
         }
         
         template <class U, class NEXT>
@@ -2344,8 +2366,7 @@ class Principal<CoordinateSystem>
     };
 };
 
-template <>
-class Quantile<0>
+class Minimum
 {
   public:
     typedef Select<> Dependencies;
@@ -2388,9 +2409,10 @@ class Quantile<0>
             value_ = min(value_, t);
         }
         
-        void update(T const & t, double weight)
+        void update(T const & t, double)
         {
-            vigra_precondition(false, "Minimum accumulator does not support weights.");
+            using namespace multi_math;
+            value_ = min(value_, t);
         }
         
         result_type operator()() const
@@ -2400,8 +2422,7 @@ class Quantile<0>
     };
 };
 
-template <>
-class Quantile<100>
+class Maximum
 {
   public:
     typedef Select<> Dependencies;
@@ -2444,9 +2465,10 @@ class Quantile<100>
             value_ = max(value_, t);
         }
         
-        void update(T const & t, double weight)
+        void update(T const & t, double)
         {
-            vigra_precondition(false, "Maximum accumulator does not support weights.");
+            using namespace multi_math;
+            value_ = max(value_, t);
         }
         
         result_type operator()() const
@@ -2584,282 +2606,381 @@ class ArgMaxWeight
     };
 };
 
-struct IdentityMapping
+template <int BinCount, class BASE>
+class HistogramBase
+: public BASE
 {
-    static const int workInPass = 1;
+  public:
+  
+    typedef double                        element_type;
+    typedef TinyVector<double, BinCount>  value_type;
+    typedef value_type const &            result_type;
     
-    template <class T>
-    T const & operator()(T const & t) const
-    {
-        return t;
-    }
+    value_type value_;
+    double left_outliers, right_outliers;
     
-    template <class T>
-    T const & inverse(T const & t) const
-    {
-        return t;
-    }
-    
-    void reset()
+    HistogramBase()
+    : value_(),
+      left_outliers(), 
+      right_outliers()
     {}
     
-    bool operator==(IdentityMapping const &) const
+    void reset()
     {
-        return true;
+        value_ = element_type();
+        left_outliers = 0.0;
+        right_outliers = 0.0;
+    }
+
+    void operator+=(HistogramBase const & o)
+    {
+        value_ += o.value_;
+        left_outliers_ += o.left_outliers_;
+        right_outliers_ += o.right_outliers_;
+    }
+        
+    result_type operator()() const
+    {
+        return value_;
     }
 };
 
-struct LinearMapping
+template <class BASE>
+class HistogramBase<0, BASE>
+: public BASE
 {
-    static const int workInPass = 1;
+  public:
+  
+    typedef double                        element_type;
+    typedef MultiArray<1, double>         value_type;
+    typedef value_type const &            result_type;
     
-    double scale_, inverse_scale_, offset_;
+    value_type value_;
+    double left_outliers, right_outliers;
     
-    LinearMapping()
-    : scale_(),
-      inverse_scale_(),
-      offset_()
+    HistogramBase()
+    : value_(),
+      left_outliers(), 
+      right_outliers()
     {}
     
-    void setParameters(double scale, double offset)
+    void reset()
     {
-        scale_ = scale;
-        inverse_scale_ = 1.0 / scale;
-        offset_ = offset;
+        value_ = element_type();
+        left_outliers = 0.0;
+        right_outliers = 0.0;
     }
     
-    template <class T>
-    T const & operator()(T const & t) const
+    void operator+=(HistogramBase const & o)
     {
-        return scale_ * (t - offset_);
+        value_ += o.value_;
+        left_outliers_ += o.left_outliers_;
+        right_outliers_ += o.right_outliers_;
     }
+        
+    void setBinCount(int binCount)
+    {
+        value_type(Shape1(binCount)).swap(value_);
+    }
+
+    result_type operator()() const
+    {
+        return value_;
+    }
+};
+
+template <class T, class BASE, int BinCount>
+class RangeHistogramBase
+: public HistogramBase<BinCount, BASE>
+{
+  public:
+  
+    double scale_, offset_, inverse_scale_;
     
-    template <class T>
-    T const & inverse(T const & t) const
-    {
-        return t * inverse_scale_ + offset_;
-    }
+    RangeHistogramBase()
+    : scale_(),
+      offset_(), 
+      inverse_scale_()
+    {}
     
     void reset()
     {
         scale_ = 0.0;
-        inverse_scale_ = 0.0;
         offset_ = 0.0;
+        inverse_scale_ = 0.0;
+        HistogramBase<BinCount, BASE>::reset();
+    }
+
+    void operator+=(RangeHistogramBase const & o)
+    {
+        vigra_precondition(scale_ == o.scale_ && offset_ == o.offset_,
+            "RangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
+        
+        HistogrammBase<BinCount, BASE>::operator+=(o);
+    }
+
+    void update(T const & t)
+    {
+        update(t, 1.0);
     }
     
-    bool operator==(LinearMapping const & o) const
+    void update(T const & t, double weight)
     {
-        return scale_ == o.scale_ && offset_ == o.offset_;
+        double m = mapItem(t);
+        int index =  (m == (double)this->value_.size())
+                       ? (int)m - 1
+                       : (int)m;
+        if(index < 0)
+            this->left_outliers += weight;
+        else if(index >= (int)this->value_.size())
+            this->right_outliers += weight;
+        else
+            this->value_[index] += weight;
+    }
+    
+    void setMinMax(double mi, double ma)
+    {
+        vigra_precondition(this->value_.size() > 0,
+            "RangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
+        vigra_precondition(mi < ma,
+            "RangeHistogramBase::setMinMax(...): min < max required.");
+        offset_ = mi;
+        scale_ = (double)this->value_.size() / (ma - mi);
+        inverse_scale_ = 1.0 / scale_;
+    }
+    
+    double mapItem(double t) const
+    {
+        return scale_ * (t - offset_);
+    }
+    
+    double mapItemInverse(double t) const
+    {
+        return inverse_scale_ * t + offset_;
+    }
+    
+    void computeStandardQuantiles(double minimum, double maximum, double count, TinyVector<double, 7> & res) const
+    {
+        res[0] = minimum;
+        res[6] = maximum;
+        
+        double mappedMinimum = mapItem(minimum);
+        double mappedMaximum = mapItem(maximum);
+        double counts[5] = { 0.1*count, 0.25*count, 0.5*count, 0.75*count, 0.9*count };
+        
+        int currentBin = 0, size = (int)this->value_.size();
+        double cumulative1 = this->left_outliers,
+               cumulative2 = this->value_[currentBin] + cumulative1;
+        
+        int quantile = 0;
+        while(quantile < 5)
+        {
+            if(cumulative2 == counts[quantile])
+            {
+                res[quantile+1] = mapItemInverse((double)(currentBin +1));
+                ++quantile;
+            }
+            else if(cumulative2 > counts[quantile])
+            {
+                double t;
+                if(cumulative1 > counts[quantile]) // in left_outlier bin
+                {
+                    t = (1.0 - counts[quantile] / cumulative1) * mappedMinimum;
+                }
+                else if(cumulative1 == 0.0)     // in first regular bin, no left outliers
+                {
+                    t = counts[quantile] / cumulative2 * (currentBin + 1 - mappedMinimum) + mappedMinimum;
+                }
+                else if(currentBin == size-1 && this->right_outliers == 0.0)  // in last bin, no right outliers
+                {
+                    t = (counts[quantile] - cumulative1) / this->value_[currentBin] * (mappedMaximum - currentBin) + currentBin;
+                }
+                else // standard case
+                {
+                    t = (counts[quantile] - cumulative1) / this->value_[currentBin] + currentBin;
+                }
+                res[quantile+1] = mapItemInverse(t);
+                ++quantile;
+            }
+            else if(currentBin == size-1) // in right outlier bin
+            {
+                double t = (counts[quantile] - cumulative2) / this->right_outliers * (mappedMaximum - size) + size;
+                res[quantile+1] = mapItemInverse(t);
+                ++quantile;
+            }
+            else
+            {
+                ++currentBin;
+                cumulative1 = cumulative2;
+                cumulative2 += this->value_[currentBin];
+            }
+        }
     }
 };
 
-// struct AutoMapping
-// {
-    // static const int workInPass = 2;
-    
-    // double scale_, offset_;
-    
-    // LinearMapping()
-    // : scale_(),
-      // offset_()
-    // {}
-    
-    // void setParameters(double scale, double offset)
-    // {
-        // scale_ = scale;
-        // offset_ = offset;
-    // }
-    
-    // template <class T>
-    // T const & operator()(T const & t) const
-    // {
-        // return scale_ * (t - offset_);
-    // }
-    
-    // void reset()
-    // {
-        // scale_ = 0.0;
-        // offset_ = 0.0;
-    // }
-// };
-
-template <int BinCount, class MappingFunctor>
-class Histogram
+template <int BinCount>
+class IntegerHistogram
 {
   public:
     
     typedef Select<> Dependencies;
     
-    static const int binCount = BinCount;
-    static const int workInPass = MappingFunctor::workInPass;
-    
     template <class T, class BASE>
     struct Impl
-    : public BASE
+    : public HistogramBase<BinCount, BASE>
     {
-        typedef double                        element_type;
-        typedef TinyVector<double, BinCount>  value_type;
-        typedef value_type const &            result_type;
-        
-        static const int workInPass = MappingFunctor::workInPass;
-        
-        value_type value_;
-        double left_outliers, right_outliers;
-        MappingFunctor mapItem;
-        
-        Impl()
-        : value_(),
-          left_outliers(), 
-          right_outliers(),
-          mapItem()
-        {}
-        
-        void reset()
+        void update(int index)
         {
-            value_ = element_type();
-            left_outliers = 0.0;
-            right_outliers = 0.0;
-            mapItem.reset();
-        }
-    
-        void operator+=(Impl const & o)
-        {
-            vigra_precondition(mapItem == o.mapItem,
-                "Histogram::operator+=(): cannot merge histograms with different data mapping.");
-            
-            value_ += o.value_;
-        }
-    
-        void update(T const & t)
-        {
-            double m = mapItem(t);
-            int index =  (m == (double)binCount)
-                           ? (int)m - 1
-                           : (int)m;
             if(index < 0)
                 ++left_outliers;
-            else if(index > BinCount)
+            else if(index >= (int)this->value_.size())
                 ++right_outliers;
             else
                 ++value_[index];
         }
         
-        void update(T const & t, double weight)
+        void update(int index, double weight)
         {
-            double m = mapItem(t);
-            int index =  (m == (double)binCount)
-                           ? (int)m - 1
-                           : (int)m;
             if(index < 0)
                 left_outliers += weight;
-            else if(index >= BinCount)
+            else if(index >= (int)this->value_.size())
                 right_outliers += weight;
             else
                 value_[index] += weight;
         }
-        
-        result_type operator()() const
+    
+        void computeStandardQuantiles(double minimum, double maximum, double count, TinyVector<double, 7> & res) const
         {
-            return value_;
-        }
-    };
-};
-
-template <class Hist>
-class DivideByCount<CumulativeHistogram<Hist> >
-{
-  public:
-    
-    typedef typename StandardizeTag<Hist>::type HistogramTag;
-    typedef Select<HistogramTag, Count> Dependencies;
-    
-    static const int workInPass = HistogramTag::workInPass;
-    static const int binCount = HistogramTag::binCount;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public CachedResultBase<T, BASE, TinyVector<double, HistogramTag::binCount> >
-    {
-        static const int workInPass = HistogramTag::workInPass;
-        
-        mutable double left_outliers;
-        
-        result_type operator()() const
-        {
-            if(this->isDirty())
+            res[0] = minimum;
+            res[6] = maximum;
+            
+            count -= 1.0; // FIXME: this should be count -= get<AverageWeight>(*this)
+            
+            // add a to the quantiles to account for the fact that counting
+            // corresponds to 1-based indexing (one element == index 1)
+            TinyVector<double, 5> counts(0.1*count+1.0, 0.25*count+1.0, 0.5*count+1.0, 0.75*count+1.0, 0.9*count+1.0);
+            
+            int currentBin = 0, size = (int)this->value_.size();
+            double cumulative1 = this->left_outliers,
+                   cumulative2 = this->value_[currentBin] + cumulative1;
+            
+            int quantile = 0;
+            while(quantile < 5)
             {
-                left_outliers = getAccumulator<HistogramTag>(*this).left_outliers / get<Count>(*this);
-                value_[0] = left_outliers + get<HistogramTag>(*this)[0] / get<Count>(*this);
-                for(int k=1; k<binCount-1; ++k)
-                    value_[k] = value_[k-1] + get<HistogramTag>(*this)[k] / get<Count>(*this);
-                if(getAccumulator<HistogramTag>(*this).right_outliers == 0.0)
-                    value_[binCount-1] = 1.0;  // get rid of rounding errors
-                else
-                    value_[binCount-1] = value_[binCount-2] + get<HistogramTag>(*this)[binCount-1] / get<Count>(*this);
-                this->setClean();
-            }
-            return value_;
-        }
-    };
-};
-
-template <unsigned Percent, class Hist> 
-class HistogramQuantile
-{
-  public:
-    
-    typedef typename StandardizeTag<DivideByCount<CumulativeHistogram<Hist> > >::type CumulativeTag;
-    typedef typename CumulativeTag::HistogramTag HistogramTag;
-    typedef Select<CumulativeTag> Dependencies;
-
-    static const int binCount = CumulativeTag::binCount;
-    static const int workInPass = CumulativeTag::workInPass;
-   
-    template <class T, class BASE>
-    struct Impl
-    : public CachedResultBase<T, BASE, double>
-    {
-        static const int workInPass = CumulativeTag::workInPass;
-        
-        double quantile_;
-        
-        Impl()
-        : quantile_(Percent / 100.0)
-        {}
-        
-        result_type operator()() const
-        {
-            if(this->isDirty())
-            {
-                typename LookupTag<CumulativeTag, BASE>::result_type hist = get<CumulativeTag>(*this);
-                
-                if(hist[0] > quantile_)
+                if(cumulative2 == counts[quantile])
                 {
-                    double left_outliers = getAccumulator<CumulativeTag>(*this).left_outliers;
-                    if(left_outliers > quantile_)
-                        value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(0.0);
-                    else
+                    res[quantile+1] = currentBin;
+                    ++quantile;
+                }
+                else if(cumulative2 > counts[quantile])
+                {
+                    if(cumulative1 > counts[quantile]) // in left_outlier bin
                     {
-                        double t = (quantile_ - left_outliers) / (hist[0] - left_outliers);
-                        value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(t);
+                        res[quantile+1] = minimum;
                     }
+                    if(cumulative1 + 1.0 > counts[quantile]) // between bins
+                    {
+                        res[quantile+1] = currentBin - 1 + counts[quantile] - std::floor(counts[quantile]);
+                    }
+                    else // standard case
+                    {
+                        res[quantile+1] = currentBin;
+                    }
+                    ++quantile;
                 }
-                else if(hist[binCount-1] < quantile_)
+                else if(currentBin == size-1) // in right outlier bin
                 {
-                    value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(binCount);
+                    res[quantile+1] = maximum;
+                    ++quantile;
                 }
                 else
                 {
-                    int k = 1;
-                    for(; k<binCount; ++k)
-                        if(hist[k] > quantile_)
-                            break;
-                    double t = (quantile_ - hist[k-1]) / (hist[k] - hist[k-1]) + k;
-                    value_ = getAccumulator<HistogramTag>(*this).mapItem.inverse(t);
+                    ++currentBin;
+                    cumulative1 = cumulative2;
+                    cumulative2 += this->value_[currentBin];
                 }
+            }
+        }
+    };
+};
+
+template <int BinCount>
+class UserRangeHistogram
+{
+  public:
+    
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public RangeHistogramBase<T, BASE, BinCount>
+    {
+        void update(T const & t)
+        {
+            update(t, 1.0);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            vigra_precondition(this->scale_ != 0.0,
+                "UserRangeHistogram::update(): setMinMax(...) has not been called.");
+                
+            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+        }
+    };
+};
+
+template <int BinCount>
+class AutoRangeHistogram
+{
+  public:
+    
+    typedef Select<Minimum, Maximum> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public RangeHistogramBase<T, BASE, BinCount>
+    {
+        static const int workInPass = LookupTag<Minimum, BASE>::type::workInPass + 1;
+        
+        void update(T const & t)
+        {
+            update(t, 1.0);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(this->scale_ == 0.0)
+                this->setMinMax(get<Minimum>(*this), get<Maximum>(*this));
+                
+            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+        }
+    };
+};
+
+template <class HistogramAccumulator> 
+class StandardQuantiles
+{
+  public:
+    
+    typedef typename StandardizeTag<HistogramAccumulator>::type HistogramTag;
+    typedef Select<HistogramTag, Minimum, Maximum, Count> Dependencies;
+
+    template <class T, class BASE>
+    struct Impl
+    : public CachedResultBase<T, BASE, TinyVector<double, 7> >
+    {
+        static const int workInPass = LookupTag<HistogramTag, BASE>::type::workInPass;
+        
+        result_type operator()() const
+        {
+            if(this->isDirty())
+            {
+                getAccumulator<HistogramTag>(*this).computeStandardQuantiles(get<Minimum>(*this), get<Maximum>(*this), 
+                                                                             get<Count>(*this), this->value_);
                 this->setClean();
             }
-            return value_;
+            return this->value_;
         }
     };
 };

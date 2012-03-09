@@ -2567,21 +2567,75 @@ struct AccumulatorTest
         using namespace vigra::acc1;
         {
 #if 1
-            typedef Histogram<10, IdentityMapping> Hist;
-            typedef AccumulatorChain<int, Select<Hist, HistogramQuantile<0, Hist>, HistogramQuantile<50, Hist>, HistogramQuantile<100, Hist>
+            static const int SIZE = 30, HSIZE = 10;
+
+            typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE> >, StandardQuantiles<AutoRangeHistogram<HSIZE> >,
+                                                 StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >
                                     > > A;
             A a;
 
-            static const int SIZE = 30;
             int data[SIZE] = {4, 3, 2, 2, 2, 0, 3, 6, 8, 8, 4, 0, 2, 0, 2, 8, 7, 8, 6, 0, 9, 3, 7, 0, 9, 5, 9, 9, 2, 4};
+            // the same sorted:
+            // int data[SIZE] = {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9};
+
+            getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-0.5, 9.5);
+            getAccumulator<IntegerHistogram<0> >(a).setBinCount(HSIZE);
+
+            shouldEqual(HSIZE, get<IntegerHistogram<HSIZE>>(a).size());
+            shouldEqual(HSIZE, get<UserRangeHistogram<HSIZE>>(a).size());
+            shouldEqual(HSIZE, get<AutoRangeHistogram<HSIZE>>(a).size());
+            shouldEqual(HSIZE, get<IntegerHistogram<0>>(a).size());
 
             for(int k=0; k<SIZE; ++k)
                 a(data[k]);
-            std::cerr << get<Hist>(a) << "\n";
-            std::cerr << get<DivideByCount<CumulativeHistogram<Hist>>>(a) << "\n";
-            std::cerr << get<HistogramQuantile<0, Hist> >(a) << "\n";
-            std::cerr << get<HistogramQuantile<50, Hist> >(a) << "\n";
-            std::cerr << get<HistogramQuantile<100, Hist> >(a) << "\n";
+
+            for(int k=0; k<SIZE; ++k)
+                a.updatePass2(data[k]);
+
+            double h[HSIZE] = { 5, 0, 6, 3, 3, 1, 2, 2, 4, 4 };
+
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0>>(a).begin());
+
+            static const int QSIZE = LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE>>, A>::value_type::static_size;
+            shouldEqual(QSIZE, 7);
+            double quser[QSIZE] = { 0.0, 0.3, 1.9166666666666666, 3.833333333333333, 7.625, 8.625, 9.0 };
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
+            
+            double qauto[QSIZE] = { 0.0, 0.53999999999999999, 2.1749999999999999, 3.8999999999999999, 7.3124999999999999, 8.3249999999999999, 9.0 };
+            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
+            
+            double qint[QSIZE] = { 0.0, 0.0, 2.0, 4.0, 7.75, 9.0, 9.0 };
+            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<HSIZE>>>(a).begin());
+            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<0>>>(a).begin());
+
+                // repeat test with negated data => quantiles should be negated
+            a.reset();
+
+            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-9.5, 0.5);
+            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
+
+            for(int k=0; k<SIZE; ++k)
+                a(-data[k]);
+
+            for(int k=0; k<SIZE; ++k)
+                a.updatePass2(-data[k]);
+
+            std::reverse(h, h+HSIZE);
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE>>(a).begin());
+
+            double hneg[HSIZE] = { 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<0>>(a).begin());
+
+            std::reverse(quser, quser+QSIZE);
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, (-get<StandardQuantiles<UserRangeHistogram<HSIZE>>>(a)).begin(), 1e-14);
+            
+            std::reverse(qauto, qauto+QSIZE);
+            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, (-get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a)).begin(), 1e-14);
 #endif
         }
     }

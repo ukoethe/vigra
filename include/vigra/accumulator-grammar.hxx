@@ -64,20 +64,24 @@ class Kurtosis;                                // kurtosis
 class FlatScatterMatrix;                       // flattened upper-triangular part of the scatter matrix
 class ScatterMatrixEigensystem;                // eigenvalues and eigenvectors of the scatter matrix
 
+    // in all histogram classes: set bin count at runtime if BinCount == 0
+template <int BinCount> 
+class IntegerHistogram;                        // use data values directly as bin indices
+template <int BinCount>
+class UserRangeHistogram;                      // set min/max explicitly at runtime
+template <int BinCount>
+class AutoRangeHistogram;                      // get min/max from accumulators
+
+class Minimum;                                 // minimum
+class Maximum;                                 // maximum
+template <class Hist> 
+class StandardQuantiles;                       // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
+                                               // min/max accumulators and given histogram
+
 class ArgMinWeight;                            // store the value (or coordinate) where weight was minimal
 class ArgMaxWeight;                            // store the value (or coordinate) where weight was maximal
 
-template <unsigned Percent> class  Quantile;   // quantiles (including minimum and maximum)
-template <int BinCount, class MappingFunctor> 
-class Histogram;                               // histogram with fixed number of bins
-template <class Hist>
-class CumulativeHistogram;                     // cumulative histogram with fixed number of bins
-template <unsigned Percent, class Hist> 
-class HistogramQuantile;                       // quantiles computed from Histogram
-
-//template <>  class Histogram<0>;               // histogram where number of bins is specified at runtime
-
-
+    // FIXME: not yet implemented
 template <unsigned NDim> class MultiHistogram; // multi-dimensional histogram
                                                // (always specify number of bins at runtime)
 
@@ -131,6 +135,8 @@ template <class A> class DataFromHandle;  // extract data from index 1 of a Coup
     // data preparation
 template <class A> class Central;    // subtract mean
 template <class A> class Principal;  // subtract mean and rotate to principle coordinates
+
+    // FIXME: not implemented yet
 template <class A> class Whitened;   // transform to principal coordinates and scale to unit variance
 
 /**************************************************************************/
@@ -179,9 +185,6 @@ typedef Coord<Principal<CoordinateSystem> >         PrincipalCoordSystem;
 typedef CoordWeighted<Mean>                         CenterOfMass;
 typedef CoordWeighted<Principal<Variance> >         MomentsOfInertia;
 typedef CoordWeighted<Principal<CoordinateSystem> > CoordSystemOfInertia;
-
-typedef Quantile<0>                                 Minimum;
-typedef Quantile<100>                               Maximum;
 
 /**************************************************************************/
 /*                                                                        */
@@ -262,7 +265,8 @@ VIGRA_MODIFIER_PRIORITY(Central, PrepareDataPriority)
 VIGRA_MODIFIER_PRIORITY(Principal, PrepareDataPriority)
 VIGRA_MODIFIER_PRIORITY(Whitened, PrepareDataPriority)
 
-VIGRA_MODIFIER_PRIORITY(CumulativeHistogram, AccumulatorPriority)
+    // explicitly set priority for base accumulators that look like modifiers
+VIGRA_MODIFIER_PRIORITY(StandardQuantiles, AccumulatorPriority)
 
 #undef VIGRA_MODIFIER_PRIORITY
 
@@ -384,7 +388,8 @@ struct RecurseModifier<B<A>, AccumulatorPriority>
 };
 
     // recurse down the modifier chain, but only of B is actually a modifier,
-    // and not a templated base accumulator (i.e. has AccumulatorPriority)
+    // and not a templated base accumulator (i.e. do not recurse if B's
+    // priority is 'AccumulatorPriority')
 template <class A, template <class> class B>
 struct ModifierRule<B<A> >
 : public RecurseModifier<B<A> >
