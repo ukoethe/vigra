@@ -184,6 +184,7 @@ class CoupledHandle<TinyVector<MultiArrayIndex, N>, void>
 {
 public:
     static const int index = 0;                   // index of this member of the chain
+    static const unsigned int dimensions = N;
 
     typedef typename MultiArrayShape<N>::type   value_type;
     typedef value_type const *                  pointer;

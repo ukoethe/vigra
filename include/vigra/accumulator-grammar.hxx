@@ -89,7 +89,6 @@ class AccumulatorArray;                        // one accumulator for each regio
 
 class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
-
     // FIXME: not yet implemented
 class Whiten;                                  // cache values after whitening
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
@@ -144,6 +143,8 @@ template <class A> class Principal;  // subtract mean and rotate to principle co
 
     // FIXME: not implemented yet
 template <class A> class Whitened;   // transform to principal coordinates and scale to unit variance
+
+template <class A> class Global;     // compute statistic A globally rather than per region
 
 /**************************************************************************/
 /*                                                                        */
@@ -236,12 +237,13 @@ namespace detail {
     // Assign priorities to modifiers to determine their standard order (by ascending priority).
     // SubstitutionMask determines which modifiers may be automatically transferred to dependencies.
 enum { MinPriority = 1, 
-       AccumulatorPriority = 16,
-       PrepareDataPriority = 8,
-       NormalizePriority = 4,
-       AccessDataPriority = 2,
-       WeightingPriority = 1,
-       MaxPriority = 16,
+       AccumulatorPriority = 32,
+       PrepareDataPriority = 16,
+       NormalizePriority = 8,
+       AccessDataPriority = 4,
+       WeightingPriority = 2,
+       GlobalPriority = 1,
+       MaxPriority = 32,
        SubstitutionMask = PrepareDataPriority | AccessDataPriority | WeightingPriority };
 
 template <class A>

@@ -85,6 +85,7 @@ struct AccumulatorBegin;
 struct DataArgTag;
 struct WeightArgTag;
 struct LabelArgTag;
+struct LabelDispatchTag;
 
 struct AccumulatorEnd 
 {
@@ -119,62 +120,34 @@ struct AccumulatorEnd
     }
 };
 
+template <int INDEX>
+class LabelArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef LabelArgTag Tag;
+        typedef void value_type;
+        typedef void result_type;
+
+        static const int value = INDEX;
+    };
+};
+
 template <class T, class TAG, class NEXT=AccumulatorEnd>
 struct AccumulatorBase;
 
 namespace detail {
 
-template <bool dynamic, unsigned LEVEL>
-struct AccumulatorFlags
-: public AccumulatorFlags<false, LEVEL>
-{
-    BitArray<LEVEL> active_accumulators_;
-   
-    template <int which>
-    void activateImpl()
-    {
-        active_accumulators_.set<which>();
-    }
-    
-    template <int which>
-    bool isActiveImpl() const
-    {
-        return active_accumulators_.test<which>();
-    }
-    
-    void reset()
-    {
-        active_accumulators_.clear();
-    }
-};
-
-template <unsigned LEVEL>
-struct AccumulatorFlags<false, LEVEL>
-: public AccumulatorEnd
-{
-    typedef AccumulatorEnd InternalBaseType;
-    static const unsigned level = LEVEL;
-    
-    mutable BitArray<LEVEL> is_dirty_;
-    
-    template <int which>
-    void setDirtyImpl() const
-    {
-        is_dirty_.set<which>();
-    }
-    
-    template <int which>
-    void setCleanImpl() const
-    {
-        is_dirty_.reset<which>();
-    }
-    
-    template <int which>
-    bool isDirtyImpl() const
-    {
-        return is_dirty_.test<which>();
-    }
-};
+/****************************************************************************/
+/*                                                                          */
+/*                   internal tag handling meta-functions                   */
+/*                                                                          */
+/****************************************************************************/
 
 template <class T>
 struct HasDependencies : public sfinae_test<T, HasDependencies>
@@ -216,14 +189,123 @@ struct ActivateDependencies
         activate<typename Dependencies::Head>(a);
         ActivateDependencies<typename Dependencies::Tail>::exec(a);
     }
+    template <class Chain, class ActiveFlags>
+    static void exec2(ActiveFlags & a)
+    {
+        LookupTag<typename Dependencies::Head, Chain>::type::activateNew(a);
+        ActivateDependencies<typename Dependencies::Tail>::exec2<Chain>(a);
+    }
 };
 
 template <>
 struct ActivateDependencies<void>
 {
     template <class Accumulator>
-    static void exec(Accumulator & a)
+    static void exec(Accumulator &)
     {}
+    template <class Chain, class ActiveFlags>
+    static void exec2(ActiveFlags &)
+    {}
+};
+
+template <class List>
+struct SeparateGlobalAndRegionTags;
+
+template <class HEAD, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<HEAD, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef TypeList<HEAD, typename Inner::RegionTags>  RegionTags;
+    typedef typename Inner::GlobalTags                  GlobalTags;
+};
+
+template <class HEAD, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<Global<HEAD>, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef typename Inner::RegionTags                  RegionTags;
+    typedef TypeList<HEAD, typename Inner::GlobalTags>  GlobalTags;
+};
+
+template <int INDEX, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<LabelArg<INDEX>, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef typename Inner::RegionTags                  RegionTags;
+    typedef TypeList<LabelArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
+};
+
+template <>
+struct SeparateGlobalAndRegionTags<void>
+{
+    typedef void RegionTags;
+    typedef void GlobalTags;
+};
+
+/****************************************************************************/
+/*                                                                          */
+/*                   internal accumulator chain classes                     */
+/*                                                                          */
+/****************************************************************************/
+
+template <bool dynamic, unsigned LEVEL, class GlobalAccumulator=void>
+struct AccumulatorFlags
+: public AccumulatorFlags<false, LEVEL, GlobalAccumulator>
+{
+    typedef BitArray<LEVEL> ActiveFlags;
+    
+    ActiveFlags active_accumulators_;
+   
+    template <int which>
+    bool isActiveImpl() const
+    {
+        return active_accumulators_.test<which>();
+    }
+    
+    void reset()
+    {
+        active_accumulators_.clear();
+    }
+};
+
+template <unsigned LEVEL, class GlobalAccumulator>
+struct AccumulatorFlags<false, LEVEL, GlobalAccumulator>
+: public AccumulatorEnd
+{
+    typedef AccumulatorEnd InternalBaseType;
+    typedef GlobalAccumulator GlobalAccumulatorType;
+    
+    static const unsigned level = LEVEL;
+    
+    mutable BitArray<LEVEL> is_dirty_;
+    GlobalAccumulator const * globalAccumulator_;
+    
+    AccumulatorFlags()
+    : globalAccumulator_(0)
+    {}
+    
+    void setGlobalAccumulator(GlobalAccumulator const * a)
+    {
+        globalAccumulator_ = a;
+    }
+    
+    template <int which>
+    void setDirtyImpl() const
+    {
+        is_dirty_.set<which>();
+    }
+    
+    template <int which>
+    void setCleanImpl() const
+    {
+        is_dirty_.reset<which>();
+    }
+    
+    template <int which>
+    bool isDirtyImpl() const
+    {
+        return is_dirty_.test<which>();
+    }
 };
 
 template <class A, unsigned CurrentPass, bool Dynamic, unsigned WorkPass=A::workInPass>
@@ -498,7 +580,6 @@ struct ReshapeImpl
         }
     }
     
-    
     template <class A, class T, class NEXT>
     void operator()(A & a, CoupledHandle<T, NEXT> const & t)
     {
@@ -539,28 +620,132 @@ struct ReshapeImpl<VigraFalseType>
     {}
 };
 
+#if 0
+template <class GlobalAccumulatorChain, class RegionAccumulatorChain>
+struct LabelDispatch
+{
+    typedef LabelDispatchTag Tag;
+    
+    typedef LabelDispatch type;
+    typedef LabelDispatch & reference;
+    typedef LabelDispatch const & const_reference;
+    typedef GlobalAccumulatorChain InternalBaseType;
+    
+
+    GlobalAccumulatorChain next_;
+    ArrayVector<RegionAccumulatorChain> region_;
+    
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct LabelIndexSelector
+    {
+        static const int value = 2; // default: CoupledHandle holds labels at index 2
+
+        template <class U, class NEXT>
+        static MultiArrayIndex exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return (MultiArrayIndex)get<value>(t); 
+        }
+    };
+    
+    template <class IndexDefinition>
+    struct LabelIndexSelector<IndexDefinition, LabelArgTag>
+    {
+        static const int value = IndexDefinition::value;
+
+        template <class U, class NEXT>
+        static MultiArrayIndex exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return (MultiArrayIndex)get<value>(t);
+        }
+    };
+    
+    typedef typename LookupTag<LabelArgTag, GlobalAccumulatorChain>::type FindLabelIndex;
+    
+    void setMaxRegionLabel(unsigned maxlabel)
+    {
+        regions_.resize(maxlabel + 1);
+        for(unsigned int k=0; k<regions_.size(); ++k)
+        {
+            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
+            // ... set activation flags
+        }
+    }
+    
+    template <class T>
+    void resize(T const & t)
+    {
+        if(regions_.size() == 0)
+        {
+            typedef typename CoupledHandleCast<FindLabelIndex::value, T>::type LabelHandle;
+            typedef MultiArrayView<LabelHandle::dimensions, typename LabelHandle::const_pointer, StridedArrayTag> LabelArray;
+            LabelArray labelArray(t.shape(), ((LabelHandle const &)t).strides(), ((LabelHandle const &)t).ptr());
+            
+            using namespace vigra::multi_math;
+            setMaxRegionLabel(max(labelArray));
+        }
+        next_.resize(t);
+        // FIXME: only call resize when label k actually exists?
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            regions_[k].resize(t);
+    }
+    
+    void reset()
+    {
+        next_.reset();
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            regions_[k].reset();
+    }
+    
+    template <unsigned N>
+    void pass(T const & t)
+    {
+        next_.pass<N>(t);
+        regions_[FindLabelIndex::exec(t)].pass<N>(t);
+    }
+    
+    template <unsigned N>
+    void pass(T const & t, double weight)
+    {
+        next_.pass<N>(t, weight);
+        regions_[FindLabelIndex::exec(t)].pass<N>(t, weight);
+    }
+    
+    void merge(LabelDispatch const & o)
+    {
+        next_.merge(o.next_);
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            regions_[k].merge(o.regions_[k]);
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(*this);
+    }
+};
+#endif
+
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
     // if dynamic=false, a plain accumulator will be created
-template <class T, class Accumulators, bool dynamic=false, unsigned level = 0>
+template <class T, class Accumulators, bool dynamic=false, unsigned level = 0, class GlobalAccumulator=void>
 struct Compose
 {
     typedef typename Accumulators::Head Tag; 
-    typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
+    typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1, GlobalAccumulator>::type BaseType;
     typedef Decorator<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T, bool dynamic, unsigned level>
-struct Compose<T, void, dynamic, level> 
+template <class T, bool dynamic, unsigned level, class GlobalAccumulator>
+struct Compose<T, void, dynamic, level, GlobalAccumulator> 
 { 
-    typedef AccumulatorFlags<dynamic, level> type;
+    typedef AccumulatorFlags<dynamic, level, GlobalAccumulator> type;
 };
 
-template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level>
-struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level>
+template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level, class GlobalAccumulator>
+struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level, GlobalAccumulator>
 {
     typedef CoupledHandle<T, NEXT> Handle;
-    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1>::type BaseType;
+    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1, GlobalAccumulator>::type BaseType;
 
     typedef typename Accumulators::Head Tag;
     typedef typename StandardizeTag<DataFromHandle<Tag> >::type WrappedTag;
@@ -569,10 +754,10 @@ struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level>
     typedef Decorator<Handle, typename UseTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T, class NEXT, bool dynamic, unsigned level>
-struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level> 
+template <class T, class NEXT, bool dynamic, unsigned level, class GlobalAccumulator>
+struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level, GlobalAccumulator> 
 { 
-    typedef AccumulatorFlags<dynamic, level> type;
+    typedef AccumulatorFlags<dynamic, level, GlobalAccumulator> type;
 };
 
 } // namespace detail 
@@ -591,6 +776,141 @@ struct AccumulatorChain
     typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type InternalBaseType;
     
     typedef AccumulatorBegin                         Tag;
+    typedef typename InternalBaseType::argument_type         argument_type;
+    typedef typename InternalBaseType::first_argument_type   first_argument_type;
+    typedef typename InternalBaseType::second_argument_type  second_argument_type;
+    typedef typename InternalBaseType::result_type           result_type;
+    
+    static const int staticSize = InternalBaseType::index;
+
+    InternalBaseType next_;
+    detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
+    
+    void reset()
+    {
+        reshape_.reset();
+        next_.reset();
+    }
+    
+    template <class Shape>
+    void reshape(Shape const & s)
+    {
+        reshape_.reset();
+        reshape_(next_, s);
+    }
+
+    template <unsigned N>
+    void update(T const & t)
+    {
+        reshape_(next_, t, MetaInt<N>());
+        next_.pass<N>(t);
+    }
+    
+    template <unsigned N>
+    void update(T const & t, double weight)
+    {
+        reshape_(*this, t, MetaInt<N>());
+        next_.pass<N>(t, weight);
+    }
+    
+    void operator+=(AccumulatorChain const & o)
+    {
+        merge(o);
+    }
+    
+    void merge(AccumulatorChain const & o)
+    {
+        next_.merge(o.next_);
+    }
+
+    result_type operator()() const
+    {
+        return next_.get();
+    }
+	
+	void operator()(T const & t)
+    {
+        update<1>(t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        update<1>(t, weight);
+    }
+
+	void updatePass2(T const & t)
+    {
+        update<2>(t);
+    }
+    
+    void updatePass2(T const & t, double weight)
+    {
+        update<2>(t, weight);
+    }
+
+	void updatePassN(T const & t, unsigned int N)
+    {
+        switch (N)
+        {
+            case 1: update<1>(t); break;
+            case 2: update<2>(t); break;
+            case 3: update<3>(t); break;
+            case 4: update<4>(t); break;
+            case 5: update<5>(t); break;
+            default:
+                vigra_precondition(false,
+                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
+        }
+    }
+    
+	void updatePassN(T const & t, double weight, unsigned int N)
+    {
+        switch (N)
+        {
+            case 1: update<1>(t, weight); break;
+            case 2: update<2>(t, weight); break;
+            case 3: update<3>(t, weight); break;
+            case 4: update<4>(t, weight); break;
+            case 5: update<5>(t, weight); break;
+            default:
+                vigra_precondition(false,
+                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
+        }
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return next_.passesRequired();
+    }
+};
+
+    // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
+    // Statistics will only be computed if activate<Tag>() is called at runtime.
+template <class T, class Selected>
+struct DynamicAccumulatorChain
+: public AccumulatorChain<T, Selected, true>
+{};
+
+/****************************************************************************/
+/*                                                                          */
+/*                      array of accumulator chains                         */
+/*                                                                          */
+/****************************************************************************/
+#if 0
+    // Create an accumulator chain containing the Selected statistics and their dependencies.
+template <class T, class Selected, bool dynamic = false>
+struct AccumulatorChainArray
+{
+    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
+    typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
+    typedef typename TagSeparator::GlobalTags GlobalTags;
+    typedef typename TagSeparator::RegionTags RegionTags;
+    
+    typedef typename detail::Compose<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
+    typedef typename detail::Compose<T, RegionTags, dynamic, GlobalAccumulatorChain>::type RegionAccumulatorChain;
+    typedef detail::LabelDispatch<GlobalAccumulatorChain, RegionAccumulatorChain> InternalBaseType;
+    
+    typedef AccumulatorBegin                                 Tag;
     typedef typename InternalBaseType::argument_type         argument_type;
     typedef typename InternalBaseType::first_argument_type   first_argument_type;
     typedef typename InternalBaseType::second_argument_type  second_argument_type;
@@ -705,7 +1025,7 @@ template <class T, class Selected>
 struct DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {};
-
+#endif
 /****************************************************************************/
 /*                                                                          */
 /*                        generic access functions                          */
@@ -759,6 +1079,16 @@ struct LookupTagImpl<TAG, A, AccumulatorEnd>
     typedef Error__Attempt_to_access_inactive_statistic<TAG> result_type;
 };
 
+template <class A>
+struct LookupTagImpl<AccumulatorEnd, A, AccumulatorEnd>
+{
+    typedef AccumulatorEnd Tag;
+    typedef A type;
+    typedef A & reference;
+    typedef Error__Attempt_to_access_inactive_statistic<AccumulatorEnd> value_type;
+    typedef Error__Attempt_to_access_inactive_statistic<AccumulatorEnd> result_type;
+};
+
 } // namespace detail
 
     // If called from an inner accumulator, transfer TargetTag's modifiers.
@@ -799,6 +1129,16 @@ struct CastImpl<Tag, Tag, reference>
 
 template <class Tag, class reference>
 struct CastImpl<Tag, AccumulatorEnd, reference>
+{
+    template <class A>
+    static reference exec(A & a)
+    {
+        return a;
+    }
+};
+
+template <class reference>
+struct CastImpl<AccumulatorEnd, AccumulatorEnd, reference>
 {
     template <class A>
     static reference exec(A & a)
@@ -948,16 +1288,16 @@ struct AccumulatorBase
     
     NEXT next_;
     
-    void activate()
+    template <class ActiveFlags>
+    static void activateNew(ActiveFlags & flags)
     {
-        next_.activateImpl<index>();
-        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec(*this);
+        flags.set<index>();
+        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec2<ThisType>(flags);
     }
     
-    template <int INDEX>
-    void activateImpl()
+    void activate()
     {
-        next_.activateImpl<INDEX>();
+        activateNew(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
     bool isActive() const
@@ -1030,6 +1370,24 @@ struct AccumulatorBase
     }
 };
 
+template <int INDEX>
+class DataArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef DataArgTag Tag;
+        typedef void value_type;
+        typedef void result_type;
+
+        static const int value = INDEX;
+    };
+};
+
 template <class TAG>
 class DataFromHandle
 {
@@ -1040,7 +1398,7 @@ class DataFromHandle
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct DataIndexSelector
     {
-        static const int value = 1;
+        static const int value = 1; // default: CoupledHandle holds data at index 1 
         
         template <class U, class NEXT>
         static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
@@ -1130,6 +1488,24 @@ class Coord
     };
 };
 
+template <int INDEX>
+class WeightArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef WeightArgTag Tag;
+        typedef void value_type;
+        typedef void result_type;
+
+        static const int value = INDEX;
+    };
+};
+
 template <class TAG>
 class Weighted
 {
@@ -1144,7 +1520,7 @@ class Weighted
         template <class U, class NEXT>
         static double exec(CoupledHandle<U, NEXT> const & t)
         {
-            return (double)*t;
+            return (double)*t; // default: CoupledHandle holds weights at the last (outermost) index 
         }
     };
     
@@ -1169,8 +1545,6 @@ class Weighted
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
-            // ImplType::update(t, get<2>(t));
             ImplType::update(t, WeightIndexSelector<FindWeightIndex>::exec(t));
         }
     };
@@ -1418,57 +1792,6 @@ important notes on modifiers:
     * FlatScatterMatrixImpl, CovarianceEigensystemImpl: Principal and Whitened
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
-
-template <int INDEX>
-class DataArg
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef DataArgTag Tag;
-        static const int value = INDEX;
-        typedef bool value_type;
-        typedef bool result_type;
-    };
-};
-
-template <int INDEX>
-class WeightArg
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef WeightArgTag Tag;
-        static const int value = INDEX;
-        typedef bool value_type;
-        typedef bool result_type;
-    };
-};
-
-template <int INDEX>
-class LabelArg
-{
-  public:
-    typedef Select<> Dependencies;
-    
-    template <class T, class BASE>
-    struct Impl
-    : public BASE
-    {
-        typedef LabelArgTag Tag;
-        static const int value = INDEX;
-        typedef bool value_type;
-        typedef bool result_type;
-    };
-};
 
 /****************************************************************************/
 /*                                                                          */

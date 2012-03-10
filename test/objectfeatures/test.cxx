@@ -1943,15 +1943,15 @@ struct AccumulatorTest
             using namespace vigra::acc1::detail;
 
 
-            TEST_LONG_FORM(Minimum, DM<DM<DM<DM<Minimum> > > >);
-            TEST_LONG_FORM(Principal<Minimum>, DM<DM<DM<Principal<Minimum> > > >);
-            TEST_LONG_FORM(Weighted<Coord<Principal<Minimum> > >, Weighted<Coord<DM<Principal<Minimum> > > >);
-            TEST_LONG_FORM(Mean, DM< DM<DivideByCount<DM<Sum> > > >);
-            TEST_LONG_FORM(Coord<Mean>,  DM<Coord<DivideByCount<DefaultModifier<Sum> > > >);
-            TEST_LONG_FORM(Count, DM<DM<DM<DM<Count> > > >);
-            TEST_LONG_FORM(Weighted<Count>, Weighted<DM<DM<DM<Count> > > >);
-            TEST_LONG_FORM(Coord<Count>,  DM<DM<DM<DM<Count> > > >);
-            TEST_LONG_FORM(Principal<Variance>,  DM<DM<DivideByCount<Principal<PowerSum<2> > > > >);
+            TEST_LONG_FORM(Minimum, DM<DM<DM<DM<DM<Minimum> > > > >);
+            TEST_LONG_FORM(Principal<Minimum>, DM<DM<DM<DM<Principal<Minimum> > > > >);
+            TEST_LONG_FORM(Weighted<Coord<Principal<Minimum> > >, DM<Weighted<Coord<DM<Principal<Minimum> > > > >);
+            TEST_LONG_FORM(Mean, DM<DM<DM<DivideByCount<DM<Sum> > > > >);
+            TEST_LONG_FORM(Coord<Mean>, DM<DM<Coord<DivideByCount<DefaultModifier<Sum> > > > >);
+            TEST_LONG_FORM(Count, DM<DM<DM<DM<DM<Count> > > > >);
+            TEST_LONG_FORM(Weighted<Count>, DM<Weighted<DM<DM<DM<Count> > > > >);
+            TEST_LONG_FORM(Coord<Count>, DM<DM<DM<DM<DM<Count> > > > >);
+            TEST_LONG_FORM(Principal<Variance>, DM<DM<DM<DivideByCount<Principal<PowerSum<2> > > > > >);
         }
 #undef TEST_LONG_FORM
 #undef DM
