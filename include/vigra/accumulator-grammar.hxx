@@ -89,8 +89,14 @@ class AccumulatorArray;                        // one accumulator for each regio
 
 class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
+
+    // FIXME: not yet implemented
 class Whiten;                                  // cache values after whitening
 class RangeMapping;                            // map value from [min, max] to another range and cache result (e.g. for histogram creation)
+
+template <int INDEX>  class DataArg;           // specifiy the index of the data member in a CoupledHandle
+template <int INDEX>  class WeightArg;         // specifiy the index of the weight member in a CoupledHandle
+template <int INDEX>  class LabelArg;          // specifiy the index of the label member in a CoupledHandle
 
 /* 
 Quantiles other than minimum and maximum require more thought:

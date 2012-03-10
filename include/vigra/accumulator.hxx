@@ -82,6 +82,9 @@ struct Select
 {};
 
 struct AccumulatorBegin;
+struct DataArgTag;
+struct WeightArgTag;
+struct LabelArgTag;
 
 struct AccumulatorEnd 
 {
@@ -1011,10 +1014,12 @@ struct AccumulatorBase
 	void operator+=(AccumulatorBase const &)
     {}
     
-	void update(argument_type)
+	template <class T>
+    void update(T const &)
     {}
     
-    void update(first_argument_type, second_argument_type)
+	template <class T>
+    void update(T const &, double)
     {}
     
     template <class TargetTag>
@@ -1032,30 +1037,59 @@ class DataFromHandle
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef typename TargetTag::Dependencies Dependencies;
     
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct DataIndexSelector
+    {
+        static const int value = 1;
+        
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return get<value>(t);
+        }
+    };
+    
+    template <class IndexDefinition>
+    struct DataIndexSelector<IndexDefinition, DataArgTag>
+    {
+        static const int value = IndexDefinition::value;
+        
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return get<value>(t);
+        }
+    };
+    
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE>
+    : public TargetTag::template Impl<typename 
+                         CoupledHandleCast<DataIndexSelector<typename LookupTag<DataArgTag, BASE>::type>::value, T>::type::value_type, BASE>
     {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<1, T>::type::value_type, BASE> ImplType;
+        typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
+        typedef DataIndexSelector<FindDataIndex> DataIndex;
+        typedef typename TargetTag::template Impl<typename CoupledHandleCast<DataIndex::value, T>::type::value_type, BASE> ImplType;
         
         using ImplType::reshape;
         
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shapeOf(get<1>(t)));
+            ImplType::reshape(detail::shapeOf(DataIndex::exec(t)));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::update(get<1>(t));
+            ImplType::update(DataIndex::exec(t));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::update(get<1>(t), weight);
+            ImplType::update(DataIndex::exec(t), weight);
         }
     };
 };
@@ -1104,18 +1138,40 @@ class Weighted
     typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
     typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
     
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct WeightIndexSelector
+    {
+        template <class U, class NEXT>
+        static double exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return (double)*t;
+        }
+    };
+    
+    template <class IndexDefinition>
+    struct WeightIndexSelector<IndexDefinition, WeightArgTag>
+    {
+        template <class U, class NEXT>
+        static double exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return (double)get<IndexDefinition::value>(t);
+        }
+    };
+    
     template <class T, class BASE>
     struct Impl
     : public TargetTag::template Impl<T, BASE>
     {
         typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        
+        typedef typename LookupTag<WeightArgTag, BASE>::type FindWeightIndex;
                 
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
             // FIXME: weights are currently hardcoded as the handle's last entry, make it more flexible
             // ImplType::update(t, get<2>(t));
-            ImplType::update(t, (double)*t);
+            ImplType::update(t, WeightIndexSelector<FindWeightIndex>::exec(t));
         }
     };
 };
@@ -1362,6 +1418,57 @@ important notes on modifiers:
     * FlatScatterMatrixImpl, CovarianceEigensystemImpl: Principal and Whitened
  * will it be useful to implement initPass<N>() or finalizePass<N>() ?
 */
+
+template <int INDEX>
+class DataArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef DataArgTag Tag;
+        static const int value = INDEX;
+        typedef bool value_type;
+        typedef bool result_type;
+    };
+};
+
+template <int INDEX>
+class WeightArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef WeightArgTag Tag;
+        static const int value = INDEX;
+        typedef bool value_type;
+        typedef bool result_type;
+    };
+};
+
+template <int INDEX>
+class LabelArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef LabelArgTag Tag;
+        static const int value = INDEX;
+        typedef bool value_type;
+        typedef bool result_type;
+    };
+};
 
 /****************************************************************************/
 /*                                                                          */
@@ -2681,6 +2788,8 @@ class HistogramBase<0, BASE>
         
     void setBinCount(int binCount)
     {
+        vigra_precondition(binCount > 0,
+            "HistogramBase:.setBinCount(): binCount > 0 required.");
         value_type(Shape1(binCount)).swap(value_);
     }
 

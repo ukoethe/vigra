@@ -2526,7 +2526,7 @@ struct AccumulatorTest
             typedef AccumulatorChain<Handle, Select<Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>,
                                                Weighted<Mean>, CoordWeighted<Mean>,
                                                ArgMinWeight, ArgMaxWeight,
-                                               Coord<ArgMinWeight>, Coord<ArgMaxWeight>
+                                               Coord<ArgMinWeight>, Coord<ArgMaxWeight>, WeightArg<2>, DataArg<1>
                                           > > A;
             
             A a;
