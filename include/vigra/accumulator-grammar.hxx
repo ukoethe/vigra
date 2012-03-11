@@ -420,10 +420,11 @@ VIGRA_REDUCE_MODFIER(VIGRA_VOID, Central<CoordinateSystem>, CoordinateSystem)
     // whitened CoordinateSystem are the same as principal CoordinateSystem
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Whitened<CoordinateSystem>, Principal<CoordinateSystem>)
 
-    // counting modified data is the same as counting data, except for weighted data
+    // counting modified data is the same as counting data, except for weighted data and global counting
 VIGRA_REDUCE_MODFIER(template <class> class A, A<Count>, Count)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, Weighted<Count>, Weighted<Count>)
 VIGRA_REDUCE_MODFIER(VIGRA_VOID, CoordWeighted<Count>, Weighted<Count>)
+VIGRA_REDUCE_MODFIER(VIGRA_VOID, Global<Count>, Global<Count>)
 
     // reduce aliases that typedef can't handle
 VIGRA_REDUCE_MODFIER(unsigned N, Moment<N>, DivideByCount<PowerSum<N> >)

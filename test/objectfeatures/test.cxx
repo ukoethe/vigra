@@ -2671,6 +2671,58 @@ struct AccumulatorTest
 #endif
         }
     }
+
+    void testLabelDispatch()
+    {
+        using namespace vigra::acc1;
+        {
+#if 1
+            typedef CoupledIteratorType<2, int>::type Iterator;
+            typedef Iterator::value_type Handle;
+            typedef Shape2 V;
+
+            typedef AccumulatorChainArray<Handle, Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>
+                                          > > A;
+
+            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::GlobalTags, TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, void > > > >::value));
+            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::RegionTags, TypeList<Count,TypeList<Coord<Sum>,void>> >::value));
+
+            typedef LookupTag<Count, A>::type RegionCount;
+            typedef LookupTag<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
+
+            should(!(IsSameType<RegionCount, LookupTag<Global<Count>, A>::type>::value));
+            should((IsSameType<GlobalCountViaRegionCount, LookupTag<Global<Count>, A>::type>::value));
+
+            MultiArray<2, int> labels(Shape2(3,2));
+            labels(2,0) = labels(2,1) = 1;
+            Iterator i     = createCoupledIterator(labels),
+                     start = i,   
+                     end   = i.getEndIterator();
+
+            A a;
+            a.setMaxRegionLabel(1);
+
+            shouldEqual((getAccumulator<LabelDispatchTag, A>(a).regions_.size()), 2);
+            should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
+
+            LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
+            LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
+            should((&gc == &getAccumulator<Global<Count>>(rc)));
+            should((&gc == &getAccumulator<Global<Count>>(getAccumulator<Count>(a, 1))));
+
+            for(; i < end; ++i)
+                a(*i);
+            
+            shouldEqual(4, get<Count>(a, 0));
+            shouldEqual(2, get<Count>(a, 1));
+            shouldEqual(6, get<Global<Count> >(a));
+
+            shouldEqual(V(2,2), get<Coord<Sum>>(a, 0));
+            shouldEqual(V(4,1), get<Coord<Sum>>(a, 1));
+            shouldEqual(V(0,0), get<Global<Coord<Minimum>> >(a));
+#endif
+        }
+    }
 };
 
 struct FeaturesTestSuite : public vigra::test_suite
@@ -2686,6 +2738,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testMerge));
         add(testCase(&AccumulatorTest::testCoordAccess));
         add(testCase(&AccumulatorTest::testHistogram));
+        add(testCase(&AccumulatorTest::testLabelDispatch));
     }
 };
 

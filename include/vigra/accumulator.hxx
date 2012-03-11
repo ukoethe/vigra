@@ -87,6 +87,8 @@ struct WeightArgTag;
 struct LabelArgTag;
 struct LabelDispatchTag;
 
+struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
+
 struct AccumulatorEnd 
 {
     typedef AccumulatorEnd Tag;
@@ -183,28 +185,19 @@ struct AddDependencies<void>
 template <class Dependencies>
 struct ActivateDependencies
 {
-    template <class Accumulator>
-    static void exec(Accumulator & a)
-    {
-        activate<typename Dependencies::Head>(a);
-        ActivateDependencies<typename Dependencies::Tail>::exec(a);
-    }
     template <class Chain, class ActiveFlags>
-    static void exec2(ActiveFlags & a)
+    static void exec(ActiveFlags & a)
     {
-        LookupTag<typename Dependencies::Head, Chain>::type::activateNew(a);
-        ActivateDependencies<typename Dependencies::Tail>::exec2<Chain>(a);
+        LookupTag<typename Dependencies::Head, Chain>::type::activateImpl(a);
+        ActivateDependencies<typename Dependencies::Tail>::exec<Chain>(a);
     }
 };
 
 template <>
 struct ActivateDependencies<void>
 {
-    template <class Accumulator>
-    static void exec(Accumulator &)
-    {}
     template <class Chain, class ActiveFlags>
-    static void exec2(ActiveFlags &)
+    static void exec(ActiveFlags &)
     {}
 };
 
@@ -248,7 +241,8 @@ struct SeparateGlobalAndRegionTags<void>
 /*                                                                          */
 /****************************************************************************/
 
-template <bool dynamic, unsigned LEVEL, class GlobalAccumulator=void>
+template <bool dynamic, unsigned LEVEL, 
+          class GlobalAccumulator=Error__Global_statistics_are_only_defined_for_AccumulatorChainArray>
 struct AccumulatorFlags
 : public AccumulatorFlags<false, LEVEL, GlobalAccumulator>
 {
@@ -256,12 +250,6 @@ struct AccumulatorFlags
     
     ActiveFlags active_accumulators_;
    
-    template <int which>
-    bool isActiveImpl() const
-    {
-        return active_accumulators_.test<which>();
-    }
-    
     void reset()
     {
         active_accumulators_.clear();
@@ -620,20 +608,36 @@ struct ReshapeImpl<VigraFalseType>
     {}
 };
 
-#if 0
-template <class GlobalAccumulatorChain, class RegionAccumulatorChain>
+} // namespace detail
+
+// FIXME: this is not the best place for this declaration
+
+template <class Tag, class A, class TargetTag=typename A::Tag>
+struct LookupTag;
+
+namespace detail {
+
+template <class T, class GlobalAccumulators, class RegionAccumulators>
 struct LabelDispatch
 {
     typedef LabelDispatchTag Tag;
+    typedef GlobalAccumulators GlobalAccumulatorChain;
+    typedef RegionAccumulators RegionAccumulatorChain;
     
     typedef LabelDispatch type;
     typedef LabelDispatch & reference;
     typedef LabelDispatch const & const_reference;
     typedef GlobalAccumulatorChain InternalBaseType;
     
-
+    typedef T const & argument_type;
+    typedef argument_type first_argument_type;
+    typedef double second_argument_type;
+    typedef RegionAccumulatorChain & result_type;
+    
+    static const int index = GlobalAccumulatorChain::index + 1;
+    
     GlobalAccumulatorChain next_;
-    ArrayVector<RegionAccumulatorChain> region_;
+    ArrayVector<RegionAccumulatorChain> regions_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -667,10 +671,19 @@ struct LabelDispatch
         for(unsigned int k=0; k<regions_.size(); ++k)
         {
             getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
-            // ... set activation flags
+            // FIXME: set activation flags
         }
     }
     
+    template <unsigned N>
+    void pass(T const & t)
+    {
+        next_.pass<N>(t);
+        regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t);
+    }
+    
+
+#if 0
     template <class T>
     void resize(T const & t)
     {
@@ -697,13 +710,6 @@ struct LabelDispatch
     }
     
     template <unsigned N>
-    void pass(T const & t)
-    {
-        next_.pass<N>(t);
-        regions_[FindLabelIndex::exec(t)].pass<N>(t);
-    }
-    
-    template <unsigned N>
     void pass(T const & t, double weight)
     {
         next_.pass<N>(t, weight);
@@ -721,8 +727,8 @@ struct LabelDispatch
     {
         return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(*this);
     }
-};
 #endif
+};
 
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
@@ -896,7 +902,7 @@ struct DynamicAccumulatorChain
 /*                      array of accumulator chains                         */
 /*                                                                          */
 /****************************************************************************/
-#if 0
+
     // Create an accumulator chain containing the Selected statistics and their dependencies.
 template <class T, class Selected, bool dynamic = false>
 struct AccumulatorChainArray
@@ -907,18 +913,43 @@ struct AccumulatorChainArray
     typedef typename TagSeparator::RegionTags RegionTags;
     
     typedef typename detail::Compose<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
-    typedef typename detail::Compose<T, RegionTags, dynamic, GlobalAccumulatorChain>::type RegionAccumulatorChain;
-    typedef detail::LabelDispatch<GlobalAccumulatorChain, RegionAccumulatorChain> InternalBaseType;
+    typedef typename detail::Compose<T, RegionTags, dynamic, 0, GlobalAccumulatorChain>::type RegionAccumulatorChain;
+    typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> InternalBaseType;
     
     typedef AccumulatorBegin                                 Tag;
     typedef typename InternalBaseType::argument_type         argument_type;
     typedef typename InternalBaseType::first_argument_type   first_argument_type;
     typedef typename InternalBaseType::second_argument_type  second_argument_type;
     typedef typename InternalBaseType::result_type           result_type;
+    typedef void           value_type;
     
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
+    
+    void setMaxRegionLabel(unsigned label)
+    {
+        next_.setMaxRegionLabel(label);
+    }
+    
+    template <unsigned N>
+    void update(T const & t)
+    {
+//        reshape_(next_, t, MetaInt<N>());
+        next_.pass<N>(t);
+    }
+    
+	void operator()(T const & t)
+    {
+        update<1>(t);
+    }
+    
+    void operator()(T const & t, double weight)
+    {
+        update<1>(t, weight);
+    }
+
+#if 0
     detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
     
     void reset()
@@ -963,16 +994,6 @@ struct AccumulatorChainArray
         return next_.get();
     }
 	
-	void operator()(T const & t)
-    {
-        update<1>(t);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        update<1>(t, weight);
-    }
-
 	void updatePass2(T const & t)
     {
         update<2>(t);
@@ -1017,28 +1038,36 @@ struct AccumulatorChainArray
     {
         return next_.passesRequired();
     }
+#endif
 };
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
-struct DynamicAccumulatorChain
-: public AccumulatorChain<T, Selected, true>
+struct DynamicAccumulatorChainArray
+: public AccumulatorChainArray<T, Selected, true>
 {};
-#endif
+
 /****************************************************************************/
 /*                                                                          */
 /*                        generic access functions                          */
 /*                                                                          */
 /****************************************************************************/
 
+template <class TAG>
+struct Error__Attempt_to_access_inactive_statistic;
+
 namespace detail {
 
+    // accumulator lookup rules: find the accumulator that implements TAG
+    
+    // When A does not implement TAG, continue search in A::InternalBaseType.
 template <class TAG, class A, class FromTag=typename A::Tag>
 struct LookupTagImpl
 : public LookupTagImpl<TAG, typename A::InternalBaseType>
 {};
 
+    // 'const A' is treated like A, except that the reference member is now const.
 template <class TAG, class A, class FromTag>
 struct LookupTagImpl<TAG, A const, FromTag>
 : public LookupTagImpl<TAG, A>
@@ -1046,6 +1075,7 @@ struct LookupTagImpl<TAG, A const, FromTag>
     typedef typename LookupTagImpl<TAG, A>::type const & reference;
 };
 
+    // When A implements TAG, report its type and associated information.
 template <class TAG, class A>
 struct LookupTagImpl<TAG, A, TAG>
 {
@@ -1056,19 +1086,8 @@ struct LookupTagImpl<TAG, A, TAG>
     typedef typename A::result_type result_type;
 };
 
-template <class TAG>
-struct Error__Attempt_to_access_inactive_statistic;
-
-// template <class TAG, class A>
-// struct LookupTagImpl<TAG, A, AccumulatorEnd>
-// {
-    // typedef TAG Tag;
-    // typedef A type;
-    // typedef A & reference;
-    // typedef typename A::value_type value_type;
-    // typedef typename A::result_type result_type;
-// };
-
+    // Recursion termination: when we end up in AccumulatorEnd without finding a 
+    // suitable A, we stop and report an error
 template <class TAG, class A>
 struct LookupTagImpl<TAG, A, AccumulatorEnd>
 {
@@ -1079,21 +1098,61 @@ struct LookupTagImpl<TAG, A, AccumulatorEnd>
     typedef Error__Attempt_to_access_inactive_statistic<TAG> result_type;
 };
 
+    // ... except when we are actually looking for AccumulatorEnd
 template <class A>
 struct LookupTagImpl<AccumulatorEnd, A, AccumulatorEnd>
 {
     typedef AccumulatorEnd Tag;
     typedef A type;
     typedef A & reference;
-    typedef Error__Attempt_to_access_inactive_statistic<AccumulatorEnd> value_type;
-    typedef Error__Attempt_to_access_inactive_statistic<AccumulatorEnd> result_type;
+    typedef void value_type;
+    typedef void result_type;
+};
+
+    // ... or we are looking for a global statistic, in which case
+    // we continue the serach via A::GlobalAccumulatorType, but remember that 
+    // we are actually looking for a global tag. 
+template <class TAG, class A>
+struct LookupTagImpl<Global<TAG>, A, AccumulatorEnd>
+: public LookupTagImpl<TAG, typename A::GlobalAccumulatorType>
+{
+    typedef Global<TAG> Tag;
+};
+
+    // When we encounter the LabelDispatch accumulator, we continue the
+    // search via LabelDispatch::RegionAccumulatorChain by default
+template <class TAG, class A>
+struct LookupTagImpl<TAG, A, LabelDispatchTag>
+: public LookupTagImpl<TAG, typename A::RegionAccumulatorChain>
+{};
+
+    // ... except when we are looking for a global statistic, in which case
+    // we continue via LabelDispatch::GlobalAccumulatorChain, but remember that 
+    // we are actually looking for a global tag.
+template <class TAG, class A>
+struct LookupTagImpl<Global<TAG>, A, LabelDispatchTag>
+: public LookupTagImpl<TAG, typename A::GlobalAccumulatorChain>
+{
+    typedef Global<TAG> Tag;
+};
+
+    // ... or we are looking for the LabelDispatch accumulator itself
+template <class A>
+struct LookupTagImpl<LabelDispatchTag, A, LabelDispatchTag>
+{
+    typedef LabelDispatchTag Tag;
+    typedef A type;
+    typedef A & reference;
+    typedef void value_type;
+    typedef void result_type;
 };
 
 } // namespace detail
 
     // If called from an inner accumulator, transfer TargetTag's modifiers.
     // This ensures that dependencies are used with matching modifiers.
-template <class Tag, class A, class TargetTag=typename A::Tag>
+// template <class Tag, class A, class TargetTag=typename A::Tag>
+template <class Tag, class A, class TargetTag>
 struct LookupTag
 : public detail::LookupTagImpl<typename TransferModifiers<TargetTag, 
                                                          typename StandardizeTag<Tag>::type>::type, A>
@@ -1115,6 +1174,12 @@ struct CastImpl
     {
         return CastImpl<Tag, typename A::InternalBaseType::Tag, reference>::exec(a.next_);
     }
+    
+    template <class A>
+    static reference exec(A & a, MultiArrayIndex label)
+    {
+        return CastImpl<Tag, typename A::InternalBaseType::Tag, reference>::exec(a.next_, label);
+    }
 };
 
 template <class Tag, class reference>
@@ -1123,6 +1188,14 @@ struct CastImpl<Tag, Tag, reference>
     template <class A>
     static reference exec(A & a)
     {
+        return const_cast<reference>(a);
+    }
+    
+    template <class A>
+    static reference exec(A & a, MultiArrayIndex)
+    {
+        vigra_precondition(false, 
+            "getAccumulator(): region accumulators can only be queried for AccumulatorChainArray.")
         return a;
     }
 };
@@ -1135,6 +1208,22 @@ struct CastImpl<Tag, AccumulatorEnd, reference>
     {
         return a;
     }
+    
+    template <class A>
+    static reference exec(A & a, MultiArrayIndex)
+    {
+        return a;
+    }
+};
+
+template <class Tag, class reference>
+struct CastImpl<Global<Tag>, AccumulatorEnd, reference>
+{
+    template <class A>
+    static reference exec(A & a)
+    {
+        return CastImpl<Tag, typename A::GlobalAccumulatorType::Tag, reference>::exec(*a.globalAccumulator_);
+    }
 };
 
 template <class reference>
@@ -1145,45 +1234,50 @@ struct CastImpl<AccumulatorEnd, AccumulatorEnd, reference>
     {
         return a;
     }
-};
-
-template <class Tag, class FromTag, class result_type>
-struct GetImpl
-{
+    
     template <class A>
-    static result_type exec(A const & a)
+    static reference exec(A & a, MultiArrayIndex)
     {
-        return GetImpl<Tag, typename A::InternalBaseType::Tag, result_type>::exec(a.next_);
+        return a;
     }
 };
 
-template <class Tag, class result_type>
-struct GetImpl<Tag, Tag, result_type>
+template <class Tag, class reference>
+struct CastImpl<Tag, LabelDispatchTag, reference>
 {
     template <class A>
-    static result_type exec(A const & a)
+    static reference exec(A & a)
     {
-        return a.get();
+        vigra_precondition(false, 
+            "getAccumulator(): a region label is required when a region accumulator is queried.");
+        return a;
+    }
+    
+    template <class A>
+    static reference exec(A & a, MultiArrayIndex label)
+    {
+        return CastImpl<Tag, typename A::RegionAccumulatorChain::Tag, reference>::exec(a.regions_[label]);
     }
 };
 
-template <class Tag, class result_type>
-struct GetImpl<Tag, AccumulatorEnd, result_type>
+template <class Tag, class reference>
+struct CastImpl<Global<Tag>, LabelDispatchTag, reference>
 {
     template <class A>
-    static bool exec(A const & a)
+    static reference exec(A & a)
     {
-        vigra_precondition(false,
-            std::string("get(accumulator): attempt to access inactive statistic '") << typeid(Tag).name() << "'.");
-        return false;
+        return CastImpl<Tag, typename A::GlobalAccumulatorChain::Tag, reference>::exec(a.next_);
     }
 };
 
-template <class Tag, class A>
-struct GetImpl<Tag, A, Error__Attempt_to_access_inactive_statistic<Tag> >
+template <class reference>
+struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 {
-    static Error__Attempt_to_access_inactive_statistic<Tag> exec(A const & a)
-    {}
+    template <class A>
+    static reference exec(A & a)
+    {
+        return a;
+    }
 };
 
 } // namespace detail
@@ -1198,14 +1292,32 @@ getAccumulator(A & a)
     return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
 }
 
+    // cast an accumulator chain to the type specified by Tag
+template <class TAG, class A>
+typename LookupTag<TAG, A>::reference
+getAccumulator(A & a, MultiArrayIndex label)
+{
+    typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
+    typedef typename LookupTag<TAG, A>::reference reference;
+    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a, label);
+}
+
     // get the result of the accumulator specified by Tag
 template <class TAG, class A>
 typename LookupTag<TAG, A>::result_type
 get(A const & a)
 {
-    typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::result_type result_type;
-    return detail::GetImpl<StandardizedTag, typename A::Tag, result_type>::exec(a);
+    return getAccumulator<TAG>(a).get();
+}
+
+    // get the result of the accumulator specified by Tag
+template <class TAG, class A>
+typename LookupTag<TAG, A>::result_type
+get(A const & a, MultiArrayIndex label)
+{
+    typedef typename LookupTag<TAG, A>::result_type result_type;
+    return getAccumulator<TAG>(a, label).get();
 }
 
     // activate the dynamic accumulator specified by Tag
@@ -1289,26 +1401,26 @@ struct AccumulatorBase
     NEXT next_;
     
     template <class ActiveFlags>
-    static void activateNew(ActiveFlags & flags)
+    static void activateImpl(ActiveFlags & flags)
     {
         flags.set<index>();
-        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec2<ThisType>(flags);
+        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec<ThisType>(flags);
+    }
+    
+    template <class ActiveFlags>
+    static bool isActiveImpl(ActiveFlags & flags)
+    {
+        return flags.test<index>();
     }
     
     void activate()
     {
-        activateNew(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
+        activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
     bool isActive() const
     {
-        return next_.isActiveImpl<index>();
-    }
-    
-    template <int INDEX>
-    bool isActiveImpl() const
-    {
-        return next_.isActiveImpl<INDEX>();
+        return isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
     void setDirty() const
@@ -1368,6 +1480,13 @@ struct AccumulatorBase
     {
         return get<TargetTag>(*this);
     }
+};
+
+template <class A>
+class Global
+{
+  public:
+    typedef Select<> Dependencies;
 };
 
 template <int INDEX>

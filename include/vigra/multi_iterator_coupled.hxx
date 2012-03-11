@@ -41,6 +41,8 @@
 
 namespace vigra {
 
+    // FIXME: this should go into its separate header file,
+    //        together with the calculation of neighborhod offsets for GridGraph
 template <unsigned int N, unsigned int DIMENSION=N-1>
 struct NeighborhoodTypeImpl
 {
@@ -300,17 +302,35 @@ public:
     MultiArrayIndex scanOrderIndex_;
 };
 
-template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX=Handle::index>
-struct CoupledHandleCast
+template <unsigned TARGET_INDEX>
+struct Error__CoupledHandle_index_out_of_range;
+
+namespace detail {
+
+template <unsigned TARGET_INDEX, class Handle, bool isValid, unsigned int INDEX=Handle::index>
+struct CoupledHandleCastImpl
 {
-    typedef typename CoupledHandleCast<TARGET_INDEX, typename Handle::base_type>::type type;
+    typedef typename CoupledHandleCastImpl<TARGET_INDEX, typename Handle::base_type, isValid>::type type;
+};
+
+template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX>
+struct CoupledHandleCastImpl<TARGET_INDEX, Handle, false, INDEX>
+{
+    typedef Error__CoupledHandle_index_out_of_range<TARGET_INDEX> type;
 };
 
 template <unsigned TARGET_INDEX, class Handle>
-struct CoupledHandleCast<TARGET_INDEX, Handle, TARGET_INDEX>
+struct CoupledHandleCastImpl<TARGET_INDEX, Handle, true, TARGET_INDEX>
 {
     typedef Handle type;
 };
+
+} // namespace detail
+
+template <unsigned TARGET_INDEX, class Handle, unsigned int INDEX=Handle::index>
+struct CoupledHandleCast
+: public detail::CoupledHandleCastImpl<TARGET_INDEX, Handle, (TARGET_INDEX <= INDEX), INDEX>
+{};
 
 template <unsigned int TARGET_INDEX, class Handle>
 typename CoupledHandleCast<TARGET_INDEX, Handle>::type &
