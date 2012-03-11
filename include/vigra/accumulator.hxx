@@ -94,6 +94,10 @@ struct AccumulatorEnd
     typedef AccumulatorEnd Tag;
     typedef void value_type;
     typedef bool result_type;
+    typedef bool ActiveFlags;
+    
+    ActiveFlags active_accumulators_;
+    
     static const unsigned int workInPass = 0; 
     static const int index = -1;
     
@@ -116,7 +120,13 @@ struct AccumulatorEnd
     void activate() {}
     bool isActive() const { return false; }
     
-    unsigned int passesRequired() const
+    static unsigned int passesRequired()
+    {
+        return 0;
+    }
+    
+    template <class ActiveFlags>
+    static unsigned int passesRequired(ActiveFlags const &)
     {
         return 0;
     }
@@ -137,6 +147,7 @@ class LabelArg
         typedef void result_type;
 
         static const int value = INDEX;
+        static const unsigned int workInPass = 0;
     };
 };
 
@@ -183,13 +194,34 @@ struct AddDependencies<void>
     // Helper class to activate dependencies at runtime (i.e. when activate<Tag>(accu) is called,
     // activate() must also be called for Tag's dependencies).
 template <class Dependencies>
-struct ActivateDependencies
+struct ActivateDependencies;
+
+template <class HEAD, class TAIL>
+struct ActivateDependencies<TypeList<HEAD, TAIL> >
 {
     template <class Chain, class ActiveFlags>
-    static void exec(ActiveFlags & a)
+    static void exec(ActiveFlags & flags)
     {
-        LookupTag<typename Dependencies::Head, Chain>::type::activateImpl(a);
-        ActivateDependencies<typename Dependencies::Tail>::exec<Chain>(a);
+        LookupTag<HEAD, Chain>::type::activateImpl(flags);
+        ActivateDependencies<TAIL>::exec<Chain>(flags);
+    }
+    
+    template <class Chain, class ActiveFlags, class GlobalFlags>
+    static void exec(ActiveFlags & flags, GlobalFlags & gflags)
+    {
+        LookupTag<HEAD, Chain>::type::activateImpl(flags);
+        ActivateDependencies<TAIL>::exec<Chain>(flags, gflags);
+    }
+};
+
+template <class HEAD, class TAIL>
+struct ActivateDependencies<TypeList<Global<HEAD>, TAIL> >
+{
+    template <class Chain, class ActiveFlags, class GlobalFlags>
+    static void exec(ActiveFlags & flags, GlobalFlags & gflags)
+    {
+        LookupTag<Global<HEAD>, Chain>::type::activateImpl(gflags);
+        ActivateDependencies<TAIL>::exec<Chain>(flags, gflags);
     }
 };
 
@@ -198,6 +230,10 @@ struct ActivateDependencies<void>
 {
     template <class Chain, class ActiveFlags>
     static void exec(ActiveFlags &)
+    {}
+    
+    template <class Chain, class ActiveFlags, class GlobalFlags>
+    static void exec(ActiveFlags &, GlobalFlags &)
     {}
 };
 
@@ -221,11 +257,27 @@ struct SeparateGlobalAndRegionTags<TypeList<Global<HEAD>, TAIL> >
 };
 
 template <int INDEX, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<DataArg<INDEX>, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef TypeList<DataArg<INDEX>, typename Inner::RegionTags>  RegionTags;
+    typedef TypeList<DataArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
+};
+
+template <int INDEX, class TAIL>
 struct SeparateGlobalAndRegionTags<TypeList<LabelArg<INDEX>, TAIL> >
 {
     typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
     typedef typename Inner::RegionTags                  RegionTags;
     typedef TypeList<LabelArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
+};
+
+template <int INDEX, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<WeightArg<INDEX>, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef TypeList<WeightArg<INDEX>, typename Inner::RegionTags>  RegionTags;
+    typedef TypeList<WeightArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
 };
 
 template <>
@@ -339,9 +391,9 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
         a.reshape(t);
     }
     
-    static unsigned int passesRequired(A const & a)
+    static unsigned int passesRequired()
     {
-        return std::max(A::workInPass, a.next_.passesRequired());
+        return std::max(A::workInPass, A::InternalBaseType::passesRequired());
     }
 };
 
@@ -383,11 +435,12 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
             a.reshape(t);
     }
     
-    static unsigned int passesRequired(A const & a)
+    template <class ActiveFlags>
+    static unsigned int passesRequired(ActiveFlags const & flags)
     {
-        return a.isActive()
-                   ? std::max(A::workInPass, a.next_.passesRequired())
-                   : a.next_.passesRequired();
+        return A::isActiveImpl(flags)
+                   ? std::max(A::workInPass, A::InternalBaseType::passesRequired(flags))
+                   : A::InternalBaseType::passesRequired(flags);
     }
 };
 
@@ -437,9 +490,15 @@ struct Decorator
         this->next_.merge(o.next_);
     }
     
-    unsigned int passesRequired() const
+    static unsigned int passesRequired()
     {
-        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(*this);
+        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired();
+    }
+    
+    template <class ActiveFlags>
+    static unsigned int passesRequired(ActiveFlags const & flags)
+    {
+        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(flags);
     }
 };
 
@@ -623,7 +682,9 @@ struct LabelDispatch
     typedef LabelDispatchTag Tag;
     typedef GlobalAccumulators GlobalAccumulatorChain;
     typedef RegionAccumulators RegionAccumulatorChain;
-    
+    typedef typename LookupTag<AccumulatorEnd, RegionAccumulatorChain>::type::ActiveFlags ActiveFlagsType;
+    typedef ArrayVector<RegionAccumulatorChain> RegionAccumulatorArray;
+        
     typedef LabelDispatch type;
     typedef LabelDispatch & reference;
     typedef LabelDispatch const & const_reference;
@@ -637,7 +698,8 @@ struct LabelDispatch
     static const int index = GlobalAccumulatorChain::index + 1;
     
     GlobalAccumulatorChain next_;
-    ArrayVector<RegionAccumulatorChain> regions_;
+    RegionAccumulatorArray regions_;
+    ActiveFlagsType active_region_accumulators_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -663,6 +725,51 @@ struct LabelDispatch
         }
     };
     
+    template <class TAG>
+    struct ActivateImpl
+    {
+        typedef typename LookupTag<TAG, type>::type TargetAccumulator;
+        
+        static void activate(GlobalAccumulatorChain & globals, RegionAccumulatorArray & regions, 
+                             ActiveFlagsType & flags)
+        {
+            TargetAccumulator::activateImpl(flags, getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
+            for(unsigned int k=0; k<regions.size(); ++k)
+                getAccumulator<AccumulatorEnd>(regions[k]).active_accumulators_ = flags;
+        }
+        
+        static bool isActive(GlobalAccumulatorChain const &, ActiveFlagsType const & flags)
+        {
+            return TargetAccumulator::isActiveImpl(flags);
+        }
+    };
+    
+    template <class TAG>
+    struct ActivateImpl<Global<TAG> >
+    {
+        static void activate(GlobalAccumulatorChain & globals, RegionAccumulatorArray &, ActiveFlagsType &)
+        {
+            getAccumulator<TAG>(globals).activate();
+        }
+        
+        static bool isActive(GlobalAccumulatorChain const & globals, ActiveFlagsType const &)
+        {
+            return getAccumulator<TAG>(globals).isActive();
+        }
+    };
+    
+    template <int INDEX>
+    struct ActivateImpl<LabelArg<INDEX> >
+    {
+        static void activate(GlobalAccumulatorChain &, RegionAccumulatorArray &, ActiveFlagsType &)
+        {}
+        
+        static bool isActive(GlobalAccumulatorChain const & globals, ActiveFlagsType const &)
+        {
+            return getAccumulator<LabelArg<INDEX> >(globals).isActive();
+        }
+    };
+    
     typedef typename LookupTag<LabelArgTag, GlobalAccumulatorChain>::type FindLabelIndex;
     
     void setMaxRegionLabel(unsigned maxlabel)
@@ -671,8 +778,29 @@ struct LabelDispatch
         for(unsigned int k=0; k<regions_.size(); ++k)
         {
             getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
-            // FIXME: set activation flags
+            getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
         }
+    }
+    
+    template <class T>
+    void resize(T const & t)
+    {
+        if(regions_.size() == 0)
+        {
+            static const int labelIndex = LabelIndexSelector<FindLabelIndex>::value;
+            typedef typename CoupledHandleCast<labelIndex, T>::type LabelHandle;
+            typedef typename LabelHandle::value_type LabelType;
+            typedef MultiArrayView<LabelHandle::dimensions, LabelType, StridedArrayTag> LabelArray;
+            LabelArray labelArray(t.shape(), cast<labelIndex>(t).strides(), const_cast<LabelType *>(cast<labelIndex>(t).ptr()));
+            
+            LabelType minimum, maximum;
+            labelArray.minmax(&minimum, &maximum);
+            setMaxRegionLabel(maximum);
+        }
+        next_.resize(t);
+        // FIXME: only call resize when label k actually exists?
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            regions_[k].resize(t);
     }
     
     template <unsigned N>
@@ -682,38 +810,53 @@ struct LabelDispatch
         regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t);
     }
     
-
-#if 0
-    template <class T>
-    void resize(T const & t)
+    template <unsigned N>
+    void pass(T const & t, double weight)
     {
-        if(regions_.size() == 0)
-        {
-            typedef typename CoupledHandleCast<FindLabelIndex::value, T>::type LabelHandle;
-            typedef MultiArrayView<LabelHandle::dimensions, typename LabelHandle::const_pointer, StridedArrayTag> LabelArray;
-            LabelArray labelArray(t.shape(), ((LabelHandle const &)t).strides(), ((LabelHandle const &)t).ptr());
-            
-            using namespace vigra::multi_math;
-            setMaxRegionLabel(max(labelArray));
-        }
-        next_.resize(t);
-        // FIXME: only call resize when label k actually exists?
-        for(unsigned int k=0; k<regions_.size(); ++k)
-            regions_[k].resize(t);
+        next_.pass<N>(t, weight);
+        regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t, weight);
+    }
+    
+    static unsigned int passesRequired()
+    {
+        return std::max(GlobalAccumulatorChain::passesRequired(), RegionAccumulatorChain::passesRequired());
+    }
+    
+    unsigned int passesRequiredDynamic() const
+    {
+        return std::max(GlobalAccumulatorChain::passesRequired(getAccumulator<AccumulatorEnd>(next_).active_accumulators_), 
+                        RegionAccumulatorChain::passesRequired(active_region_accumulators_));
     }
     
     void reset()
     {
         next_.reset();
-        for(unsigned int k=0; k<regions_.size(); ++k)
-            regions_[k].reset();
+        
+        active_region_accumulators_.clear();
+        RegionAccumulatorArray().swap(regions_);
+        // FIXME: or is it better to just reset the region accumulators?
+        // for(unsigned int k=0; k<regions_.size(); ++k)
+            // regions_[k].reset();
     }
     
-    template <unsigned N>
-    void pass(T const & t, double weight)
+    template <class TAG>
+    void activate()
     {
-        next_.pass<N>(t, weight);
-        regions_[FindLabelIndex::exec(t)].pass<N>(t, weight);
+        ActivateImpl<TAG>::activate(next_, regions_, active_region_accumulators_);
+    }
+    
+    void activateAll()
+    {
+        getAccumulator<AccumulatorEnd>(next_).active_accumulators_.set();
+        active_region_accumulators_.set();
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_.set();
+    }
+    
+    template <class TAG>
+    bool isActive() const
+    {
+        return ActivateImpl<TAG>::isActive(next_, active_region_accumulators_);
     }
     
     void merge(LabelDispatch const & o)
@@ -722,12 +865,6 @@ struct LabelDispatch
         for(unsigned int k=0; k<regions_.size(); ++k)
             regions_[k].merge(o.regions_[k]);
     }
-    
-    unsigned int passesRequired() const
-    {
-        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(*this);
-    }
-#endif
 };
 
     // helper classes to create an accumulator chain from a TypeList
@@ -785,6 +922,7 @@ struct AccumulatorChain
     typedef typename InternalBaseType::argument_type         argument_type;
     typedef typename InternalBaseType::first_argument_type   first_argument_type;
     typedef typename InternalBaseType::second_argument_type  second_argument_type;
+    typedef void                                             value_type;
     typedef typename InternalBaseType::result_type           result_type;
     
     static const int staticSize = InternalBaseType::index;
@@ -815,7 +953,7 @@ struct AccumulatorChain
     template <unsigned N>
     void update(T const & t, double weight)
     {
-        reshape_(*this, t, MetaInt<N>());
+        reshape_(next_, t, MetaInt<N>());
         next_.pass<N>(t, weight);
     }
     
@@ -886,7 +1024,7 @@ struct AccumulatorChain
     
     unsigned int passesRequired() const
     {
-        return next_.passesRequired();
+        return InternalBaseType::passesRequired();
     }
 };
 
@@ -895,7 +1033,29 @@ struct AccumulatorChain
 template <class T, class Selected>
 struct DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
-{};
+{
+    template <class TAG>
+    void activate()
+    {
+        getAccumulator<TAG>(*this).activate();
+    }
+    
+    void activateAll()
+    {
+        getAccumulator<AccumulatorEnd>(*this).active_accumulators_.set();
+    }
+    
+    template <class TAG>
+    bool isActive() const
+    {
+        return getAccumulator<TAG>(*this).isActive();
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return InternalBaseType::passesRequired(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
+    }
+};
 
 /****************************************************************************/
 /*                                                                          */
@@ -926,17 +1086,30 @@ struct AccumulatorChainArray
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
+    detail::ReshapeImpl<VigraTrueType> reshape_;
     
     void setMaxRegionLabel(unsigned label)
     {
         next_.setMaxRegionLabel(label);
     }
     
+    unsigned int regionCount() const
+    {
+        return next_.regions_.size();
+    }
+    
     template <unsigned N>
     void update(T const & t)
     {
-//        reshape_(next_, t, MetaInt<N>());
+        reshape_(next_, t, MetaInt<N>());
         next_.pass<N>(t);
+    }
+    
+    template <unsigned N>
+    void update(T const & t, double weight)
+    {
+        reshape_(next_, t, MetaInt<N>());
+        next_.pass<N>(t, weight);
     }
     
 	void operator()(T const & t)
@@ -949,51 +1122,6 @@ struct AccumulatorChainArray
         update<1>(t, weight);
     }
 
-#if 0
-    detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
-    
-    void reset()
-    {
-        reshape_.reset();
-        next_.reset();
-    }
-    
-    template <class Shape>
-    void reshape(Shape const & s)
-    {
-        reshape_.reset();
-        reshape_(next_, s);
-    }
-
-    template <unsigned N>
-    void update(T const & t)
-    {
-        reshape_(next_, t, MetaInt<N>());
-        next_.pass<N>(t);
-    }
-    
-    template <unsigned N>
-    void update(T const & t, double weight)
-    {
-        reshape_(*this, t, MetaInt<N>());
-        next_.pass<N>(t, weight);
-    }
-    
-    void operator+=(AccumulatorChain const & o)
-    {
-        merge(o);
-    }
-    
-    void merge(AccumulatorChain const & o)
-    {
-        next_.merge(o.next_);
-    }
-
-    result_type operator()() const
-    {
-        return next_.get();
-    }
-	
 	void updatePass2(T const & t)
     {
         update<2>(t);
@@ -1003,7 +1131,33 @@ struct AccumulatorChainArray
     {
         update<2>(t, weight);
     }
+    
+    unsigned int passesRequired() const
+    {
+        return next_.passesRequired();
+    }
 
+    void reset()
+    {
+        reshape_.reset();
+        next_.reset();
+    }
+    
+    void operator+=(AccumulatorChainArray const & o)
+    {
+        merge(o);
+    }
+    
+    void merge(AccumulatorChainArray const & o)
+    {
+        next_.merge(o.next_);
+    }
+
+    result_type operator()() const
+    {
+        return next_.get();
+    }
+	
 	void updatePassN(T const & t, unsigned int N)
     {
         switch (N)
@@ -1033,12 +1187,6 @@ struct AccumulatorChainArray
                      "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
-    
-    unsigned int passesRequired() const
-    {
-        return next_.passesRequired();
-    }
-#endif
 };
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
@@ -1046,7 +1194,29 @@ struct AccumulatorChainArray
 template <class T, class Selected>
 struct DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
-{};
+{
+    template <class TAG>
+    void activate()
+    {
+        this->next_.activate<TAG>();
+    }
+    
+    void activateAll()
+    {
+        this->next_.activateAll();
+    }
+    
+    template <class TAG>
+    bool isActive() const
+    {
+        return this->next_.isActive<TAG>();
+    }
+    
+    unsigned int passesRequired() const
+    {
+        return this->next_.passesRequiredDynamic();
+    }
+};
 
 /****************************************************************************/
 /*                                                                          */
@@ -1084,6 +1254,14 @@ struct LookupTagImpl<TAG, A, TAG>
     typedef A & reference;
     typedef typename A::value_type value_type;
     typedef typename A::result_type result_type;
+};
+
+    // Again, 'const A' is treated like A, except that the reference member is now const.
+template <class TAG, class A>
+struct LookupTagImpl<TAG, A const, TAG>
+: public LookupTagImpl<TAG, A, TAG>
+{
+    typedef typename LookupTagImpl<TAG, A, TAG>::type const & reference;
 };
 
     // Recursion termination: when we end up in AccumulatorEnd without finding a 
@@ -1292,7 +1470,7 @@ getAccumulator(A & a)
     return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
 }
 
-    // cast an accumulator chain to the type specified by Tag
+    // cast an accumulator chain to the type specified by Tag and label
 template <class TAG, class A>
 typename LookupTag<TAG, A>::reference
 getAccumulator(A & a, MultiArrayIndex label)
@@ -1311,7 +1489,7 @@ get(A const & a)
     return getAccumulator<TAG>(a).get();
 }
 
-    // get the result of the accumulator specified by Tag
+    // get the result of the region accumulator specified by Tag and label
 template <class TAG, class A>
 typename LookupTag<TAG, A>::result_type
 get(A const & a, MultiArrayIndex label)
@@ -1325,7 +1503,7 @@ template <class Tag, class A>
 void
 activate(A & a)
 {
-    getAccumulator<Tag>(a).activate();
+    a.activate<Tag>();
 }
 
     // activate the dynamic accumulator specified by Tag
@@ -1333,7 +1511,21 @@ template <class Tag, class A>
 bool
 isActive(A const & a)
 {
-    return getAccumulator<Tag>(a).isActive();
+    return a.isActive<Tag>();
+}
+
+/****************************************************************************/
+/*                                                                          */
+/*                               generic loops                              */
+/*                                                                          */
+/****************************************************************************/
+
+template <class ITERATOR, class ACCUMULATOR>
+void collectStatistics(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
+{
+    for(unsigned int k=1; k <= a.passesRequired(); ++k)
+        for(ITERATOR i=start; i < end; ++i)
+            a.updatePassN(*i, k);
 }
 
 /****************************************************************************/
@@ -1404,7 +1596,16 @@ struct AccumulatorBase
     static void activateImpl(ActiveFlags & flags)
     {
         flags.set<index>();
-        detail::ActivateDependencies<typename Tag::Dependencies::type>::exec<ThisType>(flags);
+        typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
+        detail::ActivateDependencies<StdDeps>::exec<ThisType>(flags);
+    }
+    
+    template <class ActiveFlags, class GlobalFlags>
+    static void activateImpl(ActiveFlags & flags, GlobalFlags & gflags)
+    {
+        flags.set<index>();
+        typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
+        detail::ActivateDependencies<StdDeps>::exec<ThisType>(flags, gflags);
     }
     
     template <class ActiveFlags>
@@ -1482,11 +1683,13 @@ struct AccumulatorBase
     }
 };
 
-template <class A>
+template <class TAG>
 class Global
 {
   public:
-    typedef Select<> Dependencies;
+    typedef typename StandardizeTag<TAG>::type TargetTag;
+    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
+    typedef typename TransferModifiers<Global<TargetTag>, TargetDependencies>::type Dependencies;
 };
 
 template <int INDEX>
@@ -1504,6 +1707,7 @@ class DataArg
         typedef void result_type;
 
         static const int value = INDEX;
+        static const unsigned int workInPass = 0;
     };
 };
 
@@ -1622,6 +1826,7 @@ class WeightArg
         typedef void result_type;
 
         static const int value = INDEX;
+        static const unsigned int workInPass = 0;
     };
 };
 
@@ -3185,8 +3390,8 @@ class HistogramBase
     void operator+=(HistogramBase const & o)
     {
         value_ += o.value_;
-        left_outliers_ += o.left_outliers_;
-        right_outliers_ += o.right_outliers_;
+        left_outliers += o.left_outliers;
+        right_outliers += o.right_outliers;
     }
         
     result_type operator()() const
@@ -3224,8 +3429,8 @@ class HistogramBase<0, BASE>
     void operator+=(HistogramBase const & o)
     {
         value_ += o.value_;
-        left_outliers_ += o.left_outliers_;
-        right_outliers_ += o.right_outliers_;
+        left_outliers += o.left_outliers;
+        right_outliers += o.right_outliers;
     }
         
     void setBinCount(int binCount)
@@ -3268,7 +3473,7 @@ class RangeHistogramBase
         vigra_precondition(scale_ == o.scale_ && offset_ == o.offset_,
             "RangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
         
-        HistogrammBase<BinCount, BASE>::operator+=(o);
+        HistogramBase<BinCount, BASE>::operator+=(o);
     }
 
     void update(T const & t)
@@ -3526,7 +3731,7 @@ class AutoRangeHistogram
     struct Impl
     : public RangeHistogramBase<T, BASE, BinCount>
     {
-        static const int workInPass = LookupTag<Minimum, BASE>::type::workInPass + 1;
+        static const unsigned int workInPass = LookupTag<Minimum, BASE>::type::workInPass + 1;
         
         void update(T const & t)
         {
@@ -3538,6 +3743,34 @@ class AutoRangeHistogram
             if(this->scale_ == 0.0)
                 this->setMinMax(get<Minimum>(*this), get<Maximum>(*this));
                 
+            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+        }
+    };
+};
+
+template <int BinCount>
+class GlobalRangeHistogram
+{
+  public:
+    
+    typedef Select<Global<Minimum>, Global<Maximum> > Dependencies;
+    
+    template <class T, class BASE>
+    struct Impl
+    : public RangeHistogramBase<T, BASE, BinCount>
+    {
+        static const unsigned int workInPass = LookupTag<Global<Minimum>, BASE>::type::workInPass + 1;
+        
+        void update(T const & t)
+        {
+            update(t, 1.0);
+        }
+        
+        void update(T const & t, double weight)
+        {
+            if(this->scale_ == 0.0)
+                this->setMinMax(get<Global<Minimum> >(*this), get<Global<Maximum> >(*this));
+
             RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
         }
     };
@@ -3555,7 +3788,7 @@ class StandardQuantiles
     struct Impl
     : public CachedResultBase<T, BASE, TinyVector<double, 7> >
     {
-        static const int workInPass = LookupTag<HistogramTag, BASE>::type::workInPass;
+        static const unsigned int workInPass = LookupTag<HistogramTag, BASE>::type::workInPass;
         
         result_type operator()() const
         {

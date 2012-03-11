@@ -65,17 +65,14 @@ class FlatScatterMatrix;                       // flattened upper-triangular par
 class ScatterMatrixEigensystem;                // eigenvalues and eigenvectors of the scatter matrix
 
     // in all histogram classes: set bin count at runtime if BinCount == 0
-template <int BinCount> 
-class IntegerHistogram;                        // use data values directly as bin indices
-template <int BinCount>
-class UserRangeHistogram;                      // set min/max explicitly at runtime
-template <int BinCount>
-class AutoRangeHistogram;                      // get min/max from accumulators
+template <int BinCount> class IntegerHistogram;      // use data values directly as bin indices
+template <int BinCount> class UserRangeHistogram;    // set min/max explicitly at runtime
+template <int BinCount> class AutoRangeHistogram;    // get min/max from accumulators
+template <int BinCount> class GlobalRangeHistogram;  // like AutoRangeHistogram, but use global min/max rather than region min/max
 
 class Minimum;                                 // minimum
 class Maximum;                                 // maximum
-template <class Hist> 
-class StandardQuantiles;                       // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
+template <class Hist> class StandardQuantiles; // compute (min, 10%, 25%, 50%, 75%, 90%, max) quantiles from 
                                                // min/max accumulators and given histogram
 
 class ArgMinWeight;                            // store the value (or coordinate) where weight was minimal
@@ -235,7 +232,7 @@ struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined
 namespace detail {
 
     // Assign priorities to modifiers to determine their standard order (by ascending priority).
-    // SubstitutionMask determines which modifiers may be automatically transferred to dependencies.
+    // SubstitutionMask determines which modifiers must be automatically transferred to dependencies.
 enum { MinPriority = 1, 
        AccumulatorPriority = 32,
        PrepareDataPriority = 16,
@@ -244,7 +241,7 @@ enum { MinPriority = 1,
        WeightingPriority = 2,
        GlobalPriority = 1,
        MaxPriority = 32,
-       SubstitutionMask = PrepareDataPriority | AccessDataPriority | WeightingPriority };
+       SubstitutionMask = PrepareDataPriority | AccessDataPriority | WeightingPriority | GlobalPriority };
 
 template <class A>
 struct ModifierPriority
@@ -258,6 +255,8 @@ struct ModifierPriority<MODIFIER<A> > \
 { \
     static const int value = VALUE; \
 };
+
+VIGRA_MODIFIER_PRIORITY(Global, GlobalPriority)
 
 VIGRA_MODIFIER_PRIORITY(Weighted, WeightingPriority)
 

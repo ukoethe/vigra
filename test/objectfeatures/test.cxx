@@ -5,6 +5,10 @@
 
 #include <unittest.hxx>
 
+#ifdef _MSC_VER
+#pragma warning (disable: 4503)
+#endif
+
 #include <vigra/accessor.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/rgbvalue.hxx>
@@ -1952,6 +1956,7 @@ struct AccumulatorTest
             TEST_LONG_FORM(Weighted<Count>, DM<Weighted<DM<DM<DM<Count> > > > >);
             TEST_LONG_FORM(Coord<Count>, DM<DM<DM<DM<DM<Count> > > > >);
             TEST_LONG_FORM(Principal<Variance>, DM<DM<DM<DivideByCount<Principal<PowerSum<2> > > > > >);
+            TEST_LONG_FORM(Global<Count>, Global<DM<DM<DM<DM<PowerSum<0> > > > > >);
         }
 #undef TEST_LONG_FORM
 #undef DM
@@ -2156,6 +2161,9 @@ struct AccumulatorTest
             should(isActive<Covariance>(a));
 
             shouldEqual(2, a.passesRequired());
+
+            a.reset();
+            a.activateAll();
 
             a(1.0);
             a(2.0);
@@ -2681,11 +2689,12 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape2 V;
 
-            typedef AccumulatorChainArray<Handle, Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>
+            typedef AccumulatorChainArray<Handle, Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>, DataArg<1>
                                           > > A;
 
-            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::GlobalTags, TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, void > > > >::value));
-            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::RegionTags, TypeList<Count,TypeList<Coord<Sum>,void>> >::value));
+            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::GlobalTags, 
+                        TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
+            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void>>>>::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupTag<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
@@ -2700,9 +2709,12 @@ struct AccumulatorTest
                      end   = i.getEndIterator();
 
             A a;
+
+            shouldEqual(1, a.passesRequired());
+
             a.setMaxRegionLabel(1);
 
-            shouldEqual((getAccumulator<LabelDispatchTag, A>(a).regions_.size()), 2);
+            shouldEqual(a.regionCount(), 2);
             should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
 
             LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
@@ -2720,6 +2732,162 @@ struct AccumulatorTest
             shouldEqual(V(2,2), get<Coord<Sum>>(a, 0));
             shouldEqual(V(4,1), get<Coord<Sum>>(a, 1));
             shouldEqual(V(0,0), get<Global<Coord<Minimum>> >(a));
+#endif
+        }
+        {
+#if 1
+            typedef CoupledIteratorType<2, double, int>::type Iterator;
+            typedef Iterator::value_type Handle;
+
+            typedef AccumulatorChainArray<Handle, Select<Count, AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
+                                                         Global<Count>, Global<AutoRangeHistogram<3>>, DataArg<1>, LabelArg<2>
+                                          > > A;
+
+            double d[] = { 1.0, 3.0, 3.0,
+                           1.0, 2.0, 5.0 };
+            MultiArrayView<2, double> data(Shape2(3,2), d);
+
+            MultiArray<2, int> labels(Shape2(3,2));
+            labels(2,0) = labels(2,1) = 1;
+
+            Iterator i     = createCoupledIterator(data, labels),
+                     start = i,   
+                     end   = i.getEndIterator();
+
+            A a;
+            shouldEqual(a.regionCount(), 0);
+            shouldEqual(2, a.passesRequired());
+
+            for(; i < end; ++i)
+                a(*i);
+            
+            shouldEqual(a.regionCount(), 2);
+            shouldEqual(4, get<Count>(a, 0));
+            shouldEqual(2, get<Count>(a, 1));
+            shouldEqual(6, get<Global<Count> >(a));
+
+            shouldEqual(1, get<Minimum>(a, 0));
+            shouldEqual(3, get<Minimum>(a, 1));
+            shouldEqual(1, get<Global<Minimum> >(a));
+
+            shouldEqual(3, get<Maximum>(a, 0));
+            shouldEqual(5, get<Maximum>(a, 1));
+            shouldEqual(5, get<Global<Maximum> >(a));
+
+            for(i = start; i < end; ++i)
+                a.updatePass2(*i);
+            
+            shouldEqual(4, get<Count>(a, 0));
+            shouldEqual(2, get<Count>(a, 1));
+            shouldEqual(6, get<Global<Count> >(a));
+
+            typedef TinyVector<double, 3> V;
+
+            shouldEqual(V(2,1,1), get<AutoRangeHistogram<3>>(a, 0));
+            shouldEqual(V(1,0,1), get<AutoRangeHistogram<3>>(a, 1));
+            shouldEqual(V(3,1,0), get<GlobalRangeHistogram<3>>(a, 0));
+            shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3>>(a, 1));
+            shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3>>>(a));
+#endif
+        }
+        {
+#if 1
+            typedef CoupledIteratorType<2, int>::type Iterator;
+            typedef Iterator::value_type Handle;
+
+            typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
+                                                                Global<Count>, Global<Coord<Mean>>, 
+                                                                LabelArg<1>, DataArg<1>
+                                                 > > A;
+
+            A a;
+
+            shouldEqual(0, a.passesRequired());
+
+            should(!isActive<Count>(a));
+            should(!isActive<Coord<Sum>>(a));
+            should(!isActive<GlobalRangeHistogram<3>>(a));
+
+            should(!isActive<Global<Count>>(a));
+            should(!isActive<Global<Minimum>>(a));
+            should(!isActive<Global<Coord<Sum>>>(a));
+
+            activate<Count>(a);
+            should(isActive<Count>(a));
+            should(!isActive<Global<Count>>(a));
+
+            activate<Global<Count>>(a);
+            should(isActive<Count>(a));
+            should(isActive<Global<Count>>(a));
+
+            activate<Coord<Mean>>(a);
+            should(isActive<Coord<Mean>>(a));
+            should(isActive<Coord<Sum>>(a));
+            should(!isActive<Global<Coord<Sum>>>(a));
+            should(!isActive<Global<Coord<Mean>>>(a));
+
+            activate<Global<Coord<Mean>>>(a);
+            should(isActive<Global<Coord<Sum>>>(a));
+            should(isActive<Global<Coord<Mean>>>(a));
+            should(!isActive<GlobalRangeHistogram<3>>(a));
+            should(!isActive<Global<Minimum>>(a));
+
+            shouldEqual(1, a.passesRequired());
+
+            activate<GlobalRangeHistogram<3>>(a);
+
+            should(isActive<GlobalRangeHistogram<3>>(a));
+            should(isActive<Global<Minimum>>(a));
+
+            shouldEqual(2, a.passesRequired());
+
+            MultiArray<2, int> labels(Shape2(3,2));
+            labels(2,0) = labels(2,1) = 1;
+            Iterator i     = createCoupledIterator(labels),
+                     start = i,   
+                     end   = i.getEndIterator();
+
+            for(; i < end; ++i)
+                a(*i);
+            
+            for(i = start; i < end; ++i)
+                a.updatePass2(*i);
+            
+            shouldEqual(4, get<Count>(a, 0));
+            shouldEqual(2, get<Count>(a, 1));
+            shouldEqual(6, get<Global<Count> >(a));
+
+            typedef TinyVector<double, 2> V;
+
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean>>(a, 0));
+            shouldEqual(V(2, 0.5), get<Coord<Mean>>(a, 1));
+            shouldEqual(V(1, 0.5), get<Global<Coord<Mean>>>(a));
+
+            typedef TinyVector<double, 3> W;
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(a,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(a,1));
+
+            A b;
+            b.activateAll();
+
+            collectStatistics(start, end, b);
+            
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(b,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(b,1));
+
+            a += b;
+            
+            shouldEqual(8, get<Count>(a, 0));
+            shouldEqual(4, get<Count>(a, 1));
+            shouldEqual(12, get<Global<Count> >(a));
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean>>(a, 0));
+            shouldEqual(V(2, 0.5), get<Coord<Mean>>(a, 1));
+            shouldEqual(V(1, 0.5), get<Global<Coord<Mean>>>(a));
+            shouldEqual(W(8, 0, 0), get<GlobalRangeHistogram<3>>(a,0));
+            shouldEqual(W(0, 0, 4), get<GlobalRangeHistogram<3>>(a,1));
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(b,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(b,1));
+
 #endif
         }
     }
