@@ -2692,12 +2692,12 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape2 V;
 
-            typedef AccumulatorChainArray<Handle, Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>, DataArg<1>
-                                          > > A;
+            typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>, DataArg<1> > Selected;
+            typedef AccumulatorChainArray<Handle, Selected> A;
 
-            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::GlobalTags, 
+            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                         TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
-            should((IsSameType<LookupTag<AccumulatorBegin, A>::type::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void>>>>::value));
+            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void>>>>::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupTag<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;

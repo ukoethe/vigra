@@ -251,80 +251,71 @@ struct SeparateGlobalAndRegionTags<void>
 /*                                                                          */
 /****************************************************************************/
 
-struct AccumulatorEndImpl 
+template <unsigned LEVEL, 
+          class GlobalAccumulator=Error__Global_statistics_are_only_defined_for_AccumulatorChainArray>
+struct AccumulatorEndImpl
 {
-    typedef AccumulatorEnd Tag;
-    typedef void value_type;
-    typedef bool result_type;
-    typedef bool ActiveFlags;
+    typedef GlobalAccumulator  GlobalAccumulatorType;
+    typedef AccumulatorEnd     Tag;
+    typedef void               value_type;
+    typedef bool               result_type;
+    typedef BitArray<LEVEL>    AccumulatorFlags;
     
-    ActiveFlags active_accumulators_;
+    static const unsigned int  workInPass = 0; 
+    static const int           index = -1;
+    static const unsigned      level = LEVEL;
     
-    static const unsigned int workInPass = 0; 
-    static const int index = -1;
+    AccumulatorFlags            active_accumulators_;
+    mutable AccumulatorFlags    is_dirty_;
+    GlobalAccumulator const *   globalAccumulator_;
+
+    AccumulatorEndImpl()
+    : globalAccumulator_(0)
+    {}
     
     bool operator()() const { return false; }
     bool get() const { return false; }
     
-    template <unsigned, class T>
-    void pass(T const &) {}
-    template <unsigned, class T>
-    void pass(T const &, double) {}
+    template <unsigned, class U>
+    void pass(U const &) 
+    {}
     
-    template <class T>
-    void merge(T const &) {}
+    template <unsigned, class U>
+    void pass(U const &, double) 
+    {}
     
-    template <class T>
-    void resize(T const &) {}
+    template <class U>
+    void merge(U const &) 
+    {}
     
-    void reset() {}
+    template <class U>
+    void resize(U const &) 
+    {}
     
-    void activate() {}
-    bool isActive() const { return false; }
+    void activate() 
+    {}
+    
+    bool isActive() const 
+    { 
+        return false;
+    }
     
     static unsigned int passesRequired()
     {
         return 0;
     }
     
-    template <class ActiveFlags>
-    static unsigned int passesRequired(ActiveFlags const &)
+    static unsigned int passesRequired(AccumulatorFlags const &)
     {
         return 0;
     }
-};
 
-template <bool dynamic, unsigned LEVEL, 
-          class GlobalAccumulator=Error__Global_statistics_are_only_defined_for_AccumulatorChainArray>
-struct AccumulatorFlags
-: public AccumulatorFlags<false, LEVEL, GlobalAccumulator>
-{
-    typedef BitArray<LEVEL> ActiveFlags;
-    
-    ActiveFlags active_accumulators_;
-   
     void reset()
     {
         active_accumulators_.clear();
+        is_dirty_.clear();
     }
-};
-
-template <unsigned LEVEL, class GlobalAccumulator>
-struct AccumulatorFlags<false, LEVEL, GlobalAccumulator>
-: public AccumulatorEndImpl
-{
-    typedef AccumulatorEndImpl InternalBaseType;
-    typedef GlobalAccumulator GlobalAccumulatorType;
-    
-    static const unsigned level = LEVEL;
-    
-    mutable BitArray<LEVEL> is_dirty_;
-    GlobalAccumulator const * globalAccumulator_;
-    
-    AccumulatorFlags()
-    : globalAccumulator_(0)
-    {}
-    
+        
     void setGlobalAccumulator(GlobalAccumulator const * a)
     {
         globalAccumulator_ = a;
@@ -584,7 +575,7 @@ struct LabelDispatch
     typedef LabelDispatchTag Tag;
     typedef GlobalAccumulators GlobalAccumulatorChain;
     typedef RegionAccumulators RegionAccumulatorChain;
-    typedef typename LookupTag<AccumulatorEnd, RegionAccumulatorChain>::type::ActiveFlags ActiveFlagsType;
+    typedef typename LookupTag<AccumulatorEnd, RegionAccumulatorChain>::type::AccumulatorFlags ActiveFlagsType;
     typedef ArrayVector<RegionAccumulatorChain> RegionAccumulatorArray;
         
     typedef LabelDispatch type;
@@ -783,7 +774,7 @@ struct Compose
 template <class T, bool dynamic, unsigned level, class GlobalAccumulator>
 struct Compose<T, void, dynamic, level, GlobalAccumulator> 
 { 
-    typedef AccumulatorFlags<dynamic, level, GlobalAccumulator> type;
+    typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
 };
 
 template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level, class GlobalAccumulator>
@@ -802,7 +793,26 @@ struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level, GlobalAccum
 template <class T, class NEXT, bool dynamic, unsigned level, class GlobalAccumulator>
 struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level, GlobalAccumulator> 
 { 
-    typedef AccumulatorFlags<dynamic, level, GlobalAccumulator> type;
+    typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
+};
+
+template <class T, class Selected, bool dynamic=false>
+struct CreateAccumulatorChain
+{
+    typedef typename AddDependencies<typename Selected::type>::type AccumulatorTags;
+    typedef typename Compose<T, AccumulatorTags, dynamic>::type type;
+};
+
+template <class T, class Selected, bool dynamic=false>
+struct CreateAccumulatorChainArray
+{
+    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
+    typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
+    typedef typename TagSeparator::GlobalTags GlobalTags;
+    typedef typename TagSeparator::RegionTags RegionTags;
+    typedef typename detail::Compose<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
+    typedef typename detail::Compose<T, RegionTags, dynamic, 0, GlobalAccumulatorChain>::type RegionAccumulatorChain;
+    typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
 } // namespace detail 
@@ -813,14 +823,12 @@ struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level, GlobalAccumulator>
 /*                                                                          */
 /****************************************************************************/
 
-    // Create an accumulator chain containing the Selected statistics and their dependencies.
-template <class T, class Selected, bool dynamic = false>
-struct AccumulatorChain
+    // Implement the high-level interface of an accumulator chain
+template <class T, class NEXT>
+struct AccumulatorChainImpl
 {
-    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef typename detail::Compose<T, AccumulatorTags, dynamic>::type InternalBaseType;
-    
-    typedef AccumulatorBegin                         Tag;
+    typedef NEXT                                             InternalBaseType;
+    typedef AccumulatorBegin                                 Tag;
     typedef typename InternalBaseType::argument_type         argument_type;
     typedef typename InternalBaseType::first_argument_type   first_argument_type;
     typedef typename InternalBaseType::second_argument_type  second_argument_type;
@@ -832,7 +840,7 @@ struct AccumulatorChain
     InternalBaseType next_;
     unsigned int current_pass_;
     
-    AccumulatorChain()
+    AccumulatorChainImpl()
     : current_pass_(0)
     {}
     
@@ -843,15 +851,6 @@ struct AccumulatorChain
             next_.reset();
     }
     
-    template <class U, int N>
-    void reshape(TinyVector<U, N> const & s)
-    {
-        vigra_precondition(current_pass_ == 0,
-             "AccumulatorChain::reshape(): cannot reshape after seeing data. Call AccumulatorChain::reset() first.");
-        next_.resize(s);
-        current_pass_ = 1;
-    }
-
     template <unsigned N>
     void update(T const & t)
     {
@@ -894,12 +893,12 @@ struct AccumulatorChain
         }
     }
     
-    void operator+=(AccumulatorChain const & o)
+    void operator+=(AccumulatorChainImpl const & o)
     {
         merge(o);
     }
     
-    void merge(AccumulatorChain const & o)
+    void merge(AccumulatorChainImpl const & o)
     {
         next_.merge(o.next_);
     }
@@ -965,6 +964,22 @@ struct AccumulatorChain
     }
 };
 
+    // Create an accumulator chain containing the Selected statistics and their dependencies.
+template <class T, class Selected, bool dynamic=false>
+struct AccumulatorChain
+: public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChain<T, Selected, dynamic>::type>
+{
+    template <class U, int N>
+    void reshape(TinyVector<U, N> const & s)
+    {
+        vigra_precondition(this->current_pass_ == 0,
+             "AccumulatorChain::reshape(): cannot reshape after seeing data. Call AccumulatorChain::reset() first.");
+        this->next_.resize(s);
+        this->current_pass_ = 1;
+    }
+};   
+
+
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
@@ -994,186 +1009,22 @@ struct DynamicAccumulatorChain
     }
 };
 
-/****************************************************************************/
-/*                                                                          */
-/*                      array of accumulator chains                         */
-/*                                                                          */
-/****************************************************************************/
-
-    // Create an accumulator chain containing the Selected statistics and their dependencies.
-template <class T, class Selected, bool dynamic = false>
+template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
+: public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::type>
 {
-    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
-    typedef typename TagSeparator::GlobalTags GlobalTags;
-    typedef typename TagSeparator::RegionTags RegionTags;
-    
-    typedef typename detail::Compose<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
-    typedef typename detail::Compose<T, RegionTags, dynamic, 0, GlobalAccumulatorChain>::type RegionAccumulatorChain;
-    typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> InternalBaseType;
-    
-    typedef AccumulatorBegin                                 Tag;
-    typedef typename InternalBaseType::argument_type         argument_type;
-    typedef typename InternalBaseType::first_argument_type   first_argument_type;
-    typedef typename InternalBaseType::second_argument_type  second_argument_type;
-    typedef typename InternalBaseType::result_type           result_type;
-    typedef void           value_type;
-    
-    static const int staticSize = InternalBaseType::index;
-
-    InternalBaseType next_;
-    unsigned int current_pass_;
-    
-    AccumulatorChainArray()
-    : current_pass_(0)
-    {}
-    
     void setMaxRegionLabel(unsigned label)
     {
-        next_.setMaxRegionLabel(label);
+        this->next_.setMaxRegionLabel(label);
     }
     
     unsigned int regionCount() const
     {
-        return next_.regions_.size();
-    }
-    
-    void reset(unsigned int reset_to_pass = 0)
-    {
-        current_pass_ = reset_to_pass;
-        if(reset_to_pass == 0)
-            next_.reset();
-    }
-    
-    template <unsigned N>
-    void update(T const & t)
-    {
-        if(current_pass_ == N)
-        {
-            next_.pass<N>(t);
-        }
-        else if(current_pass_ < N)
-        {
-            current_pass_ = N;
-            if(N == 1)
-                next_.resize(detail::shapeOf(t));
-            next_.pass<N>(t);
-        }
-        else
-        {
-            vigra_precondition(false,
-               std::string("AccumulatorChainArray::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
-        }
-    }
-    
-    template <unsigned N>
-    void update(T const & t, double weight)
-    {
-        if(current_pass_ == N)
-        {
-            next_.pass<N>(t, weight);
-        }
-        else if(current_pass_ < N)
-        {
-            current_pass_ = N;
-            if(N == 1)
-                next_.resize(detail::shapeOf(t));
-            next_.pass<N>(t, weight);
-        }
-        else
-        {
-            vigra_precondition(false,
-               std::string("AccumulatorChainArray::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
-        }
-    }
-    // template <unsigned N>
-    // void update(T const & t)
-    // {
-        // reshape_(next_, t, MetaInt<N>());
-        // next_.pass<N>(t);
-    // }
-    
-    // template <unsigned N>
-    // void update(T const & t, double weight)
-    // {
-        // reshape_(next_, t, MetaInt<N>());
-        // next_.pass<N>(t, weight);
-    // }
-    
-	void operator()(T const & t)
-    {
-        update<1>(t);
-    }
-    
-    void operator()(T const & t, double weight)
-    {
-        update<1>(t, weight);
+        return this->next_.regions_.size();
     }
 
-	void updatePass2(T const & t)
-    {
-        update<2>(t);
-    }
-    
-    void updatePass2(T const & t, double weight)
-    {
-        update<2>(t, weight);
-    }
-    
-    unsigned int passesRequired() const
-    {
-        return next_.passesRequired();
-    }
+};   
 
-    void operator+=(AccumulatorChainArray const & o)
-    {
-        merge(o);
-    }
-    
-    void merge(AccumulatorChainArray const & o)
-    {
-        next_.merge(o.next_);
-    }
-
-    result_type operator()() const
-    {
-        return next_.get();
-    }
-	
-	void updatePassN(T const & t, unsigned int N)
-    {
-        switch (N)
-        {
-            case 1: update<1>(t); break;
-            case 2: update<2>(t); break;
-            case 3: update<3>(t); break;
-            case 4: update<4>(t); break;
-            case 5: update<5>(t); break;
-            default:
-                vigra_precondition(false,
-                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
-        }
-    }
-    
-	void updatePassN(T const & tt, double weight, unsigned int N)
-    {
-        switch (N)
-        {
-            case 1: update<1>(t, weight); break;
-            case 2: update<2>(t, weight); break;
-            case 3: update<3>(t, weight); break;
-            case 4: update<4>(t, weight); break;
-            case 5: update<5>(t, weight); break;
-            default:
-                vigra_precondition(false,
-                     "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
-        }
-    }
-};
-
-    // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
-    // Statistics will only be computed if activate<Tag>() is called at runtime.
 template <class T, class Selected>
 struct DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
@@ -1563,15 +1414,15 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 template <class T, class TAG, class NEXT>
 struct AccumulatorBase 
 {
-	typedef AccumulatorBase<T, TAG, NEXT> ThisType;
-    typedef TAG            Tag;
-	typedef NEXT           InternalBaseType;
-    typedef T const &      argument_type;
-    typedef argument_type  first_argument_type;
-    typedef double         second_argument_type;
+	typedef AccumulatorBase<T, TAG, NEXT>   ThisType;
+    typedef TAG                          Tag;
+	typedef NEXT                         InternalBaseType;
+    typedef T const &                    argument_type;
+    typedef argument_type                first_argument_type;
+    typedef double                       second_argument_type;
     
-    static const unsigned int workInPass = 1;
-    static const int index = NEXT::index + 1;
+    static const unsigned int            workInPass = 1;
+    static const int                     index = NEXT::index + 1;
     
     NEXT next_;
     
