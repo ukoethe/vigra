@@ -115,6 +115,10 @@ struct AccumulatorBase;
 template <class Tag, class A, class TargetTag=typename A::Tag>
 struct LookupTag;
 
+template <class TAG, class A>
+typename LookupTag<TAG, A>::reference
+getAccumulator(A & a);
+
 namespace detail {
 
 /****************************************************************************/
@@ -157,14 +161,14 @@ struct ActivateDependencies<TypeList<HEAD, TAIL> >
     static void exec(ActiveFlags & flags)
     {
         LookupTag<HEAD, Chain>::type::activateImpl(flags);
-        ActivateDependencies<TAIL>::exec<Chain>(flags);
+        ActivateDependencies<TAIL>::template exec<Chain>(flags);
     }
     
     template <class Chain, class ActiveFlags, class GlobalFlags>
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
         LookupTag<HEAD, Chain>::type::activateImpl(flags);
-        ActivateDependencies<TAIL>::exec<Chain>(flags, gflags);
+        ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
 
@@ -175,7 +179,7 @@ struct ActivateDependencies<TypeList<Global<HEAD>, TAIL> >
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
         LookupTag<Global<HEAD>, Chain>::type::activateImpl(gflags);
-        ActivateDependencies<TAIL>::exec<Chain>(flags, gflags);
+        ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
 
@@ -323,19 +327,19 @@ struct AccumulatorEndImpl
     template <int which>
     void setDirtyImpl() const
     {
-        is_dirty_.set<which>();
+        is_dirty_.template set<which>();
     }
     
     template <int which>
     void setCleanImpl() const
     {
-        is_dirty_.reset<which>();
+        is_dirty_.template reset<which>();
     }
     
     template <int which>
     bool isDirtyImpl() const
     {
-        return is_dirty_.test<which>();
+        return is_dirty_.template test<which>();
     }
 };
 
@@ -408,9 +412,9 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
 
     static typename A::result_type get(A const & a)
     {
-        vigra_precondition(a.isActive(),
-            std::string("get(accumulator): attempt to access inactive statistic '")
-                                 << typeid(A::Tag).name() << "'.");
+        std::string message("get(accumulator): attempt to access inactive statistic '");
+        message << typeid(typename A::Tag).name() << "'.";
+        vigra_precondition(a.isActive(), message);
         return a();
     }
 
@@ -678,8 +682,8 @@ struct LabelDispatch
         }
     }
     
-    template <class T>
-    void resize(T const & t)
+    template <class U>
+    void resize(U const & t)
     {
         if(regions_.size() == 0)
         {
@@ -883,19 +887,20 @@ struct AccumulatorChainImpl
     {
         if(current_pass_ == N)
         {
-            next_.pass<N>(t);
+            next_.template pass<N>(t);
         }
         else if(current_pass_ < N)
         {
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
-            next_.pass<N>(t);
+            next_.template pass<N>(t);
         }
         else
         {
-            vigra_precondition(false,
-               std::string("AccumulatorChain::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
+            std::string message("AccumulatorChain::update(): cannot return to pass ");
+            message << N << " after working on pass " << current_pass_ << ".";
+            vigra_precondition(false, message);
         }
     }
     
@@ -904,20 +909,21 @@ struct AccumulatorChainImpl
     {
         if(current_pass_ == N)
         {
-            next_.pass<N>(t, weight);
+            next_.template pass<N>(t, weight);
         }
         else if(current_pass_ < N)
         {
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
-            next_.pass<N>(t, weight);
+            next_.template pass<N>(t, weight);
         }
         else
         {
-            vigra_precondition(false,
-               std::string("AccumulatorChain::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
-        }
+            std::string message("AccumulatorChain::update(): cannot return to pass ");
+            message << N << " after working on pass " << current_pass_ << ".";
+            vigra_precondition(false, message);
+       }
     }
     
     void operator+=(AccumulatorChainImpl const & o)
@@ -1013,6 +1019,8 @@ template <class T, class Selected>
 struct DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {
+    typedef typename AccumulatorChain<T, Selected, true>::InternalBaseType InternalBaseType;
+    
     template <class TAG>
     void activate()
     {
@@ -1236,7 +1244,7 @@ struct CastImpl<Tag, Tag, reference>
     static reference exec(A & a, MultiArrayIndex)
     {
         vigra_precondition(false, 
-            "getAccumulator(): region accumulators can only be queried for AccumulatorChainArray.")
+            "getAccumulator(): region accumulators can only be queried for AccumulatorChainArray.");
         return a;
     }
 };
@@ -1459,23 +1467,23 @@ struct AccumulatorBase
     template <class ActiveFlags>
     static void activateImpl(ActiveFlags & flags)
     {
-        flags.set<index>();
+        flags.template set<index>();
         typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
-        detail::ActivateDependencies<StdDeps>::exec<ThisType>(flags);
+        detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
     }
     
     template <class ActiveFlags, class GlobalFlags>
     static void activateImpl(ActiveFlags & flags, GlobalFlags & gflags)
     {
-        flags.set<index>();
+        flags.template set<index>();
         typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
-        detail::ActivateDependencies<StdDeps>::exec<ThisType>(flags, gflags);
+        detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags, gflags);
     }
     
     template <class ActiveFlags>
     static bool isActiveImpl(ActiveFlags & flags)
     {
-        return flags.test<index>();
+        return flags.template test<index>();
     }
     
     void activate()
@@ -1531,12 +1539,12 @@ struct AccumulatorBase
 	void operator+=(AccumulatorBase const &)
     {}
     
-	template <class T>
-    void update(T const &)
+	template <class U>
+    void update(U const &)
     {}
     
-	template <class T>
-    void update(T const &, double)
+	template <class U>
+    void update(U const &, double)
     {}
     
     template <class TargetTag>
@@ -2138,12 +2146,12 @@ class PowerSum<0>
     
         void update(U const & t)
         {
-            ++value_;
+            ++this->value_;
         }
         
         void update(U const & t, double weight)
         {
-            value_ += weight;
+            this->value_ += weight;
         }
     };
 };
@@ -2163,18 +2171,18 @@ class PowerSum<1>
 
         void update(U const & t)
         {
-            value_ += t;
+            this->value_ += t;
         }
         
         void update(U const & t, double weight)
         {
-            value_ += weight*t;
+            this->value_ += weight*t;
         }
     };
 };
 
 template <unsigned N>
-class PowerSum<N>
+class PowerSum
 {
   public:
     typedef Select<> Dependencies;
@@ -2188,13 +2196,13 @@ class PowerSum<N>
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(t, (int)N);
+            this->value_ += pow(t, (int)N);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(t, (int)N);
+            this->value_ += weight*pow(t, (int)N);
         }
     };
 };
@@ -2214,19 +2222,19 @@ class AbsPowerSum<1>
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += abs(t);
+            this->value_ += abs(t);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*abs(t);
+            this->value_ += weight*abs(t);
         }
     };
 };
 
 template <unsigned N>
-class AbsPowerSum<N>
+class AbsPowerSum
 {
   public:
     typedef Select<> Dependencies;
@@ -2240,13 +2248,13 @@ class AbsPowerSum<N>
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(abs(t), (int)N);
+            this->value_ += pow(abs(t), (int)N);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(abs(t), (int)N);
+            this->value_ += weight*pow(abs(t), (int)N);
         }
     };
 };
@@ -2306,15 +2314,17 @@ class DivideByCount
     struct Impl
     : public CachedResultBase<BASE, typename LookupTag<TargetTag, BASE>::value_type> 
     {
+        typedef typename CachedResultBase<BASE, typename LookupTag<TargetTag, BASE>::value_type>::result_type result_type;
+        
         result_type operator()() const
         {
             if(this->isDirty())
             {
                 using namespace multi_math;
-                value_ = get<TargetTag>(*this) / get<Count>(*this);
+                this->value_ = get<TargetTag>(*this) / get<Count>(*this);
                 this->setClean();
             }
-            return value_;
+            return this->value_;
         }
     };
 };
@@ -2420,7 +2430,7 @@ class Central<PowerSum<2> >
             if(n > 1.0)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - 1.0) * sq(get<Mean>(*this) - t);
+                this->value_ += n / (n - 1.0) * sq(get<Mean>(*this) - t);
             }
         }
         
@@ -2430,7 +2440,7 @@ class Central<PowerSum<2> >
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                value_ += n / (n - weight) * sq(get<Mean>(*this) - t);
+                this->value_ += n / (n - weight) * sq(get<Mean>(*this) - t);
             }
         }
     };
@@ -2447,6 +2457,7 @@ class Central<PowerSum<3> >
     : public SumBaseImpl<BASE>
     {
         typedef typename BASE::input_type U;
+        typedef typename SumBaseImpl<BASE>::value_type value_type;
 
         static const unsigned int workInPass = 2;
         
@@ -2473,13 +2484,13 @@ class Central<PowerSum<3> >
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), 3);
+            this->value_ += pow(get<Centralize>(*this), 3);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), 3);
+            this->value_ += weight*pow(get<Centralize>(*this), 3);
         }
     };
 };
@@ -2495,6 +2506,7 @@ class Central<PowerSum<4> >
     : public SumBaseImpl<BASE>
     {
         typedef typename BASE::input_type U;
+        typedef typename SumBaseImpl<BASE>::value_type value_type;
 
         static const unsigned int workInPass = 2;
         
@@ -2526,13 +2538,13 @@ class Central<PowerSum<4> >
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            value_ += pow(get<Centralize>(*this), 4);
+            this->value_ += pow(get<Centralize>(*this), 4);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            value_ += weight*pow(get<Centralize>(*this), 4);
+            this->value_ += weight*pow(get<Centralize>(*this), 4);
         }
     };
 };
@@ -2743,21 +2755,24 @@ class DivideByCount<FlatScatterMatrix>
     struct Impl
     : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
     {
+        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType> BaseType;      
+        typedef typename BaseType::result_type result_type;
+        
         template <class Shape>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_, Shape2(size,size));
+            detail::reshapeImpl(this->value_, Shape2(size,size));
         }
         
         result_type operator()() const
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(value_, get<FlatScatterMatrix>(*this), get<Count>(*this));
+                detail::flatScatterMatrixToCovariance(this->value_, get<FlatScatterMatrix>(*this), get<Count>(*this));
                 this->setClean();
             }
-            return value_;
+            return this->value_;
         }
     };
 };
@@ -2773,21 +2788,24 @@ class DivideUnbiased<FlatScatterMatrix>
     struct Impl
     : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
     {
+        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType> BaseType;      
+        typedef typename BaseType::result_type result_type;
+        
         template <class Shape>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_, Shape2(size,size));
+            detail::reshapeImpl(this->value_, Shape2(size,size));
         }
         
         result_type operator()() const
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(value_, get<FlatScatterMatrix>(*this), get<Count>(*this) - 1.0);
+                detail::flatScatterMatrixToCovariance(this->value_, get<FlatScatterMatrix>(*this), get<Count>(*this) - 1.0);
                 this->setClean();
             }
-            return value_;
+            return this->value_;
         }
     };
 };
@@ -2897,7 +2915,7 @@ class DivideByCount<ScatterMatrixEigensystem>
         mutable value_type value_;
         
         Impl()
-        : value_(EigenvalueType(), BASE::forwardGet<ScatterMatrixEigensystem>().second)
+        : value_(EigenvalueType(), BASE::template forwardGet<ScatterMatrixEigensystem>().second)
         {}
         
         void operator+=(Impl const &)
@@ -3484,11 +3502,11 @@ class RangeHistogramBase
         if(this->left_outliers > 0.0)
         {
             keypoints.push_back(0.0);
-            cumhist.push_back(left_outliers);
+            cumhist.push_back(this->left_outliers);
         }
         
         int size = (int)this->value_.size();
-        double cumulative = left_outliers;
+        double cumulative = this->left_outliers;
         for(int k=0; k<size; ++k)
         {
             if(this->value_[k] > 0.0)
@@ -3566,11 +3584,11 @@ class IntegerHistogram
         void update(int index)
         {
             if(index < 0)
-                ++left_outliers;
+                ++this->left_outliers;
             else if(index >= (int)this->value_.size())
-                ++right_outliers;
+                ++this->right_outliers;
             else
-                ++value_[index];
+                ++this->value_[index];
         }
         
         void update(int index, double weight)
@@ -3748,6 +3766,9 @@ class StandardQuantiles
     struct Impl
     : public CachedResultBase<BASE, TinyVector<double, 7> >
     {
+        typedef typename CachedResultBase<BASE, TinyVector<double, 7> >::result_type result_type;
+        typedef typename CachedResultBase<BASE, TinyVector<double, 7> >::value_type  value_type;
+        
         static const unsigned int workInPass = LookupTag<HistogramTag, BASE>::type::workInPass;
         
         result_type operator()() const

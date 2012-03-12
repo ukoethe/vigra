@@ -34,7 +34,7 @@ namespace std {
 template <unsigned int N, class T, class Stride>
 ostream & operator<<(ostream & o, vigra::MultiArrayView<N, T, Stride> const & m)
 {
-    for(MultiArrayIndex k=0; k<m.size(); ++k)
+    for(vigra::MultiArrayIndex k=0; k<m.size(); ++k)
         o << m[k] << " ";
     return o;
 }
@@ -1924,9 +1924,9 @@ struct AccumulatorTest
         using namespace vigra::acc1;
         using namespace vigra::acc1::detail;
 
-        typedef StandardizeTag<SOURCE >::type StdSource;
-        typedef TagLongForm<StdSource, MinPriority>::type LongSource;
-        typedef StandardizeTagLongForm<LongSource>::type Dest;
+        typedef typename StandardizeTag<SOURCE >::type StdSource;
+        typedef typename TagLongForm<StdSource, MinPriority>::type LongSource;
+        typedef typename StandardizeTagLongForm<LongSource>::type Dest;
             
         shouldMsg((IsSameType<LongSource, REFERENCE >::value), message);
 //        shouldMsg((IsSameType<LongSource, REFERENCE >::value), typeid(LongSource).name());
@@ -1995,7 +1995,7 @@ struct AccumulatorTest
         using namespace vigra::acc1;
         using namespace vigra::acc1::detail;
 
-        //typedef Coord<Normalize<Central<AbsSum>>> A;
+        //typedef Coord<Normalize<Central<AbsSum> > > A;
 
         //typedef Select<int, double, bool, short>::type L;
 
@@ -2005,9 +2005,9 @@ struct AccumulatorTest
         //std::cerr << typeid(Remove<L, short>::type).name() << "\n";
         //std::cerr << typeid(Remove<L, void>::type).name() << "\n";
 
-        typedef Coord<Normalize<Central<AbsSum>>> A1;
-        typedef Normalize<Central<Coord<AbsSum>>> A2;
-        typedef Central<Normalize<Coord<AbsSum>>> A3;
+        typedef Coord<Normalize<Central<AbsSum> > > A1;
+        typedef Normalize<Central<Coord<AbsSum> > > A2;
+        typedef Central<Normalize<Coord<AbsSum> > > A3;
         typedef ModifierToList<A2>::type B;
         typedef ListToModifier<Sort<ModifierToList<A1>::type>::type>::type C1;
         typedef ListToModifier<Sort<ModifierToList<A2>::type>::type>::type C2;
@@ -2576,10 +2576,10 @@ struct AccumulatorTest
 #if 1
             static const int SIZE = 30, HSIZE = 10;
 
-            typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE>>, StandardQuantiles<AutoRangeHistogram<HSIZE>>,
-                                                 StandardQuantiles<IntegerHistogram<HSIZE>>, StandardQuantiles<IntegerHistogram<0>>,
-                                                 DivideByCount<UserRangeHistogram<HSIZE>>, StandardQuantiles<UserRangeHistogram<HSIZE+2>>,
-                                                 StandardQuantiles<UserRangeHistogram<3>>, StandardQuantiles<IntegerHistogram<HSIZE+2>>
+            typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE> >, StandardQuantiles<AutoRangeHistogram<HSIZE> >,
+                                                 StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >,
+                                                 DivideByCount<UserRangeHistogram<HSIZE> >, StandardQuantiles<UserRangeHistogram<HSIZE+2> >,
+                                                 StandardQuantiles<UserRangeHistogram<3> >, StandardQuantiles<IntegerHistogram<HSIZE+2> >
                                     > > A;
             A a;
 
@@ -2587,15 +2587,15 @@ struct AccumulatorTest
             // the same sorted:
             // int data[SIZE] = {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9};
 
-            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-0.5, 9.5);
-            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-1.5, 10.5);
-            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-20.0, 30.0);  // all data in one bin
-            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
+            getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-0.5, 9.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2> >(a).setMinMax(-1.5, 10.5);
+            getAccumulator<UserRangeHistogram<3> >(a).setMinMax(-20.0, 30.0);  // all data in one bin
+            getAccumulator<IntegerHistogram<0> >(a).setBinCount(HSIZE);
 
-            shouldEqual(HSIZE, get<IntegerHistogram<HSIZE>>(a).size());
-            shouldEqual(HSIZE, get<UserRangeHistogram<HSIZE>>(a).size());
-            shouldEqual(HSIZE, get<AutoRangeHistogram<HSIZE>>(a).size());
-            shouldEqual(HSIZE, get<IntegerHistogram<0>>(a).size());
+            shouldEqual(HSIZE, get<IntegerHistogram<HSIZE> >(a).size());
+            shouldEqual(HSIZE, get<UserRangeHistogram<HSIZE> >(a).size());
+            shouldEqual(HSIZE, get<AutoRangeHistogram<HSIZE> >(a).size());
+            shouldEqual(HSIZE, get<IntegerHistogram<0> >(a).size());
 
             for(int k=0; k<SIZE; ++k)
                 a(data[k]);
@@ -2605,39 +2605,39 @@ struct AccumulatorTest
 
             double h[HSIZE] = { 5.0, 0.0, 6.0, 3.0, 3.0, 1.0, 2.0, 2.0, 4.0, 4.0 };
 
-            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE>>(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE>>(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE>>(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<HSIZE> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0> >(a).begin());
 
             double density[HSIZE] = { 5.0/30.0, 0.0, 6.0/30.0, 3.0/30.0, 3.0/30.0, 1.0/30.0, 2.0/30.0, 2.0/30.0, 4.0/30.0, 4.0/30.0 };
-            shouldEqualSequence(density, density+HSIZE, get<DivideByCount<UserRangeHistogram<HSIZE>>>(a).begin());
+            shouldEqualSequence(density, density+HSIZE, get<DivideByCount<UserRangeHistogram<HSIZE> > >(a).begin());
 
-            typedef LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE>>, A>::value_type QuantileVector;
+            typedef LookupTag<StandardQuantiles<UserRangeHistogram<HSIZE> >, A>::value_type QuantileVector;
             static const int QSIZE = QuantileVector::static_size;
             shouldEqual(QSIZE, 7);
 
             double quser[QSIZE] = { 0.0, 0.3, 1.9166666666666666, 3.833333333333333, 7.625, 8.625, 9.0 };
-            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
-            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE+2>>>(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE> > >(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, get<StandardQuantiles<UserRangeHistogram<HSIZE+2> > >(a).begin(), 1e-15);
 
             double q_onebin[QSIZE] = { 0.0, 0.9, 2.25, 4.5, 6.75, 8.1, 9.0 };
-            shouldEqualSequenceTolerance(q_onebin, q_onebin+QSIZE, get<StandardQuantiles<UserRangeHistogram<3>>>(a).begin(), 1e-14);
+            shouldEqualSequenceTolerance(q_onebin, q_onebin+QSIZE, get<StandardQuantiles<UserRangeHistogram<3> > >(a).begin(), 1e-14);
             
             double qauto[QSIZE] = { 0.0, 0.54, 2.175, 3.9, 7.3125, 8.325, 9.0 };
-            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a).begin(), 1e-15);
+            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, get<StandardQuantiles<AutoRangeHistogram<HSIZE> > >(a).begin(), 1e-15);
             
             double qint[QSIZE] = { 0.0, 0.0, 2.0, 4.0, 7.75, 9.0, 9.0 };
-            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<HSIZE>>>(a).begin());
-            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<0>>>(a).begin());
+            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<HSIZE> > >(a).begin());
+            shouldEqualSequence(qint, qint+QSIZE, get<StandardQuantiles<IntegerHistogram<0> > >(a).begin());
 
                 // repeat test with negated data => quantiles should be negated, but otherwise the same as before
             a.reset();
 
-            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-9.5, 0.5);
-            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-10.5, 1.5);
-            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-30.0, 20.0);
-            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE);
+            getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-9.5, 0.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2> >(a).setMinMax(-10.5, 1.5);
+            getAccumulator<UserRangeHistogram<3> >(a).setMinMax(-30.0, 20.0);
+            getAccumulator<IntegerHistogram<0> >(a).setBinCount(HSIZE);
 
             for(int k=0; k<SIZE; ++k)
                 a(-data[k]);
@@ -2646,26 +2646,26 @@ struct AccumulatorTest
                 a.updatePass2(-data[k]);
 
             std::reverse(h, h+HSIZE);
-            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE>>(a).begin());
-            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE>>(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<HSIZE> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<HSIZE> >(a).begin());
 
             double hneg[HSIZE] = { 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<HSIZE>>(a).begin());
-            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<0>>(a).begin());
+            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<HSIZE> >(a).begin());
+            shouldEqualSequence(hneg, hneg+HSIZE, get<IntegerHistogram<0> >(a).begin());
 
             std::reverse(quser, quser+QSIZE);
-            shouldEqualSequenceTolerance(quser, quser+QSIZE, (-get<StandardQuantiles<UserRangeHistogram<HSIZE>>>(a)).begin(), 1e-14);
+            shouldEqualSequenceTolerance(quser, quser+QSIZE, (-get<StandardQuantiles<UserRangeHistogram<HSIZE> > >(a)).begin(), 1e-14);
             
             std::reverse(qauto, qauto+QSIZE);
-            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, (-get<StandardQuantiles<AutoRangeHistogram<HSIZE>>>(a)).begin(), 1e-14);
+            shouldEqualSequenceTolerance(qauto, qauto+QSIZE, (-get<StandardQuantiles<AutoRangeHistogram<HSIZE> > >(a)).begin(), 1e-14);
 
                 // repeat test with data shifted by one (test behavior of IntegerHistogram with empty bins at the ends)
             a.reset();
 
-            getAccumulator<UserRangeHistogram<HSIZE>>(a).setMinMax(-0.5, 9.5);
-            getAccumulator<UserRangeHistogram<HSIZE+2>>(a).setMinMax(-1.5, 10.5);
-            getAccumulator<UserRangeHistogram<3>>(a).setMinMax(-20.0, 30.0);  // all data in one bin
-            getAccumulator<IntegerHistogram<0>>(a).setBinCount(HSIZE+2);
+            getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-0.5, 9.5);
+            getAccumulator<UserRangeHistogram<HSIZE+2> >(a).setMinMax(-1.5, 10.5);
+            getAccumulator<UserRangeHistogram<3> >(a).setMinMax(-20.0, 30.0);  // all data in one bin
+            getAccumulator<IntegerHistogram<0> >(a).setBinCount(HSIZE+2);
 
             for(int k=0; k<SIZE; ++k)
                 a(1+data[k]);
@@ -2673,8 +2673,8 @@ struct AccumulatorTest
             for(int k=0; k<SIZE; ++k)
                 a.updatePass2(1+data[k]);
 
-            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<HSIZE+2>>>(a)-QuantileVector(1.0)).begin());
-            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<0>>>(a)-QuantileVector(1.0)).begin());
+            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<HSIZE+2> > >(a)-QuantileVector(1.0)).begin());
+            shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<0> > >(a)-QuantileVector(1.0)).begin());
 #endif
         }
     }
@@ -2688,12 +2688,12 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
             typedef Shape2 V;
 
-            typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum>>, LabelArg<1>, DataArg<1> > Selected;
+            typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
             should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                         TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
-            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void>>>>::value));
+            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
             typedef LookupTag<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
@@ -2718,8 +2718,8 @@ struct AccumulatorTest
 
             LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
             LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
-            should((&gc == &getAccumulator<Global<Count>>(rc)));
-            should((&gc == &getAccumulator<Global<Count>>(getAccumulator<Count>(a, 1))));
+            should((&gc == &getAccumulator<Global<Count> >(rc)));
+            should((&gc == &getAccumulator<Global<Count> >(getAccumulator<Count>(a, 1))));
 
             for(; i < end; ++i)
                 a(*i);
@@ -2728,9 +2728,9 @@ struct AccumulatorTest
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
 
-            shouldEqual(V(2,2), get<Coord<Sum>>(a, 0));
-            shouldEqual(V(4,1), get<Coord<Sum>>(a, 1));
-            shouldEqual(V(0,0), get<Global<Coord<Minimum>> >(a));
+            shouldEqual(V(2,2), get<Coord<Sum> >(a, 0));
+            shouldEqual(V(4,1), get<Coord<Sum> >(a, 1));
+            shouldEqual(V(0,0), get<Global<Coord<Minimum> > >(a));
 #endif
         }
         {
@@ -2739,7 +2739,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
 
             typedef AccumulatorChainArray<Handle, Select<Count, AutoRangeHistogram<3>, GlobalRangeHistogram<3>,
-                                                         Global<Count>, Global<AutoRangeHistogram<3>>, DataArg<1>, LabelArg<2>
+                                                         Global<Count>, Global<AutoRangeHistogram<3> >, DataArg<1>, LabelArg<2>
                                           > > A;
 
             double d[] = { 1.0, 3.0, 3.0,
@@ -2782,11 +2782,11 @@ struct AccumulatorTest
 
             typedef TinyVector<double, 3> V;
 
-            shouldEqual(V(2,1,1), get<AutoRangeHistogram<3>>(a, 0));
-            shouldEqual(V(1,0,1), get<AutoRangeHistogram<3>>(a, 1));
-            shouldEqual(V(3,1,0), get<GlobalRangeHistogram<3>>(a, 0));
-            shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3>>(a, 1));
-            shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3>>>(a));
+            shouldEqual(V(2,1,1), get<AutoRangeHistogram<3> >(a, 0));
+            shouldEqual(V(1,0,1), get<AutoRangeHistogram<3> >(a, 1));
+            shouldEqual(V(3,1,0), get<GlobalRangeHistogram<3> >(a, 0));
+            shouldEqual(V(0,1,1), get<GlobalRangeHistogram<3> >(a, 1));
+            shouldEqual(V(3,2,1), get<Global<AutoRangeHistogram<3> > >(a));
 #endif
         }
         {
@@ -2795,7 +2795,7 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
 
             typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
-                                                                Global<Count>, Global<Coord<Mean>>, 
+                                                                Global<Count>, Global<Coord<Mean> >, 
                                                                 LabelArg<1>, DataArg<1>
                                                  > > A;
 
@@ -2804,39 +2804,39 @@ struct AccumulatorTest
             shouldEqual(0, a.passesRequired());
 
             should(!isActive<Count>(a));
-            should(!isActive<Coord<Sum>>(a));
-            should(!isActive<GlobalRangeHistogram<3>>(a));
+            should(!isActive<Coord<Sum> >(a));
+            should(!isActive<GlobalRangeHistogram<3> >(a));
 
-            should(!isActive<Global<Count>>(a));
-            should(!isActive<Global<Minimum>>(a));
-            should(!isActive<Global<Coord<Sum>>>(a));
+            should(!isActive<Global<Count> >(a));
+            should(!isActive<Global<Minimum> >(a));
+            should(!isActive<Global<Coord<Sum> > >(a));
 
             activate<Count>(a);
             should(isActive<Count>(a));
-            should(!isActive<Global<Count>>(a));
+            should(!isActive<Global<Count> >(a));
 
-            activate<Global<Count>>(a);
+            activate<Global<Count> >(a);
             should(isActive<Count>(a));
-            should(isActive<Global<Count>>(a));
+            should(isActive<Global<Count> >(a));
 
-            activate<Coord<Mean>>(a);
-            should(isActive<Coord<Mean>>(a));
-            should(isActive<Coord<Sum>>(a));
-            should(!isActive<Global<Coord<Sum>>>(a));
-            should(!isActive<Global<Coord<Mean>>>(a));
+            activate<Coord<Mean> >(a);
+            should(isActive<Coord<Mean> >(a));
+            should(isActive<Coord<Sum> >(a));
+            should(!isActive<Global<Coord<Sum> > >(a));
+            should(!isActive<Global<Coord<Mean> > >(a));
 
-            activate<Global<Coord<Mean>>>(a);
-            should(isActive<Global<Coord<Sum>>>(a));
-            should(isActive<Global<Coord<Mean>>>(a));
-            should(!isActive<GlobalRangeHistogram<3>>(a));
-            should(!isActive<Global<Minimum>>(a));
+            activate<Global<Coord<Mean> > >(a);
+            should(isActive<Global<Coord<Sum> > >(a));
+            should(isActive<Global<Coord<Mean> > >(a));
+            should(!isActive<GlobalRangeHistogram<3> >(a));
+            should(!isActive<Global<Minimum> >(a));
 
             shouldEqual(1, a.passesRequired());
 
-            activate<GlobalRangeHistogram<3>>(a);
+            activate<GlobalRangeHistogram<3> >(a);
 
-            should(isActive<GlobalRangeHistogram<3>>(a));
-            should(isActive<Global<Minimum>>(a));
+            should(isActive<GlobalRangeHistogram<3> >(a));
+            should(isActive<Global<Minimum> >(a));
 
             shouldEqual(2, a.passesRequired());
 
@@ -2858,34 +2858,34 @@ struct AccumulatorTest
 
             typedef TinyVector<double, 2> V;
 
-            shouldEqual(V(0.5, 0.5), get<Coord<Mean>>(a, 0));
-            shouldEqual(V(2, 0.5), get<Coord<Mean>>(a, 1));
-            shouldEqual(V(1, 0.5), get<Global<Coord<Mean>>>(a));
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean> >(a, 0));
+            shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 1));
+            shouldEqual(V(1, 0.5), get<Global<Coord<Mean> > >(a));
 
             typedef TinyVector<double, 3> W;
-            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(a,0));
-            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(a,1));
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(a,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(a,1));
 
             A b;
             b.activateAll();
 
             collectStatistics(start, end, b);
             
-            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(b,0));
-            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(b,1));
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));
 
             a += b;
             
             shouldEqual(8, get<Count>(a, 0));
             shouldEqual(4, get<Count>(a, 1));
             shouldEqual(12, get<Global<Count> >(a));
-            shouldEqual(V(0.5, 0.5), get<Coord<Mean>>(a, 0));
-            shouldEqual(V(2, 0.5), get<Coord<Mean>>(a, 1));
-            shouldEqual(V(1, 0.5), get<Global<Coord<Mean>>>(a));
-            shouldEqual(W(8, 0, 0), get<GlobalRangeHistogram<3>>(a,0));
-            shouldEqual(W(0, 0, 4), get<GlobalRangeHistogram<3>>(a,1));
-            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3>>(b,0));
-            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3>>(b,1));
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean> >(a, 0));
+            shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 1));
+            shouldEqual(V(1, 0.5), get<Global<Coord<Mean> > >(a));
+            shouldEqual(W(8, 0, 0), get<GlobalRangeHistogram<3> >(a,0));
+            shouldEqual(W(0, 0, 4), get<GlobalRangeHistogram<3> >(a,1));
+            shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
+            shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));
 
 #endif
         }
