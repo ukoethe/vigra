@@ -115,9 +115,13 @@ struct AccumulatorBase;
 template <class Tag, class A, class TargetTag=typename A::Tag>
 struct LookupTag;
 
+#ifndef _MSC_VER
+
 template <class TAG, class A>
 typename LookupTag<TAG, A>::reference
 getAccumulator(A & a);
+
+#endif
 
 namespace detail {
 
