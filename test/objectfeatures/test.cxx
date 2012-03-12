@@ -2231,6 +2231,7 @@ struct AccumulatorTest
                 0.5,   1.25, -0.375,
                -0.25, -0.375, 1.1875 };
             Var covariance(3,3, covarianceData);
+            shouldEqual(get<Covariance>(a).shape(), Shape2(3,3));
             shouldEqual(get<Covariance>(a), covariance);
             std::pair<W const &, Var const &> eigen = get<CovarianceEigensystem>(a);
             W ew(1.8181423035878563, 0.87335382939336145, 0.24600386701878226); 
@@ -2294,6 +2295,8 @@ struct AccumulatorTest
 
             W stddev = sqrt(variance);
             shouldEqualTolerance(stddev, get<StdDev>(a), W(1e-15));
+
+            a.reset(1);
 
             a(V(s, T(0, 2, 4).begin()));
             shouldEqual(get<Minimum>(a), V(s, T(0,1,1).begin()));

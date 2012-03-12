@@ -82,55 +82,13 @@ struct Select
 {};
 
 struct AccumulatorBegin;
+struct AccumulatorEnd;
 struct DataArgTag;
 struct WeightArgTag;
 struct LabelArgTag;
 struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
-
-struct AccumulatorEnd 
-{
-    typedef AccumulatorEnd Tag;
-    typedef void value_type;
-    typedef bool result_type;
-    typedef bool ActiveFlags;
-    
-    ActiveFlags active_accumulators_;
-    
-    static const unsigned int workInPass = 0; 
-    static const int index = -1;
-    
-    bool operator()() const { return false; }
-    bool get() const { return false; }
-    
-    template <unsigned, class T>
-    void pass(T const &) {}
-    template <unsigned, class T>
-    void pass(T const &, double) {}
-    
-    template <class T>
-    void merge(T const &) {}
-    
-    template <class T>
-    void resize(T const &) {}
-    
-    void reset() {}
-    
-    void activate() {}
-    bool isActive() const { return false; }
-    
-    static unsigned int passesRequired()
-    {
-        return 0;
-    }
-    
-    template <class ActiveFlags>
-    static unsigned int passesRequired(ActiveFlags const &)
-    {
-        return 0;
-    }
-};
 
 template <int INDEX>
 class LabelArg
@@ -293,6 +251,49 @@ struct SeparateGlobalAndRegionTags<void>
 /*                                                                          */
 /****************************************************************************/
 
+struct AccumulatorEndImpl 
+{
+    typedef AccumulatorEnd Tag;
+    typedef void value_type;
+    typedef bool result_type;
+    typedef bool ActiveFlags;
+    
+    ActiveFlags active_accumulators_;
+    
+    static const unsigned int workInPass = 0; 
+    static const int index = -1;
+    
+    bool operator()() const { return false; }
+    bool get() const { return false; }
+    
+    template <unsigned, class T>
+    void pass(T const &) {}
+    template <unsigned, class T>
+    void pass(T const &, double) {}
+    
+    template <class T>
+    void merge(T const &) {}
+    
+    template <class T>
+    void resize(T const &) {}
+    
+    void reset() {}
+    
+    void activate() {}
+    bool isActive() const { return false; }
+    
+    static unsigned int passesRequired()
+    {
+        return 0;
+    }
+    
+    template <class ActiveFlags>
+    static unsigned int passesRequired(ActiveFlags const &)
+    {
+        return 0;
+    }
+};
+
 template <bool dynamic, unsigned LEVEL, 
           class GlobalAccumulator=Error__Global_statistics_are_only_defined_for_AccumulatorChainArray>
 struct AccumulatorFlags
@@ -310,9 +311,9 @@ struct AccumulatorFlags
 
 template <unsigned LEVEL, class GlobalAccumulator>
 struct AccumulatorFlags<false, LEVEL, GlobalAccumulator>
-: public AccumulatorEnd
+: public AccumulatorEndImpl
 {
-    typedef AccumulatorEnd InternalBaseType;
+    typedef AccumulatorEndImpl InternalBaseType;
     typedef GlobalAccumulator GlobalAccumulatorType;
     
     static const unsigned level = LEVEL;
@@ -524,31 +525,6 @@ void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T()
     Matrix<T, Alloc>(s, initial).swap(a);
 }
 
-    // check if the accumulator chain A contains result_types that require runtime reshape
-template <class A, class ResultType = typename A::value_type>
-struct NeedsReshape
-{
-    typedef typename NeedsReshape<typename A::InternalBaseType>::type type;
-};
-
-template <class A, unsigned int N, class T, class Alloc>
-struct NeedsReshape<A, MultiArray<N, T, Alloc> >
-{
-    typedef VigraTrueType type;
-};
-
-template <class A, class T>
-struct NeedsReshape<A, Matrix<T> >
-{
-    typedef VigraTrueType type;
-};
-
-template <>
-struct NeedsReshape<AccumulatorEnd, AccumulatorEnd::value_type>
-{
-    typedef VigraFalseType type;
-};
-
 template <unsigned int N, class T, class Stride>
 inline typename MultiArrayShape<N>::type
 shapeOf(MultiArrayView<N, T, Stride> const & a)
@@ -561,6 +537,13 @@ inline Shape1
 shapeOf(TinyVector<T, N> const &)
 {
     return Shape1(N);
+}
+
+template <class T, class NEXT>
+inline CoupledHandle<T, NEXT> const &
+shapeOf(CoupledHandle<T, NEXT> const & t)
+{
+    return t;
 }
 
 #define VIGRA_SHAPE_OF(type) \
@@ -585,87 +568,6 @@ VIGRA_SHAPE_OF(double)
 VIGRA_SHAPE_OF(long double)
 
 #undef VIGRA_SHAPE_OF
-
-// FIXME: replace this with an init function that is called at the beginning of each pass?
-
-    // This functor is inserted on top of an accumulator chain to call reshape() 
-    // when the first data item arrives. This is necessary if the shape of the result 
-    // depends on the shape of the input and cannot be determined at compile time. 
-    // The above NeedsReshape traits specify the types where this applies. If the chain
-    // doesn't contain such types, ReshapeImpl will expand into a do-nothing version.
-template <class NeedsReshape>
-struct ReshapeImpl
-{
-    bool done_;
-    
-    ReshapeImpl()
-    : done_(false)
-    {}
-    
-    void reset()
-    {
-        done_ = false;
-    }
-    
-    template <class A, class T>
-    void operator()(A & a, T const & t)
-    {
-        if(!done_)
-        {
-            a.resize(shapeOf(t));
-            done_ = true;
-        }
-    }
-    
-    template <class A, class T>
-    void operator()(A & a, T const & t, MetaInt<1>)
-    {
-        if(!done_)
-        {
-            a.resize(shapeOf(t));
-            done_ = true;
-        }
-    }
-    
-    template <class A, class T, class NEXT>
-    void operator()(A & a, CoupledHandle<T, NEXT> const & t)
-    {
-        if(!done_)
-        {
-            a.resize(t);
-            done_ = true;
-        }
-    }
-    
-    template <class A, class T, class NEXT>
-    void operator()(A & a, CoupledHandle<T, NEXT> const & t, MetaInt<1>)
-    {
-        if(!done_)
-        {
-            a.resize(t);
-            done_ = true;
-        }
-    }
-    
-    template <class A, class T, unsigned N>
-    void operator()(A &, T const &, MetaInt<N>)
-    {}
-};
-
-template <>
-struct ReshapeImpl<VigraFalseType>
-{
-    void reset()
-    {}
-
-    template <class A, class T>
-    void operator()(A &, T const &)
-    {}
-
-    template <class A, class T, unsigned N>
-    void operator()(A &, T const &, MetaInt<N>)
-    {}
-};
 
 } // namespace detail
 
@@ -928,33 +830,68 @@ struct AccumulatorChain
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
-    detail::ReshapeImpl<typename detail::NeedsReshape<InternalBaseType>::type> reshape_;
+    unsigned int current_pass_;
     
-    void reset()
+    AccumulatorChain()
+    : current_pass_(0)
+    {}
+    
+    void reset(unsigned int reset_to_pass = 0)
     {
-        reshape_.reset();
-        next_.reset();
+        current_pass_ = reset_to_pass;
+        if(reset_to_pass == 0)
+            next_.reset();
     }
     
-    template <class Shape>
-    void reshape(Shape const & s)
+    template <class U, int N>
+    void reshape(TinyVector<U, N> const & s)
     {
-        reshape_.reset();
-        reshape_(next_, s);
+        vigra_precondition(current_pass_ == 0,
+             "AccumulatorChain::reshape(): cannot reshape after seeing data. Call AccumulatorChain::reset() first.");
+        next_.resize(s);
+        current_pass_ = 1;
     }
 
     template <unsigned N>
     void update(T const & t)
     {
-        reshape_(next_, t, MetaInt<N>());
-        next_.pass<N>(t);
+        if(current_pass_ == N)
+        {
+            next_.pass<N>(t);
+        }
+        else if(current_pass_ < N)
+        {
+            current_pass_ = N;
+            if(N == 1)
+                next_.resize(detail::shapeOf(t));
+            next_.pass<N>(t);
+        }
+        else
+        {
+            vigra_precondition(false,
+               std::string("AccumulatorChain::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
+        }
     }
     
     template <unsigned N>
     void update(T const & t, double weight)
     {
-        reshape_(next_, t, MetaInt<N>());
-        next_.pass<N>(t, weight);
+        if(current_pass_ == N)
+        {
+            next_.pass<N>(t, weight);
+        }
+        else if(current_pass_ < N)
+        {
+            current_pass_ = N;
+            if(N == 1)
+                next_.resize(detail::shapeOf(t));
+            next_.pass<N>(t, weight);
+        }
+        else
+        {
+            vigra_precondition(false,
+               std::string("AccumulatorChain::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
+        }
     }
     
     void operator+=(AccumulatorChain const & o)
@@ -1086,7 +1023,11 @@ struct AccumulatorChainArray
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
-    detail::ReshapeImpl<VigraTrueType> reshape_;
+    unsigned int current_pass_;
+    
+    AccumulatorChainArray()
+    : current_pass_(0)
+    {}
     
     void setMaxRegionLabel(unsigned label)
     {
@@ -1098,19 +1039,67 @@ struct AccumulatorChainArray
         return next_.regions_.size();
     }
     
+    void reset(unsigned int reset_to_pass = 0)
+    {
+        current_pass_ = reset_to_pass;
+        if(reset_to_pass == 0)
+            next_.reset();
+    }
+    
     template <unsigned N>
     void update(T const & t)
     {
-        reshape_(next_, t, MetaInt<N>());
-        next_.pass<N>(t);
+        if(current_pass_ == N)
+        {
+            next_.pass<N>(t);
+        }
+        else if(current_pass_ < N)
+        {
+            current_pass_ = N;
+            if(N == 1)
+                next_.resize(detail::shapeOf(t));
+            next_.pass<N>(t);
+        }
+        else
+        {
+            vigra_precondition(false,
+               std::string("AccumulatorChainArray::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
+        }
     }
     
     template <unsigned N>
     void update(T const & t, double weight)
     {
-        reshape_(next_, t, MetaInt<N>());
-        next_.pass<N>(t, weight);
+        if(current_pass_ == N)
+        {
+            next_.pass<N>(t, weight);
+        }
+        else if(current_pass_ < N)
+        {
+            current_pass_ = N;
+            if(N == 1)
+                next_.resize(detail::shapeOf(t));
+            next_.pass<N>(t, weight);
+        }
+        else
+        {
+            vigra_precondition(false,
+               std::string("AccumulatorChainArray::update(): cannot return to pass ") << N << " after working on pass " << current_pass_ << ".");
+        }
     }
+    // template <unsigned N>
+    // void update(T const & t)
+    // {
+        // reshape_(next_, t, MetaInt<N>());
+        // next_.pass<N>(t);
+    // }
+    
+    // template <unsigned N>
+    // void update(T const & t, double weight)
+    // {
+        // reshape_(next_, t, MetaInt<N>());
+        // next_.pass<N>(t, weight);
+    // }
     
 	void operator()(T const & t)
     {
@@ -1137,12 +1126,6 @@ struct AccumulatorChainArray
         return next_.passesRequired();
     }
 
-    void reset()
-    {
-        reshape_.reset();
-        next_.reset();
-    }
-    
     void operator+=(AccumulatorChainArray const & o)
     {
         merge(o);
