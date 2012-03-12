@@ -105,18 +105,18 @@ public:
       strides_(strides)
     {}
 
-    template<unsigned int DIMENSION>
+    template<int DIMENSION>
     inline void increment() 
     {
         pointer_ += strides_[DIMENSION];
-        base_type::increment<DIMENSION>();
+        base_type::template increment<DIMENSION>();
     }
     
     template<int DIMENSION>
     inline void decrement() 
     {
         pointer_ -= strides_[DIMENSION];
-        base_type::decrement<DIMENSION>();
+        base_type::template decrement<DIMENSION>();
     }
     
     // TODO: test if making the above a default case of the this hurts performance
@@ -124,14 +124,14 @@ public:
     inline void increment(MultiArrayIndex offset) 
     {
         pointer_ += offset*strides_[DIMENSION];
-        base_type::increment<DIMENSION>(offset);
+        base_type::template increment<DIMENSION>(offset);
     }
     
     template<int DIMENSION>
     inline void decrement(MultiArrayIndex offset) 
     {
         pointer_ -= offset*strides_[DIMENSION];
-        base_type::decrement<DIMENSION>(offset);
+        base_type::template decrement<DIMENSION>(offset);
     }
     
     void restrictToSubarray(shape_type const & start, shape_type const & end)
@@ -181,7 +181,7 @@ public:
 };
 
 
-template <unsigned int N>
+template <int N>
 class CoupledHandle<TinyVector<MultiArrayIndex, N>, void>
 {
 public:
@@ -208,7 +208,7 @@ public:
       scanOrderIndex_()
     {}
 
-    template<unsigned int DIMENSION>
+    template<int DIMENSION>
     inline void increment() 
     {
         ++point_[DIMENSION];
@@ -376,14 +376,14 @@ Namespace: vigra
 
 template <unsigned int N,
           class HANDLES,
-          unsigned int DIMENSION = N-1>
+          int DIMENSION = N-1>
 class CoupledScanOrderIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance
 : protected CoupledScanOrderIterator<N, HANDLES, DIMENSION-1>
 #endif
 {
     typedef CoupledScanOrderIterator<N, HANDLES, DIMENSION-1> base_type;
-    enum { dimension = DIMENSION };
+    static const int dimension = DIMENSION;
 
   public:
 
@@ -566,7 +566,7 @@ class CoupledScanOrderIterator
 template <unsigned int N, class HANDLES>
 class CoupledScanOrderIterator<N, HANDLES, 0>
 {
-    enum { dimension = 0 };
+    static const int dimension = 0;
 
   public:
 
@@ -849,7 +849,7 @@ struct CoupledIteratorType
     typedef CoupledScanOrderIterator<N, HandleType> type;
 };
 
-template <unsigned int N>
+template <int N>
 typename CoupledIteratorType<N>::type
 createCoupledIterator(TinyVector<MultiArrayIndex, N> const & shape)
 {
