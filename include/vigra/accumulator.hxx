@@ -96,7 +96,7 @@ class LabelArg
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -112,6 +112,9 @@ class LabelArg
 template <class T, class TAG, class NEXT=AccumulatorEnd>
 struct AccumulatorBase;
 
+template <class Tag, class A, class TargetTag=typename A::Tag>
+struct LookupTag;
+
 namespace detail {
 
 /****************************************************************************/
@@ -119,13 +122,6 @@ namespace detail {
 /*                   internal tag handling meta-functions                   */
 /*                                                                          */
 /****************************************************************************/
-
-template <class T>
-struct HasDependencies : public sfinae_test<T, HasDependencies>
-{
-    template <class U>
-    HasDependencies(U*, typename U::Dependencies* = 0);
-};
 
     // Insert the dependencies of the selected functors into the TypeList and sort
     // the list such that dependencies come after the functors using them. Make sure 
@@ -251,11 +247,17 @@ struct SeparateGlobalAndRegionTags<void>
 /*                                                                          */
 /****************************************************************************/
 
-template <unsigned LEVEL, 
-          class GlobalAccumulator=Error__Global_statistics_are_only_defined_for_AccumulatorChainArray>
+    // AccumulatorEndImpl has the following functionalities:
+    //  * marks end of accumulator chain by the AccumulatorEnd tag
+    //  * provides empty implementation of standard accumulator functions
+    //  * provides active_accumulators_ flags for run-time activation of dynamic accumulators
+    //  * provides is_dirty_ flags for caching accumulators
+    //  * hold the GlobalAccumulatorHandle for global accumulator lookup from region accumulators
+template <unsigned LEVEL, class GlobalAccumulatorHandle>
 struct AccumulatorEndImpl
 {
-    typedef GlobalAccumulator  GlobalAccumulatorType;
+    typedef typename GlobalAccumulatorHandle::type  GlobalAccumulatorType;
+    
     typedef AccumulatorEnd     Tag;
     typedef void               value_type;
     typedef bool               result_type;
@@ -267,12 +269,8 @@ struct AccumulatorEndImpl
     
     AccumulatorFlags            active_accumulators_;
     mutable AccumulatorFlags    is_dirty_;
-    GlobalAccumulator const *   globalAccumulator_;
+    GlobalAccumulatorHandle     globalAccumulator_;
 
-    AccumulatorEndImpl()
-    : globalAccumulator_(0)
-    {}
-    
     bool operator()() const { return false; }
     bool get() const { return false; }
     
@@ -316,9 +314,10 @@ struct AccumulatorEndImpl
         is_dirty_.clear();
     }
         
+    template <class GlobalAccumulator>
     void setGlobalAccumulator(GlobalAccumulator const * a)
     {
-        globalAccumulator_ = a;
+        globalAccumulator_.pointer_ = a;
     }
     
     template <int which>
@@ -340,6 +339,7 @@ struct AccumulatorEndImpl
     }
 };
 
+    // DecoratorImpl implement the functionality of Decorator below
 template <class A, unsigned CurrentPass, bool Dynamic, unsigned WorkPass=A::workInPass>
 struct DecoratorImpl
 {
@@ -436,7 +436,11 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
     }
 };
 
-template <class T, class A, bool Dynamic, unsigned level>
+    // decorator has the following functionalities
+    //  * ensure that only active accumulators are called in a dynamic accumulator chain
+    //  * ensure that each accumulator is only called in its desired pass as defined in A::workInPass
+    //  * determine how many passes through the data are required
+template <class A, bool Dynamic, unsigned level>
 struct Decorator
 : public A
 {
@@ -462,14 +466,14 @@ struct Decorator
         return DecoratorImpl<A, A::workInPass, Dynamic>::get(*this);
     }
     
-    template <unsigned N>
+    template <unsigned N, class T>
     void pass(T const & t)
     {
         this->next_.pass<N>(t);
         DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t);
     }
     
-    template <unsigned N>
+    template <unsigned N, class T>
     void pass(T const & t, double weight)
     {
         this->next_.pass<N>(t, weight);
@@ -516,6 +520,7 @@ void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T()
     Matrix<T, Alloc>(s, initial).swap(a);
 }
 
+    // generic functions to create suitable shape objects from various input data types 
 template <unsigned int N, class T, class Stride>
 inline typename MultiArrayShape<N>::type
 shapeOf(MultiArrayView<N, T, Stride> const & a)
@@ -560,15 +565,13 @@ VIGRA_SHAPE_OF(long double)
 
 #undef VIGRA_SHAPE_OF
 
-} // namespace detail
-
-// FIXME: this is not the best place for this declaration
-
-template <class Tag, class A, class TargetTag=typename A::Tag>
-struct LookupTag;
-
-namespace detail {
-
+    // LabelDispatch is only used in AccumulatorChainArrays and has the following functionalities:
+    //  * hold an accumulator chain for global statistics
+    //  * hold an array of accumulator chains (one per region) for region statistics
+    //  * forward data to the appropriate chains
+    //  * allocate the region array with appropriate size
+    //  * store and forward activation requests
+    //  * compute required number of passes as maximum from global and region accumulators
 template <class T, class GlobalAccumulators, class RegionAccumulators>
 struct LabelDispatch
 {
@@ -763,44 +766,56 @@ struct LabelDispatch
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
     // if dynamic=false, a plain accumulator will be created
-template <class T, class Accumulators, bool dynamic=false, unsigned level = 0, class GlobalAccumulator=void>
+template <class T, class Accumulators, class GlobalAccumulator, bool dynamic=false, unsigned level = 0>
 struct Compose
 {
     typedef typename Accumulators::Head Tag; 
-    typedef typename Compose<T, typename Accumulators::Tail, dynamic, level+1, GlobalAccumulator>::type BaseType;
-    typedef Decorator<T, typename Tag::template Impl<T, AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
+    typedef typename Compose<T, typename Accumulators::Tail, GlobalAccumulator, dynamic, level+1>::type BaseType;
+    typedef Decorator<typename Tag::template Impl<AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T, bool dynamic, unsigned level, class GlobalAccumulator>
-struct Compose<T, void, dynamic, level, GlobalAccumulator> 
+template <class T, class GlobalAccumulator, bool dynamic, unsigned level>
+struct Compose<T, void, GlobalAccumulator, dynamic, level> 
 { 
     typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
 };
 
-template <class T, class NEXT, class Accumulators, bool dynamic, unsigned level, class GlobalAccumulator>
-struct Compose<CoupledHandle<T, NEXT>, Accumulators, dynamic, level, GlobalAccumulator>
+template <class T, class NEXT, class Accumulators, class GlobalAccumulator, bool dynamic, unsigned level>
+struct Compose<CoupledHandle<T, NEXT>, Accumulators, GlobalAccumulator, dynamic, level>
 {
     typedef CoupledHandle<T, NEXT> Handle;
-    typedef typename Compose<Handle, typename Accumulators::Tail, dynamic, level+1, GlobalAccumulator>::type BaseType;
+    typedef typename Compose<Handle, typename Accumulators::Tail, GlobalAccumulator, dynamic, level+1>::type BaseType;
 
     typedef typename Accumulators::Head Tag;
     typedef typename StandardizeTag<DataFromHandle<Tag> >::type WrappedTag;
     typedef typename IfBool<(!HasModifierPriority<WrappedTag, WeightingPriority>::value && ShouldBeWeighted<WrappedTag>::value),
                              Weighted<WrappedTag>, WrappedTag>::type UseTag;
-    typedef Decorator<Handle, typename UseTag::template Impl<Handle, AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
+    typedef Decorator<typename UseTag::template Impl<AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
 };
 
-template <class T, class NEXT, bool dynamic, unsigned level, class GlobalAccumulator>
-struct Compose<CoupledHandle<T, NEXT>, void, dynamic, level, GlobalAccumulator> 
+template <class T, class NEXT, class GlobalAccumulator, bool dynamic, unsigned level>
+struct Compose<CoupledHandle<T, NEXT>, void, GlobalAccumulator, dynamic, level> 
 { 
     typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
+};
+
+struct InvalidGlobalAccumulatorHandle
+{
+    typedef Error__Global_statistics_are_only_defined_for_AccumulatorChainArray type;
+    
+    InvalidGlobalAccumulatorHandle()
+    : pointer_(0)
+    {}
+    
+    type const * pointer_;
 };
 
 template <class T, class Selected, bool dynamic=false>
 struct CreateAccumulatorChain
 {
     typedef typename AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef typename Compose<T, AccumulatorTags, dynamic>::type type;
+ 
+    typedef typename Compose<T, AccumulatorTags, InvalidGlobalAccumulatorHandle, dynamic>::type type;
 };
 
 template <class T, class Selected, bool dynamic=false>
@@ -810,8 +825,20 @@ struct CreateAccumulatorChainArray
     typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
     typedef typename TagSeparator::GlobalTags GlobalTags;
     typedef typename TagSeparator::RegionTags RegionTags;
-    typedef typename detail::Compose<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
-    typedef typename detail::Compose<T, RegionTags, dynamic, 0, GlobalAccumulatorChain>::type RegionAccumulatorChain;
+    typedef typename detail::Compose<T, GlobalTags, InvalidGlobalAccumulatorHandle, dynamic>::type GlobalAccumulatorChain;
+    
+    struct GlobalAccumulatorHandle
+    {
+        typedef GlobalAccumulatorChain type;
+        
+        GlobalAccumulatorHandle()
+        : pointer_(0)
+        {}
+        
+        type const * pointer_;
+    };
+    
+    typedef typename detail::Compose<T, RegionTags, GlobalAccumulatorHandle, dynamic>::type RegionAccumulatorChain;
     typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
@@ -1178,6 +1205,8 @@ struct LookupTag<Tag, A, AccumulatorBegin>
 
 namespace detail {
 
+    // CastImpl applies the same rules as LookupTagImpl, but returns a reference to an 
+    // accumulator instance rather than an accumulator type
 template <class Tag, class FromTag, class reference>
 struct CastImpl
 {
@@ -1234,7 +1263,7 @@ struct CastImpl<Global<Tag>, AccumulatorEnd, reference>
     template <class A>
     static reference exec(A & a)
     {
-        return CastImpl<Tag, typename A::GlobalAccumulatorType::Tag, reference>::exec(*a.globalAccumulator_);
+        return CastImpl<Tag, typename A::GlobalAccumulatorType::Tag, reference>::exec(*a.globalAccumulator_.pointer_);
     }
 };
 
@@ -1340,7 +1369,7 @@ activate(A & a)
     a.activate<Tag>();
 }
 
-    // activate the dynamic accumulator specified by Tag
+    // check if the dynamic accumulator specified by Tag is active
 template <class Tag, class A>
 bool
 isActive(A const & a)
@@ -1406,17 +1435,18 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 
 /****************************************************************************/
 /*                                                                          */
-/*                   generic base and decorator classes                     */
+/*                      generic decorator base class                        */
 /*                                                                          */
 /****************************************************************************/
 
-    // this class closes an accumulator chain
+    // this is the innermost class of a accumulator decorator hierarchy
 template <class T, class TAG, class NEXT>
 struct AccumulatorBase 
 {
 	typedef AccumulatorBase<T, TAG, NEXT>   ThisType;
     typedef TAG                          Tag;
 	typedef NEXT                         InternalBaseType;
+    typedef T                            input_type;
     typedef T const &                    argument_type;
     typedef argument_type                first_argument_type;
     typedef double                       second_argument_type;
@@ -1517,6 +1547,39 @@ struct AccumulatorBase
     }
 };
 
+    // change the input_type member of an existing AccumulatorBase
+template <class A, class NewInputType>
+struct ChangeInputType;
+
+    // recurse down the decorator hierarchy
+template <class A, template <class> class B, class NewInputType>
+struct ChangeInputType<B<A>, NewInputType>
+{
+    typedef B<typename ChangeInputType<A, NewInputType>::type> type;
+};
+
+    // actually apply the desired change
+template <class T, class TAG, class NEXT, class NewInputType>
+struct ChangeInputType<AccumulatorBase<T, TAG, NEXT>, NewInputType>
+{
+    typedef AccumulatorBase<NewInputType, TAG, NEXT> type;
+};
+
+    // special case: change the input_type to the previous input type's promote type
+template <class A>
+struct PromoteInputType
+{
+    typedef typename A::input_type OldInputType;
+    typedef typename AccumulatorResultTraits<OldInputType>::SumType NewInputType;
+    typedef typename ChangeInputType<A, NewInputType>::type type;
+};
+
+/****************************************************************************/
+/*                                                                          */
+/*                           modifier implementations                       */
+/*                                                                          */
+/****************************************************************************/
+
 template <class TAG>
 class Global
 {
@@ -1532,7 +1595,7 @@ class DataArg
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -1578,14 +1641,22 @@ class DataFromHandle
         }
     };
     
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename 
-                         CoupledHandleCast<DataIndexSelector<typename LookupTag<DataArgTag, BASE>::type>::value, T>::type::value_type, BASE>
+    template <class BASE>
+    struct SelectInputType
     {
         typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
         typedef DataIndexSelector<FindDataIndex> DataIndex;
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<DataIndex::value, T>::type::value_type, BASE> ImplType;
+        typedef typename CoupledHandleCast<DataIndex::value, typename BASE::input_type>::type::value_type NewValueType;
+        typedef typename ChangeInputType<BASE, NewValueType>::type type;
+    };
+    
+    template <class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
+    {
+        typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
+        typedef DataIndexSelector<FindDataIndex> DataIndex;
+        typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
         
         using ImplType::reshape;
         
@@ -1617,11 +1688,18 @@ class Coord
     typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
     typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
     
-    template <class T, class BASE>
-    struct Impl
-    : public TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE>
+    template <class BASE>
+    struct SelectInputType
     {
-        typedef typename TargetTag::template Impl<typename CoupledHandleCast<0, T>::type::value_type, BASE> ImplType;
+        typedef typename CoupledHandleCast<0, typename BASE::input_type>::type::value_type NewValueType;
+        typedef typename ChangeInputType<BASE, NewValueType>::type type;
+    };
+    
+    template <class BASE>
+    struct Impl
+    : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
+    {
+        typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
         
         using ImplType::reshape;
         
@@ -1651,7 +1729,7 @@ class WeightArg
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -1692,11 +1770,11 @@ class Weighted
         }
     };
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public TargetTag::template Impl<T, BASE>
+    : public TargetTag::template Impl<BASE>
     {
-        typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        typedef typename TargetTag::template Impl<BASE> ImplType;
         
         typedef typename LookupTag<WeightArgTag, BASE>::type FindWeightIndex;
                 
@@ -1714,14 +1792,16 @@ class Centralize
   public:
     typedef Select<Mean> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
         static const unsigned int workInPass = 2;
         
-        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<U>::SumType              value_type;
         typedef value_type const &                                  result_type;
 
         mutable value_type value_;
@@ -1741,18 +1821,18 @@ class Centralize
             detail::reshapeImpl(value_, s);
         }
         
-        void update(T const & t) const
+        void update(U const & t) const
         {
             using namespace vigra::multi_math;
             value_ = t - get<Mean>(*this);
         }
         
-        void update(T const & t, double) const
+        void update(U const & t, double) const
         {
             update(t);
         }
         
-        result_type operator()(T const & t) const
+        result_type operator()(U const & t) const
         {
             update(t);
             return value_;
@@ -1774,11 +1854,11 @@ class Central
     typedef TypeList<Centralize, 
               typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
     {
-        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        typedef typename TargetTag::template Impl<typename PromoteInputType<BASE>::type> ImplType;
         
         static const unsigned int workInPass = 2;
         
@@ -1788,11 +1868,13 @@ class Central
                 "Central<...>::operator+=(): not supported.");
         }
     
+        template <class T>
         void update(T const & t)
         {
             ImplType::update(get<Centralize>(*this));
         }
         
+        template <class T>
         void update(T const & t, double weight)
         {
             ImplType::update(get<Centralize>(*this), weight);
@@ -1809,11 +1891,11 @@ class Central
     // typedef typename StandardizeTag<TAG>::type TargetTag;
     // typedef TypeList<Mean, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
     
-    // template <class T, class BASE>
+    // template <class BASE>
     // struct Impl
-    // : public TargetTag::template Impl<T, BASE>
+    // : public TargetTag::template Impl<BASE>
     // {
-        // typedef typename TargetTag::template Impl<T, BASE> ImplType;
+        // typedef typename TargetTag::template Impl<BASE> ImplType;
         
         // static const unsigned int workInPass = 2;
         
@@ -1823,11 +1905,13 @@ class Central
                 // "Central<...>::operator+=(): not supported.");
         // }
     
+        // template <class T>
         // void update(T const & t)
         // {
             // ImplType::update(t - get<Mean>(*this));
         // }
         
+        // template <class T>
         // void update(T const & t, double weight)
         // {
             // ImplType::update(t - get<Mean>(*this), weight);
@@ -1841,14 +1925,15 @@ class PrincipalProjection
   public:
     typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
         static const unsigned int workInPass = 2;
         
-        typedef typename AccumulatorResultTraits<T>::element_promote_type element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType              value_type;
+        typedef typename BASE::input_type U;
+        typedef typename AccumulatorResultTraits<U>::element_promote_type element_type;
+        typedef typename AccumulatorResultTraits<U>::SumType              value_type;
         typedef value_type const &                                  result_type;
 
         mutable value_type value_;
@@ -1868,7 +1953,7 @@ class PrincipalProjection
             detail::reshapeImpl(value_, s);
         }
         
-        void update(T const & t) const
+        void update(U const & t) const
         {
             for(unsigned int k=0; k<t.size(); ++k)
             {
@@ -1878,12 +1963,12 @@ class PrincipalProjection
             }
         }
         
-        void update(T const & t, double) const
+        void update(U const & t, double) const
         {
             update(t);
         }
         
-        result_type operator()(T const & t) const
+        result_type operator()(U const & t) const
         {
             getAccumulator<Centralize>(*this).update(t);
             update(t);
@@ -1906,11 +1991,11 @@ class Principal
     typedef TypeList<PrincipalProjection, 
                  typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE>
+    : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
     {
-        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<T>::SumType, BASE> ImplType;
+        typedef typename TargetTag::template Impl<typename PromoteInputType<BASE>::type> ImplType;
         
         static const unsigned int workInPass = 2;
         
@@ -1920,11 +2005,13 @@ class Principal
                 "Principal<...>::operator+=(): not supported.");
         }
     
+        template <class T>
         void update(T const & t)
         {
             ImplType::update(get<PrincipalProjection>(*this));
         }
         
+        template <class T>
         void update(T const & t, double weight)
         {
             ImplType::update(get<PrincipalProjection>(*this), weight);
@@ -1962,7 +2049,7 @@ class CoordinateSystem
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -1994,9 +2081,9 @@ class CoordinateSystem
     };
 };
 
-template <class T, class BASE, 
-         class ElementType=typename AccumulatorResultTraits<T>::element_promote_type, 
-         class SumType=typename AccumulatorResultTraits<T>::SumType>
+template <class BASE, class T=typename BASE::input_type, 
+          class ElementType=typename AccumulatorResultTraits<T>::element_promote_type, 
+          class SumType=typename AccumulatorResultTraits<T>::SumType>
 struct SumBaseImpl
 : public BASE
 {
@@ -2039,20 +2126,22 @@ class PowerSum<0>
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE, double, double>
+    : public SumBaseImpl<BASE, typename BASE::input_type, double, double>
     {
+        typedef typename BASE::input_type U;
+        
         template <class Shape>
         void reshape(Shape const &)
         {}
     
-        void update(T const & t)
+        void update(U const & t)
         {
             ++value_;
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             value_ += weight;
         }
@@ -2066,16 +2155,18 @@ class PowerSum<1>
   public:
     typedef Select<> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
-        void update(T const & t)
+        typedef typename BASE::input_type U;
+
+        void update(U const & t)
         {
             value_ += t;
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             value_ += weight*t;
         }
@@ -2088,17 +2179,19 @@ class PowerSum<N>
   public:
     typedef Select<> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
-        void update(T const & t)
+        typedef typename BASE::input_type U;
+
+        void update(U const & t)
         {
             using namespace vigra::multi_math;            
             value_ += pow(t, (int)N);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(t, (int)N);
@@ -2112,17 +2205,19 @@ class AbsPowerSum<1>
   public:
     typedef Select<> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
-        void update(T const & t)
+        typedef typename BASE::input_type U;
+
+        void update(U const & t)
         {
             using namespace vigra::multi_math;            
             value_ += abs(t);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
             value_ += weight*abs(t);
@@ -2136,17 +2231,19 @@ class AbsPowerSum<N>
   public:
     typedef Select<> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
-        void update(T const & t)
+        typedef typename BASE::input_type U;
+
+        void update(U const & t)
         {
             using namespace vigra::multi_math;            
             value_ += pow(abs(t), (int)N);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(abs(t), (int)N);
@@ -2154,11 +2251,12 @@ class AbsPowerSum<N>
     };
 };
 
-template <class T, class BASE, class VALUE_TYPE>
+template <class BASE, class VALUE_TYPE>
 struct CachedResultBase
 : public BASE
 {
-    typedef typename AccumulatorResultTraits<T>::element_type  element_type;
+    typedef typename BASE::input_type U;
+    typedef typename AccumulatorResultTraits<U>::element_type  element_type;
     typedef VALUE_TYPE                                         value_type;
     typedef value_type const &                                 result_type;
 
@@ -2185,12 +2283,12 @@ struct CachedResultBase
         this->setDirty();
     }
 
-    void update(T const &)
+    void update(U const &)
     {
         this->setDirty();
     }
     
-    void update(T const &, double)
+    void update(U const &, double)
     {
          this->setDirty();
     }
@@ -2204,9 +2302,9 @@ class DivideByCount
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
   
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public CachedResultBase<T, BASE, typename LookupTag<TargetTag, BASE>::value_type> 
+    : public CachedResultBase<BASE, typename LookupTag<TargetTag, BASE>::value_type> 
     {
         result_type operator()() const
         {
@@ -2229,12 +2327,12 @@ class DivideUnbiased
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
       
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
         typedef typename LookupTag<TargetTag, BASE>::value_type  value_type;
-        typedef value_type                                 result_type;
+        typedef value_type                                       result_type;
         
         result_type operator()() const
         {
@@ -2252,7 +2350,7 @@ class RootDivideByCount
     typedef typename StandardizeTag<DivideByCount<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -2275,7 +2373,7 @@ class RootDivideUnbiased
     typedef typename StandardizeTag<DivideUnbiased<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -2296,10 +2394,12 @@ class Central<PowerSum<2> >
   public:
     typedef Select<Mean, Count> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
+        typedef typename BASE::input_type U;
+
         void operator+=(Impl const & o)
         {
             using namespace vigra::multi_math;
@@ -2314,7 +2414,7 @@ class Central<PowerSum<2> >
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             double n = get<Count>(*this);
             if(n > 1.0)
@@ -2324,7 +2424,7 @@ class Central<PowerSum<2> >
             }
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             double n = get<Count>(*this);
             if(n > weight)
@@ -2342,10 +2442,12 @@ class Central<PowerSum<3> >
   public:
     typedef Select<Centralize, Count, Mean, Central<PowerSum<2> > > Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
+        typedef typename BASE::input_type U;
+
         static const unsigned int workInPass = 2;
         
         void operator+=(Impl const & o)
@@ -2368,13 +2470,13 @@ class Central<PowerSum<3> >
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             using namespace vigra::multi_math;            
             value_ += pow(get<Centralize>(*this), 3);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(get<Centralize>(*this), 3);
@@ -2388,10 +2490,12 @@ class Central<PowerSum<4> >
   public:
     typedef Select<Centralize, Central<PowerSum<3> > > Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public SumBaseImpl<T, BASE>
+    : public SumBaseImpl<BASE>
     {
+        typedef typename BASE::input_type U;
+
         static const unsigned int workInPass = 2;
         
         void operator+=(Impl const & o)
@@ -2419,13 +2523,13 @@ class Central<PowerSum<4> >
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             using namespace vigra::multi_math;            
             value_ += pow(get<Centralize>(*this), 4);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
             value_ += weight*pow(get<Centralize>(*this), 4);
@@ -2438,7 +2542,7 @@ class Skewness
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<3> > > Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -2463,7 +2567,7 @@ class Kurtosis
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<4> > > Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
@@ -2550,15 +2654,17 @@ class FlatScatterMatrix
   public:
     typedef Select<Mean, Count> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorResultTraits<T>::FlatCovarianceType    value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
+        typedef typename AccumulatorResultTraits<U>::FlatCovarianceType    value_type;
         typedef value_type const &                                   result_type;
        
-        typedef typename AccumulatorResultTraits<T>::SumType        SumType;
+        typedef typename AccumulatorResultTraits<U>::SumType        SumType;
 
         value_type value_;
         SumType     diff_;
@@ -2597,12 +2703,12 @@ class FlatScatterMatrix
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             compute(t);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             compute(t, weight);
         }
@@ -2613,7 +2719,7 @@ class FlatScatterMatrix
         }
         
       private:
-        void compute(T const & t, double weight = 1.0)
+        void compute(U const & t, double weight = 1.0)
         {
             double n = get<Count>(*this);
             if(n > weight)
@@ -2633,10 +2739,9 @@ class DivideByCount<FlatScatterMatrix>
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public CachedResultBase<T, BASE,
-                              typename AccumulatorResultTraits<T>::CovarianceType>
+    : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
     {
         template <class Shape>
         void reshape(Shape const & s)
@@ -2664,10 +2769,9 @@ class DivideUnbiased<FlatScatterMatrix>
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public CachedResultBase<T, BASE,
-                              typename AccumulatorResultTraits<T>::CovarianceType>
+    : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
     {
         template <class Shape>
         void reshape(Shape const & s)
@@ -2693,13 +2797,15 @@ class ScatterMatrixEigensystem
   public:
     typedef Select<FlatScatterMatrix> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        typedef typename AccumulatorResultTraits<T>::SumType               EigenvalueType;
-        typedef typename AccumulatorResultTraits<T>::CovarianceType        EigenvectorType;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
+        typedef typename AccumulatorResultTraits<U>::SumType               EigenvalueType;
+        typedef typename AccumulatorResultTraits<U>::CovarianceType        EigenvectorType;
         typedef std::pair<EigenvalueType, EigenvectorType>                 value_type;
         typedef value_type const &                                         result_type;
 
@@ -2714,12 +2820,12 @@ class ScatterMatrixEigensystem
             this->setDirty();
         }
 
-        void update(T const &)
+        void update(U const &)
         {
             this->setDirty();
         }
         
-        void update(T const &, double)
+        void update(U const &, double)
         {
              this->setDirty();
         }
@@ -2775,10 +2881,12 @@ class DivideByCount<ScatterMatrixEigensystem>
   public:
     typedef Select<ScatterMatrixEigensystem, Count> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
+        typedef typename BASE::input_type U;
+
         typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type  SMImpl;
         typedef typename SMImpl::element_type                             element_type;
         typedef typename SMImpl::EigenvalueType                           EigenvalueType;
@@ -2797,12 +2905,12 @@ class DivideByCount<ScatterMatrixEigensystem>
             this->setDirty();
         }
 
-        void update(T const &)
+        void update(U const &)
         {
             this->setDirty();
         }
         
-        void update(T const &, double)
+        void update(U const &, double)
         {
              this->setDirty();
         }
@@ -2840,13 +2948,15 @@ class DivideByCount<ScatterMatrixEigensystem>
   // public:
     // typedef Select<Covariance> Dependencies;
     
-    // template <class T, class BASE>
+    // template <class BASE>
     // struct Impl
     // : public BASE
     // {
-        // typedef typename AccumulatorResultTraits<T>::element_promote_type  element_type;
-        // typedef typename AccumulatorResultTraits<T>::SumType               EigenvalueType;
-        // typedef typename AccumulatorResultTraits<T>::CovarianceType        EigenvectorType;
+        // typedef typename BASE::input_type U;
+
+        // typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
+        // typedef typename AccumulatorResultTraits<U>::SumType               EigenvalueType;
+        // typedef typename AccumulatorResultTraits<U>::CovarianceType        EigenvectorType;
         // typedef std::pair<EigenvalueType, EigenvectorType>                 value_type;
         // typedef value_type const &                                         result_type;
 
@@ -2861,12 +2971,12 @@ class DivideByCount<ScatterMatrixEigensystem>
             // this->setDirty();
         // }
 
-        // void update(T const &)
+        // void update(U const &)
         // {
             // this->setDirty();
         // }
         
-        // void update(T const &, double)
+        // void update(U const &, double)
         // {
              // this->setDirty();
         // }
@@ -2920,12 +3030,12 @@ class Principal<PowerSum<2> >
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
         typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type::EigenvalueType value_type;
-        typedef value_type const & result_type;
+        typedef value_type const &                                                       result_type;
         
         result_type operator()() const
         {
@@ -2941,12 +3051,12 @@ class Principal<CoordinateSystem>
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
         typedef typename LookupTag<ScatterMatrixEigensystem, BASE>::type::EigenvectorType value_type;
-        typedef value_type const & result_type;
+        typedef value_type const &                                                        result_type;
         
         result_type operator()() const
         {
@@ -2960,12 +3070,14 @@ class Minimum
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_type element_type;
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
 
         value_type value_;
@@ -2992,13 +3104,13 @@ class Minimum
             value_ = min(value_, o.value_);
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             using namespace multi_math;
             value_ = min(value_, t);
         }
         
-        void update(T const & t, double)
+        void update(U const & t, double)
         {
             using namespace multi_math;
             value_ = min(value_, t);
@@ -3016,12 +3128,14 @@ class Maximum
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_type element_type;
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
 
         value_type value_;
@@ -3048,13 +3162,13 @@ class Maximum
             value_ = max(value_, o.value_);
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             using namespace multi_math;
             value_ = max(value_, t);
         }
         
-        void update(T const & t, double)
+        void update(U const & t, double)
         {
             using namespace multi_math;
             value_ = max(value_, t);
@@ -3072,12 +3186,14 @@ class ArgMinWeight
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_type element_type;
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
 
         double min_weight_;
@@ -3110,12 +3226,12 @@ class ArgMinWeight
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             vigra_precondition(false, "ArgMinWeight::update() needs weights.");
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             if(weight < min_weight_)
             {
@@ -3136,12 +3252,14 @@ class ArgMaxWeight
   public:
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename AccumulatorResultTraits<T>::element_type element_type;
-        typedef typename AccumulatorResultTraits<T>::MinmaxType   value_type;
+        typedef typename BASE::input_type U;
+
+        typedef typename AccumulatorResultTraits<U>::element_type element_type;
+        typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
 
         double max_weight_;
@@ -3174,12 +3292,12 @@ class ArgMaxWeight
             }
         }
     
-        void update(T const & t)
+        void update(U const & t)
         {
             vigra_precondition(false, "ArgMaxWeight::update() needs weights.");
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             if(weight > max_weight_)
             {
@@ -3195,7 +3313,7 @@ class ArgMaxWeight
     };
 };
 
-template <int BinCount, class BASE>
+template <class BASE, int BinCount>
 class HistogramBase
 : public BASE
 {
@@ -3235,7 +3353,7 @@ class HistogramBase
 };
 
 template <class BASE>
-class HistogramBase<0, BASE>
+class HistogramBase<BASE, 0>
 : public BASE
 {
   public:
@@ -3280,11 +3398,13 @@ class HistogramBase<0, BASE>
     }
 };
 
-template <class T, class BASE, int BinCount>
+template <class BASE, int BinCount>
 class RangeHistogramBase
-: public HistogramBase<BinCount, BASE>
+: public HistogramBase<BASE, BinCount>
 {
   public:
+    typedef typename BASE::input_type U;
+
   
     double scale_, offset_, inverse_scale_;
     
@@ -3299,7 +3419,7 @@ class RangeHistogramBase
         scale_ = 0.0;
         offset_ = 0.0;
         inverse_scale_ = 0.0;
-        HistogramBase<BinCount, BASE>::reset();
+        HistogramBase<BASE, BinCount>::reset();
     }
 
     void operator+=(RangeHistogramBase const & o)
@@ -3307,15 +3427,15 @@ class RangeHistogramBase
         vigra_precondition(scale_ == o.scale_ && offset_ == o.offset_,
             "RangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
         
-        HistogramBase<BinCount, BASE>::operator+=(o);
+        HistogramBase<BASE, BinCount>::operator+=(o);
     }
 
-    void update(T const & t)
+    void update(U const & t)
     {
         update(t, 1.0);
     }
     
-    void update(T const & t, double weight)
+    void update(U const & t, double weight)
     {
         double m = mapItem(t);
         int index =  (m == (double)this->value_.size())
@@ -3439,9 +3559,9 @@ class IntegerHistogram
     
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public HistogramBase<BinCount, BASE>
+    : public HistogramBase<BASE, BinCount>
     {
         void update(int index)
         {
@@ -3535,21 +3655,23 @@ class UserRangeHistogram
     
     typedef Select<> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public RangeHistogramBase<T, BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount>
     {
-        void update(T const & t)
+        typedef typename BASE::input_type U;
+
+        void update(U const & t)
         {
             update(t, 1.0);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             vigra_precondition(this->scale_ != 0.0,
                 "UserRangeHistogram::update(): setMinMax(...) has not been called.");
                 
-            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
     };
 };
@@ -3561,23 +3683,25 @@ class AutoRangeHistogram
     
     typedef Select<Minimum, Maximum> Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public RangeHistogramBase<T, BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount>
     {
+        typedef typename BASE::input_type U;
+
         static const unsigned int workInPass = LookupTag<Minimum, BASE>::type::workInPass + 1;
         
-        void update(T const & t)
+        void update(U const & t)
         {
             update(t, 1.0);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
                 this->setMinMax(get<Minimum>(*this), get<Maximum>(*this));
                 
-            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
     };
 };
@@ -3589,23 +3713,25 @@ class GlobalRangeHistogram
     
     typedef Select<Global<Minimum>, Global<Maximum> > Dependencies;
     
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public RangeHistogramBase<T, BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount>
     {
+        typedef typename BASE::input_type U;
+
         static const unsigned int workInPass = LookupTag<Global<Minimum>, BASE>::type::workInPass + 1;
         
-        void update(T const & t)
+        void update(U const & t)
         {
             update(t, 1.0);
         }
         
-        void update(T const & t, double weight)
+        void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
                 this->setMinMax(get<Global<Minimum> >(*this), get<Global<Maximum> >(*this));
 
-            RangeHistogramBase<T, BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
     };
 };
@@ -3618,9 +3744,9 @@ class StandardQuantiles
     typedef typename StandardizeTag<HistogramAccumulator>::type HistogramTag;
     typedef Select<HistogramTag, Minimum, Maximum, Count> Dependencies;
 
-    template <class T, class BASE>
+    template <class BASE>
     struct Impl
-    : public CachedResultBase<T, BASE, TinyVector<double, 7> >
+    : public CachedResultBase<BASE, TinyVector<double, 7> >
     {
         static const unsigned int workInPass = LookupTag<HistogramTag, BASE>::type::workInPass;
         

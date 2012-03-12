@@ -5,10 +5,6 @@
 
 #include <unittest.hxx>
 
-#ifdef _MSC_VER
-#pragma warning (disable: 4503)
-#endif
-
 #include <vigra/accessor.hxx>
 #include <vigra/tinyvector.hxx>
 #include <vigra/rgbvalue.hxx>
@@ -2541,7 +2537,7 @@ struct AccumulatorTest
                                           > > A;
             
             A a;
-            
+
             typedef LookupTag<Coord<Mean>, A>::value_type W;
             
             MultiArray<3, double> data(Shape3(4,4,4), 1.0);
