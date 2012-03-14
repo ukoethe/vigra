@@ -82,8 +82,6 @@ class ArgMaxWeight;                            // store the value (or coordinate
 template <unsigned NDim> class MultiHistogram; // multi-dimensional histogram
                                                // (always specify number of bins at runtime)
 
-class AccumulatorArray;                        // one accumulator for each region (may be better implemented by other means)
-
 class Centralize;                              // cache centralized values
 class PrincipalProjection;                     // cache values after principal projection
     // FIXME: not yet implemented
@@ -136,7 +134,7 @@ template <class A> class DataFromHandle;  // extract data from index 1 of a Coup
 
     // data preparation
 template <class A> class Central;    // subtract mean
-template <class A> class Principal;  // subtract mean and rotate to principle coordinates
+template <class A> class Principal;  // subtract mean and rotate to principal coordinates
 
     // FIXME: not implemented yet
 template <class A> class Whitened;   // transform to principal coordinates and scale to unit variance

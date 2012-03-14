@@ -2144,10 +2144,6 @@ class PowerSum<0>
     {
         typedef typename BASE::input_type U;
         
-        template <class Shape>
-        void reshape(Shape const &)
-        {}
-    
         void update(U const & t)
         {
             ++this->value_;
