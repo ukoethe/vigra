@@ -130,6 +130,8 @@ IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/private/CMakeLists.txt)
 ENDIF()
 
 
+set(LIB_SUFFIX "" CACHE STRING "Define suffix of lib directory name (32/64)" )
+
 ##################################################
 #
 #     global installation commands
@@ -215,10 +217,10 @@ CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigraConfigVersion.cmake.in
 
 # export targets:
 INSTALL(EXPORT vigra-targets
-        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+        DESTINATION lib${LIB_SUFFIX}/vigra)
 INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfig.cmake
             ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigraConfigVersion.cmake
-        DESTINATION lib${LIBDIR_SUFFIX}/vigra)
+        DESTINATION lib${LIB_SUFFIX}/vigra)
 EXPORT(TARGETS vigraimpex FILE vigra-targets.cmake)
 
 ##################################################
@@ -297,7 +299,7 @@ ENDIF()
 MESSAGE( STATUS "---------------------------------------------------------" )
 
 MESSAGE( STATUS "  includes will be installed at: ${CMAKE_INSTALL_PREFIX}/include")
-MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib${LIBDIR_SUFFIX}")
+MESSAGE( STATUS "  libraries will be installed at: ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}")
 
 IF (MSVC)
   MESSAGE( STATUS "  binaries and DLLs will be installed at: ${CMAKE_INSTALL_PREFIX}/bin")
