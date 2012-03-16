@@ -46,7 +46,7 @@
 #include "numpy_array_traits.hxx"
 #include "numpy_array_taggedshape.hxx"
 
-// NumPy function called by NumPy’s import_array() macro (and our import_vigranumpy() below)
+// NumPy function called by NumPy's import_array() macro (and our import_vigranumpy() below)
 int _import_array();
 
 namespace vigra {
@@ -573,7 +573,7 @@ python_ptr constructNumpyArrayFromData(
 /** Provide the MultiArrayView interface for a Python array.
 
     This class inherits from both \ref vigra::MultiArrayView and \ref vigra::NumpyAnyArray
-    in order to support easy and save application of VIGRA functions to Python arrays.
+    in order to support easy and safe application of VIGRA functions to Python arrays.
 
     <b>\#include</b> \<vigra/numpy_array.hxx\><br>
     Namespace: vigra

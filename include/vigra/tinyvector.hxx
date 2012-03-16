@@ -1154,6 +1154,7 @@ struct NumericTraits<TinyVector<T, SIZE> >
     typedef TinyVector<T, SIZE> Type;
     typedef TinyVector<typename NumericTraits<T>::Promote, SIZE> Promote;
     typedef TinyVector<typename NumericTraits<T>::RealPromote, SIZE> RealPromote;
+    typedef TinyVector<typename NumericTraits<T>::DoublePromote, SIZE> DoublePromote;
     typedef TinyVector<typename NumericTraits<T>::ComplexPromote, SIZE> ComplexPromote;
     typedef T ValueType;
 

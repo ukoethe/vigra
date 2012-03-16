@@ -1877,7 +1877,16 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
 
     \endcode
 */
-template <class RegionStatistics, class LabelType = int>
+struct RegionStatisticsExtenderDefault
+{
+    // the iterator references the first newly-created statistics object
+    // during ArrayOfRegionStatistics::extend()
+    template <class AORS>
+    static void call(AORS &, typename AORS::iterator) {} // usually redundant
+};
+
+template <class RegionStatistics, class LabelType = int, bool autoGrow = false,
+          class RegionStatisticsExtender = RegionStatisticsExtenderDefault>
 class ArrayOfRegionStatistics
     : public detail::get_extra_passes<RegionStatistics>
 {
@@ -1925,6 +1934,8 @@ class ArrayOfRegionStatistics
          */
     typedef typename RegionArray::const_iterator const_iterator;
 
+    typedef RegionStatisticsExtender extender_type;
+    
         /** init array of RegionStatistics with default size 0.
         */
     ArrayOfRegionStatistics()
@@ -1938,12 +1949,33 @@ class ArrayOfRegionStatistics
     {}
 
         /** resize array to new index domain 0...max_region_label.
-            All bin are re-initialized.
+            All bins are re-initialized.
         */
     void resize(unsigned int max_region_label)
     {
         RegionArray newRegions(max_region_label+1);
         regions.swap(newRegions);
+    }
+
+        /** extend array index domain with
+            (maxRegionLabel() + 1)...max_region_label.
+            The default extension is 1 bin, existing bins always remain
+            unchanged. However, all iterators to the array are invalidated.
+        */
+    void extend(unsigned int max_region_label = size())
+    {
+        if (max_region_label >= size())
+        {
+            unsigned int old_size = size();
+            regions.resize(max_region_label + 1); // iterator invalidation
+            extender_type::call(*this, begin() + old_size);
+        }
+    }
+
+    void autoExtend(second_argument_type label)
+    {
+        if (autoGrow)
+            extend(static_cast<unsigned int>(label));
     }
 
         /** reset the contained functors to their initial state.
@@ -1957,13 +1989,18 @@ class ArrayOfRegionStatistics
         /** update regions statistics for region <TT>label</TT>. The label type
             is converted to <TT>unsigned int</TT>.
         */
-    void operator()(first_argument_type const & v, second_argument_type label) {
+    void operator()(first_argument_type const & v, second_argument_type label)
+    {
+        autoExtend(label);
         regions[static_cast<unsigned int>(label)](v);
     }
 
         /** merge second region into first
         */
-    void merge(argument_type label1, argument_type label2) {
+    void merge(argument_type label1, argument_type label2)
+    {
+        autoExtend(label1);
+        autoExtend(label2);
         regions[static_cast<unsigned int>(label1)](regions[static_cast<unsigned int>(label2)]);
     }
 
@@ -2039,6 +2076,11 @@ class ArrayOfRegionStatistics
         if (n < 2 || static_cast<unsigned>(n) > this->max_passes)
             vigra_fail("ArrayOfRegionStatistics::pass_n(): inconsistent use.");
         return pass_n_dispatch(*this, n);
+    }
+    unsigned numberOfPasses()
+    {
+        // all entries of 'regions' are assumed to be consistent:
+        return this->getNumberOfPasses(*begin());
     }
 
     std::vector<RegionStatistics> regions;

@@ -2,6 +2,8 @@
 #define VIGRA_OBJECT_FEATURES_HXX
 
 #include <cmath>
+#include <string>
+#include <utility>
 
 #include "error.hxx"
 #include "numerictraits.hxx"
@@ -9,6 +11,8 @@
 #include "type_lists.hxx"
 #include "algorithm.hxx"
 #include "mathutil.hxx"
+#include "tinyvector.hxx"
+#include "sized_int.hxx"
 
 namespace vigra {
 
@@ -59,21 +63,40 @@ inline bool test_pass(unsigned pass)
     return passes_test<ACX, n>::call(pass);
 }
 
-template <class T>
-struct features_real_promote
+template <class X>
+struct get_result_type
 {
-    typedef typename NumericTraits<T>::RealPromote TraitsRealPromote;
+    typedef typename X::result_type type;
+};
+
+template <class RTL> // build up a base class over a result-type list
+struct extractor_base : public extractor_base<typename RTL::rest>
+{
+    using extractor_base<typename RTL::rest>::operator();
+    virtual void operator()(const typename RTL::first &, ExtractorInfo::Flags)
+        = 0;
+};
+template <>
+struct extractor_base<type_lists::nil>
+{
+    virtual void operator()() {}
+};
+
+template <class T>
+struct features_double_promote
+{
+    typedef typename NumericTraits<T>::DoublePromote TraitsDoublePromote;
     typedef typename
         IfBool<
             IsSameType<
                 Error_NumericTraits_not_specialized_for_this_case,
-                TraitsRealPromote>::value, typename
-            get_optional_real_promote<T>::type,
-            TraitsRealPromote>::type
+                TraitsDoublePromote>::value,
+            T,
+            TraitsDoublePromote>::type
         type;
 };
 
-template <class V>
+template <class V, ExtractorInfo::Flags flags = ExtractorInfo::None>
 struct feature_base
 {
         /** the functor's result type
@@ -89,11 +112,27 @@ public:
     {
         return this->value;
     }
+        /** dummy calculation for accumulators, called before extract()
+        */
+    template <class ACX>
+    void calculate(const ACX &) const {}
+        /** copy calculated or accumulated value to extractor object
+        */
+    template <class VG>
+    void extract(VG & g) const
+    {
+        g(this->value, flags);
+    }
         /** (re-)init
         */
     void reset()
     {
         this->value = result_type(); // guaranteed to be zero for built-in types
+    }
+    template <class X>
+    result_type cast(const X & x) const
+    {
+        return static_cast<result_type>(x);
     }
     template <class X>
     void set_val(const X & x)
@@ -116,12 +155,14 @@ public:
         reset();
     }
     feature_base(const V & v) : value(v) {}
+    // provide a default static name just in case.
+    static std::string name() { return "[invalid name]"; }
 };
 
 // all collectors / accumulators must implement void reset()
 
-template <class T, class V>
-struct collector_base : public feature_base<V>
+template <class T, class V, ExtractorInfo::Flags flags = ExtractorInfo::None>
+struct collector_base : public feature_base<V, flags>
 {
     collector_base() {}
     collector_base(const V & v) : feature_base<V>(v) {}
@@ -187,9 +228,10 @@ struct collector_base : public feature_base<V>
     void updatePassN(ACX &, const T &, unsigned) { fail("pass n update"); }
 };
 
-template <class T, class A = T>
+template <class T, class A = T,
+          ExtractorInfo::Flags flags = ExtractorInfo::None>
 struct numeric_accumulator_base
-    : public collector_base<T, typename features_real_promote<A>::type>
+    : public collector_base<T, typename features_double_promote<A>::type, flags>
 {
     typedef typename numeric_accumulator_base::collector_base_type
         collector_base_type;
@@ -205,12 +247,12 @@ struct numeric_accumulator_base
     typedef numeric_accumulator_base accumulator_base_type;
 };
 
-template <class T>
+template <class T, ExtractorInfo::Flags flags = ExtractorInfo::None>
 struct calculator_base
-    : public feature_base<typename features_real_promote<T>::type>
+    : public feature_base<typename features_double_promote<T>::type, flags>
 {
-    // the actual calculator class templates should implement
-    // template <class ACX> void calculate(const ACX & x),
+    // the actual calculator class templates should re-implement
+    // template <class ACX> void calculate(const ACX & x) const,
     // wherein the values of other features are to be accessed
     // as 'soft values' via "use<feature_template_name>::val(x)"
 };
@@ -283,7 +325,6 @@ struct use_d
     f_val(const ACX & x)
     {
         return x.template value<V>();
-        // return x.template value_template<V>(); // works with gcc 4.4 -- bug?
     }
     template <class ACX>
     static bool
@@ -307,26 +348,31 @@ struct use_d
 
 // accessor classes that are specialised for StridePairPointer<N, T>
 template<class T>
-struct accumulable_coord_access
-{
-    typedef T accumulable_type;
-    typedef T type;
-    static const T & get(const T & v) { return v; }
-};
-template<class T>
 struct accumulable_value_access
 {
     typedef T accumulable_type;
     typedef T type;
     static const T & get(const T & v) { return v; }
+    static const ExtractorInfo::Flags flags = ExtractorInfo::None;
 };
+template<class> // undefined class to provoke usable error messages
+struct Error_use_StridePairPointer_for_Accumulator__coordinates_absent_in_type_;
+// arbitrary accumulated types have no embedded coordinates: flag an error.
 template<class T>
-struct accumulable_weighted_access
+struct accumulable_coord_access
 {
     typedef T accumulable_type;
     typedef T type;
-    static const T & get(const T & v) { return v; }
+    static const T & get(const T &)
+    {
+        return 
+        Error_use_StridePairPointer_for_Accumulator__coordinates_absent_in_type_
+            <T>();
+    }
+    static const ExtractorInfo::Flags flags = ExtractorInfo::IsCoordinate;
 };
+template<class T>
+struct accumulable_weighted_access : public accumulable_coord_access<T> {};
 
 } // namespace detail
 
@@ -334,10 +380,8 @@ struct accumulable_weighted_access
 
 namespace acc {
 
-using namespace detail;
-
 template <class T>
-struct Count : public collector_base<T, double>
+struct Count : public detail::collector_base<T, double>
 {
     /** update
      */
@@ -358,19 +402,42 @@ struct Count : public collector_base<T, double>
     template <class ACX>
     void merge(const ACX & z, const ACX & x, const ACX & y)
     {
+        using namespace detail;
         this->set_val(use_d<Count>::val(x) + use_d<Count>::val(y));
     }
+    static std::string name() { return "count"; }
 };
 
 } // namespace acc
 
 namespace detail {
 
+template <class T, template<class> class CV>
+struct gen_accumulator_base
+    : public numeric_accumulator_base<T, typename CV<T>::type, CV<T>::flags>
+{
+    typedef typename CV<T>::type type;
+    type get(const T & v) { return CV<T>::get(v); }
+};
+
+template <class T>
+struct value_accumulator_base
+    : public gen_accumulator_base<T, accumulable_value_access> {};
+
+template <class T>
+struct coord_accumulator_base
+    : public gen_accumulator_base<T, accumulable_coord_access> {};
+
+template <class T>
+struct weighted_accumulator_base
+    : public gen_accumulator_base<T, accumulable_weighted_access> {};
+
+
 template <class T, template<class> class CV,
                    template<class> class SELF,
                    template<class> class SUM_SQUARED_DIFF,
                    template<class> class COVAR = SUM_SQUARED_DIFF>
-struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
+struct gen_mean_acc : public gen_accumulator_base<T, CV>,
                       public type_lists::uses_template<T, acc::Count>
                                        ::template follows<SUM_SQUARED_DIFF,
                                                           COVAR>
@@ -380,7 +447,7 @@ struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v)
     {
-        this->add_val((CV<T>::get(v) - this->value)
+        this->add_val((this->get(v) - this->value)
                       / use<acc::Count>::f_val(accumulators));
     }
     /** update average, using weighted input.
@@ -391,7 +458,7 @@ struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v, double weight)
     {
-        this->add_val((CV<T>::get(v) - this->value) * weight
+        this->add_val((this->get(v) - this->value) * weight
                       / use<acc::Count>::f_val(accumulators));
     }
     /** merge two statistics: z === *this <- (x, y)
@@ -405,15 +472,35 @@ struct gen_mean_acc : public numeric_accumulator_base<T, typename CV<T>::type>,
     }
 };
 
+template <class T, template<class> class SELF,
+                   template<class> class MEAN>
+struct gen_sum_squared_diff_merge
+{
+    /** merge two statistics: z === *this <- (x, y)
+    */
+    template <class ACX>
+    void merge(const ACX & z, const ACX & x, const ACX & y)
+    {
+        double count_x = use<acc::Count>::val(x);
+        double count_y = use<acc::Count>::val(y);
+        static_cast<SELF<T>*>(this)->set_val(
+            use<SELF>::val(x) + use<SELF>::val(y)
+            + count_x * count_y / (count_x + count_y)
+                      * power<2>(use<MEAN>::val(y) - use<MEAN>::val(x)));
+    }
+};
+
 template <class T, template<class> class CV,
                    template<class> class SELF,
                    template<class> class MEAN>
 struct gen_sum_squared_diff_acc
-    : public numeric_accumulator_base<T, typename CV<T>::type>,
+    : public gen_accumulator_base<T, CV>,
+      public gen_sum_squared_diff_merge<T, SELF, MEAN>,
       public type_lists::uses_template<T, acc::Count>
                        ::template implies<MEAN>
 {
     typedef typename gen_sum_squared_diff_acc::result_type result_type;
+    using gen_sum_squared_diff_merge<T, SELF, MEAN>::merge;
 
     /** update sum of squared differences
     */
@@ -421,7 +508,7 @@ struct gen_sum_squared_diff_acc
     void updatePass1(ACX & accumulators, const T & v)
     {
         result_type t1 = static_cast<result_type>(
-                         CV<T>::get(v) - use<MEAN>::f_val(accumulators));
+                         this->get(v) - use<MEAN>::f_val(accumulators));
         result_type t2 = static_cast<result_type>(
                          t1 / use<acc::Count>::f_val(accumulators));
         this->add_val(t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.0));
@@ -434,24 +521,11 @@ struct gen_sum_squared_diff_acc
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v, double weight)
     {
-        result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
+        result_type t1 = this->get(v) - use<MEAN>::f_val(accumulators);
         result_type t2 = t1 * weight / use<acc::Count>::f_val(accumulators);
         // count > weight is ensured by preceding acc::Count::operator() call
         this->add_val(t1 * t2
                       * (use<acc::Count>::f_val(accumulators) - weight));
-    }
-    /** merge two statistics: z === *this <- (x, y)
-    */
-    template <class ACX>
-    void merge(const ACX & z, const ACX & x, const ACX & y)
-    {
-        double count_x = use<acc::Count>::val(x);
-        double count_y = use<acc::Count>::val(y);
-        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
-        this->set_val(  use<SELF>::val(x)
-                      + use<SELF>::val(y)
-                      + count_x * count_y / (count_x + count_y)
-                        * power<2>(delta));
     }
 };
 
@@ -477,7 +551,8 @@ template <class T, template<class> class CV,
 struct gen_covariance_acc
     : public numeric_accumulator_base<T, typename
                                          covariance_result<typename
-                                                           CV<T>::type>::type>,
+                                                           CV<T>::type>::type,
+                                         CV<T>::flags>,
       public type_lists::uses_template<T, acc::Count>
                        ::template implies<MEAN>
 {
@@ -488,7 +563,7 @@ struct gen_covariance_acc
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v)
     {
-//         result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
+//         result_type t1 = this->get(v) - use<MEAN>::f_val(accumulators);
 //         result_type t2 = t1 / use<acc::Count>::f_val(accumulators);
 //         this->add_val(t1 * t2 * (use<acc::Count>::f_val(accumulators) - 1.));
     }
@@ -500,7 +575,7 @@ struct gen_covariance_acc
     template <class ACX>
     void updatePass1(ACX & accumulators, const T & v, double weight)
     {
-//         result_type t1 = CV<T>::get(v) - use<MEAN>::f_val(accumulators);
+//         result_type t1 = this->get(v) - use<MEAN>::f_val(accumulators);
 //         result_type t2 = t1 * weight / use<acc::Count>::f_val(accumulators);
 //         // count > weight is ensured by preceding acc::Count::operator() call
 //         this->add_val(t1 * t2
@@ -526,13 +601,19 @@ struct Moment2;
 template <class T>
 struct Mean
     : public detail::gen_mean_acc<T, detail::accumulable_value_access, Mean,
-                                     Moment2, Moment2> {};
+                                     Moment2, Moment2>
+{
+    static std::string name() { return "mean"; }
+};
 template <class T>
 struct Moment2
     : public detail::gen_sum_squared_diff_acc<T,
                                               detail::accumulable_value_access,
                                               Moment2, Mean
-                                             > {};
+                                             >
+{
+    static std::string name() { return "moment2"; }
+};
 
 // mean and second moment for coordinates
 
@@ -541,14 +622,21 @@ struct CoordMoment2;
 
 template <class T>
 struct CoordMean
-    : public detail::gen_mean_acc<T, detail::accumulable_coord_access, 
-                                     CoordMean, CoordMoment2, CoordMoment2> {};
+    : public detail::gen_mean_acc<T, detail::accumulable_coord_access,
+                                     CoordMean, CoordMoment2, CoordMoment2>
+{
+    static std::string name() { return "coord mean"; }
+};
+
 template <class T>
 struct CoordMoment2
     : public detail::gen_sum_squared_diff_acc<T,
                                               detail::accumulable_coord_access,
                                               CoordMoment2, CoordMean
-                                             > {};
+                                             >
+{
+    static std::string name() { return "coord moment2"; }
+};
 
 // mean and second moment for coordinates weighted by values
 
@@ -559,12 +647,18 @@ template <class T>
 struct WeightedMean
     : public detail::gen_mean_acc<T, detail::accumulable_weighted_access,
                                      WeightedMean, WeightedMoment2,
-                                                   WeightedMoment2> {};
+                                                   WeightedMoment2>
+{
+    static std::string name() { return "weighted mean"; }
+};
 template <class T>
 struct WeightedMoment2
     : public detail::gen_sum_squared_diff_acc<T,
                                             detail::accumulable_weighted_access,
-                                            WeightedMoment2, WeightedMean> {};
+                                            WeightedMoment2, WeightedMean>
+{
+    static std::string name() { return "weighted moment2"; }
+};
 
 } // namespace acc
 
@@ -574,7 +668,7 @@ namespace detail {
 // - to use like temp_mean<accumulable_weighted_access>::template acc
 // in place of WeightedMean
 // - sample use may be accumulable_weighted_grey_access / etc.
-
+//
 template <template<class> class ACCU_ACCESS>
 struct temp_sum_squared_diff;
 
@@ -598,11 +692,34 @@ struct temp_sum_squared_diff
                                           temp_mean<ACCU_ACCESS>::template acc>
     {};
 };
+//
+// end of design study for mean and second moment for templated things
+
+
+template <class T, template<class> class CV>
+struct gen_calculator_base
+    : public calculator_base<typename CV<T>::type, CV<T>::flags>
+{
+    typedef typename CV<T>::type type;
+};
+
+template <class T>
+struct value_calculator_base
+    : public gen_calculator_base<T, accumulable_value_access> {};
+
+template <class T>
+struct coord_calculator_base
+    : public gen_calculator_base<T, accumulable_coord_access> {};
+
+template <class T>
+struct weighted_calculator_base
+    : public gen_calculator_base<T, accumulable_weighted_access> {};
+
 
 template <class T, template<class> class CV,
                    template<class> class SUM_SQUARED_DIFF>
 struct gen_variance_calc
-    : public calculator_base<typename CV<T>::type>,
+    : public gen_calculator_base<T, CV>,
       public type_lists::implies_template<T, SUM_SQUARED_DIFF>
 {
     template <class ACX>
@@ -620,16 +737,26 @@ namespace acc {
 template <class T>
 struct Variance
     : public detail::gen_variance_calc<T, detail::accumulable_value_access,
-                                          Moment2> {};
+                                          Moment2>
+{
+    static std::string name() { return "variance"; }
+};
+
 template <class T>
 struct CoordVariance
     : public detail::gen_variance_calc<T, detail::accumulable_coord_access,
-                                          CoordMoment2> {};
+                                          CoordMoment2>
+{
+    static std::string name() { return "coord variance"; }
+};
 
 template <class T>
 struct WeightedVariance
     : public detail::gen_variance_calc<T, detail::accumulable_weighted_access,
-                                          WeightedMoment2> {};
+                                          WeightedMoment2>
+{
+    static std::string name() { return "weighted variance"; }
+};
 
 } // namespace acc
 
@@ -656,31 +783,40 @@ template <class T>
 struct UnbiasedVariance
     : public detail::gen_unbiased_variance_calc<T,
                                                detail::accumulable_value_access,
-                                               Moment2> {};
+                                               Moment2>
+{
+    static std::string name() { return "unbiased variance"; }
+};
 template <class T>
 struct CoordUnbiasedVariance
     : public detail::gen_unbiased_variance_calc<T,
                                                detail::accumulable_coord_access,
-                                               CoordMoment2> {};
+                                               CoordMoment2>
+{
+    static std::string name() { return "coord unbiased variance"; }
+};
 template <class T>
 struct WeightedUnbiasedVariance
     : public detail::gen_unbiased_variance_calc<T,
                                             detail::accumulable_weighted_access,
-                                            WeightedMoment2> {};
+                                            WeightedMoment2>
+{
+    static std::string name() { return "weighted unbiased variance"; }
+};
 
 } // namespace acc
 
 namespace detail {
 
 template <class T, template<class> class CV, template<class> class SELF>
-struct gen_sum_acc : public numeric_accumulator_base<T, typename CV<T>::type>
+struct gen_sum_acc : public gen_accumulator_base<T, CV>
 {
     /** update sum
     */
     template <class ACX>
     void updatePass1(ACX &, const T & v)
     {
-        this->add_val(CV<T>::get(v));
+        this->add_val(this->get(v));
     }
     /** update average, using weighted input.
      * <tt>stats(value, 1.0)</tt> is equivalent to the unweighted
@@ -690,7 +826,7 @@ struct gen_sum_acc : public numeric_accumulator_base<T, typename CV<T>::type>
     template <class ACX>
     void updatePass1(ACX &, const T & v, double weight)
     {
-        this->add_val(CV<T>::get(v) * weight);
+        this->add_val(this->get(v) * weight);
     }
     /** merge two statistics: z === *this <- (x, y)
     */
@@ -707,17 +843,39 @@ namespace acc {
 
 template <class T>
 struct Sum
-    : public detail::gen_sum_acc<T, detail::accumulable_value_access, Sum> {};
+    : public detail::gen_sum_acc<T, detail::accumulable_value_access, Sum>
+{
+    static std::string name() { return "sum"; }
+};
 
 template <class T>
 struct CoordSum
     : public detail::gen_sum_acc<T, detail::accumulable_coord_access, CoordSum>
-{};
+{
+    static std::string name() { return "coord sum"; }
+};
 
 template <class T>
 struct WeightedSum
     : public detail::gen_sum_acc<T, detail::accumulable_weighted_access,
-                                    WeightedSum> {};
+                                    WeightedSum>
+{
+    static std::string name() { return "weighted sum"; }
+};
+
+template <class T>
+struct CenterOfMass
+    : public detail::coord_calculator_base<T>,
+      public type_lists::implies_template<T, Sum, WeightedSum>
+{
+    template <class ACX>
+    void calculate(const ACX & x) const
+    {
+        using namespace detail;
+        this->set_val(use<WeightedSum>::val(x) / use<Sum>::val(x));
+    }
+    static std::string name() { return "center of mass"; }
+};
 
 } // namespace acc
 
@@ -727,20 +885,20 @@ template <unsigned n, class T, template<class> class CV,
                                template<class> class MEAN,
                                template<class> class SELF>
 struct gen_central_moment_acc2
-    : public numeric_accumulator_base<T, typename CV<T>::type>,
-      public type_lists::implies_template<T, MEAN>
+    : public gen_accumulator_base<T, CV>
 {
     static const unsigned number_of_passes = 2;
     // reset() and unimplemented variants
-    using numeric_accumulator_base<T, typename CV<T>::type>::operator();
+    using gen_accumulator_base<T, CV>::operator();
 
     template <class ACX> void updatePass1(ACX &, const T &) {} // pass 1
+    template <class ACX> void updatePass1(ACX &, const T &, double) {} // pass 1
     
     template <class ACX>
     void updatePassN(ACX & x, const T & v, unsigned pass) // pass 2
     {
         if (test_pass<ACX, 2>(pass))
-            this->add_val(power<n>(CV<T>::get(v) - use<MEAN>::f_val(x)));
+            this->add_val(power<n>(this->get(v) - use<MEAN>::f_val(x)));
     }
 };
 
@@ -748,21 +906,11 @@ template <class T, template<class> class CV,
                    template<class> class MEAN,
                    template<class> class SELF>
 struct gen_central_moment2_acc2
-    : public gen_central_moment_acc2<2, T, CV, MEAN, SELF>
+    : public gen_central_moment_acc2<2, T, CV, MEAN, SELF>,
+      public gen_sum_squared_diff_merge<T, SELF, MEAN>,
+      public type_lists::implies_template<T, MEAN>
 {
-    /** merge two statistics: z === *this <- (x, y)
-    */
-    template <class ACX>
-    void merge(const ACX & z, const ACX & x, const ACX & y)
-    {
-        double count_x = use<acc::Count>::val(x);
-        double count_y = use<acc::Count>::val(y);
-        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
-        this->set_val(  use<SELF>::val(x)
-                      + use<SELF>::val(y)
-                      + count_x * count_y / (count_x + count_y)
-                        * power<2>(delta));
-    }
+    using gen_sum_squared_diff_merge<T, SELF, MEAN>::merge;
 };
 
 template <class T, template<class> class CV,
@@ -770,8 +918,10 @@ template <class T, template<class> class CV,
                    template<class> class MOMENT2,
                    template<class> class SELF>
 struct gen_central_moment3_acc2
-    : public gen_central_moment_acc2<3, T, CV, MEAN, SELF>
+    : public gen_central_moment_acc2<3, T, CV, MEAN, SELF>,
+      public type_lists::implies_template<T, MEAN, MOMENT2>
 {
+    typedef typename gen_central_moment3_acc2::result_type result_type;
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
@@ -780,7 +930,7 @@ struct gen_central_moment3_acc2
         double count_x = use<acc::Count>::val(x);
         double count_y = use<acc::Count>::val(y);
         double count = count_x + count_y;
-        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
+        result_type delta = use<MEAN>::val(y) - use<MEAN>::val(x);
         this->set_val(  use<SELF>::val(x)
                       + use<SELF>::val(y)
                       + count_x * count_y * (count_x - count_y)
@@ -796,8 +946,10 @@ template <class T, template<class> class CV,
                    template<class> class MOMENT3,
                    template<class> class SELF>
 struct gen_central_moment4_acc2
-    : public gen_central_moment_acc2<4, T, CV, MEAN, SELF>
+    : public gen_central_moment_acc2<4, T, CV, MEAN, SELF>,
+      public type_lists::implies_template<T, MEAN, MOMENT2, MOMENT3>
 {
+    typedef typename gen_central_moment4_acc2::result_type result_type;
     /** merge two statistics: z === *this <- (x, y)
     */
     template <class ACX>
@@ -808,7 +960,7 @@ struct gen_central_moment4_acc2
         double count_x_2 = power<2>(use<acc::Count>::val(x));
         double count_y_2 = power<2>(use<acc::Count>::val(y));
         double count = count_x + count_y;
-        double delta = use<MEAN>::val(y) - use<MEAN>::val(x);
+        result_type delta = use<MEAN>::val(y) - use<MEAN>::val(x);
         this->set_val(  use<SELF>::val(x)
                       + use<SELF>::val(y)
                       + count_x * count_y
@@ -830,55 +982,89 @@ template <class T>
 struct Moment2_2Pass
     : public detail::gen_central_moment2_acc2<T,
                                               detail::accumulable_value_access,
-                                              Mean, Moment2_2Pass> {};
+                                              Mean, Moment2_2Pass>
+{
+    static std::string name() { return "moment2 2-pass"; }
+};
+
 template <class T>
 struct Moment3
     : public detail::gen_central_moment3_acc2<T,
                                               detail::accumulable_value_access,
-                                              Mean, Moment2_2Pass, Moment3> {};
+                                              Mean, Moment2_2Pass, Moment3>
+{
+    static std::string name() { return "moment3"; }
+};
+
 template <class T>
 struct Moment4
     : public detail::gen_central_moment4_acc2<T,
                                               detail::accumulable_value_access,
                                               Mean, Moment2_2Pass, Moment3,
-                                              Moment4> {};
+                                              Moment4>
+{
+    static std::string name() { return "moment4"; }
+};
 
 template <class T>
 struct CoordMoment2_2Pass
     : public detail::gen_central_moment2_acc2<T,
                                               detail::accumulable_coord_access,
-                                              CoordMean, CoordMoment2_2Pass> {};
+                                              CoordMean, CoordMoment2_2Pass>
+{
+    static std::string name() { return "coord moment2 2-pass"; }
+};
+
 template <class T>
 struct CoordMoment3
     : public detail::gen_central_moment3_acc2<T,
                                               detail::accumulable_coord_access,
                                               CoordMean, CoordMoment2_2Pass,
-                                              CoordMoment3> {};
+                                              CoordMoment3>
+{
+    static std::string name() { return "coord moment3"; }
+};
+
 template <class T>
 struct CoordMoment4
     : public detail::gen_central_moment4_acc2<T,
                                               detail::accumulable_coord_access,
                                               CoordMean, CoordMoment2_2Pass,
-                                              CoordMoment3, CoordMoment4> {};
+                                              CoordMoment3, CoordMoment4>
+{
+    static std::string name() { return "coord moment4"; }
+};
 
 template <class T>
 struct WeightedMoment2_2Pass
     : public detail::gen_central_moment2_acc2<T,
                                               detail::accumulable_weighted_access,
                                               WeightedMean,
-                                              WeightedMoment2_2Pass> {};
+                                              WeightedMoment2_2Pass>
+{
+    static std::string name() { return "weighted moment2 2-pass"; }
+};
+
 template <class T>
 struct WeightedMoment3
     : public
         detail::gen_central_moment3_acc2<T, detail::accumulable_weighted_access,
                                          WeightedMean, WeightedMoment2_2Pass,
-                                         WeightedMoment3> {};
+                                         WeightedMoment3>
+{
+    static std::string name() { return "weighted moment3"; }
+};
+                                         
 template <class T>
 struct WeightedMoment4
     : public
         detail::gen_central_moment4_acc2<T, detail::accumulable_weighted_access,
                                          WeightedMean, WeightedMoment2_2Pass,
-                                         WeightedMoment3, WeightedMoment4> {};
+                                         WeightedMoment3, WeightedMoment4>
+{
+    static std::string name() { return "weighted moment4"; }
+};
+
 } // namespace acc
 
 namespace detail {
@@ -887,7 +1073,7 @@ template <class T, template<class> class CV,
                    template<class> class M2_ACC2,
                    template<class> class M3_ACC2>
 struct gen_skewness_calc2
-    : public calculator_base<typename CV<T>::type>,
+    : public gen_calculator_base<T, CV>,
       public type_lists::implies_template<T, M2_ACC2, M3_ACC2>
 {
     template <class ACX>
@@ -906,17 +1092,27 @@ namespace acc {
 template <class T>
 struct Skewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_value_access,
-                                           Moment2_2Pass, Moment3> {};
+                                           Moment2_2Pass, Moment3>
+{
+    static std::string name() { return "skewness"; }
+};
+
 template <class T>
 struct CoordSkewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_coord_access,
-                                           CoordMoment2_2Pass, CoordMoment3> {};
+                                           CoordMoment2_2Pass, CoordMoment3>
+{
+    static std::string name() { return "coord skewness"; }
+};
+
 template <class T>
 struct WeightedSkewness
     : public detail::gen_skewness_calc2<T, detail::accumulable_weighted_access,
                                            WeightedMoment2_2Pass,
                                            WeightedMoment3>
-{};
+{
+    static std::string name() { return "weighted skewness"; }
+};
 
 } // namespace acc
 
@@ -926,7 +1122,7 @@ template <class T, template<class> class CV,
                    template<class> class M2_ACC2,
                    template<class> class M4_ACC2>
 struct gen_kurtosis_calc2
-    : public calculator_base<typename CV<T>::type>,
+    : public gen_calculator_base<T, CV>,
       public type_lists::implies_template<T, M2_ACC2, M4_ACC2>
 {
     template <class ACX>
@@ -943,29 +1139,97 @@ namespace acc {
 template <class T>
 struct Kurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_value_access,
-                                           Moment2_2Pass, Moment4> {};
+                                           Moment2_2Pass, Moment4>
+{
+    static std::string name() { return "kurtosis"; }
+};
+                                           
 template <class T>
 struct CoordKurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_coord_access,
-                                           CoordMoment2_2Pass, CoordMoment4> {};
+                                           CoordMoment2_2Pass, CoordMoment4>
+{
+    static std::string name() { return "coord kurtosis"; }
+};
+                                           
 template <class T>
 struct WeightedKurtosis
     : public detail::gen_kurtosis_calc2<T, detail::accumulable_weighted_access,
                                            WeightedMoment2_2Pass,
                                            WeightedMoment4>
-{};
+{
+    static std::string name() { return "weighted kurtosis"; }
+};
+
 
 } // namespace acc
 
 namespace detail {
 
-template <class T, template<class> class CV, template<class> class SELF>
-struct gen_min_acc : public collector_base<T, typename CV<T>::type>
+template<class X> // use the dereferenced (update) type for accumulation
+struct plain_collector_load
 {
-    typedef typename gen_min_acc::collector_base_type collector_base_type;
+    typedef X type;
+};
+
+template<class X> // use an explicitly specified type for accumulation
+struct collector_load_is
+{
+    template<class>
+    struct temp
+    {
+        typedef X type;
+    };
+};
+
+template <class T, template<class> class CV,
+                   template<class> class LOAD = plain_collector_load>
+struct gen_collector_base
+    : public collector_base<T, typename
+                               LOAD<typename CV<T>::type>::type, CV<T>::flags>
+{
+    typedef typename CV<T>::type type;
+    type get(const T & v) { return CV<T>::get(v); }
+};
+
+template <class T, template<class> class LOAD = plain_collector_load>
+struct value_collector_base
+    : public gen_collector_base<T, accumulable_value_access, LOAD> {};
+
+template <class T, template<class> class LOAD = plain_collector_load>
+struct coord_collector_base
+    : public gen_collector_base<T, accumulable_coord_access, LOAD> {};
+
+template <class T, template<class> class LOAD = plain_collector_load>
+struct weighted_collector_base
+    : public gen_collector_base<T, accumulable_weighted_access, LOAD> {};
+
+template <class T, class V>
+struct counting_value_collector_base
+    : public value_collector_base<T, collector_load_is<V>::template temp>
+{};
+template <class T, class V>
+struct counting_coord_collector_base
+    : public coord_collector_base<T, collector_load_is<V>::template temp>
+{};
+template <class T, class V>
+struct counting_weighted_collector_base
+    : public weighted_collector_base<T, collector_load_is<V>::template temp>
+{};
+
+// no features_double_promote for min and max.
+template <class T, template<class> class CV>
+struct gen_plain_collector_base
+    : public gen_collector_base<T, CV> {};
+
+
+template <class T, template<class> class CV, template<class> class SELF>
+struct gen_min_acc : public gen_plain_collector_base<T, CV>
+{
+    typedef typename gen_min_acc::type type;
     void reset()
     {
-        this->set_val(NumericTraits<typename CV<T>::type>::max());
+        this->set_val(NumericTraits<type>::max());
     }
     gen_min_acc()
     {
@@ -976,7 +1240,7 @@ struct gen_min_acc : public collector_base<T, typename CV<T>::type>
     template <class ACX>
     void updatePass1(ACX &, const T & v, double = 0)
     {
-        updateMin(this->value, CV<T>::get(v));
+        updateMin(this->value, this->get(v));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
@@ -989,12 +1253,12 @@ struct gen_min_acc : public collector_base<T, typename CV<T>::type>
 };
 
 template <class T, template<class> class CV, template<class> class SELF>
-struct gen_max_acc : public collector_base<T, typename CV<T>::type>
+struct gen_max_acc : public gen_plain_collector_base<T, CV>
 {
-    typedef typename gen_max_acc::collector_base_type collector_base_type;
+    typedef typename gen_max_acc::type type;
     void reset()
     {
-        this->set_val(NumericTraits<typename CV<T>::type>::min());
+        this->set_val(NumericTraits<type>::min());
     }
     gen_max_acc()
     {
@@ -1005,7 +1269,7 @@ struct gen_max_acc : public collector_base<T, typename CV<T>::type>
     template <class ACX>
     void updatePass1(ACX &, const T & v, double = 0)
     {
-        updateMax(this->value, CV<T>::get(v));
+        updateMax(this->value, this->get(v));
     }
     /** merge two statistics: z === *this <- (x, y)
     */
@@ -1022,37 +1286,80 @@ struct gen_max_acc : public collector_base<T, typename CV<T>::type>
 namespace acc {
 
 template <class T>
-struct Min : public gen_min_acc<T, detail::accumulable_value_access, Min> {};
+struct Min
+    : public detail::gen_min_acc<T, detail::accumulable_value_access, Min>
+{
+    static std::string name() { return "min"; }
+};
 template <class T>
 struct CoordMin
-    : public gen_min_acc<T, detail::accumulable_coord_access, CoordMin> {};
-template <class T>
-struct WeightedMin
-    : public gen_min_acc<T, detail::accumulable_weighted_access, WeightedMin>
-{};
+    : public detail::gen_min_acc<T, detail::accumulable_coord_access, CoordMin>
+{
+    static std::string name() { return "coord min"; }
+};
 
 template <class T>
-struct Max : public gen_max_acc<T, detail::accumulable_value_access, Max> {};
+struct WeightedMin
+    : public detail::gen_min_acc<T, detail::accumulable_weighted_access,
+                                    WeightedMin>
+{
+    static std::string name() { return "weighted min"; }
+};
+
+template <class T>
+struct Max
+    : public detail::gen_max_acc<T, detail::accumulable_value_access, Max>
+{
+    static std::string name() { return "max"; }
+};
 template <class T>
 struct CoordMax
-    : public gen_max_acc<T, detail::accumulable_coord_access, CoordMax> {};
+    : public detail::gen_max_acc<T, detail::accumulable_coord_access, CoordMax>
+{
+    static std::string name() { return "coord max"; }
+};
 template <class T>
 struct WeightedMax
-    : public gen_max_acc<T, detail::accumulable_weighted_access, WeightedMax>
-{};
+    : public detail::gen_max_acc<T, detail::accumulable_weighted_access,
+                                    WeightedMax>
+{
+    static std::string name() { return "weighted max"; }
+};
+
+template <class T>
+struct OctetHistogram
+    : public detail::counting_value_collector_base<T, TinyVector<double, 256> >
+{
+    typedef typename OctetHistogram::type type;
+    /** update
+    */
+    template <class ACX>
+    void updatePass1(ACX &, const T & v, double weight = 1)
+    {
+        type pos = this->get(v);
+        if (pos > 255)
+            pos = 255;
+        if (pos < 0)
+            pos = 0;
+        this->value[static_cast<unsigned>(pos)] += weight;
+    }
+    /** merge two statistics: z === *this <- (x, y)
+    */
+    template <class ACX>
+    void merge(const ACX & z, const ACX & x, const ACX & y)
+    {
+        using namespace detail;
+        this->set_val(  use_d<OctetHistogram>::val(x)
+                      + use_d<OctetHistogram>::val(y));
+    }
+    static std::string name() { return "octet histogram"; }
+};
 
 } // namespace acc
 
 // -- end feature template classes --
 
 namespace detail {
-
-template <class T>
-struct std_accumulate_adder // proxy object for accu_context_base::operator+
-{
-    const T & v;
-    std_accumulate_adder(const T & v_) : v(v_) {}
-};
 
 struct BinderReset
 {
@@ -1147,12 +1454,13 @@ struct v_feature_dispatch
     };
 };
 
-template <class T, class L,
+template <class T, class L, class EXTRACTOR = type_lists::nil,
           template<class, template<class> class TES>
           class TUPLE = type_lists::tuple>
 struct feature_context_base
     : public TUPLE<L, passes<2>::template at_least>
 {
+    typedef EXTRACTOR            extractor_type;
     typedef feature_context_base feature_context_base_type;
 
     template <class V>
@@ -1215,13 +1523,26 @@ struct feature_context_base
         return soft_value< V<T> >();
     }
 
+    // default implementations to be used by accu_context_base:
     template <class, class A> void calculate(A &) const {}
     template <template<class> class, class A> void calculate_template(A &) const
     {}
+    template <class V, class ACX>
+    void set_accs(ACX &)
+    {
+        this->template set<V>();
+    }
+    template <class V, class ACX>
+    bool is_set_accs(const ACX &) const
+    {
+        return this->template is_set<V>();
+    }
 };
 
-template <class T, class L>
-struct calc_context : public feature_context_base<T, L>
+// calculators -- using just use an ordinary static type_lists::tuple, i.e.,
+// they are always available, although not necessarily with meaningful results.
+template <class T, class L, class EXTRACTOR = type_lists::nil>
+struct calc_context : public feature_context_base<T, L, EXTRACTOR>
 {
     // by-need calculation via get::val
     template <class V, class ACX>
@@ -1233,6 +1554,40 @@ struct calc_context : public feature_context_base<T, L>
     void calculate_template(ACX & x) const
     {
         this->template calculate< V<T> >(x);
+    }
+    // set_accs(): set all accumulators that are implied by calculator class V
+    template <class V>
+    struct set_accs_op
+    {
+        template <class ACX>
+        static void exec(ACX & x)
+        {
+            x.template set_accs<V>(x);
+        }
+    };
+    template <class V, class ACX>
+    void set_accs(ACX & x) const
+    {
+        type_lists::for_all_implied<V, set_accs_op>(x);
+    }
+    // consider a calculator as set if all implied features are (considered to
+    // be) set:
+    template <class V>
+    struct is_set_accs_op
+    {
+        template <class PAIR>
+        static void exec(PAIR & z)
+        {
+            *z.first = *z.first && z.second->template is_set<V>();
+        }
+    };
+    template <class V, class ACX>
+    bool is_set_accs(const ACX & x) const
+    {
+        bool ret = true; // OK if there are no implied features
+        std::pair<bool*, const ACX*> z(&ret, &x); // std::pair vetoes references
+        type_lists::for_all_implied<V, is_set_accs_op>(z);
+        return ret;
     }
 };
 
@@ -1251,15 +1606,21 @@ struct feature_types
         sync_list; // calculators that are used by passes >= 2
     static const unsigned max_passes
         = type_lists::max_value<passes_number, unsigned, accu_list>::value;
+    // base class for extractors:
+    typedef typename type_lists::map_unique<get_result_type, list>::type
+        result_type_list;
+    typedef extractor_base<result_type_list> extractor_type;
 };
 
 template <class T, class L, template<class, template<class> class TEST>
                             class TUPLE = type_lists::tuple>
 struct accu_context_base
     : public feature_context_base<T, typename feature_types<L>::accu_list,
+                                     typename feature_types<L>::extractor_type,
                                   TUPLE>,
       public UnaryAnalyserTag
 {
+    typedef          accu_context_base                            feature_type;
     typedef typename accu_context_base::tuple_type                base_type;
     typedef typename accu_context_base::list_type                 list_type;
     typedef typename accu_context_base::feature_context_base_type feature_cx;
@@ -1267,10 +1628,23 @@ struct accu_context_base
     typedef          feature_types<L>                             feature_lists;
     static const unsigned max_passes = feature_lists::max_passes;
 
+    // for Python interface and similar:
+    typedef typename accu_context_base::extractor_type extractor_type;
+
+    typedef typename feature_lists::list                          full_list;
+    typedef typename feature_lists::accu_list                     accu_list;
+    typedef typename feature_lists::calc_list                     calc_list;
     // features that do not require even a single pass:
     typedef typename feature_lists::sync_list                     sync_list;
-    typedef calc_context<T, typename feature_lists::calc_list>    calc_type;
-    calc_type                                                     calculators;
+    typedef calc_context<T, calc_list, extractor_type>            calc_type;
+
+    calc_type calculators;
+    unsigned  number_of_passes;
+    accu_context_base() : number_of_passes(0) { update_number_of_passes(); }
+
+    static const unsigned accu_size = type_lists::size<accu_list>::of;
+    static const unsigned calc_size = type_lists::size<calc_list>::of;
+    static const unsigned size = accu_size + calc_size;
 
     template <template<class> class V> // works around cl.exe bugs
     struct has_feature
@@ -1280,6 +1654,8 @@ struct accu_context_base
             || calc_type::template has_element< V<T> >::value;
     };
 
+    // use type feature_cx here in place of accu_context_base to
+    // prevent infinite recursion.
     template <class V>
     struct chooser : public type_lists::choose_tuple<V, list_type,
                                                      feature_cx, calc_type>
@@ -1290,12 +1666,34 @@ struct accu_context_base
         return chooser<V>::ref(*this, calculators);
     }
     template <class V>
-    typename chooser<V>::ref_type ref() const
+    typename chooser<V>::const_ref_type ref() const
     {
         return chooser<V>::ref(*this, calculators);
     }
  
-     // dispatch value requests to calculators and collectors:
+    // dispatch sub-accumulator member requests to calculators and collectors:
+    template <class V>
+    const V & member() const
+    {
+        return static_cast<const V &>(ref<V>());
+    }
+    template <class V>
+    V & member()
+    {
+        return static_cast<V &>(ref<V>());
+    }
+    template <template<class> class V>
+    const V<T> & member_template() const
+    {
+        return member< V<T> >();
+    }
+    template <template<class> class V>
+    V<T> & member_template()
+    {
+        return member< V<T> >();
+    }
+
+    // dispatch value requests to calculators and collectors:
     template <class V>
     const typename V::result_type & value() const
     {
@@ -1342,16 +1740,45 @@ struct accu_context_base
         return static_cast_2<const derived_type, const base_type>(*this);
     }
 
+    template <class V>
+    struct number_of_passes_op
+    {
+        template <class ACX>
+        static void exec(ACX & x)
+        {
+            const unsigned number_of_passes = V::number_of_passes;
+            if (x.template is_set<V>())
+               updateMax(x.number_of_passes, number_of_passes);
+        }
+    };
+    void update_number_of_passes()
+    {
+        type_lists::for_all<accu_list, number_of_passes_op>(*this);
+    }
+
+    template <class V>
+    void set()
+    {
+        chooser<V>::at(*this, calculators).template set_accs<V>(*this);
+        // the number of passes may have been increased:
+        update_number_of_passes();
+    }
     template <template<class> class V>
     void set_template()
     {
-        this->template set< V<T> >();
+        set< V<T> >();
     }
 
+    template <class V>
+    bool is_set() const
+    {
+        return chooser<V>::at(*this, calculators).template
+                                                  is_set_accs<V>(*this);
+    }
     template <template<class> class V>
     bool is_set_template() const
     {
-        return chooser<V<T> >::at(*this, calculators).template is_set<V<T> >();
+        return is_set< V<T> >();
     }
 
     template <class V, class ACX>
@@ -1395,7 +1822,7 @@ struct accu_context_base
         BinderPass1<accu_context_base, T> binder(*this, v);
         base_type::exec_bound(binder);
     }
-    /** update using weighted input
+    /** update using weighted input -> not yet completed.
     */
     void operator()(const T & v, double weight)
     {
@@ -1428,30 +1855,26 @@ struct accu_context_base
         return pass_n_dispatch(*this, n);
     }
 
-    /** update for std::accumulate
+    unsigned numberOfPasses()
+    {
+        return number_of_passes;
+    }
+
+    /** select accumulators that are set on the operand
     */
-    std_accumulate_adder<T> operator+(const T & v)
+    void selectSelected(const accu_context_base & x)
     {
-        return std_accumulate_adder<T>(v);
-    }
-    accu_context_base & operator=(std_accumulate_adder<T> & adder)
-    {
-        operator()(adder.v);
-        return *this;
-    }
-    accu_context_base & operator+=(const T & v)
-    {
-        operator()(v);
-        return *this;
+        // merge set features (if any):
+        x.transfer_set_to(*this);
     }
 
     /** merge two statistics: *this <- (x, y)
     */
     void operator()(const accu_context_base & x0, const accu_context_base & y0)
     {
-        // first, merge set features (if any):
-        x0.transfer_set_to(*this);
-        y0.transfer_set_to(*this);
+        // first, merge the selection of accumulators (if any):
+        selectSelected(x0);
+        selectSelected(y0);
         copy_if_same_as<accu_context_base> x(x0, *this);
         copy_if_same_as<accu_context_base> y(y0, *this);
 
@@ -1465,6 +1888,13 @@ struct accu_context_base
         operator()(*this, x);
     }
 
+    /** names of all accumulators and calculators
+    */
+//     ... names()()
+//     {
+//         ...;
+//     }
+
     // compatibility with ArrayOfRegionStatistics
     typedef T argument_type;
     typedef void result_type;
@@ -1473,8 +1903,8 @@ struct accu_context_base
 
 } // namespace detail
 
-// The feature accessing functions get(), select(), and member() are
-// implemented as free template functions, since an implementation as member
+// The feature accessing functions get(), member(), select(), and isSelected()
+// are implemented as free template functions, since an implementation as member
 // functions would necessitate the use of the 'template' disambiguator in cases
 // where they are used within template classes or template functions.
 
@@ -1500,6 +1930,16 @@ select(detail::accu_context_base<T, L, P> & x, typename
                                                                             = 0)
 {
     detail::use<V>::set(x);
+}
+template <template<class> class V,
+          class T, class L, template<class, template<class> class> class P>
+inline bool
+isSelected(detail::accu_context_base<T, L, P> & x, typename
+       enable_if<detail::accu_context_base<T, L, P>::template
+                                                   has_feature<V>::value>::type*
+                                                                            = 0)
+{
+    return detail::use<V>::is_set(x); // always returns true for calculators
 }
 
 template <template<class> class V,
@@ -1537,12 +1977,221 @@ struct NestedAccumulators
     : public detail::accu_context_base<T, L, type_lists::bit_cond_tuple> {};
 
 template <class T, class L>
+struct BitAccumulators
+    : public detail::accu_context_base<T, L, type_lists::bit_tuple> {};
+
+template <class T, class L>
+struct PlainCondAccumulators
+    : public detail::accu_context_base<T, L, type_lists::cond_tuple_plain> {};
+
+template <class T, class L>
+struct CondAccumulators
+    : public detail::accu_context_base<T, L, type_lists::cond_tuple> {};
+
+template <class T, class L>
 struct SelectedAccumulators
     : public detail::accu_context_base<T, L,
         type_lists::cond_virtual_tuple<SelectedAccumulators, T,
                                        detail::v_feature_dispatch>::template
                                                                     type>
 {};
+
+namespace detail {
+
+// Some member functions may take the accumulator object as a parameter despite
+// it being _currently_ unused.
+template <class ACX>
+struct feature_selector_base
+{
+    virtual void select(ACX &) const = 0;
+    virtual bool isSelected(const ACX &) const = 0;
+    virtual std::string name() const = 0;
+    virtual void extract(const ACX &, typename ACX::extractor_type &) const = 0;
+    virtual unsigned numberOfPasses(const ACX &) const = 0;
+    virtual feature_selector_base* clone() const = 0;
+};
+
+// Class feature_selector is the dispatch class to use for bridging runtime
+// access to a number of features (such as within the Python interface) to
+// the compile-time selection of get<>() / select<>() / etc. via C++ symbol
+// names.
+// Class feature_selector has got value semantics and is thus safe to use in,
+// e.g., arrays, or the containers of the standard library.
+// Use get_feature_selectors() to create feature_selector objects corresponding
+// to a certain feature class.
+template <class ACX>
+class feature_selector
+{
+private:
+    typedef feature_selector_base<ACX>* ptr_type;
+    ptr_type p;
+public:
+    feature_selector() : p(0) {}
+    feature_selector(ptr_type p_) : p(p_) {}
+private:
+    void check_pointer() const
+    {
+        if (!p)
+            vigra_fail("class detail::feature_selector: empty object.");
+    }
+public:
+    void select(ACX & x) const
+    {
+        check_pointer();
+        p->select(x);
+    }
+    bool isSelected(const ACX & x) const
+    {
+        check_pointer();
+        return p->isSelected(x);
+    }
+    std::string name() const
+    {
+        check_pointer();
+        return p->name();
+    }
+    void extract(const ACX & x, typename ACX::extractor_type & g) const
+    {
+        check_pointer();
+        p->extract(x, g);
+    }
+    unsigned numberOfPasses(const ACX & x) const
+    {
+        check_pointer();
+        return p->numberOfPasses(x);
+    }
+
+    feature_selector & operator=(const feature_selector & e)
+    {
+        ptr_type tmp = e.p->clone();
+        delete p;
+        p = tmp;
+        return *this;
+    }
+    feature_selector(const feature_selector & e)
+        : p(0)
+    {
+        if (e.p) // properly care for empty original
+            p = e.p->clone();
+    }
+    ~feature_selector()
+    {
+        delete p;
+    }
+};
+
+// These classes map run-time access via the feature_selector wrapper
+// class to class-name based compile-time access to features.
+template <class ACX, class V>
+struct feature_selector_impl : public feature_selector_base<ACX>
+{
+    void select(ACX & x) const
+    {
+        x.template set<V>();
+    }
+    bool isSelected(const ACX & x) const
+    {
+        return x.template is_set<V>();
+    }
+    std::string name() const
+    {
+        return V::name();
+    }
+    void extract(const ACX & x, typename ACX::extractor_type & g) const
+    {
+        x.template member<V>().calculate(x);
+        x.template member<V>().extract(g);
+    }
+    unsigned numberOfPasses(const ACX & x) const
+    {
+        return V::number_of_passes;
+    }
+    feature_selector_impl* clone() const
+    {
+        return new feature_selector_impl(*this);
+    }
+};
+
+template <class ACX>
+struct feature_selector_op
+{
+    template <class V>
+    struct get
+    {
+        template <class OutputIterator>
+        static void exec(OutputIterator & j)
+        {
+            *j = detail::feature_selector<ACX>(
+                                     new detail::feature_selector_impl<ACX, V>);
+            ++j;
+        }
+    };
+};
+// fill a sequence pointed to by an output iterator
+// with feature_selector objects:
+template <class ACX, class OutputIterator>
+void get_feature_selectors(OutputIterator j)
+{
+    type_lists::for_all<typename ACX::full_list,
+                        feature_selector_op<ACX>::template get
+                       >(j);
+}
+
+// N_STRING must be at least explicitly constructible from std::string,
+// and the std::map-like MAP template class must implement two additional member
+// functions, the advisory 'void reserve(unsigned)' as well as
+// std::string name_convert(const N_STRING &) const
+template <class ACX, class N_STRING, template<class, class> class MAP>
+struct selector_name_dispatch
+{
+    typedef feature_selector<ACX>             selector_type;
+    typedef MAP<N_STRING, selector_type>      map_type;
+    typedef typename map_type::const_iterator const_iterator;
+    static const unsigned size = ACX::size;
+    map_type selectors;
+    selector_name_dispatch()
+    {
+        selector_type input[size];
+        get_feature_selectors<ACX>(input);
+        selectors.reserve(size);
+        for (unsigned i = 0; i != size; ++i)
+            selectors[N_STRING(input[i].name())] = input[i];
+    }
+    template <class OutputIterator>
+    void names(OutputIterator j) const
+    {
+        for (const_iterator i = selectors.begin(); i != selectors.end();
+                                                                       ++i, ++j)
+            *j = (*i).first;
+    }
+    const selector_type & ref(const N_STRING & name) const
+    {
+        const_iterator i = selectors.find(name);
+        if (i == selectors.end())
+            vigra_fail("A feature named '" + selectors.name_convert(name)
+                       + "' was not found.");
+        return (*i).second;
+    }
+    void select(const N_STRING & n, ACX & x) const
+    {
+        ref(n).select(x);
+    }
+    bool isSelected(const N_STRING & n, const ACX & x) const
+    {
+        return ref(n).isSelected(x);
+    }
+    void extract(const N_STRING & n, const ACX & x, typename
+                                     ACX::extractor_type & g) const
+    {
+        ref(n).extract(x, g);
+    }
+    unsigned numberOfPasses(const N_STRING & n, const ACX & x) const
+    {
+        return ref(n).numberOfPasses(x);
+    }
+};
+
+} // namespace detail
 
 // mask cl.exe shortcomings [end]
 #if defined(_MSC_VER)

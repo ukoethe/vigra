@@ -583,6 +583,7 @@ void test3()
 
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
 
+    // tests for merge of count and mean
     my_mean2(my_mean2, my_mean);
     shouldEqual(detail::use<acc::Count>::f_val(my_mean2), 200);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_mean2), 49.5, 2e-15);
@@ -601,7 +602,7 @@ void test3()
 
     // begin copy constructor tests.
     mean_context<BImage::PixelType> my_mean5;
-    my_mean4.transfer_set_to(my_mean5);
+    my_mean4.transfer_set_to(my_mean5); // test merge
 
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
     shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
@@ -619,7 +620,7 @@ void test3()
     shouldEqualTolerance(get<acc::Mean>(my_v_mean2), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
     shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
-    my_v_mean2(test_v_mean);
+    my_v_mean2(test_v_mean); // test merge of count and mean
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 100);
     shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean2), 200);
@@ -630,7 +631,7 @@ void test3()
 
     shouldEqual(get<acc::Count>(my_v_mean), 100);
     shouldEqualTolerance(get<acc::Mean>(my_v_mean), 0, 2e-15);
-    my_v_mean(test_v_mean);
+    my_v_mean(test_v_mean); // test merge of count and mean
     shouldEqual(detail::use<acc::Count>::f_val(my_v_mean), 200);
     shouldEqualTolerance(detail::use<acc::Mean>::f_val(my_v_mean), 24.75, 2e-15); // not a bug, but a feature..
 
@@ -641,7 +642,7 @@ void test3()
     my_v_mean3->reset();
     shouldEqualTolerance(get<acc::Count>(*my_v_mean3), 0, 2e-15);
     shouldEqualTolerance(get<acc::Mean>(*my_v_mean3), 0, 2e-15);
-    (*my_v_mean3)(test_v_mean);
+    (*my_v_mean3)(test_v_mean); // test merge of count and mean
     shouldEqual(get<acc::Count>(*my_v_mean3), 100);
     shouldEqualTolerance(get<acc::Mean>(*my_v_mean3), 49.5, 2e-15);
     cvmc* my_v_mean4 = new cvmc;
@@ -651,7 +652,7 @@ void test3()
     delete my_v_mean3;
     shouldEqual(get<acc::Count>(*my_v_mean5), 100);
     shouldEqualTolerance(get<acc::Mean>(*my_v_mean5), 49.5, 2e-15);
-    (*my_v_mean4)(*my_v_mean5, *my_v_mean5);
+    (*my_v_mean4)(*my_v_mean5, *my_v_mean5); // test merge of count and mean
     shouldEqual(get<acc::Count>(*my_v_mean4), 200);
     shouldEqualTolerance(get<acc::Mean>(*my_v_mean4), 49.5, 2e-15);
     // end copy constructor tests.
@@ -698,8 +699,8 @@ void test4()
     test_acc(static_cast<float>(100.2));
     test_acc(1023);
     shouldEqual(get<acc::Count>(test_acc), 3);
-    shouldEqualTolerance(get<acc::Mean>(test_acc), 374.799987792969, 3e-6);
-    shouldEqualTolerance(get<acc::Variance>(test_acc), 211715.125, 2e-6);
+    shouldEqualTolerance(get<acc::Mean>(test_acc), 374.799998998642, 3e-6);
+    shouldEqualTolerance(get<acc::Variance>(test_acc), 211715.120546799, 2e-6);
     
     unsigned h = 19;
     unsigned w = 10;

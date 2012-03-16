@@ -276,6 +276,7 @@ struct accumulable_coord_access<StridePairPointer<N, T> >
     typedef StridePairPointer<N, T> accumulable_type;
     typedef typename accumulable_type::coord_num_type type;
     static const type & get(const accumulable_type & v) { return v.coord(); }
+    static const ExtractorInfo::Flags flags = ExtractorInfo::IsCoordinate;
 };
 
 template<unsigned N, class T>
@@ -284,6 +285,7 @@ struct accumulable_value_access<StridePairPointer<N, T> >
     typedef StridePairPointer<N, T> accumulable_type;
     typedef T type;
     static const type & get(const accumulable_type & v) { return v.value(); }
+    static const ExtractorInfo::Flags flags = ExtractorInfo::None;
 };
 
 template<unsigned N, class T>
@@ -295,6 +297,7 @@ struct accumulable_weighted_access<StridePairPointer<N, T> >
     {
         return weighted_abs<T>::get(v.value()) * v.coord();
     }
+    static const ExtractorInfo::Flags flags = ExtractorInfo::IsCoordinate;
 };
 
 template<class X>

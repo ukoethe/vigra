@@ -482,6 +482,7 @@ struct NumericTraits
     typedef Error_NumericTraits_not_specialized_for_this_case Promote;
     typedef Error_NumericTraits_not_specialized_for_this_case UnsignedPromote;
     typedef Error_NumericTraits_not_specialized_for_this_case RealPromote;
+    typedef Error_NumericTraits_not_specialized_for_this_case DoublePromote;
     typedef Error_NumericTraits_not_specialized_for_this_case ComplexPromote;
     typedef Error_NumericTraits_not_specialized_for_this_case ValueType;
 
@@ -499,6 +500,7 @@ struct NumericTraits<char>
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char Promote;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char UnsignedPromote;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char RealPromote;
+    typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char DoublePromote;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ComplexPromote;
     typedef Error_NumericTraits_char_is_not_a_numeric_type__use_signed_char_or_unsigned_char ValueType;
 
@@ -517,6 +519,7 @@ struct NumericTraits<bool>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -557,6 +560,7 @@ struct NumericTraits<signed char>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -602,6 +606,7 @@ struct NumericTraits<unsigned char>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -649,6 +654,7 @@ struct NumericTraits<short int>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -695,6 +701,7 @@ struct NumericTraits<short unsigned int>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -742,6 +749,7 @@ struct NumericTraits<int>
     typedef int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -785,6 +793,7 @@ struct NumericTraits<unsigned int>
     typedef unsigned int Promote;
     typedef unsigned int UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -826,6 +835,7 @@ struct NumericTraits<long>
     typedef long Promote;
     typedef unsigned long UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -869,6 +879,7 @@ struct NumericTraits<unsigned long>
     typedef unsigned long Promote;
     typedef unsigned long UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -911,6 +922,7 @@ struct NumericTraits<long long>
     typedef long long Promote;
     typedef unsigned long long UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -954,6 +966,7 @@ struct NumericTraits<unsigned long long>
     typedef unsigned long long Promote;
     typedef unsigned long long UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -996,6 +1009,7 @@ struct NumericTraits<float>
     typedef float Promote;
     typedef float UnsignedPromote;
     typedef float RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
     
@@ -1026,6 +1040,7 @@ struct NumericTraits<double>
     typedef double Promote;
     typedef double UnsignedPromote;
     typedef double RealPromote;
+    typedef double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -1056,6 +1071,7 @@ struct NumericTraits<long double>
     typedef long double Promote;
     typedef long double UnsignedPromote;
     typedef long double RealPromote;
+    typedef long double DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef Type ValueType;
 
@@ -1088,6 +1104,7 @@ struct NumericTraits<std::complex<T> >
     typedef std::complex<typename NumericTraits<T>::Promote> Promote;
     typedef std::complex<typename NumericTraits<T>::UnsignedPromote> UnsignedPromote;
     typedef std::complex<typename NumericTraits<T>::RealPromote> RealPromote;
+    typedef std::complex<typename NumericTraits<T>::DoublePromote> DoublePromote;
     typedef std::complex<RealPromote> ComplexPromote;
     typedef T ValueType;
 
@@ -1371,6 +1388,15 @@ struct RequiresExplicitCast<double> {
 };
 
 #undef VIGRA_SPECIALIZED_CAST
+
+struct ExtractorInfo
+{
+    enum Flags
+    {
+        None         = 0,
+        IsCoordinate = 1
+    };
+};
 
 } // namespace detail
 

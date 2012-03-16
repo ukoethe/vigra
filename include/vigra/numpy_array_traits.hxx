@@ -81,8 +81,8 @@ struct NumericTraits<Multiband<T> >
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef typename NumericTraits<T>::isSigned isSigned;
-    typedef typename NumericTraits<T>::isSigned isOrdered;
-    typedef typename NumericTraits<T>::isSigned isComplex;
+    typedef typename NumericTraits<T>::isOrdered isOrdered;
+    typedef typename NumericTraits<T>::isComplex isComplex;
 /*
     static signed char zero() { return 0; }
     static signed char one() { return 1; }
