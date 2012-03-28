@@ -340,13 +340,15 @@ template <class VoxelType, unsigned N, template<class, unsigned> class Features>
 struct PythonAccumulatorsBase
     : public Features<VoxelType, N>
 {
+    typedef Features<VoxelType, N>                 base_type;
     typedef NumpyArray<N, Singleband<VoxelType> >  volume_type;
     typedef PythonDispatch<PythonAccumulatorsBase> dispatch_base;
     typedef const dispatch_base &                  dispatch_type;
     typedef typename dispatch_base::selector_type  selector_type;
     typedef PyCoordinatePermutation<N>             permutation_type;
+    typedef typename base_type::feature_type       feature_type;
 
-    static const unsigned size = PythonAccumulatorsBase::feature_type::size;
+    static const unsigned size = feature_type::size;
 
     void select_base(python::str t, dispatch_type dispatch)
     {
@@ -396,9 +398,10 @@ struct PythonAccumulators
     typedef typename PythonAccumulators::extractor_type    extractor_base;
     typedef typename PythonAccumulators::permutation_type  permutation_type;
     typedef PythonExtractor<extractor_base, N>             extractor_type;
+    typedef typename base_type::feature_type               feature_type;
 
     static const unsigned dim = N;
-    static const unsigned size = PythonAccumulators::feature_type::size;
+    static const unsigned size = feature_type::size;
 
     dispatch_type     dispatch;
     permutation_type  my_permutation;
