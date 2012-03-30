@@ -215,7 +215,6 @@ pythonGaussianGradientMagnitude(NumpyArray<ndim, Multiband<VoxelType> > volume,
 template < class VoxelType, unsigned int ndim >
 NumpyAnyArray 
 pythonSymmetricGradientND(NumpyArray<ndim, Singleband<VoxelType> > volume,
-                          double sigma,
                           NumpyArray<ndim, TinyVector<VoxelType, (int)ndim> > res=python::object(),
                           python::object step_size = python::object(1.0), 
                           python::object roi = python::object())
