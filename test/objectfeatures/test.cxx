@@ -881,7 +881,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Mean>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Mean>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][3] =
@@ -901,7 +901,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][3] =
@@ -921,7 +921,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Moment2_2Pass>(test_aors[(k)])).begin(), 2e-13);
         }
 
         {
@@ -942,7 +942,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(const_cast<const accumulators_v2d &>(test_aors[(k)]))).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(const_cast<const accumulators_v2d &>(test_aors[(k)]))).begin(), 2e-13);
         }
 
         {
@@ -963,7 +963,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][3] =
@@ -983,7 +983,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Skewness>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Skewness>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][3] =
@@ -1003,7 +1003,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Kurtosis>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Kurtosis>(test_aors[(k)])).begin(), 2e-13);
         }
          
         {
@@ -1044,7 +1044,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Variance>(test_aors[(k)])).begin(), 2e-13);
         }
 
         {
@@ -1065,7 +1065,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Min>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Min>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][3] =
@@ -1085,7 +1085,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Max>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::Max>(test_aors[(k)])).begin(), 2e-13);
         }
         
         {
@@ -1106,7 +1106,7 @@ void test5()
             };
             TinyVector<double, 3> x;
             x = tab_assign<double, 3>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::UnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::UnbiasedVariance>(test_aors[(k)])).begin(), 2e-13);
         }
 
         {
@@ -1127,7 +1127,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMean>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMean>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1147,7 +1147,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordVariance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordVariance>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1167,7 +1167,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordUnbiasedVariance>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1187,7 +1187,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSkewness>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSkewness>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1207,7 +1207,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordKurtosis>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordKurtosis>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1227,7 +1227,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSum>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordSum>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1247,7 +1247,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1267,7 +1267,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMoment2_2Pass>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1287,7 +1287,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMin>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMin>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1307,7 +1307,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMax>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::CoordMax>(test_aors[(k)])).begin(), 2e-13);
         }
 
         {
@@ -1328,7 +1328,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMean>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMean>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1348,7 +1348,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedVariance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedVariance>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1368,7 +1368,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedUnbiasedVariance>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedUnbiasedVariance>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1388,7 +1388,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSkewness>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSkewness>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1408,7 +1408,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedKurtosis>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedKurtosis>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1428,7 +1428,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSum>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedSum>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1448,7 +1448,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1468,7 +1468,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2_2Pass>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMoment2_2Pass>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1488,7 +1488,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMin>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMin>(test_aors[(k)])).begin(), 2e-13);
         }
         {
             double x_tab[][2] =
@@ -1508,7 +1508,7 @@ void test5()
             };
             TinyVector<double, 2> x;
             x = tab_assign<double, 2>(x, x_tab[(k)]);
-            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMax>(test_aors[(k)])).begin(), 5e-15);
+            shouldEqualSequenceTolerance(x.begin(), x.end(), nan_squash(get<acc::WeightedMax>(test_aors[(k)])).begin(), 2e-13);
         }
         
     }
