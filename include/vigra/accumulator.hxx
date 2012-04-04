@@ -879,6 +879,13 @@ struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
             return ApplyVisitorToTag<TAIL>::exec(a, tag, v);
         }
     }
+    
+    template <class Accu, class Visitor>
+    static void exec(Accu & a, Visitor const & v)
+    {
+        v.exec<HEAD>(a);
+        ApplyVisitorToTag<TAIL>::exec(a, v);
+    }
 };
 
 template <>
@@ -889,6 +896,10 @@ struct ApplyVisitorToTag<void>
     {
         return false;
     }
+    
+    template <class Accu, class Visitor>
+    static void exec(Accu &, Visitor const &)
+    {}
 };
 
 struct ActivateTagVisitor
@@ -900,16 +911,23 @@ struct ActivateTagVisitor
     }
 };
 
-static std::string resolveAlias(std::string const & n)
+struct CollectActiveTagsVisitor
 {
-    if(n == "count")
-        return "powersum<0>";
-    if(n == "mean")
-        return "dividebycount<powersum<1>>";
-    if(n == "variance")
-        return "dividebycount<central<powersum<2>>>";
-    return n;
-}
+    mutable ArrayVector<std::string> activeNames;
+    bool activeOnly_;
+
+    CollectActiveTagsVisitor(bool activeOnly)
+    : activeOnly_(activeOnly)
+    {}
+    
+    template <class TAG, class Accu>
+    void exec(Accu & a) const
+    {
+        if(activeOnly_ && !a.isActive<TAG>())
+            return;
+        activeNames.push_back(TAG::name());
+    }
+};
 
 } // namespace detail 
 
@@ -1092,7 +1110,7 @@ struct DynamicAccumulatorChain
     void activate(std::string tag)
     {
         bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
-                             detail::resolveAlias(normalizeString(tag)), detail::ActivateTagVisitor());
+                                     normalizeString(tag), detail::ActivateTagVisitor());
         vigra_precondition(found,
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
@@ -1112,6 +1130,23 @@ struct DynamicAccumulatorChain
     bool isActive() const
     {
         return getAccumulator<TAG>(*this).isActive();
+    }
+    
+    ArrayVector<std::string> namesImpl(bool activeOnly) const
+    {
+        detail::CollectActiveTagsVisitor v(activeOnly);
+        detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, v);
+        return v.activeNames;
+    }
+    
+    ArrayVector<std::string> activeNames() const
+    {
+        return namesImpl(true);
+    }
+    
+    ArrayVector<std::string> names() const
+    {
+        return namesImpl(false);
     }
     
     unsigned int passesRequired() const
@@ -1147,7 +1182,7 @@ struct DynamicAccumulatorChainArray
     void activate(std::string tag)
     {
         bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
-                             detail::resolveAlias(normalizeString(tag)), detail::ActivateTagVisitor());
+                                normalizeString(tag), detail::ActivateTagVisitor());
         vigra_precondition(found,
             std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
     }

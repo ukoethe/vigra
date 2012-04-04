@@ -40,6 +40,7 @@
 #include <vigra/numpy_array_converters.hxx>
 #include <vigra/accumulator.hxx>
 #include <vigra/timing.hxx>
+#include <map>
 
 namespace python = boost::python;
 
@@ -66,24 +67,115 @@ struct InspectResultType
     typedef typename PromoteTraits<T, double>::Promote type;
 };
 
+template <class T, int N>
+struct InspectResultType<TinyVector<T, N> >
+{
+    typedef TinyVector<typename PromoteTraits<T, double>::Promote, N> type;
+};
+
 template <class T>
 struct InspectResultType<Singleband<T> >
 {
     typedef typename PromoteTraits<T, double>::Promote type;
 };
 
-template <class PixelType>
-struct PythonAccumulator
-: public DynamicAccumulatorChain<PixelType, Select<Count, Mean, Variance, Skewness, Kurtosis> >
+typedef std::map<std::string, std::string> AliasMap;
+
+AliasMap createAliasMap()
 {
-    typedef typename PythonAccumulator::AccumulatorTags AccumulatorTags;
+    AliasMap res;
+    res["DivideByCount<Central<PowerSum<2> > >"] = "Variance";
+    res["DivideByCount<Principal<PowerSum<2> > >"] = "Principal<Variance>";
+    res["DivideByCount<FlatScatterMatrix>"] = "Covariance";
+    res["DivideByCount<PowerSum<1> >"] = "Mean";
+    res["PowerSum<1>"] = "Sum";
+    res["PowerSum<0>"] = "Count";
+    res["StandardQuantiles<AutoRangeHistogram<100 > >"] = "Quantiles";
+    return res;
+}
+
+static AliasMap const & tagToAlias()
+{
+    static const AliasMap m = createAliasMap();
+    return m;
+}
+
+AliasMap createInverseAliasMap()
+{
+    AliasMap res;
+    for(AliasMap::const_iterator k = tagToAlias().begin(); k != tagToAlias().end(); ++k)
+        res[normalizeString(k->second)] = normalizeString(k->first);
+    return res;
+}
+
+static AliasMap const & aliasToTag()
+{
+    static const AliasMap m = createInverseAliasMap();
+    return m;
+}
+
+static std::string const & resolveAlias(std::string const & n)
+{
+    AliasMap::const_iterator k = aliasToTag().find(n);
+    if(k == aliasToTag().end())
+        return n;
+    else
+        return k->second;
+}
+
+static std::string const & createAlias(std::string const & n)
+{
+    AliasMap::const_iterator k = tagToAlias().find(n);
+    if(k == tagToAlias().end())
+        return n;
+    else
+        return k->second;
+}
+
+template <class PixelType, class Accumulators>
+struct PythonAccumulator
+: public DynamicAccumulatorChain<PixelType, Accumulators>
+{
+    typedef DynamicAccumulatorChain<PixelType, Accumulators> BaseType;
+    typedef typename BaseType::AccumulatorTags AccumulatorTags;
+    
+    void activate(std::string tag)
+    {
+        bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec((BaseType &)*this, 
+                                     resolveAlias(normalizeString(tag)), detail::ActivateTagVisitor());
+        vigra_precondition(found, std::string("PythonAccumulator::activate(): Tag '") + tag + "' not found.");
+    }
+    
+    python::list namesImpl(bool activeOnly) const
+    {
+        ArrayVector<std::string> a = BaseType::namesImpl(activeOnly);
+        for(unsigned int k=0; k<a.size(); ++k)
+            a[k] = createAlias(a[k]);
+
+        std::sort(a.begin(), a.end());
+        
+        python::list result;
+        for(unsigned int k=0; k<a.size(); ++k)
+            result.append(python::object(a[k]));
+        return result;
+    }
+    
+    python::list activeNames() const
+    {
+        return namesImpl(true);
+    }
+    
+    python::list names() const
+    {
+        return namesImpl(false);
+    }
     
     python::object get(std::string tag)
     {
         GetTagVisitor v;
         
         bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
-                             detail::resolveAlias(normalizeString(tag)), v);
+                                           resolveAlias(normalizeString(tag)), v);
         vigra_precondition(found, std::string("PythonAccumulator::get(): Tag '") + tag + "' not found.");
         return v.result;
     }
@@ -94,11 +186,11 @@ struct PythonAccumulator
     }
 };
 
-template <unsigned int ndim, class T>
-PythonAccumulator<typename InspectResultType<T>::type> *
+template <class Accumulators, unsigned int ndim, class T>
+PythonAccumulator<typename InspectResultType<T>::type, Accumulators> *
 pythonInspect(NumpyArray<ndim, T> in, python::object tags)
 {
-    typedef PythonAccumulator<typename InspectResultType<T>::type> Accu;
+    typedef PythonAccumulator<typename InspectResultType<T>::type, Accumulators> Accu;
     
     std::auto_ptr<Accu> res(new Accu);
     
@@ -121,10 +213,7 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
     {
         PyAllowThreads _pythread;
         
-        // USETICTOC;
-        // TIC;
         collectStatistics(in.begin(), in.end(), *res);
-        // TOC;
     }
     
     return res.release();
@@ -132,7 +221,7 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
 
 } // namespace acc1
 
-template <class T>
+template <class T, class Accumulators>
 void definePythonAccumulator()
 {
     using namespace python;
@@ -141,24 +230,40 @@ void definePythonAccumulator()
 
     typedef typename acc1::InspectResultType<T>::type ResultType;
     
-    typedef acc1::PythonAccumulator<ResultType> Accu;
+    typedef acc1::PythonAccumulator<ResultType, Accumulators> Accu;
     class_<Accu>("Accumulator", python::no_init)
         .def("__getitem__", &Accu::get)
+        .def("activeNames", &Accu::activeNames)
+        .def("names", &Accu::names)
         .def("merge", &Accu::mergeImpl)
         ;
     
-    def("extractFeatures", &acc1::pythonInspect<2, T>,
+    def("extractFeatures", &acc1::pythonInspect<Accumulators, 2, T>,
+          (arg("image"), arg("tags") = ""),
+          return_value_policy<manage_new_object>());
+    
+    def("extractFeatures", &acc1::pythonInspect<Accumulators, 3, T>,
+          (arg("volume"), arg("tags") = ""),
           return_value_policy<manage_new_object>());
 }
 
 void defineAccumulators()
 {
     using namespace python;
+    using namespace vigra::acc1;
 
     docstring_options doc_options(true, true, false);
 
-    definePythonAccumulator<Singleband<float> >();
-    definePythonAccumulator<TinyVector<float, 3> >();
+    definePythonAccumulator<Singleband<float>, 
+                            Select<Count, Mean, Variance, Skewness, Kurtosis, Minimum, Maximum,
+                                   StandardQuantiles<AutoRangeHistogram<100> > > >();
+    
+    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Minimum, Maximum, 
+                   Covariance, Principal<Variance>, Principal<Skewness>, Principal<Kurtosis> 
+                   > VectorAccumulators;
+    definePythonAccumulator<TinyVector<float, 2>, VectorAccumulators>();
+    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>();
+    definePythonAccumulator<TinyVector<float, 4>, VectorAccumulators>();
 }
 
 } // namespace vigra
