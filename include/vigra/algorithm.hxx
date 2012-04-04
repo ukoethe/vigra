@@ -37,6 +37,7 @@
 #define VIGRA_ALGORITHM_HXX
 
 #include "sized_int.hxx"
+#include "metaprogramming.hxx"
 #include "numerictraits.hxx"
 #include "inspector_passes.hxx"
 #include <algorithm>
@@ -690,17 +691,57 @@ inline UInt32 concatenateChecksum(UInt32 checksum, const char * data, unsigned i
     return detail::checksumImpl(data, size, ~checksum);
 }
 
+
+namespace detail {
+
+template <class T, class is_scalar = typename NumericTraits<T>::isScalar,
+                   bool test = IsSameType<
+                             Error_NumericTraits_not_specialized_for_this_case,
+                             is_scalar>::value>
+struct type_is_vigra_vector
+{
+   static const bool value = false;
+};
+template <class T, class is_scalar>
+struct type_is_vigra_vector<T, is_scalar, false>
+{
+   static const bool value = !is_scalar::value;
+};
+
+} // namespace detail
+
+
 template <class T>
-void updateMin(T & x, const T & y)
+void updateMin(T & x, const T & y,
+     typename enable_if<!detail::type_is_vigra_vector<T>::value>::type* = 0)
 {
     using std::min;
     x = min(x, y);
 }
 
 template <class T>
-void updateMax(T & x, const T & y)
+void updateMax(T & x, const T & y,
+     typename enable_if<!detail::type_is_vigra_vector<T>::value>::type* = 0)
 {
     using std::max;
+    x = max(x, y);
+}
+
+// TinyVector/etc. use component-wise extrema and must thus shun std::min/max,
+// since the latter are usually preferred to vigra::min/max of tinyvector.hxx
+// in overload resolution because of conversion to base class.
+
+template <class T>
+void updateMin(T & x, const T & y,
+     typename enable_if<detail::type_is_vigra_vector<T>::value>::type* = 0)
+{
+    x = min(x, y);
+}
+
+template <class T>
+void updateMax(T & x, const T & y,
+     typename enable_if<detail::type_is_vigra_vector<T>::value>::type* = 0)
+{
     x = max(x, y);
 }
 
