@@ -819,8 +819,7 @@ T determinant(MultiArrayView<2, T, C1> const & a, std::string method = "LU")
     vigra_precondition(rowCount(a) == n,
                "determinant(): Square matrix required.");    
 
-    for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = tolower(method[k]);
+    method = tolower(method);
     
     if(n == 1)
         return a(0,0);
@@ -1186,9 +1185,7 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
                        m == rowCount(b) && columnCount(b) == columnCount(res),
         "linearSolve(): matrix shape mismatch.");
 
-    for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = (std::string::value_type)tolower(method[k]);
-    
+    method = tolower(method);
     if(method == "cholesky")
     {
         vigra_precondition(columnCount(A) == rowCount(A),
