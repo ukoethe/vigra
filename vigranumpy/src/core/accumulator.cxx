@@ -85,12 +85,13 @@ AliasMap createAliasMap()
 {
     AliasMap res;
     res["DivideByCount<Central<PowerSum<2> > >"] = "Variance";
+    res["DivideUnbiased<Central<PowerSum<2> > >"] = "UnbiasedVariance";
     res["DivideByCount<Principal<PowerSum<2> > >"] = "Principal<Variance>";
     res["DivideByCount<FlatScatterMatrix>"] = "Covariance";
     res["DivideByCount<PowerSum<1> >"] = "Mean";
     res["PowerSum<1>"] = "Sum";
     res["PowerSum<0>"] = "Count";
-    res["StandardQuantiles<AutoRangeHistogram<100 > >"] = "Quantiles";
+    res["StandardQuantiles<AutoRangeHistogram<100> >"] = "Quantiles";
     return res;
 }
 
@@ -255,8 +256,9 @@ void defineAccumulators()
     docstring_options doc_options(true, true, false);
 
     definePythonAccumulator<Singleband<float>, 
-                            Select<Count, Mean, Variance, Skewness, Kurtosis, Minimum, Maximum,
-                                   StandardQuantiles<AutoRangeHistogram<100> > > >();
+                            Select<Count, Mean, Variance, Skewness, Kurtosis, 
+                                   UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
+                                   Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<100> > > >();
     
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Minimum, Maximum, 
                    Covariance, Principal<Variance>, Principal<Skewness>, Principal<Kurtosis> 

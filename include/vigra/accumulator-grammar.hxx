@@ -60,7 +60,9 @@ template <unsigned N> class PowerSum;          // sum over powers of values
 template <unsigned N> class AbsPowerSum;       // sum over powers of absolute values
 
 class Skewness;                                // skewness
-class Kurtosis;                                // kurtosis
+class UnbiasedSkewness;                        // unbiased estimator for skewness
+class Kurtosis;                                // excess kurtosis
+class UnbiasedKurtosis;                        // unbiased estimator for excess kurtosis
 class FlatScatterMatrix;                       // flattened upper-triangular part of the scatter matrix
 class ScatterMatrixEigensystem;                // eigenvalues and eigenvectors of the scatter matrix
 

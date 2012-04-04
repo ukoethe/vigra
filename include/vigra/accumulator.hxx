@@ -2398,7 +2398,7 @@ class PowerSum
      
     static std::string const & name() 
     { 
-        static const std::string n = std::string("PowerSum<") + asString(N) + " >";
+        static const std::string n = std::string("PowerSum<") + asString(N) + ">";
         return n;
     }
     
@@ -2462,7 +2462,7 @@ class AbsPowerSum
      
     static std::string const & name() 
     { 
-        static const std::string n = std::string("AbsPowerSum<") + asString(N) + " >";
+        static const std::string n = std::string("AbsPowerSum<") + asString(N) + ">";
         return n;
     }
     
@@ -2849,6 +2849,35 @@ class Skewness
     };
 };
 
+class UnbiasedSkewness
+{
+  public:
+    typedef Select<Skewness> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("UnbiasedSkewness");
+        return n;
+    }
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename LookupTag<Central<PowerSum<3> >, BASE>::value_type   value_type;
+        typedef value_type                                                    result_type;
+
+        result_type operator()() const
+        {
+			using namespace multi_math;
+            double n = getUnchecked<Count>(*this);
+            return sqrt(n*(n-1.0)) / (n - 2.0) * getUnchecked<Skewness>(*this);
+        }
+    };
+};
+
 class Kurtosis
 {
   public:
@@ -2875,7 +2904,36 @@ class Kurtosis
             typedef Central<PowerSum<2> > Sum2;
         
 			using namespace multi_math;
-            return getUnchecked<Count>(*this) * getUnchecked<Sum4>(*this) / sq(getUnchecked<Sum2>(*this));
+            return getUnchecked<Count>(*this) * getUnchecked<Sum4>(*this) / sq(getUnchecked<Sum2>(*this)) - value_type(3.0);
+        }
+    };
+};
+
+class UnbiasedKurtosis
+{
+  public:
+    typedef Select<Kurtosis> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("UnbiasedKurtosis");
+        return n;
+    }
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        static const unsigned int workInPass = 2;
+        
+        typedef typename LookupTag<Central<PowerSum<4> >, BASE>::value_type value_type;
+        typedef value_type                                                  result_type;
+
+        result_type operator()() const
+        {
+			using namespace multi_math;
+            double n = getUnchecked<Count>(*this);
+            return (n-1.0)/((n-2.0)*(n-3.0))*((n+1.0)*getUnchecked<Kurtosis>(*this) + value_type(6.0));
         }
     };
 };
@@ -3925,7 +3983,7 @@ class IntegerHistogram
     
     static std::string const & name() 
     { 
-        static const std::string n = std::string("IntegerHistogram<") + asString(BinCount) + " >";
+        static const std::string n = std::string("IntegerHistogram<") + asString(BinCount) + ">";
         return n;
     }
     
@@ -4027,7 +4085,7 @@ class UserRangeHistogram
     
     static std::string const & name() 
     { 
-        static const std::string n = std::string("UserRangeHistogram<") + asString(BinCount) + " >";
+        static const std::string n = std::string("UserRangeHistogram<") + asString(BinCount) + ">";
         return n;
     }
     
@@ -4061,7 +4119,7 @@ class AutoRangeHistogram
     
     static std::string const & name() 
     { 
-        static const std::string n = std::string("AutoRangeHistogram<") + asString(BinCount) + " >";
+        static const std::string n = std::string("AutoRangeHistogram<") + asString(BinCount) + ">";
         return n;
     }
     
@@ -4097,7 +4155,7 @@ class GlobalRangeHistogram
     
     static std::string const & name() 
     { 
-        static const std::string n = std::string("GlobalRangeHistogram<") + asString(BinCount) + " >";
+        static const std::string n = std::string("GlobalRangeHistogram<") + asString(BinCount) + ">";
         return n;
     }
     

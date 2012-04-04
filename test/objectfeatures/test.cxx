@@ -2107,7 +2107,7 @@ struct AccumulatorTest
             shouldEqual(get<Count>(a), 4.0);
             shouldEqualTolerance(get<CentralMoment<2> >(a),  2.1875, 1e-15);
             shouldEqualTolerance(get<Skewness>(a), 0.43465075957466565, 1e-15);
-            shouldEqualTolerance(get<Kurtosis>(a), 1.8457142857142856, 1e-15);
+            shouldEqualTolerance(get<Kurtosis>(a), -1.1542857142857144, 1e-15);
             shouldEqual(get<SumOfAbsDifferences>(a), 5);
             shouldEqual(get<MeanAbsoluteDeviation>(a), 1.25);
 #endif
@@ -2253,7 +2253,7 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Principal<Minimum> >(a), W(-1.3739261246727945, -1.2230658133989472, -0.6526113546697957), W(1e-15));
             shouldEqualTolerance(get<Principal<Maximum> >(a), W(1.4669637815066938,  1.1452966161690161, 0.60253363030808593), W(1e-15));
             shouldEqualTolerance(get<Principal<Skewness> >(a), W(0.01148108748350361, -0.07581454384153662, -0.09140344434535799), W(1e-14));
-            shouldEqualTolerance(get<Principal<Kurtosis> >(a), W(1.0170605873540604, 1.3758036453124218, 1.3744145653301785), W(1e-14));
+            shouldEqualTolerance(get<Principal<Kurtosis> >(a), W(-1.9829394126459396, -1.6241963546875782, -1.6255854346698215), W(1e-14));
             shouldEqualTolerance(get<Principal<SumOfAbsDifferences> >(a), W(5.3819863149157, 3.5369487298822575, 1.8777415203686885), W(1e-14));
 #endif
         }
@@ -2455,7 +2455,7 @@ struct AccumulatorTest
         shouldEqualTolerance(get<CentralMoment<3> >(a), 2.016, 1e-15);
         shouldEqualTolerance(get<CentralMoment<4> >(a), 17.4752, 1e-15);
         shouldEqualTolerance(get<Skewness>(a), 0.395870337343817, 1e-15);
-        shouldEqualTolerance(get<Kurtosis>(a), 1.9945215485756027, 1e-15);
+        shouldEqualTolerance(get<Kurtosis>(a), -1.0054784514243973, 1e-15);
 #endif
     }
 
