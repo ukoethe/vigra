@@ -32,6 +32,7 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     segmentation.cxx
     edgedetection.cxx
     interestpoints.cxx
+    accumulator.cxx
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES

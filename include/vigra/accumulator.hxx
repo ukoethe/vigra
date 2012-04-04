@@ -96,6 +96,12 @@ class LabelArg
   public:
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("LabelArg");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -306,6 +312,9 @@ struct AccumulatorEndImpl
         return false;
     }
     
+    static void activateImpl(...)
+    {}
+    
     static unsigned int passesRequired()
     {
         return 0;
@@ -416,8 +425,8 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
 
     static typename A::result_type get(A const & a)
     {
-        std::string message("get(accumulator): attempt to access inactive statistic '");
-        message << typeid(typename A::Tag).name() << "'.";
+        static const std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
+                                                                                   typeid(typename A::Tag).name() + "'.";
         vigra_precondition(a.isActive(), message);
         return a();
     }
@@ -850,6 +859,58 @@ struct CreateAccumulatorChainArray
     typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
+template <class T>
+struct ApplyVisitorToTag;
+
+template <class HEAD, class TAIL>
+struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
+{
+    template <class Accu, class Visitor>
+    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
+    {
+        static const std::string name = normalizeString(HEAD::name());
+        if(name == tag)
+        {
+            v.exec<HEAD>(a);
+            return true;
+        }
+        else
+        {
+            return ApplyVisitorToTag<TAIL>::exec(a, tag, v);
+        }
+    }
+};
+
+template <>
+struct ApplyVisitorToTag<void>
+{
+    template <class Accu, class Visitor>
+    static bool exec(Accu &, std::string const &, Visitor const &)
+    {
+        return false;
+    }
+};
+
+struct ActivateTagVisitor
+{
+    template <class TAG, class Accu>
+    void exec(Accu & a) const
+    {
+        a.activate<TAG>();
+    }
+};
+
+static std::string resolveAlias(std::string const & n)
+{
+    if(n == "count")
+        return "powersum<0>";
+    if(n == "mean")
+        return "dividebycount<powersum<1>>";
+    if(n == "variance")
+        return "dividebycount<central<powersum<2>>>";
+    return n;
+}
+
 } // namespace detail 
 
 /****************************************************************************/
@@ -1006,6 +1067,8 @@ template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChain
 : public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChain<T, Selected, dynamic>::type>
 {
+    typedef typename detail::CreateAccumulatorChain<T, Selected, dynamic>::AccumulatorTags AccumulatorTags;
+    
     template <class U, int N>
     void reshape(TinyVector<U, N> const & s)
     {
@@ -1024,6 +1087,15 @@ struct DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {
     typedef typename AccumulatorChain<T, Selected, true>::InternalBaseType InternalBaseType;
+    typedef typename DynamicAccumulatorChain::AccumulatorTags AccumulatorTags;
+        
+    void activate(std::string tag)
+    {
+        bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
+                             detail::resolveAlias(normalizeString(tag)), detail::ActivateTagVisitor());
+        vigra_precondition(found,
+            std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
+    }
     
     template <class TAG>
     void activate()
@@ -1052,6 +1124,8 @@ template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
 : public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::type>
 {
+    typedef typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::AccumulatorTags AccumulatorTags;
+    
     void setMaxRegionLabel(unsigned label)
     {
         this->next_.setMaxRegionLabel(label);
@@ -1068,6 +1142,16 @@ template <class T, class Selected>
 struct DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
 {
+    typedef typename DynamicAccumulatorChainArray::AccumulatorTags AccumulatorTags;
+        
+    void activate(std::string tag)
+    {
+        bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
+                             detail::resolveAlias(normalizeString(tag)), detail::ActivateTagVisitor());
+        vigra_precondition(found,
+            std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
+    }
+
     template <class TAG>
     void activate()
     {
@@ -1116,6 +1200,7 @@ struct LookupTagImpl<TAG, A const, FromTag>
 : public LookupTagImpl<TAG, A>
 {
     typedef typename LookupTagImpl<TAG, A>::type const & reference;
+    typedef typename LookupTagImpl<TAG, A>::type const * pointer;
 };
 
     // When A implements TAG, report its type and associated information.
@@ -1125,6 +1210,7 @@ struct LookupTagImpl<TAG, A, TAG>
     typedef TAG Tag;
     typedef A type;
     typedef A & reference;
+    typedef A * pointer;
     typedef typename A::value_type value_type;
     typedef typename A::result_type result_type;
 };
@@ -1135,6 +1221,7 @@ struct LookupTagImpl<TAG, A const, TAG>
 : public LookupTagImpl<TAG, A, TAG>
 {
     typedef typename LookupTagImpl<TAG, A, TAG>::type const & reference;
+    typedef typename LookupTagImpl<TAG, A, TAG>::type const * pointer;
 };
 
     // Recursion termination: when we end up in AccumulatorEnd without finding a 
@@ -1145,6 +1232,7 @@ struct LookupTagImpl<TAG, A, AccumulatorEnd>
     typedef TAG Tag;
     typedef A type;
     typedef A & reference;
+    typedef A * pointer;
     typedef Error__Attempt_to_access_inactive_statistic<TAG> value_type;
     typedef Error__Attempt_to_access_inactive_statistic<TAG> result_type;
 };
@@ -1156,6 +1244,7 @@ struct LookupTagImpl<AccumulatorEnd, A, AccumulatorEnd>
     typedef AccumulatorEnd Tag;
     typedef A type;
     typedef A & reference;
+    typedef A * pointer;
     typedef void value_type;
     typedef void result_type;
 };
@@ -1194,6 +1283,7 @@ struct LookupTagImpl<LabelDispatchTag, A, LabelDispatchTag>
     typedef LabelDispatchTag Tag;
     typedef A type;
     typedef A & reference;
+    typedef A * pointer;
     typedef void value_type;
     typedef void result_type;
 };
@@ -1337,7 +1427,7 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 
     // cast an accumulator chain to the type specified by Tag
 template <class TAG, class A>
-typename LookupTag<TAG, A>::reference
+inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
@@ -1347,7 +1437,7 @@ getAccumulator(A & a)
 
     // cast an accumulator chain to the type specified by Tag and label
 template <class TAG, class A>
-typename LookupTag<TAG, A>::reference
+inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a, MultiArrayIndex label)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
@@ -1357,25 +1447,31 @@ getAccumulator(A & a, MultiArrayIndex label)
 
     // get the result of the accumulator specified by Tag
 template <class TAG, class A>
-typename LookupTag<TAG, A>::result_type
+inline typename LookupTag<TAG, A>::result_type
 get(A const & a)
 {
-    typedef typename LookupTag<TAG, A>::result_type result_type;
     return getAccumulator<TAG>(a).get();
 }
 
     // get the result of the region accumulator specified by Tag and label
 template <class TAG, class A>
-typename LookupTag<TAG, A>::result_type
+inline typename LookupTag<TAG, A>::result_type
 get(A const & a, MultiArrayIndex label)
 {
-    typedef typename LookupTag<TAG, A>::result_type result_type;
     return getAccumulator<TAG>(a, label).get();
+}
+
+    // get the result of the accumulator specified by Tag without checking if the accumulator is active
+template <class TAG, class A>
+inline typename LookupTag<TAG, A>::result_type
+getUnchecked(A const & a)
+{
+    return getAccumulator<TAG>(a)();
 }
 
     // activate the dynamic accumulator specified by Tag
 template <class Tag, class A>
-void
+inline void
 activate(A & a)
 {
     a.activate<Tag>();
@@ -1383,7 +1479,7 @@ activate(A & a)
 
     // check if the dynamic accumulator specified by Tag is active
 template <class Tag, class A>
-bool
+inline bool
 isActive(A const & a)
 {
     return a.isActive<Tag>();
@@ -1453,7 +1549,7 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 
     // this is the innermost class of a accumulator decorator hierarchy
 template <class T, class TAG, class NEXT>
-struct AccumulatorBase 
+struct AccumulatorBase
 {
 	typedef AccumulatorBase<T, TAG, NEXT>   ThisType;
     typedef TAG                          Tag;
@@ -1599,6 +1695,12 @@ class Global
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
     typedef typename TransferModifiers<Global<TargetTag>, TargetDependencies>::type Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("Global<") + TargetTag::name() + " >";
+        return n;
+    }
 };
 
 template <int INDEX>
@@ -1606,6 +1708,12 @@ class DataArg
 {
   public:
     typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("DataArg");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -1626,6 +1734,12 @@ class DataFromHandle
   public:
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef typename TargetTag::Dependencies Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("DataFromHandle<") + TargetTag::name() + " >";
+        return n;
+    }
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct DataIndexSelector
@@ -1700,6 +1814,12 @@ class Coord
     typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
     typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct SelectInputType
     {
@@ -1741,6 +1861,12 @@ class WeightArg
   public:
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("WeightArg");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -1761,6 +1887,12 @@ class Weighted
     typedef typename StandardizeTag<TAG>::type                                         TargetTag;
     typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
     typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("Weighted<") + TargetTag::name() + " >";
+        return n;
+    }
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct WeightIndexSelector
@@ -1804,6 +1936,12 @@ class Centralize
   public:
     typedef Select<Mean> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("Centralize");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -1836,7 +1974,7 @@ class Centralize
         void update(U const & t) const
         {
             using namespace vigra::multi_math;
-            value_ = t - get<Mean>(*this);
+            value_ = t - getUnchecked<Mean>(*this);
         }
         
         void update(U const & t, double) const
@@ -1866,6 +2004,12 @@ class Central
     typedef TypeList<Centralize, 
               typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("Central<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
@@ -1883,13 +2027,13 @@ class Central
         template <class T>
         void update(T const & t)
         {
-            ImplType::update(get<Centralize>(*this));
+            ImplType::update(getUnchecked<Centralize>(*this));
         }
         
         template <class T>
         void update(T const & t, double weight)
         {
-            ImplType::update(get<Centralize>(*this), weight);
+            ImplType::update(getUnchecked<Centralize>(*this), weight);
         }
     };
 };
@@ -1920,13 +2064,13 @@ class Central
         // template <class T>
         // void update(T const & t)
         // {
-            // ImplType::update(t - get<Mean>(*this));
+            // ImplType::update(t - getUnchecked<Mean>(*this));
         // }
         
         // template <class T>
         // void update(T const & t, double weight)
         // {
-            // ImplType::update(t - get<Mean>(*this), weight);
+            // ImplType::update(t - getUnchecked<Mean>(*this), weight);
         // }
     // };
 // };
@@ -1936,6 +2080,12 @@ class PrincipalProjection
 {
   public:
     typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("PrincipalProjection");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -1969,9 +2119,9 @@ class PrincipalProjection
         {
             for(unsigned int k=0; k<t.size(); ++k)
             {
-                value_[k] = get<Principal<CoordinateSystem> >(*this)(0, k)*get<Centralize>(*this)[0];
+                value_[k] = getUnchecked<Principal<CoordinateSystem> >(*this)(0, k)*getUnchecked<Centralize>(*this)[0];
                 for(unsigned int d=1; d<t.size(); ++d)
-                    value_[k] += get<Principal<CoordinateSystem> >(*this)(d, k)*get<Centralize>(*this)[d];
+                    value_[k] += getUnchecked<Principal<CoordinateSystem> >(*this)(d, k)*getUnchecked<Centralize>(*this)[d];
             }
         }
         
@@ -2003,6 +2153,12 @@ class Principal
     typedef TypeList<PrincipalProjection, 
                  typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("Principal<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
@@ -2020,13 +2176,13 @@ class Principal
         template <class T>
         void update(T const & t)
         {
-            ImplType::update(get<PrincipalProjection>(*this));
+            ImplType::update(getUnchecked<PrincipalProjection>(*this));
         }
         
         template <class T>
         void update(T const & t, double weight)
         {
-            ImplType::update(get<PrincipalProjection>(*this), weight);
+            ImplType::update(getUnchecked<PrincipalProjection>(*this), weight);
         }
     };
 };
@@ -2060,6 +2216,12 @@ class CoordinateSystem
 {
   public:
     typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("CoordinateSystem");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2138,6 +2300,12 @@ class PowerSum<0>
   public:
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("PowerSum<0>");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE, typename BASE::input_type, double, double>
@@ -2163,6 +2331,12 @@ class PowerSum<1>
   public:
     typedef Select<> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("PowerSum<1>");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2187,6 +2361,12 @@ class PowerSum
   public:
     typedef Select<> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("PowerSum<") + asString(N) + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2213,6 +2393,12 @@ class AbsPowerSum<1>
   public:
     typedef Select<> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("AbsPowerSum<1>");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2239,6 +2425,12 @@ class AbsPowerSum
   public:
     typedef Select<> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("AbsPowerSum<") + asString(N) + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2310,6 +2502,12 @@ class DivideByCount
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
   
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("DivideByCount<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public CachedResultBase<BASE, typename LookupTag<TargetTag, BASE>::value_type> 
@@ -2321,7 +2519,7 @@ class DivideByCount
             if(this->isDirty())
             {
                 using namespace multi_math;
-                this->value_ = get<TargetTag>(*this) / get<Count>(*this);
+                this->value_ = getUnchecked<TargetTag>(*this) / getUnchecked<Count>(*this);
                 this->setClean();
             }
             return this->value_;
@@ -2337,6 +2535,12 @@ class DivideUnbiased
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
       
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("DivideUnbiased<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -2347,7 +2551,7 @@ class DivideUnbiased
         result_type operator()() const
         {
             using namespace multi_math;
-            return get<TargetTag>(*this) / (get<Count>(*this) - 1.0);
+            return getUnchecked<TargetTag>(*this) / (getUnchecked<Count>(*this) - 1.0);
         }
     };
 };
@@ -2360,6 +2564,12 @@ class RootDivideByCount
     typedef typename StandardizeTag<DivideByCount<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("RootDivideByCount<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -2370,7 +2580,7 @@ class RootDivideByCount
         result_type operator()() const
         {
             using namespace multi_math;
-            return sqrt(get<TargetTag>(*this));
+            return sqrt(getUnchecked<TargetTag>(*this));
         }
     };
 };
@@ -2383,6 +2593,12 @@ class RootDivideUnbiased
     typedef typename StandardizeTag<DivideUnbiased<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("RootDivideUnbiased<") + TargetTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -2393,7 +2609,7 @@ class RootDivideUnbiased
         result_type operator()() const
         {
             using namespace multi_math;
-            return sqrt(get<TargetTag>(*this));
+            return sqrt(getUnchecked<TargetTag>(*this));
         }
     };
 };
@@ -2404,43 +2620,49 @@ class Central<PowerSum<2> >
   public:
     typedef Select<Mean, Count> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("Central<PowerSum<2> >");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
     {
         typedef typename BASE::input_type U;
-
+        
         void operator+=(Impl const & o)
         {
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = getUnchecked<Count>(*this), n2 = getUnchecked<Count>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
             }
             else if(n2 != 0.0)
             {
-                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(get<Mean>(*this) - get<Mean>(o));
+                this->value_ += o.value_ + n1 * n2 / (n1 + n2) * sq(getUnchecked<Mean>(*this) - getUnchecked<Mean>(o));
             }
         }
     
         void update(U const & t)
         {
-            double n = get<Count>(*this);
+            double n = getUnchecked<Count>(*this);
             if(n > 1.0)
             {
                 using namespace vigra::multi_math;
-                this->value_ += n / (n - 1.0) * sq(get<Mean>(*this) - t);
+                this->value_ += n / (n - 1.0) * sq(getUnchecked<Mean>(*this) - t);
             }
         }
         
         void update(U const & t, double weight)
         {
-            double n = get<Count>(*this);
+            double n = getUnchecked<Count>(*this);
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                this->value_ += n / (n - weight) * sq(get<Mean>(*this) - t);
+                this->value_ += n / (n - weight) * sq(getUnchecked<Mean>(*this) - t);
             }
         }
     };
@@ -2452,6 +2674,12 @@ class Central<PowerSum<3> >
   public:
     typedef Select<Centralize, Count, Mean, Central<PowerSum<2> > > Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("Central<PowerSum<3> >");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2466,7 +2694,7 @@ class Central<PowerSum<3> >
             typedef Central<PowerSum<2> > Sum2Tag;
             
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = getUnchecked<Count>(*this), n2 = getUnchecked<Count>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
@@ -2475,22 +2703,22 @@ class Central<PowerSum<3> >
             {
                 double n = n1 + n2;
                 double weight = n1 * n2 * (n1 - n2) / sq(n);
-                value_type delta = get<Mean>(o) - get<Mean>(*this);
+                value_type delta = getUnchecked<Mean>(o) - getUnchecked<Mean>(*this);
                 this->value_ += o.value_ + weight * pow(delta, 3) +
-                               3.0 / n * delta * (n1 * get<Sum2Tag>(o) - n2 * get<Sum2Tag>(*this));
+                               3.0 / n * delta * (n1 * getUnchecked<Sum2Tag>(o) - n2 * getUnchecked<Sum2Tag>(*this));
             }
         }
     
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            this->value_ += pow(get<Centralize>(*this), 3);
+            this->value_ += pow(getUnchecked<Centralize>(*this), 3);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            this->value_ += weight*pow(get<Centralize>(*this), 3);
+            this->value_ += weight*pow(getUnchecked<Centralize>(*this), 3);
         }
     };
 };
@@ -2501,6 +2729,12 @@ class Central<PowerSum<4> >
   public:
     typedef Select<Centralize, Central<PowerSum<3> > > Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("Central<PowerSum<4> >");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public SumBaseImpl<BASE>
@@ -2516,7 +2750,7 @@ class Central<PowerSum<4> >
             typedef Central<PowerSum<3> > Sum3Tag;
 
             using namespace vigra::multi_math;
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = getUnchecked<Count>(*this), n2 = getUnchecked<Count>(o);
             if(n1 == 0.0)
             {
                 this->value_ = o.value_;
@@ -2528,23 +2762,23 @@ class Central<PowerSum<4> >
                 double n2_2 = sq(n2);
                 double n_2 = sq(n);
                 double weight = n1 * n2 * (n1_2 - n1*n2 + n2_2) / n_2 / n;
-                value_type delta = get<Mean>(o) - get<Mean>(*this);
+                value_type delta = getUnchecked<Mean>(o) - getUnchecked<Mean>(*this);
                 this->value_ += o.value_ + weight * pow(delta, 4) +
-                              6.0 / n_2 * sq(delta) * (n1_2 * get<Sum2Tag>(o) + n2_2 * get<Sum2Tag>(*this)) +
-                              4.0 / n * delta * (n1 * get<Sum3Tag>(o) - n2 * get<Sum3Tag>(*this));
+                              6.0 / n_2 * sq(delta) * (n1_2 * getUnchecked<Sum2Tag>(o) + n2_2 * getUnchecked<Sum2Tag>(*this)) +
+                              4.0 / n * delta * (n1 * getUnchecked<Sum3Tag>(o) - n2 * getUnchecked<Sum3Tag>(*this));
             }
         }
     
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
-            this->value_ += pow(get<Centralize>(*this), 4);
+            this->value_ += pow(getUnchecked<Centralize>(*this), 4);
         }
         
         void update(U const & t, double weight)
         {
             using namespace vigra::multi_math;            
-            this->value_ += weight*pow(get<Centralize>(*this), 4);
+            this->value_ += weight*pow(getUnchecked<Centralize>(*this), 4);
         }
     };
 };
@@ -2553,6 +2787,12 @@ class Skewness
 {
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<3> > > Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("Skewness");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2569,7 +2809,7 @@ class Skewness
             typedef Central<PowerSum<2> > Sum2;
         
 			using namespace multi_math;
-            return sqrt(get<Count>(*this)) * get<Sum3>(*this) / pow(get<Sum2>(*this), 1.5);
+            return sqrt(getUnchecked<Count>(*this)) * getUnchecked<Sum3>(*this) / pow(getUnchecked<Sum2>(*this), 1.5);
         }
     };
 };
@@ -2578,6 +2818,12 @@ class Kurtosis
 {
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<4> > > Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("Kurtosis");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2594,7 +2840,7 @@ class Kurtosis
             typedef Central<PowerSum<2> > Sum2;
         
 			using namespace multi_math;
-            return get<Count>(*this) * get<Sum4>(*this) / sq(get<Sum2>(*this));
+            return getUnchecked<Count>(*this) * getUnchecked<Sum4>(*this) / sq(getUnchecked<Sum2>(*this));
         }
     };
 };
@@ -2666,6 +2912,12 @@ class FlatScatterMatrix
   public:
     typedef Select<Mean, Count> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("FlatScatterMatrix");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -2701,7 +2953,7 @@ class FlatScatterMatrix
         
         void operator+=(Impl const & o)
         {
-            double n1 = get<Count>(*this), n2 = get<Count>(o);
+            double n1 = getUnchecked<Count>(*this), n2 = getUnchecked<Count>(o);
             if(n1 == 0.0)
             {
                 value_ = o.value_;
@@ -2709,7 +2961,7 @@ class FlatScatterMatrix
             else if(n2 != 0.0)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Mean>(*this) - get<Mean>(o);
+                diff_ = getUnchecked<Mean>(*this) - getUnchecked<Mean>(o);
                 detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
                 value_ += o.value_;
             }
@@ -2733,11 +2985,11 @@ class FlatScatterMatrix
       private:
         void compute(U const & t, double weight = 1.0)
         {
-            double n = get<Count>(*this);
+            double n = getUnchecked<Count>(*this);
             if(n > weight)
             {
                 using namespace vigra::multi_math;
-                diff_ = get<Mean>(*this) - t;
+                diff_ = getUnchecked<Mean>(*this) - t;
                 detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
         }
@@ -2750,6 +3002,12 @@ class DivideByCount<FlatScatterMatrix>
 {
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("DivideByCount<FlatScatterMatrix>");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2769,7 +3027,7 @@ class DivideByCount<FlatScatterMatrix>
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(this->value_, get<FlatScatterMatrix>(*this), get<Count>(*this));
+                detail::flatScatterMatrixToCovariance(this->value_, getUnchecked<FlatScatterMatrix>(*this), getUnchecked<Count>(*this));
                 this->setClean();
             }
             return this->value_;
@@ -2784,6 +3042,12 @@ class DivideUnbiased<FlatScatterMatrix>
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("DivideUnbiased<FlatScatterMatrix>");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
@@ -2802,7 +3066,7 @@ class DivideUnbiased<FlatScatterMatrix>
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(this->value_, get<FlatScatterMatrix>(*this), get<Count>(*this) - 1.0);
+                detail::flatScatterMatrixToCovariance(this->value_, getUnchecked<FlatScatterMatrix>(*this), getUnchecked<Count>(*this) - 1.0);
                 this->setClean();
             }
             return this->value_;
@@ -2814,6 +3078,12 @@ class ScatterMatrixEigensystem
 {
   public:
     typedef Select<FlatScatterMatrix> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("ScatterMatrixEigensystem");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2867,7 +3137,7 @@ class ScatterMatrixEigensystem
         {
             if(this->isDirty())
             {
-                compute(get<FlatScatterMatrix>(*this), value_.first, value_.second);
+                compute(getUnchecked<FlatScatterMatrix>(*this), value_.first, value_.second);
                 this->setClean();
             }
             return value_;
@@ -2898,6 +3168,12 @@ class DivideByCount<ScatterMatrixEigensystem>
 {
   public:
     typedef Select<ScatterMatrixEigensystem, Count> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("DivideByCount<ScatterMatrixEigensystem>");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -2950,7 +3226,7 @@ class DivideByCount<ScatterMatrixEigensystem>
         {
             if(this->isDirty())
             {
-                value_.first = get<ScatterMatrixEigensystem>(*this).first / get<Count>(*this);
+                value_.first = getUnchecked<ScatterMatrixEigensystem>(*this).first / getUnchecked<Count>(*this);
                 this->setClean();
             }
             return value_;
@@ -3018,7 +3294,7 @@ class DivideByCount<ScatterMatrixEigensystem>
         // {
             // if(this->isDirty())
             // {
-                // compute(get<Covariance>(*this), value_.first, value_.second);
+                // compute(getUnchecked<Covariance>(*this), value_.first, value_.second);
                 // this->setClean();
             // }
             // return value_;
@@ -3048,6 +3324,12 @@ class Principal<PowerSum<2> >
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("Principal<PowerSum<2> >");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -3057,7 +3339,7 @@ class Principal<PowerSum<2> >
         
         result_type operator()() const
         {
-            return get<ScatterMatrixEigensystem>(*this).first;
+            return getUnchecked<ScatterMatrixEigensystem>(*this).first;
         }
     };
 };
@@ -3069,6 +3351,12 @@ class Principal<CoordinateSystem>
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
+    static std::string const & name() 
+    { 
+        static const std::string n("Principal<CoordinateSystem>");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -3078,7 +3366,7 @@ class Principal<CoordinateSystem>
         
         result_type operator()() const
         {
-            return get<ScatterMatrixEigensystem>(*this).second;
+            return getUnchecked<ScatterMatrixEigensystem>(*this).second;
         }
     };
 };
@@ -3087,6 +3375,12 @@ class Minimum
 {
   public:
     typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("Minimum");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -3146,6 +3440,12 @@ class Maximum
   public:
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n("Maximum");
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public BASE
@@ -3203,6 +3503,12 @@ class ArgMinWeight
 {
   public:
     typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("ArgMinWeight");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -3269,6 +3575,12 @@ class ArgMaxWeight
 {
   public:
     typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("ArgMaxWeight");
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -3422,7 +3734,6 @@ class RangeHistogramBase
 {
   public:
     typedef typename BASE::input_type U;
-
   
     double scale_, offset_, inverse_scale_;
     
@@ -3577,6 +3888,12 @@ class IntegerHistogram
     
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("IntegerHistogram<") + asString(BinCount) + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public HistogramBase<BASE, BinCount>
@@ -3673,6 +3990,12 @@ class UserRangeHistogram
     
     typedef Select<> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("UserRangeHistogram<") + asString(BinCount) + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public RangeHistogramBase<BASE, BinCount>
@@ -3701,6 +4024,12 @@ class AutoRangeHistogram
     
     typedef Select<Minimum, Maximum> Dependencies;
     
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("AutoRangeHistogram<") + asString(BinCount) + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public RangeHistogramBase<BASE, BinCount>
@@ -3717,7 +4046,7 @@ class AutoRangeHistogram
         void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
-                this->setMinMax(get<Minimum>(*this), get<Maximum>(*this));
+                this->setMinMax(getUnchecked<Minimum>(*this), getUnchecked<Maximum>(*this));
                 
             RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
@@ -3730,6 +4059,12 @@ class GlobalRangeHistogram
   public:
     
     typedef Select<Global<Minimum>, Global<Maximum> > Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("GlobalRangeHistogram<") + asString(BinCount) + " >";
+        return n;
+    }
     
     template <class BASE>
     struct Impl
@@ -3747,7 +4082,7 @@ class GlobalRangeHistogram
         void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
-                this->setMinMax(get<Global<Minimum> >(*this), get<Global<Maximum> >(*this));
+                this->setMinMax(getUnchecked<Global<Minimum> >(*this), getUnchecked<Global<Maximum> >(*this));
 
             RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
@@ -3762,6 +4097,12 @@ class StandardQuantiles
     typedef typename StandardizeTag<HistogramAccumulator>::type HistogramTag;
     typedef Select<HistogramTag, Minimum, Maximum, Count> Dependencies;
 
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("StandardQuantiles<") + HistogramTag::name() + " >";
+        return n;
+    }
+    
     template <class BASE>
     struct Impl
     : public CachedResultBase<BASE, TinyVector<double, 7> >
@@ -3776,8 +4117,8 @@ class StandardQuantiles
             if(this->isDirty())
             {
                 static const double desiredQuantiles[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0 };
-                getAccumulator<HistogramTag>(*this).computeStandardQuantiles(get<Minimum>(*this), get<Maximum>(*this), 
-                                                                             get<Count>(*this), value_type(desiredQuantiles), 
+                getAccumulator<HistogramTag>(*this).computeStandardQuantiles(getUnchecked<Minimum>(*this), getUnchecked<Maximum>(*this), 
+                                                                             getUnchecked<Count>(*this), value_type(desiredQuantiles), 
                                                                              this->value_);
                 this->setClean();
             }

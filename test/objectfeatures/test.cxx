@@ -1787,6 +1787,8 @@ struct AccumulatorTest
                            Weighted<Count> >::value));
         should((IsSameType<StandardizeTag<Coord<Central<Count> > >::type,
                            Count>::value));
+        shouldEqual(Count::name(), "PowerSum<0>");
+        shouldEqual(Weighted<Count>::name(), "Weighted<PowerSum<0> >");
 
         // sum 
         should((IsSameType<StandardizeTag<Sum>::type,
@@ -1797,6 +1799,7 @@ struct AccumulatorTest
                            Weighted<Central<Sum> > >::value));
         should((IsSameType<StandardizeTag<Central<Weighted<Sum> > >::type,
                            Weighted<Central<Sum> > >::value));
+        shouldEqual(Weighted<Central<Sum> >::name(), "Weighted<Central<PowerSum<1> > >");
 
             // mean
         typedef DivideByCount<Principal<Sum> > PrincipalMean;
@@ -1808,6 +1811,7 @@ struct AccumulatorTest
                            Weighted<PrincipalMean> >::value));
         should((IsSameType<StandardizeTag<Principal<Weighted<Mean> > >::type,
                            Weighted<PrincipalMean> >::value));
+        shouldEqual(Weighted<PrincipalMean>::name(), "Weighted<DivideByCount<Principal<PowerSum<1> > > >");
 
             // moment
         should((IsSameType<StandardizeTag<Moment<2> >::type,
@@ -1818,6 +1822,7 @@ struct AccumulatorTest
                            Coord<DivideByCount<Central<PowerSum<2> > > > >::value));
         should((IsSameType<StandardizeTag<Central<Coord<Moment<2> > > >::type,
                            Coord<DivideByCount<Central<PowerSum<2> > > > >::value));
+        shouldEqual(Coord<Central<Moment<2> > >::name(), "Coord<DivideByCount<Central<PowerSum<2> > > >");
 
         should((IsSameType<StandardizeTag<Principal<Moment<2> > >::type,
                            DivideByCount<Principal<PowerSum<2> > > >::value));
@@ -2141,11 +2146,12 @@ struct AccumulatorTest
             shouldEqual(0, a.passesRequired());
             should(!isActive<Count>(a));
 
-            activate<Minimum>(a);
             activate<Mean>(a);
             activate<StdDev>(a);
             activate<Covariance>(a);
             activate<CentralMoment<4> >(a);
+            //activate<Minimum>(a);
+            a.activate("Minimum");
 
             should(isActive<Count>(a));
             should(isActive<Minimum>(a));
@@ -2815,11 +2821,13 @@ struct AccumulatorTest
             should(isActive<Count>(a));
             should(!isActive<Global<Count> >(a));
 
-            activate<Global<Count> >(a);
+            //activate<Global<Count> >(a);
+            a.activate("Global<PowerSum<0> >");
             should(isActive<Count>(a));
             should(isActive<Global<Count> >(a));
 
-            activate<Coord<Mean> >(a);
+            //activate<Coord<Mean> >(a);
+            a.activate("Coord<DivideByCount<PowerSum<1> > >");
             should(isActive<Coord<Mean> >(a));
             should(isActive<Coord<Sum> >(a));
             should(!isActive<Global<Coord<Sum> > >(a));

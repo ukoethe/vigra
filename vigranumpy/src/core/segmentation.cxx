@@ -48,7 +48,6 @@
 
 #include <string>
 #include <cmath>
-#include <ctype.h> // tolower()
 
 namespace python = boost::python;
 
@@ -515,8 +514,7 @@ pythonWatersheds2DOld(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
            "watersheds2D(): neighborhood must be 4 or 8.");
 
-    for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = (std::string::value_type)tolower(method[k]);
+    method = tolower(method);
     
     bool haveSeeds = seeds.hasData();
     unsigned int maxRegionLabel = 0;
@@ -598,8 +596,7 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 4 || neighborhood == 8,
            "watersheds2D(): neighborhood must be 4 or 8.");
 
-    for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = (std::string::value_type)tolower(method[k]);
+    method = tolower(method);
     if(method == "")
         method = "regiongrowing";
         
@@ -685,8 +682,7 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
            "watersheds3D(): neighborhood must be 6 or 26.");
 
-    for(unsigned int k=0; k<method.size(); ++k)
-        method[k] = (std::string::value_type)tolower(method[k]);
+    method = tolower(method);
     
     bool haveSeeds = seeds.hasData();
     unsigned int maxRegionLabel;
@@ -1015,6 +1011,7 @@ void defineSegmentation()
 
 void defineEdgedetection();
 void defineInterestpoints();
+void defineAccumulators();
 
 } // namespace vigra
 
@@ -1027,4 +1024,5 @@ BOOST_PYTHON_MODULE_INIT(analysis)
     defineSegmentation();
     defineEdgedetection();
     defineInterestpoints();
+    defineAccumulators();
 }
