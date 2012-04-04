@@ -35,6 +35,13 @@ SET(WITH_HDF5 ${WITH_HDF5}
     CACHE BOOL "Build HDF5 import/export ?"
     FORCE)
     
+IF(NOT DEFINED WITH_FFTW)
+    SET(WITH_FFTW "ON")
+ENDIF()
+SET(WITH_FFTW ${WITH_FFTW}
+    CACHE BOOL "Build FFTW import/export ?"
+    FORCE)
+    
 OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 
 IF(NOT DEFINED WITH_VIGRANUMPY)
