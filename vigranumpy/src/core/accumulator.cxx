@@ -437,10 +437,10 @@ struct PythonAccumulatorArray
         return v.result;
     }
     
-    // void merge(PythonAccumulator const & o)
-    // {
-        // BaseType::merge(o);
-    // }
+    void merge(PythonAccumulatorArray const & o)
+    {
+        BaseType::merge(o);
+    }
 };
 
 template <class Accumulators, unsigned int ndim, class T>
@@ -527,7 +527,7 @@ void definePythonAccumulatorArray()
         .def("__getitem__", &Accu::get)
         .def("activeNames", &Accu::activeNames)
         .def("names", &Accu::names)
-//        .def("merge", &Accu::merge)
+        .def("merge", &Accu::merge)
         ;
     
     def("extractRegionFeatures", &acc1::pythonRegionInspect<Accumulators, 2, T>,
@@ -568,13 +568,19 @@ void defineAccumulators()
                    Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<100> >,
                    GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
                    CenterOfMass, MomentsOfInertia, CoordSystemOfInertia,
-                   Coord<ArgMinWeight>, Coord<ArgMaxWeight>,
+                   Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
-    // typedef Select<Coord<ArgMinWeight>, 
-                   // DataArg<1>, WeightArg<1>, LabelArg<2>
-                   // > ScalarRegionAccumulators;
     definePythonAccumulatorArray<Singleband<float>, ScalarRegionAccumulators>();
 }
+
+// TODO:
+//  * implement PythonAccumulatorArray::merge()
+//  * implement label remapping in merge()
+//  * is there a possibility for a good implementation of merge for histogramms with different mapping?
+//  * 
+//  * general refactoring
+//  * better names for PrincipalRadii, PrincipalCoordSystem, MomentsOfInertia, CoordSystemOfInertia
+//  * tests and docu
 
 } // namespace vigra

@@ -69,7 +69,8 @@ namespace acc1 {
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
           class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
           class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void,
+          class T21=void, class T22=void, class T23=void, class T24=void, class T25=void>
 struct Select
 : public MakeTypeList<
     typename StandardizeTag<T01>::type, typename StandardizeTag<T02>::type, typename StandardizeTag<T03>::type, 
@@ -78,7 +79,10 @@ struct Select
     typename StandardizeTag<T10>::type, typename StandardizeTag<T11>::type, typename StandardizeTag<T12>::type, 
     typename StandardizeTag<T13>::type, typename StandardizeTag<T14>::type, typename StandardizeTag<T15>::type, 
     typename StandardizeTag<T16>::type, typename StandardizeTag<T17>::type, typename StandardizeTag<T18>::type, 
-    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type >
+    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type, typename StandardizeTag<T21>::type, 
+    typename StandardizeTag<T22>::type, typename StandardizeTag<T23>::type, typename StandardizeTag<T24>::type, 
+    typename StandardizeTag<T25>::type
+    >
 {};
 
 struct AccumulatorBegin
