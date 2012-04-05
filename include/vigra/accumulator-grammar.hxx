@@ -93,6 +93,7 @@ class RangeMapping;                            // map value from [min, max] to a
 template <int INDEX>  class DataArg;           // specifiy the index of the data member in a CoupledHandle
 template <int INDEX>  class WeightArg;         // specifiy the index of the weight member in a CoupledHandle
 template <int INDEX>  class LabelArg;          // specifiy the index of the label member in a CoupledHandle
+template <int INDEX>  class CoordArg;          // specifiy the index of the coord member in a CoupledHandle
 
 /* 
 Quantiles other than minimum and maximum require more thought:

@@ -2698,7 +2698,7 @@ struct AccumulatorTest
             typedef AccumulatorChainArray<Handle, Selected> A;
 
             should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::GlobalTags, 
-                        TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
+                        TypeList<AccumulatorBegin,TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > > >::value));
             should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
@@ -2802,9 +2802,9 @@ struct AccumulatorTest
 
             typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
                                                                 Global<Count>, Global<Coord<Mean> >, 
+                                                                StandardQuantiles<GlobalRangeHistogram<3> >, 
                                                                 LabelArg<1>, DataArg<1>
                                                  > > A;
-
             A a;
 
             shouldEqual(0, a.passesRequired());
@@ -2823,6 +2823,7 @@ struct AccumulatorTest
 
             //activate<Global<Count> >(a);
             a.activate("Global<PowerSum<0> >");
+
             should(isActive<Count>(a));
             should(isActive<Global<Count> >(a));
 

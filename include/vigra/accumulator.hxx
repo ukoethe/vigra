@@ -81,11 +81,28 @@ struct Select
     typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type >
 {};
 
-struct AccumulatorBegin;
+struct AccumulatorBegin
+{
+    typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n("AccumulatorBegin (internal)");
+        return n;
+    }
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {};
+};
+
+
 struct AccumulatorEnd;
 struct DataArgTag;
 struct WeightArgTag;
 struct LabelArgTag;
+struct CoordArgTag;
 struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
@@ -98,7 +115,7 @@ class LabelArg
     
     static std::string const & name() 
     { 
-        static const std::string n("LabelArg");
+        static const std::string n = std::string("LabelArg<") + asString(INDEX) + "> (internal)";
         return n;
     }
     
@@ -107,6 +124,31 @@ class LabelArg
     : public BASE
     {
         typedef LabelArgTag Tag;
+        typedef void value_type;
+        typedef void result_type;
+
+        static const int value = INDEX;
+        static const unsigned int workInPass = 0;
+    };
+};
+
+template <int INDEX>
+class CoordArg
+{
+  public:
+    typedef Select<> Dependencies;
+    
+    static std::string const & name() 
+    { 
+        static const std::string n = std::string("CoordArg<") + asString(INDEX) + "> (internal)";
+        return n;
+    }
+    
+    template <class BASE>
+    struct Impl
+    : public BASE
+    {
+        typedef CoordArgTag Tag;
         typedef void value_type;
         typedef void result_type;
 
@@ -177,7 +219,7 @@ struct ActivateDependencies<TypeList<HEAD, TAIL> >
     template <class Chain, class ActiveFlags, class GlobalFlags>
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
-        LookupTag<HEAD, Chain>::type::activateImpl(flags);
+        LookupTag<HEAD, Chain>::type::activateImpl(flags, gflags);
         ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
@@ -248,6 +290,14 @@ struct SeparateGlobalAndRegionTags<TypeList<WeightArg<INDEX>, TAIL> >
     typedef TypeList<WeightArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
 };
 
+template <int INDEX, class TAIL>
+struct SeparateGlobalAndRegionTags<TypeList<CoordArg<INDEX>, TAIL> >
+{
+    typedef SeparateGlobalAndRegionTags<TAIL>           Inner;
+    typedef TypeList<CoordArg<INDEX>, typename Inner::RegionTags>  RegionTags;
+    typedef TypeList<CoordArg<INDEX>, typename Inner::GlobalTags>  GlobalTags;
+};
+
 template <>
 struct SeparateGlobalAndRegionTags<void>
 {
@@ -314,6 +364,11 @@ struct AccumulatorEndImpl
     
     static void activateImpl(...)
     {}
+    
+    static bool isActiveImpl(...)
+    {
+        return true;
+    }
     
     static unsigned int passesRequired()
     {
@@ -840,7 +895,11 @@ struct CreateAccumulatorChainArray
 {
     typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
     typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
-    typedef typename TagSeparator::GlobalTags GlobalTags;
+    
+        // we add AccumulatorBegin so that LookupTag does not transfer any modifiers
+        // FIXME: there should be a cleaner way to organize modifier transfer in LookupTag
+    typedef TypeList<AccumulatorBegin, typename TagSeparator::GlobalTags> GlobalTags;
+    
     typedef typename TagSeparator::RegionTags RegionTags;
     typedef typename detail::Compose<T, GlobalTags, InvalidGlobalAccumulatorHandle, dynamic>::type GlobalAccumulatorChain;
     
@@ -886,6 +945,13 @@ struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
         v.exec<HEAD>(a);
         ApplyVisitorToTag<TAIL>::exec(a, v);
     }
+    
+    template <class Visitor>
+    static void exec(Visitor const & v)
+    {
+        v.exec<HEAD>();
+        ApplyVisitorToTag<TAIL>::exec(v);
+    }
 };
 
 template <>
@@ -900,9 +966,13 @@ struct ApplyVisitorToTag<void>
     template <class Accu, class Visitor>
     static void exec(Accu &, Visitor const &)
     {}
+    
+    template <class Visitor>
+    static void exec(Visitor const &)
+    {}
 };
 
-struct ActivateTagVisitor
+struct ActivateTag_Visitor
 {
     template <class TAG, class Accu>
     void exec(Accu & a) const
@@ -911,12 +981,12 @@ struct ActivateTagVisitor
     }
 };
 
-struct CollectActiveTagsVisitor
+struct CollectActiveTags_Visitor
 {
     mutable ArrayVector<std::string> activeNames;
     bool activeOnly_;
 
-    CollectActiveTagsVisitor(bool activeOnly)
+    CollectActiveTags_Visitor(bool activeOnly)
     : activeOnly_(activeOnly)
     {}
     
@@ -926,6 +996,17 @@ struct CollectActiveTagsVisitor
         if(activeOnly_ && !a.isActive<TAG>())
             return;
         activeNames.push_back(TAG::name());
+    }
+};
+
+struct CollectTagNames_Visitor
+{
+    mutable ArrayVector<std::string> names;
+
+    template <class TAG>
+    void exec() const
+    {
+        names.push_back(TAG::name());
     }
 };
 
@@ -1095,6 +1176,13 @@ struct AccumulatorChain
         this->next_.resize(s);
         this->current_pass_ = 1;
     }
+     
+    static ArrayVector<std::string> tagNames()
+    {
+        detail::CollectTagNames_Visitor v;
+        detail::ApplyVisitorToTag<AccumulatorTags>::exec(v);
+        return v.names;
+    }
 };   
 
 
@@ -1110,7 +1198,7 @@ struct DynamicAccumulatorChain
     void activate(std::string tag)
     {
         bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
-                                     normalizeString(tag), detail::ActivateTagVisitor());
+                                     normalizeString(tag), detail::ActivateTag_Visitor());
         vigra_precondition(found,
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
@@ -1134,7 +1222,7 @@ struct DynamicAccumulatorChain
     
     ArrayVector<std::string> namesImpl(bool activeOnly) const
     {
-        detail::CollectActiveTagsVisitor v(activeOnly);
+        detail::CollectActiveTags_Visitor v(activeOnly);
         detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, v);
         return v.activeNames;
     }
@@ -1159,7 +1247,10 @@ template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
 : public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::type>
 {
-    typedef typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::AccumulatorTags AccumulatorTags;
+    typedef typename detail::CreateAccumulatorChainArray<T, Selected, dynamic> Creator;
+    typedef typename Creator::AccumulatorTags AccumulatorTags;
+    typedef typename Creator::GlobalTags GlobalTags;
+    typedef typename Creator::RegionTags RegionTags;
     
     void setMaxRegionLabel(unsigned label)
     {
@@ -1170,7 +1261,13 @@ struct AccumulatorChainArray
     {
         return this->next_.regions_.size();
     }
-
+     
+    static ArrayVector<std::string> tagNames()
+    {
+        detail::CollectTagNames_Visitor v;
+        detail::ApplyVisitorToTag<AccumulatorTags>::exec(v);
+        return v.names;
+    }
 };   
 
 template <class T, class Selected>
@@ -1182,7 +1279,7 @@ struct DynamicAccumulatorChainArray
     void activate(std::string tag)
     {
         bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
-                                normalizeString(tag), detail::ActivateTagVisitor());
+                                normalizeString(tag), detail::ActivateTag_Visitor());
         vigra_precondition(found,
             std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
     }
@@ -1202,6 +1299,23 @@ struct DynamicAccumulatorChainArray
     bool isActive() const
     {
         return this->next_.isActive<TAG>();
+    }
+    
+    ArrayVector<std::string> namesImpl(bool activeOnly) const
+    {
+        detail::CollectActiveTags_Visitor v(activeOnly);
+        detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, v);
+        return v.activeNames;
+    }
+    
+    ArrayVector<std::string> activeNames() const
+    {
+        return namesImpl(true);
+    }
+    
+    ArrayVector<std::string> names() const
+    {
+        return namesImpl(false);
     }
     
     unsigned int passesRequired() const
@@ -1332,13 +1446,19 @@ template <class Tag, class A, class TargetTag>
 struct LookupTag
 : public detail::LookupTagImpl<typename TransferModifiers<TargetTag, 
                                                          typename StandardizeTag<Tag>::type>::type, A>
-{}; 
+{
+    typedef typename TransferModifiers<TargetTag, typename StandardizeTag<Tag>::type>::type SEARCH_TAG;
+    typedef TargetTag TARGET_TAG;
+}; 
 
     // If called from the main accumulator chain, use target tags verbatim (after standardization).
 template <class Tag, class A>
 struct LookupTag<Tag, A, AccumulatorBegin>
 : public detail::LookupTagImpl<typename StandardizeTag<Tag>::type, A>
-{}; 
+{
+    typedef typename StandardizeTag<Tag>::type SEARCH_TAG;
+    typedef AccumulatorBegin TARGET_TAG;
+}; 
 
 namespace detail {
 
@@ -1593,6 +1713,7 @@ struct AccumulatorBase
     typedef T const &                    argument_type;
     typedef argument_type                first_argument_type;
     typedef double                       second_argument_type;
+    typedef void                         result_type;
     
     static const unsigned int            workInPass = 1;
     static const int                     index = NEXT::index + 1;
@@ -1746,7 +1867,7 @@ class DataArg
     
     static std::string const & name() 
     { 
-        static const std::string n("DataArg");
+        static const std::string n = std::string("DataArg<") + asString(INDEX) + "> (internal)";
         return n;
     }
     
@@ -1772,7 +1893,7 @@ class DataFromHandle
     
     static std::string const & name() 
     { 
-        static const std::string n = std::string("DataFromHandle<") + TargetTag::name() + " >";
+        static const std::string n = std::string("DataFromHandle<") + TargetTag::name() + " > (internal)";
         return n;
     }
     
@@ -1815,8 +1936,7 @@ class DataFromHandle
     struct Impl
     : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
     {
-        typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
-        typedef DataIndexSelector<FindDataIndex> DataIndex;
+        typedef typename SelectInputType<BASE>::DataIndex DataIndex;
         typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
         
         using ImplType::reshape;
@@ -1855,10 +1975,38 @@ class Coord
         return n;
     }
     
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct CoordIndexSelector
+    {
+        static const int value = 0; // default: CoupledHandle holds coordinates at index 0 
+        
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return get<value>(t);
+        }
+    };
+    
+    template <class IndexDefinition>
+    struct CoordIndexSelector<IndexDefinition, CoordArgTag>
+    {
+        static const int value = IndexDefinition::value;
+        
+        template <class U, class NEXT>
+        static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
+        exec(CoupledHandle<U, NEXT> const & t)
+        {
+            return get<value>(t);
+        }
+    };
+    
     template <class BASE>
     struct SelectInputType
     {
-        typedef typename CoupledHandleCast<0, typename BASE::input_type>::type::value_type NewValueType;
+        typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
+        typedef CoordIndexSelector<FindDataIndex> CoordIndex;
+        typedef typename CoupledHandleCast<CoordIndex::value, typename BASE::input_type>::type::value_type NewValueType;
         typedef typename ChangeInputType<BASE, NewValueType>::type type;
     };
     
@@ -1866,6 +2014,7 @@ class Coord
     struct Impl
     : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
     {
+        typedef typename SelectInputType<BASE>::CoordIndex CoordIndex;
         typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
         
         using ImplType::reshape;
@@ -1873,19 +2022,19 @@ class Coord
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shapeOf(get<0>(t)));
+            ImplType::reshape(detail::shapeOf(CoordIndex::exec(t)));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::update(get<0>(t));
+            ImplType::update(CoordIndex::exec(t));
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::update(get<0>(t), weight);
+            ImplType::update(CoordIndex::exec(t), weight);
         }
     };
 };
@@ -1898,7 +2047,7 @@ class WeightArg
     
     static std::string const & name() 
     { 
-        static const std::string n("WeightArg");
+        static const std::string n = std::string("WeightArg<") + asString(INDEX) + "> (internal)";
         return n;
     }
     
@@ -1973,7 +2122,7 @@ class Centralize
     
     static std::string const & name() 
     { 
-        static const std::string n("Centralize");
+        static const std::string n("Centralize (internal)");
         return n;
     }
     
@@ -2118,7 +2267,7 @@ class PrincipalProjection
     
     static std::string const & name() 
     { 
-        static const std::string n("PrincipalProjection");
+        static const std::string n("PrincipalProjection (internal)");
         return n;
     }
     
