@@ -1916,6 +1916,12 @@ struct AccumulatorTest
         should((IsSameType<StandardizeTag<Principal<CoordinateSystem> >::type,
                            Principal<CoordinateSystem> >::value));
 
+            // PrincipalRadii
+        should((IsSameType<StandardizeTag<PrincipalRadii>::type,
+                           Coord<RootDivideByCount<Principal<PowerSum<2> > > > >::value));
+        shouldEqual(StandardizeTag<PrincipalRadii>::type::name(), "Coord<RootDivideByCount<Principal<PowerSum<2> > > >");
+
+
             // HasModifierPriority
         using namespace vigra::acc1::detail;
         should((HasModifierPriority<StandardizeTag<Count>::type, AccumulatorPriority>::value));
@@ -2685,6 +2691,15 @@ struct AccumulatorTest
         }
     }
 
+    template <class TAG, class A>
+    static inline typename acc1::LookupDependency<TAG, A>::reference
+    getAccumulatorIndirectly(A & a)
+    {
+        typedef typename acc1::LookupDependency<TAG, A>::Tag StandardizedTag;
+        typedef typename acc1::LookupDependency<TAG, A>::reference reference;
+        return acc1::detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
+    }
+
     void testLabelDispatch()
     {
         using namespace vigra::acc1;
@@ -2698,11 +2713,12 @@ struct AccumulatorTest
             typedef AccumulatorChainArray<Handle, Selected> A;
 
             should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::GlobalTags, 
-                        TypeList<AccumulatorBegin,TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > > >::value));
-            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
+                               TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
+            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, 
+                               TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
-            typedef LookupTag<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
+            typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
 
             should(!(IsSameType<RegionCount, LookupTag<Global<Count>, A>::type>::value));
             should((IsSameType<GlobalCountViaRegionCount, LookupTag<Global<Count>, A>::type>::value));
@@ -2724,8 +2740,8 @@ struct AccumulatorTest
 
             LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
             LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
-            should((&gc == &getAccumulator<Global<Count> >(rc)));
-            should((&gc == &getAccumulator<Global<Count> >(getAccumulator<Count>(a, 1))));
+            should((&gc == &getAccumulatorIndirectly<Global<Count> >(rc)));
+            should((&gc == &getAccumulatorIndirectly<Global<Count> >(getAccumulator<Count>(a, 1))));
 
             for(; i < end; ++i)
                 a(*i);
