@@ -2738,6 +2738,7 @@ struct AccumulatorTest
 
             a.setMaxRegionLabel(1);
 
+            shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
 
@@ -2785,6 +2786,7 @@ struct AccumulatorTest
             for(; i < end; ++i)
                 a(*i);
             
+            shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             shouldEqual(4, get<Count>(a, 0));
             shouldEqual(2, get<Count>(a, 1));
@@ -2880,6 +2882,7 @@ struct AccumulatorTest
             for(i = start; i < end; ++i)
                 a.updatePass2(*i);
             
+            shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(4, get<Count>(a, 0));
             shouldEqual(2, get<Count>(a, 1));
             shouldEqual(6, get<Global<Count> >(a));
@@ -2904,6 +2907,7 @@ struct AccumulatorTest
 
             a += b;
             
+            shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(8, get<Count>(a, 0));
             shouldEqual(4, get<Count>(a, 1));
             shouldEqual(12, get<Global<Count> >(a));
@@ -2914,6 +2918,20 @@ struct AccumulatorTest
             shouldEqual(W(0, 0, 4), get<GlobalRangeHistogram<3> >(a,1));
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));
+
+            TinyVector<int, 2> labelMapping(2, 3);
+            a.merge(b, labelMapping);
+            shouldEqual(a.maxRegionLabel(), 3);
+            shouldEqual(8, get<Count>(a, 0));
+            shouldEqual(4, get<Count>(a, 1));
+            shouldEqual(4, get<Count>(a, 2));
+            shouldEqual(2, get<Count>(a, 3));
+            shouldEqual(18, get<Global<Count> >(a));
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean> >(a, 0));
+            shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 1));
+            shouldEqual(V(0.5, 0.5), get<Coord<Mean> >(a, 2));
+            shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 3));
+            shouldEqual(V(1, 0.5), get<Global<Coord<Mean> > >(a));
 
 #endif
         }

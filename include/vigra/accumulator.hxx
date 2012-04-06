@@ -764,8 +764,33 @@ struct LabelDispatch
     
     typedef typename LookupTag<LabelArgTag, GlobalAccumulatorChain>::type FindLabelIndex;
     
+    LabelDispatch()
+    : next_(),
+      regions_(),
+      active_region_accumulators_()
+    {}
+    
+    LabelDispatch(LabelDispatch const & o)
+    : next_(o.next_),
+      regions_(o.regions_),
+      active_region_accumulators_(o.active_region_accumulators_)
+    {
+        for(unsigned int k=0; k<regions_.size(); ++k)
+        {
+            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
+            getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
+        }
+    }
+    
+    MultiArrayIndex maxRegionLabel() const
+    {
+        return (MultiArrayIndex)regions_.size() - 1;
+    }
+    
     void setMaxRegionLabel(unsigned maxlabel)
     {
+        if(maxRegionLabel() == (MultiArrayIndex)maxlabel)
+            return;
         regions_.resize(maxlabel + 1);
         for(unsigned int k=0; k<regions_.size(); ++k)
         {
@@ -856,6 +881,16 @@ struct LabelDispatch
         next_.merge(o.next_);
         for(unsigned int k=0; k<regions_.size(); ++k)
             regions_[k].merge(o.regions_[k]);
+    }
+    
+    template <class ArrayLike>
+    void merge(LabelDispatch const & o, ArrayLike const & labelMapping)
+    {
+        MultiArrayIndex newMaxLabel = std::max<MultiArrayIndex>(maxRegionLabel(), *argMax(labelMapping.begin(), labelMapping.end()));
+        setMaxRegionLabel(newMaxLabel);
+        for(unsigned int k=0; k<labelMapping.size(); ++k)
+            regions_[labelMapping[k]].merge(o.regions_[k]);
+        next_.merge(o.next_);
     }
 };
 
@@ -1277,6 +1312,11 @@ struct AccumulatorChainArray
         this->next_.setMaxRegionLabel(label);
     }
     
+    MultiArrayIndex maxRegionLabel() const
+    {
+        return this->next_.maxRegionLabel();
+    }
+     
     unsigned int regionCount() const
     {
         return this->next_.regions_.size();
@@ -1287,6 +1327,17 @@ struct AccumulatorChainArray
         detail::CollectTagNames_Visitor v;
         detail::ApplyVisitorToTag<AccumulatorTags>::exec(v);
         return v.names;
+    }
+    
+    void merge(AccumulatorChainArray const & o)
+    {
+        this->next_.merge(o.next_);
+    }
+
+    template <class ArrayLike>
+    void merge(AccumulatorChainArray const & o, ArrayLike const & labelMapping)
+    {
+        this->next_.merge(o.next_, labelMapping);
     }
 };   
 
@@ -4052,7 +4103,7 @@ class RangeHistogramBase
 
     void operator+=(RangeHistogramBase const & o)
     {
-        vigra_precondition(scale_ == o.scale_ && offset_ == o.offset_,
+        vigra_precondition(scale_ == 0 || o.scale_ == 0 || (scale_ == o.scale_ && offset_ == o.offset_),
             "RangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
         
         HistogramBase<BASE, BinCount>::operator+=(o);
