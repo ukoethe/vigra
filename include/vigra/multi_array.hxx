@@ -2585,41 +2585,64 @@ public:
 
         /** Add-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to a normal assignment (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator+= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator+=(rhs);
+        if(this->hasData())
+            view_type::operator+=(rhs);
+        else
+            *this = rhs;
         return *this;
     }
 
         /** Subtract-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to an assignment of the negated rhs (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator-= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
+        if(!this->hasData())
+            this->reshape(rhs);
         view_type::operator-=(rhs);
         return *this;
     }
 
         /** Multiply-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator*= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator*=(rhs);
+        if(this->hasData())
+            view_type::operator*=(rhs);
+        else
+            this->reshape(rhs);
         return *this;
     }
 
         /** Divide-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator/= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator/=(rhs);
+        if(this->hasData())
+            view_type::operator/=(rhs);
+        else
+            this->reshape(rhs);
         return *this;
     }
 
