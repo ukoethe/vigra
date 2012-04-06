@@ -777,16 +777,10 @@ struct PushUnique<void, void>
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
           class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
           class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void,
-          class T21=void, class T22=void, class T23=void, class T24=void, class T25=void>
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
 struct MakeTypeList
 {
-    typedef typename Push<T24, T25>::type L24;
-    typedef typename Push<T23, L24>::type L23;
-    typedef typename Push<T22, L23>::type L22;
-    typedef typename Push<T21, L22>::type L21;
-    typedef typename Push<T20, L21>::type L20;
-    typedef typename Push<T19, L20>::type L19;
+    typedef typename Push<T19, T20>::type L19;
     typedef typename Push<T18, L19>::type L18;
     typedef typename Push<T17, L18>::type L17;
     typedef typename Push<T16, L17>::type L16;

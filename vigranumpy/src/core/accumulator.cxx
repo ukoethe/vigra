@@ -568,17 +568,20 @@ void defineAccumulators()
                    Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<100> >,
                    GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
                    CenterOfMass, MomentsOfInertia, CoordSystemOfInertia,
-                   Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>,
+                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight> >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
     definePythonAccumulatorArray<Singleband<float>, ScalarRegionAccumulators>();
 }
 
 // TODO:
+//  * nested Select
+//  * Multiband support
 //  * implement PythonAccumulatorArray::merge()
 //  * implement label remapping in merge()
-//  * is there a possibility for a good implementation of merge for histogramms with different mapping?
-//  * 
+//  * is there a good implementation of merge for histogramms with different mapping?
+//  * multiband histograms
+//  * ensure that accumulators promote float arguments to double
 //  * general refactoring
 //  * better names for PrincipalRadii, PrincipalCoordSystem, MomentsOfInertia, CoordSystemOfInertia
 //  * tests and docu

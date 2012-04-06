@@ -69,8 +69,7 @@ namespace acc1 {
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
           class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
           class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
-          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void,
-          class T21=void, class T22=void, class T23=void, class T24=void, class T25=void>
+          class T16=void, class T17=void, class T18=void, class T19=void, class T20=void>
 struct Select
 : public MakeTypeList<
     typename StandardizeTag<T01>::type, typename StandardizeTag<T02>::type, typename StandardizeTag<T03>::type, 
@@ -79,11 +78,29 @@ struct Select
     typename StandardizeTag<T10>::type, typename StandardizeTag<T11>::type, typename StandardizeTag<T12>::type, 
     typename StandardizeTag<T13>::type, typename StandardizeTag<T14>::type, typename StandardizeTag<T15>::type, 
     typename StandardizeTag<T16>::type, typename StandardizeTag<T17>::type, typename StandardizeTag<T18>::type, 
-    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type, typename StandardizeTag<T21>::type, 
-    typename StandardizeTag<T22>::type, typename StandardizeTag<T23>::type, typename StandardizeTag<T24>::type, 
-    typename StandardizeTag<T25>::type
+    typename StandardizeTag<T19>::type, typename StandardizeTag<T20>::type
     >
 {};
+
+    // enable nesting of Select<> expressions 
+template <class T01, class T02, class T03, class T04, class T05,
+          class T06, class T07, class T08, class T09, class T10,
+          class T11, class T12, class T13, class T14, class T15,
+          class T16, class T17, class T18, class T19, class T20>
+struct StandardizeTag<Select<T01, T02, T03, T04, T05,
+                             T06, T07, T08, T09, T10,
+                             T11, T12, T13, T14, T15,
+                             T16, T17, T18, T19, T20>, 
+                      Select<T01, T02, T03, T04, T05,
+                             T06, T07, T08, T09, T10,
+                             T11, T12, T13, T14, T15,
+                             T16, T17, T18, T19, T20> >
+{
+    typedef typename  Select<T01, T02, T03, T04, T05,
+                             T06, T07, T08, T09, T10,
+                             T11, T12, T13, T14, T15,
+                             T16, T17, T18, T19, T20>::type type;
+};
 
 struct AccumulatorBegin
 {

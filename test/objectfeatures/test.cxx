@@ -1921,12 +1921,15 @@ struct AccumulatorTest
                            Coord<RootDivideByCount<Principal<PowerSum<2> > > > >::value));
         shouldEqual(StandardizeTag<PrincipalRadii>::type::name(), "Coord<RootDivideByCount<Principal<PowerSum<2> > > >");
 
-
             // HasModifierPriority
         using namespace vigra::acc1::detail;
         should((HasModifierPriority<StandardizeTag<Count>::type, AccumulatorPriority>::value));
         should(!(HasModifierPriority<StandardizeTag<Count>::type, AccessDataPriority>::value));
         should((HasModifierPriority<StandardizeTag<Weighted<Count> >::type, WeightingPriority>::value));
+
+            // nested Select
+        should((IsSameType<Select<Count, Mean, Select<Sum, Minimum>, Variance>::type,
+                           Select<Count, Mean, Sum, Minimum, Variance>::type>::value));
     }
 
     template <class SOURCE, class REFERENCE>
