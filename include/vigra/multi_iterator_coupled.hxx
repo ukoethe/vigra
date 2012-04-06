@@ -85,6 +85,7 @@ public:
     typedef CoupledHandle<T, NEXT>          self_type;
     
     static const int index =                NEXT::index + 1;    // index of this member of the chain
+    static const unsigned int dimensions =  NEXT::dimensions;
 
     typedef T                               value_type;
     typedef T *                             pointer;
@@ -104,6 +105,15 @@ public:
       pointer_(const_cast<pointer>(p)), 
       strides_(strides)
     {}
+
+    template <class Stride>
+    CoupledHandle(MultiArrayView<dimensions, T, Stride> const & v, NEXT const & next)
+    : base_type(next),
+      pointer_(const_cast<pointer>(v.data())), 
+      strides_(v.stride())
+    {
+        vigra_precondition(v.shape() == this->shape(), "createCoupledIterator(): shape mismatch.");
+    }
 
     template<int DIMENSION>
     inline void increment() 
@@ -208,6 +218,12 @@ public:
       scanOrderIndex_()
     {}
 
+    CoupledHandle(typename MultiArrayShape<N+1>::type const & shape)
+    : point_(),
+      shape_(shape.begin()),
+      scanOrderIndex_()
+    {}
+
     template<int DIMENSION>
     inline void increment() 
     {
@@ -300,6 +316,133 @@ public:
 
     value_type point_, shape_;
     MultiArrayIndex scanOrderIndex_;
+};
+
+template <class T>
+struct Multiband;
+
+template <unsigned int N, class T, class StrideTag>
+class MultiArrayView<N, Multiband<T>, StrideTag>
+: public MultiArrayView<N, T, StrideTag>
+{
+  public:
+    MultiArrayView(MultiArrayView<N, T, StrideTag> const & v)
+    : MultiArrayView<N, T, StrideTag>(v)
+    {}
+};
+
+template <class T, class NEXT>
+class CoupledHandle<Multiband<T>, NEXT>
+: public NEXT
+{
+public:
+    typedef NEXT                                  base_type;
+    typedef CoupledHandle<Multiband<T>, NEXT>     self_type;
+    
+    static const int index =                      NEXT::index + 1;    // index of this member of the chain
+    static const unsigned int dimensions =        NEXT::dimensions;
+
+    typedef MultiArrayView<1, T, StridedArrayTag> value_type;
+    typedef value_type *                          pointer;
+    typedef value_type const *                    const_pointer;
+    typedef value_type &                          reference;
+    typedef value_type const &                    const_reference;
+    typedef typename base_type::shape_type        shape_type;
+
+    CoupledHandle()
+    : base_type(),
+      view_(), 
+      strides_()
+    {}
+
+    CoupledHandle(const_reference p, shape_type const & strides, NEXT const & next)
+    : base_type(next),
+      view_(p), 
+      strides_(strides)
+    {}
+
+    template <class Stride>
+    CoupledHandle(MultiArrayView<dimensions+1, Multiband<T>, Stride> const & v, NEXT const & next)
+    : base_type(next),
+      view_(v.bindInner(shape_type())), 
+      strides_(v.bindOuter(0).stride())
+    {
+        vigra_precondition(v.bindOuter(0).shape() == this->shape(), "createCoupledIterator(): shape mismatch.");
+    }
+
+    template<int DIMENSION>
+    inline void increment() 
+    {
+        view_.unsafePtr() += strides_[DIMENSION];
+        base_type::template increment<DIMENSION>();
+    }
+    
+    template<int DIMENSION>
+    inline void decrement() 
+    {
+        view_.unsafePtr() -= strides_[DIMENSION];
+        base_type::template decrement<DIMENSION>();
+    }
+    
+    // TODO: test if making the above a default case of the this hurts performance
+    template<int DIMENSION>
+    inline void increment(MultiArrayIndex offset) 
+    {
+        view_.unsafePtr() += offset*strides_[DIMENSION];
+        base_type::template increment<DIMENSION>(offset);
+    }
+    
+    template<int DIMENSION>
+    inline void decrement(MultiArrayIndex offset) 
+    {
+        view_.unsafePtr() -= offset*strides_[DIMENSION];
+        base_type::template decrement<DIMENSION>(offset);
+    }
+    
+    void restrictToSubarray(shape_type const & start, shape_type const & end)
+    {
+        view_.unsafePtr() += dot(start, strides_);
+        base_type::restrictToSubarray(start, end);
+    }
+
+    // ptr access
+    reference operator*()
+    {
+        return view_;
+    }
+
+    const_reference operator*() const
+    {
+        return view_;
+    }
+
+    pointer operator->()
+    {
+        return &view_;
+    }
+
+    const_pointer operator->() const
+    {
+        return &view_;
+    }
+
+    pointer ptr()
+    {
+        return &view_;
+    }
+
+    const_pointer ptr() const
+    {
+        return &view_;
+    }
+
+    shape_type const & strides() const
+    {
+        return strides_;
+    }
+
+    value_type view_;
+    shape_type strides_;
 };
 
 template <unsigned TARGET_INDEX>
@@ -842,11 +985,19 @@ struct CoupledHandleType
     typedef typename ComposeCoupledHandle<N, TypeList>::type type;
 };
 
+template <unsigned int N, class T1, class T2, class T3, class T4, class T5>
+struct CoupledHandleType<N, Multiband<T1>, T2, T3, T4, T5>
+{
+    // reverse the order to get the desired index order
+    typedef typename MakeTypeList<T5, T4, T3, T2, Multiband<T1> >::type TypeList;
+    typedef typename ComposeCoupledHandle<N-1, TypeList>::type type;
+};
+
 template <unsigned int N, class T1=void, class T2=void, class T3=void, class T4=void, class T5=void>
 struct CoupledIteratorType
 {
     typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type HandleType;
-    typedef CoupledScanOrderIterator<N, HandleType> type;
+    typedef CoupledScanOrderIterator<HandleType::dimensions, HandleType> type;
 };
 
 template <int N>
@@ -859,103 +1010,103 @@ createCoupledIterator(TinyVector<MultiArrayIndex, N> const & shape)
     return IteratorType(P0(shape));
 }
 
-template <unsigned int N, class T1, class S1>
-typename CoupledIteratorType<N, T1>::type
-createCoupledIterator(MultiArrayView<N, T1, S1> const & m1)
+template <unsigned int N1, class T1, class S1>
+typename CoupledIteratorType<N1, T1>::type
+createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1)
 {
-    typedef typename CoupledHandleType<N, T1>::type             P1;
-    typedef typename P1::base_type                              P0;
-    typedef CoupledScanOrderIterator<N, P1> IteratorType;
+    typedef typename CoupledHandleType<N1, T1>::type             P1;
+    typedef typename P1::base_type                               P0;
+    typedef CoupledScanOrderIterator<P1::dimensions, P1>         IteratorType;
     
-    return IteratorType(P1(m1.data(), m1.stride(), 
+    return IteratorType(P1(m1, 
                         P0(m1.shape())));
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
-typename CoupledIteratorType<N, T1, T2>::type
-createCoupledIterator(MultiArrayView<N, T1, S1> const & m1,
-                      MultiArrayView<N, T2, S2> const & m2)
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2>
+typename CoupledIteratorType<N1, T1, T2>::type
+createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
+                      MultiArrayView<N2, T2, S2> const & m2)
 {
-    typedef typename CoupledHandleType<N, T1, T2>::type         P2;
-    typedef typename P2::base_type                              P1;
-    typedef typename P1::base_type                              P0;
-    typedef CoupledScanOrderIterator<N, P2> IteratorType;
+    typedef typename CoupledHandleType<N1, T1, T2>::type         P2;
+    typedef typename P2::base_type                               P1;
+    typedef typename P1::base_type                               P0;
+    typedef CoupledScanOrderIterator<P2::dimensions, P2> IteratorType;
     
-    return IteratorType(P2(m2.data(), m2.stride(), 
-                        P1(m1.data(), m1.stride(), 
+    return IteratorType(P2(m2, 
+                        P1(m1, 
                         P0(m1.shape()))));
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2,
-                          class T3, class S3>
-typename CoupledIteratorType<N, T1, T2, T3>::type
-createCoupledIterator(MultiArrayView<N, T1, S1> const & m1,
-                      MultiArrayView<N, T2, S2> const & m2,
-                      MultiArrayView<N, T3, S3> const & m3)
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3>
+typename CoupledIteratorType<N1, T1, T2, T3>::type
+createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
+                      MultiArrayView<N2, T2, S2> const & m2,
+                      MultiArrayView<N3, T3, S3> const & m3)
 {
-    typedef typename CoupledHandleType<N, T1, T2, T3>::type     P3;
-    typedef typename P3::base_type                              P2;
-    typedef typename P2::base_type                              P1;
-    typedef typename P1::base_type                              P0;
-    typedef CoupledScanOrderIterator<N, P3> IteratorType;
+    typedef typename CoupledHandleType<N1, T1, T2, T3>::type     P3;
+    typedef typename P3::base_type                               P2;
+    typedef typename P2::base_type                               P1;
+    typedef typename P1::base_type                               P0;
+    typedef CoupledScanOrderIterator<P3::dimensions, P3> IteratorType;
     
-    return IteratorType(P3(m3.data(), m3.stride(), 
-                        P2(m2.data(), m2.stride(), 
-                        P1(m1.data(), m1.stride(), 
+    return IteratorType(P3(m3, 
+                        P2(m2, 
+                        P1(m1, 
                         P0(m1.shape())))));
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2,
-                          class T3, class S3,
-                          class T4, class S4>
-typename CoupledIteratorType<N, T1, T2, T3, T4>::type
-createCoupledIterator(MultiArrayView<N, T1, S1> const & m1,
-                      MultiArrayView<N, T2, S2> const & m2,
-                      MultiArrayView<N, T3, S3> const & m3,
-                      MultiArrayView<N, T4, S4> const & m4)
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3,
+          unsigned int N4, class T4, class S4>
+typename CoupledIteratorType<N1, T1, T2, T3, T4>::type
+createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
+                      MultiArrayView<N2, T2, S2> const & m2,
+                      MultiArrayView<N3, T3, S3> const & m3,
+                      MultiArrayView<N4, T4, S4> const & m4)
 {
-    typedef typename CoupledHandleType<N, T1, T2, T3, T4>::type P4;
-    typedef typename P4::base_type                              P3;
-    typedef typename P3::base_type                              P2;
-    typedef typename P2::base_type                              P1;
-    typedef typename P1::base_type                              P0;
-    typedef CoupledScanOrderIterator<N, P4> IteratorType;
+    typedef typename CoupledHandleType<N1, T1, T2, T3, T4>::type P4;
+    typedef typename P4::base_type                               P3;
+    typedef typename P3::base_type                               P2;
+    typedef typename P2::base_type                               P1;
+    typedef typename P1::base_type                               P0;
+    typedef CoupledScanOrderIterator<P4::dimensions, P4> IteratorType;
     
-    return IteratorType(P4(m4.data(), m4.stride(), 
-                        P3(m3.data(), m3.stride(), 
-                        P2(m2.data(), m2.stride(), 
-                        P1(m1.data(), m1.stride(), 
+    return IteratorType(P4(m4, 
+                        P3(m3, 
+                        P2(m2, 
+                        P1(m1, 
                         P0(m1.shape()))))));
 }
 
-template <unsigned int N, class T1, class S1,
-                          class T2, class S2,
-                          class T3, class S3,
-                          class T4, class S4,
-                          class T5, class S5>
-typename CoupledIteratorType<N, T1, T2, T3, T4, T5>::type
-createCoupledIterator(MultiArrayView<N, T1, S1> const & m1,
-                      MultiArrayView<N, T2, S2> const & m2,
-                      MultiArrayView<N, T3, S3> const & m3,
-                      MultiArrayView<N, T4, S4> const & m4,
-                      MultiArrayView<N, T5, S5> const & m5)
+template <unsigned int N1, class T1, class S1,
+          unsigned int N2, class T2, class S2,
+          unsigned int N3, class T3, class S3,
+          unsigned int N4, class T4, class S4,
+          unsigned int N5, class T5, class S5>
+typename CoupledIteratorType<N1, T1, T2, T3, T4, T5>::type
+createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
+                      MultiArrayView<N2, T2, S2> const & m2,
+                      MultiArrayView<N3, T3, S3> const & m3,
+                      MultiArrayView<N4, T4, S4> const & m4,
+                      MultiArrayView<N5, T5, S5> const & m5)
 {
-    typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type P5;
-    typedef typename P5::base_type                                  P4;
-    typedef typename P4::base_type                                  P3;
-    typedef typename P3::base_type                                  P2;
-    typedef typename P2::base_type                                  P1;
-    typedef typename P1::base_type                                  P0;
-    typedef CoupledScanOrderIterator<N, P5> IteratorType;
+    typedef typename CoupledHandleType<N1, T1, T2, T3, T4, T5>::type P5;
+    typedef typename P5::base_type                                   P4;
+    typedef typename P4::base_type                                   P3;
+    typedef typename P3::base_type                                   P2;
+    typedef typename P2::base_type                                   P1;
+    typedef typename P1::base_type                                   P0;
+    typedef CoupledScanOrderIterator<P1::dimensions, P5> IteratorType;
     
-    return IteratorType(P5(m5.data(), m5.stride(), 
-                        P4(m4.data(), m4.stride(), 
-                        P3(m3.data(), m3.stride(), 
-                        P2(m2.data(), m2.stride(), 
-                        P1(m1.data(), m1.stride(), 
+    return IteratorType(P5(m5, 
+                        P4(m4, 
+                        P3(m3, 
+                        P2(m2, 
+                        P1(m1, 
                         P0(m1.shape())))))));
 }
 

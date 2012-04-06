@@ -1825,6 +1825,11 @@ public:
     {
         return m_ptr;
     }
+    
+    pointer & unsafePtr()
+    {
+        return m_ptr;
+    }
 
         /**
          * returns true iff this view refers to valid data,
@@ -3323,5 +3328,7 @@ makeRGBImageView (MultiArray<3, T> const &array)
 //@}
 
 } // namespace vigra
+
 #undef VIGRA_ASSERT_INSIDE
+
 #endif // VIGRA_MULTI_ARRAY_HXX

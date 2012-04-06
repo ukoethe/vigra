@@ -888,9 +888,9 @@ public:
         MultiArrayView<1, int> vi(Shape1(4), idata);
         MultiArrayView<1, double> vd(Shape1(4), ddata);
 
-       Iterator0 i0 = createCoupledIterator(Shape1(4));
-       Iterator1 it = createCoupledIterator(vi, vd),
-                 end = it.getEndIterator();
+        Iterator0 i0 = createCoupledIterator(Shape1(4));
+        Iterator1 it = createCoupledIterator(vi, vd),
+                  end = it.getEndIterator();
 
         count = 0;
         for(; it < end; ++it, ++i0, ++count)
@@ -901,6 +901,22 @@ public:
             shouldEqual(it.get<2>(), count+20.0);
         }
         shouldEqual(count, 4);
+
+        // test multiband
+        MultiArrayView<3, scalar_type, StridedArrayTag> at = a3.transpose();
+
+        typedef CoupledIteratorType<3, Multiband<scalar_type>, scalar_type, scalar_type>::type MultibandIterator;
+        MultibandIterator im = createCoupledIterator(MultiArrayView<3, Multiband<scalar_type>, StridedArrayTag>(at),
+                                                     at.bindOuter(0), at.bindOuter(1));
+        MultibandIterator imend = im.getEndIterator();
+        count = 0;
+        for(; im < imend; ++im, ++count)
+        {
+            shouldEqual(im.get<1>().shape(), Shape1(2));
+            shouldEqual(&(im.get<1>()[0]), &(im.get<2>()));
+            shouldEqual(&(im.get<1>()[1]), &(im.get<3>()));
+        }
+        shouldEqual(count, 15);
     }
 
     void test_traverser ()
