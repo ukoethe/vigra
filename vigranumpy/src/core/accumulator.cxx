@@ -58,25 +58,52 @@ struct GetTag_Visitor
 {
     mutable python::object result;
     
-    template <class T>
-    void to_python(T const & t) const
-    {
-        result = python::object(t);
-    }
+    python::object to_python(signed char t) const { return python::object(t); }
+    python::object to_python(signed short t) const { return python::object(t); }
+    python::object to_python(signed int t) const { return python::object(t); }
+    python::object to_python(signed long t) const { return python::object(t); }
+    python::object to_python(signed long long t) const { return python::object(t); }
+    python::object to_python(unsigned char t) const { return python::object(t); }
+    python::object to_python(unsigned short t) const { return python::object(t); }
+    python::object to_python(unsigned int t) const { return python::object(t); }
+    python::object to_python(unsigned long t) const { return python::object(t); }
+    python::object to_python(unsigned long long t) const { return python::object(t); }
+    python::object to_python(float t) const { return python::object(t); }
+    python::object to_python(double t) const { return python::object(t); }
+    python::object to_python(long double t) const { return python::object(t); }
     
     template <class T, int N>
-    void to_python(TinyVector<T, N> const & t) const
+    python::object to_python(TinyVector<T, N> const & t) const
     {
         NumpyArray<1, T> a = NumpyArray<1, T>(Shape1(N));
         for(int k=0; k<N; ++k)
             a(k) = t[k];
-        result = python::object(a);
+        return python::object(a);
+    }
+    
+    template <class T, class Stride>
+    python::object to_python(MultiArrayView<1, T, Stride> const & t) const
+    {
+        NumpyArray<1, T> a(t);
+        return python::object(a);
+    }
+    
+    template <class T>
+    python::object to_python(Matrix<T> const & t) const
+    {
+        return python::object(t);
+    }
+    
+    template <class T1, class T2>
+    python::object to_python(std::pair<T1, T2> const & t) const
+    {
+        return python::make_tuple(to_python(t.first), to_python(t.second));
     }
     
     template <class TAG, class Accu>
     void exec(Accu & a) const
     {
-        to_python(get<TAG>(a));
+        result = to_python(get<TAG>(a));
     }
 };
 
@@ -114,6 +141,23 @@ struct GetArrayTag_Visitor
         }
     };
     
+    template <class TAG, class T, class Alloc, class Accu>
+    struct ToPythonArray<TAG, MultiArray<1, T, Alloc>, Accu>
+    {
+        static python::object exec(Accu & a)
+        {
+            unsigned int n = a.regionCount();
+            MultiArrayIndex N = get<TAG>(a, 0).shape(0);
+            Shape2 s(n, N);
+            NumpyArray<2, T> res(s);
+            
+            for(unsigned int k=0; k<n; ++k)
+                for(int j=0; j<N; ++j)
+                    res(k, j) = get<TAG>(a, k)[j];
+            return python::object(res);
+        }
+    };
+    
     template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Matrix<T>, Accu>
     {
@@ -141,8 +185,8 @@ struct GetArrayTag_Visitor
         }
     };
     
-    template <class TAG, class T, int N, class Accu>
-    struct ToPythonArray<TAG, std::pair<TinyVector<T,N>, Matrix<T> >, Accu>
+    template <class TAG, class T1, class T2, class Accu>
+    struct ToPythonArray<TAG, std::pair<T1, T2>, Accu>
     {
         static python::object exec(Accu & a)
         {
@@ -165,7 +209,7 @@ struct GetArrayTag_Visitor
     template <class Accu, class TAG>
     void exec(Accu & a, Global<TAG> *) const
     {
-        to_python(get<Global<TAG> >(a));
+        this->result = to_python(get<Global<TAG> >(a));
     }
     
 };
@@ -319,6 +363,26 @@ struct PythonAccumulator
     }
 };
 
+template <class Accu>
+void pythonActivateTags(Accu & a, python::object tags)
+{
+    if(python::len(tags) == 0)
+    {
+        a.activateAll();
+    }
+    else if(PyString_Check(tags.ptr()))
+    {
+        a.activate(python::extract<std::string>(tags)());
+    }
+    else
+    {
+        for(int k=0; k<python::len(tags); ++k)
+        {
+            a.activate(python::extract<std::string>(tags[k])());
+        }
+    }
+}
+
 template <class Accumulators, unsigned int ndim, class T>
 PythonAccumulator<typename AccumulatorValueTypeTraits<T>::type, Accumulators> *
 pythonInspect(NumpyArray<ndim, T> in, python::object tags)
@@ -326,27 +390,34 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
     typedef PythonAccumulator<typename AccumulatorValueTypeTraits<T>::type, Accumulators> Accu;
     
     std::auto_ptr<Accu> res(new Accu);
-    
-    if(python::len(tags) == 0)
-    {
-        res->activateAll();
-    }
-    else if(PyString_Check(tags.ptr()))
-    {
-        res->activate(python::extract<std::string>(tags)());
-    }
-    else
-    {
-        for(int k=0; k<python::len(tags); ++k)
-        {
-            res->activate(python::extract<std::string>(tags[k])());
-        }
-    }
+    pythonActivateTags(*res, tags);
     
     {
         PyAllowThreads _pythread;
         
         collectStatistics(in.begin(), in.end(), *res);
+    }
+    
+    return res.release();
+}
+
+template <class Accumulators, unsigned int ndim, class T>
+PythonAccumulator<typename CoupledIteratorType<ndim, Multiband<T> >::type::value_type, Accumulators> *
+pythonInspectMultiband(NumpyArray<ndim, Multiband<T> > in, python::object tags)
+{
+    typedef typename CoupledIteratorType<ndim, Multiband<T> >::type Iterator;
+    typedef Iterator::value_type Handle;
+    typedef PythonAccumulator<Handle, Accumulators> Accu;
+    
+    std::auto_ptr<Accu> res(new Accu);
+    pythonActivateTags(*res, tags);
+    
+    {
+        PyAllowThreads _pythread;
+        
+        Iterator i   = createCoupledIterator(MultiArrayView<ndim, Multiband<T>, StridedArrayTag>(in)),
+                 end = i.getEndIterator();
+        collectStatistics(i, end, *res);
     }
     
     return res.release();
@@ -455,27 +526,36 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
     typedef PythonAccumulatorArray<Handle, Accumulators> Accu;
     
     std::auto_ptr<Accu> res(new Accu);
-    
-    if(python::len(tags) == 0)
-    {
-        res->activateAll();
-    }
-    else if(PyString_Check(tags.ptr()))
-    {
-        res->activate(python::extract<std::string>(tags)());
-    }
-    else
-    {
-        for(int k=0; k<python::len(tags); ++k)
-        {
-            res->activate(python::extract<std::string>(tags[k])());
-        }
-    }
+    pythonActivateTags(*res, tags);
     
     {
         PyAllowThreads _pythread;
         
         Iterator i     = createCoupledIterator(in, labels),
+                 end   = i.getEndIterator();
+        collectStatistics(i, end, *res);
+    }
+    
+    return res.release();
+}
+
+template <class Accumulators, unsigned int ndim, class T>
+PythonAccumulatorArray<typename CoupledIteratorType<ndim, Multiband<T>, npy_uint32>::type::value_type, Accumulators> *
+pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in, 
+                             NumpyArray<ndim-1, Singleband<npy_uint32> > labels,
+                             python::object tags)
+{
+    typedef typename CoupledIteratorType<ndim, Multiband<T>, npy_uint32>::type Iterator;
+    typedef Iterator::value_type Handle;
+    typedef PythonAccumulatorArray<Handle, Accumulators> Accu;
+    
+    std::auto_ptr<Accu> res(new Accu);
+    pythonActivateTags(*res, tags);
+    
+    {
+        PyAllowThreads _pythread;
+        
+        Iterator i     = createCoupledIterator(MultiArrayView<ndim, Multiband<T>, StridedArrayTag>(in), labels),
                  end   = i.getEndIterator();
         collectStatistics(i, end, *res);
     }
@@ -511,6 +591,31 @@ void definePythonAccumulator()
           return_value_policy<manage_new_object>());
 }
 
+template <unsigned int N, class T, class Accumulators>
+void definePythonAccumulatorMultiband()
+{
+    using namespace python;
+
+    docstring_options doc_options(true, true, false);
+
+    typedef acc1::PythonAccumulator<typename CoupledIteratorType<N, Multiband<T> >::type::value_type, 
+                                    Accumulators> Accu;
+    class_<Accu>("Accumulator", python::no_init)
+        .def("__getitem__", &Accu::get)
+        .def("activeNames", &Accu::activeNames)
+        .def("names", &Accu::names)
+        .def("merge", &Accu::merge)
+        ;
+        
+    std::string argname = N == 3 
+                             ? "image"
+                             : "volume";
+    
+    def("extractFeatures", &acc1::pythonInspectMultiband<Accumulators, N, T>,
+          (arg(argname.c_str()), arg("tags") = ""),
+          return_value_policy<manage_new_object>());
+}
+
 template <class T, class Accumulators>
 void definePythonAccumulatorArray()
 {
@@ -534,12 +639,37 @@ void definePythonAccumulatorArray()
           (arg("image"), arg("labels"), arg("tags") = ""),
           return_value_policy<manage_new_object>());
     
-    // def("extractFeatures", &acc1::pythonInspect<Accumulators, 3, T>,
-          // (arg("volume"), arg("tags") = ""),
-          // return_value_policy<manage_new_object>());
+    def("extractRegionFeatures", &acc1::pythonRegionInspect<Accumulators, 3, T>,
+          (arg("volume"), arg("labels"), arg("tags") = ""),
+          return_value_policy<manage_new_object>());
 }
 
-void defineAccumulators()
+template <unsigned int N, class T, class Accumulators>
+void definePythonAccumulatorArrayMultiband()
+{
+    using namespace python;
+
+    docstring_options doc_options(true, true, false);
+
+    typedef acc1::PythonAccumulatorArray<typename CoupledIteratorType<N, Multiband<T>, npy_uint32>::type::value_type, 
+                                         Accumulators> Accu;
+    class_<Accu>("Accumulator", python::no_init)
+        .def("__getitem__", &Accu::get)
+        .def("activeNames", &Accu::activeNames)
+        .def("names", &Accu::names)
+        .def("merge", &Accu::merge)
+        ;
+        
+    std::string argname = N == 3 
+                             ? "image"
+                             : "volume";
+    
+    def("extractRegionFeatures", &acc1::pythonRegionInspectMultiband<Accumulators, N, T>,
+          (arg(argname.c_str()), arg("labels"), arg("tags") = ""),
+          return_value_policy<manage_new_object>());
+}
+
+void defineGlobalAccumulators()
 {
     using namespace python;
     using namespace vigra::acc1;
@@ -548,36 +678,75 @@ void defineAccumulators()
     
     NumpyArrayConverter<NumpyArray<1, float> >();
     NumpyArrayConverter<NumpyArray<2, MultiArrayIndex> >();
+    NumpyArrayConverter<NumpyArray<3, float> >();
     NumpyArrayConverter<NumpyArray<3, double> >();
+    
+    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance, 
+                   Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
+                   Principal<CoordinateSystem>,
+                   Minimum, Maximum, Principal<Minimum>, Principal<Maximum>
+                   > VectorAccumulators;
+
+    definePythonAccumulatorMultiband<3, float, VectorAccumulators>();
+    definePythonAccumulatorMultiband<4, float, VectorAccumulators>();
+    
+    definePythonAccumulator<TinyVector<float, 2>, VectorAccumulators>();
+    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>();
+    definePythonAccumulator<TinyVector<float, 4>, VectorAccumulators>();
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
                    Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<100> > 
                    > ScalarAccumulators;
     definePythonAccumulator<Singleband<float>, ScalarAccumulators>();
+}
+
+void defineRegionAccumulators()
+{
+    using namespace python;
+    using namespace vigra::acc1;
+
+    docstring_options doc_options(true, true, false);
     
-    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
-                   Covariance, Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
-                   Minimum, Maximum, Principal<Minimum>, Principal<Maximum>
-                   > VectorAccumulators;
-    definePythonAccumulator<TinyVector<float, 2>, VectorAccumulators>();
-    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>();
-    definePythonAccumulator<TinyVector<float, 4>, VectorAccumulators>();
+    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance, 
+                   Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
+                   Principal<CoordinateSystem>,
+                   Minimum, Maximum, Principal<Minimum>, Principal<Maximum>,
+                   Select<GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
+                          Coord<Minimum>, Coord<Maximum>, Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> > >,
+                   DataArg<1>, LabelArg<2>
+                   > VectorRegionAccumulators;
+
+    definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
+    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
+    
+    definePythonAccumulatorArray<TinyVector<float, 2>, VectorRegionAccumulators>();
+    definePythonAccumulatorArray<TinyVector<float, 3>, VectorRegionAccumulators>();
+    definePythonAccumulatorArray<TinyVector<float, 4>, VectorRegionAccumulators>();
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<100> >,
                    GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
                    CenterOfMass, MomentsOfInertia, CoordSystemOfInertia,
-                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight> >,
+                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>, 
+                          Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> >, 
+                          Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
     definePythonAccumulatorArray<Singleband<float>, ScalarRegionAccumulators>();
+}
+
+void defineAccumulators()
+{
+    defineGlobalAccumulators();
+    defineRegionAccumulators();
 }
 
 // TODO:
 //  * nested Select
 //  * Multiband support
 //  * implement PythonAccumulatorArray::merge()
+//  * check that merge skips inactive accumulators
 //  * implement label remapping in merge()
 //  * is there a good implementation of merge for histogramms with different mapping?
 //  * multiband histograms

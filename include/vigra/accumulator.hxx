@@ -604,14 +604,14 @@ template <class T, class Shape, class Initial>
 void reshapeImpl(T &, Shape const &, Initial const & = T())
 {}
 
-template <unsigned int N, class T, class Alloc>
-void reshapeImpl(MultiArray<N, T, Alloc> & a, typename MultiArrayShape<N>::type const & s, T const & initial = T())
+template <unsigned int N, class T, class Alloc, class Shape>
+void reshapeImpl(MultiArray<N, T, Alloc> & a, Shape const & s, T const & initial = T())
 {
     MultiArray<N, T, Alloc>(s, initial).swap(a);
 }
 
-template <class T, class Alloc>
-void reshapeImpl(Matrix<T, Alloc> & a, Shape2 const & s, T const & initial = T())
+template <class T, class Alloc, class Shape>
+void reshapeImpl(Matrix<T, Alloc> & a, Shape const & s, T const & initial = T())
 {
     Matrix<T, Alloc>(s, initial).swap(a);
 }
@@ -1717,6 +1717,18 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
     typedef Matrix<element_promote_type>            CovarianceType;
 };
 
+template <unsigned int N, class T, class Alloc>
+struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
+{
+    typedef MultiArrayView<N, T, Alloc>             type;
+    typedef T                                       element_type;
+    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef MultiArray<N, T>                        MinmaxType;
+    typedef MultiArray<N, element_promote_type>     SumType;
+    typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
+    typedef Matrix<element_promote_type>            CovarianceType;
+};
+
 /****************************************************************************/
 /*                                                                          */
 /*                      generic decorator base class                        */
@@ -2308,6 +2320,16 @@ class PrincipalProjection
         Impl()
         : value_()  // call default constructor explicitly to ensure zero initialization
         {}
+        
+        template <class TAG, class A>
+        static inline typename acc1::LookupDependency<TAG, A>::reference
+        getAccumulatorIndirectly(A & a)
+        {
+            typedef typename acc1::LookupDependency<TAG, A>::Tag StandardizedTag;
+            typedef typename acc1::LookupDependency<TAG, A>::reference reference;
+            return acc1::detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
+        }
+
         
         void reset()
         {
@@ -3394,7 +3416,7 @@ class ScatterMatrixEigensystem
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_.first, Shape2(size,1));
+            detail::reshapeImpl(value_.first, Shape1(size));
             detail::reshapeImpl(value_.second, Shape2(size,size));
         }
         
@@ -3677,25 +3699,36 @@ class Minimum
         
         void operator+=(Impl const & o)
         {
-            using namespace multi_math;
-            value_ = min(value_, o.value_);
+            updateImpl(o.value_); // necessary because std::min causes ambiguous overload
         }
     
         void update(U const & t)
         {
-            using namespace multi_math;
-            value_ = min(value_, t);
+            updateImpl(t);
         }
         
         void update(U const & t, double)
         {
-            using namespace multi_math;
-            value_ = min(value_, t);
+            updateImpl(t);
         }
         
         result_type operator()() const
         {
             return value_;
+        }
+        
+      private:
+        template <class T>
+        void updateImpl(T const & o)
+        {
+            using namespace multi_math;
+            value_ = min(value_, o);
+        }
+        
+        template <class T, class Alloc>
+        void updateImpl(MultiArray<1, T, Alloc> const & o)
+        {
+            value_ = multi_math::min(value_, o);
         }
     };
 };
@@ -3741,25 +3774,36 @@ class Maximum
         
         void operator+=(Impl const & o)
         {
-            using namespace multi_math;
-            value_ = max(value_, o.value_);
+            updateImpl(o.value_); // necessary because std::max causes ambiguous overload
         }
     
         void update(U const & t)
         {
-            using namespace multi_math;
-            value_ = max(value_, t);
+            updateImpl(t);
         }
         
         void update(U const & t, double)
         {
-            using namespace multi_math;
-            value_ = max(value_, t);
+            updateImpl(t);
         }
         
         result_type operator()() const
         {
             return value_;
+        }
+        
+      private:
+        template <class T>
+        void updateImpl(T const & o)
+        {
+            using namespace multi_math;
+            value_ = max(value_, o);
+        }
+        
+        template <class T, class Alloc>
+        void updateImpl(MultiArray<1, T, Alloc> const & o)
+        {
+            value_ = multi_math::max(value_, o);
         }
     };
 };
