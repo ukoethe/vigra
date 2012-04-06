@@ -512,6 +512,16 @@ struct PythonAccumulatorArray
     {
         BaseType::merge(o);
     }
+    
+    void remappingMerge(PythonAccumulatorArray const & o, NumpyArray<1, npy_uint32> labelMapping)
+    {
+        BaseType::merge(o, labelMapping);
+    }
+    
+    void mergeRegions(npy_uint32 i, npy_uint32 j)
+    {
+        BaseType::merge(i, j);
+    }
 };
 
 template <class Accumulators, unsigned int ndim, class T>
@@ -633,6 +643,8 @@ void definePythonAccumulatorArray()
         .def("activeNames", &Accu::activeNames)
         .def("names", &Accu::names)
         .def("merge", &Accu::merge)
+        .def("merge", &Accu::remappingMerge)
+        .def("merge", &Accu::mergeRegions)
         ;
     
     def("extractRegionFeatures", &acc1::pythonRegionInspect<Accumulators, 2, T>,
@@ -658,6 +670,8 @@ void definePythonAccumulatorArrayMultiband()
         .def("activeNames", &Accu::activeNames)
         .def("names", &Accu::names)
         .def("merge", &Accu::merge)
+        .def("merge", &Accu::remappingMerge)
+        .def("merge", &Accu::mergeRegions)
         ;
         
     std::string argname = N == 3 
@@ -676,6 +690,7 @@ void defineGlobalAccumulators()
 
     docstring_options doc_options(true, true, false);
     
+    NumpyArrayConverter<NumpyArray<1, npy_uint32> >();
     NumpyArrayConverter<NumpyArray<1, float> >();
     NumpyArrayConverter<NumpyArray<2, MultiArrayIndex> >();
     NumpyArrayConverter<NumpyArray<3, float> >();
@@ -718,22 +733,22 @@ void defineRegionAccumulators()
                    > VectorRegionAccumulators;
 
     definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
-    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
+    // definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
     
-    definePythonAccumulatorArray<TinyVector<float, 2>, VectorRegionAccumulators>();
-    definePythonAccumulatorArray<TinyVector<float, 3>, VectorRegionAccumulators>();
-    definePythonAccumulatorArray<TinyVector<float, 4>, VectorRegionAccumulators>();
+    // definePythonAccumulatorArray<TinyVector<float, 2>, VectorRegionAccumulators>();
+    // definePythonAccumulatorArray<TinyVector<float, 3>, VectorRegionAccumulators>();
+    // definePythonAccumulatorArray<TinyVector<float, 4>, VectorRegionAccumulators>();
 
-    typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
-                   Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<100> >,
-                   GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
-                   CenterOfMass, MomentsOfInertia, CoordSystemOfInertia,
-                   Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>, 
-                          Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> >, 
-                          Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
-                   DataArg<1>, WeightArg<1>, LabelArg<2>
-                   > ScalarRegionAccumulators;
-    definePythonAccumulatorArray<Singleband<float>, ScalarRegionAccumulators>();
+    // typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
+                   // Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<100> >,
+                   // GeometricCenter, PrincipalRadii, PrincipalCoordSystem,
+                   // CenterOfMass, MomentsOfInertia, CoordSystemOfInertia,
+                   // Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>, 
+                          // Principal<Coord<Skewness> >, Principal<Coord<Kurtosis> >, 
+                          // Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
+                   // DataArg<1>, WeightArg<1>, LabelArg<2>
+                   // > ScalarRegionAccumulators;
+    // definePythonAccumulatorArray<Singleband<float>, ScalarRegionAccumulators>();
 }
 
 void defineAccumulators()
@@ -754,5 +769,6 @@ void defineAccumulators()
 //  * general refactoring
 //  * better names for PrincipalRadii, PrincipalCoordSystem, MomentsOfInertia, CoordSystemOfInertia
 //  * tests and docu
+//  * speed-up compilation of Python bindings
 
 } // namespace vigra

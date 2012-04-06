@@ -878,9 +878,15 @@ struct LabelDispatch
     
     void merge(LabelDispatch const & o)
     {
-        next_.merge(o.next_);
         for(unsigned int k=0; k<regions_.size(); ++k)
             regions_[k].merge(o.regions_[k]);
+        next_.merge(o.next_);
+    }
+    
+    void merge(unsigned i, unsigned j)
+    {
+        regions_[i].merge(regions_[j]);
+        // FIXME: reset region_[j] ?
     }
     
     template <class ArrayLike>
@@ -1329,14 +1335,25 @@ struct AccumulatorChainArray
         return v.names;
     }
     
+    void merge(unsigned i, unsigned j)
+    {
+        vigra_precondition(i <= maxRegionLabel() && j <= maxRegionLabel(),
+            "AccumulatorChainArray::merge(): region labels out of range.");
+        this->next_.merge(i, j);
+    }
+    
     void merge(AccumulatorChainArray const & o)
     {
+        vigra_precondition(maxRegionLabel() == o.maxRegionLabel(),
+            "AccumulatorChainArray::merge(): maxRegionLabel must be equal.");
         this->next_.merge(o.next_);
     }
 
     template <class ArrayLike>
     void merge(AccumulatorChainArray const & o, ArrayLike const & labelMapping)
     {
+        vigra_precondition(labelMapping.size() == o.regionCount(),
+            "AccumulatorChainArray::merge(): labelMapping.size() must match regionCount() of RHS.");
         this->next_.merge(o.next_, labelMapping);
     }
 };   
