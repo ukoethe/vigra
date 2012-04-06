@@ -2321,16 +2321,6 @@ class PrincipalProjection
         : value_()  // call default constructor explicitly to ensure zero initialization
         {}
         
-        template <class TAG, class A>
-        static inline typename acc1::LookupDependency<TAG, A>::reference
-        getAccumulatorIndirectly(A & a)
-        {
-            typedef typename acc1::LookupDependency<TAG, A>::Tag StandardizedTag;
-            typedef typename acc1::LookupDependency<TAG, A>::reference reference;
-            return acc1::detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
-        }
-
-        
         void reset()
         {
             value_ = element_type();
