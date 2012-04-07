@@ -331,6 +331,85 @@ struct SeparateGlobalAndRegionTags<void>
 
 /****************************************************************************/
 /*                                                                          */
+/*          helper classes to handle tags at runtime via strings            */
+/*                                                                          */
+/****************************************************************************/
+
+template <class Accumulators>
+struct CollectAccumulatorNames;
+
+template <class HEAD, class TAIL>
+struct CollectAccumulatorNames<TypeList<HEAD, TAIL> >
+{
+    template <class BackInsertable>
+    static void exec(BackInsertable & a, bool skipInternals=true)
+    {
+        if(!skipInternals || HEAD::name().find("internal") == std::string::npos)
+            a.push_back(HEAD::name());
+        CollectAccumulatorNames<TAIL>::exec(a, skipInternals);
+    }
+};
+
+template <>
+struct CollectAccumulatorNames<void>
+{
+    static void exec(...)
+    {}
+};
+
+template <class T>
+struct ApplyVisitorToTag;
+
+template <class HEAD, class TAIL>
+struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
+{
+    template <class Accu, class Visitor>
+    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
+    {
+        static const std::string name = normalizeString(HEAD::name());
+        if(name == tag)
+        {
+            v.exec<HEAD>(a);
+            return true;
+        }
+        else
+        {
+            return ApplyVisitorToTag<TAIL>::exec(a, tag, v);
+        }
+    }
+};
+
+template <>
+struct ApplyVisitorToTag<void>
+{
+    static bool exec(...)
+    {
+        return false;
+    }
+};
+
+struct ActivateTag_Visitor
+{
+    template <class TAG, class Accu>
+    void exec(Accu & a) const
+    {
+        a.activate<TAG>();
+    }
+};
+
+struct TagIsActive_Visitor
+{
+    mutable bool result;
+    
+    template <class TAG, class Accu>
+    void exec(Accu & a) const
+    {
+        result = a.isActive<TAG>();
+    }
+};
+
+/****************************************************************************/
+/*                                                                          */
 /*                   internal accumulator chain classes                     */
 /*                                                                          */
 /****************************************************************************/
@@ -979,98 +1058,6 @@ struct CreateAccumulatorChainArray
     typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
-template <class T>
-struct ApplyVisitorToTag;
-
-template <class HEAD, class TAIL>
-struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
-{
-    template <class Accu, class Visitor>
-    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
-    {
-        static const std::string name = normalizeString(HEAD::name());
-        if(name == tag)
-        {
-            v.exec<HEAD>(a);
-            return true;
-        }
-        else
-        {
-            return ApplyVisitorToTag<TAIL>::exec(a, tag, v);
-        }
-    }
-    
-    template <class Accu, class Visitor>
-    static void exec(Accu & a, Visitor const & v)
-    {
-        v.exec<HEAD>(a);
-        ApplyVisitorToTag<TAIL>::exec(a, v);
-    }
-    
-    template <class Visitor>
-    static void exec(Visitor const & v)
-    {
-        v.exec<HEAD>();
-        ApplyVisitorToTag<TAIL>::exec(v);
-    }
-};
-
-template <>
-struct ApplyVisitorToTag<void>
-{
-    template <class Accu, class Visitor>
-    static bool exec(Accu &, std::string const &, Visitor const &)
-    {
-        return false;
-    }
-    
-    template <class Accu, class Visitor>
-    static void exec(Accu &, Visitor const &)
-    {}
-    
-    template <class Visitor>
-    static void exec(Visitor const &)
-    {}
-};
-
-struct ActivateTag_Visitor
-{
-    template <class TAG, class Accu>
-    void exec(Accu & a) const
-    {
-        a.activate<TAG>();
-    }
-};
-
-struct CollectActiveTags_Visitor
-{
-    mutable ArrayVector<std::string> activeNames;
-    bool activeOnly_;
-
-    CollectActiveTags_Visitor(bool activeOnly)
-    : activeOnly_(activeOnly)
-    {}
-    
-    template <class TAG, class Accu>
-    void exec(Accu & a) const
-    {
-        if(activeOnly_ && !a.isActive<TAG>())
-            return;
-        activeNames.push_back(TAG::name());
-    }
-};
-
-struct CollectTagNames_Visitor
-{
-    mutable ArrayVector<std::string> names;
-
-    template <class TAG>
-    void exec() const
-    {
-        names.push_back(TAG::name());
-    }
-};
-
 } // namespace detail 
 
 /****************************************************************************/
@@ -1238,11 +1225,19 @@ struct AccumulatorChain
         this->current_pass_ = 1;
     }
      
-    static ArrayVector<std::string> tagNames()
+    static ArrayVector<std::string> const & tagNames()
     {
-        detail::CollectTagNames_Visitor v;
-        detail::ApplyVisitorToTag<AccumulatorTags>::exec(v);
-        return v.names;
+        static const ArrayVector<std::string> n = collectTagNames();
+        return n;
+    }
+    
+  private:
+    static ArrayVector<std::string> collectTagNames()
+    {
+        ArrayVector<std::string> n;
+        detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
+        std::sort(n.begin(), n.end());
+        return n;
     }
 };   
 
@@ -1258,9 +1253,7 @@ struct DynamicAccumulatorChain
         
     void activate(std::string tag)
     {
-        bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
-                                     normalizeString(tag), detail::ActivateTag_Visitor());
-        vigra_precondition(found,
+        vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
     
@@ -1275,32 +1268,45 @@ struct DynamicAccumulatorChain
         getAccumulator<AccumulatorEnd>(*this).active_accumulators_.set();
     }
     
+    bool isActive(std::string tag) const
+    {
+        detail::TagIsActive_Visitor v;
+        vigra_precondition(isActiveImpl(tag, v),
+            std::string("DynamicAccumulatorChain::isActive(): Tag '") + tag + "' not found.");
+        return v.result;
+    }
+    
     template <class TAG>
     bool isActive() const
     {
         return getAccumulator<TAG>(*this).isActive();
     }
     
-    ArrayVector<std::string> namesImpl(bool activeOnly) const
-    {
-        detail::CollectActiveTags_Visitor v(activeOnly);
-        detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, v);
-        return v.activeNames;
-    }
-    
     ArrayVector<std::string> activeNames() const
     {
-        return namesImpl(true);
-    }
-    
-    ArrayVector<std::string> names() const
-    {
-        return namesImpl(false);
+        ArrayVector<std::string> res;
+        for(unsigned k=0; k<tagNames().size(); ++k)
+            if(isActive(tagNames()[k]))
+                res.push_back(tagNames()[k]);
+        return res;
     }
     
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
+    }
+    
+  protected:
+  
+    bool activateImpl(std::string tag)
+    {
+        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
+                                         normalizeString(tag), detail::ActivateTag_Visitor());
+    }
+    
+    bool isActiveImpl(std::string tag, detail::TagIsActive_Visitor & v) const
+    {
+        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, normalizeString(tag), v);
     }
 };
 
@@ -1328,13 +1334,6 @@ struct AccumulatorChainArray
         return this->next_.regions_.size();
     }
      
-    static ArrayVector<std::string> tagNames()
-    {
-        detail::CollectTagNames_Visitor v;
-        detail::ApplyVisitorToTag<AccumulatorTags>::exec(v);
-        return v.names;
-    }
-    
     void merge(unsigned i, unsigned j)
     {
         vigra_precondition(i <= maxRegionLabel() && j <= maxRegionLabel(),
@@ -1356,6 +1355,21 @@ struct AccumulatorChainArray
             "AccumulatorChainArray::merge(): labelMapping.size() must match regionCount() of RHS.");
         this->next_.merge(o.next_, labelMapping);
     }
+    
+    static ArrayVector<std::string> const & tagNames()
+    {
+        static const ArrayVector<std::string> n = collectTagNames();
+        return n;
+    }
+    
+  private:
+    static ArrayVector<std::string> collectTagNames()
+    {
+        ArrayVector<std::string> n;
+        detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
+        std::sort(n.begin(), n.end());
+        return n;
+    }
 };   
 
 template <class T, class Selected>
@@ -1366,9 +1380,7 @@ struct DynamicAccumulatorChainArray
         
     void activate(std::string tag)
     {
-        bool found = detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
-                                normalizeString(tag), detail::ActivateTag_Visitor());
-        vigra_precondition(found,
+        vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
     }
 
@@ -1383,32 +1395,45 @@ struct DynamicAccumulatorChainArray
         this->next_.activateAll();
     }
     
+    bool isActive(std::string tag) const
+    {
+        detail::TagIsActive_Visitor v;
+        vigra_precondition(isActiveImpl(tag, v),
+            std::string("DynamicAccumulatorChainArray::isActive(): Tag '") + tag + "' not found.");
+        return v.result;
+    }
+    
     template <class TAG>
     bool isActive() const
     {
         return this->next_.isActive<TAG>();
     }
     
-    ArrayVector<std::string> namesImpl(bool activeOnly) const
-    {
-        detail::CollectActiveTags_Visitor v(activeOnly);
-        detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, v);
-        return v.activeNames;
-    }
-    
     ArrayVector<std::string> activeNames() const
     {
-        return namesImpl(true);
-    }
-    
-    ArrayVector<std::string> names() const
-    {
-        return namesImpl(false);
+        ArrayVector<std::string> res;
+        for(unsigned k=0; k<tagNames().size(); ++k)
+            if(isActive(tagNames()[k]))
+                res.push_back(tagNames()[k]);
+        return res;
     }
     
     unsigned int passesRequired() const
     {
         return this->next_.passesRequiredDynamic();
+    }
+    
+  protected:
+  
+    bool activateImpl(std::string tag)
+    {
+        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
+                                         normalizeString(tag), detail::ActivateTag_Visitor());
+    }
+    
+    bool isActiveImpl(std::string tag, detail::TagIsActive_Visitor & v) const
+    {
+        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, normalizeString(tag), v);
     }
 };
 
@@ -1632,7 +1657,7 @@ struct CastImpl<Tag, LabelDispatchTag, reference>
     {
         vigra_precondition(false, 
             "getAccumulator(): a region label is required when a region accumulator is queried.");
-        return a;
+        return CastImpl<Tag, typename A::RegionAccumulatorChain::Tag, reference>::exec(a.regions_[0]);
     }
     
     template <class A>
@@ -1754,7 +1779,7 @@ struct AccumulatorResultTraits
 {
     typedef T                                       type;
     typedef T                                       element_type;
-    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef double                                  element_promote_type;
     typedef T                                       MinmaxType;
     typedef element_promote_type                    SumType;
     typedef element_promote_type                    FlatCovarianceType;
@@ -1766,7 +1791,7 @@ struct AccumulatorResultTraits<TinyVector<T, N> >
 {
     typedef TinyVector<T, N>                             type;
     typedef T                                            element_type;
-    typedef typename NumericTraits<T>::RealPromote       element_promote_type;
+    typedef double                                       element_promote_type;
     typedef TinyVector<T, N>                             MinmaxType;
     typedef TinyVector<element_promote_type, N>          SumType;
     typedef TinyVector<element_promote_type, N*(N+1)/2>  FlatCovarianceType;
@@ -1778,7 +1803,7 @@ struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 {
     typedef MultiArrayView<N, T, Stride>            type;
     typedef T                                       element_type;
-    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef double                                  element_promote_type;
     typedef MultiArray<N, T>                        MinmaxType;
     typedef MultiArray<N, element_promote_type>     SumType;
     typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
@@ -1790,7 +1815,7 @@ struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
 {
     typedef MultiArrayView<N, T, Alloc>             type;
     typedef T                                       element_type;
-    typedef typename NumericTraits<T>::RealPromote  element_promote_type;
+    typedef double                                  element_promote_type;
     typedef MultiArray<N, T>                        MinmaxType;
     typedef MultiArray<N, element_promote_type>     SumType;
     typedef MultiArray<1, element_promote_type>     FlatCovarianceType;
@@ -4120,10 +4145,16 @@ class RangeHistogramBase
 
     void operator+=(RangeHistogramBase const & o)
     {
-        vigra_precondition(scale_ == 0 || o.scale_ == 0 || (scale_ == o.scale_ && offset_ == o.offset_),
+        vigra_precondition(scale_ == 0.0 || o.scale_ == 0.0 || (scale_ == o.scale_ && offset_ == o.offset_),
             "RangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
         
         HistogramBase<BASE, BinCount>::operator+=(o);
+        if(scale_ == 0.0)
+        {
+            scale_ = o.scale_;
+            offset_ = o.offset_;
+            inverse_scale_ = o.inverse_scale_;
+        }
     }
 
     void update(U const & t)
