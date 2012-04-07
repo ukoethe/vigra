@@ -1,3 +1,6 @@
+IF(MSVC)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+ENDIF()
 
 # note special treatment of target vigranumpy_core: 
 # module name is automatically changed into vigranumpycore
