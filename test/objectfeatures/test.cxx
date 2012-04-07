@@ -1916,10 +1916,10 @@ struct AccumulatorTest
         should((IsSameType<StandardizeTag<Principal<CoordinateSystem> >::type,
                            Principal<CoordinateSystem> >::value));
 
-            // PrincipalRadii
-        should((IsSameType<StandardizeTag<PrincipalRadii>::type,
+            // RegionRadii
+        should((IsSameType<StandardizeTag<RegionRadii>::type,
                            Coord<RootDivideByCount<Principal<PowerSum<2> > > > >::value));
-        shouldEqual(StandardizeTag<PrincipalRadii>::type::name(), "Coord<RootDivideByCount<Principal<PowerSum<2> > > >");
+        shouldEqual(StandardizeTag<RegionRadii>::type::name(), "Coord<RootDivideByCount<Principal<PowerSum<2> > > >");
 
             // HasModifierPriority
         using namespace vigra::acc1::detail;

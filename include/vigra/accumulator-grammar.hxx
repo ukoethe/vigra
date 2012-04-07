@@ -183,13 +183,13 @@ typedef AbsPowerSum<1>                              AbsSum;
 typedef Central<AbsSum>                             SumOfAbsDifferences;
 typedef DivideByCount<SumOfAbsDifferences>          MeanAbsoluteDeviation;
 
-typedef Coord<Mean>                                 GeometricCenter;
-typedef Coord<Principal<StdDev> >                   PrincipalRadii;
-typedef Coord<Principal<CoordinateSystem> >         PrincipalCoordSystem;
+typedef Coord<Mean>                                 RegionCenter;
+typedef Coord<Principal<StdDev> >                   RegionRadii;
+typedef Coord<Principal<CoordinateSystem> >         RegionAxes;
 
-typedef CoordWeighted<Mean>                         CenterOfMass;
-typedef CoordWeighted<Principal<Variance> >         MomentsOfInertia;
-typedef CoordWeighted<Principal<CoordinateSystem> > CoordSystemOfInertia;
+typedef Weighted<RegionCenter>                      CenterOfMass;
+typedef Weighted<Coord<Principal<Variance> > >      MomentsOfInertia;
+typedef Weighted<RegionAxes>                        AxesOfInertia;
 
 /**************************************************************************/
 /*                                                                        */
