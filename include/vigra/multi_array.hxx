@@ -2609,7 +2609,7 @@ public:
     MultiArray &operator-= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
         if(!this->hasData())
-            this->reshape(rhs);
+            this->reshape(rhs.shape());
         view_type::operator-=(rhs);
         return *this;
     }
@@ -2626,7 +2626,7 @@ public:
         if(this->hasData())
             view_type::operator*=(rhs);
         else
-            this->reshape(rhs);
+            this->reshape(rhs.shape());
         return *this;
     }
 
@@ -2642,7 +2642,7 @@ public:
         if(this->hasData())
             view_type::operator/=(rhs);
         else
-            this->reshape(rhs);
+            this->reshape(rhs.shape());
         return *this;
     }
 
