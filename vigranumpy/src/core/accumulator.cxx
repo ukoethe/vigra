@@ -335,9 +335,9 @@ struct PythonAccumulator
         BaseType::merge(i, j);
     }
     
-    static void definePythonClass()
+    static void definePythonClass(char const * classname)
     {
-        python::class_<PythonAccumulator>("Accumulator", python::no_init)
+        python::class_<PythonAccumulator>(classname, python::no_init)
             .def("__getitem__", &get)
             .def("isActive", &isActive)
             .def("activeNames", &activeNames)
@@ -346,9 +346,9 @@ struct PythonAccumulator
             ;
     }
     
-    static void definePythonArrayClass()
+    static void definePythonArrayClass(char const * classname)
     {
-        python::class_<PythonAccumulator>("Accumulator", python::no_init)
+        python::class_<PythonAccumulator>(classname, python::no_init)
             .def("__getitem__", &get)
             .def("isActive", &isActive)
             .def("activeNames", &activeNames)
@@ -512,7 +512,7 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
 } // namespace acc1
 
 template <class T, class Accumulators>
-void definePythonAccumulator()
+void definePythonAccumulator(char const * classname)
 {
     using namespace python;
 
@@ -521,7 +521,7 @@ void definePythonAccumulator()
     typedef typename acc1::StripSinglebandTag<T>::type ResultType;    
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<ResultType, Accumulators>, acc1::GetTag_Visitor> Accu;
     
-    Accu::definePythonClass();
+    Accu::definePythonClass(classname);
         
     def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
           (arg("image"), arg("tags") = "all"),
@@ -533,7 +533,7 @@ void definePythonAccumulator()
 }
 
 template <unsigned int N, class T, class Accumulators>
-void definePythonAccumulatorMultiband()
+void definePythonAccumulatorMultiband(char const * classname)
 {
     using namespace python;
 
@@ -542,7 +542,7 @@ void definePythonAccumulatorMultiband()
     typedef typename CoupledIteratorType<N, Multiband<T> >::type::value_type ResultType;    
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<ResultType, Accumulators>, acc1::GetTag_Visitor> Accu;
     
-    Accu::definePythonClass();
+    Accu::definePythonClass(classname);
             
     std::string argname = N == 3 
                              ? "image"
@@ -554,7 +554,7 @@ void definePythonAccumulatorMultiband()
 }
 
 template <unsigned int N, class T, class Accumulators>
-void definePythonAccumulatorArray()
+void definePythonAccumulatorArray(char const * classname)
 {
     using namespace python;
 
@@ -565,7 +565,7 @@ void definePythonAccumulatorArray()
     typedef Iterator::value_type Handle;
     
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, acc1::GetArrayTag_Visitor> Accu;
-    Accu::definePythonArrayClass();
+    Accu::definePythonArrayClass(classname);
     
     std::string argname = N == 2 
                              ? "image"
@@ -577,7 +577,7 @@ void definePythonAccumulatorArray()
 }
 
 template <unsigned int N, class T, class Accumulators>
-void definePythonAccumulatorArrayMultiband()
+void definePythonAccumulatorArrayMultiband(char const * classname)
 {
     using namespace python;
 
@@ -585,7 +585,7 @@ void definePythonAccumulatorArrayMultiband()
 
     typedef typename CoupledIteratorType<N, Multiband<T>, npy_uint32>::type::value_type Handle;
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, acc1::GetArrayTag_Visitor> Accu;
-    Accu::definePythonArrayClass();
+    Accu::definePythonArrayClass(classname);
         
     std::string argname = N == 3 
                              ? "image"
@@ -615,16 +615,16 @@ void defineGlobalAccumulators()
                    Minimum, Maximum, Principal<Minimum>, Principal<Maximum>
                    > VectorAccumulators;
 
-    definePythonAccumulatorMultiband<3, float, VectorAccumulators>();
-    definePythonAccumulatorMultiband<4, float, VectorAccumulators>();
+    definePythonAccumulatorMultiband<3, float, VectorAccumulators>("MultibandFeatures2D");
+    definePythonAccumulatorMultiband<4, float, VectorAccumulators>("MultibandFeatures3D");
     
-    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>();
+    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>("Vector3Features");
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
                    Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<64> > 
                    > ScalarAccumulators;
-    definePythonAccumulator<Singleband<float>, ScalarAccumulators>();
+    definePythonAccumulator<Singleband<float>, ScalarAccumulators>("SinglebandFeatures");
 }
 
 void defineRegionAccumulators()
@@ -643,11 +643,11 @@ void defineRegionAccumulators()
                    DataArg<1>, LabelArg<2>
                    > VectorRegionAccumulators;
 
-    definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
-    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
+    definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>("MultibandRegionFeatures2D");
+    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>("MultibandRegionFeatures3D");
     
-    definePythonAccumulatorArray<2, TinyVector<float, 3>, VectorRegionAccumulators>();
-    definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>();
+    definePythonAccumulatorArray<2, TinyVector<float, 3>, VectorRegionAccumulators>("Vector3RegionFeatures2D");
+    definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>("Vector3RegionFeatures3D");
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<64> >,
@@ -658,8 +658,8 @@ void defineRegionAccumulators()
                           Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
-    definePythonAccumulatorArray<2, Singleband<float>, ScalarRegionAccumulators>();
-    definePythonAccumulatorArray<3, Singleband<float>, ScalarRegionAccumulators>();
+    definePythonAccumulatorArray<2, Singleband<float>, ScalarRegionAccumulators>("SinglebandRegionFeatures2D");
+    definePythonAccumulatorArray<3, Singleband<float>, ScalarRegionAccumulators>("SinglebandRegionFeatures3D");
 }
 
 void defineAccumulators()
