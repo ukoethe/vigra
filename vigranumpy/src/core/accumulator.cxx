@@ -58,6 +58,13 @@ struct GetTag_Visitor
 {
     mutable python::object result;
     
+    GetTag_Visitor()
+    {}
+    
+    template <class Permutation>
+    GetTag_Visitor(Permutation const & p)
+    {}
+
     python::object to_python(signed char t) const { return python::object(t); }
     python::object to_python(signed short t) const { return python::object(t); }
     python::object to_python(signed int t) const { return python::object(t); }
@@ -113,7 +120,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, class Accu>
     struct ToPythonArray
     {
-        static python::object exec(Accu & a)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const &)
         {
             unsigned int n = a.regionCount();
             Shape1 s(n);
@@ -128,7 +136,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, int N, class Accu>
     struct ToPythonArray<TAG, TinyVector<T, N>, Accu>
     {
-        static python::object exec(Accu & a)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const & p)
         {
             unsigned int n = a.regionCount();
             Shape2 s(n, N);
@@ -136,7 +145,7 @@ struct GetArrayTag_Visitor
             
             for(unsigned int k=0; k<n; ++k)
                 for(int j=0; j<N; ++j)
-                    res(k, j) = get<TAG>(a, k)[j];
+                    res(k, j) = get<TAG>(a, k)[p(j)];
             return python::object(res);
         }
     };
@@ -144,7 +153,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, class Alloc, class Accu>
     struct ToPythonArray<TAG, MultiArray<1, T, Alloc>, Accu>
     {
-        static python::object exec(Accu & a)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const & p)
         {
             unsigned int n = a.regionCount();
             MultiArrayIndex N = get<TAG>(a, 0).shape(0);
@@ -153,7 +163,7 @@ struct GetArrayTag_Visitor
             
             for(unsigned int k=0; k<n; ++k)
                 for(int j=0; j<N; ++j)
-                    res(k, j) = get<TAG>(a, k)[j];
+                    res(k, j) = get<TAG>(a, k)[p(j)];
             return python::object(res);
         }
     };
@@ -161,7 +171,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Matrix<T>, Accu>
     {
-        static python::object exec(Accu & a)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const & p)
         {
             unsigned int n = a.regionCount();
             Shape2 m = get<TAG>(a, 0).shape();
@@ -169,9 +180,9 @@ struct GetArrayTag_Visitor
             NumpyArray<3, T> res(s);
             
             for(unsigned int k=0; k<n; ++k)
-                for(int j=0; j<m[0]; ++j)
-                    for(int i=0; i<m[1]; ++i)
-                        res(k, j, i) = get<TAG>(a, k)(j,i);
+                for(int i=0; i<m[0]; ++i)
+                    for(int j=0; j<m[1]; ++j)
+                        res(k, i, j) = get<TAG>(a, k)(p(i), p(j));
             return python::object(res);
         }
     };
@@ -179,8 +190,9 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Error__Attempt_to_access_inactive_statistic<T>, Accu>
     {
-        static python::object exec(Accu & a)
+        static python::object exec(...)
         {
+            vigra_precondition(false, "PythonAccumulator::get(): Attempt to access inactive statistic.");
             return python::object();
         }
     };
@@ -188,11 +200,50 @@ struct GetArrayTag_Visitor
     template <class TAG, class T1, class T2, class Accu>
     struct ToPythonArray<TAG, std::pair<T1, T2>, Accu>
     {
-        static python::object exec(Accu & a)
+        static python::object exec(...)
         {
+            vigra_precondition(false, "PythonAccumulator::get(): Export for this statistic is not implemented, sorry.");
             return python::object();
         }
     };
+    
+    struct CoordPermutation
+    {
+        ArrayVector<npy_intp> permutation_;
+        
+        CoordPermutation()
+        {}
+        
+        template <class Permute>
+        CoordPermutation(Permute const & p)
+        : permutation_(p.begin(), p.end())
+        {}
+        
+        template <class T>
+        T operator()(T const & t) const
+        {
+            return permutation_[t];
+        }
+    };
+    
+    struct IdentityPermutation
+    {
+        template <class T>
+        T operator()(T const & t) const
+        {
+            return t;
+        }
+    };
+    
+    CoordPermutation coord_permutation_;
+    
+    GetArrayTag_Visitor()
+    {}
+    
+    template <class Permute>
+    GetArrayTag_Visitor(Permute const & p)
+    : coord_permutation_(p)
+    {}
     
     template <class TAG, class Accu>
     void exec(Accu & a) const
@@ -203,15 +254,19 @@ struct GetArrayTag_Visitor
     template <class Accu, class TAG>
     void exec(Accu & a, TAG *) const
     {
-        this->result = ToPythonArray<TAG, typename LookupTag<TAG, Accu>::value_type, Accu>::exec(a);
+        if(IsCoordinateFeature<TAG>::value && !IsPrincipalFeature<TAG>::value)
+            this->result = ToPythonArray<TAG, typename LookupTag<TAG, Accu>::value_type, Accu>::exec(a, coord_permutation_);
+        else
+            this->result = ToPythonArray<TAG, typename LookupTag<TAG, Accu>::value_type, Accu>::exec(a, IdentityPermutation());
     }
     
     template <class Accu, class TAG>
     void exec(Accu & a, Global<TAG> *) const
     {
+        vigra_precondition(IsPrincipalFeature<TAG>::value || !IsCoordinateFeature<TAG>::value,
+            "PythonAccumulator::get(): Export of global coordinate features unsupported, sorry.");
         this->result = to_python(get<Global<TAG> >(a));
     }
-    
 };
 
 typedef std::map<std::string, std::string> AliasMap;
@@ -219,6 +274,9 @@ typedef std::map<std::string, std::string> AliasMap;
 AliasMap defineAliasMap()
 {
     AliasMap res;
+    res["Coord<DivideByCount<PowerSum<1> > >"] = "RegionCenter";
+    res["Coord<RootDivideByCount<Principal<PowerSum<2> > > >"] = "RegionRadii";
+    res["Coord<Principal<CoordinateSystem> >"] = "RegionAxes";
     res["DivideByCount<Central<PowerSum<2> > >"] = "Variance";
     res["DivideUnbiased<Central<PowerSum<2> > >"] = "UnbiasedVariance";
     res["DivideByCount<Principal<PowerSum<2> > >"] = "Principal<Variance>";
@@ -226,11 +284,9 @@ AliasMap defineAliasMap()
     res["DivideByCount<PowerSum<1> >"] = "Mean";
     res["PowerSum<1>"] = "Sum";
     res["PowerSum<0>"] = "Count";
-    res["StandardQuantiles<AutoRangeHistogram<100> >"] = "Quantiles";
-    res["StandardQuantiles<GlobalRangeHistogram<100> >"] = "Quantiles";
-    res["Coord<DivideByCount<PowerSum<1> > >"] = "RegionCenter";
-    res["Coord<RootDivideByCount<Principal<PowerSum<2> > > >"] = "RegionRadii";
-    res["Coord<Principal<CoordinateSystem> >"] = "RegionAxes";
+    res["Principal<CoordinateSystem>"] = "PrincipalAxes";
+    res["StandardQuantiles<AutoRangeHistogram<64> >"] = "Quantiles";
+    res["StandardQuantiles<GlobalRangeHistogram<64> >"] = "Quantiles";
     res["Weighted<Coord<DivideByCount<PowerSum<1> > > >"] = "Weighted<RegionCenter>";
     res["Weighted<Coord<RootDivideByCount<Principal<PowerSum<2> > > > >"] = "Weighted<RegionRadii>";
     res["Weighted<Coord<Principal<CoordinateSystem> > >"] = "Weighted<RegionAxes>";
@@ -243,16 +299,17 @@ AliasMap createTagToAlias(ArrayVector<std::string> const & names)
     AliasMap res;
     for(unsigned int k=0; k<names.size(); ++k)
     {
-            // treat ScatterMatrixEigensystem as internal 
-        if(names[k].find("ScatterMatrixEigensystem") != std::string::npos)
-            continue;
-        
             // lookup alias names
         AliasMap::const_iterator a = aliases.find(names[k]);
-        if(a == aliases.end())
-            res[names[k]] = names[k];
-        else
-            res[names[k]] = a->second;
+        std::string alias = (a == aliases.end())
+                               ? names[k]
+                               : a->second;
+                               
+            // treat FlatScatterMatrix and ScatterMatrixEigensystem as internal,
+            // i.e. use names only when they don't contain these strings
+        if(alias.find("ScatterMatrixEigensystem") == std::string::npos &&
+           alias.find("FlatScatterMatrix") == std::string::npos)
+             res[names[k]] = alias;
     }
     return res;   
 }
@@ -279,6 +336,16 @@ struct PythonAccumulator
 : public BaseType
 {
     typedef typename BaseType::AccumulatorTags AccumulatorTags;
+    
+    ArrayVector<npy_intp> permutation_;
+    
+    PythonAccumulator()
+    {}
+    
+    template <class Permutation>
+    PythonAccumulator(Permutation const & p)
+    : permutation_(p.begin(), p.end())
+    {}
     
     void activate(std::string const & tag)
     {
@@ -313,7 +380,7 @@ struct PythonAccumulator
     
     python::object get(std::string const & tag)
     {
-        GetVisitor v;
+        GetVisitor v(permutation_);
         
         vigra_precondition(isActive(tag), "PythonAccumulator::get(): Tag '" + tag + "' is not active.");
         detail::ApplyVisitorToTag<AccumulatorTags>::exec((BaseType &)*this, resolveAlias(tag), v);
@@ -475,7 +542,9 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
 {
     typedef typename CoupledIteratorType<ndim, typename StripSinglebandTag<T>::type, npy_uint32>::type Iterator;
     
-    std::auto_ptr<Accumulator> res(new Accumulator);
+    TinyVector<npy_intp, ndim> permutation = in.permuteLikewise<ndim>();
+    
+    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
@@ -496,7 +565,9 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
 {
     typedef typename CoupledIteratorType<ndim, Multiband<T>, npy_uint32>::type Iterator;
     
-    std::auto_ptr<Accumulator> res(new Accumulator);
+    TinyVector<npy_intp, ndim-1> permutation = in.permuteLikewise<ndim-1>();
+    
+    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
@@ -604,9 +675,12 @@ void defineGlobalAccumulators()
     docstring_options doc_options(true, true, false);
     
     NumpyArrayConverter<NumpyArray<1, npy_uint32> >();
+    NumpyArrayConverter<NumpyArray<1, float> >();
     NumpyArrayConverter<NumpyArray<1, double> >();
     NumpyArrayConverter<NumpyArray<2, MultiArrayIndex> >();
+    NumpyArrayConverter<NumpyArray<2, float> >();
     NumpyArrayConverter<NumpyArray<2, double> >();
+    NumpyArrayConverter<NumpyArray<3, float> >();
     NumpyArrayConverter<NumpyArray<3, double> >();
     
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance, 

@@ -482,6 +482,55 @@ struct ShouldBeWeighted<B<A> >
 
 } // namespace detail
 
+template <class A>
+struct IsCoordinateFeature
+{
+    typedef VigraFalseType type;
+    static const bool value = false;
+};
+
+template <class A, template <class> class B>
+struct IsCoordinateFeature<B<A> >
+{
+    typedef typename IsCoordinateFeature<A>::type type;
+    static const bool value = IsCoordinateFeature<A>::value;
+};
+
+template <class A>
+struct IsCoordinateFeature<Coord<A> >
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <class A>
+struct IsPrincipalFeature
+{
+    typedef VigraFalseType type;
+    static const bool value = false;
+};
+
+template <class A, template <class> class B>
+struct IsPrincipalFeature<B<A> >
+{
+    typedef typename IsPrincipalFeature<A>::type type;
+    static const bool value = IsPrincipalFeature<A>::value;
+};
+
+template <class A>
+struct IsPrincipalFeature<Principal<A> >
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
+template <class A>
+struct IsPrincipalFeature<Whitened<A> >
+{
+    typedef VigraTrueType type;
+    static const bool value = true;
+};
+
 /**************************************************************************/
 /*                                                                        */
 /*                           Tag transfer rules                           */

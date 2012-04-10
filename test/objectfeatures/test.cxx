@@ -1863,6 +1863,12 @@ struct AccumulatorTest
                            Coord<PrincipalVarianceDesired> >::value));
         should((IsSameType<StandardizeTag<Principal<Coord<Variance> > >::type,
                            Coord<PrincipalVarianceDesired> >::value));
+        should(!IsCoordinateFeature<StandardizeTag<Variance>::type>::value);
+        should(IsCoordinateFeature<StandardizeTag<Coord<Variance> >::type>::value);
+        should(!IsCoordinateFeature<StandardizeTag<Principal<Variance> >::type>::value);
+        should(IsCoordinateFeature<StandardizeTag<Principal<Coord<Variance> > >::type>::value);
+        should(!IsCoordinateFeature<StandardizeTag<Global<Variance> >::type>::value);
+        should(IsCoordinateFeature<StandardizeTag<Global<Coord<Variance> > >::type>::value);
 
             // std dev
         typedef RootDivideByCount<Central<PowerSum<2> > > CentralStdDevDesired;
