@@ -285,8 +285,10 @@ AliasMap defineAliasMap()
     res["PowerSum<1>"] = "Sum";
     res["PowerSum<0>"] = "Count";
     res["Principal<CoordinateSystem>"] = "PrincipalAxes";
-    res["StandardQuantiles<AutoRangeHistogram<64> >"] = "Quantiles";
-    res["StandardQuantiles<GlobalRangeHistogram<64> >"] = "Quantiles";
+    res["AutoRangeHistogram<0>"] = "Histogram";
+    res["GlobalRangeHistogram<0>"] = "Histogram";
+    res["StandardQuantiles<AutoRangeHistogram<0> >"] = "Quantiles";
+    res["StandardQuantiles<GlobalRangeHistogram<0> >"] = "Quantiles";
     res["Weighted<Coord<DivideByCount<PowerSum<1> > > >"] = "Weighted<RegionCenter>";
     res["Weighted<Coord<RootDivideByCount<Principal<PowerSum<2> > > > >"] = "Weighted<RegionRadii>";
     res["Weighted<Coord<Principal<CoordinateSystem> > >"] = "Weighted<RegionAxes>";
@@ -468,12 +470,14 @@ template <class T>
 struct StripSinglebandTag
 {
     typedef T type;
+    static const bool isSingleband = false;
 };
 
 template <class T>
 struct StripSinglebandTag<Singleband<T> >
 {
     typedef T type;
+    static const bool isSingleband = true;
 };
 
 template <class Accu>
@@ -500,6 +504,32 @@ bool pythonActivateTags(Accu & a, python::object tags)
     return true;
 }
 
+template <class Accu>
+void pythonHistogramOptions(Accu & a, python::object minmax, int binCount)
+{
+    HistogramOptions options;
+    options.setBinCount(binCount);
+    
+    if(PyString_Check(minmax.ptr()))
+    {
+        std::string spec = normalizeString(python::extract<std::string>(minmax)());
+        if(spec == "globalminmax")
+            options.globalAutoInit();
+        else if(spec == "regionminmax")
+            options.regionAutoInit();
+        else
+            vigra_precondition(false, 
+                "extractFeatures(): invalid histogramRange.");
+    }
+    else if(python::len(minmax) == 2)
+    {
+        options.setMinMax(python::extract<double>(minmax[0])(), python::extract<double>(minmax[1])());
+    }
+    else
+        vigra_precondition(false, "extractFeatures(): invalid histogramRange.");
+    a.setHistogramOptions(options);
+}
+
 template <class Accumulator, unsigned int ndim, class T>
 Accumulator *
 pythonInspect(NumpyArray<ndim, T> in, python::object tags)
@@ -507,6 +537,24 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
     std::auto_ptr<Accumulator> res(new Accumulator);
     if(pythonActivateTags(*res, tags))
     {
+        PyAllowThreads _pythread;
+        
+        collectStatistics(in.begin(), in.end(), *res);
+    }
+    
+    return res.release();
+}
+
+template <class Accumulator, unsigned int ndim, class T>
+Accumulator *
+pythonInspectWithHistogram(NumpyArray<ndim, T> in, python::object tags,
+                           python::object histogramRange, int binCount)
+{
+    std::auto_ptr<Accumulator> res(new Accumulator);
+    if(pythonActivateTags(*res, tags))
+    {
+        pythonHistogramOptions(*res, histogramRange, binCount);
+        
         PyAllowThreads _pythread;
         
         collectStatistics(in.begin(), in.end(), *res);
@@ -559,6 +607,31 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
 
 template <class Accumulator, unsigned int ndim, class T>
 Accumulator *
+pythonRegionInspectWithHistogram(NumpyArray<ndim, T> in, 
+                    NumpyArray<ndim, Singleband<npy_uint32> > labels,
+                    python::object tags, python::object histogramRange, int binCount)
+{
+    typedef typename CoupledIteratorType<ndim, typename StripSinglebandTag<T>::type, npy_uint32>::type Iterator;
+    
+    TinyVector<npy_intp, ndim> permutation = in.permuteLikewise<ndim>();
+    
+    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
+    if(pythonActivateTags(*res, tags))
+    {
+        pythonHistogramOptions(*res, histogramRange, binCount);
+        
+        PyAllowThreads _pythread;
+        
+        Iterator i     = createCoupledIterator(in, labels),
+                 end   = i.getEndIterator();
+        collectStatistics(i, end, *res);
+    }
+    
+    return res.release();
+}
+
+template <class Accumulator, unsigned int ndim, class T>
+Accumulator *
 pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in, 
                              NumpyArray<ndim-1, Singleband<npy_uint32> > labels,
                              python::object tags)
@@ -593,14 +666,29 @@ void definePythonAccumulator(char const * classname)
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<ResultType, Accumulators>, acc1::GetTag_Visitor> Accu;
     
     Accu::definePythonClass(classname);
-        
-    def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
-          (arg("image"), arg("tags") = "all"),
-          return_value_policy<manage_new_object>());
     
-    def("extractFeatures", &acc1::pythonInspect<Accu, 3, T>,
-          (arg("volume"), arg("tags") = "all"),
-          return_value_policy<manage_new_object>());
+    if(acc1::StripSinglebandTag<T>::isSingleband)
+    {
+        def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 2, T>,
+              (arg("image"), arg("features") = "all", 
+               arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+              return_value_policy<manage_new_object>());
+        
+        def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 3, T>,
+              (arg("volume"), arg("features") = "all", 
+               arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+              return_value_policy<manage_new_object>());
+    }
+    else    
+    {
+        def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
+              (arg("image"), arg("features") = "all"),
+              return_value_policy<manage_new_object>());
+        
+        def("extractFeatures", &acc1::pythonInspect<Accu, 3, T>,
+              (arg("volume"), arg("features") = "all"),
+              return_value_policy<manage_new_object>());
+    }
 }
 
 template <unsigned int N, class T, class Accumulators>
@@ -620,7 +708,7 @@ void definePythonAccumulatorMultiband(char const * classname)
                              : "volume";
     
     def("extractFeatures", &acc1::pythonInspectMultiband<Accu, N, T>,
-          (arg(argname.c_str()), arg("tags") = "all"),
+          (arg(argname.c_str()), arg("features") = "all"),
           return_value_policy<manage_new_object>());
 }
 
@@ -642,9 +730,19 @@ void definePythonAccumulatorArray(char const * classname)
                              ? "image"
                              : "volume";
     
-    def("extractRegionFeatures", &acc1::pythonRegionInspect<Accu, N, T>,
-          (arg(argname.c_str()), arg("labels"), arg("tags") = "all"),
-          return_value_policy<manage_new_object>());
+    if(acc1::StripSinglebandTag<T>::isSingleband)
+    {
+        def("extractRegionFeatures", &acc1::pythonRegionInspectWithHistogram<Accu, N, T>,
+              (arg(argname.c_str()), arg("labels"), arg("features") = "all", 
+               arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+              return_value_policy<manage_new_object>());
+    }
+    else
+    {
+        def("extractRegionFeatures", &acc1::pythonRegionInspect<Accu, N, T>,
+              (arg(argname.c_str()), arg("labels"), arg("features") = "all"),
+              return_value_policy<manage_new_object>());
+    }
 }
 
 template <unsigned int N, class T, class Accumulators>
@@ -663,7 +761,7 @@ void definePythonAccumulatorArrayMultiband(char const * classname)
                              : "volume";
     
     def("extractRegionFeatures", &acc1::pythonRegionInspectMultiband<Accu, N, T>,
-          (arg(argname.c_str()), arg("labels"), arg("tags") = "all"),
+          (arg(argname.c_str()), arg("labels"), arg("features") = "all"),
           return_value_policy<manage_new_object>());
 }
 
@@ -696,7 +794,7 @@ void defineGlobalAccumulators()
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
-                   Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<64> > 
+                   Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<0> > 
                    > ScalarAccumulators;
     definePythonAccumulator<Singleband<float>, ScalarAccumulators>("SinglebandFeatures");
 }
@@ -724,7 +822,7 @@ void defineRegionAccumulators()
     definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>("Vector3RegionFeatures3D");
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
-                   Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<64> >,
+                   Minimum, Maximum, StandardQuantiles<GlobalRangeHistogram<0> >,
                    RegionCenter, RegionRadii, RegionAxes,
                    Weighted<RegionCenter>, Weighted<RegionRadii>, Weighted<RegionAxes>,
                    Select<Coord<Minimum>, Coord<Maximum>, Coord<ArgMinWeight>, Coord<ArgMaxWeight>, 

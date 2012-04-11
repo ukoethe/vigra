@@ -42,6 +42,58 @@
 
 namespace vigra {
 
+class HistogramOptions
+{
+  public:
+    double minimum, maximum;
+    int binCount;
+    bool local_auto_init;
+    
+    HistogramOptions()
+    : minimum(0.0), maximum(0.0),
+      binCount(64),
+      local_auto_init(false)
+    {}
+    
+    HistogramOptions & setMinMax(double mi, double ma)
+    {
+        vigra_precondition(mi < ma,
+            "HistogramOptions::setMinMax(): min < max required.");
+        minimum = mi;
+        maximum = ma;
+        return *this;
+    }
+
+    HistogramOptions & setBinCount(int c)
+    {
+        vigra_precondition(c > 0,
+            "HistogramOptions::setBinCount(): binCount > 0 required.");
+        binCount = c;
+        return *this;
+    }
+
+    HistogramOptions & regionAutoInit()
+    {
+        vigra_precondition(!validMinMax(),
+            "HistogramOptions::regionAutoInit(): you must not call setMinMax() when auto initialization is desired.");
+        local_auto_init = true;
+        return *this;
+    }
+
+    HistogramOptions & globalAutoInit()
+    {
+        vigra_precondition(!validMinMax(),
+            "HistogramOptions::globalAutoInit(): you must not call setMinMax() when auto initialization is desired.");
+        local_auto_init = false;
+        return *this;
+    }
+    
+    bool validMinMax() const
+    {
+        return minimum < maximum;
+    }
+};
+
 template <class DataType, class BinType>
 class HistogramView
 {

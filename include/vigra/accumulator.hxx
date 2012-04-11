@@ -52,6 +52,7 @@
 #include "matrix.hxx"
 #include "multi_math.hxx"
 #include "eigensystem.hxx"
+#include "histogram.hxx"
 #include <algorithm>
 #include <iostream>
 
@@ -410,6 +411,102 @@ struct TagIsActive_Visitor
 
 /****************************************************************************/
 /*                                                                          */
+/*                    histogram initialization functors                     */
+/*                                                                          */
+/****************************************************************************/
+
+template <class TAG>
+struct SetHistogramBincount
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {}
+};
+
+template <template <int> class Histogram>
+struct SetHistogramBincount<Histogram<0> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {
+        a.setBinCount(options.binCount);
+    }
+};
+
+template <class TAG>
+struct ApplyHistogramOptions
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {}
+};
+
+template <class TAG>
+struct ApplyHistogramOptions<StandardQuantiles<TAG> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {}
+};
+
+template <class TAG, template <class> class MODIFIER>
+struct ApplyHistogramOptions<MODIFIER<TAG> >
+: public ApplyHistogramOptions<TAG>
+{};
+
+template <>
+struct ApplyHistogramOptions<IntegerHistogram<0> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {
+        SetHistogramBincount<IntegerHistogram<0> >::exec(a, options);
+    }
+};
+
+template <int BinCount>
+struct ApplyHistogramOptions<UserRangeHistogram<BinCount> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {
+        SetHistogramBincount<UserRangeHistogram<BinCount> >::exec(a, options);
+        if(a.scale_ == 0.0 && options.validMinMax())
+            a.setMinMax(options.minimum, options.maximum);
+    }
+};
+
+template <int BinCount>
+struct ApplyHistogramOptions<AutoRangeHistogram<BinCount> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {
+        SetHistogramBincount<AutoRangeHistogram<BinCount> >::exec(a, options);
+        if(a.scale_ == 0.0 && options.validMinMax())
+            a.setMinMax(options.minimum, options.maximum);
+    }
+};
+
+template <int BinCount>
+struct ApplyHistogramOptions<GlobalRangeHistogram<BinCount> >
+{
+    template <class Accu>
+    static void exec(Accu & a, HistogramOptions const & options)
+    {
+        SetHistogramBincount<GlobalRangeHistogram<BinCount> >::exec(a, options);
+        if(a.scale_ == 0.0)
+        {
+            if(options.validMinMax())
+                a.setMinMax(options.minimum, options.maximum);
+            else
+                a.autoInit(options.local_auto_init);
+        }
+    }
+};
+
+/****************************************************************************/
+/*                                                                          */
 /*                   internal accumulator chain classes                     */
 /*                                                                          */
 /****************************************************************************/
@@ -472,6 +569,9 @@ struct AccumulatorEndImpl
     {
         return true;
     }
+    
+    void applyHistogramOptions(HistogramOptions const &)
+    {}
     
     static unsigned int passesRequired()
     {
@@ -558,6 +658,11 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
         a.reshape(t);
     }
     
+    static void applyHistogramOptions(A & a, HistogramOptions const & options)
+    {
+        ApplyHistogramOptions<A::Tag>::exec(a, options);
+    }
+
     static unsigned int passesRequired()
     {
         return std::max(A::workInPass, A::InternalBaseType::passesRequired());
@@ -602,6 +707,12 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
             a.reshape(t);
     }
     
+    static void applyHistogramOptions(A & a, HistogramOptions const & options)
+    {
+        if(a.isActive())
+            ApplyHistogramOptions<A::Tag>::exec(a, options);
+    }
+
     template <class ActiveFlags>
     static unsigned int passesRequired(ActiveFlags const & flags)
     {
@@ -659,6 +770,12 @@ struct Decorator
     {
         DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::merge(*this, o);
         this->next_.merge(o.next_);
+    }
+    
+    void applyHistogramOptions(HistogramOptions const & options)
+    {
+        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::applyHistogramOptions(*this, options);
+        this->next_.applyHistogramOptions(options);
     }
     
     static unsigned int passesRequired()
@@ -771,6 +888,7 @@ struct LabelDispatch
     GlobalAccumulatorChain next_;
     RegionAccumulatorArray regions_;
     ActiveFlagsType active_region_accumulators_;
+    HistogramOptions histogram_options_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -846,13 +964,15 @@ struct LabelDispatch
     LabelDispatch()
     : next_(),
       regions_(),
-      active_region_accumulators_()
+      active_region_accumulators_(),
+      histogram_options_()
     {}
     
     LabelDispatch(LabelDispatch const & o)
     : next_(o.next_),
       regions_(o.regions_),
-      active_region_accumulators_(o.active_region_accumulators_)
+      active_region_accumulators_(o.active_region_accumulators_),
+      histogram_options_(o.histogram_options_)
     {
         for(unsigned int k=0; k<regions_.size(); ++k)
         {
@@ -870,12 +990,25 @@ struct LabelDispatch
     {
         if(maxRegionLabel() == (MultiArrayIndex)maxlabel)
             return;
+        unsigned int oldSize = regions_.size();
         regions_.resize(maxlabel + 1);
-        for(unsigned int k=0; k<regions_.size(); ++k)
+        for(unsigned int k=oldSize; k<regions_.size(); ++k)
         {
             getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
+            regions_[k].applyHistogramOptions(histogram_options_);
         }
+    }
+    
+    void applyHistogramOptions(HistogramOptions const & options)
+    {
+        applyHistogramOptions(options, options);
+    }
+    
+    void applyHistogramOptions(HistogramOptions const & localoptions, HistogramOptions const & globaloptions)
+    {
+        histogram_options_ = localoptions;
+        next_.applyHistogramOptions(globaloptions);
     }
     
     template <class U>
@@ -1086,6 +1219,16 @@ struct AccumulatorChainImpl
     AccumulatorChainImpl()
     : current_pass_(0)
     {}
+    
+    void setHistogramOptions(HistogramOptions const & options)
+    {
+        next_.applyHistogramOptions(options);
+    }
+    
+    void setHistogramOptions(HistogramOptions const & localoptions, HistogramOptions const & globaloptions)
+    {
+        next_.applyHistogramOptions(localoptions, globaloptions);
+    }
     
     void reset(unsigned int reset_to_pass = 0)
     {
@@ -4433,7 +4576,7 @@ class AutoRangeHistogram
     : public RangeHistogramBase<BASE, BinCount>
     {
         typedef typename BASE::input_type U;
-
+        
         static const unsigned int workInPass = LookupDependency<Minimum, BASE>::type::workInPass + 1;
         
         void update(U const & t)
@@ -4456,7 +4599,7 @@ class GlobalRangeHistogram
 {
   public:
     
-    typedef Select<Global<Minimum>, Global<Maximum> > Dependencies;
+    typedef Select<Global<Minimum>, Global<Maximum>, Minimum, Maximum> Dependencies;
     
     static std::string const & name() 
     { 
@@ -4472,6 +4615,18 @@ class GlobalRangeHistogram
 
         static const unsigned int workInPass = LookupDependency<Global<Minimum>, BASE>::type::workInPass + 1;
         
+        bool useLocalMinimax_;
+        
+        Impl()
+        : useLocalMinimax_(false)
+        {}
+        
+        void autoInit(bool locally)
+        {
+            this->scale_ = 0.0;
+            useLocalMinimax_ = locally;
+        }
+        
         void update(U const & t)
         {
             update(t, 1.0);
@@ -4480,7 +4635,10 @@ class GlobalRangeHistogram
         void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
-                this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
+                if(useLocalMinimax_)
+                    this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
+                else
+                    this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
 
             RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }

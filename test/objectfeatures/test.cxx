@@ -1863,12 +1863,22 @@ struct AccumulatorTest
                            Coord<PrincipalVarianceDesired> >::value));
         should((IsSameType<StandardizeTag<Principal<Coord<Variance> > >::type,
                            Coord<PrincipalVarianceDesired> >::value));
+
+            // IsCoordinateFeature
         should(!IsCoordinateFeature<StandardizeTag<Variance>::type>::value);
         should(IsCoordinateFeature<StandardizeTag<Coord<Variance> >::type>::value);
         should(!IsCoordinateFeature<StandardizeTag<Principal<Variance> >::type>::value);
         should(IsCoordinateFeature<StandardizeTag<Principal<Coord<Variance> > >::type>::value);
         should(!IsCoordinateFeature<StandardizeTag<Global<Variance> >::type>::value);
         should(IsCoordinateFeature<StandardizeTag<Global<Coord<Variance> > >::type>::value);
+
+            // IsPrincipalFeature
+        should(!IsPrincipalFeature<StandardizeTag<Variance>::type>::value);
+        should(!IsPrincipalFeature<StandardizeTag<Coord<Variance> >::type>::value);
+        should(IsPrincipalFeature<StandardizeTag<Principal<Variance> >::type>::value);
+        should(IsPrincipalFeature<StandardizeTag<Principal<Coord<Variance> > >::type>::value);
+        should(!IsPrincipalFeature<StandardizeTag<Global<Variance> >::type>::value);
+        should(IsPrincipalFeature<StandardizeTag<Global<Principal<Coord<Variance> > > >::type>::value);
 
             // std dev
         typedef RootDivideByCount<Central<PowerSum<2> > > CentralStdDevDesired;
@@ -2592,10 +2602,14 @@ struct AccumulatorTest
 
     void testHistogram()
     {
+        static const int SIZE = 30, HSIZE = 10;
+        int data[SIZE] = {4, 3, 2, 2, 2, 0, 3, 6, 8, 8, 4, 0, 2, 0, 2, 8, 7, 8, 6, 0, 9, 3, 7, 0, 9, 5, 9, 9, 2, 4};
+        // the same sorted:
+        // int data[SIZE] = {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9};
+
         using namespace vigra::acc1;
         {
 #if 1
-            static const int SIZE = 30, HSIZE = 10;
 
             typedef AccumulatorChain<int, Select<StandardQuantiles<UserRangeHistogram<HSIZE> >, StandardQuantiles<AutoRangeHistogram<HSIZE> >,
                                                  StandardQuantiles<IntegerHistogram<HSIZE> >, StandardQuantiles<IntegerHistogram<0> >,
@@ -2603,10 +2617,6 @@ struct AccumulatorTest
                                                  StandardQuantiles<UserRangeHistogram<3> >, StandardQuantiles<IntegerHistogram<HSIZE+2> >
                                     > > A;
             A a;
-
-            int data[SIZE] = {4, 3, 2, 2, 2, 0, 3, 6, 8, 8, 4, 0, 2, 0, 2, 8, 7, 8, 6, 0, 9, 3, 7, 0, 9, 5, 9, 9, 2, 4};
-            // the same sorted:
-            // int data[SIZE] = {0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9};
 
             getAccumulator<UserRangeHistogram<HSIZE> >(a).setMinMax(-0.5, 9.5);
             getAccumulator<UserRangeHistogram<HSIZE+2> >(a).setMinMax(-1.5, 10.5);
@@ -2696,6 +2706,99 @@ struct AccumulatorTest
 
             shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<HSIZE+2> > >(a)-QuantileVector(1.0)).begin());
             shouldEqualSequence(qint, qint+QSIZE, (get<StandardQuantiles<IntegerHistogram<0> > >(a)-QuantileVector(1.0)).begin());
+#endif
+        }
+        {
+#if 1
+
+            typedef AccumulatorChain<int, Select<UserRangeHistogram<0>, AutoRangeHistogram<0>, IntegerHistogram<0>
+                                    > > A;
+            A a;
+
+            a.setHistogramOptions(HistogramOptions().setMinMax(-0.5, 9.5).setBinCount(HSIZE));
+
+            shouldEqual(HSIZE, get<UserRangeHistogram<0> >(a).size());
+            shouldEqual(HSIZE, get<AutoRangeHistogram<0> >(a).size());
+            shouldEqual(HSIZE, get<IntegerHistogram<0> >(a).size());
+
+            collectStatistics(data, data+SIZE, a);
+
+            double h[HSIZE] = { 5.0, 0.0, 6.0, 3.0, 3.0, 1.0, 2.0, 2.0, 4.0, 4.0 };
+
+            shouldEqualSequence(h, h+HSIZE, get<UserRangeHistogram<0> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<AutoRangeHistogram<0> >(a).begin());
+            shouldEqualSequence(h, h+HSIZE, get<IntegerHistogram<0> >(a).begin());
+
+            try 
+            {
+                A b;
+                collectStatistics(data, data+SIZE, b);
+                failTest("collectStatistics() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nUserRangeHistogram::update(): setMinMax(...) has not been called.");
+                std::string message(c.what());
+                shouldEqual(expected, message.substr(0,expected.size()));
+            }
+
+            try 
+            {
+                A b;
+                getAccumulator<UserRangeHistogram<0> >(b).setMinMax(-2.5, 12.5);
+                failTest("collectStatistics() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
+                std::string message(c.what());
+                shouldEqual(expected, message.substr(0,expected.size()));
+            }
+
+            try 
+            {
+                A b;
+                getAccumulator<UserRangeHistogram<0> >(b).setBinCount(HSIZE+2);
+                getAccumulator<UserRangeHistogram<0> >(b).setMinMax(-2.5, 12.5);
+                collectStatistics(data, data+SIZE, b);
+                failTest("collectStatistics() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nRangeHistogramBase::setMinMax(...): setBinCount(...) has not been called.");
+                std::string message(c.what());
+                shouldEqual(expected, message.substr(0,expected.size()));
+            }
+
+            try 
+            {
+                A b;
+                b.setHistogramOptions(HistogramOptions().setBinCount(HSIZE));
+                getAccumulator<UserRangeHistogram<0> >(b).setMinMax(-2.5, 12.5);
+
+                collectStatistics(data, data+SIZE, b);
+                a.merge(b);
+
+                failTest("collectStatistics() failed to throw exception");
+            }
+            catch(ContractViolation & c) 
+            {
+                std::string expected("\nPrecondition violation!\nRangeHistogramBase::operator+=(): cannot merge histograms with different data mapping.");
+                std::string message(c.what());
+                shouldEqual(expected, message.substr(0,expected.size()));
+            }
+
+            A b;
+            b.setHistogramOptions(HistogramOptions().setBinCount(HSIZE).setMinMax(-0.5, 9.5));
+
+            collectStatistics(data, data+SIZE, b);
+            a.merge(b);
+
+            TinyVector<double, HSIZE> h2 = TinyVector<double, HSIZE>(h)*2.0;
+            shouldEqualSequence(h2.begin(), h2.end(), get<UserRangeHistogram<0> >(a).begin());
+            shouldEqualSequence(h2.begin(), h2.end(), get<AutoRangeHistogram<0> >(a).begin());
+            shouldEqualSequence(h2.begin(), h2.end(), get<IntegerHistogram<0> >(a).begin());
+
 #endif
         }
     }
@@ -2824,13 +2927,14 @@ struct AccumulatorTest
         }
         {
 #if 1
-            typedef CoupledIteratorType<2, int>::type Iterator;
+            typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
             typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
+                                                                AutoRangeHistogram<3>,
                                                                 Global<Count>, Global<Coord<Mean> >, 
                                                                 StandardQuantiles<GlobalRangeHistogram<3> >, 
-                                                                LabelArg<1>, DataArg<1>
+                                                                LabelArg<2>, DataArg<1>
                                                  > > A;
             A a;
 
@@ -2865,20 +2969,27 @@ struct AccumulatorTest
             should(isActive<Global<Coord<Sum> > >(a));
             should(isActive<Global<Coord<Mean> > >(a));
             should(!isActive<GlobalRangeHistogram<3> >(a));
+            should(!isActive<AutoRangeHistogram<3> >(a));
             should(!isActive<Global<Minimum> >(a));
 
             shouldEqual(1, a.passesRequired());
 
             activate<GlobalRangeHistogram<3> >(a);
+            a.activate("AutoRangeHistogram<3>");
 
             should(isActive<GlobalRangeHistogram<3> >(a));
+            should(isActive<AutoRangeHistogram<3> >(a));
             should(isActive<Global<Minimum> >(a));
 
             shouldEqual(2, a.passesRequired());
 
+            MultiArray<2, double> data(Shape2(3,2));
+            data(0,0) = 0.1;
+            data(2,0) = 1.0;
+            data(2,1) = 0.9;
             MultiArray<2, int> labels(Shape2(3,2));
             labels(2,0) = labels(2,1) = 1;
-            Iterator i     = createCoupledIterator(labels),
+            Iterator i     = createCoupledIterator(data, labels),
                      start = i,   
                      end   = i.getEndIterator();
 
@@ -2899,9 +3010,15 @@ struct AccumulatorTest
             shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 1));
             shouldEqual(V(1, 0.5), get<Global<Coord<Mean> > >(a));
 
+            should(getAccumulator<GlobalRangeHistogram<3> >(a,0).scale_ == getAccumulator<GlobalRangeHistogram<3> >(a,1).scale_);
+            should(getAccumulator<GlobalRangeHistogram<3> >(a,0).scale_ != getAccumulator<AutoRangeHistogram<3> >(a,0).scale_);
+            should(getAccumulator<GlobalRangeHistogram<3> >(a,1).scale_ != getAccumulator<AutoRangeHistogram<3> >(a,1).scale_);
+            
             typedef TinyVector<double, 3> W;
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(a,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(a,1));
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(a,0));
+            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(a,1));
 
             A b;
             b.activateAll();
@@ -2939,6 +3056,46 @@ struct AccumulatorTest
             shouldEqual(V(2, 0.5), get<Coord<Mean> >(a, 3));
             shouldEqual(V(1, 0.5), get<Global<Coord<Mean> > >(a));
 
+            A c;
+            c.activateAll();
+            c.setHistogramOptions(HistogramOptions().regionAutoInit());
+            collectStatistics(start, end, c);
+
+            shouldEqual(getAccumulator<GlobalRangeHistogram<3> >(c,0).scale_, getAccumulator<AutoRangeHistogram<3> >(c,0).scale_);
+            shouldEqual(getAccumulator<GlobalRangeHistogram<3> >(c,1).scale_, getAccumulator<AutoRangeHistogram<3> >(c,1).scale_);
+            
+            shouldEqual(W(3, 0, 1), get<GlobalRangeHistogram<3> >(c,0));
+            shouldEqual(W(1, 0, 1), get<GlobalRangeHistogram<3> >(c,1));
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,0));
+            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(c,1));
+
+            c.merge(c, TinyVector<int, 2>(3, 2));
+
+            shouldEqual(c.maxRegionLabel(), 3);
+            shouldEqual(get<Count>(c, 0), 4);
+            shouldEqual(get<Count>(c, 1), 2);
+            shouldEqual(get<Count>(c, 2), 2);
+            shouldEqual(get<Count>(c, 3), 4);
+            shouldEqual(get<Global<Count> >(c), 12);
+
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,0));
+            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(c,1));
+            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(c,2));
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
+
+            c.merge(1, 2);
+
+            shouldEqual(c.maxRegionLabel(), 3);
+            shouldEqual(get<Count>(c, 0), 4);
+            shouldEqual(get<Count>(c, 1), 4);
+            shouldEqual(get<Count>(c, 2), 2);
+            shouldEqual(get<Count>(c, 3), 4);
+            shouldEqual(get<Global<Count> >(c), 12);
+
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,0));
+            shouldEqual(W(2, 0, 2), get<AutoRangeHistogram<3> >(c,1));
+            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(c,2));
+            shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
 #endif
         }
     }
