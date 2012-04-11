@@ -101,7 +101,7 @@ public:
     {
         TinyVector <int, 2> inner_indices (2, 5);
         MultiArrayView <1, scalar_type, StridedArrayTag>
-            array = array3.bindInner <2> (inner_indices);
+            array = array3.bindInner(inner_indices);
         shouldEqual ((array [TinyVector <int, 1> (0)]), 52);
         shouldEqual ((array [TinyVector <int, 1> (1)]), 152);
         shouldEqual ((array (0)), 52);
@@ -113,7 +113,7 @@ public:
     {
         TinyVector <int, 2> outer_indices (2, 5);
         MultiArrayView <1, scalar_type, UnstridedArrayTag>
-            array = array3.bindOuter <2> (outer_indices);
+            array = array3.bindOuter(outer_indices);
         shouldEqual ((array [TinyVector <int, 1> (0)]), 520);
         shouldEqual ((array [TinyVector <int, 1> (1)]), 521);
         shouldEqual ((array (0)), 520);
@@ -1048,7 +1048,7 @@ public:
     void test_bindOuter ()
     {
         MultiArrayView <2, unsigned char> ba = 
-            a3.bindOuter<1> (TinyVector<int, 1>(2));
+            a3.bindOuter(TinyVector<int, 1>(2));
 
         shouldEqual (ba.shape (0), 2);
         shouldEqual (ba.shape (1), 3);
@@ -1058,7 +1058,7 @@ public:
     void test_bindInner ()
     {
         MultiArrayView <2, unsigned char, StridedArrayTag>
-            fa = a3.bindInner <1> (TinyVector <int, 1>(1));
+            fa = a3.bindInner(TinyVector <int, 1>(1));
 
         shouldEqual (fa.shape (0), 3);
         shouldEqual (fa.shape (1), 5);
@@ -1067,7 +1067,7 @@ public:
     void test_bindInnerAll ()
     {
         MultiArrayView <0, unsigned char, StridedArrayTag>
-            fa = a3.bindInner <3> (shape3_t(1,1,1));
+            fa = a3.bindInner(shape3_t(1,1,1));
 
         shouldEqual (fa.shape (0), 1);
         shouldEqual (fa[shape1_t(shape1_t::value_type(0))], 1.0);

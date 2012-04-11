@@ -1070,7 +1070,7 @@ public:
 
         /** equivalent to bindInner(), when M < N.
          */
-    template <unsigned int M>
+    template <int M>
     MultiArrayView <N-M, T, StridedArrayTag> operator[] (const TinyVector<MultiArrayIndex, M> &d) const
     {
         return bindInner(d);
@@ -1284,8 +1284,8 @@ public:
             MultiArrayView <1, double> array1 = array3.bindOuter(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
-    template <unsigned int M>
-    MultiArrayView <N-M, T, StrideTag> bindOuter (const TinyVector <MultiArrayIndex, M> &d) const;
+    template <int M, class Index>
+    MultiArrayView <N-M, T, StrideTag> bindOuter(const TinyVector <Index, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -1301,9 +1301,8 @@ public:
             MultiArrayView <1, double, StridedArrayTag> array1 = array3.bindInner(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
-    template <unsigned int M>
-    MultiArrayView <N-M, T, StridedArrayTag>
-    bindInner (const TinyVector <MultiArrayIndex, M> &d) const;
+    template <int M, class Index>
+    MultiArrayView <N-M, T, StridedArrayTag> bindInner(const TinyVector <Index, M> &d) const;
 
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
@@ -2091,9 +2090,9 @@ MultiArrayView <N, T, StrideTag>::permuteStridesDescending() const
 }
 
 template <unsigned int N, class T, class StrideTag>
-template <unsigned int M>
+template <int M, class Index>
 MultiArrayView <N-M, T, StrideTag>
-MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin () + N-M, m_stride.end ());
@@ -2114,9 +2113,9 @@ MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <MultiArrayIndex, 
 }
 
 template <unsigned int N, class T, class StrideTag>
-template <unsigned int M>
+template <int M, class Index>
 MultiArrayView <N - M, T, StridedArrayTag>
-MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin (), m_stride.end () - N + M);
