@@ -888,7 +888,7 @@ struct LabelDispatch
     GlobalAccumulatorChain next_;
     RegionAccumulatorArray regions_;
     ActiveFlagsType active_region_accumulators_;
-    HistogramOptions histogram_options_;
+    HistogramOptions region_histogram_options_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -965,14 +965,14 @@ struct LabelDispatch
     : next_(),
       regions_(),
       active_region_accumulators_(),
-      histogram_options_()
+      region_histogram_options_()
     {}
     
     LabelDispatch(LabelDispatch const & o)
     : next_(o.next_),
       regions_(o.regions_),
       active_region_accumulators_(o.active_region_accumulators_),
-      histogram_options_(o.histogram_options_)
+      region_histogram_options_(o.region_histogram_options_)
     {
         for(unsigned int k=0; k<regions_.size(); ++k)
         {
@@ -996,7 +996,7 @@ struct LabelDispatch
         {
             getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
-            regions_[k].applyHistogramOptions(histogram_options_);
+            regions_[k].applyHistogramOptions(region_histogram_options_);
         }
     }
     
@@ -1005,9 +1005,9 @@ struct LabelDispatch
         applyHistogramOptions(options, options);
     }
     
-    void applyHistogramOptions(HistogramOptions const & localoptions, HistogramOptions const & globaloptions)
+    void applyHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
-        histogram_options_ = localoptions;
+        region_histogram_options_ = regionoptions;
         next_.applyHistogramOptions(globaloptions);
     }
     
@@ -1098,7 +1098,8 @@ struct LabelDispatch
     void merge(unsigned i, unsigned j)
     {
         regions_[i].merge(regions_[j]);
-        // FIXME: reset region_[j] ?
+        regions_[j].reset();
+        getAccumulator<AccumulatorEnd>(regions_[j]).active_accumulators_ = active_region_accumulators_;
     }
     
     template <class ArrayLike>
@@ -1225,9 +1226,9 @@ struct AccumulatorChainImpl
         next_.applyHistogramOptions(options);
     }
     
-    void setHistogramOptions(HistogramOptions const & localoptions, HistogramOptions const & globaloptions)
+    void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
-        next_.applyHistogramOptions(localoptions, globaloptions);
+        next_.applyHistogramOptions(regionoptions, globaloptions);
     }
     
     void reset(unsigned int reset_to_pass = 0)

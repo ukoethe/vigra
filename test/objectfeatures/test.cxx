@@ -3088,13 +3088,13 @@ struct AccumulatorTest
             shouldEqual(c.maxRegionLabel(), 3);
             shouldEqual(get<Count>(c, 0), 4);
             shouldEqual(get<Count>(c, 1), 4);
-            shouldEqual(get<Count>(c, 2), 2);
+            shouldEqual(get<Count>(c, 2), 0);
             shouldEqual(get<Count>(c, 3), 4);
             shouldEqual(get<Global<Count> >(c), 12);
 
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,0));
             shouldEqual(W(2, 0, 2), get<AutoRangeHistogram<3> >(c,1));
-            shouldEqual(W(1, 0, 1), get<AutoRangeHistogram<3> >(c,2));
+            shouldEqual(W(0, 0, 0), get<AutoRangeHistogram<3> >(c,2));
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
 #endif
         }
