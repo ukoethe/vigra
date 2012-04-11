@@ -190,7 +190,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T, class Accu>
     struct ToPythonArray<TAG, Error__Attempt_to_access_inactive_statistic<T>, Accu>
     {
-        static python::object exec(...)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const & p)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Attempt to access inactive statistic.");
             return python::object();
@@ -200,7 +201,8 @@ struct GetArrayTag_Visitor
     template <class TAG, class T1, class T2, class Accu>
     struct ToPythonArray<TAG, std::pair<T1, T2>, Accu>
     {
-        static python::object exec(...)
+        template <class Permutation>
+        static python::object exec(Accu & a, Permutation const & p)
         {
             vigra_precondition(false, "PythonAccumulator::get(): Export for this statistic is not implemented, sorry.");
             return python::object();
@@ -407,24 +409,24 @@ struct PythonAccumulator
     static void definePythonClass(char const * classname)
     {
         python::class_<PythonAccumulator>(classname, python::no_init)
-            .def("__getitem__", &get)
-            .def("isActive", &isActive)
-            .def("activeNames", &activeNames)
-            .def("names", &names)
-            .def("merge", &merge)
+            .def("__getitem__", &PythonAccumulator::get)
+            .def("isActive", &PythonAccumulator::isActive)
+            .def("activeNames", &PythonAccumulator::activeNames)
+            .def("names", &PythonAccumulator::names)
+            .def("merge", &PythonAccumulator::merge)
             ;
     }
     
     static void definePythonArrayClass(char const * classname)
     {
         python::class_<PythonAccumulator>(classname, python::no_init)
-            .def("__getitem__", &get)
-            .def("isActive", &isActive)
-            .def("activeNames", &activeNames)
-            .def("names", &names)
-            .def("merge", &merge)
-            .def("merge", &remappingMerge)
-            .def("merge", &mergeRegions)
+            .def("__getitem__", &PythonAccumulator::get)
+            .def("isActive", &PythonAccumulator::isActive)
+            .def("activeNames", &PythonAccumulator::activeNames)
+            .def("names", &PythonAccumulator::names)
+            .def("merge", &PythonAccumulator::merge)
+            .def("merge", &PythonAccumulator::remappingMerge)
+            .def("merge", &PythonAccumulator::mergeRegions)
             ;
     }
     
@@ -449,7 +451,7 @@ struct PythonAccumulator
     
     static AliasMap const & tagToAlias()
     {
-        static const AliasMap a = createTagToAlias(tagNames());
+        static const AliasMap a = createTagToAlias(PythonAccumulator::tagNames());
         return a;   
     }
     
@@ -590,7 +592,7 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
 {
     typedef typename CoupledIteratorType<ndim, typename StripSinglebandTag<T>::type, npy_uint32>::type Iterator;
     
-    TinyVector<npy_intp, ndim> permutation = in.permuteLikewise<ndim>();
+    TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
     
     std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
@@ -613,7 +615,7 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, T> in,
 {
     typedef typename CoupledIteratorType<ndim, typename StripSinglebandTag<T>::type, npy_uint32>::type Iterator;
     
-    TinyVector<npy_intp, ndim> permutation = in.permuteLikewise<ndim>();
+    TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
     
     std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
@@ -638,7 +640,7 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
 {
     typedef typename CoupledIteratorType<ndim, Multiband<T>, npy_uint32>::type Iterator;
     
-    TinyVector<npy_intp, ndim-1> permutation = in.permuteLikewise<ndim-1>();
+    TinyVector<npy_intp, ndim-1> permutation = in.template permuteLikewise<ndim-1>();
     
     std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
@@ -729,7 +731,7 @@ void definePythonAccumulatorArraySingleband(char const * classname)
 
     typedef typename acc1::StripSinglebandTag<T>::type ResultType;
     typedef typename CoupledIteratorType<N, ResultType, npy_uint32>::type Iterator;
-    typedef Iterator::value_type Handle;
+    typedef typename Iterator::value_type Handle;
     
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, acc1::GetArrayTag_Visitor> Accu;
     Accu::definePythonArrayClass(classname);
@@ -753,7 +755,7 @@ void definePythonAccumulatorArray(char const * classname)
 
     typedef typename acc1::StripSinglebandTag<T>::type ResultType;
     typedef typename CoupledIteratorType<N, ResultType, npy_uint32>::type Iterator;
-    typedef Iterator::value_type Handle;
+    typedef typename Iterator::value_type Handle;
     
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, acc1::GetArrayTag_Visitor> Accu;
     Accu::definePythonArrayClass(classname);

@@ -207,15 +207,15 @@ class TrapezoidKernel
         double extr = 0.5*(l-r) / curv;
         if(curv < 0.0)
         {
-            return zero < -0.5
+            return extr < -0.5
                        ? T(-0.5)
-                       : zero > 0.5
+                       : extr > 0.5
                               ? T(0.5)
-                              : T(zero);
+                              : T(extr);
         }
         else
         {
-            return zero < 0.0
+            return extr < 0.0
                        ? T(0.5)
                        : T(-0.5);
         }
@@ -286,7 +286,7 @@ class KernelHistogramView
                 }
             }
         }
-        return mapItemInverse(mmax);
+        return this->mapItemInverse(mmax);
     }
     
     template <class Array>
@@ -322,7 +322,7 @@ class Histogram
   public:
     Histogram(DataType const & min, DataType const & max, int binCount, 
                   BinType * bins = 0, int stride = 1)
-    : HistogramView(min, max, binCount),
+    : BaseType(min, max, binCount),
       data_(binCount)
     {
         this->setData(&data_[0]);

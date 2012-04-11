@@ -354,7 +354,8 @@ struct CollectAccumulatorNames<TypeList<HEAD, TAIL> >
 template <>
 struct CollectAccumulatorNames<void>
 {
-    static void exec(...)
+    template <class BackInsertable>
+    static void exec(BackInsertable & a, bool skipInternals=true)
     {}
 };
 
@@ -383,7 +384,8 @@ struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
 template <>
 struct ApplyVisitorToTag<void>
 {
-    static bool exec(...)
+    template <class Accu, class Visitor>
+    static bool exec(Accu & a, std::string const & tag, Visitor const & v)
     {
         return false;
     }
@@ -394,7 +396,7 @@ struct ActivateTag_Visitor
     template <class TAG, class Accu>
     void exec(Accu & a) const
     {
-        a.activate<TAG>();
+        a.template activate<TAG>();
     }
 };
 
@@ -405,7 +407,7 @@ struct TagIsActive_Visitor
     template <class TAG, class Accu>
     void exec(Accu & a) const
     {
-        result = a.isActive<TAG>();
+        result = a.template isActive<TAG>();
     }
 };
 
@@ -562,10 +564,22 @@ struct AccumulatorEndImpl
         return false;
     }
     
-    static void activateImpl(...)
+    template <class Flags>
+    static void activateImpl(Flags &)
     {}
     
-    static bool isActiveImpl(...)
+    template <class Flags1, class Flags2>
+    static void activateImpl(Flags1 &, Flags2 &)
+    {}
+    
+    template <class Flags>
+    static bool isActiveImpl(Flags const &)
+    {
+        return true;
+    }
+    
+    template <class Flags1, class Flags2>
+    static bool isActiveImpl(Flags1 const &, Flags2 const &)
     {
         return true;
     }
@@ -660,7 +674,7 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     
     static void applyHistogramOptions(A & a, HistogramOptions const & options)
     {
-        ApplyHistogramOptions<A::Tag>::exec(a, options);
+        ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
 
     static unsigned int passesRequired()
@@ -710,7 +724,7 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
     static void applyHistogramOptions(A & a, HistogramOptions const & options)
     {
         if(a.isActive())
-            ApplyHistogramOptions<A::Tag>::exec(a, options);
+            ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
 
     template <class ActiveFlags>
@@ -1429,9 +1443,9 @@ struct DynamicAccumulatorChain
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
-        for(unsigned k=0; k<tagNames().size(); ++k)
-            if(isActive(tagNames()[k]))
-                res.push_back(tagNames()[k]);
+        for(unsigned k=0; k<DynamicAccumulatorChain::tagNames().size(); ++k)
+            if(isActive(DynamicAccumulatorChain::tagNames()[k]))
+                res.push_back(DynamicAccumulatorChain::tagNames()[k]);
         return res;
     }
     
@@ -1556,9 +1570,9 @@ struct DynamicAccumulatorChainArray
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
-        for(unsigned k=0; k<tagNames().size(); ++k)
-            if(isActive(tagNames()[k]))
-                res.push_back(tagNames()[k]);
+        for(unsigned k=0; k<DynamicAccumulatorChainArray::tagNames().size(); ++k)
+            if(isActive(DynamicAccumulatorChainArray::tagNames()[k]))
+                res.push_back(DynamicAccumulatorChainArray::tagNames()[k]);
         return res;
     }
     
@@ -4636,10 +4650,12 @@ class GlobalRangeHistogram
         void update(U const & t, double weight)
         {
             if(this->scale_ == 0.0)
+            {
                 if(useLocalMinimax_)
                     this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
                 else
                     this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
+            }
 
             RangeHistogramBase<BASE, BinCount>::update(t, weight);
         }
