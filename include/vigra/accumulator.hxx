@@ -113,7 +113,7 @@ struct AccumulatorBegin
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
     : public BASE
     {};
@@ -141,7 +141,7 @@ class LabelArg
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
     : public BASE
     {
@@ -166,7 +166,7 @@ class CoordArg
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
     : public BASE
     {
@@ -629,7 +629,7 @@ struct AccumulatorEndImpl
 };
 
     // DecoratorImpl implement the functionality of Decorator below
-template <class A, unsigned CurrentPass, bool Dynamic, unsigned WorkPass=A::workInPass>
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation, unsigned WorkPass=A::workInPass>
 struct DecoratorImpl
 {
     template <class T>
@@ -683,8 +683,9 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     }
 };
 
-template <class A, unsigned CurrentPass, bool Dynamic>
-struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
+#if 1
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
 {
     template <class T>
     static void exec(A & a, T const & t)
@@ -736,73 +737,94 @@ struct DecoratorImpl<A, CurrentPass, Dynamic, CurrentPass>
     }
 };
 
-    // decorator has the following functionalities
-    //  * ensure that only active accumulators are called in a dynamic accumulator chain
-    //  * ensure that each accumulator is only called in its desired pass as defined in A::workInPass
-    //  * determine how many passes through the data are required
-template <class A, bool Dynamic, unsigned level>
-struct Decorator
-: public A
+#else
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
 {
-    typedef Decorator type;
-    typedef Decorator & reference;
-    typedef Decorator const & const_reference;
-    
     template <class T>
-    void resize(T const & t)
-    {
-        this->next_.resize(t);
-        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::resize(*this, t);
-    }
+    static void exec(A & a, T const & t);
+
+    template <class T>
+    static void exec(A & a, T const & t, double weight);
+
+    static typename A::result_type get(A const & a);
+
+    static void merge(A & a, A const & o);
+
+    template <class T>
+    static void resize(A & a, T const & t);
     
-    void reset()
-    {
-        this->next_.reset();
-        A::reset();
-    }
-    
-    typename A::result_type get() const
-    {
-        return DecoratorImpl<A, A::workInPass, Dynamic>::get(*this);
-    }
-    
-    template <unsigned N, class T>
-    void pass(T const & t)
-    {
-        this->next_.pass<N>(t);
-        DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t);
-    }
-    
-    template <unsigned N, class T>
-    void pass(T const & t, double weight)
-    {
-        this->next_.pass<N>(t, weight);
-        DecoratorImpl<Decorator, N, Dynamic>::exec(*this, t, weight);
-    }
-    
-    void merge(Decorator const & o)
-    {
-        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::merge(*this, o);
-        this->next_.merge(o.next_);
-    }
-    
-    void applyHistogramOptions(HistogramOptions const & options)
-    {
-        DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::applyHistogramOptions(*this, options);
-        this->next_.applyHistogramOptions(options);
-    }
-    
-    static unsigned int passesRequired()
-    {
-        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired();
-    }
+    static void applyHistogramOptions(A & a, HistogramOptions const & options);
     
     template <class ActiveFlags>
-    static unsigned int passesRequired(ActiveFlags const & flags)
-    {
-        return DecoratorImpl<Decorator, Decorator::workInPass, Dynamic>::passesRequired(flags);
-    }
+    static unsigned int passesRequired(ActiveFlags const & flags);
 };
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+template <class T>
+void 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::exec(A & a, T const & t)
+{
+    if(a.isActive())
+        a.update(t);
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+template <class T>
+void 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::exec(A & a, T const & t, double weight)
+{
+    if(a.isActive())
+        a.update(t, weight);
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+typename A::result_type 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::get(A const & a)
+{
+    static const std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
+                                                                               typeid(typename A::Tag).name() + "'.";
+    vigra_precondition(a.isActive(), message);
+    return a();
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+void 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::merge(A & a, A const & o)
+{
+    if(a.isActive())
+        a += o;
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+template <class T>
+void 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::resize(A & a, T const & t)
+{
+    if(a.isActive())
+        a.reshape(t);
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+void 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::applyHistogramOptions(A & a, HistogramOptions const & options)
+{
+    if(a.isActive())
+        ApplyHistogramOptions<typename A::Tag>::exec(a, options);
+}
+
+template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
+template <class ActiveFlags>
+unsigned int 
+DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::passesRequired(ActiveFlags const & flags)
+{
+    return A::isActiveImpl(flags)
+               ? std::max(A::workInPass, A::InternalBaseType::passesRequired(flags))
+               : A::InternalBaseType::passesRequired(flags);
+}
+
+#endif
 
     // Generic reshape function (expands to a no-op when T has fixed shape, and to
     // the appropriate specialized call otherwise). Shape is an instance of MultiArrayShape<N>::type.
@@ -1127,40 +1149,249 @@ struct LabelDispatch
     }
 };
 
-    // helper classes to create an accumulator chain from a TypeList
-    // if dynamic=true,  a dynamic accumulator will be created
-    // if dynamic=false, a plain accumulator will be created
-template <class T, class Accumulators, class GlobalAccumulator, bool dynamic=false, unsigned level = 0>
-struct Compose
+template <class TargetTag, class TagList>
+struct FindNextTag;
+
+template <class TargetTag, class HEAD, class TAIL>
+struct FindNextTag<TargetTag, TypeList<HEAD, TAIL> >
 {
-    typedef typename Accumulators::Head Tag; 
-    typedef typename Compose<T, typename Accumulators::Tail, GlobalAccumulator, dynamic, level+1>::type BaseType;
-    typedef Decorator<typename Tag::template Impl<AccumulatorBase<T, Tag, BaseType> >, dynamic, level>  type;
+    typedef typename FindNextTag<TargetTag, TAIL>::type type;
 };
 
-template <class T, class GlobalAccumulator, bool dynamic, unsigned level>
-struct Compose<T, void, GlobalAccumulator, dynamic, level> 
-{ 
-    typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
-};
-
-template <class T, class NEXT, class Accumulators, class GlobalAccumulator, bool dynamic, unsigned level>
-struct Compose<CoupledHandle<T, NEXT>, Accumulators, GlobalAccumulator, dynamic, level>
+template <class TargetTag, class TAIL>
+struct FindNextTag<TargetTag, TypeList<TargetTag, TAIL> >
 {
-    typedef CoupledHandle<T, NEXT> Handle;
-    typedef typename Compose<Handle, typename Accumulators::Tail, GlobalAccumulator, dynamic, level+1>::type BaseType;
-
-    typedef typename Accumulators::Head Tag;
-    typedef typename StandardizeTag<DataFromHandle<Tag> >::type WrappedTag;
-    typedef typename IfBool<(!HasModifierPriority<WrappedTag, WeightingPriority>::value && ShouldBeWeighted<WrappedTag>::value),
-                             Weighted<WrappedTag>, WrappedTag>::type UseTag;
-    typedef Decorator<typename UseTag::template Impl<AccumulatorBase<Handle, Tag, BaseType> >, dynamic, level>  type;
+    typedef typename TAIL::Head type;
 };
 
-template <class T, class NEXT, class GlobalAccumulator, bool dynamic, unsigned level>
-struct Compose<CoupledHandle<T, NEXT>, void, GlobalAccumulator, dynamic, level> 
-{ 
-    typedef AccumulatorEndImpl<level, GlobalAccumulator> type;
+template <class TargetTag>
+struct FindNextTag<TargetTag, TypeList<TargetTag, void> >
+{
+    typedef void type;
+};
+
+template <class TargetTag>
+struct FindNextTag<TargetTag, void>
+{
+    typedef void type;
+};
+
+    // AccumulatorFactory creates the decorator hierarchy for the given TAG and configuration CONFIG
+template <class TAG, class CONFIG, unsigned LEVEL=0>
+struct AccumulatorFactory
+{
+    typedef typename FindNextTag<TAG, typename CONFIG::TagList>::type NextTag;
+    typedef typename AccumulatorFactory<NextTag, CONFIG, LEVEL+1>::type NextType;
+    typedef typename CONFIG::InputType InputType;
+    
+    template <class T>
+    struct ConfigureTag
+    {
+        typedef TAG type;
+    };
+    
+        // When InputType is a CoupledHandle, some tags need to be wrapped into 
+        // DataFromHandle<> and/or Weighted<> modifiers. The following code does
+        // this when appropriate.
+    template <class T, class NEXT>
+    struct ConfigureTag<CoupledHandle<T, NEXT> >
+    {
+        typedef typename StandardizeTag<DataFromHandle<TAG> >::type WrappedTag;
+        typedef typename IfBool<(!HasModifierPriority<WrappedTag, WeightingPriority>::value && ShouldBeWeighted<WrappedTag>::value),
+                                 Weighted<WrappedTag>, WrappedTag>::type type;
+    };
+    
+    typedef typename ConfigureTag<InputType>::type UseTag;
+    
+        // base class of the decorator hierarchy: default (possibly empty) 
+        // implementations of all members
+    struct AccumulatorBase
+    {
+        typedef AccumulatorBase              ThisType;
+        typedef TAG                          Tag;
+        typedef NextType                     InternalBaseType;
+        typedef InputType                    input_type;
+        typedef input_type const &           argument_type;
+        typedef argument_type                first_argument_type;
+        typedef double                       second_argument_type;
+        typedef void                         result_type;
+        
+        static const unsigned int            workInPass = 1;
+        static const int                     index = InternalBaseType::index + 1;
+        
+        InternalBaseType next_;
+        
+        template <class ActiveFlags>
+        static void activateImpl(ActiveFlags & flags)
+        {
+            flags.template set<index>();
+            typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
+            detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
+        }
+        
+        template <class ActiveFlags, class GlobalFlags>
+        static void activateImpl(ActiveFlags & flags, GlobalFlags & gflags)
+        {
+            flags.template set<index>();
+            typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
+            detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags, gflags);
+        }
+        
+        template <class ActiveFlags>
+        static bool isActiveImpl(ActiveFlags & flags)
+        {
+            return flags.template test<index>();
+        }
+        
+        void activate()
+        {
+            activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
+        }
+        
+        bool isActive() const
+        {
+            return isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
+        }
+        
+        void setDirty() const
+        {
+            next_.setDirtyImpl<index>();
+        }
+        
+        template <int INDEX>
+        void setDirtyImpl() const
+        {
+            next_.setDirtyImpl<INDEX>();
+        }
+        
+        void setClean() const
+        {
+            next_.setCleanImpl<index>();
+        }
+        
+        template <int INDEX>
+        void setCleanImpl() const
+        {
+            next_.setCleanImpl<INDEX>();
+        }
+        
+        bool isDirty() const
+        {
+            return next_.isDirtyImpl<index>();
+        }
+        
+        template <int INDEX>
+        bool isDirtyImpl() const
+        {
+            return next_.isDirtyImpl<INDEX>();
+        }
+        
+        void reset()
+        {}
+        
+        template <class Shape>
+        void reshape(Shape const &)
+        {}
+        
+        void operator+=(AccumulatorBase const &)
+        {}
+        
+        template <class U>
+        void update(U const &)
+        {}
+        
+        template <class U>
+        void update(U const &, double)
+        {}
+        
+        template <class TargetTag>
+        typename LookupDependency<TargetTag, ThisType>::result_type
+        call_getDependency() const
+        {
+            return getDependency<TargetTag>(*this);
+        }
+    };
+
+        // The middle class(es) of the decorator hierarchy implement the actual feature computation.
+    typedef typename UseTag::template Impl<InputType, AccumulatorBase> AccumulatorImpl;
+    
+        // outer class of the decorator hierarchy. It has the following functionalities
+        //  * ensure that only active accumulators are called in a dynamic accumulator chain
+        //  * ensure that each accumulator is only called in its desired pass as defined in A::workInPass
+        //  * determine how many passes through the data are required
+    struct Accumulator
+    : public AccumulatorImpl
+    {
+        typedef Accumulator type;
+        typedef Accumulator & reference;
+        typedef Accumulator const & const_reference;
+        typedef AccumulatorImpl A;
+        
+        static const bool allowRuntimeActivation = CONFIG::allowRuntimeActivation;
+        
+        template <class T>
+        void resize(T const & t)
+        {
+            this->next_.resize(t);
+            DecoratorImpl<Accumulator, A::workInPass, allowRuntimeActivation>::resize(*this, t);
+        }
+        
+        void reset()
+        {
+            this->next_.reset();
+            A::reset();
+        }
+        
+        typename A::result_type get() const
+        {
+            return DecoratorImpl<A, A::workInPass, allowRuntimeActivation>::get(*this);
+        }
+        
+        template <unsigned N, class T>
+        void pass(T const & t)
+        {
+            this->next_.pass<N>(t);
+            DecoratorImpl<Accumulator, N, allowRuntimeActivation>::exec(*this, t);
+        }
+        
+        template <unsigned N, class T>
+        void pass(T const & t, double weight)
+        {
+            this->next_.pass<N>(t, weight);
+            DecoratorImpl<Accumulator, N, allowRuntimeActivation>::exec(*this, t, weight);
+        }
+        
+        void merge(Accumulator const & o)
+        {
+            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::merge(*this, o);
+            this->next_.merge(o.next_);
+        }
+        
+        void applyHistogramOptions(HistogramOptions const & options)
+        {
+            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::applyHistogramOptions(*this, options);
+            this->next_.applyHistogramOptions(options);
+        }
+        
+        static unsigned int passesRequired()
+        {
+            return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired();
+        }
+        
+        template <class ActiveFlags>
+        static unsigned int passesRequired(ActiveFlags const & flags)
+        {
+            return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired(flags);
+        }
+    };
+
+    typedef Accumulator type;
+};
+
+template <class CONFIG, unsigned LEVEL>
+struct AccumulatorFactory<void, CONFIG, LEVEL>
+{
+    typedef AccumulatorEndImpl<LEVEL, typename CONFIG::GlobalAccumulatorHandle> type;
 };
 
 struct InvalidGlobalAccumulatorHandle
@@ -1174,23 +1405,50 @@ struct InvalidGlobalAccumulatorHandle
     type const * pointer_;
 };
 
+    // helper classes to create an accumulator chain from a TypeList
+    // if dynamic=true,  a dynamic accumulator will be created
+    // if dynamic=false, a plain accumulator will be created
 template <class T, class Selected, bool dynamic=false>
-struct CreateAccumulatorChain
+struct ConfigureAccumulatorChain
+: public ConfigureAccumulatorChain<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+{};
+
+template <class T, class HEAD, class TAIL, bool dynamic>
+struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic>
 {
-    typedef typename AddDependencies<typename Selected::type>::type AccumulatorTags;
+    typedef TypeList<HEAD, TAIL> TagList;
+    typedef T InputType;
+    typedef InvalidGlobalAccumulatorHandle GlobalAccumulatorHandle;
+    static const bool allowRuntimeActivation = dynamic;
  
-    typedef typename Compose<T, AccumulatorTags, InvalidGlobalAccumulatorHandle, dynamic>::type type;
+    typedef typename AccumulatorFactory<HEAD, ConfigureAccumulatorChain>::type type;
+};
+
+template <class T, class TAGLIST, bool dynamic, class GlobalHandle>
+struct ConfigureRegionAccumulatorChain
+{
+    typedef TAGLIST TagList;
+    typedef T InputType;
+    typedef GlobalHandle GlobalAccumulatorHandle;
+    static const bool allowRuntimeActivation = dynamic;
+    
+    typedef typename AccumulatorFactory<typename TAGLIST::Head, ConfigureRegionAccumulatorChain>::type type;
 };
 
 template <class T, class Selected, bool dynamic=false>
-struct CreateAccumulatorChainArray
+struct ConfigureAccumulatorChainArray
+: public ConfigureAccumulatorChainArray<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+{};
+
+template <class T, class HEAD, class TAIL, bool dynamic>
+struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
 {
-    typedef typename detail::AddDependencies<typename Selected::type>::type AccumulatorTags;
-    typedef detail::SeparateGlobalAndRegionTags<AccumulatorTags> TagSeparator;
+    typedef TypeList<HEAD, TAIL> TagList;
+    typedef SeparateGlobalAndRegionTags<TagList> TagSeparator;
     typedef typename TagSeparator::GlobalTags GlobalTags;
     typedef typename TagSeparator::RegionTags RegionTags;
-    typedef typename detail::Compose<T, GlobalTags, InvalidGlobalAccumulatorHandle, dynamic>::type GlobalAccumulatorChain;
-    
+    typedef typename ConfigureAccumulatorChain<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
+ 
     struct GlobalAccumulatorHandle
     {
         typedef GlobalAccumulatorChain type;
@@ -1202,8 +1460,9 @@ struct CreateAccumulatorChainArray
         type const * pointer_;
     };
     
-    typedef typename detail::Compose<T, RegionTags, GlobalAccumulatorHandle, dynamic>::type RegionAccumulatorChain;
-    typedef detail::LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
+    typedef typename ConfigureRegionAccumulatorChain<T, RegionTags, dynamic, GlobalAccumulatorHandle>::type RegionAccumulatorChain;
+    
+    typedef LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
 } // namespace detail 
@@ -1367,12 +1626,12 @@ struct AccumulatorChainImpl
     }
 };
 
-    // Create an accumulator chain containing the Selected statistics and their dependencies.
+   // Create an accumulator chain containing the Selected statistics and their dependencies.
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChain
-: public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChain<T, Selected, dynamic>::type>
+: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
 {
-    typedef typename detail::CreateAccumulatorChain<T, Selected, dynamic>::AccumulatorTags AccumulatorTags;
+    typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
     
     template <class U, int N>
     void reshape(TinyVector<U, N> const & s)
@@ -1398,7 +1657,6 @@ struct AccumulatorChain
         return n;
     }
 };   
-
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
@@ -1470,10 +1728,10 @@ struct DynamicAccumulatorChain
 
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
-: public AccumulatorChainImpl<T, typename detail::CreateAccumulatorChainArray<T, Selected, dynamic>::type>
+: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
 {
-    typedef typename detail::CreateAccumulatorChainArray<T, Selected, dynamic> Creator;
-    typedef typename Creator::AccumulatorTags AccumulatorTags;
+    typedef typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
+    typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
     typedef typename Creator::RegionTags RegionTags;
     
@@ -1982,148 +2240,6 @@ struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
 
 /****************************************************************************/
 /*                                                                          */
-/*                      generic decorator base class                        */
-/*                                                                          */
-/****************************************************************************/
-
-    // this is the innermost class of a accumulator decorator hierarchy
-template <class T, class TAG, class NEXT>
-struct AccumulatorBase
-{
-	typedef AccumulatorBase<T, TAG, NEXT>   ThisType;
-    typedef TAG                          Tag;
-	typedef NEXT                         InternalBaseType;
-    typedef T                            input_type;
-    typedef T const &                    argument_type;
-    typedef argument_type                first_argument_type;
-    typedef double                       second_argument_type;
-    typedef void                         result_type;
-    
-    static const unsigned int            workInPass = 1;
-    static const int                     index = NEXT::index + 1;
-    
-    NEXT next_;
-    
-    template <class ActiveFlags>
-    static void activateImpl(ActiveFlags & flags)
-    {
-        flags.template set<index>();
-        typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
-        detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
-    }
-    
-    template <class ActiveFlags, class GlobalFlags>
-    static void activateImpl(ActiveFlags & flags, GlobalFlags & gflags)
-    {
-        flags.template set<index>();
-        typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
-        detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags, gflags);
-    }
-    
-    template <class ActiveFlags>
-    static bool isActiveImpl(ActiveFlags & flags)
-    {
-        return flags.template test<index>();
-    }
-    
-    void activate()
-    {
-        activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
-    }
-    
-    bool isActive() const
-    {
-        return isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
-    }
-    
-    void setDirty() const
-    {
-        next_.setDirtyImpl<index>();
-    }
-    
-    template <int INDEX>
-    void setDirtyImpl() const
-    {
-        next_.setDirtyImpl<INDEX>();
-    }
-    
-    void setClean() const
-    {
-        next_.setCleanImpl<index>();
-    }
-    
-    template <int INDEX>
-    void setCleanImpl() const
-    {
-        next_.setCleanImpl<INDEX>();
-    }
-    
-    bool isDirty() const
-    {
-        return next_.isDirtyImpl<index>();
-    }
-    
-    template <int INDEX>
-    bool isDirtyImpl() const
-    {
-        return next_.isDirtyImpl<INDEX>();
-    }
-    
-    void reset()
-    {}
-    
-    template <class Shape>
-    void reshape(Shape const &)
-    {}
-    
-	void operator+=(AccumulatorBase const &)
-    {}
-    
-	template <class U>
-    void update(U const &)
-    {}
-    
-	template <class U>
-    void update(U const &, double)
-    {}
-    
-    template <class TargetTag>
-    typename LookupDependency<TargetTag, ThisType>::result_type
-    call_getDependency() const
-    {
-        return getDependency<TargetTag>(*this);
-    }
-};
-
-    // change the input_type member of an existing AccumulatorBase
-template <class A, class NewInputType>
-struct ChangeInputType;
-
-    // recurse down the decorator hierarchy
-template <class A, template <class> class B, class NewInputType>
-struct ChangeInputType<B<A>, NewInputType>
-{
-    typedef B<typename ChangeInputType<A, NewInputType>::type> type;
-};
-
-    // actually apply the desired change
-template <class T, class TAG, class NEXT, class NewInputType>
-struct ChangeInputType<AccumulatorBase<T, TAG, NEXT>, NewInputType>
-{
-    typedef AccumulatorBase<NewInputType, TAG, NEXT> type;
-};
-
-    // special case: change the input_type to the previous input type's promote type
-template <class A>
-struct PromoteInputType
-{
-    typedef typename A::input_type OldInputType;
-    typedef typename AccumulatorResultTraits<OldInputType>::SumType NewInputType;
-    typedef typename ChangeInputType<A, NewInputType>::type type;
-};
-
-/****************************************************************************/
-/*                                                                          */
 /*                           modifier implementations                       */
 /*                                                                          */
 /****************************************************************************/
@@ -2155,7 +2271,7 @@ class DataArg
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
     : public BASE
     {
@@ -2207,21 +2323,25 @@ class DataFromHandle
         }
     };
     
-    template <class BASE>
+    template <class T, class BASE>
     struct SelectInputType
     {
         typedef typename LookupTag<DataArgTag, BASE>::type FindDataIndex;
         typedef DataIndexSelector<FindDataIndex> DataIndex;
-        typedef typename CoupledHandleCast<DataIndex::value, typename BASE::input_type>::type::value_type NewValueType;
-        typedef typename ChangeInputType<BASE, NewValueType>::type type;
+        typedef typename CoupledHandleCast<DataIndex::value, T>::type::value_type type;
     };
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
+    : public TargetTag::template Impl<typename SelectInputType<T, BASE>::type, BASE>
     {
-        typedef typename SelectInputType<BASE>::DataIndex DataIndex;
-        typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
+        typedef SelectInputType<T, BASE>                InputTypeSelector;
+        typedef typename InputTypeSelector::DataIndex   DataIndex;
+        typedef typename InputTypeSelector::type        input_type;
+        typedef input_type const &                      argument_type;
+        typedef argument_type                           first_argument_type;
+        
+        typedef typename TargetTag::template Impl<input_type, BASE> ImplType;
         
         using ImplType::reshape;
         
@@ -2284,22 +2404,26 @@ class Coord
             return get<value>(t);
         }
     };
-    
-    template <class BASE>
+     
+    template <class T, class BASE>
     struct SelectInputType
     {
         typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
         typedef CoordIndexSelector<FindDataIndex> CoordIndex;
-        typedef typename CoupledHandleCast<CoordIndex::value, typename BASE::input_type>::type::value_type NewValueType;
-        typedef typename ChangeInputType<BASE, NewValueType>::type type;
+        typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
     };
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename SelectInputType<BASE>::type>
+    : public TargetTag::template Impl<typename SelectInputType<T, BASE>::type, BASE>
     {
-        typedef typename SelectInputType<BASE>::CoordIndex CoordIndex;
-        typedef typename TargetTag::template Impl<typename SelectInputType<BASE>::type> ImplType;
+        typedef SelectInputType<T, BASE>                InputTypeSelector;
+        typedef typename InputTypeSelector::CoordIndex  CoordIndex;
+        typedef typename InputTypeSelector::type        input_type;
+        typedef input_type const &                      argument_type;
+        typedef argument_type                           first_argument_type;
+        
+        typedef typename TargetTag::template Impl<input_type, BASE> ImplType;
         
         using ImplType::reshape;
         
@@ -2335,7 +2459,7 @@ class WeightArg
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
     : public BASE
     {
@@ -2382,11 +2506,11 @@ class Weighted
         }
     };
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<BASE>
+    : public TargetTag::template Impl<T, BASE>
     {
-        typedef typename TargetTag::template Impl<BASE> ImplType;
+        typedef typename TargetTag::template Impl<T, BASE> ImplType;
         
         typedef typename LookupTag<WeightArgTag, BASE>::type FindWeightIndex;
                 
@@ -2409,15 +2533,13 @@ class Centralize
         static const std::string n("Centralize (internal)");
         return n;
     }
-    
-    template <class BASE>
+   
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
         static const unsigned int workInPass = 2;
         
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_promote_type element_type;
         typedef typename AccumulatorResultTraits<U>::SumType              value_type;
         typedef value_type const &                                  result_type;
@@ -2478,11 +2600,11 @@ class Central
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE>
     {
-        typedef typename TargetTag::template Impl<typename PromoteInputType<BASE>::type> ImplType;
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE> ImplType;
         
         static const unsigned int workInPass = 2;
         
@@ -2515,11 +2637,11 @@ class Central
     // typedef typename StandardizeTag<TAG>::type TargetTag;
     // typedef TypeList<Mean, typename TransferModifiers<Central<TargetTag>, typename TargetTag::Dependencies::type>::type> Dependencies;
     
-    // template <class BASE>
+    // template <class U, class BASE>
     // struct Impl
-    // : public TargetTag::template Impl<BASE>
+    // : public TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE>
     // {
-        // typedef typename TargetTag::template Impl<BASE> ImplType;
+        // typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE> ImplType;
         
         // static const unsigned int workInPass = 2;
         
@@ -2555,13 +2677,12 @@ class PrincipalProjection
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
         static const unsigned int workInPass = 2;
         
-        typedef typename BASE::input_type U;
         typedef typename AccumulatorResultTraits<U>::element_promote_type element_type;
         typedef typename AccumulatorResultTraits<U>::SumType              value_type;
         typedef value_type const &                                  result_type;
@@ -2627,11 +2748,11 @@ class Principal
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename PromoteInputType<BASE>::type>
+    : public TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE>
     {
-        typedef typename TargetTag::template Impl<typename PromoteInputType<BASE>::type> ImplType;
+        typedef typename TargetTag::template Impl<typename AccumulatorResultTraits<U>::SumType, BASE> ImplType;
         
         static const unsigned int workInPass = 2;
         
@@ -2691,7 +2812,7 @@ class CoordinateSystem
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -2723,7 +2844,7 @@ class CoordinateSystem
     };
 };
 
-template <class BASE, class T=typename BASE::input_type, 
+template <class BASE, class T, 
           class ElementType=typename AccumulatorResultTraits<T>::element_promote_type, 
           class SumType=typename AccumulatorResultTraits<T>::SumType>
 struct SumBaseImpl
@@ -2774,18 +2895,16 @@ class PowerSum<0>
         return n;
     }
     
-    template <class BASE>
+    template <class T, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE, typename BASE::input_type, double, double>
+    : public SumBaseImpl<BASE, T, double, double>
     {
-        typedef typename BASE::input_type U;
-        
-        void update(U const & t)
+        void update(T const & t)
         {
             ++this->value_;
         }
         
-        void update(U const & t, double weight)
+        void update(T const & t, double weight)
         {
             this->value_ += weight;
         }
@@ -2805,12 +2924,10 @@ class PowerSum<1>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-
         void update(U const & t)
         {
             this->value_ += t;
@@ -2835,12 +2952,10 @@ class PowerSum
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
@@ -2867,12 +2982,10 @@ class AbsPowerSum<1>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
@@ -2899,12 +3012,10 @@ class AbsPowerSum
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-
         void update(U const & t)
         {
             using namespace vigra::multi_math;            
@@ -2919,11 +3030,10 @@ class AbsPowerSum
     };
 };
 
-template <class BASE, class VALUE_TYPE>
+template <class BASE, class VALUE_TYPE, class U>
 struct CachedResultBase
 : public BASE
 {
-    typedef typename BASE::input_type U;
     typedef typename AccumulatorResultTraits<U>::element_type  element_type;
     typedef VALUE_TYPE                                         value_type;
     typedef value_type const &                                 result_type;
@@ -2976,11 +3086,11 @@ class DivideByCount
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public CachedResultBase<BASE, typename LookupDependency<TargetTag, BASE>::value_type> 
+    : public CachedResultBase<BASE, typename LookupDependency<TargetTag, BASE>::value_type, U> 
     {
-        typedef typename CachedResultBase<BASE, typename LookupDependency<TargetTag, BASE>::value_type>::result_type result_type;
+        typedef typename CachedResultBase<BASE, typename LookupDependency<TargetTag, BASE>::value_type, U>::result_type result_type;
         
         result_type operator()() const
         {
@@ -3009,7 +3119,7 @@ class DivideUnbiased
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3039,7 +3149,7 @@ class RootDivideByCount
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3069,7 +3179,7 @@ class RootDivideUnbiased
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3096,12 +3206,10 @@ class Central<PowerSum<2> >
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-        
         void operator+=(Impl const & o)
         {
             using namespace vigra::multi_math;
@@ -3150,12 +3258,11 @@ class Central<PowerSum<3> >
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-        typedef typename SumBaseImpl<BASE>::value_type value_type;
+        typedef typename SumBaseImpl<BASE, U>::value_type value_type;
 
         static const unsigned int workInPass = 2;
         
@@ -3205,12 +3312,11 @@ class Central<PowerSum<4> >
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public SumBaseImpl<BASE>
+    : public SumBaseImpl<BASE, U>
     {
-        typedef typename BASE::input_type U;
-        typedef typename SumBaseImpl<BASE>::value_type value_type;
+        typedef typename SumBaseImpl<BASE, U>::value_type value_type;
 
         static const unsigned int workInPass = 2;
         
@@ -3264,7 +3370,7 @@ class Skewness
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3295,7 +3401,7 @@ class UnbiasedSkewness
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3324,7 +3430,7 @@ class Kurtosis
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3355,7 +3461,7 @@ class UnbiasedKurtosis
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3446,12 +3552,10 @@ class FlatScatterMatrix
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
         typedef typename AccumulatorResultTraits<U>::FlatCovarianceType    value_type;
         typedef value_type const &                                   result_type;
@@ -3537,11 +3641,11 @@ class DivideByCount<FlatScatterMatrix>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
+    : public CachedResultBase<BASE, typename AccumulatorResultTraits<U>::CovarianceType, U>
     {
-        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType> BaseType;      
+        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<U>::CovarianceType, U> BaseType;      
         typedef typename BaseType::result_type result_type;
         
         template <class Shape>
@@ -3576,11 +3680,11 @@ class DivideUnbiased<FlatScatterMatrix>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType>
+    : public CachedResultBase<BASE, typename AccumulatorResultTraits<U>::CovarianceType, U>
     {
-        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<typename BASE::input_type>::CovarianceType> BaseType;      
+        typedef CachedResultBase<BASE, typename AccumulatorResultTraits<U>::CovarianceType, U> BaseType;      
         typedef typename BaseType::result_type result_type;
         
         template <class Shape>
@@ -3613,12 +3717,10 @@ class ScatterMatrixEigensystem
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
         typedef typename AccumulatorResultTraits<U>::SumType               EigenvalueType;
         typedef typename AccumulatorResultTraits<U>::CovarianceType        EigenvectorType;
@@ -3703,12 +3805,10 @@ class DivideByCount<ScatterMatrixEigensystem>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename LookupDependency<ScatterMatrixEigensystem, BASE>::type  SMImpl;
         typedef typename SMImpl::element_type                             element_type;
         typedef typename SMImpl::EigenvalueType                           EigenvalueType;
@@ -3770,12 +3870,10 @@ class DivideByCount<ScatterMatrixEigensystem>
   // public:
     // typedef Select<Covariance> Dependencies;
     
-    // template <class BASE>
+    // template <class U, class BASE>
     // struct Impl
     // : public BASE
     // {
-        // typedef typename BASE::input_type U;
-
         // typedef typename AccumulatorResultTraits<U>::element_promote_type  element_type;
         // typedef typename AccumulatorResultTraits<U>::SumType               EigenvalueType;
         // typedef typename AccumulatorResultTraits<U>::CovarianceType        EigenvectorType;
@@ -3858,7 +3956,7 @@ class Principal<PowerSum<2> >
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3885,7 +3983,7 @@ class Principal<CoordinateSystem>
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
@@ -3910,12 +4008,10 @@ class Minimum
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_type element_type;
         typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
@@ -3985,12 +4081,10 @@ class Maximum
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_type element_type;
         typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
@@ -4060,12 +4154,10 @@ class ArgMinWeight
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_type element_type;
         typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
@@ -4132,12 +4224,10 @@ class ArgMaxWeight
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public BASE
     {
-        typedef typename BASE::input_type U;
-
         typedef typename AccumulatorResultTraits<U>::element_type element_type;
         typedef typename AccumulatorResultTraits<U>::MinmaxType   value_type;
         typedef value_type const &                                result_type;
@@ -4278,13 +4368,11 @@ class HistogramBase<BASE, 0>
     }
 };
 
-template <class BASE, int BinCount>
+template <class BASE, int BinCount, class U=typename BASE::input_type>
 class RangeHistogramBase
 : public HistogramBase<BASE, BinCount>
 {
   public:
-    typedef typename BASE::input_type U;
-  
     double scale_, offset_, inverse_scale_;
     
     RangeHistogramBase()
@@ -4450,7 +4538,7 @@ class IntegerHistogram
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
     : public HistogramBase<BASE, BinCount>
     {
@@ -4552,12 +4640,10 @@ class UserRangeHistogram
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public RangeHistogramBase<BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount, U>
     {
-        typedef typename BASE::input_type U;
-
         void update(U const & t)
         {
             update(t, 1.0);
@@ -4568,7 +4654,7 @@ class UserRangeHistogram
             vigra_precondition(this->scale_ != 0.0,
                 "UserRangeHistogram::update(): setMinMax(...) has not been called.");
                 
-            RangeHistogramBase<BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount, U>::update(t, weight);
         }
     };
 };
@@ -4586,12 +4672,10 @@ class AutoRangeHistogram
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public RangeHistogramBase<BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount, U>
     {
-        typedef typename BASE::input_type U;
-        
         static const unsigned int workInPass = LookupDependency<Minimum, BASE>::type::workInPass + 1;
         
         void update(U const & t)
@@ -4604,7 +4688,7 @@ class AutoRangeHistogram
             if(this->scale_ == 0.0)
                 this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
                 
-            RangeHistogramBase<BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount, U>::update(t, weight);
         }
     };
 };
@@ -4622,12 +4706,10 @@ class GlobalRangeHistogram
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public RangeHistogramBase<BASE, BinCount>
+    : public RangeHistogramBase<BASE, BinCount, U>
     {
-        typedef typename BASE::input_type U;
-
         static const unsigned int workInPass = LookupDependency<Global<Minimum>, BASE>::type::workInPass + 1;
         
         bool useLocalMinimax_;
@@ -4657,7 +4739,7 @@ class GlobalRangeHistogram
                     this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
             }
 
-            RangeHistogramBase<BASE, BinCount>::update(t, weight);
+            RangeHistogramBase<BASE, BinCount, U>::update(t, weight);
         }
     };
 };
@@ -4676,12 +4758,12 @@ class StandardQuantiles
         return n;
     }
     
-    template <class BASE>
+    template <class U, class BASE>
     struct Impl
-    : public CachedResultBase<BASE, TinyVector<double, 7> >
+    : public CachedResultBase<BASE, TinyVector<double, 7>, U>
     {
-        typedef typename CachedResultBase<BASE, TinyVector<double, 7> >::result_type result_type;
-        typedef typename CachedResultBase<BASE, TinyVector<double, 7> >::value_type  value_type;
+        typedef typename CachedResultBase<BASE, TinyVector<double, 7>, U>::result_type result_type;
+        typedef typename CachedResultBase<BASE, TinyVector<double, 7>, U>::value_type  value_type;
         
         static const unsigned int workInPass = LookupDependency<HistogramTag, BASE>::type::workInPass;
         

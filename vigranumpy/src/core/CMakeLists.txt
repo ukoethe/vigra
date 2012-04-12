@@ -36,6 +36,8 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     edgedetection.cxx
     interestpoints.cxx
     accumulator.cxx
+    accumulator-region-singleband.cxx
+    accumulator-region-multiband.cxx
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES

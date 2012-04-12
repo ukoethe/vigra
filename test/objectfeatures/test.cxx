@@ -2021,33 +2021,32 @@ struct AccumulatorTest
 
     void test1()
     {
-#if 0
+#if 1
         using namespace vigra::acc1;
         using namespace vigra::acc1::detail;
 
-        //typedef Coord<Normalize<Central<AbsSum> > > A;
+        typedef AccumulatorChain<double, Select<CovarianceEigensystem, Covariance, UnbiasedVariance, UnbiasedStdDev, 
+                                               Variance, StdDev, Minimum, Maximum, Skewness, Kurtosis,
+                                               AbsSum, SumOfAbsDifferences, MeanAbsoluteDeviation, 
+                                               Principal<Variance>, Principal<CoordinateSystem>
+                                              > > A;
+        A a;
+        std::cerr << typeid(A).name() << "\n";
+        std::cerr << typeid(LookupTag<Count, A>::type).name() << "\n";
+        std::cerr << typeid(LookupTag<Count, A>::Tag).name() << "\n";
+        std::cerr << typeid(LookupTag<Minimum, A>::type).name() << "\n";
 
-        //typedef Select<int, double, bool, short>::type L;
-
-        //std::cerr << typeid(Remove<L, int>::type).name() << "\n";
-        //std::cerr << typeid(Remove<L, double>::type).name() << "\n";
-        //std::cerr << typeid(Remove<L, bool>::type).name() << "\n";
-        //std::cerr << typeid(Remove<L, short>::type).name() << "\n";
-        //std::cerr << typeid(Remove<L, void>::type).name() << "\n";
-
-        typedef Coord<Normalize<Central<AbsSum> > > A1;
-        typedef Normalize<Central<Coord<AbsSum> > > A2;
-        typedef Central<Normalize<Coord<AbsSum> > > A3;
-        typedef ModifierToList<A2>::type B;
-        typedef ListToModifier<Sort<ModifierToList<A1>::type>::type>::type C1;
-        typedef ListToModifier<Sort<ModifierToList<A2>::type>::type>::type C2;
-        typedef ListToModifier<Sort<ModifierToList<A3>::type>::type>::type C3;
-
-
-        std::cerr << IsSameType<C1, C2>::value << " " << IsSameType<C1, C3>::value << "\n";
-        std::cerr << typeid(B).name() << "\n";
-        std::cerr << typeid(C1).name() << "\n";
-//        std::cerr << typeid(Sort<B>::type).name() << "\n";
+        typedef CoupledHandleType<2, double>::type Handle;
+        typedef AccumulatorChain<Handle, Select<Count, Minimum, Coord<Minimum> > > B;
+        B b;
+        //std::cerr << typeid(B).name() << "\n";
+        //std::cerr << typeid(LookupTag<Count, B>::type).name() << "\n";
+        //std::cerr << typeid(LookupTag<Count, B>::Tag).name() << "\n";
+        //std::cerr << typeid(LookupTag<Count, B>::result_type).name() << "\n";
+        //std::cerr << typeid(LookupTag<Minimum, B>::type).name() << "\n";
+        //std::cerr << typeid(LookupTag< Coord<Minimum> , B>::type).name() << "\n";
+        //std::cerr << typeid(LookupTag< Coord<Minimum> , B>::Tag).name() << "\n";
+        //std::cerr << typeid(LookupTag< Coord<Minimum> , B>::type::input_type).name() << "\n";
 #endif
     }
     
@@ -2486,6 +2485,7 @@ struct AccumulatorTest
 
     void testCoordAccess()
     {
+#if 1
         using namespace vigra::acc1;
 
         {
@@ -2598,10 +2598,12 @@ struct AccumulatorTest
             shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
 #endif
         }
+#endif
     }
 
     void testHistogram()
     {
+#if 1
         static const int SIZE = 30, HSIZE = 10;
         int data[SIZE] = {4, 3, 2, 2, 2, 0, 3, 6, 8, 8, 4, 0, 2, 0, 2, 8, 7, 8, 6, 0, 9, 3, 7, 0, 9, 5, 9, 9, 2, 4};
         // the same sorted:
@@ -2801,6 +2803,7 @@ struct AccumulatorTest
 
 #endif
         }
+#endif
     }
 
     template <class TAG, class A>
@@ -2814,6 +2817,7 @@ struct AccumulatorTest
 
     void testLabelDispatch()
     {
+#if 1
         using namespace vigra::acc1;
         {
 #if 1
@@ -2824,9 +2828,9 @@ struct AccumulatorTest
             typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
-            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::GlobalTags, 
+            should((IsSameType<acc1::detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<LabelArg<1>, TypeList<DataArg<1>, void> > > > >::value));
-            should((IsSameType<acc1::detail::CreateAccumulatorChainArray<Handle, Selected>::RegionTags, 
+            should((IsSameType<acc1::detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
                                TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
@@ -3098,6 +3102,7 @@ struct AccumulatorTest
             shouldEqual(W(3, 0, 1), get<AutoRangeHistogram<3> >(c,3));
 #endif
         }
+#endif
     }
 };
 
