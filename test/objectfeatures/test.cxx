@@ -1996,7 +1996,6 @@ struct AccumulatorTest
           should((IsSameType<TransferModifiers<Coord<Minimum>, Target>::type,
                              Desired1>::value));
 
-//          std::cerr << typeid(TransferModifiers<Principal<Minimum>, Target>::type).name() << "\n**\n";
           typedef Select<Count, Sum, Mean, Principal<Variance> >::type Desired2;
           should((IsSameType<TransferModifiers<Principal<Minimum>, Target>::type,
                              Desired2>::value));
@@ -2021,7 +2020,7 @@ struct AccumulatorTest
 
     void test1()
     {
-#if 1
+#if 0
         using namespace vigra::acc1;
         using namespace vigra::acc1::detail;
 
@@ -2834,10 +2833,7 @@ struct AccumulatorTest
                                TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
-            typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
-
             should(!(IsSameType<RegionCount, LookupTag<Global<Count>, A>::type>::value));
-            should((IsSameType<GlobalCountViaRegionCount, LookupTag<Global<Count>, A>::type>::value));
 
             MultiArray<2, int> labels(Shape2(3,2));
             labels(2,0) = labels(2,1) = 1;
@@ -2854,11 +2850,6 @@ struct AccumulatorTest
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
-
-            LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
-            LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
-            should((&gc == &getAccumulatorIndirectly<Global<Count> >(rc)));
-            should((&gc == &getAccumulatorIndirectly<Global<Count> >(getAccumulator<Count>(a, 1))));
 
             for(; i < end; ++i)
                 a(*i);
@@ -2935,11 +2926,15 @@ struct AccumulatorTest
             typedef Iterator::value_type Handle;
 
             typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
-                                                                AutoRangeHistogram<3>,
+                                                                AutoRangeHistogram<3>, 
                                                                 Global<Count>, Global<Coord<Mean> >, 
                                                                 StandardQuantiles<GlobalRangeHistogram<3> >, 
                                                                 LabelArg<2>, DataArg<1>
                                                  > > A;
+
+            should((IsSameType<LookupTag<GlobalRangeHistogram<3>, A>::type::GlobalMinimumTag, Global<Minimum> >::value));
+            should((IsSameType<LookupTag<GlobalRangeHistogram<3>, A>::type::GlobalMaximumTag, Global<Maximum> >::value));
+
             A a;
 
             shouldEqual(0, a.passesRequired());

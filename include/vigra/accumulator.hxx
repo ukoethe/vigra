@@ -218,9 +218,9 @@ template <class HEAD, class TAIL>
 struct AddDependencies<TypeList<HEAD, TAIL> >
 {
     typedef typename AddDependencies<TAIL>::type                                   TailWithDependencies;
-    typedef typename StandardizeDependencies<typename HEAD::Dependencies>::type    StandardDependencies;
-    typedef typename AddDependencies<StandardDependencies>::type                   HeadDependencies;
-    typedef TypeList<HEAD, HeadDependencies>                                       HeadWithDependencies;
+    typedef typename StandardizeDependencies<HEAD>::type                           HeadDependencies;
+    typedef typename AddDependencies<HeadDependencies>::type                       TransitiveHeadDependencies;
+    typedef TypeList<HEAD, TransitiveHeadDependencies>                             HeadWithDependencies;
     typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  type;
 };
 
@@ -241,14 +241,14 @@ struct ActivateDependencies<TypeList<HEAD, TAIL> >
     template <class Chain, class ActiveFlags>
     static void exec(ActiveFlags & flags)
     {
-        LookupDependency<HEAD, Chain>::type::activateImpl(flags);
+        LookupTag<HEAD, Chain>::type::activateImpl(flags);
         ActivateDependencies<TAIL>::template exec<Chain>(flags);
     }
     
     template <class Chain, class ActiveFlags, class GlobalFlags>
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
-        LookupDependency<HEAD, Chain>::type::activateImpl(flags, gflags);
+        LookupTag<HEAD, Chain>::type::activateImpl<Chain>(flags, gflags);
         ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
@@ -259,7 +259,7 @@ struct ActivateDependencies<TypeList<Global<HEAD>, TAIL> >
     template <class Chain, class ActiveFlags, class GlobalFlags>
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
-        LookupDependency<Global<HEAD>, Chain>::type::activateImpl(gflags);
+        LookupTag<Global<HEAD>, Chain>::type::activateImpl(gflags);
         ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
@@ -506,7 +506,7 @@ struct ApplyHistogramOptions<GlobalRangeHistogram<BinCount> >
             if(options.validMinMax())
                 a.setMinMax(options.minimum, options.maximum);
             else
-                a.autoInit(options.local_auto_init);
+                a.setRegionAutoInit(options.local_auto_init);
         }
     }
 };
@@ -522,12 +522,9 @@ struct ApplyHistogramOptions<GlobalRangeHistogram<BinCount> >
     //  * provides empty implementation of standard accumulator functions
     //  * provides active_accumulators_ flags for run-time activation of dynamic accumulators
     //  * provides is_dirty_ flags for caching accumulators
-    //  * hold the GlobalAccumulatorHandle for global accumulator lookup from region accumulators
-template <unsigned LEVEL, class GlobalAccumulatorHandle>
+template <unsigned LEVEL>
 struct AccumulatorEndImpl
 {
-    typedef typename GlobalAccumulatorHandle::type  GlobalAccumulatorType;
-    
     typedef AccumulatorEnd     Tag;
     typedef void               value_type;
     typedef bool               result_type;
@@ -539,8 +536,12 @@ struct AccumulatorEndImpl
     
     AccumulatorFlags            active_accumulators_;
     mutable AccumulatorFlags    is_dirty_;
-    GlobalAccumulatorHandle     globalAccumulator_;
 
+    static std::string name()
+    {
+        return "AccumulatorEnd (internal)";
+    }
+        
     bool operator()() const { return false; }
     bool get() const { return false; }
     
@@ -572,18 +573,12 @@ struct AccumulatorEndImpl
     static void activateImpl(Flags &)
     {}
     
-    template <class Flags1, class Flags2>
+    template <class Accu, class Flags1, class Flags2>
     static void activateImpl(Flags1 &, Flags2 &)
     {}
     
     template <class Flags>
     static bool isActiveImpl(Flags const &)
-    {
-        return true;
-    }
-    
-    template <class Flags1, class Flags2>
-    static bool isActiveImpl(Flags1 const &, Flags2 const &)
     {
         return true;
     }
@@ -607,11 +602,9 @@ struct AccumulatorEndImpl
         is_dirty_.clear();
     }
         
-    template <class GlobalAccumulator>
-    void setGlobalAccumulator(GlobalAccumulator const * a)
-    {
-        globalAccumulator_.pointer_ = a;
-    }
+    template <class Accu>
+    void setGlobalHistogramBounds(Accu &)
+    {}
     
     template <int which>
     void setDirtyImpl() const
@@ -680,6 +673,12 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     {
         ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
+        
+    template <class Accu>
+    static void setGlobalHistogramBounds(A & self, Accu & a)
+    {
+        self.setGlobalMinMax(a);
+    }
 
     static unsigned int passesRequired()
     {
@@ -690,17 +689,22 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
 template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
 struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
 {
+    static bool isActive(A const & a)
+    {
+        return A::isActiveImpl(getAccumulator<AccumulatorEnd>(a).active_accumulators_);
+    }
+    
     template <class T>
     static void exec(A & a, T const & t)
     {
-        if(a.isActive())
+        if(isActive(a))
             a.update(t);
     }
 
     template <class T>
     static void exec(A & a, T const & t, double weight)
     {
-        if(a.isActive())
+        if(isActive(a))
             a.update(t, weight);
     }
 
@@ -708,27 +712,34 @@ struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
     {
         static const std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
                                                                                    typeid(typename A::Tag).name() + "'.";
-        vigra_precondition(a.isActive(), message);
+        vigra_precondition(isActive(a), message);
         return a();
     }
 
     static void merge(A & a, A const & o)
     {
-        if(a.isActive())
+        if(isActive(a))
             a += o;
     }
 
     template <class T>
     static void resize(A & a, T const & t)
     {
-        if(a.isActive())
+        if(isActive(a))
             a.reshape(t);
     }
     
     static void applyHistogramOptions(A & a, HistogramOptions const & options)
     {
-        if(a.isActive())
+        if(isActive(a))
             ApplyHistogramOptions<typename A::Tag>::exec(a, options);
+    }
+    
+    template <class Accu>
+    static void setGlobalHistogramBounds(A & self, Accu & a)
+    {
+        if(isActive(self))
+            self.setGlobalMinMax(a);
     }
 
     template <class ActiveFlags>
@@ -872,7 +883,7 @@ struct LabelDispatch
         static void activate(GlobalAccumulatorChain & globals, RegionAccumulatorArray & regions, 
                              ActiveFlagsType & flags)
         {
-            TargetAccumulator::activateImpl(flags, getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
+            TargetAccumulator::activateImpl<LabelDispatch>(flags, getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
             for(unsigned int k=0; k<regions.size(); ++k)
                 getAccumulator<AccumulatorEnd>(regions[k]).active_accumulators_ = flags;
         }
@@ -888,12 +899,12 @@ struct LabelDispatch
     {
         static void activate(GlobalAccumulatorChain & globals, RegionAccumulatorArray &, ActiveFlagsType &)
         {
-            getAccumulator<TAG>(globals).activate();
+            LookupTag<TAG, GlobalAccumulatorChain>::type::activateImpl(getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
         }
         
         static bool isActive(GlobalAccumulatorChain const & globals, ActiveFlagsType const &)
         {
-            return getAccumulator<TAG>(globals).isActive();
+            return LookupTag<TAG, GlobalAccumulatorChain>::type::isActiveImpl(getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
         }
     };
     
@@ -918,19 +929,6 @@ struct LabelDispatch
       region_histogram_options_()
     {}
     
-    LabelDispatch(LabelDispatch const & o)
-    : next_(o.next_),
-      regions_(o.regions_),
-      active_region_accumulators_(o.active_region_accumulators_),
-      region_histogram_options_(o.region_histogram_options_)
-    {
-        for(unsigned int k=0; k<regions_.size(); ++k)
-        {
-            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
-            getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
-        }
-    }
-    
     MultiArrayIndex maxRegionLabel() const
     {
         return (MultiArrayIndex)regions_.size() - 1;
@@ -944,7 +942,6 @@ struct LabelDispatch
         regions_.resize(maxlabel + 1);
         for(unsigned int k=oldSize; k<regions_.size(); ++k)
         {
-            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
             regions_[k].applyHistogramOptions(region_histogram_options_);
         }
@@ -1061,6 +1058,13 @@ struct LabelDispatch
             regions_[labelMapping[k]].merge(o.regions_[k]);
         next_.merge(o.next_);
     }
+        
+    template <class Accu>
+    void setGlobalHistogramBounds(Accu & a)
+    {
+        for(unsigned int k=0; k<regions_.size(); ++k)
+            regions_[k].setGlobalHistogramBounds(a);
+    }
 };
 
 template <class TargetTag, class TagList>
@@ -1135,36 +1139,31 @@ struct AccumulatorFactory
         
         InternalBaseType next_;
         
+        static std::string name()
+        {
+            return TAG::name();
+        }
+        
         template <class ActiveFlags>
         static void activateImpl(ActiveFlags & flags)
         {
             flags.template set<index>();
-            typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
+            typedef typename StandardizeDependencies<Tag>::type StdDeps;
             detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
         }
         
-        template <class ActiveFlags, class GlobalFlags>
+        template <class Accu, class ActiveFlags, class GlobalFlags>
         static void activateImpl(ActiveFlags & flags, GlobalFlags & gflags)
         {
             flags.template set<index>();
-            typedef typename StandardizeDependencies<typename Tag::Dependencies>::type StdDeps;
-            detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags, gflags);
+            typedef typename StandardizeDependencies<Tag>::type StdDeps;
+            detail::ActivateDependencies<StdDeps>::template exec<Accu>(flags, gflags);
         }
         
         template <class ActiveFlags>
         static bool isActiveImpl(ActiveFlags & flags)
         {
             return flags.template test<index>();
-        }
-        
-        void activate()
-        {
-            activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
-        }
-        
-        bool isActive() const
-        {
-            return isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
         }
         
         void setDirty() const
@@ -1224,6 +1223,10 @@ struct AccumulatorFactory
         {
             return getDependency<TargetTag>(*this);
         }
+        
+        template <class Accu>
+        void setGlobalMinMax(Accu & a)
+        {}
     };
 
         // The middle class(es) of the decorator hierarchy implement the actual feature computation.
@@ -1287,6 +1290,13 @@ struct AccumulatorFactory
             this->next_.applyHistogramOptions(options);
         }
         
+        template <class Accu>
+        void setGlobalHistogramBounds(Accu & a)
+        {
+            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::setGlobalHistogramBounds(*this, a);
+            this->next_.setGlobalHistogramBounds(a);
+        }
+        
         static unsigned int passesRequired()
         {
             return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired();
@@ -1305,18 +1315,7 @@ struct AccumulatorFactory
 template <class CONFIG, unsigned LEVEL>
 struct AccumulatorFactory<void, CONFIG, LEVEL>
 {
-    typedef AccumulatorEndImpl<LEVEL, typename CONFIG::GlobalAccumulatorHandle> type;
-};
-
-struct InvalidGlobalAccumulatorHandle
-{
-    typedef Error__Global_statistics_are_only_defined_for_AccumulatorChainArray type;
-    
-    InvalidGlobalAccumulatorHandle()
-    : pointer_(0)
-    {}
-    
-    type const * pointer_;
+    typedef AccumulatorEndImpl<LEVEL> type;
 };
 
     // helper classes to create an accumulator chain from a TypeList
@@ -1332,21 +1331,9 @@ struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic>
 {
     typedef TypeList<HEAD, TAIL> TagList;
     typedef T InputType;
-    typedef InvalidGlobalAccumulatorHandle GlobalAccumulatorHandle;
     static const bool allowRuntimeActivation = dynamic;
  
     typedef typename AccumulatorFactory<HEAD, ConfigureAccumulatorChain>::type type;
-};
-
-template <class T, class TAGLIST, bool dynamic, class GlobalHandle>
-struct ConfigureRegionAccumulatorChain
-{
-    typedef TAGLIST TagList;
-    typedef T InputType;
-    typedef GlobalHandle GlobalAccumulatorHandle;
-    static const bool allowRuntimeActivation = dynamic;
-    
-    typedef typename AccumulatorFactory<typename TAGLIST::Head, ConfigureRegionAccumulatorChain>::type type;
 };
 
 template <class T, class Selected, bool dynamic=false>
@@ -1362,19 +1349,7 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
     typedef typename TagSeparator::GlobalTags GlobalTags;
     typedef typename TagSeparator::RegionTags RegionTags;
     typedef typename ConfigureAccumulatorChain<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
- 
-    struct GlobalAccumulatorHandle
-    {
-        typedef GlobalAccumulatorChain type;
-        
-        GlobalAccumulatorHandle()
-        : pointer_(0)
-        {}
-        
-        type const * pointer_;
-    };
-    
-    typedef typename ConfigureRegionAccumulatorChain<T, RegionTags, dynamic, GlobalAccumulatorHandle>::type RegionAccumulatorChain;
+    typedef typename ConfigureAccumulatorChain<T, RegionTags, dynamic>::type RegionAccumulatorChain;
     
     typedef LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
@@ -1437,6 +1412,8 @@ struct AccumulatorChainImpl
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
+            if(N == 2)
+                next_.setGlobalHistogramBounds(*this);
             next_.template pass<N>(t);
         }
         else
@@ -1459,6 +1436,8 @@ struct AccumulatorChainImpl
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
+            if(N == 2)
+                next_.setGlobalHistogramBounds(*this);
             next_.template pass<N>(t, weight);
         }
         else
@@ -1590,7 +1569,7 @@ struct DynamicAccumulatorChain
     template <class TAG>
     void activate()
     {
-        getAccumulator<TAG>(*this).activate();
+        LookupTag<TAG, DynamicAccumulatorChain>::type::activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
     void activateAll()
@@ -1609,7 +1588,7 @@ struct DynamicAccumulatorChain
     template <class TAG>
     bool isActive() const
     {
-        return getAccumulator<TAG>(*this).isActive();
+        return LookupTag<TAG, DynamicAccumulatorChain>::type::isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
     ArrayVector<std::string> activeNames() const
@@ -1839,16 +1818,6 @@ struct LookupTagImpl<AccumulatorEnd, A, AccumulatorEnd>
     typedef A * pointer;
     typedef void value_type;
     typedef void result_type;
-};
-
-    // ... or we are looking for a global statistic, in which case
-    // we continue the serach via A::GlobalAccumulatorType, but remember that 
-    // we are actually looking for a global tag. 
-template <class TAG, class A>
-struct LookupTagImpl<Global<TAG>, A, AccumulatorEnd>
-: public LookupTagImpl<TAG, typename A::GlobalAccumulatorType>
-{
-    typedef Global<TAG> Tag;
 };
 
     // When we encounter the LabelDispatch accumulator, we continue the
@@ -2162,9 +2131,8 @@ template <class TAG>
 class Global
 {
   public:
-    typedef typename StandardizeTag<TAG>::type TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
-    typedef typename TransferModifiers<Global<TargetTag>, TargetDependencies>::type Dependencies;
+    typedef typename StandardizeTag<TAG>::type  TargetTag;
+    typedef typename TargetTag::Dependencies    Dependencies;
     
     static std::string const & name() 
     { 
@@ -2283,9 +2251,8 @@ template <class TAG>
 class Coord
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                        TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type  TargetDependencies;
-    typedef typename TransferModifiers<Coord<TargetTag>, TargetDependencies>::type    Dependencies;
+    typedef typename StandardizeTag<TAG>::type   TargetTag;
+    typedef typename TargetTag::Dependencies     Dependencies;
     
     static std::string const & name() 
     { 
@@ -2390,9 +2357,8 @@ template <class TAG>
 class Weighted
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                         TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type   TargetDependencies;
-    typedef typename TransferModifiers<Weighted<TargetTag>, TargetDependencies>::type  Dependencies;
+    typedef typename StandardizeTag<TAG>::type   TargetTag;
+    typedef typename TargetTag::Dependencies     Dependencies;
     
     static std::string const & name() 
     { 
@@ -2503,10 +2469,8 @@ template <class TAG>
 class Central
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                           TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type     TargetDependencies;
-    typedef TypeList<Centralize, 
-              typename TransferModifiers<Central<TargetTag>, TargetDependencies>::type>  Dependencies;
+    typedef typename StandardizeTag<TAG>::type                    TargetTag;
+    typedef Select<Centralize, typename TargetTag::Dependencies>  Dependencies;
     
     static std::string const & name() 
     { 
@@ -2651,10 +2615,8 @@ template <class TAG>
 class Principal
 {
   public:
-    typedef typename StandardizeTag<TAG>::type                                                TargetTag;
-    typedef typename StandardizeDependencies<typename TargetTag::Dependencies>::type          TargetDependencies;
-    typedef TypeList<PrincipalProjection, 
-                 typename TransferModifiers<Principal<TargetTag>, TargetDependencies>::type>  Dependencies;
+    typedef typename StandardizeTag<TAG>::type                             TargetTag;
+    typedef Select<PrincipalProjection, typename TargetTag::Dependencies>  Dependencies;
     
     static std::string const & name() 
     { 
@@ -4624,7 +4586,10 @@ class GlobalRangeHistogram
     struct Impl
     : public RangeHistogramBase<BASE, BinCount, U>
     {
-        static const unsigned int workInPass = LookupDependency<Global<Minimum>, BASE>::type::workInPass + 1;
+        typedef typename TransferModifiers<typename BASE::Tag, typename StandardizeTag<Global<Minimum> >::type>::type GlobalMinimumTag;
+        typedef typename TransferModifiers<typename BASE::Tag, typename StandardizeTag<Global<Maximum> >::type>::type GlobalMaximumTag;
+        
+        static const unsigned int workInPass = LookupDependency<Minimum, BASE>::type::workInPass + 1;
         
         bool useLocalMinimax_;
         
@@ -4632,12 +4597,19 @@ class GlobalRangeHistogram
         : useLocalMinimax_(false)
         {}
         
-        void autoInit(bool locally)
+        void setRegionAutoInit(bool locally)
         {
             this->scale_ = 0.0;
             useLocalMinimax_ = locally;
         }
         
+        template <class Accu>
+        void setGlobalMinMax(Accu & a)
+        {
+            if(this->scale_ == 0.0 && !useLocalMinimax_)
+                this->setMinMax(get<GlobalMinimumTag>(a), get<GlobalMaximumTag>(a));
+        }
+       
         void update(U const & t)
         {
             update(t, 1.0);
@@ -4645,13 +4617,8 @@ class GlobalRangeHistogram
         
         void update(U const & t, double weight)
         {
-            if(this->scale_ == 0.0)
-            {
-                if(useLocalMinimax_)
-                    this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
-                else
-                    this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
-            }
+            if(this->scale_ == 0.0 && useLocalMinimax_)
+                this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
 
             RangeHistogramBase<BASE, BinCount, U>::update(t, weight);
         }

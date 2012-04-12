@@ -699,20 +699,20 @@ struct TransferModifiers<A, void>
     typedef void type;
 };
 
-template <class A>
+template <class TargetTag, class A=typename TargetTag::Dependencies>
 struct StandardizeDependencies
+: public StandardizeDependencies<TargetTag, typename A::type>
+{};
+
+template <class TargetTag, class HEAD, class TAIL>
+struct StandardizeDependencies<TargetTag, TypeList<HEAD, TAIL> >
 {
-    typedef typename A::type type;
+    typedef typename StandardizeTag<TargetTag>::type Target;
+    typedef typename TransferModifiers<Target, TypeList<HEAD, TAIL> >::type type;
 };
 
-template <class HEAD, class TAIL>
-struct StandardizeDependencies<TypeList<HEAD, TAIL> >
-{
-    typedef TypeList<HEAD, TAIL> type;
-};
-
-template <>
-struct StandardizeDependencies<void>
+template <class TargetTag>
+struct StandardizeDependencies<TargetTag, void>
 {
     typedef void type;
 };
