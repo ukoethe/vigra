@@ -194,6 +194,10 @@ template <class TAG, class A>
 typename LookupTag<TAG, A>::reference
 getAccumulator(A & a);
 
+template <class TAG, class A>
+typename LookupDependency<TAG, A>::result_type
+getDependency(A & a);
+
 #endif
 
 namespace detail {
@@ -683,7 +687,6 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     }
 };
 
-#if 1
 template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
 struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
 {
@@ -736,95 +739,6 @@ struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
                    : A::InternalBaseType::passesRequired(flags);
     }
 };
-
-#else
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
-{
-    template <class T>
-    static void exec(A & a, T const & t);
-
-    template <class T>
-    static void exec(A & a, T const & t, double weight);
-
-    static typename A::result_type get(A const & a);
-
-    static void merge(A & a, A const & o);
-
-    template <class T>
-    static void resize(A & a, T const & t);
-    
-    static void applyHistogramOptions(A & a, HistogramOptions const & options);
-    
-    template <class ActiveFlags>
-    static unsigned int passesRequired(ActiveFlags const & flags);
-};
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-template <class T>
-void 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::exec(A & a, T const & t)
-{
-    if(a.isActive())
-        a.update(t);
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-template <class T>
-void 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::exec(A & a, T const & t, double weight)
-{
-    if(a.isActive())
-        a.update(t, weight);
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-typename A::result_type 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::get(A const & a)
-{
-    static const std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
-                                                                               typeid(typename A::Tag).name() + "'.";
-    vigra_precondition(a.isActive(), message);
-    return a();
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-void 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::merge(A & a, A const & o)
-{
-    if(a.isActive())
-        a += o;
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-template <class T>
-void 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::resize(A & a, T const & t)
-{
-    if(a.isActive())
-        a.reshape(t);
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-void 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::applyHistogramOptions(A & a, HistogramOptions const & options)
-{
-    if(a.isActive())
-        ApplyHistogramOptions<typename A::Tag>::exec(a, options);
-}
-
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-template <class ActiveFlags>
-unsigned int 
-DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>::passesRequired(ActiveFlags const & flags)
-{
-    return A::isActiveImpl(flags)
-               ? std::max(A::workInPass, A::InternalBaseType::passesRequired(flags))
-               : A::InternalBaseType::passesRequired(flags);
-}
-
-#endif
 
     // Generic reshape function (expands to a no-op when T has fixed shape, and to
     // the appropriate specialized call otherwise). Shape is an instance of MultiArrayShape<N>::type.
