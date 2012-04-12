@@ -188,7 +188,7 @@ struct LookupTag;
 template <class Tag, class A, class TargetTag=typename A::Tag>
 struct LookupDependency;
 
-#ifndef _MSC_VER
+#ifndef _MSC_VER  // compiler bug? (causes 'ambiguous overload error')
 
 template <class TAG, class A>
 typename LookupTag<TAG, A>::reference
@@ -196,7 +196,7 @@ getAccumulator(A & a);
 
 template <class TAG, class A>
 typename LookupDependency<TAG, A>::result_type
-getDependency(A & a);
+getDependency(A const & a);
 
 #endif
 
@@ -248,7 +248,7 @@ struct ActivateDependencies<TypeList<HEAD, TAIL> >
     template <class Chain, class ActiveFlags, class GlobalFlags>
     static void exec(ActiveFlags & flags, GlobalFlags & gflags)
     {
-        LookupTag<HEAD, Chain>::type::activateImpl<Chain>(flags, gflags);
+        LookupTag<HEAD, Chain>::type::template activateImpl<Chain>(flags, gflags);
         ActivateDependencies<TAIL>::template exec<Chain>(flags, gflags);
     }
 };
@@ -883,7 +883,8 @@ struct LabelDispatch
         static void activate(GlobalAccumulatorChain & globals, RegionAccumulatorArray & regions, 
                              ActiveFlagsType & flags)
         {
-            TargetAccumulator::activateImpl<LabelDispatch>(flags, getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
+            TargetAccumulator::template activateImpl<LabelDispatch>(
+                      flags, getAccumulator<AccumulatorEnd>(globals).active_accumulators_);
             for(unsigned int k=0; k<regions.size(); ++k)
                 getAccumulator<AccumulatorEnd>(regions[k]).active_accumulators_ = flags;
         }
