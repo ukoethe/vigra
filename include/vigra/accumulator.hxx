@@ -522,9 +522,12 @@ struct ApplyHistogramOptions<GlobalRangeHistogram<BinCount> >
     //  * provides empty implementation of standard accumulator functions
     //  * provides active_accumulators_ flags for run-time activation of dynamic accumulators
     //  * provides is_dirty_ flags for caching accumulators
-template <unsigned LEVEL>
+    //  * hold the GlobalAccumulatorHandle for global accumulator lookup from region accumulators
+template <unsigned LEVEL, class GlobalAccumulatorHandle>
 struct AccumulatorEndImpl
 {
+    typedef typename GlobalAccumulatorHandle::type  GlobalAccumulatorType;
+    
     typedef AccumulatorEnd     Tag;
     typedef void               value_type;
     typedef bool               result_type;
@@ -536,6 +539,13 @@ struct AccumulatorEndImpl
     
     AccumulatorFlags            active_accumulators_;
     mutable AccumulatorFlags    is_dirty_;
+    GlobalAccumulatorHandle     globalAccumulator_;
+        
+    template <class GlobalAccumulator>
+    void setGlobalAccumulator(GlobalAccumulator const * a)
+    {
+        globalAccumulator_.pointer_ = a;
+    }
 
     static std::string name()
     {
@@ -602,10 +612,6 @@ struct AccumulatorEndImpl
         is_dirty_.clear();
     }
         
-    template <class Accu>
-    void setGlobalHistogramBounds(Accu &)
-    {}
-    
     template <int which>
     void setDirtyImpl() const
     {
@@ -674,12 +680,6 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
         ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
         
-    template <class Accu>
-    static void setGlobalHistogramBounds(A & self, Accu & a)
-    {
-        self.setGlobalMinMax(a);
-    }
-
     static unsigned int passesRequired()
     {
         return std::max(A::workInPass, A::InternalBaseType::passesRequired());
@@ -735,13 +735,6 @@ struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
             ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
     
-    template <class Accu>
-    static void setGlobalHistogramBounds(A & self, Accu & a)
-    {
-        if(isActive(self))
-            self.setGlobalMinMax(a);
-    }
-
     template <class ActiveFlags>
     static unsigned int passesRequired(ActiveFlags const & flags)
     {
@@ -930,6 +923,17 @@ struct LabelDispatch
       region_histogram_options_()
     {}
     
+    LabelDispatch(LabelDispatch const & o)
+    : next_(o.next_),
+      regions_(o.regions_),
+      active_region_accumulators_(o.active_region_accumulators_)
+    {
+        for(unsigned int k=0; k<regions_.size(); ++k)
+        {
+            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
+        }
+    }
+    
     MultiArrayIndex maxRegionLabel() const
     {
         return (MultiArrayIndex)regions_.size() - 1;
@@ -943,6 +947,7 @@ struct LabelDispatch
         regions_.resize(maxlabel + 1);
         for(unsigned int k=oldSize; k<regions_.size(); ++k)
         {
+            getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
             regions_[k].applyHistogramOptions(region_histogram_options_);
         }
@@ -1058,13 +1063,6 @@ struct LabelDispatch
         for(unsigned int k=0; k<labelMapping.size(); ++k)
             regions_[labelMapping[k]].merge(o.regions_[k]);
         next_.merge(o.next_);
-    }
-        
-    template <class Accu>
-    void setGlobalHistogramBounds(Accu & a)
-    {
-        for(unsigned int k=0; k<regions_.size(); ++k)
-            regions_[k].setGlobalHistogramBounds(a);
     }
 };
 
@@ -1224,10 +1222,6 @@ struct AccumulatorFactory
         {
             return getDependency<TargetTag>(*this);
         }
-        
-        template <class Accu>
-        void setGlobalMinMax(Accu & a)
-        {}
     };
 
         // The middle class(es) of the decorator hierarchy implement the actual feature computation.
@@ -1291,13 +1285,6 @@ struct AccumulatorFactory
             this->next_.applyHistogramOptions(options);
         }
         
-        template <class Accu>
-        void setGlobalHistogramBounds(Accu & a)
-        {
-            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::setGlobalHistogramBounds(*this, a);
-            this->next_.setGlobalHistogramBounds(a);
-        }
-        
         static unsigned int passesRequired()
         {
             return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired();
@@ -1316,23 +1303,35 @@ struct AccumulatorFactory
 template <class CONFIG, unsigned LEVEL>
 struct AccumulatorFactory<void, CONFIG, LEVEL>
 {
-    typedef AccumulatorEndImpl<LEVEL> type;
+    typedef AccumulatorEndImpl<LEVEL, typename CONFIG::GlobalAccumulatorHandle> type;
+};
+
+struct InvalidGlobalAccumulatorHandle
+{
+    typedef Error__Global_statistics_are_only_defined_for_AccumulatorChainArray type;
+    
+    InvalidGlobalAccumulatorHandle()
+    : pointer_(0)
+    {}
+    
+    type const * pointer_;
 };
 
     // helper classes to create an accumulator chain from a TypeList
     // if dynamic=true,  a dynamic accumulator will be created
     // if dynamic=false, a plain accumulator will be created
-template <class T, class Selected, bool dynamic=false>
+template <class T, class Selected, bool dynamic=false, class GlobalHandle=InvalidGlobalAccumulatorHandle>
 struct ConfigureAccumulatorChain
 : public ConfigureAccumulatorChain<T, typename AddDependencies<typename Selected::type>::type, dynamic>
 {};
 
-template <class T, class HEAD, class TAIL, bool dynamic>
-struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic>
+template <class T, class HEAD, class TAIL, bool dynamic, class GlobalHandle>
+struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic, GlobalHandle>
 {
     typedef TypeList<HEAD, TAIL> TagList;
     typedef T InputType;
     static const bool allowRuntimeActivation = dynamic;
+    typedef GlobalHandle GlobalAccumulatorHandle;
  
     typedef typename AccumulatorFactory<HEAD, ConfigureAccumulatorChain>::type type;
 };
@@ -1350,7 +1349,19 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
     typedef typename TagSeparator::GlobalTags GlobalTags;
     typedef typename TagSeparator::RegionTags RegionTags;
     typedef typename ConfigureAccumulatorChain<T, GlobalTags, dynamic>::type GlobalAccumulatorChain;
-    typedef typename ConfigureAccumulatorChain<T, RegionTags, dynamic>::type RegionAccumulatorChain;
+
+    struct GlobalAccumulatorHandle
+    {
+        typedef GlobalAccumulatorChain type;
+        
+        GlobalAccumulatorHandle()
+        : pointer_(0)
+        {}
+        
+        type const * pointer_;
+    };
+    
+    typedef typename ConfigureAccumulatorChain<T, RegionTags, dynamic, GlobalAccumulatorHandle>::type RegionAccumulatorChain;
     
     typedef LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
@@ -1413,8 +1424,6 @@ struct AccumulatorChainImpl
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
-            if(N == 2)
-                next_.setGlobalHistogramBounds(*this);
             next_.template pass<N>(t);
         }
         else
@@ -1437,8 +1446,6 @@ struct AccumulatorChainImpl
             current_pass_ = N;
             if(N == 1)
                 next_.resize(detail::shapeOf(t));
-            if(N == 2)
-                next_.setGlobalHistogramBounds(*this);
             next_.template pass<N>(t, weight);
         }
         else
@@ -1819,6 +1826,16 @@ struct LookupTagImpl<AccumulatorEnd, A, AccumulatorEnd>
     typedef A * pointer;
     typedef void value_type;
     typedef void result_type;
+};
+
+    // ... or we are looking for a global statistic, in which case
+    // we continue the serach via A::GlobalAccumulatorType, but remember that 
+    // we are actually looking for a global tag. 
+template <class TAG, class A>
+struct LookupTagImpl<Global<TAG>, A, AccumulatorEnd>
+: public LookupTagImpl<TAG, typename A::GlobalAccumulatorType>
+{
+    typedef Global<TAG> Tag;
 };
 
     // When we encounter the LabelDispatch accumulator, we continue the
@@ -4587,9 +4604,6 @@ class GlobalRangeHistogram
     struct Impl
     : public RangeHistogramBase<BASE, BinCount, U>
     {
-        typedef typename TransferModifiers<typename BASE::Tag, typename StandardizeTag<Global<Minimum> >::type>::type GlobalMinimumTag;
-        typedef typename TransferModifiers<typename BASE::Tag, typename StandardizeTag<Global<Maximum> >::type>::type GlobalMaximumTag;
-        
         static const unsigned int workInPass = LookupDependency<Minimum, BASE>::type::workInPass + 1;
         
         bool useLocalMinimax_;
@@ -4604,13 +4618,6 @@ class GlobalRangeHistogram
             useLocalMinimax_ = locally;
         }
         
-        template <class Accu>
-        void setGlobalMinMax(Accu & a)
-        {
-            if(this->scale_ == 0.0 && !useLocalMinimax_)
-                this->setMinMax(get<GlobalMinimumTag>(a), get<GlobalMaximumTag>(a));
-        }
-       
         void update(U const & t)
         {
             update(t, 1.0);
@@ -4618,9 +4625,14 @@ class GlobalRangeHistogram
         
         void update(U const & t, double weight)
         {
-            if(this->scale_ == 0.0 && useLocalMinimax_)
-                this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
-
+            if(this->scale_ == 0.0)
+            {
+                if(useLocalMinimax_)
+                    this->setMinMax(getDependency<Minimum>(*this), getDependency<Maximum>(*this));
+                else
+                    this->setMinMax(getDependency<Global<Minimum> >(*this), getDependency<Global<Maximum> >(*this));
+            }
+            
             RangeHistogramBase<BASE, BinCount, U>::update(t, weight);
         }
     };

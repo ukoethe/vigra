@@ -2833,7 +2833,10 @@ struct AccumulatorTest
                                TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
+            typedef LookupDependency<Global<Count>, RegionCount>::type GlobalCountViaRegionCount;
+
             should(!(IsSameType<RegionCount, LookupTag<Global<Count>, A>::type>::value));
+            should((IsSameType<GlobalCountViaRegionCount, LookupTag<Global<Count>, A>::type>::value));
 
             MultiArray<2, int> labels(Shape2(3,2));
             labels(2,0) = labels(2,1) = 1;
@@ -2850,6 +2853,11 @@ struct AccumulatorTest
             shouldEqual(a.maxRegionLabel(), 1);
             shouldEqual(a.regionCount(), 2);
             should((&getAccumulator<Count, A>(a, 0) != &getAccumulator<Count, A>(a, 1)));
+   
+            LookupTag<Count, A>::reference rc = getAccumulator<Count>(a, 0);
+            LookupTag<Global<Count>, A>::reference gc = getAccumulator<Global<Count> >(a);
+            should((&gc == &getAccumulatorIndirectly<Global<Count> >(rc)));
+            should((&gc == &getAccumulatorIndirectly<Global<Count> >(getAccumulator<Count>(a, 1))));
 
             for(; i < end; ++i)
                 a(*i);
@@ -2931,9 +2939,6 @@ struct AccumulatorTest
                                                                 StandardQuantiles<GlobalRangeHistogram<3> >, 
                                                                 LabelArg<2>, DataArg<1>
                                                  > > A;
-
-            should((IsSameType<LookupTag<GlobalRangeHistogram<3>, A>::type::GlobalMinimumTag, Global<Minimum> >::value));
-            should((IsSameType<LookupTag<GlobalRangeHistogram<3>, A>::type::GlobalMaximumTag, Global<Maximum> >::value));
 
             A a;
 
