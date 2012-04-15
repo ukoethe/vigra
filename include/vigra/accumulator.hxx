@@ -841,8 +841,9 @@ struct LabelDispatch
     
     GlobalAccumulatorChain next_;
     RegionAccumulatorArray regions_;
-    ActiveFlagsType active_region_accumulators_;
     HistogramOptions region_histogram_options_;
+    MultiArrayIndex ignore_label_;
+    ActiveFlagsType active_region_accumulators_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -919,13 +920,16 @@ struct LabelDispatch
     LabelDispatch()
     : next_(),
       regions_(),
-      active_region_accumulators_(),
-      region_histogram_options_()
+      region_histogram_options_(),
+      ignore_label_(-1),
+      active_region_accumulators_()
     {}
     
     LabelDispatch(LabelDispatch const & o)
     : next_(o.next_),
       regions_(o.regions_),
+      region_histogram_options_(o.region_histogram_options_),
+      ignore_label_(o.ignore_label_),
       active_region_accumulators_(o.active_region_accumulators_)
     {
         for(unsigned int k=0; k<regions_.size(); ++k)
@@ -951,6 +955,11 @@ struct LabelDispatch
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
             regions_[k].applyHistogramOptions(region_histogram_options_);
         }
+    }
+    
+    void ignoreLabel(MultiArrayIndex l)
+    {
+        ignore_label_ = l;
     }
     
     void applyHistogramOptions(HistogramOptions const & options)
@@ -988,15 +997,21 @@ struct LabelDispatch
     template <unsigned N>
     void pass(T const & t)
     {
-        next_.pass<N>(t);
-        regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t);
+        if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
+        {
+            next_.pass<N>(t);
+            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t);
+        }
     }
     
     template <unsigned N>
     void pass(T const & t, double weight)
     {
-        next_.pass<N>(t, weight);
-        regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t, weight);
+        if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
+        {
+            next_.pass<N>(t, weight);
+            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t, weight);
+        }
     }
     
     static unsigned int passesRequired()
@@ -1635,6 +1650,11 @@ struct AccumulatorChainArray
     typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
     typedef typename Creator::RegionTags RegionTags;
+    
+    void ignoreLabel(MultiArrayIndex l)
+    {
+        this->next_.ignoreLabel(l);
+    }
     
     void setMaxRegionLabel(unsigned label)
     {

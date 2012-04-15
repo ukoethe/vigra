@@ -2869,6 +2869,23 @@ struct AccumulatorTest
             shouldEqual(V(2,2), get<Coord<Sum> >(a, 0));
             shouldEqual(V(4,1), get<Coord<Sum> >(a, 1));
             shouldEqual(V(0,0), get<Global<Coord<Minimum> > >(a));
+
+            A b;
+            b.ignoreLabel(0);
+
+            i = start;
+
+            for(; i < end; ++i)
+                b(*i);
+            
+            shouldEqual(0, get<Count>(b, 0));
+            shouldEqual(2, get<Count>(b, 1));
+            shouldEqual(2, get<Global<Count> >(b));
+
+            shouldEqual(V(0,0), get<Coord<Sum> >(b, 0));
+            shouldEqual(V(4,1), get<Coord<Sum> >(b, 1));
+            shouldEqual(V(2,0), get<Global<Coord<Minimum> > >(b));
+
 #endif
         }
         {

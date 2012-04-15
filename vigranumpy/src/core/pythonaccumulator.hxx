@@ -148,7 +148,7 @@ struct GetArrayTag_Visitor
             
             for(unsigned int k=0; k<n; ++k)
                 for(int j=0; j<N; ++j)
-                    res(k, j) = get<TAG>(a, k)[p(j)];
+                    res(k, p(j)) = get<TAG>(a, k)[j];
             return python::object(res);
         }
     };
@@ -166,7 +166,7 @@ struct GetArrayTag_Visitor
             
             for(unsigned int k=0; k<n; ++k)
                 for(int j=0; j<N; ++j)
-                    res(k, j) = get<TAG>(a, k)[p(j)];
+                    res(k, p(j)) = get<TAG>(a, k)[j];
             return python::object(res);
         }
     };
@@ -185,7 +185,7 @@ struct GetArrayTag_Visitor
             for(unsigned int k=0; k<n; ++k)
                 for(int i=0; i<m[0]; ++i)
                     for(int j=0; j<m[1]; ++j)
-                        res(k, i, j) = get<TAG>(a, k)(p(i), p(j));
+                        res(k, p(i), p(j)) = get<TAG>(a, k)(i, j);
             return python::object(res);
         }
     };
@@ -523,7 +523,8 @@ template <class Accumulator, unsigned int ndim, class T>
 Accumulator *
 pythonRegionInspect(NumpyArray<ndim, T> in, 
                     NumpyArray<ndim, Singleband<npy_uint32> > labels,
-                    python::object tags)
+                    python::object tags,
+                    python::object ignore_label)
 {
     typedef typename CoupledIteratorType<ndim, T, npy_uint32>::type Iterator;
     
@@ -532,6 +533,9 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
     std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
+        if(ignore_label != python::object())
+            res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
+            
         PyAllowThreads _pythread;
         
         Iterator i     = createCoupledIterator(in, labels),
@@ -546,7 +550,8 @@ template <class Accumulator, unsigned int ndim, class T>
 Accumulator *
 pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in, 
                     NumpyArray<ndim, Singleband<npy_uint32> > labels,
-                    python::object tags, python::object histogramRange, int binCount)
+                    python::object tags, python::object histogramRange, int binCount,
+                    python::object ignore_label)
 {
     typedef typename CoupledIteratorType<ndim, T, npy_uint32>::type Iterator;
     
@@ -556,7 +561,9 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in,
     if(pythonActivateTags(*res, tags))
     {
         pythonHistogramOptions(*res, histogramRange, binCount);
-        
+        if(ignore_label != python::object())
+            res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
+                    
         PyAllowThreads _pythread;
         
         Iterator i     = createCoupledIterator(in, labels),
@@ -571,7 +578,8 @@ template <class Accumulator, unsigned int ndim, class T>
 Accumulator *
 pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in, 
                              NumpyArray<ndim-1, Singleband<npy_uint32> > labels,
-                             python::object tags)
+                             python::object tags,
+                             python::object ignore_label)
 {
     typedef typename CoupledIteratorType<ndim, Multiband<T>, npy_uint32>::type Iterator;
     
@@ -580,6 +588,9 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
     std::auto_ptr<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
+        if(ignore_label != python::object())
+            res->ignoreLabel(python::extract<MultiArrayIndex>(ignore_label)());
+            
         PyAllowThreads _pythread;
         
         Iterator i     = createCoupledIterator(MultiArrayView<ndim, Multiband<T>, StridedArrayTag>(in), labels),
@@ -674,7 +685,7 @@ void definePythonAccumulatorArraySingleband(char const * classname)
     
     def("extractRegionFeatures", &acc1::pythonRegionInspectWithHistogram<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", 
-           arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+           arg("histogramRange") = "globalminmax", arg("binCount") = 64, arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
 }
 
@@ -696,7 +707,7 @@ void definePythonAccumulatorArray(char const * classname)
                              : "volume";
     
     def("extractRegionFeatures", &acc1::pythonRegionInspect<Accu, N, T>,
-          (arg(argname.c_str()), arg("labels"), arg("features") = "all"),
+          (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
 }
 
@@ -716,7 +727,7 @@ void definePythonAccumulatorArrayMultiband(char const * classname)
                              : "volume";
     
     def("extractRegionFeatures", &acc1::pythonRegionInspectMultiband<Accu, N, T>,
-          (arg(argname.c_str()), arg("labels"), arg("features") = "all"),
+          (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
 }
 
