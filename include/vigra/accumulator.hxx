@@ -1254,13 +1254,14 @@ struct AccumulatorFactory
         typedef Accumulator const & const_reference;
         typedef AccumulatorImpl A;
         
+	static const unsigned int workInPass = A::workInPass;
         static const bool allowRuntimeActivation = CONFIG::allowRuntimeActivation;
         
         template <class T>
         void resize(T const & t)
         {
             this->next_.resize(t);
-            DecoratorImpl<Accumulator, A::workInPass, allowRuntimeActivation>::resize(*this, t);
+            DecoratorImpl<Accumulator, workInPass, allowRuntimeActivation>::resize(*this, t);
         }
         
         void reset()
@@ -1271,7 +1272,7 @@ struct AccumulatorFactory
         
         typename A::result_type get() const
         {
-            return DecoratorImpl<A, A::workInPass, allowRuntimeActivation>::get(*this);
+            return DecoratorImpl<A, workInPass, allowRuntimeActivation>::get(*this);
         }
         
         template <unsigned N, class T>
@@ -1296,19 +1297,19 @@ struct AccumulatorFactory
         
         void applyHistogramOptions(HistogramOptions const & options)
         {
-            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::applyHistogramOptions(*this, options);
+            DecoratorImpl<Accumulator, workInPass, allowRuntimeActivation>::applyHistogramOptions(*this, options);
             this->next_.applyHistogramOptions(options);
         }
         
         static unsigned int passesRequired()
         {
-            return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired();
+            return DecoratorImpl<Accumulator, workInPass, allowRuntimeActivation>::passesRequired();
         }
         
         template <class ActiveFlags>
         static unsigned int passesRequired(ActiveFlags const & flags)
         {
-            return DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::passesRequired(flags);
+            return DecoratorImpl<Accumulator, workInPass, allowRuntimeActivation>::passesRequired(flags);
         }
     };
 
