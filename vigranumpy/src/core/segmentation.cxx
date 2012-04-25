@@ -356,6 +356,8 @@ pythonExtendedLocalMinima3D(NumpyArray<3, Singleband<PixelType> > volume,
     return res;
 }
 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima3D)
+
 template < class PixelType >
 NumpyAnyArray 
 pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
@@ -893,13 +895,13 @@ void defineSegmentation()
         "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
         );
 
-    def("extendedLocalMinima3D", 
-         registerConverters(&pythonExtendedLocalMinima3D<float> ), 
-           (arg("volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg("out") = python::object()),
-            "Find local minima and minimal plateaus in a volume and mark them with "
-            "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-            "neighborhood to be used and can be 6(default) or 26 .\n\n"
-            "For details see extendedLocalMinima3D_ in the vigra C++ documentation.\n");
+    multidef("extendedLocalMinima3D",
+        pyExtendedLocalMinima3D<float, npy_uint8>(), 
+        (arg("volume"), arg("marker") = 1, arg("neighborhood") = 6, arg("out") = python::object()),
+        "Find local minima and minimal plateaus in a volume and mark them with "
+        "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+        "neighborhood to be used and can be 6(default) or 26 .\n\n"
+        "For details see extendedLocalMinima3D_ in the vigra C++ documentation.\n");
 
     def("localMaxima",
         registerConverters(&pythonLocalMaxima2D<float>),
