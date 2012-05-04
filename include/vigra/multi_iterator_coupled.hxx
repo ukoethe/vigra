@@ -544,12 +544,7 @@ class CoupledScanOrderIterator
     : base_type(handles)
     {}
 
-    reference operator[](MultiArrayIndex i)
-    {
-        return *(CoupledScanOrderIterator(*this) += i);
-    }
-
-    const_reference operator[](MultiArrayIndex i) const
+    value_type operator[](MultiArrayIndex i) const
     {
         return *(CoupledScanOrderIterator(*this) += i);
     }
@@ -781,12 +776,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return operator+=(-i);
     }
 
-    reference operator[](MultiArrayIndex i)
-    {
-        return *(CoupledScanOrderIterator(*this) += i);
-    }
-
-    const_reference operator[](MultiArrayIndex i) const
+    value_type operator[](MultiArrayIndex i) const
     {
         return *(CoupledScanOrderIterator(*this) += i);
     }

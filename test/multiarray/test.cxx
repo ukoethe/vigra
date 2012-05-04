@@ -753,6 +753,7 @@ public:
         Iterator i2 = i1;
         Iterator i3;
 
+        shouldEqual(&(*(*i1)), &a3(0,0,0));
         shouldEqual(&get<1>(i1[0]), &a3(0,0,0));
         shouldEqual(&get<1>(i1[1]), &a3(1,0,0));
         shouldEqual(&get<1>(i1[2]), &a3(0,1,0));
