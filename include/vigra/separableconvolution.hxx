@@ -244,13 +244,11 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
     
     for(int x=start; x<stop; ++x, ++is, ++id)
     {
-        KernelIterator ik = kernel + kright;
         SumType sum = NumericTraits<SumType>::zero();
 
         if(x < kright)
         {
-            int x0 = x - kright;
-
+            KernelIterator ik = kernel + x;
             SrcIterator iss = ibegin;
             SrcIterator isend = is + (1 - kleft);
             for(; iss != isend ; --ik, ++iss)
@@ -260,6 +258,7 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
         }
         else if(w-x <= -kleft)
         {
+            KernelIterator ik = kernel + kright;
             SrcIterator iss = is + (-kright);
             SrcIterator isend = iend;
             for(; iss != isend ; --ik, ++iss)
@@ -269,6 +268,7 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
         }
         else
         {
+            KernelIterator ik = kernel + kright;
             SrcIterator iss = is + (-kright);
             SrcIterator isend = is + (1 - kleft);
             for(; iss != isend ; --ik, ++iss)

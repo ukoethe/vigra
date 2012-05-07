@@ -332,6 +332,35 @@ struct ConvolutionTest
 
     }
     
+
+    void stdConvolutionTestWithZeropad()
+    {
+        Image dest(sym_image.size()-Size2D(2,2)), ref(sym_image);
+        dest.init(42.1);
+        ref.init(33.2);
+
+        convolveImage(srcImageRange(sym_image, Rect2D(Point2D(1,1), sym_image.size()-Size2D(2,2))), 
+                      destImage(dest), kernel2d(sym_kernel, BORDER_TREATMENT_ZEROPAD));
+
+        initImageBorder(destImageRange(sym_image), 1, 0);
+        convolveImage(srcImageRange(sym_image), destImage(ref), kernel2d(sym_kernel, BORDER_TREATMENT_AVOID));
+
+        Image::Iterator i_dest_2D = dest.upperLeft();
+        Image::Iterator i_dest_end = dest.lowerRight();
+        Image::Iterator i_ref_2D = ref.upperLeft()+Size2D(1,1);
+        Image::Accessor acc = dest.accessor();
+
+        for(; i_dest_2D.y != i_dest_end.y; ++i_dest_2D.y, ++i_ref_2D.y)
+        {
+            Image::Iterator rd = i_dest_2D;
+            Image::Iterator rr = i_ref_2D;
+            for(; rd.x != i_dest_end.x; ++rd.x, ++rr.x)
+            {
+                shouldEqual(acc(rd), acc(rr));
+            }
+        }
+    }
+    
     void stdConvolutionTestWithClip()
     {
         Image dest(sym_image);
@@ -727,6 +756,31 @@ struct ConvolutionTest
         should(acc(i1) == 3.0);
         ++i1;
         should(acc(i1) == 11.0/3.0);
+    }
+    
+    void separableSmoothZeropadTest()
+    {
+        vigra::Kernel1D<double> binom;
+        binom.initBinomial(1);
+        binom.setBorderTreatment(vigra::BORDER_TREATMENT_ZEROPAD);
+
+        Image tmp1(rampimg);
+        tmp1 = 1000.0;
+        
+        separableConvolveX(srcImageRange(rampimg), destImage(tmp1), kernel1d(binom));
+        
+        Image::ScanOrderIterator i1 = tmp1.begin();
+        Image::Accessor acc = tmp1.accessor();
+
+        shouldEqual(acc(i1), 0.25);
+        ++i1;
+        shouldEqual(acc(i1), 1.0);
+        ++i1;
+        shouldEqual(acc(i1), 2.0);
+        ++i1;
+        shouldEqual(acc(i1), 3.0);
+        ++i1;
+        shouldEqual(acc(i1), 2.75);
     }
     
     void separableSmoothWrapTest()
@@ -2214,6 +2268,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::gaussianSharpeningTest)); 
         add( testCase( &ConvolutionTest::stdConvolutionTestOnConstImage));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithAvoid));
+        add( testCase( &ConvolutionTest::stdConvolutionTestWithZeropad));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithClip));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithWrap));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithReflect));
@@ -2227,6 +2282,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::separableDerivativeReflectTest));
         add( testCase( &ConvolutionTest::separableDerivativeAvoidTest));
         add( testCase( &ConvolutionTest::separableSmoothClipTest));
+        add( testCase( &ConvolutionTest::separableSmoothZeropadTest));
         add( testCase( &ConvolutionTest::separableSmoothWrapTest));
         add( testCase( &ConvolutionTest::gaussianSmoothingTest));
         add( testCase( &ConvolutionTest::optimalSmoothing3Test));
