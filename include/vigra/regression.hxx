@@ -522,7 +522,7 @@ leastAngleRegressionMainLoop(LarsData<T, C1, C2> & d,
     MultiArrayIndex currentSolutionCount = 0;
     while(currentSolutionCount < maxSolutionCount)
     {
-        ColumnSet activeSet = d.columnPermutation.subarray(0, (unsigned int)d.activeSetSize);
+        //ColumnSet activeSet = d.columnPermutation.subarray(0, (unsigned int)d.activeSetSize);
         ColumnSet inactiveSet = d.columnPermutation.subarray((unsigned int)d.activeSetSize, (unsigned int)cols);
 
         // find next dimension to be activated

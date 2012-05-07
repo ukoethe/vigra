@@ -106,6 +106,10 @@ class SplineImageView
         */
     typedef VALUETYPE value_type;
 
+        /** The view's squared norm type (return type of g2() etc.).
+        */
+    typedef typename NormTraits<VALUETYPE>::SquaredNormType SquaredNormType;
+
         /** The view's size type.
         */
     typedef Size2D size_type;
@@ -307,66 +311,66 @@ class SplineImageView
 
         /** Access gradient squared magnitude at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2(double x, double y) const;
+    SquaredNormType g2(double x, double y) const;
 
         /** Access 1st derivative in x-direction of gradient squared magnitude
             at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2x(double x, double y) const;
+    SquaredNormType g2x(double x, double y) const;
 
         /** Access 1st derivative in y-direction of gradient squared magnitude
             at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2y(double x, double y) const;
+    SquaredNormType g2y(double x, double y) const;
 
         /** Access 2nd derivative in x-direction of gradient squared magnitude
             at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2xx(double x, double y) const;
+    SquaredNormType g2xx(double x, double y) const;
 
         /** Access mixed 2nd derivative of gradient squared magnitude
             at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2xy(double x, double y) const;
+    SquaredNormType g2xy(double x, double y) const;
 
         /** Access 2nd derivative in y-direction of gradient squared magnitude
             at real-valued coordinate <tt>(x, y)</tt>.
         */
-    value_type g2yy(double x, double y) const;
+    SquaredNormType g2yy(double x, double y) const;
 
         /** Access gradient squared magnitude at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2(difference_type const & d) const
+    SquaredNormType g2(difference_type const & d) const
         { return g2(d[0], d[1]); }
 
         /** Access 1st derivative in x-direction of gradient squared magnitude
             at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2x(difference_type const & d) const
+    SquaredNormType g2x(difference_type const & d) const
         { return g2x(d[0], d[1]); }
 
         /** Access 1st derivative in y-direction of gradient squared magnitude
             at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2y(difference_type const & d) const
+    SquaredNormType g2y(difference_type const & d) const
         { return g2y(d[0], d[1]); }
 
         /** Access 2nd derivative in x-direction of gradient squared magnitude
             at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2xx(difference_type const & d) const
+    SquaredNormType g2xx(difference_type const & d) const
         { return g2xx(d[0], d[1]); }
 
         /** Access mixed 2nd derivative of gradient squared magnitude
             at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2xy(difference_type const & d) const
+    SquaredNormType g2xy(difference_type const & d) const
         { return g2xy(d[0], d[1]); }
 
         /** Access 2nd derivative in y-direction of gradient squared magnitude
             at real-valued coordinate <tt>d</tt>.
         */
-    value_type g2yy(difference_type const & d) const
+    SquaredNormType g2yy(difference_type const & d) const
         { return g2yy(d[0], d[1]); }
 
         /** The width of the image.
@@ -402,7 +406,7 @@ class SplineImageView
     }
 
         /** Get the array of polynomial coefficients for the facet containing
-            the point <tt>(x, y)</tt>. The array <tt>res</tt> will be resized to
+            the point <tt>(x, y)</tt>. The array <tt>res</tt> must have
             dimension <tt>(ORDER+1)x(ORDER+1)</tt>. From these coefficients, the
             value of the interpolated function can be calculated by the following
             algorithm
@@ -661,27 +665,27 @@ template <class Array>
 void
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
 {
+    typedef typename Array::value_type ResType;
     typename Spline::WeightMatrix & weights = Spline::weights();
-    double tmp[ksize_][ksize_];
+    ResType tmp[ksize_][ksize_];
 
     calculateIndices(x, y);
     for(int j=0; j<ksize_; ++j)
     {
         for(int i=0; i<ksize_; ++i)
         {
-            tmp[i][j] = 0.0;
+            tmp[i][j] = ResType();
             for(int k=0; k<ksize_; ++k)
             {
                 tmp[i][j] += weights[i][k]*image_(ix_[k], iy_[j]);
             }
        }
     }
-    res.resize(ksize_, ksize_);
     for(int j=0; j<ksize_; ++j)
     {
         for(int i=0; i<ksize_; ++i)
         {
-            res(i,j) = 0.0;
+            res(i,j) = ResType();
             for(int k=0; k<ksize_; ++k)
             {
                 res(i,j) += weights[j][k]*tmp[i][k];
@@ -710,39 +714,48 @@ VALUETYPE SplineImageView<ORDER, VALUETYPE>::operator()(double x, double y,
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2(double x, double y) const
 {
-    return sq(dx(x,y)) + sq(dy(x,y));
+    return squaredNorm(dx(x,y)) + squaredNorm(dy(x,y));
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2x(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2x(double x, double y) const
 {
-    return VALUETYPE(2.0)*(dx(x,y) * dxx(x,y) + dy(x,y) * dxy(x,y));
+    return SquaredNormType(2.0)*(dot(dx(x,y), dxx(x,y)) + dot(dy(x,y), dxy(x,y)));
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2y(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2y(double x, double y) const
 {
-    return VALUETYPE(2.0)*(dx(x,y) * dxy(x,y) + dy(x,y) * dyy(x,y));
+    return SquaredNormType(2.0)*(dot(dx(x,y), dxy(x,y)) + dot(dy(x,y), dyy(x,y)));
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2xx(double x, double y) const
 {
-    return VALUETYPE(2.0)*(sq(dxx(x,y)) + dx(x,y) * dx3(x,y) + sq(dxy(x,y)) + dy(x,y) * dxxy(x,y));
+    return SquaredNormType(2.0)*(squaredNorm(dxx(x,y)) + dot(dx(x,y), dx3(x,y)) + 
+                                 squaredNorm(dxy(x,y)) + dot(dy(x,y), dxxy(x,y)));
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2yy(double x, double y) const
 {
-    return VALUETYPE(2.0)*(sq(dxy(x,y)) + dx(x,y) * dxyy(x,y) + sq(dyy(x,y)) + dy(x,y) * dy3(x,y));
+    return SquaredNormType(2.0)*(squaredNorm(dxy(x,y)) + dot(dx(x,y), dxyy(x,y)) + 
+                                 squaredNorm(dyy(x,y)) + dot(dy(x,y), dy3(x,y)));
 }
 
 template <int ORDER, class VALUETYPE>
-VALUETYPE SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
+typename SplineImageView<ORDER, VALUETYPE>::SquaredNormType
+SplineImageView<ORDER, VALUETYPE>::g2xy(double x, double y) const
 {
-    return VALUETYPE(2.0)*(dx(x,y) * dxxy(x,y) + dy(x,y) * dxyy(x,y) + dxy(x,y) * (dxx(x,y) + dyy(x,y)));
+    return SquaredNormType(2.0)*(dot(dx(x,y), dxxy(x,y)) + dot(dy(x,y), dxyy(x,y)) + 
+                                 dot(dxy(x,y), dxx(x,y) + dyy(x,y)));
 }
 
 /********************************************************/
@@ -756,6 +769,7 @@ class SplineImageView0Base
     typedef typename INTERNAL_INDEXER::value_type InternalValue;
   public:
     typedef VALUETYPE value_type;
+    typedef typename NormTraits<VALUETYPE>::SquaredNormType SquaredNormType;
     typedef Size2D size_type;
     typedef TinyVector<double, 2> difference_type;
     enum StaticOrder { order = 0 };
@@ -906,41 +920,41 @@ class SplineImageView0Base
     value_type dxyy(difference_type const & d) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type g2(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2x(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2x(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2y(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2y(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xx(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xx(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xy(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xy(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2yy(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2yy(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2x(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2x(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2y(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2y(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xx(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xx(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xy(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xy(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2yy(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2yy(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
     unsigned int width() const
         { return w_; }
@@ -957,7 +971,6 @@ class SplineImageView0Base
     template <class Array>
     void coefficientArray(double x, double y, Array & res) const
     {
-        res.resize(1, 1);
         res(0, 0) = operator()(x,y);
     }
 
@@ -1011,6 +1024,7 @@ class SplineImageView0
     typedef SplineImageView0Base<VALUETYPE, INTERNAL_TRAVERSER> Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };
@@ -1086,6 +1100,7 @@ class SplineImageView0<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstride
     typedef SplineImageView0Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided> > Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };
@@ -1149,6 +1164,7 @@ class SplineImageView<0, VALUETYPE>
     typedef SplineImageView0<VALUETYPE> Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };
@@ -1208,6 +1224,7 @@ class SplineImageView1Base
   public:
     typedef VALUETYPE value_type;
     typedef Size2D size_type;
+    typedef typename NormTraits<VALUETYPE>::SquaredNormType SquaredNormType;
     typedef TinyVector<double, 2> difference_type;
     enum StaticOrder { order = 1 };
 
@@ -1475,41 +1492,41 @@ class SplineImageView1Base
     value_type dxyy(difference_type const & d) const
         { return NumericTraits<VALUETYPE>::zero(); }
 
-    value_type g2(double x, double y) const
-        { return sq(dx(x,y)) + sq(dy(x,y)); }
+    SquaredNormType g2(double x, double y) const
+        { return squaredNorm(dx(x,y)) + squaredNorm(dy(x,y)); }
 
-    value_type g2x(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2x(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2y(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2y(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xx(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xx(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xy(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xy(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2yy(double x, double y) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2yy(double x, double y) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2(difference_type const & d) const
+    SquaredNormType g2(difference_type const & d) const
         { return g2(d[0], d[1]); }
 
-    value_type g2x(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2x(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2y(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2y(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xx(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xx(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2xy(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2xy(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
-    value_type g2yy(difference_type const & d) const
-        { return NumericTraits<VALUETYPE>::zero(); }
+    SquaredNormType g2yy(difference_type const & d) const
+        { return NumericTraits<SquaredNormType>::zero(); }
 
     unsigned int width() const
         { return w_; }
@@ -1568,7 +1585,6 @@ void SplineImageView1Base<VALUETYPE, INTERNAL_INDEXER>::coefficientArray(double 
 {
     int ix, iy, ix1, iy1;
     calculateIndices(x, y, ix, iy, ix1, iy1);
-    res.resize(2, 2);
     res(0,0) = internalIndexer_(ix,iy);
     res(1,0) = internalIndexer_(ix1,iy) - internalIndexer_(ix,iy);
     res(0,1) = internalIndexer_(ix,iy1) - internalIndexer_(ix,iy);
@@ -1645,6 +1661,7 @@ class SplineImageView1
     typedef SplineImageView1Base<VALUETYPE, INTERNAL_TRAVERSER> Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };
@@ -1720,6 +1737,7 @@ class SplineImageView1<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstride
     typedef SplineImageView1Base<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstrided> > Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };
@@ -1783,6 +1801,7 @@ class SplineImageView<1, VALUETYPE>
     typedef SplineImageView1<VALUETYPE> Base;
   public:
     typedef typename Base::value_type value_type;
+    typedef typename Base::SquaredNormType SquaredNormType;
     typedef typename Base::size_type size_type;
     typedef typename Base::difference_type difference_type;
     enum StaticOrder { order = Base::order };

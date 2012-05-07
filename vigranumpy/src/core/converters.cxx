@@ -35,6 +35,7 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpycore_PyArray_API
 #define NO_IMPORT_ARRAY
+
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>

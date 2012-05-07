@@ -145,30 +145,6 @@ struct ScanOrderToCoordinate<1>
     }
 };
 
-template <int K>
-struct CoordinateToScanOrder
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
-    }
-};
-
-template <>
-struct CoordinateToScanOrder<1>
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-1];
-    }
-};
-
 
 template <class C>
 struct CoordinatesToOffest
@@ -331,6 +307,7 @@ initMultiArrayData(DestIterator d, Shape const & shape, T const & init, MetaInt<
     }
 }
 
+// FIXME: the explicit overload for MultiIterator<1, UInt8, ... > works around a compiler crash in VisualStudio 2010
 #define VIGRA_COPY_MULTI_ARRAY_DATA(name, op) \
 template <class SrcIterator, class Shape, class DestIterator> \
 inline void \
@@ -343,6 +320,17 @@ name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt
     } \
 } \
  \
+template <class Ref, class Ptr, class Shape, class DestIterator> \
+inline void \
+name##MultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, DestIterator d, MetaInt<0>) \
+{ \
+    Ptr s = &(*si), send = s + shape[0]; \
+    for(; s < send; ++s, ++d) \
+    { \
+        *d op detail::RequiresExplicitCast<typename DestIterator::value_type>::cast(*s); \
+    } \
+} \
+\
 template <class SrcIterator, class Shape, class DestIterator, int N> \
 void \
 name##MultiArrayData(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>) \
@@ -389,6 +377,18 @@ inline void
 uninitializedCopyMultiArrayData(SrcIterator s, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
 {
     SrcIterator send = s + shape[0];
+    for(; s < send; ++s, ++d)
+    {
+        a.construct(d, static_cast<T const &>(*s));
+    }
+}
+
+// FIXME: this overload works around a compiler crash in VisualStudio 2010
+template <class Ref, class Ptr, class Shape, class T, class ALLOC>
+inline void
+uninitializedCopyMultiArrayData(MultiIterator<1, UInt8, Ref, Ptr> si, Shape const & shape, T * & d, ALLOC & a, MetaInt<0>)
+{
+    Ptr s = &(*si), send = s + shape[0];
     for(; s < send; ++s, ++d)
     {
         a.construct(d, static_cast<T const &>(*s));
@@ -2489,6 +2489,13 @@ public:
       m_alloc(alloc)
     {}
 
+        /** construct with given length
+        
+            Use only for 1-dimensional arrays (<tt>N==1</tt>).
+         */
+    explicit MultiArray (difference_type_1 length,
+                         allocator_type const & alloc = allocator_type());
+
         /** construct with given shape
          */
     explicit MultiArray (const difference_type &shape,
@@ -2751,6 +2758,17 @@ public:
         return m_alloc;
     }
 };
+
+template <unsigned int N, class T, class A>
+MultiArray <N, T, A>::MultiArray (difference_type_1 length,
+                                  allocator_type const & alloc)
+: MultiArrayView <N, T> (difference_type(length),
+                         detail::defaultStride <1> (difference_type(length)),
+                         0),
+  m_alloc(alloc)
+{
+    allocate (this->m_ptr, this->elementCount (), T());
+}
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,

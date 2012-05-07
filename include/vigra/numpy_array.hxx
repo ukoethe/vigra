@@ -46,14 +46,18 @@
 #include "numpy_array_traits.hxx"
 #include "numpy_array_taggedshape.hxx"
 
+// NumPy function called by NumPy’s import_array() macro (and our import_vigranumpy() below)
 int _import_array();
 
 namespace vigra {
 
-inline void import_vigranumpy()
+static inline void import_vigranumpy()
 {
+    // roughly equivalent to import_array():
     if(_import_array() < 0)
         pythonToCppException(0);
+
+    // in addition, import vigra.vigranumpycore:
     python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
     pythonToCppException(module);
 }
@@ -136,10 +140,10 @@ class MultibandVectorAccessor
 
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
-PyObject * 
+PyObject *
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
                python_ptr arraytype = python_ptr());
-               
+
 /********************************************************/
 /*                                                      */
 /*                    NumpyAnyArray                     */
@@ -166,12 +170,12 @@ class NumpyAnyArray
 
         /// difference type
     typedef ArrayVector<npy_intp> difference_type;
-    
+
     static python_ptr getArrayTypeObject()
     {
         return detail::getArrayTypeObject();
     }
-    
+
     static std::string defaultOrder(std::string defaultValue = "C")
     {
         return detail::defaultOrder(defaultValue);
@@ -241,12 +245,12 @@ class NumpyAnyArray
         {
             vigra_precondition(other.hasData(),
                 "NumpyArray::operator=(): Cannot assign from empty array.");
-                
+
             python_ptr arraytype = getArrayTypeObject();
             python_ptr f(PyString_FromString("_copyValuesImpl"), python_ptr::keep_count);
             if(PyObject_HasAttr(arraytype, f))
             {
-                python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(), 
+                python_ptr res(PyObject_CallMethodObjArgs(arraytype, f.get(),
                                                           pyArray_.get(), other.pyArray_.get(), NULL),
                                python_ptr::keep_count);
                 vigra_postcondition(res.get() != 0,
@@ -357,7 +361,7 @@ class NumpyAnyArray
     }
 
         // /**
-         // Returns the the permutation that will transpose this array into 
+         // Returns the the permutation that will transpose this array into
          // canonical ordering (currently: F-order). The size of
          // the returned permutation equals ndim().
          // */
@@ -365,8 +369,8 @@ class NumpyAnyArray
     // {
         // if(!hasData())
             // return difference_type();
-            
-        // // difference_type res(detail::getAxisPermutationImpl(pyArray_, 
+
+        // // difference_type res(detail::getAxisPermutationImpl(pyArray_,
                                                // // "permutationToNormalOrder", true));
         // difference_type res;
         // detail::getAxisPermutationImpl(res, pyArray_, "permutationToNormalOrder", true);
@@ -396,7 +400,7 @@ class NumpyAnyArray
     python_ptr axistags() const
     {
         static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-        
+
         python_ptr axistags;
         if(pyObject())
         {
@@ -481,7 +485,7 @@ class NumpyAnyArray
 
 namespace detail {
 
-inline bool 
+inline bool
 nontrivialPermutation(ArrayVector<npy_intp> const & p)
 {
     for(unsigned int k=0; k<p.size(); ++k)
@@ -494,21 +498,21 @@ nontrivialPermutation(ArrayVector<npy_intp> const & p)
 
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
-PyObject * 
+PyObject *
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_ptr arraytype)
 {
     ArrayVector<npy_intp> shape = finalizeTaggedShape(tagged_shape);
     PyAxisTags axistags(tagged_shape.axistags);
-    
+
     int ndim = (int)shape.size();
     ArrayVector<npy_intp> inverse_permutation;
     int order = 1; // Fortran order
-    
+
     if(axistags)
     {
         if(!arraytype)
             arraytype = NumpyAnyArray::getArrayTypeObject();
-            
+
         inverse_permutation = axistags.permutationFromNormalOrder();
         vigra_precondition(ndim == (int)inverse_permutation.size(),
                      "axistags.permutationFromNormalOrder(): permutation has wrong size.");
@@ -518,10 +522,10 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
         arraytype = python_ptr((PyObject*)&PyArray_Type);
         order = 0; // C order
     }
-    
+
 //    std::cerr << "constructArray: " << shape << "\n" << inverse_permutation << "\n";
-    
-    python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(), 
+
+    python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(),
                                   typeCode, 0, 0, 0, order, 0),
                      python_ptr::keep_count);
     pythonToCppException(array);
@@ -529,17 +533,17 @@ constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_pt
     if(detail::nontrivialPermutation(inverse_permutation))
     {
         PyArray_Dims permute = { inverse_permutation.begin(), ndim };
-        array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute), 
+        array = python_ptr(PyArray_Transpose((PyArrayObject*)array.get(), &permute),
                            python_ptr::keep_count);
         pythonToCppException(array);
     }
-    
+
     if(arraytype != (PyObject*)&PyArray_Type && axistags)
         pythonToCppException(PyObject_SetAttrString(array, "axistags", axistags.axistags) != -1);
-    
+
     if(init)
         PyArray_FILLWBYTE((PyArrayObject *)array.get(), 0);
-   
+
     return array.release();
 }
 
@@ -552,7 +556,7 @@ python_ptr constructNumpyArrayFromData(
 {
     ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
 
-    python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(), 
+    python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(),
                                  typeCode, strides, data, 0, NPY_WRITEABLE, 0),
                      python_ptr::keep_count);
     pythonToCppException(array);
@@ -638,11 +642,11 @@ class NumpyArray
 
         /** sequential (random access) iterator type
          */
-    typedef value_type * iterator;
+    typedef typename view_type::iterator iterator;
 
         /** sequential (random access) const iterator type
          */
-    typedef value_type * const_iterator;
+    typedef typename view_type::const_iterator const_iterator;
 
     using view_type::shape;   // resolve ambiguity of multiple inheritance
     using view_type::hasData; // resolve ambiguity of multiple inheritance
@@ -653,13 +657,13 @@ class NumpyArray
     // this function assumes that pyArray_ has already been set, and compatibility been checked
     void setupArrayView();
 
-    static python_ptr init(difference_type const & shape, bool init = true, 
+    static python_ptr init(difference_type const & shape, bool init = true,
                            std::string const & order = "")
     {
-        vigra_precondition(order == "" || order == "C" || order == "F" || 
+        vigra_precondition(order == "" || order == "C" || order == "F" ||
                            order == "V" || order == "A",
             "NumpyArray.init(): order must be in ['C', 'F', 'V', 'A', ''].");
-        return python_ptr(constructArray(ArrayTraits::taggedShape(shape, order), typeCode, init), 
+        return python_ptr(constructArray(ArrayTraits::taggedShape(shape, order), typeCode, init),
                           python_ptr::keep_count);
     }
 
@@ -800,7 +804,7 @@ class NumpyArray
         else if(other.hasData())
         {
             NumpyArray copy;
-            copy.reshapeIfEmpty(other.taggedShape(), 
+            copy.reshapeIfEmpty(other.taggedShape(),
                 "NumpyArray::operator=(): reshape failed unexpectedly.");
             copy = other;
             makeReferenceUnchecked(copy.pyObject());
@@ -826,7 +830,7 @@ class NumpyArray
         else if(other.hasData())
         {
             NumpyArray copy;
-            copy.reshapeIfEmpty(other.shape(), 
+            copy.reshapeIfEmpty(other.shape(),
                 "NumpyArray::operator=(): reshape failed unexpectedly.");
             copy = other;
             makeReferenceUnchecked(copy.pyObject());
@@ -861,7 +865,7 @@ class NumpyArray
     }
 
         /**
-         Permute the entries of the given array \a data exactly like the axes of this NumpyArray 
+         Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
     template<class U>
@@ -877,7 +881,7 @@ class NumpyArray
     }
 
         /**
-         Permute the entries of the given array \a data exactly like the axes of this NumpyArray 
+         Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
     template<class U, int K>
@@ -886,7 +890,7 @@ class NumpyArray
     {
         vigra_precondition(hasData(),
             "NumpyArray::permuteLikewise(): array has no data.");
-            
+
         TinyVector<U, K> res;
         ArrayTraits::permuteLikewise(this->pyArray_, data, res);
         return res;
@@ -960,9 +964,9 @@ class NumpyArray
          * Returns false if the python object is not a compatible
          * numpy array (see isReferenceCompatible()).
          *
-         * The parameter \a strict is deprecated and will be ignored
+         * The second parameter ('strict') is deprecated and will be ignored.
          */
-    bool makeReference(PyObject *obj, bool strict = false)
+    bool makeReference(PyObject *obj, bool /* strict */ = false)
     {
         if(!isReferenceCompatible(obj))
             return false;
@@ -993,11 +997,11 @@ class NumpyArray
          */
     void makeUnsafeReference(const view_type &multiArrayView)
     {
-        vigra_precondition(!hasData(), 
+        vigra_precondition(!hasData(),
             "makeUnsafeReference(): cannot replace existing view with given buffer");
 
         // construct an ndarray that points to our data (taking strides into account):
-        python_ptr array(ArrayTraits::unsafeConstructorFromData(multiArrayView.shape(), 
+        python_ptr array(ArrayTraits::unsafeConstructorFromData(multiArrayView.shape(),
                                   multiArrayView.data(), multiArrayView.stride()));
 
         view_type::operator=(multiArrayView);
@@ -1015,7 +1019,7 @@ class NumpyArray
 #if VIGRA_CONVERTER_DEBUG
         int ndim = PyArray_NDIM((PyArrayObject *)obj);
         npy_intp * s = PyArray_DIMS((PyArrayObject *)obj);
-        std::cerr << "makeCopy: " << ndim << " " <<  ArrayVectorView<npy_intp>(ndim, s) << 
+        std::cerr << "makeCopy: " << ndim << " " <<  ArrayVectorView<npy_intp>(ndim, s) <<
                      ", strides " << ArrayVectorView<npy_intp>(ndim, PyArray_STRIDES((PyArrayObject *)obj)) << "\n";
         std::cerr << "for " << typeid(*this).name() << "\n";
 #endif
@@ -1061,14 +1065,14 @@ class NumpyArray
     void reshapeIfEmpty(TaggedShape tagged_shape, std::string message = "")
     {
         ArrayTraits::finalizeTaggedShape(tagged_shape);
-        
+
         if(hasData())
         {
             vigra_precondition(tagged_shape.compatible(taggedShape()), message.c_str());
         }
         else
         {
-            python_ptr array(constructArray(tagged_shape, typeCode, true), 
+            python_ptr array(constructArray(tagged_shape, typeCode, true),
                              python_ptr::keep_count);
             vigra_postcondition(makeReference(NumpyAnyArray(array.get())),
                   "NumpyArray.reshapeIfEmpty(): Python constructor did not produce a compatible array.");
@@ -1089,13 +1093,13 @@ void NumpyArray<N, T, Stride>::setupArrayView()
     {
         permutation_type permute;
         ArrayTraits::permutationToSetupOrder(this->pyArray_, permute);
-        
+
         vigra_precondition(abs((int)permute.size() - actual_dimension) <= 1,
             "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
-            
-        applyPermutation(permute.begin(), permute.end(), 
+
+        applyPermutation(permute.begin(), permute.end(),
                          pyArray()->dimensions, this->m_shape.begin());
-        applyPermutation(permute.begin(), permute.end(), 
+        applyPermutation(permute.begin(), permute.end(),
                          pyArray()->strides, this->m_stride.begin());
 
         if((int)permute.size() == actual_dimension - 1)

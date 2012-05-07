@@ -860,7 +860,7 @@ ArrayVector<T, Alloc>::initImpl( Iter i, Iter end, VigraFalseType /*isIntegral*/
     capacity_ = this->size_;
     this->data_ = reserve_raw(capacity_);
     if(this->size_ > 0)
-        std::uninitialized_copy(i, end, this->data_);
+        detail::uninitializedCopy(i, end, this->data_);
 }
 
 template <class T, class Alloc>

@@ -105,6 +105,10 @@
     #endif
     
     #define VIGRA_NEED_BIN_STREAMS
+    
+    #ifndef VIGRA_ENABLE_ANNOYING_WARNINGS
+        #pragma warning ( disable: 4244 4267) // implicit integer conversion warnings
+    #endif
 
     #ifdef VIGRA_DLL
         #define VIGRA_EXPORT __declspec(dllexport)

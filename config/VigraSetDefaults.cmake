@@ -35,6 +35,8 @@ SET(WITH_HDF5 ${WITH_HDF5}
     CACHE BOOL "Build HDF5 import/export ?"
     FORCE)
     
+OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
+
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()

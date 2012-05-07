@@ -51,6 +51,16 @@ struct CanSkipInitialization
 
 namespace detail {
 
+// differs from std::uninitialized_copy by explicit type conversion
+template <class Src, class Dest>
+Dest uninitializedCopy(Src s, Src end, Dest d)
+{
+    typedef typename std::iterator_traits<Dest>::value_type T;
+    for(; s != end; ++s, ++d)
+        new(d) T(static_cast<T const &>(*s));
+    return d;
+}
+
 template <class T>
 inline void destroy_n(T * /* p */, std::ptrdiff_t /* n */, VigraTrueType /* isPOD */)
 {

@@ -156,11 +156,9 @@ int VIGRA_RGBE_WriteHeader(FILE *fp, int width, int height, vigra_rgbe_header_in
 int VIGRA_RGBE_ReadHeader(FILE *fp, int *width, int *height, vigra_rgbe_header_info *info)
 {
   char buf[128];
-  int found_format;
   float tempf;
   int i;
 
-  found_format = 0;
   if (info) {
     info->valid = 0;
     info->programtype[0] = 0;

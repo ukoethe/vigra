@@ -312,8 +312,6 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
                          DestIterator id, DestAccessor ad, double b1, double b2)
 {
     int w = isend - is;
-    SrcIterator istart = is;
-    
     int x;
     
     typedef typename

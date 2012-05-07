@@ -213,6 +213,8 @@ class SamplerOptions
     int numberOfSamples = 20; // repeat experiment 20 times 
     Sampler<> stratifiedSampler(strata.begin(), strata.end(),
                      SamplerOptions().withoutReplacement().stratified().sampleSize(sampleSize));
+    // create first sample
+    sampler.sample();
 
     for(int k=0; k<numberOfSamples; ++k)
     {

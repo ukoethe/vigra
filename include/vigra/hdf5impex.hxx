@@ -550,9 +550,20 @@ class HDF5File
         Open           // Open file. Create if not existing.
     };
 
-        /** \brief Create an HDF5File object.
+        /** \brief Default constructor.
 
-        Creates or opens HDF5 file at position filename. 
+        A file can later be opened via the open() function.
+        
+        If \a track_creation_times is non-zero, time tagging of datasets will be enabled (it is disabled
+        by default).
+        */
+    HDF5File(int track_creation_times = 0)
+    : track_time(track_creation_times)
+    {}
+
+        /** \brief Open or create an HDF5File object.
+
+        Creates or opens HDF5 file with given filename. 
         The current group is set to "/".
         
         Note that the HDF5File class is not copyable (the copy constructor is 
@@ -561,9 +572,7 @@ class HDF5File
     HDF5File(std::string filename, OpenMode mode, int track_creation_times = 0)
         : track_time(track_creation_times)
     {
-        std::string errorMessage = "HDF5File: Could not create file '" + filename + "'.";
-        fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
-        cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File(): Failed to open root group.");
+        open(filename, mode);
     }
 
         /** \brief The destructor flushes and closes the file.
@@ -583,9 +592,29 @@ class HDF5File
     void operator=(const HDF5File &);
 
   public:
+  
+        /** \brief Open or create the given file in the given mode and set the group to "/".
+            If another file is currently open, it is first closed.
+         */
+    void open(std::string filename, OpenMode mode)
+    {
+        close();
+        
+        std::string errorMessage = "HDF5File.open(): Could not open or create file '" + filename + "'.";
+        fileHandle_ = HDF5Handle(createFile_(filename, mode), &H5Fclose, errorMessage.c_str());
+        cGroupHandle_ = HDF5Handle(openCreateGroup_("/"), &H5Gclose, "HDF5File.open(): Failed to open root group.");
+    }
 
-    /** \brief Change current group to "/".
-     */
+        /** \brief Close the current file.
+         */
+    void close()
+    {
+        bool success = cGroupHandle_.close() >= 0 && fileHandle_.close() >= 0;
+        vigra_postcondition(success, "HDF5File.close() failed.");
+    }
+
+        /** \brief Change current group to "/".
+         */
     inline void root()
     {
         std::string message = "HDF5File::root(): Could not open group '/'.";
@@ -1988,6 +2017,9 @@ class HDF5File
 
         vigra_precondition(shape == array.shape(),
                            "HDF5File::read(): Array shape disagrees with dataset shape.");
+        if (offset)
+            vigra_precondition(dimshape[0] == numBandsOfType,
+                               "HDF5File::read(): Band count doesn't match destination array compound type.");
 
         // simply read in the data as is
         H5Dread( datasetHandle, datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() ); // .data() possible since void pointer!
@@ -2195,8 +2227,8 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
     The array must have the correct number of dimensions and shape for the dataset 
     represented by 'info'. When the element type of 'array' differs from the stored element
     type, HDF5 will convert the type on the fly (except when the HDF5 version is 1.6 or below,
-    in which case an error will result). Multi-channel element types (i.e. \ref vigra::RGBValue
-    and \ref vigra::TinyVector) are recognized and handled correctly.
+    in which case an error will result). Multi-channel element types (i.e. \ref vigra::RGBValue,
+    \ref vigra::TinyVector, and \ref vigra::FFTWComplex) are recognized and handled correctly.
     
     <b> Declaration:</b>
     
@@ -2245,6 +2277,13 @@ template<unsigned int N, class T>
 inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> array)
 {
     readHDF5(info, array, detail::getH5DataType<T>(), 3);
+}
+
+// non-scalar (FFTWComplex) and unstrided target multi array
+template<unsigned int N, class T>
+inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, FFTWComplex<T>, UnstridedArrayTag> array)
+{
+    readHDF5(info, array, detail::getH5DataType<T>(), 2);
 }
 
 // unstrided target multi array
@@ -2523,7 +2562,8 @@ writeHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const
     The number of dimensions, shape and element type of the stored dataset is automatically 
     determined from the properties of the given \a array. Strided arrays are stored in an
     unstrided way, i.e. in contiguous scan-order. Multi-channel element types 
-    (i.e. \ref vigra::RGBValue and \ref vigra::TinyVector) are recognized and handled correctly
+    (i.e. \ref vigra::RGBValue, \ref vigra::TinyVector and \ref vigra::FFTWComplex)
+    are recognized and handled correctly
     (in particular, the will form the innermost dimension of the stored dataset).
     \a pathInFile may contain '/'-separated group names, but must end with the name 
     of the dataset to be created.
@@ -2618,7 +2658,7 @@ inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiA
     writeHDF5(filePath, pathInFile, array, detail::getH5DataType<T>(), 3);
 }
 
-// non-scalar (RGBValue) and strided multi arrays
+// non-scalar (FFTWComplex) and strided multi arrays
 template<unsigned int N, class T>
 inline void writeHDF5(const char* filePath, const char* pathInFile, const MultiArrayView<N, FFTWComplex<T>, StridedArrayTag> & array) 
 {

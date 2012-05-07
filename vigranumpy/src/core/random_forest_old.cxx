@@ -98,8 +98,10 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
             "Output array has wrong dimensions.");
     
-    PyAllowThreads _pythread;
-    rf.predictLabels(testData, res);
+    {
+        PyAllowThreads _pythread;
+        rf.predictLabels(testData, res);
+    }
     return res;
 }
 

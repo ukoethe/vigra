@@ -403,7 +403,6 @@ public:
 
         //create a file
         HDF5File file (file_name, HDF5File::New);
-        
 
         //write one dataset in each group level
         file.write("/dataset",out_data_1);
@@ -416,14 +415,15 @@ public:
         file.write("/atomicint", (int)-42);
         file.write("/atomicuint", (unsigned int)42);
         file.write("/atomicdouble", (double)3.1);
-
-
+        
         //create a new dataset
         MultiArrayShape<3>::type shape (50,50,50);
         unsigned char init = 42;
         file.createDataset<3,unsigned char>("/newset", shape, init );
 
-
+        file.close();
+        file.open(file_name, HDF5File::Open);
+        
         // check if data is really written
 
         MultiArray<2,int> in_data_1 (MultiArrayShape<2>::type(10, 11));
@@ -494,8 +494,6 @@ public:
         should (in_re_data_4 == out_data_4);
         // ...data 5
         should (in_re_data_5(1,2,3) == init);
-
-
 
         // overwrite existing dataset
         file.write("/dataset",out_data_2);
@@ -581,9 +579,6 @@ public:
         file.read("set_string2",read_string2);
         should(read_string2 == "abcdef");
     }
-
-
-
 
     // reading and writing attributes. get handles of groups, datasets and attributes
     void testHDF5FileAttributes()
@@ -1069,8 +1064,9 @@ public:
 
     void testHDF5FileTutorial()
     {
-        // First create a new HDF5 file
-        HDF5File file ("tutorial_HDF5File.h5", HDF5File::New);
+        // First create a new HDF5 file (thereby also testing default construction + open);
+        HDF5File file;
+        file.open("tutorial_HDF5File.h5", HDF5File::New);
 
         // we should be in root group in the beginning
         should(file.pwd() == "/" );

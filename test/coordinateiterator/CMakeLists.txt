@@ -1,0 +1,1 @@
+VIGRA_ADD_TEST(test_coordinateiterator test.cxx)

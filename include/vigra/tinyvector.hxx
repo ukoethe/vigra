@@ -59,9 +59,16 @@
 
 namespace vigra {
 
+// mask cl.exe shortcomings [begin]
+#if defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4503 )
+#endif
+
 using VIGRA_CSTD::abs;
 using VIGRA_CSTD::ceil;
 using VIGRA_CSTD::floor;
+using VIGRA_CSTD::sqrt;
 
 
 template <class V1, int SIZE, class D1, class D2>
@@ -124,6 +131,7 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(abs, = vigra::abs)
     VIGRA_EXEC_LOOP(floor, = vigra::floor)
     VIGRA_EXEC_LOOP(ceil, = vigra::ceil)
+    VIGRA_EXEC_LOOP(sqrt, = vigra::sqrt)
     VIGRA_EXEC_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_EXEC_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
     VIGRA_EXEC_LOOP_SCALAR(mulScalar, *)
@@ -150,6 +158,18 @@ struct ExecLoop
         return false;
     }
 
+    template <class T1, class T2>
+    static bool less(T1 const * left, T2 const * right)
+    {
+        for(int i=0; i<LEVEL; ++i)
+        {
+            if(left[i] < right[i])
+                return true;
+            if(right[i] < left[i])
+                return false;
+        }
+        return false;
+    }
     template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
@@ -326,6 +346,7 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(abs, = vigra::abs)
     VIGRA_UNROLL_LOOP(floor, = vigra::floor)
     VIGRA_UNROLL_LOOP(ceil, = vigra::ceil)
+    VIGRA_UNROLL_LOOP(sqrt, = vigra::sqrt)
     VIGRA_UNROLL_LOOP(fromPromote, = NumericTraits<T1>::fromPromote)
     VIGRA_UNROLL_LOOP(fromRealPromote, = NumericTraits<T1>::fromRealPromote)
     VIGRA_UNROLL_LOOP_SCALAR(mulScalar, *)
@@ -347,6 +368,16 @@ struct UnrollLoop
     static bool notEqual(T1 const * left, T2 const * right)
     {
         return (*left != *right) || UnrollLoop<LEVEL - 1>::notEqual(left+1, right+1);
+    }
+
+    template <class T1, class T2>
+    static bool less(T1 const * left, T2 const * right)
+    {
+        if(*left < *right)
+            return true;
+        if(*right < *left)
+            return false;
+        return UnrollLoop<LEVEL - 1>::less(left+1, right+1);
     }
 
     template <class T>
@@ -410,7 +441,11 @@ struct UnrollLoop<0>
     template <class T1, class T2>
     static void ceil(T1, T2) {}
     template <class T1, class T2>
+    static void sqrt(T1, T2) {}
+    template <class T1, class T2>
     static bool notEqual(T1, T2) { return false; }
+    template <class T1, class T2>
+    static bool less(T1, T2) { return false; }
     template <class T>
     static T minimum(T const * p)
     {
@@ -1029,6 +1064,16 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::notEqual(l.begin(), r.begin());
 }
 
+    /// component-wise lexicographical comparison
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline bool
+operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+          TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    return ltype::less(l.begin(), r.begin());
+}
+
 /********************************************************/
 /*                                                      */
 /*                     TinyVector Output                */
@@ -1115,17 +1160,29 @@ struct NumericTraits<TinyVector<T, SIZE> >
     typedef typename NumericTraits<T>::isIntegral isIntegral;
     typedef VigraFalseType isScalar;
     typedef typename NumericTraits<T>::isSigned isSigned;
-    typedef VigraFalseType isOrdered;
+    typedef VigraTrueType isOrdered;
     typedef VigraFalseType isComplex;
 
-    static TinyVector<T, SIZE> zero() {
+    static TinyVector<T, SIZE> zero()
+    {
         return TinyVector<T, SIZE>(NumericTraits<T>::zero());
     }
-    static TinyVector<T, SIZE> one() {
+    static TinyVector<T, SIZE> one()
+    {
         return TinyVector<T, SIZE>(NumericTraits<T>::one());
     }
-    static TinyVector<T, SIZE> nonZero() {
+    static TinyVector<T, SIZE> nonZero()
+    {
         return TinyVector<T, SIZE>(NumericTraits<T>::nonZero());
+    }
+
+    static TinyVector<T, SIZE> min()
+    {
+        return TinyVector<T, SIZE>(NumericTraits<T>::min());
+    }
+    static TinyVector<T, SIZE> max()
+    {
+        return TinyVector<T, SIZE>(NumericTraits<T>::max());
     }
 
     template <class D1, class D2>
@@ -1512,6 +1569,19 @@ floor(TinyVectorBase<V, SIZE, D1, D2> const & v)
     return res;
 }
 
+    /** Apply sqrt() function to each vector component.
+    */
+template <class V, int SIZE, class D1, class D2>
+inline
+TinyVector<V, SIZE>
+sqrt(TinyVectorBase<V, SIZE, D1, D2> const & v)
+{
+    TinyVector<V, SIZE> res(detail::dontInit());
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    ltype::sqrt(res.begin(), v.begin());
+    return res;
+}
+
     /// cross product
 template <class V1, class D1, class D2, class V2, class D3, class D4>
 inline
@@ -1573,7 +1643,7 @@ prod(TinyVectorBase<V, SIZE, D1, D2> const & l)
     return res;
 }
 
-    /// cumulative sum of the vector's elements
+    /// cumulative product of the vector's elements
 template <class V, int SIZE, class D1, class D2>
 inline
 TinyVector<typename NumericTraits<V>::Promote, SIZE>
@@ -1650,6 +1720,10 @@ squaredNorm(TinyVector<V, SIZE> const & t)
 }
 //@}
 
+// mask cl.exe shortcomings [end]
+#if defined(_MSC_VER)
+#pragma warning( pop )
+#endif
 
 } // namespace vigra
 #undef VIGRA_ASSERT_INSIDE

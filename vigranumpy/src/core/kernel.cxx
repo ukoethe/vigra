@@ -37,6 +37,7 @@
 #define NO_IMPORT_ARRAY
 
 #include <Python.h>
+#include <vigra/config.hxx>
 #include <iostream>
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>

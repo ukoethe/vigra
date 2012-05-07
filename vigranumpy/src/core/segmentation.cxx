@@ -70,21 +70,23 @@ pythonLabelImage(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "labelImage(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            labelImage(srcImageRange(image), destImage(res), false);
-            break;
-        }
-        case 8:
-        {
-            labelImage(srcImageRange(image), destImage(res), true);
-            break;
+            case 4:
+            {
+                labelImage(srcImageRange(image), destImage(res), false);
+                break;
+            }
+            case 8:
+            {
+                labelImage(srcImageRange(image), destImage(res), true);
+                break;
+            }
         }
     }
-
+    
     return res;
 }
 
@@ -106,20 +108,22 @@ pythonLabelImageWithBackground(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
         "labelImageWithBackground(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            labelImageWithBackground(srcImageRange(image),
-                destImage(res), false, background_value);
-            break;
-        }
-        case 8:
-        {
-            labelImageWithBackground(srcImageRange(image),
-                destImage(res), true, background_value);
-            break;
+            case 4:
+            {
+                labelImageWithBackground(srcImageRange(image),
+                    destImage(res), false, background_value);
+                break;
+            }
+            case 8:
+            {
+                labelImageWithBackground(srcImageRange(image),
+                    destImage(res), true, background_value);
+                break;
+            }
         }
     }
     return res;
@@ -142,20 +146,22 @@ pythonLabelVolume(NumpyArray<3, Singleband<VoxelType> > volume,
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
             "labelVolume(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 6:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            labelVolume(srcMultiArrayRange(volume),
-                destMultiArray(res), NeighborCode3DSix());
-            break;
-        }
-        case 26:
-        {
-            labelVolume(srcMultiArrayRange(volume),
-                destMultiArray(res), NeighborCode3DTwentySix());
-            break;
+            case 6:
+            {
+                labelVolume(srcMultiArrayRange(volume),
+                    destMultiArray(res), NeighborCode3DSix());
+                break;
+            }
+            case 26:
+            {
+                labelVolume(srcMultiArrayRange(volume),
+                    destMultiArray(res), NeighborCode3DTwentySix());
+                break;
+            }
         }
     }
     return res;
@@ -179,22 +185,24 @@ pythonLabelVolumeWithBackground(NumpyArray<3, Singleband<VoxelType> > volume,
     res.reshapeIfEmpty(volume.taggedShape().setChannelDescription(description), 
         "labelVolumeWithBackground(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 6:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            labelVolumeWithBackground(srcMultiArrayRange(volume),
-                destMultiArray(res), NeighborCode3DSix(),
-                background_value);
-            break;
-        }
-        case 26:
-        {
-            labelVolumeWithBackground(srcMultiArrayRange(volume),
-                destMultiArray(res), NeighborCode3DTwentySix(),
-                background_value);
-            break;
+            case 6:
+            {
+                labelVolumeWithBackground(srcMultiArrayRange(volume),
+                    destMultiArray(res), NeighborCode3DSix(),
+                    background_value);
+                break;
+            }
+            case 26:
+            {
+                labelVolumeWithBackground(srcMultiArrayRange(volume),
+                    destMultiArray(res), NeighborCode3DTwentySix(),
+                    background_value);
+                break;
+            }
         }
     }
     return res;
@@ -220,23 +228,25 @@ pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "localMinima(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+            PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            localMinima(srcImageRange(image), destImage(res), marker,
-                FourNeighborCode());
-            break;
-        }
-        case 8:
-        {
-            localMinima(srcImageRange(image), destImage(res), marker,
-                EightNeighborCode());
-            break;
+            case 4:
+            {
+                localMinima(srcImageRange(image), destImage(res), marker,
+                    FourNeighborCode());
+                break;
+            }
+            case 8:
+            {
+                localMinima(srcImageRange(image), destImage(res), marker,
+                    EightNeighborCode());
+                break;
+            }
         }
     }
-
+    
     return res;
 }
 
@@ -291,20 +301,22 @@ pythonExtendedLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
         "extendedLocalMinima(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            extendedLocalMinima(srcImageRange(image), destImage(res),
-                marker, FourNeighborCode());
-            break;
-        }
-        case 8:
-        {
-            extendedLocalMinima(srcImageRange(image), destImage(res),
-                marker, EightNeighborCode());
-            break;
+            case 4:
+            {
+                extendedLocalMinima(srcImageRange(image), destImage(res),
+                    marker, FourNeighborCode());
+                break;
+            }
+            case 8:
+            {
+                extendedLocalMinima(srcImageRange(image), destImage(res),
+                    marker, EightNeighborCode());
+                break;
+            }
         }
     }
     return res;
@@ -344,6 +356,8 @@ pythonExtendedLocalMinima3D(NumpyArray<3, Singleband<PixelType> > volume,
     return res;
 }
 
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyExtendedLocalMinima3D, pythonExtendedLocalMinima3D)
+
 template < class PixelType >
 NumpyAnyArray 
 pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
@@ -360,23 +374,25 @@ pythonLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "localMaxima(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            localMaxima(srcImageRange(image), destImage(res), marker,
-                FourNeighborCode());
-            break;
-        }
-        case 8:
-        {
-            localMaxima(srcImageRange(image), destImage(res), marker,
-                EightNeighborCode());
-            break;
+            case 4:
+            {
+                localMaxima(srcImageRange(image), destImage(res), marker,
+                    FourNeighborCode());
+                break;
+            }
+            case 8:
+            {
+                localMaxima(srcImageRange(image), destImage(res), marker,
+                    EightNeighborCode());
+                break;
+            }
         }
     }
-
+    
     return res;
 }
 
@@ -430,20 +446,22 @@ pythonExtendedLocalMaxima2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "extendedLocalMaxima(): Output array has wrong shape.");
 
-    PyAllowThreads _pythread;
-    switch (neighborhood)
     {
-        case 4:
+        PyAllowThreads _pythread;
+        switch (neighborhood)
         {
-            extendedLocalMaxima(srcImageRange(image), destImage(res),
-                marker, FourNeighborCode());
-            break;
-        }
-        case 8:
-        {
-            extendedLocalMaxima(srcImageRange(image), destImage(res),
-                marker, EightNeighborCode());
-            break;
+            case 4:
+            {
+                extendedLocalMaxima(srcImageRange(image), destImage(res),
+                    marker, FourNeighborCode());
+                break;
+            }
+            case 8:
+            {
+                extendedLocalMaxima(srcImageRange(image), destImage(res),
+                    marker, EightNeighborCode());
+                break;
+            }
         }
     }
     return res;
@@ -877,13 +895,13 @@ void defineSegmentation()
         "For details see extendedLocalMinima_ in the vigra C++ documentation.\n"
         );
 
-    def("extendedLocalMinima3D", 
-         registerConverters(&pythonExtendedLocalMinima3D<float> ), 
-           (arg("volume"), arg("marker") = 1.0, arg("neighborhood") = 6, arg("out") = python::object()),
-            "Find local minima and minimal plateaus in a volume and mark them with "
-            "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
-            "neighborhood to be used and can be 6(default) or 26 .\n\n"
-            "For details see extendedLocalMinima3D_ in the vigra C++ documentation.\n");
+    multidef("extendedLocalMinima3D",
+        pyExtendedLocalMinima3D<float, npy_uint8>(), 
+        (arg("volume"), arg("marker") = 1, arg("neighborhood") = 6, arg("out") = python::object()),
+        "Find local minima and minimal plateaus in a volume and mark them with "
+        "the given 'marker'. Parameter 'neighborhood' specifies the pixel "
+        "neighborhood to be used and can be 6(default) or 26 .\n\n"
+        "For details see extendedLocalMinima3D_ in the vigra C++ documentation.\n");
 
     def("localMaxima",
         registerConverters(&pythonLocalMaxima2D<float>),

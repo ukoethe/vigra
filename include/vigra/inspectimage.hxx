@@ -44,6 +44,7 @@
 #include "iteratortraits.hxx"
 #include "functortraits.hxx"
 #include "rgbvalue.hxx"
+#include "inspector_passes.hxx"
 
 namespace vigra {
 
@@ -179,18 +180,34 @@ inspectTwoLinesIf(SrcIterator1 s1,
 */
 doxygen_overloaded_function(template <...> void inspectImage)
 
+template <class ImageIterator, class Accessor>
+struct inspectImage_binder
+{
+    ImageIterator upperleft;
+    ImageIterator lowerright;
+    Accessor a;
+
+    inspectImage_binder(ImageIterator ul, ImageIterator lr, Accessor ac)
+        : upperleft(ul), lowerright(lr), a(ac) {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        int w = lowerright.x - upperleft.x;
+
+        for (ImageIterator t = upperleft; t.y < lowerright.y; ++t.y)
+        {
+            inspectLine(t.rowIterator(), t.rowIterator() + w, a, f);
+        }
+    }
+};
+
 template <class ImageIterator, class Accessor, class Functor>
 void
 inspectImage(ImageIterator upperleft, ImageIterator lowerright,
          Accessor a, Functor & f)
 {
-    int w = lowerright.x - upperleft.x;
-
-    for(; upperleft.y<lowerright.y; ++upperleft.y)
-    {
-        inspectLine(upperleft.rowIterator(),
-                    upperleft.rowIterator() + w, a, f);
-    }
+    inspectImage_binder<ImageIterator, Accessor> g(upperleft, lowerright, a);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator, class Accessor, class Functor>
@@ -308,6 +325,35 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 doxygen_overloaded_function(template <...> void inspectImageIf)
 
 template <class ImageIterator, class Accessor,
+      class MaskImageIterator, class MaskAccessor>
+struct inspectImageIf_binder
+{
+    ImageIterator upperleft;
+    ImageIterator lowerright;
+    Accessor a;
+    MaskImageIterator mask_upperleft;
+    MaskAccessor ma;
+
+    inspectImageIf_binder(ImageIterator ul, ImageIterator lr, Accessor ac,
+                        MaskImageIterator m_ul, MaskAccessor m_ac)
+        : upperleft(ul), lowerright(lr), a(ac), mask_upperleft(m_ul), ma(m_ac)
+    {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        int w = lowerright.x - upperleft.x;
+
+        MaskImageIterator mt = mask_upperleft;
+        for (ImageIterator t = upperleft; t.y < lowerright.y; ++t.y, ++mt.y)
+        {
+            inspectLineIf(t.rowIterator(),
+                          t.rowIterator() + w, a,
+                          mt.rowIterator(), ma, f);
+        }
+    }
+};
+
+template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
 void
 inspectImageIf(ImageIterator upperleft,
@@ -315,14 +361,10 @@ inspectImageIf(ImageIterator upperleft,
            MaskImageIterator mask_upperleft, MaskAccessor ma,
            Functor & f)
 {
-    int w = lowerright.x - upperleft.x;
-
-    for(; upperleft.y<lowerright.y; ++upperleft.y, ++mask_upperleft.y)
-    {
-        inspectLineIf(upperleft.rowIterator(),
-                      upperleft.rowIterator() + w, a,
-                      mask_upperleft.rowIterator(), ma, f);
-    }
+    inspectImageIf_binder<ImageIterator, Accessor, MaskImageIterator,
+                                                                   MaskAccessor>
+        g(upperleft, lowerright, a, mask_upperleft, ma);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator, class Accessor,
@@ -439,21 +481,46 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 doxygen_overloaded_function(template <...> void inspectTwoImages)
 
 template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2>
+struct inspectTwoImages_binder
+{
+    ImageIterator1 upperleft1;
+    ImageIterator1 lowerright1;
+    Accessor1      a1;
+    ImageIterator2 upperleft2;
+    Accessor2      a2;
+    inspectTwoImages_binder(ImageIterator1 u1, ImageIterator1 l1, Accessor1 a1_,
+                        ImageIterator2 u2, Accessor2 a2_)
+        : upperleft1(u1), lowerright1(l1), a1(a1_), upperleft2(u2), a2(a2_) {}
+    template <class Functor>
+    void operator()(Functor & f)
+    {
+        int w = lowerright1.x - upperleft1.x;
+
+        ImageIterator1 t1 = upperleft1;
+        ImageIterator2 t2 = upperleft2;
+        for (; t1.y < lowerright1.y; ++t1.y, ++t2.y)
+        {
+            inspectTwoLines(t1.rowIterator(),
+                            t1.rowIterator() + w, a1,
+                            t2.rowIterator(), a2, f);
+        }
+    }
+};
+
+template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class Functor>
 void
-inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
+inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
+                 Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
                  Functor & f)
 {
-    int w = lowerright1.x - upperleft1.x;
-
-    for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y)
-    {
-        inspectTwoLines(upperleft1.rowIterator(),
-                        upperleft1.rowIterator() + w, a1,
-                        upperleft2.rowIterator(), a2, f);
-    }
+    inspectTwoImages_binder<ImageIterator1, Accessor1,
+                            ImageIterator2, Accessor2>
+        g(upperleft1, lowerright1, a1, upperleft2, a2);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator1, class Accessor1,
@@ -583,23 +650,55 @@ doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
 
 template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
-          class MaskImageIterator, class MaskAccessor,
-      class Functor>
-void
-inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
-                 ImageIterator2 upperleft2, Accessor2 a2,
-                 MaskImageIterator mupperleft, MaskAccessor mask,
-                 Functor & f)
+          class MaskImageIterator, class MaskAccessor>
+struct inspectTwoImagesIf_binder
 {
-    int w = lowerright1.x - upperleft1.x;
-
-    for(; upperleft1.y<lowerright1.y; ++upperleft1.y, ++upperleft2.y, ++mupperleft.y)
+    ImageIterator1    upperleft1;
+    ImageIterator1    lowerright1;
+    Accessor1         a1;
+    ImageIterator2    upperleft2;
+    Accessor2         a2;
+    MaskImageIterator mupperleft;
+    MaskAccessor      mask;
+    inspectTwoImagesIf_binder(ImageIterator1 u1, ImageIterator1 l1,
+                              Accessor1 a1_, ImageIterator2 u2, Accessor2 a2_,
+                              MaskImageIterator mu, MaskAccessor ma)
+        : upperleft1(u1), lowerright1(l1), a1(a1_), upperleft2(u2), a2(a2_),
+          mupperleft(mu), mask(ma) {}
+    template <class Functor>
+    void operator()(Functor & f)
     {
-        inspectTwoLinesIf(upperleft1.rowIterator(),
-                          upperleft1.rowIterator() + w, a1,
-                          upperleft2.rowIterator(), a2,
-                          mupperleft.rowIterator(), mask, f);
+        int w = lowerright1.x - upperleft1.x;
+
+        ImageIterator1 t1 = upperleft1;
+        ImageIterator2 t2 = upperleft2;
+        MaskImageIterator mu = mupperleft;
+        for(; t1.y < lowerright1.y; ++t1.y, ++t2.y, ++mu.y)
+        {
+            inspectTwoLinesIf(t1.rowIterator(),
+                              t1.rowIterator() + w, a1,
+                              t2.rowIterator(), a2,
+                              mu.rowIterator(), mask, f);
+        }
     }
+};
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
+void
+inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
+                   Accessor1 a1,
+                   ImageIterator2 upperleft2, Accessor2 a2,
+                   MaskImageIterator mupperleft, MaskAccessor mask,
+                   Functor & f)
+{
+    inspectTwoImagesIf_binder<ImageIterator1, Accessor1,
+                              ImageIterator2, Accessor2,
+                              MaskImageIterator, MaskAccessor>
+        g(upperleft1, lowerright1, a1, upperleft2, a2, mupperleft, mask);
+    detail::extra_passes_select(g, f);
 }
 
 template <class ImageIterator1, class Accessor1,
@@ -1368,8 +1467,8 @@ class FunctorTraits<FindROISize<VALUETYPE> >
     vigra::FindBoundingRectangle roiRect;   // init functor
 
     // Diff2D is used as the iterator for the source image. This
-    // simulates an image where each pixel value equals that pixel's
-    // coordinates. Tha image 'mask' determines the ROI.
+    // simulates an image where each pixel value equals the pixel's
+    // coordinates. The image 'mask' determines the ROI.
     vigra::inspectImageIf(srcIterRange(Diff2D(0,0), (Diff2D)img.size()),
                           srcImage(mask), roiRect);
 
@@ -1780,6 +1879,7 @@ class FunctorTraits<ReduceFunctor<FUNCTOR, VALUETYPE> >
 */
 template <class RegionStatistics, class LabelType = int>
 class ArrayOfRegionStatistics
+    : public detail::get_extra_passes<RegionStatistics>
 {
     typedef std::vector<RegionStatistics> RegionArray;
 
@@ -1912,6 +2012,34 @@ class ArrayOfRegionStatistics
         */
     const_iterator end() const
         { return regions.end(); }
+
+        /** prepare next pass for multi-pass RegionStatistics types
+        */
+    void calc_sync()
+    {
+        for (iterator j = begin(); j != end(); ++j)
+            this->sync(*j);
+    }
+    // update: passes >= 2
+    struct pass_n_dispatch
+    {
+        ArrayOfRegionStatistics & x;
+        unsigned                  pass_number;
+        pass_n_dispatch(ArrayOfRegionStatistics & a, unsigned n)
+            : x(a), pass_number(n) {}
+        template <class S> // instantiate only when used.
+        void operator()(const first_argument_type & v, S label)
+        {
+            x.regions[static_cast<unsigned>(label)].updatePassN(v, pass_number);
+        }
+    };
+    template <class N> // instantiate only when used.
+    pass_n_dispatch pass_n(N n)
+    {
+        if (n < 2 || static_cast<unsigned>(n) > this->max_passes)
+            vigra_fail("ArrayOfRegionStatistics::pass_n(): inconsistent use.");
+        return pass_n_dispatch(*this, n);
+    }
 
     std::vector<RegionStatistics> regions;
 };

@@ -55,13 +55,15 @@ pythonNonlinearDiffusion2D(NumpyArray<3, Multiband<InValue> > image,
     res.reshapeIfEmpty(image.taggedShape(), 
         "nonlinearDiffusion2D(): Output array has wrong shape.");
         
-    PyAllowThreads _pythread;
-    for(int k=0; k<image.shape(2); ++k)
     {
-        MultiArrayView<2, OutValue, StridedArrayTag> bres = res.bindOuter(k);
-        nonlinearDiffusion(srcImageRange(image.bindOuter(k)), 
-                           destImage(bres), 
-                           DiffusivityFunctor< double >(edgeThreshold), scale);
+        PyAllowThreads _pythread;
+        for(int k=0; k<image.shape(2); ++k)
+        {
+            MultiArrayView<2, OutValue, StridedArrayTag> bres = res.bindOuter(k);
+            nonlinearDiffusion(srcImageRange(image.bindOuter(k)), 
+                               destImage(bres), 
+                               DiffusivityFunctor< double >(edgeThreshold), scale);
+        }
     }
     return res;
 }
@@ -78,8 +80,10 @@ pythonRadialSymmetryTransform2D(NumpyArray<2, Singleband<SrcPixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "radialSymmetryTransform2D(): Output array has wrong shape.");    
         
-    PyAllowThreads _pythread;
-    radialSymmetryTransform(srcImageRange(image), destImage(res), scale);
+    {
+        PyAllowThreads _pythread;
+        radialSymmetryTransform(srcImageRange(image), destImage(res), scale);
+    }
     return res;
 }
 

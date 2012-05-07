@@ -123,8 +123,8 @@ struct SelectIntegerType<SIZE, Int_type_not_supported_on_this_platform>
 template<class LIST>
 struct SelectBiggestIntegerType
 {
-    enum { cursize = LIST::size, 
-           nextsize = SelectBiggestIntegerType<typename LIST::next>::size,
+    enum { cursize = static_cast<int>(LIST::size), 
+           nextsize = static_cast<int>(SelectBiggestIntegerType<typename LIST::next>::size),
            size = (cursize < nextsize) ? nextsize : cursize };
     typedef typename 
        IfBool<(cursize < nextsize), 

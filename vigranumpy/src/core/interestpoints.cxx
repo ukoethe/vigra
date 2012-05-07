@@ -59,8 +59,10 @@ pythonCornerResponseFunction2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "cornernessHarris(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    cornerResponseFunction(srcImageRange(image), destImage(res), scale);
+    {
+        PyAllowThreads _pythread;
+        cornerResponseFunction(srcImageRange(image), destImage(res), scale);
+    }
     return res;
 }
 
@@ -76,8 +78,10 @@ pythonFoerstnerCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "cornernessFoerstner(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    foerstnerCornerDetector(srcImageRange(image), destImage(res), scale);
+    {
+        PyAllowThreads _pythread;
+        foerstnerCornerDetector(srcImageRange(image), destImage(res), scale);
+    }
     return res;
 }
 
@@ -93,8 +97,10 @@ pythonRohrCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "cornernessRohr(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    rohrCornerDetector(srcImageRange(image), destImage(res), scale);
+    {
+        PyAllowThreads _pythread;
+        rohrCornerDetector(srcImageRange(image), destImage(res), scale);
+    }
     return res;
 }
 
@@ -110,8 +116,10 @@ pythonBeaudetCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image,
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
             "cornernessBeaudet(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    beaudetCornerDetector(srcImageRange(image), destImage(res), scale);
+    {
+        PyAllowThreads _pythread;
+        beaudetCornerDetector(srcImageRange(image), destImage(res), scale);
+    }
     return res;
 }
 
@@ -127,17 +135,19 @@ pythonBoundaryTensorCornerDetector2D(NumpyArray<2, Singleband<PixelType> > image
     res.reshapeIfEmpty(image.taggedShape().setChannelDescription(description), 
         "cornernessBoundaryTensor(): Output array has wrong shape.");    
     
-    PyAllowThreads _pythread;
-    MultiArray<2, TinyVector<PixelType, 3> > bt(image.shape());
-    boundaryTensor(srcImageRange(image), destImage(bt), scale);
-    
-    PixelType ev1, ev2;
-    for(int y=0; y<image.shape(1); ++y)
     {
-        for(int x=0; x<image.shape(0); ++x)
+        PyAllowThreads _pythread;
+        MultiArray<2, TinyVector<PixelType, 3> > bt(image.shape());
+        boundaryTensor(srcImageRange(image), destImage(bt), scale);
+        
+        PixelType ev1, ev2;
+        for(int y=0; y<image.shape(1); ++y)
         {
-            symmetric2x2Eigenvalues(bt(x,y)[0], bt(x,y)[1], bt(x,y)[2], &ev1, &ev2);
-            res(x,y) = PixelType(2.0)*ev2;
+            for(int x=0; x<image.shape(0); ++x)
+            {
+                symmetric2x2Eigenvalues(bt(x,y)[0], bt(x,y)[1], bt(x,y)[2], &ev1, &ev2);
+                res(x,y) = PixelType(2.0)*ev2;
+            }
         }
     }
     return res;
