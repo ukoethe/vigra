@@ -504,7 +504,7 @@ class RandomNumberGenerator
     
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0].
             
-            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / 2<sup>32</sup>, 
+            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / (2<sup>32</sup> - 1), 
             so it has effectively only 32 random bits. 
         */
     double uniform() const
