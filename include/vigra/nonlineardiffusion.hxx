@@ -181,7 +181,7 @@ void internalNonlinearDiffusionAOSStep(
     }
 }
 
-/** \addtogroup NonLinearDiffusion Non-linear Diffusion
+/** \addtogroup NonLinearDiffusion Non-linear Diffusion and Total Variation
     
     Perform edge-preserving smoothing.
 */

@@ -10,7 +10,8 @@ SET(TARGETS
     edge
     watershed
     weightedWatersheds
-    voronoi)
+    voronoi
+    total_variation)
 
 ADD_CUSTOM_TARGET(examples)
 
