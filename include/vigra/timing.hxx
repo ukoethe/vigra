@@ -141,7 +141,7 @@ Basic usage:
 */
 
 
-#ifdef WIN32
+#ifdef _WIN32
 
     #include "windows.h"
 
@@ -172,7 +172,8 @@ Basic usage:
 
     inline void tic_toc_diff(LARGE_INTEGER const & tic)
     {
-        std::cerr << tic_toc_diff_string(tic) <<std::endl;
+        double diff = tic_toc_diff_num(tic);
+        std::cerr << diff << " msec" << std::endl;
     }
 
     inline double tic_toc_diff_num(std::vector<LARGE_INTEGER> & tic)
@@ -327,12 +328,14 @@ Basic usage:
 
     #endif // VIGRA_HIRES_TIMING
 
-#endif // WIN32
+#endif // _WIN32
 
 // TICTOCLOOP runs the body inner_repetitions times, and minimizes the result over a number of outer_repetitions runs,
 //  outputting the final minimal average to std::cerr
+// We enclose the loop in a dummy do { ... } while(false) in order to make this a true single statement 
+//  (instead of just a scope).
 #define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions) \
-    { \
+    do { \
     USETICTOC \
         double tictoc_best_, tictoc_inner_repetitions_=inner_repetitions; size_t tictoc_outer_repetitions_=outer_repetitions; \
         for (size_t tictoccounter_=0; tictoccounter_<tictoc_outer_repetitions_; ++tictoccounter_) { \
@@ -348,7 +351,7 @@ Basic usage:
         } \
         std::cerr << tictoc_best_/tictoc_inner_repetitions_ \
              << " msec (best-of-" << tictoc_outer_repetitions_ << ")" << std::endl; \
-    }\
+    } while(false);
 
 
 
@@ -361,8 +364,8 @@ Basic usage:
 #define TICS ""
 #define USE_NESTED_TICTOC
 #define TICPUSH
-#define TICTOCLOOP_BEGIN {
-#define TICTOCLOOP_END }
+#define TICTOCLOOP_BEGIN(inner_repetitions,outer_repetitions)  do {
+#define TICTOCLOOP_END } while(false);
 #endif // NDEBUG
 
 
