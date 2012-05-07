@@ -150,8 +150,8 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
   out=data;
   u_bar=data;
   
-  double tau=1/std::max(alpha,1.)/sqrt(8)*0.06;
-  double sigma=1/sqrt(8)/0.06;
+  double tau=1.0 / std::max(alpha,1.) / std::sqrt(8.0) * 0.06;
+  double sigma=1.0 / std::sqrt(8.0) / 0.06;
     
   for (int i=0;i<steps;i++){
   
@@ -220,8 +220,8 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
   out=data;
   u_bar=data;
   
-  double tau=1/std::max(alpha,1.)/sqrt(8)*0.06;
-  double sigma=1/sqrt(8)/0.06;
+  double tau=1.0 / std::max(alpha,1.) / std::sqrt(8.0) * 0.06;
+  double sigma=1.0 / std::sqrt(8.0) / 0.06;
   
   for (int i=0;i<steps;i++){
     separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
