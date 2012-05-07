@@ -679,15 +679,16 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     {
         ApplyHistogramOptions<typename A::Tag>::exec(a, options);
     }
-        
+
     static unsigned int passesRequired()
     {
-        return std::max(A::workInPass, A::InternalBaseType::passesRequired());
+        static const unsigned int A_workInPass = A::workInPass;
+	return std::max(A_workInPass, A::InternalBaseType::passesRequired());
     }
 };
 
-template <class A, unsigned CurrentPass, bool allowRuntimeActivation>
-struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
+template <class A, unsigned CurrentPass>
+struct DecoratorImpl<A, CurrentPass, true, CurrentPass>
 {
     static bool isActive(A const & a)
     {
@@ -738,8 +739,9 @@ struct DecoratorImpl<A, CurrentPass, allowRuntimeActivation, CurrentPass>
     template <class ActiveFlags>
     static unsigned int passesRequired(ActiveFlags const & flags)
     {
+        static const unsigned int A_workInPass = A::workInPass;
         return A::isActiveImpl(flags)
-                   ? std::max(A::workInPass, A::InternalBaseType::passesRequired(flags))
+                   ? std::max(A_workInPass, A::InternalBaseType::passesRequired(flags))
                    : A::InternalBaseType::passesRequired(flags);
     }
 };
