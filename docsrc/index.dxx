@@ -308,7 +308,9 @@
     <LI> \ref vigra::SplineImageView
          <BR>&nbsp;&nbsp;&nbsp;<em>Wrap a discrete image as a continous function</em>
     <LI> \ref Convolution
-         <BR>&nbsp;&nbsp;&nbsp;<em>1D, 2D, and nD filters, including separable and recursive convolution, and non-linear diffusion</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>1D, 2D, and nD filters, including separable and recursive convolution</em>
+    <LI> \ref NonLinearDiffusion
+         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing </em>
     <LI> \ref FourierTransform
          <BR>&nbsp;&nbsp;&nbsp;<em>forward and backward FFT, cosine transform, and related
                  functionality</em>

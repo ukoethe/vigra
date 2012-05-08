@@ -34,18 +34,19 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef VIGRA_TV_FILTER_H
-#define VIGRA_TV_FILTER_H
+#ifndef VIGRA_TV_FILTER_HXX
+#define VIGRA_TV_FILTER_HXX
 
 #include <iostream>
-#include <vigra/impex.hxx>
-#include <vigra/separableconvolution.hxx>
-#include <vigra/multi_array.hxx>
-#include <vigra/multi_math.hxx>
-#include <vigra/eigensystem.hxx>
-#include <math.h>
-#include <vigra/convolution.hxx>
-#include <vigra/fixedpoint.hxx>
+#include <cmath>
+#include "config.hxx"
+#include "impex.hxx"
+#include "separableconvolution.hxx"
+#include "multi_array.hxx"
+#include "multi_math.hxx"
+#include "eigensystem.hxx"
+#include "convolution.hxx"
+#include "fixedpoint.hxx"
 #include "project2ellipse.hxx"
 
 #ifndef MIXED_2ND_DERIVATIVES
@@ -98,7 +99,7 @@ namespace vigra {
 }
 \endcode
             
-\ref totalVariationFilter implements a primal-dual algorithm to solve (1).
+\ref totalVariationFilter() implements a primal-dual algorithm to solve (1).
      
 Input:
      <table>     
@@ -163,11 +164,11 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
     //project to constraint set
     for (int y=0;y<data.shape(1);y++){
       for (int x=0;x<data.shape(0);x++){
-	double l=hypot(vx(x,y),vy(x,y));
-	if (l>1){
-	  vx(x,y)/=l;
-	  vy(x,y)/=l;
-	}
+        double l=hypot(vx(x,y),vy(x,y));
+        if (l>1){
+          vx(x,y)/=l;
+          vy(x,y)/=l;
+        }
       }
     }
     
@@ -185,25 +186,24 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
       
       double f_primal=0,f_dual=0;
       for (int y=0;y<data.shape(1);y++){
-	for (int x=0;x<data.shape(0);x++){
-	  f_primal+=.5*(out(x,y)-data(x,y))*(out(x,y)-data(x,y))+alpha*hypot(temp1(x,y),temp2(x,y));
-	}
+        for (int x=0;x<data.shape(0);x++){
+          f_primal+=.5*(out(x,y)-data(x,y))*(out(x,y)-data(x,y))+alpha*hypot(temp1(x,y),temp2(x,y));
+        }
       }
       separableConvolveX(srcImageRange(vx),destImage(temp1),kernel1d(LTx));
       separableConvolveY(srcImageRange(vy),destImage(temp2),kernel1d(LTx));
       for (int y=0;y<data.shape(1);y++){
-	for (int x=0;x<data.shape(0);x++){
-	  double divv=temp1(x,y)+temp2(x,y);
-	  f_dual+=-.5*alpha*alpha*(divv*divv)+alpha*data(x,y)*divv;
-	}
+        for (int x=0;x<data.shape(0);x++){
+          double divv=temp1(x,y)+temp2(x,y);
+          f_dual+=-.5*alpha*alpha*(divv*divv)+alpha*data(x,y)*divv;
+        }
       }
       if (f_primal>0 && (f_primal-f_dual)/f_primal<eps){
-	break;
+        break;
       }
     }
   }
 }
-doxygen_overloaded_function(template <...> void totalVariationFilter)
 
 template <class stride1,class stride2, class stride3>
 void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, MultiArrayView<2,double,stride3> weight,double alpha, int steps, double eps=0){
@@ -232,11 +232,11 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
     //project to constraint set
     for (int y=0;y<data.shape(1);y++){
       for (int x=0;x<data.shape(0);x++){
-	double l=hypot(vx(x,y),vy(x,y));
-	if (l>1){
-	  vx(x,y)/=l;
-	  vy(x,y)/=l;
-	}
+        double l=hypot(vx(x,y),vy(x,y));
+        if (l>1){
+          vx(x,y)/=l;
+          vy(x,y)/=l;
+        }
       }
     }
     
@@ -254,20 +254,20 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
       
       double f_primal=0,f_dual=0;
       for (int y=0;y<data.shape(1);y++){
-	for (int x=0;x<data.shape(0);x++){
-	  f_primal+=.5*weight(x,y)*(out(x,y)-data(x,y))*(out(x,y)-data(x,y))+alpha*hypot(temp1(x,y),temp2(x,y));
-	}
+        for (int x=0;x<data.shape(0);x++){
+          f_primal+=.5*weight(x,y)*(out(x,y)-data(x,y))*(out(x,y)-data(x,y))+alpha*hypot(temp1(x,y),temp2(x,y));
+        }
       }
       separableConvolveX(srcImageRange(vx),destImage(temp1),kernel1d(LTx));
       separableConvolveY(srcImageRange(vy),destImage(temp2),kernel1d(LTx));
       for (int y=0;y<data.shape(1);y++){
-	for (int x=0;x<data.shape(0);x++){
-	  double divv=temp1(x,y)+temp2(x,y);
-	  f_dual+=-.5*alpha*alpha*(weight(x,y)*divv*divv)+alpha*data(x,y)*divv;
-	}
+        for (int x=0;x<data.shape(0);x++){
+          double divv=temp1(x,y)+temp2(x,y);
+          f_dual+=-.5*alpha*alpha*(weight(x,y)*divv*divv)+alpha*data(x,y)*divv;
+        }
       }
       if (f_primal>0 && (f_primal-f_dual)/f_primal<eps){
-	break;
+        break;
       }
     }
   }
@@ -329,14 +329,14 @@ Input:
 <tr><td><em>K_par</em>:</td><td> positive edge sensitivity parameter.</td></tr>
  </table>
  
-(see \ref anisotropicTotalVariationFilter and \ref secondOrderTotalVariationFilter for usage in a an application).
+(see \ref anisotropicTotalVariationFilter() and \ref secondOrderTotalVariationFilter() for usage in an application).
 */
 doxygen_overloaded_function(template <...> void getAnisotropy)
 
 template <class stride1,class stride2,class stride3,class stride4>
 void getAnisotropy(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> phi,
-		    MultiArrayView<2,double,stride3> alpha, MultiArrayView<2,double,stride4> beta, 
-		    double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par){
+                    MultiArrayView<2,double,stride3> alpha, MultiArrayView<2,double,stride4> beta, 
+                    double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par){
   
   using namespace multi_math;
   
@@ -400,7 +400,7 @@ is the image gradient in the sense of Total Variation and <em>\f$ A \f$ </em> is
 Matrix <em>\f$ A \f$ </em> is described by providing  for each data point a normalized eigenvector (via angle \f$ \phi \f$)
 and two eigenvalues \f$ \alpha>0 \f$ and \f$ \beta>0 \f$.
 
-\ref getAnisotropy can be use to set up such data \f$ \phi,\alpha,\beta \f$ by providing a vector field normal to edges.
+\ref getAnisotropy() can be use to set up such data \f$ \phi,\alpha,\beta \f$ by providing a vector field normal to edges.
 
 <b> Declarations:</b>
 
@@ -417,7 +417,7 @@ namespace vigra {
 }
 \endcode
 
-\ref anisotropicTotalVariationFilter implements a primal-dual algorithm to solve (2).
+\ref anisotropicTotalVariationFilter() implements a primal-dual algorithm to solve (2).
 
 Input:
 <table>
@@ -437,7 +437,7 @@ Output:
 E.g. with a solution-dependent adaptivity cf. [1], by updating the matrix \f$ A=A(u)\f$
 in an outer loop:
 
-<b>\#include</b> \<vigra/tv_filter.hxx\>
+<b>\#include</b> \"tv_filter.hxx\>
 
 \code 
 MultiArray<2,double> data(Shape2(width,height)); //to be initialized
@@ -458,14 +458,15 @@ for (int i=0;i<outer_steps;i++){
 \endcode
 (see also example 'total_variation.cxx'.)
 
-[1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.*/
+[1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.
+*/
 doxygen_overloaded_function(template <...>  void anisotropicTotalVariationFilter)
 
 template <class stride1,class stride2,class stride3,class stride4,class stride5,class stride6>
 void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, 
-		    MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
-		    MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
-		    int steps){
+                    MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
+                    MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
+                    int steps){
   
   using namespace multi_math;
   
@@ -501,16 +502,16 @@ void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
     //project to constraint set
     for (int y=0;y<data.shape(1);y++){
       for (int x=0;x<data.shape(0);x++){
-	double e1,e2,skp1,skp2;
+        double e1,e2,skp1,skp2;
 
-	e1=std::cos(phi(x,y));
-	e2=std::sin(phi(x,y));
-	skp1=vx(x,y)*e1+vy(x,y)*e2;
-	skp2=vx(x,y)*(-e2)+vy(x,y)*e1;
-	vigra::detail::projectEllipse2D (skp1,skp2,alpha(x,y),beta(x,y),0.001,100);
-	
-	vx(x,y)=skp1*e1-skp2*e2;
-	vy(x,y)=skp1*e2+skp2*e1;
+        e1=std::cos(phi(x,y));
+        e2=std::sin(phi(x,y));
+        skp1=vx(x,y)*e1+vy(x,y)*e2;
+        skp2=vx(x,y)*(-e2)+vy(x,y)*e1;
+        vigra::detail::projectEllipse2D (skp1,skp2,alpha(x,y),beta(x,y),0.001,100);
+        
+        vx(x,y)=skp1*e1-skp2*e2;
+        vy(x,y)=skp1*e2+skp2*e1;
       }
     }
     
@@ -541,7 +542,7 @@ symmetric, positive-definite  2x2 matrix and <em>\f$ |Hu|_F \f$</em> is the Frob
 
 Matrix <em>\f$ A \f$ </em> is described by providing  for each data point a normalized eigenvector (via angle \f$ \phi \f$)
 and two eigenvalues \f$ \alpha>0 \f$ and \f$ \beta>0 \f$.
-\ref getAnisotropy can be use to set up such data \f$ \phi,\alpha, \beta \f$ by providing a vector field normal to edges.
+\ref getAnisotropy() can be use to set up such data \f$ \phi,\alpha, \beta \f$ by providing a vector field normal to edges.
 
 \f$ \gamma>0 \f$ is the locally varying regularization parameter for second order.
 
@@ -563,7 +564,7 @@ namespace vigra {
 }
 \endcode
 
-\ref secondOrderTotalVariationFilter implements a primal-dual algorithm to solve (3).
+\ref secondOrderTotalVariationFilter() implements a primal-dual algorithm to solve (3).
 
 Input:
 <table>
@@ -583,7 +584,7 @@ finite differences across edges are artificially set to zero to avoid second ord
 E.g. with a solution-dependent adaptivity (cf.[1]), by updating the matrix \f$ A=A(u)\f$
 in an outer loop:
 
-<b>\#include</b> \<vigra/tv_filter.hxx\>
+<b>\#include</b> \"tv_filter.hxx\>
 
 \code 
 MultiArray<2,double> data(Shape2(width,height)); //to be initialized
@@ -616,11 +617,11 @@ doxygen_overloaded_function(template <...> void secondOrderTotalVariationFilter)
 
 template <class stride1,class stride2,class stride3,class stride4,class stride5,class stride6,class stride7,class stride8,class stride9>
 void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, 
-			    MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
-			    MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
-			    MultiArrayView<2,double,stride7> gamma,
-			    MultiArrayView<2,double,stride8> xedges,MultiArrayView<2,double,stride9> yedges,
-			    int steps){
+                            MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
+                            MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
+                            MultiArrayView<2,double,stride7> gamma,
+                            MultiArrayView<2,double,stride8> xedges,MultiArrayView<2,double,stride9> yedges,
+                            int steps){
   
   using namespace multi_math;
   
@@ -687,26 +688,26 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
     //project to constraint sets
     for (int y=0;y<data.shape(1);y++){
       for (int x=0;x<data.shape(0);x++){
-	double e1,e2,skp1,skp2;
-	
-	//project v
-	e1=std::cos(phi(x,y));
-	e2=std::sin(phi(x,y));
-	skp1=vx(x,y)*e1+vy(x,y)*e2;
-	skp2=vx(x,y)*(-e2)+vy(x,y)*e1;
-	vigra::detail::projectEllipse2D (skp1,skp2,alpha(x,y),beta(x,y),0.001,100);
-	vx(x,y)=skp1*e1-skp2*e2;
-	vy(x,y)=skp1*e2+skp2*e1;
-	
-	//project w
-	double l=sqrt(wx(x,y)*wx(x,y)+wy(x,y)*wy(x,y)+wz(x,y)*wz(x,y));
-	if (l>gamma(x,y)){
-	  wx(x,y)=gamma(x,y)*wx(x,y)/l;
-	  wy(x,y)=gamma(x,y)*wy(x,y)/l;  
-	  #if (MIXED_2ND_DERIVATIVES)
-	  wz(x,y)=gamma(x,y)*wz(x,y)/l;
-	  #endif
-	}
+        double e1,e2,skp1,skp2;
+        
+        //project v
+        e1=std::cos(phi(x,y));
+        e2=std::sin(phi(x,y));
+        skp1=vx(x,y)*e1+vy(x,y)*e2;
+        skp2=vx(x,y)*(-e2)+vy(x,y)*e1;
+        vigra::detail::projectEllipse2D (skp1,skp2,alpha(x,y),beta(x,y),0.001,100);
+        vx(x,y)=skp1*e1-skp2*e2;
+        vy(x,y)=skp1*e2+skp2*e1;
+        
+        //project w
+        double l=sqrt(wx(x,y)*wx(x,y)+wy(x,y)*wy(x,y)+wz(x,y)*wz(x,y));
+        if (l>gamma(x,y)){
+          wx(x,y)=gamma(x,y)*wx(x,y)/l;
+          wy(x,y)=gamma(x,y)*wy(x,y)/l;  
+          #if (MIXED_2ND_DERIVATIVES)
+          wz(x,y)=gamma(x,y)*wz(x,y)/l;
+          #endif
+        }
       }
     }
     
@@ -752,4 +753,5 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
 
 //@}
 } // closing namespace vigra
-#endif
+
+#endif // VIGRA_TV_FILTER_HXX

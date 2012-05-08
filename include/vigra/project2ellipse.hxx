@@ -35,8 +35,8 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef __project2ellipse_h
-#define __project2ellipse_h
+#ifndef VIGRA_PROJECT2ELLIPSE_HXX
+#define VIGRA_PROJECT2ELLIPSE_HXX
 #include <iostream>
 
 namespace vigra{
@@ -45,9 +45,9 @@ namespace vigra{
 
 //---------------------------------------------------------------------------
 
-void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){		
+void projectEllipse2D_FirstQuad (double &vx, double &vy, double a, double b, const double eps, const int iter_max){                
   
-  double t=0,tmin,tmax,d1,d2,f,x1,y1,l;		      
+  double t=0,tmin,tmax,d1,d2,f,x1,y1,l;                      
   int i;
   tmax=std::max(2*a*vx,2*b*vy);
   tmin=-b*b;
@@ -147,13 +147,13 @@ void projectEllipse2D(double &vx, double &vy, const double _a,const double _b,co
     }
     else{
       if (vx < a - b*b/a){
-	double vx_temp = vx;
-	vx = a*a*vx/(a*a-b*b);
-	vy = vy*sqrt(fabs(1.0-vx_temp/a*vx_temp/a));
+        double vx_temp = vx;
+        vx = a*a*vx/(a*a-b*b);
+        vy = vy*sqrt(fabs(1.0-vx_temp/a*vx_temp/a));
       }
       else{
-	vx = a;
-	vy = 0.0;
+        vx = a;
+        vy = 0.0;
       }
     }
   }
@@ -174,4 +174,4 @@ void projectEllipse2D(double &vx, double &vy, const double _a,const double _b,co
 }
   } //closing namespace detail
 } //closing namespace vigra
-#endif
+#endif // VIGRA_PROJECT2ELLIPSE_HXX
