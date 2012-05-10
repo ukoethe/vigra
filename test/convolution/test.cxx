@@ -2185,13 +2185,13 @@ struct TotalVariationTest{
   
   void testTotalVariation(){
    
-    totalVariationFilter(out,data,0.5,1000,0.01);
+    totalVariationFilter(data,out,0.5,1000,0.01);
     //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_tv.pgm"));
     shouldEqualSequenceTolerance(out.begin(), out.end(), result_std_tv, 1e-12); 
   }
   void testWeightedTotalVariation(){
    
-    totalVariationFilter(out,data,weight,.5,1000,0.01);
+    totalVariationFilter(data,weight,out,.5,1000,0.01);
     //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_tvw.pgm"));
     shouldEqualSequenceTolerance(out.begin(), out.end(), result_std_tv_weight, 1e-12); 
   }
@@ -2218,7 +2218,7 @@ struct TotalVariationTest{
     out=data; 
     for (int i=0;i<outer_steps;i++){ 
       getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);
-      anisotropicTotalVariationFilter(out,data,weight,phi,alpha,beta,inner_steps);  
+      anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps);  
     }
     //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_aniso.pgm"));
     shouldEqualSequenceTolerance(out.begin(), out.end(), result_aniso_tv, 1e-12); 
@@ -2248,7 +2248,7 @@ struct TotalVariationTest{
     out=data; 
     for (int i=0;i<outer_steps;i++){
       getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);
-      secondOrderTotalVariationFilter(out,data,weight,phi,alpha,beta,gamma,xedges,yedges,inner_steps);
+      secondOrderTotalVariationFilter(data,weight,phi,alpha,beta,gamma,xedges,yedges,out,inner_steps);
     }
     //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_htv.pgm"));
     shouldEqualSequenceTolerance(out.begin(), out.end(), result_higher_order_tv,1e-12); 

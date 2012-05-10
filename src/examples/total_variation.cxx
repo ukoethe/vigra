@@ -163,11 +163,11 @@ int main(int argc, char ** argv)
       switch(mode){
         case 1:
         std::cout<<"Standard TV filter"<<std::endl;
-        totalVariationFilter(out,data,0.3,1000,0.01);
+        totalVariationFilter(data,out,0.3,1000,0.01);
        break;
         case 2: 
         std::cout<<"Weighted TV filter"<<std::endl;
-        totalVariationFilter(out,data,weight,.3,1000,0.01);
+        totalVariationFilter(data,weight,out,.3,1000,0.01);
        break;
        case 3:{
         std::cout<<"Anisotropic TV filter"<<std::endl;
@@ -182,7 +182,7 @@ int main(int argc, char ** argv)
           std::cout<<"outer step "<<i<<"\n";
           
           getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);  // get anisotropic data
-          anisotropicTotalVariationFilter(out,data,weight,phi,alpha,beta,inner_steps); //perform smoothing 
+          anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps); //perform smoothing 
           
           if(write_steps){
             char dummy[80];
@@ -218,7 +218,7 @@ int main(int argc, char ** argv)
            std::cout<<"outer step "<<i<<"\n";
            
            getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K); // get anisotropic data
-           secondOrderTotalVariationFilter(out,data,weight,phi,alpha,beta,gamma,xedges,yedges,inner_steps);//perform smoothing 
+           secondOrderTotalVariationFilter(data,weight,phi,alpha,beta,gamma,xedges,yedges,out,inner_steps);//perform smoothing 
            
            if(write_steps){
              char dummy[80];

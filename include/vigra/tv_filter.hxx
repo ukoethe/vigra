@@ -49,8 +49,8 @@
 #include "fixedpoint.hxx"
 #include "project2ellipse.hxx"
 
-#ifndef MIXED_2ND_DERIVATIVES
-#define MIXED_2ND_DERIVATIVES 1
+#ifndef VIGRA_MIXED_2ND_DERIVATIVES
+#define VIGRA_MIXED_2ND_DERIVATIVES 1
 #endif
 
 
@@ -85,14 +85,14 @@ is the filter parameter and <em>\f$ TV(u)\f$ </em> is the total variation semi-n
 \code
 namespace vigra {
       template <class stride1,class stride2>
-      void totalVariationFilter(MultiArrayView<2,double,stride1> out,
-                                MultiArrayView<2,double,stride2> data, 
+      void totalVariationFilter(MultiArrayView<2,double,stride1> data, 
+                                MultiArrayView<2,double,stride2> out,
                                 double alpha, 
                                 int steps, 
                                 double eps=0);
-      void totalVariationFilter(MultiArrayView<2,double,stride1> out,
-                                MultiArrayView<2,double,stride2> data,
-                                MultiArrayView<2,double,stride3> weight,
+      void totalVariationFilter(MultiArrayView<2,double,stride1> data,
+                                MultiArrayView<2,double,stride2> weight,
+                                MultiArrayView<2,double,stride3> out,
                                 double alpha, 
                                 int steps, 
                                 double eps=0);
@@ -126,18 +126,18 @@ Input:
     int steps;        // to be initialized
     double alpha,eps; // to be initialized
     
-    totalVariationFilter(out,data,alpha,steps,eps);
+    totalVariationFilter(data,out,alpha,steps,eps);
     \endcode
     or
     \code
-    totalVariationFilter(out,data,weight,alpha,steps,eps);
+    totalVariationFilter(data,weight,out,alpha,steps,eps);
     \endcode
   
  */
 doxygen_overloaded_function(template <...> void totalVariationFilter)
 
 template <class stride1,class stride2>
-void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, double alpha, int steps, double eps=0){
+void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> out, double alpha, int steps, double eps=0){
 
   using namespace multi_math;
   
@@ -206,7 +206,7 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,
 }
 
 template <class stride1,class stride2, class stride3>
-void totalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, MultiArrayView<2,double,stride3> weight,double alpha, int steps, double eps=0){
+void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> weight, MultiArrayView<2,double,stride3> out,double alpha, int steps, double eps=0){
 
   using namespace multi_math;
   
@@ -407,12 +407,12 @@ and two eigenvalues \f$ \alpha>0 \f$ and \f$ \beta>0 \f$.
 \code
 namespace vigra {
   template <class stride1,class stride2,class stride3,class stride4,class stride5,class stride6>
-  void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> out,
-                                       MultiArrayView<2,double,stride2> data,
-                                       MultiArrayView<2,double,stride3> weight,
-                                       MultiArrayView<2,double,stride4> phi,
-                                       MultiArrayView<2,double,stride5> alpha, 
-                                       MultiArrayView<2,double,stride6> beta,
+  void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> data,
+                                       MultiArrayView<2,double,stride2> weight,
+                                       MultiArrayView<2,double,stride3> phi,
+                                       MultiArrayView<2,double,stride4> alpha, 
+                                       MultiArrayView<2,double,stride5> beta,
+                                       MultiArrayView<2,double,stride6> out,
                                        int steps);
 }
 \endcode
@@ -437,7 +437,7 @@ Output:
 E.g. with a solution-dependent adaptivity cf. [1], by updating the matrix \f$ A=A(u)\f$
 in an outer loop:
 
-<b>\#include</b> \"tv_filter.hxx\>
+<b>\#include</b> \<vigra/tv_filter.hxx\>
 
 \code 
 MultiArray<2,double> data(Shape2(width,height)); //to be initialized
@@ -453,19 +453,18 @@ out=data; // data serves as initial value
 
 for (int i=0;i<outer_steps;i++){
   getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);  // sets phi, alpha, beta
-  anisotropicTotalVariationFilter(out,data,weight,phi,alpha,beta,inner_steps);
+  anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps);
   }
 \endcode
-(see also example 'total_variation.cxx'.)
 
 [1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.
 */
 doxygen_overloaded_function(template <...>  void anisotropicTotalVariationFilter)
 
 template <class stride1,class stride2,class stride3,class stride4,class stride5,class stride6>
-void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, 
-                    MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
-                    MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
+void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> weight, 
+                    MultiArrayView<2,double,stride3> phi,MultiArrayView<2,double,stride4> alpha,
+                    MultiArrayView<2,double,stride5> beta,MultiArrayView<2,double,stride6> out,
                     int steps){
   
   using namespace multi_math;
@@ -550,16 +549,16 @@ and two eigenvalues \f$ \alpha>0 \f$ and \f$ \beta>0 \f$.
 
 \code
 namespace vigra {
-  
-  void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,
-                                       MultiArrayView<2,double,stride2> data, 
-                                       MultiArrayView<2,double,stride3> weight,
-                                       MultiArrayView<2,double,stride4> phi,
-                                       MultiArrayView<2,double,stride5> alpha,
-                                       MultiArrayView<2,double,stride6> beta,
-                                       MultiArrayView<2,double,stride7> gamma,
-                                       MultiArrayView<2,double,stride8> xedges,
-                                       MultiArrayView<2,double,stride9> yedges,
+  template <class stride1,class stride2,...,class stride9>
+  void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data, 
+                                       MultiArrayView<2,double,stride2> weight,
+                                       MultiArrayView<2,double,stride3> phi,
+                                       MultiArrayView<2,double,stride4> alpha,
+                                       MultiArrayView<2,double,stride5> beta,
+                                       MultiArrayView<2,double,stride6> gamma,
+                                       MultiArrayView<2,double,stride7> xedges,
+                                       MultiArrayView<2,double,stride8> yedges,
+                                       MultiArrayView<2,double,stride9> out,
                                        int steps);
 }
 \endcode
@@ -584,7 +583,7 @@ finite differences across edges are artificially set to zero to avoid second ord
 E.g. with a solution-dependent adaptivity (cf.[1]), by updating the matrix \f$ A=A(u)\f$
 in an outer loop:
 
-<b>\#include</b> \"tv_filter.hxx\>
+<b>\#include</b> \<vigra/tv_filter.hxx\>
 
 \code 
 MultiArray<2,double> data(Shape2(width,height)); //to be initialized
@@ -606,21 +605,22 @@ out=data; // data serves as initial value
 for (int i=0;i<outer_steps;i++){
   
   getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);  // sets phi, alpha, beta
-  secondOrderTotalVariationFilter(out,data,weight,phi,alpha,beta,gamma,xedges,yedges,inner_steps);
+  secondOrderTotalVariationFilter(data,weight,phi,alpha,beta,gamma,xedges,yedges,out,inner_steps);
 }
 \endcode
-(see also example 'total_variation.cxx'.)
+
 
 [1] Frank Lenzen, Florian Becker, Jan Lellmann, Stefania Petra and Christoph Schn&ouml;rr, A Class of Quasi-Variational Inequalities for Adaptive Image Denoising and Decomposition, Computational Optimization and Applications, Springer, 2012.
 */
 doxygen_overloaded_function(template <...> void secondOrderTotalVariationFilter)
 
 template <class stride1,class stride2,class stride3,class stride4,class stride5,class stride6,class stride7,class stride8,class stride9>
-void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiArrayView<2,double,stride2> data, 
-                            MultiArrayView<2,double,stride3> weight,MultiArrayView<2,double,stride4> phi,
-                            MultiArrayView<2,double,stride5> alpha,MultiArrayView<2,double,stride6> beta,
-                            MultiArrayView<2,double,stride7> gamma,
-                            MultiArrayView<2,double,stride8> xedges,MultiArrayView<2,double,stride9> yedges,
+void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data, 
+                            MultiArrayView<2,double,stride2> weight,MultiArrayView<2,double,stride3> phi,
+                            MultiArrayView<2,double,stride4> alpha,MultiArrayView<2,double,stride5> beta,
+                            MultiArrayView<2,double,stride6> gamma,
+                            MultiArrayView<2,double,stride7> xedges,MultiArrayView<2,double,stride8> yedges,
+		            MultiArrayView<2,double,stride9> out,
                             int steps){
   
   using namespace multi_math;
@@ -671,7 +671,7 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
     
     
     //update wz
-    #if (MIXED_2ND_DERIVATIVES)
+    #if (VIGRA_MIXED_2ND_DERIVATIVES)
     separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
     temp1*=yedges;
     separableConvolveX(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
@@ -704,7 +704,7 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
         if (l>gamma(x,y)){
           wx(x,y)=gamma(x,y)*wx(x,y)/l;
           wy(x,y)=gamma(x,y)*wy(x,y)/l;  
-          #if (MIXED_2ND_DERIVATIVES)
+          #if (VIGRA_MIXED_2ND_DERIVATIVES)
           wz(x,y)=gamma(x,y)*wz(x,y)/l;
           #endif
         }
@@ -732,7 +732,7 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> out,MultiA
     out+=tau*temp2; 
     
     //update wz
-    #if (MIXED_2ND_DERIVATIVES)
+    #if (VIGRA_MIXED_2ND_DERIVATIVES)
     
     separableConvolveY(srcImageRange(wz),destImage(temp1),kernel1d(Lx));
     temp1*=yedges;
