@@ -214,6 +214,8 @@ VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyLabelVolumeWithBackground, pythonLabelVolumeWit
 
 /*********************************************************************************/
 
+// FIXME: support output of label images from localMinim/Maxima functions
+
 template < class PixelType >
 NumpyAnyArray 
 pythonLocalMinima2D(NumpyArray<2, Singleband<PixelType> > image,
@@ -747,49 +749,23 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
             PyAllowThreads _pythread;
             maxRegionLabel = 0;
             
-            // determine seeds
-            // FIXME: implement localMinima() for volumes
-            typedef NeighborCode3DTwentySix Neighborhood;
-            typedef Neighborhood::Direction Direction;
+            MultiArray<3, npy_uint32> minima(seeds.shape());
             
-            MultiArrayShape<3>::type p(0,0,0);
-            
-            for(p[2]=0; p[2]<image.shape(2); ++p[2])
+            if (neighborhood ==6)
             {
-                for(p[1]=0; p[1]<image.shape(1); ++p[1])
-                {
-                    for(p[0]=0; p[0]<image.shape(0); ++p[0])
-                    {
-                        AtVolumeBorder atBorder = isAtVolumeBorder(p, image.shape());
-                        int totalCount = Neighborhood::nearBorderDirectionCount(atBorder),
-                            minimumCount = 0;
-                        if(atBorder == NotAtBorder)
-                        {
-                            for(int k=0; k<totalCount; ++k)
-                            {
-                                if(image[p] < image[p+Neighborhood::diff((Direction)k)])
-                                    ++minimumCount;
-                            }
-                        }
-                        else
-                        {
-                            for(int k=0; k<totalCount; ++k)
-                            {
-                                if(image[p] < image[p+Neighborhood::diff(
-                                                        Neighborhood::nearBorderDirections(atBorder, k))])
-                                    ++minimumCount;
-                            }
-                        }
-                        if(minimumCount == totalCount)
-                        {
-                            seeds[p] = ++maxRegionLabel;
-                        }
-                        else
-                        {
-                            seeds[p] = 0;
-                        }
-                    }
-                }
+                extendedLocalMinima3D(srcMultiArrayRange(image), destMultiArray(minima),
+                                      (npy_uint32)1, NeighborCode3DSix());
+                labelVolumeWithBackground(srcMultiArrayRange(minima),
+                                          destMultiArray(seeds), NeighborCode3DSix(),
+                                          (npy_uint32)0);
+            }
+            else
+            {
+                extendedLocalMinima3D(srcMultiArrayRange(image), destMultiArray(minima),
+                                      (npy_uint32)1, NeighborCode3DTwentySix());
+                labelVolumeWithBackground(srcMultiArrayRange(minima),
+                                          destMultiArray(seeds), NeighborCode3DTwentySix(),
+                                          (npy_uint32)0);
             }
         }
         else
