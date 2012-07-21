@@ -1022,7 +1022,7 @@ class HDF5File
         datasetName = get_absolute_path(datasetName);
 
         typename MultiArrayShape<N>::type chunkSize;
-        for(int i = 0; i < N; i++){
+        for(unsigned int i = 0; i < N; i++){
             chunkSize[i] = iChunkSize;
         }
         write_(datasetName, array, detail::getH5DataType<T>(), 1, chunkSize, compression);
@@ -2018,7 +2018,7 @@ class HDF5File
         vigra_precondition(shape == array.shape(),
                            "HDF5File::read(): Array shape disagrees with dataset shape.");
         if (offset)
-            vigra_precondition(dimshape[0] == numBandsOfType,
+            vigra_precondition(dimshape[0] == static_cast<hsize_t>(numBandsOfType),
                                "HDF5File::read(): Band count doesn't match destination array compound type.");
 
         // simply read in the data as is
