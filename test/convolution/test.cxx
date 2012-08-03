@@ -140,6 +140,114 @@ struct ConvolutionTest
             acc.set(k, i);
         }
     }
+
+    void borderCopyTest()
+    {
+        static const int size = 6, kleft = -2, kright = 3,
+                         ksize = kright - kleft,
+                         outsize = size + ksize;
+
+        int data[size] = {1, 2, 3, 4, 5, 6};
+        int out[outsize];
+
+        vigra::StandardValueAccessor<int> a;
+
+        // copy entire array
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {4, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 1, 1, 1, 2, 3, 4, 5, 6, 6, 6};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out+kright, out+outsize+kleft, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {0, 0, 0, 1, 2, 3, 4, 5, 6, 0, 0};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+
+        // copy with partial border treatment
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {5, 6, 1, 2, 3, 4, 5, 6, 1};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {3, 2, 1, 2, 3, 4, 5, 6, 5};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 1, 1, 2, 3, 4, 5, 6, 6};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {2, 3, 4, 5};
+            shouldEqualSequence(out+kright, out+outsize+kleft-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {0, 0, 1, 2, 3, 4, 5, 6, 0};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+
+        // copy interior, no border treatment necessary
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {4};
+            shouldEqualSequence(out+kright, out+outsize+kleft-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+    }
     
     void initExplicitlyTest()
     {
@@ -2177,8 +2285,8 @@ struct TotalVariationTest{
   TotalVariationTest():width(50),height(50),data(Shape2(50,50)),out(Shape2(50,50)),weight(Shape2(50,50)){
     for (int y=0;y<height;y++){
       for (int x=0;x<width;x++){
-	weight(x,y)=1;
-	data(x,y)=testdata[x+width*y]/255.;
+        weight(x,y)=1;
+        data(x,y)=testdata[x+width*y]/255.;
       }
     }
   }
@@ -2209,10 +2317,10 @@ struct TotalVariationTest{
     
     for (int y=0;y<height;y++){
       for (int x=0;x<width;x++){
-	alpha(x,y)=alpha0;
-	beta(x,y)=beta0;
-	xedges(x,y)=1;
-	yedges(x,y)=1;
+        alpha(x,y)=alpha0;
+        beta(x,y)=beta0;
+        xedges(x,y)=1;
+        yedges(x,y)=1;
       }
     }
     out=data; 
@@ -2238,11 +2346,11 @@ struct TotalVariationTest{
     
     for (int y=0;y<height;y++){
       for (int x=0;x<width;x++){
-	alpha(x,y)=alpha0;
-	beta(x,y)=beta0;
-	gamma(x,y)=gamma0;
-	xedges(x,y)=1;
-	yedges(x,y)=1;
+        alpha(x,y)=alpha0;
+        beta(x,y)=beta0;
+        gamma(x,y)=gamma0;
+        xedges(x,y)=1;
+        yedges(x,y)=1;
       }
     }
     out=data; 
@@ -2262,6 +2370,9 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
+        add( testCase( &ConvolutionTest::borderCopyTest));
+
+#if 1
         add( testCase( &ConvolutionTest::initExplicitlyTest));
 
         add( testCase( &ConvolutionTest::simpleSharpeningTest)); 
@@ -2320,11 +2431,12 @@ struct ConvolutionTestSuite
 
         add( testCase( &ImagePyramidTest::testPyramidConstruction));
         add( testCase( &ImagePyramidTest::testBurtReduceExpand));
-	
-	add( testCase( &TotalVariationTest::testTotalVariation));
-	add( testCase( &TotalVariationTest::testWeightedTotalVariation));
-	add( testCase( &TotalVariationTest::testAnisotropicTotalVariation));
-	add( testCase( &TotalVariationTest::testSecondOrderTotalVariation));
+    
+        add( testCase( &TotalVariationTest::testTotalVariation));
+        add( testCase( &TotalVariationTest::testWeightedTotalVariation));
+        add( testCase( &TotalVariationTest::testAnisotropicTotalVariation));
+        add( testCase( &TotalVariationTest::testSecondOrderTotalVariation));
+#endif
     }
 };
 
