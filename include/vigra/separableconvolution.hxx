@@ -49,6 +49,168 @@ namespace vigra {
 
 /********************************************************/
 /*                                                      */
+/*            internalConvolveLineOptimistic            */
+/*                                                      */
+/********************************************************/
+
+// This function assumes that the input array is actually larger than
+// the range [is, iend), so that it can safely access values outside
+// this range. This is useful if (1) we work on a small ROI, or 
+// (2) we enlarge the input by copying with border treatment.
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class KernelIterator, class KernelAccessor>
+void internalConvolveLineOptimistic(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                                    DestIterator id, DestAccessor da,
+                                    KernelIterator kernel, KernelAccessor ka,
+                                    int kleft, int kright)
+{
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
+
+    int w = std::distance( is, iend );
+    int kw = kright - kleft + 1;
+    for(int x=0; x<w; ++x, ++is, ++id)
+    {
+        SrcIterator iss = is + (-kright);
+        KernelIterator ik = kernel + kright;
+        SumType sum = NumericTraits<SumType>::zero();
+
+        for(int k = 0; k < kw; ++k, --ik, ++iss)
+        {
+            sum += ka(ik) * sa(iss);
+        }
+
+        da.set(detail::RequiresExplicitCast<typename
+                      DestAccessor::value_type>::cast(sum), id);
+    }
+}
+
+namespace detail {
+
+// dest array must have size = stop - start + kright - kleft
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+void 
+copyLineWithBorderTreatment(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                            DestIterator id, DestAccessor da,
+                            int start, int stop,
+                            int kleft, int kright,
+                            BorderTreatmentMode borderTreatment)
+{
+    int w = std::distance( is, iend );
+    int leftBorder = start - kright;
+    int rightBorder = stop - kleft;
+    int copyEnd = std::min(w, rightBorder);
+    
+    if(leftBorder < 0)
+    {
+        switch(borderTreatment)
+        {
+            case BORDER_TREATMENT_WRAP:
+            {
+                for(; leftBorder<0; ++leftBorder, ++id)
+                    da.set(sa(iend, leftBorder), id);
+                break;
+            }
+            case BORDER_TREATMENT_AVOID:
+            {
+                // nothing to do
+                break;
+            }
+            case BORDER_TREATMENT_REFLECT:
+            {
+                for(; leftBorder<0; ++leftBorder, ++id)
+                    da.set(sa(is, -leftBorder), id);
+                break;
+            }
+            case BORDER_TREATMENT_REPEAT:
+            {
+                for(; leftBorder<0; ++leftBorder, ++id)
+                    da.set(sa(is), id);
+                break;
+            }
+            case BORDER_TREATMENT_CLIP:
+            {
+                vigra_precondition(false,
+                             "copyLineWithBorderTreatment() internal error: not applicable to BORDER_TREATMENT_CLIP.");
+                break;
+            }
+            case BORDER_TREATMENT_ZEROPAD:
+            {
+                for(; leftBorder<0; ++leftBorder, ++id)
+                    da.set(NumericTraits<typename DestAccessor::value_type>::zero(), id);
+                break;
+            }
+            default:
+            {
+                vigra_precondition(false,
+                             "copyLineWithBorderTreatment(): Unknown border treatment mode.");
+            }
+        }
+    }
+    
+    SrcIterator iss = is + leftBorder;
+    vigra_invariant( leftBorder < copyEnd,
+        "copyLineWithBorderTreatment(): assertion failed.");
+    for(; leftBorder<copyEnd; ++leftBorder, ++id, ++iss)
+        da.set(sa(iss), id);
+    
+    if(copyEnd < rightBorder)
+    {
+        switch(borderTreatment)
+        {
+            case BORDER_TREATMENT_WRAP:
+            {
+                for(; copyEnd<rightBorder; ++copyEnd, ++id, ++is)
+                    da.set(sa(is), id);
+                break;
+            }
+            case BORDER_TREATMENT_AVOID:
+            {
+                // nothing to do
+                break;
+            }
+            case BORDER_TREATMENT_REFLECT:
+            {
+                iss -= 2;
+                for(; copyEnd<rightBorder; ++copyEnd, ++id, --iss)
+                    da.set(sa(iss), id);
+                break;
+            }
+            case BORDER_TREATMENT_REPEAT:
+            {
+                --iss;
+                for(; copyEnd<rightBorder; ++copyEnd, ++id)
+                    da.set(sa(iss), id);
+                break;
+            }
+            case BORDER_TREATMENT_CLIP:
+            {
+                vigra_precondition(false,
+                             "copyLineWithBorderTreatment() internal error: not applicable to BORDER_TREATMENT_CLIP.");
+                break;
+            }
+            case BORDER_TREATMENT_ZEROPAD:
+            {
+                for(; copyEnd<rightBorder; ++copyEnd, ++id)
+                    da.set(NumericTraits<typename DestAccessor::value_type>::zero(), id);
+                break;
+            }
+            default:
+            {
+                vigra_precondition(false,
+                             "copyLineWithBorderTreatment(): Unknown border treatment mode.");
+            }
+        }
+    }
+}
+
+} // namespace detail
+
+/********************************************************/
+/*                                                      */
 /*                internalConvolveLineWrap              */
 /*                                                      */
 /********************************************************/
@@ -308,7 +470,7 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
     if(stop == 0)
         stop = w;
     is += start;
-
+    
     for(int x=start; x<stop; ++x, ++is, ++id)
     {
         KernelIterator ik = kernel + kright;
@@ -324,10 +486,29 @@ void internalConvolveLineReflect(SrcIterator is, SrcIterator iend, SrcAccessor s
                 sum += ka(ik) * sa(iss);
             }
 
-            SrcIterator isend = is + (1 - kleft);
-            for(; iss != isend ; --ik, ++iss)
+            if(w-x <= -kleft)
             {
-                sum += ka(ik) * sa(iss);
+                SrcIterator isend = iend;
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+
+                int x0 = -kleft - w + x + 1;
+                iss = iend - 2;
+
+                for(; x0; --x0, --ik, --iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+            }
+            else
+            {
+                SrcIterator isend = is + (1 - kleft);
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
             }
         }
         else if(w-x <= -kleft)
@@ -668,6 +849,10 @@ void convolveLine(SrcIterator is, SrcIterator iend, SrcAccessor sa,
         vigra_precondition(0 <= start && start < stop && stop <= w,
                         "convolveLine(): invalid subrange (start, stop).\n");
 
+    typedef typename PromoteTraits<
+            typename SrcAccessor::value_type,
+            typename KernelAccessor::value_type>::Promote SumType;
+    ArrayVector<SumType> a(iend - is); 
     switch(border)
     {
       case BORDER_TREATMENT_WRAP:
