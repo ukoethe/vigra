@@ -252,10 +252,29 @@ void internalConvolveLineWrap(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
 
             iss = ibegin;
-            SrcIterator isend = is + (1 - kleft);
-            for(; iss != isend ; --ik, ++iss)
+            if(w-x <= -kleft)
             {
-                sum += ka(ik) * sa(iss);
+                SrcIterator isend = iend;
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+
+                int x0 = -kleft - w + x + 1;
+                iss = ibegin;
+
+                for(; x0; --x0, --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+            }
+            else
+            {
+                SrcIterator isend = is + (1 - kleft);
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
             }
         }
         else if(w-x <= -kleft)
@@ -334,12 +353,30 @@ void internalConvolveLineClip(SrcIterator is, SrcIterator iend, SrcAccessor sa,
             }
 
             SrcIterator iss = ibegin;
-            SrcIterator isend = is + (1 - kleft);
-            for(; iss != isend ; --ik, ++iss)
+            if(w-x <= -kleft)
             {
-                sum += ka(ik) * sa(iss);
-            }
+                SrcIterator isend = iend;
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
 
+                int x0 = -kleft - w + x + 1;
+
+                for(; x0; --x0, --ik)
+                {
+                    clipped += ka(ik);
+                }
+            }
+            else
+            {
+                SrcIterator isend = is + (1 - kleft);
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+            }
+            
             sum = norm / (norm - clipped) * sum;
         }
         else if(w-x <= -kleft)
@@ -412,10 +449,22 @@ void internalConvolveLineZeropad(SrcIterator is, SrcIterator iend, SrcAccessor s
         {
             KernelIterator ik = kernel + x;
             SrcIterator iss = ibegin;
-            SrcIterator isend = is + (1 - kleft);
-            for(; iss != isend ; --ik, ++iss)
+            
+            if(w-x <= -kleft)
             {
-                sum += ka(ik) * sa(iss);
+                SrcIterator isend = iend;
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+            }
+            else
+            {
+                SrcIterator isend = is + (1 - kleft);
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
             }
         }
         else if(w-x <= -kleft)
@@ -585,10 +634,29 @@ void internalConvolveLineRepeat(SrcIterator is, SrcIterator iend, SrcAccessor sa
                 sum += ka(ik) * sa(iss);
             }
 
-            SrcIterator isend = is + (1 - kleft);
-            for(; iss != isend ; --ik, ++iss)
+            if(w-x <= -kleft)
             {
-                sum += ka(ik) * sa(iss);
+                SrcIterator isend = iend;
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+
+                int x0 = -kleft - w + x + 1;
+                iss = iend - 1;
+
+                for(; x0; --x0, --ik)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
+            }
+            else
+            {
+                SrcIterator isend = is + (1 - kleft);
+                for(; iss != isend ; --ik, ++iss)
+                {
+                    sum += ka(ik) * sa(iss);
+                }
             }
         }
         else if(w-x <= -kleft)
