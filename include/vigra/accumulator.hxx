@@ -57,7 +57,117 @@
 #include <iostream>
 
 namespace vigra {
+  
+/** \defgroup FeatureAccumulators vigra::acc1
 
+    The namespace <tt>vigra::acc1</tt> contains the accumulator classes which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program. 
+    
+    <b>Basic statistics:</b> (incomplete)
+    - PowerSum<N> (@f$ \sum_i x_i^N @f$)
+    - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
+    - Skewness, Kurtosis, Minimum, Maximum
+    - FlatScatterMatrix (flattened upper-triangular part of scatter matrix)
+    - StandardQuantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%)
+    - ArgMinWeight, ArgMaxWeight (store data or coordinate weher weight assumes its minimal or maximal value)
+    - CoordniateSystem
+    
+    <b>Modifiers:</b> (A is the statistc to be modified)
+    - Normalization
+      <table border="0">
+      <tr><td> DivideByCount<A>      </td><td>  A/Count           </td></tr>
+      <tr><td> RootDivideByCount<A>  </td><td>  sqrt(A/Count)     </td></tr>
+      <tr><td> DivideUnbiased<A>     </td><td>  A/(Count-1)       </td></tr>
+      <tr><td> RootDivideUnbiased<A> </td><td>  sqrt(A/(Count-1)) </td></tr>
+      </table>    
+    - Data preparation:
+      <table border="0">
+      <tr><td>  Central<A>   </td><td> substract mean before computing A </td></tr>
+      <tr><td>  Principal<A> </td><td> project onto PCA eigenvectors   </td></tr>
+      <tr><td>  Whitened<A>  </td><td> scalte to unit variance after PCA   </td></tr>
+      <tr><td>  Coord        </td><td> compute A from pixel coordinates rather than from pixel values    </td></tr>
+      <tr><td>  Weighted     </td><td> compute weighted version of A   </td></tr>
+      <tr><td>  Global       </td><td> compute A globally rather than per region (per region is default if labels are given)   </td></tr>
+      </table>
+    
+    Aliases for a couple of important features are implemented (mainly as typedef FullName Alias). The alias names are equivalent to full names. 
+    Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
+    
+    <table border="0">
+    <tr><th> Alias           </th><th>   Full Name                 </th></tr>
+    <tr><td> Count           </td><td>  PowerSum<0>                </td></tr>
+    <tr><td> Sum             </td><td>  PowerSum<1>                </td></tr>
+    <tr><td> SumOfSquares    </td><td>  PowerSum<2>                </td></tr>
+    <tr><td> Mean            </td><td>  DivideByCount<PowerSum<1>> </td></tr>
+    <tr><td> RootMeanSquares </td><td>  RootDivideByCount<PowerSum<2>> </td></tr>
+    <tr><td> Moment<N>       </td><td>  DivideByCount<PowerSum<N>>  </td></tr>
+    <tr><td> Variance        </td><td>  DivideByCount<Central<PowerSum<2>>>  </td></tr>
+    <tr><td> StdDev          </td><td>  RootDivideByCount<Central<PowerSum<2>>>  </td></tr>
+    <tr><td> Covariance      </td><td>  DivideByCount<FlatScatterMatrix> </td></tr>
+    <tr><td> RegionCenter    </td><td>  Coord<Mean>                </td></tr>
+    <tr><td> CenterOfMass    </td><td>  Weighted<Coord<Mean>>      </td></tr>
+    </table>
+    
+    There are a few rules for composing statistics:
+    - modifiers can be specified in any order, but are internally transformed to standard order: Global<Weighted<Coord<normalization<data preparation<basic statistic
+    - only one normalization modifier and one data preparation modifier (Central or Principal or Whitened) is permitted 
+    - Count ignores all modifiers except Global and Weighted
+    - Sum ignores Central and Principal, because sum would be zero
+    - ArgMinWeight and ArgMaxWeight are automatically Weighted
+
+
+    High-level syntax example using the \ref vigra::acc1::AccumulatorChain class:
+
+    \code
+    using namespace vigra::acc1;
+    typedef double DataType;
+    vigra::MultiArray<2, DataType> data(...);
+    AccumulatorChain<DataType, 
+        Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> > a;
+
+    collectStatistics(data.begin(), data.end(), a);
+    
+    std::cout << "Mean: " << get<Mean(a) << std::endl;
+    std::cout << "Variance: " << get<Variance(a) << std::endl;
+    \endcode
+    
+    The \ref vigra::acc1::AccumulatorChain object contains the selected statistics and their dependencies. In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient. 
+
+    Rules and notes:
+    - order of statistics in Select<> is arbitrary
+    - up to 20 statistics in Select<>, but Select<> can be nested
+    - dependencies are automatically inserted
+    - duplicates are automatically removed
+    - collectStatistics() does as many passes through the data as necessary
+    - each accumulator only sees data in the appropriate pass (its "working pass"
+
+    The Accumulators can also be used with vector-valued data, e.g.
+    
+    \code 
+    typedef vigra::RGBValue<UInt8> DataType;
+    AccumulatorChain<DataType, Select<...> > a;
+    ...
+    \endcode
+    
+    To access several images or pixel coordinates, use CoupledIterator:
+    
+    \code
+    using namespace vigra::acc1;
+    vigra::MultiArray<3, double> data(...), weights(...);
+    typedef vigra::CoupledIteratorType<3, double, double>::type Iterator;
+    typedef Iterator::value_type Handle;
+    
+    AccumulatorChain<Handle,
+        Select<DataArg<1>, WeightArg<2>, //
+	>
+
+      @f$ e^{\pi} @f$.
+
+      
+The accumulator system understands and takes advantage of these relationships. different features can be composed from a small number of fundamental statistics. efficiently compute a variety of statistics. 
+
+ 
+
+   */
 namespace acc1 {
 
 /****************************************************************************/
@@ -1546,6 +1656,10 @@ struct AccumulatorChainImpl
 };
 
    // Create an accumulator chain containing the Selected statistics and their dependencies.
+/** \brief create an accumulator chain containing the selected statistics and their dependencies.
+
+The template parameters are as follows
+ */
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChain
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
