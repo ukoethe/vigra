@@ -58,35 +58,37 @@
 
 namespace vigra {
   
-/** \defgroup FeatureAccumulators vigra::acc1
+/** \defgroup FeatureAccumulators Feature Accumulators
 
     The namespace <tt>vigra::acc1</tt> contains the accumulator classes which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program. 
     
     <b>Basic statistics:</b> (incomplete)
     - PowerSum<N> (@f$ \sum_i x_i^N @f$)
     - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
-    - Skewness, Kurtosis, Minimum, Maximum
+    - Skewness, UnbiasedSkewness
+    - Kurtosis, UnbiasedKurtosis
+    - Minimum, Maximum
     - FlatScatterMatrix (flattened upper-triangular part of scatter matrix)
     - StandardQuantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%)
-    - ArgMinWeight, ArgMaxWeight (store data or coordinate weher weight assumes its minimal or maximal value)
-    - CoordniateSystem
+    - ArgMinWeight, ArgMaxWeight (store data or coordinate where weight assumes its minimal or maximal value)
+    - CoordniateSystem (identity matrix of appropriate size)
     
-    <b>Modifiers:</b> (A is the statistc to be modified)
+    <b>Modifiers:</b> (S is the statistc to be modified)
     - Normalization
       <table border="0">
-      <tr><td> DivideByCount<A>      </td><td>  A/Count           </td></tr>
-      <tr><td> RootDivideByCount<A>  </td><td>  sqrt(A/Count)     </td></tr>
-      <tr><td> DivideUnbiased<A>     </td><td>  A/(Count-1)       </td></tr>
-      <tr><td> RootDivideUnbiased<A> </td><td>  sqrt(A/(Count-1)) </td></tr>
+      <tr><td> DivideByCount<S>        </td><td>  S/Count           </td></tr>
+      <tr><td> RootDivideByCount<S>    </td><td>  sqrt( S/Count )     </td></tr>
+      <tr><td> DivideUnbiased<S>       </td><td>  S/(Count-1)       </td></tr>
+      <tr><td> RootDivideUnbiased<S> &nbsp; &nbsp;  </td><td>  sqrt( S/(Count-1) ) </td></tr>
       </table>    
     - Data preparation:
       <table border="0">
-      <tr><td>  Central<A>   </td><td> substract mean before computing A </td></tr>
-      <tr><td>  Principal<A> </td><td> project onto PCA eigenvectors   </td></tr>
-      <tr><td>  Whitened<A>  </td><td> scalte to unit variance after PCA   </td></tr>
-      <tr><td>  Coord        </td><td> compute A from pixel coordinates rather than from pixel values    </td></tr>
-      <tr><td>  Weighted     </td><td> compute weighted version of A   </td></tr>
-      <tr><td>  Global       </td><td> compute A globally rather than per region (per region is default if labels are given)   </td></tr>
+      <tr><td>  Central<S>   </td><td> substract mean before computing S </td></tr>
+      <tr><td>  Principal<S> </td><td> project onto PCA eigenvectors   </td></tr>
+      <tr><td>  Whitened<S> &nbsp; &nbsp;  </td><td> scalte to unit variance after PCA   </td></tr>
+      <tr><td>  Coord<S>        </td><td> compute S from pixel coordinates rather than from pixel values    </td></tr>
+      <tr><td>  Weighted<S>     </td><td> compute weighted version of S   </td></tr>
+      <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
       </table>
     
     Aliases for a couple of important features are implemented (mainly as typedef FullName Alias). The alias names are equivalent to full names. 
@@ -98,7 +100,7 @@ namespace vigra {
     <tr><td> Sum             </td><td>  PowerSum<1>                </td></tr>
     <tr><td> SumOfSquares    </td><td>  PowerSum<2>                </td></tr>
     <tr><td> Mean            </td><td>  DivideByCount<PowerSum<1>> </td></tr>
-    <tr><td> RootMeanSquares </td><td>  RootDivideByCount<PowerSum<2>> </td></tr>
+    <tr><td> RootMeanSquares &nbsp; </td><td>  RootDivideByCount<PowerSum<2>> </td></tr>
     <tr><td> Moment<N>       </td><td>  DivideByCount<PowerSum<N>>  </td></tr>
     <tr><td> Variance        </td><td>  DivideByCount<Central<PowerSum<2>>>  </td></tr>
     <tr><td> StdDev          </td><td>  RootDivideByCount<Central<PowerSum<2>>>  </td></tr>
@@ -107,7 +109,7 @@ namespace vigra {
     <tr><td> CenterOfMass    </td><td>  Weighted<Coord<Mean>>      </td></tr>
     </table>
     
-    There are a few rules for composing statistics:
+    There are a few <b>rules for composing statistics</b>:
     - modifiers can be specified in any order, but are internally transformed to standard order: Global<Weighted<Coord<normalization<data preparation<basic statistic
     - only one normalization modifier and one data preparation modifier (Central or Principal or Whitened) is permitted 
     - Count ignores all modifiers except Global and Weighted
@@ -115,7 +117,7 @@ namespace vigra {
     - ArgMinWeight and ArgMaxWeight are automatically Weighted
 
 
-    High-level syntax example using the \ref vigra::acc1::AccumulatorChain class (to use Weighted<> or Coord<> modifiers, see below):
+    High-level syntax example using the \ref acc1::AccumulatorChain class (to use Weighted<> or Coord<> modifiers, see below):
 
     \code
     using namespace vigra::acc1;
@@ -130,7 +132,7 @@ namespace vigra {
     std::cout << "Variance: " << get<Variance(a) << std::endl;
     \endcode
     
-    The \ref vigra::acc1::AccumulatorChain object contains the selected statistics and their dependencies. In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient. 
+    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with <tt>Select</tt>. (In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
 
     Rules and notes:
     - order of statistics in Select<> is arbitrary
@@ -144,11 +146,11 @@ namespace vigra {
     
     \code 
     typedef vigra::RGBValue<UInt8> DataType;
-    AccumulatorChain<DataType, Select<...> > a;
+    vigra::acc1::AccumulatorChain<DataType, Select<...> > a;
     ...
     \endcode
     
-    To compute <b>weighted statistics</b> (Weighted<>) or statistics over <b>coordinates</b> (Coord<>), use \ref CoupledScanOrderIterator :
+    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), use \ref CoupledScanOrderIterator :
                            
     \code
     using namespace vigra::acc1;
@@ -191,9 +193,7 @@ namespace vigra {
 
     collectStatistics(start,end,a);
 
-    
     std::cout << get<Mean>(a, regionlabel) //get Mean of certain region
-
     \endcode
 
    
@@ -204,27 +204,20 @@ namespace vigra {
     DynamicAccumulatorChain<double, 
         Select<Mean, Minimum, Maximum, Variance, StdDev> > a; // at compile-time
     activate<Mean>(a);      //at run-time
-    a.activate("Minimum");  //same as activate<Minimum>(a)
+    a.activate("Minimum");  //same as activate<Minimum>(a) (alias names are not recognized)
 
     std::cout << "Mean: " << get<Mean>(a) << std::endl;       //ok
     std::cout << "Maximum: " << get<Maximum>(a) << std::endl; //error
     \endcode
       
-    For run-time activation of region statistics, see \ref acc1::DynamicAccumulatorChainArray. 
+    For run-time activation of region statistics, use \ref acc1::DynamicAccumulatorChainArray instead. 
 
     
-
-    
-The accumulator system understands and takes advantage of these relationships. different features can be composed from a small number of fundamental statistics. efficiently compute a variety of statistics. 
-
-@f$ e^{\pi} @f$.
-
-This computation is more efficient, becuase Variance, StdDev and Maximum are not computed. However, it is probably less efficient than only computing Mean and Minimum via the non-dynamic AccumulatorChain.
-
-
-
 */
 
+
+/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for usage examples.
+*/
 namespace acc1 {
 
 /****************************************************************************/
@@ -296,6 +289,8 @@ struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
 
+/** LabelArg<INDEX> tells the acc1::AccumulatorChainArray which index of the Handle contains the labels. (Note that coordinates are always index 0)
+ */
 template <int INDEX>
 class LabelArg
 {
@@ -1816,7 +1811,9 @@ struct DynamicAccumulatorChain
     {
         return LookupTag<TAG, DynamicAccumulatorChain>::type::isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
-    
+
+    /** Return names of all tags in the accumulator chain that are activated.
+    */
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
@@ -1847,9 +1844,16 @@ struct DynamicAccumulatorChain
     }
 };
 
-/** \brief FIXME (needs documentation...) create an accumulator chain containing the selected statistics and their dependencies.
+/** \brief The AccumulatorChainArray is used to compute per-region statistics.
 
-The template parameters are as follows
+The template parameters are as follows:
+
+- T: CoupledIterator
+
+- Selected: (?)
+
+See \ref FeatureAccumulators for examples of use.
+
 */
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
@@ -1918,28 +1922,41 @@ struct AccumulatorChainArray
     }
 };   
 
+/** \brief Create a dynamic accumulator chain array containing the Selected statistics and their dependencies.
+DynamicAccumulatorChainArray is used to compute per-region statistics with run-time activation. Statistics will only be computed if activate<Tag>() is called at runtime.
+*/
 template <class T, class Selected>
 struct DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
 {
     typedef typename DynamicAccumulatorChainArray::AccumulatorTags AccumulatorTags;
-        
+
+    /** Activate Tag by name. If the Tag is not in the accumulator chain a PreconditionViolation is thrown.
+    */
     void activate(std::string tag)
     {
         vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
     }
-
+    
+    /**
+       Activate Tag. If the Tag is not in the accumulator chain it is ignored. (?)
+    */
     template <class TAG>
     void activate()
     {
         this->next_.activate<TAG>();
     }
     
+    /** Activate all statistics of the accumulator chain.
+    */
     void activateAll()
     {
         this->next_.activateAll();
     }
+    
+    /** Return true if the corresponding Tag (the Tag with name 'tag') is active, i.e. activate(tag) or activate<Tag>() has been called. If Tag is not in the accumulator chain a PreconditionViolation is thrown. (Note that alias names are not recognized.)
+    */
     
     bool isActive(std::string tag) const
     {
@@ -1949,12 +1966,16 @@ struct DynamicAccumulatorChainArray
         return v.result;
     }
     
+    /** Return true if Tag is active, i.e. activate(tag) or activate<Tag>() has been called. If Tag is not in the accumulator chain, true is returned. (?)
+    */
     template <class TAG>
     bool isActive() const
     {
         return this->next_.isActive<TAG>();
     }
     
+    /** Return names of all tags in the accumulator chain that are activated.
+    */
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
@@ -1964,6 +1985,8 @@ struct DynamicAccumulatorChainArray
         return res;
     }
     
+    /** Return number of passes required to compute the active statistics in the accumulator chain.
+    */
     unsigned int passesRequired() const
     {
         return this->next_.passesRequiredDynamic();
@@ -2306,8 +2329,8 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
-/** Collect statistics.. as many passes as necessary (?)
- */
+/** Generic loop to collect the statistics.
+*/
 template <class ITERATOR, class ACCUMULATOR>
 void collectStatistics(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
 {
@@ -2376,6 +2399,8 @@ struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
 /*                                                                          */
 /****************************************************************************/
 
+/** Compute statistic globally rather than per region. This modifier only works when labels are given ((Dynamic)AccumulatorChainArray), in which case statistics are computed per-region by default.
+*/
 template <class TAG>
 class Global
 {
@@ -2390,6 +2415,8 @@ class Global
     }
 };
 
+/** If AccumulatorChain is used with CoupledIterator, DataArg<INDEX> tells the accumulator which index of the Handle contains the data. (Note that coordinates are always index 0)
+*/
 template <int INDEX>
 class DataArg
 {
@@ -2415,6 +2442,8 @@ class DataArg
     };
 };
 
+/** (?)
+ */
 template <class TAG>
 class DataFromHandle
 {
@@ -2496,6 +2525,8 @@ class DataFromHandle
     };
 };
 
+/** Compute statistic from pixel coordinates rather than from pixel values. (Accumulator must be used with CoupledHandle to access pixel coordinates.)
+ */
 template <class TAG>
 class Coord
 {
@@ -2577,6 +2608,8 @@ class Coord
     };
 };
 
+/** If AccumulatorChain is used with CoupledIterator, WeightArg<INDEX> tells the accumulator which index of the Handle contains the weights. (Note that coordinates are always index 0.)
+*/
 template <int INDEX>
 class WeightArg
 {
@@ -2602,6 +2635,8 @@ class WeightArg
     };
 };
 
+/** Compute weighted version of the statistic.
+*/
 template <class TAG>
 class Weighted
 {
@@ -2652,6 +2687,8 @@ class Weighted
 };
 
 // Centralize by subtracting the mean and cache the result
+/** Centralize by substracting the mean before computing the statistic and cache the result. (?)
+*/
 class Centralize
 {
   public:
@@ -2714,6 +2751,8 @@ class Centralize
     };
 };
 
+/** Substract the mean before computing the statistic.
+*/
 template <class TAG>
 class Central
 {
@@ -2793,6 +2832,8 @@ class Central
 // };
 
 // Compute principal projection and cache the result
+/** (?)
+*/
 class PrincipalProjection
 {
   public:
@@ -2860,6 +2901,8 @@ class PrincipalProjection
     };
 };
 
+/** Project onto PCA eigenvectors.
+*/
 template <class TAG>
 class Principal
 {
@@ -2926,6 +2969,8 @@ important notes on modifiers:
 /*                                                                          */
 /****************************************************************************/
 
+/** Identity matrix of appropriate size. (?)
+*/
 class CoordinateSystem
 {
   public:
@@ -3065,6 +3110,8 @@ class PowerSum<1>
     };
 };
 
+/** PowerSum<N> =@f$ \sum_i x_i^N @f$
+*/
 template <unsigned N>
 class PowerSum
 {
@@ -3125,6 +3172,8 @@ class AbsPowerSum<1>
     };
 };
 
+/** AbsPowerSum<N> =@f$ \sum_i |x_i|^N @f$
+*/
 template <unsigned N>
 class AbsPowerSum
 {
@@ -3198,6 +3247,8 @@ struct CachedResultBase
 };
 
 // cached Mean and Variance
+/** Divide statistic by Count:  DivideByCount<TAG> = TAG / Count .
+*/
 template <class TAG>
 class DivideByCount
 {
@@ -3231,6 +3282,8 @@ class DivideByCount
 };
 
 // UnbiasedVariance
+/** Divide statistics by Count-1:  DivideUnbiased<TAG> = TAG / (Count-1)
+*/
 template <class TAG>
 class DivideUnbiased
 {
@@ -3260,6 +3313,8 @@ class DivideUnbiased
 };
 
 // RootMeanSquares and StdDev
+/** RootDivideByCount<TAG> = sqrt( A/Count )
+*/
 template <class TAG>
 class RootDivideByCount
 {
@@ -3290,6 +3345,8 @@ class RootDivideByCount
 };
 
 // UnbiasedStdDev
+/** RootDivideUnbiased<TAG> = sqrt( A / (Count-1) )
+*/
 template <class TAG>
 class RootDivideUnbiased
 {
@@ -3484,6 +3541,8 @@ class Central<PowerSum<4> >
     };
 };
 
+/** Skewness =@f$ \frac{ \frac{1}{n}\sum_i (x_i-\hat{x})^3 }{ (\frac{1}{n}\sum_i (x_i-\hat{x})^2)^{3/2} } @f$
+*/
 class Skewness
 {
   public:
@@ -3515,6 +3574,8 @@ class Skewness
     };
 };
 
+/** Unbiased skewness.
+*/
 class UnbiasedSkewness
 {
   public:
@@ -3544,6 +3605,9 @@ class UnbiasedSkewness
     };
 };
 
+/** Kurtosis = @f$ \frac{ \frac{1}{n}\sum_i (x_i-\bar{x})^4 }{
+(\frac{1}{n} \sum_i(x_i-\bar{x})^2)^2 } - 3 @f$
+*/
 class Kurtosis
 {
   public:
@@ -3575,6 +3639,8 @@ class Kurtosis
     };
 };
 
+/** Unbiased Kurtosis.
+*/
 class UnbiasedKurtosis
 {
   public:
@@ -3666,6 +3732,8 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
 } // namespace detail
 
 // we only store the flattened upper triangular part of the scatter matrix
+/** Flattened uppter-triangular part of scatter matrix (?)
+*/
 class FlatScatterMatrix
 {
   public:
@@ -3831,6 +3899,8 @@ class DivideUnbiased<FlatScatterMatrix>
     };
 };
 
+/** ScatterMatrixEigensystem (?)
+*/
 class ScatterMatrixEigensystem
 {
   public:
@@ -4122,6 +4192,8 @@ class Principal<CoordinateSystem>
     };
 };
 
+/** Minimum value.
+*/
 class Minimum
 {
   public:
@@ -4195,6 +4267,8 @@ class Minimum
     };
 };
 
+/** Maximum value.
+*/
 class Maximum
 {
   public:
@@ -4268,6 +4342,8 @@ class Maximum
     };
 };
 
+/** Give data where weight assumes its minimal value. (Weights must be given.) Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
+*/
 class ArgMinWeight
 {
   public:
@@ -4338,6 +4414,8 @@ class ArgMinWeight
     };
 };
 
+/** Give data where weight assumes its minimal value. (Weights must be given.) Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
+*/
 class ArgMaxWeight
 {
   public:
@@ -4407,6 +4485,7 @@ class ArgMaxWeight
         }
     };
 };
+
 
 template <class BASE, int BinCount>
 class HistogramBase
