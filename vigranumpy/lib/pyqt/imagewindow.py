@@ -57,6 +57,22 @@ import quickdialog
 import weakref
 import viewer2svg
 
+class Crosshair(ImageCursor):
+    def __init__(self, *args):
+        ImageCursor.__init__(self, *args)
+        self.visible = False
+        self.position = qcore.QPoint(-1, -1)
+    def setVisible(self, what=True):
+        self.visible = what
+        if what:
+            ImageCursor.setPosition(self, self.position)
+        else:
+            ImageCursor.setPosition(self, qcore.QPoint(-1, -1))
+    def setPosition(self, pos):
+        self.position = pos
+        if self.visible:
+            ImageCursor.setPosition(self, self.position)
+
 class ImageViewer(OverlayViewer):
 
     activeViewers = weakref.WeakValueDictionary()
@@ -79,7 +95,8 @@ class ImageViewer(OverlayViewer):
             ImageViewer.activeViewers[k] = self
             self.setWindowTitle("Image %d" % k)
 
-        self.imageCursor = ImageCursor(self)
+        #self.imageCursor = ImageCursor(self) # doesn't work anymore - setVisible() is gone
+        self.imageCursor = Crosshair(self)
         self.imageCursor.setVisible(False)
         self.imageCursor.setPosition(qcore.QPoint(self.image.width // 2, self.image.height // 2))
         OverlayViewer.addOverlay(self, self.imageCursor)
