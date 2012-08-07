@@ -115,7 +115,7 @@ namespace vigra {
     - ArgMinWeight and ArgMaxWeight are automatically Weighted
 
 
-    High-level syntax example using the \ref vigra::acc1::AccumulatorChain class:
+    High-level syntax example using the \ref vigra::acc1::AccumulatorChain class (to use Weighted<> or Coord<> modifiers, see below):
 
     \code
     using namespace vigra::acc1;
@@ -138,7 +138,7 @@ namespace vigra {
     - dependencies are automatically inserted
     - duplicates are automatically removed
     - collectStatistics() does as many passes through the data as necessary
-    - each accumulator only sees data in the appropriate pass (its "working pass"
+    - each accumulator only sees data in the appropriate pass (its "working pass")
 
     The Accumulators can also be used with vector-valued data, e.g.
     
@@ -148,8 +148,8 @@ namespace vigra {
     ...
     \endcode
     
-    To access several images or pixel coordinates, use CoupledIterator:
-    
+    To compute <b>weighted statistics</b> (Weighted<>) or statistics over <b>coordinates</b> (Coord<>), use \ref CoupledScanOrderIterator :
+                           
     \code
     using namespace vigra::acc1;
     vigra::MultiArray<3, double> data(...), weights(...);
@@ -157,17 +157,74 @@ namespace vigra {
     typedef Iterator::value_type Handle;
     
     AccumulatorChain<Handle,
-        Select<DataArg<1>, WeightArg<2>, //
-	>
+        Select<DataArg<1>, WeightArg<2>,       //where to look in the Handle (coordinates are always arg 0)
+	       Mean, Variance,                     //statistics over values  
+	       Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
+	       Weighted<Mean>, Weighted<Variance>, //weighted values,
+	       Weighted<Coord<Mean> > >            //weighted coordinates.
+	a;
 
-      @f$ e^{\pi} @f$.
+    Iterator start = createCoupledIterator(data, weights); //coord->0, data->1, weights->2
+    Iterator end = start.getEndIterator();
+     
+    collectStatistics(start,end,a);
+    \endcode
 
+    To compute <b>region statistics</b>, use \ref acc1::AccumulatorChainArray with \ref CoupledScanOrderIterator :
+    
+    \code
+    using namespace vigra::acc1;
+    using namespace vigra;
+    MultiArray<3, double> data(...);
+    MultiArray<3, UInt32> labels(...);
+    typedef CoupledIteratorType<3, double, UInt32>::type Iterator;
+    typedef Iterator::value_type Handle;
+    AccumulatorChainArray<Handle,
+        Select<DataArg<1>, LabelArg<2>,            //where to look in the Handle (coordinates are always arg 0)
+	       Mean, Variance,                    //per-region statistics over values
+	       Coord<Mean>, Coord<Variance>,       //per-region statistics over coordinates
+	       Global<Mean>, Global<Variance> > > //global statistics
+    a;
+
+    Iterator start = createCoupledIterator(data, labels);
+    Iterator end = start.getEndIterator();
+
+    collectStatistics(start,end,a);
+
+    
+    std::cout << get<Mean>(a, regionlabel) //get Mean of certain region
+
+    \endcode
+
+   
+    In some application it will be known only at run-time which statistics have to be computed. An Accumulator with <b>run-time activation</b> is provided by the \ref acc1::DynamicAccumulatorChain class. One specifies a set of statistics at compile-time and from this set one can activate the needed statistics at run-time.
+  
+    \code
+    using namespace vigra::acc1;
+    DynamicAccumulatorChain<double, 
+        Select<Mean, Minimum, Maximum, Variance, StdDev> > a; // at compile-time
+    activate<Mean>(a);      //at run-time
+    a.activate("Minimum");  //same as activate<Minimum>(a)
+
+    std::cout << "Mean: " << get<Mean>(a) << std::endl;       //ok
+    std::cout << "Maximum: " << get<Maximum>(a) << std::endl; //error
+    \endcode
       
+    For run-time activation of region statistics, see \ref acc1::DynamicAccumulatorChainArray. 
+
+    
+
+    
 The accumulator system understands and takes advantage of these relationships. different features can be composed from a small number of fundamental statistics. efficiently compute a variety of statistics. 
 
- 
+@f$ e^{\pi} @f$.
 
-   */
+This computation is more efficient, becuase Variance, StdDev and Maximum are not computed. However, it is probably less efficient than only computing Mean and Minimum via the non-dynamic AccumulatorChain.
+
+
+
+*/
+
 namespace acc1 {
 
 /****************************************************************************/
@@ -1648,7 +1705,8 @@ struct AccumulatorChainImpl
                      "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
-    
+    // /** Return number of passes required to compute the statistics in the accumulator chain.
+    // */
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired();
@@ -1656,16 +1714,22 @@ struct AccumulatorChainImpl
 };
 
    // Create an accumulator chain containing the Selected statistics and their dependencies.
-/** \brief create an accumulator chain containing the selected statistics and their dependencies.
+/** \brief Create an accumulator chain containing the selected statistics and their dependencies.
 
 The template parameters are as follows
+- T: The input type. Either Type of the data, or CoupledHandle (when using CoupledIterator to access coordinates or compute weighted statistics)
+- Selected: Select<Tag1, Tag2,...>, wrapper containing the statistics to be computed.
+
+To compute the selected statistics, call \ref acc1::collectStatistics .
  */
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChain
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
 {
+    /** TypeList of Tags in the accumulator chain (?).
+    */
     typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
-    
+  
     template <class U, int N>
     void reshape(TinyVector<U, N> const & s)
     {
@@ -1675,6 +1739,9 @@ struct AccumulatorChain
         this->current_pass_ = 1;
     }
      
+    /**
+       Return names of all tags in the accumulator chain (selected statistics and their dependencies)
+    */
     static ArrayVector<std::string> const & tagNames()
     {
         static const ArrayVector<std::string> n = collectTagNames();
@@ -1693,30 +1760,47 @@ struct AccumulatorChain
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
+/** \brief Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
+
+Statistics will only be computed if activate<Tag>() or activate(tag) is called at runtime.
+
+The template parameters are as follows
+- T: The input type. Either Type of the data, or CoupledHandle (when using CoupledIterator to access coordinates or compute weighted statistics)
+- Selected: Select<Tag1, Tag2,...>, wrapper containing the statistics to be computed.
+
+ */
 template <class T, class Selected>
 struct DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {
     typedef typename AccumulatorChain<T, Selected, true>::InternalBaseType InternalBaseType;
     typedef typename DynamicAccumulatorChain::AccumulatorTags AccumulatorTags;
-        
+       
+    /** Activate Tag by name. If the Tag is not in the accumulator chain a PreconditionViolation is thrown.
+    */
     void activate(std::string tag)
     {
         vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
     
+    /**
+       Activate Tag. If the Tag is not in the accumulator chain it is ignored. (?)
+    */
     template <class TAG>
     void activate()
     {
         LookupTag<TAG, DynamicAccumulatorChain>::type::activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
+    /** Activate all statistics of the accumulator chain.
+    */
     void activateAll()
     {
         getAccumulator<AccumulatorEnd>(*this).active_accumulators_.set();
     }
-    
+    /** Return true if the corresponding Tag (the Tag with name 'tag') is active, i.e. activate(tag) or activate<Tag>() has been called. If Tag is not in the accumulator chain a PreconditionViolation is thrown. (Note that alias names are not recognized.)
+    */
     bool isActive(std::string tag) const
     {
         detail::TagIsActive_Visitor v;
@@ -1725,6 +1809,8 @@ struct DynamicAccumulatorChain
         return v.result;
     }
     
+    /** Return true if Tag is active, i.e. activate(tag) or activate<Tag>() has been called. If Tag is not in the accumulator chain, true is returned. (?)
+    */
     template <class TAG>
     bool isActive() const
     {
@@ -1740,6 +1826,8 @@ struct DynamicAccumulatorChain
         return res;
     }
     
+    /** Return number of passes required to compute the active statistics in the accumulator chain.
+    */
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
@@ -1759,6 +1847,10 @@ struct DynamicAccumulatorChain
     }
 };
 
+/** \brief FIXME (needs documentation...) create an accumulator chain containing the selected statistics and their dependencies.
+
+The template parameters are as follows
+*/
 template <class T, class Selected, bool dynamic=false>
 struct AccumulatorChainArray
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
@@ -2214,6 +2306,8 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
+/** Collect statistics.. as many passes as necessary (?)
+ */
 template <class ITERATOR, class ACCUMULATOR>
 void collectStatistics(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
 {
