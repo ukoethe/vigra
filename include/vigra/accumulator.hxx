@@ -69,6 +69,7 @@ namespace vigra {
     - Kurtosis, UnbiasedKurtosis
     - Minimum, Maximum
     - FlatScatterMatrix (flattened upper-triangular part of scatter matrix)
+    - 4 histogram classes (see \ref histogram "below")
     - StandardQuantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%)
     - ArgMinWeight, ArgMaxWeight (store data or coordinate where weight assumes its minimal or maximal value)
     - CoordniateSystem (identity matrix of appropriate size)
@@ -90,7 +91,7 @@ namespace vigra {
       <tr><td>  Weighted<S>     </td><td> compute weighted version of S   </td></tr>
       <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
       </table>
-    
+      
     Aliases for a couple of important features are implemented (mainly as typedef FullName Alias). The alias names are equivalent to full names. 
     Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
     
@@ -122,14 +123,16 @@ namespace vigra {
     \code
     using namespace vigra::acc1;
     typedef double DataType;
-    vigra::MultiArray<2, DataType> data(...);
+    int size = 1000;
+    vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
+    // fill array with data
     AccumulatorChain<DataType, 
         Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> > a;
 
     collectStatistics(data.begin(), data.end(), a);
     
-    std::cout << "Mean: " << get<Mean(a) << std::endl;
-    std::cout << "Variance: " << get<Variance(a) << std::endl;
+    std::cout << "Mean: " << get<Mean>(a) << std::endl;
+    std::cout << "Variance: " << get<Variance>(a) << std::endl;
     \endcode
     
     The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with <tt>Select</tt>. (In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
@@ -163,7 +166,7 @@ namespace vigra {
 	       Mean, Variance,                     //statistics over values  
 	       Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
 	       Weighted<Mean>, Weighted<Variance>, //weighted values,
-	       Weighted<Coord<Mean> > >            //weighted coordinates.
+	       Weighted<Coord<Mean> > > >          //weighted coordinates.
 	a;
 
     Iterator start = createCoupledIterator(data, weights); //coord->0, data->1, weights->2
@@ -192,8 +195,8 @@ namespace vigra {
     Iterator end = start.getEndIterator();
 
     collectStatistics(start,end,a);
-
-    std::cout << get<Mean>(a, regionlabel) //get Mean of certain region
+    int regionlabel = 0;
+    std::cout << get<Mean>(a, regionlabel); //get Mean of region with label 0
     \endcode
 
    
@@ -201,16 +204,59 @@ namespace vigra {
   
     \code
     using namespace vigra::acc1;
+    vigra::MultiArray<2, double> data(...);
     DynamicAccumulatorChain<double, 
         Select<Mean, Minimum, Maximum, Variance, StdDev> > a; // at compile-time
     activate<Mean>(a);      //at run-time
     a.activate("Minimum");  //same as activate<Minimum>(a) (alias names are not recognized)
-
+    
+    collectStatistics(data.begin(), data.end(), a);
     std::cout << "Mean: " << get<Mean>(a) << std::endl;       //ok
     std::cout << "Maximum: " << get<Maximum>(a) << std::endl; //error
     \endcode
       
     For run-time activation of region statistics, use \ref acc1::DynamicAccumulatorChainArray instead. 
+
+    \anchor histogram
+    Four kinds of <b>histograms</b> are currently implemented:
+        - IntegerHistogram<BinCount>: data values are equal to bin indices
+        - UserRangeHistogram<BinCount>: ...
+        - ...
+
+    - number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time)
+    - ...
+
+    Usage:
+    \code
+    using namespace vigra::acc1;
+    typedef double DataType;
+    vigra::MultiArray<2, DataType> data(...);
+    
+    typedef IntegerHistogram<40> SomeHistogram;
+    
+    AccumulatorChain<DataType, Select<SomeHistogram> > a;
+
+    collectStatistics(data.begin(), data.end(), a);
+
+    vigra::TinyVector<double, 40> hist = get<SomeHistogram>(a);
+    \endcode
+    
+
+    Usage when specifying number of bins at run-time:
+    \code
+    ...
+    typedef IntegerHistogram<0> SomeHistogram; //use zero as template parameter
+    AccumulatorChain<DataType, Select<SomeHistogram> > a;
+
+    vigra::HistogramOptions histogram_option;                 //specify number of bins
+    histogram_options = histogram_options.setBinCount(40);    //at run-time
+
+    collectStatistics(data.begin(), data.end(), a);
+    vigra::MultiArray<1, double> hist = get<SomeHistogram>(a);
+    \endcode
+    
+    
+    ... more histogram stuff ...
 
     
 */
@@ -2259,6 +2305,8 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 } // namespace detail
 
     // Get a reference to the accumulator TAG in the accumulator chain A
+/** \brief Get a reference to the accumulator TAG in the accumulator chain A
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a)
@@ -2269,6 +2317,8 @@ getAccumulator(A & a)
 }
 
     // Get a reference to the accumulator TAG for region 'label' in the accumulator chain A
+/** Get a reference to the accumulator TAG for region 'label' in the accumulator chain A.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a, MultiArrayIndex label)
@@ -2279,6 +2329,8 @@ getAccumulator(A & a, MultiArrayIndex label)
 }
 
     // get the result of the accumulator specified by TAG
+/** Get the result of the accumulator specified by TAG.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
 get(A const & a)
@@ -2287,6 +2339,8 @@ get(A const & a)
 }
 
     // get the result of the accumulator TAG for region 'label'
+/** Get the result of the accumulator TAG for region 'label'.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
 get(A const & a, MultiArrayIndex label)
@@ -2308,6 +2362,8 @@ getDependency(A const & a)
 }
 
     // activate the dynamic accumulator specified by Tag
+/** Activate the dynamic accumulator specified by Tag. Same as a.activate<Tag>().
+*/
 template <class Tag, class A>
 inline void
 activate(A & a)
@@ -2316,6 +2372,8 @@ activate(A & a)
 }
 
     // check if the dynamic accumulator specified by Tag is active
+/** Check if the dynamic accumulator specified by Tag is active. Same as a.isActive<Tag>().
+*/
 template <class Tag, class A>
 inline bool
 isActive(A const & a)
@@ -2329,7 +2387,7 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
-/** Generic loop to collect the statistics.
+/** Generic loop to collect the statistics in as many passes over the data as necessary.
 */
 template <class ITERATOR, class ACCUMULATOR>
 void collectStatistics(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
@@ -2399,7 +2457,9 @@ struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
 /*                                                                          */
 /****************************************************************************/
 
-/** Compute statistic globally rather than per region. This modifier only works when labels are given ((Dynamic)AccumulatorChainArray), in which case statistics are computed per-region by default.
+/** \brief Compute statistic globally rather than per region. 
+
+This modifier only works when labels are given (with (Dynamic)AccumulatorChainArray), in which case statistics are computed per-region by default.
 */
 template <class TAG>
 class Global
@@ -2415,7 +2475,7 @@ class Global
     }
 };
 
-/** If AccumulatorChain is used with CoupledIterator, DataArg<INDEX> tells the accumulator which index of the Handle contains the data. (Note that coordinates are always index 0)
+/** If AccumulatorChain is used with CoupledIterator, DataArg<INDEX> tells the accumulator chain which index of the Handle contains the data. (Note that coordinates are always index 0)
 */
 template <int INDEX>
 class DataArg
@@ -2525,7 +2585,9 @@ class DataFromHandle
     };
 };
 
-/** Compute statistic from pixel coordinates rather than from pixel values. (Accumulator must be used with CoupledHandle to access pixel coordinates.)
+/** \brief Compute statistic from pixel coordinates rather than from pixel values. 
+
+(AccumulatorChain must be used with CoupledIterator to access pixel coordinates.)
  */
 template <class TAG>
 class Coord
@@ -2608,7 +2670,7 @@ class Coord
     };
 };
 
-/** If AccumulatorChain is used with CoupledIterator, WeightArg<INDEX> tells the accumulator which index of the Handle contains the weights. (Note that coordinates are always index 0.)
+/** If AccumulatorChain is used with CoupledIterator, WeightArg<INDEX> tells the accumulator chain which index of the Handle contains the weights. (Note that coordinates are always index 0.)
 */
 template <int INDEX>
 class WeightArg
@@ -2635,7 +2697,7 @@ class WeightArg
     };
 };
 
-/** Compute weighted version of the statistic.
+/** \brief Compute weighted version of the statistic.
 */
 template <class TAG>
 class Weighted
@@ -2687,8 +2749,6 @@ class Weighted
 };
 
 // Centralize by subtracting the mean and cache the result
-/** Centralize by substracting the mean before computing the statistic and cache the result. (?)
-*/
 class Centralize
 {
   public:
@@ -2751,7 +2811,7 @@ class Centralize
     };
 };
 
-/** Substract the mean before computing the statistic.
+/** \brief Substract the mean before computing the statistic, workInPass=2, operator+=() nor supported (merging).
 */
 template <class TAG>
 class Central
@@ -2831,9 +2891,7 @@ class Central
     // };
 // };
 
-// Compute principal projection and cache the result
-/** (?)
-*/
+
 class PrincipalProjection
 {
   public:
@@ -2901,7 +2959,7 @@ class PrincipalProjection
     };
 };
 
-/** Project onto PCA eigenvectors.
+/** \brief Project onto PCA eigenvectors, workInPass=2, operator+=() not supported (merging).
 */
 template <class TAG>
 class Principal
@@ -2969,7 +3027,7 @@ important notes on modifiers:
 /*                                                                          */
 /****************************************************************************/
 
-/** Identity matrix of appropriate size. (?)
+/** \brief Identity matrix of appropriate size. (?)
 */
 class CoordinateSystem
 {
@@ -3110,7 +3168,7 @@ class PowerSum<1>
     };
 };
 
-/** PowerSum<N> =@f$ \sum_i x_i^N @f$
+/** \brief PowerSum<N> =@f$ \sum_i x_i^N @f$
 */
 template <unsigned N>
 class PowerSum
@@ -3172,7 +3230,7 @@ class AbsPowerSum<1>
     };
 };
 
-/** AbsPowerSum<N> =@f$ \sum_i |x_i|^N @f$
+/** \brief AbsPowerSum<N> =@f$ \sum_i |x_i|^N @f$
 */
 template <unsigned N>
 class AbsPowerSum
@@ -3247,7 +3305,7 @@ struct CachedResultBase
 };
 
 // cached Mean and Variance
-/** Divide statistic by Count:  DivideByCount<TAG> = TAG / Count .
+/** \brief Divide statistic by Count:  DivideByCount<TAG> = TAG / Count .
 */
 template <class TAG>
 class DivideByCount
@@ -3313,7 +3371,7 @@ class DivideUnbiased
 };
 
 // RootMeanSquares and StdDev
-/** RootDivideByCount<TAG> = sqrt( A/Count )
+/** \brief RootDivideByCount<TAG> = sqrt( TAG/Count )
 */
 template <class TAG>
 class RootDivideByCount
@@ -3345,7 +3403,7 @@ class RootDivideByCount
 };
 
 // UnbiasedStdDev
-/** RootDivideUnbiased<TAG> = sqrt( A / (Count-1) )
+/** \brief RootDivideUnbiased<TAG> = sqrt( TAG / (Count-1) )
 */
 template <class TAG>
 class RootDivideUnbiased
@@ -3376,6 +3434,8 @@ class RootDivideUnbiased
     };
 };
 
+/** \brief Spezialization: workInPass=1, operator+=() supported (merging).
+*/
 template <>
 class Central<PowerSum<2> >
 {
@@ -3428,6 +3488,8 @@ class Central<PowerSum<2> >
     };
 };
 
+/** \brief Specialization: operator+=() supported (merging).
+*/
 template <>
 class Central<PowerSum<3> >
 {
@@ -3481,7 +3543,8 @@ class Central<PowerSum<3> >
         }
     };
 };
-
+/** \brief Specialization: operator+=() supported (merging).
+*/
 template <>
 class Central<PowerSum<4> >
 {
@@ -3541,7 +3604,7 @@ class Central<PowerSum<4> >
     };
 };
 
-/** Skewness =@f$ \frac{ \frac{1}{n}\sum_i (x_i-\hat{x})^3 }{ (\frac{1}{n}\sum_i (x_i-\hat{x})^2)^{3/2} } @f$
+/** \brief Skewness =@f$ \frac{ \frac{1}{n}\sum_i (x_i-\hat{x})^3 }{ (\frac{1}{n}\sum_i (x_i-\hat{x})^2)^{3/2} } @f$ , workInPass=2.
 */
 class Skewness
 {
@@ -3574,7 +3637,7 @@ class Skewness
     };
 };
 
-/** Unbiased skewness.
+/** \brief Unbiased skewness, workInPass=2.
 */
 class UnbiasedSkewness
 {
@@ -3605,8 +3668,8 @@ class UnbiasedSkewness
     };
 };
 
-/** Kurtosis = @f$ \frac{ \frac{1}{n}\sum_i (x_i-\bar{x})^4 }{
-(\frac{1}{n} \sum_i(x_i-\bar{x})^2)^2 } - 3 @f$
+/** \brief Kurtosis = @f$ \frac{ \frac{1}{n}\sum_i (x_i-\bar{x})^4 }{
+(\frac{1}{n} \sum_i(x_i-\bar{x})^2)^2 } - 3 @f$ , workInPass=2.
 */
 class Kurtosis
 {
@@ -3639,7 +3702,7 @@ class Kurtosis
     };
 };
 
-/** Unbiased Kurtosis.
+/** \brief Unbiased Kurtosis, workInPass=2.
 */
 class UnbiasedKurtosis
 {
@@ -4139,6 +4202,8 @@ class DivideByCount<ScatterMatrixEigensystem>
 // };
 
 // covariance eigenvalues
+/** \brief Specialization (covariance eigenvalues): workInPass=1, operator+=() supported (merging).
+*/
 template <>
 class Principal<PowerSum<2> >
 {
@@ -4165,7 +4230,10 @@ class Principal<PowerSum<2> >
     };
 };
 
+
 // Principal<CoordinateSystem> == covariance eigenvectors
+/** \brief Specialization (covariance eigenvectors): workInPass=1, operator+=() supported (merging).
+*/
 template <>
 class Principal<CoordinateSystem>
 {
@@ -4192,7 +4260,7 @@ class Principal<CoordinateSystem>
     };
 };
 
-/** Minimum value.
+/** \brief Minimum value.
 */
 class Minimum
 {
@@ -4267,7 +4335,7 @@ class Minimum
     };
 };
 
-/** Maximum value.
+/** \brief Maximum value.
 */
 class Maximum
 {
@@ -4342,7 +4410,9 @@ class Maximum
     };
 };
 
-/** Give data where weight assumes its minimal value. (Weights must be given.) Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
+/** \brief Give data where weight assumes its minimal value. 
+
+Weights must be given. Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
 */
 class ArgMinWeight
 {
@@ -4414,7 +4484,9 @@ class ArgMinWeight
     };
 };
 
-/** Give data where weight assumes its minimal value. (Weights must be given.) Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
+/** \brief Give data where weight assumes its minimal value. 
+
+Weights must be given. Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value.
 */
 class ArgMaxWeight
 {
@@ -4729,6 +4801,8 @@ class RangeHistogramBase
     }
 };
 
+/** \brief needs documentation (?)
+*/
 template <int BinCount>
 class IntegerHistogram
 {
@@ -4831,6 +4905,8 @@ class IntegerHistogram
     };
 };
 
+/** \brief needs documentation (?)
+*/
 template <int BinCount>
 class UserRangeHistogram
 {
@@ -4897,6 +4973,8 @@ class AutoRangeHistogram
     };
 };
 
+/** \brief needs documentation (?)
+*/
 template <int BinCount>
 class GlobalRangeHistogram
 {
@@ -4948,6 +5026,8 @@ class GlobalRangeHistogram
     };
 };
 
+/** \brief needs documentation (?)
+*/
 template <class HistogramAccumulator> 
 class StandardQuantiles
 {
