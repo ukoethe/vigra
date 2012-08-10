@@ -127,15 +127,17 @@ namespace vigra {
     vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
     // fill array with data
     AccumulatorChain<DataType, 
-        Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> > a;
-
-    collectStatistics(data.begin(), data.end(), a);
+        Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> >
+	a;
+	
+    std::cout << "passes required: " << a.passesRequired() << std::endl;
+    collectStatistics(data.begin(), data.end(), a); 
     
     std::cout << "Mean: " << get<Mean>(a) << std::endl;
     std::cout << "Variance: " << get<Variance>(a) << std::endl;
     \endcode
     
-    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with <tt>Select</tt>. (In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
+    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc1::Select. (In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
 
     Rules and notes:
     - order of statistics in Select<> is arbitrary
@@ -145,7 +147,7 @@ namespace vigra {
     - collectStatistics() does as many passes through the data as necessary
     - each accumulator only sees data in the appropriate pass (its "working pass")
 
-    The Accumulators can also be used with vector-valued data, e.g.
+    The Accumulators can also be used with vector-valued data, e.g. (?) (does not work...)
     
     \code 
     typedef vigra::RGBValue<UInt8> DataType;
@@ -239,10 +241,11 @@ namespace vigra {
     collectStatistics(data.begin(), data.end(), a);
 
     vigra::TinyVector<double, 40> hist = get<SomeHistogram>(a);
+    double right_outliers = getAccumulator<SomeHistogram>(a).right_outliers;
     \endcode
     
 
-    Usage when specifying number of bins at run-time:
+    \anchor acc1_hist_options Usage when specifying number of bins at run-time:
     \code
     ...
     typedef IntegerHistogram<0> SomeHistogram; //use zero as template parameter
@@ -273,6 +276,8 @@ namespace acc1 {
 /****************************************************************************/
 
     // Select is a wrapper for MakeTypeList that additionally performs tag standardization
+/** \brief Wrapper for MakeTypeList that additionally performs tag standardization.
+*/
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
           class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
           class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
@@ -1601,6 +1606,8 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
 /****************************************************************************/
 
     // Implement the high-level interface of an accumulator chain
+/** Implement the high-level interface of an accumulator chain (?)
+*/
 template <class T, class NEXT>
 struct AccumulatorChainImpl
 {
@@ -1620,12 +1627,19 @@ struct AccumulatorChainImpl
     AccumulatorChainImpl()
     : current_pass_(0)
     {}
-    
+
+    /** \brief Set options for histograms in accumulator chain.
+	
+	See Histogram Classes for options. The function is ignored if there is no histogram in the accumulator chain.
+    */
     void setHistogramOptions(HistogramOptions const & options)
     {
         next_.applyHistogramOptions(options);
     }
     
+
+    /** \brief Set options for histograms in accumulator chain array (?).
+    */
     void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
         next_.applyHistogramOptions(regionoptions, globaloptions);
