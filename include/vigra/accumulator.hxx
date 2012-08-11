@@ -219,53 +219,86 @@ namespace vigra {
       
     For run-time activation of region statistics, use \ref acc1::DynamicAccumulatorChainArray instead. 
 
+    <b>Accumulator merging</b> (e.g. for parallelization or hierarchical segmentation) is possible for many accumulators. 
+
+    \code
+    using namespace vigra::acc1;
+    vigra::MultiArray<2, double> data(...);
+    AccumulatorChain<double, Mean, Variance, Skewness> a, a1, a2;
+
+    collectStatistics(data.begin(), data.end(), a); //process entire data set at once
+    collectStatistics(data.begin(), data.begin()+data.size()/2, a1); //process first half
+    collectStatistics(data.begin()+data.size()/2, data.end(), a2); //process second half
+    a1 += a2; // merge: a1 now equals a0 (with numerical tolerances)
+    \endcode
+
+    Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A particular statistic can be merged if the "+=" operator is supported (see the documentation of that statistic). If the accumulator chain only needs one pass to collect the data it is also possible to just apply the collectStatistics() function repeatedly.
+
+    \code
+    using namespace vigra::acc1;
+    vigra::MultiArray<2, double> data(...);
+    AccumulatorChain<double, Mean, Variance> a;
+    AccumulatorChain<double, Mean, Variance, Skewness> a1;
+
+    collectStatistics(data.begin(), data.begin()+data.size()/2, a); // this works because 
+    collectStatistics(data.begin()+data.size()/2, data.end(), a);   // all statistics only work in pass 1
+
+    collectStatistics(data.begin(), data.begin()+data.size()/2, a1); // run-time error because
+    collectStatistics(data.begin()+data.size()/2, data.end(), a1);   // skewness needs two passes
+    \endcode
+
+
     \anchor histogram
     Four kinds of <b>histograms</b> are currently implemented:
-        - IntegerHistogram<BinCount>: data values are equal to bin indices
-        - UserRangeHistogram<BinCount>: ...
-        - ...
+    
+    <table border="0">
+      <tr><td> IntegerHistogram      </td><td>   Data values are equal to bin indices   </td></tr>
+      <tr><td> UserRangeHistogram    </td><td>  User provides lower and upper bounds for linear range mapping from values to indices.    </td></tr>
+      <tr><td> AutoRangeHistogram    </td><td>  Range mapping bounds are defiend by minimum and maximum of the data (2 passes needed!)    </td></tr>
+      <tr><td> GlobalRangeHistogram &nbsp;  </td><td>  Likewise, but use global min/max rather than region min/max as AutoRangeHistogram will </td></tr>
+      </table>    
+  
 
-    - number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time)
-    - ...
+       
+    - The number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time). In the first case the return type of the accumulator is TinyVector<double, BinCount> (number of bins cannot be changed). In the second case, the return type is MultiArray<1, double> and the nNumber of bins must be set before seeing data (see example below). 
+    - If UserRangeHistogram is used, the bounds for the linear range mapping from values to indices must be set before seeing data (see below).
+    - Options can be set by passing an instance of HistogramOptions to the accumulator chain (same options for all histograms in the chain) or by directly calling the appropriate member functions of the accumulators.
 
-    Usage:
+    \anchor acc1_hist_options Usage:
     \code
     using namespace vigra::acc1;
     typedef double DataType;
     vigra::MultiArray<2, DataType> data(...);
     
-    typedef IntegerHistogram<40> SomeHistogram;
+    typedef UserRangeHistogram<40> SomeHistogram;   //binCount set at compile time
+    typedef UserRangeHistogram<0> SomeHistogram2; // binCount must be set at run-time
+    typedef AutoRangeHistogram<0> SomeHistogram3;
     
-    AccumulatorChain<DataType, Select<SomeHistogram> > a;
+    AccumulatorChain<DataType, Select<SomeHistogram, SomeHistogram2, SomeHistogram3> > a;
+    
+    //set options for all histograms in the accumulator chain:
+    vigra::HistogramOptions histogram_opt;
+    histogram_opt = histogram_opt.setBinCount(50);
+    //histogram_opt = histogram_opt.setMinMax(0.1, 0.9); // this would set min/max also for SomeHistogram3 (range bounds not set automatically by min/max of data)
+    a.setHistogramOptions(histogram_opt);  
+
+    // set options for a specific histogram in the accumulator chain:
+    getAccumulator<SomeHistogram>.setMinMax(0.1, 0.9); // number of bins must have been set before setting min/max
+    getAccumulator<SomeHistogram2>.setMinMax(0.0, 1.0);
 
     collectStatistics(data.begin(), data.end(), a);
 
     vigra::TinyVector<double, 40> hist = get<SomeHistogram>(a);
+    vigra::MultiArray<1, double> hist2 = get<SomeHistogram2>(a);
     double right_outliers = getAccumulator<SomeHistogram>(a).right_outliers;
     \endcode
-    
 
-    \anchor acc1_hist_options Usage when specifying number of bins at run-time:
-    \code
-    ...
-    typedef IntegerHistogram<0> SomeHistogram; //use zero as template parameter
-    AccumulatorChain<DataType, Select<SomeHistogram> > a;
-
-    vigra::HistogramOptions histogram_option;                 //specify number of bins
-    histogram_options = histogram_options.setBinCount(40);    //at run-time
-
-    collectStatistics(data.begin(), data.end(), a);
-    vigra::MultiArray<1, double> hist = get<SomeHistogram>(a);
-    \endcode
-    
-    
-    ... more histogram stuff ...
 
     
 */
 
 
-/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for usage examples.
+/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
 */
 namespace acc1 {
 
@@ -1609,8 +1642,9 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
 /** Implement the high-level interface of an accumulator chain (?)
 */
 template <class T, class NEXT>
-struct AccumulatorChainImpl
+class AccumulatorChainImpl
 {
+  public:
     typedef NEXT                                             InternalBaseType;
     typedef AccumulatorBegin                                 Tag;
     typedef typename InternalBaseType::argument_type         argument_type;
@@ -1622,15 +1656,16 @@ struct AccumulatorChainImpl
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
+
+    /** \brief Current pass of the accumulator chain.
+    */
     unsigned int current_pass_;
     
     AccumulatorChainImpl()
     : current_pass_(0)
     {}
 
-    /** \brief Set options for histograms in accumulator chain.
-	
-	See Histogram Classes for options. The function is ignored if there is no histogram in the accumulator chain.
+    /** Set options for histograms in the accumulator chain. See histogram accumulators for possible options. The function is ignored if there is no histogram in the accumulator chain.
     */
     void setHistogramOptions(HistogramOptions const & options)
     {
@@ -1638,13 +1673,15 @@ struct AccumulatorChainImpl
     }
     
 
-    /** \brief Set options for histograms in accumulator chain array (?).
+    /** Set regional and global options for histograms in the accumulator chain. (?)
     */
     void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
         next_.applyHistogramOptions(regionoptions, globaloptions);
     }
     
+    /** Reset current_pass_ of the accumulator chain to 'reset_to_pass'.
+    */
     void reset(unsigned int reset_to_pass = 0)
     {
         current_pass_ = reset_to_pass;
@@ -1696,11 +1733,15 @@ struct AccumulatorChainImpl
        }
     }
     
+    /** Equivalent to merge() .
+    */
     void operator+=(AccumulatorChainImpl const & o)
     {
         merge(o);
     }
     
+    /** Merge with accumulator chain o.
+    */
     void merge(AccumulatorChainImpl const & o)
     {
         next_.merge(o.next_);
@@ -1710,8 +1751,8 @@ struct AccumulatorChainImpl
     {
         return next_.get();
     }
-	
-	void operator()(T const & t)
+
+    void operator()(T const & t)
     {
         update<1>(t);
     }
@@ -1721,7 +1762,7 @@ struct AccumulatorChainImpl
         update<1>(t, weight);
     }
 
-	void updatePass2(T const & t)
+    void updatePass2(T const & t)
     {
         update<2>(t);
     }
@@ -1731,7 +1772,9 @@ struct AccumulatorChainImpl
         update<2>(t, weight);
     }
 
-	void updatePassN(T const & t, unsigned int N)
+    /** Upate all accumulators in the accumulator chain that work in pass N with data t. Requirement: 0 < N < 6 and N >= current_pass_ , otherwise call reset() first. 
+    */
+    void updatePassN(T const & t, unsigned int N)
     {
         switch (N)
         {
@@ -1746,7 +1789,9 @@ struct AccumulatorChainImpl
         }
     }
     
-	void updatePassN(T const & t, double weight, unsigned int N)
+    /** Upate all accumulators in the accumulator chain that work in pass N with data t and weight. Requirement: 0 < N < 6 and N >= current_pass_ , otherwise call reset() first. 
+    */
+    void updatePassN(T const & t, double weight, unsigned int N)
     {
         switch (N)
         {
@@ -1760,8 +1805,9 @@ struct AccumulatorChainImpl
                      "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
-    // /** Return number of passes required to compute the statistics in the accumulator chain.
-    // */
+  
+    /** Return number of passes required to compute all statistics in the accumulator chain.
+    */
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired();
@@ -1769,22 +1815,26 @@ struct AccumulatorChainImpl
 };
 
    // Create an accumulator chain containing the Selected statistics and their dependencies.
+
 /** \brief Create an accumulator chain containing the selected statistics and their dependencies.
 
-The template parameters are as follows
-- T: The input type. Either Type of the data, or CoupledHandle (when using CoupledIterator to access coordinates or compute weighted statistics)
+The template parameters are as follows (?) 
+- T: The input type. Either Type of the data, or CoupledScanOrderIterator (when using CoupledIterator to access coordinates or compute weighted statistics)
 - Selected: Select<Tag1, Tag2,...>, wrapper containing the statistics to be computed.
 
-To compute the selected statistics, call \ref acc1::collectStatistics .
+See \ref FeatureAccumulators for a short introduction and examples of use.
  */
 template <class T, class Selected, bool dynamic=false>
-struct AccumulatorChain
+class AccumulatorChain
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
 {
+  public:
     /** TypeList of Tags in the accumulator chain (?).
     */
     typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
   
+    /** (?) Before having seen data (current_pass_==0), the shape of the data can be changed...
+    */
     template <class U, int N>
     void reshape(TinyVector<U, N> const & s)
     {
@@ -1825,9 +1875,10 @@ The template parameters are as follows
 
  */
 template <class T, class Selected>
-struct DynamicAccumulatorChain
+class DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {
+  public:
     typedef typename AccumulatorChain<T, Selected, true>::InternalBaseType InternalBaseType;
     typedef typename DynamicAccumulatorChain::AccumulatorTags AccumulatorTags;
        
@@ -1916,9 +1967,10 @@ See \ref FeatureAccumulators for examples of use.
 
 */
 template <class T, class Selected, bool dynamic=false>
-struct AccumulatorChainArray
+class AccumulatorChainArray
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
 {
+  public:
     typedef typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
     typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
@@ -1989,6 +2041,7 @@ template <class T, class Selected>
 struct DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
 {
+  public:
     typedef typename DynamicAccumulatorChainArray::AccumulatorTags AccumulatorTags;
 
     /** Activate Tag by name. If the Tag is not in the accumulator chain a PreconditionViolation is thrown.
@@ -2319,7 +2372,7 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 } // namespace detail
 
     // Get a reference to the accumulator TAG in the accumulator chain A
-/** \brief Get a reference to the accumulator TAG in the accumulator chain A
+/** Get a reference to the accumulator TAG in the accumulator chain A
 */
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
@@ -4815,7 +4868,7 @@ class RangeHistogramBase
     }
 };
 
-/** \brief needs documentation (?)
+/** \brief Data values are equal to bin indices. (?)
 */
 template <int BinCount>
 class IntegerHistogram

@@ -42,19 +42,40 @@
 
 namespace vigra {
 
+/** \brief Set histogram options.
+
+    HistogramOptions objects are used to pass histogram options to other objects. This \ref acc1_hist_options "example" shows how it is is used to pass histogram options to an accumulator chain.
+*/
 class HistogramOptions
 {
   public:
-    double minimum, maximum;
+
+    /** \brief Lower bound for linear range mapping from values to indices. */
+    double minimum;
+
+    /** \brief Upper bound for linear range mapping from values to indices. */
+    double maximum;
+
+    /** \brief Total number of bins in the histogram. */
     int binCount;
+
+    /** \brief If true, range mapping bounds are defined by minimum and maximum of the data. */
     bool local_auto_init;
     
+    /** Initialize members with default values:
+
+	- minimum, maximum = 0.0
+	- binCount = 64
+	- local_auto_init = false
+    */
     HistogramOptions()
     : minimum(0.0), maximum(0.0),
       binCount(64),
       local_auto_init(false)
     {}
     
+    /** Set minimum = mi and maximum = ma. Requirement: mi < ma.
+    */
     HistogramOptions & setMinMax(double mi, double ma)
     {
         vigra_precondition(mi < ma,
@@ -64,6 +85,8 @@ class HistogramOptions
         return *this;
     }
 
+    /** Set binCount = c. Requirement: c > 0.
+    */
     HistogramOptions & setBinCount(int c)
     {
         vigra_precondition(c > 0,
@@ -72,6 +95,7 @@ class HistogramOptions
         return *this;
     }
 
+    /** Set local_auto_init = true. Requirement: setMinMax() must not have been called before. */
     HistogramOptions & regionAutoInit()
     {
         vigra_precondition(!validMinMax(),
@@ -80,6 +104,7 @@ class HistogramOptions
         return *this;
     }
 
+    /** Set local_auto_init = false. Requirement: setMinMax() must not have been called before. */
     HistogramOptions & globalAutoInit()
     {
         vigra_precondition(!validMinMax(),
@@ -88,6 +113,8 @@ class HistogramOptions
         return *this;
     }
     
+    /** Return minimum < maximum.
+    */
     bool validMinMax() const
     {
         return minimum < maximum;
