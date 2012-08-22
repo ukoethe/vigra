@@ -29,7 +29,7 @@ struct extra_passes_selector<true>
     static void
     call(Inspector g, Functor & f)
     {
-        for (unsigned n = 2; n <= Functor::max_passes; ++n)
+        for (unsigned n = 2; n <= f.numberOfPasses(); ++n)
         {
             f.calc_sync();
             call_n(g, f.pass_n(n));
@@ -48,6 +48,11 @@ struct get_extra_passes
     : public VigraFalseType
 {
     void sync(Functor &) {}
+    template <class X>
+    unsigned getNumberOfPasses(X &)
+    {
+        return 1;
+    }
 };
 
 template <class Functor>
@@ -60,6 +65,11 @@ struct get_extra_passes<Functor, true>
     void sync(Functor & f)
     {
         f.calc_sync();
+    }
+    template <class X>
+    unsigned getNumberOfPasses(X & x)
+    {
+        return x.numberOfPasses();
     }
 };
 

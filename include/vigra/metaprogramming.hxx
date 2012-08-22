@@ -503,24 +503,6 @@ struct IsIterator<T const *>
 };
 
 template <class T>
-struct has_real_promote_type : public sfinae_test<T, has_real_promote_type>
-{
-    template <class U>
-    has_real_promote_type(U*, typename U::real_promote_type* = 0);
-};
-
-template <class T, bool P = has_real_promote_type<T>::value>
-struct get_optional_real_promote
-{
-    typedef T type;
-};
-template <class T>
-struct get_optional_real_promote<T, true>
-{
-    typedef typename T::real_promote_type type;
-};
-
-template <class T>
 struct IsArray
 {
     typedef char falseResult[1];

@@ -462,6 +462,7 @@ struct NumericTraits<RGBValue<T, R, G, B> >
     typedef RGBValue<T, R, G, B> Type;
     typedef RGBValue<typename NumericTraits<T>::Promote, R, G, B> Promote;
     typedef RGBValue<typename NumericTraits<T>::RealPromote, R, G, B> RealPromote;
+    typedef RGBValue<typename NumericTraits<T>::DoublePromote, R, G, B> DoublePromote;
     typedef RGBValue<typename NumericTraits<T>::ComplexPromote, R, G, B> ComplexPromote;
     typedef T ValueType;
 

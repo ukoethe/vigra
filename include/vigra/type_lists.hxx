@@ -65,7 +65,8 @@ namespace type_lists {
                          class S = NIL, class T = NIL, class U = NIL,
                          class V = NIL, class W = NIL, class X = NIL,
                          class Y = NIL, class Z = NIL>
-    struct make_list_nil {
+    struct make_list_nil
+    {
         typedef typename truncate<NIL, cons<A, cons<B, cons<C, cons<D, cons<E,
                                        cons<F, cons<G, cons<H, cons<I, cons<J,
                                        cons<K, cons<L, cons<M, cons<N, cons<O,
@@ -83,7 +84,8 @@ namespace type_lists {
               class U = nil, class V = nil, class W = nil, class X = nil,
               class Y = nil, class Z = nil>
 
-    struct make_list {
+    struct make_list
+    {
         typedef typename make_list_nil<nil, A, B, C, D, E, F, G, H, I,
                                             J, K, L, M, N, O, P, Q, R,
                                             S, T, U, V, W, X, Y, Z
@@ -116,7 +118,8 @@ namespace type_lists {
                         template<class> class X = nil_t,
                         template<class> class Y = nil_t,
                         template<class> class Z = nil_t>
-    struct make_list_template {
+    struct make_list_template
+    {
         typedef typename make_list_nil<nil_t<T_>,
                                        A<T_>, B<T_>, C<T_>, D<T_>, E<T_>,
                                        F<T_>, G<T_>, H<T_>, I<T_>, J<T_>,
@@ -207,6 +210,22 @@ namespace type_lists {
     template <> struct size<nil>
     {
         static const unsigned of = 0;
+    };
+
+    template <class L, class V> struct index
+    {
+        static const unsigned of = index<typename L::rest, V>::of + 1;
+        static const bool found  = index<typename L::rest, V>::found;
+    };
+    template <class L> struct index<L, typename L::first>
+    {
+        static const unsigned of = 0;
+        static const bool found = true;
+    };
+    template <class V> struct index<nil, V>
+    {
+        static const unsigned of = 0;
+        static const bool found = false;
     };
 
     template <class X, class L> struct append
@@ -304,7 +323,22 @@ namespace type_lists {
         static const bool value = false;
     };
 
-    // simple, unstable merge
+    template <class X, class L> struct intersect
+    {
+        typedef typename L::first first;
+        typedef typename
+            IfBool<contains<first, X>::value,
+                cons<first, typename
+                            intersect<X, typename L::rest>::type>,
+                typename    intersect<X, typename L::rest>::type
+            >::type type;
+    };
+    template <class X> struct intersect<X, nil>
+    {
+        typedef nil type;
+    };
+
+    // simple merge
     template <class X, class L> struct merge
     {
         typedef typename L::first first;
@@ -326,6 +360,22 @@ namespace type_lists {
     template <class L> struct unique
     {
         typedef typename merge<nil, L>::type type;
+    };
+
+    // map predicate P over type list L
+    template <template<class> class P, class L> struct map
+    {
+        typedef cons<typename P<typename L::first>::type,
+                     typename map<P, typename L::rest>::type> type;
+    };
+    template <template<class> class P> struct map<P, nil>
+    {
+        typedef nil type;
+    };
+
+    template <template<class> class P, class L> struct map_unique
+    {
+        typedef typename unique<typename map<P, L>::type>::type type;
     };
 
     template <class T_, template<class> class A = nil_t,
@@ -394,39 +444,6 @@ namespace type_lists {
                                                 W, X, Y, Z>::type follows_types;
     };
 
-    template <class T_, template<class> class A = nil_t,
-                        template<class> class B = nil_t,
-                        template<class> class C = nil_t,
-                        template<class> class D = nil_t,
-                        template<class> class E = nil_t,
-                        template<class> class F = nil_t,
-                        template<class> class G = nil_t,
-                        template<class> class H = nil_t,
-                        template<class> class I = nil_t,
-                        template<class> class J = nil_t,
-                        template<class> class K = nil_t,
-                        template<class> class L = nil_t,
-                        template<class> class M = nil_t,
-                        template<class> class N = nil_t,
-                        template<class> class O = nil_t,
-                        template<class> class P = nil_t,
-                        template<class> class Q = nil_t,
-                        template<class> class R = nil_t,
-                        template<class> class S = nil_t,
-                        template<class> class T = nil_t,
-                        template<class> class U = nil_t,
-                        template<class> class V = nil_t,
-                        template<class> class W = nil_t,
-                        template<class> class X = nil_t,
-                        template<class> class Y = nil_t,
-                        template<class> class Z = nil_t>
-    struct depends_on_template
-    {
-        typedef typename make_list_template<T_, A, B, C, D, E, F, G, H, I, J, K,
-                                                L, M, N, O, P, Q, R, S, T, U, V,
-                                                W, X, Y, Z>::type depends_on;
-    };
-
     template <class T_u, template<class> class A = nil_t,
                          template<class> class B = nil_t,
                          template<class> class C = nil_t,
@@ -456,7 +473,7 @@ namespace type_lists {
     struct uses_template
         : public implies_template<T_u, A, B, C, D, E, F, G, H, I, J, K, L, M,
                                        N, O, P, Q, R, S, T, U, V, W, X, Y, Z>,
-          public depends_on_template<T_u, A, B, C, D, E, F, G, H, I, J, K, L, M,
+          public follows_template<T_u, A, B, C, D, E, F, G, H, I, J, K, L, M,
                                        N, O, P, Q, R, S, T, U, V, W, X, Y, Z>
     {
         template <template<class> class A_ = nil_t,
@@ -487,10 +504,17 @@ namespace type_lists {
                   template<class> class Z_ = nil_t>
         struct follows
             : public uses_template
-            , public follows_template<T_u, A_, B_, C_, D_, E_, F_, G_, H_, I_,
-                                           J_, K_, L_, M_, N_, O_, P_, Q_, R_,
-                                           S_, T_, U_, V_, W_, X_, Y_, Z_> {};
-
+        {
+            typedef typename
+                merge<typename
+                    uses_template::follows_types, typename
+                    follows_template<T_u, A_, B_, C_, D_, E_, F_, G_, H_, I_,
+                                          J_, K_, L_, M_, N_, O_, P_, Q_, R_,
+                                          S_, T_, U_, V_, W_, X_, Y_, Z_>
+                        ::follows_types
+                >::type
+            follows_types;
+        };
         template <template<class> class A_ = nil_t,
                   template<class> class B_ = nil_t,
                   template<class> class C_ = nil_t,
@@ -556,11 +580,6 @@ namespace type_lists {
     }
 
     template <class T>
-    struct has_depends_on : public sfinae_test<T, has_depends_on>
-    {
-        template <class U> has_depends_on(U*, typename U::depends_on* = 0);
-    };
-    template <class T>
     struct has_implies : public sfinae_test<T, has_implies>
     {
         template <class U> has_implies(U*, typename U::implies_types* = 0);
@@ -571,25 +590,7 @@ namespace type_lists {
         template <class U> has_follows(U*, typename U::follows_types* = 0);
     };
 
-    // use empty list in case of lacking / faulty depends_on or implies_types:
-    template <bool P, class T>
-    struct depends_on_guard;
-    template <class T>
-    struct depends_on_guard<false, T>
-    {
-        typedef nil type;
-    };
-    template <class T>
-    struct depends_on_guard<true, T>
-    {
-        typedef typename list_guard<typename T::depends_on>::type type;
-    };
-    template <class T>
-    struct get_pure_depends_on
-    {
-        typedef typename depends_on_guard<has_depends_on<T>::value, T>::type
-            type;
-    };
+    // use empty list in case of lacking / faulty follows_types or implies_types
 
     template <bool P, class T>
     struct follows_guard;
@@ -608,13 +609,6 @@ namespace type_lists {
     {
         typedef typename follows_guard<has_follows<T>::value, T>::type
             type;
-    };
-
-    template <class T>
-    struct get_depends_on
-    {
-        typedef typename merge<typename get_pure_depends_on<T>::type,
-                               typename get_follows<T>::type       >::type type;
     };
 
     template <bool P, class T>
@@ -653,18 +647,24 @@ namespace type_lists {
         typedef nil type;
     };
 
-    // for_all with type list == T::depends_on (if any.)
-    template <class T, template<class> class EXEC, class TX>
-    inline void for_all_used(TX & tx)
+    template <class A, class B> struct implies
     {
-        for_all<typename get_pure_depends_on<T>::type, EXEC>(tx);
+        static const bool value = contains<B, typename implies_expand<cons<A> >
+                                  ::type>::value;
+    };
+
+    // for_all with type list == T::implies_types (if any.)
+    template <class T, template<class> class EXEC, class TX>
+    inline void for_all_implied(TX & tx)
+    {
+        for_all<typename get_implies<T>::type, EXEC>(tx);
     }
 
     template <class X, class T>
     struct contains_dependent
     {
         static const bool value
-            = contains<X, typename get_depends_on<T>::type>::value;
+            = contains<X, typename get_follows<T>::type>::value;
     };
 
     template <class X, class XL> struct is_independent_on
@@ -712,16 +712,16 @@ namespace type_lists {
         typedef nil type;
     };
 
-    // Topological sort -- the input is a list of types (see below),
-    // each of which may, optionally, have an embedded typedef 'depends_on'
-    // set to a singly-linked-list of types declared
-    // using vigra::type_lists::cons, such as
+    // Topological sort -- the input is a list L of types, each of which may,
+    // optionally, have an embedded typedef 'follows_types' set to a list of
+    // types. These singly-linked-lists of types are declared using
+    // vigra::type_lists::cons, such as
     // cons<type_a, cons<type_b, cons<type_c> > >
     // (a one-parameter cons will add the trailing nil automatically),
     // -- the output is a list of types with increasing dependence,
     // starting with the indepedent types.
-    // Types that should be said lists -- but are in fact not -- are silently
-    // replaced by empty lists.
+    // Embedded typedefs 'follows_types' that should be of the above form
+    // -- but are in fact not -- are silently replaced by empty lists.
 
     template <class L> struct topological_sort
     {
@@ -1124,17 +1124,17 @@ namespace type_lists {
         void reassign() {}
     };
     
-    struct plain_chooser // this policy does effectively nothing.
+    struct plain_data_mixin
     {
         template <class V, unsigned pos = 0>
         struct use
         {
              typedef V type;
         };
+    };
 
-        template <class, template <class> class TEST>
-        struct exec_op : public exec_op_plain<TEST> {};
-
+    struct plain_global_data_mixin
+    {
         // "M" & "S" -> bug in cl.exe's parser.
         template <template<class, class, template<class> class M, unsigned>
                   class, class, template<class> class S, unsigned>
@@ -1142,24 +1142,37 @@ namespace type_lists {
         {
             typedef global_data global_data_type;
         };
+    };
+
+    // this policy does effectively nothing.
+    struct plain_chooser
+        : public plain_data_mixin, public plain_global_data_mixin
+    {
+        template <class, template <class> class TEST>
+        struct exec_op : public exec_op_plain<TEST> {};
+
         template <class QV, class TUPLE>
         static bool is_set(const QV &, const TUPLE &) { return true; }
         template <class QV, class TUPLE>
         static void set(QV &, TUPLE &) {}
+        template <class V>
+        struct set_implying
+        {
+             typedef nil type;
+        };
     };
 
-                        // this policy uses the cond_val template to annotate
-                        // each tuple member with a bool that steers conditional
-                        // execution of each member's operator(), if called via
-                        // the tuple's operator().
-    struct cond_chooser_plain : public plain_chooser
+    struct real_chooser
     {
-        template <class V, unsigned pos = 0>
-        struct use
+        template <class V>
+        struct set_implying
         {
-            typedef cond_val<V, pos> type;
+             typedef V type;
         };
+    };
 
+    struct exec_chooser_base
+    {
         template <class, template <class> class TEST>
         struct exec_op
         {
@@ -1182,7 +1195,10 @@ namespace type_lists {
                 tuple.rest.call_bound_op(binder, z);
             }
         };
+    };
 
+    struct chooser_set_base
+    {
         template <class QV, class TUPLE>
         static bool is_set(const QV & qv, const TUPLE & t)
         {
@@ -1194,66 +1210,46 @@ namespace type_lists {
             qv.set(t);
         }
     };
+
+    struct cond_chooser_plain_base
+        :  public plain_data_mixin, public plain_global_data_mixin,
+           public real_chooser    , public chooser_set_base
+    {
+        template <class V, unsigned pos = 0>
+        struct use
+        {
+            typedef cond_val<V, pos> type;
+        };
+    };
+                        // this policy uses the cond_val template to annotate
+                        // each tuple member with a bool that steers conditional
+                        // execution of each member's operator(), if called via
+                        // the tuple's operator().
+    struct cond_chooser_plain
+        :  public cond_chooser_plain_base, public exec_chooser_base
+    {};
     
-    // start the machinery for cond_chooser that produces nested 'if's
-
-    template <class X, class T, class L = typename get_pure_depends_on<T>::type>
-    struct depends_on_deep
+    // start the machinery for cond_chooser that produces nested "if"s
+    template <class R, class T>
+    struct first_of_implies
     {
-        static const bool value =
-            depends_on_deep<X, T, typename L::rest>::value   // iterate list
-            || depends_on_deep<X, typename L::first>::value; // indirect dep.
-    };
-    template <class T, class L>
-    struct depends_on_deep<typename L::first, T, L>
-    {
-        static const bool value = true;
-    };
-    template <class X, class T>
-    struct depends_on_deep<X, T, nil>
-    {
-        static const bool value = false;
-    };
-
-    template <class T, class R>
-    struct first_depends_on
-    {
-        static const bool value
-            =  depends_on_deep<typename R::first, T>::value;
+        static const bool value = implies<typename R::first, T>::value;
     };
     template <class T>
-    struct first_depends_on<T, nil>
+    struct first_of_implies<nil, T>
     {
         static const bool value = false;
     };
 
-    template <class RRL, class R>
-    struct first_depends_on_all_of
+    template <class L, class RRL>
+    struct first_of_implies_first_of
     {
-        static const bool value
-            = ChooseBool<
-                  first_depends_on<typename
-                      RRL::first,
-                      R
-                  >,
-                  first_depends_on_all_of<typename RRL::rest, R>,
-                  VigraFalseType
-              >::value;
+        static const bool value = first_of_implies<L, RRL>::value;
     };
-    template <class R> // end of list RRL: 'success'
-    struct first_depends_on_all_of<nil, R>
+    template <class L> // end of list RRL: 'anything implies nil'
+    struct first_of_implies_first_of<L, nil>
     {
         static const bool value = true;
-    };
-    template <class RRL> // 'invalid' input (e.g., at end of cond_op recursion)
-    struct first_depends_on_all_of<RRL, nil>
-    {
-        static const bool value = false;
-    };
-    template <> // 'invalid' input (e.g., at end of cond_op recursion)
-    struct first_depends_on_all_of<nil, nil>
-    {
-        static const bool value = false;
     };
 
     // helper structs for cond_op:
@@ -1265,24 +1261,72 @@ namespace type_lists {
         static void call(TUPLE &, B &, const TBASE &) {}
         typedef nil iter_leftover_type;
     };
-    template <bool cond, class EX>
+    template <class EX>
     struct if_then
     {
         template <class TUPLE, class B, class TBASE>
         static void exec(TUPLE & t, B & b, const TBASE & z)
         {
-            IfBool<cond, EX, null_exec>::type::exec(t, b, z);
+            EX::exec(t, b, z);
         }
         template <class TUPLE, class B, class TBASE>
         static void call(TUPLE & t, B & b, const TBASE & z)
         {
-            IfBool<cond, EX, null_exec>::type::call(t, b, z);
+            EX::call(t, b, z);
         }
     };
+    template <>
+    struct if_then<nil> : public null_exec {};
+
+
+    template <class ZL, template <class> class TEST, class RRL = nil>
+    struct cond_op;
+
     template <class ZL, template <class> class TEST, class RRL>
     struct cond_op_inner;
+
+    template <bool recurse_deep, class rest_type, template <class> class TEST,
+                                 class next_rr_list>
+    struct deep_chooser
+    {
+        typedef cond_op<rest_type, TEST, next_rr_list> type;
+        typedef typename type::iter_leftover_type      leftover_type;
+    };
+    template <class rest_type, template <class> class TEST,
+              class next_rr_list>
+    struct deep_chooser<false, rest_type, TEST, next_rr_list>
+    {
+        typedef nil       type;
+        typedef rest_type leftover_type;
+    };
+
+    template <bool iterate, class deep_leftover_type,
+                            template <class> class TEST, class RRL>
+    struct iter_chooser
+    {
+        typedef cond_op_inner<deep_leftover_type, TEST, RRL> type;
+        typedef typename type::iter_leftover_type            leftover_type;
+    };
+    template <class deep_leftover_type,
+              template <class> class TEST, class RRL>
+    struct iter_chooser<false, deep_leftover_type, TEST, RRL>
+    {
+        typedef nil                type;
+        typedef deep_leftover_type leftover_type;
+    };
     
-    template <class ZL, template <class> class TEST, class RRL = nil>
+    // cond_op: possibly nested conditional application of binder::operator()
+    // and binder::call() [via corresponding static member functions
+    // cond_op::exec and cond_op::call] to all members (type list ZL) of a
+    // tuple.
+    // Nesting follows from a member of a tuple being implied by its predecessor
+    // within the tuple. This may apply recursively, and the types of all
+    // such predecessors are collected in the type list RRL, with the innermost
+    // nested predecessor at the head of the list.
+    // The template parameter TEST conditionally masks the application of
+    // binder::call().
+
+    template <class ZL, template <class> class TEST, class RRL>
     struct cond_op
     {
         typedef typename ZL::first             first_type;
@@ -1290,30 +1334,26 @@ namespace type_lists {
         typedef          cons<first_type, RRL> next_rr_list;
 
         static const bool recurse_deep
-            = first_depends_on<first_type, rest_type>::value;
-        typedef cond_op<rest_type, TEST, next_rr_list>
-            deep_type;
+            = first_of_implies<rest_type, first_type>::value;
 
-        typedef typename IfBool<recurse_deep, typename
-                                deep_type::iter_leftover_type,
-                                rest_type
-                               >::type
-            deep_leftover_type;
+        typedef deep_chooser<recurse_deep, rest_type, TEST, next_rr_list>
+            if_deep;
+        typedef typename if_deep::type          deep_type;
+        typedef typename if_deep::leftover_type deep_leftover_type;
 
         static const bool iterate
-            = first_depends_on_all_of<RRL, deep_leftover_type>::value;
+            = first_of_implies_first_of<deep_leftover_type, RRL>::value;
 
-        typedef cond_op_inner<deep_leftover_type, TEST, RRL>
-            iter_type;
+        typedef iter_chooser<iterate, deep_leftover_type, TEST, RRL>
+            if_iter;
+        typedef typename if_iter::type          iter_type;
+        typedef typename if_iter::leftover_type iter_leftover_type;
 
-        // the type list left over from the deep first recursion of exec()
-        // and the iteration step: the recursion patterns of both the type
-        // 'iter_leftover_type' and the function 'exec()' must match.
-        typedef typename IfBool<iterate, typename
-                                iter_type::iter_leftover_type,
-                                deep_leftover_type
-                               >::type
-            iter_leftover_type;
+        // iter_leftover_type is the type list left over from the
+        // deep first recursion of exec() [if_then<deep_type>], plus the
+        // iteration step at the present level of nesting [if_then<iter_type>]:
+        // the recursion patterns of both the type 'iter_leftover_type'
+        // and the functions 'exec() / call()' must match.
 
         // the code generation templates
         template <class TUPLE, class B, class TBASE>
@@ -1322,9 +1362,9 @@ namespace type_lists {
             if (tuple.first.is_set(z))
             {
                 binder(tuple.first);
-                if_then<recurse_deep, deep_type>::exec(tuple.rest, binder, z);
+                if_then<deep_type>::exec(tuple.rest, binder, z);
             }
-            if_then<iterate, iter_type>::exec(tuple, binder, z);
+            if_then<iter_type>::exec(tuple, binder, z);
         }
         template <class TUPLE, class B, class TBASE>
         static void call(TUPLE & tuple, B & binder, const TBASE & z)
@@ -1335,9 +1375,9 @@ namespace type_lists {
                 if (TEST<ref_finder_type>::value)
                     binder.call(static_cast<ref_finder_type &> (tuple.first));
                     
-                if_then<recurse_deep, deep_type>::call(tuple.rest, binder, z);
+                if_then<deep_type>::call(tuple.rest, binder, z);
             }
-            if_then<iterate, iter_type>::call(tuple, binder, z);
+            if_then<iter_type>::call(tuple, binder, z);
         }
     };
     template <template <class> class TEST, class RRL> // end of type list ZL
@@ -1370,13 +1410,17 @@ namespace type_lists {
         }
     };
 
-    struct cond_chooser : public cond_chooser_plain
+    struct cond_chooser_exec
     {
         template <class ZL, template <class> class TEST>
         struct exec_op : public cond_op<ZL, TEST> {};
     };
 
-    struct bit_cond_chooser : public cond_chooser
+    struct cond_chooser
+        : public cond_chooser_plain_base, public cond_chooser_exec
+    {};
+
+    struct bit_chooser_base : public real_chooser, public chooser_set_base
     {
         template <class V, unsigned pos>
         struct use
@@ -1407,6 +1451,13 @@ namespace type_lists {
             bool is_bit_set() const { return bit_set.template test<pos>(); }
         };
     };
+
+    struct bit_cond_chooser
+        : public bit_chooser_base, public cond_chooser_exec
+    {};
+    struct bit_chooser
+        : public bit_chooser_base, public exec_chooser_base
+    {};
 
     template <class ACX, class T, class Z>
     struct virtual_chooser: public cond_chooser_plain
@@ -1450,6 +1501,12 @@ namespace type_lists {
             {
                 for (unsigned i = 0; i != tuple.callers.size; ++i)
                     binder.call(*tuple.callers.pointers[i]);
+            }
+            template <class TUPLE, class B, class TBASE>
+            static void exec_single(TUPLE & tuple, B & binder, const TBASE &,
+                                    unsigned key)
+            {
+                binder(*tuple.execs.pointers[key]);
             }
         };
         // cl.exe wants this -- maybe it is right.
@@ -1518,6 +1575,16 @@ namespace type_lists {
                 if (find(pos, found))
                     *found.second = p;
             }
+            bool find_key(unsigned pos, unsigned & key)
+            {
+                finder found;
+                bool ret = find(pos, found);
+                if (ret)
+                {
+                    key = found.first - orders;
+                }
+                return ret;
+            }
         };
         template <template<class, class, template<class> class M, unsigned>
                   class TBASE, class ITL, template<class> class TEST>
@@ -1545,6 +1612,10 @@ namespace type_lists {
                 execs.  reassign(p, pos);
                 callers.reassign(p, pos);
             }
+            bool find_key(unsigned pos, unsigned & key)
+            {
+                return execs.find_key(pos, key);
+            }
 
             template <class V>
             struct reassign_op
@@ -1564,9 +1635,9 @@ namespace type_lists {
 
 
     template <class ITL, class Q = plain_chooser,
-              template<class> class TEST = true_test, unsigned index = 0>
+              template<class> class TEST = true_test, unsigned index_pos = 0>
     struct tuple_base
-        : public Q::template global_data<tuple_base, ITL, TEST, index>
+        : public Q::template global_data<tuple_base, ITL, TEST, index_pos>
     {
         typedef typename tuple_base::global_data_type global_data_base_type;
         typedef nil derived_type; // dummy declaration for static_cast_2<>
@@ -1577,16 +1648,18 @@ namespace type_lists {
         typedef typename ITL::first                            finder_type;
         typedef typename ITL::rest                             rest_list_type;
 
-        typedef tuple_base<rest_list_type, Q, TEST, index + 1> rest_type;
+        typedef tuple_base<rest_list_type, Q, TEST, index_pos + 1> rest_type;
 
         // use policy class Q to annotate the types of the type list ITL
         // for use as members of the tuple:
         // -- the actually stored type
         typedef typename ITL::first                            ref_finder_type;
         typedef typename Q::template use<ref_finder_type,
-                                         index>::type          first_type;
+                                         index_pos>::type          first_type;
         first_type first;
         rest_type  rest;
+
+        static const unsigned size = size<list_type>::of;
 
         template <class T>
         struct has_element
@@ -1632,22 +1705,52 @@ namespace type_lists {
             if (! Q::template is_set(rv, *this))
                 Q::template set(rv, *this);
         }
-        // recursively set all the cond_val::is_set bits of the depended-on
-        // types, or, respectively, take equivalent action.
+        // recursively set all the cond_val::is_set bits of the types implied
+        // by type V, or, respectively, take equivalent action.
         template <class V>
         void set()
         {
             set_if_not(this->template ref<V>());
-            for_all_used<V, set_exec>(*this);
+            // take care that nothing is instantiated for plain (non-
+            // conditional) tuples, using conditional masking of type V
+            // via 'set_implying':
+            for_all_implied<typename Q::template set_implying<V>::type,
+                            set_exec>(*this);
         }
         // transfer the set bits of *this to another tuple t2:
         // (ITL must be a subset of ITL2.)
         template <class ITL2, class Q2, template<class> class TEST2>
         void transfer_set_to(tuple_base<ITL2, Q2, TEST2> & t2) const
         {
-            if (is_set<ref_finder_type>())
+            transfer_set_to_loop(t2, *this);
+        }
+        template <class ITL2, class Q2, template<class> class TEST2, class ALL>
+        void transfer_set_to_loop(tuple_base<ITL2, Q2, TEST2> & t2,
+                             const ALL & t1) const
+        {
+            if (t1.template is_set<ref_finder_type>())
                 t2.template set<ref_finder_type>();
-            rest.transfer_set_to(t2);
+            rest.transfer_set_to_loop(t2, t1);
+        }
+
+        // Policy-based application of operations on single members.
+        // As of yet, implemented for Q == cond_virtual_chooser only.
+        template <class V>
+        bool find_key(unsigned & key) const
+        {
+            typedef index<list_type, V> key_index;
+            return key_index::found && find_key(key_index::of, key);
+        }
+        template <class B, class TBASE>
+        void exec_single_bound_op(B & binder, const TBASE & z, unsigned s)
+        {
+            Q::template
+               exec_op<list_type, true_test>::exec_single(*this, binder, z);
+        }
+        template <class B>
+        void exec_single_bound(B & binder, unsigned s)
+        {
+            exec_single_bound_op(binder, *this);
         }
 
         // policy-based application of operator()
@@ -1791,8 +1894,8 @@ namespace type_lists {
             return *this;
         }
     };
-    template <class Q, template <class> class TEST, unsigned index>
-    struct tuple_base<nil, Q, TEST, index>
+    template <class Q, template <class> class TEST, unsigned index_pos>
+    struct tuple_base<nil, Q, TEST, index_pos>
     {
         template <class>
         struct has_element
@@ -1803,8 +1906,9 @@ namespace type_lists {
         void exec_bound_op(B &, const TBASE &) {}
         template <class B, class TBASE>
         void call_bound_op(B &, const TBASE &) {}
-        template <class ITL2, class Q2, template<class> class TEST2>
-        void transfer_set_to(tuple_base<ITL2, Q2, TEST2> &) const {}
+        template <class ITL2, class Q2, template<class> class TEST2, class ALL>
+        void transfer_set_to_loop(tuple_base<ITL2, Q2, TEST2> &, const ALL &)
+            const {}
     };
 
     template <class V, class L, class A, class B>
@@ -1847,6 +1951,9 @@ namespace type_lists {
 
     template <class ITL, template<class> class TEST = true_test>
     struct cond_tuple : public tuple_base<ITL, cond_chooser, TEST> {};
+
+    template <class ITL, template<class> class TEST = true_test>
+    struct bit_tuple : public tuple_base<ITL, bit_chooser, TEST> {};
 
     template <class ITL, template<class> class TEST = true_test>
     struct bit_cond_tuple : public tuple_base<ITL, bit_cond_chooser, TEST> {};

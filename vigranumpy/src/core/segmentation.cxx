@@ -1056,6 +1056,7 @@ void defineSegmentation()
 
 void defineEdgedetection();
 void defineInterestpoints();
+void defineObjectFeatures();
 
 } // namespace vigra
 
@@ -1068,4 +1069,5 @@ BOOST_PYTHON_MODULE_INIT(analysis)
     defineSegmentation();
     defineEdgedetection();
     defineInterestpoints();
+    defineObjectFeatures();
 }
