@@ -60,9 +60,9 @@ namespace vigra {
   
 /** \defgroup FeatureAccumulators Feature Accumulators
 
-    The namespace <tt>vigra::acc1</tt> contains the accumulator classes which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program. 
+    The namespace <tt>vigra::acc1</tt> contains the accumulator classes, basic statistics and modifiers which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program. 
     
-    <b>Basic statistics:</b> (incomplete)
+    <b>Basic statistics:</b>
     - PowerSum<N> (@f$ \sum_i x_i^N @f$)
     - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
     - Skewness, UnbiasedSkewness
@@ -86,7 +86,7 @@ namespace vigra {
       <table border="0">
       <tr><td>  Central<S>   </td><td> substract mean before computing S </td></tr>
       <tr><td>  Principal<S> </td><td> project onto PCA eigenvectors   </td></tr>
-      <tr><td>  Whitened<S> &nbsp; &nbsp;  </td><td> scalte to unit variance after PCA   </td></tr>
+      <tr><td>  Whitened<S> &nbsp; &nbsp;  </td><td> scale to unit variance after PCA   </td></tr>
       <tr><td>  Coord<S>        </td><td> compute S from pixel coordinates rather than from pixel values    </td></tr>
       <tr><td>  Weighted<S>     </td><td> compute weighted version of S   </td></tr>
       <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
@@ -118,14 +118,14 @@ namespace vigra {
     - ArgMinWeight and ArgMaxWeight are automatically Weighted
 
 
-    High-level syntax example using the \ref acc1::AccumulatorChain class (to use Weighted<> or Coord<> modifiers, see below):
+    Here is an example how to use \ref acc1::AccumulatorChain to compute statistics. (To use Weighted<> or Coord<> modifiers, see below):
 
     \code
     using namespace vigra::acc1;
     typedef double DataType;
     int size = 1000;
     vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
-    // fill array with data
+   
     AccumulatorChain<DataType, 
         Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> >
 	a;
@@ -137,7 +137,9 @@ namespace vigra {
     std::cout << "Variance: " << get<Variance>(a) << std::endl;
     \endcode
     
-    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc1::Select. (In the above example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
+    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc1::Select. The statistics are computed with the acc1::collectStatistics function and the statistics can be accessed with acc1::get . 
+
+    (Note that in the example, RootMeanSquares, Variance and StdDev are all composed from the fundamental statistic PowerSum<2>, which only has to be computed once. This makes the algorithm more efficient.)
 
     Rules and notes:
     - order of statistics in Select<> is arbitrary
@@ -147,15 +149,15 @@ namespace vigra {
     - collectStatistics() does as many passes through the data as necessary
     - each accumulator only sees data in the appropriate pass (its "working pass")
 
-    The Accumulators can also be used with vector-valued data, e.g. (?) (does not work...)
+    The Accumulators can also be used with vector-valued data, e.g. vigra::RGBValue , vigra::TinyVector or vigra::MultiArray :
     
     \code 
-    typedef vigra::RGBValue<UInt8> DataType;
-    vigra::acc1::AccumulatorChain<DataType, Select<...> > a;
+    typedef vigra::RGBValue<double> DataType;
+    AccumulatorChain<DataType, Select<...> > a;
     ...
     \endcode
     
-    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), use \ref CoupledScanOrderIterator :
+    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), accumulator chain can be used with \ref CoupledScanOrderIterator. The coupled iterator enables the accumulator chain access both the data, coordinates and/or the weights:
                            
     \code
     using namespace vigra::acc1;
@@ -196,11 +198,12 @@ namespace vigra {
     Iterator start = createCoupledIterator(data, labels);
     Iterator end = start.getEndIterator();
 
-    a.ignoreLabel(0); //do not compute statistics for region 0 (e.g. background)
+    a.ignoreLabel(0); //statistics will not be computed for region 0 (e.g. background)
 
     collectStatistics(start,end,a);
 
-    std::cout << get<Mean>(a, regionlabel); //get Mean of region with label 0
+    int regionlabel = ...;
+    std::cout << get<Mean>(a, regionlabel); //get Mean of region with label 'regionlabel'
     \endcode
 
    
@@ -262,13 +265,13 @@ namespace vigra {
   
 
        
-    - The number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time). In the first case the return type of the accumulator is TinyVector<double, BinCount> (number of bins cannot be changed). In the second case, the return type is MultiArray<1, double> and the nNumber of bins must be set before seeing data (see example below). 
+    - The number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time). In the first case the return type of the accumulator is TinyVector<double, BinCount> (number of bins cannot be changed). In the second case, the return type is MultiArray<1, double> and the number of bins must be set before seeing data (see example below). 
     - If UserRangeHistogram is used, the bounds for the linear range mapping from values to indices must be set before seeing data (see below).
     - Options can be set by passing an instance of HistogramOptions to the accumulator chain (same options for all histograms in the chain) or by directly calling the appropriate member functions of the accumulators.
     - Merging is supported if the range mapping of the histograms is the same.
     - Histogram accumulators have two members for outliers (left_outliers, right_outliers).
 
-    With the StandardQuantiles class, <b>histogram quantiles</b> (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from a given histgram using linear interpolation. The return type is vigra::TinyVector<double, 7>.
+    With the StandardQuantiles class, <b>histogram quantiles</b> (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from a given histgram using linear interpolation. The return type is TinyVector<double, 7> .
 
     \anchor acc1_hist_options Usage:
     \code
@@ -381,7 +384,7 @@ struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
 
-/** Specifies index of labels in CoupledHandle. 
+/** \brief Specifies index of labels in CoupledHandle. 
 
     LabelArg<INDEX> tells the acc1::AccumulatorChainArray which index of the Handle contains the labels. (Note that coordinates are always index 0)
  */
@@ -1649,8 +1652,8 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
 /****************************************************************************/
 
     // Implement the high-level interface of an accumulator chain
-/** \brief Implement the high-level interface of an accumulator chain. (?)
-*/
+//  \brief Implement the high-level interface of an accumulator chain. (?)
+  
 template <class T, class NEXT>
 class AccumulatorChainImpl
 {
@@ -1824,6 +1827,8 @@ class AccumulatorChainImpl
     }
 };
 
+
+
    // Create an accumulator chain containing the Selected statistics and their dependencies.
 
 /** \brief Create an accumulator chain containing the selected statistics and their dependencies.
@@ -1861,7 +1866,19 @@ class AccumulatorChain
         static const ArrayVector<std::string> n = collectTagNames();
         return n;
     }
-    
+  
+  int testen() {
+    return 0;
+  }
+  
+  //extern
+  //  extern unsigned int passesRequired() const;
+
+  /** \fn int testen()
+   some docu...?
+  */
+  
+ 
   private:
     static ArrayVector<std::string> collectTagNames()
     {
@@ -1871,6 +1888,7 @@ class AccumulatorChain
         return n;
     }
 };   
+
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
@@ -2523,6 +2541,21 @@ struct AccumulatorResultTraits<TinyVector<T, N> >
     typedef Matrix<element_promote_type>                 CovarianceType;
 };
 
+// (?) beign change
+template <class T>
+struct AccumulatorResultTraits<RGBValue<T> >
+{
+    typedef RGBValue<T>                                  type;
+    typedef T                                            element_type;
+    typedef double                                       element_promote_type;
+    typedef RGBValue<T>                                  MinmaxType;
+    typedef RGBValue<element_promote_type>               SumType;
+    typedef TinyVector<element_promote_type, 3*(3+1)/2>  FlatCovarianceType;
+    typedef Matrix<element_promote_type>                 CovarianceType;
+};
+// end change
+
+
 template <unsigned int N, class T, class Stride>
 struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 {
@@ -2768,7 +2801,7 @@ class Coord
     };
 };
 
-/** Specifies index of data in CoupledHandle. 
+/** \brief Specifies index of data in CoupledHandle. 
 
     If AccumulatorChain is used with CoupledIterator, WeightArg<INDEX> tells the accumulator chain which index of the Handle contains the weights. (Note that coordinates are always index 0.)
 */
@@ -3444,7 +3477,7 @@ class DivideByCount
 };
 
 // UnbiasedVariance
-/** Modifier. Divide statistics by Count-1:  DivideUnbiased<TAG> = TAG / (Count-1)
+/** \brief Modifier. Divide statistics by Count-1:  DivideUnbiased<TAG> = TAG / (Count-1)
 */
 template <class TAG>
 class DivideUnbiased
@@ -3903,7 +3936,7 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
 } // namespace detail
 
 // we only store the flattened upper triangular part of the scatter matrix
-/** Basic statistic. Flattened uppter-triangular part of scatter matrix (?)
+/** \brief Basic statistic. Flattened uppter-triangular part of scatter matrix (?)
 */
 class FlatScatterMatrix
 {
@@ -4912,7 +4945,8 @@ class RangeHistogramBase
 /** \brief Histogram where data values are equal to bin indices. (?)
 
     - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
-    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<IntegerHistogram<0> >(acc_chain).setBinCount(bincount) or by passing an instance of HistogramOptions to the accumulator chain. 
+    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<IntegerHistogram<0> >(acc_chain).setBinCount(bincount) or by passing an instance of HistogramOptions to the accumulator chain via setHistogramOptions . 
+    - Outliers can be accessed via getAccumulator<...>(a).left_outliers and getAccumulator<...>(a).right_outliers.
 */
 template <int BinCount>
 class IntegerHistogram
@@ -5023,6 +5057,7 @@ class IntegerHistogram
     - Bounds for the mapping (min/max) must be set before seeing data by calling getAccumulator<UserRangeHistogram<BinCount> >.setMinMax(min, max).
     - Options can also be passed to the accumulator chain via an instance of HistogramOptions .
     - operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<...>(a).left_outliers and getAccumulator<...>(a).right_outliers.
 */
 template <int BinCount>
 class UserRangeHistogram
@@ -5063,6 +5098,7 @@ class UserRangeHistogram
     - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<IntegerHistogram<0> >(acc_chain).setBinCount(bincount).
     - Becomes a UserRangeHistogram if min/max is set.
     - operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<...>(a).left_outliers and getAccumulator<...>(a).right_outliers .
 */
 template <int BinCount>
 class AutoRangeHistogram
@@ -5101,10 +5137,11 @@ class AutoRangeHistogram
 /** \brief Like AutoRangeHistogram, but use global min/max rather than region min/max.
 
     - Works in pass 2.
-    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount.
+    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
     - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<IntegerHistogram<0> >(acc_chain).setBinCount(bincount) .
     - Becomes a UserRangeHistogram if min/max is set.
     - operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<...>(a).left_outliers and getAccumulator<...>(a).right_outliers .
 */
 template <int BinCount>
 class GlobalRangeHistogram

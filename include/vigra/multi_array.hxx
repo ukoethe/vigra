@@ -1706,7 +1706,8 @@ public:
     void meanVariance(U * mean, U * variance) const
     {
         typedef typename NumericTraits<U>::RealPromote R;
-        triple<R, R, R> res(0.0, 0.0, 0.0);
+	R zero;
+        triple<double, R, R> res(0.0, zero, zero);
         detail::reduceOverMultiArray(traverser_begin(), shape(),
                                      res, 
                                      detail::MeanVarianceReduceFunctor(),

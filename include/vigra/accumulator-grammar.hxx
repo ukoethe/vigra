@@ -150,11 +150,16 @@ template <class A> class Global;     // compute statistic A globally rather than
 /*                                                                        */
 /**************************************************************************/
 
+/** \brief Alias. Count. */
 typedef PowerSum<0>                                 Count;
+/** \brief Alias. Sum. */
 typedef PowerSum<1>                                 Sum;
+/** \brief Alias. Sum of squares. */
 typedef PowerSum<2>                                 SumOfSquares;
 
+/** \brief Alias. Mean. */
 typedef DivideByCount<Sum>                          Mean;
+/** \brief Alias. Root mean square. */
 typedef RootDivideByCount<SumOfSquares>             RootMeanSquares;
 
 // desired pseudocode (unfortunately not legal in C++)
@@ -164,31 +169,51 @@ typedef RootDivideByCount<SumOfSquares>             RootMeanSquares;
 //
 // actual definition (desired behavior is realised by rules below)
 //
+/** \brief Alias. Moment<N>. */
 template <unsigned N> class                         Moment;  
+/** \brief Alias. CentralMoment<N>. */
 template <unsigned N> class                         CentralMoment;  
 
+/** \brief Alias. Sum of squared differences. */
 typedef Central<PowerSum<2> >                       SumOfSquaredDifferences;
+/** \brief Alias. Sum of squared differences. */
 typedef SumOfSquaredDifferences                     SSD;
 
+/** \brief Alias. Variance. */
 typedef DivideByCount<Central<PowerSum<2> > >       Variance;
+/** \brief Alias. Standard deviation. */
 typedef RootDivideByCount<Central<PowerSum<2> > >   StdDev;
+/** \brief Alias. Unbiased variance. */
 typedef DivideUnbiased<Central<PowerSum<2> > >      UnbiasedVariance;
+/** \brief Alias. Unbiased standard deviation. */
 typedef RootDivideUnbiased<Central<PowerSum<2> > >  UnbiasedStdDev;
 
+/** \brief Alias. Covariance. */
 typedef DivideByCount<FlatScatterMatrix>            Covariance;
+/** \brief Alias. Unbiased covariance. */
 typedef DivideUnbiased<FlatScatterMatrix>           UnbiasedCovariance;
+/** \brief Alias. Covariance eigensystem. */
 typedef DivideByCount<ScatterMatrixEigensystem>     CovarianceEigensystem;
 
+/** \brief Alias. Absolute sum. */
 typedef AbsPowerSum<1>                              AbsSum;
+/** \brief Alias. Sum of absolute differences. */
 typedef Central<AbsSum>                             SumOfAbsDifferences;
+/** \brief Alias. Mean absolute deviation. */
 typedef DivideByCount<SumOfAbsDifferences>          MeanAbsoluteDeviation;
 
+/** \brief Alias. Region center. */
 typedef Coord<Mean>                                 RegionCenter;
+/** \brief Alias. Region radii. */
 typedef Coord<Principal<StdDev> >                   RegionRadii;
+/** \brief Alias. Region axes. */
 typedef Coord<Principal<CoordinateSystem> >         RegionAxes;
 
+/** \brief Alias. Center of mass. */
 typedef Weighted<RegionCenter>                      CenterOfMass;
+/** \brief Alias. Moments of inertia. */
 typedef Weighted<Coord<Principal<Variance> > >      MomentsOfInertia;
+/** \brief Alias. Axes of inertia. */
 typedef Weighted<RegionAxes>                        AxesOfInertia;
 
 /**************************************************************************/

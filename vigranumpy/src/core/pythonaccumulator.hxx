@@ -357,25 +357,87 @@ struct PythonAccumulator
     
     static void definePythonClass(char const * classname)
     {
-        python::class_<PythonAccumulator>(classname, python::no_init)
-            .def("__getitem__", &PythonAccumulator::get)
-            .def("isActive", &PythonAccumulator::isActive)
-            .def("activeNames", &PythonAccumulator::activeNames)
-            .def("names", &PythonAccumulator::names)
-            .def("merge", &PythonAccumulator::merge)
+
+      //docstring_options doc_options(true, true, false); //me (?)
+
+      std::string classname_str(classname);
+      if (strcmp("MultibandFeatures2D", classname)==0) {
+      
+        python::class_<PythonAccumulator>
+	  (classname, 
+	   "An instance of this accumulator class is returned by \n"
+	   "extractFeatures() and contains the computed features. \n",
+	   python::no_init)
+	  .def("__getitem__", &PythonAccumulator::get, 
+	       "Returns the value of the 'feature'. The return type is a \n"
+	       " float or a numpy array of appropriate shape.\n",
+	       python::arg("feature") )
+	  .def("isActive", &PythonAccumulator::isActive,
+	       "Returns True if 'feature' is selected (i.e. \n"
+	       "'feature' has been computed) and False otherwise.\n",
+	       python::arg("feature") )
+	  .def("activeNames", &PythonAccumulator::activeNames,
+	       "Returns a list of all selected features.\n")
+	  .def("names", &PythonAccumulator::names,
+	       "Returns a list of all supported features for the given input.\n"
+	       )
+	  .def("merge", &PythonAccumulator::merge,
+	       "Merge statistics with the statistics from accumulator 'b'.\n"
+	       "Merging is not supported for all statistics, see the\n"
+	       "C++ documentation for more information (?) .\n",
+	       python::arg("b"))
             ;
+      } else {
+	python::class_<PythonAccumulator>
+	  (classname, 
+	   " (?) An instance of this accumulator class is returned by \n"
+	   "extractFeatures() and contains the computed features. \n"
+	   "See MultibandFeatures2D for documentation of member functions.\n",
+	   python::no_init)
+	  .def("__getitem__", &PythonAccumulator::get)
+	  .def("isActive", &PythonAccumulator::isActive)
+	  .def("activeNames", &PythonAccumulator::activeNames)
+	  .def("names", &PythonAccumulator::names)
+	  .def("merge", &PythonAccumulator::merge)
+            ;
+      }
     }
     
     static void definePythonArrayClass(char const * classname)
     {
-        python::class_<PythonAccumulator>(classname, python::no_init)
-            .def("__getitem__", &PythonAccumulator::get)
-            .def("isActive", &PythonAccumulator::isActive)
-            .def("activeNames", &PythonAccumulator::activeNames)
-            .def("names", &PythonAccumulator::names)
-            .def("merge", &PythonAccumulator::merge)
-            .def("merge", &PythonAccumulator::remappingMerge)
-            .def("merge", &PythonAccumulator::mergeRegions)
+        python::class_<PythonAccumulator>
+	  (classname, 
+	   "An instance of this accumulator class is returned by \n"
+	   "extractRegionFeatures() and contains the computed features. \n",
+	   python::no_init)
+	  .def("__getitem__", &PythonAccumulator::get,
+	       "Returns the value of the 'feature'. The return type is a \n"
+	       " a numpy array of appropriate shape. The first array index \n"
+	       "is the region label. \n",
+	       python::arg("feature"))
+	  .def("isActive", &PythonAccumulator::isActive, 
+	       "Returns True if 'feature' is selected (i.e. \n"
+	       "'feature' has been computed) and False otherwise.\n",
+	       python::arg("feature"))
+	  .def("activeNames", &PythonAccumulator::activeNames,
+	       "Returns a list of all selected features.\n")
+	  .def("names", &PythonAccumulator::names,
+	       "Returns a list of all supported features for the given input.\n")
+	  .def("merge", &PythonAccumulator::merge,
+	       "Merge statistics with the statistics from accumulator 'b'.\n"
+	       "Merging is not supported for all statistics, see the\n"
+	       "C++ documentation for more information (?) .\n",
+	       python::arg("b"))
+	  .def("merge", &PythonAccumulator::remappingMerge,
+	       "Merge statistics with the statistics from accumulator 'b'\n"
+	       "using label remapping. The label map 'labelmap' maps the \n"
+	       "labels of accumulator 'b' (i.e. the index is the old label \n"
+	       "and the value is the new label). 'labelmap' must be a \n"
+	       "numpy array with dtype=numpy.uint32.\n",
+	       (python::arg("b"), python::arg("labelmap")))
+	  .def("merge", &PythonAccumulator::mergeRegions,
+	       "Merge statistics from region 'k' into region 'j'.\n",
+	       (python::arg("j"), python::arg("k")))
             ;
     }
     
@@ -613,11 +675,14 @@ void definePythonAccumulatorSingleband(char const * classname)
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<T, Accumulators>, acc1::GetTag_Visitor> Accu;
     
     Accu::definePythonClass(classname);
+
+    std::string test_string = "Docu_test\n\n";
     
     def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 2, T>,
           (arg("image"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
-          return_value_policy<manage_new_object>());
+	return_value_policy<manage_new_object>(),
+	"");
     
     def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 3, T>,
           (arg("volume"), arg("features") = "all", 
