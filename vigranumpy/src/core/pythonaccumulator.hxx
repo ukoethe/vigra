@@ -360,47 +360,50 @@ struct PythonAccumulator
 
       //docstring_options doc_options(true, true, false); //me (?)
 
-      std::string classname_str(classname);
-      if (strcmp("MultibandFeatures2D", classname)==0) {
+     // std::string classname_str(classname);
+     // if (strcmp("MultibandFeatures2D", classname)==0) {
       
         python::class_<PythonAccumulator>
 	  (classname, 
-	   "An instance of this accumulator class is returned by \n"
-	   "extractFeatures() and contains the computed features. \n",
+	   "An instance of this accumulator class is returned by\n"
+	   " :func:`extractFeatures` with input data type ... . \n"
+           "The object contains the computed features \n"
+           "(i.e. the selected features and their dependencies).\n"
+	   "For details see `Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ \n"
+           "in the vigra C++ documentation. \n\n",
 	   python::no_init)
 	  .def("__getitem__", &PythonAccumulator::get, 
 	       "Returns the value of the 'feature'. The return type is a \n"
 	       " float or a numpy array of appropriate shape.\n",
 	       python::arg("feature") )
 	  .def("isActive", &PythonAccumulator::isActive,
-	       "Returns True if 'feature' is selected (i.e. \n"
-	       "'feature' has been computed) and False otherwise.\n",
+	       "Returns True if 'feature' has been computed and False otherwise.\n",
 	       python::arg("feature") )
 	  .def("activeNames", &PythonAccumulator::activeNames,
-	       "Returns a list of all selected features.\n")
+	       "Returns a list of all computed features.\n")
 	  .def("names", &PythonAccumulator::names,
-	       "Returns a list of all supported features for the given input.\n"
+	       "Returns a list of all supported features for the given input data array.\n"
 	       )
 	  .def("merge", &PythonAccumulator::merge,
-	       "Merge statistics with the statistics from accumulator 'b'.\n"
-	       "Merging is not supported for all statistics, see the\n"
+	       "Merge features with the features from accumulator 'b'.\n"
+	       "Merging is not supported for all statistics  (?) , see the\n"
 	       "C++ documentation for more information (?) .\n",
 	       python::arg("b"))
             ;
-      } else {
-	python::class_<PythonAccumulator>
-	  (classname, 
-	   " (?) An instance of this accumulator class is returned by \n"
-	   "extractFeatures() and contains the computed features. \n"
-	   "See MultibandFeatures2D for documentation of member functions.\n",
-	   python::no_init)
-	  .def("__getitem__", &PythonAccumulator::get)
-	  .def("isActive", &PythonAccumulator::isActive)
-	  .def("activeNames", &PythonAccumulator::activeNames)
-	  .def("names", &PythonAccumulator::names)
-	  .def("merge", &PythonAccumulator::merge)
-            ;
-      }
+     // } else {
+//	python::class_<PythonAccumulator>
+//	  (classname, 
+//	   " (?) An instance of this accumulator class is returned by \n"
+//	   "extractFeatures() and contains the computed features. \n"
+//	   "See MultibandFeatures2D for documentation of member functions.\n",
+//	   python::no_init)
+//	  .def("__getitem__", &PythonAccumulator::get)
+//	  .def("isActive", &PythonAccumulator::isActive)
+//	  .def("activeNames", &PythonAccumulator::activeNames)
+//	  .def("names", &PythonAccumulator::names)
+//	  .def("merge", &PythonAccumulator::merge)
+//            ;
+  //    }
     }
     
     static void definePythonArrayClass(char const * classname)
@@ -698,7 +701,7 @@ void definePythonAccumulator(char const * classname)
     docstring_options doc_options(true, true, false);
 
     typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<T, Accumulators>, acc1::GetTag_Visitor> Accu;
-    
+
     Accu::definePythonClass(classname);
     
     def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
@@ -708,6 +711,7 @@ void definePythonAccumulator(char const * classname)
     def("extractFeatures", &acc1::pythonInspect<Accu, 3, T>,
           (arg("volume"), arg("features") = "all"),
           return_value_policy<manage_new_object>());
+
 }
 
 template <unsigned int N, class T, class Accumulators>
@@ -725,9 +729,19 @@ void definePythonAccumulatorMultiband(char const * classname)
     std::string argname = N == 3 
                              ? "image"
                              : "volume";
+
+    //for documentation only
+    std::string doc_string;
+    if (N==3) {
+      doc_string.append
+	("Extract global features (e.g. Mean, Variance, Minimum etc.) from the input array. As input array the overloaded extractFeatures() function supports 2D or 3D numpy arrays with arbitrary many channels. For different input arrays a different accumulator class is returned. The element type of the input array must be **dtype=float32**. The set of available features depends on the input array, e.g. the 'Histogram' feature is only supported for singleband arrays. Call :func:`MultibandFeatures2D.names` (and others...) to get a list of all available features for the respective input array. Features are can be:\n\n    + 'feature'    compute single feature (and its dependencies)\n\n    + ['feat1', 'feat2',...]    compute given feature set\n\n    + 'all'    compute all features (default)\n\n    + None or ''    compute nothing (usefull to get list of available features)\n\nTo compute per-region features, use :func:`extractRegionFeatures`.\n\nThis instance is called for input array :class:`vigra.VigraArray` with two spatial axes and two or more than four channels. The function returns an instance of :class:`MultibandFeatures2D`.\n\nFor details see `Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ in the vigra C++ documentation.\n\n");
+    } else {
+      doc_string.append("This instance of :func:`extractFeatures` is called for input array :class:`vigra.VigraArray` with three spatial axes and two or more than four channels. An instance of :class:`MultibandFeatures3D` is returned.\n\n");
+    }
     
     def("extractFeatures", &acc1::pythonInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("features") = "all"),
+	doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
