@@ -89,11 +89,15 @@ FUNCTION(VIGRA_ADD_TEST target)
                        ${VIGRA_RUN_TEST}
                        @ONLY)
     ELSE()
-        SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.sh")
-        CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
-                       ${VIGRA_RUN_TEST}
-                       @ONLY)
-        EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
+        IF(VIGRA_RUN_TESTS_DIRECTLY)
+          SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/${target}")
+        ELSE()
+          SET(VIGRA_RUN_TEST "${CMAKE_CURRENT_BINARY_DIR}/run_${target}.sh")
+          CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/config/run_test.sh.in
+                         ${VIGRA_RUN_TEST}
+                         @ONLY)
+          EXECUTE_PROCESS(COMMAND chmod u+x ${VIGRA_RUN_TEST} OUTPUT_QUIET ERROR_QUIET)
+        ENDIF()
     ENDIF()
     
     # register the test execution command

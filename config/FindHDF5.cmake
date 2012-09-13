@@ -41,7 +41,7 @@ if(HDF5_INCLUDE_DIR)
                CMAKE_FLAGS "${HDF5_TRY_COMPILE_INCLUDE_DIR}") 
 
     if(HDF5_USES_ZLIB)
-        FIND_LIBRARY(HDF5_Z_LIBRARY NAMES zlib1 z )
+        FIND_LIBRARY(HDF5_Z_LIBRARY NAMES zlib1 zlib z )
         set(HDF5_ZLIB_OK ${HDF5_Z_LIBRARY})
     else()
         set(HDF5_ZLIB_OK TRUE)

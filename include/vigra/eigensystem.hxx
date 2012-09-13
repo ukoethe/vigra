@@ -1025,6 +1025,68 @@ symmetricEigensystem(MultiArrayView<2, T, C1> const & a,
     return true;
 }
 
+namespace detail{
+template <class T, class C1, class C2, class C3>
+bool
+symmetricEigensystem2x2(MultiArrayView<2, T, C1> const & a,
+            MultiArrayView<2, T, C2> & ew, MultiArrayView<2, T, C3> & ev)
+{
+    vigra_precondition(isSymmetric(a),
+        "symmetricEigensystem(): symmetric input matrix required.");
+ 
+    double evec[2]={0,0};
+      
+      /* Eigenvectors*/ 
+      if (a(0,1)==0){
+        if (fabs(a(1,1))>fabs(a(0,0))){
+          evec[0]=0.;
+          evec[1]=1.;
+          ew(0,0)=a(1,1);
+          ew(1,0)=a(0,0);
+         }
+        else if(fabs(a(0,0))>fabs(a(1,1))) {
+          evec[0]=1.;
+          evec[1]=0.;
+          ew(0,0)=a(0,0);
+          ew(1,0)=a(1,1);
+        }
+        else {
+          evec[0]=.5* M_SQRT2;
+          evec[1]=.5* M_SQRT2;
+          ew(0,0)=a(0,0);
+          ew(1,0)=a(1,1);
+        }
+      }
+      else{ 
+        double temp=a(1,1)-a(0,0);
+        
+        double coherence=sqrt(temp*temp+4*a(0,1)*a(0,1));
+        evec[0]=2*a(0,1);
+        evec[1]=temp+coherence;
+        temp=std::sqrt(evec[0]*evec[0]+evec[1]*evec[1]);
+        if (temp==0){
+          evec[0]=.5* M_SQRT2;
+          evec[1]=.5* M_SQRT2;
+          ew(0,0)=1.;
+          ew(1,0)=1.;
+        }
+        else{
+          evec[0]/=temp;
+          evec[1]/=temp;
+          
+          /* Eigenvalues */
+          ew(0,0)=.5*(a(0,0)+a(1,1)+coherence);
+          ew(1,0)=.5*(a(0,0)+a(1,1)-coherence);
+        }
+      }
+      ev(0,0)= evec[0];
+      ev(1,0)= evec[1];
+      ev(0,1)=-evec[1];
+      ev(1,1)= evec[0];
+      return true;
+}
+} // closing namespace detail 
+
     /** Compute the eigensystem of a square, but
         not necessarily symmetric matrix.
 

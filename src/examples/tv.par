@@ -1,0 +1,7 @@
+infile:  cameraman_noise.png
+outfile: result_standard_tv.png
+mode:    1
+alpha:   0.3
+eps:     0.01
+
+...do not change order or insert additional items above...

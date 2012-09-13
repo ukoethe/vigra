@@ -587,7 +587,7 @@ class TinyVectorBase
 
         /** STL-compatible definition of difference_type
         */
-    typedef int difference_type;
+    typedef std::ptrdiff_t difference_type;
 
         /** the scalar type for the outer product
         */

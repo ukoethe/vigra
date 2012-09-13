@@ -1,0 +1,13 @@
+infile:  cameraman_noise.png
+outfile: result_aniso_tv.png
+mode:    3
+outer:   5
+inner:   200
+alpha:   0.05
+beta:    .5
+sigma:   0.1
+rho:     0.5
+edge_factor: 500
+write_steps: 1
+
+...do not change order or insert additional items above...
