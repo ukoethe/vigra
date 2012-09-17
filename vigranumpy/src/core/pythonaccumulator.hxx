@@ -358,22 +358,16 @@ struct PythonAccumulator
     static void definePythonClass(char const * classname)
     {
 
-      //docstring_options doc_options(true, true, false); //me (?)
-
-     // std::string classname_str(classname);
-     // if (strcmp("MultibandFeatures2D", classname)==0) {
-      
-        python::class_<PythonAccumulator>
-	  (classname, 
-	   "An instance of this accumulator class is returned by\n"
-	   " :func:`extractFeatures` with input data type ... . \n"
-           "The object contains the computed features \n"
-           "(i.e. the selected features and their dependencies).\n"
-	   "For details see `Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ \n"
-           "in the vigra C++ documentation. \n\n",
+           
+       python::class_<PythonAccumulator>
+	 (classname, 
+	  "An instance of this accumulator class is returned by"
+	   " :func:`extractFeatures`. "
+           "The object contains the computed features "
+           "(i.e. the selected features and their dependencies).\n",
 	   python::no_init)
 	  .def("__getitem__", &PythonAccumulator::get, 
-	       "Returns the value of the 'feature'. The return type is a \n"
+	       "Returns the value of the 'feature'. The return type is a"
 	       " float or a numpy array of appropriate shape.\n",
 	       python::arg("feature") )
 	  .def("isActive", &PythonAccumulator::isActive,
@@ -385,61 +379,42 @@ struct PythonAccumulator
 	       "Returns a list of all supported features for the given input data array.\n"
 	       )
 	  .def("merge", &PythonAccumulator::merge,
-	       "Merge features with the features from accumulator 'b'.\n"
-	       "Merging is not supported for all statistics  (?) , see the\n"
-	       "C++ documentation for more information (?) .\n",
+	       "Merge features with the features from accumulator 'b'.\n",
 	       python::arg("b"))
             ;
-     // } else {
-//	python::class_<PythonAccumulator>
-//	  (classname, 
-//	   " (?) An instance of this accumulator class is returned by \n"
-//	   "extractFeatures() and contains the computed features. \n"
-//	   "See MultibandFeatures2D for documentation of member functions.\n",
-//	   python::no_init)
-//	  .def("__getitem__", &PythonAccumulator::get)
-//	  .def("isActive", &PythonAccumulator::isActive)
-//	  .def("activeNames", &PythonAccumulator::activeNames)
-//	  .def("names", &PythonAccumulator::names)
-//	  .def("merge", &PythonAccumulator::merge)
-//            ;
-  //    }
     }
     
     static void definePythonArrayClass(char const * classname)
     {
         python::class_<PythonAccumulator>
 	  (classname, 
-	   "An instance of this accumulator class is returned by \n"
-	   "extractRegionFeatures() and contains the computed features. \n",
+	   "An instance of this accumulator class is returned by "
+	   ":func:`extractRegionFeatures()` and contains the computed"
+	   " per-region features. \n",
 	   python::no_init)
 	  .def("__getitem__", &PythonAccumulator::get,
-	       "Returns the value of the 'feature'. The return type is a \n"
-	       " a numpy array of appropriate shape. The first array index \n"
-	       "is the region label. \n",
+	       "Returns the value of the 'feature'. The return type is a"
+	       " numpy array of appropriate shape."
+	       " The first array index is the region label.\n",
 	       python::arg("feature"))
 	  .def("isActive", &PythonAccumulator::isActive, 
-	       "Returns True if 'feature' is selected (i.e. \n"
-	       "'feature' has been computed) and False otherwise.\n",
+	       "Returns True if 'feature' has been computed"
+	       " and False otherwise.\n",
 	       python::arg("feature"))
 	  .def("activeNames", &PythonAccumulator::activeNames,
 	       "Returns a list of all selected features.\n")
 	  .def("names", &PythonAccumulator::names,
-	       "Returns a list of all supported features for the given input.\n")
+	       "Returns a list of all supported features for the given input array.\n")
 	  .def("merge", &PythonAccumulator::merge,
-	       "Merge statistics with the statistics from accumulator 'b'.\n"
-	       "Merging is not supported for all statistics, see the\n"
-	       "C++ documentation for more information (?) .\n",
+	       "Merge features with the features from accumulator 'b'.",
 	       python::arg("b"))
 	  .def("merge", &PythonAccumulator::remappingMerge,
-	       "Merge statistics with the statistics from accumulator 'b'\n"
-	       "using label remapping. The label map 'labelmap' maps the \n"
-	       "labels of accumulator 'b' (i.e. the index is the old label \n"
-	       "and the value is the new label). 'labelmap' must be a \n"
-	       "numpy array with dtype=numpy.uint32.\n",
+	       "Merge features with the features from accumulator 'b' "
+	       "using a remapping of the labels in 'b'. The numpy array "
+	       "'labelmap' (dtype=uint32) maps label l to labelmap[l].\n",
 	       (python::arg("b"), python::arg("labelmap")))
 	  .def("merge", &PythonAccumulator::mergeRegions,
-	       "Merge statistics from region 'k' into region 'j'.\n",
+	       "Merge features from region 'k' into region 'j'.\n",
 	       (python::arg("j"), python::arg("k")))
             ;
     }
@@ -684,12 +659,26 @@ void definePythonAccumulatorSingleband(char const * classname)
     def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 2, T>,
           (arg("image"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
-	return_value_policy<manage_new_object>(),
-	"");
+	"This instance of :func:`extractFeatures` is called for input array\n"
+	":class:`vigra.ScalarImage`. An instance\n"
+	"of :class:`SinglebandFeatures` is returned.\n\n"
+	"Supports features 'Histogram' and 'Quantiles'. Options are:\n\n"
+	"    - histogramRange: lower and upper bound of the histogram\n\n"
+	"        + 'globalminmax':   use global minimum/maximum (default)\n\n"
+	"        + [lower, upper]:    provide explicit bounds (float numbers), "
+	"useful to ensure that merge will be allowed.\n\n"
+	"    - binCount: number of bins (default: 64).\n\n"
+	"Histogram options are ignored when Histogram feature is not selected."
+	" Quantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from"
+	" specified histogram.\n\n",
+	return_value_policy<manage_new_object>());
     
     def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 3, T>,
           (arg("volume"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+	"This instance of :func:`extractFeatures` is called for input array "
+	":class:`vigra.ScalarVolume`. An instance "
+	"of :class:`SinglebandFeatures` is returned.\n\n",
           return_value_policy<manage_new_object>());
 }
 
@@ -706,10 +695,16 @@ void definePythonAccumulator(char const * classname)
     
     def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
           (arg("image"), arg("features") = "all"),
+	"This instance of :func:`extractFeatures` is called for input array "
+	":class:`vigra.RGBImage` or :class:`vigra.Vector3Image`. An instance "
+	"of :class:`Vector3Features` is returned.\n\n",
           return_value_policy<manage_new_object>());
     
     def("extractFeatures", &acc1::pythonInspect<Accu, 3, T>,
           (arg("volume"), arg("features") = "all"),
+	"This instance of :func:`extractFeatures` is called for input array "
+	":class:`vigra.RGBVolume` or :class:`vigra.Vector3Volume`. An instance"
+	" of :class:`Vector3Features` is returned.\n\n",
           return_value_policy<manage_new_object>());
 
 }
@@ -734,7 +729,7 @@ void definePythonAccumulatorMultiband(char const * classname)
     std::string doc_string;
     if (N==3) {
       doc_string.append
-	("Extract global features (e.g. Mean, Variance, Minimum etc.) from the input array. As input array the overloaded extractFeatures() function supports 2D or 3D numpy arrays with arbitrary many channels. For different input arrays a different accumulator class is returned. The element type of the input array must be **dtype=float32**. The set of available features depends on the input array, e.g. the 'Histogram' feature is only supported for singleband arrays. Call :func:`MultibandFeatures2D.names` (and others...) to get a list of all available features for the respective input array. Features are can be:\n\n    + 'feature'    compute single feature (and its dependencies)\n\n    + ['feat1', 'feat2',...]    compute given feature set\n\n    + 'all'    compute all features (default)\n\n    + None or ''    compute nothing (usefull to get list of available features)\n\nTo compute per-region features, use :func:`extractRegionFeatures`.\n\nThis instance is called for input array :class:`vigra.VigraArray` with two spatial axes and two or more than four channels. The function returns an instance of :class:`MultibandFeatures2D`.\n\nFor details see `Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ in the vigra C++ documentation.\n\n");
+	("Extract global features (e.g. Mean, Variance, Minimum, etc.) from the input array ('image'). An accumulator object is returned that contains the features, see :class:`MultibandFeatures2D` for how to access the features etc. As input array the overloaded extractFeatures() function supports 2D or 3D numpy arrays with arbitrary many channels. For different input arrays a different type of accumulator class is returned. The element type of the input array must be **dtype=float32**. The set of available features depends on the input array. The 'Histogram' feature, for example, is only supported for singleband arrays. Call the :func:`names` member function of the returned accumulator object, (e.g. :func:`MultibandFeatures2D.names`) to get a list of all available features for the respective input array. The input features can be:\n\n    + 'feature':    compute single feature (and its dependencies)\n\n    + ['feat1', 'feat2',...]:    compute given feature set\n\n    + 'all':    compute all features (default)\n\n    + None or '':    compute nothing (usefull to get list of available features)\n\nTo compute per-region features, use :func:`extractRegionFeatures`.\n\nThis instance is called for input array :class:`vigra.VigraArray` with two spatial axes and two or more than four channels. The function returns an instance of :class:`MultibandFeatures2D`.\n\nFor details see `Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ in the vigra C++ documentation.\n\n");
     } else {
       doc_string.append("This instance of :func:`extractFeatures` is called for input array :class:`vigra.VigraArray` with three spatial axes and two or more than four channels. An instance of :class:`MultibandFeatures3D` is returned.\n\n");
     }
@@ -761,10 +756,34 @@ void definePythonAccumulatorArraySingleband(char const * classname)
     std::string argname = N == 2 
                              ? "image"
                              : "volume";
+
+    //for documentation only
+    std::string doc_string;
+    if (N==2) {
+      doc_string.append
+	("This instance of :func:`extractRegionFeatures` is called for input"
+	 "array :class:`vigra.ScalarImage`. An instance "
+	 "of :class:`SinglebandRegionFeatures2D` is returned.\n\n"
+	 "Supports features 'Histogram' and 'Quantiles'. Options are:\n\n"
+	 "    - histogramRange: lower and upper bound of the histogram\n\n"
+	 "        + 'globalminmax':   use global minimum/maximum (default)\n\n"
+	 "        + 'regionminmax':   use minimum/maximum within each region\n\n"
+	 "        + [lower, upper]:    provide explicit bounds (float numbers), "
+	 "useful to ensure that merge will be allowed.\n\n"
+	 "    - binCount: number of bins (default: 64).\n\n"
+);
+    } else {
+      doc_string.append
+	("This instance of :func:`extractRegionFeatures` is called for input"
+	 "array :class:`vigra.ScalarVolume`. An instance "
+	 "of :class:`SinglebandRegionFeatures3D` is returned.\n\n");
+    }
+
     
     def("extractRegionFeatures", &acc1::pythonRegionInspectWithHistogram<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64, arg("ignoreLabel")=python::object()),
+	doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
@@ -785,8 +804,26 @@ void definePythonAccumulatorArray(char const * classname)
                              ? "image"
                              : "volume";
     
+    //for documentation only
+    std::string doc_string;
+    if (N==2) {
+      doc_string.append
+	("This instance of :func:`extractRegionFeatures` is called for "
+	 "input array :class:`vigra.RGBImage` or "
+	 ":class:`vigra.Vector3Image`. An instance "
+	 "of :class:`Vector3RegionFeatures2D` is returned.\n\n");
+    } else {
+      doc_string.append
+	("This instance of :func:`extractRegionFeatures` is called for"
+	 " input array :class:`vigra.RGBVolume` or"
+	 " :class:`vigra.Vector3Volume`." 
+	 " An instance of :class:`Vector3RegionFeatures3D` is returned.\n\n");
+    }
+
+
     def("extractRegionFeatures", &acc1::pythonRegionInspect<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
+	doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
@@ -804,9 +841,20 @@ void definePythonAccumulatorArrayMultiband(char const * classname)
     std::string argname = N == 3 
                              ? "image"
                              : "volume";
+
+    //for documentation only
+    std::string doc_string;
+    if (N==3) {
+      doc_string.append
+	("Extract per-region features from the input array.\n\nParameters:\n\n    + image, features: see :func:`extractFeatures`\n\n    + labels: numpy array of appropriate shape with element type **dtype=uint32**\n\n    + ignoreLabel: label (int) for which no features will be computed (e.g. label of background) or None (default)\n\nThis instance is called for input array :class:`vigra.VigraArray` with two spatial axes and two or more than four channels. The function returns an instance of :class:`MultibandRegionFeatures2D`.\n\n");
+    } else {
+      doc_string.append("This instance of :func:`extractRegionFeatures` is called for input array :class:`vigra.VigraArray` with three spatial axes and two or more than four channels. An instance of :class:`MultibandRegionFeatures3D` is returned.\n\n");
+    }
+
     
     def("extractRegionFeatures", &acc1::pythonRegionInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
+	doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
