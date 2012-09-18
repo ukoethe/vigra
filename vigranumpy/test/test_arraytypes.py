@@ -45,7 +45,7 @@ import vigra.arraytypes as arraytypes
 import vigra.ufunc as ufunc
 import numpy, copy
 import vigranumpytest as vt
-from nose.tools import assert_equal, raises
+from nose.tools import assert_equal, raises, assert_true
 
 from vigra.arraytypes import AxisTags, AxisInfo
 
@@ -1149,6 +1149,68 @@ def testDeepcopyWithCyclicReference():
     c = copy.deepcopy(a)
     assert hasattr(c, "myCustomAttribute")
     assert c.myCustomAttribute.backLink is c
+    
+def testSlicing():
+    a = arraytypes.Vector2Volume((5,4,3))
+    a.flat[...] = xrange(a.size)
+    
+    tags = arraytypes.VigraArray.defaultAxistags('xyzc')
+    assert_equal(tags, a.axistags)
+    
+    b = a[...]
+    assert_true((a==b).all())
+    assert_equal(tags, b.axistags)
+    
+    b = a[...,0]
+    assert_equal(b.shape, a.shape[:-1])
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('xyz'))
+    assert_equal(b[3,2,1], a[3,2,1,0])
+    
+    b = a[1,...]
+    assert_equal(b.shape, a.shape[1:])
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('yzc'))
+    assert_equal(b[3,2,1], a[1,3,2,1])
+    
+    b = a[:,2,...]
+    assert_equal(b.shape, (5,3,2))
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('xzc'))
+    assert_equal(b[3,2,1], a[3,2,2,1])
+    
+    b = a[:,1,2,...]
+    assert_equal(b.shape, (5,2))
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('xc'))
+    assert_equal(b[2,1], a[2,1,2,1])
+    
+    b = a[2:4, :, 2, ...]
+    assert_equal(b.shape, (2, 4, 2))
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('xyc'))
+    assert_equal(b[0,2,1], a[2,2,2,1])
+    
+    b = a[1:4, :, arraytypes.newaxis(arraytypes.AxisInfo.t), 1, ...]
+    assert_equal(b.shape, (3, 4, 1, 2))
+    assert_equal(b.axistags, arraytypes.VigraArray.defaultAxistags('xytc'))
+    assert_equal(b[0,2,0,0], a[1,2,1,0])
+    
+    b = a[..., None, :,1]
+    assert_equal(b.shape, (5, 4, 1, 3))
+    rtags = arraytypes.AxisTags(arraytypes.AxisInfo.x, arraytypes.AxisInfo.y, arraytypes.AxisInfo(), arraytypes.AxisInfo.z) 
+    assert_equal(b.axistags, rtags)
+    assert_equal(b[0,3,0,1], a[0,3,1,1])
+    
+    b = a.subarray((4,3,2))
+    assert_equal(b.shape, (4,3,2,2))
+    assert_true((a[:4,:3,:2,:]==b).all())
+    assert_equal(tags, b.axistags)
+    
+    b = a.subarray((1,1,1),(4,3,2))
+    assert_equal(b.shape, (3,2,1,2))
+    assert_true((a[1:4,1:3,1:2]==b).all())
+    assert_equal(tags, b.axistags)
+    
+    b = a.subarray((1,1,1,1),(4,3,2,2))
+    assert_equal(b.shape, (3,2,1,1))
+    assert_true((a[1:4,1:3,1:2,1:]==b).all())
+    assert_equal(tags, b.axistags)
 
 def testMethods():
     a = arraytypes.ScalarImage((20, 30))

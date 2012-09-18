@@ -789,7 +789,7 @@ class VigraArray(numpy.ndarray):
         
             array[:, index, ...]
             
-        but you don not need to know the position of the axis when you use the 
+        but you do not need to know the position of the axis when you use the 
         axis key (according to axistags). For example, to get the green channel
         of an RGBImage, you write::
         
@@ -1032,6 +1032,31 @@ class VigraArray(numpy.ndarray):
             else:
                 res.axistags = res._empty_axistags(res.ndim)
         return res
+        
+    def subarray(self, p1, p2=None):
+        '''
+        Construct a subarray view from a pair of points. The first point denotes the start
+        of the subarray (inclusive), the second its end (exclusive). For example,
+        
+            a.subarray((1,2,3), (4,5,6))  # equivalent to a[1:4, 2:5, 3:6]
+        
+        The given points must have the same dimension, otherwise an IndexError is raised. 
+        If only one point is given, it refers to the subarray's end, and the start is set 
+        to the point (0, 0, ...) with appropriate dimension, for example
+        
+            a.subarray((4,5,6))           # equivalent to a[:4, :5, :6]
+        
+        The function transforms the given point pair into a tuple of slices and calls 
+        self.__getitem__() in it. If the points have lower dimension than the array, an 
+        Ellipsis ('...') is implicitly appended to the slicing, so that missing axes 
+        are left unaltered.
+        '''
+        if p2 is not None:
+            if len(p1) != len(p2):
+                raise IndexError('VigraArray.subarray(): points must have the same dimension.')
+            return self.__getitem__(tuple(map(lambda x,y: slice(x.__int__(), y.__int__()), p1, p2)))
+        else:
+            return self.__getitem__(tuple(map(lambda x: slice(x.__int__()), p1)))
     
     ###############################################################
     #                                                             #
