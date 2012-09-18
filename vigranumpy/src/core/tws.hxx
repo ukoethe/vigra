@@ -47,14 +47,14 @@ void tws
 	// add each unlabeled pixels which is adjacent to a seed
 	// to the queue corresponding to its gray level
 	for(MultiArrayIndex j = 0; j < labeling.size(); ++j) {
-        if(j % 1000 == 0) {
+        if(j % 1000000 == 0) {
             std::cout << "\r  initializing queues " << (j/float(numVoxels)*100) << "%                    " << std::flush;
         }
 		if(isAtSeedBorder<T>(labeling, j)) {
 			queues[vol[j]].push(j);
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  initializing queues 100.0000%                    " << std::endl;
 
 	// flood
 	UInt8 grayLevel = 0;
@@ -69,7 +69,7 @@ void tws
 
             ++voxelsProcessed;
 
-            if(voxelsProcessed % 1000 == 0) {
+            if(voxelsProcessed % 1000000 == 0) {
                 std::cout << "\r  watersheds " << (voxelsProcessed/float(numVoxels)*100) << "%                    " << std::flush;
             }
 
@@ -110,7 +110,7 @@ void tws
 			++grayLevel;
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  watersheds 100.0000%                    " << std::endl;
 }
 
 template<class S1, class T, class S2>
@@ -131,7 +131,7 @@ void tws
 	// add each unlabeled pixels which is adjacent to a seed
 	// to the queue corresponding to its gray level
 	for(MultiArrayIndex j = 0; j < labeling.size(); ++j) {
-        if(j % 1000 == 0) {
+        if(j % 1000000 == 0) {
             std::cout << "\r  initializing queues " << (j/float(numVoxels)*100) << "%                    " << std::flush;
         }
 		if(isAtSeedBorder<T>(labeling, j)) 
@@ -139,7 +139,7 @@ void tws
 			queues[(int)vol[j]].push(j, vol[j]);
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  initializing queues 100.0000%                    " << std::endl;
 
 	// flood
 	UInt8 grayLevel = 0;
@@ -155,7 +155,7 @@ void tws
 
             ++voxelsProcessed;
 
-            if(voxelsProcessed % 1000 == 0) {
+            if(voxelsProcessed % 1000000 == 0) {
                 std::cout << "\r  watersheds " << (voxelsProcessed/float(numVoxels)*100) << "%                    " << std::flush;
             }
 
@@ -196,7 +196,7 @@ void tws
 			++grayLevel;
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  watersheds 100.0000%                    " << std::endl;
 }
 
 template <class T>
