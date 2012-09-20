@@ -39,8 +39,26 @@
 
 #include "mathutil.hxx"
 #include "functortraits.hxx"
+#include "array_vector.hxx"
 
 #include <ctime>
+
+    // includes to get the current process and thread IDs
+    // to be used for automated seeding
+#ifdef _MSC_VER
+  #include <vigra/windows.h>  // for GetCurrentProcessId() and GetCurrentThreadId()
+#endif
+
+#if __linux__
+  #include <unistd.h>       // for getpid()
+  #include <sys/syscall.h>  // for SYS_gettid
+#endif
+
+#if __APPLE__
+  #include <unistd.h>               // for getpid()
+  #include <sys/syscall.h>          // SYS_thread_selfid
+  #include <AvailabilityMacros.h>   // to check if we are on MacOS 10.6 or later
+#endif
 
 namespace vigra {
 
@@ -49,6 +67,7 @@ enum RandomSeedTag { RandomSeed };
 namespace detail {
 
 enum RandomEngineTag { TT800, MT19937 };
+
 
 template<RandomEngineTag EngineTag>
 struct RandomState;
@@ -107,10 +126,38 @@ template <RandomEngineTag EngineTag>
 void seed(RandomSeedTag, RandomState<EngineTag> & engine)
 {
     static UInt32 globalCount = 0;
-    UInt32 init[3] = { (UInt32)time(0), (UInt32)clock(), ++globalCount };
-    seed(init, 3, engine);
-}
+    ArrayVector<UInt32> seedData;
+    
+    seedData.push_back((UInt32)time(0));
+    seedData.push_back((UInt32)clock());
+    seedData.push_back(++globalCount);
+    
+    std::size_t ptr((char*)&engine - (char*)0);
+    seedData.push_back((UInt32)(ptr & 0xffffffff));
+    seedData.push_back((UInt32)(ptr >> 32));
+    
+#ifdef _MSC_VER
+    seedData.push_back((UInt32)GetCurrentProcessId());
+    seedData.push_back((UInt32)GetCurrentThreadId());
+#endif
 
+#ifdef __linux__
+    seedData.push_back((UInt32)getpid());
+# ifdef SYS_gettid
+    seedData.push_back((UInt32)syscall(SYS_gettid));
+# endif
+#endif
+
+#ifdef __APPLE__
+    seedData.push_back((UInt32)getpid());
+  #if defined(SYS_thread_selfid) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
+    // SYS_thread_selfid was introduced in MacOS 10.6
+    seedData.push_back((UInt32)syscall(SYS_thread_selfid));
+  #endif
+#endif
+
+    seed(seedData.begin(), seedData.size(), engine);
+}
 
     /* Tempered twister TT800 by M. Matsumoto */
 template<>
@@ -457,7 +504,7 @@ class RandomNumberGenerator
     
         /** Return a uniformly distributed double-precision random number in [0.0, 1.0].
             
-            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / 2<sup>32</sup>, 
+            That is, 0.0 &lt;= i &lt;= 1.0. This number is computed by <tt>uniformInt()</tt> / (2<sup>32</sup> - 1), 
             so it has effectively only 32 random bits. 
         */
     double uniform() const

@@ -59,7 +59,7 @@ Detailed information about the use of axistags is given in section :ref:`sec-vig
 Axistags and the VigraArray Data Structure
 ------------------------------------------
 
-While vigranumpy can directly work on numpy.ndarrays, this would not give us the advantages of axistags as described above. Therefore, vigranumpy introduces its own array class :class:`~vigra.VigraArray` which is a subclass of numpy.ndarray, but re-implements many of its methods so that axistags are respected. Arrays with a conforming ``axistags`` property are most easily constructed by one of the predefined :ref:`array factories <subsec-array-factories>`. We illustrate the ideas by some examples::
+While vigranumpy can directly work on numpy.ndarrays, this would not give us the advantages of axistags as described above. Therefore, vigranumpy introduces its own array class :class:`~vigra.VigraArray` which is a subclass of numpy.ndarray, but re-implements many of its methods so that axistags are respected. Arrays with a conforming ``axistags`` property are most easily constructed by one of the predefined :ref:`array factories <subsec-array-factories>`. A **view with axistags** can be created from an existing numpy.ndarray by means of the function :py:func:`~vigra.taggedView` (in contrast, factory functions create copies of the given arrays, not views). We illustrate the ideas by some examples::
 
     >>> width, height, depth = 300, 200, 3
     

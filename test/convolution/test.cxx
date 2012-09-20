@@ -43,6 +43,8 @@
 #include "vigra/combineimages.hxx"
 #include "vigra/resampling_convolution.hxx"
 #include "vigra/imagecontainer.hxx"
+#include "vigra/tv_filter.hxx"
+#include "tv_test_data.hxx"
 
 using namespace vigra;
 
@@ -136,6 +138,114 @@ struct ConvolutionTest
         for(int k=0; i != end; ++i, ++k)
         {
             acc.set(k, i);
+        }
+    }
+
+    void borderCopyTest()
+    {
+        static const int size = 6, kleft = -2, kright = 3,
+                         ksize = kright - kleft,
+                         outsize = size + ksize;
+
+        int data[size] = {1, 2, 3, 4, 5, 6};
+        int out[outsize];
+
+        vigra::StandardValueAccessor<int> a;
+
+        // copy entire array
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {4, 5, 6, 1, 2, 3, 4, 5, 6, 1, 2};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {4, 3, 2, 1, 2, 3, 4, 5, 6, 5, 4};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 1, 1, 1, 2, 3, 4, 5, 6, 6, 6};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out+kright, out+outsize+kleft, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               0, size, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {0, 0, 0, 1, 2, 3, 4, 5, 6, 0, 0};
+            shouldEqualSequence(out, out+outsize, r);
+        }
+
+        // copy with partial border treatment
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {5, 6, 1, 2, 3, 4, 5, 6, 1};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {3, 2, 1, 2, 3, 4, 5, 6, 5};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 1, 1, 2, 3, 4, 5, 6, 6};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {2, 3, 4, 5};
+            shouldEqualSequence(out+kright, out+outsize+kleft-2, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               1, size-1, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {0, 0, 1, 2, 3, 4, 5, 6, 0};
+            shouldEqualSequence(out, out+outsize-2, r);
+        }
+
+        // copy interior, no border treatment necessary
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_WRAP);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_REFLECT);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_REPEAT);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_AVOID);
+            int r[] = {4};
+            shouldEqualSequence(out+kright, out+outsize+kleft-ksize, r);
+        }
+        {
+            vigra::detail::copyLineWithBorderTreatment(data, data+size, a, out, a,
+                                               kright, size+kleft, kleft, kright, vigra::BORDER_TREATMENT_ZEROPAD);
+            int r[] = {1, 2, 3, 4, 5, 6};
+            shouldEqualSequence(out, out+outsize-ksize, r);
         }
     }
     
@@ -328,6 +438,35 @@ struct ConvolutionTest
             }
         }
 
+    }
+    
+
+    void stdConvolutionTestWithZeropad()
+    {
+        Image dest(sym_image.size()-Size2D(2,2)), ref(sym_image);
+        dest.init(42.1);
+        ref.init(33.2);
+
+        convolveImage(srcImageRange(sym_image, Rect2D(Point2D(1,1), sym_image.size()-Size2D(2,2))), 
+                      destImage(dest), kernel2d(sym_kernel, BORDER_TREATMENT_ZEROPAD));
+
+        initImageBorder(destImageRange(sym_image), 1, 0);
+        convolveImage(srcImageRange(sym_image), destImage(ref), kernel2d(sym_kernel, BORDER_TREATMENT_AVOID));
+
+        Image::Iterator i_dest_2D = dest.upperLeft();
+        Image::Iterator i_dest_end = dest.lowerRight();
+        Image::Iterator i_ref_2D = ref.upperLeft()+Size2D(1,1);
+        Image::Accessor acc = dest.accessor();
+
+        for(; i_dest_2D.y != i_dest_end.y; ++i_dest_2D.y, ++i_ref_2D.y)
+        {
+            Image::Iterator rd = i_dest_2D;
+            Image::Iterator rr = i_ref_2D;
+            for(; rd.x != i_dest_end.x; ++rd.x, ++rr.x)
+            {
+                shouldEqual(acc(rd), acc(rr));
+            }
+        }
     }
     
     void stdConvolutionTestWithClip()
@@ -725,6 +864,31 @@ struct ConvolutionTest
         should(acc(i1) == 3.0);
         ++i1;
         should(acc(i1) == 11.0/3.0);
+    }
+    
+    void separableSmoothZeropadTest()
+    {
+        vigra::Kernel1D<double> binom;
+        binom.initBinomial(1);
+        binom.setBorderTreatment(vigra::BORDER_TREATMENT_ZEROPAD);
+
+        Image tmp1(rampimg);
+        tmp1 = 1000.0;
+        
+        separableConvolveX(srcImageRange(rampimg), destImage(tmp1), kernel1d(binom));
+        
+        Image::ScanOrderIterator i1 = tmp1.begin();
+        Image::Accessor acc = tmp1.accessor();
+
+        shouldEqual(acc(i1), 0.25);
+        ++i1;
+        shouldEqual(acc(i1), 1.0);
+        ++i1;
+        shouldEqual(acc(i1), 2.0);
+        ++i1;
+        shouldEqual(acc(i1), 3.0);
+        ++i1;
+        shouldEqual(acc(i1), 2.75);
     }
     
     void separableSmoothWrapTest()
@@ -2109,8 +2273,96 @@ struct ImagePyramidTest
             shouldEqualSequenceTolerance(pyramid[i].begin(), pyramid[i].end(), laplacian[i].begin(), 1e-14);
         }
     }
-        
+    
 };
+
+struct TotalVariationTest{
+  
+  const int width,height;
+  MultiArray<2,double> data;
+  MultiArray<2,double> out;
+  MultiArray<2,double> weight;
+  TotalVariationTest():width(50),height(50),data(Shape2(50,50)),out(Shape2(50,50)),weight(Shape2(50,50)){
+    for (int y=0;y<height;y++){
+      for (int x=0;x<width;x++){
+        weight(x,y)=1;
+        data(x,y)=testdata[x+width*y]/255.;
+      }
+    }
+  }
+  
+  void testTotalVariation(){
+   
+    totalVariationFilter(data,out,0.5,1000,0.01);
+    //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_tv.pgm"));
+    shouldEqualSequenceTolerance(out.begin(), out.end(), result_std_tv, 1e-12); 
+  }
+  void testWeightedTotalVariation(){
+   
+    totalVariationFilter(data,weight,out,.5,1000,0.01);
+    //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_tvw.pgm"));
+    shouldEqualSequenceTolerance(out.begin(), out.end(), result_std_tv_weight, 1e-12); 
+  }
+  
+  void testAnisotropicTotalVariation(){
+    
+    double alpha0=0.05,beta0=0.5,sigma=0.1,rho=.5,K=10;
+    int inner_steps=200,outer_steps=5;
+   
+    MultiArray<2,double> phi(Shape2(width,height));
+    MultiArray<2,double> alpha(Shape2(width,height));
+    MultiArray<2,double> beta(Shape2(width,height)); 
+    MultiArray<2,double> xedges(Shape2(width,height)); 
+    MultiArray<2,double> yedges(Shape2(width,height)); 
+    
+    for (int y=0;y<height;y++){
+      for (int x=0;x<width;x++){
+        alpha(x,y)=alpha0;
+        beta(x,y)=beta0;
+        xedges(x,y)=1;
+        yedges(x,y)=1;
+      }
+    }
+    out=data; 
+    for (int i=0;i<outer_steps;i++){ 
+      getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);
+      anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps);  
+    }
+    //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_aniso.pgm"));
+    shouldEqualSequenceTolerance(out.begin(), out.end(), result_aniso_tv, 1e-12); 
+  }
+    
+  void testSecondOrderTotalVariation(){
+    
+    double alpha0=0.05,beta0=0.5,sigma=0.1,rho=.5,K=10,gamma0=0.1;
+    int inner_steps=200,outer_steps=5;
+   
+    MultiArray<2,double> phi(Shape2(width,height));
+    MultiArray<2,double> alpha(Shape2(width,height));
+    MultiArray<2,double> beta(Shape2(width,height)); 
+    MultiArray<2,double> gamma(Shape2(width,height)); 
+    MultiArray<2,double> xedges(Shape2(width,height)); 
+    MultiArray<2,double> yedges(Shape2(width,height)); 
+    
+    for (int y=0;y<height;y++){
+      for (int x=0;x<width;x++){
+        alpha(x,y)=alpha0;
+        beta(x,y)=beta0;
+        gamma(x,y)=gamma0;
+        xedges(x,y)=1;
+        yedges(x,y)=1;
+      }
+    }
+    out=data; 
+    for (int i=0;i<outer_steps;i++){
+      getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);
+      secondOrderTotalVariationFilter(data,weight,phi,alpha,beta,gamma,xedges,yedges,out,inner_steps);
+    }
+    //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_htv.pgm"));
+    shouldEqualSequenceTolerance(out.begin(), out.end(), result_higher_order_tv,1e-12); 
+  }
+};
+
 
 struct ConvolutionTestSuite
 : public vigra::test_suite
@@ -2118,12 +2370,16 @@ struct ConvolutionTestSuite
     ConvolutionTestSuite()
     : vigra::test_suite("ConvolutionTestSuite")
     {
+        add( testCase( &ConvolutionTest::borderCopyTest));
+
+#if 1
         add( testCase( &ConvolutionTest::initExplicitlyTest));
 
         add( testCase( &ConvolutionTest::simpleSharpeningTest)); 
         add( testCase( &ConvolutionTest::gaussianSharpeningTest)); 
         add( testCase( &ConvolutionTest::stdConvolutionTestOnConstImage));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithAvoid));
+        add( testCase( &ConvolutionTest::stdConvolutionTestWithZeropad));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithClip));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithWrap));
         add( testCase( &ConvolutionTest::stdConvolutionTestWithReflect));
@@ -2137,6 +2393,7 @@ struct ConvolutionTestSuite
         add( testCase( &ConvolutionTest::separableDerivativeReflectTest));
         add( testCase( &ConvolutionTest::separableDerivativeAvoidTest));
         add( testCase( &ConvolutionTest::separableSmoothClipTest));
+        add( testCase( &ConvolutionTest::separableSmoothZeropadTest));
         add( testCase( &ConvolutionTest::separableSmoothWrapTest));
         add( testCase( &ConvolutionTest::gaussianSmoothingTest));
         add( testCase( &ConvolutionTest::optimalSmoothing3Test));
@@ -2174,6 +2431,12 @@ struct ConvolutionTestSuite
 
         add( testCase( &ImagePyramidTest::testPyramidConstruction));
         add( testCase( &ImagePyramidTest::testBurtReduceExpand));
+    
+        add( testCase( &TotalVariationTest::testTotalVariation));
+        add( testCase( &TotalVariationTest::testWeightedTotalVariation));
+        add( testCase( &TotalVariationTest::testAnisotropicTotalVariation));
+        add( testCase( &TotalVariationTest::testSecondOrderTotalVariation));
+#endif
     }
 };
 

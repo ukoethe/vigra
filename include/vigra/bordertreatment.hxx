@@ -69,6 +69,9 @@ namespace vigra {
 
           // wrap image around (periodic boundary conditions)
        BORDER_TREATMENT_WRAP
+
+          // assume that all outside points have value zero
+       BORDER_TREATMENT_ZEROPAD
     };
     \endcode
 */   
@@ -78,7 +81,8 @@ enum BorderTreatmentMode
    BORDER_TREATMENT_CLIP, 
    BORDER_TREATMENT_REPEAT,
    BORDER_TREATMENT_REFLECT, 
-   BORDER_TREATMENT_WRAP
+   BORDER_TREATMENT_WRAP,
+   BORDER_TREATMENT_ZEROPAD
 };
 
 } // namespace vigra

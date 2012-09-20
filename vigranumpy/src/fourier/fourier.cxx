@@ -34,8 +34,9 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpyfourier_PyArray_API
-#include <vigra/config.hxx>
+
 #include <Python.h>
+#include <vigra/config.hxx>
 #include <boost/python.hpp>
 #include <vigra/numpy_array.hxx>
 #include <vigra/multi_array.hxx>
