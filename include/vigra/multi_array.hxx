@@ -1687,7 +1687,9 @@ public:
         return res;
     }
 
-        /** Find the minimum and maximum element in this array.
+        /** Find the minimum and maximum element in this array. 
+	    See \ref FeatureAccumulators for a general feature 
+	    extraction framework.
          */
     void minmax(T * minimum, T * maximum) const
     {
@@ -1700,7 +1702,9 @@ public:
         *maximum = res.second;
     }
 
-        /** Compute the mean and variance of the values in this array.
+        /** Compute the mean and variance of the values in this array. 
+	    See \ref FeatureAccumulators for a general feature 
+	    extraction framework.
          */
     template <class U>
     void meanVariance(U * mean, U * variance) const

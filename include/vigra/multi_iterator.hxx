@@ -65,6 +65,8 @@ template <unsigned int N, class T,
      <BR>&nbsp;&nbsp;&nbsp;<em>Iterator for strided \ref vigra::MultiArrayView</em>
 <LI> \ref vigra::StridedScanOrderIterator
      <BR>&nbsp;&nbsp;&nbsp;<em>STL-compatible random access iterator for \ref vigra::MultiArrayView</em>
+<LI> \ref vigra::CoupledScanOrderIterator
+     <BR>&nbsp;&nbsp;&nbsp;<em>Iterate over multiple images simultaneously in scan order</em>
 </UL>
 </p>
 
