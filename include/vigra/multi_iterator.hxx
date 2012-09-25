@@ -2369,10 +2369,8 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
 
     StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
     {
-    return operator+=(-coordOffset);
+        return operator+=(-coordOffset);
     }
-    
-
 
     StridedScanOrderIterator & operator--()
     {
