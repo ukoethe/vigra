@@ -43,17 +43,18 @@
 #include <vigra/multi_array.hxx>
 #include <vigra/tv_filter.hxx>
 
-
+#ifdef _MSC_VER
+#define strcasecmp _stricmp
+#endif
 
 using namespace vigra; 
-
 
 
 // Read a string from file <file>.
 void read_string(FILE *file,const char *name, char* out){
   char dummy[80];
   int s=fscanf(file,"%s %s ",dummy,out);
-  if (s==EOF or s<2){
+  if (s==EOF || s<2){
     std::cout<<"Could not read from file.\n";
     exit(0); 
   }
@@ -74,7 +75,7 @@ float read_value(FILE *file,const char *name){
   int s=fscanf(file,"%s %s ",dummy,dummy2); 
   
   
-  if (s==EOF or s<2){
+  if (s==EOF || s<2){
     std::cout<<"Could not read from file.\n";
     exit(0); 
   }
@@ -106,7 +107,7 @@ int main(int argc, char ** argv)
   try
   {   
     char infile[80],outfile[80];
-    double alpha0=0.01*sqrt(255),beta0=0.1*sqrt(255),sigma=0.1,rho=.5,K=10,eps=0,gamma0=0;
+    double alpha0=0.01*sqrt(255.0),beta0=0.1*sqrt(255.0),sigma=0.1,rho=.5,K=10,eps=0,gamma0=0;
     int mode,inner_steps=200,outer_steps=5,write_steps=0;
     
     FILE *file=fopen(argv[1],"r");         // open parameter file 
