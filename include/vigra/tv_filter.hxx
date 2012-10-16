@@ -487,9 +487,9 @@ void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> data,Multi
       m=std::max(m,beta (x,y));
     }
   }  
-  m=std::min(m,1.);
-  double tau=.1/m/std::sqrt(8.)*0.06;  
-  double sigma=.1/m/std::sqrt(8.)/0.06;
+  m=std::max(m,1.);
+  double tau=.9/m/std::sqrt(8.)*0.06;  
+  double sigma=.9/m/std::sqrt(8.)/0.06;
   
     
   for (int i=0;i<steps;i++){

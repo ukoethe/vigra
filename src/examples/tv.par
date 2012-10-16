@@ -1,7 +1,8 @@
-infile:  cameraman_noise.png
-outfile: result_standard_tv.png
-mode:    1
-alpha:   0.3
-eps:     0.01
+input_file  cameraman_noise.png
+output_file result_standard_tv.png
+mode    1
+alpha   0.5
+epsilon     0.00001
+histogram_stretch 0
 
 ...do not change order or insert additional items above...

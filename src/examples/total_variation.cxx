@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 #include <vigra/stdimage.hxx>
 #include <vigra/stdimagefunctions.hxx>
 #include <vigra/impex.hxx>
@@ -50,12 +51,18 @@ using namespace vigra;
 
 // Read a string from file <file>.
 void read_string(FILE *file,const char *name, char* out){
-  unsigned char dummy[80];
+  char dummy[80];
   int s=fscanf(file,"%s %s ",dummy,out);
-  if (s==EOF or s<2)
+  if (s==EOF or s<2){
     std::cout<<"Could not read from file.\n";
+    exit(0); 
+  }
+  else if (strcasecmp(name,dummy)!=0){
+    std::cout<<"Found parameter "<<dummy<<" instead of "<<name<<"\n";
+    exit(0);
+  }
   else
-    std::cout<<"Parameter "<<name<<"("<<dummy<<") "<<out<<std::endl;
+    std::cout<<"Parameter "<<name<<" = "<<out<<std::endl;
 }
 
 // read a flota-value from file <file>
@@ -64,12 +71,20 @@ float read_value(FILE *file,const char *name){
   char dummy2[80];
   float f=0;
   
-  int s=fscanf(file,"%s %s ",dummy,dummy2);
-  if (s==EOF or s<2)
+  int s=fscanf(file,"%s %s ",dummy,dummy2); 
+  
+  
+  if (s==EOF or s<2){
     std::cout<<"Could not read from file.\n";
+    exit(0); 
+  }
+  else if (strcasecmp(name,dummy)!=0){
+    std::cout<<"Found parameter "<<dummy<<" instead of "<<name<<"\n";
+    exit(0);
+  }
   else{
     f=atof(dummy2);
-    std::cout<<"Parameter "<<name<<"("<<dummy<<") "<<f<<std::endl;
+    std::cout<<"Parameter "<<name<<" = "<<f<<std::endl;
   }
   return f;
 }
@@ -99,9 +114,9 @@ int main(int argc, char ** argv)
       std::cout<<"Cannot open file "<<argv[1]<<std::endl;
       return 1;
     }
-    read_string(file,"Input file",infile);    // read name of input file (an image)
-    read_string(file,"Output file",outfile);  // read name of output file (an image)
-    mode=(int)read_value(file,"Mode");        // read mode:  1- standard Total Variation
+    read_string(file,"input_file",infile);    // read name of input file (an image)
+    read_string(file,"output_file",outfile);  // read name of output file (an image)
+    mode=(int)read_value(file,"mode");        // read mode:  1- standard Total Variation
                                               //             2- Anisotropic Total Variation
                                               //             3- Anisotropic Total Variation with Higher Order term
 					      
@@ -110,34 +125,37 @@ int main(int argc, char ** argv)
       case 1:
       case 2:
 	inner_steps=1000;                 // read number of iteration steps
-	alpha0=read_value(file,"Alpha");  // read alpha
-	eps=read_value(file,"Epsilon");   // read eps
+	alpha0=read_value(file,"alpha");  // read alpha
+	eps=read_value(file,"epsilon");   // read eps
 	break;
       case 3:
-	outer_steps=(int)read_value(file,"Outer steps"); // read number of outer iteration steps
-	inner_steps=(int)read_value(file,"Inner steps"); // read number of inner iteration steps
-	alpha0=read_value(file,"Alpha");  // read alpha
-	beta0=read_value(file,"Beta");    // read beta 
-	sigma=read_value(file,"Sigma");   // read sigma
-	rho=read_value(file,"Rho");       // read rho
-	K=read_value(file,"Edge factor"); // read parameter K (edge sensitivity)
-	write_steps=(int)read_value(file,"Write outer steps"); //read flag for writing intermediate result after each outer iteration
+	outer_steps=(int)read_value(file,"outer_steps"); // read number of outer iteration steps
+	inner_steps=(int)read_value(file,"inner_steps"); // read number of inner iteration steps
+	alpha0=read_value(file,"alpha");  // read alpha
+	beta0=read_value(file,"beta");    // read beta 
+	sigma=read_value(file,"sigma");   // read sigma
+	rho=read_value(file,"rho");       // read rho
+	K=read_value(file,"edge_factor"); // read parameter K (edge sensitivity)
+	write_steps=(int)read_value(file,"write_outer_steps"); //read flag for writing intermediate result after each outer iteration
 	break;  
       
       case 4:
-	outer_steps=(int)read_value(file,"Outer steps"); // read number of outer iteration steps
-	inner_steps=(int)read_value(file,"Inner steps"); // read number of inner iteration steps
-	alpha0=read_value(file,"Alpha"); // read alpha
-	beta0=read_value(file,"Beta");   // read beta 
-	gamma0=read_value(file,"Gamma"); // read gamma
-	sigma=read_value(file,"Sigma");  // read sigma
-	rho=read_value(file,"Rho");      // read rho
-	K=read_value(file,"Edge factor");// read parameter K (edge sensitivity)
-	write_steps=(int)read_value(file,"Write outer steps");//read flag for writing intermediate result after each outer iteration
+	outer_steps=(int)read_value(file,"outer_steps"); // read number of outer iteration steps
+	inner_steps=(int)read_value(file,"inner_steps"); // read number of inner iteration steps
+	alpha0=read_value(file,"alpha"); // read alpha
+	beta0=read_value(file,"beta");   // read beta 
+	gamma0=read_value(file,"gamma"); // read gamma
+	sigma=read_value(file,"sigma");  // read sigma
+	rho=read_value(file,"rho");      // read rho
+	K=read_value(file,"edge_factor");// read parameter K (edge sensitivity)
+	write_steps=(int)read_value(file,"write_outer_steps");//read flag for writing intermediate result after each outer iteration
 	break;
       default:
 	std::cout<<"Unknown mode "<<mode<<std::endl;
     }
+    int stretch=(int)read_value(file,"histogram_stretch");        // flag for histogram stretching: 0 -no, 1 -yes
+    
+    
     
     vigra::ImageImportInfo info(infile); // get information about input image
     
@@ -147,7 +165,9 @@ int main(int argc, char ** argv)
     {
       MultiArray<2,double> data(Shape2(info.width(),info.height()));
       MultiArray<2,double> out(Shape2(info.width(),info.height())); 
-      MultiArray<2,double> weight(Shape2(info.width(),info.height()));
+      MultiArray<2,double> weight(Shape2(info.width(),info.height()));  
+    
+      
       for (int y=0;y<data.shape(1);y++){
 	for (int x=0;x<data.shape(0);x++){
 	  weight(x,y)=1;                         // set weight to 1 (needed for anisotropicTotalVariationFilter and
@@ -163,11 +183,11 @@ int main(int argc, char ** argv)
       switch(mode){
 	case 1:
 	std::cout<<"Standard TV filter"<<std::endl;
-	totalVariationFilter(out,data,alpha0,inner_steps,eps);
+	totalVariationFilter(data,out,alpha0,inner_steps,eps);
        break;
 	case 2: 
 	std::cout<<"Weighted TV filter"<<std::endl;
-	totalVariationFilter(out,data,weight,alpha0,inner_steps,eps);
+	totalVariationFilter(data,out,weight,alpha0,inner_steps,eps);
        break;
        case 3:{
 	std::cout<<"Anisotropic TV filter"<<std::endl;
@@ -182,13 +202,19 @@ int main(int argc, char ** argv)
 	  std::cout<<"outer step "<<i<<"\n";
 	  
 	  getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K);  // get anisotropic data
-	  anisotropicTotalVariationFilter(out,data,weight,phi,alpha,beta,inner_steps); //perform smoothing 
+	  anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps); //perform smoothing 
 	  
 	  if(write_steps){
 	    char dummy[80];
 	    sprintf(dummy,"output_step_%03d.png",i);
 	    std::cout<<"Writing temp file\n";
-	    exportImage(srcImageRange(out), vigra::ImageExportInfo(dummy));
+	    if (stretch)
+	       exportImage(srcImageRange(out), vigra::ImageExportInfo(dummy)); //exportImage performes histogramm stretching
+	    else{
+	      MultiArray<2,unsigned char>  buffer(Shape2(info.width(),info.height()));
+	      buffer=max(min(out*255+0.5,0.),255.);                              //scaling back to [0,255], clipping, cast to uint8
+	      exportImage(srcImageRange(buffer), vigra::ImageExportInfo(dummy));
+	    }  
 	  }
 	}
        break;
@@ -218,19 +244,31 @@ int main(int argc, char ** argv)
 	   std::cout<<"outer step "<<i<<"\n";
 	   
 	   getAnisotropy(out,phi,alpha,beta,alpha0,beta0,sigma,rho,K); // get anisotropic data
-	   secondOrderTotalVariationFilter(out,data,weight,phi,alpha,beta,gamma,xedges,yedges,inner_steps);//perform smoothing 
+	   secondOrderTotalVariationFilter(data,weight,phi,alpha,beta,gamma,xedges,yedges,out,inner_steps);//perform smoothing 
 	   
 	   if(write_steps){
 	     char dummy[80];
 	     sprintf(dummy,"output_step_%03d.png",i);
-	     std::cout<<"Writing temp file\n";
-	     exportImage(srcImageRange(out), vigra::ImageExportInfo(dummy));
+	     std::cout<<"Writing temp file\n"; 
+	     if (stretch)
+	        exportImage(srcImageRange(out), vigra::ImageExportInfo(dummy));
+	     else{
+	       MultiArray<2,unsigned char>  buffer(Shape2(info.width(),info.height()));
+	       buffer=max(min(out*255+0.5,0.),255.);                              //scaling back to [0,255], clipping, cast to uint8
+	       exportImage(srcImageRange(buffer), vigra::ImageExportInfo(dummy));
+	     }  
 	   }
 	 }
        }
       }
       //-------------------------------------
+      if (stretch)
       exportImage(srcImageRange(out), vigra::ImageExportInfo(outfile));  //write result to file
+      else{
+	MultiArray<2,unsigned char>  buffer(Shape2(info.width(),info.height()));
+	buffer=min(max(out*255.+0.5,0.),255.);                              //scaling back to [0,255], clipping, cast to uint8
+	exportImage(srcImageRange(buffer), vigra::ImageExportInfo(outfile));
+      }
     }
     else
     {
