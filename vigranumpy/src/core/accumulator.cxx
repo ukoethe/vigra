@@ -117,22 +117,25 @@ void defineGlobalAccumulators()
 
     docstring_options doc_options(true, true, false);
     
+    PythonAccumulatorBase::definePythonClass();
+    PythonRegionAccumulatorBase::definePythonClass();
+    
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, Covariance, 
                    Principal<Variance>, Principal<Skewness>, Principal<Kurtosis>,
                    Principal<CoordinateSystem>,
                    Minimum, Maximum, Principal<Minimum>, Principal<Maximum>
                    > VectorAccumulators;
 
-    definePythonAccumulatorMultiband<3, float, VectorAccumulators>("MultibandFeatures2D");
-    definePythonAccumulatorMultiband<4, float, VectorAccumulators>("MultibandFeatures3D");
+    definePythonAccumulatorMultiband<3, float, VectorAccumulators>();
+    definePythonAccumulatorMultiband<4, float, VectorAccumulators>();
     
-    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>("Vector3Features");
+    definePythonAccumulator<TinyVector<float, 3>, VectorAccumulators>();
 
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
                    UnbiasedVariance, UnbiasedSkewness, UnbiasedKurtosis,
                    Minimum, Maximum, StandardQuantiles<AutoRangeHistogram<0> > 
                    > ScalarAccumulators;
-    definePythonAccumulatorSingleband<float, ScalarAccumulators>("SinglebandFeatures");
+    definePythonAccumulatorSingleband<float, ScalarAccumulators>();
 }
 
 void defineSinglebandRegionAccumulators();

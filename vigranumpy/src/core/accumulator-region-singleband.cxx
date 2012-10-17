@@ -58,8 +58,8 @@ void defineSinglebandRegionAccumulators()
                           Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
-    definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>("SinglebandRegionFeatures2D");
-    definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>("SinglebandRegionFeatures3D");
+    definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>();
+    definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>();
 }
 
 } // namespace vigra

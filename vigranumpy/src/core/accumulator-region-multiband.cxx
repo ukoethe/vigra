@@ -59,11 +59,11 @@ void defineMultibandRegionAccumulators()
                    DataArg<1>, LabelArg<2>
                    > VectorRegionAccumulators;
 
-    definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>("MultibandRegionFeatures2D");
-    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>("MultibandRegionFeatures3D");
+    definePythonAccumulatorArrayMultiband<3, float, VectorRegionAccumulators>();
+    definePythonAccumulatorArrayMultiband<4, float, VectorRegionAccumulators>();
     
-    definePythonAccumulatorArray<2, TinyVector<float, 3>, VectorRegionAccumulators>("Vector3RegionFeatures2D");
-    definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>("Vector3RegionFeatures3D");
+    definePythonAccumulatorArray<2, TinyVector<float, 3>, VectorRegionAccumulators>();
+    definePythonAccumulatorArray<3, TinyVector<float, 3>, VectorRegionAccumulators>();
 }
 
 } // namespace vigra

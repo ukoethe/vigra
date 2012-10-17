@@ -1683,6 +1683,8 @@ struct AccumulatorChainArray
     
     void merge(AccumulatorChainArray const & o)
     {
+        if(maxRegionLabel() == -1)
+            setMaxRegionLabel(o.maxRegionLabel());
         vigra_precondition(maxRegionLabel() == o.maxRegionLabel(),
             "AccumulatorChainArray::merge(): maxRegionLabel must be equal.");
         this->next_.merge(o.next_);
