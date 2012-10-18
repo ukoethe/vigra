@@ -308,6 +308,7 @@ struct PythonFeatureAccumulator
 struct PythonRegionFeatureAccumulator
 : public PythonFeatureAccumulator
 {
+    virtual MultiArrayIndex maxRegionLabel() { throw std::runtime_error("abstract function called."); }
     virtual void mergeAll(PythonRegionFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
     virtual void remappingMerge(PythonFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
     virtual void mergeRegions(npy_uint32 i, npy_uint32 j) { throw std::runtime_error("abstract function called."); }
@@ -317,6 +318,7 @@ struct PythonRegionFeatureAccumulator
     {
         python::class_<PythonRegionFeatureAccumulator>("RegionFeatureAccumulator", python::no_init)
             .def("__getitem__", &PythonRegionFeatureAccumulator::get)
+            .def("maxRegionLabel", &PythonRegionFeatureAccumulator::maxRegionLabel)
             .def("isActive", &PythonRegionFeatureAccumulator::isActive)
             .def("activeFeatures", &PythonRegionFeatureAccumulator::activeNames)
             .def("keys", &PythonRegionFeatureAccumulator::activeNames)
@@ -425,7 +427,12 @@ struct PythonAccumulator
         return a.release();
     }
     
-  private:
+    MultiArrayIndex maxRegionLabel() 
+    {
+        return BaseType::maxRegionLabel();
+    }
+
+    private:
     static std::string createAlias(std::string const & n)
     {
         AliasMap::const_iterator k = tagToAlias().find(n);
