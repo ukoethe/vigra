@@ -36,9 +36,6 @@
 #ifndef VIGRA_PYTHONACCUMULATOR_HXX
 #define VIGRA_PYTHONACCUMULATOR_HXX
 
-#define PY_ARRAY_UNIQUE_SYMBOL vigranumpyanalysis_PyArray_API
-#define NO_IMPORT_ARRAY
-
 #ifdef _MSC_VER
 #pragma warning (disable: 4503)
 #endif
@@ -54,7 +51,7 @@ namespace python = boost::python;
 namespace vigra
 {
 
-namespace acc1 
+namespace acc 
 {
 
 struct GetTag_Visitor
@@ -284,52 +281,50 @@ AliasMap createAliasToTag(AliasMap const & tagToAlias);
 
 ArrayVector<std::string> createSortedNames(AliasMap const & tagToAlias);
 
-struct PythonAccumulatorBase
+struct PythonFeatureAccumulator
 {
     virtual void activate(std::string const & tag) { throw std::runtime_error("abstract function called."); }   
     virtual bool isActive(std::string const & tag) const { throw std::runtime_error("abstract function called."); return false; }
     virtual python::list activeNames() const { throw std::runtime_error("abstract function called."); return python::list(); }
     virtual python::list names() const { throw std::runtime_error("abstract function called."); return python::list(); }
     virtual python::object get(std::string const & tag) { throw std::runtime_error("abstract function called."); return python::object(); }
-    virtual void merge(PythonAccumulatorBase const & o) { throw std::runtime_error("abstract function called."); }
-    virtual PythonAccumulatorBase * create() const { throw std::runtime_error("abstract function called."); return 0; }
+    virtual void merge(PythonFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
+    virtual PythonFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
     
     static void definePythonClass()
     {
-        python::class_<PythonAccumulatorBase>("FeatureAccumulator", python::no_init)
-            .def("__getitem__", &PythonAccumulatorBase::get)
-            .def("isActive", &PythonAccumulatorBase::isActive)
-            .def("has_key", &PythonAccumulatorBase::isActive)
-            .def("activeFeatures", &PythonAccumulatorBase::activeNames)
-            .def("keys", &PythonAccumulatorBase::activeNames)
-            .def("supportedFeatures", &PythonAccumulatorBase::names)
-            .def("merge", &PythonAccumulatorBase::merge)
-            .def("createAccumulator", &PythonAccumulatorBase::create, python::return_value_policy<python::manage_new_object>())
+        python::class_<PythonFeatureAccumulator>("FeatureAccumulator", python::no_init)
+            .def("__getitem__", &PythonFeatureAccumulator::get)
+            .def("isActive", &PythonFeatureAccumulator::isActive)
+            .def("activeFeatures", &PythonFeatureAccumulator::activeNames)
+            .def("keys", &PythonFeatureAccumulator::activeNames)
+            .def("supportedFeatures", &PythonFeatureAccumulator::names)
+            .def("merge", &PythonFeatureAccumulator::merge)
+            .def("createAccumulator", &PythonFeatureAccumulator::create, python::return_value_policy<python::manage_new_object>())
             ;
     }
 };
 
-struct PythonRegionAccumulatorBase
-: public PythonAccumulatorBase
+struct PythonRegionFeatureAccumulator
+: public PythonFeatureAccumulator
 {
-    virtual void mergeAll(PythonRegionAccumulatorBase const & o) { throw std::runtime_error("abstract function called."); }
-    virtual void remappingMerge(PythonAccumulatorBase const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
+    virtual void mergeAll(PythonRegionFeatureAccumulator const & o) { throw std::runtime_error("abstract function called."); }
+    virtual void remappingMerge(PythonFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping) { throw std::runtime_error("abstract function called."); }
     virtual void mergeRegions(npy_uint32 i, npy_uint32 j) { throw std::runtime_error("abstract function called."); }
-    virtual PythonRegionAccumulatorBase * create() const { throw std::runtime_error("abstract function called."); return 0; }
+    virtual PythonRegionFeatureAccumulator * create() const { throw std::runtime_error("abstract function called."); return 0; }
     
     static void definePythonClass()
     {
-        python::class_<PythonRegionAccumulatorBase>("RegionFeatureAccumulator", python::no_init)
-            .def("__getitem__", &PythonRegionAccumulatorBase::get)
-            .def("isActive", &PythonRegionAccumulatorBase::isActive)
-            .def("has_key", &PythonRegionAccumulatorBase::isActive)
-            .def("activeFeatures", &PythonRegionAccumulatorBase::activeNames)
-            .def("keys", &PythonRegionAccumulatorBase::activeNames)
-            .def("supportedFeatures", &PythonRegionAccumulatorBase::names)
-            .def("merge", &PythonRegionAccumulatorBase::mergeAll)
-            .def("merge", &PythonRegionAccumulatorBase::remappingMerge)
-            .def("merge", &PythonRegionAccumulatorBase::mergeRegions)
-            .def("createAccumulator", &PythonRegionAccumulatorBase::create, python::return_value_policy<python::manage_new_object>())
+        python::class_<PythonRegionFeatureAccumulator>("RegionFeatureAccumulator", python::no_init)
+            .def("__getitem__", &PythonRegionFeatureAccumulator::get)
+            .def("isActive", &PythonRegionFeatureAccumulator::isActive)
+            .def("activeFeatures", &PythonRegionFeatureAccumulator::activeNames)
+            .def("keys", &PythonRegionFeatureAccumulator::activeNames)
+            .def("supportedFeatures", &PythonRegionFeatureAccumulator::names)
+            .def("merge", &PythonRegionFeatureAccumulator::mergeAll)
+            .def("merge", &PythonRegionFeatureAccumulator::remappingMerge)
+            .def("merge", &PythonRegionFeatureAccumulator::mergeRegions)
+            .def("createAccumulator", &PythonRegionFeatureAccumulator::create, python::return_value_policy<python::manage_new_object>())
             ;
     }  
 };
@@ -391,7 +386,7 @@ struct PythonAccumulator
         return v.result;
     }
     
-    void merge(PythonAccumulatorBase const & o)
+    void merge(PythonFeatureAccumulator const & o)
     {
         PythonAccumulator const * p = dynamic_cast<PythonAccumulator const *>(&o);
         if(p == 0)
@@ -402,12 +397,12 @@ struct PythonAccumulator
         BaseType::merge(*p);
     }
     
-    void mergeAll(PythonRegionAccumulatorBase const & o)
+    void mergeAll(PythonRegionFeatureAccumulator const & o)
     {
         merge(o);
     }
     
-    void remappingMerge(PythonAccumulatorBase const & o, NumpyArray<1, npy_uint32> labelMapping)
+    void remappingMerge(PythonFeatureAccumulator const & o, NumpyArray<1, npy_uint32> labelMapping)
     {
         PythonAccumulator const * p = dynamic_cast<PythonAccumulator const *>(&o);
         if(p == 0)
@@ -527,7 +522,7 @@ pythonInspect(NumpyArray<ndim, T> in, python::object tags)
     {
         PyAllowThreads _pythread;
         
-        collectStatistics(in.begin(), in.end(), *res);
+        extractFeatures(in.begin(), in.end(), *res);
     }
     
     return res.release();
@@ -545,7 +540,7 @@ pythonInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in, python::object t
         
         PyAllowThreads _pythread;
         
-        collectStatistics(in.begin(), in.end(), *res);
+        extractFeatures(in.begin(), in.end(), *res);
     }
     
     return res.release();
@@ -564,7 +559,7 @@ pythonInspectMultiband(NumpyArray<ndim, Multiband<T> > in, python::object tags)
         
         Iterator i   = createCoupledIterator(MultiArrayView<ndim, Multiband<T>, StridedArrayTag>(in)),
                  end = i.getEndIterator();
-        collectStatistics(i, end, *res);
+        extractFeatures(i, end, *res);
     }
     
     return res.release();
@@ -591,7 +586,7 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
         
         Iterator i     = createCoupledIterator(in, labels),
                  end   = i.getEndIterator();
-        collectStatistics(i, end, *res);
+        extractFeatures(i, end, *res);
     }
     
     return res.release();
@@ -619,7 +614,7 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in,
         
         Iterator i     = createCoupledIterator(in, labels),
                  end   = i.getEndIterator();
-        collectStatistics(i, end, *res);
+        extractFeatures(i, end, *res);
     }
     
     return res.release();
@@ -646,13 +641,13 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
         
         Iterator i     = createCoupledIterator(MultiArrayView<ndim, Multiband<T>, StridedArrayTag>(in), labels),
                  end   = i.getEndIterator();
-        collectStatistics(i, end, *res);
+        extractFeatures(i, end, *res);
     }
     
     return res.release();
 }
 
-} // namespace acc1
+} // namespace acc
 
 template <class T, class Accumulators>
 void definePythonAccumulatorSingleband()
@@ -661,15 +656,15 @@ void definePythonAccumulatorSingleband()
 
     docstring_options doc_options(true, true, false);
 
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<T, Accumulators>, 
-                                    acc1::PythonAccumulatorBase, acc1::GetTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChain<T, Accumulators>, 
+                                    acc::PythonFeatureAccumulator, acc::GetTag_Visitor> Accu;
     
-    def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 2, T>,
+    def("extractFeatures", &acc::pythonInspectWithHistogram<Accu, 2, T>,
           (arg("image"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
           return_value_policy<manage_new_object>());
     
-    def("extractFeatures", &acc1::pythonInspectWithHistogram<Accu, 3, T>,
+    def("extractFeatures", &acc::pythonInspectWithHistogram<Accu, 3, T>,
           (arg("volume"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
           return_value_policy<manage_new_object>());
@@ -682,14 +677,14 @@ void definePythonAccumulator()
 
     docstring_options doc_options(true, true, false);
 
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<T, Accumulators>, 
-                                    acc1::PythonAccumulatorBase, acc1::GetTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChain<T, Accumulators>, 
+                                    acc::PythonFeatureAccumulator, acc::GetTag_Visitor> Accu;
     
-    def("extractFeatures", &acc1::pythonInspect<Accu, 2, T>,
+    def("extractFeatures", &acc::pythonInspect<Accu, 2, T>,
           (arg("image"), arg("features") = "all"),
           return_value_policy<manage_new_object>());
     
-    def("extractFeatures", &acc1::pythonInspect<Accu, 3, T>,
+    def("extractFeatures", &acc::pythonInspect<Accu, 3, T>,
           (arg("volume"), arg("features") = "all"),
           return_value_policy<manage_new_object>());
 }
@@ -702,14 +697,14 @@ void definePythonAccumulatorMultiband()
     docstring_options doc_options(true, true, false);
 
     typedef typename CoupledIteratorType<N, Multiband<T> >::type::value_type ResultType;    
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChain<ResultType, Accumulators>, 
-                                    acc1::PythonAccumulatorBase, acc1::GetTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChain<ResultType, Accumulators>, 
+                                    acc::PythonFeatureAccumulator, acc::GetTag_Visitor> Accu;
     
     std::string argname = N == 3 
                              ? "image"
                              : "volume";
     
-    def("extractFeatures", &acc1::pythonInspectMultiband<Accu, N, T>,
+    def("extractFeatures", &acc::pythonInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("features") = "all"),
           return_value_policy<manage_new_object>());
 }
@@ -724,14 +719,14 @@ void definePythonAccumulatorArraySingleband()
     typedef typename CoupledIteratorType<N, T, npy_uint32>::type Iterator;
     typedef typename Iterator::value_type Handle;
     
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, 
-                                    acc1::PythonRegionAccumulatorBase, acc1::GetArrayTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChainArray<Handle, Accumulators>, 
+                                    acc::PythonRegionFeatureAccumulator, acc::GetArrayTag_Visitor> Accu;
     
     std::string argname = N == 2 
                              ? "image"
                              : "volume";
     
-    def("extractRegionFeatures", &acc1::pythonRegionInspectWithHistogram<Accu, N, T>,
+    def("extractRegionFeatures", &acc::pythonRegionInspectWithHistogram<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64, arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
@@ -747,14 +742,14 @@ void definePythonAccumulatorArray()
     typedef typename CoupledIteratorType<N, T, npy_uint32>::type Iterator;
     typedef typename Iterator::value_type Handle;
     
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, 
-                                    acc1::PythonRegionAccumulatorBase, acc1::GetArrayTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChainArray<Handle, Accumulators>, 
+                                    acc::PythonRegionFeatureAccumulator, acc::GetArrayTag_Visitor> Accu;
     
     std::string argname = N == 2 
                              ? "image"
                              : "volume";
     
-    def("extractRegionFeatures", &acc1::pythonRegionInspect<Accu, N, T>,
+    def("extractRegionFeatures", &acc::pythonRegionInspect<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
 }
@@ -767,14 +762,14 @@ void definePythonAccumulatorArrayMultiband()
     docstring_options doc_options(true, true, false);
 
     typedef typename CoupledIteratorType<N, Multiband<T>, npy_uint32>::type::value_type Handle;
-    typedef acc1::PythonAccumulator<acc1::DynamicAccumulatorChainArray<Handle, Accumulators>, 
-                                    acc1::PythonRegionAccumulatorBase, acc1::GetArrayTag_Visitor> Accu;
+    typedef acc::PythonAccumulator<acc::DynamicAccumulatorChainArray<Handle, Accumulators>, 
+                                    acc::PythonRegionFeatureAccumulator, acc::GetArrayTag_Visitor> Accu;
         
     std::string argname = N == 3 
                              ? "image"
                              : "volume";
     
-    def("extractRegionFeatures", &acc1::pythonRegionInspectMultiband<Accu, N, T>,
+    def("extractRegionFeatures", &acc::pythonRegionInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
           return_value_policy<manage_new_object>());
 }

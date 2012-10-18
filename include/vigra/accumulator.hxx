@@ -41,7 +41,6 @@
 #endif
 
 #include "accumulator-grammar.hxx"
-//#include "accumulator-detail.hxx"
 #include "config.hxx"
 #include "metaprogramming.hxx"
 #include "bit_array.hxx"
@@ -58,7 +57,7 @@
 
 namespace vigra {
 
-namespace acc1 {
+namespace acc {
 
 /****************************************************************************/
 /*                                                                          */
@@ -2103,7 +2102,7 @@ isActive(A const & a)
 /****************************************************************************/
 
 template <class ITERATOR, class ACCUMULATOR>
-void collectStatistics(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
+void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
 {
     for(unsigned int k=1; k <= a.passesRequired(); ++k)
         for(ITERATOR i=start; i < end; ++i)
@@ -4701,6 +4700,6 @@ class StandardQuantiles
     };
 };
 
-}} // namespace vigra::acc1
+}} // namespace vigra::acc
 
 #endif // VIGRA_ACCUMULATOR_HXX

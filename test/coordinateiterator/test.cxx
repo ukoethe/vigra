@@ -10,9 +10,6 @@
 #include "vigra/rgbvalue.hxx"
 #include "vigra/coordinate_iterator.hxx"
 
-#include "vigra/object_features.hxx"
-
-
 using namespace vigra;
 
 typedef float pixel_type;
@@ -84,7 +81,7 @@ struct echo_cmp : public echo
     }
 };
 
-void test1()
+void testCoordinateIterator()
 {
     StridePair<2>::coord_type c2_origin(10,  0);
     StridePair<2>::coord_type c2_stride( 1,  2);
@@ -350,18 +347,12 @@ void test1()
                       echo_f(out_14)));
 }
 
-struct CoordinateIteratorTest1
-{
-    void run() { test1(); }
-    
-};
-
 struct CoordinateIteratorTestSuite : public vigra::test_suite
 {
     CoordinateIteratorTestSuite()
         : vigra::test_suite("CoordinateIteratorTestSuite")
     {
-        add(testCase(&CoordinateIteratorTest1::run));
+        add(testCase(&testCoordinateIterator));
     }
 };
 

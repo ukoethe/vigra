@@ -46,7 +46,7 @@ namespace vigra
 void defineSinglebandRegionAccumulators()
 {
     using namespace python;
-    using namespace vigra::acc1;
+    using namespace vigra::acc;
 
     docstring_options doc_options(true, true, false);
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 

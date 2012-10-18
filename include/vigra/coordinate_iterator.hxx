@@ -1,3 +1,38 @@
+/************************************************************************/
+/*                                                                      */
+/*    Copyright 2011-2012 by Markus Nullmeier and Ullrich Koethe        */
+/*                                                                      */
+/*    This file is part of the VIGRA computer vision library.           */
+/*    The VIGRA Website is                                              */
+/*        http://hci.iwr.uni-heidelberg.de/vigra/                       */
+/*    Please direct questions, bug reports, and contributions to        */
+/*        ullrich.koethe@iwr.uni-heidelberg.de    or                    */
+/*        vigra@informatik.uni-hamburg.de                               */
+/*                                                                      */
+/*    Permission is hereby granted, free of charge, to any person       */
+/*    obtaining a copy of this software and associated documentation    */
+/*    files (the "Software"), to deal in the Software without           */
+/*    restriction, including without limitation the rights to use,      */
+/*    copy, modify, merge, publish, distribute, sublicense, and/or      */
+/*    sell copies of the Software, and to permit persons to whom the    */
+/*    Software is furnished to do so, subject to the following          */
+/*    conditions:                                                       */
+/*                                                                      */
+/*    The above copyright notice and this permission notice shall be    */
+/*    included in all copies or substantial portions of the             */
+/*    Software.                                                         */
+/*                                                                      */
+/*    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND    */
+/*    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES   */
+/*    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND          */
+/*    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT       */
+/*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
+/*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
+/*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
+/*                                                                      */
+/************************************************************************/
+
 #ifndef VIGRA_COORDINATE_ITERATOR_HXX
 #define VIGRA_COORDINATE_ITERATOR_HXX
 
@@ -95,17 +130,11 @@ struct StridePair
         return coord[0];
     }
 };
+
 template<unsigned M>
 struct NumericTraits<StridePair<M> >
     : public NumericTraits<typename StridePair<M>::index_type>
 {};
-template <unsigned N>
-std::ostream &
-operator<<(std::ostream & os, const StridePair<N> & x)
-{
-    os << "[" << x.index << ", " << x.coord << "]";
-    return os;
-}
 
 template<unsigned N>
 struct StridePairCoord : public TinyVector<double, N>
@@ -156,18 +185,11 @@ struct StridePairDiff : public StridePairCoord<N>
         return ret;
     }
 };
+
 template<unsigned M>
 struct NumericTraits<StridePairDiff<M> >
     : public NumericTraits<StridePairCoord<M> >
 {};
-template <unsigned N>
-std::ostream &
-operator<<(std::ostream & os, const StridePairDiff<N> & x)
-{
-    os << "<" << x.c << "; "
-       << static_cast<StridePairCoord<N> >(x) << ">";
-    return os;
-}
 
 template<unsigned N, class T>
 struct StridePairPointer : public StridePairCoord<N>
@@ -220,17 +242,11 @@ struct StridePairPointer : public StridePairCoord<N>
         coord_type::operator-=(x);
     }
 };
+
 template<unsigned M, class T>
 struct NumericTraits<StridePairPointer<M, T> >
     : public NumericTraits<typename StridePairPointer<M, T>::coord_type>
 {};
-template <unsigned N, class T>
-std::ostream &
-operator<<(std::ostream & os, const StridePairPointer<N, T> & x)
-{
-    os << "[" << x.value() << ", " << x.coord() << "]";
-    return os;
-}
 
 namespace detail {
 
@@ -621,14 +637,6 @@ struct AccessorCoordinatePair
         return c;
     }
 };
-template <class VALUETYPE, class COORD>
-std::ostream &
-operator<<(std::ostream & os,
-           const AccessorCoordinatePair<VALUETYPE, COORD> & x)
-{
-    os << "[" << x.value() << ", " << x.coord() << "]";
-    return os;
-}
 
 /** \brief Forward accessor to the value() part of the values an iterator
            points to.
@@ -710,5 +718,43 @@ srcCoordinateMultiArrayRangeAccessor(const MultiArrayView<N, T, StrideTag> &
 }
 
 } // namespace vigra
+
+namespace std {
+
+template <unsigned N>
+ostream &
+operator<<(ostream & os, const vigra::StridePair<N> & x)
+{
+    os << "[" << x.index << ", " << x.coord << "]";
+    return os;
+}
+
+template <unsigned N>
+ostream &
+operator<<(ostream & os, const vigra::StridePairDiff<N> & x)
+{
+    os << "<" << x.c << "; "
+       << static_cast<vigra::StridePairCoord<N> >(x) << ">";
+    return os;
+}
+
+template <unsigned N, class T>
+ostream &
+operator<<(ostream & os, const vigra::StridePairPointer<N, T> & x)
+{
+    os << "[" << x.value() << ", " << x.coord() << "]";
+    return os;
+}
+
+template <class VALUETYPE, class COORD>
+ostream &
+operator<<(ostream & os,
+           const vigra::AccessorCoordinatePair<VALUETYPE, COORD> & x)
+{
+    os << "[" << x.value() << ", " << x.coord() << "]";
+    return os;
+}
+
+} // namespace std
 
 #endif // VIGRA_COORDINATE_ITERATOR_HXX

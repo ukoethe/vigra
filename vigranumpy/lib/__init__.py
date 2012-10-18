@@ -368,3 +368,56 @@ def _genTensorConvenienceFunctions():
 
 _genTensorConvenienceFunctions()
 del _genTensorConvenienceFunctions
+
+# define feature convenience functions
+def _genFeaturConvenienceFunctions():
+    def supportedFeatures(array):
+        '''Return a list of feature names that are available for the given array. These feature
+           names are the valid inputs to a call of :func:`extractFeatures`(array, features = ...).
+        '''
+        
+        return analysis.extractFeatures(array, None).supportedFeatures()
+
+    supportedFeatures.__module__ = 'vigra.analysis'
+    analysis.supportedFeatures = supportedFeatures
+
+    def supportedRegionFeatures(array, labels):
+        '''Return a list of feature names that are available for the given array and label array. 
+           These feature names are the valid inputs to a call of 
+           :func:`extractRegionFeatures`(array, labels, features = ...).
+        '''
+        
+        return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()
+    
+    supportedRegionFeatures.__module__ = 'vigra.analysis'
+    analysis.supportedRegionFeatures = supportedRegionFeatures
+    
+    # implement the read-only part of the 'dict' API in FeatureAccumulator and RegionFeatureAccumulator
+    def __len__(self):
+        return len(self.keys())
+    def __iter__(self):
+        return self.keys().__iter__()
+    def has_key(self, key):
+        try:
+            return self.isActive(key)
+        except:
+            return False
+    def values(self):
+        return [self[k] for k in self.keys()]
+    def items(self):
+        return [(k, self[k]) for k in self.keys()]
+    def iterkeys(self):
+        return self.keys().__iter__()
+    def itervalues(self):
+        for k in self.keys():
+            yield self[k]
+    def iteritems(self):
+        for k in self.keys():
+            yield (k, self[k])
+    
+    for k in ['__len__', '__iter__', 'has_key', 'values', 'items', 'iterkeys', 'itervalues', 'iteritems']:
+        setattr(analysis.FeatureAccumulator, k, eval(k))
+        setattr(analysis.RegionFeatureAccumulator, k, eval(k))
+
+_genFeaturConvenienceFunctions()
+del _genFeaturConvenienceFunctions
