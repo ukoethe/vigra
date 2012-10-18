@@ -1974,7 +1974,7 @@ struct MoveToScanOrderIndex<0>
          Shape & point, Ptr & p, Shape const & strides)
     {
         enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = newIndex % shape[N-1];
+        MultiArrayIndex newPos = std::min(newIndex, shape[N-1]);
         p += (newPos - point[N-1]) * strides[N-1];
         point[N-1] = newPos;
     }
@@ -1985,7 +1985,7 @@ struct MoveToScanOrderIndex<0>
          Ptr1 & p1, Shape const & strides1, Ptr2 & p2, Shape const & strides2)
     {
         enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = newIndex % shape[N-1];
+        MultiArrayIndex newPos = std::min(newIndex, shape[N-1]);
         p1 += (newPos - point[N-1]) * strides1[N-1];
         p2 += (newPos - point[N-1]) * strides2[N-1];
         point[N-1] = newPos;
@@ -2369,10 +2369,8 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
 
     StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
     {
-    return operator+=(-coordOffset);
+        return operator+=(-coordOffset);
     }
-    
-
 
     StridedScanOrderIterator & operator--()
     {

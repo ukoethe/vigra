@@ -831,7 +831,7 @@ template <class U, unsigned int N, class T, class S>
 U
 sum(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::zero()) 
 { 
-    return v.sum<U>() + res;
+    return v.template sum<U>() + res;
 }
 
 template <class U, class T>
@@ -849,7 +849,7 @@ template <class U, unsigned int N, class T, class S>
 U
 product(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::one()) 
 { 
-    return v.product<U>() * res;
+    return v.template product<U>() * res;
 }
 
 template <class T>

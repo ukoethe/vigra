@@ -34,13 +34,14 @@
 /************************************************************************/
 
 #define PY_ARRAY_UNIQUE_SYMBOL vigranumpytest_PyArray_API
-#include <vigra/config.hxx>
+
 #include <Python.h>
+#include <iostream>
+#include <vigra/config.hxx>
 #include <boost/python.hpp>
 #include <boost/python/signature.hpp>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
-#include <iostream>
 
 namespace python = boost::python;
 

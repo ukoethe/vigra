@@ -542,6 +542,22 @@ public:
         shouldEqual(&*(iend-7), &a3(1,2,3));
         shouldEqual(&*(iend-8), &a3(0,2,3));
         shouldEqual(&*(iend-10), &a3(0,1,3));
+        
+        i3 = iend;
+        --i3;
+        shouldEqual(&*iend, &*(i3+1));
+        shouldEqual(&*i3, &a3(1,2,4));
+        --i3;
+        shouldEqual(&*i3, &a3(0,2,4));
+        --i3;
+        shouldEqual(&*i3, &a3(1,1,4));
+        i3 -= 4;
+        shouldEqual(&*i3, &a3(1,2,3));
+        --i3;
+        shouldEqual(&*i3, &a3(0,2,3));
+        --i3;
+        --i3;
+        shouldEqual(&*i3, &a3(0,1,3));
 
         i3 = iend-1;
         shouldEqual(&*(i3-shape3_t(0,0,0)), &a3(1,2,4));

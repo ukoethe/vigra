@@ -11,6 +11,7 @@
 
 #include <vigra/windows.h>
 #include <vigra/multi_array.hxx>
+#include <vigra/bucket_queue.hxx>
 
 namespace vigra {
 
@@ -41,19 +42,19 @@ void tws
 	// define 256 queues, one for each gray level.
 	std::vector<std::queue<MultiArrayIndex> > queues(256);
 
-    
+    std::cout << "uint8 version\n" << std::flush;
 
 	// add each unlabeled pixels which is adjacent to a seed
 	// to the queue corresponding to its gray level
 	for(MultiArrayIndex j = 0; j < labeling.size(); ++j) {
-        if(j % 1000 == 0) {
+        if(j % 1000000 == 0) {
             std::cout << "\r  initializing queues " << (j/float(numVoxels)*100) << "%                    " << std::flush;
         }
 		if(isAtSeedBorder<T>(labeling, j)) {
 			queues[vol[j]].push(j);
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  initializing queues 100.0000%                    " << std::endl;
 
 	// flood
 	UInt8 grayLevel = 0;
@@ -68,7 +69,7 @@ void tws
 
             ++voxelsProcessed;
 
-            if(voxelsProcessed % 1000 == 0) {
+            if(voxelsProcessed % 1000000 == 0) {
                 std::cout << "\r  watersheds " << (voxelsProcessed/float(numVoxels)*100) << "%                    " << std::flush;
             }
 
@@ -109,7 +110,93 @@ void tws
 			++grayLevel;
 		}
 	}
-    std::cout << std::endl;
+    std::cout << "\r  watersheds 100.0000%                    " << std::endl;
+}
+
+template<class S1, class T, class S2>
+void tws
+(
+	const MultiArrayView<3, float, S1>& vol,
+	MultiArrayView<3, T, S2>& labeling
+)
+{
+    size_t numVoxels = vol.size();
+
+	// define 256 queues, one for each gray level.
+    typedef PriorityQueue<MultiArrayIndex, float, true> PQ;
+	std::vector<PQ> queues(256);
+
+    std::cout << "float version\n" << std::flush;
+
+	// add each unlabeled pixels which is adjacent to a seed
+	// to the queue corresponding to its gray level
+	for(MultiArrayIndex j = 0; j < labeling.size(); ++j) {
+        if(j % 1000000 == 0) {
+            std::cout << "\r  initializing queues " << (j/float(numVoxels)*100) << "%                    " << std::flush;
+        }
+		if(isAtSeedBorder<T>(labeling, j)) 
+        {
+			queues[(int)vol[j]].push(j, vol[j]);
+		}
+	}
+    std::cout << "\r  initializing queues 100.0000%                    " << std::endl;
+
+	// flood
+	UInt8 grayLevel = 0;
+
+    size_t voxelsProcessed = 0;
+
+	for(;;) {
+		while(!queues[grayLevel].empty()) {
+			// label pixel and remove from queue
+			MultiArrayIndex j = queues[grayLevel].top();
+            float p = queues[grayLevel].topPriority();
+			queues[grayLevel].pop();
+
+            ++voxelsProcessed;
+
+            if(voxelsProcessed % 1000000 == 0) {
+                std::cout << "\r  watersheds " << (voxelsProcessed/float(numVoxels)*100) << "%                    " << std::flush;
+            }
+
+			// add unlabeled neighbors to queues
+			// left, upper, and front voxel
+			typename MultiArrayView<3, UInt32>::difference_type coordinate = labeling.scanOrderIndexToCoordinate(j);
+			for(unsigned short d = 0; d<3; ++d) {
+				if(coordinate[d] != 0) {
+					--coordinate[d];
+					if(labeling[coordinate] == 0) {
+						MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
+						float priority = std::max(vol[coordinate], p);
+						labeling[k] = labeling[j]; // label pixel
+						queues[(int)priority].push(k, priority);
+					}
+					++coordinate[d];
+				}
+			}
+			// right, lower, and back voxel
+			for(unsigned short d = 0; d<3; ++d) {
+				if(coordinate[d] < labeling.shape(d)-1) {
+					++coordinate[d];
+					if(labeling[coordinate] == 0) {
+						MultiArrayIndex k = labeling.coordinateToScanOrderIndex(coordinate);
+						float priority = std::max(vol[coordinate], p);
+						labeling[k] = labeling[j]; // label pixel
+						queues[(int)priority].push(k, priority);
+					}
+					--coordinate[d];
+				}
+			}
+		}
+		if(grayLevel == 255) {
+			break;
+		}
+		else {
+			queues[grayLevel] = PQ(); // free memory
+			++grayLevel;
+		}
+	}
+    std::cout << "\r  watersheds 100.0000%                    " << std::endl;
 }
 
 template <class T>
@@ -120,7 +207,7 @@ struct TWS
                      MultiArrayView<3, U, S2>&)
     {
         vigra_precondition(false,
-           "tws(): Turbo watershed needs input type UInt8.");
+           "tws(): Turbo watershed needs input type UInt8 or float32.");
     }
 };
 
@@ -129,6 +216,17 @@ struct TWS<UInt8>
 {
     template<class S1, class U, class S2>
     static void exec(const MultiArrayView<3, UInt8, S1>& vol,
+                     MultiArrayView<3, U, S2>& labeling)
+    {
+        tws(vol, labeling);
+    }
+};
+
+template <>
+struct TWS<float>
+{
+    template<class S1, class U, class S2>
+    static void exec(const MultiArrayView<3, float, S1>& vol,
                      MultiArrayView<3, U, S2>& labeling)
     {
         tws(vol, labeling);

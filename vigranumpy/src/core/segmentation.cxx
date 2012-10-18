@@ -723,8 +723,9 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
     
     if(method == "turbo")
     {
-        vigra_precondition((IsSameType<PixelType, npy_uint8>::value),
-           "watersheds3D(): Turbo algorithm requires input dtype = uint8.");
+        vigra_precondition((Or<typename IsSameType<PixelType, npy_uint8>::type,
+                               typename IsSameType<PixelType, float>::type>::value),
+           "watersheds3D(): Turbo algorithm requires input dtype = uint8 or dtype = float.");
         vigra_precondition(neighborhood == 6,
            "watersheds3D(): Turbo algorithm requires neighborhood = 6.");
         vigra_precondition(srgType == CompleteGrow,
@@ -1007,7 +1008,7 @@ void defineSegmentation()
         "      3-dimensional data:\n"
         "        6 (default) or 26\n\n"
         " seeds:\n"
-        "    a label image specifying region seeds, only supported by method 'RegionGrowing' "
+        "    a label image specifying region seeds, only supported by methods 'RegionGrowing' and 'Turbo'"
         "    (with dtype=numpy.uint32).\n" 
         " method:\n"
         "    the algorithm to be used for watershed computation. Possible values:\n\n"
