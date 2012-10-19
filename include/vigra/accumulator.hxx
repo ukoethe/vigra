@@ -147,7 +147,7 @@ All statistics are computed simultaneously and without redundancy in as few pass
     std::cout << "Variance: " << get<Variance>(a) << std::endl;
     \endcode
     
-    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc1::Select. The statistics are computed with the acc1::collectStatistics function and the statistics can be accessed with acc1::get . 
+    The \ref acc1::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with Select. The statistics are computed with the acc1::collectStatistics function and the statistics can be accessed with acc1::get . 
 
     Rules and notes:
     - order of statistics in Select<> is arbitrary
@@ -397,6 +397,11 @@ struct CoordArgTag;
 struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
+
+  //moved this here from below (?)
+template <class TAG>
+struct Error__Attempt_to_access_inactive_statistic;
+
 
 /** \brief Specifies index of labels in CoupledHandle. 
 
@@ -1613,7 +1618,9 @@ struct InvalidGlobalAccumulatorHandle
     // if dynamic=false, a plain accumulator will be created
 template <class T, class Selected, bool dynamic=false, class GlobalHandle=InvalidGlobalAccumulatorHandle>
 struct ConfigureAccumulatorChain
+#ifndef DOXYGEN
 : public ConfigureAccumulatorChain<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+#endif
 {};
 
 template <class T, class HEAD, class TAIL, bool dynamic, class GlobalHandle>
@@ -1629,7 +1636,9 @@ struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic, GlobalHandle>
 
 template <class T, class Selected, bool dynamic=false>
 struct ConfigureAccumulatorChainArray
+#ifndef DOXYGEN
 : public ConfigureAccumulatorChainArray<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+#endif
 {};
 
 template <class T, class HEAD, class TAIL, bool dynamic>
@@ -1986,11 +1995,20 @@ class DynamicAccumulatorChain
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
     
-    /** %activate<TAG>() activates statistic 'TAG'. If the statistic is not in the accumulator chain it is ignored. (?)
+    /** %activate\<TAG\>() activates statistic 'TAG'. If the statistic is not in the accumulator chain it is ignored. (?)
     */
     template <class TAG>
     void activate()
     {
+
+      //changed (?)
+      bool found = IsDifferentType
+	<Error__Attempt_to_access_inactive_statistic<TAG>,
+	 typename LookupTag<TAG, DynamicAccumulatorChain>::value_type>::value;
+      vigra_precondition(found,
+			 std::string("DynamicAccumulatorChain::activate(): Tag '") + "' not found.");
+      //end change (?)
+
         LookupTag<TAG, DynamicAccumulatorChain>::type::activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
@@ -2010,7 +2028,7 @@ class DynamicAccumulatorChain
         return v.result;
     }
     
-    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+    /** %isActive\<TAG\>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
     */
     template <class TAG>
     bool isActive() const
@@ -2240,7 +2258,7 @@ class DynamicAccumulatorChainArray
         return v.result;
     }
     
-    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+    /** %isActive\<TAG\>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
      */
     template <class TAG>
     bool isActive() const
@@ -2284,8 +2302,9 @@ class DynamicAccumulatorChainArray
 /*                                                                          */
 /****************************************************************************/
 
-template <class TAG>
-struct Error__Attempt_to_access_inactive_statistic;
+// copied to above (?)
+//template <class TAG>
+//struct Error__Attempt_to_access_inactive_statistic;
 
 namespace detail {
 
@@ -2294,7 +2313,9 @@ namespace detail {
     // When A does not implement TAG, continue search in A::InternalBaseType.
 template <class TAG, class A, class FromTag=typename A::Tag>
 struct LookupTagImpl
+#ifndef DOXYGEN
 : public LookupTagImpl<TAG, typename A::InternalBaseType>
+#endif
 {};
 
     // 'const A' is treated like A, except that the reference member is now const.

@@ -726,7 +726,9 @@ struct TransferModifiers<A, void>
 
 template <class TargetTag, class A=typename TargetTag::Dependencies>
 struct StandardizeDependencies
+#ifndef DOXYGEN
 : public StandardizeDependencies<TargetTag, typename A::type>
+#endif
 {};
 
 template <class TargetTag, class HEAD, class TAIL>
