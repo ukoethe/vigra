@@ -153,6 +153,7 @@ void defineAccumulators()
     NumpyArrayConverter<NumpyArray<3, double> >();
     
     defineGlobalAccumulators();
+    // changed order (?)
     defineMultibandRegionAccumulators();
     defineSinglebandRegionAccumulators();
 }

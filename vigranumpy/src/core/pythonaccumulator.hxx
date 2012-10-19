@@ -293,14 +293,34 @@ struct PythonFeatureAccumulator
     
     static void definePythonClass()
     {
-        python::class_<PythonFeatureAccumulator>("FeatureAccumulator", python::no_init)
-            .def("__getitem__", &PythonFeatureAccumulator::get)
-            .def("isActive", &PythonFeatureAccumulator::isActive)
-            .def("activeFeatures", &PythonFeatureAccumulator::activeNames)
-            .def("keys", &PythonFeatureAccumulator::activeNames)
-            .def("supportedFeatures", &PythonFeatureAccumulator::names)
-            .def("merge", &PythonFeatureAccumulator::merge)
-            .def("createAccumulator", &PythonFeatureAccumulator::create, python::return_value_policy<python::manage_new_object>())
+        python::class_<PythonFeatureAccumulator>(
+               "FeatureAccumulator", 
+               "An instance of this accumulator class is returned by"
+               " :func:`extractFeatures`. "
+               "The object contains the computed features "
+               "(i.e. the selected features and their dependencies).\n"
+               ,python::no_init)
+            .def("__getitem__", &PythonFeatureAccumulator::get, 
+               "accumulator[feature] returns the value of the 'feature'. The return type is a"
+               " float or a numpy array of appropriate shape.\n",
+               python::arg("feature") )
+            .def("isActive", &PythonFeatureAccumulator::isActive,
+               "Returns True if 'feature' has been computed and False otherwise.\n",
+               python::arg("feature"))
+            .def("activeFeatures", &PythonFeatureAccumulator::activeNames,
+               "Returns a list with the names of all computed features.\n")
+            .def("keys", &PythonFeatureAccumulator::activeNames,
+               "Returns a list with the names of all computed features.\n")
+            .def("supportedFeatures", &PythonFeatureAccumulator::names,
+               "Returns a list of all supported features for the given input data array.\n")
+            .def("merge", &PythonFeatureAccumulator::merge,
+               "Merge features with the features from accumulator 'other'. Raises a "
+               "TypeError when 'other' is incompatible with 'self'.\n",
+               python::arg("other"))
+            .def("createAccumulator", &PythonFeatureAccumulator::create,
+               "Create an empty accumulator with the same active features as 'self'. "
+               "This is useful for merging.\n", 
+               python::return_value_policy<python::manage_new_object>())
             ;
     }
 };
@@ -316,17 +336,47 @@ struct PythonRegionFeatureAccumulator
     
     static void definePythonClass()
     {
-        python::class_<PythonRegionFeatureAccumulator>("RegionFeatureAccumulator", python::no_init)
-            .def("__getitem__", &PythonRegionFeatureAccumulator::get)
-            .def("maxRegionLabel", &PythonRegionFeatureAccumulator::maxRegionLabel)
-            .def("isActive", &PythonRegionFeatureAccumulator::isActive)
-            .def("activeFeatures", &PythonRegionFeatureAccumulator::activeNames)
-            .def("keys", &PythonRegionFeatureAccumulator::activeNames)
-            .def("supportedFeatures", &PythonRegionFeatureAccumulator::names)
-            .def("merge", &PythonRegionFeatureAccumulator::mergeAll)
-            .def("merge", &PythonRegionFeatureAccumulator::remappingMerge)
-            .def("merge", &PythonRegionFeatureAccumulator::mergeRegions)
-            .def("createAccumulator", &PythonRegionFeatureAccumulator::create, python::return_value_policy<python::manage_new_object>())
+        python::class_<PythonRegionFeatureAccumulator>(
+                "RegionFeatureAccumulator", 
+                "An instance of this accumulator class is returned by "
+                ":func:`extractRegionFeatures()` and contains the computed"
+                " global and per-region features. \n",
+                python::no_init)
+            .def("__getitem__", &PythonRegionFeatureAccumulator::get,
+               "accumulator[feature] returns the value of the 'feature'. "
+               "The return type is a numpy array of appropriate shape. "
+               "The first index of the returned arrays is the region label.\n",
+               python::arg("feature"))
+            .def("maxRegionLabel", &PythonRegionFeatureAccumulator::maxRegionLabel,
+                "Return the highest region label in this accumulator.\n")
+            .def("isActive", &PythonRegionFeatureAccumulator::isActive, 
+               "Returns True if 'feature' has been computed"
+               " and False otherwise.\n",
+               python::arg("feature"))
+            .def("activeFeatures", &PythonRegionFeatureAccumulator::activeNames,
+               "Returns a list with the names of all selected features.\n")
+            .def("keys", &PythonRegionFeatureAccumulator::activeNames,
+               "Returns a list with the names of all selected features.\n")
+            .def("supportedFeatures", &PythonRegionFeatureAccumulator::names,
+               "Returns a list with the names of all supported features for the given input arrays.\n")
+            .def("merge", &PythonRegionFeatureAccumulator::mergeAll,
+               "Merge features with the features from accumulator 'other'. "
+               "'self' and 'other' must have the same `maxRegionLabel`(), or "
+               "'self' must be an empty accumulator (as returned by `create`).\n",
+               python::arg("other"))
+            .def("merge", &PythonRegionFeatureAccumulator::remappingMerge,
+               "Merge features with the features from accumulator 'other'. "
+               "The 'labelMap' determines the correspondence of regions between "
+               "'self' and 'other' (i.e. region k of accumulator 'other' is "
+               "merged into region labelMap[k] of 'self').\n",
+               (python::arg("other"), python::arg("labelMap")))
+            .def("merge", &PythonRegionFeatureAccumulator::mergeRegions,
+               "Merge features from region 'j' into region 'i' of this accumulator.\n",
+               (python::arg("i"), python::arg("j")))
+            .def("createAccumulator", &PythonRegionFeatureAccumulator::create,
+               "Create an empty accumulator with the same active features as 'self'. "
+               "This is useful for merging.\n", 
+               python::return_value_policy<python::manage_new_object>())
             ;
     }  
 };
@@ -669,11 +719,23 @@ void definePythonAccumulatorSingleband()
     def("extractFeatures", &acc::pythonInspectWithHistogram<Accu, 2, T>,
           (arg("image"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+          "\nThis overload of :func:`extractFeatures` computes global statistics for a\n"
+          "2D scalar input array, e.g. :class:`vigra.ScalarImage`\n\n"
+          "Features 'Histogram' and 'Quantiles' are supported for this input.\nOptions are:\n\n"
+          "    - histogramRange: lower and upper bound of the histogram\n\n"
+          "        + 'globalminmax':  compute and use global minimum/maximum (default)\n"
+          "        + [lower, upper]:  provide explicit bounds (float numbers),\n"
+          "                           useful to ensure that merge will be allowed.\n\n"
+          "    - binCount: number of bins (default: 64).\n\n"
+          "Histogram options are ignored when the histogram feature is not selected.\n"
+          "Quantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from\n"
+          "the specified histogram.\n\n",
           return_value_policy<manage_new_object>());
     
     def("extractFeatures", &acc::pythonInspectWithHistogram<Accu, 3, T>,
           (arg("volume"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
+          "Likewise for a scalar 3D input array, e.g. :class:`vigra.ScalarVolume`.\n\n",
           return_value_policy<manage_new_object>());
 }
 
@@ -689,10 +751,14 @@ void definePythonAccumulator()
     
     def("extractFeatures", &acc::pythonInspect<Accu, 2, T>,
           (arg("image"), arg("features") = "all"),
+          "Likewise for 2D arrays with 3 channels.\n"
+          "Histograms and quantiles are not supported for this input.\n\n",
           return_value_policy<manage_new_object>());
     
     def("extractFeatures", &acc::pythonInspect<Accu, 3, T>,
           (arg("volume"), arg("features") = "all"),
+          "Likewise for 3D arrays with 3 channels.\n"
+          "Histograms and quantiles are not supported for this input.\n\n",
           return_value_policy<manage_new_object>());
 }
 
@@ -711,8 +777,40 @@ void definePythonAccumulatorMultiband()
                              ? "image"
                              : "volume";
     
+    std::string doc_string;
+    if (N==3) {
+      doc_string +=
+        "Extract global features (e.g. Mean, Variance, Minimum, etc.)\n"
+        "from the input array ('image' or 'volume'). An accumulator object\n"
+        "of type :class:`FeatureAccumulator` is returned that holds the computed\nfeatures.\n\n" 
+        "The overloaded function :func:`extractFeatures`() supports 2D or 3D\n"
+        "arrays with arbitrary many channels. The element type of the\n"
+        "input array must be **dtype=numpy.float32**. The set of available features\n"
+        "depends on the input array. The 'Histogram' feature, for example,\n"
+        "is only supported for singleband arrays. Call :func:`supportedFeatures`()\n"
+        "with the same input array to get a list of all available features\n"
+        "for this input.\n\n"
+        "The argument 'features' can take the following values:\n\n"
+        "   - 'all': compute all supported features (default)\n\n"
+        "   - name:  compute a single feature (and its dependencies)\n\n"
+        "   - [name1, name2,...]:  compute the given features plus dependencies\n\n"
+        "   - None or '':  return an empty accumulator, whose `supportedFeatures`()\n"
+        "                  method tells you the list of supported features for the\n"
+        "                  given input array.\n\n"
+        "To compute per-region features, use :func:`extractRegionFeatures`().\n\n"
+        "This overload is called for 2D input arrays two or more than\n"
+        "four channels. Histograms and quantiles are not supported for\n"
+        "this input.\n\n"
+        "For further details about the meaning of the features, see\n"
+        "`Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ in the vigra C++ documentation.\n\n";
+    } else {
+      doc_string +=
+        "Overload for 3D arrays with arbitrary many channels.\n"
+        "Histograms and quantiles are not supported for this input.\n\n";
+    }
     def("extractFeatures", &acc::pythonInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("features") = "all"),
+          doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
@@ -733,9 +831,30 @@ void definePythonAccumulatorArraySingleband()
                              ? "image"
                              : "volume";
     
+    std::string doc_string;
+    if (N==2) {
+      doc_string +=
+         "\nThis overload of :func:`extractRegionFeatures` computes region statistics\n"
+         "for a scalar 2D input array, e.g. :class:`vigra.ScalarImage`.\n\n"
+         "Features 'Histogram' and 'Quantiles' are supported for this input. Options are:\n\n"
+         "    - histogramRange: lower and upper bound of the histogram\n\n"
+         "        + 'globalminmax':  compute and use global minimum/maximum (default)\n"
+         "        + 'regionminmax':   use minimum/maximum within each region\n"
+         "        + [lower, upper]:  provide explicit bounds (float numbers),\n"
+         "                           useful to ensure that merge will be allowed.\n\n"
+         "    - binCount: number of bins (default: 64).\n\n"
+         "Histogram options are ignored when Histogram feature is not selected.\n"
+         "Quantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from\n"
+         "the specified histogram.\n\n";
+    } else {
+      doc_string += 
+         "Likewise for 3D scalar arrays, e.g. :class:`vigra.ScalarVolume`.\n\n";
+    }
+    
     def("extractRegionFeatures", &acc::pythonRegionInspectWithHistogram<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64, arg("ignoreLabel")=python::object()),
+          doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
@@ -756,8 +875,20 @@ void definePythonAccumulatorArray()
                              ? "image"
                              : "volume";
     
+    std::string doc_string;
+    if (N==2) {
+      doc_string +=
+         "This overload of :func:`extractRegionFeatures` is called for\n"
+         "2D input arrays with 3 channels.\n\n";
+    } else {
+      doc_string +=
+         "This overload of :func:`extractRegionFeatures` is called for\n"
+         "3D input arrays with 3 channels.\n\n";
+    }
+    
     def("extractRegionFeatures", &acc::pythonRegionInspect<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
+          doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 
@@ -776,8 +907,44 @@ void definePythonAccumulatorArrayMultiband()
                              ? "image"
                              : "volume";
     
+    std::string doc_string;
+    if (N==3) {
+      doc_string +=
+        "\nExtract region features from an input array with **dtype=numpy.float32**\n"
+        "and return a :class:`RegionFeatureAccumulator` object.\n\n"
+        "Membership of the array elements (pixels) to regions is specified\n"
+        "by a 'labels' array with element type **dtype=uint32**.\n\n"
+        "The set of available features depends on the input array.\n"
+        "Call :func:`supportedRegionFeatures`() with the same input and label\n"
+        "arrays to get a list of all available features for these inputs.\n\n"
+        "The argument 'features' can take the following values:\n\n"
+        "   - 'all': compute all supported features (default)\n\n"
+        "   - name:  compute a single feature (and its dependencies)\n\n"
+        "   - [name1, name2,...]:  compute the given features plus dependencies\n\n"
+        "   - None or '':  return an empty accumulator, whose `supportedFeatures`()\n"
+        "                  method tells you the list of supported features for the\n"
+        "                  given input array.\n\n"
+        "When the feature name starts with 'Global', the feature is computed\n"
+        "globally, i.e. without considering region membership.\n\n"
+        "The argument 'ignoreLabel' is useful when the label array contains\n"
+        "a background region (usually label 0) that should be ignored during\n"
+        "feature computation. If 'ignoreLabel' is None (the default), all\n"
+        "region labels are used.\n\n"
+        "This overload is called for 2D input arrays with two or more than\n"
+        "four channels. Histograms and quantiles are not supported for this\n"
+        "input.\n\n"
+        "For further details about the meaning of the features, see\n"
+        "`Feature Accumulators <../vigra/group__FeatureAccumulators.html>`_ in the vigra C++ documentation.\n\n";
+
+    } else {
+      doc_string +=
+         "Likewise for a 3D input array  with two or more than four channels.\n"
+         "Histograms and quantiles are not supported for this input.\n\n";
+    }
+    
     def("extractRegionFeatures", &acc::pythonRegionInspectMultiband<Accu, N, T>,
           (arg(argname.c_str()), arg("labels"), arg("features") = "all", arg("ignoreLabel")=python::object()),
+          doc_string.c_str(),
           return_value_policy<manage_new_object>());
 }
 

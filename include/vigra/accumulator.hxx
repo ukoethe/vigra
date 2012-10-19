@@ -56,7 +56,274 @@
 #include <iostream>
 
 namespace vigra {
+  
+/** \defgroup FeatureAccumulators Feature Accumulators
 
+    The namespace <tt>vigra::acc</tt> contains the accumulator classes, basic statistics and modifiers which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. 
+
+An accumulator is an object that maintains an internal state for incremental statistical computation. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. This allows accumulators to offload some of their computations on other accumulators, making the algorithm more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
+
+All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program.
+
+<b>\#include</b>
+\<vigra/accumulator.hxx\>
+    
+    <b>Basic statistics:</b>
+    - PowerSum<N> (@f$ \sum_i x_i^N @f$)
+    - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
+    - Skewness, UnbiasedSkewness
+    - Kurtosis, UnbiasedKurtosis
+    - Minimum, Maximum
+    - FlatScatterMatrix (flattened upper-triangular part of scatter matrix)
+    - 4 histogram classes (see \ref histogram "below")
+    - StandardQuantiles (0%, 10%, 25%, 50%, 75%, 90%, 100%)
+    - ArgMinWeight, ArgMaxWeight (store data or coordinate where weight assumes its minimal or maximal value)
+    - CoordinateSystem (identity matrix of appropriate size)
+    
+    <b>Modifiers:</b> (S is the statistc to be modified)
+    - Normalization
+      <table border="0">
+      <tr><td> DivideByCount<S>        </td><td>  S/Count           </td></tr>
+      <tr><td> RootDivideByCount<S>    </td><td>  sqrt( S/Count )     </td></tr>
+      <tr><td> DivideUnbiased<S>       </td><td>  S/(Count-1)       </td></tr>
+      <tr><td> RootDivideUnbiased<S> &nbsp; &nbsp;  </td><td>  sqrt( S/(Count-1) ) </td></tr>
+      </table>    
+    - Data preparation:
+      <table border="0">
+      <tr><td>  Central<S>   </td><td> substract mean before computing S </td></tr>
+      <tr><td>  Principal<S> </td><td> project onto PCA eigenvectors   </td></tr>
+      <tr><td>  Whitened<S> &nbsp; &nbsp;  </td><td> scale to unit variance after PCA   </td></tr>
+      <tr><td>  Coord<S>        </td><td> compute S from pixel coordinates rather than from pixel values    </td></tr>
+      <tr><td>  Weighted<S>     </td><td> compute weighted version of S   </td></tr>
+      <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
+      </table>
+      
+    Aliases for a couple of important features are implemented (mainly as typedef FullName Alias). The alias names are equivalent to full names. 
+    Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
+    
+    <table border="0">
+    <tr><th> Alias           </th><th>   Full Name                 </th></tr>
+    <tr><td> Count           </td><td>  PowerSum<0>                </td></tr>
+    <tr><td> Sum             </td><td>  PowerSum<1>                </td></tr>
+    <tr><td> SumOfSquares    </td><td>  PowerSum<2>                </td></tr>
+    <tr><td> Mean            </td><td>  DivideByCount<PowerSum<1>> </td></tr>
+    <tr><td> RootMeanSquares &nbsp; </td><td>  RootDivideByCount<PowerSum<2>> </td></tr>
+    <tr><td> Moment<N>       </td><td>  DivideByCount<PowerSum<N>>  </td></tr>
+    <tr><td> Variance        </td><td>  DivideByCount<Central<PowerSum<2>>>  </td></tr>
+    <tr><td> StdDev          </td><td>  RootDivideByCount<Central<PowerSum<2>>>  </td></tr>
+    <tr><td> Covariance      </td><td>  DivideByCount<FlatScatterMatrix> </td></tr>
+    <tr><td> RegionCenter    </td><td>  Coord<Mean>                </td></tr>
+    <tr><td> CenterOfMass    </td><td>  Weighted<Coord<Mean>>      </td></tr>
+    </table>
+    
+    There are a few <b>rules for composing statistics</b>:
+    - modifiers can be specified in any order, but are internally transformed to standard order: Global<Weighted<Coord<normalization<data preparation<basic statistic
+    - only one normalization modifier and one data preparation modifier (Central or Principal or Whitened) is permitted 
+    - Count ignores all modifiers except Global and Weighted
+    - Sum ignores Central and Principal, because sum would be zero
+    - ArgMinWeight and ArgMaxWeight are automatically Weighted
+
+
+    Here is an example how to use \ref acc::AccumulatorChain to compute statistics. (To use Weighted<> or Coord<> modifiers, see below):
+
+    \code
+    #include <vigra/multi_array.hxx>
+    #include <vigra/impex.hxx>
+    #include <vigra/accumulator.hxx>
+    using namespace vigra::acc;
+    typedef double DataType;
+    int size = 1000;
+    vigra::MultiArray<2, DataType> data(vigra::Shape2(size, size));
+   
+    AccumulatorChain<DataType, 
+        Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> >
+	a;
+	
+    std::cout << "passes required: " << a.passesRequired() << std::endl;
+    collectStatistics(data.begin(), data.end(), a); 
+    
+    std::cout << "Mean: " << get<Mean>(a) << std::endl;
+    std::cout << "Variance: " << get<Variance>(a) << std::endl;
+    \endcode
+    
+    The \ref acc::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc::Select. The statistics are computed with the acc::collectStatistics function and the statistics can be accessed with acc::get . 
+
+    Rules and notes:
+    - order of statistics in Select<> is arbitrary
+    - up to 20 statistics in Select<>, but Select<> can be nested
+    - dependencies are automatically inserted
+    - duplicates are automatically removed
+    - collectStatistics() does as many passes through the data as necessary
+    - each accumulator only sees data in the appropriate pass (its "working pass")
+
+    The Accumulators can also be used with vector-valued data (vigra::RGBValue, vigra::TinyVector, vigra::MultiArray or vigra::MultiArrayView):
+    
+    \code 
+    typedef vigra::RGBValue<double> DataType;
+    AccumulatorChain<DataType, Select<...> > a;
+    ...
+    \endcode
+
+    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), the accumulator chain can be used with \ref CoupledScanOrderIterator. The coupled iterator provides simultaneous access to several images (e.g. weight and data) and pixel coordinates. The first parameter in the accumulator chain is the type of the CoupledHandle. The indeces at which the CoupledHandle holds the data, weights etc. can be specified inside the Select wrapper. 
+
+These <b>index specifiers</b> are: (INDEX is of type int)
+
+    - DataArg<INDEX>: CoupledHandle holds data at index 'INDEX' (default INDEX=1)
+    - LabelArg<INDEX>: CoupledHandle holds labels at index 'INDEX' (default INDEX=2)
+    - WeightArg<INDEX>: CoupledHandle holds weights at index 'INDEX' (default INDEX=outermost index)
+
+Pixel coordinates are always at index 0.
+
+    \code
+    using namespace vigra::acc;
+    vigra::MultiArray<3, double> data(...), weights(...);
+    typedef vigra::CoupledIteratorType<3, double, double>::type Iterator; //type of the CoupledScanOrderIterator
+    typedef Iterator::value_type Handle; //type of the corresponding CoupledHandle
+    
+    AccumulatorChain<Handle,
+        Select<DataArg<1>, WeightArg<2>,       //where to look in the Handle (coordinates are always arg 0)
+	       Mean, Variance,                     //statistics over values  
+	       Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
+	       Weighted<Mean>, Weighted<Variance>, //weighted values,
+	       Weighted<Coord<Mean> > > >          //weighted coordinates.
+	a;
+
+    Iterator start = createCoupledIterator(data, weights); //coord->index 0, data->index 1, weights->index 2
+    Iterator end = start.getEndIterator();
+     
+    collectStatistics(start,end,a);
+    \endcode
+
+    To compute <b>region statistics</b>, use \ref acc::AccumulatorChainArray :
+    
+    \code
+    using namespace vigra::acc;
+    vigra::MultiArray<3, double> data(...);
+    vigra::MultiArray<3, int> labels(...);
+    typedef vigra::CoupledIteratorType<3, double, int>::type Iterator;
+    typedef Iterator::value_type Handle;
+
+    AccumulatorChainArray<Handle,
+        Select<DataArg<1>, LabelArg<2>,       //where to look in the Handle (coordinates are always arg 0)
+	       Mean, Variance,                    //per-region statistics over values
+	       Coord<Mean>, Coord<Variance>,      //per-region statistics over coordinates
+	       Global<Mean>, Global<Variance> > > //global statistics
+    a;
+
+    Iterator start = createCoupledIterator(data, labels);
+    Iterator end = start.getEndIterator();
+
+    a.ignoreLabel(0); //statistics will not be computed for region 0 (e.g. background)
+
+    collectStatistics(start,end,a);
+
+    int regionlabel = ...;
+    std::cout << get<Mean>(a, regionlabel) << std::endl; //get Mean of region with label 'regionlabel'
+    \endcode
+
+   
+    In some application it will be known only at run-time which statistics have to be computed. An Accumulator with <b>run-time activation</b> is provided by the \ref acc::DynamicAccumulatorChain class. One specifies a set of statistics at compile-time and from this set one can activate the needed statistics at run-time:
+  
+    \code
+    using namespace vigra::acc;
+    vigra::MultiArray<2, double> data(...);
+    DynamicAccumulatorChain<double, 
+        Select<Mean, Minimum, Maximum, Variance, StdDev> > a; // at compile-time
+    activate<Mean>(a);      //at run-time
+    a.activate("Minimum");  //same as activate<Minimum>(a) (alias names are not recognized)
+    
+    collectStatistics(data.begin(), data.end(), a);
+    std::cout << "Mean: " << get<Mean>(a) << std::endl;       //ok
+    //std::cout << "Maximum: " << get<Maximum>(a) << std::endl; // run-time error because Maximum not activated
+    \endcode
+      
+    Likewise, for run-time activation of region statistics, use \ref acc::DynamicAccumulatorChainArray. 
+
+    <b>Accumulator merging</b> (e.g. for parallelization or hierarchical segmentation) is possible for many accumulators:
+
+    \code
+    using namespace vigra::acc;
+    vigra::MultiArray<2, double> data(...);
+    AccumulatorChain<double, Select<Mean, Variance, Skewness> > a, a1, a2;
+
+    collectStatistics(data.begin(), data.end(), a); //process entire data set at once
+    collectStatistics(data.begin(), data.begin()+data.size()/2, a1); //process first half
+    collectStatistics(data.begin()+data.size()/2, data.end(), a2); //process second half
+    a1 += a2; // merge: a1 now equals a0 (with numerical tolerances)
+    \endcode
+
+    Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A statistic can be merged if the "+=" operator is supported (see the documentation of that particular statistic). If the accumulator chain only requires one pass to collect the data, it is also possible to just apply the collectStatistics() function repeatedly:
+
+    \code
+    using namespace vigra::acc;
+    vigra::MultiArray<2, double> data(...);
+    AccumulatorChain<double, Select<Mean, Variance> > a;
+
+    collectStatistics(data.begin(), data.begin()+data.size()/2, a); // this works because 
+    collectStatistics(data.begin()+data.size()/2, data.end(), a);   // all statistics only work in pass 1
+
+    \endcode
+
+
+    \anchor histogram
+    Four kinds of <b>histograms</b> are currently implemented:
+    
+    <table border="0">
+      <tr><td> IntegerHistogram      </td><td>   Data values are equal to bin indices   </td></tr>
+      <tr><td> UserRangeHistogram    </td><td>  User provides lower and upper bounds for linear range mapping from values to indices.    </td></tr>
+      <tr><td> AutoRangeHistogram    </td><td>  Range mapping bounds are defiend by minimum and maximum of the data (2 passes needed!)    </td></tr>
+      <tr><td> GlobalRangeHistogram &nbsp;  </td><td>  Likewise, but use global min/max rather than region min/max as AutoRangeHistogram will </td></tr>
+      </table>    
+  
+
+       
+    - The number of bins is specified at compile time (as template parameter int BinCount) or at run-time (if BinCount is zero at compile time). In the first case the return type of the accumulator is TinyVector<double, BinCount> (number of bins cannot be changed). In the second case, the return type is MultiArray<1, double> and the number of bins must be set before seeing data (see example below). 
+    - If UserRangeHistogram is used, the bounds for the linear range mapping from values to indices must be set before seeing data (see below).
+    - Options can be set by passing an instance of HistogramOptions to the accumulator chain (same options for all histograms in the chain) or by directly calling the appropriate member functions of the accumulators.
+    - Merging is supported if the range mapping of the histograms is the same.
+    - Histogram accumulators have two members for outliers (left_outliers, right_outliers).
+
+    With the StandardQuantiles class, <b>histogram quantiles</b> (0%, 10%, 25%, 50%, 75%, 90%, 100%) are computed from a given histgram using linear interpolation. The return type is TinyVector<double, 7> .
+
+    \anchor acc_hist_options Usage:
+    \code
+    using namespace vigra::acc;
+    typedef double DataType;
+    vigra::MultiArray<2, DataType> data(...);
+    
+    typedef UserRangeHistogram<40> SomeHistogram;   //binCount set at compile time
+    typedef UserRangeHistogram<0> SomeHistogram2; // binCount must be set at run-time
+    typedef AutoRangeHistogram<0> SomeHistogram3;
+    typedef StandardQuantiles<SomeHistogram3> Quantiles3;
+    
+    AccumulatorChain<DataType, Select<SomeHistogram, SomeHistogram2, SomeHistogram3, Quantiles3> > a;
+    
+    //set options for all histograms in the accumulator chain:
+    vigra::HistogramOptions histogram_opt;         
+    histogram_opt = histogram_opt.setBinCount(50); 
+    //histogram_opt = histogram_opt.setMinMax(0.1, 0.9); // this would set min/max for all three histograms, but range bounds 
+                                                         // shall be set automatically by min/max of data for SomeHistogram3
+    a.setHistogramOptions(histogram_opt);  
+
+    // set options for a specific histogram in the accumulator chain:
+    getAccumulator<SomeHistogram>(a).setMinMax(0.1, 0.9); // number of bins must be set before setting min/max
+    getAccumulator<SomeHistogram2>(a).setMinMax(0.0, 1.0);
+
+    collectStatistics(data.begin(), data.end(), a);
+
+    vigra::TinyVector<double, 40> hist = get<SomeHistogram>(a);
+    vigra::MultiArray<1, double> hist2 = get<SomeHistogram2>(a);
+    vigra::TinyVector<double, 7> quant = get<Quantiles3>(a);
+    double right_outliers = getAccumulator<SomeHistogram>(a).right_outliers;
+    \endcode
+
+
+    
+*/
+
+
+/** This namespace contains the accumulator classes, fundamental statistics and modifiers. See \ref FeatureAccumulators for examples of usage.
+*/
 namespace acc {
 
 /****************************************************************************/
@@ -65,7 +332,8 @@ namespace acc {
 /*                                                                          */
 /****************************************************************************/
 
-    // Select is a wrapper for MakeTypeList that additionally performs tag standardization
+  /// \brief Wrapper for MakeTypeList that additionally performs tag standardization.
+
 template <class T01=void, class T02=void, class T03=void, class T04=void, class T05=void,
           class T06=void, class T07=void, class T08=void, class T09=void, class T10=void,
           class T11=void, class T12=void, class T13=void, class T14=void, class T15=void,
@@ -128,6 +396,10 @@ struct LabelDispatchTag;
 
 struct Error__Global_statistics_are_only_defined_for_AccumulatorChainArray;
 
+/** \brief Specifies index of labels in CoupledHandle. 
+
+    LabelArg<INDEX> tells the acc::AccumulatorChainArray which index of the Handle contains the labels. (Note that coordinates are always index 0)
+ */
 template <int INDEX>
 class LabelArg
 {
@@ -1391,10 +1663,11 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
 /*                                                                          */
 /****************************************************************************/
 
-    // Implement the high-level interface of an accumulator chain
+// Implement the high-level interface of an accumulator chain
 template <class T, class NEXT>
-struct AccumulatorChainImpl
+class AccumulatorChainImpl
 {
+  public:
     typedef NEXT                                             InternalBaseType;
     typedef AccumulatorBegin                                 Tag;
     typedef typename InternalBaseType::argument_type         argument_type;
@@ -1406,22 +1679,32 @@ struct AccumulatorChainImpl
     static const int staticSize = InternalBaseType::index;
 
     InternalBaseType next_;
+
+    /** \brief Current pass of the accumulator chain.
+    */
     unsigned int current_pass_;
     
     AccumulatorChainImpl()
     : current_pass_(0)
     {}
-    
+
+    /** Set options for all histograms in the accumulator chain. See histogram accumulators for possible options. The function is ignored if there is no histogram in the accumulator chain.
+    */
     void setHistogramOptions(HistogramOptions const & options)
     {
         next_.applyHistogramOptions(options);
     }
     
+
+    /** Set regional and global options for all histograms in the accumulator chain.
+    */
     void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
         next_.applyHistogramOptions(regionoptions, globaloptions);
     }
     
+    /** Reset current_pass_ of the accumulator chain to 'reset_to_pass'.
+    */
     void reset(unsigned int reset_to_pass = 0)
     {
         current_pass_ = reset_to_pass;
@@ -1473,11 +1756,15 @@ struct AccumulatorChainImpl
        }
     }
     
+    /** Equivalent to merge(o) .
+    */
     void operator+=(AccumulatorChainImpl const & o)
     {
         merge(o);
     }
     
+    /** Merge the accumulator chain with accumulator chain 'o'. This only works if all selected statistics in the accumulator chain support the '+=' operator. See the documentations of the particular statistics for support information.
+    */
     void merge(AccumulatorChainImpl const & o)
     {
         next_.merge(o.next_);
@@ -1487,8 +1774,8 @@ struct AccumulatorChainImpl
     {
         return next_.get();
     }
-	
-	void operator()(T const & t)
+
+    void operator()(T const & t)
     {
         update<1>(t);
     }
@@ -1498,7 +1785,7 @@ struct AccumulatorChainImpl
         update<1>(t, weight);
     }
 
-	void updatePass2(T const & t)
+    void updatePass2(T const & t)
     {
         update<2>(t);
     }
@@ -1508,7 +1795,9 @@ struct AccumulatorChainImpl
         update<2>(t, weight);
     }
 
-	void updatePassN(T const & t, unsigned int N)
+    /** Upate all accumulators in the accumulator chain that work in pass N with data t. Requirement: 0 < N < 6 and N >= current_pass_ . If N < current_pass_ call reset() first.  
+    */
+    void updatePassN(T const & t, unsigned int N)
     {
         switch (N)
         {
@@ -1523,7 +1812,9 @@ struct AccumulatorChainImpl
         }
     }
     
-	void updatePassN(T const & t, double weight, unsigned int N)
+    /** Upate all accumulators in the accumulator chain that work in pass N with data t and weight. Requirement: 0 < N < 6 and N >= current_pass_ . If N < current_pass_ call reset() first. 
+    */
+    void updatePassN(T const & t, double weight, unsigned int N)
     {
         switch (N)
         {
@@ -1537,20 +1828,58 @@ struct AccumulatorChainImpl
                      "AccumulatorChain::updatePassN(): 0 < N < 6 required.");
         }
     }
-    
+  
+    /** Return the number of passes required to compute all statistics in the accumulator chain.
+    */
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired();
     }
 };
 
+
+
    // Create an accumulator chain containing the Selected statistics and their dependencies.
-template <class T, class Selected, bool dynamic=false>
-struct AccumulatorChain
-: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
-{
-    typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
+
+/** \brief Create an accumulator chain containing the selected statistics and their dependencies.
+
+    AccumulatorChain is used to compute global statistics which have to be selected at compile time. 
+
+    The template parameters are as follows:
+    - T: The input type
+        - either element type of the data(e.g. double, int, RGBValue, ...)
+        - or type of CoupledHandle (for simultaneous access to coordinates and/or weights)
+    - Selected: statistics to be computed and index specifier for the CoupledHandle, wrapped with Select
     
+    Usage:
+    \code
+    typedef double DataType;
+    AccumulatorChain<DataType, Select<Variance, Mean, Minimum, ...> > accumulator;
+    \endcode
+
+    Usage, using CoupledHandle:
+    \code
+    const int dim = 3; //dimension of MultiArray
+    typedef double DataType;
+    typedef double WeightType;
+    typedef vigra::CoupledIteratorType<dim, DataType, WeightType>::HandleType Handle;
+    AccumulatorChain<Handle, Select<DataArg<1>, WeightArg<2>, Mean,...> > a;
+    \endcode
+
+    See \ref FeatureAccumulators for more information and examples of use.
+ */
+template <class T, class Selected, bool dynamic=false>
+class AccumulatorChain
+#ifndef DOXYGEN // hide AccumulatorChainImpl from documentation
+: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
+#endif
+{
+  public:
+  // \brief TypeList of Tags in the accumulator chain (?).
+    typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
+  
+    /** Before having seen data (current_pass_==0), the shape of the data can be changed... (?)
+    */
     template <class U, int N>
     void reshape(TinyVector<U, N> const & s)
     {
@@ -1560,12 +1889,45 @@ struct AccumulatorChain
         this->current_pass_ = 1;
     }
      
+    /** Return the names of all tags in the accumulator chain (selected statistics and their dependencies).
+    */
     static ArrayVector<std::string> const & tagNames()
     {
         static const ArrayVector<std::string> n = collectTagNames();
         return n;
     }
+
+
+#ifdef DOXYGEN // hide AccumulatorChainImpl from documentation
+  
+  /** Set options for all histograms in the accumulator chain. See histogram accumulators for possible options. The function is ignored if there is no histogram in the accumulator chain.
+   */
+  void setHistogramOptions(HistogramOptions const & options);
     
+  /** Reset current_pass_ of the accumulator chain to 'reset_to_pass'. */
+  void reset(unsigned int reset_to_pass = 0);
+
+  /** Equivalent to merge(o) . */
+  void operator+=(AccumulatorChainImpl const & o);
+  
+  /** Merge the accumulator chain with accumulator chain 'o'. This only works if all selected statistics in the accumulator chain support the '+=' operator. See the documentations of the particular statistics for support information.
+   */
+  void merge(AccumulatorChainImpl const & o);
+  
+  /** Upate all accumulators in the accumulator chain that work in pass N with data t. Requirement: 0 < N < 6 and N >= current_pass_ . If N < current_pass_ call reset first.  
+   */
+  void updatePassN(T const & t, unsigned int N);
+  
+  /** Upate all accumulators in the accumulator chain that work in pass N with data t and weight. Requirement: 0 < N < 6 and N >= current_pass_ . If N < current_pass_ call reset first. 
+   */
+  void updatePassN(T const & t, double weight, unsigned int N);
+  
+  /** Return the number of passes required to compute all statistics in the accumulator chain.
+   */
+  unsigned int passesRequired() const;
+  
+#endif   
+ 
   private:
     static ArrayVector<std::string> collectTagNames()
     {
@@ -1576,32 +1938,68 @@ struct AccumulatorChain
     }
 };   
 
+
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
     // Statistics will only be computed if activate<Tag>() is called at runtime.
+/** \brief Create a dynamic accumulator chain containing the selected statistics and their dependencies.
+
+    DynamicAccumulatorChain is used to compute global statistics with run-time activation. A set of statistics is selected at run-time and from this set statistics can be activated at run-time by calling activate<stat>() or activate(std::string stat).
+
+    The template parameters are as follows:
+    - T: The input type
+        - either element type of the data(e.g. double, int, RGBValue, ...)
+        - or type of CoupledHandle (for access to coordinates and/or weights)
+    - Selected: statistics to be computed and index specifier for the CoupledHandle, wrapped with Select
+    
+    Usage:
+    \code
+    typedef double DataType;
+    DynamicAccumulatorChain<DataType, Select<Variance, Mean, Minimum, ...> > accumulator;
+    \endcode
+
+    Usage, using CoupledHandle:
+    \code
+    const int dim = 3; //dimension of MultiArray
+    typedef double DataType;
+    typedef double WeightType;
+    typedef vigra::CoupledIteratorType<dim, DataType, WeightType>::HandleType Handle;
+    DynamicAccumulatorChain<Handle, Select<DataArg<1>, WeightArg<2>, Mean,...> > a;
+    \endcode
+
+    See \ref FeatureAccumulators for more information and examples of use.
+ */
 template <class T, class Selected>
-struct DynamicAccumulatorChain
+class DynamicAccumulatorChain
 : public AccumulatorChain<T, Selected, true>
 {
+  public:
     typedef typename AccumulatorChain<T, Selected, true>::InternalBaseType InternalBaseType;
     typedef typename DynamicAccumulatorChain::AccumulatorTags AccumulatorTags;
-        
+       
+    /** Activate statistic 'tag'. Alias names are not recognized. If the statistic is not in the accumulator chain a PreconditionViolation is thrown.
+    */
     void activate(std::string tag)
     {
         vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
     
+    /** %activate<TAG>() activates statistic 'TAG'. If the statistic is not in the accumulator chain it is ignored. (?)
+    */
     template <class TAG>
     void activate()
     {
         LookupTag<TAG, DynamicAccumulatorChain>::type::activateImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
     
+    /** Activate all statistics in the accumulator chain.
+    */
     void activateAll()
     {
         getAccumulator<AccumulatorEnd>(*this).active_accumulators_.set();
     }
-    
+    /** Return true if the statistic 'tag' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain a PreconditionViolation is thrown. (Note that alias names are not recognized.)
+    */
     bool isActive(std::string tag) const
     {
         detail::TagIsActive_Visitor v;
@@ -1610,12 +2008,16 @@ struct DynamicAccumulatorChain
         return v.result;
     }
     
+    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+    */
     template <class TAG>
     bool isActive() const
     {
         return LookupTag<TAG, DynamicAccumulatorChain>::type::isActiveImpl(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
     }
-    
+
+    /** Return names of all statistics in the accumulator chain that are active.
+    */
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
@@ -1625,6 +2027,8 @@ struct DynamicAccumulatorChain
         return res;
     }
     
+    /** Return number of passes required to compute the active statistics in the accumulator chain.
+    */
     unsigned int passesRequired() const
     {
         return InternalBaseType::passesRequired(getAccumulator<AccumulatorEnd>(*this).active_accumulators_);
@@ -1644,35 +2048,68 @@ struct DynamicAccumulatorChain
     }
 };
 
+/** \brief Create an array of accumulator chains containing the selected per-region and global statistics and their dependencies.
+
+    AccumulatorChainArray is used to compute per-region statistics (as well as global statistics). The statistics are selected at compile-time. An array of accumulator chains (one per region) for region statistics is created and one accumulator chain for global statistics. The region labels always start at 0. Use the Global modifier to compute global statistics (by default per-region statistics are computed). 
+
+    The template parameters are as follows:
+    - T: The input type, type of CoupledHandle (for access to coordinates, labels and weights)
+    - Selected: statistics to be computed and index specifier for the CoupledHandle, wrapped with Select
+
+    Usage:
+    \code
+    const int dim = 3; //dimension of MultiArray
+    typedef double DataType;
+    typedef double WeightType;
+    typedef unsigned int LabelType;
+    typedef vigra::CoupledIteratorType<dim, DataType, WeightType, LabelType>::HandleType Handle;
+    AccumulatorChainArray<Handle, Select<DataArg<1>, WeightArg<2>, LabelArg<3>, Mean, Variance, ...> > a;
+    \endcode
+
+    See \ref FeatureAccumulators for more information and examples of use.
+*/
 template <class T, class Selected, bool dynamic=false>
-struct AccumulatorChainArray
+class AccumulatorChainArray
+#ifndef DOXYGEN //hide AccumulatorChainImpl vom documentation
 : public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
+#endif
 {
+  public:
     typedef typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
     typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
     typedef typename Creator::RegionTags RegionTags;
     
+    /** Statistics will not be computed for label l. Note that only one label can be ignored.
+    */
     void ignoreLabel(MultiArrayIndex l)
     {
         this->next_.ignoreLabel(l);
     }
     
+    /** Set the maximum region label (e.g. for merging two accumulator chains).
+    */
     void setMaxRegionLabel(unsigned label)
     {
         this->next_.setMaxRegionLabel(label);
     }
     
+    /** %Maximum region label. (equal to regionCount() - 1)
+    */
     MultiArrayIndex maxRegionLabel() const
     {
         return this->next_.maxRegionLabel();
     }
-     
+    
+    /** Number of Regions. (equal to maxRegionLabel() + 1)
+    */
     unsigned int regionCount() const
     {
         return this->next_.regions_.size();
     }
-     
+    
+    /** Merge region i with region j. 
+    */
     void merge(unsigned i, unsigned j)
     {
         vigra_precondition(i <= maxRegionLabel() && j <= maxRegionLabel(),
@@ -1680,6 +2117,8 @@ struct AccumulatorChainArray
         this->next_.merge(i, j);
     }
     
+    /** Merge with accumulator chain o. maxRegionLabel() of the two accumulators must be equal.
+    */
     void merge(AccumulatorChainArray const & o)
     {
         if(maxRegionLabel() == -1)
@@ -1689,6 +2128,8 @@ struct AccumulatorChainArray
         this->next_.merge(o.next_);
     }
 
+    /** Merge with accumulator chain o using a mapping between labels of the two accumulators. Label l of accumulator chain o is mapped to labelMapping[l]. Hence, all elements of labelMapping must be <= maxRegionLabel() and size of labelMapping must match o.regionCount().
+    */
     template <class ArrayLike>
     void merge(AccumulatorChainArray const & o, ArrayLike const & labelMapping)
     {
@@ -1696,12 +2137,40 @@ struct AccumulatorChainArray
             "AccumulatorChainArray::merge(): labelMapping.size() must match regionCount() of RHS.");
         this->next_.merge(o.next_, labelMapping);
     }
-    
+
+    /** Return names of all tags in the accumulator chain (selected statistics and their dependencies).
+    */
     static ArrayVector<std::string> const & tagNames()
     {
         static const ArrayVector<std::string> n = collectTagNames();
         return n;
     }
+
+
+#ifdef DOXYGEN // hide AccumulatorChainImpl from documentation
+
+  /** \copydoc AccumulatorChain::setHistogramOptions(HistogramOptions const &) */
+  void setHistogramOptions(HistogramOptions const & options);
+
+  /** Set regional and global options for all histograms in the accumulator chain.
+   */
+  void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions);
+  
+  /** \copydoc AccumulatorChain::reset() */
+  void reset(unsigned int reset_to_pass = 0);
+
+  /** \copydoc AccumulatorChain::operator+=() */
+  void operator+=(AccumulatorChainImpl const & o);
+    
+  /** \copydoc AccumulatorChain::updatePassN(T const &,unsigned int) */
+  void updatePassN(T const & t, unsigned int N);
+  
+  /** \copydoc AccumulatorChain::updatePassN(T const &,double,unsigned int) */
+  void updatePassN(T const & t, double weight, unsigned int N);
+  
+#endif
+
+
     
   private:
     static ArrayVector<std::string> collectTagNames()
@@ -1713,29 +2182,56 @@ struct AccumulatorChainArray
     }
 };   
 
+/** \brief Create an array of dynamic accumulator chains containing the selected per-region and global statistics and their dependencies.
+
+
+    DynamicAccumulatorChainArray is used to compute per-region statistics (as well as global statistics) with run-time activation. A set of statistics is selected at run-time and from this set statistics can be activated at run-time by calling activate<stat>() or activate(std::string stat).
+
+     The template parameters are as follows:
+    - T: The input type, type of CoupledHandle (for access to coordinates, labels and weights)
+    - Selected: statistics to be computed and index specifier for the CoupledHandle, wrapped with Select
+
+    Usage:
+    \code
+    const int dim = 3; //dimension of MultiArray
+    typedef double DataType;
+    typedef double WeightType;
+    typedef unsigned int LabelType;
+    typedef vigra::CoupledIteratorType<dim, DataType, WeightType, LabelType>::HandleType Handle;
+    DynamicAccumulatorChainArray<Handle, Select<DataArg<1>, WeightArg<2>, LabelArg<3>, Mean, Variance, ...> > a;
+    \endcode
+
+    See \ref FeatureAccumulators for more information and examples of use.
+*/
 template <class T, class Selected>
-struct DynamicAccumulatorChainArray
+class DynamicAccumulatorChainArray
 : public AccumulatorChainArray<T, Selected, true>
 {
+  public:
     typedef typename DynamicAccumulatorChainArray::AccumulatorTags AccumulatorTags;
-        
+
+    /** \copydoc DynamicAccumulatorChain::activate(std::string tag) */
     void activate(std::string tag)
     {
         vigra_precondition(activateImpl(tag),
             std::string("DynamicAccumulatorChainArray::activate(): Tag '") + tag + "' not found.");
     }
-
+    
+    /** \copydoc DynamicAccumulatorChain::activate() */
     template <class TAG>
     void activate()
     {
         this->next_.activate<TAG>();
     }
     
+    /** \copydoc DynamicAccumulatorChain::activateAll() */
     void activateAll()
     {
         this->next_.activateAll();
     }
     
+    /** Return true if the statistic 'tag' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain a PreconditionViolation is thrown. (Note that alias names are not recognized.)
+     */
     bool isActive(std::string tag) const
     {
         detail::TagIsActive_Visitor v;
@@ -1744,12 +2240,15 @@ struct DynamicAccumulatorChainArray
         return v.result;
     }
     
+    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+     */
     template <class TAG>
     bool isActive() const
     {
         return this->next_.isActive<TAG>();
     }
     
+    /** \copydoc DynamicAccumulatorChain::activeNames() */
     ArrayVector<std::string> activeNames() const
     {
         ArrayVector<std::string> res;
@@ -1759,11 +2258,12 @@ struct DynamicAccumulatorChainArray
         return res;
     }
     
+    /** \copydoc DynamicAccumulatorChain::passesRequired() */
     unsigned int passesRequired() const
     {
         return this->next_.passesRequiredDynamic();
     }
-    
+
   protected:
   
     bool activateImpl(std::string tag)
@@ -2031,6 +2531,8 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 } // namespace detail
 
     // Get a reference to the accumulator TAG in the accumulator chain A
+/** Get a reference to the accumulator TAG in the accumulator chain a.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a)
@@ -2041,6 +2543,8 @@ getAccumulator(A & a)
 }
 
     // Get a reference to the accumulator TAG for region 'label' in the accumulator chain A
+/** Get a reference to the accumulator TAG for region 'label' in the accumulator chain a.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
 getAccumulator(A & a, MultiArrayIndex label)
@@ -2051,6 +2555,8 @@ getAccumulator(A & a, MultiArrayIndex label)
 }
 
     // get the result of the accumulator specified by TAG
+/** Get the result of the accumulator 'TAG' in the accumulator chain a.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
 get(A const & a)
@@ -2059,6 +2565,8 @@ get(A const & a)
 }
 
     // get the result of the accumulator TAG for region 'label'
+/** Get the result of the accumulator 'TAG' for region 'label' in the accumulator chain a.
+*/
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
 get(A const & a, MultiArrayIndex label)
@@ -2080,6 +2588,8 @@ getDependency(A const & a)
 }
 
     // activate the dynamic accumulator specified by Tag
+/** Activate the dynamic accumulator 'Tag' in the dynamic accumulator chain a. Same as a.activate<Tag>(). For run-time activation use DynamicAccumulatorChain::activate(std::string tag) or DynamicAccumulatorChainArray::activate(std::string tag) .
+*/
 template <class Tag, class A>
 inline void
 activate(A & a)
@@ -2088,6 +2598,8 @@ activate(A & a)
 }
 
     // check if the dynamic accumulator specified by Tag is active
+/** Check if the dynamic accumulator 'Tag' is active. Same as a.isActive<Tag>().
+*/
 template <class Tag, class A>
 inline bool
 isActive(A const & a)
@@ -2101,6 +2613,8 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
+/** Generic loop to collect the statistics in as many passes over the data as necessary.
+*/
 template <class ITERATOR, class ACCUMULATOR>
 void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
 {
@@ -2139,6 +2653,21 @@ struct AccumulatorResultTraits<TinyVector<T, N> >
     typedef Matrix<element_promote_type>                 CovarianceType;
 };
 
+// (?) beign change
+template <class T, unsigned int RED_IDX, unsigned int GREEN_IDX, unsigned int BLUE_IDX>
+struct AccumulatorResultTraits<RGBValue<T, RED_IDX, GREEN_IDX, BLUE_IDX> >
+{
+    typedef RGBValue<T>                                  type;
+    typedef T                                            element_type;
+    typedef double                                       element_promote_type;
+    typedef RGBValue<T>                                  MinmaxType;
+    typedef RGBValue<element_promote_type>               SumType;
+    typedef TinyVector<element_promote_type, 3*(3+1)/2>  FlatCovarianceType;
+    typedef Matrix<element_promote_type>                 CovarianceType;
+};
+// end change
+
+
 template <unsigned int N, class T, class Stride>
 struct AccumulatorResultTraits<MultiArrayView<N, T, Stride> >
 {
@@ -2169,6 +2698,10 @@ struct AccumulatorResultTraits<MultiArray<N, T, Alloc> >
 /*                                                                          */
 /****************************************************************************/
 
+/** \brief Modifier. Compute statistic globally rather than per region. 
+
+This modifier only works when labels are given (with (Dynamic)AccumulatorChainArray), in which case statistics are computed per-region by default.
+*/
 template <class TAG>
 class Global
 {
@@ -2183,6 +2716,10 @@ class Global
     }
 };
 
+/** \brief Specifies index of data in CoupledHandle. 
+
+    If AccumulatorChain is used with CoupledIterator, DataArg<INDEX> tells the accumulator chain which index of the Handle contains the data. (Coordinates are always index 0)
+*/
 template <int INDEX>
 class DataArg
 {
@@ -2208,6 +2745,7 @@ class DataArg
     };
 };
 
+// Tags are automatically wrapped with DataFromHandle if CoupledHandle used
 template <class TAG>
 class DataFromHandle
 {
@@ -2289,6 +2827,10 @@ class DataFromHandle
     };
 };
 
+/** \brief Modifier. Compute statistic from pixel coordinates rather than from pixel values. 
+
+    AccumulatorChain must be used with CoupledIterator in order to have access to pixel coordinates.
+ */
 template <class TAG>
 class Coord
 {
@@ -2370,6 +2912,10 @@ class Coord
     };
 };
 
+/** \brief Specifies index of data in CoupledHandle. 
+
+    If AccumulatorChain is used with CoupledIterator, WeightArg<INDEX> tells the accumulator chain which index of the Handle contains the weights. (Note that coordinates are always index 0.)
+*/
 template <int INDEX>
 class WeightArg
 {
@@ -2395,6 +2941,8 @@ class WeightArg
     };
 };
 
+/** \brief Compute weighted version of the statistic.
+*/
 template <class TAG>
 class Weighted
 {
@@ -2507,6 +3055,10 @@ class Centralize
     };
 };
 
+/** \brief Modifier. Substract mean before computing statistic. 
+
+Works in pass 2, %operator+=() not supported (merging not supported).
+*/
 template <class TAG>
 class Central
 {
@@ -2585,7 +3137,7 @@ class Central
     // };
 // };
 
-// Compute principal projection and cache the result
+
 class PrincipalProjection
 {
   public:
@@ -2653,6 +3205,10 @@ class PrincipalProjection
     };
 };
 
+/** \brief Modifier. Project onto PCA eigenvectors.
+
+    Works in pass 2, %operator+=() not supported (merging not supported).
+*/
 template <class TAG>
 class Principal
 {
@@ -2719,6 +3275,8 @@ important notes on modifiers:
 /*                                                                          */
 /****************************************************************************/
 
+/** \brief Basic statistic. Identity matrix of appropriate size.
+*/
 class CoordinateSystem
 {
   public:
@@ -2858,6 +3416,10 @@ class PowerSum<1>
     };
 };
 
+/** \brief Basic statistic. PowerSum<N> =@f$ \sum_i x_i^N @f$
+
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 template <unsigned N>
 class PowerSum
 {
@@ -2918,6 +3480,10 @@ class AbsPowerSum<1>
     };
 };
 
+/** \brief Basic statistic. AbsPowerSum<N> =@f$ \sum_i |x_i|^N @f$
+
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 template <unsigned N>
 class AbsPowerSum
 {
@@ -2991,6 +3557,8 @@ struct CachedResultBase
 };
 
 // cached Mean and Variance
+/** \brief Modifier. Divide statistic by Count:  DivideByCount<TAG> = TAG / Count .
+*/
 template <class TAG>
 class DivideByCount
 {
@@ -3024,6 +3592,8 @@ class DivideByCount
 };
 
 // UnbiasedVariance
+/** \brief Modifier. Divide statistics by Count-1:  DivideUnbiased<TAG> = TAG / (Count-1)
+*/
 template <class TAG>
 class DivideUnbiased
 {
@@ -3053,6 +3623,8 @@ class DivideUnbiased
 };
 
 // RootMeanSquares and StdDev
+/** \brief Modifier. RootDivideByCount<TAG> = sqrt( TAG/Count )
+*/
 template <class TAG>
 class RootDivideByCount
 {
@@ -3083,6 +3655,8 @@ class RootDivideByCount
 };
 
 // UnbiasedStdDev
+/** \brief Modifier. RootDivideUnbiased<TAG> = sqrt( TAG / (Count-1) )
+*/
 template <class TAG>
 class RootDivideUnbiased
 {
@@ -3112,6 +3686,8 @@ class RootDivideUnbiased
     };
 };
 
+/** \brief Spezialization: works in pass 1, %operator+=() supported (merging supported).
+*/
 template <>
 class Central<PowerSum<2> >
 {
@@ -3164,6 +3740,8 @@ class Central<PowerSum<2> >
     };
 };
 
+/** \brief Specialization: works in pass 2, %operator+=() supported (merging supported).
+*/
 template <>
 class Central<PowerSum<3> >
 {
@@ -3217,7 +3795,8 @@ class Central<PowerSum<3> >
         }
     };
 };
-
+/** \brief Specialization: works in pass 2, %operator+=() supported (merging supported).
+*/
 template <>
 class Central<PowerSum<4> >
 {
@@ -3277,6 +3856,11 @@ class Central<PowerSum<4> >
     };
 };
 
+/** \brief Basic statistic. Skewness. 
+
+    %Skewness =@f$ \frac{ \frac{1}{n}\sum_i (x_i-\hat{x})^3 }{ (\frac{1}{n}\sum_i (x_i-\hat{x})^2)^{3/2} } @f$ .
+    Works in pass 2, %operator+=() supported (merging supported).
+*/
 class Skewness
 {
   public:
@@ -3308,6 +3892,10 @@ class Skewness
     };
 };
 
+/** \brief Basic statistic. Unbiased Skewness.
+
+    Works in pass 2, %operator+=() supported (merging supported).
+*/
 class UnbiasedSkewness
 {
   public:
@@ -3337,6 +3925,12 @@ class UnbiasedSkewness
     };
 };
 
+/** \brief Basic statistic. Kurtosis. 
+
+    %Kurtosis = @f$ \frac{ \frac{1}{n}\sum_i (x_i-\bar{x})^4 }{
+    (\frac{1}{n} \sum_i(x_i-\bar{x})^2)^2 } - 3 @f$ . 
+    Works in pass 2, %operator+=() supported (merging supported).
+*/
 class Kurtosis
 {
   public:
@@ -3368,6 +3962,10 @@ class Kurtosis
     };
 };
 
+/** \brief Basic statistic. Unbiased Kurtosis.
+
+    Works in pass 2, %operator+=() supported (merging supported).
+*/
 class UnbiasedKurtosis
 {
   public:
@@ -3459,6 +4057,10 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
 } // namespace detail
 
 // we only store the flattened upper triangular part of the scatter matrix
+/** \brief Basic statistic. Flattened uppter-triangular part of scatter matrix.
+
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 class FlatScatterMatrix
 {
   public:
@@ -3624,6 +4226,8 @@ class DivideUnbiased<FlatScatterMatrix>
     };
 };
 
+/** Basic statistic. ScatterMatrixEigensystem (?)
+*/
 class ScatterMatrixEigensystem
 {
   public:
@@ -3862,6 +4466,8 @@ class DivideByCount<ScatterMatrixEigensystem>
 // };
 
 // covariance eigenvalues
+/** \brief Specialization (covariance eigenvalues): works in pass 1, %operator+=() supported (merging).
+*/
 template <>
 class Principal<PowerSum<2> >
 {
@@ -3888,7 +4494,10 @@ class Principal<PowerSum<2> >
     };
 };
 
+
 // Principal<CoordinateSystem> == covariance eigenvectors
+/** \brief Specialization (covariance eigenvectors): works in pass 1, %operator+=() supported (merging).
+*/
 template <>
 class Principal<CoordinateSystem>
 {
@@ -3915,6 +4524,10 @@ class Principal<CoordinateSystem>
     };
 };
 
+/** \brief Basic statistic. %Minimum value.
+
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 class Minimum
 {
   public:
@@ -3988,6 +4601,10 @@ class Minimum
     };
 };
 
+/** \brief Basic statistic. %Maximum value.
+
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 class Maximum
 {
   public:
@@ -4061,6 +4678,10 @@ class Maximum
     };
 };
 
+/** \brief Basic statistic. Data value where weight assumes its minimal value. 
+
+    Weights must be given. Coord<ArgMinWeight> gives coordinate where weight assumes its minimal value. Works in pass 1, %operator+=() supported (merging supported).
+*/
 class ArgMinWeight
 {
   public:
@@ -4131,6 +4752,10 @@ class ArgMinWeight
     };
 };
 
+/** \brief Basic statistic. Data where weight assumes its maximal value. 
+
+    Weights must be given. Coord<ArgMinWeight> gives coordinate where weight assumes its maximal value. Works in pass 1, %operator+=() supported (merging supported).
+*/
 class ArgMaxWeight
 {
   public:
@@ -4200,6 +4825,7 @@ class ArgMaxWeight
         }
     };
 };
+
 
 template <class BASE, int BinCount>
 class HistogramBase
@@ -4443,6 +5069,14 @@ class RangeHistogramBase
     }
 };
 
+/** \brief Histogram where data values are equal to bin indices.
+
+    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
+    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<IntegerHistogram<0> >(acc_chain).setBinCount(bincount).  
+    - Outliers can be accessed via getAccumulator<IntegerHistogram<Bincount>>(a).left_outliers and getAccumulator<...>(acc_chain).right_outliers.
+    - Note that histogram options (for all histograms in the accumulator chain) can also be set by passing an instance of HistogramOptions to the accumulator chain via acc_chain.setHistogramOptions().
+    Works in pass 1, %operator+=() supported (merging supported).
+*/
 template <int BinCount>
 class IntegerHistogram
 {
@@ -4545,6 +5179,16 @@ class IntegerHistogram
     };
 };
 
+/** \brief Histogram where user provides bounds for linear range mapping from values to indices.
+
+    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
+    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<UserRangeHistogram<0> >(acc_chain).setBinCount(bincount).
+    - Bounds for the mapping (min/max) must be set before seeing data by calling getAccumulator<UserRangeHistogram<BinCount> >.setMinMax(min, max).
+    - Options can also be passed to the accumulator chain via an instance of HistogramOptions .
+    - Works in pass 1, %operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<...>(a).left_outliers and getAccumulator<...>(a).right_outliers.
+    - Note that histogram options (for all histograms in the accumulator chain) can also be set by passing an instance of HistogramOptions to the accumulator chain via acc_chain.setHistogramOptions().
+*/
 template <int BinCount>
 class UserRangeHistogram
 {
@@ -4577,6 +5221,15 @@ class UserRangeHistogram
     };
 };
 
+/** \brief Histogram where range mapping bounds are defined by minimum and maximum of data.
+
+    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
+    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<AutoRangeHistogram>(acc_chain).setBinCount(bincount).
+    - Becomes a UserRangeHistogram if min/max is set.
+    - Works in pass 2, %operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<...>(acc_chain).left_outliers and getAccumulator<...>(acc_chain).right_outliers .
+    - Note that histogram options (for all histograms in the accumulator chain) can also be set by passing an instance of HistogramOptions to the accumulator chain via acc_chain.setHistogramOptions().
+*/
 template <int BinCount>
 class AutoRangeHistogram
 {
@@ -4611,6 +5264,15 @@ class AutoRangeHistogram
     };
 };
 
+/** \brief Like AutoRangeHistogram, but use global min/max rather than region min/max.
+
+    - If BinCount != 0, the return type of the accumulator is TinyVector<double, BinCount> .
+    - If BinCount == 0, the return type of the accumulator is MultiArray<1, double> . BinCount can be set by calling getAccumulator<GlobalRangeHistogram<0>>(acc_chain).setBinCount(bincount).
+    - Becomes a UserRangeHistogram if min/max is set.
+    - Works in pass 2, %operator+=() is supported (merging) if both histograms have the same data mapping.
+    - Outliers can be accessed via getAccumulator<GlobalRangeHistogram<Bincount>>(acc_chain).left_outliers and getAccumulator<...>(acc_chain).right_outliers .
+    - Histogram options (for all histograms in the accumulator chain) can also be set by passing an instance of HistogramOptions to the accumulator chain via acc_chain.setHistogramOptions().
+*/
 template <int BinCount>
 class GlobalRangeHistogram
 {
@@ -4662,6 +5324,10 @@ class GlobalRangeHistogram
     };
 };
 
+/** \brief Compute (0%, 10%, 25%, 50%, 75%, 90%, 100%) quantiles from given histogram.
+
+    Return type is TinyVector<double, 7> . 
+*/
 template <class HistogramAccumulator> 
 class StandardQuantiles
 {

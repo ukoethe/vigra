@@ -373,7 +373,7 @@ del _genTensorConvenienceFunctions
 def _genFeaturConvenienceFunctions():
     def supportedFeatures(array):
         '''Return a list of feature names that are available for the given array. These feature
-           names are the valid inputs to a call of :func:`extractFeatures`(array, features = ...).
+           names are the valid inputs to a call of :func:`extractFeatures`(array, features=...).
         '''
         
         return analysis.extractFeatures(array, None).supportedFeatures()
@@ -384,7 +384,7 @@ def _genFeaturConvenienceFunctions():
     def supportedRegionFeatures(array, labels):
         '''Return a list of feature names that are available for the given array and label array. 
            These feature names are the valid inputs to a call of 
-           :func:`extractRegionFeatures`(array, labels, features = ...).
+           :func:`extractRegionFeatures`(array, labels, features=...).
         '''
         
         return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()

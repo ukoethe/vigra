@@ -76,6 +76,9 @@ struct NeighborhoodTypeImpl<N, 0>
     }
 };
 
+  /**
+     Handle class, used by CoupledScanOrderIterator as the value type to simultaneously itearate over multiple images.
+  */
 template <class T, class NEXT>
 class CoupledHandle
 : public NEXT
@@ -489,6 +492,8 @@ cast(Handle const & handle)
     return handle;
 };
 
+  /** Returns reference to the element in the band of the handle with index TARGET_INDEX.
+   */
 template <unsigned int TARGET_INDEX, class Handle>
 typename CoupledHandleCast<TARGET_INDEX, Handle>::type::reference
 get(Handle & handle)
@@ -496,6 +501,8 @@ get(Handle & handle)
     return *cast<TARGET_INDEX>(handle);
 };
 
+  /** Returns a constant reference to the element in the band of the handle with index TARGET_INDEX.
+   */
 template <unsigned int TARGET_INDEX, class Handle>
 typename CoupledHandleCast<TARGET_INDEX, Handle>::type::const_reference
 get(Handle const & handle)
@@ -509,9 +516,41 @@ get(Handle const & handle)
 /*                                                      */
 /********************************************************/
 
-/** \brief Iterate over multiple images simultaneously in scan order. Zero images is a special case;
-    The coordinates can be accessed as a special band.
+/** \brief Iterate over multiple images simultaneously in scan order. 
 
+    The value type of this iterator is an instance of the handle class CoupledHandle. This allows to iterate over multiple arrays simultaneously. The coordinates can be accessed as a special band (index 0) in the handle. The scan-order is defined such that dimensions are iterated from front to back (first to last).
+    
+    Instances of this class are usually constructed by calling createCoupledIterator() .
+
+    To get the type of a CoupledScanOrderIterator for arrays of a certain dimension and element types use CoupledIteratorType::type.
+
+    The iterator supports all functions listed in the STL documentation for
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random
+Access Iterators</a>.
+
+    Example of use:
+    \code
+    using namespace vigra;
+    MultiArray<2, double> image1(Shape2(5, 5));
+    MultiArray<2, double> image2(Shape2(5, 5));
+    // fill image with data ...
+    
+    typedef CoupledIteratorType<2, double, double>::type Iterator; // the type of the CoupledScanOrderIterator
+    
+    Iterator start = createCoupledIterator(image1, image2); // create coupled iterator for simultaneous iteration over image1, image2 and their coordinates
+    Iterator end = start.getEndIterator();
+    
+    for (Iterator it = start; it < end; ++it) {
+      std::cout << "coordinates: " << it.get<0>() << std::endl;
+      std::cout << "image1: " << it.get<1>() << std::endl;
+      std::cout << "image2: " << it.get<2>() << std::endl;
+    }
+    
+    //random access:
+    Iterator::value_type handle = start[15];
+    std::cout << "image1: " << get<1>(handle) << std::endl;
+    \endcode
+    
 <b>\#include</b> \<vigra/multi_iterator_coupled.hxx\>
 
 Namespace: vigra
@@ -536,6 +575,13 @@ class CoupledScanOrderIterator
     typedef std::random_access_iterator_tag   iterator_category;
 
     typedef typename base_type::value_type      value_type;
+
+#ifdef DOXYGEN
+  /** The type of the CoupledHandle.
+   */
+    typedef HANDLES value_type;
+#endif
+
     typedef typename base_type::reference       reference;
     typedef typename base_type::const_reference const_reference; // FIXME: do we need both?
     typedef typename base_type::pointer         pointer;
@@ -613,6 +659,8 @@ class CoupledScanOrderIterator
         return operator+=(-coordOffset);
     }
 
+    /** Returns CoupledScanOrderIterator pointing beyond the last element.
+    */
     CoupledScanOrderIterator getEndIterator() const
     {
         return operator+(prod(this->shape()));
@@ -680,6 +728,27 @@ class CoupledScanOrderIterator
     using base_type::atBorder;
     using base_type::neighborhoodType;
     using base_type::get;
+
+#ifdef DOXYGEN
+  
+  /** Returns reference to the element in the band with index TARGET_INDEX.
+  */
+  template<unsigned int TARGET_INDEX> 
+  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
+  get() 
+  {
+    return vigra::get<TARGET_INDEX>(handles_);
+  }
+
+  /** Returns constant reference to the element in the band with index TARGET_INDEX.
+  */
+  template<unsigned int TARGET_INDEX> 
+  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
+  get() const
+  {
+    return vigra::get<TARGET_INDEX>(handles_);
+  }
+#endif
 
   protected:
     void reset()
@@ -983,13 +1052,20 @@ struct CoupledHandleType<N, Multiband<T1>, T2, T3, T4, T5>
     typedef typename ComposeCoupledHandle<N-1, TypeList>::type type;
 };
 
+/** Helper class to easliy get the type of a CoupledScanOrderIterator (and corresponding CoupledHandle) for up to five arrays of dimension N with element types T1,...,T5.
+ */
 template <unsigned int N, class T1=void, class T2=void, class T3=void, class T4=void, class T5=void>
 struct CoupledIteratorType
 {
+    /** Type of the CoupledHandle.*/
     typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type HandleType;
+  
+    /** Type of the CoupledScanOrderIterator.*/
     typedef CoupledScanOrderIterator<HandleType::dimensions, HandleType> type;
 };
 
+/** Returns a CoupledScanOrderIterator from shape to iterate over coordinates. 
+ */
 template <int N>
 typename CoupledIteratorType<N>::type
 createCoupledIterator(TinyVector<MultiArrayIndex, N> const & shape)
@@ -1000,6 +1076,8 @@ createCoupledIterator(TinyVector<MultiArrayIndex, N> const & shape)
     return IteratorType(P0(shape));
 }
 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over image m1 and its coordinates. 
+ */
 template <unsigned int N1, class T1, class S1>
 typename CoupledIteratorType<N1, T1>::type
 createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1)
@@ -1012,6 +1090,8 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1)
                         P0(m1.shape())));
 }
 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2 and their coordinates. 
+ */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2>
 typename CoupledIteratorType<N1, T1, T2>::type
@@ -1028,6 +1108,8 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P0(m1.shape()))));
 }
 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3 and their coordinates. 
+ */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
           unsigned int N3, class T3, class S3>
@@ -1048,6 +1130,8 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P0(m1.shape())))));
 }
 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4 and their coordinates. 
+ */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
           unsigned int N3, class T3, class S3,
@@ -1072,6 +1156,8 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P0(m1.shape()))))));
 }
 
+/** Returns a CoupledScanOrderIterator to simultaneously iterate over images m1, m2, m3, m4, m5 and their coordinates. 
+ */
 template <unsigned int N1, class T1, class S1,
           unsigned int N2, class T2, class S2,
           unsigned int N3, class T3, class S3,
