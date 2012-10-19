@@ -46,7 +46,7 @@ namespace vigra
 void defineSinglebandRegionAccumulators()
 {
     using namespace python;
-    using namespace vigra::acc1;
+    using namespace vigra::acc;
 
     docstring_options doc_options(true, true, false);
     typedef Select<Count, Mean, Variance, Skewness, Kurtosis, 
@@ -58,8 +58,8 @@ void defineSinglebandRegionAccumulators()
                           Principal<Weighted<Coord<Skewness> > >, Principal<Weighted<Coord<Kurtosis> > > >,
                    DataArg<1>, WeightArg<1>, LabelArg<2>
                    > ScalarRegionAccumulators;
-    definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>("SinglebandRegionFeatures2D");
-    definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>("SinglebandRegionFeatures3D");
+    definePythonAccumulatorArraySingleband<2, float, ScalarRegionAccumulators>();
+    definePythonAccumulatorArraySingleband<3, float, ScalarRegionAccumulators>();
 }
 
 } // namespace vigra

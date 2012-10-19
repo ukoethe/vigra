@@ -45,7 +45,7 @@
 
 namespace vigra {
 
-namespace acc1 {
+namespace acc {
 
 /**************************************************************************/
 /*                                                                        */
@@ -744,6 +744,6 @@ struct StandardizeDependencies<TargetTag, void>
     typedef void type;
 };
 
-}} // namespace vigra::acc1
+}} // namespace vigra::acc
 
 #endif // VIGRA_ACCUMULATOR_GRAMMAR_HXX

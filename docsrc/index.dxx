@@ -331,11 +331,11 @@
 /** \page ImageAnalysis Image Analysis
 
     <UL style="list-style-image:url(documents/bullet.gif)">
-    <LI> \ref FeatureAccumulators
-         <BR>&nbsp;&nbsp;&nbsp;<em>Computation of global and per-region statistics of multi arrays via accumulators framework</em>
     <LI> \ref InspectAlgo and \ref InspectFunctor
          <BR>&nbsp;&nbsp;&nbsp;<em>Statistical analysis of images and regions</em>
-    <LI> \ref vigra::Threshold
+     <LI> \ref FeatureAccumulators
+         <BR>&nbsp;&nbsp;&nbsp;<em>Computation of global and per-region statistics of multi arrays via accumulators framework</em>
+   <LI> \ref vigra::Threshold
          <BR>&nbsp;&nbsp;&nbsp;<em>Good old thresholding</em>
     <LI> \ref Labeling
          <BR>&nbsp;&nbsp;&nbsp;<em>Connected components labeling using 4 or 8 connectivity </em>
