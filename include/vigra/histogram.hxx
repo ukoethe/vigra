@@ -44,7 +44,7 @@ namespace vigra {
 
 /** \brief Set histogram options.
 
-    HistogramOptions objects are used to pass histogram options to other objects. This \ref acc1_hist_options "example" shows how it is is used to pass histogram options to an accumulator chain.
+    HistogramOptions objects are used to pass histogram options to other objects. This \ref acc_hist_options "example" shows how it is is used to pass histogram options to an accumulator chain.
 */
 class HistogramOptions
 {

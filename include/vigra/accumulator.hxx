@@ -61,7 +61,7 @@ namespace vigra {
 
 The namespace <tt>vigra::acc</tt> provides the function \ref vigra::acc::extractFeatures() along with associated statistics functors and accumulator classes. Together, they provide a framework for efficient compution of a wide variety of statistical features, both globally for an entire image, and locally for each region defined by a label array. Many different statistics can be composed out of a small number of fundamental statistics and suitable modifiers. The user simply selects the desired statistics by means of their <i>tags</i> (see below), and a template meta-program automatically generates an efficient functor that computes exactly those statistics.
 
-The function \ref extractFeatures() scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
+The function \ref acc::extractFeatures() "extractFeatures()" scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
 
 <b>\#include</b> \<vigra/accumulator.hxx\>
     
@@ -1608,7 +1608,9 @@ struct InvalidGlobalAccumulatorHandle
     // if dynamic=false, a plain accumulator will be created
 template <class T, class Selected, bool dynamic=false, class GlobalHandle=InvalidGlobalAccumulatorHandle>
 struct ConfigureAccumulatorChain
+#ifndef DOXYGEN
 : public ConfigureAccumulatorChain<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+#endif
 {};
 
 template <class T, class HEAD, class TAIL, bool dynamic, class GlobalHandle>
@@ -1624,7 +1626,9 @@ struct ConfigureAccumulatorChain<T, TypeList<HEAD, TAIL>, dynamic, GlobalHandle>
 
 template <class T, class Selected, bool dynamic=false>
 struct ConfigureAccumulatorChainArray
+#ifndef DOXYGEN
 : public ConfigureAccumulatorChainArray<T, typename AddDependencies<typename Selected::type>::type, dynamic>
+#endif
 {};
 
 template <class T, class HEAD, class TAIL, bool dynamic>
@@ -1981,7 +1985,7 @@ class DynamicAccumulatorChain
             std::string("DynamicAccumulatorChain::activate(): Tag '") + tag + "' not found.");
     }
     
-    /** %activate<TAG>() activates statistic 'TAG'. If the statistic is not in the accumulator chain it is ignored. (?)
+    /** %activate\<TAG\>() activates statistic 'TAG'. If the statistic is not in the accumulator chain it is ignored. (?)
     */
     template <class TAG>
     void activate()
@@ -2005,7 +2009,7 @@ class DynamicAccumulatorChain
         return v.result;
     }
     
-    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+    /** %isActive\<TAG\>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
     */
     template <class TAG>
     bool isActive() const
@@ -2237,7 +2241,7 @@ class DynamicAccumulatorChainArray
         return v.result;
     }
     
-    /** %isActive<TAG>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
+    /** %isActive\<TAG\>() returns true if statistic 'TAG' is active, i.e. activate(std::string tag) or activate<TAG>() has been called. If the statistic is not in the accumulator chain, true is returned. (?)
      */
     template <class TAG>
     bool isActive() const
@@ -2291,7 +2295,9 @@ namespace detail {
     // When A does not implement TAG, continue search in A::InternalBaseType.
 template <class TAG, class A, class FromTag=typename A::Tag>
 struct LookupTagImpl
+#ifndef DOXYGEN
 : public LookupTagImpl<TAG, typename A::InternalBaseType>
+#endif
 {};
 
     // 'const A' is treated like A, except that the reference member is now const.
@@ -2528,7 +2534,29 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
 } // namespace detail
 
     // Get a reference to the accumulator TAG in the accumulator chain A
-/** Get a reference to the accumulator TAG in the accumulator chain a.
+/** Get a reference to the accumulator 'TAG' in the accumulator chain 'a'. This can be useful for example to update a certain accumulator with data, set individual options or get information about a certain accumulator.\n
+Example of use (set options):
+\code
+    vigra::MultiArray<2, double> data(...);   
+    typedef UserRangeHistogram<40> SomeHistogram;   //binCount set at compile time
+    typedef UserRangeHistogram<0> SomeHistogram2; // binCount must be set at run-time
+    AccumulatorChain<DataType, Select<SomeHistogram, SomeHistogram2> > a;
+    
+    getAccumulator<SomeHistogram>(a).setMinMax(0.1, 0.9);
+    getAccumulator<SomeHistogram2>(a).setMinMax(0.0, 1.0);
+
+    extractFeatures(data.begin(), data.end(), a);
+\endcode
+
+Example of use (get information):
+\code
+  vigra::MultiArray<2, double> data(...));
+  AccumulatorChain<double, Select<Mean, Skewness> > a;
+
+  std::cout << "passes required for all statistics: " << a.passesRequired() << std::endl; //skewness needs two passes
+  std::cout << "passes required by Mean: " << getAccumulator<Mean>(a).passesRequired() << std::endl;
+\endcode
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
@@ -2540,7 +2568,7 @@ getAccumulator(A & a)
 }
 
     // Get a reference to the accumulator TAG for region 'label' in the accumulator chain A
-/** Get a reference to the accumulator TAG for region 'label' in the accumulator chain a.
+/** Get a reference to the accumulator 'TAG' for region 'label' in the accumulator chain 'a'.
 */
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::reference
@@ -2552,7 +2580,15 @@ getAccumulator(A & a, MultiArrayIndex label)
 }
 
     // get the result of the accumulator specified by TAG
-/** Get the result of the accumulator 'TAG' in the accumulator chain a.
+/** Get the result of the accumulator 'TAG' in the accumulator chain 'a'.\n
+Example of use:
+\code
+    vigra::MultiArray<2, double> data(...);
+    AccumulatorChain<DataType, Select<Variance, Mean, StdDev> > a;
+    extractFeatures(data.begin(), data.end(), a); 
+    double mean = get<Mean>(a);
+\endcode
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
@@ -2562,7 +2598,25 @@ get(A const & a)
 }
 
     // get the result of the accumulator TAG for region 'label'
-/** Get the result of the accumulator 'TAG' for region 'label' in the accumulator chain a.
+/** Get the result of the accumulator 'TAG' for region 'label' in the accumulator chain 'a'.\n
+Example of use:
+\code
+    vigra::MultiArray<2, double> data(...);
+    vigra::MultiArray<2, int> labels(...);
+    typedef vigra::CoupledIteratorType<2, double, int>::type Iterator;
+    typedef Iterator::value_type Handle;
+
+    AccumulatorChainArray<Handle, 
+        Select<DataArg<1>, LabelArg<2>, Mean, Variance> > a;
+
+    Iterator start = createCoupledIterator(data, labels);
+    Iterator end = start.getEndIterator();
+    extractFeatures(start,end,a);
+
+    double mean_of_region_1 = get<Mean>(a,1);
+    double mean_of_background = get<Mean>(a,0);
+\endcode
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class TAG, class A>
 inline typename LookupTag<TAG, A>::result_type
@@ -2585,7 +2639,8 @@ getDependency(A const & a)
 }
 
     // activate the dynamic accumulator specified by Tag
-/** Activate the dynamic accumulator 'Tag' in the dynamic accumulator chain a. Same as a.activate<Tag>(). For run-time activation use DynamicAccumulatorChain::activate(std::string tag) or DynamicAccumulatorChainArray::activate(std::string tag) .
+/** Activate the dynamic accumulator 'Tag' in the dynamic accumulator chain 'a'. Same as a.activate<Tag>() (see DynamicAccumulatorChain::activate<Tag>() or DynamicAccumulatorChainArray::activate<Tag>()). For run-time activation use DynamicAccumulatorChain::activate(std::string tag) or DynamicAccumulatorChainArray::activate(std::string tag) instead.\n
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class Tag, class A>
 inline void
@@ -2595,7 +2650,8 @@ activate(A & a)
 }
 
     // check if the dynamic accumulator specified by Tag is active
-/** Check if the dynamic accumulator 'Tag' is active. Same as a.isActive<Tag>().
+/** Check if the dynamic accumulator 'Tag' in the accumulator chain 'a' is active. Same as a.isActive<Tag>() (see DynamicAccumulatorChain::isActive<Tag>() or DynamicAccumulatorChainArray::isActive<Tag>()). At run-time, use DynamicAccumulatorChain::isActive(std::string tag) const or DynamicAccumulatorChainArray::isActive(std::string tag) const instead.\n
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class Tag, class A>
 inline bool
@@ -2610,7 +2666,24 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
-/** Generic loop to collect the statistics in as many passes over the data as necessary.
+/** Generic loop to collect the statistics of the accumulator chain 'a' in as many passes over the data as necessary.\n
+
+Example of use:
+\code
+    vigra::MultiArray<3, double> data(...);
+    vigra::MultiArray<3, int> labels(...);
+    typedef vigra::CoupledIteratorType<3, double, int>::type Iterator;
+    typedef Iterator::value_type Handle;
+
+    AccumulatorChainArray<Handle,
+        Select<DataArg<1>, LabelArg<2>, Mean, Variance> > a;
+
+    Iterator start = createCoupledIterator(data, labels);
+    Iterator end = start.getEndIterator();
+
+    extractFeatures(start,end,a);
+\endcode
+See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
 template <class ITERATOR, class ACCUMULATOR>
 void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
