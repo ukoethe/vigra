@@ -272,7 +272,9 @@ struct AddDependencies<void>
 
 template <bool dynamic, unsigned LEVEL>
 struct AccumulatorFlags
+#ifndef DOXYGEN
 : public AccumulatorFlags<false, LEVEL>
+#endif
 {
     BitArray<LEVEL> active_accumulators_;
    
@@ -760,7 +762,9 @@ struct DynamicAccumulator
 
 template <class Tag, class A, class FromTag=typename A::Tag>
 struct LookupTag
+#ifndef DOXYGEN
 : public LookupTag<Tag, typename A::BaseType>
+#endif
 {};
 
 template <class Tag, class A, class FromTag>
