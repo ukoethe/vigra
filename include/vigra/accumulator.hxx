@@ -59,14 +59,11 @@ namespace vigra {
   
 /** \defgroup FeatureAccumulators Feature Accumulators
 
-    The namespace <tt>vigra::acc</tt> contains the accumulator classes, basic statistics and modifiers which provide a framework to efficiently compute a wide variety of statistics. Many different statistics can be composed from a small number of fundamental statistics and modifiers. 
+The namespace <tt>vigra::acc</tt> provides the function \ref vigra::acc::extractFeatures() along with associated statistics functors and accumulator classes. Together, they provide a framework for efficient compution of a wide variety of statistical features, both globally for an entire image, and locally for each region defined by a label array. Many different statistics can be composed out of a small number of fundamental statistics and suitable modifiers. The user simply selects the desired statistics by means of their <i>tags</i> (see below), and a template meta-program automatically generates an efficient functor that computes exactly those statistics.
 
-An accumulator is an object that maintains an internal state for incremental statistical computation. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. This allows accumulators to offload some of their computations on other accumulators, making the algorithm more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
+The function \ref extractFeatures() scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
 
-All statistics are computed simultaneously and without redundancy in as few passes through the data as possible. It is implemented as a template meta-program.
-
-<b>\#include</b>
-\<vigra/accumulator.hxx\>
+<b>\#include</b> \<vigra/accumulator.hxx\>
     
     <b>Basic statistics:</b>
     - PowerSum<N> (@f$ \sum_i x_i^N @f$)
@@ -98,7 +95,7 @@ All statistics are computed simultaneously and without redundancy in as few pass
       <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
       </table>
       
-    Aliases for a couple of important features are implemented (mainly as typedef FullName Alias). The alias names are equivalent to full names. 
+    Aliases for a couple of important features are implemented (mainly as <tt>typedef FullName Alias</tt>). The alias names are equivalent to full names. 
     Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
     
     <table border="0">
@@ -140,20 +137,20 @@ All statistics are computed simultaneously and without redundancy in as few pass
 	a;
 	
     std::cout << "passes required: " << a.passesRequired() << std::endl;
-    collectStatistics(data.begin(), data.end(), a); 
+    extractFeatures(data.begin(), data.end(), a); 
     
     std::cout << "Mean: " << get<Mean>(a) << std::endl;
     std::cout << "Variance: " << get<Variance>(a) << std::endl;
     \endcode
     
-    The \ref acc::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc::Select. The statistics are computed with the acc::collectStatistics function and the statistics can be accessed with acc::get . 
+    The \ref acc::AccumulatorChain object contains the selected statistics and their dependencies. Statistics have to be wrapped with \ref acc::Select. The statistics are computed with the acc::extractFeatures function and the statistics can be accessed with acc::get . 
 
     Rules and notes:
     - order of statistics in Select<> is arbitrary
     - up to 20 statistics in Select<>, but Select<> can be nested
     - dependencies are automatically inserted
     - duplicates are automatically removed
-    - collectStatistics() does as many passes through the data as necessary
+    - extractFeatures() does as many passes through the data as necessary
     - each accumulator only sees data in the appropriate pass (its "working pass")
 
     The Accumulators can also be used with vector-valued data (vigra::RGBValue, vigra::TinyVector, vigra::MultiArray or vigra::MultiArrayView):
@@ -191,7 +188,7 @@ Pixel coordinates are always at index 0.
     Iterator start = createCoupledIterator(data, weights); //coord->index 0, data->index 1, weights->index 2
     Iterator end = start.getEndIterator();
      
-    collectStatistics(start,end,a);
+    extractFeatures(start,end,a);
     \endcode
 
     To compute <b>region statistics</b>, use \ref acc::AccumulatorChainArray :
@@ -215,7 +212,7 @@ Pixel coordinates are always at index 0.
 
     a.ignoreLabel(0); //statistics will not be computed for region 0 (e.g. background)
 
-    collectStatistics(start,end,a);
+    extractFeatures(start,end,a);
 
     int regionlabel = ...;
     std::cout << get<Mean>(a, regionlabel) << std::endl; //get Mean of region with label 'regionlabel'
@@ -232,7 +229,7 @@ Pixel coordinates are always at index 0.
     activate<Mean>(a);      //at run-time
     a.activate("Minimum");  //same as activate<Minimum>(a) (alias names are not recognized)
     
-    collectStatistics(data.begin(), data.end(), a);
+    extractFeatures(data.begin(), data.end(), a);
     std::cout << "Mean: " << get<Mean>(a) << std::endl;       //ok
     //std::cout << "Maximum: " << get<Maximum>(a) << std::endl; // run-time error because Maximum not activated
     \endcode
@@ -246,21 +243,21 @@ Pixel coordinates are always at index 0.
     vigra::MultiArray<2, double> data(...);
     AccumulatorChain<double, Select<Mean, Variance, Skewness> > a, a1, a2;
 
-    collectStatistics(data.begin(), data.end(), a); //process entire data set at once
-    collectStatistics(data.begin(), data.begin()+data.size()/2, a1); //process first half
-    collectStatistics(data.begin()+data.size()/2, data.end(), a2); //process second half
+    extractFeatures(data.begin(), data.end(), a); //process entire data set at once
+    extractFeatures(data.begin(), data.begin()+data.size()/2, a1); //process first half
+    extractFeatures(data.begin()+data.size()/2, data.end(), a2); //process second half
     a1 += a2; // merge: a1 now equals a0 (with numerical tolerances)
     \endcode
 
-    Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A statistic can be merged if the "+=" operator is supported (see the documentation of that particular statistic). If the accumulator chain only requires one pass to collect the data, it is also possible to just apply the collectStatistics() function repeatedly:
+    Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A statistic can be merged if the "+=" operator is supported (see the documentation of that particular statistic). If the accumulator chain only requires one pass to collect the data, it is also possible to just apply the extractFeatures() function repeatedly:
 
     \code
     using namespace vigra::acc;
     vigra::MultiArray<2, double> data(...);
     AccumulatorChain<double, Select<Mean, Variance> > a;
 
-    collectStatistics(data.begin(), data.begin()+data.size()/2, a); // this works because 
-    collectStatistics(data.begin()+data.size()/2, data.end(), a);   // all statistics only work in pass 1
+    extractFeatures(data.begin(), data.begin()+data.size()/2, a); // this works because 
+    extractFeatures(data.begin()+data.size()/2, data.end(), a);   // all statistics only work in pass 1
 
     \endcode
 
@@ -309,7 +306,7 @@ Pixel coordinates are always at index 0.
     getAccumulator<SomeHistogram>(a).setMinMax(0.1, 0.9); // number of bins must be set before setting min/max
     getAccumulator<SomeHistogram2>(a).setMinMax(0.0, 1.0);
 
-    collectStatistics(data.begin(), data.end(), a);
+    extractFeatures(data.begin(), data.end(), a);
 
     vigra::TinyVector<double, 40> hist = get<SomeHistogram>(a);
     vigra::MultiArray<1, double> hist2 = get<SomeHistogram2>(a);
