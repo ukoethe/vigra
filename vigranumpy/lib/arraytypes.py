@@ -302,7 +302,7 @@ class VigraArray(numpy.ndarray):
             >>> vigra.VigraArray.defaultAxistags(3, order='C')
             y x c
             >>> vigra.VigraArray.defaultAxistags(2, noChannels=True)
-            x y z
+            x y
             >>> vigra.VigraArray.defaultAxistags(3, noChannels=True)
             x y z
             >>> vigra.VigraArray.defaultAxistags(4, noChannels=True)
