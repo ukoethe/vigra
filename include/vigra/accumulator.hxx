@@ -476,6 +476,28 @@ namespace detail {
 /*                                                                          */
 /****************************************************************************/
 
+    // we must make sure that Arg<INDEX> tags are at the end of the chain because 
+    // all other tags potentially depend on them
+template <class T>
+struct PushArgTagToTail
+{
+    typedef T type;
+};
+
+#define VIGRA_PUSHARGTAG(TAG) \
+template <int INDEX, class TAIL> \
+struct PushArgTagToTail<TypeList<TAG<INDEX>, TAIL> > \
+{ \
+    typedef typename Push<TAIL, TypeList<TAG<INDEX> > >::type type; \
+};
+
+VIGRA_PUSHARGTAG(DataArg)
+VIGRA_PUSHARGTAG(WeightArg)
+VIGRA_PUSHARGTAG(CoordArg)
+VIGRA_PUSHARGTAG(LabelArg)
+
+#undef VIGRA_PUSHARGTAG
+
     // Insert the dependencies of the selected functors into the TypeList and sort
     // the list such that dependencies come after the functors using them. Make sure 
     // that each functor is contained only once.
@@ -489,7 +511,8 @@ struct AddDependencies<TypeList<HEAD, TAIL> >
     typedef typename StandardizeDependencies<HEAD>::type                           HeadDependencies;
     typedef typename AddDependencies<HeadDependencies>::type                       TransitiveHeadDependencies;
     typedef TypeList<HEAD, TransitiveHeadDependencies>                             HeadWithDependencies;
-    typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  type;
+    typedef typename PushUnique<HeadWithDependencies, TailWithDependencies>::type  UnsortedDependencies;
+    typedef typename PushArgTagToTail<UnsortedDependencies>::type                  type;
 };
 
 template <>
