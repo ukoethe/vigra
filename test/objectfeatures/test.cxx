@@ -856,6 +856,47 @@ struct AccumulatorTest
         }
     }
 
+    void testIndexSpecifiers()
+    {
+        using namespace vigra::acc;
+
+        typedef CoupledIteratorType<3, double, double>::type Iterator;
+	typedef Iterator::value_type Handle;
+	typedef Shape3 V;
+	
+	typedef AccumulatorChain<Handle, Select<WeightArg<1>, DataArg<2>, Mean, Coord<Mean>, Coord<Maximum>, Coord<Minimum>, Weighted<Count>, Weighted<Mean>, CoordWeighted<Mean>, ArgMinWeight, ArgMaxWeight, Coord<ArgMinWeight>, Coord<ArgMaxWeight> > >  A;
+	A a;
+	
+	typedef LookupTag<Coord<Mean>, A>::value_type W;
+	
+	MultiArray<3, double> data(Shape3(4,4,4), 1.0);
+	data(1,2,3) = 0.5;
+	data(3,1,2) = 4.0;
+	MultiArray<3, double> weights(Shape3(4,4,4), 1.0);
+	weights(1,2,3) = 0.5;
+	weights(3,1,2) = 0.25;
+	
+	Iterator i = createCoupledIterator(weights, data);
+	
+	a(*(i+V(1,2,3)));
+	a(*(i+V(2,3,1)));
+	a(*(i+V(3,1,2)));
+	
+	shouldEqual(get<Count>(a), 3.0);
+	shouldEqual(get<Coord<Minimum> >(a), V(1));
+	shouldEqual(get<Coord<Maximum> >(a), V(3));
+	shouldEqual(get<Coord<Mean> >(a), W(2.0));
+	shouldEqualTolerance(get<Weighted<Mean> >(a), 1.2857142857142858, 1e-15);
+	shouldEqualTolerance(get<Mean>(a), 1.8333333333333333, 1e-15);
+	W coordWeightedMean(1.8571428571428572, 2.4285714285714284,  1.7142857142857142);
+	shouldEqualTolerance(coordWeightedMean, get<CoordWeighted<Mean> >(a), W(1e-15));
+	shouldEqual(4.0, get<ArgMinWeight>(a));
+	shouldEqual(1.0, get<ArgMaxWeight>(a));
+	shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(a));
+	shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
+	
+    }
+  
     void testHistogram()
     {
         static const int SIZE = 30, HSIZE = 10;
@@ -1378,6 +1419,7 @@ struct FeaturesTestSuite : public vigra::test_suite
         add(testCase(&AccumulatorTest::testCoordAccess));
         add(testCase(&AccumulatorTest::testHistogram));
         add(testCase(&AccumulatorTest::testLabelDispatch));
+	add(testCase(&AccumulatorTest::testIndexSpecifiers));
     }
 };
 
