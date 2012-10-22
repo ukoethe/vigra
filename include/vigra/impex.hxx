@@ -52,6 +52,7 @@
 #define VIGRA_IMPEX_HXX
 
 
+#include "stdimage.hxx"
 #include "imageinfo.hxx"
 #include "impexbase.hxx"
 
