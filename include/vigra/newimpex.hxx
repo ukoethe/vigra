@@ -528,6 +528,9 @@ namespace new_vigra
 
             encoder->setPixelType(pixel_type);
 
+            vigra_precondition(isBandNumberSupported(encoder->getFileType(), image_accessor.size(image_upper_left)),
+                               "exportImage(): file format does not support requested number of bands (color channels)");
+
             const range_t image_source_range(find_source_value_range(export_info,
                                                                      image_upper_left, image_lower_right, image_accessor));
             const range_t destination_range(find_destination_value_range(export_info, pixel_t_of_string(pixel_type)));
@@ -535,8 +538,6 @@ namespace new_vigra
             if ((downcast || export_info.hasForcedRangeMapping()) &&
                 (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second))
             {
-                std::cout << "+ exportImageAlpha<non-scalar>: RESCALE!\n";
-
                 const linear_transform image_rescaler(image_source_range, destination_range);
 
                 switch (type)
@@ -575,8 +576,6 @@ namespace new_vigra
             }
             else
             {
-                std::cout << "+ exportImageAlpha<non-scalar>: no rescaling necessary\n";
-
                 switch (type)
                 {
                 case UNSIGNED_INT_8:

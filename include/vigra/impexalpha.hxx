@@ -647,8 +647,6 @@ namespace vigra
                 (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
                  alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
             {
-                std::cout << "+ exportImageAlpha<scalar>: RESCALE!\n";
-
                 const linear_transform image_rescaler(image_source_range, destination_range);
                 const linear_transform alpha_rescaler(alpha_source_range, destination_range);
 
@@ -695,8 +693,6 @@ namespace vigra
             }
             else
             {
-                std::cout << "+ exportImageAlpha<scalar>: no rescaling necessary\n";
-
                 switch (type)
                 {
                 case UNSIGNED_INT_8:
@@ -762,6 +758,9 @@ namespace vigra
 
             encoder->setPixelType(pixel_type);
 
+            vigra_precondition(isBandNumberSupported(encoder->getFileType(), image_accessor.size(image_upper_left)),
+                               "exportImageAlpha(): file format does not support requested number of bands (color channels)");
+
             const range_t image_source_range(find_source_value_range(export_info,
                                                                      image_upper_left, image_lower_right, image_accessor));
             const range_t alpha_source_range(find_source_value_range(export_info,
@@ -774,8 +773,6 @@ namespace vigra
                 (image_source_range.first != destination_range.first || image_source_range.second != destination_range.second ||
                  alpha_source_range.first != destination_range.first || alpha_source_range.second != destination_range.second))
             {
-                std::cout << "+ exportImageAlpha<non-scalar>: RESCALE!\n";
-
                 const linear_transform image_rescaler(image_source_range, destination_range);
                 const linear_transform alpha_rescaler(alpha_source_range, destination_range);
 
@@ -822,8 +819,6 @@ namespace vigra
             }
             else
             {
-                std::cout << "+ exportImageAlpha<non-scalar>: no rescaling necessary\n";
-
                 switch (type)
                 {
                 case UNSIGNED_INT_8:

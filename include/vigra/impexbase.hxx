@@ -130,7 +130,7 @@ namespace vigra
             template <typename T>
             double operator()(T x) const
             {
-                return scale_ * static_cast<double>(x) + offset_;
+                return scale_ * (static_cast<double>(x) + offset_);
             }
 
         private:
