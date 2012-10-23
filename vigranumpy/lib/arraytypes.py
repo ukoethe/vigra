@@ -157,6 +157,13 @@ def _AxisTags_fromJSON(json_rep):
         tag_list.append(AxisInfo(**tags))
     return AxisTags(tag_list)
 
+def _AxisTags__reduce__(self):
+    '''
+        enable pickling of AxisTags
+    '''
+    return _AxisTags_fromJSON, (self.toJSON(),)
+
+AxisTags.__reduce__ = _AxisTags__reduce__
 AxisTags.fromJSON = staticmethod(_AxisTags_fromJSON)
 AxisTags.fromJSON.__doc__ = _AxisTags_fromJSON.__doc__
     
@@ -218,6 +225,15 @@ def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
             array.axistags = axistags
         elif hasattr(array, 'axistags'):
             del array.axistags
+    return array
+
+def _constructArrayFromPickle(_arraypickle, _permutation, _axistags):
+    reconstructionFunction = _arraypickle[0]
+    reconstructionArgs = _arraypickle[1]
+    array = reconstructionFunction(*reconstructionArgs)
+    array.__setstate__(_arraypickle[2])
+    array = array.transpose(_permutation)
+    array.axistags = AxisTags.fromJSON(_axistags)
     return array
     
 ##################################################################
@@ -454,7 +470,19 @@ class VigraArray(numpy.ndarray):
         except:
             pass
         return str(self.view(numpy.ndarray))
-    
+          
+    def __reduce__(self):
+        '''
+            Enable pickling of a VigraArray, including axistags. The stride ordering
+            will be preserved in the unpickled array. Note that user-defined attributes
+            will not be saved and restored.
+        '''
+        # since the stride ordering is not necessarily preserved by ndarray's pickling
+        # functions, we need to normalize stride ordering, and permute to the original 
+        # ordering upon reconstruction
+        pickled = numpy.ndarray.__reduce__(self.transposeToNumpyOrder())
+        return _constructArrayFromPickle, (pickled, self.permutationFromNumpyOrder(), self.axistags.toJSON())
+            
     ###############################################################
     #                                                             #
     #                     array I/O and display                   #

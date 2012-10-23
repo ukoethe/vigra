@@ -472,6 +472,19 @@ def testAxisTags():
     assert_equal(readBack[2].resolution, 0.5)
     assert_equal(readBack[3].resolution, 4)
     
+    import pickle
+    s = pickle.dumps(axistags)
+    unpickled = pickle.loads(s)
+    assert_equal(axistags, unpickled)
+    assert_equal(unpickled[0].description, "RGB")
+    assert_equal(unpickled[1].description, "time frequency")
+    assert_equal(unpickled[2].description, "")
+    assert_equal(unpickled[3].description, "confocal depth")
+    assert_equal(unpickled[0].resolution, 0)
+    assert_equal(unpickled[1].resolution, 3)
+    assert_equal(unpickled[2].resolution, 0.5)
+    assert_equal(unpickled[3].resolution, 4)
+    
     # FIXME: add more tests here
     defaultTags = arraytypes.VigraArray.defaultAxistags('cxyt')
     assert_equal(defaultTags.permutationToOrder('A'), (0, 1, 2, 3))
@@ -1113,8 +1126,8 @@ def testDeepcopy():
     assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
     assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
     assert_equal(b.axistags, a.axistags)
-    a[0,0,0] = 42
-    assert b[0,0,0] != 42
+    a[0,0,0] += 42
+    assert b[0,0,0] != a[0,0,0]
 
     a = arraytypes.RGBImage(numpy.random.random((4, 10, 3)), order='V')
     b = copy.deepcopy(a)
@@ -1122,8 +1135,8 @@ def testDeepcopy():
     assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
     assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
     assert_equal(b.axistags, a.axistags)
-    a[0,0,0] = 42
-    assert b[0,0,0] != 42
+    a[0,0,0] += 42
+    assert b[0,0,0] != a[0,0,0]
 
     a = arraytypes.RGBImage(numpy.random.random((3, 4, 10)), order='F')
     b = copy.deepcopy(a)
@@ -1131,8 +1144,8 @@ def testDeepcopy():
     assert_equal(b.flags.c_contiguous, a.flags.c_contiguous)
     assert_equal(b.flags.f_contiguous, a.flags.f_contiguous)
     assert_equal(b.axistags, a.axistags)
-    a[0,0,0] = 42
-    assert b[0,0,0] != 42
+    a[0,0,0] += 42
+    assert b[0,0,0] != a[0,0,0]
 
 def testDeepcopyWithAttributes():
     a = arraytypes.Image((320, 200), order='C')
@@ -1149,6 +1162,32 @@ def testDeepcopyWithCyclicReference():
     c = copy.deepcopy(a)
     assert hasattr(c, "myCustomAttribute")
     assert c.myCustomAttribute.backLink is c
+
+def testPickle():
+    import pickle
+    a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
+    s = pickle.dumps(a)
+    b = pickle.loads(s)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
+
+    a = arraytypes.RGBImage(numpy.random.random((4, 10, 3)), order='V')
+    s = pickle.dumps(a)
+    b = pickle.loads(s)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
+
+    a = arraytypes.RGBImage(numpy.random.random((3, 4, 10)), order='F')
+    s = pickle.dumps(a)
+    b = pickle.loads(s)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
     
 def testSlicing():
     a = arraytypes.Vector2Volume((5,4,3))
