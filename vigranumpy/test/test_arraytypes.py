@@ -1189,6 +1189,41 @@ def testPickle():
     assert_equal(b.axistags, a.axistags)
     assert numpy.all(a == b)
     
+def testZMQ():
+    try:
+        import zmq
+        ctx = zmq.Context.instance()
+        sender = zmq.Socket(ctx, zmq.PUSH)
+        receiver = zmq.Socket(ctx, zmq.PULL)
+        sender.bind('inproc://a')
+        receiver.connect('inproc://a')
+    except:
+        return
+        
+    a = arraytypes.RGBImage(numpy.random.random((10, 4, 3)), order='C')
+    a.sendSocket(sender, copy=False)
+    b = arraytypes.VigraArray.receiveSocket(receiver, copy=False)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
+
+    a = arraytypes.RGBImage(numpy.random.random((4, 10, 3)), order='V')
+    a.sendSocket(sender, copy=False)
+    b = arraytypes.VigraArray.receiveSocket(receiver, copy=False)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
+
+    a = arraytypes.RGBImage(numpy.random.random((3, 4, 10)), order='F')
+    a.sendSocket(sender, copy=False)
+    b = arraytypes.VigraArray.receiveSocket(receiver, copy=False)
+    assert_equal(b.shape, a.shape)
+    assert_equal(b.strides, a.strides)
+    assert_equal(b.axistags, a.axistags)
+    assert numpy.all(a == b)
+    
 def testSlicing():
     a = arraytypes.Vector2Volume((5,4,3))
     a.flat[...] = xrange(a.size)
