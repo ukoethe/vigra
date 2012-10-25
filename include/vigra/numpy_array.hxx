@@ -868,7 +868,7 @@ class NumpyArray
          Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
-    template<class U>
+    template <class U>
     ArrayVector<U>
     permuteLikewise(ArrayVector<U> const & data) const
     {
@@ -884,7 +884,7 @@ class NumpyArray
          Permute the entries of the given array \a data exactly like the axes of this NumpyArray
          were permuted upon conversion from numpy.
          */
-    template<class U, int K>
+    template <class U, int K>
     TinyVector<U, K>
     permuteLikewise(TinyVector<U, K> const & data) const
     {
@@ -892,6 +892,23 @@ class NumpyArray
             "NumpyArray::permuteLikewise(): array has no data.");
 
         TinyVector<U, K> res;
+        ArrayTraits::permuteLikewise(this->pyArray_, data, res);
+        return res;
+    }
+
+        /**
+         Get the permutation of the axes of this NumpyArray
+         that was performed upon conversion from numpy.
+         */
+    template <int K>
+    TinyVector<npy_intp, K>
+    permuteLikewise() const
+    {
+        vigra_precondition(hasData(),
+            "NumpyArray::permuteLikewise(): array has no data.");
+
+        TinyVector<npy_intp, K> data, res;
+        linearSequence(data.begin(), data.end());
         ArrayTraits::permuteLikewise(this->pyArray_, data, res);
         return res;
     }

@@ -925,6 +925,32 @@ floor(RGBValue<V, RIDX, GIDX, BIDX> const & r)
                                          floor(r.blue()));
 }
 
+// overload min and max to avoid that std:min() and std::max() match
+template <class V, unsigned int RIDX, unsigned int GIDX, unsigned int BIDX>
+inline
+RGBValue<V, RIDX, GIDX, BIDX>
+min(RGBValue<V, RIDX, GIDX, BIDX> const & l,
+    RGBValue<V, RIDX, GIDX, BIDX> const & r)
+{
+    typedef typename detail::LoopType<3>::type ltype;
+    RGBValue<V, RIDX, GIDX, BIDX> res(l);
+    ltype::min(res.begin(), r.begin());
+    return res;
+}
+
+template <class V, unsigned int RIDX, unsigned int GIDX, unsigned int BIDX>
+inline
+RGBValue<V, RIDX, GIDX, BIDX>
+max(RGBValue<V, RIDX, GIDX, BIDX> const & l,
+    RGBValue<V, RIDX, GIDX, BIDX> const & r)
+{
+    typedef typename detail::LoopType<3>::type ltype;
+    RGBValue<V, RIDX, GIDX, BIDX> res(l);
+    ltype::max(res.begin(), r.begin());
+    return res;
+}
+
+
 //@}
 
 /********************************************************/

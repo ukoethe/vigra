@@ -177,6 +177,20 @@ VIGRA_DEFINE_SCALAR_DOT(long double)
 
 #undef VIGRA_DEFINE_SCALAR_DOT
 
+using std::pow;
+
+// support 'double' exponents for all floating point versions of pow()
+
+inline float pow(float v, double e)
+{
+    return std::pow(v, (float)e);
+}
+
+inline long double pow(long double v, double e)
+{
+    return std::pow(v, (long double)e);
+}
+
     /*! The rounding function.
 
         Defined for all floating point types. Rounds towards the nearest integer 

@@ -157,6 +157,13 @@ def _AxisTags_fromJSON(json_rep):
         tag_list.append(AxisInfo(**tags))
     return AxisTags(tag_list)
 
+def _AxisTags__reduce__(self):
+    '''
+        enable pickling of AxisTags
+    '''
+    return _AxisTags_fromJSON, (self.toJSON(),)
+
+AxisTags.__reduce__ = _AxisTags__reduce__
 AxisTags.fromJSON = staticmethod(_AxisTags_fromJSON)
 AxisTags.fromJSON.__doc__ = _AxisTags_fromJSON.__doc__
     
@@ -218,6 +225,23 @@ def _constructArrayFromArray(cls, obj, dtype, order, init, axistags):
             array.axistags = axistags
         elif hasattr(array, 'axistags'):
             del array.axistags
+    return array
+
+def _constructArrayFromPickle(_arraypickle, _permutation, _axistags):
+    reconstructionFunction = _arraypickle[0]
+    reconstructionArgs = _arraypickle[1]
+    array = reconstructionFunction(*reconstructionArgs)
+    array.__setstate__(_arraypickle[2])
+    array = array.transpose(_permutation)
+    array.axistags = AxisTags.fromJSON(_axistags)
+    return array
+    
+def _constructArrayFromZMQSocket(socket, flags=0, copy=True, track=False):
+    metadata = socket.recv_json(flags=flags)
+    axistags = AxisTags.fromJSON(socket.recv(flags=flags))
+    data = buffer(socket.recv(flags=flags, copy=copy, track=track))
+    array = numpy.frombuffer(data, dtype=metadata['dtype']).reshape(metadata['shape'])
+    array = taggedView(array.transpose(metadata['permutation']), axistags)
     return array
     
 ##################################################################
@@ -302,7 +326,7 @@ class VigraArray(numpy.ndarray):
             >>> vigra.VigraArray.defaultAxistags(3, order='C')
             y x c
             >>> vigra.VigraArray.defaultAxistags(2, noChannels=True)
-            x y z
+            x y
             >>> vigra.VigraArray.defaultAxistags(3, noChannels=True)
             x y z
             >>> vigra.VigraArray.defaultAxistags(4, noChannels=True)
@@ -454,7 +478,29 @@ class VigraArray(numpy.ndarray):
         except:
             pass
         return str(self.view(numpy.ndarray))
-    
+          
+    def __reduce__(self):
+        '''
+            Enable pickling of a VigraArray, including axistags. The stride ordering
+            will be preserved in the unpickled array. Note that user-defined attributes
+            will not be saved and restored.
+        '''
+        # since the stride ordering is not necessarily preserved by ndarray's pickling
+        # functions, we need to normalize stride ordering, and permute to the original 
+        # ordering upon reconstruction
+        pickled = numpy.ndarray.__reduce__(self.transposeToNumpyOrder())
+        return _constructArrayFromPickle, (pickled, self.permutationFromNumpyOrder(), self.axistags.toJSON())
+        
+    @staticmethod
+    def receiveSocket(socket, flags=0, copy=True, track=False):
+        '''
+        Reconstruct an array that has been transferred via a ZMQ socket by a call to 
+        VigraArray.sendSocket(). This only works when the 'zmq' module is available.
+        The meaning of the arguments is described in zmq.Socket.recv().
+        '''
+        return _constructArrayFromZMQSocket(socket, flags, copy, track)
+
+            
     ###############################################################
     #                                                             #
     #                     array I/O and display                   #
@@ -495,6 +541,23 @@ class VigraArray(numpy.ndarray):
         import vigra.impex
 
         vigra.impex.writeHDF5(self, filenameOurGroup, pathInFile)
+
+    def sendSocket(self, socket, flags=0, copy=True, track=False):
+        '''
+        Send array and metadata over a ZMQ socket. Only works if the 'zmq' module is available.
+        The meaning of the arguments is described in zmq.Socket.send().
+        '''
+        import zmq
+        
+        transposed = self.transposeToNumpyOrder().view(numpy.ndarray)
+        metadata = dict(
+            dtype = str(transposed.dtype),
+            shape = transposed.shape,
+            permutation = self.permutationFromNumpyOrder()
+        )
+        socket.send_json(metadata, flags|zmq.SNDMORE)
+        socket.send(self.axistags.toJSON(), flags|zmq.SNDMORE)
+        return socket.send(transposed, flags, copy=copy, track=track)
 
     def imshow(self):
         '''

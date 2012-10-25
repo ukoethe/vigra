@@ -1,3 +1,6 @@
+IF(MSVC)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+ENDIF()
 
 # note special treatment of target vigranumpy_core: 
 # module name is automatically changed into vigranumpycore
@@ -32,6 +35,9 @@ VIGRA_ADD_NUMPY_MODULE(analysis SOURCES
     segmentation.cxx
     edgedetection.cxx
     interestpoints.cxx
+    accumulator.cxx
+    accumulator-region-singleband.cxx
+    accumulator-region-multiband.cxx
   VIGRANUMPY)
    
 VIGRA_ADD_NUMPY_MODULE(learning SOURCES

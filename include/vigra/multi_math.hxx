@@ -659,7 +659,7 @@ VIGRA_MULTIMATH_BINARY_OPERATOR(BitwiseOr, VIGRA_NOTHING, operator|, |, VIGRA_PR
 VIGRA_MULTIMATH_BINARY_OPERATOR(BitwiseXor, VIGRA_NOTHING, operator^, ^, VIGRA_PROMOTE)
 
 VIGRA_MULTIMATH_BINARY_OPERATOR(Atan2, std::atan2, atan2, VIGRA_COMMA, VIGRA_REALPROMOTE)
-VIGRA_MULTIMATH_BINARY_OPERATOR(Pow, std::pow, pow, VIGRA_COMMA, VIGRA_REALPROMOTE)
+VIGRA_MULTIMATH_BINARY_OPERATOR(Pow, vigra::pow, pow, VIGRA_COMMA, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_BINARY_OPERATOR(Fmod, std::fmod, fmod, VIGRA_COMMA, VIGRA_REALPROMOTE)
 VIGRA_MULTIMATH_BINARY_OPERATOR(Min, std::min, min, VIGRA_COMMA, VIGRA_PROMOTE)
 VIGRA_MULTIMATH_BINARY_OPERATOR(Max, std::max, max, VIGRA_COMMA, VIGRA_PROMOTE)
@@ -831,7 +831,7 @@ template <class U, unsigned int N, class T, class S>
 U
 sum(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::zero()) 
 { 
-    return v.sum<U>() + res;
+    return v.template sum<U>() + res;
 }
 
 template <class U, class T>
@@ -849,7 +849,7 @@ template <class U, unsigned int N, class T, class S>
 U
 product(MultiArrayView<N, T, S> const & v, U res = NumericTraits<U>::one()) 
 { 
-    return v.product<U>() * res;
+    return v.template product<U>() * res;
 }
 
 template <class T>

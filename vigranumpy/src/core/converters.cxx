@@ -37,6 +37,7 @@
 #define NO_IMPORT_ARRAY
 
 #include <Python.h>
+#include <vigra/matrix.hxx>
 #include <vigra/numpy_array.hxx>
 #include <vigra/numpy_array_converters.hxx>
 #include <boost/python.hpp>
@@ -313,6 +314,8 @@ void registerNumpyShapeConvertersOneType()
     MultiArrayShapeConverter<3, T>();
     MultiArrayShapeConverter<4, T>();
     MultiArrayShapeConverter<5, T>();
+    MultiArrayShapeConverter<6, T>();
+    MultiArrayShapeConverter<7, T>();
 }
 
 void registerNumpyShapeConvertersAllTypes()
@@ -373,12 +376,42 @@ constructArrayFromAxistags(python::object type, ArrayVector<npy_intp> const & sh
     return constructArray(tagged_shape, typeCode, init, python_ptr(type.ptr()));
 }
 
+template <class T>
+struct MatrixConverter
+{
+    typedef linalg::Matrix<T> ArrayType;
+    
+    MatrixConverter();
+        
+    // to Python
+    static PyObject* convert(ArrayType const& a)
+    {
+        return returnNumpyArray(NumpyArray<2, T>(a));
+    }
+};
+
+template <class T>
+MatrixConverter<T>::MatrixConverter()
+{
+    using namespace boost::python;
+    
+    converter::registration const * reg = converter::registry::query(type_id<ArrayType>());
+    
+    // register the to_python_converter only once
+    if(!reg || !reg->rvalue_chain)
+    {
+        to_python_converter<ArrayType, MatrixConverter>();
+    }
+}
+
 void registerNumpyArrayConverters()
 {
     NumpyTypenumConverter();
     registerNumpyShapeConvertersAllTypes();
     registerNumpyPoint2DConverter();
     NumpyAnyArrayConverter();
+    MatrixConverter<float>();
+    MatrixConverter<double>();
     
     python::docstring_options doc_options(true, true, false);
         

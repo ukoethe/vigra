@@ -242,3 +242,35 @@ for l in replace_file:
     .. _%s: ../../doc/vigra/%s
 """% (replacement[0],replacement[1])
 
+# make python accumulators documentation better (?)
+
+def processAccumulators(app, what, name, obj, options, docstringlines):
+    global_accumulators = ["MultibandFeatures3D", "SinglebandFeatures", "Vector3Features"]
+    region_accumulators = ["MultibandRegionFeatures3D", "SinglebandRegionFeatures2D", "SinglebandRegionFeatures3D", "Vector3RegionFeatures2D", "Vector3RegionFeatures3D"]
+    for acc in global_accumulators:
+        if name.find(acc) != -1 and docstringlines[0].find("Raises an exception") == -1:
+            docstringlines[:] = ["See :class:`MultibandFeatures2D`.","\n"]
+    for acc in region_accumulators:
+        if name.find(acc) != -1 and docstringlines[0].find("Raises an exception") == -1:
+            docstringlines[:] = ["See :class:`MultibandRegionFeatures2D`.","\n"]
+
+
+def skipMember(app, what, name, obj, skip, options):
+    #check if member function of accumulator class
+    skip_accumulator_members = ["MultibandFeatures3D", "MultibandRegionFeatures3D", "SinglebandFeatures", "SinglebandRegionFeatures2D", "SinglebandRegionFeatures3D", "Vector3Features", "Vector3RegionFeatures2D", "Vector3RegionFeatures3D"]
+    for acc in skip_accumulator_members:
+        if str(obj).find(acc) != -1 and str(obj).find("method") != -1:
+            #skip_member = True
+            return True
+    #make sure to document __getitem__ member of documented accumulator classes
+    doc_accumulator_members = ["MultibandFeatures2D", "MultibandRegionFeatures2D"]
+    for acc in doc_accumulator_members:
+        if name.find("__getitem__") != -1 and str(obj).find(acc) != -1:
+            return False
+    return skip
+
+
+def setup(app):
+    app.connect('autodoc-process-docstring', processAccumulators)
+    app.connect('autodoc-skip-member', skipMember)
+

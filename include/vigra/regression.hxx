@@ -384,8 +384,7 @@ class LeastAngleRegressionOptions
         */
     LeastAngleRegressionOptions & setMode(std::string mode)
     {
-        for(unsigned int k=0; k<mode.size(); ++k)
-            mode[k] = (std::string::value_type)tolower(mode[k]);
+        mode = tolower(mode);
         if(mode == "lars")
             this->lars();
         else if(mode == "lasso")

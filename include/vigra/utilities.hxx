@@ -45,6 +45,7 @@
 #include "mathutil.hxx"
 #include <string>
 #include <sstream>
+#include <cctype>
 
 namespace vigra {
 
@@ -87,7 +88,52 @@ std::string & operator<<(std::string & s, T const & t)
     return s += ss.str();
 }
 
+    /** Convert string to lower case.
+    */
+inline std::string tolower(std::string s)
+{
+    for(unsigned int k=0; k<s.size(); ++k)
+        s[k] = (std::string::value_type)std::tolower(s[k]);
+    return s;
+}
+
+inline std::string tolower(const char * s)
+{
+    return tolower(std::string(s));
+}
+
+    /** Convert string to lower case and remove any white space characters.
+    */
+inline std::string normalizeString(std::string const & s)
+{
+    std::string res;
+    
+    for(unsigned int k=0; k<s.size(); ++k)
+    {
+        if(std::isspace(s[k]))
+            continue;
+        res += (std::string::value_type)std::tolower(s[k]);
+    }
+    return res;
+}
+
+inline std::string normalizeString(const char * s)
+{
+    return normalizeString(std::string(s));
+}
+
 } // namespace vigra
+
+namespace std {
+
+template <class T1, class T2>
+ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
+{
+    s << "(" << p.first << ", " << p.second << ")";
+    return s;
+}
+
+}
 
 /*! \page Utilities Utilities
     Basic helper functionality needed throughout.

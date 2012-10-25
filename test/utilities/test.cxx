@@ -469,6 +469,9 @@ void stringTest()
     shouldEqual(asString(1), "1");
     shouldEqual(asString(2.0), "2");
     shouldEqual(asString(false), "0");
+
+    shouldEqual(tolower("AluFr iNsta< Z89>"), "alufr insta< z89>");
+    shouldEqual(normalizeString("AluFr iNsta< Z89>"), "alufrinsta<z89>");
 }
 
 struct UtilitiesTestSuite

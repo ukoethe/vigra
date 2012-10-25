@@ -939,6 +939,13 @@ public:
         return *this;
     }
 
+        /** Assignment of a scalar. Equivalent to MultiArrayView::init(v).
+         */
+    MultiArrayView & operator=(value_type const & v)
+    {
+        return init(v);
+    }
+
         /** Add-assignment of a compatible MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
          */
@@ -1063,7 +1070,7 @@ public:
 
         /** equivalent to bindInner(), when M < N.
          */
-    template <unsigned int M>
+    template <int M>
     MultiArrayView <N-M, T, StridedArrayTag> operator[] (const TinyVector<MultiArrayIndex, M> &d) const
     {
         return bindInner(d);
@@ -1206,7 +1213,8 @@ public:
     template <class U>
     MultiArrayView & init(const U & init)
     {
-        detail::copyScalarMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
+        if(hasData())
+            detail::copyScalarMultiArrayData(traverser_begin(), shape(), init, MetaInt<actual_dimension-1>());
         return *this;
     }
 
@@ -1276,8 +1284,8 @@ public:
             MultiArrayView <1, double> array1 = array3.bindOuter(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
-    template <unsigned int M>
-    MultiArrayView <N-M, T, StrideTag> bindOuter (const TinyVector <MultiArrayIndex, M> &d) const;
+    template <int M, class Index>
+    MultiArrayView <N-M, T, StrideTag> bindOuter(const TinyVector <Index, M> &d) const;
 
         /** bind the M innermost dimensions to certain indices.
             this reduces the dimensionality of the image to
@@ -1293,9 +1301,8 @@ public:
             MultiArrayView <1, double, StridedArrayTag> array1 = array3.bindInner(TinyVector<MultiArrayIndex, 2>(12, 10));
             \endcode
         */
-    template <unsigned int M>
-    MultiArrayView <N-M, T, StridedArrayTag>
-    bindInner (const TinyVector <MultiArrayIndex, M> &d) const;
+    template <int M, class Index>
+    MultiArrayView <N-M, T, StridedArrayTag> bindInner(const TinyVector <Index, M> &d) const;
 
         /** bind dimension M to index d.
             this reduces the dimensionality of the image to
@@ -1680,7 +1687,9 @@ public:
         return res;
     }
 
-        /** Find the minimum and maximum element in this array.
+        /** Find the minimum and maximum element in this array. 
+	    See \ref FeatureAccumulators for a general feature 
+	    extraction framework.
          */
     void minmax(T * minimum, T * maximum) const
     {
@@ -1693,13 +1702,16 @@ public:
         *maximum = res.second;
     }
 
-        /** Compute the mean and variance of the values in this array.
+        /** Compute the mean and variance of the values in this array. 
+	    See \ref FeatureAccumulators for a general feature 
+	    extraction framework.
          */
     template <class U>
     void meanVariance(U * mean, U * variance) const
     {
         typedef typename NumericTraits<U>::RealPromote R;
-        triple<R, R, R> res(0.0, 0.0, 0.0);
+	R zero;
+        triple<double, R, R> res(0.0, zero, zero);
         detail::reduceOverMultiArray(traverser_begin(), shape(),
                                      res, 
                                      detail::MeanVarianceReduceFunctor(),
@@ -1814,6 +1826,11 @@ public:
         /** return the pointer to the image data
          */
     pointer data () const
+    {
+        return m_ptr;
+    }
+    
+    pointer & unsafePtr()
     {
         return m_ptr;
     }
@@ -2078,9 +2095,9 @@ MultiArrayView <N, T, StrideTag>::permuteStridesDescending() const
 }
 
 template <unsigned int N, class T, class StrideTag>
-template <unsigned int M>
+template <int M, class Index>
 MultiArrayView <N-M, T, StrideTag>
-MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin () + N-M, m_stride.end ());
@@ -2101,9 +2118,9 @@ MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <MultiArrayIndex, 
 }
 
 template <unsigned int N, class T, class StrideTag>
-template <unsigned int M>
+template <int M, class Index>
 MultiArrayView <N - M, T, StridedArrayTag>
-MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <MultiArrayIndex, M> &d) const
+MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <Index, M> &d) const
 {
     TinyVector <MultiArrayIndex, M> stride;
     stride.init (m_stride.begin (), m_stride.end () - N + M);
@@ -2562,43 +2579,74 @@ public:
         return *this;
     }
 
+        /** assignment from scalar.<br>
+            Equivalent to MultiArray::init(v).
+         */
+    MultiArray & operator=(value_type const & v)
+    {
+        return this->init(v);
+    }
+
         /** Add-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to a normal assignment (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator+= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator+=(rhs);
+        if(this->hasData())
+            view_type::operator+=(rhs);
+        else
+            *this = rhs;
         return *this;
     }
 
         /** Subtract-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to an assignment of the negated rhs (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator-= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
+        if(!this->hasData())
+            this->reshape(rhs.shape());
         view_type::operator-=(rhs);
         return *this;
     }
 
         /** Multiply-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator*= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator*=(rhs);
+        if(this->hasData())
+            view_type::operator*=(rhs);
+        else
+            this->reshape(rhs.shape());
         return *this;
     }
 
         /** Divide-assignment from arbitrary MultiArrayView. Fails with
             <tt>PreconditionViolation</tt> exception when the shapes do not match.
+            If the left array has no data (hasData() is false), this function is 
+            equivalent to reshape(rhs.shape()) with zero initialisation (i.e. an empty
+            array is interpreted as a zero-array of appropriate size).
          */
     template <class U, class StrideTag>
     MultiArray &operator/= (const MultiArrayView<N, U, StrideTag> &rhs)
     {
-        view_type::operator/=(rhs);
+        if(this->hasData())
+            view_type::operator/=(rhs);
+        else
+            this->reshape(rhs.shape());
         return *this;
     }
 
@@ -3307,5 +3355,7 @@ makeRGBImageView (MultiArray<3, T> const &array)
 //@}
 
 } // namespace vigra
+
 #undef VIGRA_ASSERT_INSIDE
+
 #endif // VIGRA_MULTI_ARRAY_HXX
