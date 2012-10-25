@@ -43,22 +43,20 @@
  * The matching implementation for any given datatype is selected by
  * template meta code.
  *
- * \addtogroup VigraImpex
- * @{
  */
-
 
 #ifndef VIGRA_IMPEX_HXX
 #define VIGRA_IMPEX_HXX
-
 
 #include "stdimage.hxx"
 #include "imageinfo.hxx"
 #include "impexbase.hxx"
 
-
 namespace vigra
 {
+/** \addtogroup VigraImpex
+ * @{
+*/
     namespace detail
     {
         template <class ValueType,
@@ -622,7 +620,7 @@ namespace vigra
      * }
      * \endcode
      *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories:
+     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
      * \code
      * namespace vigra {
      *     template <class ImageIterator, class Accessor>
@@ -746,7 +744,7 @@ namespace vigra
      * }
      * \endcode
      *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories:
+     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
      * \code
      *     namespace vigra {
      *         template <class ImageIterator, class ImageAccessor>
@@ -817,10 +815,9 @@ namespace vigra
         exportImage(image.first, image.second, image.third,
                     export_info);
     }
-} // end namespace vigra
-
 
 /** @} */
 
+} // end namespace vigra
 
 #endif // VIGRA_IMPEX_HXX
