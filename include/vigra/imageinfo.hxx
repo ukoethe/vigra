@@ -365,7 +365,7 @@ class ImageExportInfo
 };
 
 // return an encoder for a given ImageExportInfo object
-VIGRA_EXPORT std::auto_ptr<Encoder> encoder( const ImageExportInfo & info );
+VIGRA_EXPORT VIGRA_UNIQUE_PTR<Encoder> encoder( const ImageExportInfo & info );
 
 /********************************************************/
 /*                                                      */
@@ -551,7 +551,7 @@ class ImageImportInfo
 };
 
 // return a decoder for a given ImageImportInfo object
-VIGRA_EXPORT std::auto_ptr<Decoder> decoder( const ImageImportInfo & info );
+VIGRA_EXPORT VIGRA_UNIQUE_PTR<Decoder> decoder( const ImageImportInfo & info );
 
 //@}
 

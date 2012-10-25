@@ -43,14 +43,6 @@
 #include "utilities.hxx"
 
 
-// #ifdef NO_UNIQUE_PTR
-#if 1
-#  define UNIQUE_PTR std::auto_ptr
-#else
-#  include <memory>
-#  define UNIQUE_PTR std::unique_ptr
-#endif
-
 namespace vigra
 {
     typedef enum

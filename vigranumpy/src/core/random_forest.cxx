@@ -101,7 +101,7 @@ RandomForest<LabelType> *
 pythonImportRandomForestFromHDF5(std::string filename, 
                                  std::string pathname = "")
 { 
-    std::auto_ptr<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
+    VIGRA_UNIQUE_PTR<RandomForest<LabelType> > rf(new RandomForest<LabelType>);
     
     vigra_precondition(rf_import_HDF5(*rf, filename, pathname),
            "RandomForest(): Unable to load from HDF5 file.");

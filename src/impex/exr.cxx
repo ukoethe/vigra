@@ -102,14 +102,14 @@ namespace vigra {
         return desc;
     }
 
-    std::auto_ptr<Decoder> ExrCodecFactory::getDecoder() const
+    VIGRA_UNIQUE_PTR<Decoder> ExrCodecFactory::getDecoder() const
     {
-        return std::auto_ptr<Decoder>( new ExrDecoder() );
+        return VIGRA_UNIQUE_PTR<Decoder>( new ExrDecoder() );
     }
 
-    std::auto_ptr<Encoder> ExrCodecFactory::getEncoder() const
+    VIGRA_UNIQUE_PTR<Encoder> ExrCodecFactory::getEncoder() const
     {
-        return std::auto_ptr<Encoder>( new ExrEncoder() );
+        return VIGRA_UNIQUE_PTR<Encoder>( new ExrEncoder() );
     }
 
     struct ExrDecoderImpl

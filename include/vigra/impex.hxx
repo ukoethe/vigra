@@ -178,7 +178,7 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraTrueType)
         {
-            UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
+            VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
             switch (pixel_t_of_string(decoder->getPixelType()))
             {
@@ -217,7 +217,7 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraFalseType)
         {
-            UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
+            VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
             switch (pixel_t_of_string(decoder->getPixelType()))
             {
@@ -408,7 +408,7 @@ namespace vigra
         {
             typedef typename ImageAccessor::value_type ImageValueType;
 
-            UNIQUE_PTR<Encoder> encoder(vigra::encoder(export_info));
+            VIGRA_UNIQUE_PTR<Encoder> encoder(vigra::encoder(export_info));
 
             std::string pixel_type(export_info.getPixelType());
             const bool downcast(negotiatePixelType(encoder->getFileType(), TypeAsString<ImageValueType>::result(), pixel_type));
@@ -509,7 +509,7 @@ namespace vigra
             typedef typename ImageAccessor::value_type ImageBaseType;
             typedef typename ImageBaseType::value_type ImageValueType;
 
-            UNIQUE_PTR<Encoder> encoder(vigra::encoder(export_info));
+            VIGRA_UNIQUE_PTR<Encoder> encoder(vigra::encoder(export_info));
 
             std::string pixel_type(export_info.getPixelType());
             const bool downcast(negotiatePixelType(encoder->getFileType(), TypeAsString<ImageValueType>::result(), pixel_type));

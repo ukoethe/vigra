@@ -282,14 +282,14 @@ namespace {
         return desc;
     }
 
-    std::auto_ptr<Decoder> GIFCodecFactory::getDecoder() const
+    VIGRA_UNIQUE_PTR<Decoder> GIFCodecFactory::getDecoder() const
     {
-        return std::auto_ptr<Decoder>( new GIFDecoder() );
+        return VIGRA_UNIQUE_PTR<Decoder>( new GIFDecoder() );
     }
 
-    std::auto_ptr<Encoder> GIFCodecFactory::getEncoder() const
+    VIGRA_UNIQUE_PTR<Encoder> GIFCodecFactory::getEncoder() const
     {
-        return std::auto_ptr<Encoder>( new GIFEncoder() );
+        return VIGRA_UNIQUE_PTR<Encoder>( new GIFEncoder() );
     }
 
     struct GIFHeader

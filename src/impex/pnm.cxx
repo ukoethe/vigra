@@ -102,14 +102,14 @@ namespace vigra {
         return desc;
     }
 
-    std::auto_ptr<Decoder> PnmCodecFactory::getDecoder() const
+    VIGRA_UNIQUE_PTR<Decoder> PnmCodecFactory::getDecoder() const
     {
-        return std::auto_ptr<Decoder>( new PnmDecoder() );
+        return VIGRA_UNIQUE_PTR<Decoder>( new PnmDecoder() );
     }
 
-    std::auto_ptr<Encoder> PnmCodecFactory::getEncoder() const
+    VIGRA_UNIQUE_PTR<Encoder> PnmCodecFactory::getEncoder() const
     {
-        return std::auto_ptr<Encoder>( new PnmEncoder() );
+        return VIGRA_UNIQUE_PTR<Encoder>( new PnmEncoder() );
     }
 
     struct PnmDecoderImpl

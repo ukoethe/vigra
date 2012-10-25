@@ -104,6 +104,10 @@
         #define VIGRA_NO_WORKING_STRINGSTREAM
     #endif
     
+    #if _MSC_VER < 1600
+        #define VIGRA_NO_UNIQUE_PTR
+    #endif
+    
     #define VIGRA_NEED_BIN_STREAMS
     
     #ifndef VIGRA_ENABLE_ANNOYING_WARNINGS
@@ -138,6 +142,10 @@
     #pragma GCC diagnostic ignored "-Wstrict-aliasing"  
     #pragma GCC diagnostic ignored "-Wshadow"  
     
+    #if !defined(__GXX_EXPERIMENTAL_CXX0X) && __cplusplus < 201103L
+        #define VIGRA_NO_UNIQUE_PTR
+    #endif
+
 #endif  // __GNUC__
 
 ///////////////////////////////////////////////////////////
@@ -212,6 +220,12 @@
 
 #ifndef VIGRA_EXPORT
     #define VIGRA_EXPORT
+#endif
+
+#ifdef VIGRA_NO_UNIQUE_PTR
+#  define VIGRA_UNIQUE_PTR  std::auto_ptr
+#else
+#  define VIGRA_UNIQUE_PTR  std::unique_ptr
 #endif
 
 namespace vigra {

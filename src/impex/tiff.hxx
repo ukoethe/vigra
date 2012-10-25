@@ -56,8 +56,8 @@ namespace vigra {
     struct TIFFCodecFactory : public CodecFactory
     {
         CodecDesc getCodecDesc() const;
-        std::auto_ptr<Decoder> getDecoder() const;
-        std::auto_ptr<Encoder> getEncoder() const;
+        VIGRA_UNIQUE_PTR<Decoder> getDecoder() const;
+        VIGRA_UNIQUE_PTR<Encoder> getEncoder() const;
     };
 
     class TIFFDecoderImpl;

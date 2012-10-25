@@ -81,14 +81,14 @@ CodecDesc BmpCodecFactory::getCodecDesc() const
     return desc;
 }
 
-std::auto_ptr<Decoder> BmpCodecFactory::getDecoder() const
+VIGRA_UNIQUE_PTR<Decoder> BmpCodecFactory::getDecoder() const
 {
-    return std::auto_ptr<Decoder>( new BmpDecoder() );
+    return VIGRA_UNIQUE_PTR<Decoder>( new BmpDecoder() );
 }
 
-std::auto_ptr<Encoder> BmpCodecFactory::getEncoder() const
+VIGRA_UNIQUE_PTR<Encoder> BmpCodecFactory::getEncoder() const
 {
-    return std::auto_ptr<Encoder>( new BmpEncoder() );
+    return VIGRA_UNIQUE_PTR<Encoder>( new BmpEncoder() );
 }
 
 struct BmpFileHeader

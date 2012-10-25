@@ -94,7 +94,7 @@ namespace vigra {
     is no longer needed, the appropriate close function must be called. However, if a function is 
     aborted by an exception, this is difficult to ensure. Class HDF5Handle is a smart pointer that 
     solves this problem by calling the close function in the destructor (This is analogous to how 
-    std::auto_ptr calls 'delete' on the contained pointer). A pointer to the close function must be 
+    VIGRA_UNIQUE_PTR calls 'delete' on the contained pointer). A pointer to the close function must be 
     passed to the constructor, along with an error message that is raised when creation/opening fails. 
     
     Since HDF5Handle objects are convertible to hid_t, they can be used in the code in place 
@@ -160,7 +160,7 @@ public:
     }
 
         /** \brief Copy constructor.
-            Hands over ownership of the RHS handle (analogous to std::auto_ptr).
+            Hands over ownership of the RHS handle (analogous to VIGRA_UNIQUE_PTR).
         */
     HDF5Handle(HDF5Handle const & h)
     : handle_( h.handle_ ),
@@ -171,7 +171,7 @@ public:
     
         /** \brief Assignment.
             Calls close() for the LHS handle and hands over ownership of the 
-            RHS handle (analogous to std::auto_ptr).
+            RHS handle (analogous to VIGRA_UNIQUE_PTR).
         */
     HDF5Handle & operator=(HDF5Handle const & h)
     {

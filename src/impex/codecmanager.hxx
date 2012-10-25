@@ -76,7 +76,7 @@ namespace vigra
         std::vector<std::string> supportedFileExtensions();
 
         // look up decoder from the list, then return it
-        std::auto_ptr<Decoder>
+        VIGRA_UNIQUE_PTR<Decoder>
         getDecoder( const std::string & fileName,
                     const std::string & fileType = "undefined",
                     unsigned int imageIndex = 0 ) const;
@@ -88,7 +88,7 @@ namespace vigra
                         const std::string & mode = "w" ) const;
 
         // look up encoder from the list, then return it
-        std::auto_ptr<Encoder>
+        VIGRA_UNIQUE_PTR<Encoder>
         getEncoder( const std::string & fileName,
                     const std::string & fileType = "undefined",
                     const std::string & mode = "w" ) const;

@@ -472,7 +472,7 @@ struct PythonAccumulator
     
     PythonAccumulator * create() const
     {
-        std::auto_ptr<PythonAccumulator> a(new PythonAccumulator(permutation_));
+        VIGRA_UNIQUE_PTR<PythonAccumulator> a(new PythonAccumulator(permutation_));
         pythonActivateTags(*a, activeNames());
         return a.release();
     }
@@ -574,7 +574,7 @@ template <class Accumulator, unsigned int ndim, class T>
 typename Accumulator::PythonBase *
 pythonInspect(NumpyArray<ndim, T> in, python::object tags)
 {
-    std::auto_ptr<Accumulator> res(new Accumulator);
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
     if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
@@ -590,7 +590,7 @@ typename Accumulator::PythonBase *
 pythonInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in, python::object tags,
                            python::object histogramRange, int binCount)
 {
-    std::auto_ptr<Accumulator> res(new Accumulator);
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
     if(pythonActivateTags(*res, tags))
     {
         pythonHistogramOptions(*res, histogramRange, binCount);
@@ -609,7 +609,7 @@ pythonInspectMultiband(NumpyArray<ndim, Multiband<T> > in, python::object tags)
 {
     typedef typename CoupledIteratorType<ndim, Multiband<T> >::type Iterator;
     
-    std::auto_ptr<Accumulator> res(new Accumulator);
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator);
     if(pythonActivateTags(*res, tags))
     {
         PyAllowThreads _pythread;
@@ -633,7 +633,7 @@ pythonRegionInspect(NumpyArray<ndim, T> in,
     
     TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
     
-    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
         if(ignore_label != python::object())
@@ -660,7 +660,7 @@ pythonRegionInspectWithHistogram(NumpyArray<ndim, Singleband<T> > in,
     
     TinyVector<npy_intp, ndim> permutation = in.template permuteLikewise<ndim>();
     
-    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
         pythonHistogramOptions(*res, histogramRange, binCount);
@@ -688,7 +688,7 @@ pythonRegionInspectMultiband(NumpyArray<ndim, Multiband<T> > in,
     
     TinyVector<npy_intp, ndim-1> permutation = in.template permuteLikewise<ndim-1>();
     
-    std::auto_ptr<Accumulator> res(new Accumulator(permutation));
+    VIGRA_UNIQUE_PTR<Accumulator> res(new Accumulator(permutation));
     if(pythonActivateTags(*res, tags))
     {
         if(ignore_label != python::object())

@@ -325,14 +325,14 @@ namespace vigra {
         return desc;
     }
 
-    std::auto_ptr<Decoder> ViffCodecFactory::getDecoder() const
+    VIGRA_UNIQUE_PTR<Decoder> ViffCodecFactory::getDecoder() const
     {
-        return std::auto_ptr<Decoder>( new ViffDecoder() );
+        return VIGRA_UNIQUE_PTR<Decoder>( new ViffDecoder() );
     }
 
-    std::auto_ptr<Encoder> ViffCodecFactory::getEncoder() const
+    VIGRA_UNIQUE_PTR<Encoder> ViffCodecFactory::getEncoder() const
     {
-        return std::auto_ptr<Encoder>( new ViffEncoder() );
+        return VIGRA_UNIQUE_PTR<Encoder>( new ViffEncoder() );
     }
 
     class ViffHeader

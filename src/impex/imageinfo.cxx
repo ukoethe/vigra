@@ -472,20 +472,28 @@ ImageExportInfo & ImageExportInfo::setICCProfile(
 }
 
 // return an encoder for a given ImageExportInfo object
-std::auto_ptr<Encoder> encoder( const ImageExportInfo & info )
+VIGRA_UNIQUE_PTR<Encoder> encoder( const ImageExportInfo & info )
 {
-    std::auto_ptr<Encoder> enc;
+    VIGRA_UNIQUE_PTR<Encoder> enc;
 
     std::string filetype = info.getFileType();
     if ( filetype != "" ) {
         validate_filetype(filetype);
-        std::auto_ptr<Encoder> enc2
+        VIGRA_UNIQUE_PTR<Encoder> enc2
             = getEncoder( std::string( info.getFileName() ), filetype, std::string( info.getMode() ) );
+#ifdef VIGRA_NO_UNIQUE_PTR
         enc = enc2;
+#else
+        enc.swap(enc2);
+#endif
     } else {
-        std::auto_ptr<Encoder> enc2
+        VIGRA_UNIQUE_PTR<Encoder> enc2
             = getEncoder( std::string( info.getFileName() ), "undefined", std::string( info.getMode() ) );
+#ifdef VIGRA_NO_UNIQUE_PTR
         enc = enc2;
+#else
+        enc.swap(enc2);
+#endif
     }
 
     std::string comp = info.getCompression();
@@ -680,7 +688,7 @@ const ImageImportInfo::ICCProfile & ImageImportInfo::getICCProfile() const
 
 void ImageImportInfo::readHeader_()
 {
-    std::auto_ptr<Decoder> decoder = getDecoder(m_filename, "undefined", m_image_index);
+    VIGRA_UNIQUE_PTR<Decoder> decoder = getDecoder(m_filename, "undefined", m_image_index);
     m_num_images = decoder->getNumImages();
 
     m_filetype = decoder->getFileType();
@@ -700,7 +708,7 @@ void ImageImportInfo::readHeader_()
 }
 
 // return a decoder for a given ImageImportInfo object
-std::auto_ptr<Decoder> decoder( const ImageImportInfo & info )
+VIGRA_UNIQUE_PTR<Decoder> decoder( const ImageImportInfo & info )
 {
     std::string filetype = info.getFileType();
     validate_filetype(filetype);
