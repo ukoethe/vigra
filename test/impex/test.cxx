@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                 Copyright 2004 by Ullrich Koethe                     */
+/*           Copyright 2004-2012 by Ullrich Koethe                      */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -39,6 +39,7 @@
 #include <cstring>
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
+#include "vigra/impexalpha.hxx"
 #include "unittest.hxx"
 #include "vigra/multi_array.hxx"
 
@@ -1468,6 +1469,156 @@ public:
     }
 };
 
+class GrayscaleImportExportAlphaTest
+{
+public:
+    GrayscaleImportExportAlphaTest()
+    {
+        vigra::ImageImportInfo info("lenna_masked_gray.tif");
+
+        image_.resize(info.size());
+        alpha_.resize(info.size());
+        importImageAlpha(info, destImage(image_), destImage(alpha_));
+    }
+
+    void testFile(const char* filename);
+
+    void testTIFF()
+    {
+        const char filename[] = "res.tif";
+
+#if defined(HasTIFF)
+        testFile(filename);
+#else
+        failCodec(image_, vigra::ImageExportInfo(filename));
+#endif
+    }
+
+    void testPNG()
+    {
+        const char filename[] = "res.png";
+
+#if defined(HasPNG)
+        testFile(filename);
+#else
+        failCodec(image_, vigra::ImageExportInfo(filename));
+#endif
+    }
+
+private:
+    BImage image_;
+    BImage alpha_;
+};
+
+void
+GrayscaleImportExportAlphaTest::testFile(const char* filename)
+{
+    exportImageAlpha(srcImageRange(image_), srcImage(alpha_), vigra::ImageExportInfo(filename));
+
+    vigra::ImageImportInfo info(filename);
+
+    should(info.width() == image_.width());
+    should(info.height() == image_.height());
+    should(!info.isColor());
+    should(!strcmp(info.getPixelType(), "UINT8"));
+    should(info.numBands() == 2);
+
+    should(info.width() == alpha_.width());
+    should(info.height() == alpha_.height());
+    should(info.numExtraBands() == 1);
+
+    BImage image(info.size());
+    BImage alpha(info.size());
+
+    importImageAlpha(info, destImage(image), destImage(alpha));
+
+    for (BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    {
+        should(*x == 255);
+        should(*x == *xx);
+    }
+
+    for (BImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    {
+        should(*x == *xx);
+    }
+}
+
+class RGBImportExportAlphaTest
+{
+public:
+    RGBImportExportAlphaTest()
+    {
+        vigra::ImageImportInfo info("lenna_masked_color.tif");
+
+        image_.resize(info.size());
+        alpha_.resize(info.size());
+        importImageAlpha(info, destImage(image_), destImage(alpha_));
+    }
+
+    void testFile(const char* filename);
+
+    void testTIFF()
+    {
+        const char filename[] = "res.tif";
+
+#if defined(HasTIFF)
+        testFile(filename);
+#else
+        failCodec(image_, vigra::ImageExportInfo(filename));
+#endif
+    }
+
+    void testPNG()
+    {
+        const char filename[] = "res.png";
+
+#if defined(HasPNG)
+        testFile(filename);
+#else
+        failCodec(image_, vigra::ImageExportInfo(filename));
+#endif
+    }
+
+private:
+    BRGBImage image_;
+    BImage alpha_;
+};
+
+void
+RGBImportExportAlphaTest::testFile(const char* filename)
+{
+    exportImageAlpha(srcImageRange(image_), srcImage(alpha_), vigra::ImageExportInfo(filename));
+
+    vigra::ImageImportInfo info(filename);
+
+    should(info.width() == image_.width());
+    should(info.height() == image_.height());
+    should(info.isColor());
+    should(!strcmp(info.getPixelType(), "UINT8"));
+    should(info.numBands() == 4);
+
+    should(info.width() == alpha_.width());
+    should(info.height() == alpha_.height());
+    should(info.numExtraBands() == 1);
+
+    BRGBImage image(info.size());
+    BImage alpha(info.size());
+
+    importImageAlpha(info, destImage(image), destImage(alpha));
+
+    for (BImage::const_iterator x = alpha_.begin(), xx = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    {
+        should(*x == 255);
+        should(*x == *xx);
+    }
+
+    for (BRGBImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    {
+        should(*x == *xx);
+    }
+}
+
 struct ImageImportExportTestSuite : public vigra::test_suite
 {
     ImageImportExportTestSuite()
@@ -1558,6 +1709,12 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ImageExportImportFailureTest::testSUNImport));
         add(testCase(&ImageExportImportFailureTest::testVIFFExport));
         add(testCase(&ImageExportImportFailureTest::testVIFFImport));
+
+        // alpha-channel tests
+        add(testCase(&GrayscaleImportExportAlphaTest::testTIFF));
+        add(testCase(&GrayscaleImportExportAlphaTest::testPNG));
+        add(testCase(&RGBImportExportAlphaTest::testTIFF));
+        add(testCase(&RGBImportExportAlphaTest::testPNG));
     }
 };
 
