@@ -142,7 +142,7 @@
     #pragma GCC diagnostic ignored "-Wstrict-aliasing"  
     #pragma GCC diagnostic ignored "-Wshadow"  
     
-    #if !defined(__GXX_EXPERIMENTAL_CXX0X) && __cplusplus < 201103L
+    #if !defined(__GXX_EXPERIMENTAL_CXX0X__) && __cplusplus < 201103L
         #define VIGRA_NO_UNIQUE_PTR
     #endif
 
