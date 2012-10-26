@@ -547,7 +547,8 @@ class HDF5File
         */
     enum OpenMode {
         New,           // Create new empty file (existing file will be deleted).
-        Open           // Open file. Create if not existing.
+        Open,          // Open file. Create if not existing.
+        OpenReadOnly   // Open file in read-only mode.
     };
 
         /** \brief Default constructor.
@@ -1643,6 +1644,10 @@ class HDF5File
         {
             fclose( pFile );
             fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDWR, H5P_DEFAULT);
+        }
+        else if(mode == OpenReadOnly) {
+            fclose( pFile );
+            fileId = H5Fopen(filePath.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         }
         else
         {
