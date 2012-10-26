@@ -666,7 +666,7 @@ struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
         static const std::string name = normalizeString(HEAD::name());
         if(name == tag)
         {
-            v.exec<HEAD>(a);
+            v.template exec<HEAD>(a);
             return true;
         }
         else
