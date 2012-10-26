@@ -578,6 +578,14 @@ public:
         std::string read_string2 = "";
         file.read("set_string2",read_string2);
         should(read_string2 == "abcdef");
+       
+        // test read-only opening
+        file.close();
+        file.open(file_name, HDF5File::OpenReadOnly);
+        read_string2 = "";
+        file.read("set_string2",read_string2);
+        should(read_string2 == "abcdef");
+        file.close();
     }
 
     // reading and writing attributes. get handles of groups, datasets and attributes
