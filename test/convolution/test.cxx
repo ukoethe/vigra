@@ -269,7 +269,6 @@ struct ConvolutionTest
         shouldEqual(k[0], -2);
         shouldEqual(k[1], -2);
 
-#ifndef __clang__
         try
         {
             k.initExplicitly(-1,1) = 1, 2;
@@ -281,7 +280,6 @@ struct ConvolutionTest
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
-#endif
 
         try
         {

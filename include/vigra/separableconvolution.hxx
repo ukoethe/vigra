@@ -1309,13 +1309,11 @@ class Kernel1D
           norm_(norm)
         {}
 
-        ~InitProxy()
+        ~InitProxy() throw(PreconditionViolation)
         {
-#ifndef __clang__  // clang doesn't like exceptions in destructors
             vigra_precondition(count_ == 1 || count_ == sum_,
                   "Kernel1D::initExplicitly(): "
                   "Wrong number of init values.");
-#endif
         }
 
         InitProxy & operator,(value_type const & v)
@@ -1327,15 +1325,11 @@ class Kernel1D
 
             --count_;
 
-#ifdef __clang__  // clang doesn't like exceptions in destructors
-            vigra_precondition(count_ > 0,
-                  "Kernel1D::initExplicitly(): "
-                  "Wrong number of init values.");
-#endif
-
-            ++iter_;
-            *iter_ = v;
-
+            if(count_ > 0)
+	    {
+                ++iter_;
+                *iter_ = v;
+            }
             return *this;
         }
 
