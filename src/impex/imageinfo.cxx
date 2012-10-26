@@ -490,7 +490,7 @@ VIGRA_UNIQUE_PTR<Encoder> encoder( const ImageExportInfo & info )
     if ( comp != "" ) {
 
         // check for quality parameter of JPEG compression
-        int quality = -1;
+        int quality = 0;
 
         // possibility 1: quality specified as "JPEG QUALITY=N" or "JPEG-ARITH QUALITY=N"
         // possibility 2 (deprecated): quality specified as just a number "10"
@@ -505,7 +505,7 @@ VIGRA_UNIQUE_PTR<Encoder> encoder( const ImageExportInfo & info )
 
         std::istringstream compstream(comp.substr(start));
         compstream >> quality;
-        if ( quality != -1 )
+        if ( quality != 0 )
         {
             if(parsed_comp == "")
                 parsed_comp = "JPEG";
