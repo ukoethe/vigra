@@ -761,6 +761,26 @@ HTML_FOOTER            = @PROJECT_SOURCE_DIR@/docsrc/footer.html
 
 HTML_STYLESHEET        = @PROJECT_SOURCE_DIR@/docsrc/vigra.css
 
+# The HTML_EXTRA_STYLESHEET tag can be used to specify an additional
+# user-defined cascading style sheet that is included after the standard
+# style sheets created by doxygen. Using this option one can overrule
+# certain style aspects. This is preferred over using HTML_STYLESHEET
+# since it does not replace the standard style sheet and is therefor more
+# robust against future updates. Doxygen will copy the style sheet file to
+# the output directory.
+
+HTML_EXTRA_STYLESHEET  = @PROJECT_SOURCE_DIR@/docsrc/vigra_1_8_2.css
+
+# The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
+# other source files which should be copied to the HTML output directory. Note
+# that these files will be copied to the base HTML output directory. Use the
+# $relpath$ marker in the HTML_HEADER and/or HTML_FOOTER files to load these
+# files. In the HTML_STYLESHEET file, use the file name only. Also note that
+# the files will be copied as-is; there are no commands or markers available.
+
+HTML_EXTRA_FILES       = @PROJECT_SOURCE_DIR@/src/examples/lenna_color.gif \
+                         @PROJECT_SOURCE_DIR@/src/examples/lenna_gray.gif
+
 # If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, 
 # files or namespaces will be aligned in HTML using tables. If set to 
 # NO a bullet list will be used.
@@ -1205,7 +1225,7 @@ TAGFILES               =
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create 
 # a tag file that is based on the input files it reads.
 
-GENERATE_TAGFILE       = 
+GENERATE_TAGFILE       = tagfile.tag
 
 # If the ALLEXTERNALS tag is set to YES all external classes will be listed 
 # in the class index. If set to NO only the inherited external classes 

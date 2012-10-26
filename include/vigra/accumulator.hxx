@@ -64,8 +64,9 @@ The namespace <tt>vigra::acc</tt> provides the function \ref vigra::acc::extract
 The function \ref acc::extractFeatures() "extractFeatures()" scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
 
 <b>\#include</b> \<vigra/accumulator.hxx\>
+
     
-    <b>Basic statistics:</b>
+<b>Basic statistics:</b>
     - PowerSum<N> (computes @f$ \sum_i x_i^N @f$)
     - AbsPowerSum<N> (computes @f$ \sum_i |x_i|^N @f$)
     - Skewness, UnbiasedSkewness
@@ -154,7 +155,7 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
 
     The Accumulators can also be used with vector-valued data (vigra::RGBValue, vigra::TinyVector, vigra::MultiArray or vigra::MultiArrayView):
     
-    \code 
+    \code
     typedef vigra::RGBValue<double> DataType;
     AccumulatorChain<DataType, Select<...> > a;
     ...
@@ -163,13 +164,11 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
     To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), the accumulator chain can be used with \ref CoupledScanOrderIterator. The coupled iterator provides simultaneous access to several images (e.g. weight and data) and pixel coordinates. The first parameter in the accumulator chain is the type of the CoupledHandle. The indeces at which the CoupledHandle holds the data, weights etc. can be specified inside the Select wrapper. 
 
 These <b>index specifiers</b> are: (INDEX is of type int)
-
     - DataArg<INDEX>: CoupledHandle holds data at index 'INDEX' (default INDEX=1)
     - LabelArg<INDEX>: CoupledHandle holds labels at index 'INDEX' (default INDEX=2)
     - WeightArg<INDEX>: CoupledHandle holds weights at index 'INDEX' (default INDEX=outermost index)
 
 Pixel coordinates are always at index 0.
-
     \code
     using namespace vigra::acc;
     vigra::MultiArray<3, double> data(...), weights(...);

@@ -3,6 +3,7 @@
 import re
 import glob
 import sys
+import xml.etree.ElementTree as ET
 
 if len(sys.argv) != 2:
     print 'usage: python makeFunctionIndex.py directory'
@@ -10,51 +11,49 @@ if len(sys.argv) != 2:
 
 path = str(sys.argv[1])
 
+
 def getClassList():
-    text = open(path + "/classes.html").read()
-    classList = re.findall(r'<a class="el" href="(class[^"]+\.html)">([^<&]+)*</a> \(<a class="el" href="namespace[^"]+">([^<]+)</a>\)', text)
-    classList.sort(lambda a,b: cmp(a[1], b[1]))
-    return classList
+    tree = ET.parse(path + "/../../../vigra_build/docsrc/tagfile.tag")
+    root = tree.getroot()
 
-def getNamespaceList():
-    text = open(path + "/namespaces.html").read()
-    return re.findall(r'<tr><td class="indexkey"><a class="el" href="([^"]+)">([^<]+)</a>', text)
+    class_list = []
+    for classes in root.findall("*[@kind='class']"):
+        long_name = classes.find('name').text
+        # only classes from vigra namespace
+        if long_name[0:5] == 'vigra':
+            html = classes.find('filename').text
+            short_name = long_name[long_name.rfind('::')+2:]
+            namespace = long_name[:long_name.rfind('::')]
+            class_list.append([html, short_name, namespace])
 
-def getFunctionList(namespaceList):
-    functionList = []
-    for namespace in namespaceList:
-        text = open(path + '/' + namespace[0]).read()
-        # start of function section in the namespace file
-        start = re.search(r'<tr><td colspan="2">(?:<br>|)?<h2>(?:<a name="func-members"></a>\n)?Functions</h2></td></tr>', text)
-        if not start:
-            continue # no functions in this namespace
-        # end of function section in the namespace file
-        end = re.search(r'<tr><td colspan="2">(?:<br>)?<h2>(?:<a name="var-members"></a>\n)?Variables</h2></td></tr>', text)
-        if not end:
-            end = re.search(r'<hr/?><a name="_?details"[^>]*></a><h2[^>]*>Detailed Description</h2>', text)
-        # extract the function section from the namespace file
-        text = text[start.regs[0][0]:end.regs[0][0]]
-        
-        # split at the function signatures to get sections for each individual function
-        functionPieces = re.split(r'</a> \([^)]*\)</td></tr>', text)
-        for f in functionPieces:
-            # the rightmost hyperlink contains the function name and link address
-            f = f[f.rfind('<a class="el" href='):]
-            functionList += re.findall(r'<a class="el" href="([^"]+)">([^<]+)$', f)
+    class_list.sort(lambda a,b: cmp(a[1], b[1]))
+    return class_list
+
+
+
+def getFunctionList():
+    tree = ET.parse(path + "/../../../vigra_build/docsrc/tagfile.tag")
+    root = tree.getroot()
+
+    function_list = []
+    for function in root.findall("*[@kind='namespace']/*[@kind='function']"):
+        name = function.find('name').text
+        anchorfile = function.find('anchorfile').text
+        anchor = function.find('anchor').text
+        html = anchorfile + '#' + anchor
+        function_list.append((html, name))
 
     # add special documentation for argument object factories
     for k in ['srcImageRange', 'srcImage', 'destImageRange', 'destImage', 'maskImage']:
-        functionList.append(('group__ImageIterators.html#ImageBasedArgumentObjectFactories', k))
+        function_list.append(('group__ImageIterators.html#ImageBasedArgumentObjectFactories', k))
     for k in ['srcMultiArrayRange', 'srcMultiArray', 'destMultiArrayRange', 'destMultiArray']:
-        functionList.append(('group__ImageIterators.html#MultiArrayBasedArgumentObjectFactories', k))
+        function_list.append(('group__ImageIterators.html#MultiArrayBasedArgumentObjectFactories', k))
     for k in ['srcIterRange', 'srcIter', 'destIterRange', 'destIter', 'maskIter']:
-        functionList.append(('group__ImageIterators.html#IteratorBasedArgumentObjectFactories', k))
+        function_list.append(('group__ImageIterators.html#IteratorBasedArgumentObjectFactories', k))
 
-    functionList.sort(lambda a,b: cmp(a[1], b[1]))
-    
-    functionList = disambiguateOverloadedFunctions(functionList)
-
-    return functionList
+    function_list.sort(lambda a,b: cmp(a[1], b[1]))
+    function_list = disambiguateOverloadedFunctions(function_list)
+    return function_list
 
 def addHeading(index, initial):    
     index = index + '<p><a name="index_' + initial + \
@@ -83,7 +82,8 @@ def disambiguateOverloadedFunctions(functionList):
         functionList[i] = functionList[i] + (group,)
     
     return functionList
-    
+
+
 def generateFunctionIndex(functionList):
     index = ""
     initials = []
@@ -130,9 +130,9 @@ def generateFunctionIndex(functionList):
 
     open(path + "/functionindex.html", 'w+').write(text)
 
+
 classList = getClassList()
-namespaceList = getNamespaceList()
-functionList = getFunctionList(namespaceList)
+functionList = getFunctionList()
 generateFunctionIndex(functionList)
 
 # Export class and function list to c_api_replaces.txt for 
