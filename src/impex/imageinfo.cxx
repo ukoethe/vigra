@@ -479,9 +479,11 @@ VIGRA_UNIQUE_PTR<Encoder> encoder( const ImageExportInfo & info )
     std::string filetype = info.getFileType();
     if ( filetype != "" ) {
         validate_filetype(filetype);
-        std::swap(enc, getEncoder( std::string( info.getFileName() ), filetype, std::string( info.getMode() ) ));
+        VIGRA_UNIQUE_PTR<Encoder> enc2 = getEncoder( std::string( info.getFileName() ), filetype, std::string( info.getMode() ) );
+        std::swap(enc, enc2);
     } else {
-        std::swap(enc, getEncoder( std::string( info.getFileName() ), "undefined", std::string( info.getMode() ) ));
+        VIGRA_UNIQUE_PTR<Encoder> enc2 = getEncoder( std::string( info.getFileName() ), "undefined", std::string( info.getMode() ) );
+        std::swap(enc, enc2);
     }
 
     std::string comp = info.getCompression();
