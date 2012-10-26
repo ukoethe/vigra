@@ -1329,7 +1329,7 @@ class Kernel1D
             --count_;
 
             if(count_ > 0)
-	    {
+            {
                 ++iter_;
                 *iter_ = v;
             }
