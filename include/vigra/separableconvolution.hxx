@@ -1309,7 +1309,7 @@ class Kernel1D
           norm_(norm)
         {}
 
-        ~InitProxy() throw(PreconditionViolation)
+        ~InitProxy() throw(...)
         {
             vigra_precondition(count_ == 1 || count_ == sum_,
                   "Kernel1D::initExplicitly(): "
