@@ -807,7 +807,14 @@ struct AccumulatorTest
                 -0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
                  0.7071067811865476, -0.4082482904638629, -0.5773502691896257,
                  0.0               ,  0.816496580927726,  -0.5773502691896257 };
-            Var ev(3,3, eigenvectorData),
+            double eigenvectorDataSwapped[] = {
+                -0.4082482904638629, -0.7071067811865476, -0.5773502691896257,
+                -0.4082482904638629,  0.7071067811865476, -0.5773502691896257,
+                 0.816496580927726,   0.0               , -0.5773502691896257 };
+            
+            Var ev(3,3, closeAtTolerance(seigen.second(0,0), -0.7071067811865476, 1e-15)
+                                ? eigenvectorData
+                                : eigenvectorDataSwapped),
                 eps(3, 3, 1e-15);
             shouldEqualTolerance(ev, seigen.second, W(1e-15));
             shouldEqualTolerance(ev, get<Coord<Principal<CoordinateSystem> > >(a), W(1e-15));

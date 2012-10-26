@@ -274,7 +274,7 @@ public:
         */
     template <unsigned Int2, unsigned Frac2>
     FixedPoint(const FixedPoint<Int2, Frac2> &other)
-    : value(detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<Frac2 - FractionalBits>(other.value))
+    : value(detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<int(Frac2) - int(FractionalBits)>(other.value))
     {
         VIGRA_STATIC_ASSERT((FixedPoint_overflow_error__More_than_31_bits_requested<(IntBits + FractionalBits)>));
         VIGRA_STATIC_ASSERT((FixedPoint_assignment_error__Target_object_has_too_few_integer_bits<(IntBits >= Int2)>));
@@ -319,7 +319,7 @@ public:
     FixedPoint & operator=(const FixedPoint<Int2, Frac2> &other)
     {
         VIGRA_STATIC_ASSERT((FixedPoint_assignment_error__Target_object_has_too_few_integer_bits<(IntBits >= Int2)>));
-        value = detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<Frac2 - FractionalBits>(other.value);
+        value = detail::FPAssignWithRound<(Frac2 > FractionalBits)>::template exec<int(Frac2) - int(FractionalBits)>(other.value);
         return *this;
     }
 

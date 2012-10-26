@@ -1292,8 +1292,8 @@ struct LabelDispatch
     {
         if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
         {
-            next_.pass<N>(t);
-            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t);
+            next_.template pass<N>(t);
+            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].template pass<N>(t);
         }
     }
     
@@ -1302,8 +1302,8 @@ struct LabelDispatch
     {
         if(LabelIndexSelector<FindLabelIndex>::exec(t) != ignore_label_)
         {
-            next_.pass<N>(t, weight);
-            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].pass<N>(t, weight);
+            next_.template pass<N>(t, weight);
+            regions_[LabelIndexSelector<FindLabelIndex>::exec(t)].template pass<N>(t, weight);
         }
     }
     
@@ -1475,35 +1475,35 @@ struct AccumulatorFactory
         
         void setDirty() const
         {
-            next_.setDirtyImpl<index>();
+            next_.template setDirtyImpl<index>();
         }
         
         template <int INDEX>
         void setDirtyImpl() const
         {
-            next_.setDirtyImpl<INDEX>();
+            next_.template setDirtyImpl<INDEX>();
         }
         
         void setClean() const
         {
-            next_.setCleanImpl<index>();
+            next_.template setCleanImpl<index>();
         }
         
         template <int INDEX>
         void setCleanImpl() const
         {
-            next_.setCleanImpl<INDEX>();
+            next_.template setCleanImpl<INDEX>();
         }
         
         bool isDirty() const
         {
-            return next_.isDirtyImpl<index>();
+            return next_.template isDirtyImpl<index>();
         }
         
         template <int INDEX>
         bool isDirtyImpl() const
         {
-            return next_.isDirtyImpl<INDEX>();
+            return next_.template isDirtyImpl<INDEX>();
         }
         
         void reset()
@@ -1571,14 +1571,14 @@ struct AccumulatorFactory
         template <unsigned N, class T>
         void pass(T const & t)
         {
-            this->next_.pass<N>(t);
+            this->next_.template pass<N>(t);
             DecoratorImpl<Accumulator, N, allowRuntimeActivation>::exec(*this, t);
         }
         
         template <unsigned N, class T>
         void pass(T const & t, double weight)
         {
-            this->next_.pass<N>(t, weight);
+            this->next_.template pass<N>(t, weight);
             DecoratorImpl<Accumulator, N, allowRuntimeActivation>::exec(*this, t, weight);
         }
         
@@ -2245,7 +2245,7 @@ class DynamicAccumulatorChainArray
     template <class TAG>
     void activate()
     {
-        this->next_.activate<TAG>();
+        this->next_.template activate<TAG>();
     }
     
     /** \copydoc DynamicAccumulatorChain::activateAll() */
@@ -2269,7 +2269,7 @@ class DynamicAccumulatorChainArray
     template <class TAG>
     bool isActive() const
     {
-        return this->next_.isActive<TAG>();
+        return this->next_.template isActive<TAG>();
     }
     
     /** \copydoc DynamicAccumulatorChain::activeNames() */
@@ -2669,7 +2669,7 @@ template <class Tag, class A>
 inline void
 activate(A & a)
 {
-    a.activate<Tag>();
+    a.template activate<Tag>();
 }
 
     // check if the dynamic accumulator specified by Tag is active
@@ -2680,7 +2680,7 @@ template <class Tag, class A>
 inline bool
 isActive(A const & a)
 {
-    return a.isActive<Tag>();
+    return a.template isActive<Tag>();
 }
 
 /****************************************************************************/
