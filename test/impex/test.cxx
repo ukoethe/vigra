@@ -1474,11 +1474,19 @@ class GrayscaleImportExportAlphaTest
 public:
     GrayscaleImportExportAlphaTest()
     {
+#if defined(HasTIFF)
         vigra::ImageImportInfo info("lenna_masked_gray.tif");
-
+        
         image_.resize(info.size());
         alpha_.resize(info.size());
         importImageAlpha(info, destImage(image_), destImage(alpha_));
+#else
+        image_.resize(Size2D(20,10));
+        alpha_.resize(image_.size());
+        
+        image_.init(10);
+        alpha_.init(255);
+#endif
     }
 
     void testFile(const char* filename);
@@ -1549,11 +1557,19 @@ class RGBImportExportAlphaTest
 public:
     RGBImportExportAlphaTest()
     {
+#if defined(HasTIFF)
         vigra::ImageImportInfo info("lenna_masked_color.tif");
 
         image_.resize(info.size());
         alpha_.resize(info.size());
         importImageAlpha(info, destImage(image_), destImage(alpha_));
+#else
+        image_.resize(Size2D(20,10));
+        alpha_.resize(image_.size());
+        
+        image_.init(RGBValue<unsigned char>(10,20,30));
+        alpha_.init(255);
+#endif
     }
 
     void testFile(const char* filename);
