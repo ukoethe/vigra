@@ -39,18 +39,18 @@ IF (MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE -D_SCL_SECURE_NO_DEPRECATE)
 ENDIF ()
 
-if(CMAKE_COMPILER_IS_GNUCXX)
-  exec_program(
-      ${CMAKE_CXX_COMPILER}
-      ARGS                    --version
-      OUTPUT_VARIABLE _compiler_output)
-  string(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  gcc_compiler_version ${_compiler_output})
-  if(gcc_compiler_version VERSION_LESS "4.4.0")
-      message(FATAL_ERROR "VIGRA requires at least gcc 4.4")
-  else()
-      message(STATUS "Using gcc ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
-  endif()
-endif()
+# if(CMAKE_COMPILER_IS_GNUCXX)
+  # exec_program(
+      # ${CMAKE_CXX_COMPILER}
+      # ARGS                    --version
+      # OUTPUT_VARIABLE _compiler_output)
+  # string(REGEX REPLACE ".*([0-9]\\.[0-9]\\.[0-9]).*" "\\1"  gcc_compiler_version ${_compiler_output})
+  # if(gcc_compiler_version VERSION_LESS "4.4.0")
+      # message(FATAL_ERROR "VIGRA requires at least gcc 4.4")
+  # else()
+      # message(STATUS "Using gcc ${gcc_compiler_version} [${CMAKE_CXX_COMPILER}]")
+  # endif()
+# endif()
 
 ##################################################
 #
