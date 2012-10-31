@@ -414,5 +414,56 @@ public:
         return false;
     }
 };
+
+
+class DepthAndSizeStopping: public StopBase
+{
+public:
+	int max_depth_;
+	int min_size_;
+
+	int max_depth_reached; //for debug maximum reached depth
+
+	DepthAndSizeStopping() : max_depth_(-1),min_size_(0)
+	{
+	}
+
+    /** Constructor DepthAndSize Criterion
+     * Stop growing the tree if a certain depth or is reached or make a leaf if the
+     * node is smaller than a certain size. Note this is checked before the split so it
+     * is still possible that smaller leafs are created
+     */
+
+	DepthAndSizeStopping(int depth, int size) :
+		max_depth_(depth), min_size_(size)
+	{	}
+
+	template<class T>
+	void set_external_parameters(ProblemSpec<T> const &, int
+	 tree_count = 0, bool /* is_weighted_ */= false)
+	{	}
+
+	template<class Region>
+	bool operator()(Region& region)
+	{
+
+		if (region.depth() > max_depth_ + 1)
+		   throw std::runtime_error("violation in the stopping criterion");
+
+
+		return (region.depth() > max_depth_) || (region.size() < min_size_) ;
+
+	}
+
+	template<class WeightIter, class T, class C>
+	bool after_prediction(WeightIter, int /* k */,
+			MultiArrayView<2, T, C> /* prob */, double /* totalCt */)
+	{
+		return true;
+	}
+};
+
+
+
 } //namespace vigra;
 #endif //RF_EARLY_STOPPING_P_HXX

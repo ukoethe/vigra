@@ -47,6 +47,7 @@
 #include <cmath>
 #include <memory>
 #include <boost/python.hpp>
+#include<vigra/random_forest/rf_earlystopping.hxx>
 
 namespace python = boost::python;
 namespace vigra
@@ -141,7 +142,9 @@ template<class LabelType, class FeatureType>
 double
 pythonLearnRandomForest(RandomForest<LabelType> & rf, 
                         NumpyArray<2,FeatureType> trainData, 
-                        NumpyArray<2,LabelType> trainLabels)
+                        NumpyArray<2,LabelType> trainLabels,
+                        int maxdepth=-1,
+                        int minsize=0)
 {
     vigra_precondition(!trainData.axistags() && !trainLabels.axistags(),
                        "RandomForest.learnRF(): training data and labels must not\n"
@@ -150,9 +153,11 @@ pythonLearnRandomForest(RandomForest<LabelType> & rf,
     using namespace rf;
     visitors::OOB_Error oob_v;
 
+
+    vigra::DepthAndSizeStopping earlystop(maxdepth,minsize);
     {
         PyAllowThreads _pythread;
-        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v));
+        rf.learn(trainData, trainLabels, visitors::create_visitor(oob_v),vigra::rf_default(),earlystop);
     }
     double oob = oob_v.oob_breiman;
 
@@ -335,9 +340,9 @@ void defineRandomForest()
              "The output is an array containing a probability for every test sample and class.\n")
         .def("learnRF",
              registerConverters(&pythonLearnRandomForest<UInt32,float>),
-             (arg("trainData"), arg("trainLabels")),
+             (arg("trainData"), arg("trainLabels"),arg("maxDepth")=-1,arg("minSize")=0),
              "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
-             "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.\n")
+             "and returns the OOB. max Depth is the max depth reachable for the tree and minSize forbid splitting if the node is smaller than minSize\n")
         .def("reLearnTree",
              registerConverters(&pythonRFReLearnTree<UInt32,float>),
             (arg("trainData"), arg("trainLabels"), arg("treeId")),

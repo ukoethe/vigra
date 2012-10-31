@@ -2,6 +2,7 @@ INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
 
 SET(TEST_SCRIPTS
     test_arraytypes.py
+    test_rf.py
     test_impex.py
     test1.py
     test2.py
