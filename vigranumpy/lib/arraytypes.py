@@ -1090,7 +1090,7 @@ class VigraArray(numpy.ndarray):
             res = numpy.ndarray.__getitem__(self, 
                      map(lambda x: None if isinstance(x, AxisInfo) else x, index))
         if res is not self and hasattr(res, 'axistags'):
-            if res.base is self:
+            if res.base is self or res.base is self.base:
                 res.axistags = res._transform_axistags(index)
             else:
                 res.axistags = res._empty_axistags(res.ndim)
