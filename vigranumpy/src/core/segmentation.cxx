@@ -643,8 +643,6 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
             options.seedOptions(SeedOptions().minima());
     }
     
-    std::cerr << method << " watershed\n";
-    
     if(method == "turbo")
     {
         vigra_precondition((IsSameType<PixelType, npy_uint8>::value),
@@ -785,7 +783,6 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
         {
             if(method == "turbo")
             {
-                std::cerr << "turbo watershed3d\n";
                 res = seeds;
                 
                 TWS<PixelType>::exec(image, res);

@@ -719,7 +719,7 @@ void definePythonAccumulatorSingleband()
     def("extractFeatures", &acc::pythonInspectWithHistogram<Accu, 2, T>,
           (arg("image"), arg("features") = "all", 
            arg("histogramRange") = "globalminmax", arg("binCount") = 64),
-          "\nThis overload of :func:`extractFeatures` computes global statistics for a\n"
+          "\nThis overload of extractFeatures() computes global statistics for a\n"
           "2D scalar input array, e.g. :class:`vigra.ScalarImage`\n\n"
           "Features 'Histogram' and 'Quantiles' are supported for this input.\nOptions are:\n\n"
           "    - histogramRange: lower and upper bound of the histogram\n\n"
@@ -783,21 +783,22 @@ void definePythonAccumulatorMultiband()
         "Extract global features (e.g. Mean, Variance, Minimum, etc.)\n"
         "from the input array ('image' or 'volume'). An accumulator object\n"
         "of type :class:`FeatureAccumulator` is returned that holds the computed\nfeatures.\n\n" 
-        "The overloaded function :func:`extractFeatures`() supports 2D or 3D\n"
+        "The overloaded function extractFeatures() supports 2D or 3D\n"
         "arrays with arbitrary many channels. The element type of the\n"
         "input array must be **dtype=numpy.float32**. The set of available features\n"
         "depends on the input array. The 'Histogram' feature, for example,\n"
-        "is only supported for singleband arrays. Call :func:`supportedFeatures`()\n"
+        "is only supported for singleband arrays. Call :func:`supportedFeatures`\n"
         "with the same input array to get a list of all available features\n"
         "for this input.\n\n"
         "The argument 'features' can take the following values:\n\n"
         "   - 'all': compute all supported features (default)\n\n"
         "   - name:  compute a single feature (and its dependencies)\n\n"
         "   - [name1, name2,...]:  compute the given features plus dependencies\n\n"
-        "   - None or '':  return an empty accumulator, whose `supportedFeatures`()\n"
-        "                  method tells you the list of supported features for the\n"
+        "   - None or '':  return an empty accumulator, whose method \n"
+        "                  :meth:`~.FeatureAccumulator.supportedFeatures`\n"
+        "                  tells you the list of supported features for the\n"
         "                  given input array.\n\n"
-        "To compute per-region features, use :func:`extractRegionFeatures`().\n\n"
+        "To compute per-region features, use :func:`extractRegionFeatures`.\n\n"
         "This overload is called for 2D input arrays two or more than\n"
         "four channels. Histograms and quantiles are not supported for\n"
         "this input.\n\n"
@@ -834,7 +835,7 @@ void definePythonAccumulatorArraySingleband()
     std::string doc_string;
     if (N==2) {
       doc_string +=
-         "\nThis overload of :func:`extractRegionFeatures` computes region statistics\n"
+         "\nThis overload of extractRegionFeatures() computes region statistics\n"
          "for a scalar 2D input array, e.g. :class:`vigra.ScalarImage`.\n\n"
          "Features 'Histogram' and 'Quantiles' are supported for this input. Options are:\n\n"
          "    - histogramRange: lower and upper bound of the histogram\n\n"
@@ -878,11 +879,11 @@ void definePythonAccumulatorArray()
     std::string doc_string;
     if (N==2) {
       doc_string +=
-         "This overload of :func:`extractRegionFeatures` is called for\n"
+         "This overload of extractRegionFeatures() is called for\n"
          "2D input arrays with 3 channels.\n\n";
     } else {
       doc_string +=
-         "This overload of :func:`extractRegionFeatures` is called for\n"
+         "This overload of extractRegionFeatures() is called for\n"
          "3D input arrays with 3 channels.\n\n";
     }
     
@@ -915,14 +916,15 @@ void definePythonAccumulatorArrayMultiband()
         "Membership of the array elements (pixels) to regions is specified\n"
         "by a 'labels' array with element type **dtype=uint32**.\n\n"
         "The set of available features depends on the input array.\n"
-        "Call :func:`supportedRegionFeatures`() with the same input and label\n"
+        "Call :func:`supportedRegionFeatures` with the same input and label\n"
         "arrays to get a list of all available features for these inputs.\n\n"
         "The argument 'features' can take the following values:\n\n"
         "   - 'all': compute all supported features (default)\n\n"
         "   - name:  compute a single feature (and its dependencies)\n\n"
         "   - [name1, name2,...]:  compute the given features plus dependencies\n\n"
-        "   - None or '':  return an empty accumulator, whose `supportedFeatures`()\n"
-        "                  method tells you the list of supported features for the\n"
+        "   - None or '':  return an empty accumulator, whose method \n"
+        "                  :meth:`~.RegionFeatureAccumulator.supportedFeatures`\n"
+        "                  tells you the list of supported features for the\n"
         "                  given input array.\n\n"
         "When the feature name starts with 'Global', the feature is computed\n"
         "globally, i.e. without considering region membership.\n\n"

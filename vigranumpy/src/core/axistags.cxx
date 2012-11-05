@@ -661,7 +661,8 @@ void defineAxisTags()
         .def("index", &AxisTags::index,
              "Get the axis index of a given axis key::\n\n"
              "    >>> axistags.index('x')\n"
-             "    0   # the 'x' axis is first index\n\n")
+             "    0\n\n"     
+             "In this example, the 'x'-axis corresponds to index 0 (i.e. the first index).\n")
         .add_property("channelIndex", &AxisTags::channelIndex,
             "(read-only property, type 'int') the index of the channel axis, or ``len(axistags)``\n"
             "when no channel axis exists (i.e. ``axistags.channelIndex`` is similar to\n"

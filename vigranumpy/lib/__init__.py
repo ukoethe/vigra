@@ -373,7 +373,12 @@ del _genTensorConvenienceFunctions
 def _genFeaturConvenienceFunctions():
     def supportedFeatures(array):
         '''Return a list of feature names that are available for the given array. These feature
-           names are the valid inputs to a call of :func:`extractFeatures`(array, features=...).
+           names are the valid inputs to a call of :func:`extractFeatures`. E.g., to compute 
+           just the first two features in the list, use::
+           
+                f = vigra.analysis.supportedFeatures(array)
+                print "Computing features:", f[:2]
+                r = vigra.analysis.extractFeatures(array, features=f[:2])
         '''
         
         return analysis.extractFeatures(array, None).supportedFeatures()
@@ -384,7 +389,12 @@ def _genFeaturConvenienceFunctions():
     def supportedRegionFeatures(array, labels):
         '''Return a list of feature names that are available for the given array and label array. 
            These feature names are the valid inputs to a call of 
-           :func:`extractRegionFeatures`(array, labels, features=...).
+           :func:`extractRegionFeatures`. E.g., to compute just the first two features in the 
+           list, use::
+           
+                f = vigra.analysis.supportedRegionFeatures(array, labels)
+                print "Computing features:", f[:2]
+                r = vigra.analysis.extractRegionFeatures(array, labels, features=f[:2])
         '''
         
         return analysis.extractRegionFeatures(array, labels, None).supportedFeatures()
