@@ -42,7 +42,8 @@ import vigranumpycore
 from vigranumpycore import AxisType, AxisInfo, AxisTags
 
 def _preserve_doc(f):
-    f.__doc__ = eval('numpy.ndarray.%s.__doc__' % f.__name__) + \
+    npy_doc = eval('numpy.ndarray.%s.__doc__' % f.__name__)
+    f.__doc__ =  ("" if npy_doc is None else npy_doc) + \
                  ("" if f.__doc__ is None else "\n" + f.__doc__)
     return f
 
