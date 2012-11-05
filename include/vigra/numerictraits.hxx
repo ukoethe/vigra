@@ -474,7 +474,7 @@
 namespace vigra {
     namespace detail {
         template <typename s, typename t>
-        inline static t clamp_unsigned_to_integer(s value, t maximum) {
+        inline static t clamp_integer_to_unsigned(s value, t maximum) {
             return
                 value <= s() ?
                 t() :
@@ -482,7 +482,7 @@ namespace vigra {
         }
 
         template <typename s, typename t>
-        inline static t clamp_signed_to_integer(s value, t minimum, t maximum) {
+        inline static t clamp_integer_to_signed(s value, t minimum, t maximum) {
             return
                 value <= static_cast<s>(minimum) ?
                 minimum :
@@ -490,7 +490,7 @@ namespace vigra {
         }
 
         template <typename s, typename t>
-        inline static t clamp_unsigned_to_float(s value, t maximum) {
+        inline static t clamp_float_to_unsigned(s value, t maximum) {
             return
                 value <= s() ?
                 t() :
@@ -498,7 +498,7 @@ namespace vigra {
         }
 
         template <typename s, typename t>
-        inline static t clamp_signed_to_float(s value, t minimum, t maximum) {
+        inline static t clamp_float_to_signed(s value, t minimum, t maximum) {
             if (value >= s()) {
                 return value >= static_cast<s>(maximum) ? maximum : static_cast<t>(value + 0.5);
             } else {
@@ -617,10 +617,10 @@ struct NumericTraits<signed char>
     static Promote toPromote(signed char v) { return v; }
     static RealPromote toRealPromote(signed char v) { return v; }
     static signed char fromPromote(Promote v) {
-        return detail::clamp_signed_to_integer<Promote, signed char>(v, SCHAR_MIN, SCHAR_MAX);
+        return detail::clamp_integer_to_signed<Promote, signed char>(v, SCHAR_MIN, SCHAR_MAX);
     }
     static signed char fromRealPromote(RealPromote v) {
-        return detail::clamp_signed_to_float<RealPromote, signed char>(v, SCHAR_MIN, SCHAR_MAX);
+        return detail::clamp_float_to_signed<RealPromote, signed char>(v, SCHAR_MIN, SCHAR_MAX);
     }
 };
 
@@ -656,10 +656,10 @@ struct NumericTraits<unsigned char>
     static Promote toPromote(unsigned char v) { return v; }
     static RealPromote toRealPromote(unsigned char v) { return v; }
     static unsigned char fromPromote(Promote v) {
-        return detail::clamp_unsigned_to_integer<Promote, unsigned char>(v, UCHAR_MAX);
+        return detail::clamp_integer_to_unsigned<Promote, unsigned char>(v, UCHAR_MAX);
     }
     static unsigned char fromRealPromote(RealPromote v) {
-        return detail::clamp_unsigned_to_float<RealPromote, unsigned char>(v, UCHAR_MAX);
+        return detail::clamp_float_to_unsigned<RealPromote, unsigned char>(v, UCHAR_MAX);
     }
 };
 
@@ -695,10 +695,10 @@ struct NumericTraits<short int>
     static Promote toPromote(short int v) { return v; }
     static RealPromote toRealPromote(short int v) { return v; }
     static short int fromPromote(Promote v) {
-        return detail::clamp_signed_to_integer<Promote, short int>(v, SHRT_MIN, SHRT_MAX);
+        return detail::clamp_integer_to_signed<Promote, short int>(v, SHRT_MIN, SHRT_MAX);
     }
     static short int fromRealPromote(RealPromote v) {
-        return detail::clamp_signed_to_float<RealPromote, short int>(v, SHRT_MIN, SHRT_MAX);
+        return detail::clamp_float_to_signed<RealPromote, short int>(v, SHRT_MIN, SHRT_MAX);
     }
 };
 
@@ -734,10 +734,10 @@ struct NumericTraits<short unsigned int>
     static Promote toPromote(short unsigned int v) { return v; }
     static RealPromote toRealPromote(short unsigned int v) { return v; }
     static short unsigned int fromPromote(Promote v) {
-        return detail::clamp_unsigned_to_integer<Promote, short unsigned int>(v, USHRT_MAX);
+        return detail::clamp_integer_to_unsigned<Promote, short unsigned int>(v, USHRT_MAX);
     }
     static short unsigned int fromRealPromote(RealPromote v) {
-        return detail::clamp_unsigned_to_float<RealPromote, short unsigned int>(v, USHRT_MAX);
+        return detail::clamp_float_to_unsigned<RealPromote, short unsigned int>(v, USHRT_MAX);
     }
 };
 
@@ -774,7 +774,7 @@ struct NumericTraits<int>
     static RealPromote toRealPromote(int v) { return v; }
     static int fromPromote(Promote v) { return v; }
     static int fromRealPromote(RealPromote v) {
-        return detail::clamp_signed_to_float<RealPromote, int>(v, INT_MIN, INT_MAX);
+        return detail::clamp_float_to_signed<RealPromote, int>(v, INT_MIN, INT_MAX);
     }
 };
 
@@ -811,7 +811,7 @@ struct NumericTraits<unsigned int>
     static RealPromote toRealPromote(unsigned int v) { return v; }
     static unsigned int fromPromote(Promote v) { return v; }
     static unsigned int fromRealPromote(RealPromote v) {
-        return detail::clamp_unsigned_to_float<RealPromote, unsigned int>(v, UINT_MAX);
+        return detail::clamp_float_to_unsigned<RealPromote, unsigned int>(v, UINT_MAX);
     }
 };
 
@@ -848,7 +848,7 @@ struct NumericTraits<long>
     static RealPromote toRealPromote(long v) { return static_cast<RealPromote>(v); }
     static long fromPromote(Promote v) { return v; }
     static long fromRealPromote(RealPromote v) {
-        return detail::clamp_signed_to_float<RealPromote, long>(v, LONG_MIN, LONG_MAX);
+        return detail::clamp_float_to_signed<RealPromote, long>(v, LONG_MIN, LONG_MAX);
     }
 };
 
@@ -885,7 +885,7 @@ struct NumericTraits<unsigned long>
     static RealPromote toRealPromote(unsigned long v) { return static_cast<RealPromote>(v); }
     static unsigned long fromPromote(Promote v) { return v; }
     static unsigned long fromRealPromote(RealPromote v) {
-        return detail::clamp_unsigned_to_float<RealPromote, unsigned long>(v, ULONG_MAX);
+        return detail::clamp_float_to_unsigned<RealPromote, unsigned long>(v, ULONG_MAX);
     }
 };
 
@@ -923,7 +923,7 @@ struct NumericTraits<long long>
     static RealPromote toRealPromote(long long v) { return (RealPromote)v; }
     static long long fromPromote(Promote v) { return v; }
     static long long fromRealPromote(RealPromote v) {
-        return detail::clamp_signed_to_float<RealPromote, long long>(v, LLONG_MIN, LLONG_MAX);
+        return detail::clamp_float_to_signed<RealPromote, long long>(v, LLONG_MIN, LLONG_MAX);
     }
 };
 
@@ -960,7 +960,7 @@ struct NumericTraits<unsigned long long>
     static RealPromote toRealPromote(unsigned long long v) { return (RealPromote)v; }
     static unsigned long long fromPromote(Promote v) { return v; }
     static unsigned long long fromRealPromote(RealPromote v) {
-        return detail::clamp_unsigned_to_float<RealPromote, unsigned long long>(v, ULLONG_MAX);
+        return detail::clamp_float_to_unsigned<RealPromote, unsigned long long>(v, ULLONG_MAX);
     }
 };
 #endif // LLONG_MAX
