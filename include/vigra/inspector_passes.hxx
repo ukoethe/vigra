@@ -14,7 +14,7 @@ struct extra_passes_selector
 {
     template <class Inspector, class Functor>
     static void
-    call(Inspector g, Functor & f) {}
+    call(Inspector, Functor &) {}
 };
 template <>
 struct extra_passes_selector<true>

@@ -144,7 +144,7 @@ VIGRA_DEFINE_UNSIGNED_ABS(unsigned long long)
 #undef VIGRA_DEFINE_UNSIGNED_ABS
 
 #define VIGRA_DEFINE_MISSING_ABS(T) \
-    inline T abs(T t) { return t < 0 ? -t : t; }
+    inline T abs(T t) { return t < 0 ? static_cast<T>(-t) : t; }
 
 VIGRA_DEFINE_MISSING_ABS(signed char)
 VIGRA_DEFINE_MISSING_ABS(signed short)
@@ -843,7 +843,7 @@ inline double ellipticIntegralE(double x, double k)
     return s*(detail::ellipticRF(c2, 1.0-k, 1.0) - k/3.0*detail::ellipticRD(c2, 1.0-k, 1.0));
 }
 
-#if _MSC_VER
+#ifdef _MSC_VER
 
 namespace detail {
 

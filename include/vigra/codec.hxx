@@ -146,7 +146,7 @@ namespace vigra
         virtual void init( const std::string & ) = 0;
 
         // initialize with an image index. For codecs that do not support this feature, the standard init is called.
-        virtual void init( const std::string & fileName, unsigned int imageIndex)
+        virtual void init( const std::string & fileName, unsigned int)
         {
           init(fileName);
         }
@@ -219,7 +219,7 @@ namespace vigra
         virtual void init( const std::string & ) = 0;
 
         // initialize with file access mode. For codecs that do not support this feature, the standard init is called.
-        virtual void init( const std::string & fileName, const std::string & mode )
+        virtual void init( const std::string & fileName, const std::string & )
         {
           init(fileName);
         }
