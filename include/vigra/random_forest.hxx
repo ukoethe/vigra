@@ -60,6 +60,10 @@
 #include "random_forest/rf_online_prediction_set.hxx"
 #include "random_forest/rf_earlystopping.hxx"
 #include "random_forest/rf_ridge_split.hxx"
+#ifdef _OPENMP
+    #include <omp.h>
+#endif
+
 namespace vigra
 {
 
@@ -158,7 +162,7 @@ class RandomForest
 
     /** optimisation for predictLabels
      * */
-    mutable MultiArray<2, double> garbage_prediction_;
+    mutable std::vector< MultiArray<2, double> > garbage_prediction_;
 
   public:
 
@@ -588,8 +592,21 @@ class RandomForest
     {
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
-        for(int k=0; k<features.shape(0); ++k)
-            labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
+	
+        #ifdef _OPENMP
+	    const int numThreads = omp_get_max_threads();
+	    garbage_prediction_.resize( numThreads );
+        #else
+	    garbage_prediction_.resize(1);
+        #endif
+
+        #pragma omp parallel for schedule(dynamic) num_threads(numThreads)
+        for(int k=0; k<features.shape(0); ++k) {
+            T label = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
+            
+	    #pragma omp critical
+            labels(k,0) = label;
+	}
     }
 
     template <class U, class C1, class T, class C2, class Stop>
@@ -953,20 +970,23 @@ void RandomForest<LabelType, PreprocessorTag>::
     //initialize trees.
     trees_.resize(options_.tree_count_  , DecisionTree_t(ext_param_));
 
-    Sampler<Random_t > sampler(preprocessor.strata().begin(),
-                               preprocessor.strata().end(),
-                               detail::make_sampler_opt(options_)
-                                        .sampleSize(ext_param().actual_msample_),
-                                    random);
+    
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
-    
+
+    #pragma omp parallel for schedule(dynamic)
     for(int ii = 0; ii < (int)trees_.size(); ++ii)
     {
-        //initialize First region/node/stack entry
+        Sampler<Random_t > sampler(preprocessor.strata().begin(),
+                           preprocessor.strata().end(),
+                           detail::make_sampler_opt(options_)
+                                    .sampleSize(ext_param().actual_msample_),
+                                random);
+
         sampler
-            .sample();  
+            .sample();
+            
         StackEntry_t
             first_stack_entry(  sampler.sampledIndices().begin(),
                                 sampler.sampledIndices().end(),
@@ -982,6 +1002,7 @@ void RandomForest<LabelType, PreprocessorTag>::
                                 stop,
                                 visitor,
                                 randint);
+
         visitor
             .visit_after_tree(  *this,
                                 preprocessor,
@@ -1010,11 +1031,20 @@ LabelType RandomForest<LabelType, Tag>
         "RandomForestn::predictLabel():"
             " Feature matrix must have a singlerow.");
     typedef MultiArrayShape<2>::type Shp;
+    
+#ifdef _OPENMP
+    const int curThread = omp_get_thread_num();
+    #define garbage_prediction_	garbage_prediction_[curThread]
+#else
+    #define garbage_prediction_ garbage_prediction_[0]
+#endif
+    
     garbage_prediction_.reshape(Shp(1, ext_param_.class_count_), 0.0);
     LabelType          d;
     predictProbabilities(features, garbage_prediction_, stop);
     ext_param_.to_classlabel(argMax(garbage_prediction_), d);
     return d;
+#undef garbage_prediction_
 }
 
 
@@ -1222,6 +1252,7 @@ void RandomForest<LabelType, PreprocessorTag>
     }
     */
     //Classify for each row.
+    #pragma omp parallel for
     for(int row=0; row < rowCount(features); ++row)
     {
         ArrayVector<double>::const_iterator weights;

@@ -900,67 +900,39 @@ class OOB_Error : public VisitorBase
     template<class RF, class PR, class SM, class ST>
     void visit_after_tree(RF& rf, PR & pr,  SM & sm, ST & st, int index)
     {
-        // go through the samples
-        int total_oob =0;
-        // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
-        //                            (i.e. the OOB sample ist very large)
-        //                     40000: use at most 40000 OOB samples per class for OOB error estimate 
-        if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
+        #pragma omp critical
         {
-            ArrayVector<int> oob_indices;
-            ArrayVector<int> cts(class_count, 0);
-            std::random_shuffle(indices.begin(), indices.end());
-            for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
+            // go through the samples
+            int total_oob =0;
+            // FIXME: magic number 10000: invoke special treatment when when msample << sample_count
+            //                            (i.e. the OOB sample ist very large)
+            //                     40000: use at most 40000 OOB samples per class for OOB error estimate
+            if(rf.ext_param_.actual_msample_ < pr.features().shape(0) - 10000)
             {
-                if(!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 40000)
+                ArrayVector<int> oob_indices;
+                ArrayVector<int> cts(class_count, 0);
+                std::random_shuffle(indices.begin(), indices.end());
+                for(int ii = 0; ii < rf.ext_param_.row_count_; ++ii)
                 {
-                    oob_indices.push_back(indices[ii]);
-                    ++cts[pr.response()(indices[ii], 0)];
+                    if(!sm.is_used()[indices[ii]] && cts[pr.response()(indices[ii], 0)] < 40000)
+                    {
+                        oob_indices.push_back(indices[ii]);
+                        ++cts[pr.response()(indices[ii], 0)];
+                    }
                 }
-            }
-            for(unsigned int ll = 0; ll < oob_indices.size(); ++ll)
-            {
-                // update number of trees in which current sample is oob
-                ++oobCount[oob_indices[ll]];
-
-                // update number of oob samples in this tree.
-                ++total_oob; 
-                // get the predicted votes ---> tmp_prob;
-                int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),oob_indices[ll]));
-                Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
-                                                    rf.tree(index).parameters_,
-                                                    pos);
-                tmp_prob.init(0); 
-                for(int ii = 0; ii < class_count; ++ii)
-                {
-                    tmp_prob[ii] = node.prob_begin()[ii];
-                }
-                if(is_weighted)
-                {
-                    for(int ii = 0; ii < class_count; ++ii)
-                        tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
-                }
-                rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
-                
-            }
-        }else
-        {
-            for(int ll = 0; ll < rf.ext_param_.row_count_; ++ll)
-            {
-                // if the lth sample is oob...
-                if(!sm.is_used()[ll])
+                for(unsigned int ll = 0; ll < oob_indices.size(); ++ll)
                 {
                     // update number of trees in which current sample is oob
-                    ++oobCount[ll];
+                    ++oobCount[oob_indices[ll]];
 
                     // update number of oob samples in this tree.
-                    ++total_oob; 
+                    ++total_oob;
                     // get the predicted votes ---> tmp_prob;
-                    int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
-                    Node<e_ConstProbNode> node ( rf.tree(index).topology_, 
+                    int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),oob_indices[ll]));
+                    Node<e_ConstProbNode> node ( rf.tree(index).topology_,
                                                         rf.tree(index).parameters_,
                                                         pos);
-                    tmp_prob.init(0); 
+                    tmp_prob.init(0);
                     for(int ii = 0; ii < class_count; ++ii)
                     {
                         tmp_prob[ii] = node.prob_begin()[ii];
@@ -970,11 +942,42 @@ class OOB_Error : public VisitorBase
                         for(int ii = 0; ii < class_count; ++ii)
                             tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
                     }
-                    rowVector(prob_oob, ll) += tmp_prob;
+                    rowVector(prob_oob, oob_indices[ll]) += tmp_prob;
+
+                }
+            }else
+            {
+                for(int ll = 0; ll < rf.ext_param_.row_count_; ++ll)
+                {
+                    // if the lth sample is oob...
+                    if(!sm.is_used()[ll])
+                    {
+                        // update number of trees in which current sample is oob
+                        ++oobCount[ll];
+
+                        // update number of oob samples in this tree.
+                        ++total_oob;
+                        // get the predicted votes ---> tmp_prob;
+                        int pos =  rf.tree(index).getToLeaf(rowVector(pr.features(),ll));
+                        Node<e_ConstProbNode> node ( rf.tree(index).topology_,
+                                                            rf.tree(index).parameters_,
+                                                            pos);
+                        tmp_prob.init(0);
+                        for(int ii = 0; ii < class_count; ++ii)
+                        {
+                            tmp_prob[ii] = node.prob_begin()[ii];
+                        }
+                        if(is_weighted)
+                        {
+                            for(int ii = 0; ii < class_count; ++ii)
+                                tmp_prob[ii] = tmp_prob[ii] * (*(node.prob_begin()-1));
+                        }
+                        rowVector(prob_oob, ll) += tmp_prob;
+                    }
                 }
             }
+            // go through the ib samples;
         }
-        // go through the ib samples; 
     }
 
     /** Normalise variable importance after the number of trees is known.
@@ -1285,6 +1288,8 @@ class VariableImportanceVisitor : public VisitorBase
         
         Int32 const  class_count = tree.ext_param_.class_count_;
         Int32 const  column_count = tree.ext_param_.column_count_;
+
+        #pragma omp critical
         if(variable_importance_.size() == 0)
         {
             
@@ -1296,8 +1301,11 @@ class VariableImportanceVisitor : public VisitorBase
         if(split.createNode().typeID() == i_ThresholdNode)
         {
             Node<i_ThresholdNode> node(split.createNode());
+            double val = split.region_gini_ - split.minGini();
+
+            #pragma omp critical
             variable_importance_(node.column(),class_count+1) 
-                += split.region_gini_ - split.minGini();
+                += val;
         }
     }
 
@@ -1415,9 +1423,12 @@ class VariableImportanceVisitor : public VisitorBase
             perm_oob_right -=oob_right;
             perm_oob_right *= -1;
             perm_oob_right      /=  oob_indices.size();
+
+            #pragma omp critical
             variable_importance_
                 .subarray(Shp_t(ii,0), 
                           Shp_t(ii+1,class_count+1)) += perm_oob_right;
+
             //copy back permuted dimension
             for(int jj = 0; jj < int(oob_indices.size()); ++jj)
                 features(oob_indices[jj], ii) = backup_column[jj];

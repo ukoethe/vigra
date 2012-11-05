@@ -63,6 +63,7 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     
     if(inputs.getBool("sample_classes_individually", v_default(false)))
         options.use_stratification(vigra::RF_EQUAL);
+
     options.min_split_node_size(static_cast<int>(inputs
             .getScalarMinMax<double>("min_split_node_size",
                                      v_default(1.0), 
@@ -105,8 +106,10 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     MultiArrayView<1, inputType>  weights 
         = inputs.getMultiArray<1, inputType>("weights", v_optional());
 
-    if(weights.size() != 0)
+    if(weights.size() != 0) {
         ext_param.class_weights(weights.data(), weights.data() + weights.size());
+        mexPrintf("Weights assigned\n");
+	}
 
     double var_imp_rep
         = inputs.getScalar<double>("importance_repetition",v_default(10));
@@ -114,8 +117,14 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     VariableImportanceVisitor   var_imp(static_cast<int>(var_imp_rep));
     OOB_Error                   oob_err;
     MatlabRandomForestProgressVisitor progress;
-    if(!outputs.isValid(2))
+    if(!outputs.isValid(3))
         var_imp.deactivate();
+
+    bool outputTreeDepth = true;
+    if(!outputs.isValid(2))
+        outputTreeDepth = false;
+
+    progress.setComputeMaxTreeDepth(outputTreeDepth);
 
 
     /***************************************************************************************************
@@ -123,18 +132,60 @@ void vigraMain(matlab::OutputArray outputs, matlab::InputArray inputs){
     ****************************************************************************************************/
 
     RandomForest<inputLType> rf(options, ext_param);    
-    rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
+
+    bool useRidgeSplit = false;
+    if(inputs.getBool("use_ridge_split", v_default(false)))
+        useRidgeSplit = true;
+        
+    bool useEntropy = false;
+    if(inputs.getBool("use_entropy_split", v_default(false)))
+        useEntropy = true;
+        
+    if (useEntropy && useRidgeSplit)
+		mexErrMsgTxt("Either use ridge or entropy split\n");
+
+    if (useRidgeSplit)
+    {
+        vigra::GiniRidgeSplit ridgeSplit;
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err), ridgeSplit);
+        mexPrintf("Using ridge split\n");
+    } else if( useEntropy ) 
+    {
+		vigra::EntropySplit entropySplit;
+		mexPrintf("Using entropy split\n");
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err), entropySplit);
+	}
+    else
+    {
+		mexPrintf("Using default split\n");
+        rf.learn(features, labels, create_visitor(var_imp, progress, oob_err));
+    }
 
     matlab::exportRandomForest(rf, matlab::createCellArray(2*options.tree_count_+2, outputs[0]));
 
     outputs.createScalar<double> (1, v_optional(), oob_err.oob_breiman);
     MultiArrayView<2, double> vari 
-        = outputs.createMultiArray<2, double>(2, v_optional(), 
+        = outputs.createMultiArray<2, double>(3, v_optional(),
                             MultiArrayShape<2>::type(var_imp
                                                       .variable_importance_
                                                       .shape()));
     if(vari.size() != 0)
         vari = var_imp.variable_importance_;
+
+    // show tree depth
+    if (outputTreeDepth)
+    {
+        typedef MultiArray<2, double>::difference_type Shape;
+
+        MultiArrayView<2, double> vari
+            = outputs.createMultiArray<2, double>(2, v_optional(),
+                                                  Shape( progress.treeInfo.size(), 2 ));
+        for (int i=0; i < progress.treeInfo.size(); i++)
+        {
+            vari( i, 0 ) = progress.treeInfo[i].maxDepthLeft;
+            vari( i, 1 ) = progress.treeInfo[i].maxDepthRight;
+        }
+    }
 }
 
 
@@ -153,7 +204,8 @@ function RF = vigraLearnRF(features, labels) Trains a randomForest with Default 
 function RF = vigraLearnRF(features, labels, treeCount)  does the same treeCount number of trees and default options.
 function RF = vigraLearnRF(features, labels, treeCount, options)  does the same with user options.
 function [RF oob] = vigraLearnRF(...)                Outputs the oob error estimate
-function [RF oob var_imp] = vigraLearnRF(...)       Outputs variable importance.
+function [RF oob trees_depth] = vigraLearnRF(...)       Outputs tree depth for each tree, left + right branches.
+function [RF oob trees_depth var_imp] = vigraLearnRF(...)       Outputs variable importance.
 
 features    - A Nxp Matrix with N samples containing p features
 labels      - A Nx1 Matrix with the corresponding Training labels
@@ -168,7 +220,7 @@ options     - a struct with the following possible fields (default will be used
                                     if a Scalar value is specified it is taken as the 
                                     absolute value. Otherwise use one of the Tokens
                                     'RF_SQRT', 'RF_LOG' or 'RF_ALL'
-
+    'use_ridge_split'               logical, default: false. If true then ridge split is used instead of orthogonal split
     'training_set_size'             Scalar, default: Not used
     'training_set_proportion'       Scalar, default: 1.0
                                     The last two options exclude each other. if training_set_size always overrides
