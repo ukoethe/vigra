@@ -41,6 +41,11 @@
 
 namespace vigra {
 
+/** \addtogroup MultiIteratorGroup
+*/
+//@{
+
+
     // FIXME: this should go into its separate header file,
     //        together with the calculation of neighborhod offsets for GridGraph
 template <unsigned int N, unsigned int DIMENSION=N-1>
@@ -1186,6 +1191,8 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P0(m1.shape())))))));
 }
 
-}; // namespace vigra
+//@}
+
+} // namespace vigra
 
 #endif /* MULTI_ITERATOR_COUPLED_HXX_ */

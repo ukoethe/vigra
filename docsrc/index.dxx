@@ -310,7 +310,7 @@
     <LI> \ref Convolution
          <BR>&nbsp;&nbsp;&nbsp;<em>1D, 2D, and nD filters, including separable and recursive convolution</em>
     <LI> \ref NonLinearDiffusion
-         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing </em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>Edge-preserving smoothing and denoising</em>
     <LI> \ref FourierTransform
          <BR>&nbsp;&nbsp;&nbsp;<em>forward and backward FFT, cosine transform, and related
                  functionality</em>

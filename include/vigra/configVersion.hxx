@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2010 by Ullrich Koethe                  */
+/*               Copyright 1998-2012 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -38,8 +38,8 @@
 #define VIGRA_CONFIG_VERSION_HXX
 
     #define VIGRA_VERSION_MAJOR 1
-    #define VIGRA_VERSION_MINOR 8
+    #define VIGRA_VERSION_MINOR 9
     #define VIGRA_VERSION_PATCH 0
-    #define VIGRA_VERSION "1.8.0"
+    #define VIGRA_VERSION "1.9.0"
 
 #endif /* VIGRA_CONFIG_VERSION_HXX */

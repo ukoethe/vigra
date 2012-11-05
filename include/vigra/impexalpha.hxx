@@ -33,23 +33,6 @@
 /*                                                                      */
 /************************************************************************/
 
-
-// http://www.stack.nl/~dimitri/doxygen/manual.html
-
-
-/*!
- * \file impexalpha.hxx
- * \brief alpha-channel image import and export functions
- *
- * This module implements functions importImageAlpha() and
- * exportImageAlpha() that read or write images with an associated
- * alpha channel (also known as "transparency" in other contexts).  As
- * in module impex.hxx the matching implementation for any given
- * datatype is selected by template meta code.
- *
- */
-
-
 #ifndef VIGRA_IMPEXALPHA_HXX
 #define VIGRA_IMPEXALPHA_HXX
 

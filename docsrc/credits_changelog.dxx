@@ -51,11 +51,33 @@
 
       <li> Oliver Gathmann and Michael Held implemented support for the multi-page TIFF format.
 
+      <li> Christoph Spiel contributed I/O functions for images with transparency (alpha channel) and other improvements to the impex library.
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.8.0 to 1.9.0</b>
+
+<UL>  
+      <li> Flexible incremental computation of image and region statistics via \ref FeatureAccumulators.
+      
+      <li> Simultaneous iteration over several arrays via \ref vigra::CoupledScanOrderIterator.
+      
+      <li> Import and export of images with transparency: importImageAlpha() and exportImageAlpha().
+      
+      <li> Image denoising by total variation filtering, see \ref NonLinearDiffusion and example <a href="total_variation_8cxx-example.html">total_variation.cxx</a>.
+      
+      <li> Fixed Python bindings of \ref Unsupervised_Decomposition.
+      
+      <li> Extended \ref vigra::SplineImageView to handle \ref vigra::TinyVector pixels.
+      
+      <li> Various convenience functions for vigranumpy's <a href="../vigranumpy/index.html#vigra.VigraArray">VigraArray</a>.
+      
+      <li> Minor improvements and bug fixes in the code and documentation. 
+ </UL>
 
 <b> Changes from Version 1.7.1 to 1.8.0</b>
 
