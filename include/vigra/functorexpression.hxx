@@ -40,7 +40,9 @@
 /** \page FunctorExpressions Functor Expressions  
 
     Simple automatic functor creation by means of expression templates
-    (also known as a "lambda library").    
+    (also known as a "lambda library"). Note, however, that the \ref 
+    MultiMathModule module offers similar functionality with an easier
+    syntax.
 
     <b>\#include</b> \<vigra/functorexpression.hxx\><br>
     Namespace: vigra::functor
@@ -109,7 +111,7 @@
     Therefore, it is necessary to provide a means to generate functors on 
     the fly where they are needed. The C++ standard library contains so called
     "functor combinators" that allow to construct complicated functors from 
-    simpler ones. The above problem "apply <TT>exp(-beta*v)</TT> to every pixel"
+    simpler ones. The above problem "apply exp(-beta*v) to every pixel"
     would be solved like this:
     
     \code
@@ -318,7 +320,7 @@
     \endcode
     
     Further information about how this mechanism works can be found in
-    <a href="documents/FunctorFactory.ps">this paper</a> (sorry, slightly out of date).
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/FunctorFactory.ps">this paper</a> (sorry, slightly out of date).
 */
 
 #ifndef DOXYGEN

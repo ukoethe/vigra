@@ -51,7 +51,7 @@ namespace vigra {
     are bound to what <TT>operator*()</TT> returns, if this method exists at
     all. Encapsulating access in an accessor enables a better
     decoupling of data structures and algorithms.
-    <a href="documents/DataAccessors.ps">This paper</a> contains
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/DataAccessors.ps">This paper</a> contains
     a detailed description of the concept. Here is a brief list of the basic
     accessor requirements:
 <p>

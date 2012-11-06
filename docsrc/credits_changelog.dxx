@@ -62,7 +62,7 @@ Many thanks to all!
 <b> Changes from Version 1.8.0 to 1.9.0</b>
 
 <UL>  
-      <li> Flexible incremental computation of image and region statistics via \ref FeatureAccumulators.
+      <li> Flexible incremental computation of image and region statistics via \ref FeatureAccumulators and corresponding Python bindings (see <a href="../vigranumpy/index.html#vigra.analysis.extractFeatures">vigra.analysis.extractFeatures()</a> and <a href="../vigranumpy/index.html#vigra.analysis.extractRegionFeatures">vigra.analysis.extractRegionFeatures()</a>).
       
       <li> Simultaneous iteration over several arrays via \ref vigra::CoupledScanOrderIterator.
       

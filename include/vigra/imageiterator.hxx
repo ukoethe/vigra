@@ -554,7 +554,7 @@ class LinearIteratorSelector<StridedArrayTag>
     \endcode
 
     See the paper: U. Koethe:
-    <a href="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
     for a discussion of the concepts behind ImageIterators.
 
 */
@@ -838,7 +838,7 @@ class ImageIteratorBase
     Most functions and local types are inherited from ImageIteratorBase.
 
     See the paper: U. Koethe:
-    <a href="documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
+    <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/GenericProg2D.ps">Reusable Algorithms in Image Processing</a>
     for a discussion of the concepts behind ImageIterators.
 
     <b>\#include</b> \<vigra/imageiterator.hxx\>
