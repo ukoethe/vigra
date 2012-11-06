@@ -16,7 +16,7 @@ for d in dlls:
         continue
     dll = ctypes.util.find_library(os.path.splitext(os.path.basename(d))[0])
     shutil.copy(dll, '@vigranumpy_tmp_dir@/dlls')
-vigraimpex_dll='@VIGRAIMPEX_LOCATION@'.replace('$(OutDir)', 'release')
+vigraimpex_dll='@VIGRAIMPEX_LOCATION@'.replace('$(OutDir)', 'release').replace('$(Configuration)', 'release')
 shutil.copy(vigraimpex_dll, '@vigranumpy_tmp_dir@/dlls')
 msvc_runtime = ctypes.util.find_library(ctypes.util.find_msvcrt())
 shutil.copy(msvc_runtime, '@vigranumpy_tmp_dir@/dlls')
