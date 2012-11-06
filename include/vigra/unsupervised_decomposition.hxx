@@ -218,8 +218,8 @@ class PLSAOptions
         in: UAI'99, Proc. 15th Conf. on Uncertainty in Artificial Intelligence,
         pp. 289-296, Morgan Kaufmann, 1999
 
-        \arg features must be a matrix with shape <tt>(numFeatures * numSamples)</tt>, which is
-        decomposed into the matrices 
+        \arg features must be a matrix with shape <tt>(numFeatures * numSamples)</tt> and 
+        non-negative entries, which is decomposed into the matrices 
         \arg fz with shape <tt>(numFeatures * numComponents)</tt> and
         \arg zv with shape <tt>(numComponents * numSamples)</tt>
         

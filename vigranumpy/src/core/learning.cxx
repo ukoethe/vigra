@@ -52,8 +52,12 @@ template<class U>
 python::tuple
 pythonPCA(NumpyArray<2,U> features, int nComponents)
 {
-    NumpyArray<2, U> fz(Shape2(nComponents, features.shape(1))); 
-    NumpyArray<2, U> zv(Shape2(features.shape(0), nComponents)); 
+    vigra_precondition(!features.axistags(),
+                       "principleComponents(): feature matrix must not have axistags\n"
+                       "(use 'array.view(numpy.ndarray)' to remove them).");
+    
+    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents)); 
+    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1))); 
 
     {
         PyAllowThreads _pythread;
@@ -70,8 +74,12 @@ pythonPLSA(NumpyArray<2,U> features,
            double minGain,
            bool normalize)
 {
-    NumpyArray<2, U> fz(Shape2(nComponents, features.shape(1))); 
-    NumpyArray<2, U> zv(Shape2(features.shape(0), nComponents)); 
+    vigra_precondition(!features.axistags(),
+                       "pLSA(): feature matrix must not have axistags\n"
+                       "(use 'array.view(numpy.ndarray)' to remove them).");
+    
+    NumpyArray<2, U> fz(Shape2(features.shape(0), nComponents)); 
+    NumpyArray<2, U> zv(Shape2(nComponents, features.shape(1))); 
 
     {
         PyAllowThreads _pythread;
@@ -94,8 +102,15 @@ void defineUnsupervised()
     def("principleComponents", registerConverters(&pythonPCA<double>),
         (arg("features"), arg("nComponents")),
         "\nPerform principle component analysis. \n\n"
-        "See principleComponents_ in the C++ documentation for detailed information.\n"
-        "Note that the feature matrix must have shape (numFeatures * numSamples)!\n\n");
+        "The imput matrix 'features' must have shape (nFeatures*nSamples). PCA will\n"
+        "reduce it to a smaller matrix 'C' with shape (nComponents*nSamples) that \n"
+        "preserves as much variance as possible. Specifically, the call::\n\n"
+        "    P, C = principleComponents(features, 3)\n\n"
+        "returns a projection matrix 'P' with shape (nComponents*nFeatures)\n"
+        "such that ``C = numpy.dot(numpy.transpose(P), features)``. Conversely, the\n"
+        "matrix  ``f = numpy.dot(P, C)`` is the best possible rank-nComponents\n"
+        "approximation to the matrix 'features' under the least-squares criterion.\n\n"
+        "See principleComponents_ in the C++ documentation for more detailed\ninformation.\n\n");
 
     PLSAOptions options;
 
@@ -103,8 +118,16 @@ void defineUnsupervised()
         (arg("features"), arg("nComponents"), arg("nIterations") = options.max_iterations,
          arg("minGain") = options.min_rel_gain, arg("normalize") = options.normalized_component_weights),
         "\nPerform probabilistic latent semantic analysis. \n\n"
-        "See pLSA_ in the C++ documentation for detailed information.\n"
-        "Note that the feature matrix must have shape (numFeatures * numSamples)!\n\n");
+        "The imput matrix 'features' must have shape (nFeatures*nSamples). PCA will\n"
+        "reduce it to a smaller matrix 'C' with shape (nComponents*nSamples) that \n"
+        "preserves as much information as possible. Specifically, the call::\n\n"
+        "    P, C = pLSA(features, 3)\n\n"
+        "returns a projection matrix 'P' with shape (nComponents*nFeatures)\n"
+        "such that the matrix ``f = numpy.dot(P, C)`` is a rank-nComponents matrix\n"
+        "that approximates the matrix 'features' well under the pLSA criterion.\n"
+        "Note that the result of pLSA() is not unique, since the algorithm uses random\n"
+        "initialization.\n\n"
+        "See pLSA_ in the C++ documentation for more detailed\ninformation.\n\n");
 }
 
 void defineRandomForest();
