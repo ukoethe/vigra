@@ -53,6 +53,8 @@
 
       <li> Christoph Spiel contributed I/O functions for images with transparency (alpha channel) and other improvements to the impex library.
 
+      <li> Frank Lenzen contributed his implementations of total variation filters.
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
