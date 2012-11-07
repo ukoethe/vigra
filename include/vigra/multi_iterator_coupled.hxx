@@ -701,23 +701,18 @@ class CoupledScanOrderIterator
 
 #ifdef DOXYGEN
   
-  /** Returns reference to the element in the band with index TARGET_INDEX.
-  */
-  template<unsigned int TARGET_INDEX> 
-  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
-  get() 
-  {
-    return vigra::get<TARGET_INDEX>(handles_);
-  }
+    /** Returns reference to the element in the band with index TARGET_INDEX.
+    */
+    template<unsigned int TARGET_INDEX> 
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
+    get();
 
-  /** Returns constant reference to the element in the band with index TARGET_INDEX.
-  */
-  template<unsigned int TARGET_INDEX> 
-  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
-  get() const
-  {
-    return vigra::get<TARGET_INDEX>(handles_);
-  }
+    /** Returns constant reference to the element in the band with index TARGET_INDEX.
+    */
+    template<unsigned int TARGET_INDEX> 
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
+    get() const;
+    
 #endif
 
   protected:
