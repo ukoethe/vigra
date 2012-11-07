@@ -33,53 +33,18 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef MULTI_ITERATOR_COUPLED_HXX_
-#define MULTI_ITERATOR_COUPLED_HXX_
+#ifndef MULTI_ITERATOR_COUPLED_HXX
+#define MULTI_ITERATOR_COUPLED_HXX
 
 #include "metaprogramming.hxx"
 #include "multi_iterator.hxx"
+#include "multi_gridgraph_neighborhoods.hxx"
 
 namespace vigra {
 
 /** \addtogroup MultiIteratorGroup
 */
 //@{
-
-
-    // FIXME: this should go into its separate header file,
-    //        together with the calculation of neighborhod offsets for GridGraph
-template <unsigned int N, unsigned int DIMENSION=N-1>
-struct NeighborhoodTypeImpl
-{
-    typedef typename MultiArrayShape<N>::type shape_type;
-    
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
-    {
-        unsigned int res = NeighborhoodTypeImpl<N, DIMENSION-1>::exec(point, shape);
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
-        return res;
-    }
-};
-
-template <unsigned int N>
-struct NeighborhoodTypeImpl<N, 0>
-{
-    typedef typename MultiArrayShape<N>::type shape_type;
-    static const unsigned int DIMENSION = 0;
-    
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
-    {
-        unsigned int res = 0;
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
-        return res;
-    }
-};
 
   /**
      Handle class, used by CoupledScanOrderIterator as the value type to simultaneously itearate over multiple images.
@@ -319,7 +284,7 @@ public:
     
     unsigned int neighborhoodType() const
     {
-        return NeighborhoodTypeImpl<N>::exec(point_, shape_);
+        return BorderTypeImpl<N>::exec(point_, shape_);
     }
 
     value_type point_, shape_;
@@ -1195,4 +1160,4 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
 
 } // namespace vigra
 
-#endif /* MULTI_ITERATOR_COUPLED_HXX_ */
+#endif /* MULTI_ITERATOR_COUPLED_HXX */
