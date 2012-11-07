@@ -89,7 +89,7 @@ struct NeighborhoodTests
         
         for(int k=0; k<a.size(); ++k, ++ai)
         {
-            int borderType = ai.neighborhoodType();
+            int borderType = ai.borderType();
             shouldEqual(neighborExists[borderType].size(), neighborCount);
             
             for(int j=0; j<neighborCount; ++j)
@@ -144,7 +144,7 @@ struct NeighborhoodTests
         
         for(int k=0; k<a.size(); ++k, ++ai)
         {
-            int borderType = ai.neighborhoodType();
+            int borderType = ai.borderType();
             shouldEqual(neighborExists[borderType].size(), neighborCount);
             
             for(int j=0; j<neighborCount; ++j)

@@ -2182,9 +2182,9 @@ class StridedScanOrderIterator
                 this->point_[level] == this->shape_[level] - 1;
     }
     
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
-        unsigned int res = base_type::neighborhoodType();
+        unsigned int res = base_type::borderType();
         if(this->point_[level] == 0)
             res |= (1 << 2*level);
         if(this->point_[level] == this->shape_[level]-1)
@@ -2535,7 +2535,7 @@ class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
         return res;
     }
     
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
         unsigned int res = 0;
         if(this->point_[level] == 0)

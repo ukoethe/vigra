@@ -282,7 +282,7 @@ public:
         return &point_;
     }
     
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
         return BorderTypeImpl<N>::exec(point_, shape_);
     }
@@ -696,7 +696,7 @@ class CoupledScanOrderIterator
     using base_type::shape;
     using base_type::scanOrderIndex;
     using base_type::atBorder;
-    using base_type::neighborhoodType;
+    using base_type::borderType;
     using base_type::get;
 
 #ifdef DOXYGEN
@@ -922,12 +922,12 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
 
     bool atBorder() const
     {
-        return (handles_.neighborhoodType() != 0);
+        return (handles_.borderType() != 0);
     }
 
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
-        return handles_.neighborhoodType();
+        return handles_.borderType();
     }
 
     template<unsigned int TARGET_INDEX> 
