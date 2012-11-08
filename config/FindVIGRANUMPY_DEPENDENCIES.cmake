@@ -27,18 +27,28 @@ IF(PYTHONINTERP_V2_FOUND)
 #    from another version)
 #    FIND_PACKAGE(PythonLibs)
 
-    # find Python library
+
+    set(FOUND_FRAMEWORK_PYTHON 0)
+    # Find Python library (Mac OS X Framework)
     IF(APPLE)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; print sys.exec_prefix"
                           OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-        SET(PYTHON_LIBRARY "${PYTHON_PREFIX}/Python"
-            CACHE FILEPATH "Python library"
-            FORCE)
-        SET(PYTHON_LIBRARIES "${PYTHON_PREFIX}/Python"
-            CACHE FILEPATH "Python libraries"
-            FORCE)
-    ELSE()
+        # If the user built python from source, it might not be a framework build.
+        # Only use this special python library location for framework builds.
+	IF (${PYTHON_PREFIX} MATCHES ".*framework.*")
+            SET(FOUND_FRAMEWORK_PYTHON 1)
+            SET(PYTHON_LIBRARY "${PYTHON_PREFIX}/Python"
+                CACHE FILEPATH "Python library"
+                FORCE)
+            SET(PYTHON_LIBRARIES "${PYTHON_PREFIX}/Python"
+                CACHE FILEPATH "Python libraries"
+                FORCE)
+        ENDIF()
+    ENDIF()
+
+    # Find Python library (Linux, Windows, and Mac OS X Non-framework)
+    IF(NOT APPLE OR NOT FOUND_FRAMEWORK_PYTHON)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
