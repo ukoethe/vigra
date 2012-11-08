@@ -2162,7 +2162,8 @@ public:
     {
         using namespace vigra::multi_math;
         using namespace vigra::functor;
-        Shape3 s(100, 100, 100);
+        const int size = 200;
+        Shape3 s(size, size, size);
         array3_type u(s),
                     v(s),
                     w(s);
@@ -2187,6 +2188,21 @@ public:
         std::cerr << "    marray expression: " << t << "\n";
 #endif
         TIC;
+        typedef array3_type::view_type View;
+        View::iterator wi = ((View &)w).begin(), wend = wi.getEndIterator(),
+                       ui = ((View &)u).begin(), vi = ((View &)v).begin();
+        for(; wi != wend; ++wi, ++ui, ++vi)
+                    *wi = *ui * *vi;
+        t = TOCS;
+        std::cerr << "    StridedScanOrderIterator: " << t << "\n";
+        TIC;
+        typedef CoupledIteratorType<3, scalar_type, scalar_type, scalar_type>::type CI;
+        CI i = createCoupledIterator(w, u, v), end = i.getEndIterator();
+        for(; i != end; ++i)
+                    i.get<1>() = i.get<2>() * i.get<3>();
+        t = TOCS;
+        std::cerr << "    CoupledScanOrderIterator: " << t << "\n";
+        TIC;
         w = u*v;
         t = TOCS;
         std::cerr << "    multi_math expression: " << t << "\n";
@@ -2205,9 +2221,9 @@ public:
         t = TOCS;
         std::cerr << "    transposed lambda expression: " << t << "\n";
         TIC;
-        for(int z=0; z<100; ++z)
-            for(int y=0; y<100; ++y)
-                for(int x=0; x<100; ++x)
+        for(int z=0; z<size; ++z)
+            for(int y=0; y<size; ++y)
+                for(int x=0; x<size; ++x)
                     w(x,y,z) = u(x,y,z) * v(x,y,z);
         t = TOCS;
         std::cerr << "    explicit loops: " << t << "\n";

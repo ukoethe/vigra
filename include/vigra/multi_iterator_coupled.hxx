@@ -37,10 +37,12 @@
 #define MULTI_ITERATOR_COUPLED_HXX
 
 #include "metaprogramming.hxx"
-#include "multi_iterator.hxx"
-#include "multi_gridgraph_neighborhoods.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
+
+template <unsigned int N, class T, class C = UnstridedArrayTag>
+class MultiArrayView;
 
 /** \addtogroup MultiIteratorGroup
 */
@@ -284,7 +286,7 @@ public:
     
     unsigned int borderType() const
     {
-        return BorderTypeImpl<N>::exec(point_, shape_);
+        return detail::BorderTypeImpl<N>::exec(point_, shape_);
     }
 
     value_type point_, shape_;
@@ -527,7 +529,7 @@ Namespace: vigra
 */
 
 template <unsigned int N,
-          class HANDLES,
+          class HANDLES=CoupledHandle<TinyVector<MultiArrayIndex, N>, void>,
           int DIMENSION = N-1>
 class CoupledScanOrderIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance

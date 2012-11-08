@@ -35,8 +35,9 @@
 
 #define VIGRA_CHECK_BOUNDS
 #include "unittest.hxx"
+#include <vigra/multi_shape.hxx>
+#include <vigra/multi_iterator.hxx>
 #include <vigra/multi_array.hxx>
-#include <vigra/multi_gridgraph_neighborhoods.hxx>
 #include <vigra/algorithm.hxx>
 
 using namespace vigra;
@@ -81,22 +82,37 @@ struct NeighborhoodTests
         shouldEqual(pos, Shape(1));   // check that all causal neighbors were found
         shouldEqual(neg, Shape(-1));  // check that all anti-causal neighbors were found
         
-        // check border flags
-        MultiArray<N, int> a(Shape(3));
-        typename MultiArrayView<N, int>::const_iterator ai = static_cast<MultiArrayView<N, int> const &>(a).begin();
-        
         shouldEqual(neighborExists.size(), (int)pow(2.0, (int)N*2));
+        MultiArray<1, unsigned char> checkNeighborCodes(Shape1(neighborExists.size()), (unsigned char)0);
+
+        // check neighborhoods at ROI border
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
+        MultiArray<N, int> a(Shape(3));
+        typedef typename MultiArray<N, int>::view_type View;
         
-        for(int k=0; k<a.size(); ++k, ++ai)
+        for(; i != iend; ++i)
         {
-            int borderType = ai.borderType();
-            shouldEqual(neighborExists[borderType].size(), neighborCount);
+            // create all possible array shapes from 1**N to 3**N
+            View va = a.subarray(Shape(), *i+Shape(1)); 
             
-            for(int j=0; j<neighborCount; ++j)
+            // check neighborhood of all pixels
+            typename View::iterator vi = va.begin(), viend = vi.getEndIterator();
+            for(; vi != viend; ++vi)
             {
-                shouldEqual(a.isInside(ai.point()+neighborhood[0][j]), neighborExists[borderType][j]);
+                int borderType = vi.borderType();
+                
+                shouldEqual(neighborExists[borderType].size(), neighborCount);
+                checkNeighborCodes[borderType] = 1;
+                
+                for(int k=0; k<neighborCount; ++k)
+                {
+                    // check that neighbors are correctly marked as inside or outside in neighborExists
+                    shouldEqual(va.isInside(vi.point()+neighborhood[0][k]), neighborExists[borderType][k]);
+                }
             }
         }
+        
+        should(checkNeighborCodes.all()); // check that all possible neighborhoods have been tested
     }
     
     template <unsigned int N>
@@ -137,21 +153,36 @@ struct NeighborhoodTests
         shouldEqual(min, 1);
         shouldEqual(max, 1);
         
-        // check border flags
-        typename MultiArrayView<N, int>::const_iterator ai = static_cast<MultiArrayView<N, int> const &>(a).begin();
-        
         shouldEqual(neighborExists.size(), (int)pow(2.0, (int)N*2));
+        MultiArray<1, unsigned char> checkNeighborCodes(Shape1(neighborExists.size()), (unsigned char)0);
+
+        // check neighborhoods at ROI border
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
+        typedef typename MultiArray<N, int>::view_type View;
         
-        for(int k=0; k<a.size(); ++k, ++ai)
+        for(; i != iend; ++i)
         {
-            int borderType = ai.borderType();
-            shouldEqual(neighborExists[borderType].size(), neighborCount);
+            // create all possible array shapes from 1**N to 3**N
+            View va = a.subarray(Shape(), *i +Shape(1));
             
-            for(int j=0; j<neighborCount; ++j)
+            // check neighborhood of all pixels
+            typename View::iterator vi = va.begin(), viend = vi.getEndIterator();
+            for(; vi != viend; ++vi)
             {
-                shouldEqual(a.isInside(ai.point()+neighborhood[0][j]), neighborExists[borderType][j]);
+                int borderType = vi.borderType();
+                
+                shouldEqual(neighborExists[borderType].size(), neighborCount);
+                checkNeighborCodes[borderType] = 1;
+                
+                for(int k=0; k<neighborCount; ++k)
+                {
+                    // check that neighbors are correctly marked as inside or outside in neighborExists
+                    shouldEqual(va.isInside(vi.point()+neighborhood[0][k]), neighborExists[borderType][k]);
+                }
             }
         }
+        
+        should(checkNeighborCodes.all()); // check that all possible neighborhoods have been tested
     }
 };
 

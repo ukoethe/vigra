@@ -62,123 +62,6 @@ namespace vigra
 
 namespace detail
 {
-/********************************************************/
-/*                                                      */
-/*                    defaultStride                     */
-/*                                                      */
-/********************************************************/
-
-/* generates the stride for a gapless shape.
-
-    Namespace: vigra::detail
-*/
-template <unsigned int N>
-inline TinyVector <MultiArrayIndex, N>
-defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
-{
-    TinyVector <MultiArrayIndex, N> ret;
-    ret [0] = 1;
-    for (int i = 1; i < (int)N; ++i)
-        ret [i] = ret [i-1] * shape [i-1];
-    return ret;
-}
-
-/********************************************************/
-/*                                                      */
-/*                 ScanOrderToOffset                    */
-/*                                                      */
-/********************************************************/
-
-/* transforms an index in scan order sense to a pointer offset in a possibly
-   strided, multi-dimensional array.
-
-    Namespace: vigra::detail
-*/
-
-template <int K>
-struct ScanOrderToOffset
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & stride)
-    {
-        return stride[N-K] * (d % shape[N-K]) +
-               ScanOrderToOffset<K-1>::exec(d / shape[N-K], shape, stride);
-    }
-};
-
-template <>
-struct ScanOrderToOffset<1>
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & stride)
-    {
-        return stride[N-1] * d;
-    }
-};
-
-template <int K>
-struct ScanOrderToCoordinate
-{
-    template <int N>
-    static void
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> &shape,
-         TinyVector <MultiArrayIndex, N> & result)
-    {
-        result[N-K] = (d % shape[N-K]);
-        ScanOrderToCoordinate<K-1>::exec(d / shape[N-K], shape, result);
-    }
-};
-
-template <>
-struct ScanOrderToCoordinate<1>
-{
-    template <int N>
-    static void
-    exec(MultiArrayIndex d, const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         TinyVector <MultiArrayIndex, N> & result)
-    {
-        result[N-1] = d;
-    }
-};
-
-
-template <class C>
-struct CoordinatesToOffest
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x)
-    {
-        return stride[0] * x;
-    }
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x, MultiArrayIndex y)
-    {
-        return stride[0] * x + stride[1] * y;
-    }
-};
-
-template <>
-struct CoordinatesToOffest<UnstridedArrayTag>
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*stride*/, MultiArrayIndex x)
-    {
-        return x;
-    }
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & stride, MultiArrayIndex x, MultiArrayIndex y)
-    {
-        return x + stride[1] * y;
-    }
-};
 
 /********************************************************/
 /*                                                      */
@@ -589,8 +472,8 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 // forward declarations
 
-template <unsigned int N, class T, class C = UnstridedArrayTag>
-class MultiArrayView;
+// template <unsigned int N, class T, class C = UnstridedArrayTag>
+// class MultiArrayView;
 template <unsigned int N, class T, class A = std::allocator<T> >
 class MultiArray;
 
@@ -1710,7 +1593,7 @@ public:
     void meanVariance(U * mean, U * variance) const
     {
         typedef typename NumericTraits<U>::RealPromote R;
-	R zero;
+        R zero = R();
         triple<double, R, R> res(0.0, zero, zero);
         detail::reduceOverMultiArray(traverser_begin(), shape(),
                                      res, 
@@ -1850,7 +1733,7 @@ public:
         */
     iterator begin()
     {
-        return iterator(m_ptr, m_shape, m_stride);
+        return iterator(*this);
     }
 
         /** returns a const scan-order iterator pointing
@@ -1858,7 +1741,7 @@ public:
         */
     const_iterator begin() const
     {
-        return const_iterator(m_ptr, m_shape, m_stride);
+        return const_iterator(*this);
     }
 
         /** returns a scan-order iterator pointing

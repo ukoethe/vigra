@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*     Copyright 2003-2008 by Gunnar Kedenburg and Ullrich Koethe       */
+/*     Copyright 2003-2012 by Gunnar Kedenburg and Ullrich Koethe       */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    ( Version 1.3.0, Sep 10 2004 )                                    */
@@ -30,25 +30,369 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
-
 
 #ifndef VIGRA_MULTI_ITERATOR_HXX
 #define VIGRA_MULTI_ITERATOR_HXX
 
 #include <sys/types.h>
-#include "tinyvector.hxx"
 #include "iteratortags.hxx"
+#include "multi_iterator_coupled.hxx"
 
 namespace vigra {
 
+/** \addtogroup MultiIteratorGroup
+*/
+//@{
 
-template <unsigned int N, class T, 
-          class REFERENCE = T &, class POINTER = T *> class MultiIterator;
-template <unsigned int N, class T, 
-          class REFERENCE = T &, class POINTER = T *> class StridedMultiIterator;
+    /** \brief Iterate over a virtual array where each element contains its coordinate.
+
+        MultiCoordinateIterator behaves like a read-only random access iterator. 
+        It moves accross the given region of interest in scan-order (with the first
+        index changing most rapidly), and dereferencing the iterator returns the 
+        coordinate (i.e. multi-dimensional index) of the current array element. 
+        The functionality is thus similar to a meshgrid in Matlab or numpy. 
+        
+        Internally, it is just a wrapper of a \ref CoupledScanOrderIterator that
+        has been created without any array and whose reference type is not a 
+        \ref CoupledHandle, but the coordinate itself.
+                
+        The iterator supports all functions listed in the STL documentation for 
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
+
+        <b>Usage:</b>
+
+        <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
+        Namespace: vigra
+        
+        \code
+        MultiCoordinateIterator<3> i(Shape3(3,2,1)), end = i.getEndIterator();
+        
+        for(; i != end; ++i)
+            std::cout << *i << "\n";
+            
+        // Output:
+        // (0, 0, 0)
+        // (1, 0, 0)
+        // (2, 0, 0)
+        // (0, 1, 0)
+        // (1, 1, 0)
+        // (2, 1, 0)
+        \endcode
+    */
+template<unsigned int N>
+class MultiCoordinateIterator
+    : public CoupledScanOrderIterator<N>
+{
+  public:
+    typedef CoupledScanOrderIterator<N>            base_type;
+
+    typedef typename base_type::shape_type         shape_type;
+    typedef typename base_type::difference_type    difference_type;
+    typedef MultiCoordinateIterator                iterator;
+    typedef std::random_access_iterator_tag        iterator_category;
+
+    typedef typename base_type::value_type         handle_type;
+    typedef typename handle_type::value_type       value_type;
+    typedef typename handle_type::reference        reference;
+    typedef typename handle_type::const_reference  const_reference;
+    typedef typename handle_type::pointer          pointer;
+    typedef typename handle_type::const_pointer    const_pointer;
+
+    MultiCoordinateIterator() 
+        : base_type(handle_type())
+    {}
+
+    MultiCoordinateIterator(shape_type const & shape) 
+        : base_type(handle_type(shape))
+    {}
+
+    // dereferencing the iterator yields the coordinate object
+    // (used as vertex_descriptor)
+    reference operator*()
+    {
+        return this->template get<0>();
+    }
+    
+    const_reference operator*() const
+    {
+        return this->template get<0>();
+    }
+
+    pointer operator->()
+    {
+        return &this->template get<0>();
+    }
+    
+    const_pointer operator->() const
+    {
+        return &this->template get<0>();
+    }
+
+    reference operator[](MultiArrayIndex i)
+    {
+        return *(MultiCoordinateIterator(*this) += i);
+    }
+
+    const_reference operator[](MultiArrayIndex i) const
+    {
+        return *(MultiCoordinateIterator(*this) += i);
+    }
+
+    MultiCoordinateIterator & operator++()
+    {
+        base_type::operator++();
+        return *this;
+    }
+    
+    MultiCoordinateIterator operator++(int)
+    {
+        MultiCoordinateIterator res(*this);
+        ++*this;
+        return res;
+    }
+
+    MultiCoordinateIterator & operator+=(MultiArrayIndex i)
+    {
+        base_type::operator+=(i);
+        return *this;
+    }
+
+    MultiCoordinateIterator & operator+=(const shape_type &coordOffset)
+    {
+        base_type::operator+=(coordOffset);
+        return *this;
+    }
+
+    MultiCoordinateIterator & operator--()
+    {
+        base_type::operator--();
+        return *this;
+    }
+
+    MultiCoordinateIterator operator--(int)
+    {
+        MultiCoordinateIterator res(*this);
+        --*this;
+        return res;
+    }
+
+    MultiCoordinateIterator & operator-=(MultiArrayIndex i)
+    {
+        return operator+=(-i);
+    }
+
+    MultiCoordinateIterator & operator-=(const shape_type &coordOffset)
+    {
+        return operator+=(-coordOffset);
+    }
+
+    MultiCoordinateIterator getEndIterator() const
+    {
+        return MultiCoordinateIterator(base_type::getEndIterator());
+    }
+
+    MultiCoordinateIterator operator+(MultiArrayIndex d) const
+    {
+        return MultiCoordinateIterator(*this) += d;
+    }
+
+    MultiCoordinateIterator operator-(MultiArrayIndex d) const
+    {
+        return MultiCoordinateIterator(*this) -= d;
+    }
+
+    MultiCoordinateIterator operator+(const shape_type &coordOffset) const
+    {
+        return MultiCoordinateIterator(*this) += coordOffset;
+    }
+
+    MultiCoordinateIterator operator-(const shape_type &coordOffset) const
+    {
+        return MultiCoordinateIterator(*this) -= coordOffset;
+    }
+
+    MultiArrayIndex operator-(const MultiCoordinateIterator & other) const
+    {
+        return base_type::operator-(other);
+    }
+    
+  protected:
+    MultiCoordinateIterator(base_type const & base) 
+        : base_type(base)
+    {}
+};
+
+    /** \brief Sequential iterator for MultiArrayView.
+        
+        This iterator provides STL-compatible random access iterator functionality for arbitrary 
+        \ref MultiArrayView instances, regardless of their shapes and strides. The
+        class uses an implementation that minimizes speed penalties that could result from 
+        non-trivial strides. The <i>scan-order</i> is defined such that dimensions are iterated 
+        from front to back (first to last).
+        
+        You normally construct instances of this class by calling \ref MultiArrayView::begin() 
+        and \ref MultiArrayView::end(). 
+        
+        The iterator supports all functions listed in the STL documentation for 
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
+        
+        <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
+        Namespace: vigra
+    */
+template <unsigned int N, class T, class REFERENCE, class POINTER>
+class StridedScanOrderIterator
+    : public CoupledIteratorType<N, T>::type
+{
+  public:
+    typedef typename CoupledIteratorType<N, T>::type  base_type;
+
+    typedef typename base_type::shape_type         shape_type;
+    typedef typename base_type::difference_type    difference_type;
+    typedef StridedScanOrderIterator              iterator;
+    typedef std::random_access_iterator_tag        iterator_category;
+
+    typedef T                                      value_type;
+    typedef REFERENCE                              reference;
+    typedef T const &                              const_reference;
+    typedef POINTER                                pointer;
+    typedef T const *                              const_pointer;
+
+    StridedScanOrderIterator() 
+        : base_type()
+    {}
+
+    template <class S>
+    StridedScanOrderIterator(MultiArrayView<N, T, S> const & view) 
+        : base_type(createCoupledIterator(view))
+    {}
+
+    StridedScanOrderIterator(POINTER p, shape_type const & shape, shape_type const & strides) 
+        : base_type(createCoupledIterator(MultiArrayView<N, T, StridedArrayTag>(shape, strides, const_cast<T *>(p))))
+    {}
+
+    reference operator*()
+    {
+        return this->template get<1>();
+    }
+    
+    const_reference operator*() const
+    {
+        return this->template get<1>();
+    }
+
+    pointer operator->()
+    {
+        return &this->template get<1>();
+    }
+    
+    const_pointer operator->() const
+    {
+        return &this->template get<1>();
+    }
+
+    reference operator[](MultiArrayIndex i)
+    {
+        return *(StridedScanOrderIterator(*this) += i);
+    }
+
+    const_reference operator[](MultiArrayIndex i) const
+    {
+        return *(StridedScanOrderIterator(*this) += i);
+    }
+
+    StridedScanOrderIterator & operator++()
+    {
+        base_type::operator++();
+        return *this;
+    }
+    
+    StridedScanOrderIterator operator++(int)
+    {
+        StridedScanOrderIterator res(*this);
+        ++*this;
+        return res;
+    }
+
+    StridedScanOrderIterator & operator+=(MultiArrayIndex i)
+    {
+        base_type::operator+=(i);
+        return *this;
+    }
+
+    StridedScanOrderIterator & operator+=(const shape_type &coordOffset)
+    {
+        base_type::operator+=(coordOffset);
+        return *this;
+    }
+
+    StridedScanOrderIterator & operator--()
+    {
+        base_type::operator--();
+        return *this;
+    }
+
+    StridedScanOrderIterator operator--(int)
+    {
+        StridedScanOrderIterator res(*this);
+        --*this;
+        return res;
+    }
+
+    StridedScanOrderIterator & operator-=(MultiArrayIndex i)
+    {
+        return operator+=(-i);
+    }
+
+    StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
+    {
+        return operator+=(-coordOffset);
+    }
+
+    StridedScanOrderIterator getEndIterator() const
+    {
+        return StridedScanOrderIterator(base_type::getEndIterator());
+    }
+
+    StridedScanOrderIterator operator+(MultiArrayIndex d) const
+    {
+        return StridedScanOrderIterator(*this) += d;
+    }
+
+    StridedScanOrderIterator operator-(MultiArrayIndex d) const
+    {
+        return StridedScanOrderIterator(*this) -= d;
+    }
+
+    MultiArrayIndex operator-(StridedScanOrderIterator const & other) const
+    {
+        return base_type::operator-(other);
+    }
+
+    StridedScanOrderIterator operator+(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) += coordOffset;
+    }
+
+    StridedScanOrderIterator operator-(const shape_type &coordOffset) const
+    {
+        return StridedScanOrderIterator(*this) -= coordOffset;
+    }
+    
+    MultiArrayIndex index() const
+    {
+        return this->scanOrderIndex();
+    }
+    
+  protected:
+    StridedScanOrderIterator(base_type const & base) 
+        : base_type(base)
+    {}
+};
+
+//@}
 
 /** \page MultiIteratorPage  Multi-dimensional Array Iterators
 
@@ -336,35 +680,9 @@ but iterator performance will suffer significantly, as is experienced with
 
 */
 
-/** \addtogroup MultiIteratorGroup  Multi-dimensional Array Iterators
-
-    \brief General iterators for arrays of arbitrary dimension.
+/** \addtogroup MultiIteratorGroup  
 */
 //@{
-
-    /** Index type for a single dimension of a MultiArrayView or
-        MultiArray.
-    */
-typedef std::ptrdiff_t MultiArrayIndex;
-
-    /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
-        MultiArray variants.
-    */
-template <unsigned int N>
-class MultiArrayShape
-{
-  public:
-        /** The difference type of all MultiIterator, MultiArrayView, and
-            MultiArray variants.
-        */
-    typedef TinyVector<MultiArrayIndex, N> type;
-};
-
-typedef MultiArrayShape<1>::type Shape1; ///< shape type for MultiArray<1, T>
-typedef MultiArrayShape<2>::type Shape2; ///< shape type for MultiArray<2, T>
-typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
-typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
-typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
 
 template <class POINTER>
 struct MultiIteratorStrideTraits
@@ -378,15 +696,17 @@ struct MultiIteratorStrideTraits
     }
 };
 
+template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
+class MultiIterator;
+
+template <unsigned int N, class T, class REFERENCE = T &, class POINTER = T *>
+class StridedMultiIterator;
 
 /********************************************************/
 /*                                                      */
 /*                      MultiIterator                   */
 /*                                                      */
 /********************************************************/
-
-template <unsigned int N, class T, class REFERENCE, class POINTER>
-class MultiIterator;
 
 /********************************************************/
 /*                                                      */
@@ -1149,9 +1469,6 @@ public:
 /*                                                      */
 /********************************************************/
 
-template <unsigned int N, class T, class REFERENCE, class POINTER>
-class StridedMultiIterator;
-
 /********************************************************/
 /*                                                      */
 /*                   StridedMultiIterator<1>            */
@@ -1908,700 +2225,6 @@ public:
     }
 
 };
-
-namespace detail {
-
-
-template <int K>
-struct CoordinateToScanOrder
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
-    }
-};
-
-template <>
-struct CoordinateToScanOrder<1>
-{
-    template <int N>
-    static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
-    {
-        return coordinate[N-1];
-    }
-};
-
-
-template <unsigned int M>
-struct MoveToScanOrderIndex
-{
-    template <class Shape, class Ptr>
-    static void 
-    exec(MultiArrayIndex newIndex, Shape const & shape,
-         Shape & point, Ptr & p, Shape const & strides)
-    {
-        enum { N = Shape::static_size };
-        MultiArrayIndex newPos = newIndex % shape[N-1-M];
-        p += (newPos - point[N-1-M]) * strides[N-1-M];
-        point[N-1-M] = newPos;
-        MoveToScanOrderIndex<M-1>::exec(newIndex / shape[N-1-M], shape, point, p, strides);
-    }
-    
-    template <class Shape, class Ptr1, class Ptr2>
-    static void 
-    exec(MultiArrayIndex newIndex, Shape const & shape, Shape & point, 
-         Ptr1 & p1, Shape const & strides1, Ptr2 & p2, Shape const & strides2)
-    {
-        enum { N = Shape::static_size };
-        MultiArrayIndex newPos = newIndex % shape[N-1-M];
-        p1 += (newPos - point[N-1-M]) * strides1[N-1-M];
-        p2 += (newPos - point[N-1-M]) * strides2[N-1-M];
-        point[N-1-M] = newPos;
-        MoveToScanOrderIndex<M-1>::exec(newIndex / shape[N-1-M], shape, point, 
-                                         p1, strides1, p2, strides2);
-    }
-};
-
-template <>
-struct MoveToScanOrderIndex<0>
-{
-    template <class Shape, class Ptr>
-    static void 
-    exec(MultiArrayIndex newIndex, Shape const & shape,
-         Shape & point, Ptr & p, Shape const & strides)
-    {
-        enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = std::min(newIndex, shape[N-1]);
-        p += (newPos - point[N-1]) * strides[N-1];
-        point[N-1] = newPos;
-    }
-    
-    template <class Shape, class Ptr1, class Ptr2>
-    static void 
-    exec(MultiArrayIndex newIndex, Shape const & shape, Shape & point, 
-         Ptr1 & p1, Shape const & strides1, Ptr2 & p2, Shape const & strides2)
-    {
-        enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = std::min(newIndex, shape[N-1]);
-        p1 += (newPos - point[N-1]) * strides1[N-1];
-        p2 += (newPos - point[N-1]) * strides2[N-1];
-        point[N-1] = newPos;
-    }
-};
-
-#if 0 // alternative implementation, may be faster on some machines
-template <unsigned int M>
-struct MoveToScanOrderIndex
-{
-    template <class Shape, class Ptr>
-    static void 
-    exec(MultiArrayIndex & newIndex, Shape const & shape,
-         Shape & point, Ptr & p, Shape const & strides, MultiArrayIndex shapeStride = 1)
-    {
-        enum { N = Shape::static_size };
-        MoveToScanOrderIndex<M-1>::exec(newIndex, shape, point, p, strides, shapeStride*shape[N-1-M]);
-        MultiArrayIndex newPos = newIndex / shapeStride;
-        p += (newPos - point[N-1-M]) * strides[N-1-M];
-        point[N-1-M] = newPos;
-        newIndex %= shapeStride;
-    }
-    
-    template <class Shape, class Ptr1, class Ptr2>
-    static void 
-    exec(MultiArrayIndex & newIndex, Shape const & shape, Shape & point, 
-         Ptr1 & p1, Shape const & strides1, Ptr2 & p2, Shape const & strides2, 
-         MultiArrayIndex shapeStride = 1)
-    {
-        enum { N = Shape::static_size };
-        MoveToScanOrderIndex<M-1>::exec(newIndex, shape, point, 
-                                         p1, strides1, p2, strides2, shapeStride*shape[N-1-M]);
-        MultiArrayIndex newPos = newIndex / shapeStride;
-        p1 += (newPos - point[N-1-M]) * strides1[N-1-M];
-        p2 += (newPos - point[N-1-M]) * strides2[N-1-M];
-        point[N-1-M] = newPos;
-        newIndex %= shapeStride;
-    }
-};
-
-template <>
-struct MoveToScanOrderIndex<0>
-{
-    template <class Shape, class Ptr>
-    static void 
-    exec(MultiArrayIndex & newIndex, Shape const & shape,
-         Shape & point, Ptr & p, Shape const & strides, MultiArrayIndex shapeStride)
-    {
-        enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = newIndex / shapeStride;
-        p += (newPos - point[N-1]) * strides[N-1];
-        point[N-1] = newPos;
-        newIndex %= shapeStride;
-    }
-    
-    template <class Shape, class Ptr1, class Ptr2>
-    static void 
-    exec(MultiArrayIndex & newIndex, Shape const & shape, Shape & point, 
-         Ptr1 & p1, Shape const & strides1, Ptr2 & p2, Shape const & strides2, 
-         MultiArrayIndex shapeStride)
-    {
-        enum { N = Shape::static_size }; 
-        MultiArrayIndex newPos = newIndex / shapeStride;
-        p1 += (newPos - point[N-1]) * strides1[N-1];
-        p2 += (newPos - point[N-1]) * strides2[N-1];
-        point[N-1] = newPos;
-        newIndex %= shapeStride;
-    }
-};
-#endif
-
-}
-
-    /** \brief Sequential iterator for MultiArrayView.
-        
-        This iterator provides STL-compatible random access iterator functionality for arbitrary 
-        \ref MultiArrayView instances, regardless of their shapes and strides. The
-        class uses an implementation that minimizes speed penalties that could result from 
-        non-trivial strides. The <i>scan-order</i> is defined such that dimensions are iterated 
-        from front to back (first to last).
-        
-        You normally construct instances of this class by calling \ref MultiArrayView::begin() 
-        and \ref MultiArrayView::end(). 
-        
-        The iterator supports all functions listed in the STL documentation for 
-        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
-    */
-template <unsigned int N, class T, class REFERENCE, class POINTER, unsigned int M = N>
-class StridedScanOrderIterator
-#ifndef DOXYGEN  // doxygen doesn't understand this inheritance
-: protected StridedScanOrderIterator<N, T, REFERENCE, POINTER, M-1>
-#endif
-{
-    typedef StridedScanOrderIterator<N, T, REFERENCE, POINTER, M-1> base_type;
-    enum { level = M-1 };
-
-  public:
-
-    typedef typename base_type::value_type value_type;
-    typedef typename base_type::pointer pointer;
-    typedef typename base_type::reference reference;
-    typedef typename base_type::const_reference const_reference;
-    typedef typename base_type::shape_type shape_type;
-    typedef MultiIteratorStrideTraits<POINTER> stride_traits;
-    typedef typename stride_traits::stride_type difference_type;
-    typedef typename stride_traits::stride_array_type difference_array_type;
-    typedef StridedScanOrderIterator iterator;
-    typedef std::random_access_iterator_tag iterator_category;
-    
-    StridedScanOrderIterator()
-    {}
-    
-    StridedScanOrderIterator(pointer i, 
-                             shape_type const & shape, shape_type const & strides)
-    : base_type(i, shape, strides)
-    {}
-
-    StridedScanOrderIterator & operator++()
-    {
-        base_type::operator++();
-        if(this->point_[level-1] == this->shape_[level-1]) 
-        {
-            base_type::reset();
-            this->i_ += this->strides_[level];
-            ++this->point_[level];
-        }
-        return *this;
-    }
-
-    StridedScanOrderIterator operator++(int)
-    {
-        StridedScanOrderIterator res(*this);
-        ++*this;
-        return res;
-    }
-
-    StridedScanOrderIterator & operator+=(MultiArrayIndex i)
-    {
-        this->moveToScanOrderIndex(this->index_+i);
-        return *this;
-    }
-
-    //! overload to add a coord-tuple:
-    // it should be cheaper because the modulo-divisions are avoided
-    StridedScanOrderIterator & operator+=(const shape_type &coordOffset)
-    {
-        this->moveRelative(dot(coordOffset,this->strides_),
-               detail::CoordinateToScanOrder<N>::exec(this->shape_, coordOffset),
-               coordOffset);
-        return *this;
-    }
-    StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
-    {
-    return operator+=(-coordOffset);
-    }
-
-    StridedScanOrderIterator & operator--()
-    {
-        base_type::operator--();
-        if(this->point_[level-1] == -1) 
-        {
-            base_type::inverseReset();
-            this->i_ -= this->strides_[level];
-            --this->point_[level];
-        }
-        return *this;
-    }
-
-    StridedScanOrderIterator operator--(int)
-    {
-        StridedScanOrderIterator res(*this);
-        --*this;
-        return res;
-    }
-
-    StridedScanOrderIterator & operator-=(MultiArrayIndex i)
-    {
-        return operator+=(-i);
-    }
-
-    StridedScanOrderIterator getEndIterator() const
-    {
-        StridedScanOrderIterator res(*this);
-        res.moveToScanOrderIndex(prod(this->shape_));
-        return res;
-    }
-
-    bool atBorder() const
-    {
-        return base_type::atBorder() || 
-                this->point_[level] == 0 || 
-                this->point_[level] == this->shape_[level] - 1;
-    }
-    
-    unsigned int borderType() const
-    {
-        unsigned int res = base_type::borderType();
-        if(this->point_[level] == 0)
-            res |= (1 << 2*level);
-        if(this->point_[level] == this->shape_[level]-1)
-            res |= (2 << 2*level);
-        return res;
-    }
-    
-    StridedScanOrderIterator operator+(MultiArrayIndex d) const
-    {
-        return StridedScanOrderIterator(*this) += d;
-    }
-
-    StridedScanOrderIterator operator-(MultiArrayIndex d) const
-    {
-        return StridedScanOrderIterator(*this) -= d;
-    }
-
-
-    StridedScanOrderIterator operator+(const shape_type &coordOffset) const
-    {
-        return StridedScanOrderIterator(*this) += coordOffset;
-    }
-
-    StridedScanOrderIterator operator-(const shape_type &coordOffset) const
-    {
-        return StridedScanOrderIterator(*this) -= coordOffset;
-    }
-
-
-    
-    MultiArrayIndex operator-(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator-(r);
-    }
-
-    bool operator==(StridedScanOrderIterator const & r)
-    {
-        return base_type::operator==(r);
-    }
-
-    bool operator!=(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator!=(r);
-    }
-
-    bool operator<(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator<(r);
-    }
-
-    bool operator<=(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator<=(r);
-    }
-
-    bool operator>(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator>(r);
-    }
-
-    bool operator>=(StridedScanOrderIterator const & r) const
-    {
-        return base_type::operator>=(r);
-    }
-
-    using base_type::point;
-    using base_type::shape;
-    using base_type::strides;
-    using base_type::ptr;
-    using base_type::index;
-    using base_type::operator*;
-    using base_type::operator->;
-    using base_type::operator[];
-
-  protected:
-    void reset()
-    {
-        this->i_ -= this->shape_[level]*this->strides_[level];
-        this->point_[level] = 0;
-    }
-
-    void inverseReset()
-    {
-        this->i_ += this->shape_[level]*this->strides_[level];
-        this->point_[level] = this->shape_[level]-1;
-    }
-    
-    template <class Ptr>
-    void increment(Ptr & p2, shape_type const & strides2)
-    {
-        base_type::increment(p2, strides2);
-        if(this->point_[level-1] == this->shape_[level-1]) 
-        {
-            base_type::reset();
-            this->i_ += this->strides_[level];
-            p2 += strides2[level] - this->shape_[level-1]*strides2[level-1];
-            ++this->point_[level];
-        }
-    }
-    
-    template <class Ptr>
-    void decrement(Ptr & p2, shape_type const & strides2)
-    {
-        base_type::decrement(p2, strides2);
-        if(this->point_[level-1] == -1) 
-        {
-            base_type::inverseReset();
-            this->i_ -= this->strides_[level];
-            p2 -= strides2[level] - this->shape_[level-1]*strides2[level-1];
-            --this->point_[level];
-        }
-    }
-    StridedScanOrderIterator & moveRelative(const MultiArrayIndex &pointerOffset,
-                                            const MultiArrayIndex &indexOffset,
-                                            const shape_type &coordOffset)
-    {
-        base_type::moveRelative(pointerOffset, indexOffset, coordOffset);
-        this->point_[level] += coordOffset[level];
-        return *this;
-    }
-};
-
-template <unsigned int N, class T, class REFERENCE, class POINTER>
-class StridedScanOrderIterator<N, T, REFERENCE, POINTER, 1>
-{
-    enum { level = 0 };
-
-  public:
-
-    typedef T value_type;
-    typedef POINTER pointer;
-    typedef T const * const_pointer;
-    typedef REFERENCE reference;
-    typedef T const & const_reference;
-    typedef typename MultiArrayShape<N>::type shape_type;
-    typedef MultiIteratorStrideTraits<POINTER> stride_traits;
-    typedef typename stride_traits::stride_type difference_type;
-    typedef typename stride_traits::stride_array_type difference_array_type;
-    typedef StridedScanOrderIterator iterator;
-    typedef std::random_access_iterator_tag iterator_category;
-
-    StridedScanOrderIterator()
-    : i_((pointer)0),
-      index_(0)
-    {}
-    
-    StridedScanOrderIterator(pointer i, 
-                             shape_type const & shape, shape_type const & strides)
-    : i_(i),
-      shape_(shape),
-      strides_(strides),
-      index_(0)
-    {}
-
-    StridedScanOrderIterator & operator++()
-    {
-        i_ += strides_[level];
-        ++point_[level];
-        ++index_;
-        return *this;
-    }
-
-    StridedScanOrderIterator operator++(int)
-    {
-        StridedScanOrderIterator res(*this);
-        ++*this;
-        return res;
-    }
-
-    StridedScanOrderIterator & operator+=(MultiArrayIndex i)
-    {
-        this->moveToScanOrderIndex(index_+i);
-        return *this;
-    }
-    
-    //! overload to add a coord-tuple:
-    StridedScanOrderIterator & operator+=(const shape_type &coordOffset)
-    {
-        this->moveRelative(dot(coordOffset,strides_), 
-               detail::CoordinateToScanOrder<N>::exec(shape_, coordOffset),
-               coordOffset);
-        return *this;
-    }
-
-    StridedScanOrderIterator & operator-=(const shape_type &coordOffset)
-    {
-        return operator+=(-coordOffset);
-    }
-
-    StridedScanOrderIterator & operator--()
-    {
-        i_ -= strides_[level];
-        --point_[level];
-        --index_;
-        return *this;
-    }
-
-    StridedScanOrderIterator operator--(int)
-    {
-        StridedScanOrderIterator res(*this);
-        --this;
-        return res;
-    }
-
-    StridedScanOrderIterator & operator-=(MultiArrayIndex i)
-    {
-        return operator+=(-i);
-    }
-    
-    reference operator*()
-    {
-        return *i_;
-    }
-
-    const_reference operator*() const
-    {
-        return *i_;
-    }
-    
-    pointer operator->()
-    {
-        return i_;
-    }
-
-    const_pointer operator->() const
-    {
-        return i_;
-    }
-
-    pointer ptr()
-    {
-        return i_;
-    }
-
-    const_pointer ptr() const
-    {
-        return i_;
-    }
-
-    reference operator[](MultiArrayIndex i)
-    {
-        StridedScanOrderIterator t(*this);
-        t.moveToScanOrderIndex(index_+i);
-        return *t;
-    }
-
-    const_reference operator[](MultiArrayIndex i) const
-    {
-        StridedScanOrderIterator t(*this);
-        t.moveToScanOrderIndex(index_+i);
-        return *t;
-    }
-
-    StridedScanOrderIterator
-    operator+(MultiArrayIndex d) const
-    {
-        return StridedScanOrderIterator(*this) += d;
-    }
-
-    StridedScanOrderIterator
-    operator-(MultiArrayIndex d) const
-    {
-        return StridedScanOrderIterator(*this) -= d;
-    }
-
-    StridedScanOrderIterator operator+(const shape_type &coordOffset) const
-    {
-        return StridedScanOrderIterator(*this) += coordOffset;
-    }
-
-    StridedScanOrderIterator operator-(const shape_type &coordOffset) const
-    {
-        return StridedScanOrderIterator(*this) -= coordOffset;
-    }
-    
-    MultiArrayIndex
-    operator-(StridedScanOrderIterator const & r) const
-    {
-        return index() - r.index();
-    }
-
-    bool
-    operator==(StridedScanOrderIterator const & r)
-    {
-        return index() == r.index();
-    }
-
-    bool
-    operator!=(StridedScanOrderIterator const & r) const
-    {
-        return index() != r.index();
-    }
-
-    bool
-    operator<(StridedScanOrderIterator const & r) const
-    {
-        return index() < r.index();
-    }
-
-    bool
-    operator<=(StridedScanOrderIterator const & r) const
-    {
-        return index() <= r.index();
-    }
-
-    bool
-    operator>(StridedScanOrderIterator const & r) const
-    {
-        return index() > r.index();
-    }
-
-    bool
-    operator>=(StridedScanOrderIterator const & r) const
-    {
-        return index() >= r.index();
-    }
-
-
-    bool atBorder() const
-    {
-        return point_[level] == 0 || point_[level] == shape_[level] - 1;
-    }
-    
-    MultiArrayIndex index() const
-    {
-        return index_;
-    }
-    
-    shape_type const & point() const
-    {
-        return point_;
-    }
-    
-    shape_type const & shape() const
-    {
-        return shape_;
-    }
-    
-    shape_type const & strides() const
-    {
-        return strides_;
-    }
-    
-    StridedScanOrderIterator getEndIterator() const
-    {
-        StridedScanOrderIterator res(*this);
-        res.moveToScanOrderIndex(prod(shape_));
-        return res;
-    }
-    
-    unsigned int borderType() const
-    {
-        unsigned int res = 0;
-        if(this->point_[level] == 0)
-            res |= 1;
-        if(this->point_[level] == this->shape_[level]-1)
-            res |= 2;
-        return res;
-    }
-
-  protected:
-    void reset()
-    {
-        i_ -= shape_[level]*strides_[level];
-        point_[level] = 0;
-    }
-    
-    void inverseReset()
-    {
-        i_ += shape_[level]*strides_[level];
-        point_[level] = shape_[level] - 1;
-    }
-    
-    void moveToScanOrderIndex(MultiArrayIndex newIndex)
-    {
-        index_ = newIndex;
-        detail::MoveToScanOrderIndex<N-1>::exec(newIndex, shape_, point_, i_, strides_);
-    }
-    
-    template <class Ptr>
-    void increment(Ptr & p2, shape_type const & strides2)
-    {
-        operator++();
-        p2 += strides2[level];
-    }
-    
-    template <class Ptr>
-    void decrement(Ptr & p2, shape_type const & strides2)
-    {
-        operator--();
-        p2 -= strides2[level];
-    }
-    
-    template <class Ptr>
-    void moveToScanOrderIndex(MultiArrayIndex newIndex, Ptr & p2, shape_type const & strides2)
-    {
-        index_ = newIndex;
-        detail::MoveToScanOrderIndex<N-1>::exec(newIndex, shape_, point_, i_, strides_, p2, strides2);
-    }
-
-    StridedScanOrderIterator & moveRelative(const MultiArrayIndex &pointerOffset,
-                                            const MultiArrayIndex &indexOffset,
-                                            const shape_type &coordOffset)
-    {
-        point_[level] += coordOffset[level];
-
-        index_+= indexOffset;
-        i_ += pointerOffset;
-        
-        return *this;
-    }
-
-    pointer i_;
-    shape_type point_, shape_, strides_;
-    MultiArrayIndex index_;
-};
-
 
 //@}
 
