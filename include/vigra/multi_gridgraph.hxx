@@ -229,7 +229,6 @@ public:
                               vertex_descriptor source)
     : neighborOffsets_(&neighborOffsets),
       neighborIndices_(&neighborIndices),
-      source_(source),
       target_(source),
       index_(0)
     {
@@ -267,11 +266,6 @@ public:
     const_reference target() const
     {
         return target_;
-    }
-
-    const_reference source() const
-    {
-        return source_;
     }
 
     MultiArrayIndex index() const
@@ -321,7 +315,7 @@ public:
 
     ArrayVector<shape_type> const * neighborOffsets_;
     ArrayVector<index_type> const * neighborIndices_;
-    vertex_descriptor source_, target_;
+    vertex_descriptor target_;
     MultiArrayIndex index_;
 };
 
@@ -344,13 +338,12 @@ class GridGraphOutEdgeIterator
       index_(0)
     {}
 
-    GridGraphOutEdgeIterator(const ArrayVector<value_type> &neighborOffsets,
-                             ArrayVector<index_type>  const & neighborIndices,
+    GridGraphOutEdgeIterator(ArrayVector<value_type> const & neighborOffsets,
+                             ArrayVector<index_type> const & neighborIndices,
                              shape_type const & source)
     : neighborOffsets_(&neighborOffsets),
       neighborIndices_(&neighborIndices),
       edge_descriptor_(source, 0),
-//      source_(source),
       index_(0)
     {
         updateEdgeDescriptor();
@@ -427,9 +420,107 @@ class GridGraphOutEdgeIterator
     ArrayVector<value_type> const * neighborOffsets_;
     ArrayVector<index_type> const * neighborIndices_;
     value_type edge_descriptor_;
-//    shape_type source_;
     index_type index_;
 };
+
+    // Edge iterator for undirected graphs. 
+    // Composed of a vertex_iterator and an out_edge_iterator
+    // (which in case of the undirected graph is filtered for the unique edges).
+template<unsigned int N>
+class GridGraphEdgeIterator
+{
+public:
+    typedef GridGraphEdgeIterator<N>                     self_type;
+    typedef MultiCoordinateIterator<N>                   vertex_iterator;
+    typedef typename vertex_iterator::vertex_descriptor  vertex_descriptor;
+    typedef GridGraphOutEdgeIterator<N>                  out_edge_iterator;
+    typedef typename out_edge_iterator::edge_descriptor  edge_descriptor;
+    typedef edge_descriptor                              value_type;
+    typedef value_type const *                           pointer;
+    typedef value_type const *                           const_pointer;
+    typedef value_type const &                           reference;
+    typedef value_type const &                           const_reference;
+    typedef typename MultiArrayShape<N>::type            shape_type;
+    typedef MultiArrayIndex                              difference_type;
+    typedef MultiArrayIndex                              index_type;
+    typedef std::forward_iterator_tag                    iterator_category;
+
+    GridGraphEdgeIterator() 
+    : neighborOffsets_(0),
+      neighborIndices_(0)
+    {}
+
+    GridGraphEdgeIterator(ArrayVector<ArrayVector<value_type> > const & neighborOffsets,
+                          ArrayVector<ArrayVector<index_type> > const & neighborIndices,
+                          shape_type const & shape)
+    : neighborOffsets_(&neighborOffsets),
+      neighborIndices_(&neighborIndices),
+      vertexIterator_(shape),
+      outEdgeIterator_(neighborOffsets[vertexIterator_.boderType()], neighborIndices[vertexIterator_.boderType()], Shape())
+    {}
+
+    GridGraphEdgeIterator & operator++()
+    {
+        ++outEdgeIterator_;
+        if(outEdgeIterator_.atEnd())
+        {
+            ++vertexIterator_;
+            if(vertexIterator_.isValid())
+            {
+                unsigned int borderType = vertexIterator_.borderType();
+                outEdgeIterator_ = out_edge_iterator(neighborOffsets[borderType], neighborIndices[borderType], vi.point());
+            }
+        }
+        return *this;
+    }
+
+    GridGraphEdgeIterator  operator++(int)
+    {
+        GridGraphEdgeIterator ret(*this);
+        ++*this;
+        return ret;
+    }
+
+    const_reference operator*() const
+    {
+        return *outEdgeIterator_;
+    }
+
+    bool operator==(GridGraphEdgeIterator const & other) const
+    {
+        return (vertexIterator_ == other.vertexIterator_ && outEdgeIterator_ == other.outEdgeIterator_);
+    }
+
+    bool operator!=(GridGraphEdgeIterator const & other) const
+    {
+        return !operator==(other);
+    }
+    
+    bool isValid() const
+    {
+        return vertexIterator_.isValid();
+    }
+    
+    bool atEnd() const
+    {
+        return !isValid();
+    }
+    
+    GridGraphEdgeIterator getEndIterator() const
+    {
+        GridGraphEdgeIterator ret(*this);
+        ret.outEdgeIterator_ = outEdgeIterator_.getEndIterator();
+        ret.vertexIterator_ = vertexIterator_.getEndIterator();
+        return ret;
+    }
+
+  protected:
+    ArrayVector<ArrayVector<value_type> > const * neighborOffsets;
+    ArrayVector<ArrayVector<index_type> > const * neighborIndices;
+    vertex_iterator vertexIterator_;
+    out_edge_iterator outEdgeIterator_;
+};
+
 
 } // namespace vigra
 
@@ -598,7 +689,7 @@ public:
     typedef detail::MultiCoordinateIterator<N> vertex_iterator;
     typedef detail::CoordsGridGraphNeighborIterator<N> neighbor_vertex_iterator;
     typedef detail::CoordsGridGraphOutEdgeIterator<N> out_edge_iterator;
-    typedef detail::CoordsGridGraphEdgeIterator<self_type> edge_iterator;
+    typedef detail::GridGraphEdgeIterator<self_type> edge_iterator;
 
 
     struct traversal_category : virtual public vigragraph::incidence_graph_tag,
