@@ -71,7 +71,7 @@ class GridGraphEdgeDescriptor
     GridGraphEdgeDescriptor(shape_type const &vertex,
                             index_type edge_index,
                             bool reversed=false)
-    : base_type(DontInit())
+    : base_type(detail::DontInit())
     {
         set(vertex, edge_index, reversed);
     }
