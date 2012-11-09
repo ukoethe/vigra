@@ -262,6 +262,191 @@ struct NeighborhoodTests
             }
         }
     }
+    
+    template <unsigned int N, NeighborhoodType NType>
+    void testOutEdgeIteratorDirected()
+    {
+        typedef typename MultiArrayShape<N>::type Shape;
+        
+        ArrayVector<Shape> neighborOffsets;
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
+        
+        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets, backOffsets, forwardOffsets;
+        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, true, true, true);
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, true, true, false);
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, true, false, true);
+
+        // check neighborhoods at ROI border
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
+        MultiArray<N, int> a(Shape(3));
+        typedef typename MultiArray<N, int>::view_type View;
+        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            View va = a.subarray(Shape(), *i+Shape(1)); 
+            
+            // check neighborhood of all pixels
+            typename View::iterator vi = va.begin(), viend = vi.getEndIterator();
+            for(; vi != viend; ++vi)
+            {
+                int borderType = vi.borderType();
+                
+                {
+                    GridGraphOutEdgeIterator<N> ni(relativeOffsets[borderType], neighborIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point(), ni->vertexDescriptor());
+                            shouldEqual(k, ni->edgeIndex());
+                            shouldEqual(k, ni.neighborIndex());
+                            should(!ni->isReversed());
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                        
+                {
+                    GridGraphOutEdgeIterator<N> ni(backOffsets[borderType], backIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size()/2; ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point(), ni->vertexDescriptor());
+                            shouldEqual(k, ni->edgeIndex());
+                            shouldEqual(k, ni.neighborIndex());
+                            should(!ni->isReversed());
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                
+                {
+                    GridGraphOutEdgeIterator<N> ni(forwardOffsets[borderType], forwardIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point(), ni->vertexDescriptor());
+                            shouldEqual(k, ni->edgeIndex());
+                            shouldEqual(k, ni.neighborIndex());
+                            should(!ni->isReversed());
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+            }
+        }
+    }
+    
+    template <unsigned int N, NeighborhoodType NType>
+    void testOutEdgeIteratorUndirected()
+    {
+        typedef typename MultiArrayShape<N>::type Shape;
+        
+        ArrayVector<Shape> neighborOffsets;
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
+        
+        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets, backOffsets, forwardOffsets;
+        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, false, true, true);
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, false, true, false);
+        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, false, false, true);
+
+        // check neighborhoods at ROI border
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
+        MultiArray<N, int> a(Shape(3));
+        typedef typename MultiArray<N, int>::view_type View;
+        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            View va = a.subarray(Shape(), *i+Shape(1)); 
+            
+            // check neighborhood of all pixels
+            typename View::iterator vi = va.begin(), viend = vi.getEndIterator();
+            for(; vi != viend; ++vi)
+            {
+                int borderType = vi.borderType();
+                
+                {
+                    GridGraphOutEdgeIterator<N> ni(relativeOffsets[borderType], neighborIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(k, ni.neighborIndex());
+                            if(k < neighborExists[borderType].size() / 2)
+                            {
+                                shouldEqual(vi.point(), ni->vertexDescriptor());
+                                shouldEqual(k, ni->edgeIndex());
+                                should(!ni->isReversed());
+                            }
+                            else
+                            {
+                                shouldEqual(vi.point()+neighborOffsets[k], ni->vertexDescriptor());
+                                shouldEqual(k, (int)neighborOffsets.size() - ni->edgeIndex() - 1);
+                                should(ni->isReversed());
+                            }
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                        
+                {
+                    GridGraphOutEdgeIterator<N> ni(backOffsets[borderType], backIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size()/2; ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(k, ni.neighborIndex());
+                            shouldEqual(vi.point(), ni->vertexDescriptor());
+                            shouldEqual(k, ni->edgeIndex());
+                            should(!ni->isReversed());
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                
+                {
+                    GridGraphOutEdgeIterator<N> ni(forwardOffsets[borderType], forwardIndices[borderType], vi.point()),
+                                                nend = ni.getEndIterator();
+                    
+                    for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(k, ni.neighborIndex());
+                            shouldEqual(vi.point()+neighborOffsets[k], ni->vertexDescriptor());
+                            shouldEqual(k, (int)neighborOffsets.size() - ni->edgeIndex() - 1);
+                            should(ni->isReversed());
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+            }
+        }
+    }
 };
 
 struct GridgraphTestSuite
@@ -274,10 +459,21 @@ struct GridgraphTestSuite
         add(testCase(&NeighborhoodTests::testDirectNeighborhood<3>));
         add(testCase(&NeighborhoodTests::testIndirectNeighborhood<2>));
         add(testCase(&NeighborhoodTests::testIndirectNeighborhood<3>));
+        
         add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, DirectNeighborhood>)));
         add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, DirectNeighborhood>)));
         add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, IndirectNeighborhood>)));
         add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, IndirectNeighborhood>)));
+        
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<2, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<3, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<2, IndirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<3, IndirectNeighborhood>)));
+        
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<2, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<3, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<2, IndirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<3, IndirectNeighborhood>)));
     }
 };
 

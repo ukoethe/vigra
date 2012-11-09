@@ -79,7 +79,7 @@ class GridGraphEdgeDescriptor
     void set(shape_type const &vertex, index_type edge_index, bool reversed) 
     {
         vertex_descriptor_view(this->data()) = vertex;
-        *this[N] = edge_index;
+        (*this)[N] = edge_index;
         is_reversed_ = reversed;
     }
         
@@ -90,12 +90,22 @@ class GridGraphEdgeDescriptor
             is_reversed_ = true;
             vertex_descriptor_view(this->data()) += vertex_descriptor_view(diff.data());
         }
-        *this[N] = diff[N];
+        (*this)[N] = diff[N];
     }
         
     bool isReversed() const 
     {
         return is_reversed_;
+    }
+    
+    vertex_descriptor_view vertexDescriptor() const
+    {
+        return vertex_descriptor_view(this->data());
+    }
+    
+    value_type edgeIndex() const
+    {
+        return (*this)[N];
     }
 
   protected:
@@ -113,13 +123,13 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
                        bool includeBackEdges, bool includeForwardEdges)
 {
     unsigned int borderTypeCount = neighborExists.size();
-    indices.resize(borderTypeCount);
     relativeOffsets.resize(borderTypeCount);
+    indices.resize(borderTypeCount);
     
     for(unsigned int k=0; k<borderTypeCount; ++k)
     {
-        indices[k].clear();
         relativeOffsets[k].clear();
+        indices[k].clear();
         
         unsigned int j   = includeBackEdges
                               ? 0
@@ -146,16 +156,20 @@ void
 computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets, 
                              ArrayVector<ArrayVector<bool> > const & neighborExists,
                              ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & relativeOffsets,
+                             ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
                              bool directed, bool includeBackEdges, bool includeForwardEdges)
 {
     enum { N = Shape::static_size };
     typedef GridGraphEdgeDescriptor<N> EdgeDescriptor;
+    
     unsigned int borderTypeCount = neighborExists.size();
     relativeOffsets.resize(borderTypeCount);
+    indices.resize(borderTypeCount);
     
     for(unsigned int k=0; k<borderTypeCount; ++k)
     {
         relativeOffsets[k].clear();
+        indices[k].clear();
         
         unsigned int j   = includeBackEdges
                               ? 0
@@ -177,10 +191,10 @@ computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets,
                 }       
                 else // second or higher forward edge
                 {
-                    unsigned int prevIndex = neighborOffsets.size() - relativeOffsets[k].back()[N] - 1;
-                    relativeOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[prevIndex], 
+                    relativeOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
                                                                 neighborOffsets.size()-j-1, true));
                 }
+                indices[k].push_back(j);
             }
         }
     }
@@ -211,7 +225,7 @@ public:
     {}
 
     GridGraphNeighborIterator(ArrayVector<shape_type> const & neighborOffsets,
-                              ArrayVector<index_type>  const & neighborIndices,
+                              ArrayVector<index_type> const & neighborIndices,
                               vertex_descriptor source)
     : neighborOffsets_(&neighborOffsets),
       neighborIndices_(&neighborIndices),
@@ -219,8 +233,7 @@ public:
       target_(source),
       index_(0)
     {
-        if(neighborOffsets.size())
-            target_ += neighborOffsets[0];
+        updateTarget();
     }
 
     // TODO: implement a "goto-neighbor" operation
@@ -230,8 +243,7 @@ public:
     GridGraphNeighborIterator & operator++()
     {
         ++index_;
-        if(index_ < (MultiArrayIndex)neighborOffsets_->size())
-            target_ += (*neighborOffsets_)[index_];
+        updateTarget();
         return *this;
     }
 
@@ -245,6 +257,21 @@ public:
     const_reference operator*() const
     {
         return target_;
+    }
+
+    const_pointer operator->() const
+    {
+        return &target_;
+    }
+
+    const_reference target() const
+    {
+        return target_;
+    }
+
+    const_reference source() const
+    {
+        return source_;
     }
 
     MultiArrayIndex index() const
@@ -267,6 +294,11 @@ public:
         return index_ != other.index_;
     }
 
+    bool isValid() const
+    {
+        return index_ < (MultiArrayIndex)neighborIndices_->size();
+    }
+    
     bool atEnd() const
     {
         return index_ >= (MultiArrayIndex)neighborIndices_->size();
@@ -280,11 +312,123 @@ public:
     }
 
   protected:
+  
+    void updateTarget()
+    {
+        if(isValid())
+            target_ += (*neighborOffsets_)[index_];
+    }
 
-    const ArrayVector<shape_type> *neighborOffsets_;
-    const ArrayVector<index_type> *neighborIndices_;
+    ArrayVector<shape_type> const * neighborOffsets_;
+    ArrayVector<index_type> const * neighborIndices_;
     vertex_descriptor source_, target_;
     MultiArrayIndex index_;
+};
+
+template<unsigned int N>
+class GridGraphOutEdgeIterator
+{
+  public:
+    typedef typename MultiArrayShape<N>::type  shape_type;
+    typedef MultiArrayIndex                    index_type;
+    typedef GridGraphEdgeDescriptor<N>         value_type;
+    typedef value_type const &                 reference;
+    typedef value_type const &                 const_reference;
+    typedef value_type const *                 pointer;
+    typedef value_type const *                 const_pointer;
+    typedef std::forward_iterator_tag          iterator_category;
+
+    GridGraphOutEdgeIterator() 
+    : neighborOffsets_(0),
+      neighborIndices_(0),
+      index_(0)
+    {}
+
+    GridGraphOutEdgeIterator(const ArrayVector<value_type> &neighborOffsets,
+                             ArrayVector<index_type>  const & neighborIndices,
+                             shape_type const & source)
+    : neighborOffsets_(&neighborOffsets),
+      neighborIndices_(&neighborIndices),
+      edge_descriptor_(source, 0),
+//      source_(source),
+      index_(0)
+    {
+        updateEdgeDescriptor();
+    }
+
+    GridGraphOutEdgeIterator & operator++()
+    {
+        ++index_;
+        updateEdgeDescriptor();
+        return *this;
+    }
+
+    GridGraphOutEdgeIterator  operator++(int)
+    {
+        GridGraphOutEdgeIterator ret(*this);
+        ++*this;
+        return ret;
+    }
+
+    const_reference operator*() const
+    {
+        return edge_descriptor_;
+    }
+
+    const_pointer operator->() const
+    {
+        return &edge_descriptor_;
+    }
+
+    index_type index() const
+    {
+        return index_;
+    }
+
+    index_type neighborIndex() const
+    {
+        return (*neighborIndices_)[index_];
+    }
+
+    bool operator==(GridGraphOutEdgeIterator const & other) const
+    {
+        return index_ == other.index();
+    }
+
+    bool operator!=(GridGraphOutEdgeIterator const & other) const
+    {
+        return index_ != other.index();
+    }
+
+    bool isValid() const 
+    {
+        return index_ < (index_type)neighborOffsets_->size();
+    }
+
+    bool atEnd() const 
+    {
+        return index_ >= (index_type)neighborOffsets_->size();
+    }
+
+    GridGraphOutEdgeIterator getEndIterator() const
+    {
+        GridGraphOutEdgeIterator res(*this);
+        res.index_ = (index_type)neighborOffsets_->size();
+        return res;
+    }
+
+  protected:
+    void updateEdgeDescriptor()
+    {
+        if(isValid())
+            edge_descriptor_.increment((*neighborOffsets_)[index_]);
+    }
+  
+    ArrayVector<value_type> const * neighborOffsets_;
+    ArrayVector<index_type> const * neighborIndices_;
+    value_type edge_descriptor_;
+//    shape_type source_;
+    index_type index_;
 };
 
 } // namespace vigra
