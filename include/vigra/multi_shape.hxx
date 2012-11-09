@@ -419,50 +419,35 @@ struct MakeIndirectArrayNeighborhood<0>
     }
 };
 
-
+// Create the list of neighbor offsets for the given neighborhood type 
+// and dimension (the dimension is implicitly defined by the Shape type)
+// an return it in 'neighborOffsets'. Moreover, create a list of flags
+// for each BorderType that is 'true' when the corresponding neighbor exists
+// in this border situation and return the result in 'neighborExists'.
 template <class Shape>
 void
-makeArrayNeighborhood(ArrayVector<ArrayVector<Shape> > & neighborOffsets, 
+makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets, 
                       ArrayVector<ArrayVector<bool> > & neighborExists,
-                      ArrayVector<ArrayVector<bool> > & causalNeighborExists,
-                      ArrayVector<ArrayVector<bool> > & anticausalNeighborExists,
-                      ArrayVector<ArrayVector<int> > & neighborIndexLookup,
                       NeighborhoodType neighborhoodType = DirectNeighborhood)
 {
     enum { N = Shape::static_size };
-    unsigned int size = 1 << 2*N;
-    Shape strides = cumprod(Shape(MultiArrayIndex(3))) / 3; 
     
-    neighborOffsets.resize(size);
-    neighborOffsets[0].clear(); // [0] is the standard case of all neighbors present
+    neighborOffsets.clear();
     if(neighborhoodType == DirectNeighborhood)
     {
-        MakeDirectArrayNeighborhood<N-1>::offsets(neighborOffsets[0]);
+        MakeDirectArrayNeighborhood<N-1>::offsets(neighborOffsets);
     }
     else
     {
         Shape point; // represents the center
-        MakeIndirectArrayNeighborhood<N-1>::offsets(neighborOffsets[0], point);
+        MakeIndirectArrayNeighborhood<N-1>::offsets(neighborOffsets, point);
     }
     
-    unsigned int neighborCount = neighborOffsets[0].size(); // maximal number of neighbors
+    unsigned int borderTypeCount = 1 << 2*N;
+    neighborExists.resize(borderTypeCount);
 
-#ifdef VERBOSE    
-    std::cerr << " size " << neighborCount << ": " << neighborOffsets[0] << "\n strides ";
-    for(unsigned int l=0; l<neighborCount; ++l)
-        std::cerr << dot(neighborOffsets[0][l], strides) << ", ";
-    std::cerr << "\n\n";
-#endif
-    
-    neighborExists.resize(size);
-    causalNeighborExists.resize(size);
-    anticausalNeighborExists.resize(size);
-    neighborIndexLookup.resize(size);
-
-    for(unsigned int k=0; k<size; ++k) // iterate all k neighborhood codes
+    for(unsigned int k=0; k<borderTypeCount; ++k)
     {
-        if (k>0) 
-            neighborOffsets[k].clear();
         neighborExists[k].clear();
         if(neighborhoodType == DirectNeighborhood)
         {
@@ -472,63 +457,7 @@ makeArrayNeighborhood(ArrayVector<ArrayVector<Shape> > & neighborOffsets,
         {
             MakeIndirectArrayNeighborhood<N-1>::exists(neighborExists[k], k);
         }
-        
-        causalNeighborExists[k].resize(neighborCount);
-        anticausalNeighborExists[k].resize(neighborCount);
-        
-        for(unsigned int l = 0; l<neighborCount; ++l)
-        {
-            MultiArrayIndex stride = dot(neighborOffsets[0][l], strides);
-            if(stride < 0)
-            {
-                causalNeighborExists[k][l] = neighborExists[k][l];
-                anticausalNeighborExists[k][l] = false;
-            }
-            else
-            {
-                causalNeighborExists[k][l] = false;
-                anticausalNeighborExists[k][l] = neighborExists[k][l];
-            }
-            if (neighborExists[k][l])
-                neighborIndexLookup[k].push_back(l);
-            if (k>0)
-                if (neighborExists[k][l])
-                    neighborOffsets[k].push_back(neighborOffsets[0][l]);
-        }
     }
-
-}
-
-template <class Shape>
-void
-makeArraySubNeighborhood(const ArrayVector<Shape> & allNeighborOffsets, 
-             const ArrayVector<ArrayVector<bool> > & neighborExists,
-             const Shape strides,
-             ArrayVector<ArrayVector<MultiArrayIndex> > & neighborIndices
-             )
-{
-    enum { N = Shape::static_size };
-    unsigned int size = 1 << 2*N;
-    
-    neighborIndices.resize(size);
-    const unsigned int neighborCount = allNeighborOffsets.size(); // maximal number of neighbors
-    
-    for (unsigned int k=0; k<size; ++k)  // iterate all k neighborhood codes
-    for(unsigned int l=0; l<neighborCount; ++l) 
-        if (neighborExists[k][l])
-        neighborIndices[k].push_back(dot(allNeighborOffsets[l], strides));
-#if 0
-    for (unsigned int k=0; k<size; ++k)  // iterate all k neighborhood codes
-    {
-    std::cerr << " NB-type " << k << ": ";
-    for(unsigned int l=0; l<neighborCount; ++l) 
-        if (neighborExists[k][l])
-        {
-        std::cerr << neighborIndices[k].back() << ", ";
-        }
-    std::cerr << std::endl;
-    }
-#endif
 }
 
 } // namespace detail

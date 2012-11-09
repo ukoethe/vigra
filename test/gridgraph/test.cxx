@@ -38,6 +38,7 @@
 #include <vigra/multi_shape.hxx>
 #include <vigra/multi_iterator.hxx>
 #include <vigra/multi_array.hxx>
+#include <vigra/multi_gridgraph.hxx>
 #include <vigra/algorithm.hxx>
 
 using namespace vigra;
@@ -52,31 +53,30 @@ struct NeighborhoodTests
     {
         typedef typename MultiArrayShape<N>::type Shape;
         
-        ArrayVector<ArrayVector<Shape> > neighborhood;
-        ArrayVector<ArrayVector<bool> > neighborExists, causalNeighborhood, anticausalNeighborhood;
-        ArrayVector<ArrayVector<int> > neighborIndexLookup;
-        detail::makeArrayNeighborhood(neighborhood, neighborExists, causalNeighborhood, anticausalNeighborhood, neighborIndexLookup, DirectNeighborhood);
+        ArrayVector<Shape> neighborOffsets;
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        detail::makeArrayNeighborhood(neighborOffsets, neighborExists, DirectNeighborhood);
         
         int neighborCount = 2*N;
-        shouldEqual(neighborhood[0].size(), neighborCount);
+        shouldEqual(neighborOffsets.size(), neighborCount);
         
         Shape pos, neg, strides = cumprod(Shape(3)) / 3;
         for(int k=0; k<neighborCount; ++k)
         {
-            shouldEqual(sum(abs(neighborhood[0][k])), 1); // test that it is a direct neighbor 
+            shouldEqual(sum(abs(neighborOffsets[k])), 1); // test that it is a direct neighbor 
             
             if(k < neighborCount/2)
             {
-                should(dot(strides, neighborhood[0][k]) < 0); // check that causal neighbors are first
-                neg += neighborhood[0][k];                    // check that all causal neighbors are found
+                should(dot(strides, neighborOffsets[k]) < 0); // check that causal neighbors are first
+                neg += neighborOffsets[k];                    // check that all causal neighbors are found
             }
             else
             {
-                should(dot(strides, neighborhood[0][k]) > 0); // check that anti-causal neighbors are last
-                pos += neighborhood[0][k];                    // check that all anti-causal neighbors are found
+                should(dot(strides, neighborOffsets[k]) > 0); // check that anti-causal neighbors are last
+                pos += neighborOffsets[k];                    // check that all anti-causal neighbors are found
             }
             
-            shouldEqual(neighborhood[0][k], -neighborhood[0][neighborCount-1-k]); // check index of opposite neighbor
+            shouldEqual(neighborOffsets[k], -neighborOffsets[neighborCount-1-k]); // check index of opposite neighbor
         }
         
         shouldEqual(pos, Shape(1));   // check that all causal neighbors were found
@@ -107,7 +107,7 @@ struct NeighborhoodTests
                 for(int k=0; k<neighborCount; ++k)
                 {
                     // check that neighbors are correctly marked as inside or outside in neighborExists
-                    shouldEqual(va.isInside(vi.point()+neighborhood[0][k]), neighborExists[borderType][k]);
+                    shouldEqual(va.isInside(vi.point()+neighborOffsets[k]), neighborExists[borderType][k]);
                 }
             }
         }
@@ -120,30 +120,29 @@ struct NeighborhoodTests
     {
         typedef typename MultiArrayShape<N>::type Shape;
         
-        ArrayVector<ArrayVector<Shape> > neighborhood;
-        ArrayVector<ArrayVector<bool> > neighborExists, causalNeighborhood, anticausalNeighborhood;
-        ArrayVector<ArrayVector<int> > neighborIndexLookup;
-        detail::makeArrayNeighborhood(neighborhood, neighborExists, causalNeighborhood, anticausalNeighborhood, neighborIndexLookup, IndirectNeighborhood);
+        ArrayVector<Shape> neighborOffsets;
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        detail::makeArrayNeighborhood(neighborOffsets, neighborExists, IndirectNeighborhood);
         
         MultiArray<N, int> a(Shape(3));
         Shape center(1), strides = cumprod(Shape(3)) / 3;
         a[center] = 1;              
         
         int neighborCount = (int)pow(3.0, (int)N) - 1;
-        shouldEqual(neighborhood[0].size(), neighborCount);
+        shouldEqual(neighborOffsets.size(), neighborCount);
         
         for(int k=0; k<neighborCount; ++k)
         {
-            shouldEqual(abs(neighborhood[0][k]).maximum(), 1); // check that offset is at most 1 in any direction
+            shouldEqual(abs(neighborOffsets[k]).maximum(), 1); // check that offset is at most 1 in any direction
                  
             if(k < neighborCount/2)
-                should(dot(strides, neighborhood[0][k]) < 0); // check that causal neighbors are first
+                should(dot(strides, neighborOffsets[k]) < 0); // check that causal neighbors are first
             else
-                should(dot(strides, neighborhood[0][k]) > 0); // check that anti-causal neighbors are last
+                should(dot(strides, neighborOffsets[k]) > 0); // check that anti-causal neighbors are last
 
-            shouldEqual(neighborhood[0][k], -neighborhood[0][neighborCount-1-k]); // check index of opposite neighbor
+            shouldEqual(neighborOffsets[k], -neighborOffsets[neighborCount-1-k]); // check index of opposite neighbor
             
-            a[center+neighborhood[0][k]] += 1;  // check that all neighbors are found
+            a[center+neighborOffsets[k]] += 1;  // check that all neighbors are found
         }
         
           // check that all neighbors are found
@@ -177,12 +176,91 @@ struct NeighborhoodTests
                 for(int k=0; k<neighborCount; ++k)
                 {
                     // check that neighbors are correctly marked as inside or outside in neighborExists
-                    shouldEqual(va.isInside(vi.point()+neighborhood[0][k]), neighborExists[borderType][k]);
+                    shouldEqual(va.isInside(vi.point()+neighborOffsets[k]), neighborExists[borderType][k]);
                 }
             }
         }
         
         should(checkNeighborCodes.all()); // check that all possible neighborhoods have been tested
+    }
+    
+    template <unsigned int N, NeighborhoodType NType>
+    void testNeighborhoodIterator()
+    {
+        typedef typename MultiArrayShape<N>::type Shape;
+        
+        ArrayVector<Shape> neighborOffsets;
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
+        
+        ArrayVector<ArrayVector<Shape> > relativeOffsets, backOffsets, forwardOffsets;
+        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, true, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, true, false);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, false, true);
+        
+        // check neighborhoods at ROI border
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
+        MultiArray<N, int> a(Shape(3));
+        typedef typename MultiArray<N, int>::view_type View;
+        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            View va = a.subarray(Shape(), *i+Shape(1)); 
+            
+            // check neighborhood of all pixels
+            typename View::iterator vi = va.begin(), viend = vi.getEndIterator();
+            for(; vi != viend; ++vi)
+            {
+                int borderType = vi.borderType();
+                
+                {
+                    GridGraphNeighborIterator<N> ni(relativeOffsets[borderType], neighborIndices[borderType], vi.point()),
+                                                 nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point()+neighborOffsets[k], *ni);
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                
+                {
+                    GridGraphNeighborIterator<N> ni(backOffsets[borderType], backIndices[borderType], vi.point()),
+                                                 nend = ni.getEndIterator();
+                    
+                    for(int k=0; k<neighborExists[borderType].size()/2; ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point()+neighborOffsets[k], *ni);
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+                
+                {
+                    GridGraphNeighborIterator<N> ni(forwardOffsets[borderType], forwardIndices[borderType], vi.point()),
+                                                 nend = ni.getEndIterator();
+                    
+                    for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
+                    {
+                        if(neighborExists[borderType][k])
+                        {
+                            shouldEqual(vi.point()+neighborOffsets[k], *ni);
+                            ++ni;
+                        }
+                    }
+                    should(ni == nend);
+                }
+            }
+        }
     }
 };
 
@@ -196,6 +274,10 @@ struct GridgraphTestSuite
         add(testCase(&NeighborhoodTests::testDirectNeighborhood<3>));
         add(testCase(&NeighborhoodTests::testIndirectNeighborhood<2>));
         add(testCase(&NeighborhoodTests::testIndirectNeighborhood<3>));
+        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, DirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, IndirectNeighborhood>)));
+        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, IndirectNeighborhood>)));
     }
 };
 
