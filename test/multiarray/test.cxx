@@ -511,6 +511,9 @@ public:
         iterator3_t i2 = av.begin();
         iterator3_t iend = av.end();
         iterator3_t i3;
+        
+        should(i1.isValid() && !i1.atEnd());
+        should(!iend.isValid() && iend.atEnd());
 
         shouldEqual(&i1[0], &a3(0,0,0));
         shouldEqual(&i1[1], &a3(1,0,0));
@@ -545,18 +548,30 @@ public:
         
         i3 = iend;
         --i3;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*iend, &*(i3+1));
         shouldEqual(&*i3, &a3(1,2,4));
         --i3;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*i3, &a3(0,2,4));
         --i3;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*i3, &a3(1,1,4));
         i3 -= 4;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*i3, &a3(1,2,3));
         --i3;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*i3, &a3(0,2,3));
         --i3;
         --i3;
+        should(i3.isValid() && !i3.atEnd());
+        should(i3.getEndIterator() == iend);
         shouldEqual(&*i3, &a3(0,1,3));
 
         i3 = iend-1;

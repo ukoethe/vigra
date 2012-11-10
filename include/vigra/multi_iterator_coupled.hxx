@@ -635,9 +635,9 @@ class CoupledScanOrderIterator
     */
     CoupledScanOrderIterator getEndIterator() const
     {
-        return operator+(prod(this->shape()));
+        return operator+(prod(this->shape()) - this->scanOrderIndex());
     }
-
+    
     CoupledScanOrderIterator operator+(MultiArrayIndex d) const
     {
         return CoupledScanOrderIterator(*this) += d;
@@ -663,7 +663,7 @@ class CoupledScanOrderIterator
         return base_type::operator-(r);
     }
 
-    bool operator==(CoupledScanOrderIterator const & r)
+    bool operator==(CoupledScanOrderIterator const & r) const
     {
         return base_type::operator==(r);
     }
@@ -700,6 +700,8 @@ class CoupledScanOrderIterator
     using base_type::atBorder;
     using base_type::borderType;
     using base_type::get;
+    using base_type::isValid;
+    using base_type::atEnd;
 
 #ifdef DOXYGEN
   
@@ -845,40 +847,44 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return scanOrderIndex() - r.scanOrderIndex();
     }
 
-    bool
-    operator==(CoupledScanOrderIterator const & r)
+    bool operator==(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() == r.scanOrderIndex();
     }
 
-    bool
-    operator!=(CoupledScanOrderIterator const & r) const
+    bool operator!=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() != r.scanOrderIndex();
     }
 
-    bool
-    operator<(CoupledScanOrderIterator const & r) const
+    bool operator<(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() < r.scanOrderIndex();
     }
 
-    bool
-    operator<=(CoupledScanOrderIterator const & r) const
+    bool operator<=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() <= r.scanOrderIndex();
     }
 
-    bool
-    operator>(CoupledScanOrderIterator const & r) const
+    bool operator>(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() > r.scanOrderIndex();
     }
 
-    bool
-    operator>=(CoupledScanOrderIterator const & r) const
+    bool operator>=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() >= r.scanOrderIndex();
+    }
+
+    bool isValid() const
+    {
+        return handles_.scanOrderIndex() < prod(shape());
+    }
+
+    bool atEnd() const
+    {
+        return handles_.scanOrderIndex() >= prod(shape());
     }
 
     MultiArrayIndex scanOrderIndex() const
@@ -914,7 +920,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
 
     CoupledScanOrderIterator getEndIterator() const
     {
-        return operator+(prod(shape()));
+        return operator+(prod(shape())-scanOrderIndex());
     }
 
     bool atBorder() const
