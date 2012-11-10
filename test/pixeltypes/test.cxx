@@ -161,15 +161,15 @@ struct TinyVectorTest
         shouldEqual(fv5[3], SIZE <= 3 ? 0.0 : fv3[3]);
         shouldEqual(fv5[4], SIZE <= 4 ? 0.0 : fv3[4]);
         
-        shouldEqual(iv3, (iv3.subarray<0,SIZE>()));
-        shouldEqual(2, (iv3.subarray<0,2>().size()));
-        shouldEqual(iv3[0], (iv3.subarray<0,2>()[0]));
-        shouldEqual(iv3[1], (iv3.subarray<0,2>()[1]));
-        shouldEqual(2, (iv3.subarray<1,3>().size()));
-        shouldEqual(iv3[1], (iv3.subarray<1,3>()[0]));
-        shouldEqual(iv3[2], (iv3.subarray<1,3>()[1]));
-        shouldEqual(1, (iv3.subarray<1,2>().size()));
-        shouldEqual(iv3[1], (iv3.subarray<1,2>()[0]));
+        shouldEqual(iv3, (iv3.template subarray<0,SIZE>()));
+        shouldEqual(2, (iv3.template subarray<0,2>().size()));
+        shouldEqual(iv3[0], (iv3.template subarray<0,2>()[0]));
+        shouldEqual(iv3[1], (iv3.template subarray<0,2>()[1]));
+        shouldEqual(2, (iv3.template subarray<1,3>().size()));
+        shouldEqual(iv3[1], (iv3.template subarray<1,3>()[0]));
+        shouldEqual(iv3[2], (iv3.template subarray<1,3>()[1]));
+        shouldEqual(1, (iv3.template subarray<1,2>().size()));
+        shouldEqual(iv3[1], (iv3.template subarray<1,2>()[0]));
     }
 
     void testComparison()
