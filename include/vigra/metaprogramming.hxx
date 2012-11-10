@@ -642,6 +642,18 @@ struct MetaLog2<X, z, 1, 0, 1, z, z, u, typename EnableMetaLog2<X>::type>
     static const unsigned value = 0;
 };
 
+template <int X, unsigned int N>
+struct MetaPow
+{
+    static const long long value = MetaPow<X, N-1>::value * X;
+};
+
+template <int X>
+struct MetaPow<X, 0>
+{
+    static const long long value = 1;
+};
+
 /****************************************************************************/
 /*                                                                          */
 /*                        TypeList and its functions                        */
