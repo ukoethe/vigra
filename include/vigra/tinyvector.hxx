@@ -168,6 +168,24 @@ struct ExecLoop
         return *std::max_element(p, p+LEVEL);
     }
 
+    template <class T>
+    static bool all(T const * p, T const & zero)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            if(p[i] == zero)
+                return false;
+        return true;
+    }
+
+    template <class T>
+    static bool any(T const * p, T const & zero)
+    {
+        for(int i=0; i<LEVEL; ++i)
+            if(p[i] != zero)
+                return true;
+        return false;
+    }
+
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)
     {
@@ -267,6 +285,18 @@ struct UnrollScalarResult
                     ? *p
                     : m;
     }
+
+    template <class T>
+    static bool all(T const * p, T const & zero)
+    {
+        return *p != zero && UnrollScalarResult<LEVEL - 1>::all(p+1, zero);
+    }
+
+    template <class T>
+    static bool any(T const * p, T const & zero)
+    {
+        return *p != zero || UnrollScalarResult<LEVEL - 1>::any(p+1, zero);
+    }
 };
 
 template <>
@@ -309,6 +339,18 @@ struct UnrollScalarResult<1>
     static T const & maximum(T const * p)
     {
         return *p;
+    }
+
+    template <class T>
+    static bool all(T const * p, T const & zero)
+    {
+        return *p != zero;
+    }
+
+    template <class T>
+    static bool any(T const * p, T const & zero)
+    {
+        return *p != zero;
     }
 };
 
@@ -403,6 +445,18 @@ struct UnrollLoop
         return UnrollScalarResult<LEVEL>::maximum(p);
     }
 
+    template <class T>
+    static bool all(T const * p, T const & zero)
+    {
+        return UnrollScalarResult<LEVEL>::all(p, zero);
+    }
+
+    template <class T>
+    static bool any(T const * p, T const & zero)
+    {
+        return UnrollScalarResult<LEVEL>::any(p, zero);
+    }
+
     template <class T1, class T2>
     static bool notEqual(T1 const * left, T2 const * right)
     {
@@ -493,21 +547,20 @@ struct UnrollLoop<0>
     template <class T1, class T2>
     static void max(T1, T2) {}
     template <class T>
-    static T minimum(T const * p)
-    {
-        return NumericTraits<T>::max();
-    }
+    static T minimum(T const *) { return NumericTraits<T>::max(); }
     template <class T>
-    static T maximum(T const * p)
-    {
-        return NumericTraits<T>::min();
-    }
+    static T maximum(T const *) { return NumericTraits<T>::min(); }
+    template <class T>
+    static bool all(T const *, T const &) { return true; }
+    template <class T>
+    static bool any(T const *, T const &) { return false; }
 };
 
 template <int SIZE>
 struct LoopType
 {
-    typedef typename IfBool<(SIZE <= 5), UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
+    static const int MaxUnrollSize = 5;
+    typedef typename IfBool<(SIZE <= MaxUnrollSize), UnrollLoop<SIZE>, ExecLoop<SIZE> >::type type;
 
 };
 
@@ -702,6 +755,20 @@ class TinyVectorBase
     {
         return Loop::maximum(data_);
     }
+    
+        /** Check that all elements of this vector are non-zero (or 'true' if T is bool).
+        */
+    bool all() const
+    {
+        return Loop::all(data_, VALUETYPE());
+    }
+    
+        /** Check that at least one element of this vector is non-zero (or 'true' if T is bool).
+        */
+    bool any() const
+    {
+        return Loop::any(data_, VALUETYPE());
+    }
 
         /** Access component by index.
         */
@@ -733,6 +800,21 @@ class TinyVectorBase
         /** Get const random access iterator past-the-end of vector.
         */
     const_iterator end() const { return data_ + SIZE; }
+    
+        /** Get a view to the subarray with length <tt>(TO-FROM)</tt> starting at <tt>FROM</tt>.
+            The bounds must fullfill <tt>0 <= FROM < TO <= SIZE</tt>, but this is only
+            checked when <tt>VIGRA_CHECK_BOUNDS</tt> is #define'd.
+        */
+    template <int FROM, int TO>
+    TinyVectorView<VALUETYPE, TO-FROM> subarray() const
+    {
+#ifdef VIGRA_CHECK_BOUNDS
+        vigra_precondition(FROM >= 0, "Index out of bounds");
+        vigra_precondition(FROM < TO, "Index out of bounds");
+        vigra_precondition(TO <=SIZE, "Index out of bounds");
+#endif
+        return TinyVectorView<VALUETYPE, TO-FROM>(data_+FROM);
+    }
 
         /** Size of TinyVector vector always equals the template parameter SIZE.
         */
