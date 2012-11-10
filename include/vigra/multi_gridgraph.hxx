@@ -51,6 +51,8 @@ the last coordinate indexing the edge number
 
 The gridgraph class is able to convert/construct these edge_descriptors
 and to reconstruct the corresponding source/target nodes.
+
+FIXME: store edge index in (*this)[0] ??
 */
 template<unsigned int N>
 class GridGraphEdgeDescriptor
@@ -78,7 +80,7 @@ class GridGraphEdgeDescriptor
                                       
     void set(shape_type const &vertex, index_type edge_index, bool reversed) 
     {
-        vertex_descriptor_view(this->data()) = vertex;
+        this->template subarray<0,N>() = vertex;
         (*this)[N] = edge_index;
         is_reversed_ = reversed;
     }
@@ -88,7 +90,7 @@ class GridGraphEdgeDescriptor
         if(diff.is_reversed_)
         {
             is_reversed_ = true;
-            vertex_descriptor_view(this->data()) += vertex_descriptor_view(diff.data());
+            this->template subarray<0,N>() += diff.template subarray<0,N>();
         }
         (*this)[N] = diff[N];
     }
@@ -100,7 +102,7 @@ class GridGraphEdgeDescriptor
     
     vertex_descriptor_view vertexDescriptor() const
     {
-        return vertex_descriptor_view(this->data());
+        return this->template subarray<0,N>();
     }
     
     value_type edgeIndex() const
@@ -112,23 +114,46 @@ class GridGraphEdgeDescriptor
     bool is_reversed_;
 };
 
+inline unsigned int 
+gridGraphMaxDegree(unsigned int N, NeighborhoodType t)
+{
+    return t == DirectNeighborhood
+                ? 2*N
+                : (unsigned int)pow(3.0, (int)N) - 1;
+}
+
+template <unsigned int N, NeighborhoodType>
+struct GridGraphMaxDegree;
+
+template <unsigned int N>
+struct GridGraphMaxDegree<N, DirectNeighborhood>
+{
+    static const unsigned int value = 2*N;
+};
+
+template <unsigned int N>
+struct GridGraphMaxDegree<N, IndirectNeighborhood>
+{
+    static const unsigned int value = MetaPow<3, N>::value - 1;
+};
+
 namespace detail {
 
 template <class Shape>
 void
 computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets, 
                        ArrayVector<ArrayVector<bool> > const & neighborExists,
-                       ArrayVector<ArrayVector<Shape> > & relativeOffsets,
+                       ArrayVector<ArrayVector<Shape> > & incrementOffsets,
                        ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
                        bool includeBackEdges, bool includeForwardEdges)
 {
     unsigned int borderTypeCount = neighborExists.size();
-    relativeOffsets.resize(borderTypeCount);
+    incrementOffsets.resize(borderTypeCount);
     indices.resize(borderTypeCount);
     
     for(unsigned int k=0; k<borderTypeCount; ++k)
     {
-        relativeOffsets[k].clear();
+        incrementOffsets[k].clear();
         indices[k].clear();
         
         unsigned int j   = includeBackEdges
@@ -141,10 +166,10 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
         {
             if(neighborExists[k][j])
             {
-                if(relativeOffsets[k].size() == 0)
-                    relativeOffsets[k].push_back(neighborOffsets[j]);
+                if(incrementOffsets[k].size() == 0)
+                    incrementOffsets[k].push_back(neighborOffsets[j]);
                 else
-                    relativeOffsets[k].push_back(neighborOffsets[j] - neighborOffsets[indices[k].back()]);
+                    incrementOffsets[k].push_back(neighborOffsets[j] - neighborOffsets[indices[k].back()]);
                 indices[k].push_back(j);
             }
         }
@@ -155,7 +180,7 @@ template <class Shape>
 void
 computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets, 
                              ArrayVector<ArrayVector<bool> > const & neighborExists,
-                             ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & relativeOffsets,
+                             ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & incrementOffsets,
                              ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
                              bool directed, bool includeBackEdges, bool includeForwardEdges)
 {
@@ -163,12 +188,12 @@ computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets,
     typedef GridGraphEdgeDescriptor<N> EdgeDescriptor;
     
     unsigned int borderTypeCount = neighborExists.size();
-    relativeOffsets.resize(borderTypeCount);
+    incrementOffsets.resize(borderTypeCount);
     indices.resize(borderTypeCount);
     
     for(unsigned int k=0; k<borderTypeCount; ++k)
     {
-        relativeOffsets[k].clear();
+        incrementOffsets[k].clear();
         indices[k].clear();
         
         unsigned int j   = includeBackEdges
@@ -183,15 +208,15 @@ computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets,
             {
                 if(directed || j < neighborOffsets.size() / 2) // directed edge or backward edge
                 {
-                    relativeOffsets[k].push_back(EdgeDescriptor(Shape(), j));
+                    incrementOffsets[k].push_back(EdgeDescriptor(Shape(), j));
                 }
-                else if(relativeOffsets[k].size() == 0 || !relativeOffsets[k].back().isReversed()) // the first forward edge
+                else if(incrementOffsets[k].size() == 0 || !incrementOffsets[k].back().isReversed()) // the first forward edge
                 {
-                    relativeOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size()-j-1, true));
+                    incrementOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size()-j-1, true));
                 }       
                 else // second or higher forward edge
                 {
-                    relativeOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
+                    incrementOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
                                                                 neighborOffsets.size()-j-1, true));
                 }
                 indices[k].push_back(j);
@@ -432,9 +457,9 @@ class GridGraphEdgeIterator
 public:
     typedef GridGraphEdgeIterator<N>                     self_type;
     typedef MultiCoordinateIterator<N>                   vertex_iterator;
-    typedef typename vertex_iterator::vertex_descriptor  vertex_descriptor;
+    typedef typename vertex_iterator::value_type         vertex_descriptor;
     typedef GridGraphOutEdgeIterator<N>                  out_edge_iterator;
-    typedef typename out_edge_iterator::edge_descriptor  edge_descriptor;
+    typedef typename out_edge_iterator::value_type       edge_descriptor;
     typedef edge_descriptor                              value_type;
     typedef value_type const *                           pointer;
     typedef value_type const *                           const_pointer;
@@ -456,8 +481,18 @@ public:
     : neighborOffsets_(&neighborOffsets),
       neighborIndices_(&neighborIndices),
       vertexIterator_(shape),
-      outEdgeIterator_(neighborOffsets[vertexIterator_.boderType()], neighborIndices[vertexIterator_.boderType()], Shape())
-    {}
+      outEdgeIterator_(neighborOffsets[vertexIterator_.borderType()], neighborIndices[vertexIterator_.borderType()], shape_type())
+    {
+        if(outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
+        {
+            ++vertexIterator_;
+            if(vertexIterator_.isValid())
+            {
+                unsigned int borderType = vertexIterator_.borderType();
+                outEdgeIterator_ = out_edge_iterator(neighborOffsets[borderType], neighborIndices[borderType], *vertexIterator_);
+            }
+        }
+    }
 
     GridGraphEdgeIterator & operator++()
     {
@@ -468,7 +503,7 @@ public:
             if(vertexIterator_.isValid())
             {
                 unsigned int borderType = vertexIterator_.borderType();
-                outEdgeIterator_ = out_edge_iterator(neighborOffsets[borderType], neighborIndices[borderType], vi.point());
+                outEdgeIterator_ = out_edge_iterator((*neighborOffsets_)[borderType], (*neighborIndices_)[borderType], *vertexIterator_);
             }
         }
         return *this;
@@ -509,14 +544,17 @@ public:
     GridGraphEdgeIterator getEndIterator() const
     {
         GridGraphEdgeIterator ret(*this);
-        ret.outEdgeIterator_ = outEdgeIterator_.getEndIterator();
         ret.vertexIterator_ = vertexIterator_.getEndIterator();
+        vertex_iterator lastVertex = ret.vertexIterator_ - 1;
+        unsigned int borderType = lastVertex.borderType();
+        ret.outEdgeIterator_ = out_edge_iterator((*neighborOffsets_)[borderType], (*neighborIndices_)[borderType], 
+                                                 *lastVertex).getEndIterator();
         return ret;
     }
 
   protected:
-    ArrayVector<ArrayVector<value_type> > const * neighborOffsets;
-    ArrayVector<ArrayVector<index_type> > const * neighborIndices;
+    ArrayVector<ArrayVector<value_type> > const * neighborOffsets_;
+    ArrayVector<ArrayVector<index_type> > const * neighborIndices_;
     vertex_iterator vertexIterator_;
     out_edge_iterator outEdgeIterator_;
 };
