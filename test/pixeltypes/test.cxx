@@ -170,6 +170,14 @@ struct TinyVectorTest
         shouldEqual(iv3[2], (iv3.template subarray<1,3>()[1]));
         shouldEqual(1, (iv3.template subarray<1,2>().size()));
         shouldEqual(iv3[1], (iv3.template subarray<1,2>()[0]));
+        
+        for(int k=0; k<SIZE; ++k)
+        {
+            IV iv = IV::unitVector(k);
+            shouldEqual(iv[k], 1);
+            iv[k] = 0;
+            should(!iv.any());
+        }
     }
 
     void testComparison()

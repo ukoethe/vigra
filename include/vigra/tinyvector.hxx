@@ -823,6 +823,14 @@ class TinyVectorBase
     pointer data() { return data_; }
 
     const_pointer data() const { return data_; }
+    
+    static TinyVector<VALUETYPE, SIZE> unitVector(int k)
+    {
+        VIGRA_ASSERT_INSIDE(k);
+        TinyVector<VALUETYPE, SIZE> ret;
+        ret[k] = 1;
+        return ret;
+    }
 
   protected:
   
