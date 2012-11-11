@@ -37,6 +37,7 @@
 #define VIGRA_MULTI_GRIDGRAPH_HXX
 
 #include "multi_iterator.hxx"
+#include "graphs.hxx"
 
 namespace vigra {
 
@@ -144,16 +145,21 @@ void
 computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets, 
                        ArrayVector<ArrayVector<bool> > const & neighborExists,
                        ArrayVector<ArrayVector<Shape> > & incrementOffsets,
+                       ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & edgeDescriptorOffsets,
                        ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
-                       bool includeBackEdges, bool includeForwardEdges)
+                       bool directed, bool includeBackEdges, bool includeForwardEdges)
 {
+    typedef GridGraphEdgeDescriptor<Shape::static_size> EdgeDescriptor;
+    
     unsigned int borderTypeCount = neighborExists.size();
     incrementOffsets.resize(borderTypeCount);
+    edgeDescriptorOffsets.resize(borderTypeCount);
     indices.resize(borderTypeCount);
     
     for(unsigned int k=0; k<borderTypeCount; ++k)
     {
         incrementOffsets[k].clear();
+        edgeDescriptorOffsets[k].clear();
         indices[k].clear();
         
         unsigned int j   = includeBackEdges
@@ -167,58 +173,28 @@ computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets,
             if(neighborExists[k][j])
             {
                 if(incrementOffsets[k].size() == 0)
+                {
                     incrementOffsets[k].push_back(neighborOffsets[j]);
+                }
                 else
+                {
                     incrementOffsets[k].push_back(neighborOffsets[j] - neighborOffsets[indices[k].back()]);
-                indices[k].push_back(j);
-            }
-        }
-    }
-}
-
-template <class Shape>
-void
-computeEdgeDescriptorOffsets(ArrayVector<Shape> const & neighborOffsets, 
-                             ArrayVector<ArrayVector<bool> > const & neighborExists,
-                             ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & incrementOffsets,
-                             ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
-                             bool directed, bool includeBackEdges, bool includeForwardEdges)
-{
-    enum { N = Shape::static_size };
-    typedef GridGraphEdgeDescriptor<N> EdgeDescriptor;
-    
-    unsigned int borderTypeCount = neighborExists.size();
-    incrementOffsets.resize(borderTypeCount);
-    indices.resize(borderTypeCount);
-    
-    for(unsigned int k=0; k<borderTypeCount; ++k)
-    {
-        incrementOffsets[k].clear();
-        indices[k].clear();
-        
-        unsigned int j   = includeBackEdges
-                              ? 0
-                              : neighborOffsets.size() / 2,
-                     end = includeForwardEdges
-                              ? neighborOffsets.size()
-                              : neighborOffsets.size() / 2;
-        for(; j < end; ++j)
-        {
-            if(neighborExists[k][j])
-            {
+                }
+                
                 if(directed || j < neighborOffsets.size() / 2) // directed edge or backward edge
                 {
-                    incrementOffsets[k].push_back(EdgeDescriptor(Shape(), j));
+                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(Shape(), j));
                 }
-                else if(incrementOffsets[k].size() == 0 || !incrementOffsets[k].back().isReversed()) // the first forward edge
+                else if(edgeDescriptorOffsets[k].size() == 0 || !edgeDescriptorOffsets[k].back().isReversed()) // the first forward edge
                 {
-                    incrementOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size()-j-1, true));
+                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j], neighborOffsets.size()-j-1, true));
                 }       
                 else // second or higher forward edge
                 {
-                    incrementOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
-                                                                neighborOffsets.size()-j-1, true));
+                    edgeDescriptorOffsets[k].push_back(EdgeDescriptor(neighborOffsets[j] - neighborOffsets[indices[k].back()], 
+                                                                      neighborOffsets.size()-j-1, true));
                 }
+                
                 indices[k].push_back(j);
             }
         }
@@ -448,9 +424,8 @@ class GridGraphOutEdgeIterator
     index_type index_;
 };
 
-    // Edge iterator for undirected graphs. 
-    // Composed of a vertex_iterator and an out_edge_iterator
-    // (which in case of the undirected graph is filtered for the unique edges).
+    // Edge iterator for directed and undirected graphs. 
+    // Composed of a vertex_iterator and an out_edge_iterator.
 template<unsigned int N>
 class GridGraphEdgeIterator
 {
@@ -559,6 +534,262 @@ public:
     out_edge_iterator outEdgeIterator_;
 };
 
+    // Grid Graph class to adapt vigra MultiArrayViews to a BGL-like interface.
+    //       This class only knows about
+    //       - dimensions
+    //       - shape
+    //       - neighborhood type (DirectedNeighborhood or IndirectNeighborhood, i.e.\ including diagonal neighbors)
+    //       - whether the graph is directed or undirected
+template<unsigned int N, class DirectedTag>
+class GridGraph
+{
+public:
+    typedef GridGraph<N, DirectedTag>               self_type;
+    typedef typename MultiArrayShape<N>::type       shape_type;
+    typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;
+    typedef MultiArrayIndex                         index_type;
+    typedef MultiArrayIndex                         vertices_size_type;
+    typedef MultiArrayIndex                         edges_size_type;
+    typedef MultiArrayIndex                         degree_size_type;
+
+    typedef MultiCoordinateIterator<N>              vertex_iterator;
+    typedef GridGraphNeighborIterator<N>            neighbor_vertex_iterator;
+    typedef GridGraphOutEdgeIterator<N>             out_edge_iterator;
+    typedef GridGraphEdgeIterator<N>                edge_iterator;
+
+    typedef shape_type                              vertex_descriptor;
+    typedef GridGraphEdgeDescriptor<N>              edge_descriptor;
+    typedef void                                    in_edge_iterator; // for bidirectional_graph concept, not implemented here
+    typedef neighbor_vertex_iterator                adjacency_iterator; // must be a MultiPassInputIterator model
+
+    typedef DirectedTag                              directed_category;
+    typedef vigragraph::disallow_parallel_edge_tag   edge_parallel_category;
+    typedef vigragraph::no_property                  vertex_property_type; // we only support "external properties".
+    // FIXME: Maybe support the vertex -> coordinate map (identity) as the only internal property map
+    // and additionally the vertex_descriptor -> ID map (vertex_index = SOI).
+
+    struct traversal_category 
+    : public vigragraph::incidence_graph_tag,
+      public vigragraph::adjacency_graph_tag,
+      public vigragraph::vertex_list_graph_tag,
+      public vigragraph::edge_list_graph_tag,
+      public vigragraph::adjacency_matrix_tag
+    {};
+
+        // dummy default constructor to satisfy adjacency_graph concept
+    GridGraph()
+    {}
+
+        //! Constructor for grid graph. 
+        //  @param shape                  an array of the graph's dimensions as a TinyVector
+        //  @param directNeighborsOnly    true for direct neighborhood (axis-aligned edges only) 
+        //                                or false for indirect neighborhood (including all diagonal edges)
+    GridGraph(shape_type const &shape, NeighborhoodType ntype = DirectNeighborhood) 
+    : shape_(shape),
+      num_vertices_(prod(shape)),
+      num_edges_(0), // computed below
+      neighborhoodType_(ntype)
+    {
+        ArrayVector<ArrayVector<bool> > neighborExists;
+        
+        // use makeArrayNeighborhood to populate neighborhood tables:
+        detail::makeArrayNeighborhood(neighborOffsets_, neighborExists, neighborhoodType_);
+        detail::computeNeighborOffsets(neighborOffsets_, neighborExists, incrementalOffsets_, 
+                                       edgeDescriptorOffsets_, neighborIndices_, isDirected(), true, true);
+        detail::computeNeighborOffsets(neighborOffsets_, neighborExists, backOffsets_, 
+                                       backEdgeDescriptorOffsets_, backIndices_, isDirected(), true, false);
+        
+        // compute the neighbor offsets per neighborhood type
+        // detail::makeArraySubNeighborhood(neighborhood[0], neighborExists, shape_type(1), neighborhoodIndices);
+
+        // compute total number of edges
+        num_edges_ = 0;
+        for (unsigned int i=0; i<neighborOffsets_.size(); ++i) 
+        {
+            size_t product = 1;
+            for (unsigned int j=0; j<N; ++j) 
+            {
+                product *= (neighborOffsets_[i][j] == 0) 
+                                            ? shape_[j] 
+                                            : shape_[j]-1;
+            }
+            num_edges_ += product;
+        }
+        if(!isDirected())
+            num_edges_ /= 2;
+    }
+    
+    vertex_iterator get_vertex_iterator() const 
+    {
+        return vertex_iterator(shape_);
+    }
+
+        // FIXME: this may be redundent
+    vertex_iterator get_vertex_iterator(vertex_descriptor const & v) const 
+    {
+        return vertex_iterator(shape_) + v;
+    }
+
+    vertex_iterator get_vertex_end_iterator() const 
+    {
+        return get_vertex_iterator().getEndIterator();
+    }
+
+    neighbor_vertex_iterator get_neighbor_vertex_iterator(vertex_iterator const & pos) const 
+    {
+        // determine neighborhood type
+        unsigned int nbtype = pos.borderType();
+        // instantiate appropriate neighborhood iterator
+        return neighbor_vertex_iterator(relativeOffsets_[nbtype], neighborIndices_[nbtype], *pos);
+    }
+
+    neighbor_vertex_iterator get_neighbor_vertex_end_iterator(vertex_iterator const & pos) const 
+    {
+       return get_neighbor_vertex_iterator().getEndIterator();
+    }
+
+    // --------------------------------------------------
+    // support for VertexListGraph:
+
+    vertices_size_type num_vertices() const 
+    {
+        return num_vertices_;
+    }
+
+    // --------------------------------------------------
+    // support for IncidenceGraph:
+
+    out_edge_iterator get_out_edge_iterator(vertex_iterator const & pos) const 
+    {
+        // determine neighborhood type
+        unsigned int nbtype = pos.borderType();
+        // instantiate appropriate neighborhood iterator
+        return out_edge_iterator(edgeDescriptorOffsets_[nbtype], neighborIndices_[nbtype], *pos);
+    }
+
+    out_edge_iterator get_out_edge_end_iterator(vertex_iterator const & pos) const 
+    {
+        return get_out_edge_iterator().getEndIterator();
+    }
+
+    const shape_type & neighborCoordOffset(int borderType) const 
+    {
+        return neighborOffsets_[neighborIndices_[borderType]];
+    }
+
+    degree_size_type out_degree(vertex_iterator const & pos) const 
+    {
+        unsigned int nbtype = pos.borderType();
+        return edgeDescriptorOffsets_[nbtype].size();
+    }
+
+    // --------------------------------------------------
+    // support for EdgeListGraph:
+
+    edges_size_type num_edges() const 
+    {
+        return num_edges_;
+    }
+
+    // --------------------------------------------------
+    // support for AdjacencyMatrix concept:
+
+    std::pair<edge_descriptor, bool>
+    edge(vertex_descriptor const & u, vertex_descriptor const & v) const
+    {
+        edge_descriptor edge;
+        bool found=false;
+
+        neighbor_vertex_iterator i = get_neighbor_vertex_iterator(get_vertex_iterator(u)),
+                                 end = i.getEndIterator();
+        for (; i != end; ++i) 
+        {
+            if (*i == v) 
+            {
+                found = true;
+                edge = make_edge_descriptor(u, i.neighborIndex());
+                break;
+            }
+        }
+        return std::make_pair(edge, found);
+    }
+
+
+    // --------------------------------------------------
+    // other helper functions:
+
+    bool isDirected() const
+    {
+        return IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+    }
+    
+    degree_size_type maxDegree() const
+    {
+        return (degree_size_type)neighborOffsets_.size();
+    }
+
+    degree_size_type halfMaxDegree() const 
+    {
+         return maxDegree() / 2;
+    }
+
+    shape_type const & shape() const 
+    {
+        return shape_;
+    }
+
+    edge_descriptor make_edge_descriptor(vertex_descriptor const & v,
+                                         index_type neighborIndex) const
+    {
+        if(isDirected() || neighborIndex < halfMaxDegree())
+            return edge_descriptor(v, neighborIndex, false);
+        else
+            return edge_descriptor(v + neighborOffsets_[neighborIndex], maxDegree() - neighborIndex - 1, true);
+    }
+
+    edge_propmap_shape_type edge_propmap_shape() const 
+    {
+        edge_propmap_shape_type res;
+        res.template subarray<0, N>() = shape_;
+        res[N] = isDirected()
+                     ? maxDegree()
+                     : halfMaxDegree();
+        return res;
+    }
+
+    
+    // //! In case of an undirected graph, the edge u->v is the same as v->u.
+    // //  This function folds in the edge descriptors corresponding to "causal neighbors",
+    // //  i.e. those to vertices with lower scan order index, by reversing the edge and computing
+    // //  the corresponding edge descriptor.
+    // //  (assuming here the neighbor-indices are in the order of noncausal, causal neighbors....
+    // //   FIXME: check this again in neighborhood construction!)
+    // //  (At least, the neighborhood construction is symmetrical, hence this should be OK)
+    // inline 
+    // edge_descriptor
+    // map_to_undirected_edge(const edge_descriptor &e) const {
+        // edge_descriptor res = e;
+        // //assert(!res.isReversed()); 
+        // if (res[N] >= halfMaxDegree()) {
+            // TinyVectorView<typename edge_descriptor::value_type, N> vertex(res.data());
+            // vertex += neighborCoordOffset(res[N]);
+            // res[N] = maxDegree() - res[N] - 1;
+            // res.setReversed(!res.isReversed());
+        // }
+        // return res;
+    // }
+
+
+
+protected:
+    ArrayVector<shape_type> neighborOffsets_;
+    ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices_, backIndices_;
+    ArrayVector<ArrayVector<shape_type> > incrementalOffsets_, backOffsets_;
+    ArrayVector<ArrayVector<edge_descriptor> > edgeDescriptorOffsets_, backEdgeDescriptorOffsets_;
+    shape_type shape_;
+    MultiArrayIndex num_vertices_, num_edges_;
+    NeighborhoodType neighborhoodType_;
+};
 
 } // namespace vigra
 
@@ -580,7 +811,7 @@ public:
 namespace vigra {
     // forward declare graph type:
     template<unsigned int N>
-    class GridGraphView_CoordsDescriptor;
+    class GridGraph;
 }
 
 #include "multi_shape.hxx"
@@ -715,10 +946,10 @@ makeArraySubNeighborhood2(const ArrayVector<Shape> & allNeighborOffsets,
 //       - shape
 //       - neighborhood type (DirectedNeighborhood or IndirectNeighborhood, i.e.\ including diagonal neighbors)
 template<unsigned int N>
-class GridGraphView_CoordsDescriptor
+class GridGraph
 {
 public:
-    typedef GridGraphView_CoordsDescriptor<N> self_type;
+    typedef GridGraph<N> self_type;
 
     typedef typename MultiArrayShape<N>::type shape_type;
     typedef typename MultiArrayShape<N+1>::type edge_propmap_shape_type;
@@ -759,7 +990,7 @@ public:
 
 
     // dummy default constructor to satisfy adjacency_graph concept
-    GridGraphView_CoordsDescriptor()
+    GridGraph()
     {}
 
 
@@ -767,7 +998,7 @@ public:
     //  @param shape                  an array of the graph's dimensions as a TinyVector
     //  @param directNeighborsOnly    true for direct neighborhood (axis-aligned edges only) 
     //                                or false for indirect neighborhood (including all diagonal edges)
-    GridGraphView_CoordsDescriptor(shape_type const &shape, borderType directNeighborsOnly = IndirectNeighborhood) 
+    GridGraph(shape_type const &shape, borderType directNeighborsOnly = IndirectNeighborhood) 
         : shape_(shape)
     {
         // use makeArrayNeighborhood to populate neighborhood tables:
@@ -1013,9 +1244,9 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator >
-        vertices(vigra::GridGraphView_CoordsDescriptor<N> &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator >
+        vertices(vigra::GridGraph<N> &g) 
         {
             return std::make_pair(g.get_vertex_iterator(),
                                   g.get_vertex_end_iterator());    
@@ -1024,9 +1255,9 @@ namespace vigragraph
         // const variant
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator >
-        vertices(const vigra::GridGraphView_CoordsDescriptor<N> &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator >
+        vertices(const vigra::GridGraph<N> &g) 
         {
             return std::make_pair(g.get_vertex_iterator(),
                                   g.get_vertex_end_iterator());    
@@ -1036,8 +1267,8 @@ namespace vigragraph
         
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertices_size_type
-        num_vertices(const vigra::GridGraphView_CoordsDescriptor<N> &g) 
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertices_size_type
+        num_vertices(const vigra::GridGraph<N> &g) 
         {
             return g.num_vertices();
         }
@@ -1046,15 +1277,15 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::adjacency_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::adjacency_iterator >
-        adjacent_vertices(typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor v,
-                          vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator >
+        adjacent_vertices(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor v,
+                          vigra::GridGraph<N> const &g) 
         {
             // Here: need to provide a variant that converts the index vertex_descriptor
             // back into the corresponding node_iterator.
             // 
-            typedef typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator
+            typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
                 vertex_iterator;
             vertex_iterator reconstructed = g.get_vertex_iterator();
             reconstructed += v;
@@ -1067,10 +1298,10 @@ namespace vigragraph
         // adjacent_vertices variant in vigra namespace: allows to call adjacent_vertices with vertex_iterator argument
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::adjacency_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::adjacency_iterator >
-        adjacent_vertices_at_iterator(typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator const &v,
-                                      vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator >
+        adjacent_vertices_at_iterator(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator const &v,
+                                      vigra::GridGraph<N> const &g) 
         {    
             return std::make_pair(g.get_neighbor_vertex_iterator(v),
                                   g.get_neighbor_vertex_end_iterator(v));    
@@ -1080,15 +1311,15 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::out_edge_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::out_edge_iterator >
-        out_edges(typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor v,
-                          vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::out_edge_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::out_edge_iterator >
+        out_edges(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor v,
+                          vigra::GridGraph<N> const &g) 
         {
             // Here: need to provide a variant that converts the index vertex_descriptor
             // back into the corresponding node_iterator.
             // 
-            typedef typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator
+            typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
                 vertex_iterator;
             vertex_iterator reconstructed = g.get_vertex_iterator();
             reconstructed += v;
@@ -1099,24 +1330,24 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor 
-        source_or_target(const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor e,
-                         vigra::GridGraphView_CoordsDescriptor<N> const &g,
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
+        source_or_target(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
+                         vigra::GridGraph<N> const &g,
                          bool return_source)
         {
             // source is always the attached node (first coords) unless the
             // edge has been reversed. 
             if ((return_source && e.isReversed()) 
                 || (!return_source && !e.isReversed())) {
-                typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor res = 
-                    TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor::value_type, N>(e.data());
+                typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor res = 
+                    TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor::value_type, N>(e.data());
 
                 // the target is a bit more complicated, because we need the help of the graph to find the correct offset:
                 res += g.neighborCoordOffset(e[N]);
                 return res;
             } else {
-                typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor res =
-                    TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor::value_type, N>(e.data());
+                typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor res =
+                    TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor::value_type, N>(e.data());
                 return res;
             }
         }
@@ -1124,9 +1355,9 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor 
-        source(const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor e,
-                          vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
+        source(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
+                          vigra::GridGraph<N> const &g) 
         {
             return source_or_target(e, g, true);
         }
@@ -1135,20 +1366,20 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor 
-        target(const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor e,
-                          vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
+        target(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
+                          vigra::GridGraph<N> const &g) 
         {
             return source_or_target(e, g, false);
         }
 
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::degree_size_type
-        out_degree(const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor v,
-                          vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::degree_size_type
+        out_degree(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor v,
+                          vigra::GridGraph<N> const &g) 
         {
-            typedef typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_iterator
+            typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
                 vertex_iterator;
             vertex_iterator reconstructed = g.get_vertex_iterator();
             reconstructed += v;
@@ -1159,19 +1390,19 @@ namespace vigragraph
 
         template<unsigned int N>
         inline
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_iterator, 
-                  typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_iterator >
-        edges(vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator, 
+                  typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator >
+        edges(vigra::GridGraph<N> const &g) 
         {
-            typedef typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_iterator edge_iterator;
+            typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator edge_iterator;
             return std::make_pair(edge_iterator(g), edge_iterator());
         }
 
 
         template<unsigned int N>
         inline
-        typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edges_size_type
-        num_edges(vigra::GridGraphView_CoordsDescriptor<N> const &g) 
+        typename vigragraph::graph_traits<vigra::GridGraph<N> >::edges_size_type
+        num_edges(vigra::GridGraph<N> const &g) 
         {
             return g.num_edges();
         }
@@ -1181,10 +1412,10 @@ namespace vigragraph
         // support for AdjacencyMatrix concept:
 
         template<unsigned int N>
-        std::pair<typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::edge_descriptor, bool>
-        edge(const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor &u,
-             const typename vigragraph::graph_traits<vigra::GridGraphView_CoordsDescriptor<N> >::vertex_descriptor &v,
-             vigra::GridGraphView_CoordsDescriptor<N> const &g)
+        std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor, bool>
+        edge(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor &u,
+             const typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor &v,
+             vigra::GridGraph<N> const &g)
         {
             return g.edge(u,v);
         }
@@ -1203,7 +1434,7 @@ namespace vigragraph
             typedef typename VIEW::value_type value_type;
             typedef typename VIEW::reference reference;
             typedef typename VIEW::const_reference const_reference;
-            typedef typename vigra::GridGraphView_CoordsDescriptor<VIEW::actual_dimension> graph_type;
+            typedef typename vigra::GridGraph<VIEW::actual_dimension> graph_type;
             typedef typename graph_type::vertex_descriptor key_type;
             MultiArrayView_property_map(const VIEW& view)
                 : view_(view) { }
@@ -1295,7 +1526,7 @@ namespace vigragraph
 
         template<unsigned int N>
         struct IDMapper {
-            typedef typename vigra::GridGraphView_CoordsDescriptor<N> graph_type;
+            typedef typename vigra::GridGraph<N> graph_type;
             typedef vigragraph::readable_property_map_tag category;
             typedef typename graph_type::index_type value_type;
             typedef typename graph_type::vertex_descriptor key_type;
@@ -1310,7 +1541,7 @@ namespace vigragraph
         };
 
         template<unsigned int N>
-        struct property_map<vigra::GridGraphView_CoordsDescriptor<N>, vigragraph::vertex_index_t>
+        struct property_map<vigra::GridGraph<N>, vigragraph::vertex_index_t>
         {
             typedef IDMapper<N> type;
             typedef IDMapper<N> const_type;
@@ -1328,9 +1559,9 @@ namespace vigragraph
 
 
         template<unsigned int N>
-        typename vigragraph::property_map<vigra::GridGraphView_CoordsDescriptor<N>, vigragraph::vertex_index_t>::type
+        typename vigragraph::property_map<vigra::GridGraph<N>, vigragraph::vertex_index_t>::type
         //typename IDMapper<N>
-        get(vigragraph::vertex_index_t, const vigra::GridGraphView_CoordsDescriptor<N> &graph) {
+        get(vigragraph::vertex_index_t, const vigra::GridGraph<N> &graph) {
             // return a lightweight wrapper for the CoupledIterator, which easily allows the conversion of 
             // coordinates via its += operator followed by index().
             return IDMapper<N>(graph);
@@ -1339,10 +1570,10 @@ namespace vigragraph
 #if 0 
         // CHECK if required: also provide the direct (three-parameter) version for index lookup
         template<unsigned int N>
-        typename vigra::GridGraphView_CoordsDescriptor<N>::vertices_size_type
+        typename vigra::GridGraph<N>::vertices_size_type
         get(vigragraph::vertex_index_t, 
-            const vigra::GridGraphView_CoordsDescriptor<N> &graph,
-            const typename vigra::GridGraphView_CoordsDescriptor<N>::vertex_descriptor &v) {
+            const vigra::GridGraph<N> &graph,
+            const typename vigra::GridGraph<N>::vertex_descriptor &v) {
             return (IDMapper<N>(graph).map_helper + v).scanOrderIndex();
         }
 #endif
@@ -1370,7 +1601,7 @@ namespace vigragraph
 namespace std {
     template<unsigned int N>
     ostream& operator<<(ostream& out,
-                        const typename vigra::GridGraphView_CoordsDescriptor<N>::vertex_iterator & arg)
+                        const typename vigra::GridGraph<N>::vertex_iterator & arg)
     {
         out << "v" << arg.scanOrderIndex();
         return out;

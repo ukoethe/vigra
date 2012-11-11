@@ -43,12 +43,20 @@
 
 using namespace vigra;
 
+template <unsigned int N>
 struct NeighborhoodTests
 {
+    typedef typename MultiArrayShape<N>::type Shape;
+    
+    ArrayVector<Shape> neighborOffsets;
+    ArrayVector<ArrayVector<bool> > neighborExists;
+    ArrayVector<ArrayVector<Shape> > relativeOffsets, backOffsets, forwardOffsets;
+    ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > edgeDescrOffsets, backEdgeDescrOffsets, forwardEdgeDescrOffsets;
+    ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
+
     NeighborhoodTests()
     {}
     
-    template <unsigned int N>
     void testVertexIterator()
     {
         typedef typename MultiArrayShape<N>::type Shape;
@@ -80,13 +88,8 @@ struct NeighborhoodTests
         }
     }   
     
-    template <unsigned int N>
     void testDirectNeighborhood()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, DirectNeighborhood);
         
         static const unsigned int neighborCount = 2*N;
@@ -149,13 +152,8 @@ struct NeighborhoodTests
         should(checkNeighborCodes.all()); // check that all possible neighborhoods have been tested
     }
     
-    template <unsigned int N>
     void testIndirectNeighborhood()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, IndirectNeighborhood);
         
         MultiArray<N, int> a(Shape(3));
@@ -220,20 +218,13 @@ struct NeighborhoodTests
         should(checkNeighborCodes.all()); // check that all possible neighborhoods have been tested
     }
     
-    template <unsigned int N, NeighborhoodType NType>
+    template <NeighborhoodType NType>
     void testNeighborhoodIterator()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
-        
-        ArrayVector<ArrayVector<Shape> > relativeOffsets, backOffsets, forwardOffsets;
-        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
-        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, true, true);
-        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, true, false);
-        detail::computeNeighborOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, false, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, edgeDescrOffsets, neighborIndices, true, true, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backEdgeDescrOffsets, backIndices, true, true, false);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardEdgeDescrOffsets, forwardIndices, true, false, true);
         
         // check neighborhoods at ROI border
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
@@ -305,20 +296,13 @@ struct NeighborhoodTests
         }
     }
     
-    template <unsigned int N, NeighborhoodType NType>
+    template <NeighborhoodType NType>
     void testOutEdgeIteratorDirected()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
-        
-        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets, backOffsets, forwardOffsets;
-        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, true, true, true);
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, true, true, false);
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, true, false, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, edgeDescrOffsets, neighborIndices, true, true, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backEdgeDescrOffsets, backIndices, true, true, false);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardEdgeDescrOffsets, forwardIndices, true, false, true);
 
         // check neighborhoods at ROI border
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
@@ -337,7 +321,7 @@ struct NeighborhoodTests
                 int borderType = vi.borderType();
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(relativeOffsets[borderType], neighborIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size(); ++k)
@@ -357,7 +341,7 @@ struct NeighborhoodTests
                 }
                         
                 {
-                    GridGraphOutEdgeIterator<N> ni(backOffsets[borderType], backIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size()/2; ++k)
@@ -377,7 +361,7 @@ struct NeighborhoodTests
                 }
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(forwardOffsets[borderType], forwardIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
@@ -399,20 +383,13 @@ struct NeighborhoodTests
         }
     }
     
-    template <unsigned int N, NeighborhoodType NType>
+    template <NeighborhoodType NType>
     void testOutEdgeIteratorUndirected()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
-        
-        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets, backOffsets, forwardOffsets;
-        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, false, true, true);
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, false, true, false);
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardIndices, false, false, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, edgeDescrOffsets, neighborIndices, false, true, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backEdgeDescrOffsets, backIndices, false, true, false);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, forwardOffsets, forwardEdgeDescrOffsets, forwardIndices, false, false, true);
 
         // check neighborhoods at ROI border
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
@@ -431,7 +408,7 @@ struct NeighborhoodTests
                 int borderType = vi.borderType();
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(relativeOffsets[borderType], neighborIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size(); ++k)
@@ -460,7 +437,7 @@ struct NeighborhoodTests
                 }
                         
                 {
-                    GridGraphOutEdgeIterator<N> ni(backOffsets[borderType], backIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size()/2; ++k)
@@ -480,7 +457,7 @@ struct NeighborhoodTests
                 }
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(forwardOffsets[borderType], forwardIndices[borderType], vi.point()),
+                    GridGraphOutEdgeIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
@@ -502,18 +479,11 @@ struct NeighborhoodTests
         }
     }
     
-    template <unsigned int N, NeighborhoodType NType>
+    template <NeighborhoodType NType>
     void testEdgeIteratorDirected()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
-        
-        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets;
-        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices;
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, true, true, true);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, relativeOffsets, edgeDescrOffsets, neighborIndices, true, true, true);
 
         // check neighborhoods at ROI border
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
@@ -528,7 +498,7 @@ struct NeighborhoodTests
             es.template subarray<0,N>() = s;
             MultiArray<N+1, int> edge_map(es);
             
-            GridGraphEdgeIterator<N> ni(relativeOffsets, neighborIndices, s),
+            GridGraphEdgeIterator<N> ni(edgeDescrOffsets, neighborIndices, s),
                                      nend = ni.getEndIterator();
             
             for(; ni != nend; ++ni)
@@ -557,19 +527,11 @@ struct NeighborhoodTests
         }
     }
     
-    template <unsigned int N, NeighborhoodType NType>
+    template <NeighborhoodType NType>
     void testEdgeIteratorUndirected()
     {
-        typedef typename MultiArrayShape<N>::type Shape;
-        
-        ArrayVector<Shape> neighborOffsets;
-        ArrayVector<ArrayVector<bool> > neighborExists;
         detail::makeArrayNeighborhood(neighborOffsets, neighborExists, NType);
-        
-        ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > relativeOffsets, backOffsets;
-        ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices;
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, relativeOffsets, neighborIndices, false, true, true);
-        detail::computeEdgeDescriptorOffsets(neighborOffsets, neighborExists, backOffsets, backIndices, false, true, false);
+        detail::computeNeighborOffsets(neighborOffsets, neighborExists, backOffsets, backEdgeDescrOffsets, backIndices, false, true, false);
 
         // check neighborhoods at ROI border
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();
@@ -584,7 +546,7 @@ struct NeighborhoodTests
             es.template subarray<0,N>() = s;
             MultiArray<N+1, int> edge_map(es);
             
-            GridGraphEdgeIterator<N> ni(relativeOffsets, neighborIndices, s),
+            GridGraphEdgeIterator<N> ni(backEdgeDescrOffsets, backIndices, s),
                                      nend = ni.getEndIterator();
             
             for(; ni != nend; ++ni)
@@ -605,12 +567,39 @@ struct NeighborhoodTests
                 for(es[N]=0; es[N]<(MultiArrayIndex)neighborExists[borderType].size()/2; ++es[N])
                 {
                     if(neighborExists[borderType][es[N]])
-                        shouldEqual(edge_map[es], 2);
+                        shouldEqual(edge_map[es], 1);
                     else
                         shouldEqual(edge_map[es], 0);
                 }
             }
         }
+    }
+};
+
+template <unsigned int N>
+struct GridGraphTests
+{
+    typedef typename MultiArrayShape<N>::type Shape;
+    
+    template <class DirectedTag, NeighborhoodType NType>
+    void testCounts()
+    {
+        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        
+        GridGraph<N, DirectedTag> g1(Shape(1), NType);
+        
+        shouldEqual(g1.num_vertices(), 1);
+        shouldEqual(g1.num_edges(), 0);
+        shouldEqual(g1.maxDegree(), gridGraphMaxDegree(N, NType));
+        
+        GridGraph<N, DirectedTag> g3(Shape(3), NType);
+        
+        // int expectedEdgeCount = directed
+                                  // ? 2*gridGraphMaxDegree(N, NType)
+                                  // : gridGraphMaxDegree(N, NType);
+        shouldEqual(g3.num_vertices(), (MetaPow<3, N>::value));
+        // shouldEqual(g3.num_edges(), 0);
+        shouldEqual(g3.maxDegree(), gridGraphMaxDegree(N, NType));
     }
 };
 
@@ -620,38 +609,40 @@ struct GridgraphTestSuite
     GridgraphTestSuite()
     : vigra::test_suite("Gridgraph Test")
     {
-        add(testCase(&NeighborhoodTests::testVertexIterator<2>));
-        add(testCase(&NeighborhoodTests::testVertexIterator<3>));
+        add(testCase(&NeighborhoodTests<2>::testVertexIterator));
+        add(testCase(&NeighborhoodTests<3>::testVertexIterator));
         
-        add(testCase(&NeighborhoodTests::testDirectNeighborhood<2>));
-        add(testCase(&NeighborhoodTests::testDirectNeighborhood<3>));
-        add(testCase(&NeighborhoodTests::testIndirectNeighborhood<2>));
-        add(testCase(&NeighborhoodTests::testIndirectNeighborhood<3>));
+        add(testCase(&NeighborhoodTests<2>::testDirectNeighborhood));
+        add(testCase(&NeighborhoodTests<3>::testDirectNeighborhood));
+        add(testCase(&NeighborhoodTests<2>::testIndirectNeighborhood));
+        add(testCase(&NeighborhoodTests<3>::testIndirectNeighborhood));
         
-        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<2, IndirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testNeighborhoodIterator<3, IndirectNeighborhood>)));
+        add(testCase(&NeighborhoodTests<2>::testNeighborhoodIterator<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testNeighborhoodIterator<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<2>::testNeighborhoodIterator<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testNeighborhoodIterator<IndirectNeighborhood>));
         
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<2, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<3, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<2, IndirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorDirected<3, IndirectNeighborhood>)));
+        add(testCase(&NeighborhoodTests<2>::testOutEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testOutEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<2>::testOutEdgeIteratorDirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testOutEdgeIteratorDirected<IndirectNeighborhood>));
         
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<2, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<3, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<2, IndirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testOutEdgeIteratorUndirected<3, IndirectNeighborhood>)));
+        add(testCase(&NeighborhoodTests<2>::testOutEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testOutEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<2>::testOutEdgeIteratorUndirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testOutEdgeIteratorUndirected<IndirectNeighborhood>));
         
-        add(testCase((&NeighborhoodTests::testEdgeIteratorDirected<2, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorDirected<3, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorDirected<2, IndirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorDirected<3, IndirectNeighborhood>)));
+        add(testCase(&NeighborhoodTests<2>::testEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<2>::testEdgeIteratorDirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testEdgeIteratorDirected<IndirectNeighborhood>));
         
-        add(testCase((&NeighborhoodTests::testEdgeIteratorUndirected<2, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorUndirected<3, DirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorUndirected<2, IndirectNeighborhood>)));
-        add(testCase((&NeighborhoodTests::testEdgeIteratorUndirected<3, IndirectNeighborhood>)));
+        add(testCase(&NeighborhoodTests<2>::testEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<2>::testEdgeIteratorUndirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<3>::testEdgeIteratorUndirected<IndirectNeighborhood>));
+        
+        add(testCase((&GridGraphTests<2>::testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
     }
 };
 
