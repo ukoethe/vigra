@@ -524,6 +524,8 @@ struct NeighborhoodTests
                         shouldEqual(edge_map[es], 0);
                 }
             }
+            
+            shouldEqual(edge_map.template sum<int>(), gridGraphEdgeCount(s, NType, true));
         }
     }
     
@@ -572,6 +574,8 @@ struct NeighborhoodTests
                         shouldEqual(edge_map[es], 0);
                 }
             }
+            
+            shouldEqual(edge_map.template sum<int>(), gridGraphEdgeCount(s, NType, false));
         }
     }
 };
@@ -586,20 +590,89 @@ struct GridGraphTests
     {
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
-        GridGraph<N, DirectedTag> g1(Shape(1), NType);
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            Shape s = *i + Shape(1);
+            GridGraph<N, DirectedTag> g(s, NType);
         
-        shouldEqual(g1.num_vertices(), 1);
-        shouldEqual(g1.num_edges(), 0);
-        shouldEqual(g1.maxDegree(), gridGraphMaxDegree(N, NType));
+            shouldEqual(g.shape(), s);
+            shouldEqual(g.isDirected(), directed);
+            shouldEqual(g.num_vertices(), prod(s));
+            shouldEqual(g.num_edges(), gridGraphEdgeCount(s, NType, directed));
+            shouldEqual(g.maxDegree(), gridGraphMaxDegree(N, NType));
+        }
+    }
+    
+    template <class DirectedTag, NeighborhoodType NType>
+    void testVertexIterator()
+    {
+        typedef GridGraph<N, DirectedTag> Graph;
         
-        GridGraph<N, DirectedTag> g3(Shape(3), NType);
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            Shape s = *i + Shape(1);
+            Graph g(s, NType);
+            MultiArray<N, int> vertexMap(s);
+            int count = 0;
         
-        // int expectedEdgeCount = directed
-                                  // ? 2*gridGraphMaxDegree(N, NType)
-                                  // : gridGraphMaxDegree(N, NType);
-        shouldEqual(g3.num_vertices(), (MetaPow<3, N>::value));
-        // shouldEqual(g3.num_edges(), 0);
-        shouldEqual(g3.maxDegree(), gridGraphMaxDegree(N, NType));
+            typename Graph::vertex_iterator i = g.get_vertex_iterator(), 
+                                            end = g.get_vertex_end_iterator();
+            for(; i != end; ++i, ++count)
+            {
+                should(i.isValid() && !i.atEnd());
+                vertexMap[*i] += 1;
+            }
+            should(!i.isValid() && i.atEnd());
+            
+            // check that all vertices are found exactly once
+            shouldEqual(count, g.num_vertices());
+            int min = NumericTraits<int>::max(), max = NumericTraits<int>::min();
+            vertexMap.minmax(&min, &max);
+            
+            shouldEqual(min, 1);
+            shouldEqual(max, 1);
+        }
+    }
+    
+    template <class DirectedTag, NeighborhoodType NType>
+    void testNeighborIterator()
+    {
+        typedef GridGraph<N, DirectedTag> Graph;
+        
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            Shape s = *i + Shape(1);
+            Graph g(s, NType);
+            MultiArray<N, int> vertexMap(s);
+        
+            typename Graph::vertex_iterator i = g.get_vertex_iterator(), 
+                                            end = g.get_vertex_end_iterator();
+            for(; i != end; ++i)
+            {
+                typename Graph::neighbor_vertex_iterator n = g.get_neighbor_vertex_iterator(i), 
+                                                         nend = g.get_neighbor_vertex_end_iterator(i);
+                int count = 0;
+                
+                for(; n != nend; ++n, ++count)
+                {
+                    vertexMap[*i] += 1;
+                    should(n.isValid() && !n.atEnd());
+                }
+                should(!n.isValid() && n.atEnd());
+                shouldEqual(count, g.out_degree(i));
+            }
+            
+            // check that all neighbors are found
+            i = g.get_vertex_iterator();
+            for(; i != end; ++i)
+                shouldEqual(vertexMap[*i], g.in_degree(i));
+        }
     }
 };
 
@@ -643,6 +716,32 @@ struct GridgraphTestSuite
         add(testCase(&NeighborhoodTests<3>::testEdgeIteratorUndirected<IndirectNeighborhood>));
         
         add(testCase((&GridGraphTests<2>::testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<4>::testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testCounts<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testCounts<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testCounts<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testCounts<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testCounts<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testCounts<vigragraph::undirected_tag, DirectNeighborhood>)));
+        
+        add(testCase((&GridGraphTests<2>::testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testVertexIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testVertexIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testVertexIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testVertexIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        
+        add(testCase((&GridGraphTests<2>::testNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<2>::testNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<3>::testNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
     }
 };
 
