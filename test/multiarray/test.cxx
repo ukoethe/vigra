@@ -514,6 +514,7 @@ public:
         
         should(i1.isValid() && !i1.atEnd());
         should(!iend.isValid() && iend.atEnd());
+        should(iend.getEndIterator() == iend);
 
         shouldEqual(&i1[0], &a3(0,0,0));
         shouldEqual(&i1[1], &a3(1,0,0));

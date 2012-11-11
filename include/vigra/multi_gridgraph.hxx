@@ -546,7 +546,7 @@ public:
         return ret;
     }
 
-  protected:
+   protected:
     ArrayVector<ArrayVector<value_type> > const * neighborOffsets_;
     ArrayVector<ArrayVector<index_type> > const * neighborIndices_;
     vertex_iterator vertexIterator_;
@@ -687,15 +687,24 @@ public:
 
     degree_size_type out_degree(vertex_iterator const & v) const 
     {
-        return (degree_size_type)edgeDescriptorOffsets_[get_border_type(v)].size();
+        return (degree_size_type)neighborIndices_[get_border_type(v)].size();
     }
 
     degree_size_type out_degree(vertex_descriptor const & v) const 
     {
-        return (degree_size_type)edgeDescriptorOffsets_[get_border_type(v)].size();
+        return (degree_size_type)neighborIndices_[get_border_type(v)].size();
     }
     
+    degree_size_type back_degree(vertex_iterator const & v) const 
+    {
+        return (degree_size_type)backIndices_[get_border_type(v)].size();
+    }
 
+    degree_size_type back_degree(vertex_descriptor const & v) const 
+    {
+        return (degree_size_type)backIndices_[get_border_type(v)].size();
+    }
+    
     degree_size_type in_degree(vertex_iterator const & v) const 
     {
         return out_degree(v);
@@ -717,6 +726,19 @@ public:
     edges_size_type num_edges() const 
     {
         return num_edges_;
+    }
+    
+    edge_iterator get_edge_iterator() const 
+    {
+        if(is_directed)
+            return edge_iterator(edgeDescriptorOffsets_, neighborIndices_, shape_);
+        else
+            return edge_iterator(backEdgeDescriptorOffsets_, backIndices_, shape_);
+    }
+
+    edge_iterator get_edge_end_iterator() const 
+    {
+        return get_edge_iterator().getEndIterator();
     }
 
     // --------------------------------------------------
@@ -819,7 +841,7 @@ public:
 
 
 
-// protected:
+  protected:
     ArrayVector<shape_type> neighborOffsets_;
     ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices_, backIndices_;
     ArrayVector<ArrayVector<shape_type> > incrementalOffsets_, backOffsets_;
