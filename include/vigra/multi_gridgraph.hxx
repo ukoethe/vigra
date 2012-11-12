@@ -573,17 +573,17 @@ public:
 
     typedef MultiCoordinateIterator<N>              vertex_iterator;
     typedef GridGraphNeighborIterator<N>            neighbor_vertex_iterator;
+    typedef neighbor_vertex_iterator                adjacency_iterator; // must be a MultiPassInputIterator model
+    typedef void                                    in_edge_iterator; // for bidirectional_graph concept, not implemented here
     typedef GridGraphOutEdgeIterator<N>             out_edge_iterator;
     typedef GridGraphEdgeIterator<N>                edge_iterator;
 
     typedef shape_type                              vertex_descriptor;
     typedef GridGraphEdgeDescriptor<N>              edge_descriptor;
-    typedef void                                    in_edge_iterator; // for bidirectional_graph concept, not implemented here
-    typedef neighbor_vertex_iterator                adjacency_iterator; // must be a MultiPassInputIterator model
-
-    typedef DirectedTag                              directed_category;
-    typedef vigragraph::disallow_parallel_edge_tag   edge_parallel_category;
-    typedef vigragraph::no_property                  vertex_property_type; // we only support "external properties".
+ 
+    typedef DirectedTag                             directed_category;
+    typedef vigragraph::disallow_parallel_edge_tag  edge_parallel_category;
+    typedef vigragraph::no_property                 vertex_property_type; // we only support "external properties".
     // FIXME: Maybe support the vertex -> coordinate map (identity) as the only internal property map
     // and additionally the vertex_descriptor -> ID map (vertex_index = SOI).
 
@@ -652,6 +652,11 @@ public:
         return neighbor_vertex_iterator(incrementalOffsets_[nbtype], neighborIndices_[nbtype], *v);
     }
 
+    neighbor_vertex_iterator get_neighbor_vertex_end_iterator(vertex_descriptor const & v) const 
+    {
+       return get_neighbor_vertex_iterator(v).getEndIterator();
+    }
+
     neighbor_vertex_iterator get_neighbor_vertex_end_iterator(vertex_iterator const & v) const 
     {
        return get_neighbor_vertex_iterator(v).getEndIterator();
@@ -678,6 +683,11 @@ public:
     {
         unsigned int nbtype = get_border_type(v);
         return out_edge_iterator(edgeDescriptorOffsets_[nbtype], neighborIndices_[nbtype], *v);
+    }
+
+    out_edge_iterator get_out_edge_end_iterator(vertex_descriptor const & v) const 
+    {
+        return get_out_edge_iterator(v).getEndIterator();
     }
 
     out_edge_iterator get_out_edge_end_iterator(vertex_iterator const & v) const 
@@ -715,11 +725,6 @@ public:
         return out_degree(v);
     }
     
-    // const shape_type & neighborCoordOffset(int borderType) const 
-    // {
-        // return neighborOffsets_[neighborIndices_[borderType]];
-    // }
-
     // --------------------------------------------------
     // support for EdgeListGraph:
 
@@ -798,6 +803,9 @@ public:
         return v.borderType();
     }
 
+        /* the given neighborIndex must be valid for the given vertex,
+           otherwise this function will crash
+        */
     edge_descriptor make_edge_descriptor(vertex_descriptor const & v,
                                          index_type neighborIndex) const
     {
@@ -815,6 +823,11 @@ public:
                      ? maxDegree()
                      : halfMaxDegree();
         return res;
+    }
+    
+    shape_type const & neighborOffset(index_type neighborIndex) const
+    {
+        return neighborOffsets_[neighborIndex];
     }
 
     
@@ -853,191 +866,163 @@ public:
 
 } // namespace vigra
 
-#if 0
 namespace vigragraph {
 
 //using namespace vigra;
 
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-typename vigra::GridGraph<N>::degree_size_type
-out_degree(typename vigra::GridGraph<N>::vertex_descriptor const & v, vigra::GridGraph<N> const & g) 
+typename vigra::GridGraph<N, DirectedTag>::degree_size_type
+out_degree(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v, 
+           vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
-        vertex_iterator;
-    vertex_iterator reconstructed = g.get_vertex_iterator();
-    reconstructed += v;
-    return g.out_degree(reconstructed);
+    return g.out_degree(v);
 }
 
-
-
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator >
-vertices(vigra::GridGraph<N> &g) 
+std::pair<typename vigra::GridGraph<N, DirectedTag>::vertex_iterator, 
+          typename vigra::GridGraph<N, DirectedTag>::vertex_iterator>
+vertices(vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return std::make_pair(g.get_vertex_iterator(),
                           g.get_vertex_end_iterator());    
 }
 
-// const variant
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator >
-vertices(const vigra::GridGraph<N> &g) 
-{
-    return std::make_pair(g.get_vertex_iterator(),
-                          g.get_vertex_end_iterator());    
-}
-
-
-
-template<unsigned int N>
-inline
-typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertices_size_type
-num_vertices(const vigra::GridGraph<N> &g) 
+typename vigra::GridGraph<N, DirectedTag>::vertices_size_type
+num_vertices(vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return g.num_vertices();
 }
 
-
-
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator >
-adjacent_vertices(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor v,
-                  vigra::GridGraph<N> const &g) 
+std::pair<typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator, 
+          typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator>
+adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
+                  vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    // Here: need to provide a variant that converts the index vertex_descriptor
-    // back into the corresponding node_iterator.
-    // 
-    typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
-        vertex_iterator;
-    vertex_iterator reconstructed = g.get_vertex_iterator();
-    reconstructed += v;
-
-    return std::make_pair(g.get_neighbor_vertex_iterator(reconstructed),
-                          g.get_neighbor_vertex_end_iterator(reconstructed));    
+    return std::make_pair(g.get_neighbor_vertex_iterator(v),
+                          g.get_neighbor_vertex_end_iterator(v));    
 }
 
-
 // adjacent_vertices variant in vigra namespace: allows to call adjacent_vertices with vertex_iterator argument
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::adjacency_iterator >
-adjacent_vertices_at_iterator(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator const &v,
-                              vigra::GridGraph<N> const &g) 
+std::pair<typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator, 
+          typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator>
+adjacent_vertices_at_iterator(typename vigra::GridGraph<N, DirectedTag>::vertex_iterator const & v,
+                              vigra::GridGraph<N, DirectedTag> const & g) 
 {    
     return std::make_pair(g.get_neighbor_vertex_iterator(v),
                           g.get_neighbor_vertex_end_iterator(v));    
 }
 
-
-
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::out_edge_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::out_edge_iterator >
-out_edges(typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor v,
-                  vigra::GridGraph<N> const &g) 
+std::pair<typename vigra::GridGraph<N, DirectedTag>::out_edge_iterator, 
+          typename vigra::GridGraph<N, DirectedTag> ::out_edge_iterator>
+out_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
+          vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    // Here: need to provide a variant that converts the index vertex_descriptor
-    // back into the corresponding node_iterator.
-    // 
-    typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_iterator
-        vertex_iterator;
-    vertex_iterator reconstructed = g.get_vertex_iterator();
-    reconstructed += v;
-
-    return std::make_pair(g.get_out_edge_iterator(reconstructed),
-                          g.get_out_edge_end_iterator(reconstructed));    
+    return std::make_pair(g.get_out_edge_iterator(v),
+                          g.get_out_edge_end_iterator(v));    
 }
 
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
-source_or_target(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
-                 vigra::GridGraph<N> const &g,
+typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor 
+source_or_target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
+                 vigra::GridGraph<N, DirectedTag> const & g,
                  bool return_source)
 {
     // source is always the attached node (first coords) unless the
     // edge has been reversed. 
-    if ((return_source && e.isReversed()) 
-        || (!return_source && !e.isReversed())) {
-        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor res = 
-            TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor::value_type, N>(e.data());
-
-        // the target is a bit more complicated, because we need the help of the graph to find the correct offset:
-        res += g.neighborCoordOffset(e[N]);
-        return res;
-    } else {
-        typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor res =
-            TinyVectorView<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor::value_type, N>(e.data());
-        return res;
+    if ((return_source && e.isReversed()) ||
+        (!return_source && !e.isReversed())) 
+    {
+        return e.vertexDescriptor() + g.neighborOffset(e.edgeIndex());
+    } 
+    else 
+    {
+        return e.vertexDescriptor();
     }
 }
 
 
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
-source(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
-                  vigra::GridGraph<N> const &g) 
+typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor 
+source(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
+       vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return source_or_target(e, g, true);
 }
 
-
-
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor 
-target(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor e,
-                  vigra::GridGraph<N> const &g) 
+typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor 
+target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
+       vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return source_or_target(e, g, false);
 }
 
-
-
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator, 
-          typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator >
-edges(vigra::GridGraph<N> const &g) 
+std::pair<typename vigra::GridGraph<N, DirectedTag>::edge_iterator, 
+          typename vigra::GridGraph<N, DirectedTag>::edge_iterator>
+edges(vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    typedef typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_iterator edge_iterator;
-    return std::make_pair(edge_iterator(g), edge_iterator());
+    return std::make_pair(g.get_edge_iterator(), g.get_edge_end_iterator());
 }
 
 
-template<unsigned int N>
+template<unsigned int N, class DirectedTag>
 inline
-typename vigragraph::graph_traits<vigra::GridGraph<N> >::edges_size_type
-num_edges(vigra::GridGraph<N> const &g) 
+typename vigra::GridGraph<N, DirectedTag>::edges_size_type
+num_edges(vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return g.num_edges();
 }
 
-
 // --------------------------------------------------
 // support for AdjacencyMatrix concept:
 
-template<unsigned int N>
-std::pair<typename vigragraph::graph_traits<vigra::GridGraph<N> >::edge_descriptor, bool>
-edge(const typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor &u,
-     const typename vigragraph::graph_traits<vigra::GridGraph<N> >::vertex_descriptor &v,
-     vigra::GridGraph<N> const &g)
+// FIXME: test this
+template<unsigned int N, class DirectedTag>
+std::pair<typename vigra::GridGraph<N, DirectedTag>::edge_descriptor, bool>
+edge(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & u,
+     typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
+     vigra::GridGraph<N, DirectedTag> const & g)
 {
     return g.edge(u,v);
 }
 
+// provide get / put for MultiArrayViews, indexed by the 
+// above-defined vertex_descriptor and edge_descriptor (in our case, a coordinate tuple):
 
+template<unsigned int N, class T, class Stride, class U>
+inline
+void put(vigra::MultiArrayView<N, T, Stride> & pmap,
+         typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k,
+         U const & val) 
+{ 
+    pmap[k] = val;  
+}
+
+template<unsigned int N, class T, class Stride>
+inline
+typename vigra::MultiArrayView<N, T, Stride>::const_reference 
+get(vigra::MultiArrayView<N, T, Stride> const & pmap,
+    typename vigra::MultiArrayView<N, T, Stride>::difference_type const & k)
+{ 
+    return pmap[k]; 
+}
+
+#if 0
 
 // provide get / put for MultiArrayViews, indexed by the above-defined vertex_descriptor (in this case, a coordinate tuple):
 
@@ -1201,10 +1186,10 @@ get(vigragraph::vertex_index_t,
 // eventually provide an edge_index property map as well?
 // (edge_descriptor -> linear contiguous edge index)
 
+#endif
 
 } // namespace vigragraph
 
-#endif
 
 #if 0
 

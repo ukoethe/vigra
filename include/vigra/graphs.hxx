@@ -73,7 +73,7 @@ struct bidirectional_tag : public directed_tag { };
 // traversal_category tags
 struct incidence_graph_tag { };
 struct adjacency_graph_tag { };
-struct bidirectional_graph_tag : virtual incidence_graph_tag { };
+struct bidirectional_graph_tag : public incidence_graph_tag { };
 struct vertex_list_graph_tag { };
 struct edge_list_graph_tag { };
 struct adjacency_matrix_tag { };
@@ -95,41 +95,11 @@ struct vertex_index_t {};
 
 struct edge_property_tag {};
 
-#if 0
-    // CHECKME
-#define vertex_index vertex_index_t()
-
-// iterator_property_map necessary?
-
-// tie() support for std::pair, similar to Boost's one:
 template<class T1, class T2>
-class tie_adapter 
-{
-public:
-    inline
-    tie_adapter(T1 &x, T2 &y) 
-        : x_(x), y_(y)
-    {}
-
-    template<class X, class Y>
-    inline tie_adapter &operator=(const std::pair<X, Y> &pair)
-    {
-        x_ = pair.first;
-        y_ = pair.second;
-        return *this;
-    }
-    
-protected:
-    T1 &x_;
-    T2 &y_;
-};
-
-template<class T1, class T2>
-inline
-tie_adapter<T1, T2>
+inline std::pair<T1 &, T2 &>
 tie(T1& t1, T2& t2) 
 {
-    return tie_adapter<T1, T2>(t1, t2);
+    return std::pair<T1 &, T2 &>(t1, t2);
 }
 
 // graph_traits class template
@@ -153,6 +123,12 @@ struct graph_traits {
 
     static inline vertex_descriptor null_vertex();
 };
+
+#if 0
+    // CHECKME
+#define vertex_index vertex_index_t()
+
+// iterator_property_map necessary?
 
 // property_map class template
 template<class GRAPH, class T>

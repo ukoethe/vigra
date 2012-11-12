@@ -33,6 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
+//#define WITH_BOOST_GRAPH
+
 #define VIGRA_CHECK_BOUNDS
 #include "unittest.hxx"
 #include <vigra/multi_shape.hxx>
@@ -588,6 +590,7 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testCounts()
     {
+        using namespace vigragraph;
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
@@ -600,7 +603,9 @@ struct GridGraphTests
             shouldEqual(g.shape(), s);
             shouldEqual(g.isDirected(), directed);
             shouldEqual(g.num_vertices(), prod(s));
+            shouldEqual(num_vertices(g), prod(s));
             shouldEqual(g.num_edges(), gridGraphEdgeCount(s, NType, directed));
+            shouldEqual(num_edges(g), gridGraphEdgeCount(s, NType, directed));
             shouldEqual(g.maxDegree(), gridGraphMaxDegree(N, NType));
         }
     }
@@ -608,6 +613,8 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testVertexIterator()
     {
+        using namespace vigragraph;
+        
         typedef GridGraph<N, DirectedTag> Graph;
         
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
@@ -621,10 +628,13 @@ struct GridGraphTests
         
             typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
                                             end = g.get_vertex_end_iterator();
+                                            
+            should(j == vertices(g).first);
+            should(end == vertices(g).second);
             for(; j != end; ++j, ++count)
             {
                 should(j.isValid() && !j.atEnd());
-                vertexMap[*j] += 1;
+                put(vertexMap, *j, get(vertexMap, *j) + 1); // same as: vertexMap[*j] += 1;
             }
             should(!j.isValid() && j.atEnd());
             
@@ -641,6 +651,8 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testNeighborIterator()
     {
+        using namespace vigragraph;
+        
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
@@ -668,14 +680,27 @@ struct GridGraphTests
                                                          nend = g.get_neighbor_vertex_end_iterator(j);
                 typename Graph::out_edge_iterator        e = g.get_out_edge_iterator(j), 
                                                          eend = g.get_out_edge_end_iterator(j);
+
+                should(n == g.get_neighbor_vertex_iterator(*j));
+                should(nend == g.get_neighbor_vertex_end_iterator(*j));
+                should(n == adjacent_vertices(*j, g).first);
+                should(nend == adjacent_vertices(*j, g).second);
+                should(n == adjacent_vertices_at_iterator(j, g).first);
+                should(nend == adjacent_vertices_at_iterator(j, g).second);
+                should(e == g.get_out_edge_iterator(*j));
+                should(eend == g.get_out_edge_end_iterator(*j));
+                should(e == out_edges(*j, g).first);
+                should(eend == out_edges(*j, g).second);
+
                 int count = 0;
-                
                 for(; n != nend; ++n, ++e, ++count)
                 {
                     should(*n != *j);
                     should(n.isValid() && !n.atEnd());
                     should(e.isValid() && !e.atEnd());
                     should(e != eend);
+                    shouldEqual(source(*e, g), *j);
+                    shouldEqual(target(*e, g), *n);
                     vertexMap[*n] += 1;
                     edgeMap[*e] += 1;
                 }
@@ -683,6 +708,7 @@ struct GridGraphTests
                 should(!e.isValid() && e.atEnd());
                 should(e == eend);
                 shouldEqual(count, g.out_degree(j));
+                shouldEqual(count, out_degree(*j, g));
                 
                 totalCount += count;
             }
@@ -707,6 +733,8 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testEdgeIterator()
     {
+        using namespace vigragraph;
+        
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
@@ -724,14 +752,17 @@ struct GridGraphTests
             shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
             shouldEqual(edgeMap.shape(N), directed ? g.maxDegree() : g.halfMaxDegree());
             
-            int count = 0;
-            
             typename Graph::edge_iterator e = g.get_edge_iterator(),
                                           eend = g.get_edge_end_iterator();
+
+            should(e == edges(g).first);
+            should(eend == edges(g).second);
+            
+            int count = 0;
             for(; e != eend; ++e, ++count)
             {
                 should(e.isValid() && !e.atEnd());
-                edgeMap[*e] += 1;
+                put(edgeMap, *e, get(edgeMap, *e) + 1); // same as: edgeMap[*e] += 1;
             }
             should(!e.isValid() && e.atEnd());
             
