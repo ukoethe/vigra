@@ -634,6 +634,12 @@ struct GridGraphTests
             for(; j != end; ++j, ++count)
             {
                 should(j.isValid() && !j.atEnd());
+                shouldEqual(g.out_degree(j), g.out_degree(*j));
+                shouldEqual(g.out_degree(j), out_degree(*j, g));
+                shouldEqual(g.forward_degree(j), g.forward_degree(*j));
+                shouldEqual(g.back_degree(j), g.back_degree(*j));
+                shouldEqual(g.forward_degree(j) + g.back_degree(j), g.out_degree(j));
+                shouldEqual(g.in_degree(j), g.out_degree(j));
                 put(vertexMap, *j, get(vertexMap, *j) + 1); // same as: vertexMap[*j] += 1;
             }
             should(!j.isValid() && j.atEnd());
@@ -708,7 +714,6 @@ struct GridGraphTests
                 should(!e.isValid() && e.atEnd());
                 should(e == eend);
                 shouldEqual(count, g.out_degree(j));
-                shouldEqual(count, out_degree(*j, g));
                 
                 totalCount += count;
             }
@@ -718,6 +723,11 @@ struct GridGraphTests
                 totalCount /= 2;
             shouldEqual(totalCount, g.num_edges());
             
+            int min = NumericTraits<int>::max(), max = NumericTraits<int>::min();
+            edgeMap.minmax(&min, &max);
+            shouldEqual(min, 0);
+            shouldEqual(max, g.num_edges() ? !directed ? 2 : 1 : 0);
+
             j = g.get_vertex_iterator();
             for(; j != end; ++j)
             {
@@ -746,7 +756,7 @@ struct GridGraphTests
             Shape s = *i + Shape(1);
             Graph g(s, NType);
             
-            MultiArray<N, int> vertexMap(s);
+            MultiArray<N, int> sourceVertexMap(s),targetVertexMap(s);
             MultiArray<N+1, int> edgeMap(g.edge_propmap_shape());
             
             shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
@@ -763,19 +773,34 @@ struct GridGraphTests
             {
                 should(e.isValid() && !e.atEnd());
                 put(edgeMap, *e, get(edgeMap, *e) + 1); // same as: edgeMap[*e] += 1;
+                sourceVertexMap[source(*e, g)] += 1;
+                targetVertexMap[target(*e, g)] += 1;
             }
             should(!e.isValid() && e.atEnd());
             
             // check that all neighbors are found
             shouldEqual(count, g.num_edges());
             
+            int min = NumericTraits<int>::max(), max = NumericTraits<int>::min();
+            edgeMap.minmax(&min, &max);
+            shouldEqual(min, 0);
+            shouldEqual(max, g.num_edges() ? 1 : 0);
+            
             MultiCoordinateIterator<N> j(s), end = j.getEndIterator();
             for(; j != end; ++j)
             {
                 if(directed)
+                {
                     shouldEqual(edgeMap.bindInner(*j).template sum<int>(), g.out_degree(j));
+                    shouldEqual(sourceVertexMap[*j], g.out_degree(j));
+                    shouldEqual(targetVertexMap[*j], g.out_degree(j));
+                }
                 else
+                {
                     shouldEqual(edgeMap.bindInner(*j).template sum<int>(), g.back_degree(j));
+                    shouldEqual(sourceVertexMap[*j], g.back_degree(j));
+                    shouldEqual(targetVertexMap[*j], g.forward_degree(j));
+                }
             }
         }
     }

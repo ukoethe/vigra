@@ -715,6 +715,18 @@ public:
         return (degree_size_type)backIndices_[get_border_type(v)].size();
     }
     
+    degree_size_type forward_degree(vertex_iterator const & v) const 
+    {
+        unsigned int bt = get_border_type(v);
+        return (degree_size_type)(neighborIndices_[bt].size() - backIndices_[bt].size());
+    }
+
+    degree_size_type forward_degree(vertex_descriptor const & v) const 
+    {
+        unsigned int bt = get_border_type(v);
+        return (degree_size_type)(neighborIndices_[bt].size() - backIndices_[bt].size());
+    }
+    
     degree_size_type in_degree(vertex_iterator const & v) const 
     {
         return out_degree(v);
@@ -2005,6 +2017,29 @@ namespace std {
 };
 
 #endif
+
+
+namespace std {
+
+template<unsigned int N, class DirectedTag>
+ostream& operator<<(ostream& out,
+                    typename vigra::GridGraph<N, DirectedTag>::vertex_iterator const & arg)
+{
+    out << "v" << arg.scanOrderIndex();
+    return out;
+}
+
+template<unsigned int N, class DirectedTag>
+ostream& operator<<(ostream& out,
+                    typename vigra::GridGraph<N, DirectedTag>::adjacency_iterator const & arg)
+{
+    out << "nb" << arg.index();
+    return out;
+}
+
+} // namespace std
+
+
 
 #endif /* VIGRA_MULTI_GRIDGRAPH_HXX */
 
