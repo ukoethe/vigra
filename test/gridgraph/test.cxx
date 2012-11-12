@@ -793,40 +793,40 @@ struct GridgraphTestSuiteN
         add(testCase(&NeighborhoodTests<N>::testDirectNeighborhood));
         add(testCase(&NeighborhoodTests<N>::testIndirectNeighborhood));
         
-        add(testCase(&NeighborhoodTests<N>::testNeighborhoodIterator<DirectNeighborhood>));
-        add(testCase(&NeighborhoodTests<N>::testNeighborhoodIterator<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testNeighborhoodIterator<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testNeighborhoodIterator<IndirectNeighborhood>));
         
-        add(testCase(&NeighborhoodTests<N>::testOutEdgeIteratorDirected<DirectNeighborhood>));
-        add(testCase(&NeighborhoodTests<N>::testOutEdgeIteratorDirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testOutEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testOutEdgeIteratorDirected<IndirectNeighborhood>));
         
-        add(testCase(&NeighborhoodTests<N>::testOutEdgeIteratorUndirected<DirectNeighborhood>));
-        add(testCase(&NeighborhoodTests<N>::testOutEdgeIteratorUndirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testOutEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testOutEdgeIteratorUndirected<IndirectNeighborhood>));
         
-        add(testCase(&NeighborhoodTests<N>::testEdgeIteratorDirected<DirectNeighborhood>));
-        add(testCase(&NeighborhoodTests<N>::testEdgeIteratorDirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorDirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorDirected<IndirectNeighborhood>));
         
-        add(testCase(&NeighborhoodTests<N>::testEdgeIteratorUndirected<DirectNeighborhood>));
-        add(testCase(&NeighborhoodTests<N>::testEdgeIteratorUndirected<IndirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorUndirected<DirectNeighborhood>));
+        add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorUndirected<IndirectNeighborhood>));
         
-        add(testCase((&GridGraphTests<N>::testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testCounts<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testCounts<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testCounts<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testVertexIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testVertexIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::testNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::testEdgeIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testEdgeIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testEdgeIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::testEdgeIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
     }
 };
 
