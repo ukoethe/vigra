@@ -105,7 +105,7 @@ class MultiCoordinateIterator
         : base_type(handle_type())
     {}
 
-    MultiCoordinateIterator(shape_type const & shape) 
+    explicit MultiCoordinateIterator(shape_type const & shape) 
         : base_type(handle_type(shape))
     {}
 
@@ -265,7 +265,7 @@ class StridedScanOrderIterator
     {}
 
     template <class S>
-    StridedScanOrderIterator(MultiArrayView<N, T, S> const & view) 
+    explicit StridedScanOrderIterator(MultiArrayView<N, T, S> const & view) 
         : base_type(createCoupledIterator(view))
     {}
 

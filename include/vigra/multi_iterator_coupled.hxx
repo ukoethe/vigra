@@ -558,7 +558,7 @@ class CoupledScanOrderIterator
     typedef typename base_type::const_reference const_reference; // FIXME: do we need both?
     typedef typename base_type::pointer         pointer;
 
-    CoupledScanOrderIterator(value_type const & handles = value_type())
+    explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : base_type(handles)
     {}
 
@@ -756,7 +756,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typedef CoupledScanOrderIterator                 iterator;
     typedef std::random_access_iterator_tag          iterator_category;
 
-    CoupledScanOrderIterator(value_type const & handles = value_type())
+    explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : handles_(handles)
     {}
 
