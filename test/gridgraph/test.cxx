@@ -786,7 +786,7 @@ struct GridgraphTestSuiteN
 : public vigra::test_suite
 {
     GridgraphTestSuiteN()
-    : vigra::test_suite((std::string("Gridgraph Test Dimension ") << N).c_str())
+    : vigra::test_suite((std::string("Gridgraph Test Dimension ") + vigra::asString(N)).c_str())
     {
         add(testCase(&NeighborhoodTests<N>::testVertexIterator));
         
