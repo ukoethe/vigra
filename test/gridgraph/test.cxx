@@ -33,8 +33,6 @@
 /*                                                                      */
 /************************************************************************/
 
-//#define WITH_BOOST_GRAPH
-
 #define VIGRA_CHECK_BOUNDS
 #include "unittest.hxx"
 #include <vigra/multi_shape.hxx>
@@ -859,7 +857,11 @@ struct GridgraphTestSuite
 : public vigra::test_suite
 {
     GridgraphTestSuite()
+#ifdef WITH_BOOST_GRAPH
+    : vigra::test_suite("Gridgraph BGL Test")
+#else
     : vigra::test_suite("Gridgraph Test")
+#endif
     {
         add(VIGRA_TEST_SUITE(GridgraphTestSuiteN<2>));
         add(VIGRA_TEST_SUITE(GridgraphTestSuiteN<3>));

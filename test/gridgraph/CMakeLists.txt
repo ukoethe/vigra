@@ -1,1 +1,7 @@
 VIGRA_ADD_TEST(test_gridgraph test.cxx)
+
+if(WITH_BOOST_GRAPH)
+    VIGRA_ADD_TEST(test_gridgraph_BGL test.cxx LIBRARIES ${Boost_GRAPH_LIBRARY})
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIR})
+    SET_TARGET_PROPERTIES(test_gridgraph_BGL PROPERTIES COMPILE_FLAGS "-DWITH_BOOST_GRAPH")
+endif()

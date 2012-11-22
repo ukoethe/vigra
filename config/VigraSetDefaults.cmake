@@ -37,6 +37,10 @@ SET(WITH_HDF5 ${WITH_HDF5}
     
 OPTION(WITH_OPENEXR "Support for the OpenEXR graphics format" OFF)
 
+OPTION(WITH_BOOST_GRAPH "Use the Boost Graph Library" OFF)
+
+OPTION(WITH_LEMON "Use the LEMON graph library" OFF)
+
 IF(NOT DEFINED WITH_VIGRANUMPY)
     SET(WITH_VIGRANUMPY "ON")
 ENDIF()
