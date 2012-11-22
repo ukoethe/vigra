@@ -43,6 +43,9 @@
 
 namespace vigra {
 
+template<unsigned int N, class DirectedTag>
+class GridGraph;
+
 /** \addtogroup MultiIteratorGroup
 */
 //@{
@@ -109,6 +112,11 @@ class MultiCoordinateIterator
         : base_type(handle_type(shape))
     {}
 
+    template<unsigned int N, class DirectedTag>
+    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g) 
+        : base_type(handle_type(g.shape()))
+    {}
+
     // dereferencing the iterator yields the coordinate object
     // (used as vertex_descriptor)
     reference operator*()
@@ -119,6 +127,11 @@ class MultiCoordinateIterator
     const_reference operator*() const
     {
         return this->template get<0>();
+    }
+    
+    operator value_type() const
+    {
+        return *(*this);
     }
 
     pointer operator->()

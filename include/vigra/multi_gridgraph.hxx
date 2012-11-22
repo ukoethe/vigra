@@ -260,6 +260,16 @@ public:
         updateTarget();
     }
 
+    template<unsigned int N, class DirectedTag>
+    explicit GridGraphNeighborIterator(GridGraph<N, DirectedTag> const & g) 
+    : neighborOffsets_(&neighborOffsets),
+      neighborIndices_(&neighborIndices),
+      target_(source),
+      index_(0)
+    {
+        updateTarget();
+    }
+
     // TODO: implement a "goto-neighbor" operation
     // yielding a vertex_iterator! -> useful for 
     // watershed algo.
@@ -587,6 +597,20 @@ VIGRA_LEMON_INVALID_COMPARISON(GridGraphEdgeIterator)
 
 #undef VIGRA_LEMON_INVALID_COMPARISON
 
+namespace detail {
+
+template <class DirectedTag>
+struct GridGraphLemonTag
+{};
+
+template <>
+struct GridGraphLemonTag<vigragraph::undirected_tag>
+{
+    typedef lemon::True UndirectedTag;
+};
+
+} // namespace detail
+
     // Grid Graph class to adapt vigra MultiArrayViews to a BGL-like interface.
     //       This class only knows about
     //       - dimensions
@@ -595,6 +619,7 @@ VIGRA_LEMON_INVALID_COMPARISON(GridGraphEdgeIterator)
     //       - whether the graph is directed or undirected
 template<unsigned int N, class DirectedTag>
 class GridGraph
+: public detail::GridGraphLemonTag<DirectedTag>
 {
 public:
     typedef GridGraph<N, DirectedTag>               self_type;
@@ -605,6 +630,7 @@ public:
     typedef MultiArrayIndex                         edges_size_type;
     typedef MultiArrayIndex                         degree_size_type;
 
+    // Boost Graph interface
     typedef MultiCoordinateIterator<N>              vertex_iterator;
     typedef GridGraphNeighborIterator<N>            neighbor_vertex_iterator;
     typedef neighbor_vertex_iterator                adjacency_iterator; // must be a MultiPassInputIterator model
@@ -630,6 +656,51 @@ public:
     {};
     
     static const bool is_directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+    
+    // LEMON interface
+    typedef self_type              Graph;
+    typedef vertex_descriptor      Node;
+    typedef vertex_iterator        NodeIt;
+    
+    // present in both directed and undirected graphs
+    // FIXME: different types must be used in an undirected graph
+    typedef edge_descriptor        Arc;
+    typedef edge_iterator          ArcIt;     // all directed edges
+    typedef out_edge_iterator      OutArcIt;  // outgoing edges of some node (returns Arc)
+    typedef void                   InArcIt;   // not implemented
+    
+    // present only in undirected graphs
+    typedef edge_descriptor        Edge;
+    typedef edge_iterator          EdgeIt;     // all undirected edges
+    typedef out_edge_iterator      IncEdgeIt;  // outgoing edges of some node (returns Edge)
+    
+    template <class T>
+    class NodeMap
+    : public MultiArray<N, T>
+    {
+      public:
+        NodeMap(GridGraph const & g)
+        : MultiArray<N, T>(g.shape())
+        {}
+        
+        NodeMap(GridGraph const & g, T const & t)
+        : MultiArray<N, T>(g.shape(), t)
+        {}
+    };
+    
+    template <class T>
+    class ArcMap
+    : public MultiArray<N+1, T>
+    {
+      public:
+        ArcMap(GridGraph const & g)
+        : MultiArray<N+1, T>(g.edge_propmap_shape())
+        {}
+        
+        ArcMap(GridGraph const & g, T const & t)
+        : MultiArray<N+1, T>(g.edge_propmap_shape(), t)
+        {}
+    };
 
         // dummy default constructor to satisfy adjacency_graph concept
     GridGraph()
@@ -637,8 +708,8 @@ public:
 
         //! Constructor for grid graph. 
         //  @param shape                  an array of the graph's dimensions as a TinyVector
-        //  @param directNeighborsOnly    true for direct neighborhood (axis-aligned edges only) 
-        //                                or false for indirect neighborhood (including all diagonal edges)
+        //  @param ntype                  DirectNeighborhood for direct neighborhood (axis-aligned edges only) 
+        //                                or IndirectNeighborhood for indirect neighborhood (including all diagonal edges)
     GridGraph(shape_type const &shape, NeighborhoodType ntype = DirectNeighborhood) 
     : shape_(shape),
       num_vertices_(prod(shape)),
@@ -838,7 +909,17 @@ public:
     {
         return shape_;
     }
-    
+
+    edge_propmap_shape_type edge_propmap_shape() const 
+    {
+        edge_propmap_shape_type res;
+        res.template subarray<0, N>() = shape_;
+        res[N] = is_directed
+                     ? maxDegree()
+                     : halfMaxDegree();
+        return res;
+    }
+
     unsigned int get_border_type(vertex_descriptor const & v) const
     {
         return detail::BorderTypeImpl<N>::exec(v, shape_);
@@ -859,16 +940,6 @@ public:
             return edge_descriptor(v, neighborIndex, false);
         else
             return edge_descriptor(v + neighborOffsets_[neighborIndex], maxDegree() - neighborIndex - 1, true);
-    }
-
-    edge_propmap_shape_type edge_propmap_shape() const 
-    {
-        edge_propmap_shape_type res;
-        res.template subarray<0, N>() = shape_;
-        res[N] = is_directed
-                     ? maxDegree()
-                     : halfMaxDegree();
-        return res;
     }
     
     shape_type const & neighborOffset(index_type neighborIndex) const

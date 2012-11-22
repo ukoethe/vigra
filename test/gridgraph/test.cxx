@@ -602,6 +602,10 @@ struct GridGraphTests
             Shape s = *i + Shape(1);
             G g(s, NType);
             
+#ifdef WITH_LEMON
+            shouldEqual(directed, !lemon::UndirectedTagIndicator<G>::value);
+#endif
+            
             should(G::vertex_descriptor(lemon::INVALID) == lemon::INVALID);
             should(G::edge_descriptor(lemon::INVALID) == lemon::INVALID);
         
@@ -628,7 +632,7 @@ struct GridGraphTests
             // create all possible array shapes from 1**N to 3**N
             Shape s = *i + Shape(1);
             Graph g(s, NType);
-            MultiArray<N, int> vertexMap(s);
+            typename Graph::NodeMap<int> vertexMap(g);
             int count = 0;
         
             typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
@@ -636,6 +640,7 @@ struct GridGraphTests
                                             
             should(j == vertices(g).first);
             should(end == vertices(g).second);
+            should(j == typename Graph::vertex_iterator(g));
             for(; j != end; ++j, ++count)
             {
                 should(j.isValid() && !j.atEnd());
