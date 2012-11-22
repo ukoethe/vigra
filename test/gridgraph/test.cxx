@@ -33,6 +33,8 @@
 /*                                                                      */
 /************************************************************************/
 
+#define WITH_LEMON
+
 #define VIGRA_CHECK_BOUNDS
 #include "unittest.hxx"
 #include <vigra/multi_shape.hxx>
@@ -586,9 +588,11 @@ struct GridGraphTests
     typedef typename MultiArrayShape<N>::type Shape;
     
     template <class DirectedTag, NeighborhoodType NType>
-    void testCounts()
+    void testBasics()
     {
         using namespace vigragraph;
+        typedef GridGraph<N, DirectedTag> G;
+        
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
@@ -596,7 +600,10 @@ struct GridGraphTests
         {
             // create all possible array shapes from 1**N to 3**N
             Shape s = *i + Shape(1);
-            GridGraph<N, DirectedTag> g(s, NType);
+            G g(s, NType);
+            
+            should(G::vertex_descriptor(lemon::INVALID) == lemon::INVALID);
+            should(G::edge_descriptor(lemon::INVALID) == lemon::INVALID);
         
             shouldEqual(g.shape(), s);
             shouldEqual(g.isDirected(), directed);
@@ -632,6 +639,8 @@ struct GridGraphTests
             for(; j != end; ++j, ++count)
             {
                 should(j.isValid() && !j.atEnd());
+                should(j != lemon::INVALID);
+                should(!(j == lemon::INVALID));
                 shouldEqual(g.out_degree(j), g.out_degree(*j));
                 shouldEqual(g.out_degree(j), out_degree(*j, g));
                 shouldEqual(g.forward_degree(j), g.forward_degree(*j));
@@ -641,6 +650,8 @@ struct GridGraphTests
                 put(vertexMap, *j, get(vertexMap, *j) + 1); // same as: vertexMap[*j] += 1;
             }
             should(!j.isValid() && j.atEnd());
+            should(j == lemon::INVALID);
+            should(!(j != lemon::INVALID));
             
             // check that all vertices are found exactly once
             shouldEqual(count, g.num_vertices());
@@ -701,16 +712,26 @@ struct GridGraphTests
                 {
                     should(*n != *j);
                     should(n.isValid() && !n.atEnd());
+                    should(n != lemon::INVALID);
+                    should(!(n == lemon::INVALID));
                     should(e.isValid() && !e.atEnd());
                     should(e != eend);
+                    should(e != lemon::INVALID);
+                    should(!(e == lemon::INVALID));
+                    
                     shouldEqual(source(*e, g), *j);
                     shouldEqual(target(*e, g), *n);
                     vertexMap[*n] += 1;
                     edgeMap[*e] += 1;
                 }
                 should(!n.isValid() && n.atEnd());
+                should(n == lemon::INVALID);
+                should(!(n != lemon::INVALID));
                 should(!e.isValid() && e.atEnd());
                 should(e == eend);
+                should(e == lemon::INVALID);
+                should(!(e != lemon::INVALID));
+                
                 shouldEqual(count, g.out_degree(j));
                 
                 totalCount += count;
@@ -770,11 +791,16 @@ struct GridGraphTests
             for(; e != eend; ++e, ++count)
             {
                 should(e.isValid() && !e.atEnd());
+                should(e != lemon::INVALID);
+                should(!(e == lemon::INVALID));
+
                 put(edgeMap, *e, get(edgeMap, *e) + 1); // same as: edgeMap[*e] += 1;
                 sourceVertexMap[source(*e, g)] += 1;
                 targetVertexMap[target(*e, g)] += 1;
             }
             should(!e.isValid() && e.atEnd());
+            should(e == lemon::INVALID);
+            should(!(e != lemon::INVALID));
             
             // check that all neighbors are found
             shouldEqual(count, g.num_edges());
@@ -831,10 +857,10 @@ struct GridgraphTestSuiteN
         add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorUndirected<DirectNeighborhood>));
         add(testCase(&NeighborhoodTests<N>::template testEdgeIteratorUndirected<IndirectNeighborhood>));
         
-        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testCounts<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::undirected_tag, DirectNeighborhood>)));
         
         add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
         add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));

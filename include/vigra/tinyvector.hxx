@@ -37,6 +37,12 @@
 #ifndef VIGRA_TINYVECTOR_HXX
 #define VIGRA_TINYVECTOR_HXX
 
+namespace lemon {
+
+struct Invalid;
+
+} // namespace lemon
+
 #include <cmath>    // abs(double)
 #include <cstdlib>  // abs(int)
 #include <iosfwd>   // ostream
@@ -897,6 +903,16 @@ class TinyVector
     : BaseType()
     {
         Loop::assignScalar(BaseType::begin(), initial);
+    }
+
+        /** Construction from lemon::Invalid.
+        
+            Initializes all vector elements with -1.
+        */
+    explicit TinyVector(lemon::Invalid)
+    : BaseType()
+    {
+        Loop::assignScalar(BaseType::begin(), -1);
     }
 
         /** Construction with Diff2D.

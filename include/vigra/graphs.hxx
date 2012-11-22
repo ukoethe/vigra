@@ -42,8 +42,11 @@
 #ifndef VIGRA_GRAPH_HXX
 #define VIGRA_GRAPH_HXX
 
+#include "metaprogramming.hxx"
+#include "tinyvector.hxx"
 
 #ifdef WITH_BOOST_GRAPH
+
 #include <boost/tuple/tuple.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/properties.hpp>
@@ -57,7 +60,7 @@
 #define vigragraph boost
 
 
-#else // WITH_BOOST_GRAPH
+#else // not WITH_BOOST_GRAPH
 
 // emulate the BGL-style interface in our namespace
 namespace vigragraph {
@@ -208,5 +211,58 @@ adjacent_vertices_at_iterator(typename graph_traits<GRAPH>::vertex_iterator cons
 
 } // namespace vigragraph
 #endif
+
+#ifdef WITH_LEMON
+
+#include <lemon/core.h>
+
+#else // not WITH_LEMON
+
+// emulate the lemon interface
+namespace lemon {
+
+struct Invalid {
+  public:
+    bool operator==(Invalid) const { return true;  }
+    bool operator!=(Invalid) const { return false; }
+    bool operator< (Invalid) const { return false; }
+};
+
+static const Invalid INVALID = Invalid();
+
+typedef vigra::VigraTrueType   True;
+typedef vigra::VigraFalseType  False;
+
+} // namespace lemon
+
+#endif // WITH_LEMON
+
+namespace lemon {
+
+template <class T>
+inline bool operator==(T const & t, Invalid)
+{
+    return t == T(Invalid());
+}
+
+template <class T>
+inline bool operator==(Invalid, T const & t)
+{
+    return t == T(Invalid());
+}
+
+template <class T>
+inline bool operator!=(T const & t, Invalid)
+{
+    return t != T(Invalid());
+}
+
+template <class T>
+inline bool operator!=(Invalid, T const & t)
+{
+    return t != T(Invalid());
+}
+
+} // namespace lemon
 
 #endif // VIGRA_GRAPH_HXX

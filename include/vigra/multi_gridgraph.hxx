@@ -71,6 +71,11 @@ class GridGraphEdgeDescriptor
     : is_reversed_(false)
     {}
 
+    GridGraphEdgeDescriptor(lemon::Invalid)
+    : base_type(-1),
+      is_reversed_(false)
+    {}
+
     GridGraphEdgeDescriptor(shape_type const &vertex,
                             index_type edge_index,
                             bool reversed=false)
@@ -553,6 +558,35 @@ public:
     out_edge_iterator outEdgeIterator_;
 };
 
+#define VIGRA_LEMON_INVALID_COMPARISON(type) \
+template<unsigned int N> \
+inline bool operator==(type<N> const & i, lemon::Invalid) \
+{ \
+    return i.atEnd(); \
+} \
+template<unsigned int N> \
+inline bool operator!=(type<N> const & i, lemon::Invalid) \
+{ \
+    return i.isValid(); \
+} \
+template<unsigned int N> \
+inline bool operator==(lemon::Invalid, type<N> const & i) \
+{ \
+    return i.atEnd(); \
+} \
+template<unsigned int N> \
+inline bool operator!=(lemon::Invalid, type<N> const & i) \
+{ \
+    return i.isValid(); \
+}
+
+VIGRA_LEMON_INVALID_COMPARISON(MultiCoordinateIterator)
+VIGRA_LEMON_INVALID_COMPARISON(GridGraphNeighborIterator)
+VIGRA_LEMON_INVALID_COMPARISON(GridGraphOutEdgeIterator)
+VIGRA_LEMON_INVALID_COMPARISON(GridGraphEdgeIterator)
+
+#undef VIGRA_LEMON_INVALID_COMPARISON
+
     // Grid Graph class to adapt vigra MultiArrayViews to a BGL-like interface.
     //       This class only knows about
     //       - dimensions
@@ -1015,7 +1049,7 @@ edge(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & u,
 
 // provide get / put for MultiArrayViews, indexed by the 
 // above-defined vertex_descriptor and edge_descriptor (in our case, a coordinate tuple):
-
+// FIXME: place this into multi_array.hxx ?
 template<unsigned int N, class T, class Stride, class U>
 inline
 void put(vigra::MultiArrayView<N, T, Stride> & pmap,
