@@ -549,7 +549,7 @@ class RandomNumberGenerator
         */
     static RandomNumberGenerator & global()
     {
-        static RandomNumberGenerator generator;
+        static RandomNumberGenerator generator(RandomSeed);
         return generator;
     }
 
@@ -644,7 +644,7 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor \endverbatim
     are true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
@@ -751,7 +751,7 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class UniformRandomFunctor
 {
     double offset_, scale_;
@@ -823,7 +823,7 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class NormalRandomFunctor
 {
     double mean_, stddev_;
