@@ -698,12 +698,13 @@ struct GridGraphTests
             MultiArray<N, int> vertexMap(s);
             typename Graph::EdgeMap<int> edgeMap(g);
             
-            //std::map<int, int> edgeIdMap, arcIdMap;
-
             typename Graph::ArcMap<int> arcIdMap(g);            
             typename MultiArrayShape<N+1>::type p(N);
             linearSequence(p.begin()+1, p.end());
             linearSequence(arcIdMap.transpose(p).begin(), arcIdMap.transpose(p).end());
+            
+            typename Graph::EdgeMap<int> edgeIdMap(g);            
+            linearSequence(edgeIdMap.transpose(p).begin(), edgeIdMap.transpose(p).end());
             
             shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
             shouldEqual(edgeMap.shape(N), directed ? g.maxDegree() : g.halfMaxDegree());
@@ -757,6 +758,7 @@ struct GridGraphTests
                     shouldEqual(g.oppositeArc(a), oa);
                     
                     shouldEqual(arcIdMap[*le], g.id(le));
+                    shouldEqual(edgeIdMap[*le], g.id((typename Graph::Edge &)*le));
                 }
                 should(!n.isValid() && n.atEnd());
                 should(n == lemon::INVALID);

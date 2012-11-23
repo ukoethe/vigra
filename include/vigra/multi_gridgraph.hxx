@@ -814,7 +814,6 @@ struct GridGraphBase;
 template <unsigned int N>
 struct GridGraphBase<N, vigragraph::directed_tag>
 {
-    struct Edge;
     struct IncEdgeIt;
     struct EdgeIt;
     
@@ -838,7 +837,6 @@ struct GridGraphBase<N, vigragraph::undirected_tag>
 {
     typedef lemon::True UndirectedTag;
     
-    typedef typename MultiArrayShape<N+1>::type   Edge;
     typedef GridGraphOutEdgeIterator<N>           IncEdgeIt;
     typedef GridGraphEdgeIterator<N>              EdgeIt;
     
@@ -949,9 +947,9 @@ public:
     typedef GridGraphArcIterator<N>     ArcIt;
     typedef void                        InArcIt;   // not implemented
     
-    typedef typename base_type::Edge Edge;
-    typedef typename base_type::EdgeIt EdgeIt;
-    typedef typename base_type::IncEdgeIt IncEdgeIt;
+    typedef typename MultiArrayShape<N+1>::type  Edge;
+    typedef typename base_type::EdgeIt           EdgeIt;
+    typedef typename base_type::IncEdgeIt        IncEdgeIt;
     
     typedef lemon::True NodeNumTag;
     typedef lemon::True EdgeNumTag;
