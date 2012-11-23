@@ -109,10 +109,10 @@ defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
 template <int K>
 struct CoordinateToScanOrder
 {
-    template <int N>
+    template <int N, class D1, class D2, class D3, class D4>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> &shape,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
+    exec(const TinyVectorBase <MultiArrayIndex, N, D1, D2> &shape,
+         const TinyVectorBase <MultiArrayIndex, N, D3, D4> & coordinate)
     {
         return coordinate[N-K] + shape[N-K] * CoordinateToScanOrder<K-1>::exec(shape, coordinate);
     }
@@ -121,10 +121,10 @@ struct CoordinateToScanOrder
 template <>
 struct CoordinateToScanOrder<1>
 {
-    template <int N>
+    template <int N, class D1, class D2, class D3, class D4>
     static MultiArrayIndex
-    exec(const TinyVector <MultiArrayIndex, N> & /*shape*/,
-         const TinyVector <MultiArrayIndex, N> & coordinate)
+    exec(const TinyVectorBase <MultiArrayIndex, N, D1, D2> & /*shape*/,
+         const TinyVectorBase <MultiArrayIndex, N, D3, D4> & coordinate)
     {
         return coordinate[N-1];
     }
