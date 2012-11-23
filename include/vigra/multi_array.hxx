@@ -1424,13 +1424,19 @@ public:
             typedef MultiArray<2, double>::difference_type Shape;
             MultiArray<2, double> array(10, 20);
 
-            MultiArray<2, double, StridedArrayTag> transposed = array.permuteDimensions(Shape(1,0));
+            MultiArray<2, double, StridedArrayTag> transposed = array.transpose(Shape(1,0));
 
             for(int i=0; i<array.shape(0), ++i)
                 for(int j=0; j<array.shape(1); ++j)
                     assert(array(i, j) == transposed(j, i));
             \endcode
         */
+    MultiArrayView <N, T, StridedArrayTag>
+    transpose (const difference_type &s) const
+    {
+        return permuteDimensions(s);
+    }
+    
     MultiArrayView <N, T, StridedArrayTag>
     permuteDimensions (const difference_type &s) const;
 
