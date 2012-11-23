@@ -53,7 +53,7 @@ struct NeighborhoodTests
     ArrayVector<Shape> neighborOffsets;
     ArrayVector<ArrayVector<bool> > neighborExists;
     ArrayVector<ArrayVector<Shape> > relativeOffsets, backOffsets, forwardOffsets;
-    ArrayVector<ArrayVector<GridGraphEdgeDescriptor<N> > > edgeDescrOffsets, backEdgeDescrOffsets, forwardEdgeDescrOffsets;
+    ArrayVector<ArrayVector<GridGraphArcDescriptor<N> > > edgeDescrOffsets, backEdgeDescrOffsets, forwardEdgeDescrOffsets;
     ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices, backIndices, forwardIndices;
 
     NeighborhoodTests()
@@ -323,7 +323,7 @@ struct NeighborhoodTests
                 int borderType = vi.borderType();
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size(); ++k)
@@ -343,7 +343,7 @@ struct NeighborhoodTests
                 }
                         
                 {
-                    GridGraphOutEdgeIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size()/2; ++k)
@@ -363,7 +363,7 @@ struct NeighborhoodTests
                 }
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
@@ -410,7 +410,7 @@ struct NeighborhoodTests
                 int borderType = vi.borderType();
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(edgeDescrOffsets[borderType], neighborIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size(); ++k)
@@ -439,7 +439,7 @@ struct NeighborhoodTests
                 }
                         
                 {
-                    GridGraphOutEdgeIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(backEdgeDescrOffsets[borderType], backIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=0; k<neighborExists[borderType].size()/2; ++k)
@@ -459,7 +459,7 @@ struct NeighborhoodTests
                 }
                 
                 {
-                    GridGraphOutEdgeIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
+                    GridGraphOutArcIterator<N> ni(forwardEdgeDescrOffsets[borderType], forwardIndices[borderType], vi.point()),
                                                 nend = ni.getEndIterator();
                     
                     for(int k=neighborExists[borderType].size()/2; k<neighborExists[borderType].size(); ++k)
@@ -500,7 +500,7 @@ struct NeighborhoodTests
             es.template subarray<0,N>() = s;
             MultiArray<N+1, int> edge_map(es);
             
-            GridGraphEdgeIterator<N> ni(edgeDescrOffsets, neighborIndices, s),
+            GridGraphArcIterator<N> ni(edgeDescrOffsets, neighborIndices, s),
                                      nend = ni.getEndIterator();
             
             for(; ni != nend; ++ni)
@@ -550,7 +550,7 @@ struct NeighborhoodTests
             es.template subarray<0,N>() = s;
             MultiArray<N+1, int> edge_map(es);
             
-            GridGraphEdgeIterator<N> ni(backEdgeDescrOffsets, backIndices, s),
+            GridGraphArcIterator<N> ni(backEdgeDescrOffsets, backIndices, s),
                                      nend = ni.getEndIterator();
             
             for(; ni != nend; ++ni)

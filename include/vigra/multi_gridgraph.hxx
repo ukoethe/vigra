@@ -37,6 +37,7 @@
 #define VIGRA_MULTI_GRIDGRAPH_HXX
 
 #include "multi_iterator.hxx"
+#include "multi_array.hxx"
 #include "graphs.hxx"
 
 namespace vigra {
@@ -56,7 +57,7 @@ and to reconstruct the corresponding source/target nodes.
 FIXME: store edge index in (*this)[0] ??
 */
 template<unsigned int N>
-class GridGraphEdgeDescriptor
+class GridGraphArcDescriptor
     : public MultiArrayShape<N+1>::type
 {
   public:
@@ -67,16 +68,16 @@ class GridGraphEdgeDescriptor
     typedef typename MultiArrayShape<N>::type    shape_type;
     typedef TinyVectorView<value_type, N>        vertex_descriptor_view;
 
-    GridGraphEdgeDescriptor()
+    GridGraphArcDescriptor()
     : is_reversed_(false)
     {}
 
-    GridGraphEdgeDescriptor(lemon::Invalid)
+    GridGraphArcDescriptor(lemon::Invalid)
     : base_type(-1),
       is_reversed_(false)
     {}
 
-    GridGraphEdgeDescriptor(shape_type const &vertex,
+    GridGraphArcDescriptor(shape_type const &vertex,
                             index_type edge_index,
                             bool reversed=false)
     : base_type(detail::DontInit())
@@ -91,7 +92,7 @@ class GridGraphEdgeDescriptor
         is_reversed_ = reversed;
     }
         
-    void increment(GridGraphEdgeDescriptor const & diff) 
+    void increment(GridGraphArcDescriptor const & diff) 
     {
         if(diff.is_reversed_)
         {
@@ -169,11 +170,11 @@ void
 computeNeighborOffsets(ArrayVector<Shape> const & neighborOffsets, 
                        ArrayVector<ArrayVector<bool> > const & neighborExists,
                        ArrayVector<ArrayVector<Shape> > & incrementOffsets,
-                       ArrayVector<ArrayVector<GridGraphEdgeDescriptor<Shape::static_size> > > & edgeDescriptorOffsets,
+                       ArrayVector<ArrayVector<GridGraphArcDescriptor<Shape::static_size> > > & edgeDescriptorOffsets,
                        ArrayVector<ArrayVector<MultiArrayIndex> > & indices,
                        bool directed, bool includeBackEdges, bool includeForwardEdges)
 {
-    typedef GridGraphEdgeDescriptor<Shape::static_size> EdgeDescriptor;
+    typedef GridGraphArcDescriptor<Shape::static_size> EdgeDescriptor;
     
     unsigned int borderTypeCount = neighborExists.size();
     incrementOffsets.resize(borderTypeCount);
@@ -252,16 +253,6 @@ public:
     GridGraphNeighborIterator(ArrayVector<shape_type> const & neighborOffsets,
                               ArrayVector<index_type> const & neighborIndices,
                               vertex_descriptor source)
-    : neighborOffsets_(&neighborOffsets),
-      neighborIndices_(&neighborIndices),
-      target_(source),
-      index_(0)
-    {
-        updateTarget();
-    }
-
-    template<unsigned int N, class DirectedTag>
-    explicit GridGraphNeighborIterator(GridGraph<N, DirectedTag> const & g) 
     : neighborOffsets_(&neighborOffsets),
       neighborIndices_(&neighborIndices),
       target_(source),
@@ -358,14 +349,15 @@ template<unsigned int N>
 class GridGraphOutEdgeIterator
 {
   public:
-    typedef typename MultiArrayShape<N>::type  shape_type;
-    typedef MultiArrayIndex                    index_type;
-    typedef GridGraphEdgeDescriptor<N>         value_type;
-    typedef value_type const &                 reference;
-    typedef value_type const &                 const_reference;
-    typedef value_type const *                 pointer;
-    typedef value_type const *                 const_pointer;
-    typedef std::forward_iterator_tag          iterator_category;
+    typedef typename MultiArrayShape<N>::type    shape_type;
+    typedef MultiArrayIndex                      index_type;
+    typedef GridGraphArcDescriptor<N>            arc_descriptor;
+    typedef typename MultiArrayShape<N+1>::type  value_type;
+    typedef value_type const &                   reference;
+    typedef value_type const &                   const_reference;
+    typedef value_type const *                   pointer;
+    typedef value_type const *                   const_pointer;
+    typedef std::forward_iterator_tag            iterator_category;
 
     GridGraphOutEdgeIterator() 
     : neighborOffsets_(0),
@@ -373,7 +365,7 @@ class GridGraphOutEdgeIterator
       index_(0)
     {}
 
-    GridGraphOutEdgeIterator(ArrayVector<value_type> const & neighborOffsets,
+    GridGraphOutEdgeIterator(ArrayVector<arc_descriptor> const & neighborOffsets,
                              ArrayVector<index_type> const & neighborIndices,
                              shape_type const & source)
     : neighborOffsets_(&neighborOffsets),
@@ -381,6 +373,32 @@ class GridGraphOutEdgeIterator
       edge_descriptor_(source, 0),
       index_(0)
     {
+        updateEdgeDescriptor();
+    }
+
+    template <class DirectedTag>
+    GridGraphOutEdgeIterator(GridGraph<N, DirectedTag> const & g, typename GridGraph<N, DirectedTag>::NodeIt const & v)
+    : neighborOffsets_(0),
+      neighborIndices_(0),
+      edge_descriptor_(v, 0),
+      index_(0)
+    {
+        unsigned int nbtype = g.get_border_type(v);
+        neighborOffsets_ = &g.edgeDescriptorOffsets_[nbtype];
+        neighborIndices_ = &g.neighborIndices_[nbtype];
+        updateEdgeDescriptor();
+    }
+
+    template <class DirectedTag>
+    GridGraphOutEdgeIterator(GridGraph<N, DirectedTag> const & g, typename GridGraph<N, DirectedTag>::Node const & v)
+    : neighborOffsets_(0),
+      neighborIndices_(0),
+      edge_descriptor_(v, 0),
+      index_(0)
+    {
+        unsigned int nbtype = g.get_border_type(v);
+        neighborOffsets_ = &g.edgeDescriptorOffsets_[nbtype];
+        neighborIndices_ = &g.neighborIndices_[nbtype];
         updateEdgeDescriptor();
     }
 
@@ -399,6 +417,11 @@ class GridGraphOutEdgeIterator
     }
 
     const_reference operator*() const
+    {
+        return edge_descriptor_;
+    }
+
+    operator value_type() const
     {
         return edge_descriptor_;
     }
@@ -452,10 +475,83 @@ class GridGraphOutEdgeIterator
             edge_descriptor_.increment((*neighborOffsets_)[index_]);
     }
   
-    ArrayVector<value_type> const * neighborOffsets_;
+    ArrayVector<arc_descriptor> const * neighborOffsets_;
     ArrayVector<index_type> const * neighborIndices_;
-    value_type edge_descriptor_;
+    arc_descriptor edge_descriptor_;
     index_type index_;
+};
+
+template<unsigned int N>
+class GridGraphOutArcIterator
+: public GridGraphOutEdgeIterator<N>
+{
+  public:
+    typedef GridGraphOutEdgeIterator<N>        base_type;
+    typedef typename MultiArrayShape<N>::type  shape_type;
+    typedef MultiArrayIndex                    index_type;
+    typedef GridGraphArcDescriptor<N>          value_type;
+    typedef value_type const &                 reference;
+    typedef value_type const &                 const_reference;
+    typedef value_type const *                 pointer;
+    typedef value_type const *                 const_pointer;
+    typedef std::forward_iterator_tag          iterator_category;
+
+    GridGraphOutArcIterator() 
+    : base_type()
+    {}
+
+    explicit GridGraphOutArcIterator(base_type const & b) 
+    : base_type(b)
+    {}
+
+    template <class DirectedTag>
+    GridGraphOutArcIterator(GridGraph<N, DirectedTag> const & g, typename GridGraph<N, DirectedTag>::NodeIt const & v)
+    : base_type(g, v)
+    {}
+
+    template <class DirectedTag>
+    GridGraphOutArcIterator(GridGraph<N, DirectedTag> const & g, typename GridGraph<N, DirectedTag>::Node const & v)
+    : base_type(g, v)
+    {}
+
+    GridGraphOutArcIterator(ArrayVector<value_type> const & neighborOffsets,
+                            ArrayVector<index_type> const & neighborIndices,
+                            shape_type const & source)
+    : base_type(neighborOffsets, neighborIndices, source)
+    {}
+
+    GridGraphOutArcIterator & operator++()
+    {
+        base_type::operator++();
+        return *this;
+    }
+
+    GridGraphOutArcIterator  operator++(int)
+    {
+        GridGraphOutArcIterator ret(*this);
+        ++*this;
+        return ret;
+    }
+
+    const_reference operator*() const
+    {
+        return this->edge_descriptor_;
+    }
+
+    operator value_type() const
+    {
+        return this->edge_descriptor_;
+    }
+
+    const_pointer operator->() const
+    {
+        return &this->edge_descriptor_;
+    }
+
+    GridGraphOutArcIterator getEndIterator() const
+    {
+        return GridGraphOutArcIterator(base_type::getEndIterator());
+    }
 };
 
     // Edge iterator for directed and undirected graphs. 
@@ -467,8 +563,8 @@ public:
     typedef GridGraphEdgeIterator<N>                     self_type;
     typedef MultiCoordinateIterator<N>                   vertex_iterator;
     typedef typename vertex_iterator::value_type         vertex_descriptor;
-    typedef GridGraphOutEdgeIterator<N>                  out_edge_iterator;
-    typedef typename out_edge_iterator::value_type       edge_descriptor;
+    typedef GridGraphOutArcIterator<N>                   out_edge_iterator;
+    typedef typename MultiArrayShape<N+1>::type          edge_descriptor;
     typedef edge_descriptor                              value_type;
     typedef value_type const *                           pointer;
     typedef value_type const *                           const_pointer;
@@ -484,7 +580,7 @@ public:
       neighborIndices_(0)
     {}
 
-    GridGraphEdgeIterator(ArrayVector<ArrayVector<value_type> > const & neighborOffsets,
+    GridGraphEdgeIterator(ArrayVector<ArrayVector<typename out_edge_iterator::value_type> > const & neighborOffsets,
                           ArrayVector<ArrayVector<index_type> > const & neighborIndices,
                           shape_type const & shape)
     : neighborOffsets_(&neighborOffsets),
@@ -499,6 +595,25 @@ public:
             {
                 unsigned int borderType = vertexIterator_.borderType();
                 outEdgeIterator_ = out_edge_iterator(neighborOffsets[borderType], neighborIndices[borderType], *vertexIterator_);
+            }
+        }
+    }
+
+    template <class DirectedTag>
+    GridGraphEdgeIterator(GridGraph<N, DirectedTag> const & g)
+    : neighborOffsets_(GridGraph<N, DirectedTag>::is_directed ? &g.edgeDescriptorOffsets_ : &g.backEdgeDescriptorOffsets_),
+      neighborIndices_(GridGraph<N, DirectedTag>::is_directed ? &g.neighborIndices_ : &g.backIndices_),
+      vertexIterator_(g.shape()),
+      outEdgeIterator_((*neighborOffsets_)[vertexIterator_.borderType()], 
+                       (*neighborIndices_)[vertexIterator_.borderType()], shape_type())
+    {
+        if(outEdgeIterator_.atEnd()) // in a undirected graph, the first point stores no edges
+        {
+            ++vertexIterator_;
+            if(vertexIterator_.isValid())
+            {
+                unsigned int borderType = vertexIterator_.borderType();
+                outEdgeIterator_ = out_edge_iterator((*neighborOffsets_)[borderType], (*neighborIndices_)[borderType], *vertexIterator_);
             }
         }
     }
@@ -528,6 +643,16 @@ public:
     const_reference operator*() const
     {
         return *outEdgeIterator_;
+    }
+
+    operator value_type() const
+    {
+        return *outEdgeIterator_;
+    }
+
+    const_pointer operator->() const
+    {
+        return outEdgeIterator_.operator->();
     }
 
     bool operator==(GridGraphEdgeIterator const & other) const
@@ -562,10 +687,84 @@ public:
     }
 
    protected:
-    ArrayVector<ArrayVector<value_type> > const * neighborOffsets_;
+    ArrayVector<ArrayVector<typename out_edge_iterator::value_type> > const * neighborOffsets_;
     ArrayVector<ArrayVector<index_type> > const * neighborIndices_;
     vertex_iterator vertexIterator_;
     out_edge_iterator outEdgeIterator_;
+};
+
+template<unsigned int N>
+class GridGraphArcIterator
+: public GridGraphEdgeIterator<N>
+{
+public:
+    typedef GridGraphEdgeIterator<N>                     base_type;
+    typedef GridGraphArcIterator<N>                      self_type;
+    typedef MultiCoordinateIterator<N>                   vertex_iterator;
+    typedef typename vertex_iterator::value_type         vertex_descriptor;
+    typedef GridGraphOutArcIterator<N>                   out_edge_iterator;
+    typedef typename out_edge_iterator::value_type       edge_descriptor;
+    typedef edge_descriptor                              value_type;
+    typedef value_type const *                           pointer;
+    typedef value_type const *                           const_pointer;
+    typedef value_type const &                           reference;
+    typedef value_type const &                           const_reference;
+    typedef typename MultiArrayShape<N>::type            shape_type;
+    typedef MultiArrayIndex                              difference_type;
+    typedef MultiArrayIndex                              index_type;
+    typedef std::forward_iterator_tag                    iterator_category;
+
+    GridGraphArcIterator() 
+    : base_type()
+    {}
+
+    explicit GridGraphArcIterator(base_type const & b) 
+    : base_type(b)
+    {}
+
+    GridGraphArcIterator(ArrayVector<ArrayVector<value_type> > const & neighborOffsets,
+                          ArrayVector<ArrayVector<index_type> > const & neighborIndices,
+                          shape_type const & shape)
+    : base_type(neighborOffsets, neighborIndices, shape)
+    {}
+
+    template <class DirectedTag>
+    GridGraphArcIterator(GridGraph<N, DirectedTag> const & g)
+    : base_type(g.edgeDescriptorOffsets_, g.neighborIndices_, g.shape())
+    {}
+
+    GridGraphArcIterator & operator++()
+    {
+        base_type::operator++();
+        return *this;
+    }
+
+    GridGraphArcIterator  operator++(int)
+    {
+        GridGraphArcIterator ret(*this);
+        ++*this;
+        return ret;
+    }
+
+    const_reference operator*() const
+    {
+        return *(this->outEdgeIterator_);
+    }
+
+    operator value_type() const
+    {
+        return *(this->outEdgeIterator_);
+    }
+
+    const_pointer operator->() const
+    {
+        return this->outEdgeIterator_.operator->();
+    }
+    
+    GridGraphArcIterator getEndIterator() const
+    {
+        return GridGraphArcIterator(base_type::getEndIterator());
+    }
 };
 
 #define VIGRA_LEMON_INVALID_COMPARISON(type) \
@@ -593,20 +792,36 @@ inline bool operator!=(lemon::Invalid, type<N> const & i) \
 VIGRA_LEMON_INVALID_COMPARISON(MultiCoordinateIterator)
 VIGRA_LEMON_INVALID_COMPARISON(GridGraphNeighborIterator)
 VIGRA_LEMON_INVALID_COMPARISON(GridGraphOutEdgeIterator)
+VIGRA_LEMON_INVALID_COMPARISON(GridGraphOutArcIterator)
 VIGRA_LEMON_INVALID_COMPARISON(GridGraphEdgeIterator)
+VIGRA_LEMON_INVALID_COMPARISON(GridGraphArcIterator)
 
 #undef VIGRA_LEMON_INVALID_COMPARISON
 
+using vigragraph::directed_tag;
+using vigragraph::undirected_tag;
+
 namespace detail {
 
-template <class DirectedTag>
-struct GridGraphLemonTag
-{};
+template <unsigned int N, class DirectedTag>
+struct GridGraphBase;
 
-template <>
-struct GridGraphLemonTag<vigragraph::undirected_tag>
+template <unsigned int N>
+struct GridGraphBase<N, vigragraph::directed_tag>
+{
+    struct Edge;
+    struct IncEdgeIt;
+    struct EdgeIt;
+};
+
+template <unsigned int N>
+struct GridGraphBase<N, vigragraph::undirected_tag>
 {
     typedef lemon::True UndirectedTag;
+    
+    typedef typename MultiArrayShape<N+1>::type   Edge;
+    typedef GridGraphOutEdgeIterator<N>           IncEdgeIt;
+    typedef GridGraphEdgeIterator<N>              EdgeIt;
 };
 
 } // namespace detail
@@ -619,9 +834,10 @@ struct GridGraphLemonTag<vigragraph::undirected_tag>
     //       - whether the graph is directed or undirected
 template<unsigned int N, class DirectedTag>
 class GridGraph
-: public detail::GridGraphLemonTag<DirectedTag>
+: public detail::GridGraphBase<N, DirectedTag>
 {
 public:
+    typedef detail::GridGraphBase<N, DirectedTag>   base_type;
     typedef GridGraph<N, DirectedTag>               self_type;
     typedef typename MultiArrayShape<N>::type       shape_type;
     typedef typename MultiArrayShape<N+1>::type     edge_propmap_shape_type;
@@ -635,11 +851,11 @@ public:
     typedef GridGraphNeighborIterator<N>            neighbor_vertex_iterator;
     typedef neighbor_vertex_iterator                adjacency_iterator; // must be a MultiPassInputIterator model
     typedef void                                    in_edge_iterator; // for bidirectional_graph concept, not implemented here
-    typedef GridGraphOutEdgeIterator<N>             out_edge_iterator;
-    typedef GridGraphEdgeIterator<N>                edge_iterator;
+    typedef GridGraphOutArcIterator<N>              out_edge_iterator;
+    typedef GridGraphArcIterator<N>                 edge_iterator;
 
     typedef shape_type                              vertex_descriptor;
-    typedef GridGraphEdgeDescriptor<N>              edge_descriptor;
+    typedef GridGraphArcDescriptor<N>               edge_descriptor;
  
     typedef DirectedTag                             directed_category;
     typedef vigragraph::disallow_parallel_edge_tag  edge_parallel_category;
@@ -663,17 +879,15 @@ public:
     typedef vertex_iterator        NodeIt;
     
     // present in both directed and undirected graphs
-    // FIXME: different types must be used in an undirected graph
-    typedef edge_descriptor        Arc;
-    typedef edge_iterator          ArcIt;     // all directed edges
-    typedef out_edge_iterator      OutArcIt;  // outgoing edges of some node (returns Arc)
-    typedef void                   InArcIt;   // not implemented
+    typedef GridGraphArcDescriptor<N>   Arc;
+    typedef GridGraphOutArcIterator<N>  OutArcIt;
+    typedef GridGraphArcIterator<N>     ArcIt;
+    typedef void                        InArcIt;   // not implemented
     
-    // present only in undirected graphs
-    typedef edge_descriptor        Edge;
-    typedef edge_iterator          EdgeIt;     // all undirected edges
-    typedef out_edge_iterator      IncEdgeIt;  // outgoing edges of some node (returns Edge)
-    
+    typedef typename base_type::Edge Edge;
+    typedef typename base_type::EdgeIt EdgeIt;
+    typedef typename base_type::IncEdgeIt IncEdgeIt;
+        
     template <class T>
     class NodeMap
     : public MultiArray<N, T>
@@ -730,6 +944,21 @@ public:
         // detail::makeArraySubNeighborhood(neighborhood[0], neighborExists, shape_type(1), neighborhoodIndices);
     }
     
+    index_type id(Node const & v) const
+    {
+        return detail::CoordinateToScanOrder<N>::exec(shape(), v);
+    }
+    
+    index_type id(NodeIt const & v) const
+    {
+        return v.scanOrderIndex();
+    }
+    
+    Node const & pos(Node const & v) const
+    {
+        return v;
+    }
+    
     vertex_iterator get_vertex_iterator() const 
     {
         return vertex_iterator(shape_);
@@ -778,6 +1007,43 @@ public:
     // --------------------------------------------------
     // support for IncidenceGraph:
 
+    index_type id(Edge const & e) const
+    {
+        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), e);
+    }
+    
+    index_type id(EdgeIt const & e) const
+    {
+        return id(*e);
+    }
+    
+    index_type id(IncEdgeIt const & e) const
+    {
+        return id(*e);
+    }
+
+    index_type id(Arc const & a) const
+    {
+        if(is_directed)
+        {
+            return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
+        }
+        else
+        {
+            return (detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a) << 1) + (a.isReversed() ? 1 : 0);
+        }
+    }
+    
+    index_type id(ArcIt const & a) const
+    {
+        return id(*a);
+    }
+    
+    index_type id(OutArcIt const & a) const
+    {
+        return id(*a);
+    }
+    
     out_edge_iterator get_out_edge_iterator(vertex_descriptor const & v) const 
     {
         unsigned int nbtype = get_border_type(v);
@@ -947,6 +1213,21 @@ public:
         return neighborOffsets_[neighborIndex];
     }
 
+    vertex_descriptor 
+    source_or_target(edge_descriptor const & e, bool return_source) const
+    {
+        // source is always the attached node (first coords) unless the
+        // edge has been reversed. 
+        if ((return_source && e.isReversed()) ||
+            (!return_source && !e.isReversed())) 
+        {
+            return e.vertexDescriptor() + neighborOffset(e.edgeIndex());
+        } 
+        else 
+        {
+            return e.vertexDescriptor();
+        }
+    }
     
     // //! In case of an undirected graph, the edge u->v is the same as v->u.
     // //  This function folds in the edge descriptors corresponding to "causal neighbors",
@@ -971,7 +1252,7 @@ public:
 
 
 
-  protected:
+//  protected:
     ArrayVector<shape_type> neighborOffsets_;
     ArrayVector<ArrayVector<MultiArrayIndex> > neighborIndices_, backIndices_;
     ArrayVector<ArrayVector<shape_type> > incrementalOffsets_, backOffsets_;
@@ -1051,31 +1332,10 @@ out_edges(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v
 template<unsigned int N, class DirectedTag>
 inline
 typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor 
-source_or_target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
-                 vigra::GridGraph<N, DirectedTag> const & g,
-                 bool return_source)
-{
-    // source is always the attached node (first coords) unless the
-    // edge has been reversed. 
-    if ((return_source && e.isReversed()) ||
-        (!return_source && !e.isReversed())) 
-    {
-        return e.vertexDescriptor() + g.neighborOffset(e.edgeIndex());
-    } 
-    else 
-    {
-        return e.vertexDescriptor();
-    }
-}
-
-
-template<unsigned int N, class DirectedTag>
-inline
-typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor 
 source(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
        vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    return source_or_target(e, g, true);
+    return g.source_or_target(e, true);
 }
 
 template<unsigned int N, class DirectedTag>
@@ -1084,7 +1344,7 @@ typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor
 target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
        vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    return source_or_target(e, g, false);
+    return g.source_or_target(e, false);
 }
 
 template<unsigned int N, class DirectedTag>
@@ -1484,7 +1744,7 @@ public:
 
     typedef shape_type  vertex_descriptor;
     //typedef typename MultiArrayShape<N+1>::type edge_descriptor;
-    typedef detail::GridGraphEdgeDescriptor<N> edge_descriptor;
+    typedef detail::GridGraphArcDescriptor<N> edge_descriptor;
 
     typedef void in_edge_iterator; // for bidirectional_graph concept, not implemented here
 
