@@ -77,9 +77,14 @@ class GridGraphArcDescriptor
       is_reversed_(false)
     {}
 
+    GridGraphArcDescriptor(base_type const & b, bool reversed)
+    : base_type(b),
+      is_reversed_(reversed)
+    {}
+
     GridGraphArcDescriptor(shape_type const &vertex,
-                            index_type edge_index,
-                            bool reversed=false)
+                           index_type edge_index,
+                           bool reversed=false)
     : base_type(detail::DontInit())
     {
         set(vertex, edge_index, reversed);
@@ -812,6 +817,20 @@ struct GridGraphBase<N, vigragraph::directed_tag>
     struct Edge;
     struct IncEdgeIt;
     struct EdgeIt;
+    
+    template <class T>
+    class ArcMap
+    : public MultiArray<N+1, T>
+    {
+      public:
+        ArcMap(GridGraph<N, vigragraph::directed_tag> const & g)
+        : MultiArray<N+1, T>(g.edge_propmap_shape())
+        {}
+        
+        ArcMap(GridGraph<N, vigragraph::directed_tag> const & g, T const & t)
+        : MultiArray<N+1, T>(g.edge_propmap_shape(), t)
+        {}
+    };
 };
 
 template <unsigned int N>
@@ -822,6 +841,53 @@ struct GridGraphBase<N, vigragraph::undirected_tag>
     typedef typename MultiArrayShape<N+1>::type   Edge;
     typedef GridGraphOutEdgeIterator<N>           IncEdgeIt;
     typedef GridGraphEdgeIterator<N>              EdgeIt;
+    
+    template <class T>
+    class ArcMap
+    : public MultiArray<N+1, T>
+    {
+      public:
+        typedef MultiArray<N+1, T> base_type;
+        typedef typename base_type::reference reference;
+        typedef typename base_type::const_reference const_reference;
+        typedef GridGraphArcDescriptor<N> shape_type;
+        
+        ArcMap(GridGraph<N, vigragraph::undirected_tag> const & g)
+        : base_type(g.arc_propmap_shape()),
+          graph_(&g)
+        {}
+        
+        ArcMap(GridGraph<N, vigragraph::undirected_tag> const & g, T const & t)
+        : base_type(g.arc_propmap_shape(), t),
+          graph_(&g)
+        {}
+        
+        reference operator[](shape_type const & s)
+        {
+            if(s.isReversed())
+            {
+                return base_type::operator[](graph_->directedArc(s));
+            }
+            else
+            {
+                return base_type::operator[](s);
+            }
+        }
+        
+        const_reference operator[](shape_type const & s) const
+        {
+            if(s.isReversed())
+            {
+                return base_type::operator[](graph_->directedArc(s));
+            }
+            else
+            {
+                return base_type::operator[](s);
+            }
+        }
+        
+        GridGraph<N, vigragraph::undirected_tag> const * graph_;
+    };
 };
 
 } // namespace detail
@@ -878,7 +944,6 @@ public:
     typedef vertex_descriptor      Node;
     typedef vertex_iterator        NodeIt;
     
-    // present in both directed and undirected graphs
     typedef GridGraphArcDescriptor<N>   Arc;
     typedef GridGraphOutArcIterator<N>  OutArcIt;
     typedef GridGraphArcIterator<N>     ArcIt;
@@ -887,6 +952,30 @@ public:
     typedef typename base_type::Edge Edge;
     typedef typename base_type::EdgeIt EdgeIt;
     typedef typename base_type::IncEdgeIt IncEdgeIt;
+    
+    typedef lemon::True NodeNumTag;
+    typedef lemon::True EdgeNumTag;
+    typedef lemon::True ArcNumTag;
+    typedef lemon::True FindEdgeTag;
+    typedef lemon::True FindArcTag;
+
+    class IndexMap 
+    {
+      public:
+        typedef Node Key;
+        typedef Node Value;
+
+        IndexMap()
+        {}
+
+        IndexMap(const GridGraph&)
+        {}
+
+        Value const & operator[](Key const & key) const 
+        {
+            return key;
+        }
+    };
         
     template <class T>
     class NodeMap
@@ -903,15 +992,15 @@ public:
     };
     
     template <class T>
-    class ArcMap
+    class EdgeMap
     : public MultiArray<N+1, T>
     {
       public:
-        ArcMap(GridGraph const & g)
+        EdgeMap(GridGraph const & g)
         : MultiArray<N+1, T>(g.edge_propmap_shape())
         {}
         
-        ArcMap(GridGraph const & g, T const & t)
+        EdgeMap(GridGraph const & g, T const & t)
         : MultiArray<N+1, T>(g.edge_propmap_shape(), t)
         {}
     };
@@ -952,6 +1041,11 @@ public:
     index_type id(NodeIt const & v) const
     {
         return v.scanOrderIndex();
+    }
+    
+    index_type maxNodeId() const
+    {
+        return prod(shape()) - 1;
     }
     
     Node const & pos(Node const & v) const
@@ -1004,12 +1098,20 @@ public:
         return num_vertices_;
     }
 
+    vertices_size_type nodeNum() const 
+    {
+        return num_vertices();
+    }
+
     // --------------------------------------------------
     // support for IncidenceGraph:
 
     index_type id(Edge const & e) const
     {
-        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), e);
+        index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), e.template subarray<0, N>());
+        return is_directed
+                  ? res*maxDegree() + e[N]
+                  : res*halfMaxDegree() + e[N];
     }
     
     index_type id(EdgeIt const & e) const
@@ -1022,16 +1124,23 @@ public:
         return id(*e);
     }
 
+    index_type maxEdgeId() const
+    {
+        if(edgeNum() == 0)
+            return -1;
+        unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
+        index_type d = neighborIndices_[nbtype].back();
+        return is_directed
+                      ? prod(edge_propmap_shape()) - maxDegree() + d
+                      : prod(edge_propmap_shape()) - halfMaxDegree() + d;
+    }
+    
     index_type id(Arc const & a) const
     {
-        if(is_directed)
-        {
-            return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
-        }
-        else
-        {
-            return (detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a) << 1) + (a.isReversed() ? 1 : 0);
-        }
+        index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), source(a))*maxDegree();
+        return a.isReversed()
+                  ? res + maxDegree() - 1 - a[N]
+                  : res + a[N];
     }
     
     index_type id(ArcIt const & a) const
@@ -1044,6 +1153,56 @@ public:
         return id(*a);
     }
     
+    index_type maxArcId() const
+    {
+        if(edgeNum() == 0)
+            return -1;
+        unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
+        index_type d = neighborIndices_[nbtype].back();
+        return is_directed
+                      ? prod(edge_propmap_shape()) - maxDegree() + d
+                      : 2*prod(edge_propmap_shape()) - maxDegree() + d;
+    }
+    
+    Arc direct(Edge const & e, bool forward) const
+    {
+        return Arc(e, !forward);
+    }
+    
+    Arc oppositeArc(Arc const & a) const
+    {
+        return is_directed
+                 ? Arc(a.vertexDescriptor() + neighborOffsets_[a[N]], maxDegree() - 1 - a[N], false)
+                 : Arc(a, !a.isReversed());
+    }
+    
+    Arc directedArc(Arc const & a) const
+    {
+        return a.isReversed()
+                 ? Arc(a.vertexDescriptor() + neighborOffsets_[a[N]], maxDegree() - 1 - a[N], false)
+                 : a;
+    }
+    
+    vertex_descriptor source(edge_descriptor const & e) const 
+    {
+        return source_or_target(e, true);
+    }
+
+    vertex_descriptor target(edge_descriptor const & e) const 
+    {
+        return source_or_target(e, false);
+    }
+
+    vertex_descriptor u(Edge const & e) const 
+    {
+        return vertex_descriptor(e.template subarray<0,N>());
+    }
+
+    vertex_descriptor v(Edge const & e) const 
+    {
+        return vertex_descriptor(e.template subarray<0,N>()) + neighborOffsets_[e[N]];
+    }
+
     out_edge_iterator get_out_edge_iterator(vertex_descriptor const & v) const 
     {
         unsigned int nbtype = get_border_type(v);
@@ -1115,6 +1274,18 @@ public:
     {
         return num_edges_;
     }
+
+    edges_size_type edgeNum() const 
+    {
+        return num_edges();
+    }
+
+    edges_size_type arcNum() const 
+    {
+        return is_directed
+                   ? num_edges()
+                   : 2*num_edges();
+    }
     
     edge_iterator get_edge_iterator() const 
     {
@@ -1152,9 +1323,29 @@ public:
         return res;
     }
 
-
+    Edge findEdge(Node const & u, Node const & v, Edge const & = lemon::INVALID) const 
+    {
+        std::pair<edge_descriptor, bool> res(edge(u, v));
+        return res.second
+                 ? res.first
+                 : Edge(lemon::INVALID);
+    }
+    
+    Arc findArc(Node const & u, Node const & v, Arc const & = lemon::INVALID) const 
+    {
+        std::pair<edge_descriptor, bool> res(edge(u, v));
+        return res.second
+                 ? res.first
+                 : Arc(lemon::INVALID);
+    }
+    
     // --------------------------------------------------
     // other helper functions:
+    
+    IndexMap indexMap() const 
+    {
+        return IndexMap();
+    }
 
     bool isDirected() const
     {
@@ -1178,11 +1369,19 @@ public:
 
     edge_propmap_shape_type edge_propmap_shape() const 
     {
-        edge_propmap_shape_type res;
+        edge_propmap_shape_type res(SkipInitialization);
         res.template subarray<0, N>() = shape_;
         res[N] = is_directed
                      ? maxDegree()
                      : halfMaxDegree();
+        return res;
+    }
+
+    edge_propmap_shape_type arc_propmap_shape() const 
+    {
+        edge_propmap_shape_type res(SkipInitialization);
+        res.template subarray<0, N>() = shape_;
+        res[N] = maxDegree();
         return res;
     }
 
@@ -1335,7 +1534,7 @@ typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor
 source(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
        vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    return g.source_or_target(e, true);
+    return g.source(e);
 }
 
 template<unsigned int N, class DirectedTag>
@@ -1344,7 +1543,7 @@ typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor
 target(typename vigra::GridGraph<N, DirectedTag>::edge_descriptor const & e,
        vigra::GridGraph<N, DirectedTag> const & g) 
 {
-    return g.source_or_target(e, false);
+    return g.target(e);
 }
 
 template<unsigned int N, class DirectedTag>
