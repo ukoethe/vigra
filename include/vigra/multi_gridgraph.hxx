@@ -814,9 +814,6 @@ struct GridGraphBase;
 template <unsigned int N>
 struct GridGraphBase<N, vigragraph::directed_tag>
 {
-    struct IncEdgeIt;
-    struct EdgeIt;
-    
     template <class T>
     class ArcMap
     : public MultiArray<N+1, T>
@@ -836,9 +833,6 @@ template <unsigned int N>
 struct GridGraphBase<N, vigragraph::undirected_tag>
 {
     typedef lemon::True UndirectedTag;
-    
-    typedef GridGraphOutEdgeIterator<N>           IncEdgeIt;
-    typedef GridGraphEdgeIterator<N>              EdgeIt;
     
     template <class T>
     class ArcMap
@@ -948,8 +942,8 @@ public:
     typedef void                        InArcIt;   // not implemented
     
     typedef typename MultiArrayShape<N+1>::type  Edge;
-    typedef typename base_type::EdgeIt           EdgeIt;
-    typedef typename base_type::IncEdgeIt        IncEdgeIt;
+    typedef GridGraphOutEdgeIterator<N>          IncEdgeIt;
+    typedef GridGraphEdgeIterator<N>             EdgeIt;
     
     typedef lemon::True NodeNumTag;
     typedef lemon::True EdgeNumTag;
@@ -1041,6 +1035,11 @@ public:
         return v.scanOrderIndex();
     }
     
+    index_type id(neighbor_vertex_iterator const & v) const
+    {
+        return id(*v);
+    }
+    
     index_type maxNodeId() const
     {
         return prod(shape()) - 1;
@@ -1107,9 +1106,7 @@ public:
     index_type id(Edge const & e) const
     {
         index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), e.template subarray<0, N>());
-        return is_directed
-                  ? res*maxDegree() + e[N]
-                  : res*halfMaxDegree() + e[N];
+        return res*uniqueDegree() + e[N];
     }
     
     index_type id(EdgeIt const & e) const
@@ -1128,16 +1125,14 @@ public:
             return -1;
         unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
         index_type d = neighborIndices_[nbtype].back();
-        return is_directed
-                      ? prod(edge_propmap_shape()) - maxDegree() + d
-                      : prod(edge_propmap_shape()) - halfMaxDegree() + d;
+        return prod(edge_propmap_shape()) - uniqueDegree() + d;
     }
     
     index_type id(Arc const & a) const
     {
         index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), source(a))*maxDegree();
         return a.isReversed()
-                  ? res + maxDegree() - 1 - a[N]
+                  ? res + oppositeIndex(a[N])
                   : res + a[N];
     }
     
@@ -1170,14 +1165,14 @@ public:
     Arc oppositeArc(Arc const & a) const
     {
         return is_directed
-                 ? Arc(a.vertexDescriptor() + neighborOffsets_[a[N]], maxDegree() - 1 - a[N], false)
+                 ? Arc(neighbor(a.vertexDescriptor(), a[N]), oppositeIndex(a[N]), false)
                  : Arc(a, !a.isReversed());
     }
     
     Arc directedArc(Arc const & a) const
     {
         return a.isReversed()
-                 ? Arc(a.vertexDescriptor() + neighborOffsets_[a[N]], maxDegree() - 1 - a[N], false)
+                 ? Arc(neighbor(a.vertexDescriptor(), a[N]), oppositeIndex(a[N]), false)
                  : a;
     }
     
@@ -1355,9 +1350,11 @@ public:
         return (degree_size_type)neighborOffsets_.size();
     }
 
-    degree_size_type halfMaxDegree() const 
+    degree_size_type uniqueDegree() const 
     {
-         return maxDegree() / 2;
+         return is_directed
+                    ? maxDegree()
+                    : maxDegree() / 2;
     }
 
     shape_type const & shape() const 
@@ -1369,9 +1366,7 @@ public:
     {
         edge_propmap_shape_type res(SkipInitialization);
         res.template subarray<0, N>() = shape_;
-        res[N] = is_directed
-                     ? maxDegree()
-                     : halfMaxDegree();
+        res[N] = uniqueDegree();
         return res;
     }
 
@@ -1392,6 +1387,11 @@ public:
     {
         return v.borderType();
     }
+    
+    index_type oppositeIndex(index_type neighborIndex) const
+    {
+        return  maxDegree() - neighborIndex - 1;
+    }
 
         /* the given neighborIndex must be valid for the given vertex,
            otherwise this function will crash
@@ -1399,15 +1399,20 @@ public:
     edge_descriptor make_edge_descriptor(vertex_descriptor const & v,
                                          index_type neighborIndex) const
     {
-        if(is_directed || neighborIndex < halfMaxDegree())
+        if(neighborIndex < uniqueDegree())
             return edge_descriptor(v, neighborIndex, false);
         else
-            return edge_descriptor(v + neighborOffsets_[neighborIndex], maxDegree() - neighborIndex - 1, true);
+            return edge_descriptor(neighbor(v, neighborIndex), oppositeIndex(neighborIndex), true);
     }
     
     shape_type const & neighborOffset(index_type neighborIndex) const
     {
         return neighborOffsets_[neighborIndex];
+    }
+
+    vertex_descriptor neighbor(vertex_descriptor const & v, index_type neighborIndex) const
+    {
+        return v + neighborOffsets_[neighborIndex];
     }
 
     vertex_descriptor 
@@ -1418,7 +1423,7 @@ public:
         if ((return_source && e.isReversed()) ||
             (!return_source && !e.isReversed())) 
         {
-            return e.vertexDescriptor() + neighborOffset(e.edgeIndex());
+            return neighbor(e.vertexDescriptor(), e.edgeIndex());
         } 
         else 
         {

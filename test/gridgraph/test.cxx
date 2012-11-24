@@ -33,8 +33,6 @@
 /*                                                                      */
 /************************************************************************/
 
-#define WITH_LEMON
-
 #define VIGRA_CHECK_BOUNDS
 #include "unittest.hxx"
 #include <vigra/multi_shape.hxx>
@@ -707,7 +705,10 @@ struct GridGraphTests
             linearSequence(edgeIdMap.transpose(p).begin(), edgeIdMap.transpose(p).end());
             
             shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
-            shouldEqual(edgeMap.shape(N), directed ? g.maxDegree() : g.halfMaxDegree());
+            shouldEqual(edgeMap.shape(N), g.uniqueDegree());
+            shouldEqual((arcIdMap.shape().template subarray<0, N>()), s);
+            shouldEqual(arcIdMap.shape(N), g.maxDegree());
+            shouldEqual(edgeMap.shape(), edgeIdMap.shape());
             
             int totalCount = 0;
         
@@ -719,7 +720,8 @@ struct GridGraphTests
                                                          nend = g.get_neighbor_vertex_end_iterator(j);
                 typename Graph::out_edge_iterator        e = g.get_out_edge_iterator(j), 
                                                          eend = g.get_out_edge_end_iterator(j);
-                typename Graph::OutArcIt                 le(g, j);
+                typename Graph::IncEdgeIt                le(g, j);
+                typename Graph::OutArcIt                 la(g, j);
 
                 should(n == g.get_neighbor_vertex_iterator(*j));
                 should(nend == g.get_neighbor_vertex_end_iterator(*j));
@@ -733,13 +735,14 @@ struct GridGraphTests
                 should(eend == out_edges(*j, g).second);
 
                 int count = 0;
-                for(; n != nend; ++n, ++e, ++le, ++count)
+                for(; n != nend; ++n, ++e, ++la, ++le, ++count)
                 {
                     should(*n != *j);
                     should(n.isValid() && !n.atEnd());
                     should(n != lemon::INVALID);
                     should(!(n == lemon::INVALID));
                     should(e.isValid() && !e.atEnd());
+                    should(e == la);
                     should(e == le);
                     should(e != eend);
                     should(e != lemon::INVALID);
@@ -752,19 +755,35 @@ struct GridGraphTests
                     
                     typename Graph::Arc a  = g.findArc(*j, *n),
                                         oa = g.findArc(*n, *j);
-                    should(a == *le);
+                    should(a == *la);
                     shouldEqual(source(oa, g), *n);
                     shouldEqual(target(oa, g), *j);
                     shouldEqual(g.oppositeArc(a), oa);
                     
-                    shouldEqual(arcIdMap[*le], g.id(le));
-                    shouldEqual(edgeIdMap[*le], g.id((typename Graph::Edge &)*le));
+                    typename Graph::Edge ge = g.findEdge(*j, *n),
+                                         oe = g.findEdge(*n, *j);
+                    should(ge == *le);
+                    
+                    Graph::Node u = g.u(oe), 
+                                v = g.v(oe);
+                    if(!directed)
+                    {
+                        should(oe == *le);
+                        if(g.id(n) < g.id(j))
+                            std::swap(u, v);
+                    }
+                    shouldEqual(u, *n);
+                    shouldEqual(v, *j);
+                    
+                    shouldEqual(arcIdMap[*la], g.id(la));
+                    shouldEqual(edgeIdMap[*la], g.id((typename Graph::Edge &)*la));
                 }
                 should(!n.isValid() && n.atEnd());
                 should(n == lemon::INVALID);
                 should(!(n != lemon::INVALID));
                 should(!e.isValid() && e.atEnd());
                 should(e == eend);
+                should(e == la);
                 should(e == le);
                 should(e == lemon::INVALID);
                 should(!(e != lemon::INVALID));
@@ -817,7 +836,7 @@ struct GridGraphTests
                                  edgeIdMap(g.edge_propmap_shape());
             
             shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
-            shouldEqual(edgeMap.shape(N), directed ? g.maxDegree() : g.halfMaxDegree());
+            shouldEqual(edgeMap.shape(N), g.uniqueDegree());
             
             typename MultiArrayShape<N+1>::type p(N);
             linearSequence(p.begin()+1, p.end());
@@ -825,7 +844,8 @@ struct GridGraphTests
             
             typename Graph::edge_iterator e = g.get_edge_iterator(),
                                           eend = g.get_edge_end_iterator();
-            typename IfBool<Graph::is_directed, typename Graph::ArcIt, typename Graph::EdgeIt>::type el(g);
+            // typename IfBool<Graph::is_directed, typename Graph::ArcIt, typename Graph::EdgeIt>::type el(g);
+            typename Graph::EdgeIt el(g);
 
             should(e == edges(g).first);
             should(eend == edges(g).second);
@@ -853,7 +873,7 @@ struct GridGraphTests
             should(e == lemon::INVALID);
             should(!(e != lemon::INVALID));
             
-            shouldEqual(maxEdgeId, directed ? g.maxArcId() : g.maxEdgeId());
+            shouldEqual(maxEdgeId, g.maxEdgeId());
             
             // check that all neighbors are found
             shouldEqual(count, g.num_edges());
@@ -882,109 +902,82 @@ struct GridGraphTests
         }
     }
     
-    // template <NeighborhoodType NType>
-    // void testUndirectedIterators()
-    // {
-        // using namespace vigragraph;
+    template <class DirectedTag, NeighborhoodType NType>
+    void testArcIterator()
+    {
+        using namespace vigragraph;
         
-        // typedef GridGraph<N, vigragraph::undirected_tag> Graph;
+        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
-        // MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
-        // for(; i != iend; ++i)
-        // {
-            // // create all possible array shapes from 1**N to 3**N
-            // Shape s = *i + Shape(1);
-            // Graph g(s, NType);
-            
-            // MultiArray<N, int> vertexMap(s);
-            // typename Graph::EdgeMap<int> edgeMap(g);
-            
-            // shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
-            // shouldEqual(edgeMap.shape(N), directed ? g.maxDegree() : g.halfMaxDegree());
-            
-            // int totalCount = 0;
+        typedef GridGraph<N, DirectedTag> Graph;
         
-            // typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
-                                            // end = g.get_vertex_end_iterator();
-            // for(; j != end; ++j)
-            // {
-                // typename Graph::neighbor_vertex_iterator n = g.get_neighbor_vertex_iterator(j), 
-                                                         // nend = g.get_neighbor_vertex_end_iterator(j);
-                // typename Graph::out_edge_iterator        e = g.get_out_edge_iterator(j), 
-                                                         // eend = g.get_out_edge_end_iterator(j);
-                // typename Graph::OutArcIt                 le(g, j);
+        MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
+        for(; i != iend; ++i)
+        {
+            // create all possible array shapes from 1**N to 3**N
+            Shape s = *i + Shape(1);
+            Graph g(s, NType);
+            
+            typename Graph::NodeMap<int> sourceVertexMap(g), targetVertexMap(g);
+            typename Graph::EdgeMap<int> edgeMap(g);
+            typename Graph::ArcMap<int> arcMap(g);
+            
+            shouldEqual(sourceVertexMap.shape(), s);
+            shouldEqual(targetVertexMap.shape(), s);
+            shouldEqual((edgeMap.shape().template subarray<0, N>()), s);
+            shouldEqual(edgeMap.shape(N), g.uniqueDegree());
+            shouldEqual((arcMap.shape().template subarray<0, N>()), s);
+            shouldEqual(arcMap.shape(N), g.maxDegree());
+            
+            typename Graph::ArcIt e(g);
 
-                // should(n == g.get_neighbor_vertex_iterator(*j));
-                // should(nend == g.get_neighbor_vertex_end_iterator(*j));
-                // should(n == adjacent_vertices(*j, g).first);
-                // should(nend == adjacent_vertices(*j, g).second);
-                // should(n == adjacent_vertices_at_iterator(j, g).first);
-                // should(nend == adjacent_vertices_at_iterator(j, g).second);
-                // should(e == g.get_out_edge_iterator(*j));
-                // should(eend == g.get_out_edge_end_iterator(*j));
-                // should(e == out_edges(*j, g).first);
-                // should(eend == out_edges(*j, g).second);
+            int count = 0;
+            int maxArcId = -1;
+            for(; e != lemon::INVALID; ++e, ++count)
+            {
+                should(e.isValid() && !e.atEnd());
+                should(e != lemon::INVALID);
+                should(!(e == lemon::INVALID));
 
-                // int count = 0;
-                // for(; n != nend; ++n, ++e, ++le, ++count)
-                // {
-                    // should(*n != *j);
-                    // should(n.isValid() && !n.atEnd());
-                    // should(n != lemon::INVALID);
-                    // should(!(n == lemon::INVALID));
-                    // should(e.isValid() && !e.atEnd());
-                    // should(e == le);
-                    // should(e != eend);
-                    // should(e != lemon::INVALID);
-                    // should(!(e == lemon::INVALID));
-                    
-                    // shouldEqual(source(*e, g), *j);
-                    // shouldEqual(target(*e, g), *n);
-                    // vertexMap[*n] += 1;
-                    // edgeMap[*e] += 1;
-                    
-                    // typename Graph::Arc a  = g.findArc(*j, *n),
-                                        // oa = g.findArc(*n, *j);
-                    // should(a == *le);
-                    // shouldEqual(source(oa, g), *n);
-                    // shouldEqual(target(oa, g), *j);
-                    // shouldEqual(g.oppositeArc(a), oa);
-                // }
-                // should(!n.isValid() && n.atEnd());
-                // should(n == lemon::INVALID);
-                // should(!(n != lemon::INVALID));
-                // should(!e.isValid() && e.atEnd());
-                // should(e == eend);
-                // should(e == le);
-                // should(e == lemon::INVALID);
-                // should(!(e != lemon::INVALID));
+                sourceVertexMap[source(*e, g)] += 1;
+                targetVertexMap[target(*e, g)] += 1;
+                edgeMap[*e] += 1;
+                arcMap[*e] += 1;
                 
-                // shouldEqual(count, g.out_degree(j));
-                
-                // totalCount += count;
-            // }
+                if(maxArcId < g.id(e))
+                    maxArcId = g.id(e);
+            }
+            should(!e.isValid() && e.atEnd());
+            should(e == lemon::INVALID);
+            should(!(e != lemon::INVALID));
             
-            // // check that all neighbors are found
-            // if(!directed)
-                // totalCount /= 2;
-            // shouldEqual(totalCount, g.num_edges());
+            shouldEqual(maxArcId, g.maxArcId());
             
-            // int min = NumericTraits<int>::max(), max = NumericTraits<int>::min();
-            // edgeMap.minmax(&min, &max);
-            // shouldEqual(min, 0);
-            // shouldEqual(max, g.num_edges() ? !directed ? 2 : 1 : 0);
-
-            // j = g.get_vertex_iterator();
-            // for(; j != end; ++j)
-            // {
-                // shouldEqual(vertexMap[*j], g.in_degree(j));
-                // if(directed)
-                    // shouldEqual(edgeMap.bindInner(*j).template sum<int>(), g.out_degree(j));
-                // else
-                    // shouldEqual(edgeMap.bindInner(*j).template sum<int>(), 2*g.back_degree(j));
-            // }
-        // }
-    // }
+            // check that all neighbors are found
+            shouldEqual(count, g.arcNum());
+            shouldEqual(count, directed ? g.edgeNum() : 2*g.edgeNum());
+            
+            int min = NumericTraits<int>::max(), max = NumericTraits<int>::min();
+            edgeMap.minmax(&min, &max);
+            shouldEqual(min, 0);
+            shouldEqual(max, g.arcNum() ? directed ? 1 : 2 : 0);
+            
+            min = NumericTraits<int>::max();
+            max = NumericTraits<int>::min();
+            arcMap.minmax(&min, &max);
+            shouldEqual(min, 0);
+            shouldEqual(max, g.arcNum() ? 1 : 0);
+            
+            MultiCoordinateIterator<N> j(s), end = j.getEndIterator();
+            for(; j != end; ++j)
+            {
+                shouldEqual(edgeMap.bindInner(*j).template sum<int>(), directed ? g.out_degree(j) : 2*g.back_degree(j));
+                shouldEqual(arcMap.bindInner(*j).template sum<int>(), g.out_degree(j));
+                shouldEqual(sourceVertexMap[*j], g.out_degree(j));
+                shouldEqual(targetVertexMap[*j], g.out_degree(j));
+            }
+        }
+    }
 };
 
 template <unsigned int N>
@@ -1033,6 +1026,11 @@ struct GridgraphTestSuiteN
         add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
         add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::directed_tag, DirectNeighborhood>)));
         add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        
+        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
     }
 };
 
