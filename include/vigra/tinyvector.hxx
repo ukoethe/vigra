@@ -909,7 +909,7 @@ class TinyVector
         
             Initializes all vector elements with -1.
         */
-    explicit TinyVector(lemon::Invalid)
+    TinyVector(lemon::Invalid)
     : BaseType()
     {
         Loop::assignScalar(BaseType::begin(), -1);
