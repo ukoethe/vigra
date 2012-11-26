@@ -41,8 +41,10 @@
 #include <functional>
 #include "multi_array.hxx"
 #include "localminmax.hxx"
-#if 0
+
 namespace vigra {
+
+#if 0
 
 namespace detail {
 
@@ -495,8 +497,53 @@ extendedLocalMaxima(MultiArrayView<3, T1, C1> src,
           "extendedLocalMaxima(): Invalid neighborhood.");
 }
 
-} // namespace vigra
-
 #endif
+
+  // Attempt without LValue propmaps, using only the free functions
+  // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
+template <class Graph, class T1Map, class T2Map, class Compare>
+void
+localMinMaxGraph(Graph const &G, 
+                 T1Map const &src,
+                 T2Map &dest,
+                 // typename vigragraph::property_traits<T2Map>::value_type marker, // unsigned int neighborhood,
+                 // typename vigragraph::property_traits<T1Map>::value_type threshold,
+                 int marker, // unsigned int neighborhood,
+                 int threshold,
+                 Compare const &compare)
+{
+    typedef typename vigragraph::graph_traits<Graph>::vertex_iterator graph_scanner;
+    typedef typename vigragraph::graph_traits<Graph>::adjacency_iterator neighbor_iterator;
+
+    // typedef typename vigragraph::property_traits<T1Map>::value_type T1;
+    // typedef typename vigragraph::property_traits<T2Map>::value_type T2;
+
+    graph_scanner srcit, srcend;
+    neighbor_iterator nbit, nbend;
+
+    vigragraph::tie(srcit, srcend) = vigragraph::vertices(G);
+    for (; srcit != srcend; ++srcit) 
+    {
+        // const T1 refval = vigragraph::get(src, *srcit);
+        const int refval = vigragraph::get(src, *srcit);
+
+        if (!compare(refval, threshold))
+            continue;
+          
+        // MAIN PROBLEM WITH BOOST INTERFACE:
+        // adjacent_vertices is called with a vertex_descriptor,
+        // not the iterator which possibly has more state!
+        // -> potentially expensive to reconstruct iterator!
+        vigragraph::tie(nbit, nbend) = vigragraph::adjacent_vertices(*srcit, G);
+        for (;nbit != nbend; ++nbit) 
+            if (!compare(refval, vigragraph::get(src, *nbit))) 
+                break;
+                
+        if (nbit == nbend)
+            vigragraph::put(dest, *srcit, marker);
+    }
+}
+
+} // namespace vigra
 
 #endif // VIGRA_MULTI_LOCALMINMAX_HXX
