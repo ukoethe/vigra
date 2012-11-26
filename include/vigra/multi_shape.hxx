@@ -95,7 +95,7 @@ namespace detail {
 
     /* generates the stride for a gapless shape.
     */
-template <unsigned int N>
+template <int N>
 inline TinyVector <MultiArrayIndex, N>
 defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
 {
@@ -108,7 +108,7 @@ defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
 
     /* generates the stride for a gapless shape.
     */
-template <unsigned int N>
+template <int N>
 inline TinyVector <MultiArrayIndex, N>
 defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
 {
@@ -569,7 +569,7 @@ struct ResolveMultiband
     typedef UnstridedArrayTag Stride;
     static const bool value = false;
 
-    template <unsigned int N>
+    template <int N>
     static TinyVector <MultiArrayIndex, N>
     defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
     {
@@ -584,7 +584,7 @@ struct ResolveMultiband<Singleband<T> >
     typedef UnstridedArrayTag Stride;
     static const bool value = false;
 
-    template <unsigned int N>
+    template <int N>
     static TinyVector <MultiArrayIndex, N>
     defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
     {
@@ -599,7 +599,7 @@ struct ResolveMultiband<Multiband<T> >
     typedef StridedArrayTag Stride;
     static const bool value = true;
 
-    template <unsigned int N>
+    template <int N>
     static TinyVector <MultiArrayIndex, N>
     defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
     {

@@ -905,6 +905,7 @@ class TinyVector
         Loop::assignScalar(BaseType::begin(), initial);
     }
 
+#ifdef WITH_LEMON
         /** Construction from lemon::Invalid.
         
             Initializes all vector elements with -1.
@@ -914,6 +915,7 @@ class TinyVector
     {
         Loop::assignScalar(BaseType::begin(), -1);
     }
+#endif
 
         /** Construction with Diff2D.
         

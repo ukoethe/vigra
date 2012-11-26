@@ -2683,7 +2683,7 @@ public:
          */
     iterator begin ()
     {
-        return vigra::detail::MultiIteratorChooser<actual_stride>::constructIterator<iterator>((view_type *)this);
+        return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type *)this);
     }
 
         /** sequential iterator pointing beyond the last array element.
@@ -2697,7 +2697,7 @@ public:
          */
     const_iterator begin () const
     {
-        return vigra::detail::MultiIteratorChooser<actual_stride>::constructIterator<iterator>((view_type const *)this);
+        return vigra::detail::MultiIteratorChooser<actual_stride>::template constructIterator<iterator>((view_type const *)this);
     }
 
         /** sequential const iterator pointing beyond the last array element.

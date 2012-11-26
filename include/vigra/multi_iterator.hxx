@@ -112,7 +112,7 @@ class MultiCoordinateIterator
         : base_type(handle_type(shape))
     {}
 
-    template<unsigned int N, class DirectedTag>
+    template<class DirectedTag>
     explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g) 
         : base_type(handle_type(g.shape()))
     {}

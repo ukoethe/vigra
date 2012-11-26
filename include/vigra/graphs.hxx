@@ -98,11 +98,35 @@ struct vertex_index_t {};
 
 struct edge_property_tag {};
 
+// tie() support for std::pair, similar to Boost's one:
+// (necessary because std::pair doesn't define a suitable assignment operator)
 template<class T1, class T2>
-inline std::pair<T1 &, T2 &>
+class tie_adapter 
+{
+  public:
+    tie_adapter(T1 &x, T2 &y) 
+        : x_(x), y_(y)
+    {}
+
+    template<class X, class Y>
+    tie_adapter & operator=(const std::pair<X, Y> &pair)
+    {
+        x_ = pair.first;
+        y_ = pair.second;
+        return *this;
+    }
+    
+  protected:
+    T1 &x_;
+    T2 &y_;
+};
+
+template<class T1, class T2>
+inline
+tie_adapter<T1, T2>
 tie(T1& t1, T2& t2) 
 {
-    return std::pair<T1 &, T2 &>(t1, t2);
+    return tie_adapter<T1, T2>(t1, t2);
 }
 
 // graph_traits class template
@@ -226,6 +250,12 @@ struct Invalid {
     bool operator==(Invalid) const { return true;  }
     bool operator!=(Invalid) const { return false; }
     bool operator< (Invalid) const { return false; }
+
+    template <class T, int N>
+    operator vigra::TinyVector<T, N>() const
+    {
+       return vigra::TinyVector<T, N>(-1);
+    }
 };
 
 static const Invalid INVALID = Invalid();

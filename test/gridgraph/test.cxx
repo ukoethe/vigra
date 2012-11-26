@@ -605,8 +605,8 @@ struct GridGraphTests
             shouldEqual(directed, !lemon::UndirectedTagIndicator<G>::value);
 #endif
             
-            should(G::vertex_descriptor(lemon::INVALID) == lemon::INVALID);
-            should(G::edge_descriptor(lemon::INVALID) == lemon::INVALID);
+            should(typename G::vertex_descriptor(lemon::INVALID) == lemon::INVALID);
+            should(typename G::edge_descriptor(lemon::INVALID) == lemon::INVALID);
         
             shouldEqual(g.shape(), s);
             shouldEqual(g.isDirected(), directed);
@@ -635,7 +635,7 @@ struct GridGraphTests
             // create all possible array shapes from 1**N to 3**N
             Shape s = *i + Shape(1);
             Graph g(s, NType);
-            typename Graph::NodeMap<int> vertexMap(g);
+            typename Graph::template NodeMap<int> vertexMap(g);
             int count = 0;
         
             typename Graph::vertex_iterator j = g.get_vertex_iterator(), 
@@ -695,10 +695,10 @@ struct GridGraphTests
             Graph g(s, NType);
             
             MultiArray<N, int> vertexMap(s);
-            typename Graph::EdgeMap<int> edgeMap(g);
+            typename Graph::template EdgeMap<int> edgeMap(g);
             
-            typename Graph::ArcMap<int> arcIdMap(g);            
-            typename Graph::EdgeMap<int> edgeIdMap(g);            
+            typename Graph::template ArcMap<int> arcIdMap(g);            
+            typename Graph::template EdgeMap<int> edgeIdMap(g);            
 
                 // convention: neighbor index has priority in id
             // typename MultiArrayShape<N+1>::type p(N);
@@ -770,8 +770,8 @@ struct GridGraphTests
                                          oe = g.findEdge(*n, *j);
                     should(ge == *le);
                     
-                    Graph::Node u = g.u(oe), 
-                                v = g.v(oe);
+                    typename Graph::Node u = g.u(oe), 
+                                         v = g.v(oe);
                     if(!directed)
                     {
                         should(oe == *le);
@@ -927,9 +927,9 @@ struct GridGraphTests
             Shape s = *i + Shape(1);
             Graph g(s, NType);
             
-            typename Graph::NodeMap<int> sourceVertexMap(g), targetVertexMap(g);
-            typename Graph::EdgeMap<int> edgeMap(g);
-            typename Graph::ArcMap<int> arcMap(g);
+            typename Graph::template NodeMap<int> sourceVertexMap(g), targetVertexMap(g);
+            typename Graph::template EdgeMap<int> edgeMap(g);
+            typename Graph::template ArcMap<int> arcMap(g);
             
             shouldEqual(sourceVertexMap.shape(), s);
             shouldEqual(targetVertexMap.shape(), s);
@@ -1000,7 +1000,7 @@ struct GridGraphAlgorithmTests
         typedef GridGraph<N, DirectedTag> Graph;
         
         Graph g(Shape(3), NType);
-        typename Graph::NodeMap<int> src(g), dest(g);
+        typename Graph::template NodeMap<int> src(g), dest(g);
         
         src[Shape(1)] = 1;
         

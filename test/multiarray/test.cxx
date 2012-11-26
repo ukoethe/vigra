@@ -113,7 +113,7 @@ public:
     void test_bindOuter ()
     {
         TinyVector <int, 2> outer_indices (2, 5);
-        MultiArrayView <1, scalar_type, array3_type::actual_stride>
+        MultiArrayView <1, scalar_type, typename array3_type::actual_stride>
             array = array3.bindOuter(outer_indices);
         shouldEqual ((array [TinyVector <int, 1> (0)]), 520);
         shouldEqual ((array [TinyVector <int, 1> (1)]), 521);
@@ -137,8 +137,8 @@ public:
     // bind tests
     void test_bind ()
     {
-        MultiArrayView <2, scalar_type, array3_type::actual_stride>
-            array = array3.bind <1> (4);
+        MultiArrayView <2, scalar_type, typename array3_type::actual_stride>
+            array = array3.template bind <1> (4);
         shouldEqual ((array [TinyVector <int, 2> (0, 0)]), 40);
         shouldEqual ((array [TinyVector <int, 2> (1, 0)]), 41);
         shouldEqual ((array [TinyVector <int, 2> (0, 1)]), 140);
@@ -150,7 +150,7 @@ public:
     void test_bind0 ()
     {
         MultiArrayView <2, scalar_type, StridedArrayTag>
-            array = array3.bind <0> (4);
+            array = array3.template bind <0> (4);
         shouldEqual ((array [TinyVector <int, 2> (0, 0)]), 4);
         shouldEqual ((array [TinyVector <int, 2> (1, 0)]), 14);
         shouldEqual ((array [TinyVector <int, 2> (0, 1)]), 104);
@@ -161,17 +161,17 @@ public:
 
     void test_singletonDimension ()
     {
-        MultiArrayView <4, scalar_type, array3_type::actual_stride> a0 = array3.insertSingletonDimension(0);
+        MultiArrayView <4, scalar_type, typename array3_type::actual_stride> a0 = array3.insertSingletonDimension(0);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 0)]), 4);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 1, 0)]), 14);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 1)]), 104);
 
-        MultiArrayView <4, scalar_type, array3_type::actual_stride> a1 = array3.insertSingletonDimension(1);
+        MultiArrayView <4, scalar_type, typename array3_type::actual_stride> a1 = array3.insertSingletonDimension(1);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 1, 0)]), 14);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 1)]), 104);
 
-        MultiArrayView <4, scalar_type, array3_type::actual_stride> a3 = array3.insertSingletonDimension(3);
+        MultiArrayView <4, scalar_type, typename array3_type::actual_stride> a3 = array3.insertSingletonDimension(3);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 1, 0, 0)]), 14);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 1, 0)]), 104);
@@ -191,7 +191,7 @@ public:
         
         Shape offset (1,1,1);
         Shape size (5,5,5);
-        MultiArrayView <3, scalar_type, array3_type::actual_stride>
+        MultiArrayView <3, scalar_type, typename array3_type::actual_stride>
             array = array3.subarray (offset, size);
         shouldEqual (array [Shape (0,0,0)], 111);
         shouldEqual (array [Shape (5,2,1)], 236);
@@ -365,8 +365,8 @@ public:
         should(!array3.all());
         should(array3.subarray(last, array3.shape()).all());
 
-        shouldEqual(array3.sum<int>(), 499500);
-        shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).product<int>(), 183521184);
+        shouldEqual(array3.template sum<int>(), 499500);
+        shouldEqual(array3.subarray(Shape3(1,1,1),Shape3(3,3,2)).template product<int>(), 183521184);
 
         Shape3 reducedShape(1, 1, array3.shape(2));
         array3_type reducedSums(reducedShape);
@@ -401,9 +401,8 @@ public:
         for(int k=0; k< array.size(); ++k)
             shouldEqual(array[k], 10*k+2);
             
-        typedef MultiArrayView <2, scalar_type, UnstridedArrayTag>::difference_type Shape;
-        MultiArrayView <2, scalar_type, array3_type::actual_stride>
-            subarray = array3.bindOuter(2).subarray(Shape(1,0), Shape(10,9));
+        MultiArrayView <2, scalar_type, typename array3_type::actual_stride>
+            subarray = array3.bindOuter(2).subarray(Shape2(1,0), Shape2(10,9));
         shouldEqual(subarray.size(), 81);
         for(int k=0, l=200; k< subarray.size(); ++k, ++l)
         {
@@ -416,7 +415,7 @@ public:
     void testAssignmentAndReset()
     {
         typedef Shape3 Shape;
-        array3_type::view_type array;
+        typename array3_type::view_type array;
         array = array3;
         should(array3 == array);
         try {
@@ -429,7 +428,7 @@ public:
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
-        MultiArrayView <3, scalar_type, array3_type::actual_stride> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
+        MultiArrayView <3, scalar_type, typename array3_type::actual_stride> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
         subarray = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0));

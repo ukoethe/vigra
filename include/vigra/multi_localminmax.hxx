@@ -40,7 +40,7 @@
 #include <vector>
 #include <functional>
 #include "multi_array.hxx"
-#include "localminmax.hxx"
+#include "multi_gridgraph.hxx"
 
 namespace vigra {
 
