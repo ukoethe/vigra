@@ -506,17 +506,14 @@ void
 localMinMaxGraph(Graph const &G, 
                  T1Map const &src,
                  T2Map &dest,
-                 // typename vigragraph::property_traits<T2Map>::value_type marker, // unsigned int neighborhood,
-                 // typename vigragraph::property_traits<T1Map>::value_type threshold,
-                 int marker, // unsigned int neighborhood,
-                 int threshold,
+                 typename vigragraph::property_traits<T2Map>::value_type marker,
+                 typename vigragraph::property_traits<T1Map const>::value_type threshold,
                  Compare const &compare)
 {
     typedef typename vigragraph::graph_traits<Graph>::vertex_iterator graph_scanner;
     typedef typename vigragraph::graph_traits<Graph>::adjacency_iterator neighbor_iterator;
 
-    // typedef typename vigragraph::property_traits<T1Map>::value_type T1;
-    // typedef typename vigragraph::property_traits<T2Map>::value_type T2;
+    typedef typename vigragraph::property_traits<T1Map const>::value_type T1;
 
     graph_scanner srcit, srcend;
     neighbor_iterator nbit, nbend;
@@ -525,7 +522,7 @@ localMinMaxGraph(Graph const &G,
     for (; srcit != srcend; ++srcit) 
     {
         // const T1 refval = vigragraph::get(src, *srcit);
-        const int refval = vigragraph::get(src, *srcit);
+        const T1 refval = vigragraph::get(src, *srcit);
 
         if (!compare(refval, threshold))
             continue;

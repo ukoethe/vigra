@@ -151,6 +151,18 @@ struct graph_traits {
     static inline vertex_descriptor null_vertex();
 };
 
+// property_traits class template
+template <typename PropMap>
+struct property_traits 
+{
+    typedef typename PropMap::key_type    key_type;
+    typedef typename PropMap::value_type  value_type; 
+    typedef typename PropMap::reference   reference;
+    typedef typename PropMap::category    category;
+};
+
+
+
 #if 0
     // CHECKME
 #define vertex_index vertex_index_t()
@@ -161,15 +173,6 @@ struct graph_traits {
 template<class GRAPH, class T>
 struct property_map 
 {
-};
-
-// property_traits class template
-template <typename PA>
-struct property_traits {
-    typedef typename PA::key_type key_type;
-    typedef typename PA::value_type value_type; 
-    typedef typename PA::reference reference;
-    typedef typename PA::category   category;
 };
 
 
