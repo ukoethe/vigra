@@ -816,8 +816,8 @@ struct GridGraphTests
 
                 should(n == g.get_back_neighbor_vertex_iterator(*j));
                 should(nend == g.get_back_neighbor_vertex_end_iterator(*j));
-                should(n == adjacent_back_vertices(*j, g).first);
-                should(nend == adjacent_back_vertices(*j, g).second);
+                should(n == back_adjacent_vertices(*j, g).first);
+                should(nend == back_adjacent_vertices(*j, g).second);
                 should(e == g.get_out_back_edge_iterator(*j));
                 should(eend == g.get_out_back_edge_end_iterator(*j));
                 should(e == out_back_edges(*j, g).first);

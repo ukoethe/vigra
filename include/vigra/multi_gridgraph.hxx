@@ -1894,7 +1894,7 @@ template<unsigned int N, class DirectedTag>
 inline
 std::pair<typename vigra::GridGraph<N, DirectedTag>::back_neighbor_vertex_iterator, 
           typename vigra::GridGraph<N, DirectedTag>::back_neighbor_vertex_iterator>
-adjacent_back_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
+back_adjacent_vertices(typename vigra::GridGraph<N, DirectedTag>::vertex_descriptor const & v,
                        vigra::GridGraph<N, DirectedTag> const & g) 
 {
     return std::make_pair(g.get_back_neighbor_vertex_iterator(v),
