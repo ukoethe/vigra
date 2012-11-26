@@ -92,6 +92,11 @@ public:
         should(array3 == array3);
         should(array3 != array3.subarray(Shape(1,1,1), Shape(2,2,2)));
         should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) != array3.subarray(Shape(0,1,0), Shape(10,2,1)));
+
+        array3_type a(array3.shape());
+        linearSequence(a.begin(), a.end());
+        should(a == array3);
+
         for(unsigned int k=0; k<10; ++k)
             array3(k,0,0) += 10;
         should(array3.subarray(Shape(0,0,0), Shape(10,1,1)) == array3.subarray(Shape(0,1,0), Shape(10,2,1)));
@@ -2806,6 +2811,7 @@ struct MultiArrayDataTestSuite
         }
         {
             typedef Multiband<int> T;
+            typedef MultiArray<3, T> A;
             add( testCase( &MultiArrayDataTest<T>::testHasData ) );
             add( testCase( &MultiArrayDataTest<T>::testEquality ) );
             add( testCase( &MultiArrayDataTest<T>::test_subarray ) );
@@ -2821,8 +2827,6 @@ struct MultiArrayDataTestSuite
             add( testCase( &MultiArrayDataTest<T>::testMethods ) );
             add( testCase( &MultiArrayDataTest<T>::testScanOrderAccess ) );
             add( testCase( &MultiArrayDataTest<T>::testAssignmentAndReset ) );
-            add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
-            add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
         }
     }
 };

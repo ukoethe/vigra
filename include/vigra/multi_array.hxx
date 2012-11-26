@@ -699,6 +699,10 @@ public:
          */
     typedef typename MultiArrayShape<actual_dimension>::type difference_type;
 
+        /** key type (argument of index operator array[i] -- same as difference_type)
+         */
+    typedef difference_type key_type;
+
         /** size type
          */
     typedef difference_type size_type;
@@ -2299,7 +2303,6 @@ class MultiArray
 {
 
 public:
-    typedef typename vigra::detail::ResolveMultiband<T>::type   actual_type;
     typedef typename vigra::detail::ResolveMultiband<T>::Stride actual_stride;
     
         /** the allocator type used to allocate the memory
@@ -2359,12 +2362,12 @@ public:
 
         /** sequential (random access) iterator type
          */
-    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, T, T &, T *>::type
+    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, value_type, reference, pointer>::type
     iterator;
 
         /** sequential (random access) const iterator type
          */
-    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, T, T const &, T const *>::type
+    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, value_type, const_reference, const_pointer>::type
     const_iterator;
 
 protected:
