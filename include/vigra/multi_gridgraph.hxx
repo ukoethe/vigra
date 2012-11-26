@@ -987,11 +987,11 @@ struct GridGraphBase<N, vigragraph::directed_tag>
         {}
 
         explicit ArcMap(difference_type const & shape)
-        : base_type(s)
+        : base_type(shape)
         {}
         
         ArcMap(difference_type const & shape, T const & t)
-        : base_type(s, t)
+        : base_type(shape, t)
         {}
         
         ArcMap & operator=(ArcMap const & m)
@@ -1205,11 +1205,11 @@ public:
         {}
 
        explicit  NodeMap(difference_type const & shape)
-        : base_type(s)
+        : base_type(shape)
         {}
         
         NodeMap(difference_type const & shape, T const & t)
-        : base_type(s, t)
+        : base_type(shape, t)
         {}
         
         NodeMap & operator=(NodeMap const & m)
@@ -1250,11 +1250,11 @@ public:
         {}
 
         explicit EdgeMap(difference_type const & shape)
-        : base_type(s)
+        : base_type(shape)
         {}
         
         EdgeMap(difference_type const & shape, T const & t)
-        : base_type(s, t)
+        : base_type(shape, t)
         {}
         
         EdgeMap & operator=(EdgeMap const & m)
