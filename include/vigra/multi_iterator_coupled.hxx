@@ -41,9 +41,6 @@
 
 namespace vigra {
 
-template <unsigned int N, class T, class C = UnstridedArrayTag>
-class MultiArrayView;
-
 /** \addtogroup MultiIteratorGroup
 */
 //@{
@@ -292,9 +289,6 @@ public:
     value_type point_, shape_;
     MultiArrayIndex scanOrderIndex_;
 };
-
-template <class T>
-struct Multiband;
 
 template <unsigned int N, class T, class StrideTag>
 class MultiArrayView<N, Multiband<T>, StrideTag>

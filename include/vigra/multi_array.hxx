@@ -105,16 +105,7 @@ struct MaybeStrided <StrideTag, 0>
 Namespace: vigra::detail
 */
 template <class O>
-struct MultiIteratorChooser
-{
-    struct Nil {};
-
-    template <unsigned int N, class T, class REFERENCE, class POINTER>
-    struct Traverser
-    {
-        typedef Nil type;
-    };
-};
+struct MultiIteratorChooser;
 
 /********************************************************/
 /*                                                      */
@@ -137,6 +128,18 @@ struct MultiIteratorChooser <StridedArrayTag>
     {
         typedef StridedMultiIterator <N, T, REFERENCE, POINTER> type;
     };
+    
+    template <unsigned int N, class T, class REFERENCE, class POINTER>
+    struct Iterator
+    {
+        typedef StridedScanOrderIterator <N, T, REFERENCE, POINTER> type;
+    };
+    
+    template <class Iter, class View>
+    static Iter constructIterator(View * v)
+    {
+        return v->begin();
+    }
 };
 
 /********************************************************/
@@ -160,6 +163,18 @@ struct MultiIteratorChooser <UnstridedArrayTag>
     {
         typedef MultiIterator <N, T, REFERENCE, POINTER> type;
     };
+    
+    template <unsigned int N, class T, class REFERENCE, class POINTER>
+    struct Iterator
+    {
+        typedef POINTER type;
+    };
+    
+    template <class Iter, class View>
+    static Iter constructIterator(View * v)
+    {
+        return v->data();
+    }
 };
 
 /********************************************************/
@@ -474,7 +489,8 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 // template <unsigned int N, class T, class C = UnstridedArrayTag>
 // class MultiArrayView;
-template <unsigned int N, class T, class A = std::allocator<T> >
+template <unsigned int N, class T, 
+          class A = std::allocator<typename vigra::detail::ResolveMultiband<T>::type> >
 class MultiArray;
 
 namespace multi_math {
@@ -602,9 +618,9 @@ struct NormTraits<MultiArrayView<N, T, C> >
 
 template <unsigned int N, class T, class A>
 struct NormTraits<MultiArray<N, T, A> >
-: public NormTraits<MultiArrayView<N, T, UnstridedArrayTag> >
+: public NormTraits<typename MultiArray<N, T, A>::view_type>
 {
-    typedef NormTraits<MultiArrayView<N, T, UnstridedArrayTag> > BaseType;
+    typedef NormTraits<typename MultiArray<N, T, A>::view_type>  BaseType;
     typedef MultiArray<N, T, A>                                  Type;
     typedef typename BaseType::SquaredNormType                   SquaredNormType;
     typedef typename BaseType::NormType                          NormType;
@@ -701,13 +717,11 @@ public:
 
         /** traverser (MultiIterator) type
          */
-    typedef typename vigra::detail::MultiIteratorChooser <
-        StrideTag>::template Traverser <actual_dimension, T, T &, T *>::type traverser;
+    typedef typename vigra::detail::MultiIteratorChooser<StrideTag>::template Traverser<actual_dimension, T, T &, T *>::type traverser;
 
         /** const traverser (MultiIterator) type
          */
-    typedef typename vigra::detail::MultiIteratorChooser <
-        StrideTag>::template Traverser <actual_dimension, T, T const &, T const *>::type const_traverser;
+    typedef typename vigra::detail::MultiIteratorChooser<StrideTag>::template Traverser<actual_dimension, T, T const &, T const *>::type const_traverser;
 
         /** the view type associated with this array.
          */
@@ -772,7 +786,7 @@ public:
          */
     MultiArrayView (const difference_type &shape, pointer ptr)
     : m_shape (shape),
-      m_stride (detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape)),
+      m_stride (detail::defaultStride<actual_dimension>(shape)),
       m_ptr (ptr)
     {}
 
@@ -1147,10 +1161,11 @@ public:
         */
     bool isUnstrided(unsigned int dimension = N-1) const
     {
-        difference_type p = shape() - difference_type(1);
-        for(unsigned int k = dimension+1; k < N; ++k)
-            p[k] = 0;
-        return (&operator[](p) - m_ptr) == coordinateToScanOrderIndex(p);
+        difference_type s = vigra::detail::defaultStride<actual_dimension>(shape());
+        for(unsigned int k = 0; k <= dimension; ++k)
+            if(stride(k) != s[k])
+                return false;
+        return true;
     }
 
         /** bind the M outmost dimensions to certain indices.
@@ -1932,7 +1947,7 @@ MultiArrayView <N, T, StrideTag>::permuteDimensions (const difference_type &s) c
         ++check[s[i]];
     }
     vigra_precondition(check == difference_type(1),
-       "MultiArrayView::permuteDimensions(): every dimension must occur exactly once.");
+       "MultiArrayView::transpose(): every dimension must occur exactly once.");
     return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
 }
 
@@ -1979,7 +1994,7 @@ MultiArrayView <N, T, StrideTag>::permuteStridesDescending() const
 {
     difference_type ordering(strideOrdering(m_stride)), permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
-        permutation[ordering[N-1-k]] = k;
+        permutation[N-1-ordering[k]] = k;
     return permuteDimensions(permutation);
 }
 
@@ -2278,19 +2293,25 @@ The template parameters are as follows
 Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
-class MultiArray : public MultiArrayView <N, T>
+class MultiArray 
+: public MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type, 
+                            typename vigra::detail::ResolveMultiband<T>::Stride>
 {
 
 public:
-    using MultiArrayView <N, T>::actual_dimension;
-
+    typedef typename vigra::detail::ResolveMultiband<T>::type   actual_type;
+    typedef typename vigra::detail::ResolveMultiband<T>::Stride actual_stride;
+    
         /** the allocator type used to allocate the memory
          */
     typedef A allocator_type;
 
         /** the view type associated with this array.
          */
-    typedef MultiArrayView <N, T> view_type;
+    typedef MultiArrayView <N, typename vigra::detail::ResolveMultiband<T>::type, 
+                               typename vigra::detail::ResolveMultiband<T>::Stride> view_type;
+
+    using view_type::actual_dimension;
 
         /** the matrix type associated with this array.
          */
@@ -2330,23 +2351,21 @@ public:
 
         /** traverser type
          */
-    typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type
-    traverser;
+    typedef typename view_type::traverser traverser;
 
         /** traverser type to const data
          */
-    typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
-    const_traverser;
+    typedef typename view_type::const_traverser  const_traverser;
 
         /** sequential (random access) iterator type
          */
-    typedef T * iterator;
+    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, T, T &, T *>::type
+    iterator;
 
         /** sequential (random access) const iterator type
          */
-    typedef T * const_iterator;
+    typedef typename vigra::detail::MultiIteratorChooser<actual_stride>::template Iterator<N, T, T const &, T const *>::type
+    const_iterator;
 
 protected:
 
@@ -2383,15 +2402,15 @@ public:
         /** default constructor
          */
     MultiArray ()
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0)
+    : view_type(difference_type (diff_zero_t(0)),
+                difference_type (diff_zero_t(0)), 0)
     {}
 
         /** construct with given allocator
          */
     MultiArray (allocator_type const & alloc)
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0),
+    : view_type(difference_type (diff_zero_t(0)),
+                difference_type (diff_zero_t(0)), 0),
       m_alloc(alloc)
     {}
 
@@ -2420,7 +2439,7 @@ public:
         /** copy constructor
          */
     MultiArray (const MultiArray &rhs)
-    : MultiArrayView <N, T> (rhs.m_shape, rhs.m_stride, 0),
+    : view_type(rhs.m_shape, rhs.m_stride, 0),
       m_alloc (rhs.m_alloc)
     {
         allocate (this->m_ptr, this->elementCount (), rhs.data ());
@@ -2431,8 +2450,8 @@ public:
     template<class Expression>
     MultiArray (multi_math::MultiMathOperand<Expression> const & rhs,
                 allocator_type const & alloc = allocator_type())
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0),
+    : view_type(difference_type (diff_zero_t(0)),
+                difference_type (diff_zero_t(0)), 0),
       m_alloc (alloc)
     {
         multi_math::detail::assignOrResize(*this, rhs);
@@ -2643,7 +2662,7 @@ public:
          */
     void reshape (const difference_type &shape)
     {
-        reshape (shape, T());
+        reshape (shape, value_type());
     }
 
         /** Allocate new memory with the given shape and initialize it
@@ -2664,28 +2683,28 @@ public:
          */
     iterator begin ()
     {
-        return this->data();
+        return vigra::detail::MultiIteratorChooser<actual_stride>::constructIterator<iterator>((view_type *)this);
     }
 
         /** sequential iterator pointing beyond the last array element.
          */
     iterator end ()
     {
-        return this->data() + this->elementCount();
+        return begin() + this->elementCount();
     }
 
         /** sequential const iterator pointing to the first array element.
          */
     const_iterator begin () const
     {
-        return this->data();
+        return vigra::detail::MultiIteratorChooser<actual_stride>::constructIterator<iterator>((view_type const *)this);
     }
 
         /** sequential const iterator pointing beyond the last array element.
          */
     const_iterator end () const
     {
-        return this->data() + this->elementCount();
+        return begin() + this->elementCount();
     }
 
         /** get the allocator.
@@ -2694,25 +2713,30 @@ public:
     {
         return m_alloc;
     }
+    
+    static difference_type defaultStride(difference_type const & shape)
+    {
+        return vigra::detail::ResolveMultiband<T>::defaultStride(shape);
+    }
 };
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (difference_type_1 length,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (difference_type(length),
-                         detail::defaultStride <1> (difference_type(length)),
-                         0),
+: view_type(difference_type(length),
+            defaultStride(difference_type(length)),
+            0),
   m_alloc(alloc)
 {
-    allocate (this->m_ptr, this->elementCount (), T());
+    allocate (this->m_ptr, this->elementCount (), value_type());
 }
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            defaultStride(shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2720,15 +2744,15 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
         this->m_shape [0] = 1;
         this->m_stride [0] = 0;
     }
-    allocate (this->m_ptr, this->elementCount (), T());
+    allocate (this->m_ptr, this->elementCount (), value_type());
 }
 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference init,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            defaultStride(shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2742,9 +2766,9 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_pointer init,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            defaultStride(shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2759,9 +2783,9 @@ template <unsigned int N, class T, class A>
 template <class U, class StrideTag>
 MultiArray <N, T, A>::MultiArray(const MultiArrayView<N, U, StrideTag>  &rhs,
                                  allocator_type const & alloc)
-: MultiArrayView <N, T> (rhs.shape(),
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension>(rhs.shape()),
-                         0),
+: view_type(rhs.shape(),
+            defaultStride(rhs.shape()),
+            0),
   m_alloc (alloc)
 {
     allocate (this->m_ptr, rhs);
@@ -2785,7 +2809,7 @@ template <unsigned int N, class T, class A>
 void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
                                     const_reference initial)
 {
-    if (N== 0)
+    if (N == 0)
     {
         return;
     }
@@ -2795,9 +2819,9 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
     }
     else
     {
-        difference_type new_stride = detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (new_shape);
-        difference_type_1 new_size = new_shape [MultiArrayView<N,T>::actual_dimension-1] * new_stride [MultiArrayView<N,T>::actual_dimension-1];
-        T *new_ptr;
+        difference_type new_stride = defaultStride(new_shape);
+        difference_type_1 new_size = prod(new_shape);
+        pointer new_ptr = pointer();
         allocate (new_ptr, new_size, initial);
         deallocate (this->m_ptr, this->elementCount ());
         this->m_ptr = new_ptr;

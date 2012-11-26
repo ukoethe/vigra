@@ -52,6 +52,7 @@
 using namespace vigra;
 using namespace vigra::functor;
 
+template <class T>
 class MultiArrayDataTest
 {
 public:
@@ -60,12 +61,12 @@ public:
     // the image is filled from start to beginning (memory-wise) with
     // ascending numbers.
 
-    typedef int scalar_type;
+    typedef typename vigra::detail::ResolveMultiband<T>::type   scalar_type;
     typedef MultiArray <2, scalar_type> array2_type;
-    typedef MultiArray <3, scalar_type> array3_type;
-    typedef MultiArrayView <3, scalar_type> array3_view_type;
-    typedef array2_type::difference_type difference2_type;
-    typedef array3_type::difference_type difference3_type;
+    typedef MultiArray <3, T> array3_type;
+    typedef typename array3_type::view_type array3_view_type;
+    typedef typename array2_type::difference_type difference2_type;
+    typedef typename array3_type::difference_type difference3_type;
     
     difference3_type shape3;
     array3_type array3;
@@ -75,7 +76,7 @@ public:
     {
         // initialize the array to the test data
         for (int i = 0; i < 1000; ++i)
-            array3.data () [i] = i;
+            array3[i] = i;
     }
 
     void testHasData ()
@@ -112,7 +113,7 @@ public:
     void test_bindOuter ()
     {
         TinyVector <int, 2> outer_indices (2, 5);
-        MultiArrayView <1, scalar_type, UnstridedArrayTag>
+        MultiArrayView <1, scalar_type, array3_type::actual_stride>
             array = array3.bindOuter(outer_indices);
         shouldEqual ((array [TinyVector <int, 1> (0)]), 520);
         shouldEqual ((array [TinyVector <int, 1> (1)]), 521);
@@ -136,7 +137,7 @@ public:
     // bind tests
     void test_bind ()
     {
-        MultiArrayView <2, scalar_type, UnstridedArrayTag>
+        MultiArrayView <2, scalar_type, array3_type::actual_stride>
             array = array3.bind <1> (4);
         shouldEqual ((array [TinyVector <int, 2> (0, 0)]), 40);
         shouldEqual ((array [TinyVector <int, 2> (1, 0)]), 41);
@@ -160,17 +161,17 @@ public:
 
     void test_singletonDimension ()
     {
-        MultiArrayView <4, scalar_type, UnstridedArrayTag> a0 = array3.insertSingletonDimension(0);
+        MultiArrayView <4, scalar_type, array3_type::actual_stride> a0 = array3.insertSingletonDimension(0);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 0)]), 4);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 1, 0)]), 14);
         shouldEqual ((a0 [TinyVector <int, 4> (0, 4, 0, 1)]), 104);
 
-        MultiArrayView <4, scalar_type, UnstridedArrayTag> a1 = array3.insertSingletonDimension(1);
+        MultiArrayView <4, scalar_type, array3_type::actual_stride> a1 = array3.insertSingletonDimension(1);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 1, 0)]), 14);
         shouldEqual ((a1 [TinyVector <int, 4> (4, 0, 0, 1)]), 104);
 
-        MultiArrayView <4, scalar_type, UnstridedArrayTag> a3 = array3.insertSingletonDimension(3);
+        MultiArrayView <4, scalar_type, array3_type::actual_stride> a3 = array3.insertSingletonDimension(3);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 0, 0)]), 4);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 1, 0, 0)]), 14);
         shouldEqual ((a3 [TinyVector <int, 4> (4, 0, 1, 0)]), 104);
@@ -190,7 +191,7 @@ public:
         
         Shape offset (1,1,1);
         Shape size (5,5,5);
-        MultiArrayView <3, scalar_type, UnstridedArrayTag>
+        MultiArrayView <3, scalar_type, array3_type::actual_stride>
             array = array3.subarray (offset, size);
         shouldEqual (array [Shape (0,0,0)], 111);
         shouldEqual (array [Shape (5,2,1)], 236);
@@ -226,6 +227,7 @@ public:
 
     void testIsUnstrided()
     {
+        // for MultiArray<3, T>
         typedef difference3_type Shape;
 
         should(array3.isUnstrided());
@@ -244,9 +246,23 @@ public:
         should(array3.subarray(Shape(), array3.shape()-Shape(0,2,2)).isUnstrided(0));
     }
 
+    void testIsStrided()
+    {
+        // for MultiArray<3, Multiband<T> >
+        typedef difference3_type Shape;
+
+        should(!array3.isUnstrided());
+        should(array3.permuteStridesAscending().isUnstrided());
+        should(!array3.isUnstrided(0));
+        should(!array3.isUnstrided(1));
+        should(!array3.isUnstrided(2));
+        should(array3.bindInner(Shape2(0,0)).isUnstrided());
+    }
+
     // permute and transpose tests
     void testPermute ()
-    {   
+    {
+        typedef MultiArrayView <3, scalar_type, StridedArrayTag> transposed_view;
         array3.reshape(difference3_type(3,5,7));
         for(int k=0; k<array3.size(); ++k)
             array3[k] = k;
@@ -258,25 +274,51 @@ public:
                     ref(m,k,l) = array3(k,l,m);
 
         MultiArrayView <3, scalar_type, StridedArrayTag>
-                parray = array3.permuteDimensions (difference3_type (2, 0, 1));        
+                parray = array3.transpose (difference3_type (2, 0, 1));        
         shouldEqual(ref.shape(), parray.shape());
         should(ref == parray);
+        
+        if(vigra::detail::ResolveMultiband<T>::value) // array is Multiband<T>
+        {
+            shouldEqual(array3.strideOrdering(), Shape3(1,2,0));
+            
+            array3_type ref_ascending(difference3_type(array3.shape(2), array3.shape(0), array3.shape(1)));
+            for(int k=0; k<array3.shape(0); ++k)
+                for(int l=0; l<array3.shape(1); ++l)
+                    for(int m=0; m<array3.shape(2); ++m)
+                        ref_ascending(m,k,l) = array3(k,l,m);
 
-        MultiArrayView <3, scalar_type, StridedArrayTag>
-                parray_ascending = parray.permuteStridesAscending();        
-        shouldEqual(array3.shape(), parray_ascending.shape());
-        should(array3 == parray_ascending);
+            transposed_view parray_ascending = array3.permuteStridesAscending();
+            shouldEqual(ref_ascending.shape(), parray_ascending.shape());
+            should(ref_ascending == parray_ascending);
+            
+            array3_type ref_descending(difference3_type(array3.shape(1), array3.shape(0), array3.shape(2)));
+            for(int k=0; k<array3.shape(0); ++k)
+                for(int l=0; l<array3.shape(1); ++l)
+                    for(int m=0; m<array3.shape(2); ++m)
+                        ref_descending(l,k,m) = array3(k,l,m);
 
-        array3_type ref_descending(difference3_type(array3.shape(2), array3.shape(1), array3.shape(0)));
-        for(int k=0; k<array3.shape(0); ++k)
-            for(int l=0; l<array3.shape(1); ++l)
-                for(int m=0; m<array3.shape(2); ++m)
-                    ref_descending(m,l,k) = array3(k,l,m);
+            transposed_view parray_descending = array3.permuteStridesDescending();
+            shouldEqual(ref_descending.shape(), parray_descending.shape());
+            should(ref_descending == parray_descending);
+        }
+        else
+        {
+            shouldEqual(array3.strideOrdering(), Shape3(0,1,2));
+            transposed_view parray_ascending = parray.permuteStridesAscending();        
+            shouldEqual(array3.shape(), parray_ascending.shape());
+            should(array3 == parray_ascending);
 
-        MultiArrayView <3, scalar_type, StridedArrayTag>
-                parray_descending = array3.permuteStridesDescending();        
-        shouldEqual(ref_descending.shape(), parray_descending.shape());
-        should(ref_descending == parray_descending);
+            array3_type ref_descending(difference3_type(array3.shape(2), array3.shape(1), array3.shape(0)));
+            for(int k=0; k<array3.shape(0); ++k)
+                for(int l=0; l<array3.shape(1); ++l)
+                    for(int m=0; m<array3.shape(2); ++m)
+                        ref_descending(m,l,k) = array3(k,l,m);
+
+            transposed_view parray_descending = array3.permuteStridesDescending();        
+            shouldEqual(ref_descending.shape(), parray_descending.shape());
+            should(ref_descending == parray_descending);
+        }
 
         array2_type ref2(difference2_type(array3.shape(1), array3.shape(0)));
         for(int k=0; k<array3.shape(0); ++k)
@@ -289,12 +331,12 @@ public:
         should(ref2 == array2);
 
         try {
-            array3.permuteDimensions (difference3_type (2, 0, 0));   
+            array3.transpose (difference3_type (2, 0, 0));   
             failTest("no exception thrown");
         }
         catch(vigra::ContractViolation & c)
         {
-            std::string expected("\nPrecondition violation!\nMultiArrayView::permuteDimensions(): every dimension must occur exactly once");
+            std::string expected("\nPrecondition violation!\nMultiArrayView::transpose(): every dimension must occur exactly once");
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
@@ -360,7 +402,7 @@ public:
             shouldEqual(array[k], 10*k+2);
             
         typedef MultiArrayView <2, scalar_type, UnstridedArrayTag>::difference_type Shape;
-        MultiArrayView <2, scalar_type, UnstridedArrayTag>
+        MultiArrayView <2, scalar_type, array3_type::actual_stride>
             subarray = array3.bindOuter(2).subarray(Shape(1,0), Shape(10,9));
         shouldEqual(subarray.size(), 81);
         for(int k=0, l=200; k< subarray.size(); ++k, ++l)
@@ -373,8 +415,8 @@ public:
     
     void testAssignmentAndReset()
     {
-        typedef MultiArrayView <3, scalar_type, UnstridedArrayTag>::difference_type Shape;
-        MultiArrayView <3, scalar_type, UnstridedArrayTag> array;
+        typedef Shape3 Shape;
+        array3_type::view_type array;
         array = array3;
         should(array3 == array);
         try {
@@ -387,7 +429,7 @@ public:
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
-        MultiArrayView <3, scalar_type, UnstridedArrayTag> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
+        MultiArrayView <3, scalar_type, array3_type::actual_stride> subarray = array3.subarray(Shape(0,0,0), Shape(10,1,1));
         subarray = array3.subarray(Shape(0,1,0), Shape(10,2,1)); // should overwrite the data
         for(unsigned int k=0; k<10; ++k)
             shouldEqual(array3(k,0,0), array3(k,1,0));
@@ -2743,23 +2785,46 @@ struct MultiArrayDataTestSuite
     MultiArrayDataTestSuite()
     : vigra::test_suite("MultiArrayDataTestSuite")
     {
-        add( testCase( &MultiArrayDataTest::testHasData ) );
-        add( testCase( &MultiArrayDataTest::testEquality ) );
-        add( testCase( &MultiArrayDataTest::test_subarray ) );
-        add( testCase( &MultiArrayDataTest::test_stridearray ) );
-        add( testCase( &MultiArrayDataTest::test_bindOuter ) );
-        add( testCase( &MultiArrayDataTest::test_bindInner ) );
-        add( testCase( &MultiArrayDataTest::test_bindAt ) );
-        add( testCase( &MultiArrayDataTest::test_bind ) );
-        add( testCase( &MultiArrayDataTest::test_bind0 ) );
-        add( testCase( &MultiArrayDataTest::testIsUnstrided ) );
-        add( testCase( &MultiArrayDataTest::test_singletonDimension ) );
-        add( testCase( &MultiArrayDataTest::testPermute ) );
-        add( testCase( &MultiArrayDataTest::testMethods ) );
-        add( testCase( &MultiArrayDataTest::testScanOrderAccess ) );
-        add( testCase( &MultiArrayDataTest::testAssignmentAndReset ) );
-        add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
-        add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
+        {
+            typedef int T;
+            add( testCase( &MultiArrayDataTest<T>::testHasData ) );
+            add( testCase( &MultiArrayDataTest<T>::testEquality ) );
+            add( testCase( &MultiArrayDataTest<T>::test_subarray ) );
+            add( testCase( &MultiArrayDataTest<T>::test_stridearray ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindOuter ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindInner ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindAt ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bind ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bind0 ) );
+            add( testCase( &MultiArrayDataTest<T>::testIsUnstrided ) );
+            add( testCase( &MultiArrayDataTest<T>::test_singletonDimension ) );
+            add( testCase( &MultiArrayDataTest<T>::testPermute ) );
+            add( testCase( &MultiArrayDataTest<T>::testMethods ) );
+            add( testCase( &MultiArrayDataTest<T>::testScanOrderAccess ) );
+            add( testCase( &MultiArrayDataTest<T>::testAssignmentAndReset ) );
+            add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
+            add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
+        }
+        {
+            typedef Multiband<int> T;
+            add( testCase( &MultiArrayDataTest<T>::testHasData ) );
+            add( testCase( &MultiArrayDataTest<T>::testEquality ) );
+            add( testCase( &MultiArrayDataTest<T>::test_subarray ) );
+            add( testCase( &MultiArrayDataTest<T>::test_stridearray ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindOuter ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindInner ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bindAt ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bind ) );
+            add( testCase( &MultiArrayDataTest<T>::test_bind0 ) );
+            add( testCase( &MultiArrayDataTest<T>::testIsStrided ) );
+            add( testCase( &MultiArrayDataTest<T>::test_singletonDimension ) );
+            add( testCase( &MultiArrayDataTest<T>::testPermute ) );
+            add( testCase( &MultiArrayDataTest<T>::testMethods ) );
+            add( testCase( &MultiArrayDataTest<T>::testScanOrderAccess ) );
+            add( testCase( &MultiArrayDataTest<T>::testAssignmentAndReset ) );
+            add( testCase( &MultiArrayNavigatorTest::testNavigator ) );
+            add( testCase( &MultiArrayNavigatorTest::testCoordinateNavigator ) );
+        }
     }
 };
 
