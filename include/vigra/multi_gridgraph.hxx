@@ -1103,10 +1103,83 @@ public:
     // --------------------------------------------------
     // support for IncidenceGraph:
 
+        // convention: Edge id threate neighbor index as fastest changing dimension
+        // advantages:   * edges of a given node have consecutive ids
+        //               * edges with max id belongs to last vertex
+        // disadvantage: * no direct correspondence between ids and scan order index
+        //
+    // index_type maxEdgeId() const
+    // {
+        // if(edgeNum() == 0)
+            // return -1;
+        // unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
+        // index_type d = neighborIndices_[nbtype].back();
+        // return prod(edge_propmap_shape()) - maxUniqueDegree() + d;
+    // }
+    
+    // index_type id(Edge const & e) const
+    // {
+        // index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), e.template subarray<0, N>());
+        // return res*maxUniqueDegree() + e[N];
+    // }
+    
+    // index_type maxArcId() const
+    // {
+        // if(edgeNum() == 0)
+            // return -1;
+        // unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
+        // index_type d = neighborIndices_[nbtype].back();
+        // return is_directed
+                      // ? prod(edge_propmap_shape()) - maxDegree() + d
+                      // : 2*prod(edge_propmap_shape()) - maxDegree() + d;
+    // }
+    
+    // index_type id(Arc const & a) const
+    // {
+        // index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), source(a))*maxDegree();
+        // return a.isReversed()
+                  // ? res + oppositeIndex(a[N])
+                  // : res + a[N];
+    // }
+    
+        // convention: Edge id equals the scan order index in an EdgeMap
+        // advantage:    * direct correspondence between ids and scan order index
+        //               * edges with same neighbor index have consecutive ids
+        // diadvantages: * edges of a given node have ids with large strides
+        //               * edges with max id does not necessariyl belong to last vertex
+        // Both conventions would become equal when the neighbor index were stored in 
+        // edge[0] instead of edge[N], but then the 'channel' index would be first,
+        // contrary to the usual convention in vigranumpy. The would also be equal
+        // if we used C-order, so that scan order counts dimensions from last to first.
+    index_type maxEdgeId() const
+    {
+        if(is_directed)
+            return maxArcId();
+        if(edgeNum() == 0)
+            return -1;
+        Node lastNode = shape() - shape_type(1);
+        Arc a(lastNode, backIndices_[get_border_type(lastNode)].back(), false);
+        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
+    }
+    
     index_type id(Edge const & e) const
     {
-        index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), e.template subarray<0, N>());
-        return res*uniqueDegree() + e[N];
+        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), e);
+    }
+    
+    index_type maxArcId() const
+    {
+        if(edgeNum() == 0)
+            return -1;
+        Node lastNode = shape() - shape_type(1);
+        index_type n = neighborIndices_[get_border_type(lastNode)][0];
+        Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
+        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
+    }
+    
+    index_type id(Arc const & a) const
+    {
+        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), directedArc(a));
     }
     
     index_type id(EdgeIt const & e) const
@@ -1119,23 +1192,6 @@ public:
         return id(*e);
     }
 
-    index_type maxEdgeId() const
-    {
-        if(edgeNum() == 0)
-            return -1;
-        unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
-        index_type d = neighborIndices_[nbtype].back();
-        return prod(edge_propmap_shape()) - uniqueDegree() + d;
-    }
-    
-    index_type id(Arc const & a) const
-    {
-        index_type res = detail::CoordinateToScanOrder<N>::exec(shape(), source(a))*maxDegree();
-        return a.isReversed()
-                  ? res + oppositeIndex(a[N])
-                  : res + a[N];
-    }
-    
     index_type id(ArcIt const & a) const
     {
         return id(*a);
@@ -1144,17 +1200,6 @@ public:
     index_type id(OutArcIt const & a) const
     {
         return id(*a);
-    }
-    
-    index_type maxArcId() const
-    {
-        if(edgeNum() == 0)
-            return -1;
-        unsigned int nbtype = get_border_type(--get_vertex_end_iterator());
-        index_type d = neighborIndices_[nbtype].back();
-        return is_directed
-                      ? prod(edge_propmap_shape()) - maxDegree() + d
-                      : 2*prod(edge_propmap_shape()) - maxDegree() + d;
     }
     
     Arc direct(Edge const & e, bool forward) const
@@ -1350,7 +1395,7 @@ public:
         return (degree_size_type)neighborOffsets_.size();
     }
 
-    degree_size_type uniqueDegree() const 
+    degree_size_type maxUniqueDegree() const 
     {
          return is_directed
                     ? maxDegree()
@@ -1366,7 +1411,7 @@ public:
     {
         edge_propmap_shape_type res(SkipInitialization);
         res.template subarray<0, N>() = shape_;
-        res[N] = uniqueDegree();
+        res[N] = maxUniqueDegree();
         return res;
     }
 
@@ -1399,7 +1444,7 @@ public:
     edge_descriptor make_edge_descriptor(vertex_descriptor const & v,
                                          index_type neighborIndex) const
     {
-        if(neighborIndex < uniqueDegree())
+        if(neighborIndex < maxUniqueDegree())
             return edge_descriptor(v, neighborIndex, false);
         else
             return edge_descriptor(neighbor(v, neighborIndex), oppositeIndex(neighborIndex), true);
