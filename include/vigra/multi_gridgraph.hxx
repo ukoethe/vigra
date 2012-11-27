@@ -373,6 +373,11 @@ public:
     {
         return &target_;
     }
+    
+    operator const_reference() const
+    {
+        return target_;
+    }
 
     const_reference target() const
     {
@@ -510,7 +515,7 @@ class GridGraphOutEdgeIterator
         return edge_descriptor_;
     }
 
-    operator value_type() const
+    operator const_reference() const
     {
         return edge_descriptor_;
     }
@@ -528,6 +533,11 @@ class GridGraphOutEdgeIterator
     index_type neighborIndex() const
     {
         return (*neighborIndices_)[index_];
+    }
+
+    arc_descriptor const & arcDescriptor() const
+    {
+        return edge_descriptor_;
     }
 
     bool operator==(GridGraphOutEdgeIterator const & other) const
@@ -649,7 +659,7 @@ class GridGraphOutArcIterator
         return this->edge_descriptor_;
     }
 
-    operator value_type() const
+    operator const_reference() const
     {
         return this->edge_descriptor_;
     }
@@ -745,7 +755,7 @@ public:
         return *outEdgeIterator_;
     }
 
-    operator value_type() const
+    operator const_reference() const
     {
         return *outEdgeIterator_;
     }
@@ -871,7 +881,7 @@ public:
         return *(this->outEdgeIterator_);
     }
 
-    operator value_type() const
+    operator const_reference() const
     {
         return *(this->outEdgeIterator_);
     }
@@ -967,12 +977,19 @@ struct GridGraphBase<N, vigragraph::directed_tag>
     : public MultiArray<N+1, Multiband<T> >
     {
       public:
-        typedef MultiArray<N+1, Multiband<T> >      base_type;
-        typedef typename base_type::difference_type difference_type;
-        typedef typename base_type::key_type        key_type;
-        typedef typename base_type::value_type      value_type; 
-        typedef typename base_type::reference       reference;
-        typedef vigragraph::read_write_property_map_tag         category;
+        typedef MultiArray<N+1, Multiband<T> >             base_type;
+        typedef typename base_type::difference_type        difference_type;
+        typedef typename base_type::key_type               key_type;
+        typedef typename base_type::value_type             value_type; 
+        typedef typename base_type::reference              reference;
+        typedef typename base_type::const_reference        const_reference;
+        typedef vigragraph::read_write_property_map_tag    category;
+        
+        typedef lemon::True                                ReferenceMapTag;
+        typedef key_type                                   Key;
+        typedef value_type                                 Value;
+        typedef reference                                  Reference;
+        typedef const_reference                            ConstReference;
 
         ArcMap()
         : base_type()
@@ -1005,6 +1022,13 @@ struct GridGraphBase<N, vigragraph::directed_tag>
             base_type::operator=(m);
             return *this;
         }
+        
+        // appropriate operator[] are inherited
+        
+        void set(Key const & k, Value const & v)
+        {
+            (*this)[k] = v;
+        }
     };
 };
 
@@ -1018,13 +1042,19 @@ struct GridGraphBase<N, vigragraph::undirected_tag>
     : public MultiArray<N+1, Multiband<T> >
     {
       public:
-        typedef MultiArray<N+1, Multiband<T> >      base_type;
-        typedef GridGraphArcDescriptor<N>           difference_type;
-        typedef difference_type                     key_type;
-        typedef typename base_type::value_type      value_type; 
-        typedef typename base_type::reference       reference;
-        typedef typename base_type::const_reference const_reference;
-        typedef vigragraph::read_write_property_map_tag         category;
+        typedef MultiArray<N+1, Multiband<T> >             base_type;
+        typedef GridGraphArcDescriptor<N>                  difference_type;
+        typedef difference_type                            key_type;
+        typedef typename base_type::value_type             value_type; 
+        typedef typename base_type::reference              reference;
+        typedef typename base_type::const_reference        const_reference;
+        typedef vigragraph::read_write_property_map_tag    category;
+        
+        typedef lemon::True                                ReferenceMapTag;
+        typedef key_type                                   Key;
+        typedef value_type                                 Value;
+        typedef reference                                  Reference;
+        typedef const_reference                            ConstReference;
         
         ArcMap()
         : base_type()
@@ -1074,6 +1104,11 @@ struct GridGraphBase<N, vigragraph::undirected_tag>
             {
                 return base_type::operator[](s);
             }
+        }
+        
+        void set(Key const & k, Value const & v)
+        {
+            (*this)[k] = v;
         }
         
         GridGraph<N, vigragraph::undirected_tag> const * graph_;
@@ -1161,11 +1196,11 @@ public:
     class IndexMap 
     {
       public:
-        typedef Node                        Key;
-        typedef Node                        Value;
-        typedef Key                         key_type;
-        typedef Value                       value_type; 
-        typedef Value const &               reference;
+        typedef Node                                    Key;
+        typedef Node                                    Value;
+        typedef Key                                     key_type;
+        typedef Value                                   value_type; 
+        typedef Value const &                           reference;
         typedef vigragraph::readable_property_map_tag   category;
 
         IndexMap()
@@ -1186,11 +1221,18 @@ public:
     {
       public:
         typedef MultiArray<N, T> base_type;
-        typedef typename base_type::difference_type difference_type;
-        typedef typename base_type::key_type        key_type;
-        typedef typename base_type::value_type      value_type; 
-        typedef typename base_type::reference       reference;
-        typedef vigragraph::read_write_property_map_tag         category;
+        typedef typename base_type::difference_type        difference_type;
+        typedef typename base_type::key_type               key_type;
+        typedef typename base_type::value_type             value_type; 
+        typedef typename base_type::reference              reference;
+        typedef typename base_type::const_reference        const_reference;
+        typedef vigragraph::read_write_property_map_tag    category;
+        
+        typedef lemon::True                                ReferenceMapTag;
+        typedef key_type                                   Key;
+        typedef value_type                                 Value;
+        typedef reference                                  Reference;
+        typedef const_reference                            ConstReference;
 
         NodeMap()
         : base_type()
@@ -1223,6 +1265,13 @@ public:
             base_type::operator=(m);
             return *this;
         }
+        
+        // appropriate operator[] are inherited
+        
+        void set(Key const & k, Value const & v)
+        {
+            (*this)[k] = v;
+        }
     };
     
     template <class T>
@@ -1230,12 +1279,19 @@ public:
     : public MultiArray<N+1, Multiband<T> >
     {
       public:
-        typedef MultiArray<N+1, Multiband<T> > base_type;
-        typedef typename base_type::difference_type difference_type;
-        typedef typename base_type::key_type        key_type;
-        typedef typename base_type::value_type      value_type; 
-        typedef typename base_type::reference       reference;
-        typedef vigragraph::read_write_property_map_tag         category;
+        typedef MultiArray<N+1, Multiband<T> >             base_type;
+        typedef typename base_type::difference_type        difference_type;
+        typedef typename base_type::key_type               key_type;
+        typedef typename base_type::value_type             value_type; 
+        typedef typename base_type::reference              reference;
+        typedef typename base_type::const_reference        const_reference;
+        typedef vigragraph::read_write_property_map_tag    category;
+        
+        typedef lemon::True                                ReferenceMapTag;
+        typedef key_type                                   Key;
+        typedef value_type                                 Value;
+        typedef reference                                  Reference;
+        typedef const_reference                            ConstReference;
 
         EdgeMap()
         : base_type()
@@ -1267,6 +1323,13 @@ public:
         {
             base_type::operator=(m);
             return *this;
+        }
+        
+        // appropriate operator[] are inherited
+        
+        void set(Key const & k, Value const & v)
+        {
+            (*this)[k] = v;
         }
     };
 
@@ -1317,6 +1380,13 @@ public:
         return id(*v);
     }
     
+    Node nodeFromId(index_type i) const
+    {
+        Node res(SkipInitialization);
+        detail::ScanOrderToCoordinate<N>::exec(i, shape(), res);
+        return res;
+    }
+
     index_type maxNodeId() const
     {
         return prod(shape()) - 1;
@@ -1399,35 +1469,9 @@ public:
     // support for IncidenceGraph:
 
         // convention: Edge id equals the scan order index in an EdgeMap
-    index_type maxEdgeId() const
-    {
-        if(is_directed)
-            return maxArcId();
-        if(edgeNum() == 0)
-            return -1;
-        Node lastNode = shape() - shape_type(1);
-        Arc a(lastNode, backIndices_[get_border_type(lastNode)].back(), false);
-        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
-    }
-    
     index_type id(Edge const & e) const
     {
         return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), e);
-    }
-    
-    index_type maxArcId() const
-    {
-        if(edgeNum() == 0)
-            return -1;
-        Node lastNode = shape() - shape_type(1);
-        index_type n = neighborIndices_[get_border_type(lastNode)][0];
-        Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
-        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
-    }
-    
-    index_type id(Arc const & a) const
-    {
-        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), directedArc(a));
     }
     
     index_type id(EdgeIt const & e) const
@@ -1445,6 +1489,29 @@ public:
         return id(*e);
     }
 
+    Edge edgeFromId(index_type i) const
+    {
+        Edge res(SkipInitialization);
+        detail::ScanOrderToCoordinate<N+1>::exec(i, edge_propmap_shape(), res);
+        return res;
+    }
+    
+    index_type maxEdgeId() const
+    {
+        if(is_directed)
+            return maxArcId();
+        if(edgeNum() == 0)
+            return -1;
+        Node lastNode = shape() - shape_type(1);
+        Arc a(lastNode, backIndices_[get_border_type(lastNode)].back(), false);
+        return detail::CoordinateToScanOrder<N+1>::exec(edge_propmap_shape(), a);
+    }
+    
+    index_type id(Arc const & a) const
+    {
+        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), directedArc(a));
+    }
+    
     index_type id(ArcIt const & a) const
     {
         return id(*a);
@@ -1460,31 +1527,122 @@ public:
         return id(*a);
     }
     
+    Arc arcFromId(index_type i) const
+    {
+        Arc res;
+        detail::ScanOrderToCoordinate<N+1>::exec(i, arc_propmap_shape(), res);
+        return undirectedArc(res);
+    }
+    
+    index_type maxArcId() const
+    {
+        if(edgeNum() == 0)
+            return -1;
+        Node lastNode = shape() - shape_type(1);
+        index_type n = neighborIndices_[get_border_type(lastNode)][0];
+        Arc a(neighbor(lastNode, n), oppositeIndex(n), false);
+        return detail::CoordinateToScanOrder<N+1>::exec(arc_propmap_shape(), a);
+    }
+    
+    bool direction(Arc const & a) const
+    {
+        return !a.isReversed();
+    }
+    
     Arc direct(Edge const & e, bool forward) const
     {
-        return Arc(e, !forward);
+        if(!is_directed || forward)
+            return Arc(e, !forward);
+        else
+            return Arc(v(e), oppositeIndex(e[N]), true);
+    }
+    
+    Arc direct(Edge const & e, Node const & n) const
+    {
+        if(u(e) == n)
+            return direct(e, true);
+        if(v(e) == n)
+            return direct(e, false);
+        return Arc(lemon::INVALID);
+    }
+    
+    Node oppositeNode(Node const & n, Edge const & e) const
+    {
+        Node start(u(e)), end(v(e));
+        if(n == start)
+            return end;
+        if(n == end)
+            return start;
+        return Node(lemon::INVALID);
     }
     
     Arc oppositeArc(Arc const & a) const
     {
         return is_directed
-                 ? Arc(neighbor(a.vertexDescriptor(), a[N]), oppositeIndex(a[N]), false)
+                 ? Arc(neighbor(a.vertexDescriptor(), a.edgeIndex()), oppositeIndex(a.edgeIndex()), false)
                  : Arc(a, !a.isReversed());
     }
     
     Arc directedArc(Arc const & a) const
     {
         return a.isReversed()
-                 ? Arc(neighbor(a.vertexDescriptor(), a[N]), oppositeIndex(a[N]), false)
+                 ? Arc(neighbor(a.vertexDescriptor(), a.edgeIndex()), oppositeIndex(a.edgeIndex()), false)
                  : a;
     }
     
-    vertex_descriptor source(edge_descriptor const & e) const 
+    Arc undirectedArc(Arc const & a) const
+    {
+        return a.edgeIndex() < maxUniqueDegree() 
+                 ? a
+                 : Arc(neighbor(a.vertexDescriptor(), a.edgeIndex()), oppositeIndex(a.edgeIndex()), true);
+    }
+    
+    Node baseNode(IncEdgeIt const & e)  const
+    {
+        return source(e.arcDescriptor());
+    }
+    
+    Node runningNode(IncEdgeIt const & e)  const
+    {
+        return target(e.arcDescriptor());
+    }
+    
+    Node baseNode(IncBackEdgeIt const & e)  const
+    {
+        return source(e.arcDescriptor());
+    }
+    
+    Node runningNode(IncBackEdgeIt const & e)  const
+    {
+        return target(e.arcDescriptor());
+    }
+    
+    Node baseNode(OutArcIt const & a)  const
+    {
+        return source(*a);
+    }
+    
+    Node runningNode(OutArcIt const & a)  const
+    {
+        return target(*a);
+    }
+    
+    Node baseNode(OutBackArcIt const & a)  const
+    {
+        return source(*a);
+    }
+    
+    Node runningNode(OutBackArcIt const & a)  const
+    {
+        return target(*a);
+    }
+    
+    vertex_descriptor source(Arc const & e) const 
     {
         return source_or_target(e, true);
     }
 
-    vertex_descriptor target(edge_descriptor const & e) const 
+    vertex_descriptor target(Arc const & e) const 
     {
         return source_or_target(e, false);
     }

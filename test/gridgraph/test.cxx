@@ -609,6 +609,7 @@ struct GridGraphTests
                 
                 shouldEqual(j.scanOrderIndex(), g.id(j));
                 shouldEqual(j.scanOrderIndex(), g.id(*j));
+                shouldEqual(*j, g.nodeFromId(g.id(*j)));
                 
                 shouldEqual(g.out_degree(j), g.out_degree(*j));
                 shouldEqual(g.out_degree(j), out_degree(*j, g));
@@ -641,6 +642,7 @@ struct GridGraphTests
         static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
+        typedef typename Graph::Node Node;
         
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
         for(; i != iend; ++i)
@@ -712,25 +714,55 @@ struct GridGraphTests
                     should(a == *la);
                     shouldEqual(source(oa, g), *n);
                     shouldEqual(target(oa, g), *j);
+                    shouldEqual(g.baseNode(la), *j);
+                    shouldEqual(g.runningNode(la), *n);
                     shouldEqual(g.oppositeArc(a), oa);
                     
                     typename Graph::Edge ge = g.findEdge(*j, *n),
                                          oe = g.findEdge(*n, *j);
                     should(ge == *le);
+                    shouldEqual(g.baseNode(le), *j);
+                    shouldEqual(g.runningNode(le), *n);
                     
                     typename Graph::Node u = g.u(oe), 
                                          v = g.v(oe);
-                    if(!directed)
+                    if(directed)
+                    {
+                        should(g.direction(*la));
+                        shouldEqual(g.direct(*le, true), *la);
+                        shouldEqual(g.direct(*le, false), g.oppositeArc(*la));
+                    }
+                    else
                     {
                         should(oe == *le);
                         if(g.id(n) < g.id(j))
+                        {
                             std::swap(u, v);
+                            should(g.direction(*la));
+                            shouldEqual(g.direct(*le, true), *la);
+                            shouldEqual(g.direct(*le, false), g.oppositeArc(*la));
+                        }
+                        else
+                        {
+                            should(!g.direction(*la));
+                            shouldEqual(g.direct(*le, false), *la);
+                            shouldEqual(g.direct(*le, true), g.oppositeArc(*la));
+                        }
                     }
+
                     shouldEqual(u, *n);
                     shouldEqual(v, *j);
+                    shouldEqual(g.direct(*le, v), *la);
+                    shouldEqual(g.direct(*le, u), g.oppositeArc(*la));
+                    shouldEqual(g.oppositeNode(u, *le), v);
+                    shouldEqual(g.oppositeNode(v, *le), u);
+                    shouldEqual(g.oppositeNode(lemon::INVALID, *le), Node(lemon::INVALID));
                     
                     shouldEqual(arcIdMap[*la], g.id(la));
                     shouldEqual(edgeIdMap[*la], g.id((typename Graph::Edge &)*la));
+                    shouldEqual(edgeIdMap[*le], g.id(*le));
+                    shouldEqual(*la, g.arcFromId(g.id(*la)));
+                    shouldEqual(*le, g.edgeFromId(g.id(*le)));
                 }
                 should(!n.isValid() && n.atEnd());
                 should(n == lemon::INVALID);
@@ -848,11 +880,15 @@ struct GridGraphTests
                     should(a == *la);
                     shouldEqual(source(oa, g), *n);
                     shouldEqual(target(oa, g), *j);
+                    shouldEqual(g.baseNode(la), *j);
+                    shouldEqual(g.runningNode(la), *n);
                     shouldEqual(g.oppositeArc(a), oa);
                     
                     typename Graph::Edge ge = g.findEdge(*j, *n),
                                          oe = g.findEdge(*n, *j);
                     should(ge == *le);
+                    shouldEqual(g.baseNode(le), *j);
+                    shouldEqual(g.runningNode(le), *n);
                     
                     typename Graph::Node u = g.u(oe), 
                                          v = g.v(oe);
@@ -867,6 +903,9 @@ struct GridGraphTests
                     
                     shouldEqual(arcIdMap[*la], g.id(la));
                     shouldEqual(edgeIdMap[*la], g.id((typename Graph::Edge &)*la));
+                    shouldEqual(edgeIdMap[*le], g.id(*le));
+                    shouldEqual(*la, g.arcFromId(g.id(*la)));
+                    shouldEqual(*le, g.edgeFromId(g.id(*le)));
                 }
                 should(!n.isValid() && n.atEnd());
                 should(n == lemon::INVALID);
@@ -960,7 +999,8 @@ struct GridGraphTests
                 targetVertexMap[target(*e, g)] += 1;
                 
                 shouldEqual(edgeIdMap[*e], g.id(el));
-                
+                shouldEqual(*el, g.edgeFromId(g.id(*el)));
+
                 if(maxEdgeId < g.id(el))
                     maxEdgeId = g.id(el);
             }
@@ -1039,6 +1079,8 @@ struct GridGraphTests
                 targetVertexMap[target(*e, g)] += 1;
                 edgeMap[*e] += 1;
                 arcMap[*e] += 1;
+                
+                shouldEqual(*e, g.arcFromId(g.id(*e)));
                 
                 if(maxArcId < g.id(e))
                     maxArcId = g.id(e);
