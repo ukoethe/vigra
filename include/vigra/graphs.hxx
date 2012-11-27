@@ -150,7 +150,7 @@ struct graph_traits {
 
     static inline vertex_descriptor null_vertex()
     {
-        return vertex_descriptor(lemon::INVALD);
+        return vertex_descriptor(-1);
     }
 };
 
