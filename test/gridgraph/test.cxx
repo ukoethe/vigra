@@ -42,6 +42,11 @@
 #include <vigra/multi_localminmax.hxx>
 #include <vigra/algorithm.hxx>
 
+#ifdef WITH_BOOST_GRAPH
+#  include <boost/graph/graph_concepts.hpp>
+#endif
+
+
 using namespace vigra;
 
 template <unsigned int N>
@@ -575,6 +580,14 @@ struct GridGraphTests
             shouldEqual(g.num_edges(), g.edgeNum());
             shouldEqual(g.arcNum(), directed ? g.edgeNum() : 2*g.edgeNum());
         }
+#ifdef WITH_BOOST_GRAPH
+        BOOST_CONCEPT_ASSERT(( vigragraph::GraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::IncidenceGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::AdjacencyGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::VertexListGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::EdgeListGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::AdjacencyMatrixConcept<G> ));
+#endif
     }
     
     template <class DirectedTag, NeighborhoodType NType>

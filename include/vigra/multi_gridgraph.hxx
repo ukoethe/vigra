@@ -463,6 +463,7 @@ class GridGraphOutEdgeIterator
     typedef value_type const &                   const_reference;
     typedef value_type const *                   pointer;
     typedef value_type const *                   const_pointer;
+    typedef MultiArrayIndex                      difference_type;
     typedef std::forward_iterator_tag            iterator_category;
 
     friend struct NeighborhoodTests<N>;
@@ -618,6 +619,7 @@ class GridGraphOutArcIterator
     typedef value_type const &                 const_reference;
     typedef value_type const *                 pointer;
     typedef value_type const *                 const_pointer;
+    typedef MultiArrayIndex                    difference_type;
     typedef std::forward_iterator_tag          iterator_category;
 
     friend struct NeighborhoodTests<N>;

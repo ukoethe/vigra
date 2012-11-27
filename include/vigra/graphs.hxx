@@ -148,7 +148,10 @@ struct graph_traits {
     typedef typename G::edges_size_type        edges_size_type;
     typedef typename G::degree_size_type       degree_size_type;
 
-    static inline vertex_descriptor null_vertex();
+    static inline vertex_descriptor null_vertex()
+    {
+        return vertex_descriptor(lemon::INVALD);
+    }
 };
 
 // property_traits class template
