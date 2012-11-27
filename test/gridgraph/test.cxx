@@ -583,6 +583,7 @@ struct GridGraphTests
 #ifdef WITH_BOOST_GRAPH
         BOOST_CONCEPT_ASSERT(( vigragraph::GraphConcept<G> ));
         BOOST_CONCEPT_ASSERT(( vigragraph::IncidenceGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( vigragraph::BidirectionalGraphConcept<G> ));
         BOOST_CONCEPT_ASSERT(( vigragraph::AdjacencyGraphConcept<G> ));
         BOOST_CONCEPT_ASSERT(( vigragraph::VertexListGraphConcept<G> ));
         BOOST_CONCEPT_ASSERT(( vigragraph::EdgeListGraphConcept<G> ));
@@ -630,6 +631,7 @@ struct GridGraphTests
                 shouldEqual(g.back_degree(j), g.back_degree(*j));
                 shouldEqual(g.forward_degree(j) + g.back_degree(j), g.out_degree(j));
                 shouldEqual(g.in_degree(j), g.out_degree(j));
+                shouldEqual(g.degree(j), g.isDirected() ? 2*g.out_degree(j) : g.out_degree(j));
                 put(vertexMap, *j, get(vertexMap, *j) + 1); // same as: vertexMap[*j] += 1;
             }
             should(!j.isValid() && j.atEnd());
@@ -689,8 +691,11 @@ struct GridGraphTests
                                                          nend = g.get_neighbor_vertex_end_iterator(j);
                 typename Graph::out_edge_iterator        e = g.get_out_edge_iterator(j), 
                                                          eend = g.get_out_edge_end_iterator(j);
+                typename Graph::in_edge_iterator         i = g.get_in_edge_iterator(j), 
+                                                         iend = g.get_in_edge_end_iterator(j);
                 typename Graph::IncEdgeIt                le(g, j);
                 typename Graph::OutArcIt                 la(g, j);
+                typename Graph::InArcIt                  li(g, j);
 
                 should(n == g.get_neighbor_vertex_iterator(*j));
                 should(nend == g.get_neighbor_vertex_end_iterator(*j));
@@ -702,9 +707,11 @@ struct GridGraphTests
                 should(eend == g.get_out_edge_end_iterator(*j));
                 should(e == out_edges(*j, g).first);
                 should(eend == out_edges(*j, g).second);
+                should(i == in_edges(*j, g).first);
+                should(iend == in_edges(*j, g).second);
 
                 int count = 0;
-                for(; n != nend; ++n, ++e, ++la, ++le, ++count)
+                for(; n != nend; ++n, ++e, ++i, ++la, ++le, ++li, ++count)
                 {
                     should(*n != *j);
                     should(n.isValid() && !n.atEnd());
@@ -716,11 +723,17 @@ struct GridGraphTests
                     should(e != eend);
                     should(e != lemon::INVALID);
                     should(!(e == lemon::INVALID));
+                    should(i != lemon::INVALID);
+                    should(!(i == lemon::INVALID));
+                    should(i == li);
                     
                     shouldEqual(source(*e, g), *j);
                     shouldEqual(target(*e, g), *n);
                     vertexMap[*n] += 1;
                     edgeMap[*e] += 1;
+                    
+                    shouldEqual(source(*i, g), *n);
+                    shouldEqual(target(*i, g), *j);
                     
                     typename Graph::Arc a  = g.findArc(*j, *n),
                                         oa = g.findArc(*n, *j);
@@ -786,6 +799,10 @@ struct GridGraphTests
                 should(e == le);
                 should(e == lemon::INVALID);
                 should(!(e != lemon::INVALID));
+                should(i == li);
+                should(i == iend);
+                should(i == lemon::INVALID);
+                should(!(i != lemon::INVALID));
                 
                 shouldEqual(count, g.out_degree(j));
                 
