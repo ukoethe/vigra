@@ -1264,10 +1264,11 @@ public:
         */
     bool isUnstrided(unsigned int dimension = N-1) const
     {
-        difference_type p = shape() - difference_type(1);
-        for(unsigned int k = dimension+1; k < N; ++k)
-            p[k] = 0;
-        return (&operator[](p) - m_ptr) == coordinateToScanOrderIndex(p);
+        difference_type s = vigra::detail::defaultStride<actual_dimension>(shape());
+        for(unsigned int k = 0; k <= dimension; ++k)
+            if(stride(k) != s[k])
+                return false;
+        return true;
     }
 
         /** bind the M outmost dimensions to certain indices.
@@ -1688,8 +1689,8 @@ public:
     }
 
         /** Find the minimum and maximum element in this array. 
-	    See \ref FeatureAccumulators for a general feature 
-	    extraction framework.
+            See \ref FeatureAccumulators for a general feature 
+            extraction framework.
          */
     void minmax(T * minimum, T * maximum) const
     {
@@ -1703,14 +1704,14 @@ public:
     }
 
         /** Compute the mean and variance of the values in this array. 
-	    See \ref FeatureAccumulators for a general feature 
-	    extraction framework.
+            See \ref FeatureAccumulators for a general feature 
+            extraction framework.
          */
     template <class U>
     void meanVariance(U * mean, U * variance) const
     {
         typedef typename NumericTraits<U>::RealPromote R;
-	R zero;
+        R zero = R();
         triple<double, R, R> res(0.0, zero, zero);
         detail::reduceOverMultiArray(traverser_begin(), shape(),
                                      res, 
@@ -2090,7 +2091,7 @@ MultiArrayView <N, T, StrideTag>::permuteStridesDescending() const
 {
     difference_type ordering(strideOrdering(m_stride)), permutation;
     for(MultiArrayIndex k=0; k<N; ++k)
-        permutation[ordering[N-1-k]] = k;
+        permutation[N-1-ordering[k]] = k;
     return permuteDimensions(permutation);
 }
 
