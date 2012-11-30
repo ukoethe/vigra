@@ -268,8 +268,8 @@ struct SplineTest
     void testWeightMatrix()
     {
         int n = ORDER + 1;
-        typename BS::WeightMatrix & ws = BS::weights();
-        typename BSB::WeightMatrix & wsb = BSB::weights();
+        typename BS::WeightMatrix const & ws = BS::weights();
+        typename BSB::WeightMatrix const & wsb = BSB::weights();
 
         for(int d = 0; d < n; ++d)
             for(int i = 0; i < n; ++i)
@@ -420,6 +420,9 @@ struct FunctionsTest
             shouldEqualTolerance(vigra::sin_pi(x), std::sin(M_PI*x), 1e-14);
             shouldEqualTolerance(vigra::cos_pi(x), std::cos(M_PI*x), 1e-14);
         }
+
+        shouldEqualTolerance(vigra::sin_pi(0.25), 0.5*M_SQRT2, 2e-16);
+        shouldEqualTolerance(vigra::cos_pi(0.25), 0.5*M_SQRT2, 2e-16);
 
         shouldEqual(vigra::gamma(4.0), 6.0);
         shouldEqualTolerance(vigra::gamma(0.1), 9.5135076986687306, 1e-15);

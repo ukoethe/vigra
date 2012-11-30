@@ -211,7 +211,7 @@ void createGaborFilter(triple<DestImageIterator, DestImageIterator,
 
 inline double radialGaborSigma(double centerFrequency)
 {
-    static double sfactor = 3.0 * VIGRA_CSTD::sqrt(VIGRA_CSTD::log(4.0));
+    double sfactor = 3.0 * VIGRA_CSTD::sqrt(VIGRA_CSTD::log(4.0));
     return centerFrequency / sfactor;
 }
 

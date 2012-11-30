@@ -153,13 +153,14 @@ Basic usage:
         QueryPerformanceFrequency(&frequency);
         return 1000.0 / frequency.QuadPart;
     }
+    
+    static const double timerUnit = queryTimerUnit();
 
     inline double tic_toc_diff_num(LARGE_INTEGER const & tic)
     {
         LARGE_INTEGER toc;
         QueryPerformanceCounter(&toc);
-        static double unit = queryTimerUnit();
-        return ((toc.QuadPart - tic.QuadPart) * unit);
+        return ((toc.QuadPart - tic.QuadPart) * timerUnit);
     }
 
     inline std::string tic_toc_diff_string(LARGE_INTEGER const & tic)

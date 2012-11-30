@@ -758,7 +758,7 @@ int laguerre1Root(POLYNOMIAL const & p, Complex & x, unsigned int multiplicity)
 {
     typedef typename NumericTraits<Complex>::ValueType Real;
     
-    static double frac[] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0};
+    double frac[] = {0.0, 0.5, 0.25, 0.75, 0.13, 0.38, 0.62, 0.88, 1.0};
     int maxiter = 80, 
         count;
     double N = p.order();

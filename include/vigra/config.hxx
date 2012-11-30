@@ -110,6 +110,23 @@
     
     #define VIGRA_NEED_BIN_STREAMS
     
+    #define VIGRA_NO_THREADSAFE_STATIC_INIT  // at least up to _MSC_VER <= 1600, probably higher
+    
+    // usage: 
+    //   static int * p = VIGRA_SAFE_STATIC(p, new int(42));
+    //
+    #define VIGRA_SAFE_STATIC(p, v) \
+    0; while(p == 0) ::vigra::detail::safeStaticInit(&p, v)
+    
+    namespace vigra { namespace detail {
+    template <class T>
+    inline void safeStaticInit(T ** p, T * v)
+    {
+        if (_InterlockedCompareExchangePointer((void * volatile *)p, v, 0) != 0)
+            delete v;
+    }
+    }} // namespace vigra::detail
+    
     #ifndef VIGRA_ENABLE_ANNOYING_WARNINGS
         #pragma warning ( disable: 4244 4267) // implicit integer conversion warnings
     #endif
@@ -226,6 +243,13 @@
 #  define VIGRA_UNIQUE_PTR  std::unique_ptr
 #else
 #  define VIGRA_UNIQUE_PTR  std::auto_ptr
+#endif
+
+#ifndef VIGRA_NO_THREADSAFE_STATIC_INIT    
+    // usage: 
+    //   static int * p = VIGRA_SAFE_STATIC(p, new int(42));
+    //
+    #define VIGRA_SAFE_STATIC(p, v) v
 #endif
 
 namespace vigra {

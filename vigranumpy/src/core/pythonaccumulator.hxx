@@ -275,11 +275,11 @@ typedef std::map<std::string, std::string> AliasMap;
 
 AliasMap defineAliasMap();
 
-AliasMap createTagToAlias(ArrayVector<std::string> const & names);
+AliasMap * createTagToAlias(ArrayVector<std::string> const & names);
 
-AliasMap createAliasToTag(AliasMap const & tagToAlias);
+AliasMap * createAliasToTag(AliasMap const & tagToAlias);
 
-ArrayVector<std::string> createSortedNames(AliasMap const & tagToAlias);
+ArrayVector<std::string> * createSortedNames(AliasMap const & tagToAlias);
 
 struct PythonFeatureAccumulator
 {
@@ -503,20 +503,20 @@ struct PythonAccumulator
     
     static AliasMap const & tagToAlias()
     {
-        static const AliasMap a = createTagToAlias(PythonAccumulator::tagNames());
-        return a;   
+        static AliasMap * a = VIGRA_SAFE_STATIC(a, createTagToAlias(PythonAccumulator::tagNames()));
+        return *a;   
     }
     
     static AliasMap const & aliasToTag()
     {
-        static const AliasMap a = createAliasToTag(tagToAlias());
-        return a;   
+        static AliasMap * a = VIGRA_SAFE_STATIC(a, createAliasToTag(tagToAlias()));
+        return *a;   
     }
     
     static ArrayVector<std::string> const & nameList()
     {
-        static const ArrayVector<std::string> n = createSortedNames(tagToAlias());
-        return n;
+        static ArrayVector<std::string> * n = VIGRA_SAFE_STATIC(n, createSortedNames(tagToAlias()));
+        return *n;
     }
 };
 

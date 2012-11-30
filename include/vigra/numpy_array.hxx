@@ -399,11 +399,10 @@ class NumpyAnyArray
          */
     python_ptr axistags() const
     {
-        static python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
-
         python_ptr axistags;
         if(pyObject())
         {
+            python_ptr key(PyString_FromString("axistags"), python_ptr::keep_count);
             axistags.reset(PyObject_GetAttr(pyObject(), key), python_ptr::keep_count);
             if(!axistags)
                 PyErr_Clear();

@@ -128,10 +128,9 @@ class CoscotFunction
         /** Prefilter coefficients for compatibility with \ref vigra::BSpline.
             (array has zero length, since prefiltering is not necessary).
         */
-    ArrayVector<double> const & prefilterCoefficients() const
+    ArrayVector<double> prefilterCoefficients() const
     {
-        static ArrayVector<double> b;
-        return b;
+        return ArrayVector<double>();
     }
 
   protected:
@@ -705,7 +704,7 @@ resizeImageSplineInterpolation(
 
     BasicImage<TMPTYPE> line((height_old > width_old) ? height_old : width_old, 1);
     typename BasicImage<TMPTYPE>::Accessor tmp_acc = tmp.accessor();
-    ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
+    ArrayVector<double> prefilterCoeffs(spline.prefilterCoefficients());
 
     int x,y;
 
@@ -1212,7 +1211,7 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
 
     DestIterator xxd = id, yyd = id;
 
-    static Diff2D down(0,1), right(1,0), downright(1,1);
+    const Diff2D down(0,1), right(1,0), downright(1,1);
 
     for(y=0; y<h-1; ++y, ++in.y, ov -= 1.0)
     {

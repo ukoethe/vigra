@@ -1183,6 +1183,8 @@ public:
     static const Int32 ONE_HALF        = ONE >> 1;
     static const Int32 FRACTIONAL_MASK = (1u << FRACTIONAL_BITS) - 1;
     static const Int32 INT_MASK        = 0xffffffffu ^ FRACTIONAL_MASK;
+    
+    static const FixedPoint16 zero, pi, pi_2, mpi_2; 
 
     Int16 value;
 
@@ -1377,6 +1379,18 @@ public:
         return *this;
     }
 };
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+const FixedPoint16<IntBits, OverflowHandling> FixedPoint16<IntBits, OverflowHandling>::zero(0);
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+const FixedPoint16<IntBits, OverflowHandling> FixedPoint16<IntBits, OverflowHandling>::pi(M_PI);
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+const FixedPoint16<IntBits, OverflowHandling> FixedPoint16<IntBits, OverflowHandling>::pi_2(0.5 * M_PI);
+
+template <int IntBits, FPOverflowHandling OverflowHandling>
+const FixedPoint16<IntBits, OverflowHandling> FixedPoint16<IntBits, OverflowHandling>::mpi_2(-0.5 * M_PI); 
 
 namespace detail {
 
@@ -1641,11 +1655,11 @@ atan2(FixedPoint16<IntBits, OverflowHandling> y, FixedPoint16<IntBits, OverflowH
 {
     enum { ResIntBits = 2 };
     typedef FixedPoint16<ResIntBits, OverflowHandling> FP;
-    static const FP zero(0), pi(M_PI), pi_2(0.5 * M_PI), mpi_2(-0.5 * M_PI); 
-    static const Int32 Pi_4  = roundi(0.25 * M_PI * (1 << 15)), // 15 frac bits
-                       Pi3_4 = roundi(0.75 * M_PI * (1 << 15)),
-                       c1    = roundi(0.19826763260224867 * (1 << 15)), 
-                       c2    = roundi(-0.9757748231899761 * (1 << 30)); 
+    static const Int32 Pi_4  = 25736,       // = roundi(0.25 * M_PI * (1 << 15)), at 15 frac bits
+                       Pi3_4 = 77208,       // = roundi(0.75 * M_PI * (1 << 15)),
+                       c1    = 6497,        // = roundi(0.19826763260224867 * (1 << 15)), 
+                       c2    = -1047730238; // = roundi(-0.9757748231899761 * (1 << 30));
+                       
     // coefficients c1 and c2 minimize
     //
     // NIntegrate[(c1 r^3 + c2 r + Pi/4 - a)^4 /. r -> (Cos[a] - Sin[a])/(Cos[a] + Sin[a]), {a, 0, Pi/2}]
@@ -1654,24 +1668,24 @@ atan2(FixedPoint16<IntBits, OverflowHandling> y, FixedPoint16<IntBits, OverflowH
 
     if(x.value == 0)
         return (y.value > 0)
-                   ? pi_2
+                   ? FP::pi_2
                    : (y.value < 0)
-                         ? mpi_2
-                         : zero;
+                         ? FP::mpi_2
+                         : FP::zero;
                          
     Int32 abs_y = abs(y.value);
     Int32 r, angle;
     if(x.value > 0)
     {
         if(y.value == 0)
-            return zero;
+            return FP::zero;
         r = ((x.value - abs_y) << 15) / (x.value + abs_y); // 15 frac bits
         angle = Pi_4;
     }
     else
     {
         if(y.value == 0)
-            return pi;
+            return FP::pi;
         r = ((x.value + abs_y) << 15) / (abs_y - x.value); // 15 frac bits
         angle = Pi3_4;
     }
