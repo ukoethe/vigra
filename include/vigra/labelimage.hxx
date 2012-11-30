@@ -168,14 +168,14 @@ unsigned int labelImage(SrcIterator upperlefts,
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
 
-    static const Diff2D neighbor[] = {
+    const Diff2D neighbor[] = {
         Diff2D(-1,0),  // left
         Diff2D(-1,-1), // topleft
         Diff2D(0,-1),  // top
         Diff2D(1,-1)   // topright
     };
 
-    static const int left = 0, /* unused:  topleft = 1, */ top = 2, topright = 3;
+    const int left = 0, /* unused:  topleft = 1, */ top = 2, topright = 3;
     int step = eight_neighbors ? 1 : 2;
 
     SrcIterator ys = upperlefts;
@@ -420,14 +420,14 @@ unsigned int labelImageWithBackground(
     int h = lowerrights.y - upperlefts.y;
     int x,y,i;
 
-    static const Diff2D neighbor[] = {
+    const Diff2D neighbor[] = {
         Diff2D(-1,0),  // left
         Diff2D(-1,-1), // topleft
         Diff2D(0,-1),  // top
         Diff2D(1,-1)   // topright
     };
 
-    static const int left = 0, /* unused:  topleft = 1,*/ top = 2, topright = 3;
+    const int left = 0, /* unused:  topleft = 1,*/ top = 2, topright = 3;
     int step = eight_neighbors ? 1 : 2;
 
     SrcIterator ys(upperlefts);
@@ -709,11 +709,11 @@ void regionImageToCrackEdgeImage(
     int h = slr.y - sul.y;
     int x,y;
 
-    static const Diff2D right(1,0);
-    static const Diff2D left(-1,0);
-    static const Diff2D bottomright(1,1);
-    static const Diff2D bottom(0,1);
-    static const Diff2D top(0,-1);
+    const Diff2D right(1,0);
+    const Diff2D left(-1,0);
+    const Diff2D bottomright(1,1);
+    const Diff2D bottom(0,1);
+    const Diff2D top(0,-1);
 
     SrcIterator iy = sul;
     DestIterator dy = dul;
@@ -777,6 +777,7 @@ void regionImageToCrackEdgeImage(
 
     dy = dul + Diff2D(1,1);
 
+    const Diff2D dist[] = {right, top, left, bottom };
     // find missing 0-cells
     for(y=0; y<h-1; ++y, dy.y+=2)
     {
@@ -784,8 +785,6 @@ void regionImageToCrackEdgeImage(
 
         for(x=0; x<w-1; ++x, dx.x+=2)
         {
-            static const Diff2D dist[] = {right, top, left, bottom };
-
             int i;
             for(i=0; i<4; ++i)
             {
@@ -915,11 +914,11 @@ void regionImageToEdgeImage(
     int h = slr.y - sul.y;
     int x,y;
 
-    static const Diff2D right(1,0);
-    static const Diff2D left(-1,0);
-    static const Diff2D bottomright(1,1);
-    static const Diff2D bottom(0,1);
-    static const Diff2D top(0,-1);
+    const Diff2D right(1,0);
+    const Diff2D left(-1,0);
+    const Diff2D bottomright(1,1);
+    const Diff2D bottom(0,1);
+    const Diff2D top(0,-1);
 
     SrcIterator iy = sul;
     DestIterator dy = dul;

@@ -371,7 +371,7 @@ double clebschGordan (double l1, double m1, double l2, double m2, double l3, dou
 {
     const double err = 0.01;
     double CG = 0.0, m2min, m2max, *cofp;                               
-    // static array for calculation of 3-j symbols 
+    // array for calculation of 3-j symbols 
     const int ncof = 100;
     double cof[ncof];                                            
     // reset error flag   

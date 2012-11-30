@@ -549,8 +549,8 @@ class RandomNumberGenerator
         */
     static RandomNumberGenerator & global()
     {
-        static RandomNumberGenerator generator;
-        return generator;
+        static RandomNumberGenerator * generator = VIGRA_SAFE_STATIC(generator, new RandomNumberGenerator(RandomSeed));
+        return *generator;
     }
 
     static UInt32 factorForUniformInt(UInt32 range)

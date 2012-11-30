@@ -102,10 +102,10 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     FImage::Iterator xdx = xdy;
     FImage::Iterator ydx = ydy;
     
-    static const Diff2D left(-1, 0);
-    static const Diff2D right(1, 0);
-    static const Diff2D top(0, -1);
-    static const Diff2D bottom(0, 1);
+    const Diff2D left(-1, 0);
+    const Diff2D right(1, 0);
+    const Diff2D top(0, -1);
+    const Diff2D bottom(0, 1);
         
     int x,y;
     if(sa(sx) != background)    // first pixel

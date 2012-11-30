@@ -313,7 +313,7 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
     vigra_precondition(scale > 0.0, "nonlinearDiffusion(): scale must be > 0");
     
     double total_time = scale*scale/2.0;
-    static const double time_step = 5.0;
+    const double time_step = 5.0;
     int number_of_steps = (int)(total_time / time_step);
     double rest_time = total_time - time_step * number_of_steps;
     
@@ -390,10 +390,10 @@ void internalNonlinearDiffusionExplicitStep(
 
     int x,y;
     
-    static const Diff2D left(-1, 0);
-    static const Diff2D right(1, 0);
-    static const Diff2D top(0, -1);
-    static const Diff2D bottom(0, 1);
+    const Diff2D left(-1, 0);
+    const Diff2D right(1, 0);
+    const Diff2D top(0, -1);
+    const Diff2D bottom(0, 1);
     
     WeightType gt, gb, gl, gr, g0;
     WeightType one = NumericTraits<WeightType>::one();
@@ -567,7 +567,7 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
     vigra_precondition(scale > 0.0, "nonlinearDiffusionExplicit(): scale must be > 0");
     
     double total_time = scale*scale/2.0;
-    static const double time_step = 0.25;
+    const double time_step = 0.25;
     int number_of_steps = total_time / time_step;
     double rest_time = total_time - time_step * number_of_steps;
     

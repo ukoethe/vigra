@@ -298,7 +298,42 @@ def("transform_" #name, registerConverters(&pythonColorTransform<float, 2, name#
     "\n" \
     "For details see " #name "Functor_ in the C++ documentation.\n")
 
-
+template<class T>
+NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueImage, 
+                                    const NumpyArray<2, UInt8>& colortable,
+                                    NumpyArray<3, Multiband<npy_uint8> > res =  NumpyArray<3, Multiband<npy_uint8> >())
+{
+    vigra_precondition(!colortable.axistags(),
+                       "applyColortable(): colortable must not have axistags\n"
+                       "(use 'array.view(numpy.ndarray)' to remove them).");
+    
+    // Singleband: there is only a singleton channel axis (which is removed when converted from python numpy array to C++
+    // Multiband: channel axis is allowed to be singleband, but does not have to be,
+    //            will be last when converted Python -> C++ and channel axis is counted in the dimension ('3')
+    typedef NumpyArray<2, Singleband<T> > InputType;
+    typedef NumpyArray<3, Multiband<npy_uint8> > OutputType;
+    
+    res.reshapeIfEmpty(valueImage.taggedShape().setChannelCount(colortable.shape(1)),
+                       "pythonApplyColortable: shape of res is wrong");
+    
+    const unsigned int N = colortable.shape(0);
+   
+    for(MultiArrayIndex c=0; c<colortable.shape(1); ++c)
+    {
+        MultiArrayView<2, UInt8>::iterator channelIter = res.bind<2>(c).begin();
+        
+        //make an unstrided copy of the current column of the colortable
+        ArrayVector<UInt8> ctable(colortable.bind<1>(c).begin(), colortable.bind<1>(c).end());
+        
+        for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
+        {
+            *channelIter = ctable[*v % N];
+        }
+    }
+    
+    return res;
+}
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pyApplyColortable, pythonApplyColortable)
 
 void defineColors()
 {
@@ -306,6 +341,15 @@ void defineColors()
 
     docstring_options doc_options(true, true, false);
 
+    multidef("applyColortable", pyApplyColortable<vigra::UInt8, vigra::Int16, vigra::UInt16, vigra::Int32, vigra::UInt32>(),
+        (arg("valueImage"), 
+        arg("colortable"),
+        arg("out")=python::object()), 
+        "Applies a colortable to the given 2D valueImage.\n\n"
+        "Colortable must have 4 columns, each row represents a color (for example, RGBA).\n"
+        "Values in valueImage are first taken module the length of the colortable.\n\n"
+        "Returns: uint8 image with 4 channels\n");
+    
     def("brightness",
          registerConverters(&pythonBrightnessTransform<float, 3>),
          (arg("image"), arg("factor"), arg("range")=make_tuple(0.0, 255.0), arg("out")=object()),

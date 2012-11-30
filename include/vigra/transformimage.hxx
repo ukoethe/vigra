@@ -414,10 +414,10 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
     SrcImageIterator sy = srcul;
     DestImageIterator dy = destul;
 
-    static const Diff2D left(-1,0);
-    static const Diff2D right(1,0);
-    static const Diff2D top(0,-1);
-    static const Diff2D bottom(0,1);
+    const Diff2D left(-1,0);
+    const Diff2D right(1,0);
+    const Diff2D top(0,-1);
+    const Diff2D bottom(0,1);
 
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
     TmpType diffx, diffy;

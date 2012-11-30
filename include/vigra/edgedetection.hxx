@@ -216,8 +216,8 @@ void differenceOfExponentialEdgeImage(
     typename TMPIMG::Iterator ty = tmp.upperLeft();
     DestIterator              dy = dul;
 
-    static const Diff2D right(1, 0);
-    static const Diff2D bottom(0, 1);
+    const Diff2D right(1, 0);
+    const Diff2D bottom(0, 1);
 
 
     TMPTYPE thresh = detail::RequiresExplicitCast<TMPTYPE>::cast((gradient_threshold * gradient_threshold) *
@@ -494,10 +494,10 @@ void differenceOfExponentialCrackEdgeImage(
 
     TMPTYPE zero = NumericTraits<TMPTYPE>::zero();
 
-    static const Diff2D right(1,0);
-    static const Diff2D bottom(0,1);
-    static const Diff2D left(-1,0);
-    static const Diff2D top(0,-1);
+    const Diff2D right(1,0);
+    const Diff2D bottom(0,1);
+    const Diff2D left(-1,0);
+    const Diff2D top(0,-1);
 
     recursiveSmoothX(srcIterRange(sul, slr, sa), destImage(tmp), scale / 2.0);
     recursiveSmoothY(srcImageRange(tmp), destImage(tmp), scale / 2.0);
@@ -567,10 +567,10 @@ void differenceOfExponentialCrackEdgeImage(
     ty = tmp.upperLeft() + Diff2D(0,1);
     dy = dul + Diff2D(1,2);
 
-    static const Diff2D topleft(-1,-1);
-    static const Diff2D topright(1,-1);
-    static const Diff2D bottomleft(-1,1);
-    static const Diff2D bottomright(1,1);
+    const Diff2D topleft(-1,-1);
+    const Diff2D topright(1,-1);
+    const Diff2D bottomleft(-1,1);
+    const Diff2D bottomright(1,1);
 
     // find missing 1-cells below threshold (x-direction)
     for(y=0; y<h-2; ++y, ++iy.y, ++ty.y, dy.y+=2)
@@ -635,7 +635,7 @@ void differenceOfExponentialCrackEdgeImage(
 
         for(int x=0; x<w-1; ++x, dx.x+=2)
         {
-            static const Diff2D dist[] = {right, top, left, bottom };
+            const Diff2D dist[] = {right, top, left, bottom };
 
             int i;
             for(i=0; i<4; ++i)
@@ -899,19 +899,15 @@ void closeGapsInCrackEdgeImage(
 
     int count1, count2, count3;
 
-    static const Diff2D right(1,0);
-    static const Diff2D bottom(0,1);
-    static const Diff2D left(-1,0);
-    static const Diff2D top(0,-1);
+    const Diff2D right(1,0);
+    const Diff2D bottom(0,1);
+    const Diff2D left(-1,0);
+    const Diff2D top(0,-1);
 
-    static const Diff2D leftdist[] = {
-        Diff2D(0, 0), Diff2D(-1, 1), Diff2D(-2, 0), Diff2D(-1, -1)};
-    static const Diff2D rightdist[] = {
-        Diff2D(2, 0), Diff2D(1, 1), Diff2D(0, 0), Diff2D(1, -1)};
-    static const Diff2D topdist[] = {
-        Diff2D(1, -1), Diff2D(0, 0), Diff2D(-1, -1), Diff2D(0, -2)};
-    static const Diff2D bottomdist[] = {
-        Diff2D(1, 1), Diff2D(0, 2), Diff2D(-1, 1), Diff2D(0, 0)};
+    const Diff2D leftdist[] = { Diff2D(0, 0), Diff2D(-1, 1), Diff2D(-2, 0), Diff2D(-1, -1)};
+    const Diff2D rightdist[] = { Diff2D(2, 0), Diff2D(1, 1), Diff2D(0, 0), Diff2D(1, -1)};
+    const Diff2D topdist[] = { Diff2D(1, -1), Diff2D(0, 0), Diff2D(-1, -1), Diff2D(0, -2)};
+    const Diff2D bottomdist[] = { Diff2D(1, 1), Diff2D(0, 2), Diff2D(-1, 1), Diff2D(0, 0)};
 
     int i;
 
@@ -1117,10 +1113,10 @@ void beautifyCrackEdgeImage(
     SrcIterator sy = sul + Diff2D(1,1);
     SrcIterator sx;
 
-    static const Diff2D right(1,0);
-    static const Diff2D bottom(0,1);
-    static const Diff2D left(-1,0);
-    static const Diff2D top(0,-1);
+    const Diff2D right(1,0);
+    const Diff2D bottom(0,1);
+    const Diff2D left(-1,0);
+    const Diff2D top(0,-1);
 
     //  delete 0-cells at corners
     for(y=0; y<h2; ++y, sy.y+=2)
@@ -1895,7 +1891,7 @@ void cannyEdgeImageFromGradWithThinning(
         initImageBorder(destImageRange(edgeImage), 1, 1);
     detail::cannyEdgeImageFromGrad(sul, slr, sa, eul, ea, gradient_threshold, 1);
 
-    static bool isSimplePoint[256] = {
+    bool isSimplePoint[256] = {
         0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0,
         0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
@@ -1938,8 +1934,7 @@ void cannyEdgeImageFromGradWithThinning(
         }
     }
 
-    static const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1),
-                                   Diff2D(1,0),  Diff2D(0,1) };
+    const Diff2D dist[] = { Diff2D(-1,0), Diff2D(0,-1), Diff2D(1,0),  Diff2D(0,1) };
 
     while(pqueue.size())
     {

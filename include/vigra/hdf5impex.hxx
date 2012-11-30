@@ -412,11 +412,41 @@ inline hid_t getH5DataType<const char*>()
 }
 #undef VIGRA_H5_DATATYPE
 
+template <unsigned int SIZE>
+struct HDF5TypeBySize;
+
+template <>
+struct HDF5TypeBySize<1>
+{
+    static hid_t signed_type() { return H5T_NATIVE_INT8; }
+    static hid_t unsigned_type() { return H5T_NATIVE_UINT8; }
+};
+
+template <>
+struct HDF5TypeBySize<2>
+{
+    static hid_t signed_type() { return H5T_NATIVE_INT16; }
+    static hid_t unsigned_type() { return H5T_NATIVE_UINT16; }
+};
+
+template <>
+struct HDF5TypeBySize<4>
+{
+    static hid_t signed_type() { return H5T_NATIVE_INT32; }
+    static hid_t unsigned_type() { return H5T_NATIVE_UINT32; }
+};
+
+template <>
+struct HDF5TypeBySize<8>
+{
+    static hid_t signed_type() { return H5T_NATIVE_INT64; }
+    static hid_t unsigned_type() { return H5T_NATIVE_UINT64; }
+};
+
 #define VIGRA_H5_SIGNED_DATATYPE(type) \
 template<> \
 inline hid_t getH5DataType<type>() \
-{ static hid_t types[] = {0, H5T_NATIVE_INT8, H5T_NATIVE_INT16, 0, H5T_NATIVE_INT32, 0,0,0,H5T_NATIVE_INT64}; \
-  return types[sizeof(type)];}
+{ return HDF5TypeBySize<sizeof(type)>::signed_type(); }
 
 VIGRA_H5_SIGNED_DATATYPE(signed char)
 VIGRA_H5_SIGNED_DATATYPE(signed short)
@@ -429,8 +459,7 @@ VIGRA_H5_SIGNED_DATATYPE(signed long long)
 #define VIGRA_H5_UNSIGNED_DATATYPE(type) \
 template<> \
 inline hid_t getH5DataType<type>() \
-{ static hid_t types[] = {0, H5T_NATIVE_UINT8, H5T_NATIVE_UINT16, 0, H5T_NATIVE_UINT32, 0,0,0,H5T_NATIVE_UINT64}; \
-  return types[sizeof(type)];}
+{ return HDF5TypeBySize<sizeof(type)>::unsigned_type(); }
 
 VIGRA_H5_UNSIGNED_DATATYPE(unsigned char)
 VIGRA_H5_UNSIGNED_DATATYPE(unsigned short)
