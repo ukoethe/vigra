@@ -128,16 +128,21 @@ class CoscotFunction
         /** Prefilter coefficients for compatibility with \ref vigra::BSpline.
             (array has zero length, since prefiltering is not necessary).
         */
-    ArrayVector<double> prefilterCoefficients() const
+    ArrayVector<double> const & prefilterCoefficients() const
     {
-        return ArrayVector<double>();
+        return prefilterCoefficients_;
     }
-
+    
   protected:
-
+    static ArrayVector<double> prefilterCoefficients_;
     unsigned int m_;
     double h_;
 };
+
+template <class T>
+ArrayVector<double> CoscotFunction<T>::prefilterCoefficients_;
+
+
 
 /** \addtogroup GeometricTransformations Geometric Transformations
     Zoom up and down by repeating pixels, or using various interpolation schemes.
@@ -704,7 +709,7 @@ resizeImageSplineInterpolation(
 
     BasicImage<TMPTYPE> line((height_old > width_old) ? height_old : width_old, 1);
     typename BasicImage<TMPTYPE>::Accessor tmp_acc = tmp.accessor();
-    ArrayVector<double> prefilterCoeffs(spline.prefilterCoefficients());
+    ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
 
     int x,y;
 

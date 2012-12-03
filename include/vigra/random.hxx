@@ -331,7 +331,7 @@ void RandomState<MT19937>::generateNumbers() const
     \verbatim FunctorTraits<RandomNumberGenerator<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = detail::RandomState<detail::TT800> >
+template <class Engine = detail::RandomState<detail::MT19937> >
 class RandomNumberGenerator
 : public Engine
 {
@@ -549,8 +549,7 @@ class RandomNumberGenerator
         */
     static RandomNumberGenerator & global()
     {
-        static RandomNumberGenerator * generator = VIGRA_SAFE_STATIC(generator, new RandomNumberGenerator(RandomSeed));
-        return *generator;
+        return global_;
     }
 
     static UInt32 factorForUniformInt(UInt32 range)
@@ -559,7 +558,13 @@ class RandomNumberGenerator
                      ? 1
                      : 2*(2147483648U / ceilPower2(range));
     }
+    
+    static RandomNumberGenerator global_;
 };
+
+template <class Engine>
+RandomNumberGenerator<Engine> RandomNumberGenerator<Engine>::global_(RandomSeed);
+
 
 template <class Engine>
 double RandomNumberGenerator<Engine>::normal() const
@@ -591,11 +596,11 @@ double RandomNumberGenerator<Engine>::normal() const
 
     /** Shorthand for the TT800 random number generator class.
     */
-typedef RandomNumberGenerator<>  RandomTT800; 
+typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  RandomTT800; 
 
     /** Shorthand for the TT800 random number generator class (same as RandomTT800).
     */
-typedef RandomNumberGenerator<>  TemperedTwister; 
+typedef RandomNumberGenerator<detail::RandomState<detail::TT800> >  TemperedTwister; 
 
     /** Shorthand for the MT19937 random number generator class.
     */
@@ -644,7 +649,7 @@ class FunctorTraits<RandomNumberGenerator<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isUnaryFunctor \endverbatim
     are true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class UniformIntRandomFunctor
 {
     UInt32 lower_, difference_, factor_;
@@ -751,7 +756,7 @@ class FunctorTraits<UniformIntRandomFunctor<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class UniformRandomFunctor
 {
     double offset_, scale_;
@@ -823,7 +828,7 @@ class FunctorTraits<UniformRandomFunctor<Engine> >
     \verbatim FunctorTraits<UniformIntRandomFunctor<Engine> >::isInitializer \endverbatim
     is true (<tt>VigraTrueType</tt>).
 */
-template <class Engine = RandomTT800>
+template <class Engine = MersenneTwister>
 class NormalRandomFunctor
 {
     double mean_, stddev_;

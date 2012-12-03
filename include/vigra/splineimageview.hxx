@@ -514,7 +514,7 @@ class SplineImageView
 template <int ORDER, class VALUETYPE>
 void SplineImageView<ORDER, VALUETYPE>::init()
 {
-    ArrayVector<double> b(k_.prefilterCoefficients());
+    ArrayVector<double> const & b = k_.prefilterCoefficients();
 
     for(unsigned int i=0; i<b.size(); ++i)
     {

@@ -75,7 +75,7 @@ internalResizeMultiArrayOneDimension(
     resampling_detail::MapTargetToSourceCoordinate mapCoordinate(ratio, offset);
     int period = lcm(ratio.numerator(), ratio.denominator());
     
-    ArrayVector<double> prefilterCoeffs(spline.prefilterCoefficients());
+    ArrayVector<double> const & prefilterCoeffs = spline.prefilterCoefficients();
     ArrayVector<Kernel1D<double> > kernels(period);
     createResamplingKernels(spline, mapCoordinate, kernels);
 
