@@ -2642,22 +2642,22 @@ struct RandomTest
             2.57671, 0.0299117, 0.471425, 1.59464, 1.37346};
 
         vigra::RandomTT800 random1;
-        vigra::UniformRandomFunctor<> f1(random1);
+        vigra::UniformRandomFunctor<vigra::RandomTT800> f1(random1);
         for(unsigned int k=0; k<n; ++k)
             should(vigra::abs(f1() - fref[k]) < 2e-6);
 
         vigra::RandomTT800 random2;
-        vigra::UniformIntRandomFunctor<> f2(4, 34, random2, true);
+        vigra::UniformIntRandomFunctor<vigra::RandomTT800> f2(4, 34, random2, true);
         for(unsigned int k=0; k<n; ++k)
             shouldEqual(f2(), iref[k] % 31 + 4);
 
         vigra::RandomTT800 random3;
-        vigra::UniformIntRandomFunctor<> f3(random3);
+        vigra::UniformIntRandomFunctor<vigra::RandomTT800> f3(random3);
         for(unsigned int k=0; k<n; ++k)
             shouldEqual(f3(32), iref[k] % 32);
 
         vigra::RandomTT800 random4;
-        vigra::NormalRandomFunctor<> f4(random4);
+        vigra::NormalRandomFunctor<vigra::RandomTT800> f4(random4);
         for(unsigned int k=0; k<n; ++k)
             shouldEqualTolerance(f4(), nref[k], 1e-5);
     }

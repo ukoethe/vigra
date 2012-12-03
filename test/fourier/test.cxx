@@ -471,18 +471,18 @@ struct MultiFFTTest
 
     void testPadding()
     {
-        shouldEqual(0, detail::fftwPaddingSize(0));
-        shouldEqual(1, detail::fftwPaddingSize(1));
-        shouldEqual(3, detail::fftwPaddingSize(3));
-        shouldEqual(256, detail::fftwPaddingSize(255));
-        shouldEqual(256, detail::fftwPaddingSize(256));
-        shouldEqual(260, detail::fftwPaddingSize(257));
-        shouldEqual(0, detail::fftwEvenPaddingSize(0));
-        shouldEqual(2, detail::fftwEvenPaddingSize(1));
-        shouldEqual(4, detail::fftwEvenPaddingSize(3));
-        shouldEqual(256, detail::fftwEvenPaddingSize(255));
-        shouldEqual(256, detail::fftwEvenPaddingSize(256));
-        shouldEqual(260, detail::fftwEvenPaddingSize(257));
+        shouldEqual(0, detail::FFTWPaddingSize<0>::find(0));
+        shouldEqual(1, detail::FFTWPaddingSize<0>::find(1));
+        shouldEqual(3, detail::FFTWPaddingSize<0>::find(3));
+        shouldEqual(256, detail::FFTWPaddingSize<0>::find(255));
+        shouldEqual(256, detail::FFTWPaddingSize<0>::find(256));
+        shouldEqual(260, detail::FFTWPaddingSize<0>::find(257));
+        shouldEqual(0, detail::FFTWPaddingSize<0>::findEven(0));
+        shouldEqual(2, detail::FFTWPaddingSize<0>::findEven(1));
+        shouldEqual(4, detail::FFTWPaddingSize<0>::findEven(3));
+        shouldEqual(256, detail::FFTWPaddingSize<0>::findEven(255));
+        shouldEqual(256, detail::FFTWPaddingSize<0>::findEven(256));
+        shouldEqual(260, detail::FFTWPaddingSize<0>::findEven(257));
 
         Shape3 s(113, 256, 257);
         shouldEqual(Shape3(117, 256, 260), fftwBestPaddedShape(s));
