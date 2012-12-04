@@ -10,8 +10,10 @@
     
     <li> \ref Indexing
 		<BR>&nbsp;&nbsp;&nbsp;<em>how to access an element of MultiArray</em>
+
+    <li> \ref ImageInputOutput
     
-    <li> Important methods
+    <li> \ref ImportantMethods
 		<BR>&nbsp;&nbsp;&nbsp;<em>the methods subarray, bind and transpose</em>
       
     </ul>
@@ -82,15 +84,15 @@
 	MultiArray. Imagine you are adding a 2x3-matrix and a 3x2-matrix.
 
 	\code
-		vigra::MultiArray<2, int> _23Matrix(Shape2(2,3));
-		vigra::MultiArray<2, int> _32Matrix(Shape2(3,2));
-		_23Matrix.init(1);
-		_32Matrix.init(3);
+	    vigra::MultiArray<2, int> _23Matrix(Shape2(2,3));
+	    vigra::MultiArray<2, int> _32Matrix(Shape2(3,2));
+	    _23Matrix.init(1);
+        _32Matrix.init(3);
 	
-		int size = _23Matrix.size();			// number of array elements
-		for (int i=0; i < size; i++) {
-			_23Matrix[i] += _32Matrix[i];
-		}
+	    int size = _23Matrix.size();			// number of array elements
+	    for (int i=0; i < size; i++) {
+		    _23Matrix[i] += _32Matrix[i];
+        }
 	\endcode
 
 	<B> This implementation works but it's mathematically impossible! </B>
@@ -136,3 +138,105 @@
         matrix1[Shape2(1,2)] = 22;
     \endcode
 */
+
+
+/** \page ImportantMethods Important Methods
+    In this part of the tutorial we'll introduce you to some important methods.
+
+    <h2> bind<M>(i) </h2>
+    This method is part of the MultiArrayView-Class and binds the dimension M to the index d.
+    As you probably remember, we tried to set the elements of a certain column or row of a 
+    matrix in the \ref Indexing part. We used a for-loop, but it's getting more easily with
+    the bind-method. Look at the following example. We initialize a 2x3-matrix with the value
+    0, set the second row to 5 and print the array eventually:
+
+    \code
+        #include <vigra/multi_array.hxx>
+        #include <iostream>
+
+        using namespace vigra;
+
+        int main (int argc, char ** argv) {
+            // initialize 2x3-matrix and declare iterator
+            vigra::MultiArray<2, int> intArray(Shape2(3,2));
+            intArray.init(0);
+            vigra::MultiArray<2, int>::iterator iter;
+
+            // set 2nd row (equivalent to dimension 1 and index 1) to 5
+            intArray.bind<1>(1) = 5;
+
+            // print the array on console
+            for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		        std::cout << *iter << "  ";
+	        }
+            std::cout << std::endl;
+
+            return 0;
+        }
+    \endcode
+
+    Binding a dimension reduces a N-dimensional array to dimension N-1. Furthermore you can
+    initialize a lower-dimensional array with the bind-method.
+
+    \code
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
+    \endcode
+
+    The array <dnf> lowArray </dnf> contains the elements the 3rd column of intArray. Moving
+    on to Image Processing we'll give an example how you can mirror an image by using bind.
+    We save an gray scale image in a 2-dimensional array called <dnf> imageArray </dnf>. 
+    Then we initalize a new array <dnf> newImageArray </dnf> of the same dimension and size
+    and set the first row of <dnf> newImageArray </dnf> to the values of the last row of 
+    <dnf> imageArray </dnf>, the second row to the values of the second last row and so on.
+    Hence, we mirror the image horizontal.
+
+    \code
+        #include <iostream>
+        #include <vigra/multi_array.hxx>
+        #include "vigra/stdimage.hxx"
+        #include "vigra/impex.hxx"
+
+        using namespace vigra; 
+
+
+        int main(int argc, char ** argv) {
+            if(argc != 3) {
+                std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
+                std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+                
+                return 1;
+            }
+
+            try {
+                vigra::ImageImportInfo info(argv[1]);
+                
+                if(info.isGrayscale()) {
+			        vigra::MultiArray<2, unsigned char> imageArray(Shape2(info.width(), info.height()));
+			        importImage(info, destImage(imageArray));
+                    vigra::MultiArray<2, unsigned char> newImageArray(Shape2(info.width(), info.height()));
+                    
+                    // mirror the image horizontical 
+                    // info.height() is equal to the index of the last row
+			        for (int i=0; i<info.height(); i++) {           
+	                		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-i);
+			        }
+                    
+                    exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
+                }
+                else {
+                    std::cout << "no gray scale image" << std::endl;
+                }
+            }
+            catch (vigra::StdException & e) {
+                std::cout << e.what() << std::endl;
+                return 1;
+            }
+            
+            return 0;
+        }
+    \endcode
+
+*/
+
+/** \page ImageInputOutput Image Input Output
