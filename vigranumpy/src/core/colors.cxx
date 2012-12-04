@@ -327,7 +327,7 @@ NumpyAnyArray pythonApplyColortable(const NumpyArray<2, Singleband<T> >& valueIm
         
         for(typename InputType::const_iterator v = valueImage.begin(); v != valueImage.end(); ++v, ++channelIter)
         {
-            *channelIter = ctable[*v % N];
+            const_cast<UInt8 &>(*channelIter) = ctable[*v % N];
         }
     }
     
