@@ -39,14 +39,14 @@ int main(int argc, char ** argv)
             // mirror horizontal
             if (axis == 1) {
 				for (int i=0; i<info.height(); i++) {           
-    	        		in.bind<1>(i) = tempImage.bind<1>(info.height()-i);
+    	        		in.bind<1>(i) = tempImage.bind<1>(info.height()-(i+1));
 				}
 			}
 
             // mirror vertical
 			if (axis == 2) {
 				for (int i=0; i<info.width(); i++) {           
-    	        		in.bind<0>(i) = tempImage.bind<0>(info.width()-i);
+    	        		in.bind<0>(i) = tempImage.bind<0>(info.width()-(i+1));
 				}
 			}    
             
@@ -65,14 +65,14 @@ int main(int argc, char ** argv)
             // mirror horizontal
 			if (axis == 1) {
 				for (int i=0; i<info.height(); i++) {           
-    	        		in.bind<1>(i) = tempImage.bind<1>(info.height()-i);
+    	        		in.bind<1>(i) = tempImage.bind<1>(info.height()-(i+1));
 				}
 			}
 
             // mirror vertical
 			if (axis == 2) {
 				for (int i=0; i<info.width(); i++) {           
-    	        		in.bind<0>(i) = tempImage.bind<0>(info.width()-i);
+    	        		in.bind<0>(i) = tempImage.bind<0>(info.width()-(i+1));
 				}
 			}
             
