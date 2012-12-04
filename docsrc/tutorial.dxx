@@ -183,12 +183,12 @@
         vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
     \endcode
 
-    The array <dnf> lowArray </dnf> contains the elements the 3rd column of intArray. Moving
+    The array <dfn> lowArray </dfn> contains the elements the 3rd column of intArray. Moving
     on to Image Processing we'll give an example how you can mirror an image by using bind.
-    We save an gray scale image in a 2-dimensional array called <dnf> imageArray </dnf>. 
-    Then we initalize a new array <dnf> newImageArray </dnf> of the same dimension and size
-    and set the first row of <dnf> newImageArray </dnf> to the values of the last row of 
-    <dnf> imageArray </dnf>, the second row to the values of the second last row and so on.
+    We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
+    Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
+    and set the first row of <dfn> newImageArray </dfn> to the values of the last row of 
+    <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
     Hence, we mirror the image horizontal.
 
     \code
@@ -218,11 +218,11 @@
                     
                     // mirror the image horizontical 
                     // info.height() is equal to the index of the last row
-			        for (int i=0; i<info.height(); i++) {           
-	                		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-i);
+			        for (int i=0; i<=info.height(); i++) {           
+	                		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-(i+1));
 			        }
                     
-                    exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
+                    exportImage(srcImageRange(newImageArray), vigra::ImageExportInfo(argv[2]));
                 }
                 else {
                     std::cout << "no gray scale image" << std::endl;
@@ -236,7 +236,31 @@
             return 0;
         }
     \endcode
+    
+    This code needs an infile and an outfile as arguments. For this example, just the 
+    commented for-loop is important. The rest contains the code for
+    \ref ImageInputOutput and is explained in this part of the Tutorial. We bind dimension 1
+    to fix the y-coordinate. To mirror horizontal you have to fix the x-coordinate, so bind
+    dimension 0. <br/>
+    Here you can see what happens to an inputfile:
 
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_mirror.gif "mirrored outputfile"
+
+    A detailed example is given here:
+    <a href="mirror_8cxx-example.html">mirror.cxx</a> 
+    There you can mirror RGB-images as well and decide wheter to mirror horizontal or
+    vertical.
+    
+
+    <hr>
+
+*/
+
+/** \example mirror.cxx
+    Mirror an image file (horizontal or vertical)
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
 */
 
 /** \page ImageInputOutput Image Input Output
