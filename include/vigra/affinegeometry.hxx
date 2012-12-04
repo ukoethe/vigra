@@ -247,25 +247,9 @@ void rotateImage(SplineImageView<ORDER, T> const & src,
     int w = src.width();
     int h = src.height();
     
-    double angle = angleInDegree*M_PI/180.0;
-    double c = std::cos(angle);
-    double s = std::sin(angle);
-    
-    // avoid round-off errors for simple rotations
-    if(closeAtTolerance(std::fmod(angleInDegree, 45.0), 0.0))
-    {
-        // convert angle into a multiple of pi/4
-        int ai = roundi(angleInDegree / 45.0) % 8;
-        if(ai < 0)
-            ai += 8;
-        
-        static double sqrt2_2 = 0.5*M_SQRT2;
-        static double ss[8] = {0.0, sqrt2_2, 1.0,  sqrt2_2,  0.0, -sqrt2_2, -1.0, -sqrt2_2};
-        static double cc[8] = {1.0, sqrt2_2, 0.0, -sqrt2_2, -1.0, -sqrt2_2,  0.0,  sqrt2_2};
-        
-        s = ss[ai];
-        c = cc[ai];
-    }
+    double angle = angleInDegree/180.0;
+    double c = cos_pi(angle); // avoid round-off errors for simple rotations
+    double s = sin_pi(angle);
     
     for(int y = 0; y < h; ++y, ++id.y)
     {

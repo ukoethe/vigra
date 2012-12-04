@@ -130,15 +130,19 @@ class CoscotFunction
         */
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b;
-        return b;
+        return prefilterCoefficients_;
     }
-
+    
   protected:
-
+    static ArrayVector<double> prefilterCoefficients_;
     unsigned int m_;
     double h_;
 };
+
+template <class T>
+ArrayVector<double> CoscotFunction<T>::prefilterCoefficients_;
+
+
 
 /** \addtogroup GeometricTransformations Geometric Transformations
     Zoom up and down by repeating pixels, or using various interpolation schemes.
@@ -1212,7 +1216,7 @@ resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAcce
 
     DestIterator xxd = id, yyd = id;
 
-    static Diff2D down(0,1), right(1,0), downright(1,1);
+    const Diff2D down(0,1), right(1,0), downright(1,1);
 
     for(y=0; y<h-1; ++y, ++in.y, ov -= 1.0)
     {

@@ -666,7 +666,7 @@ void
 SplineImageView<ORDER, VALUETYPE>::coefficientArray(double x, double y, Array & res) const
 {
     typedef typename Array::value_type ResType;
-    typename Spline::WeightMatrix & weights = Spline::weights();
+    typename Spline::WeightMatrix const & weights = Spline::weights();
     ResType tmp[ksize_][ksize_];
 
     calculateIndices(x, y);

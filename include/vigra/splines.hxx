@@ -156,32 +156,40 @@ class BSplineBase
         */
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> const & b = calculatePrefilterCoefficients();
-        return b;
+        return prefilterCoefficients_;
     }
 
-    static ArrayVector<double> const & calculatePrefilterCoefficients();
-
-    typedef T WeightMatrix[ORDER+1][ORDER+1];
+    typedef ArrayVector<ArrayVector<T> > WeightMatrix;
 
         /** Get the coefficients to transform spline coefficients into
             the coefficients of the corresponding polynomial.
             Currently internally used in SplineImageView; needs more
             documentation ???
         */
-    static WeightMatrix & weights()
+    static WeightMatrix const & weights()
     {
-        static WeightMatrix & b = calculateWeightMatrix();
-        return b;
+        return weightMatrix_;
     }
-
-    static WeightMatrix & calculateWeightMatrix();
 
   protected:
     result_type exec(first_argument_type x, second_argument_type derivative_order) const;
+    
+        // factory function for the prefilter coefficients array
+    static ArrayVector<double> calculatePrefilterCoefficients();
+
+        // factory function for the weight matrix
+    static WeightMatrix calculateWeightMatrix();
 
     BSplineBase<ORDER-1, T> s1_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
 };
+
+template <int ORDER, class T>
+ArrayVector<double> BSplineBase<ORDER, T>::prefilterCoefficients_(BSplineBase<ORDER, T>::calculatePrefilterCoefficients());
+
+template <int ORDER, class T>
+typename BSplineBase<ORDER, T>::WeightMatrix BSplineBase<ORDER, T>::weightMatrix_(calculateWeightMatrix());
 
 template <int ORDER, class T>
 typename BSplineBase<ORDER, T>::result_type
@@ -200,12 +208,13 @@ BSplineBase<ORDER, T>::exec(first_argument_type x, second_argument_type derivati
 }
 
 template <int ORDER, class T>
-ArrayVector<double> const & BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
+ArrayVector<double> 
+BSplineBase<ORDER, T>::calculatePrefilterCoefficients()
 {
-    static ArrayVector<double> b;
+    ArrayVector<double> res;
     if(ORDER > 1)
     {
-        static const int r = ORDER / 2;
+        const int r = ORDER / 2;
         StaticPolynomial<2*r, double> p(2*r);
         BSplineBase spline;
         for(int i = 0; i <= 2*r; ++i)
@@ -214,16 +223,16 @@ ArrayVector<double> const & BSplineBase<ORDER, T>::calculatePrefilterCoefficient
         polynomialRealRoots(p, roots);
         for(unsigned int i = 0; i < roots.size(); ++i)
             if(VIGRA_CSTD::fabs(roots[i]) < 1.0)
-                b.push_back(roots[i]);
+                res.push_back(roots[i]);
     }
-    return b;
+    return res;
 }
 
 template <int ORDER, class T>
-typename BSplineBase<ORDER, T>::WeightMatrix &
+typename BSplineBase<ORDER, T>::WeightMatrix
 BSplineBase<ORDER, T>::calculateWeightMatrix()
 {
-    static WeightMatrix b;
+    WeightMatrix res(ORDER+1, ArrayVector<T>(ORDER+1));
     double faculty = 1.0;
     for(int d = 0; d <= ORDER; ++d)
     {
@@ -232,9 +241,9 @@ BSplineBase<ORDER, T>::calculateWeightMatrix()
         double x = ORDER / 2; // (note: integer division)
         BSplineBase spline;
         for(int i = 0; i <= ORDER; ++i, --x)
-            b[d][i] = spline(x, d) / faculty;
+            res[d][i] = spline(x, d) / faculty;
     }
-    return b;
+    return res;
 }
 
 /********************************************************/
@@ -312,15 +321,14 @@ class BSplineBase<0, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b;
-        return b;
+        return prefilterCoefficients_;
     }
 
     typedef T WeightMatrix[1][1];
-    static WeightMatrix & weights()
+  
+    static WeightMatrix const & weights()
     {
-        static T b[1][1] = {{ 1.0}};
-        return b;
+        return weightMatrix_;
     }
 
   protected:
@@ -335,7 +343,15 @@ class BSplineBase<0, T>
     }
 
     unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
 };
+
+template <class T>
+ArrayVector<double> BSplineBase<0, T>::prefilterCoefficients_;
+
+template <class T>
+typename BSplineBase<0, T>::WeightMatrix BSplineBase<0, T>::weightMatrix_ = {{ 1.0 }};
 
 /********************************************************/
 /*                                                      */
@@ -390,22 +406,29 @@ class BSpline<1, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b;
-        return b;
+        return prefilterCoefficients_;
     }
 
     typedef T WeightMatrix[2][2];
-    static WeightMatrix & weights()
+
+    static WeightMatrix const & weights()
     {
-        static T b[2][2] = {{ 1.0, 0.0}, {-1.0, 1.0}};
-        return b;
+        return weightMatrix_;
     }
 
   protected:
     T exec(T x, unsigned int derivative_order) const;
 
     unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
 };
+
+template <class T>
+ArrayVector<double> BSpline<1, T>::prefilterCoefficients_;
+
+template <class T>
+typename BSpline<1, T>::WeightMatrix BSpline<1, T>::weightMatrix_ = {{ 1.0, 0.0}, {-1.0, 1.0}};
 
 template <class T>
 T BSpline<1, T>::exec(T x, unsigned int derivative_order) const
@@ -500,24 +523,32 @@ class BSpline<2, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b(1, 2.0*M_SQRT2 - 3.0);
-        return b;
+        return prefilterCoefficients_;
     }
 
     typedef T WeightMatrix[3][3];
-    static WeightMatrix & weights()
+
+    static WeightMatrix const & weights()
     {
-        static T b[3][3] = {{ 0.125, 0.75, 0.125},
-                            {-0.5, 0.0, 0.5},
-                            { 0.5, -1.0, 0.5}};
-        return b;
+        return weightMatrix_;
     }
 
   protected:
     result_type exec(first_argument_type x, second_argument_type derivative_order) const;
 
     unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
 };
+
+template <class T>
+ArrayVector<double> BSpline<2, T>::prefilterCoefficients_(1, 2.0*M_SQRT2 - 3.0);
+
+template <class T>
+typename BSpline<2, T>::WeightMatrix BSpline<2, T>::weightMatrix_ = 
+                           {{ 0.125, 0.75, 0.125},
+                            {-0.5, 0.0, 0.5},
+                            { 0.5, -1.0, 0.5}};
 
 template <class T>
 typename BSpline<2, T>::result_type
@@ -632,25 +663,33 @@ class BSpline<3, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b(1, VIGRA_CSTD::sqrt(3.0) - 2.0);
-        return b;
+        return prefilterCoefficients_;
     }
 
     typedef T WeightMatrix[4][4];
-    static WeightMatrix & weights()
+
+    static WeightMatrix const & weights()
     {
-        static T b[4][4] = {{ 1.0 / 6.0, 2.0 / 3.0, 1.0 / 6.0, 0.0},
-                            {-0.5, 0.0, 0.5, 0.0},
-                            { 0.5, -1.0, 0.5, 0.0},
-                            {-1.0 / 6.0, 0.5, -0.5, 1.0 / 6.0}};
-        return b;
+        return weightMatrix_;
     }
 
   protected:
     result_type exec(first_argument_type x, second_argument_type derivative_order) const;
 
     unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
 };
+
+template <class T>
+ArrayVector<double> BSpline<3, T>::prefilterCoefficients_(1, VIGRA_CSTD::sqrt(3.0) - 2.0);
+
+template <class T>
+typename BSpline<3, T>::WeightMatrix BSpline<3, T>::weightMatrix_ = 
+                           {{ 1.0 / 6.0, 2.0 / 3.0, 1.0 / 6.0, 0.0},
+                            {-0.5, 0.0, 0.5, 0.0},
+                            { 0.5, -1.0, 0.5, 0.0},
+                            {-1.0 / 6.0, 0.5, -0.5, 1.0 / 6.0}};
 
 template <class T>
 typename BSpline<3, T>::result_type
@@ -767,13 +806,22 @@ class BSpline<4, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> const & b = initPrefilterCoefficients();
-        return b;
+        return prefilterCoefficients_;
     }
 
-    static ArrayVector<double> const & initPrefilterCoefficients()
+    typedef T WeightMatrix[5][5];
+
+    static WeightMatrix const & weights()
     {
-        static ArrayVector<double> b(2);
+        return weightMatrix_;
+    }
+
+  protected:
+    result_type exec(first_argument_type x, second_argument_type derivative_order) const;
+
+    static ArrayVector<double> calculatePrefilterCoefficients()
+    {
+        ArrayVector<double> b(2);
         // -19 + 4*sqrt(19) + 2*sqrt(2*(83 - 19*sqrt(19)))
         b[0] = -0.361341225900220177092212841325;
         // -19 - 4*sqrt(19) + 2*sqrt(2*(83 + 19*sqrt(19)))
@@ -781,22 +829,21 @@ class BSpline<4, T>
         return b;
     }
 
-    typedef T WeightMatrix[5][5];
-    static WeightMatrix & weights()
-    {
-        static T b[5][5] = {{ 1.0/384.0, 19.0/96.0, 115.0/192.0, 19.0/96.0, 1.0/384.0},
+    unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
+};
+
+template <class T>
+ArrayVector<double> BSpline<4, T>::prefilterCoefficients_(calculatePrefilterCoefficients());
+
+template <class T>
+typename BSpline<4, T>::WeightMatrix BSpline<4, T>::weightMatrix_ = 
+                           {{ 1.0/384.0, 19.0/96.0, 115.0/192.0, 19.0/96.0, 1.0/384.0},
                             {-1.0/48.0, -11.0/24.0, 0.0, 11.0/24.0, 1.0/48.0},
                             { 1.0/16.0, 1.0/4.0, -5.0/8.0, 1.0/4.0, 1.0/16.0},
                             {-1.0/12.0, 1.0/6.0, 0.0, -1.0/6.0, 1.0/12.0},
                             { 1.0/24.0, -1.0/6.0, 0.25, -1.0/6.0, 1.0/24.0}};
-        return b;
-    }
-
-  protected:
-    result_type exec(first_argument_type x, second_argument_type derivative_order) const;
-
-    unsigned int derivativeOrder_;
-};
 
 template <class T>
 typename BSpline<4, T>::result_type
@@ -965,13 +1012,22 @@ class BSpline<5, T>
 
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> const & b = initPrefilterCoefficients();
-        return b;
+        return prefilterCoefficients_;
     }
 
-    static ArrayVector<double> const & initPrefilterCoefficients()
+    typedef T WeightMatrix[6][6];
+
+    static WeightMatrix const & weights()
     {
-        static ArrayVector<double> b(2);
+        return weightMatrix_;
+    }
+
+  protected:
+    result_type exec(first_argument_type x, second_argument_type derivative_order) const;
+
+    static ArrayVector<double> calculatePrefilterCoefficients()
+    {
+        ArrayVector<double> b(2);
         // -(13/2) + sqrt(105)/2 + sqrt(1/2*((135 - 13*sqrt(105))))
         b[0] = -0.430575347099973791851434783493;
         // (1/2)*((-13) - sqrt(105) + sqrt(2*((135 + 13*sqrt(105)))))
@@ -979,23 +1035,22 @@ class BSpline<5, T>
         return b;
     }
 
-    typedef T WeightMatrix[6][6];
-    static WeightMatrix & weights()
-    {
-        static T b[6][6] = {{ 1.0/120.0, 13.0/60.0, 11.0/20.0, 13.0/60.0, 1.0/120.0, 0.0},
+    unsigned int derivativeOrder_;
+    static ArrayVector<double> prefilterCoefficients_;
+    static WeightMatrix weightMatrix_;
+};
+
+template <class T>
+ArrayVector<double> BSpline<5, T>::prefilterCoefficients_(calculatePrefilterCoefficients());
+
+template <class T>
+typename BSpline<5, T>::WeightMatrix BSpline<5, T>::weightMatrix_ = 
+                           {{ 1.0/120.0, 13.0/60.0, 11.0/20.0, 13.0/60.0, 1.0/120.0, 0.0},
                             {-1.0/24.0, -5.0/12.0, 0.0, 5.0/12.0, 1.0/24.0, 0.0},
                             { 1.0/12.0, 1.0/6.0, -0.5, 1.0/6.0, 1.0/12.0, 0.0},
                             {-1.0/12.0, 1.0/6.0, 0.0, -1.0/6.0, 1.0/12.0, 0.0},
                             { 1.0/24.0, -1.0/6.0, 0.25, -1.0/6.0, 1.0/24.0, 0.0},
                             {-1.0/120.0, 1.0/24.0, -1.0/12.0, 1.0/12.0, -1.0/24.0, 1.0/120.0}};
-        return b;
-    }
-
-  protected:
-    result_type exec(first_argument_type x, second_argument_type derivative_order) const;
-
-    unsigned int derivativeOrder_;
-};
 
 template <class T>
 typename BSpline<5, T>::result_type
@@ -1198,11 +1253,15 @@ public:
         */
     ArrayVector<double> const & prefilterCoefficients() const
     {
-        static ArrayVector<double> b;
-        return b;
+        return prefilterCoefficients_;
     }
+    
+  protected:
+    static ArrayVector<double> prefilterCoefficients_;
 };
 
+template <class T>
+ArrayVector<double> CatmullRomSpline<T>::prefilterCoefficients_;
 
 template <class T>
 typename CatmullRomSpline<T>::result_type

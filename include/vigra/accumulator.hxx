@@ -134,8 +134,8 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
    
     AccumulatorChain<DataType, 
         Select<Variance, Mean, StdDev, Minimum, Maximum, RootMeanSquares, Skewness, Covariance> >
-	a;
-	
+        a;
+        
     std::cout << "passes required: " << a.passesRequired() << std::endl;
     extractFeatures(data.begin(), data.end(), a); 
     
@@ -179,11 +179,11 @@ Pixel coordinates are always at index 0.
     
     AccumulatorChain<Handle,
         Select<DataArg<1>, WeightArg<2>,       //where to look in the Handle (coordinates are always arg 0)
-	       Mean, Variance,                     //statistics over values  
-	       Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
-	       Weighted<Mean>, Weighted<Variance>, //weighted values,
-	       Weighted<Coord<Mean> > > >          //weighted coordinates.
-	a;
+               Mean, Variance,                     //statistics over values  
+               Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
+               Weighted<Mean>, Weighted<Variance>, //weighted values,
+               Weighted<Coord<Mean> > > >          //weighted coordinates.
+        a;
 
     Iterator start = createCoupledIterator(data, weights); //coord->index 0, data->index 1, weights->index 2
     Iterator end = start.getEndIterator();
@@ -202,9 +202,9 @@ Pixel coordinates are always at index 0.
 
     AccumulatorChainArray<Handle,
         Select<DataArg<1>, LabelArg<2>,       //where to look in the Handle (coordinates are always arg 0)
-	       Mean, Variance,                    //per-region statistics over values
-	       Coord<Mean>, Coord<Variance>,      //per-region statistics over coordinates
-	       Global<Mean>, Global<Variance> > > //global statistics
+               Mean, Variance,                    //per-region statistics over values
+               Coord<Mean>, Coord<Variance>,      //per-region statistics over coordinates
+               Global<Mean>, Global<Variance> > > //global statistics
     a;
 
     Iterator start = createCoupledIterator(data, labels);
@@ -371,10 +371,11 @@ struct AccumulatorBegin
 {
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("AccumulatorBegin (internal)");
-        return n;
+        return "AccumulatorBegin (internal)";
+       // static const std::string n("AccumulatorBegin (internal)");
+       // return n;
     }
     
     template <class T, class BASE>
@@ -403,10 +404,11 @@ class LabelArg
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("LabelArg<") + asString(INDEX) + "> (internal)";
-        return n;
+        return std::string("LabelArg<") + asString(INDEX) + "> (internal)";
+        // static const std::string n = std::string("LabelArg<") + asString(INDEX) + "> (internal)";
+        // return n;
     }
     
     template <class T, class BASE>
@@ -428,10 +430,11 @@ class CoordArg
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("CoordArg<") + asString(INDEX) + "> (internal)";
-        return n;
+        return std::string("CoordArg<") + asString(INDEX) + "> (internal)";
+        // static const std::string n = std::string("CoordArg<") + asString(INDEX) + "> (internal)";
+        // return n;
     }
     
     template <class T, class BASE>
@@ -663,8 +666,8 @@ struct ApplyVisitorToTag<TypeList<HEAD, TAIL> >
     template <class Accu, class Visitor>
     static bool exec(Accu & a, std::string const & tag, Visitor const & v)
     {
-        static const std::string name = normalizeString(HEAD::name());
-        if(name == tag)
+        static std::string * name = VIGRA_SAFE_STATIC(name, new std::string(normalizeString(HEAD::name())));
+        if(*name == tag)
         {
             v.template exec<HEAD>(a);
             return true;
@@ -974,7 +977,7 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
     static unsigned int passesRequired()
     {
         static const unsigned int A_workInPass = A::workInPass;
-	return std::max(A_workInPass, A::InternalBaseType::passesRequired());
+        return std::max(A_workInPass, A::InternalBaseType::passesRequired());
     }
 };
 
@@ -1002,9 +1005,12 @@ struct DecoratorImpl<A, CurrentPass, true, CurrentPass>
 
     static typename A::result_type get(A const & a)
     {
-        static const std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
-                                                                                   typeid(typename A::Tag).name() + "'.";
-        vigra_precondition(isActive(a), message);
+        if(!isActive(a))
+        {
+            std::string message = std::string("get(accumulator): attempt to access inactive statistic '") +
+                                              A::Tag::name() + "'.";
+            vigra_precondition(false, message);
+        }
         return a();
     }
 
@@ -1547,7 +1553,7 @@ struct AccumulatorFactory
         typedef Accumulator const & const_reference;
         typedef AccumulatorImpl A;
         
-	static const unsigned int workInPass = A::workInPass;
+        static const unsigned int workInPass = A::workInPass;
         static const bool allowRuntimeActivation = CONFIG::allowRuntimeActivation;
         
         template <class T>
@@ -1917,8 +1923,8 @@ class AccumulatorChain
     */
     static ArrayVector<std::string> const & tagNames()
     {
-        static const ArrayVector<std::string> n = collectTagNames();
-        return n;
+        static ArrayVector<std::string> * n = VIGRA_SAFE_STATIC(n, new ArrayVector<std::string>(collectTagNames()));
+        return *n;
     }
 
 
@@ -2802,10 +2808,11 @@ class Global
     typedef typename StandardizeTag<TAG>::type  TargetTag;
     typedef typename TargetTag::Dependencies    Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("Global<") + TargetTag::name() + " >";
-        return n;
+        return std::string("Global<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Global<") + TargetTag::name() + " >";
+        // return n;
     }
 };
 
@@ -2819,10 +2826,11 @@ class DataArg
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("DataArg<") + asString(INDEX) + "> (internal)";
-        return n;
+        return std::string("DataArg<") + asString(INDEX) + "> (internal)";
+        // static const std::string n = std::string("DataArg<") + asString(INDEX) + "> (internal)";
+        // return n;
     }
     
     template <class T, class BASE>
@@ -2846,10 +2854,11 @@ class DataFromHandle
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef typename TargetTag::Dependencies Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("DataFromHandle<") + TargetTag::name() + " > (internal)";
-        return n;
+        return std::string("DataFromHandle<") + TargetTag::name() + " > (internal)";
+        // static const std::string n = std::string("DataFromHandle<") + TargetTag::name() + " > (internal)";
+        // return n;
     }
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
@@ -2931,10 +2940,11 @@ class Coord
     typedef typename StandardizeTag<TAG>::type   TargetTag;
     typedef typename TargetTag::Dependencies     Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
-        return n;
+        return std::string("Coord<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Coord<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
@@ -3015,10 +3025,11 @@ class WeightArg
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("WeightArg<") + asString(INDEX) + "> (internal)";
-        return n;
+        return std::string("WeightArg<") + asString(INDEX) + "> (internal)";
+        // static const std::string n = std::string("WeightArg<") + asString(INDEX) + "> (internal)";
+        // return n;
     }
     
     template <class T, class BASE>
@@ -3043,10 +3054,11 @@ class Weighted
     typedef typename StandardizeTag<TAG>::type   TargetTag;
     typedef typename TargetTag::Dependencies     Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("Weighted<") + TargetTag::name() + " >";
-        return n;
+        return std::string("Weighted<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Weighted<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
@@ -3091,10 +3103,11 @@ class Centralize
   public:
     typedef Select<Mean> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Centralize (internal)");
-        return n;
+         return "Centralize (internal)";
+        // static const std::string n("Centralize (internal)");
+        // return n;
     }
    
     template <class U, class BASE>
@@ -3159,10 +3172,11 @@ class Central
     typedef typename StandardizeTag<TAG>::type                    TargetTag;
     typedef Select<Centralize, typename TargetTag::Dependencies>  Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("Central<") + TargetTag::name() + " >";
-        return n;
+        return std::string("Central<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Central<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3236,10 +3250,11 @@ class PrincipalProjection
   public:
     typedef Select<Centralize, Principal<CoordinateSystem> > Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("PrincipalProjection (internal)");
-        return n;
+        return "PrincipalProjection (internal)";
+        // static const std::string n("PrincipalProjection (internal)");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3309,10 +3324,11 @@ class Principal
     typedef typename StandardizeTag<TAG>::type                             TargetTag;
     typedef Select<PrincipalProjection, typename TargetTag::Dependencies>  Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("Principal<") + TargetTag::name() + " >";
-        return n;
+        return std::string("Principal<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("Principal<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3375,10 +3391,11 @@ class CoordinateSystem
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("CoordinateSystem");
-        return n;
+        return "CoordinateSystem";
+        // static const std::string n("CoordinateSystem");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3458,10 +3475,11 @@ class PowerSum<0>
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("PowerSum<0>");
-        return n;
+        return "PowerSum<0>";
+        // static const std::string n("PowerSum<0>");
+        // return n;
     }
     
     template <class T, class BASE>
@@ -3487,10 +3505,11 @@ class PowerSum<1>
   public:
     typedef Select<> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("PowerSum<1>");
-        return n;
+        return "PowerSum<1>";
+        // static const std::string n("PowerSum<1>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3519,10 +3538,11 @@ class PowerSum
   public:
     typedef Select<> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("PowerSum<") + asString(N) + ">";
-        return n;
+        return std::string("PowerSum<") + asString(N) + ">";
+        // static const std::string n = std::string("PowerSum<") + asString(N) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3549,10 +3569,11 @@ class AbsPowerSum<1>
   public:
     typedef Select<> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("AbsPowerSum<1>");
-        return n;
+        return "AbsPowerSum<1>";
+        // static const std::string n("AbsPowerSum<1>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3583,10 +3604,11 @@ class AbsPowerSum
   public:
     typedef Select<> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("AbsPowerSum<") + asString(N) + ">";
-        return n;
+        return std::string("AbsPowerSum<") + asString(N) + ">";
+        // static const std::string n = std::string("AbsPowerSum<") + asString(N) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3659,10 +3681,11 @@ class DivideByCount
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
   
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("DivideByCount<") + TargetTag::name() + " >";
-        return n;
+        return std::string("DivideByCount<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("DivideByCount<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3694,10 +3717,11 @@ class DivideUnbiased
     typedef typename StandardizeTag<TAG>::type TargetTag;
     typedef Select<TargetTag, Count> Dependencies;
       
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("DivideUnbiased<") + TargetTag::name() + " >";
-        return n;
+        return std::string("DivideUnbiased<") + TargetTag::name() + " >";
+        // static const std::string n = std::string("DivideUnbiased<") + TargetTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3725,11 +3749,12 @@ class RootDivideByCount
     typedef typename StandardizeTag<DivideByCount<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
         typedef typename StandardizeTag<TAG>::type InnerTag;
-        static const std::string n = std::string("RootDivideByCount<") + InnerTag::name() + " >";
-        return n;
+        return std::string("RootDivideByCount<") + InnerTag::name() + " >";
+        // static const std::string n = std::string("RootDivideByCount<") + InnerTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3757,11 +3782,12 @@ class RootDivideUnbiased
     typedef typename StandardizeTag<DivideUnbiased<TAG> >::type TargetTag;
     typedef Select<TargetTag> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
         typedef typename StandardizeTag<TAG>::type InnerTag;
-        static const std::string n = std::string("RootDivideUnbiased<") + InnerTag::name() + " >";
-        return n;
+        return std::string("RootDivideUnbiased<") + InnerTag::name() + " >";
+        // static const std::string n = std::string("RootDivideUnbiased<") + InnerTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3787,10 +3813,11 @@ class Central<PowerSum<2> >
   public:
     typedef Select<Mean, Count> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Central<PowerSum<2> >");
-        return n;
+        return "Central<PowerSum<2> >";
+        // static const std::string n("Central<PowerSum<2> >");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3841,10 +3868,11 @@ class Central<PowerSum<3> >
   public:
     typedef Select<Centralize, Count, Mean, Central<PowerSum<2> > > Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Central<PowerSum<3> >");
-        return n;
+        return "Central<PowerSum<3> >";
+        // static const std::string n("Central<PowerSum<3> >");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3896,10 +3924,11 @@ class Central<PowerSum<4> >
   public:
     typedef Select<Centralize, Central<PowerSum<3> > > Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Central<PowerSum<4> >");
-        return n;
+        return "Central<PowerSum<4> >";
+        // static const std::string n("Central<PowerSum<4> >");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3959,10 +3988,11 @@ class Skewness
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<3> > > Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Skewness");
-        return n;
+        return "Skewness";
+        // static const std::string n("Skewness");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -3979,7 +4009,7 @@ class Skewness
             typedef Central<PowerSum<3> > Sum3;
             typedef Central<PowerSum<2> > Sum2;
         
-			using namespace multi_math;
+                        using namespace multi_math;
             return sqrt(getDependency<Count>(*this)) * getDependency<Sum3>(*this) / pow(getDependency<Sum2>(*this), 1.5);
         }
     };
@@ -3994,10 +4024,11 @@ class UnbiasedSkewness
   public:
     typedef Select<Skewness> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("UnbiasedSkewness");
-        return n;
+        return "UnbiasedSkewness";
+        // static const std::string n("UnbiasedSkewness");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4011,7 +4042,7 @@ class UnbiasedSkewness
 
         result_type operator()() const
         {
-			using namespace multi_math;
+                        using namespace multi_math;
             double n = getDependency<Count>(*this);
             return sqrt(n*(n-1.0)) / (n - 2.0) * getDependency<Skewness>(*this);
         }
@@ -4029,10 +4060,11 @@ class Kurtosis
   public:
     typedef Select<Central<PowerSum<2> >, Central<PowerSum<4> > > Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Kurtosis");
-        return n;
+        return "Kurtosis";
+        // static const std::string n("Kurtosis");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4049,7 +4081,7 @@ class Kurtosis
             typedef Central<PowerSum<4> > Sum4;
             typedef Central<PowerSum<2> > Sum2;
         
-			using namespace multi_math;
+                        using namespace multi_math;
             return getDependency<Count>(*this) * getDependency<Sum4>(*this) / sq(getDependency<Sum2>(*this)) - value_type(3.0);
         }
     };
@@ -4064,10 +4096,11 @@ class UnbiasedKurtosis
   public:
     typedef Select<Kurtosis> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("UnbiasedKurtosis");
-        return n;
+        return "UnbiasedKurtosis";
+        // static const std::string n("UnbiasedKurtosis");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4081,7 +4114,7 @@ class UnbiasedKurtosis
 
         result_type operator()() const
         {
-			using namespace multi_math;
+                        using namespace multi_math;
             double n = getDependency<Count>(*this);
             return (n-1.0)/((n-2.0)*(n-3.0))*((n+1.0)*getDependency<Kurtosis>(*this) + value_type(6.0));
         }
@@ -4159,10 +4192,11 @@ class FlatScatterMatrix
   public:
     typedef Select<Mean, Count> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("FlatScatterMatrix");
-        return n;
+        return "FlatScatterMatrix";
+        // static const std::string n("FlatScatterMatrix");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4248,10 +4282,11 @@ class DivideByCount<FlatScatterMatrix>
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("DivideByCount<FlatScatterMatrix>");
-        return n;
+        return "DivideByCount<FlatScatterMatrix>";
+        // static const std::string n("DivideByCount<FlatScatterMatrix>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4287,10 +4322,11 @@ class DivideUnbiased<FlatScatterMatrix>
   public:
     typedef Select<FlatScatterMatrix, Count> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("DivideUnbiased<FlatScatterMatrix>");
-        return n;
+        return "DivideUnbiased<FlatScatterMatrix>";
+        // static const std::string n("DivideUnbiased<FlatScatterMatrix>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4326,10 +4362,11 @@ class ScatterMatrixEigensystem
   public:
     typedef Select<FlatScatterMatrix> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("ScatterMatrixEigensystem");
-        return n;
+        return "ScatterMatrixEigensystem";
+        // static const std::string n("ScatterMatrixEigensystem");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4414,10 +4451,11 @@ class DivideByCount<ScatterMatrixEigensystem>
   public:
     typedef Select<ScatterMatrixEigensystem, Count> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("DivideByCount<ScatterMatrixEigensystem>");
-        return n;
+        return "DivideByCount<ScatterMatrixEigensystem>";
+        // static const std::string n("DivideByCount<ScatterMatrixEigensystem>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4567,10 +4605,11 @@ class Principal<PowerSum<2> >
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Principal<PowerSum<2> >");
-        return n;
+        return "Principal<PowerSum<2> >";
+        // static const std::string n("Principal<PowerSum<2> >");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4597,10 +4636,11 @@ class Principal<CoordinateSystem>
   public:
     typedef Select<ScatterMatrixEigensystem> Dependencies;
      
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Principal<CoordinateSystem>");
-        return n;
+        return "Principal<CoordinateSystem>";
+        // static const std::string n("Principal<CoordinateSystem>");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4626,10 +4666,11 @@ class Minimum
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Minimum");
-        return n;
+        return "Minimum";
+        // static const std::string n("Minimum");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4703,10 +4744,11 @@ class Maximum
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("Maximum");
-        return n;
+        return "Maximum";
+        // static const std::string n("Maximum");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4780,10 +4822,11 @@ class ArgMinWeight
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("ArgMinWeight");
-        return n;
+        return "ArgMinWeight";
+        // static const std::string n("ArgMinWeight");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -4854,10 +4897,11 @@ class ArgMaxWeight
   public:
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n("ArgMaxWeight");
-        return n;
+        return "ArgMaxWeight";
+        // static const std::string n("ArgMaxWeight");
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5177,10 +5221,11 @@ class IntegerHistogram
     
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("IntegerHistogram<") + asString(BinCount) + ">";
-        return n;
+        return std::string("IntegerHistogram<") + asString(BinCount) + ">";
+        // static const std::string n = std::string("IntegerHistogram<") + asString(BinCount) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5289,10 +5334,11 @@ class UserRangeHistogram
     
     typedef Select<> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("UserRangeHistogram<") + asString(BinCount) + ">";
-        return n;
+        return std::string("UserRangeHistogram<") + asString(BinCount) + ">";
+        // static const std::string n = std::string("UserRangeHistogram<") + asString(BinCount) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5330,10 +5376,11 @@ class AutoRangeHistogram
     
     typedef Select<Minimum, Maximum> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("AutoRangeHistogram<") + asString(BinCount) + ">";
-        return n;
+        return std::string("AutoRangeHistogram<") + asString(BinCount) + ">";
+        // static const std::string n = std::string("AutoRangeHistogram<") + asString(BinCount) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5373,10 +5420,11 @@ class GlobalRangeHistogram
     
     typedef Select<Global<Minimum>, Global<Maximum>, Minimum, Maximum> Dependencies;
     
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("GlobalRangeHistogram<") + asString(BinCount) + ">";
-        return n;
+        return std::string("GlobalRangeHistogram<") + asString(BinCount) + ">";
+        // static const std::string n = std::string("GlobalRangeHistogram<") + asString(BinCount) + ">";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5429,10 +5477,11 @@ class StandardQuantiles
     typedef typename StandardizeTag<HistogramAccumulator>::type HistogramTag;
     typedef Select<HistogramTag, Minimum, Maximum, Count> Dependencies;
 
-    static std::string const & name() 
+    static std::string name() 
     { 
-        static const std::string n = std::string("StandardQuantiles<") + HistogramTag::name() + " >";
-        return n;
+        return std::string("StandardQuantiles<") + HistogramTag::name() + " >";
+        // static const std::string n = std::string("StandardQuantiles<") + HistogramTag::name() + " >";
+        // return n;
     }
     
     template <class U, class BASE>
@@ -5448,7 +5497,7 @@ class StandardQuantiles
         {
             if(this->isDirty())
             {
-                static const double desiredQuantiles[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0 };
+                double desiredQuantiles[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0 };
                 getAccumulator<HistogramTag>(*this).computeStandardQuantiles(getDependency<Minimum>(*this), getDependency<Maximum>(*this), 
                                                                              getDependency<Count>(*this), value_type(desiredQuantiles), 
                                                                              this->value_);

@@ -191,23 +191,28 @@ class NeighborCode
         InitialDirection = East,
         OppositeDirPrefix = 1,
         OppositeOffset = West
- };
+    };
+    
+    template <int DUMMY>
+    struct StaticData
+    {
+        static unsigned int b[];
+        static unsigned int c[];
+        static Direction bd[11][4];
+        static Diff2D d[];
+        static Diff2D rd[][4];
+    };
 
     static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << East,
-                                   1 << North,
-                                   1 << West,
-                                   1 << South };
-        return b[d];
+        return StaticData<0>::b[d];
     };
 
         /** The number of valid neighbors if the current center is at the image border.
         */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
     {
-        static unsigned int c[] = { 4, 3, 3, 0, 3, 2, 2, 0, 3, 2, 2};
-        return c[b];
+        return StaticData<0>::c[b];
     }
 
         /** The valid direction codes when the center is at the image border.
@@ -215,20 +220,7 @@ class NeighborCode
         */
     static Direction nearBorderDirections(AtImageBorder b, int index)
     {
-        static Direction c[11][4] = {
-                { East, North, West, South},
-                { North, West, South, Error},
-                { East, North, South, Error},
-                { Error, Error, Error, Error},
-                { East, West, South, Error},
-                { West, South, Error, Error},
-                { East, South, Error, Error},
-                { Error, Error, Error, Error},
-                { East, North, West, Error},
-                { North, West, Error, Error},
-                { East, North, Error, Error}
-             };
-        return c[b][index];
+        return StaticData<0>::bd[b][index];
     }
 
         /** Transform direction code into corresponding Diff2D offset.
@@ -236,10 +228,7 @@ class NeighborCode
         */
     static Diff2D const & diff(Direction code)
     {
-        static Diff2D d[] = {
-            Diff2D(1, 0), Diff2D(0, -1), Diff2D(-1, 0), Diff2D(0, 1)
-        };
-        return d[code];
+        return StaticData<0>::d[code];
     }
 
         /** Equivalent to <tt>diff(static_cast<Direction>(code))</tt>.
@@ -253,14 +242,7 @@ class NeighborCode
         */
     static Diff2D const & relativeDiff(Direction fromCode, Direction toCode)
     {
-        static Diff2D d[][4] = {
-            { Diff2D(0, 0), Diff2D(-1, -1), Diff2D(-2, 0), Diff2D(-1, 1) },
-            { Diff2D(1, 1), Diff2D(0, 0), Diff2D(-1, 1), Diff2D(0, 2) },
-            { Diff2D(2, 0), Diff2D(1, -1), Diff2D(0, 0), Diff2D(1, 1) },
-            { Diff2D(1, -1), Diff2D(0, -2), Diff2D(-1, -1), Diff2D(0, 0) }
-        };
-
-        return d[fromCode][toCode];
+        return StaticData<0>::rd[fromCode][toCode];
     }
 
         /** Equivalent to relativeDiff(static_cast<Direction>(fromCode), static_cast<Direction>(toCode)).
@@ -333,6 +315,7 @@ class NeighborCode
     static Diff2D const & south()      { return diff(South); }   /**<  Offset to the south neighbor */
 };
 
+
     /** Export NeighborCode::Direction into the scope of namespace FourNeighborhood.
     */
 typedef NeighborCode::Direction Direction;
@@ -349,7 +332,47 @@ inline Diff2D const & north()      { return NeighborCode::diff(North); }   /**< 
 inline Diff2D const & west()       { return NeighborCode::diff(West); }    /**<  Offset to the west neighbor */
 inline Diff2D const & south()      { return NeighborCode::diff(South); }   /**<  Offset to the south neighbor */
 
+
+template <int DUMMY>
+unsigned int NeighborCode::StaticData<DUMMY>::b[] = {1 << East,
+                                                    1 << North,
+                                                    1 << West,
+                                                    1 << South };
+
+template <int DUMMY>
+unsigned int NeighborCode::StaticData<DUMMY>::c[] = { 4, 3, 3, 0, 3, 2, 2, 0, 3, 2, 2};
+
+template <int DUMMY>
+Direction NeighborCode::StaticData<DUMMY>::bd[11][4] = {
+                { East, North, West, South},
+                { North, West, South, Error},
+                { East, North, South, Error},
+                { Error, Error, Error, Error},
+                { East, West, South, Error},
+                { West, South, Error, Error},
+                { East, South, Error, Error},
+                { Error, Error, Error, Error},
+                { East, North, West, Error},
+                { North, West, Error, Error},
+                { East, North, Error, Error}
+             };
+
+template <int DUMMY>
+Diff2D NeighborCode::StaticData<DUMMY>::d[] = {
+            Diff2D(1, 0), Diff2D(0, -1), Diff2D(-1, 0), Diff2D(0, 1)
+        };
+
+template <int DUMMY>
+Diff2D NeighborCode::StaticData<DUMMY>::rd[][4] = {
+            { Diff2D(0, 0), Diff2D(-1, -1), Diff2D(-2, 0), Diff2D(-1, 1) },
+            { Diff2D(1, 1), Diff2D(0, 0), Diff2D(-1, 1), Diff2D(0, 2) },
+            { Diff2D(2, 0), Diff2D(1, -1), Diff2D(0, 0), Diff2D(1, 1) },
+            { Diff2D(1, -1), Diff2D(0, -2), Diff2D(-1, -1), Diff2D(0, 0) }
+        };
+
 } // namespace FourNeighborhood
+
+
 
     /** Export \ref vigra::FourNeighborhood::NeighborCode into the scope of namespace vigra.
     */
@@ -429,25 +452,26 @@ class NeighborCode
         OppositeOffset = West
     };
 
+    template <int DUMMY>
+    struct StaticData
+    {
+        static unsigned int b[];
+        static unsigned int c[];
+        static Direction bd[11][8];
+        static Diff2D d[];
+        static Diff2D rd[][8];
+    };
+
     static unsigned int directionBit(Direction d)
     {
-        static unsigned int b[] = {1 << East,
-                                   1 << NorthEast,
-                                   1 << North,
-                                   1 << NorthWest,
-                                   1 << West,
-                                   1 << SouthWest,
-                                   1 << South,
-                                   1 << SouthEast};
-        return b[d];
+        return StaticData<0>::b[d];
     };
 
         /** The number of valid neighbors if the current center is at the image border.
         */
     static unsigned int nearBorderDirectionCount(AtImageBorder b)
     {
-        static unsigned int c[] = { 8, 5, 5, 0, 5, 3, 3, 0, 5, 3, 3};
-        return c[b];
+        return StaticData<0>::c[b];
     }
 
         /** The valid direction codes when the center is at the image border.
@@ -455,20 +479,7 @@ class NeighborCode
         */
     static Direction nearBorderDirections(AtImageBorder b, int index)
     {
-        static Direction c[11][8] = {
-                { East, NorthEast, North, NorthWest, West, SouthWest, South, SouthEast},
-                { North, NorthWest, West, SouthWest, South, Error, Error, Error},
-                { East, NorthEast, North, South, SouthEast, Error, Error, Error},
-                { Error, Error, Error, Error, Error, Error, Error, Error},
-                { East, West, SouthWest, South, SouthEast, Error, Error, Error},
-                { West, SouthWest, South, Error, Error, Error, Error, Error},
-                { East, South, SouthEast, Error, Error, Error, Error, Error},
-                { Error, Error, Error, Error, Error, Error, Error, Error},
-                { East, NorthEast, North, NorthWest, West, Error, Error, Error},
-                { North, NorthWest, West, Error, Error, Error, Error, Error},
-                { East, NorthEast, North, Error, Error, Error, Error, Error}
-             };
-        return c[b][index];
+        return StaticData<0>::bd[b][index];
     }
 
         /** Transform direction code into corresponding Diff2D offset.
@@ -476,11 +487,7 @@ class NeighborCode
         */
     static Diff2D const & diff(Direction code)
     {
-        static Diff2D d[] = {
-            Diff2D(1, 0), Diff2D(1, -1), Diff2D(0, -1), Diff2D(-1, -1),
-            Diff2D(-1, 0), Diff2D(-1, 1), Diff2D(0, 1), Diff2D(1, 1)
-        };
-        return d[code];
+        return StaticData<0>::d[code];
     }
 
         /** Equivalent to diff(static_cast<Direction>(code)).
@@ -494,26 +501,7 @@ class NeighborCode
         */
     static Diff2D const & relativeDiff(Direction fromCode, Direction toCode)
     {
-        static Diff2D d[][8] = {
-            { Diff2D(0, 0), Diff2D(0, -1), Diff2D(-1, -1), Diff2D(-2, -1),
-              Diff2D(-2, 0), Diff2D(-2, 1), Diff2D(-1, 1), Diff2D(0, 1) },
-            { Diff2D(0, 1), Diff2D(0, 0), Diff2D(-1, 0), Diff2D(-2, 0),
-              Diff2D(-2, 1), Diff2D(-2, 2), Diff2D(-1, 2), Diff2D(0, 2) },
-            { Diff2D(1, 1), Diff2D(1, 0), Diff2D(0, 0), Diff2D(-1, 0),
-              Diff2D(-1, 1), Diff2D(-1, 2), Diff2D(0, 2), Diff2D(1, 2) },
-            { Diff2D(2, 1), Diff2D(2, 0), Diff2D(1, 0), Diff2D(0, 0),
-              Diff2D(0, 1), Diff2D(0, 2), Diff2D(1, 2), Diff2D(2, 2) },
-            { Diff2D(2, 0), Diff2D(2, -1), Diff2D(1, -1), Diff2D(0, -1),
-              Diff2D(0, 0), Diff2D(0, 1), Diff2D(1, 1), Diff2D(2, 1) },
-            { Diff2D(2, -1), Diff2D(2, -2), Diff2D(1, -2), Diff2D(0, -2),
-              Diff2D(0, -1), Diff2D(0, 0), Diff2D(1, 0), Diff2D(2, 0) },
-            { Diff2D(1, -1), Diff2D(1, -2), Diff2D(0, -2), Diff2D(-1, -2),
-              Diff2D(-1, -1), Diff2D(-1, 0), Diff2D(0, 0), Diff2D(1, 0) },
-            { Diff2D(0, -1), Diff2D(0, -2), Diff2D(-1, -2), Diff2D(-2, -2),
-              Diff2D(-2, -1), Diff2D(-2, 0), Diff2D(-1, 0), Diff2D(0, 0) }
-        };
-
-        return d[fromCode][toCode];
+        return StaticData<0>::rd[fromCode][toCode];
     }
 
         /** Equivalent to relativeDiff(static_cast<Direction>(fromCode), static_cast<Direction>(toCode)).
@@ -636,6 +624,61 @@ inline Diff2D const & west()       { return NeighborCode::diff(West); }        /
 inline Diff2D const & southWest()  { return NeighborCode::diff(SouthWest); }   /**<  Offset to the southWest neighbor */
 inline Diff2D const & south()      { return NeighborCode::diff(South); }       /**<  Offset to the south neighbor */
 inline Diff2D const & southEast()  { return NeighborCode::diff(SouthEast); }   /**<  Offset to the southEast neighbor */
+
+template <int DUMMY>
+unsigned int NeighborCode::StaticData<DUMMY>::b[] = {
+                                   1 << East,
+                                   1 << NorthEast,
+                                   1 << North,
+                                   1 << NorthWest,
+                                   1 << West,
+                                   1 << SouthWest,
+                                   1 << South,
+                                   1 << SouthEast};
+
+template <int DUMMY>
+unsigned int NeighborCode::StaticData<DUMMY>::c[] = { 8, 5, 5, 0, 5, 3, 3, 0, 5, 3, 3};
+
+template <int DUMMY>
+Direction NeighborCode::StaticData<DUMMY>::bd[11][8] = {
+                { East, NorthEast, North, NorthWest, West, SouthWest, South, SouthEast},
+                { North, NorthWest, West, SouthWest, South, Error, Error, Error},
+                { East, NorthEast, North, South, SouthEast, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error, Error, Error},
+                { East, West, SouthWest, South, SouthEast, Error, Error, Error},
+                { West, SouthWest, South, Error, Error, Error, Error, Error},
+                { East, South, SouthEast, Error, Error, Error, Error, Error},
+                { Error, Error, Error, Error, Error, Error, Error, Error},
+                { East, NorthEast, North, NorthWest, West, Error, Error, Error},
+                { North, NorthWest, West, Error, Error, Error, Error, Error},
+                { East, NorthEast, North, Error, Error, Error, Error, Error}
+             };
+
+template <int DUMMY>
+Diff2D NeighborCode::StaticData<DUMMY>::d[] = {
+            Diff2D(1, 0), Diff2D(1, -1), Diff2D(0, -1), Diff2D(-1, -1),
+            Diff2D(-1, 0), Diff2D(-1, 1), Diff2D(0, 1), Diff2D(1, 1)
+        };
+
+template <int DUMMY>
+Diff2D NeighborCode::StaticData<DUMMY>::rd[][8] = {
+            { Diff2D(0, 0), Diff2D(0, -1), Diff2D(-1, -1), Diff2D(-2, -1),
+              Diff2D(-2, 0), Diff2D(-2, 1), Diff2D(-1, 1), Diff2D(0, 1) },
+            { Diff2D(0, 1), Diff2D(0, 0), Diff2D(-1, 0), Diff2D(-2, 0),
+              Diff2D(-2, 1), Diff2D(-2, 2), Diff2D(-1, 2), Diff2D(0, 2) },
+            { Diff2D(1, 1), Diff2D(1, 0), Diff2D(0, 0), Diff2D(-1, 0),
+              Diff2D(-1, 1), Diff2D(-1, 2), Diff2D(0, 2), Diff2D(1, 2) },
+            { Diff2D(2, 1), Diff2D(2, 0), Diff2D(1, 0), Diff2D(0, 0),
+              Diff2D(0, 1), Diff2D(0, 2), Diff2D(1, 2), Diff2D(2, 2) },
+            { Diff2D(2, 0), Diff2D(2, -1), Diff2D(1, -1), Diff2D(0, -1),
+              Diff2D(0, 0), Diff2D(0, 1), Diff2D(1, 1), Diff2D(2, 1) },
+            { Diff2D(2, -1), Diff2D(2, -2), Diff2D(1, -2), Diff2D(0, -2),
+              Diff2D(0, -1), Diff2D(0, 0), Diff2D(1, 0), Diff2D(2, 0) },
+            { Diff2D(1, -1), Diff2D(1, -2), Diff2D(0, -2), Diff2D(-1, -2),
+              Diff2D(-1, -1), Diff2D(-1, 0), Diff2D(0, 0), Diff2D(1, 0) },
+            { Diff2D(0, -1), Diff2D(0, -2), Diff2D(-1, -2), Diff2D(-2, -2),
+              Diff2D(-2, -1), Diff2D(-2, 0), Diff2D(-1, 0), Diff2D(0, 0) }
+        };
 
 } // namespace EightNeighborhood
 

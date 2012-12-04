@@ -122,7 +122,6 @@ struct WrapDoubleIteratorTriple
     double sigma_eff() const { return *sigma_eff_it; }
     double sigma_d() const { return *sigma_d_it; }
     double step_size() const { return *step_size_it; }
-    static double sqr(double x) { return x * x; }
     static void sigma_precondition(double sigma, const char *const function_name)
     {
         if (sigma < 0.0)
@@ -135,7 +134,7 @@ struct WrapDoubleIteratorTriple
     {
         sigma_precondition(sigma_eff(), function_name);
         sigma_precondition(sigma_d(), function_name);
-        double sigma_squared = sqr(sigma_eff()) - sqr(sigma_d());
+        double sigma_squared = sq(sigma_eff()) - sq(sigma_d());
         if (sigma_squared > 0.0)
         {
             return std::sqrt(sigma_squared) / step_size();

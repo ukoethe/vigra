@@ -343,12 +343,6 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
     SeedRgVoxelHeap pheap;
     int cneighbor;
 
-    #if 0
-    static const Diff_type dist[] = { Diff_type(-1, 0, 0), Diff_type( 0,-1, 0),
-                                      Diff_type( 1, 0, 0), Diff_type( 0, 1, 0),
-                                      Diff_type( 0, 0,-1), Diff_type( 0, 0, 1) };
-    #endif
-
     typedef typename Neighborhood::Direction Direction;
     int directionCount = Neighborhood::DirectionCount;
 

@@ -364,15 +364,46 @@ fftwPlanExecute(fftwl_plan plan, FFTWComplex<long double> * in,  long double * o
     fftwl_execute_dft_c2r(plan, (fftwl_complex *)in, out);
 }
 
-inline 
-int fftwPaddingSize(int s)
+template <int DUMMY>
+struct FFTWPaddingSize
 {
+    static const int size = 1330;
+    static const int evenSize = 1063;
+    static int goodSizes[size];
+    static int goodEvenSizes[evenSize];
+    
+    static inline int find(int s)
+    {
+        if(s <= 0 || s >= goodSizes[size-1])
+            return s;
+        // find the smallest padding size that is at least as large as 's'
+        int * upperBound = std::upper_bound(goodSizes, goodSizes+size, s);
+        if(upperBound > goodSizes && upperBound[-1] == s)
+            return s;
+        else
+            return *upperBound;
+    }
+
+    static inline int findEven(int s)
+    {
+        if(s <= 0 || s >= goodEvenSizes[evenSize-1])
+            return s;
+        // find the smallest padding size that is at least as large as 's'
+        int * upperBound = std::upper_bound(goodEvenSizes, goodEvenSizes+evenSize, s);
+        if(upperBound > goodEvenSizes && upperBound[-1] == s)
+            return s;
+        else
+            return *upperBound;
+    }
+};
+    
     // Image sizes where FFTW is fast. The list contains all
     // numbers less than 100000 whose prime decomposition is of the form
     // 2^a*3^b*5^c*7^d*11^e*13^f, where e+f is either 0 or 1, and the 
     // other exponents are arbitrary
-    static const int size = 1330;
-    static int goodSizes[size] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
+template <int DUMMY>
+int FFTWPaddingSize<DUMMY>::goodSizes[size] = {
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 
         18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 35, 36, 39, 40, 42, 44, 45, 48, 
         49, 50, 52, 54, 55, 56, 60, 63, 64, 65, 66, 70, 72, 75, 77, 78, 80, 81, 
         84, 88, 90, 91, 96, 98, 99, 100, 104, 105, 108, 110, 112, 117, 120, 125, 
@@ -491,27 +522,12 @@ int fftwPaddingSize(int s)
         92400, 92610, 93184, 93312, 93555, 93600, 93639, 93750, 94080, 94325, 
         94500, 94770, 95040, 95256, 95550, 96000, 96040, 96228, 96250, 96768, 
         97020, 97200, 97500, 98000, 98280, 98304, 98415, 98560, 98784, 99000, 
-        99225, 99792, 99840 }; 
+        99225, 99792, 99840 
+}; 
 
-    if(s <= 0 || s >= goodSizes[size-1])
-        return s;
-    // find the smallest padding size that is at least as large as 's'
-    int * upperBound = std::upper_bound(goodSizes, goodSizes+size, s);
-    if(upperBound > goodSizes && upperBound[-1] == s)
-        return s;
-    else
-        return *upperBound;
-}
-
-inline 
-int fftwEvenPaddingSize(int s)
-{
-    // Image sizes where FFTW is fast. The list contains all even
-    // numbers less than 100000 whose prime decomposition is of the form
-    // 2^a*3^b*5^c*7^d*11^e*13^f, where a >= 1, e+f is either 0 or 1, and the 
-    // other exponents are arbitrary
-    static const int size = 1063;
-    static int goodSizes[size] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 
+template <int DUMMY>
+int FFTWPaddingSize<DUMMY>::goodEvenSizes[evenSize] = { 
+        2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 
         24, 26, 28, 30, 32, 36, 40, 42, 44, 48, 50, 52, 54, 56, 60, 64, 66, 70, 
         72, 78, 80, 84, 88, 90, 96, 98, 100, 104, 108, 110, 112, 120, 126, 128, 
         130, 132, 140, 144, 150, 154, 156, 160, 162, 168, 176, 180, 182, 192, 
@@ -607,17 +623,8 @@ int fftwEvenPaddingSize(int s)
         90000, 90112, 90552, 90720, 91000, 91728, 91854, 92160, 92400, 92610, 
         93184, 93312, 93600, 93750, 94080, 94500, 94770, 95040, 95256, 95550, 
         96000, 96040, 96228, 96250, 96768, 97020, 97200, 97500, 98000, 98280, 
-        98304, 98560, 98784, 99000, 99792, 99840 }; 
-
-    if(s <= 0 || s >= goodSizes[size-1])
-        return s;
-    // find the smallest padding size that is at least as large as 's'
-    int * upperBound = std::upper_bound(goodSizes, goodSizes+size, s);
-    if(upperBound > goodSizes && upperBound[-1] == s)
-        return s;
-    else
-        return *upperBound;
-}
+        98304, 98560, 98784, 99000, 99792, 99840 
+}; 
 
 template <int M>
 struct FFTEmbedKernel
@@ -731,7 +738,7 @@ TinyVector<T, N>
 fftwBestPaddedShape(TinyVector<T, N> shape)
 {
     for(unsigned int k=0; k<N; ++k)
-        shape[k] = detail::fftwPaddingSize(shape[k]);
+        shape[k] = detail::FFTWPaddingSize<0>::find(shape[k]);
     return shape;
 }
 
@@ -739,9 +746,9 @@ template <class T, int N>
 TinyVector<T, N>
 fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
 {
-    shape[0] = detail::fftwEvenPaddingSize(shape[0]);
+    shape[0] = detail::FFTWPaddingSize<0>::findEven(shape[0]);
     for(unsigned int k=1; k<N; ++k)
-        shape[k] = detail::fftwPaddingSize(shape[k]);
+        shape[k] = detail::FFTWPaddingSize<0>::find(shape[k]);
     return shape;
 }
 

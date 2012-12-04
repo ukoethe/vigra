@@ -24,17 +24,15 @@ IF(PYTHONINTERP_V2_FOUND)
 
 #    this command cannot be used because its results are often inconsistent
 #    with the Python interpreter found previously (e.g. libraries or includes
-#    from another version)
+#    from incompatible installations)
 #    FIND_PACKAGE(PythonLibs)
 
     # find Python library
-    IF(APPLE)
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print sys.exec_prefix"
-                          OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-        SET(PYTHON_LIBRARY "${PYTHON_PREFIX}/Python"
-            CACHE FILEPATH "Python library"
-            FORCE)
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
+                     "import sys; print sys.exec_prefix"
+                      OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    IF(APPLE AND ${PYTHON_PREFIX} MATCHES ".*framework.*")
         SET(PYTHON_LIBRARIES "${PYTHON_PREFIX}/Python"
             CACHE FILEPATH "Python libraries"
             FORCE)
@@ -42,12 +40,9 @@ IF(PYTHONINTERP_V2_FOUND)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
-        execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
-                         "import sys; print sys.exec_prefix"
-                          OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
-        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} "${PYTHON_PREFIX}/libs")
+        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} PATHS "${PYTHON_PREFIX}" 
+                     PATH_SUFFIXES lib lib64 libs DOC "Python libraries" NO_DEFAULT_PATH)
     ENDIF()
-
 
     # find Python includes
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
@@ -58,11 +53,11 @@ IF(PYTHONINTERP_V2_FOUND)
         FORCE)
 
     IF(PYTHON_LIBRARIES AND PYTHON_INCLUDE_PATH)
-        MESSAGE(STATUS "Found Python library: ${PYTHON_LIBRARIES}")
-        MESSAGE(STATUS "Found Python includes: ${PYTHON_INCLUDE_PATH}")
+        MESSAGE(STATUS "Found Python libraries: ${PYTHON_LIBRARIES}")
+        MESSAGE(STATUS "Found Python includes:  ${PYTHON_INCLUDE_PATH}")
         SET(PYTHONLIBS_FOUND TRUE)
     ELSE()
-        MESSAGE(STATUS "Could NOT find Python library and/or includes")
+        MESSAGE(STATUS "Could NOT find Python libraries and/or includes")
     ENDIF()
 
     VIGRA_FIND_PACKAGE( Boost 1.40.0 COMPONENTS python )

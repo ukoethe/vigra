@@ -70,10 +70,10 @@ AliasMap defineAliasMap()
     return res;
 }
 
-AliasMap createTagToAlias(ArrayVector<std::string> const & names)
+AliasMap * createTagToAlias(ArrayVector<std::string> const & names)
 {
-    static const AliasMap aliases = defineAliasMap();
-    AliasMap res;
+    const AliasMap aliases = defineAliasMap();
+    VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
     for(unsigned int k=0; k<names.size(); ++k)
     {
             // lookup alias names
@@ -86,26 +86,26 @@ AliasMap createTagToAlias(ArrayVector<std::string> const & names)
             // i.e. use names only when they don't contain these strings
         if(alias.find("ScatterMatrixEigensystem") == std::string::npos &&
            alias.find("FlatScatterMatrix") == std::string::npos)
-             res[names[k]] = alias;
+             (*res)[names[k]] = alias;
     }
-    return res;   
+    return res.release();   
 }
 
-AliasMap createAliasToTag(AliasMap const & tagToAlias)
+AliasMap * createAliasToTag(AliasMap const & tagToAlias)
 {
-    AliasMap res;
+    VIGRA_UNIQUE_PTR<AliasMap> res(new AliasMap());
     for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
-        res[normalizeString(k->second)] = normalizeString(k->first);
-    return res;
+        (*res)[normalizeString(k->second)] = normalizeString(k->first);
+    return res.release();
 }
 
-ArrayVector<std::string> createSortedNames(AliasMap const & tagToAlias)
+ArrayVector<std::string> * createSortedNames(AliasMap const & tagToAlias)
 {
-    ArrayVector<std::string> res;
+    VIGRA_UNIQUE_PTR<ArrayVector<std::string> > res(new ArrayVector<std::string>());
     for(AliasMap::const_iterator k = tagToAlias.begin(); k != tagToAlias.end(); ++k)
-        res.push_back(k->second);
-    std::sort(res.begin(), res.end());
-    return res;
+        res->push_back(k->second);
+    std::sort(res->begin(), res->end());
+    return res.release();
 }
 
 } // namespace acc
