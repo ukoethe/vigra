@@ -549,10 +549,10 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testBasics()
     {
-        using namespace vigragraph;
+        using namespace boost;
         typedef GridGraph<N, DirectedTag> G;
         
-        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
         MultiCoordinateIterator<N> i(Shape(3)), iend = i.getEndIterator();        
         for(; i != iend; ++i)
@@ -581,20 +581,20 @@ struct GridGraphTests
             shouldEqual(g.arcNum(), directed ? g.edgeNum() : 2*g.edgeNum());
         }
 #ifdef WITH_BOOST_GRAPH
-        BOOST_CONCEPT_ASSERT(( vigragraph::GraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::IncidenceGraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::BidirectionalGraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::AdjacencyGraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::VertexListGraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::EdgeListGraphConcept<G> ));
-        BOOST_CONCEPT_ASSERT(( vigragraph::AdjacencyMatrixConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::GraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::IncidenceGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::BidirectionalGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::AdjacencyGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::VertexListGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::EdgeListGraphConcept<G> ));
+        BOOST_CONCEPT_ASSERT(( boost::AdjacencyMatrixConcept<G> ));
 #endif
     }
     
     template <class DirectedTag, NeighborhoodType NType>
     void testVertexIterator()
     {
-        using namespace vigragraph;
+        using namespace boost;
         
         typedef GridGraph<N, DirectedTag> Graph;
         
@@ -652,9 +652,9 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testNeighborIterator()
     {
-        using namespace vigragraph;
+        using namespace boost;
         
-        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
         typedef typename Graph::Node Node;
@@ -834,9 +834,9 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testBackNeighborIterator()
     {
-        using namespace vigragraph;
+        using namespace boost;
         
-        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
         
@@ -986,9 +986,9 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testEdgeIterator()
     {
-        using namespace vigragraph;
+        using namespace boost;
         
-        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
         
@@ -1071,9 +1071,9 @@ struct GridGraphTests
     template <class DirectedTag, NeighborhoodType NType>
     void testArcIterator()
     {
-        using namespace vigragraph;
+        using namespace boost;
         
-        static const bool directed = IsSameType<DirectedTag, vigragraph::directed_tag>::value;
+        static const bool directed = IsSameType<DirectedTag, directed_tag>::value;
         
         typedef GridGraph<N, DirectedTag> Graph;
         
@@ -1163,7 +1163,13 @@ struct GridGraphAlgorithmTests
         
         src[Shape(1)] = 1;
         
-        localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>());
+        boost_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>());
+        
+        shouldEqualSequence(src.begin(), src.end(), dest.begin());
+        
+        dest.init(0);
+        
+        lemon_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>());
         
         shouldEqualSequence(src.begin(), src.end(), dest.begin());
     }
@@ -1196,37 +1202,37 @@ struct GridgraphTestSuiteN
         add(testCase(&NeighborhoodTests<N>::template testArcIteratorUndirected<DirectNeighborhood>));
         add(testCase(&NeighborhoodTests<N>::template testArcIteratorUndirected<IndirectNeighborhood>));
         
-        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBasics<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBasics<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testVertexIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testVertexIterator<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testNeighborIterator<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testBackNeighborIterator<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testEdgeIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testEdgeIterator<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::directed_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::undirected_tag, IndirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::directed_tag, DirectNeighborhood>)));
-        add(testCase((&GridGraphTests<N>::template testArcIterator<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<directed_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<undirected_tag, IndirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<directed_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphTests<N>::template testArcIterator<undirected_tag, DirectNeighborhood>)));
         
-        add(testCase((&GridGraphAlgorithmTests<N>::template testLocalMinMax<vigragraph::undirected_tag, DirectNeighborhood>)));
+        add(testCase((&GridGraphAlgorithmTests<N>::template testLocalMinMax<undirected_tag, DirectNeighborhood>)));
     }
 };
 

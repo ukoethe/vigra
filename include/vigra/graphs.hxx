@@ -46,24 +46,13 @@
 #include "tinyvector.hxx"
 
 #ifdef WITH_BOOST_GRAPH
-
-#include <boost/tuple/tuple.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/properties.hpp>
-
- // We define the namespace vigragraph to be the same as boost,
- // since our BGL-like graph interface needs to reside in that 
- // namespace to specialize their graph and property trait classes.
-
- // alias the vigragraph namespace with the boost namespace
- // namespace vigragraph = boost;
-#define vigragraph boost
-
-
+#  include <boost/tuple/tuple.hpp>
+#  include <boost/graph/graph_traits.hpp>
+#  include <boost/graph/properties.hpp>
 #else // not WITH_BOOST_GRAPH
 
 // emulate the BGL-style interface in our namespace
-namespace vigragraph {
+namespace boost {
 
 struct no_property {};
 
@@ -198,7 +187,7 @@ put(const put_get_helper<Reference, PropertyMap>& pa, K k, const V& v)
 }
 
 #endif
-} // namespace vigragraph
+} // namespace boost
 
 #endif // WITH_BOOST_GRAPH
 
@@ -243,9 +232,7 @@ adjacent_vertices_at_iterator(typename graph_traits<GRAPH>::vertex_iterator cons
 #endif
 
 #ifdef WITH_LEMON
-
-#include <lemon/core.h>
-
+#  include <lemon/core.h>
 #else // not WITH_LEMON
 
 // emulate the lemon interface
