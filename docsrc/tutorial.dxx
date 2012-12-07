@@ -6,7 +6,7 @@
     
     <ul>
     
-    <li> The idea of VIGRA an the MultiArray class
+    <li> \ref Basics
     
     <li> \ref Indexing
 		<BR>&nbsp;&nbsp;&nbsp;<em>how to access an element of MultiArray</em>
@@ -14,11 +14,49 @@
     <li> \ref ImageInputOutput
     
     <li> \ref ImportantMethods
-		<BR>&nbsp;&nbsp;&nbsp;<em>the methods subarray, bind and transpose</em>
+		<BR>&nbsp;&nbsp;&nbsp;<em>the methods bind and subarray</em>
       
     </ul>
 */
 
+/** \page Basics Basic ideas
+    <p>The aim of this tutorial is to show you some easy examples of Image Processing using 
+    arrays, particularly VIGRA's MultiArray. An image can be interpreted as a matrix or
+    2-dimensional arrays, where each element contains the information of a specific pixel.
+    In fact, matrices or 2-dimensional arrays are implemented as 1-dimensional array, but for 
+    us it seems more natural to describe an image by 2 coordinates (ergo dimensions).
+    Each pixel of an image with 800x600 pixels can be identified by a pair (y,x) with 
+    y = 0,...,799 and x = 0,...,599.</p>
+    <p> In VIGRA, we call the structure of the matrix or multidimensional array 
+    <dfn>shape</dfn>. The image described above has the shape (800,600). A 3x3-matrix has the 
+    shape (3,3).
+    Shapes like (n,m, ...) define the possible values of the coordinates for each 
+    dimension: <br/>
+    possible coordinates in dimension 0: 0, 1, ..., n-1 <br/>
+    possible coordinates in dimension 1: 0, 1, ..., m-1 <br/>
+    ... </p>
+    <p> To save the data of a gray scale image, we just need to store one value, so we choose
+    a 2-dimensional array, where each element has the <dfn> unsigned char </dfn> type. With
+    VIGRA we instantiate an gray scale image object like this:</p>
+    
+    \code
+        #include <vigra/multi_array.hxx>
+        vigra::MultiArray<2, unsigned char> imageArray;
+    \endcode
+
+    <p> Considering RGB-images it is obvious that we can't use the unsigned char type to store
+    color images because every pixel contains 3 informations: values for red, green and blue.
+    Mathematically you intend to store the data in a vector. For this special purpose, VIGRA
+    provides the <dfn>vigra::RGBValue<ValueType></dfn> class. So for RGB-images just use: </p>
+
+    \code
+        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > RGBImageArray;
+    \endcode
+
+    <p> In fact, vigra::RGBValue<ValueType> is a special kind of a 3-dimensional vector
+    containing ValueType elements. The vector data type in VIGRA is implemented in the
+    <dfn> TinyVector<T, SIZE> </dfn> class.
+*/
 /** \page Indexing Indexing
 	There are different ways to access the elements of a MultiArray. The first way is to
  	use the []-Operator:
@@ -26,28 +64,28 @@
     <h2> []-Operator an StridedScanOrderIterator </h2>
 	
     \code
-		#include <vigra/multi_array.hxx>
-		#include <iostream>
-
-		using namespace vigra;
-
-		int main (int argc, char ** argv) {
-	
-		    // declare 2-dimensional MultiArray with 3 integer elements in first dimension  
-		    // and 2 integer elements in second dimension
-		    vigra::MultiArray<2, int> intArray(Shape2(3,2));
-	
-		    // set all elements on 3
-		    intArray.init(3);
-
-		    // print the first element on console
+        #include <vigra/multi_array.hxx>
+        #include <iostream>
+        
+        using namespace vigra;
+        
+        int main (int argc, char ** argv) {
+        
+            // declare 2-dimensional MultiArray with 3 integer elements in first dimension  
+            // and 2 integer elements in second dimension
+            vigra::MultiArray<2, int> intArray(Shape2(3,2));
+        
+            // set all elements on 3
+            intArray.init(3);
+        
+            // print the first element on console
             std::cout << intArray[0] << std::endl;
-
+        
             return 0;
-		}
-	\endcode
+        }
+    \endcode
 	
-	The access via \code intArray[0] \endcode is equivalent to the StridedScanOrderIterator.
+	The access via <dfn> intArray[0] </dfn> is implemented by the StridedScanOrderIterator.
 	Scan order means, that you iterate the dimensions from front to back. You can easily 
 	build instances of this Iterator by calling the MultiArrayView::begin() and 
 	MultiArrayView::end() methods. To give an example we iterate over all elements and set a
@@ -104,6 +142,8 @@
         matrix1 += matrix2;                     // works fine!
         _23Matrix += _32Matrix;                 // error: wrong matrix sizes!
     \endcode
+
+    <hr>
 
     <h2> Access via coordinates </h2>
     Regarding matrices it is more common to index the elements with a tuple of coordinates.
