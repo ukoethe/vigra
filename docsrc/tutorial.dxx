@@ -252,13 +252,57 @@
     There you can mirror RGB-images as well and decide wheter to mirror horizontal or
     vertical.
     
-
     <hr>
 
+    <h2> subarray(p,q) </h2>
+    This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
+    array between the points p and q, where p is included, q not. Compared to the <dfn>bind
+    </dfn>-method, subarray doesn't change the dimension.
+    To give an example, let's say that you want to copy the upper-left subsquare of a 
+    4x4-matrix (initialized with 1).
+
+    \code
+        // copy the upper-left subsquare of a 4x4-matrix
+        vigra::MultiArray<2, int> _44Matrix(Shape2(4,4));
+        _44Matrix.init(1);
+        vigra::MultiArray<2, int> subsquare = _44Matrix.subarray(Shape2(0,0), Shape2(2,2));
+    \endcode
+
+    To determine the positions p and q, we use <dfn>Shape</dfn>. In this example we copy the 
+    element with the x,y-coordinates from 0 to 1. Subarray can be used to set elements as
+    well. We now set the lower half of the 4x4-matrix to 0.
+
+    \code
+       // change the elements of a subarray
+       _44Matrix.subarray(Shape2(0,2),Shape2(4,4)) = 0;
+    \endcode
+
+    In Image Processing you can use <dfn>subarray</dfn> to create a subimage of a given image.
+    In the next example we create a half-sized subimage with the middle part of the original
+    image:
+    <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
+    The relevant part ot this code is shown here:
+
+    \dontinclude subimage_tutorial.cxx
+    \skip // write
+    \until exportImage
+
+    After writing the (here: gray scale) image data to an array we need to calculate the 
+    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
+    Afterwards we write the subimage into a new array. Look at the results.
+
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_sub.gif "subimage outputfile"
 */
 
 /** \example mirror.cxx
     Mirror an image file (horizontal or vertical)
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+/** \example subimage_tutorial.cxx
+    Create a half-sized subimage
     <br>
     Usage: <TT>mirror infile outfile</TT>
 */
