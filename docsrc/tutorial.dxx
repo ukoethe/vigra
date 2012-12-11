@@ -36,9 +36,9 @@
     possible coordinates in dimension 0: 0, 1, ..., n-1 <br/>
     possible coordinates in dimension 1: 0, 1, ..., m-1 <br/>
     ... </p>
-    <p> To save the data of a gray scale image, we just need to store one value, so we choose
-    a 2-dimensional array, where each element has the <dfn> unsigned char </dfn> type. With
-    VIGRA we instantiate an gray scale image object like this:</p>
+    <p> To represent the data of a gray scale image, we just need to store one value, so we 
+    choose a 2-dimensional array, where each element has the <dfn> unsigned char </dfn> type. 
+    With VIGRA we instantiate an gray scale image object like this:</p>
     
     \code
         #include <vigra/multi_array.hxx>
@@ -54,9 +54,23 @@
         vigra::MultiArray<2, vigra::RGBValue<unsigned char> > RGBImageArray;
     \endcode
 
-    <p> In fact, vigra::RGBValue<ValueType> is a special kind of a 3-dimensional vector
+    In fact, vigra::RGBValue<ValueType> is a special kind of a 3-dimensional vector
     containing ValueType elements. The vector data type in VIGRA is implemented in the
     <dfn> TinyVector<T, SIZE> </dfn> class.
+
+    Alternatively you can use a 3-dimensional array <dfn>vigra::MultiArray<2, unsigned
+    char></dfn> to represent a color image. The third dimension has size 3 and contains the
+    information for red, green and blue channel. We won't use the 3-dimensional array for
+    color images because dfn>vigra::RGBValue<ValueType></dfn> provides a lot of helpful
+    methods.
+
+    Maybe you've recognized in the last paragraph that there is no need to restrict oneself
+    to 2-dimensional arrays. With VIGRA an <B>arbitrary number of dimensions</B> is possible
+    for instance:
+
+    \code
+        vigra::MultiArray<7, float> otherArray;
+    \endcode
 */
 /** \page Indexing Indexing
 
