@@ -112,7 +112,7 @@
 
     <hr>
 
-    <h2> []-Operator an StridedScanOrderIterator </h2>
+    <h2> []-Operator and StridedScanOrderIterator </h2>
 	
     \code
         #include <vigra/multi_array.hxx>
@@ -366,4 +366,20 @@
 */
 
 /** \page ImageInputOutput Image Input Output 
+    In this chapter we'd like to show you how to import and export an image with Vigra. If you
+    you want to import an image from disk and enquire about its properties, you must use an 
+    object of <dfn> ImageImportInfo </dfn> class. The constructor expects the filename, the
+    filename will be determined automatically.
+    In the following example, the image is given via console as first argument:
+
+    \include imageImportInfo_tutorial.cxx
+
+    As you can see, the <dfn> ImageImportInfo </dfn> object contains a lot of information,
+    some of it is printed in the example.
+
+    To process images, this isn't enough. As described in \ref basics we want to save the
+    image data in a multidimensional array. That's why we need <dfn> MultiArray </dfn> 
+    object and a method writing the image data into the array. This method is called 
+    <dfn> vigraImportImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
+    
 */
