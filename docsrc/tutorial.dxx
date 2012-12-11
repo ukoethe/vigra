@@ -15,7 +15,8 @@
     
     <li> \ref ImportantMethods
 		<BR>&nbsp;&nbsp;&nbsp;<em>the methods bind and subarray</em>
-      
+
+    <li> \ref MultiMathModule
     </ul>
 */
 
@@ -58,9 +59,59 @@
     <dfn> TinyVector<T, SIZE> </dfn> class.
 */
 /** \page Indexing Indexing
-	There are different ways to access the elements of a MultiArray. The first way is to
- 	use the []-Operator:
-    
+
+    <h2> Access via coordinates </h2>
+    Regarding matrices it is common to index the elements with a tuple of coordinates.
+    Using the matrices from the section above we can access for instance the element of 
+    <dfn> matrix1 </dfn> in the second column and third row by using round brackets 
+    ():
+
+    \code
+        #include <vigra/multi_array.hxx>
+        #include <iostream>
+        
+        using namespace vigra;
+        
+        int main (int argc, char ** argv) {
+        
+            // declare 2-dimensional MultiArray with 3 integer elements in first dimension  
+            // and 2 integer elements in second dimension
+            vigra::MultiArray<2, int> matrix(Shape2(2,3));
+        
+            // set all elements on 3
+            matrix.init(3);
+        
+            // print element in second column and third row
+            std::cout << matrix(1,2) << std::endl;
+
+            return 0;
+        }
+    \endcode
+	
+	In combination with the method size(n), that gives us the size of the n-th dimension, 
+    we can use the coordinates to set the element of an entire row or column:
+
+    \code
+        // set all elements of second row to 13
+        for (int i = 0; i < _23Matrix.size(1); i++) {
+            _23Matrix(1,i) = 13;
+        }
+    \endcode
+
+    Later in this tutorial, we will discuss special methods to set certain parts of the array.
+
+    An alternative way of indexing with coordinates is the use of the MultiArrayShape::type, 
+    which is a kind of a TinyVector. This way is equivalent to the round brackets. For this 
+    example we use the type Shape2(x,y), the specific type definition for 2-dimensional
+    arrays.
+
+    \code
+        // access via Shape2(x,y), set element in second column and third row
+        matrix1[Shape2(1,2)] = 22;
+    \endcode
+
+    <hr>
+
     <h2> []-Operator an StridedScanOrderIterator </h2>
 	
     \code
@@ -143,40 +194,7 @@
         _23Matrix += _32Matrix;                 // error: wrong matrix sizes!
     \endcode
 
-    <hr>
-
-    <h2> Access via coordinates </h2>
-    Regarding matrices it is more common to index the elements with a tuple of coordinates.
-    Using the matrices from the section above we can access for instance the element of 
-    <dfn> matrix1 </dfn> in the second column and third row by using round brackets 
-    ():
-
-    \code
-        // print element in second column and third row
-        std::cout << matrix1(1,2) << std::endl;
-    \endcode
-	
-	In combination with the method size(n), that gives us the size of the n-th dimension, 
-    we can use the coordinates to set the element of an entire row or column:
-
-    \code
-        // set all elements of second row to 13
-        for (int i = 0; i < _23Matrix.size(1); i++) {
-            _23Matrix(1,i) = 13;
-        }
-    \endcode
-
-    Later in this tutorial, we will discuss special methods to set certain parts of the array.
-
-    An alternative way of indexing with coordinates is the use of the MultiArrayShape::type, 
-    which is a kind of a TinyVector. This way is equivalent to the round brackets. For this 
-    example we use the type Shape2(x,y), the specific type definition for 2-dimensional
-    arrays.
-
-    \code
-        // access via Shape2(x,y), set element in second column and third row
-        matrix1[Shape2(1,2)] = 22;
-    \endcode
+    
 */
 
 
@@ -347,4 +365,5 @@
     Usage: <TT>mirror infile outfile</TT>
 */
 
-/** \page ImageInputOutput Image Input Output
+/** \page ImageInputOutput Image Input Output 
+*/
