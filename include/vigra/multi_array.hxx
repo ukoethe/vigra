@@ -46,6 +46,7 @@
 #include "imageiterator.hxx"
 #include "numerictraits.hxx"
 #include "multi_iterator.hxx"
+#include "multi_pointoperators.hxx"
 #include "metaprogramming.hxx"
 #include "mathutil.hxx"
 
@@ -1753,11 +1754,11 @@ public:
             #include <vigra/multi_array.hxx>
             #include <vigra/multi_pointoperators.hxx>
             
-            MultiArray<2, double> A(rows, cols);
+            MultiArray<2, double> A(Shape2(rows, cols));
             ... // fill A
             
             // make the first axis a singleton to sum over the first index
-            MultiArray<2, double> rowSums(1, cols);
+            MultiArray<2, double> rowSums(Shape2(1, cols));
             A.sum(rowSums);
             
             // this is equivalent to
