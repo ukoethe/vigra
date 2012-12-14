@@ -317,6 +317,12 @@
         }
     \endcode
 
+    The output is:
+
+    \verbatim
+    0  0  0  5  5  5
+    \endverbatim
+
     Binding a dimension reduces a N-dimensional array to dimension N-1. Furthermore you can
     initialize a lower-dimensional array with the bind-method.
 
@@ -325,13 +331,87 @@
         vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
     \endcode
 
-    The array <dfn> lowArray </dfn> contains the elements the 3rd column of intArray. Moving
-    on to Image Processing we'll give an example how you can mirror an image by using bind.
-    We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
+    The array <dfn> lowArray </dfn> contains the elements the 3rd column of intArray. At this
+    point we have to distinguish between the classes <dfn> MultiArray </dfn> and 
+    <dfn> MultiArrayView </dfn>. MultiArray inherits from MultiArrayView and contains the
+    memory management of the array. With MultiArrayView we can view the data stored in a 
+    MultiArray. The code above produces a copy of the 3rd column of intArray. If we change the
+    elements of <dfn>lowArray</dfn> nothing happens to <dfn> intArray </dfn>.
+
+    \code
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
+        // set elements of lowArray to ten
+        lowArray = 10;
+        // print lowArray
+        std::cout << "lowArray:\n";
+        for (iter = lowArray.begin(); iter != lowArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArray:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+    \endcode
+
+    Output:
+    \verbatim
+    lowArray:
+    10  10  
+    intArray after changing lowArray:
+    0  0  0  5  5  5  
+    \endverbatim
+
+    But if we use bind in combination with MultiArrayView instead, we don't get a copy of
+    intArray's 3rd column, rather a view of it:
+
+    \code
+        // initialize array view of 3rd column of intArray
+        vigra::MultiArrayView<1, int, StridedArrayTag> lowArrayView = intArray.bind<0>(2);
+        // initialize ArrayView-Iterator
+        vigra::MultiArrayView<1,int>::iterator viewIter;
+        // set elements of lowArrayView to ten
+        lowArrayView = 10;
+        // print lowArrayView
+        std::cout << "lowArrayView:\n";
+        for (viewIter = lowArrayView.begin(); viewIter != lowArrayView.end(); viewIter++) {
+		    std::cout << *viewIter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArrayView:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+    \endcode
+
+    Output:
+    \verbatim
+    lowArrayView:
+    10  10  
+    intArray after changing lowArrayView:
+    0  0  10  5  5  10 
+    \endverbatim
+
+    In this case, changing lowArrayView causes changes in intArray because we changed a view
+    of intArray and not a copy. An equivalent and easier way to change the 3rd column is
+    analogous to the first example:
+
+    \code
+        // set 3rd column to ten
+        intArray.bind<0>(2) = 10;
+    \endcode
+
+    Moving on to Image Processing we'll give an example how you can flip an image by using 
+    bind. We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
     Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
     and set the first row of <dfn> newImageArray </dfn> to the values of the last row of 
     <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
-    Hence, we mirror the image horizontal.
+    Hence, we flip the image top to bottom.
 
     \code
         #include <iostream>
@@ -358,7 +438,7 @@
 			        importImage(info, destImage(imageArray));
                     vigra::MultiArray<2, unsigned char> newImageArray(Shape2(info.width(), info.height()));
                     
-                    // mirror the image horizontical 
+                    // mirror the image horizontal 
                     // info.height() is equal to the index of the last row
 			        for (int i=0; i<=info.height(); i++) {           
 	                		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-(i+1));
@@ -382,7 +462,7 @@
     This code needs an infile and an outfile as arguments. For this example, just the 
     commented for-loop is important. The rest contains the code for
     \ref ImageInputOutput and is explained in this part of the Tutorial. We bind dimension 1
-    to fix the y-coordinate. To mirror horizontal you have to fix the x-coordinate, so bind
+    to fix the y-coordinate. To flip left to right you have to fix the x-coordinate, so bind
     dimension 0. <br/>
     Here you can see what happens to an inputfile:
 
@@ -391,8 +471,8 @@
 
     A detailed example is given here:
     <a href="mirror_8cxx-example.html">mirror.cxx</a> 
-    There you can mirror RGB-images as well and decide wheter to mirror horizontal or
-    vertical.
+    There you can flip RGB-images as well and decide wheter to flip top to bottom (horizontal)
+    or left to right (vertical).
     
     <hr>
 
