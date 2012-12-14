@@ -410,6 +410,7 @@
     \verbatim
     intArray[2,:] = 10      // NumPy-equivalent of bind
     \verbatim
+
     Moving on to Image Processing we'll give an example how you can flip an image by using 
     bind. We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
     Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
@@ -417,51 +418,7 @@
     <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
     Hence, we flip the image top to bottom.
 
-    \code
-        #include <iostream>
-        #include <vigra/multi_array.hxx>
-        #include "vigra/stdimage.hxx"
-        #include "vigra/impex.hxx"
-
-        using namespace vigra; 
-
-
-        int main(int argc, char ** argv) {
-            if(argc != 3) {
-                std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-                std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
-                
-                return 1;
-            }
-
-            try {
-                vigra::ImageImportInfo info(argv[1]);
-                
-                if(info.isGrayscale()) {
-			        vigra::MultiArray<2, unsigned char> imageArray(Shape2(info.width(), info.height()));
-			        importImage(info, destImage(imageArray));
-                    vigra::MultiArray<2, unsigned char> newImageArray(Shape2(info.width(), info.height()));
-                    
-                    // mirror the image horizontal 
-                    // info.height() is equal to the index of the last row
-			        for (int i=0; i<=info.height(); i++) {           
-	                		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-(i+1));
-			        }
-                    
-                    exportImage(srcImageRange(newImageArray), vigra::ImageExportInfo(argv[2]));
-                }
-                else {
-                    std::cout << "no gray scale image" << std::endl;
-                }
-            }
-            catch (vigra::StdException & e) {
-                std::cout << e.what() << std::endl;
-                return 1;
-            }
-            
-            return 0;
-        }
-    \endcode
+    \include mirror_tutorial.cxx
     
     This code needs an infile and an outfile as arguments. For this example, just the 
     commented for-loop is important. The rest contains the code for

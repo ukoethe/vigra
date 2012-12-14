@@ -18,9 +18,9 @@ int main(int argc, char ** argv) {
         vigra::ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale()) {
-			vigra::MultiArray<2, unsigned char> imageArray(Shape2(info.width(), info.height()));
+			vigra::MultiArray<2, unsigned char> imageArray(info.shape());
 			importImage(info, destImage(imageArray));
-            vigra::MultiArray<2, unsigned char> newImageArray(Shape2(info.width(), info.height()));
+            vigra::MultiArray<2, unsigned char> newImageArray(info.shape());
 
             // mirror the image horizontal 
             // info.height() is equal to the index of the last row

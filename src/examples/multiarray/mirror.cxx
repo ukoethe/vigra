@@ -31,10 +31,10 @@ int main(int argc, char ** argv)
         if(info.isGrayscale())
         {   
             // write image data to MultiArray
-			vigra::MultiArray<2, unsigned char> tempImage(Shape2(info.width(), info.height()));
+			vigra::MultiArray<2, unsigned char> tempImage(info.shape());
 			importImage(info, destImage(tempImage));
             // create a gray scale image of appropriate size
-            vigra::MultiArray<2, unsigned char> in(Shape2(info.width(), info.height()));
+            vigra::MultiArray<2, unsigned char> in(info.shape());
 
             // mirror horizontal
             if (axis == 1) {
@@ -57,10 +57,10 @@ int main(int argc, char ** argv)
         else
         {
             // write image data to MultiArray
-           	vigra::MultiArray<2, vigra::RGBValue<unsigned char> > tempImage(Shape2(info.width(), info.height()));
+           	vigra::MultiArray<2, vigra::RGBValue<unsigned char> > tempImage(info.shape());
 			importImage(info, destImage(tempImage));
             // create a RGB-image of appropriate size
-            vigra::MultiArray<2, vigra::RGBValue<unsigned char> > in(Shape2(info.width(), info.height()));
+            vigra::MultiArray<2, vigra::RGBValue<unsigned char> > in(info.shape());
             
             // mirror horizontal
 			if (axis == 1) {
