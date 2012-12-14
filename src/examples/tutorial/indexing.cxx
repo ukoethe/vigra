@@ -21,8 +21,9 @@ int main (int argc, char ** argv) {
 	// iterate over intArray, set a new value and print the element
 	for (iter = intArray.begin(); iter != intArray.end(); iter++) {
 		*iter = ++count;
-		std::cout << *iter << std::endl;
+		std::cout << *iter << " ";
 	}
+    std::cout << std::endl;
 
 	// section: add two 3x3-matrices
 	vigra::MultiArray<2, int> matrix1(Shape2(3,3));
@@ -36,27 +37,27 @@ int main (int argc, char ** argv) {
 	}
 
 	// section: wrong math (add 2x3- and 3x2-matrices)
-	vigra::MultiArray<2, int> _23Matrix(Shape2(2,3));
-	vigra::MultiArray<2, int> _32Matrix(Shape2(3,2));
-	_23Matrix.init(1);
-	_32Matrix.init(3);
+	vigra::MultiArray<2, int> matrix32(Shape2(2,3));
+	vigra::MultiArray<2, int> matrix23(Shape2(3,2));
+	matrix32.init(1);
+	matrix23.init(3);
 	
-	int size = _23Matrix.size();			// number of array elements
+	int size = matrix32.size();			// number of array elements
 	for (int i=0; i < size; i++) {
-		_23Matrix[i] += _32Matrix[i];
+		matrix32[i] += matrix23[i];
 	}
 
     // section: correct addition of 2 matrices
     matrix1 += matrix2;                     // works fine!
-/*  _23Matrix += _32Matrix;                 // error: wrong matrix sizes! */
+/*  matrix32 += matrix23;                 // error: wrong matrix sizes! */
 
     // indexing via coordinates
     // print element in second column and third row
     std::cout << matrix1(1,2) << std::endl;
 
     // set all elements of second row to 13
-    for (int i = 0; i < _23Matrix.size(1); i++) {
-        _23Matrix(1,i) = 13;
+    for (int i = 0; i < matrix32.size(1); i++) {
+        matrix32(1,i) = 13;
     }
 
     // access via Shape2(x,y), set element in second column and third row
@@ -74,6 +75,21 @@ int main (int argc, char ** argv) {
     for(p[1]=0; p[1]<matrix84.size(1); p[1]++) {   
         matrix84[p] = 7;
     }
-    
+
+    // flatten an array in scan order
+    // set first row of matrix23 to 1 2 3, second row to 4 5 6
+    count = 0;
+    for (iter = matrix23.begin(); iter != matrix23.end(); iter++) {
+        *iter = count++;
+    }
+    // create 1D-array of appropriate size
+    vigra::MultiArray<1, int> flatArray(Shape1(matrix23.size()));
+    // copy 2D-array into 1D-array
+    std::copy(matrix23.begin(), matrix23.end(), flatArray.begin());
+    // print 1D-array on console; 
+    for (iter = flatArray.begin(); iter != flatArray.end(); iter++) {
+         std::cout << *iter << " ";
+    }
+    std::cout << std::endl;
 	return 0;
 }

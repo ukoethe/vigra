@@ -168,7 +168,7 @@
         }
     \endcode
 	
-	The access via <dfn> intArray[0] </dfn> refers to the the indoex of the scan order.
+	The access via <dfn> intArray[0] </dfn> refers to the the index of the scan order.
 	Scan order means, that you iterate the dimensions from front to back. The <dfn> 
     vigra::MultiArray </dfn> - class provides methods to determine the scan order index of 
     given coordinates and vice versa. The <dfn>StridedScanOrderIterator</dfn> lets you iterate
@@ -183,9 +183,16 @@
 		// iterate over intArray, set a new value and print the element
 		for (iter = intArray.begin(); iter != intArray.end(); iter++) {
 			*iter = ++count;
-			std::cout << *iter << std::endl;
-		}
+		    std::cout << *iter << " ";
+	    }
+        std::cout << std::endl;
 	\endcode
+
+    This creates the ouptut:
+
+    \verbatim
+        1 2 3 4 5 6
+    \endverbatim
 
 	Let's do some maths: We use the MultiArray class to represent matrices and want to add
 	two 3x3-matrices by adding the elements on the same position. The result will be stored
@@ -230,6 +237,48 @@
     \endcode
 
     For further mathematical implementations see \ref MultiMathModule .
+
+    VIGRA's scan order is similar to the NumPy-method <dfn> array.flatten </dfn>. You use it, 
+    to copy a multidimensional array into an one-dimensional array. The only
+    difference is that NumPy uses "C-order" (that means the outmost dimension first), but
+    VIGRA from first to last dimension. A method like flatten can be implemented in VIGRA like
+    this:
+
+    \code
+        // initialize array for flattening
+        // set first row of matrix23 to 1 2 3, second row to 4 5 6
+        count = 0;
+        for (iter = matrix23.begin(); iter != matrix23.end(); iter++) {
+            *iter = count++;
+        }
+
+        // flatten an array in scan order
+        // create 1D-array of appropriate size
+        vigra::MultiArray<1, int> flatArray(Shape1(matrix23.size()));
+        // copy 2D-array into 1D-array
+        std::copy(matrix23.begin(), matrix23.end(), flatArray.begin());
+        
+        // print 1D-array on console; 
+        for (iter = flatArray.begin(); iter != flatArray.end(); iter++) {
+             std::cout << *iter << " ";
+        }
+        std::cout << std::endl;
+    \endcode
+
+    To show the difference between VIGRA and NumPy we'll we add the NumPy output if we had
+    used the flatten-method to the output of the code above
+
+    \verbatim
+    flatarray - index     0       1       2       3       4       5 
+    -----------------------------------------------------------------
+    VIGRA-output:         0       1       2       3       4       5
+    matrix23 - index    [0,0]   [1,0]   [2,0]   [0,1]   [1,1]   [2,1]
+    -----------------------------------------------------------------
+    NumPy-output:         0       3       1       4       2       5
+    matrix23 - index    [0,0]   [0,1]   [1,0]   [1,1]   [2,0]   [2,1]
+    \endverbatim
+
+   However, NumPy's flat-method returns an iterator like matrix23.begin() in VIGRA.
 */
 
 
