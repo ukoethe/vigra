@@ -62,5 +62,18 @@ int main (int argc, char ** argv) {
     // access via Shape2(x,y), set element in second column and third row
     matrix1[Shape2(1,2)] = 22;
 
+    // iterating over a Shape-Object
+    vigra::MultiArray<2, int> matrix84(Shape2(4,8));
+    matrix84.init(5);
+    // instantiate Shape-Object
+    Shape2 p;
+    // iterate over 3rd column :
+    // set first dimension on 2 (equals 3rd column)
+    // then iterate over second dimension (equals rows)
+    p[0] = 2;                                  
+    for(p[1]=0; p[1]<matrix84.size(1); p[1]++) {   
+        matrix84[p] = 7;
+    }
+    
 	return 0;
 }

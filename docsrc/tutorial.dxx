@@ -121,6 +121,25 @@
         }
     \endcode
 
+    Every call with round brackets creates a new Shape-Object, which is quite inefficient.
+    It is better to iterate over a Shape-Object. In the following example, we want to set the
+    3rd column of a 8x4-matrix (initialized with 5) to 7.
+
+    \code
+        // iterating over a Shape-Object
+        vigra::MultiArray<2, int> matrix84(Shape2(4,8));
+        matrix84.init(5);
+        // instantiate Shape-Object
+        Shape2 p;
+        // iterate over 3rd column :
+        // set first dimension on 2 (equals 3rd column)
+        // then iterate over second dimension (equals rows)
+        p[0] = 2;                                  
+        for(p[1]=0; p[1]<matrix84.size(1); p[1]++) {   
+            matrix84[p] = 7;
+        }
+    \endcode
+
     Later in this tutorial, we will discuss special methods to set certain parts of the array.
 
     <hr>
