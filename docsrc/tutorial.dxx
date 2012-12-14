@@ -72,6 +72,7 @@
         vigra::MultiArray<7, float> otherArray;
     \endcode
 */
+
 /** \page Indexing Indexing
 
     <h2> Access via coordinates </h2>
@@ -281,12 +282,12 @@
    However, NumPy's flat-method returns an iterator like matrix23.begin() in VIGRA.
 */
 
-
 /** \page ImportantMethods Important Methods
+
     In this part of the tutorial we'll introduce you to some important methods.
 
     <h2> bind<M>(i) </h2>
-    This method is part of the MultiArrayView-Class and binds the dimension M to the index d.
+    This method is part of the MultiArrayView-Class and binds the dimension M to the index i.
     As you probably remember, we tried to set the elements of a certain column or row of a 
     matrix in the \ref Indexing part. We used a for-loop, but it's getting more easily with
     the bind-method. Look at the following example. We initialize a 2x3-matrix with the value
@@ -437,7 +438,19 @@
 
     You don't need to implement a method like this because VIGRA already provides the 
     <dfn> vigra::reflectimage() </dfn> - method.
+
+    Furthermore there are some special bind-methods:
     
+    <DL>
+    <DT> bindAt(M,i) </DT>
+        <DD> equivalent to bind<M>(i) </DD>
+    <DT> bindInner(i) </DT>
+        <DD> if i is an integer, the innermost dimension is fixed to i, if i is a TinyVector
+        of size M, then the M innermost dimensions are fixed to the values of the vector </DD>
+    <DT> bindOuter(i) </DT>
+        <DD> if i is an integer, the outmost dimension is fixed to i, if i is a TinyVector
+        of size M, then the M outmost dimensions are fixed to the values of the vector </DD>
+    </DL>
     <hr>
 
     <h2> subarray(p,q) </h2>
@@ -494,6 +507,7 @@
 */
 
 /** \page ImageInputOutput Image Input Output 
+
     In this chapter we'd like to show you how to import and export an image with Vigra. If you
     you want to import an image from disk and enquire about its properties, you must use an 
     object of <dfn> ImageImportInfo </dfn> class. The constructor expects the filename, the
