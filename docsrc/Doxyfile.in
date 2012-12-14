@@ -551,7 +551,8 @@ FILE_PATTERNS          = index.dxx \
                          examples.dxx \
                          credits_changelog.dxx \
                          installation.dxx \
-                         tutorial.dxx
+                         tutorial.dxx \
+                         important_methods.dxx
                          *.hxx \
                          viff.h
 

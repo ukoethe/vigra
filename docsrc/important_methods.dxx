@@ -1,0 +1,224 @@
+/** \page ImportantMethods Important Methods
+
+    In this part of the tutorial we'll introduce you to some important methods.
+
+    <h2> bind<M>(i) </h2>
+    This method is part of the MultiArrayView-Class and binds the dimension M to the index i.
+    As you probably remember, we tried to set the elements of a certain column or row of a 
+    matrix in the \ref Indexing part. We used a for-loop, but it's getting more easily with
+    the bind-method. Look at the following example. We initialize a 2x3-matrix with the value
+    0, set the second row to 5 and print the array eventually:
+
+    \code
+        #include <vigra/multi_array.hxx>
+        #include <iostream>
+
+        using namespace vigra;
+
+        int main (int argc, char ** argv) {
+            // initialize 2x3-matrix and declare iterator
+            vigra::MultiArray<2, int> intArray(Shape2(3,2));
+            intArray.init(0);
+            vigra::MultiArray<2, int>::iterator iter;
+
+            // set 2nd row (equivalent to dimension 1 and index 1) to 5
+            intArray.bind<1>(1) = 5;
+
+            // print the array on console
+            for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		        std::cout << *iter << "  ";
+	        }
+            std::cout << std::endl;
+
+            return 0;
+        }
+    \endcode
+
+    The output is:
+
+    \verbatim
+    0  0  0  5  5  5
+    \endverbatim
+
+    Binding a dimension reduces a N-dimensional array to dimension N-1. Furthermore you can
+    initialize a lower-dimensional array with the bind-method.
+
+    \code
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
+    \endcode
+
+    The array <dfn> lowArray </dfn> contains the elements the 3rd column of intArray. At this
+    point we have to distinguish between the classes <dfn> MultiArray </dfn> and 
+    <dfn> MultiArrayView </dfn>. MultiArray inherits from MultiArrayView and contains the
+    memory management of the array. With MultiArrayView we can view the data stored in a 
+    MultiArray. The code above produces a copy of the 3rd column of intArray. If we change the
+    elements of <dfn>lowArray</dfn> nothing happens to <dfn> intArray </dfn>.
+
+    \code
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
+        // set elements of lowArray to ten
+        lowArray = 10;
+        // print lowArray
+        std::cout << "lowArray:\n";
+        for (iter = lowArray.begin(); iter != lowArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArray:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+    \endcode
+
+    Output:
+    \verbatim
+    lowArray:
+    10  10  
+    intArray after changing lowArray:
+    0  0  0  5  5  5  
+    \endverbatim
+
+    But if we use bind in combination with MultiArrayView instead, we don't get a copy of
+    intArray's 3rd column, rather a view of it:
+
+    \code
+        // initialize array view of 3rd column of intArray
+        vigra::MultiArrayView<1, int, StridedArrayTag> lowArrayView = intArray.bind<0>(2);
+        // initialize ArrayView-Iterator
+        vigra::MultiArrayView<1,int>::iterator viewIter;
+        // set elements of lowArrayView to ten
+        lowArrayView = 10;
+        // print lowArrayView
+        std::cout << "lowArrayView:\n";
+        for (viewIter = lowArrayView.begin(); viewIter != lowArrayView.end(); viewIter++) {
+		    std::cout << *viewIter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArrayView:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+    \endcode
+
+    Output:
+    \verbatim
+    lowArrayView:
+    10  10  
+    intArray after changing lowArrayView:
+    0  0  10  5  5  10 
+    \endverbatim
+
+    In this case, changing lowArrayView causes changes in intArray because we changed a view
+    of intArray and not a copy. An equivalent and easier way to change the 3rd column is
+    analogous to the first example:
+
+    \code
+        // set 3rd column to ten
+        intArray.bind<0>(2) = 10;
+    \endcode
+
+    NumPy-Users know the bind mechanism as "slicing". In the example above they had written:
+    \verbatim
+    intArray[2,:] = 10      // NumPy-equivalent of bind
+    \endverbatim
+
+    Moving on to Image Processing we'll give an example how you can flip an image by using 
+    bind. We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
+    Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
+    and set the first row of <dfn> newImageArray </dfn> to the values of the last row of 
+    <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
+    Hence, we flip the image top to bottom.
+
+    \include mirror_tutorial.cxx
+    
+    This code needs an infile and an outfile as arguments. For this example, just the 
+    commented for-loop is important. The rest contains the code for
+    \ref ImageInputOutput and is explained in this part of the Tutorial. We bind dimension 1
+    to fix the y-coordinate. To flip left to right you have to fix the x-coordinate, so bind
+    dimension 0. <br/>
+    Here you can see what happens to an inputfile:
+
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_mirror.gif "mirrored outputfile"
+
+    A detailed example is given here:
+    <a href="mirror_8cxx-example.html">mirror.cxx</a> 
+    There you can flip RGB-images as well and decide wheter to flip top to bottom (horizontal)
+    or left to right (vertical).
+
+    You don't need to implement a method like this because VIGRA already provides the 
+    <dfn> vigra::reflectimage() </dfn> - method.
+
+    Furthermore there are some special bind-methods:
+    
+    <DL>
+    <DT> bindAt(M,i) </DT>
+        <DD> equivalent to bind<M>(i) </DD>
+    <DT> bindInner(i) </DT>
+        <DD> if i is an integer, the innermost dimension is fixed to i, if i is a TinyVector
+        of size M, then the M innermost dimensions are fixed to the values of the vector </DD>
+    <DT> bindOuter(i) </DT>
+        <DD> if i is an integer, the outmost dimension is fixed to i, if i is a TinyVector
+        of size M, then the M outmost dimensions are fixed to the values of the vector </DD>
+    </DL>
+
+    <hr>
+
+    <h2> subarray(p,q) </h2>
+    This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
+    array between the points p and q, where p is included, q not. Compared to the <dfn>bind
+    </dfn>-method, subarray doesn't change the dimension.
+    To give an example, let's say that you want to copy the upper-left subsquare of a 
+    4x4-matrix (initialized with 1).
+
+    \code
+        // copy the upper-left subsquare of a 4x4-matrix
+        vigra::MultiArray<2, int> _44Matrix(Shape2(4,4));
+        _44Matrix.init(1);
+        vigra::MultiArray<2, int> subsquare = _44Matrix.subarray(Shape2(0,0), Shape2(2,2));
+    \endcode
+
+    To determine the positions p and q, we use <dfn>Shape</dfn>. In this example we copy the 
+    element with the x,y-coordinates from 0 to 1. Subarray can be used to set elements as
+    well. We now set the lower half of the 4x4-matrix to 0.
+
+    \code
+       // change the elements of a subarray
+       _44Matrix.subarray(Shape2(0,2),Shape2(4,4)) = 0;
+    \endcode
+
+    In Image Processing you can use <dfn>subarray</dfn> to create a subimage of a given image.
+    In the next example we create a half-sized subimage with the middle part of the original
+    image:
+    <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
+    The relevant part ot this code is shown here:
+
+    \dontinclude subimage_tutorial.cxx
+    \skip // write
+    \until exportImage
+
+    After writing the (here: gray scale) image data to an array we need to calculate the 
+    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
+    Afterwards we write the subimage into a new array. Look at the results.
+
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_sub.gif "subimage outputfile"
+*/
+
+/** \example mirror.cxx
+    Mirror an image file (horizontal or vertical)
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+/** \example subimage_tutorial.cxx
+    Create a half-sized subimage
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
