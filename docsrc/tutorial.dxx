@@ -75,10 +75,12 @@
 /** \page Indexing Indexing
 
     <h2> Access via coordinates </h2>
+
     Regarding matrices it is common to index the elements with a tuple of coordinates.
-    Using the matrices from the section above we can access for instance the element of 
-    <dfn> matrix1 </dfn> in the second column and third row by using round brackets 
-    ():
+    Using a 3x2 matrix from the section above we can access for instance the element of 
+    <dfn> matrix </dfn> in the second column and third row by using the MultiArrayShape::type, 
+    which is a kind of a TinyVector. For this example we use the type Shape2(x,y), the 
+    specific type definition for 2-dimensional arrays.
 
     \code
         #include <vigra/multi_array.hxx>
@@ -96,10 +98,17 @@
             matrix.init(3);
         
             // print element in second column and third row
-            std::cout << matrix(1,2) << std::endl;
+            std::cout << matrix[Shape2(1,2)] << std::endl;      // output: 3
 
             return 0;
         }
+    \endcode
+
+    An easier and equivalent way is just to use the coordinates with round brackets (y,x):
+
+    \code
+        // access via simple coordinates, set element in second column and third row
+        matrix1(1,2) = 22;
     \endcode
 	
 	In combination with the method size(n), that gives us the size of the n-th dimension, 
@@ -107,22 +116,12 @@
 
     \code
         // set all elements of second row to 13
-        for (int i = 0; i < _23Matrix.size(1); i++) {
-            _23Matrix(1,i) = 13;
+        for (int i = 0; i < matrix.size(1); i++) {
+            matrix(1,i) = 13;
         }
     \endcode
 
     Later in this tutorial, we will discuss special methods to set certain parts of the array.
-
-    An alternative way of indexing with coordinates is the use of the MultiArrayShape::type, 
-    which is a kind of a TinyVector. This way is equivalent to the round brackets. For this 
-    example we use the type Shape2(x,y), the specific type definition for 2-dimensional
-    arrays.
-
-    \code
-        // access via Shape2(x,y), set element in second column and third row
-        matrix1[Shape2(1,2)] = 22;
-    \endcode
 
     <hr>
 
@@ -150,11 +149,13 @@
         }
     \endcode
 	
-	The access via <dfn> intArray[0] </dfn> is implemented by the StridedScanOrderIterator.
-	Scan order means, that you iterate the dimensions from front to back. You can easily 
-	build instances of this Iterator by calling the MultiArrayView::begin() and 
-	MultiArrayView::end() methods. To give an example we iterate over all elements and set a
-	new value:
+	The access via <dfn> intArray[0] </dfn> refers to the the indoex of the scan order.
+	Scan order means, that you iterate the dimensions from front to back. The <dfn> 
+    vigra::MultiArray </dfn> - class provides methods to determine the scan order index of 
+    given coordinates and vice versa. The <dfn>StridedScanOrderIterator</dfn> lets you iterate
+    over the array elements in scan order. You can easily build instances of this Iterator 
+    by calling the <dfn>MultiArrayView::begin()</dfn> and <dfn>MultiArrayView::end()</dfn> 
+    methods. To give an example we iterate over all elements and set a new value:
 
 	\code
 		// declare iterator
@@ -183,32 +184,33 @@
 		}
 	\endcode
 
-	Be careful: The StridedScanOrderIterator doesn't regard the shape and the strides of the
-	MultiArray. Imagine you are adding a 2x3-matrix and a 3x2-matrix.
+	Be careful: The StridedScanOrderIterator doesn't recognize if the matrices' shapes match
+    to each other.
 
 	\code
-	    vigra::MultiArray<2, int> _23Matrix(Shape2(2,3));
-	    vigra::MultiArray<2, int> _32Matrix(Shape2(3,2));
-	    _23Matrix.init(1);
-        _32Matrix.init(3);
+	    vigra::MultiArray<2, int> matrix32(Shape2(2,3));
+	    vigra::MultiArray<2, int> matrix23(Shape2(3,2));
+	    matrix32.init(1);
+        matrix23.init(3);
 	
-	    int size = _23Matrix.size();			// number of array elements
+	    int size = matrix32.size();			// number of array elements
 	    for (int i=0; i < size; i++) {
-		    _23Matrix[i] += _32Matrix[i];
+		    matrix32[i] += matrix23[i];
         }
 	\endcode
 
-	<B> This implementation works but it's mathematically impossible! </B>
+	<B> This implementation works but it's probably not what you're mathematically intending
+    to do! </B>
 
     By the way: VIGRA provides the += Operator for this purpose and throws an exception if 
     the matrix-sizes don't match:
 
     \code
         matrix1 += matrix2;                     // works fine!
-        _23Matrix += _32Matrix;                 // error: wrong matrix sizes!
+        matrix32 += matrix23;                 // error: wrong matrix sizes!
     \endcode
 
-    
+    For further mathematical implementations see \ref MultiMathModule .
 */
 
 
