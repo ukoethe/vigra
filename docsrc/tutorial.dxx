@@ -406,6 +406,10 @@
         intArray.bind<0>(2) = 10;
     \endcode
 
+    NumPy-Users know the bind mechanism as "slicing". In the example above they had written:
+    \verbatim
+    intArray[2,:] = 10      // NumPy-equivalent of bind
+    \verbatim
     Moving on to Image Processing we'll give an example how you can flip an image by using 
     bind. We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
     Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
@@ -473,6 +477,9 @@
     <a href="mirror_8cxx-example.html">mirror.cxx</a> 
     There you can flip RGB-images as well and decide wheter to flip top to bottom (horizontal)
     or left to right (vertical).
+
+    You don't need to implement a method like this because VIGRA already provides the 
+    <dfn> vigra::reflectimage() </dfn> - method.
     
     <hr>
 
