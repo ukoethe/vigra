@@ -65,14 +65,13 @@ int main(int argc, char ** argv)
         std::cin >> method;
 
         // calculate new image size
-        int nw = (int)(sizefactor*(info.width()-1) + 1.5);
-        int nh = (int)(sizefactor*(info.height()-1) + 1.5);
+        Size2D newSize((info.size() - Size2D(1,1)) * sizefactor + Size2D(1,1));
 
         if(info.isGrayscale())
         {
             // create a gray scale image of appropriate size
-            vigra::BImage in(info.width(), info.height());
-            vigra::BImage out(nw, nh);
+            vigra::BImage in(info.size());
+            vigra::BImage out(newSize);
 
             // import the image just read
             importImage(info, destImage(in));
@@ -102,8 +101,8 @@ int main(int argc, char ** argv)
         else
         {
             // create a RGB image of appropriate size
-            vigra::BRGBImage in(info.width(), info.height());
-            vigra::BRGBImage out(nw, nh);
+            vigra::BRGBImage in(info.size());
+            vigra::BRGBImage out(newSize);
 
             // import the image just read
             importImage(info, destImage(in));
