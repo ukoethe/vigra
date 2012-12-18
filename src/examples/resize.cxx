@@ -41,6 +41,42 @@
 
 using namespace vigra;
 
+
+template<class ImageType>
+void resizeImageFile(const vigra::ImageImportInfo &info, const Size2D &newSize,
+                     int method, const char *outputFilename)
+{
+    // create a gray scale image of appropriate size
+    ImageType in(info.size());
+    ImageType out(newSize);
+
+    // import the image just read
+    importImage(info, destImage(in));
+
+    switch(method)
+    {
+      case 0:
+        // resize the image, using a bi-cubic spline algorithms
+        resizeImageNoInterpolation(srcImageRange(in),
+            destImageRange(out));
+        break;
+      case 1:
+        // resize the image, using a bi-cubic spline algorithms
+        resizeImageLinearInterpolation(srcImageRange(in),
+            destImageRange(out));
+        break;
+      default:
+        // resize the image, using a bi-cubic spline algorithms
+        resizeImageSplineInterpolation(srcImageRange(in),
+            destImageRange(out));
+    }
+
+    // write the image to the file given as second argument
+    // the file type will be determined from the file name's extension
+    exportImage(srcImageRange(out), vigra::ImageExportInfo(outputFilename));
+}
+
+
 int main(int argc, char ** argv)
 {
     if(argc != 3)
@@ -69,65 +105,11 @@ int main(int argc, char ** argv)
 
         if(info.isGrayscale())
         {
-            // create a gray scale image of appropriate size
-            vigra::BImage in(info.size());
-            vigra::BImage out(newSize);
-
-            // import the image just read
-            importImage(info, destImage(in));
-
-            switch(method)
-            {
-              case 0:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageNoInterpolation(srcImageRange(in),
-                    destImageRange(out));
-                break;
-              case 1:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageLinearInterpolation(srcImageRange(in),
-                    destImageRange(out));
-                break;
-              default:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageSplineInterpolation(srcImageRange(in),
-                    destImageRange(out));
-            }
-
-            // write the image to the file given as second argument
-            // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+            resizeImageFile<vigra::BImage>(info, newSize, method, argv[2]);
         }
         else
         {
-            // create a RGB image of appropriate size
-            vigra::BRGBImage in(info.size());
-            vigra::BRGBImage out(newSize);
-
-            // import the image just read
-            importImage(info, destImage(in));
-
-            switch(method)
-            {
-              case 0:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageNoInterpolation(srcImageRange(in),
-                    destImageRange(out));
-                break;
-              case 1:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageLinearInterpolation(srcImageRange(in),
-                    destImageRange(out));
-                break;
-              default:
-                // resize the image, using a bi-cubic spline algorithms
-                resizeImageSplineInterpolation(srcImageRange(in),
-                    destImageRange(out));
-            }
-
-            // write the image to the file given as second argument
-            // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+            resizeImageFile<vigra::BRGBImage>(info, newSize, method, argv[2]);
         }
     }
     catch (vigra::StdException & e)
