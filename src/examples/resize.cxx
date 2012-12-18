@@ -29,17 +29,17 @@
 /*    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,      */
 /*    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING      */
 /*    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR     */
-/*    OTHER DEALINGS IN THE SOFTWARE.                                   */                
+/*    OTHER DEALINGS IN THE SOFTWARE.                                   */
 /*                                                                      */
 /************************************************************************/
- 
+
 
 #include <iostream>
 #include "vigra/stdimage.hxx"
 #include "vigra/resizeimage.hxx"
 #include "vigra/impex.hxx"
 
-using namespace vigra; 
+using namespace vigra;
 
 int main(int argc, char ** argv)
 {
@@ -47,51 +47,51 @@ int main(int argc, char ** argv)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
-        
+
         return 1;
     }
-    
+
     try
     {
         // read image given as first argument
         // file type is determined automatically
         vigra::ImageImportInfo info(argv[1]);
-        
+
         double sizefactor;
         std::cerr << "Resize factor ? ";
         std::cin >> sizefactor;
         int method;
         std::cerr << "Method (0 - pixel repetition, 1 - linear, 2 - spline ? ";
         std::cin >> method;
-        
+
         // calculate new image size
         int nw = (int)(sizefactor*(info.width()-1) + 1.5);
         int nh = (int)(sizefactor*(info.height()-1) + 1.5);
-        
+
         if(info.isGrayscale())
         {
             // create a gray scale image of appropriate size
             vigra::BImage in(info.width(), info.height());
             vigra::BImage out(nw, nh);
-            
+
             // import the image just read
             importImage(info, destImage(in));
-            
+
             switch(method)
             {
               case 0:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageNoInterpolation(srcImageRange(in), 
+                resizeImageNoInterpolation(srcImageRange(in),
                     destImageRange(out));
                 break;
               case 1:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageLinearInterpolation(srcImageRange(in), 
+                resizeImageLinearInterpolation(srcImageRange(in),
                     destImageRange(out));
                 break;
               default:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageSplineInterpolation(srcImageRange(in), 
+                resizeImageSplineInterpolation(srcImageRange(in),
                     destImageRange(out));
             }
 
@@ -104,28 +104,28 @@ int main(int argc, char ** argv)
             // create a RGB image of appropriate size
             vigra::BRGBImage in(info.width(), info.height());
             vigra::BRGBImage out(nw, nh);
-            
+
             // import the image just read
             importImage(info, destImage(in));
-            
+
             switch(method)
             {
               case 0:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageNoInterpolation(srcImageRange(in), 
+                resizeImageNoInterpolation(srcImageRange(in),
                     destImageRange(out));
                 break;
               case 1:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageLinearInterpolation(srcImageRange(in), 
+                resizeImageLinearInterpolation(srcImageRange(in),
                     destImageRange(out));
                 break;
               default:
                 // resize the image, using a bi-cubic spline algorithms
-                resizeImageSplineInterpolation(srcImageRange(in), 
+                resizeImageSplineInterpolation(srcImageRange(in),
                     destImageRange(out));
             }
-            
+
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
             exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
@@ -137,6 +137,6 @@ int main(int argc, char ** argv)
         std::cout << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }
