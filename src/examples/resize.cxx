@@ -39,11 +39,9 @@
 #include "vigra/resizeimage.hxx"
 #include "vigra/impex.hxx"
 
-using namespace vigra;
-
 
 template<class ImageType>
-void resizeImageFile(const vigra::ImageImportInfo &info, const Size2D &newSize,
+void resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Size2D &newSize,
                      int method, const char *outputFilename)
 {
     // create a gray scale image of appropriate size
@@ -79,6 +77,8 @@ void resizeImageFile(const vigra::ImageImportInfo &info, const Size2D &newSize,
 
 int main(int argc, char ** argv)
 {
+    using vigra::Size2D;
+
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
