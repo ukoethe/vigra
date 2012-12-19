@@ -37,16 +37,19 @@
 #ifndef VIGRA_CONFIG_HXX
 #define VIGRA_CONFIG_HXX
 
-#include <vigra/configVersion.hxx>
+#include "configVersion.hxx"
 #include <stdexcept>
 
 ///////////////////////////////////////////////////////////
 //                                                       //
-//                   VisualC++ 5.0                       //
+//                     VisualC++                         //
 //                                                       //
 ///////////////////////////////////////////////////////////
 
 #ifdef _MSC_VER
+    // make sure that we use vigra/windows.h so that incompatibilities are fixed
+    #include "windows.h"
+
     #if(_MSC_VER < 1100)    // before VisualC++ 5.0
         #error "Need VisualC++ 5.0, Service Pack 2, or later"
     #endif // _MSC_VER < 1100
@@ -122,7 +125,7 @@
     template <class T>
     inline void safeStaticInit(T ** p, T * v)
     {
-        if (_InterlockedCompareExchangePointer((void * volatile *)p, v, 0) != 0)
+        if (InterlockedCompareExchangePointer((PVOID *)p, v, 0) != 0)
             delete v;
     }
     }} // namespace vigra::detail
