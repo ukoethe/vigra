@@ -35,17 +35,18 @@
 
 
 #include <iostream>
-#include "vigra/stdimage.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/rgbvalue.hxx"
 #include "vigra/resizeimage.hxx"
 #include "vigra/impex.hxx"
 
 
 template<class ImageType>
-bool resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Size2D &newSize,
+bool resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Shape2 &newSize,
                      int method, const char *outputFilename)
 {
     // create a gray scale image of appropriate size
-    ImageType in(info.size());
+    ImageType in(info.shape());
     ImageType out(newSize);
 
     // import the image just read
@@ -55,39 +56,39 @@ bool resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Size2D &ne
 
     switch(method)
     {
-    case 0:
+      case 0:
         // equiv. to resizeImageSplineInterpolation with BSpline<0, double>:
         resizeImageNoInterpolation(srcImageRange(in), destImageRange(out));
         break;
-    case 1:
+      case 1:
         // equiv. to resizeImageSplineInterpolation with BSpline<1, double>:
         resizeImageLinearInterpolation(srcImageRange(in), destImageRange(out));
         break;
-    case 2:
+      case 2:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<2, double>());
         break;
-    case 3:
+      case 3:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<3, double>());
         break;
-    case 4:
+      case 4:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<4, double>());
         break;
-    case 5:
+      case 5:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<5, double>());
         break;
-    case 6:
+      case 6:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<6, double>());
         break;
-    case 7:
+      case 7:
         resizeImageSplineInterpolation(srcImageRange(in), destImageRange(out),
                                        BSpline<7, double>());
         break;
-    default:
+      default:
         std::cerr << "Invalid method " << method << " (must be 0..7)!\n";
         return false;
     }
@@ -101,12 +102,13 @@ bool resizeImageFile(const vigra::ImageImportInfo &info, const vigra::Size2D &ne
 
 int main(int argc, char ** argv)
 {
-    using vigra::Size2D;
+    using vigra::Shape2;
 
     if((argc < 3) || (argc > 5))
     {
         std::cout << "Usage: " << argv[0] << " infile outfile [factor] [method]" << std::endl;
         std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+        std::cout << "If factor or method are not provided, you will be asked for\nthem on the command line." << std::endl;
 
         return 1;
     }
@@ -140,16 +142,16 @@ int main(int argc, char ** argv)
         }
 
         // calculate new image size
-        Size2D newSize((info.size() - Size2D(1,1)) * sizefactor + Size2D(1,1));
+        Shape2 newSize((info.shape() - Shape2(1,1)) * sizefactor + Shape2(1,1));
 
         if(info.isGrayscale())
         {
-            if(!resizeImageFile<vigra::BImage>(info, newSize, method, argv[2]))
+            if(!resizeImageFile<vigra::MultiArray<2, unsigned char> >(info, newSize, method, argv[2]))
                 return 1;
         }
         else
         {
-            if(!resizeImageFile<vigra::BRGBImage>(info, newSize, method, argv[2]))
+            if(!resizeImageFile<vigra::MultiArray<2, vigra::RGBValue<unsigned char> > >(info, newSize, method, argv[2]))
                 return 1;
         }
     }
