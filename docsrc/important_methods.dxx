@@ -203,7 +203,7 @@
     \skip // write
     \until exportImage
 
-    After writing the (here: gray scale) image data to an array we need to calculate the 
+    After reading the (here: gray scale) image data to an array we need to calculate the 
     coordinates of our subimage. In this case we want to cut out the middle part of the image. 
     Afterwards we write the subimage into a new array. Look at the results.
 
