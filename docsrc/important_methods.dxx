@@ -209,6 +209,62 @@
 
     \image html lenna_small.gif "inputfile"
     \image html lenna_sub.gif "subimage outputfile"
+
+    <hr>
+
+    <h2> transpose() </h2>
+    <dfn> vigra::MultiArrayView </dfn> class provides a method to transpose a N-dimensional
+    array. Regarding matrices (2-dimensional arrays) this operation is well known. As explained
+    with the <dfn> bind<M>(i) </dfn> method, it is possible to make a transposed copy of a
+    matrix or just to create a transoposed view. For usage of transpose() and the difference
+    between copy and view, see the following example. In the first part of the example we 
+    implement some print-methode to make the code more readable.
+
+    \dontinclude transpose.cxx
+    \skip #include
+    \until setting transarray to 5
+    \skipline print(intarray);
+    \skip return
+    \until }
+
+    The output is:
+
+    \verbatim
+    intarray:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    transarray:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    transArrayView:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    intarray after setting transarray to 5:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    intarray after setting transarrayView to 5:
+    5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
+    \endverbatim
+
+    As already mentioned it is possible to transpose an array of arbitrary number of 
+    dimensions. In this case, the innermost dimension is swapped with the outermost, the 
+    2nd innermost with the 2nd outermost and so on...
+    In the follwing example we transpose a 5D array and print out its shape.
+
+    \dontinclude transpose.cxx
+    \skip transposing a 5D array
+    \until std::endl
+    \until std::endl
+
+    The output is:
+
+    \verbatim
+    Shape of Array5D:
+    12345
+    Shape of transposed Array5D:
+    54321
+    \endverbatim
+
+    <B>Remark:</B> You probably think, that the tranpose-method is quite inefficient because 
+    every array element has to be copied. This not true. For a transposed view of an array, 
+    you just need to change the strides.
+    
 */
 
 /** \example mirror.cxx
