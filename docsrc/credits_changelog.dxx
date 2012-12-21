@@ -600,9 +600,9 @@ Many thanks to all!
       
       <li> Added \ref nonlinearDiffusion().
       
-      <li> Added more smoothing methods to <a href="Examples.html">smooth</a> example.
+      <li> Added more smoothing methods to <a href="ExampleList.html">smooth</a> example.
       
-      <li> Added <a href="Examples.html">resize</a> example.
+      <li> Added <a href="ExampleList.html">resize</a> example.
       
       <li> Minor corrections and bug fixes.
       

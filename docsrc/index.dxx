@@ -28,7 +28,7 @@
         <BR>&nbsp;&nbsp;&nbsp;<em>Segmentation and feature extraction algorithms</em>
     <LI> \ref MachineLearning
         <BR>&nbsp;&nbsp;&nbsp;<em>Classification algorithms</em>
-    <LI> \ref Examples
+    <LI> \ref ExampleList
         <BR>&nbsp;&nbsp;&nbsp;<em>Demonstration programs for VIGRA's usage </em>
     <LI> \ref VigraMatlab
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA Matlab bindings</em>
