@@ -22,7 +22,7 @@ int main(int argc, char ** argv) {
         if(info.isGrayscale()) {
             
             // write image data to MultiArray
-			vigra::MultiArray<2, unsigned char> imageArray(Shape2(info.width(), info.height()));
+			vigra::MultiArray<2, unsigned char> imageArray(Shape2(info.shape()));
 			importImage(info, destImage(imageArray));
 
             // calculate upper-left (x0,y0) and lower-right (x1,y1) position of subimage
@@ -41,7 +41,7 @@ int main(int argc, char ** argv) {
         }
         else {
             // write image data to MultiArray
-			vigra::MultiArray<2, vigra::RGBValue<unsigned char> > imageArray(Shape2(info.width(), info.height()));
+			vigra::MultiArray<2, vigra::RGBValue<unsigned char> > imageArray(Shape2(info.shape()));
 			importImage(info, destImage(imageArray));
 
             // calculate upper-left (x0,y0) and lower-right (x1,y1) position of subimage
