@@ -286,18 +286,54 @@
 
     In this chapter we'd like to show you how to import and export an image with Vigra. If you
     you want to import an image from disk and enquire about its properties, you must use an 
-    object of <dfn> ImageImportInfo </dfn> class. The constructor expects the filename, the
-    filename will be determined automatically.
+    object of <dfn> ImageImportInfo </dfn> class. It reads the header of the image file. 
+    The constructor expects the filename, the filetype will be determined automatically. The
+    following types are recognized:
+
+    <DL>
+    <DT>"BMP"<DD> Microsoft Windows bitmap image file.
+    <DT>"EXR"<DD> OpenEXR high dynamic range image format.
+    (only available if libopenexr is installed)
+    <DT>"GIF"<DD> CompuServe graphics interchange format; 8-bit color.
+    <DT>"HDR"<DD> Radiance RGBE high dynamic range image format.
+    <DT>"JPEG"<DD> Joint Photographic Experts Group JFIF format;
+    compressed 24-bit color (only available if libjpeg is installed).
+    <DT>"PNG"<DD> Portable Network Graphic
+    (only available if libpng is installed).
+    <DT>"PBM"<DD> Portable bitmap format (black and white).
+    <DT>"PGM"<DD> Portable graymap format (gray scale).
+    <DT>"PNM"<DD> Portable anymap.
+    <DT>"PPM"<DD> Portable pixmap format (color).
+    <DT>"SUN"<DD> SUN Rasterfile.
+    <DT>"TIFF"<DD> Tagged Image File Format.
+    (only available if libtiff is installed.)
+    <DT>"VIFF"<DD> Khoros Visualization image file.
+    </DL>
+
     In the following example, the image is given via console as first argument:
 
     \include imageImportInfo_tutorial.cxx
 
     As you can see, the <dfn> ImageImportInfo </dfn> object contains a lot of information,
-    some of it is printed in the example.
+    some of it is printed in the example. Using this image
+
+    \image html lenna_small.gif "inputfile"
+
+    we get the following output:
+
+    \verbatim
+    Image information:
+    Filetype: GIF
+    Width: 154
+    Height: 145
+    Color Image: no
+    \endverbatim
 
     To process images, this isn't enough. As described in \ref basics we want to save the
     image data in a multidimensional array. That's why we need <dfn> MultiArray </dfn> 
     object and a method writing the image data into the array. This method is called 
-    <dfn> vigraImportImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
-    
+    <dfn> vigra::ImportImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
+    an <dfn>ImageIterator</dfn> (+ Accessor). To give the iterator, just use 
+    <dfn>destImage(imageArray)</dfn> where imageArray is the MultiArray object to copy the 
+    image data in.
 */
