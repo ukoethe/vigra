@@ -50,23 +50,28 @@ int main (int argc, char ** argv) {
     std::cout << "intarray after setting transarrayView to 5:\n";
     print(intarray);
 
+
     // transposing a 5D array
+    // instantiate 5D array
     vigra::MultiArray<5, int> array5D(Shape5(1,2,3,4,5));
 
+    // print the shape of the original array
     std::cout << "Shape of Array5D:\n";
     for (int i = 0; i < array5D.shape().size(); i++) {
         std::cout << array5D.size(i);
     }
     std::cout << std::endl;
 
+    // transpose array
     array5D = array5D.transpose();
 
+    // print the shape of transposed array
     std::cout << "Shape of transposed Array5D:\n";
     for (int i = 0; i < array5D.shape().size(); i++) {
         std::cout << array5D.size(i);
     }
     std::cout << std::endl;
-   
+
     return 0;
 }
 

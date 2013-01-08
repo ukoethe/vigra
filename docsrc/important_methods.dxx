@@ -264,6 +264,29 @@
     <B>Remark:</B> You probably think, that the tranpose-method is quite inefficient because 
     every array element has to be copied. This not true. For a transposed view of an array, 
     you just need to change the strides.
+
+    <hr>
+
+    <h2> permuteDimensions(vector) </h2>
+    An augmentation of transposing an array is to permute the dimensions by an arbitrary
+    permutation. In two dimensions, transpose and permuteDimensions are equal.
+    The method needs a vector that contains the permutation. The length of the the vector is
+    equal to the numbar of array dimensions. The first value of the vector contains the
+    dimension of the original array that shoulb be now the first dimension and so on. In the
+    following example we want to permute an array of shape (1,2,3,4) to an array of shape
+    (2,3,4,1). Remember, that VIGRA counts the dimensions from 0:
+
+    \include permute.cxx
+
+    The output is:
+
+    \verbatim
+    Shape of intarray:
+    1234
+    Shape of permuted intarray:
+    2341
+    \endverbatim
+
     
 */
 
