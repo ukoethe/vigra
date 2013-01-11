@@ -265,6 +265,19 @@
     every array element has to be copied. This not true. For a transposed view of an array, 
     you just need to change the strides.
 
+    An image can be transposed like this:
+
+    \include transpose_imgae_tutorial.cxx
+
+    The result is:
+
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_transposed.gif "outputfile"
+
+    In VIGRA, there is already a method <dfn>vigra::transposeImage(...)</dfn>. The difference
+    is, that transposeImage changes the whole image data, whereas transpose just changes the
+    strides.
+
     <hr>
 
     <h2> permuteDimensions(vector) </h2>
