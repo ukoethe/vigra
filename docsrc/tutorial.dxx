@@ -332,8 +332,53 @@
     To process images, this isn't enough. As described in \ref basics we want to save the
     image data in a multidimensional array. That's why we need <dfn> MultiArray </dfn> 
     object and a method writing the image data into the array. This method is called 
-    <dfn> vigra::ImportImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
+    <dfn> importImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
     an <dfn>ImageIterator</dfn> (+ Accessor). To give the iterator, just use 
     <dfn>destImage(imageArray)</dfn> where imageArray is the MultiArray object to copy the 
-    image data in.
+    image data in. The code looks like this:
+
+    \dontinclude imageIO_tutorial.cxx
+    \skip read image
+    \until importImage
+
+    Now, imageArray contains the image data and you can edit it. Writing the image data from
+    an Array to a file is quite similar. For this purpose, we use the mehtod 
+    <dfn>exportImage(...)</dfn>. It needs two iterators, one pointing at the upper-left point
+    of an image, one on the lower-right, an Image Accessor and an 
+    <dfn>vigra::ImageExportInfo</dfn>-object. To make it easier, just use the
+    <dfn>srcImageRange(imageArray)</dfn> method instead of giving two iterators and an 
+    accessor. The ImageExportInfo-object needs a filename. The file-type is guessed from the
+    filename's extension. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', 
+    '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr'. 
+    EXR support requires libopenexr, JPEG support requires libjpeg, PNG support requires 
+    libpng and TIFF support requires libtiff. In the following example, we create and save a 
+    180x180pixels - image, where the whole image is gray. 
+    The image is saved as "testimage.gif" in the same folder as the executed code.
+
+    \include imageExportInfo_tutorial.cxx
+
+    The resulting image is the following:
+
+    \image html testimage.gif "testimage.gif"
+
+    Finally we want to give a whole example of importing, editing and exporting an image.
+    After importing, we set every second horizontal line to black. This can be easily done
+    with the <dfn>bind<M>(i)></dfn>-method thoroughly explained in \ref ImportantMethods .
+    The inputfile and the outputfile are given as arguments via console.
+
+    \include imageIO_tutorial.cxx
+
+    The inputimage and the resulting outputimage are:
+
+    \image html lenna_small.gif "inputimage"
+    \image html lenna_stripes.gif "outputimage"
+
+    <B>Note:</B> The handling of color images is exactly the same, but instead of instantiating
+    a <dfn>vigra::MultiArray<2, unsigned char></dfn> you need a
+    <dfn> vigra::MultiArray<2, vigra::RGBValue<unsigned char> > </dfn> array as described in
+    \ref Basics .
+
+    <B> For advanced users: </B> The ImageExportInfo class provides some additional useful 
+    methods for instance <dfn> setCompression(...) </dfn>, whereby you can set the image's
+    compression type and quality.
 */
