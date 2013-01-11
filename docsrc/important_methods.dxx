@@ -2,6 +2,48 @@
 
     In this part of the tutorial we'll introduce you to some important methods.
 
+    <h2> subarray(p,q) </h2>
+    This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
+    array between the points p and q, where p is included, q not. Compared to the <dfn>bind
+    </dfn>-method, subarray doesn't change the dimension.
+    To give an example, let's say that you want to copy the upper-left subsquare of a 
+    4x4-matrix (initialized with 1).
+
+    \code
+        // copy the upper-left subsquare of a 4x4-matrix
+        vigra::MultiArray<2, int> _44Matrix(Shape2(4,4));
+        _44Matrix.init(1);
+        vigra::MultiArray<2, int> subsquare = _44Matrix.subarray(Shape2(0,0), Shape2(2,2));
+    \endcode
+
+    To determine the positions p and q, we use <dfn>Shape</dfn>. In this example we copy the 
+    element with the x,y-coordinates from 0 to 1. Subarray can be used to set elements as
+    well. We now set the lower half of the 4x4-matrix to 0.
+
+    \code
+       // change the elements of a subarray
+       _44Matrix.subarray(Shape2(0,2),Shape2(4,4)) = 0;
+    \endcode
+
+    In Image Processing you can use <dfn>subarray</dfn> to create a subimage of a given image.
+    In the next example we create a half-sized subimage with the middle part of the original
+    image:
+    <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
+    The relevant part ot this code is shown here:
+
+    \dontinclude subimage_tutorial.cxx
+    \skip // write
+    \until exportImage
+
+    After reading the (here: gray scale) image data to an array we need to calculate the 
+    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
+    Afterwards we write the subimage into a new array. Look at the results.
+
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_sub.gif "subimage outputfile"
+
+    <hr>
+
     <h2> bind<M>(i) </h2>
     This method is part of the MultiArrayView-Class and binds the dimension M to the index i.
     As you probably remember, we tried to set the elements of a certain column or row of a 
@@ -170,48 +212,6 @@
 
     <hr>
 
-    <h2> subarray(p,q) </h2>
-    This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
-    array between the points p and q, where p is included, q not. Compared to the <dfn>bind
-    </dfn>-method, subarray doesn't change the dimension.
-    To give an example, let's say that you want to copy the upper-left subsquare of a 
-    4x4-matrix (initialized with 1).
-
-    \code
-        // copy the upper-left subsquare of a 4x4-matrix
-        vigra::MultiArray<2, int> _44Matrix(Shape2(4,4));
-        _44Matrix.init(1);
-        vigra::MultiArray<2, int> subsquare = _44Matrix.subarray(Shape2(0,0), Shape2(2,2));
-    \endcode
-
-    To determine the positions p and q, we use <dfn>Shape</dfn>. In this example we copy the 
-    element with the x,y-coordinates from 0 to 1. Subarray can be used to set elements as
-    well. We now set the lower half of the 4x4-matrix to 0.
-
-    \code
-       // change the elements of a subarray
-       _44Matrix.subarray(Shape2(0,2),Shape2(4,4)) = 0;
-    \endcode
-
-    In Image Processing you can use <dfn>subarray</dfn> to create a subimage of a given image.
-    In the next example we create a half-sized subimage with the middle part of the original
-    image:
-    <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
-    The relevant part ot this code is shown here:
-
-    \dontinclude subimage_tutorial.cxx
-    \skip // write
-    \until exportImage
-
-    After reading the (here: gray scale) image data to an array we need to calculate the 
-    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
-    Afterwards we write the subimage into a new array. Look at the results.
-
-    \image html lenna_small.gif "inputfile"
-    \image html lenna_sub.gif "subimage outputfile"
-
-    <hr>
-
     <h2> transpose() </h2>
     <dfn> vigra::MultiArrayView </dfn> class provides a method to transpose a N-dimensional
     array. Regarding matrices (2-dimensional arrays) this operation is well known. As explained
@@ -278,6 +278,12 @@
     is, that transposeImage changes the whole image data, whereas transpose just changes the
     strides.
 
+    Transposing an array changes the direction of the StridedScanOrderIterator. Imagine a 3x4-
+    matrix. ScanOrder means that we iterate from left to right, row by row. Now, let's 
+    transpose the matrix to a 4x3-matrix. If this transposed array is just a View and we 
+    iterate using ScanOrder, it means that we iterate top to bottom, column by column in the 
+    original array.
+
     <hr>
 
     <h2> permuteDimensions(vector) </h2>
@@ -285,7 +291,7 @@
     permutation. In two dimensions, transpose and permuteDimensions are equal.
     The method needs a vector that contains the permutation. The length of the the vector is
     equal to the numbar of array dimensions. The first value of the vector contains the
-    dimension of the original array that shoulb be now the first dimension and so on. In the
+    dimension of the original array that should be now the first dimension and so on. In the
     following example we want to permute an array of shape (1,2,3,4) to an array of shape
     (2,3,4,1). Remember, that VIGRA counts the dimensions from 0:
 

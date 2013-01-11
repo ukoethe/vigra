@@ -105,13 +105,15 @@
         }
     \endcode
 
-    An easier and equivalent way is just to use the coordinates with round brackets (y,x):
+    An convenient and equivalent way is just to use the coordinates with round brackets (y,x):
 
     \code
         // access via simple coordinates, set element in second column and third row
         matrix1(1,2) = 22;
     \endcode
 	
+    This kind of indexing is only possible if the array's dimension is well known. For generic
+    methods you have to use indexing via Shape-object.
 	In combination with the method size(n), that gives us the size of the n-th dimension, 
     we can use the coordinates to set the element of an entire row or column:
 
@@ -145,7 +147,7 @@
 
     <hr>
 
-    <h2> []-Operator and StridedScanOrderIterator </h2>
+    <h2> Onedimensional []-Operator and StridedScanOrderIterator </h2>
 	
     \code
         #include <vigra/multi_array.hxx>
@@ -211,7 +213,7 @@
 		}
 	\endcode
 
-	Be careful: The StridedScanOrderIterator doesn't recognize if the matrices' shapes match
+	Be careful: The StridedScanOrderIterator doesn't check if the matrices' shapes match
     to each other.
 
 	\code
@@ -266,7 +268,7 @@
         std::cout << std::endl;
     \endcode
 
-    To show the difference between VIGRA and NumPy we'll we add the NumPy output if we had
+    To show the difference between VIGRA and NumPy we'll add the NumPy output if we had
     used the flatten-method to the output of the code above
 
     \verbatim
@@ -279,7 +281,10 @@
     matrix23 - index    [0,0]   [0,1]   [1,0]   [1,1]   [2,0]   [2,1]
     \endverbatim
 
-   However, NumPy's flat-method returns an iterator like matrix23.begin() in VIGRA.
+    However, NumPy's flat-method returns an iterator like matrix23.begin() in VIGRA.
+
+    To change the direction of the StridedScanOrderIterator, look at the transpose-function
+    in \ref ImportantMethods
 */
 
 /** \page ImageInputOutput Image Input Output 
@@ -378,7 +383,23 @@
     <dfn> vigra::MultiArray<2, vigra::RGBValue<unsigned char> > </dfn> array as described in
     \ref Basics .
 
-    <B> For advanced users: </B> The ImageExportInfo class provides some additional useful 
+    <h2> For advanced users: </h2> 
+    The ImageExportInfo class provides some additional useful 
     methods for instance <dfn> setCompression(...) </dfn>, whereby you can set the image's
     compression type and quality.
+
+    Image Processing often requires more complicated calculations as seen in these examples.
+    In this case, it is better to import and convert the data into a <dfn>float</dfn>-array 
+    instead of the <dfn>unsigned</dfn> type to avoid huge rounding errors. Conversion is
+    automatically done by the importImage method. Of course, there are other possible types,
+    but float is highly recommended for Image Processing.
+
+    Exporting a float-Array is handled differently. Some file formats allow float e.g. TIFF,
+    so there is no conversion. If not, exportImage automatically converts the data into
+    unsigned char. To see which types are allowed by each format look at the documentation of
+    \ref ImageExportInfo .
+
+
+
+    
 */
