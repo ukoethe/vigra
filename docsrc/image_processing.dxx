@@ -1,0 +1,5 @@
+/** \page ImageProcessing Image Processing
+    
+    In this chapter we'll use VIGRA's important methods for some application of Image 
+    Processing.
+*/
