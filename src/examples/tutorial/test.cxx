@@ -1,27 +1,23 @@
-#include <vigra/multi_array.hxx>
 #include <iostream>
+#include <vigra/multi_array.hxx>
+#include <vigra/stdimage.hxx>
+#include "vigra/impex.hxx"
 
 using namespace vigra;
-int main (int argc, char ** argv) {
 
-    MultiArray<2, int> array(Shape2(4,4));
-    array = 1;
-    for (int i = 0; i< array.size(); i++) {
-        std::cout << array[i];
-    }
-    std::cout << std::endl;
-    MultiArrayView<2,int, StridedArrayTag> view;
-    view = array.subarray(Shape2(0,0), Shape2(2,2));
-    view = 2;
-    for (int i = 0; i< array.size(); i++) {
-        std::cout << array[i];
-    }
-    std::cout << std::endl;
-    view = array.subarray(Shape2(2,2), Shape2(4,4));
-    view = 4;
-    for (int i = 0; i< array.size(); i++) {
-        std::cout << array[i];
-    }
-    std::cout << std::endl;
+int main(int argc, char ** argv) {
+    // instantiate array for image data of size 180x180 pixels
+    vigra:MultiArray<2, unsigned char> imageArray(Shape2(160,160));
+    // set all pixels to a certain gray value
+    for (int i = 0; i < imageArray.size(0); i++) {
+        for (int j = 0; j < imageArray.size(1); j++) {
+
+        if ((i%20)/10 == (j%20)/10) imageArray[Shape2(i,j)] = 0;
+        else                        imageArray[Shape2(i,j)] = 255; 
+        }
+    }   
+    // write Image data to "testimage.gif"
+    exportImage(srcImageRange(imageArray), vigra::ImageExportInfo("testimage.gif"));
     return 0;
 }
+
