@@ -296,7 +296,7 @@ bool rf_import_HDF5(RandomForest<T, Tag> & rf,
                     const std::string & filename, 
                     const std::string & pathname = "")
 {
-    HDF5File h5context(filename, HDF5File::Open);
+    HDF5File h5context(filename, HDF5File::OpenReadOnly);
     return rf_import_HDF5(rf, h5context, pathname);
 }
 
