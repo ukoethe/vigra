@@ -50,6 +50,8 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigranumpyConfig.cmake.in
             ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigranumpyConfig.cmake
             @ONLY IMMEDIATE)
+    INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigranumpyConfig.cmake
+            DESTINATION lib${LIB_SUFFIX}/vigra)
 ENDIF()
 
 

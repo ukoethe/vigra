@@ -8,3 +8,7 @@ if(${VIGRA_TYPE} STREQUAL "STATIC_LIBRARY")
     ADD_DEFINITIONS(-DVIGRA_STATIC_LIB)
 endif(${VIGRA_TYPE} STREQUAL "STATIC_LIBRARY")
 get_filename_component(Vigra_INCLUDE_DIRS "${Vigra_TOP_DIR}/include/" ABSOLUTE)
+
+IF(EXISTS ${SELF_DIR}/VigranumpyConfig.cmake)
+    INCLUDE(${SELF_DIR}/VigranumpyConfig.cmake)
+ENDIF()
