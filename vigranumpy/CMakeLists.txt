@@ -46,6 +46,10 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
                            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
                            COMMENT "Creating vigranumpy setup in ${CMAKE_CURRENT_BINARY_DIR}/dist")        
     ENDIF()
+    
+    CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigranumpyConfig.cmake.in
+            ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigranumpyConfig.cmake
+            @ONLY IMMEDIATE)
 ENDIF()
 
 

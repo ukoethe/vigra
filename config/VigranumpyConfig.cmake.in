@@ -1,0 +1,42 @@
+#        Configuration file for 3rd party vigranumpy modules
+#        
+#        Usage:
+#            add_vigranumpy_module(myModule SOURCES myModule.cxx ... [LIBRARIES extralib.lib ...])
+#
+FUNCTION(add_vigranumpy_module target)
+    
+    # parse the args
+    set(v SOURCES)
+    foreach(i ${ARGN})
+        if(${i} MATCHES "^SOURCES$")
+            set(v SOURCES)
+        elseif(${i} MATCHES "^LIBRARIES$")
+            set(v LIBRARIES)
+        else()
+            set(${v} ${${v}} ${i})
+        endif()
+    endforeach(i)
+    
+    set(TARGET_NAME ${target})
+    set(LIBRARY_NAME ${target})
+
+    include_directories(@VIGRANUMPY_INCLUDE_DIRS@)
+    
+    ADD_LIBRARY(${TARGET_NAME} SHARED ${SOURCES})    
+    
+    if(DEFINED LIBRARIES)
+        TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LIBRARIES})
+    endif()
+    
+    TARGET_LINK_LIBRARIES(${TARGET_NAME} @VIGRANUMPY_LIBRARIES@)
+    
+    IF(WIN32 AND NOT MINGW)
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
+                                                           PREFIX "" SUFFIX  ".pyd")
+    ELSEIF(MACOSX)
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" PREFIX "" SUFFIX ".so")
+    ELSE()
+        SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 
+                                                           PREFIX "")
+    ENDIF()
+ENDFUNCTION(add_vigranumpy_module)
