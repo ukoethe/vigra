@@ -1,8 +1,24 @@
 #        Configuration file for 3rd party vigranumpy modules
 #        
 #        Usage:
+#            find_package(Vigranumpy REQUIRED PATHS ${Vigranumpy_DIR}) # set Vigranumpy_DIR default paths fail
 #            add_vigranumpy_module(myModule SOURCES myModule.cxx ... [LIBRARIES extralib.lib ...])
 #
+get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+
+# turn relative paths to includes and libraries back into absolute paths
+set(VIGRANUMPY_INCLUDE_DIRS "")
+foreach(PATH @VIGRANUMPY_INCLUDE_RELATIVE@)
+    get_filename_component(ABSPATH ${SELF_DIR}/${PATH} ABSOLUTE)
+    set(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS} ${ABSPATH})
+endforeach(PATH)
+
+set(VIGRANUMPY_LIBRARIES "")
+foreach(PATH @VIGRANUMPY_LIBRARIES_RELATIVE@)
+    get_filename_component(ABSPATH ${SELF_DIR}/${PATH} ABSOLUTE)
+    set(VIGRANUMPY_LIBRARIES ${VIGRANUMPY_LIBRARIES} ${ABSPATH})
+endforeach(PATH)
+
 FUNCTION(add_vigranumpy_module target)
     
     # parse the args
@@ -20,7 +36,7 @@ FUNCTION(add_vigranumpy_module target)
     set(TARGET_NAME ${target})
     set(LIBRARY_NAME ${target})
 
-    include_directories(@VIGRANUMPY_INCLUDE_DIRS@)
+    include_directories(${VIGRANUMPY_INCLUDE_DIRS})
     
     ADD_LIBRARY(${TARGET_NAME} SHARED ${SOURCES})    
     
@@ -28,7 +44,7 @@ FUNCTION(add_vigranumpy_module target)
         TARGET_LINK_LIBRARIES(${TARGET_NAME} ${LIBRARIES})
     endif()
     
-    TARGET_LINK_LIBRARIES(${TARGET_NAME} @VIGRANUMPY_LIBRARIES@)
+    TARGET_LINK_LIBRARIES(${TARGET_NAME} ${VIGRANUMPY_LIBRARIES})
     
     IF(WIN32 AND NOT MINGW)
         SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES OUTPUT_NAME "${LIBRARY_NAME}" 

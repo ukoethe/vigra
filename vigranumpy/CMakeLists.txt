@@ -47,11 +47,25 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
                            COMMENT "Creating vigranumpy setup in ${CMAKE_CURRENT_BINARY_DIR}/dist")        
     ENDIF()
     
+    set(VIGRANUMPY_CONFIG_INSTALL_PATH lib${LIB_SUFFIX}/vigranumpy)
+    
+    set(VIGRANUMPY_INCLUDE_RELATIVE "")
+    foreach(PATH ${VIGRANUMPY_INCLUDE_DIRS})
+        file(RELATIVE_PATH RELPATH ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_CONFIG_INSTALL_PATH} ${PATH})
+        set(VIGRANUMPY_INCLUDE_RELATIVE ${VIGRANUMPY_INCLUDE_RELATIVE} ${RELPATH})
+    endforeach(PATH)
+    
+    set(VIGRANUMPY_LIBRARIES_RELATIVE "")
+    foreach(PATH ${VIGRANUMPY_LIBRARIES})
+        file(RELATIVE_PATH RELPATH ${CMAKE_INSTALL_PREFIX}/${VIGRANUMPY_CONFIG_INSTALL_PATH} ${PATH})
+        set(VIGRANUMPY_LIBRARIES_RELATIVE ${VIGRANUMPY_LIBRARIES_RELATIVE} ${RELPATH})
+    endforeach(PATH)
+    
     CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/config/VigranumpyConfig.cmake.in
-            ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigranumpyConfig.cmake
+            ${PROJECT_BINARY_DIR}/lib/vigranumpy/CMake/VigranumpyConfig.cmake
             @ONLY IMMEDIATE)
-    INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigra/CMake/VigranumpyConfig.cmake
-            DESTINATION lib${LIB_SUFFIX}/vigra)
+    INSTALL(FILES ${PROJECT_BINARY_DIR}/lib/vigranumpy/CMake/VigranumpyConfig.cmake
+            DESTINATION ${VIGRANUMPY_CONFIG_INSTALL_PATH})
 ENDIF()
 
 
