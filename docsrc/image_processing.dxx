@@ -1,5 +1,11 @@
 /** \page ImageProcessing Image Processing
     
-    In this chapter we'll use VIGRA's important methods for some application of Image 
-    Processing.
+    In this chapter we'll use VIGRA's methods for some applications of Image Processing.
+
+    <h2> Inverting </h2>
+    Inverting an image is quite easy. We just need to subtract every pixel's value from white
+    (255). The namespace \ref MultiMathModule provides elementwise operations on a MultiArray.
+    By a given imageArray the invertation works as follows:
+
+    \code
 */
