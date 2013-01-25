@@ -1,11 +1,177 @@
-/** \page ImageProcessing Image Processing
+/** \page ImageProcessingTutorial Image Processing
     
     In this chapter we'll use VIGRA's methods for some applications of Image Processing.
 
     <h2> Inverting </h2>
     Inverting an image is quite easy. We just need to subtract every pixel's value from white
     (255). The namespace \ref MultiMathModule provides elementwise operations on a MultiArray.
-    By a given imageArray the invertation works as follows:
+    By a given imageArray inverting works as follows:
 
     \code
+    imageArray = 255-imageArray;
+    \endcode
+
+    See here a whole example:
+    <a href="invert_tutorial_8cxx-example.html">invert_tutorial.cxx</a>
+
+    This is the result:
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_inverted.gif "inverted outputfile"
+
+    <hr>
+
+    <h2> Dissolving </h2>
+    In this example, we have two input images and want to dissolve them. In the dissolved 
+    output image every pixel value is the mean of the two appropriate original pixels.
+
+    \code
+    exportArray = 0.5*imageArray1 + 0.5*imageArray2;
+    \endcode
+
+    Since it is not guaranteed that the two input images have the same size, we first
+    determine the maximum possible size of the dissolved image. With the help of subarray-
+    method we just dissolve the appropriate parts of the two images. These parts (subimages)
+    are aligned in the center of the original images.
+
+    Here's the code:
+    <a href="dissolve_8cxx-example.html">dissolve.cxx</a>
+
+    And here are the results:
+    \image html lenna_color_small.gif "inputfile 1"
+    \image html oi_small.jpg "inputfile 2"
+    \image html dissolved_color.gif "dissolved outputfile"
+
+    <hr>
+
+    <h2> Composite </h2>
+    Let's come to a little gimmick. Given one input image e want to create a composite image 
+    of 4 images reflectedto each other. The result looks as if someone had put a mirror on the
+    right and lower edge of the input image. Two of Vigra's methods are enough for this
+    purpose: subarray and reflectImage (already mentioned in \ref ImportantMethods).
+    reflectImage needs some iterators, accessors and a reflection axis. The axis can either
+    be horizontal, vertical or both. Use reflectImage with srcImageRange and destImage.
+
+    \code
+    vigra::reflectImage(srcImageRange(imageArray), destImage(exportArray), vigra::horizontal | vigra::vertical);
+    \endcode
+
+    Here's the code:
+    <a href="dissolve_8cxx-example.html">composite.cxx</a>
+
+    And here are the results:
+    \image html lenna_color_small.gif "inputfile"
+    \image html lenna_composite_color.gif "composite outputfile"
+
+    <hr>
+
+    <h2> Smoothing </h2>
+    There are a lot of different ways to smooth an image. Before we use VIGRA's methods, we 
+    want to write a smoothing code by our own. The idea is to choose a pixel and give it the
+    mean of the surround pixels in 3x3-box around the pixel as new value.
+    MultiArray provides two useful methods: sum and size. If we want to calculate the mean of
+    an array we need the sum of all elements and divide it by the number of elements (size).
+    In our code we iterate over every pixel, look on the 3x3-box surrounding via subarray,
+    calculate the sum of this subarray and divide it by its size. This is the new value of
+    the pixel.
+
+    On the edges of the image we can't build a box around the pixel. We can only average the
+    remaining neighbours of the pixel.
+
+    See the code:
+    <a href="smooth_explicitly_8cxx-example.html">smooth_explicitly.cxx</a>
+
+    The results:
+    \image html lenna_small.gif "inputfile"
+    \image html lenna_smoothed.gif "smoothed outputfile"
+
+    A more comfortable way of such convolving operations is provided by the method 
+    <dfn>convolveImage</dfn>. You may use it as follows:
+
+    \code
+    vigra::convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
+    \endcode
+
+    It needs a convolution kernel, which is given as arguent object by <dfn>kernel2d()</dfn>.
+    For the kernel itself there are different possibilities. You may want to have an
+    averaging kernel or weight some elements more than others or maybe you want the kernel
+    to be a gaussian curve... We now want discuss these three possibilities among more others.
+    
+    <h3> Simple averaging </h3>
+    Concerning our smoothing example above, this equivalent way for averaging a 3x3-box is:
+
+    \code
+    vigra::Kernel2D<float> kernel; 
+    kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0;
+    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
+    \endcode
+
+    Pointing to the center (0,0) of the kernel our 3x3-box starts at the coordinates (-1,1) 
+    and has its lower-right corner at (1,1). Since we want to average homogenously every pixel
+    in the kernel is weigthed with 1/9 (the kernel has 9 elements).
+
+    <h3> Weighting by hand </h3>
+    If we want to have a certain weighting, we can do this by hand. In the following example
+    we just want to average the corners of the 3x3-box.
+    
+    \code
+    vigra::Kernel2D<float> kernel; 
+    kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
+                        0.25, 0.0, 0.25, 
+                        0.0,  0.0, 0.0,
+                        0.25, 0.0, 0.25;
+    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
+    \endcode
+
+    You can type in a comma separated list with the weights of each element. Consider that the
+    sum of all weights has to be 1.
+
+    <h3> Gaussian convolving </h3>
+    The kernel-class has a special <dfn>initGaussian(std_dev)</dfn>-method, that creates the
+    appropriate element weightings for any arbitrary standard deviation std_dev:
+
+    \code
+    vigra::Kernel2D<float> kernel; 
+    kernel.initGaussian(1.5);
+    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
+    \endcode
+
+    We give you now an example, where you can choose on of the three methods to smooth an 
+    image:
+    <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>
+
+    The results:
+    \image html testimage.gif "inputfile"
+    \image html conv1.gif "simple averaging"
+    \image html conv2.gif "weighting by hand (corners)"
+    \image html conv3.gif "gaussian (std_dev=1.5)"
+*/
+
+/** \example invert_tutorial.cxx
+    Invert an image file (gray scale or color)
+    <br>
+    Usage: <TT>invert infile outfile</TT>
+*/
+
+/** \example dissolve.cxx
+    Dissolve two image files (gray scale or color)
+    <br>
+    Usage: <TT>dissolve infile1 infile2 outfile</TT>
+*/
+
+/** \example composite.cxx
+    Create a composite image (gray scale or color)
+    <br>
+    Usage: <TT>composite infile outfile</TT>
+*/
+
+/** \example smooth_explicitly.cxx
+    Smooth an image by averaging a 3x3-box (gray scale or color)
+    <br>
+    Usage: <TT>smooth_ex infile outfile</TT>
+*/
+
+/** \example smooth_convolve.cxx
+    Convolve an image on different ways (only gray scale)
+    <br>
+    Usage: <TT>smooth_con infile outfile</TT>
 */

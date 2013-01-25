@@ -17,6 +17,8 @@
 		<BR>&nbsp;&nbsp;&nbsp;<em>the methods bind and subarray</em>
 
     <li> \ref MultiMathModule
+
+    <li> \ref ImageProcessingTutorial
     </ul>
 */
 
@@ -357,7 +359,7 @@
     '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr'. 
     EXR support requires libopenexr, JPEG support requires libjpeg, PNG support requires 
     libpng and TIFF support requires libtiff. In the following example, we create and save a 
-    180x180pixels - image, where the whole image is gray. 
+    160x160pixels - image, where the whole image is gray. 
     The image is saved as "testimage.gif" in the same folder as the executed code.
 
     \include imageExportInfo_tutorial.cxx
