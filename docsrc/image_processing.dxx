@@ -139,6 +139,9 @@
     image:
     <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>
 
+    <B> Remark: </B> When using RGBValue for color images you have to use double-type in your
+    kernel because some operators are not overloaded for float-type (cf. example).
+
     The results:
     \image html testimage.gif "inputfile"
     \image html conv1.gif "simple averaging"
