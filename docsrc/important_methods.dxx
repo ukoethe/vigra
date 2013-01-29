@@ -267,7 +267,7 @@
 
     An image can be transposed like this:
 
-    \include transpose_imgae_tutorial.cxx
+    \include transpose_image_tutorial.cxx
 
     The result is:
 

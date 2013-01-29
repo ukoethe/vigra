@@ -12,13 +12,15 @@
 		<BR>&nbsp;&nbsp;&nbsp;<em>how to access an element of MultiArray</em>
 
     <li> \ref ImageInputOutput
+        <BR>&nbsp;&nbsp;&nbsp;<em>importing and exporting images</em>
     
     <li> \ref ImportantMethods
-		<BR>&nbsp;&nbsp;&nbsp;<em>the methods bind and subarray</em>
+		<BR>&nbsp;&nbsp;&nbsp;<em>the methods subarray, bind, transpose and permuteDimensions</em>
 
     <li> \ref MultiMathModule
 
     <li> \ref ImageProcessingTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>some applications of VIGRA's methods</em>
     </ul>
 */
 
@@ -63,7 +65,7 @@
     Alternatively you can use a 3-dimensional array <dfn>vigra::MultiArray<2, unsigned
     char></dfn> to represent a color image. The third dimension has size 3 and contains the
     information for red, green and blue channel. We won't use the 3-dimensional array for
-    color images because dfn>vigra::RGBValue<ValueType></dfn> provides a lot of helpful
+    color images because <dfn>vigra::RGBValue<ValueType></dfn> provides a lot of helpful
     methods.
 
     Maybe you've recognized in the last paragraph that there is no need to restrict oneself
