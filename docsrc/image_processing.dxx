@@ -5,9 +5,11 @@
     <h2> Inverting </h2>
     Inverting an image is quite easy. We just need to subtract every pixel's value from white
     (255). The namespace \ref MultiMathModule provides elementwise operations on a MultiArray.
-    By a given imageArray inverting works as follows:
+    To avoid confusion you always have to use the using namespace command beforeworking with
+    multi_math. By a given imageArray inverting works as follows:
 
     \code
+    using namespace vigra::multi_math;
     imageArray = 255-imageArray;
     \endcode
 
@@ -25,6 +27,7 @@
     output image every pixel value is the mean of the two appropriate original pixels.
 
     \code
+    using namespace vigra::multi_math;
     exportArray = 0.5*imageArray1 + 0.5*imageArray2;
     \endcode
 
@@ -178,11 +181,23 @@
     <TR>
     <TD> \image html testimage.gif "inputfile" </TD>
     <TD> \image html conv1.gif "simple averaging" </TD>
-    <TD> \image html conv2.gif "weighting by hand (corners)" </TD>
+    <TD> \image html conv2.gif "weighting manually (corners)" </TD>
     <TD> \image html conv3.gif "gaussian (std_dev=1.5)" </TD>
     <TD> \image html conv4.gif "separately convolution" </TD>
     </TR>
     </Table>
+
+    <h3> Convenient methods </h3>
+    VIGRA already provides some convenient methods and filters for convolution e.g. 
+    <dfn>gaussianSmoothing()</dfn>. For more information see \ref CommonConvolutionFilters and
+    \ref Convolution .
+
+    <h3> Convolution of N dimensional arrays </h3>
+    VIGRA provides a wide range of convolution filters for N dimensional arrays as well 
+    (vigra::MultiArrayView, vigra::MultiArray, etc). Theconvolution can be done with a single
+    1D kernel used for every dimension or with a vector of 1D kernels each for a single 
+    dimension. See also \ref MultiArrayConvolutionFilters.
+    
 */
 
 /** \example invert_tutorial.cxx
