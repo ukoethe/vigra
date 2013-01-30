@@ -323,6 +323,7 @@ void registerNumpyShapeConvertersAllTypes()
     registerNumpyShapeConvertersOneType<MultiArrayIndex>();
     registerNumpyShapeConvertersOneType<float>();
     registerNumpyShapeConvertersOneType<double>();
+    registerNumpyShapeConvertersOneType<short>();
     if(typeid(npy_intp) != typeid(MultiArrayIndex))
         MultiArrayShapeConverter<0, npy_intp>();
 }
