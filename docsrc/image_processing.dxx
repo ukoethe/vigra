@@ -18,9 +18,9 @@
 
     This is the result:
     <Table cellspacing = "10">
-    <TR>
-    <TD> \image html lenna_small.gif "inputfile" </TD>
-    <TD> \image html lenna_inverted.gif "inverted outputfile" </TD>
+    <TR valign = "bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_inverted.gif "inverted output file" </TD>
     </TR>
     </Table>
 
@@ -45,10 +45,10 @@
 
     And here are the results:
     <Table cellspacing = "10">
-    <TR>
-    <TD> \image html lenna_color_small.gif "inputfile 1" </TD>
-    <TD> \image html oi_small.jpg "inputfile 2" </TD>
-    <TD> \image html dissolved_color.gif "dissolved outputfile" </TD>
+    <TR valign = "bottom">
+    <TD> \image html lenna_color_small.gif "input file 1" </TD>
+    <TD> \image html oi_small.jpg "input file 2" </TD>
+    <TD> \image html dissolved_color.gif "dissolved output file" </TD>
     <TR>
     </Table>
 
@@ -71,9 +71,9 @@
 
     And here are the results:
     <Table cellspacing = "10">
-    <TR>
-    <TD> \image html lenna_color_small.gif "inputfile" </TD>
-    <TD> \image html lenna_composite_color.gif "composite outputfile" </TD>
+    <TR valign = "bottom">
+    <TD> \image html lenna_color_small.gif "input file" </TD>
+    <TD> \image html lenna_composite_color.gif "composite output file" </TD>
     </TR>
     </Table>
 
@@ -97,9 +97,9 @@
 
     The results:
     <Table cellspacing = "10">
-    <TR>
-    <TD> \image html lenna_small.gif "inputfile" </TD>
-    <TD> \image html lenna_smoothed.gif "smoothed outputfile" </TD>
+    <TR valign = "bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_smoothed.gif "smoothed output file" </TD>
     </TR>
     </Table>
 
@@ -194,8 +194,8 @@
 
     The results:
     <Table cellspacing = "10">
-    <TR>
-    <TD> \image html testimage.gif "inputfile" </TD>
+    <TR valign = "bottom">
+    <TD> \image html testimage.gif "input file" </TD>
     <TD> \image html conv1.gif "simple averaging" </TD>
     <TD> \image html conv2.gif "weighting manually (corners)" </TD>
     <TD> \image html conv3.gif "Gaussian (std_dev=1.5)" </TD>
@@ -217,13 +217,13 @@
     <B> Remark: </B>
     The convolution of N dimensional arrays has a little different calling. Instead of using
     <dfn>srcImageRange()</dfn> and <dfn>destImage()</dfn> you have to call the filters with
-    <dfn> srcMultiArrayRange() </dfn> and <dfn> destMultiArray </dfn>. See the following 
+    <dfn> srcMultiArrayRange() </dfn> and <dfn> destMultiArray() </dfn>. See the following 
     example for Gaussian smoothing of a MultiArray.
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
-    MultiArray<3, unsigned char> imageArray(shape);
-    MultiArray<3, float> exportArray(shape);
+    vigra::MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    vigra::MultiArray<3, unsigned char> imageArray(shape);
+    vigra::MultiArray<3, float> exportArray(shape);
 
     // perform isotropic Gaussian smoothing at scale 'sigma'
     gaussianSmoothMultiArray(srcMultiArrayRange(imageArray), destMultiArray(exportArray), sigma);

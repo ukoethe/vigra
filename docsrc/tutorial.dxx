@@ -30,8 +30,8 @@
     2-dimensional arrays, where each element contains the information of a specific pixel.
     In fact, matrices or 2-dimensional arrays are implemented as 1-dimensional array, but for 
     us it seems more natural to describe an image by 2 coordinates (ergo dimensions).
-    Each pixel of an image with 800x600 pixels can be identified by a pair (y,x) with 
-    y = 0,...,799 and x = 0,...,599.</p>
+    Each pixel of an image with 800x600 pixels can be identified by a pair (x,y) with 
+    x = 0,...,799 and y = 0,...,599.</p>
     <p> In VIGRA, we call the structure of the matrix or multidimensional array 
     <dfn>shape</dfn>. The image described above has the shape (800,600). A 3x3-matrix has the 
     shape (3,3).
@@ -87,6 +87,10 @@
     which is a kind of a TinyVector. For this example we use the type Shape2(x,y), the 
     specific type definition for 2-dimensional arrays.
 
+    <B> Note: </B> Don't get confused with the indexing of our arrays and matrices. Unfortunately
+    a 3x2-matrix means that the matrix has 3 rows (y-coordinate!) and 2 columns (x-coordinate!).
+    So with Shape2(x,y) you create a y-x-matrix.
+
     \code
         #include <vigra/multi_array.hxx>
         #include <iostream>
@@ -109,7 +113,7 @@
         }
     \endcode
 
-    An convenient and equivalent way is just to use the coordinates with round brackets (y,x):
+    An convenient and equivalent way is just to use the coordinates with round brackets (x,y):
 
     \code
         // access via simple coordinates, set element in second column and third row
@@ -128,7 +132,7 @@
         }
     \endcode
 
-    Every call with round brackets creates a new Shape-Object, which is quite inefficient.
+    Every call with round brackets creates a new Shape-Object.
     It is better to iterate over a Shape-Object. In the following example, we want to set the
     3rd column of a 8x4-matrix (initialized with 5) to 7.
 
@@ -151,7 +155,7 @@
 
     <hr>
 
-    <h2> Onedimensional []-Operator and StridedScanOrderIterator </h2>
+    <h2> One-dimensional []-Operator and StridedScanOrderIterator </h2>
 	
     \code
         #include <vigra/multi_array.hxx>
@@ -239,7 +243,7 @@
     the matrix-sizes don't match:
 
     \code
-        matrix1 += matrix2;                     // works fine!
+        matrix1 += matrix2;                   // works fine!
         matrix32 += matrix23;                 // error: wrong matrix sizes!
     \endcode
 
@@ -296,7 +300,7 @@
     In this chapter we'd like to show you how to import and export an image with Vigra. If you
     you want to import an image from disk and enquire about its properties, you must use an 
     object of <dfn> ImageImportInfo </dfn> class. It reads the header of the image file. 
-    The constructor expects the filename, the filetype will be determined automatically. The
+    The constructor expects the file name, the file type will be determined automatically. The
     following types are recognized:
 
     <DL>
@@ -326,13 +330,13 @@
     As you can see, the <dfn> ImageImportInfo </dfn> object contains a lot of information,
     some of it is printed in the example. Using this image
 
-    \image html lenna_small.gif "inputfile"
+    \image html lenna_small.gif "input file"
 
     we get the following output:
 
     \verbatim
     Image information:
-    Filetype: GIF
+    File type: GIF
     Width: 154
     Height: 145
     Color Image: no
@@ -351,13 +355,13 @@
     \until importImage
 
     Now, imageArray contains the image data and you can edit it. Writing the image data from
-    an Array to a file is quite similar. For this purpose, we use the mehtod 
+    an Array to a file is quite similar. For this purpose, we use the method 
     <dfn>exportImage(...)</dfn>. It needs two iterators, one pointing at the upper-left point
     of an image, one on the lower-right, an Image Accessor and an 
     <dfn>vigra::ImageExportInfo</dfn>-object. To make it easier, just use the
     <dfn>srcImageRange(imageArray)</dfn> method instead of giving two iterators and an 
-    accessor. The ImageExportInfo-object needs a filename. The file-type is guessed from the
-    filename's extension. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', 
+    accessor. The ImageExportInfo-object needs a file name. The file-type is guessed from the
+    file name's extension. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', 
     '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr'. 
     EXR support requires libopenexr, JPEG support requires libjpeg, PNG support requires 
     libpng and TIFF support requires libtiff. In the following example, we create and save a 
@@ -373,14 +377,18 @@
     Finally we want to give a whole example of importing, editing and exporting an image.
     After importing, we set every second horizontal line to black. This can be easily done
     with the <dfn>bind<M>(i)></dfn>-method thoroughly explained in \ref ImportantMethods .
-    The inputfile and the outputfile are given as arguments via console.
+    The input file and the output file are given as arguments via console.
 
     \include imageIO_tutorial.cxx
 
-    The inputimage and the resulting outputimage are:
-
-    \image html lenna_small.gif "inputimage"
-    \image html lenna_stripes.gif "outputimage"
+    The input image and the resulting output image are:
+    
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input image" </TD>
+    <TD> \image html lenna_stripes.gif "output image" </TD>
+    </TR>
+    </Table>
 
     <B>Note:</B> The handling of color images is exactly the same, but instead of instantiating
     a <dfn>vigra::MultiArray<2, unsigned char></dfn> you need a
@@ -403,6 +411,9 @@
     unsigned char. To see which types are allowed by each format look at the documentation of
     \ref ImageExportInfo .
 
+    <h3> HDF5-format </h3>
+    HDF5 is a format to store multidimensional arrays. With VIGRA it is possible to import and
+    export files in this format. See \ref VigraHDF5Impex for more information.
 
 
     
