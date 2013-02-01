@@ -22,8 +22,8 @@ int main(int argc, char ** argv) {
 			importImage(info, destImage(imageArray));
             vigra::MultiArray<2, unsigned char> newImageArray(info.shape());
 
-            // mirror the image horizontal 
-            // info.height() is equal to the index of the last row
+            // mirror the image horizontally 
+            // info.height()-1 is equal to the index of the last row
 			for (int i=0; i<info.height(); i++) {           
 	        		newImageArray.bind<1>(i) = imageArray.bind<1>(info.height()-(i+1));
 			}

@@ -4,7 +4,7 @@
 
     <h2> subarray(p,q) </h2>
     This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
-    array between the points p and q, where p is included, q not. Compared to the <dfn>bind
+    array between the points p and q, where p is included, q is not. Compared to the <dfn>bind
     </dfn>-method, subarray doesn't change the dimension.
     To give an example, let's say that you want to copy the upper-left subsquare of a 
     4x4-matrix (initialized with 1).
@@ -29,7 +29,7 @@
     In the next example we create a half-sized subimage with the middle part of the original
     image:
     <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
-    The relevant part ot this code is shown here:
+    The relevant part of this code is shown here:
 
     \dontinclude subimage_tutorial.cxx
     \skip // write
@@ -67,8 +67,8 @@
             intArray.init(0);
             vigra::MultiArray<2, int>::iterator iter;
 
-            // set 2nd row (equivalent to dimension 1 and index 1) to 5
-            intArray.bind<1>(1) = 5;
+            // set 1st row (equivalent to dimension 1 and index 0) to 5
+            intArray.bind<1>(0) = 5;
 
             // print the array on console
             for (iter = intArray.begin(); iter != intArray.end(); iter++) {
@@ -83,7 +83,7 @@
     The output is:
 
     \verbatim
-    0  0  0  5  5  5
+    5  5  5  0  0  0
     \endverbatim
 
     Binding a dimension reduces a N-dimensional array to dimension N-1. Furthermore you can
@@ -171,11 +171,11 @@
 
     NumPy-Users know the bind mechanism as "slicing". In the example above they had written:
     \verbatim
-    intArray[2,:] = 10      // NumPy-equivalent of bind
+    intArray[:,2] = 10      // NumPy-equivalent of bind
     \endverbatim
 
     Moving on to Image Processing we'll give an example how you can flip an image by using 
-    bind. We save an gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
+    bind. We save a gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
     Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
     and set the first row of <dfn> newImageArray </dfn> to the values of the last row of 
     <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
@@ -185,7 +185,7 @@
     
     This code needs an infile and an outfile as arguments. For this example, just the 
     commented for-loop is important. The rest contains the code for
-    \ref ImageInputOutput and is explained in this part of the Tutorial. We bind dimension 1
+    \ref ImageInputOutput and is explained in that part of the Tutorial. We bind dimension 1
     to fix the y-coordinate. To flip left to right you have to fix the x-coordinate, so bind
     dimension 0. <br/>
     Here you can see what happens to an input file:
@@ -234,7 +234,7 @@
 
     \dontinclude transpose.cxx
     \skip #include
-    \until setting transarray to 5
+    \until setting transarrayView to 5
     \skipline print(intarray);
     \skip return
     \until }
@@ -305,12 +305,12 @@
     <h2> permuteDimensions(vector) / transpose(vector) </h2>
 
     <B> Note: </B>
-    The usage of <dfn> permuteDimensions() </dfn> and <dfn> transpose </dfn> with an vector
+    The usage of <dfn> permuteDimensions() </dfn> and <dfn> transpose() </dfn> with a vector
     argument is completely equivalent.
 
     An augmentation of transposing an array is to permute the dimensions by an arbitrary
     permutation. In two dimensions, transpose and permuteDimensions are equal.
-    The method needs a vector that contains the permutation. The length of the the vector is
+    The method needs a vector that contains the permutation. The length of the vector is
     equal to the number of array dimensions. The first value of the vector contains the
     dimension of the original array that should be now the first dimension and so on. In the
     following example we want to permute an array of shape (1,2,3,4) to an array of shape

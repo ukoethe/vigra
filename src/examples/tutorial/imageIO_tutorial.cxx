@@ -12,7 +12,7 @@ int main(int argc, char ** argv) {
     vigra::ImageImportInfo imageInfo(argv[1]);
 
     // instantiate array for image data
-    vigra:MultiArray<2, unsigned char> imageArray(imageInfo.shape());
+    vigra::MultiArray<2, unsigned char> imageArray(imageInfo.shape());
 
     // copy image data into array
     importImage(imageInfo, destImage(imageArray));

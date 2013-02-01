@@ -17,7 +17,8 @@
     <li> \ref ImportantMethods
 		<BR>&nbsp;&nbsp;&nbsp;<em>the methods subarray, bind, transpose and permuteDimensions</em>
 
-    <li> \ref MultiMathModule
+    <li> Calculating with \ref MultiMathModule
+        <BR>element-wise operations on MultiArrays</em>
 
     <li> \ref ImageProcessingTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>some applications of VIGRA's methods</em>
@@ -62,7 +63,7 @@
     containing ValueType elements. The vector data type in VIGRA is implemented in the
     <dfn> TinyVector<T, SIZE> </dfn> class.
 
-    Alternatively you can use a 3-dimensional array <dfn>vigra::MultiArray<2, unsigned
+    Alternatively you can use a 3-dimensional array <dfn>vigra::MultiArray<3, unsigned
     char></dfn> to represent a color image. The third dimension has size 3 and contains the
     information for red, green and blue channel. We won't use the 3-dimensional array for
     color images because <dfn>vigra::RGBValue<ValueType></dfn> provides a lot of helpful
@@ -99,11 +100,11 @@
         
         int main (int argc, char ** argv) {
         
-            // declare 2-dimensional MultiArray with 3 integer elements in first dimension  
-            // and 2 integer elements in second dimension
+            // declare 2-dimensional MultiArray with 2 integer elements in first dimension  
+            // and 3 integer elements in second dimension
             vigra::MultiArray<2, int> matrix(Shape2(2,3));
         
-            // set all elements on 3
+            // set all elements to 3
             matrix.init(3);
         
             // print element in second column and third row
@@ -113,11 +114,11 @@
         }
     \endcode
 
-    An convenient and equivalent way is just to use the coordinates with round brackets (x,y):
+    A convenient and equivalent way is just to use the coordinates with round brackets (x,y):
 
     \code
         // access via simple coordinates, set element in second column and third row
-        matrix1(1,2) = 22;
+        matrix(1,2) = 22;
     \endcode
 	
     This kind of indexing is only possible if the array's dimension is well known. For generic
@@ -126,7 +127,7 @@
     we can use the coordinates to set the element of an entire row or column:
 
     \code
-        // set all elements of second row to 13
+        // set all elements of second column to 13
         for (int i = 0; i < matrix.size(1); i++) {
             matrix(1,i) = 13;
         }
@@ -157,6 +158,9 @@
 
     <h2> One-dimensional []-Operator and StridedScanOrderIterator </h2>
 	
+    The access via <dfn> intArray[0] </dfn> refers to the index of the scan order.
+	Scan order means, that you iterate the dimensions from front to back.
+
     \code
         #include <vigra/multi_array.hxx>
         #include <iostream>
@@ -179,9 +183,7 @@
         }
     \endcode
 	
-	The access via <dfn> intArray[0] </dfn> refers to the the index of the scan order.
-	Scan order means, that you iterate the dimensions from front to back. The <dfn> 
-    vigra::MultiArray </dfn> - class provides methods to determine the scan order index of 
+    The <dfn> vigra::MultiArray </dfn> - class provides methods to determine the scan order index of 
     given coordinates and vice versa. The <dfn>StridedScanOrderIterator</dfn> lets you iterate
     over the array elements in scan order. You can easily build instances of this Iterator 
     by calling the <dfn>MultiArrayView::begin()</dfn> and <dfn>MultiArrayView::end()</dfn> 
@@ -199,7 +201,7 @@
         std::cout << std::endl;
 	\endcode
 
-    This creates the ouptut:
+    This creates the output:
 
     \verbatim
         1 2 3 4 5 6
@@ -215,8 +217,8 @@
 		matrix1.init(1);
 		matrix2.init(3);
 	
-		int elements = matrix1.size();			// number of array elements
-		for (int i=0; i < elements; i++) {
+		int size = matrix1.size();			// number of array elements
+		for (int i=0; i < size; i++) {
 			matrix1[i] += matrix2[i];
 		}
 	\endcode
@@ -336,13 +338,13 @@
 
     \verbatim
     Image information:
-    File type: GIF
+    Filetype: GIF
     Width: 154
     Height: 145
     Color Image: no
     \endverbatim
 
-    To process images, this isn't enough. As described in \ref basics we want to save the
+    To process images, this isn't enough. As described in \ref Basics we want to save the
     image data in a multidimensional array. That's why we need <dfn> MultiArray </dfn> 
     object and a method writing the image data into the array. This method is called 
     <dfn> importImage(...) </dfn>. It needs an <dfn> ImageImportInfo </dfn> object and
@@ -357,7 +359,7 @@
     Now, imageArray contains the image data and you can edit it. Writing the image data from
     an Array to a file is quite similar. For this purpose, we use the method 
     <dfn>exportImage(...)</dfn>. It needs two iterators, one pointing at the upper-left point
-    of an image, one on the lower-right, an Image Accessor and an 
+    of an image, one at the lower-right, an Image Accessor and a 
     <dfn>vigra::ImageExportInfo</dfn>-object. To make it easier, just use the
     <dfn>srcImageRange(imageArray)</dfn> method instead of giving two iterators and an 
     accessor. The ImageExportInfo-object needs a file name. The file-type is guessed from the
@@ -365,7 +367,7 @@
     '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr'. 
     EXR support requires libopenexr, JPEG support requires libjpeg, PNG support requires 
     libpng and TIFF support requires libtiff. In the following example, we create and save a 
-    160x160pixels - image, where the whole image is gray. 
+    160x160pixels - image, where the image is a chess board. 
     The image is saved as "testimage.gif" in the same folder as the executed code.
 
     \include imageExportInfo_tutorial.cxx
@@ -397,8 +399,8 @@
 
     <h2> For advanced users: </h2> 
     The ImageExportInfo class provides some additional useful 
-    methods for instance <dfn> setCompression(...) </dfn>, whereby you can set the image's
-    compression type and quality.
+    methods for instance <dfn> setCompression(...) </dfn>, which you can use for setting 
+    the image's compression type and quality.
 
     Image Processing often requires more complicated calculations as seen in these examples.
     In this case, it is better to import and convert the data into a <dfn>float</dfn>-array 
@@ -409,7 +411,7 @@
     Exporting a float-Array is handled differently. Some file formats allow float e.g. TIFF,
     so there is no conversion. If not, exportImage automatically converts the data into
     unsigned char. To see which types are allowed by each format look at the documentation of
-    \ref ImageExportInfo .
+    \ref vigra::ImageExportInfo .
 
     <h3> HDF5-format </h3>
     HDF5 is a format to store multidimensional arrays. With VIGRA it is possible to import and
