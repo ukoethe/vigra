@@ -4,8 +4,8 @@
 
     <h2> Inverting </h2>
     Inverting an image is quite easy. We just need to subtract every pixel's value from white
-    (255). The namespace \ref MultiMathModule provides elementwise operations on a MultiArray.
-    To avoid confusion you always have to use the using namespace command beforeworking with
+    (255). The namespace \ref MultiMathModule provides element-wise operations on a MultiArray.
+    To avoid confusion you always have to use the using namespace command before working with
     multi_math. By a given imageArray inverting works as follows:
 
     \code
@@ -17,8 +17,12 @@
     <a href="invert_tutorial_8cxx-example.html">invert_tutorial.cxx</a>
 
     This is the result:
-    \image html lenna_small.gif "inputfile"
-    \image html lenna_inverted.gif "inverted outputfile"
+    <Table cellspacing = "10">
+    <TR>
+    <TD> \image html lenna_small.gif "inputfile" </TD>
+    <TD> \image html lenna_inverted.gif "inverted outputfile" </TD>
+    </TR>
+    </Table>
 
     <hr>
 
@@ -40,15 +44,19 @@
     <a href="dissolve_8cxx-example.html">dissolve.cxx</a>
 
     And here are the results:
-    \image html lenna_color_small.gif "inputfile 1"
-    \image html oi_small.jpg "inputfile 2"
-    \image html dissolved_color.gif "dissolved outputfile"
+    <Table cellspacing = "10">
+    <TR>
+    <TD> \image html lenna_color_small.gif "inputfile 1" </TD>
+    <TD> \image html oi_small.jpg "inputfile 2" </TD>
+    <TD> \image html dissolved_color.gif "dissolved outputfile" </TD>
+    <TR>
+    </Table>
 
     <hr>
 
     <h2> Composite </h2>
     Let's come to a little gimmick. Given one input image e want to create a composite image 
-    of 4 images reflectedto each other. The result looks as if someone had put a mirror on the
+    of 4 images reflected to each other. The result looks as if someone had put a mirror on the
     right and lower edge of the input image. Two of Vigra's methods are enough for this
     purpose: subarray and reflectImage (already mentioned in \ref ImportantMethods).
     reflectImage needs some iterators, accessors and a reflection axis. The axis can either
@@ -62,8 +70,12 @@
     <a href="dissolve_8cxx-example.html">composite.cxx</a>
 
     And here are the results:
-    \image html lenna_color_small.gif "inputfile"
-    \image html lenna_composite_color.gif "composite outputfile"
+    <Table cellspacing = "10">
+    <TR>
+    <TD> \image html lenna_color_small.gif "inputfile" </TD>
+    <TD> \image html lenna_composite_color.gif "composite outputfile" </TD>
+    </TR>
+    </Table>
 
     <hr>
 
@@ -84,8 +96,12 @@
     <a href="smooth_explicitly_8cxx-example.html">smooth_explicitly.cxx</a>
 
     The results:
-    \image html lenna_small.gif "inputfile"
-    \image html lenna_smoothed.gif "smoothed outputfile"
+    <Table cellspacing = "10">
+    <TR>
+    <TD> \image html lenna_small.gif "inputfile" </TD>
+    <TD> \image html lenna_smoothed.gif "smoothed outputfile" </TD>
+    </TR>
+    </Table>
 
     A more comfortable way of such convolving operations is provided by the method 
     <dfn>convolveImage</dfn>. You may use it as follows:
@@ -94,10 +110,10 @@
     vigra::convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
     \endcode
 
-    It needs a convolution kernel, which is given as arguent object by <dfn>kernel2d()</dfn>.
+    It needs a convolution kernel, which is given as argument object by <dfn>kernel2d()</dfn>.
     For the kernel itself there are different possibilities. You may want to have an
     averaging kernel or weight some elements more than others or maybe you want the kernel
-    to be a gaussian curve... We now want discuss these three possibilities among more others.
+    to be a Gaussian curve... We now want discuss these three possibilities among more others.
     
     <h3> Simple averaging </h3>
     Concerning our smoothing example above, this equivalent way for averaging a 3x3-box is:
@@ -109,8 +125,8 @@
     \endcode
 
     Pointing to the center (0,0) of the kernel our 3x3-box starts at the coordinates (-1,1) 
-    and has its lower-right corner at (1,1). Since we want to average homogenously every pixel
-    in the kernel is weigthed with 1/9 (the kernel has 9 elements).
+    and has its lower-right corner at (1,1). Since we want to average homogeneously every pixel
+    in the kernel is weighted with 1/9 (the kernel has 9 elements).
 
     <h3> Weighting manually </h3>
     If we want to have a certain weighting, we can do this by hand. In the following example
@@ -143,8 +159,8 @@
     3x3-averaging. It rather uses the methods <dfn> separableConvolveX </dfn> and 
     <dfn> separableConvolveY </dfn>. These methods convolve the x- respectively the y-
     dimension. The advantage is that we need less operations. Instead of averaging 9 pixels
-    with weight 1/9 (in total 9 additions), we average every line (3 pixels with weigth 1/3 
-    ==> 3 additions) and afterwards every column (3 pixels with weigth 1/3 ==> 3 additions 
+    with weight 1/9 (in total 9 additions), we average every line (3 pixels with weight 1/3 
+    ==> 3 additions) and afterwards every column (3 pixels with weight 1/3 ==> 3 additions 
     as well). So in total we need 6 additions instead of 9. With bigger sizes and more 
     dimensions there's a huge difference so it's better to convolve every dimension separately.
     But why do I get the same result? Given a 3x3-matrix
@@ -177,12 +193,12 @@
     kernel because some operators are not overloaded for float-type (cf. example).
 
     The results:
-    <Table>
+    <Table cellspacing = "10">
     <TR>
     <TD> \image html testimage.gif "inputfile" </TD>
     <TD> \image html conv1.gif "simple averaging" </TD>
     <TD> \image html conv2.gif "weighting manually (corners)" </TD>
-    <TD> \image html conv3.gif "gaussian (std_dev=1.5)" </TD>
+    <TD> \image html conv3.gif "Gaussian (std_dev=1.5)" </TD>
     <TD> \image html conv4.gif "separately convolution" </TD>
     </TR>
     </Table>
@@ -194,9 +210,24 @@
 
     <h3> Convolution of N dimensional arrays </h3>
     VIGRA provides a wide range of convolution filters for N dimensional arrays as well 
-    (vigra::MultiArrayView, vigra::MultiArray, etc). Theconvolution can be done with a single
+    (vigra::MultiArrayView, vigra::MultiArray, etc.). The convolution can be done with a single
     1D kernel used for every dimension or with a vector of 1D kernels each for a single 
     dimension. See also \ref MultiArrayConvolutionFilters.
+
+    <B> Remark: </B>
+    The convolution of N dimensional arrays has a little different calling. Instead of using
+    <dfn>srcImageRange()</dfn> and <dfn>destImage()</dfn> you have to call the filters with
+    <dfn> srcMultiArrayRange() </dfn> and <dfn> destMultiArray </dfn>. See the following 
+    example for Gaussian smoothing of a MultiArray.
+
+    \code
+    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    MultiArray<3, unsigned char> imageArray(shape);
+    MultiArray<3, float> exportArray(shape);
+
+    // perform isotropic Gaussian smoothing at scale 'sigma'
+    gaussianSmoothMultiArray(srcMultiArrayRange(imageArray), destMultiArray(exportArray), sigma);
+    \endcode
     
 */
 
