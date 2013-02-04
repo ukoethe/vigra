@@ -157,7 +157,10 @@ IF(PYTHONINTERP_V2_FOUND)
                          Boost_PYTHON_FOUND PYTHON_NUMPY_INCLUDE_DIR VIGRANUMPY_INSTALL_DIR)
 
     IF(NOT VIGRANUMPY_INCLUDE_DIRS OR VIGRANUMPY_INCLUDE_DIRS MATCHES "-NOTFOUND")
-        SET(VIGRANUMPY_INCLUDE_DIRS ${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIR} ${PYTHON_NUMPY_INCLUDE_DIR})
+        #note that the numpy include dir is set _before_ the python include dir, such that
+        #installing a more recent version of numpy on top of an existing python installation
+        #works (otherwise, numpy includes are picked up from ${PYTHON_INCLUDE_PATH}/numpy )
+        SET(VIGRANUMPY_INCLUDE_DIRS ${PYTHON_NUMPY_INCLUDE_DIR} ${PYTHON_INCLUDE_PATH} ${Boost_INCLUDE_DIR})
     ENDIF()
     SET(VIGRANUMPY_INCLUDE_DIRS ${VIGRANUMPY_INCLUDE_DIRS}
         CACHE PATH "include directories needed by VIGRA Python bindings"
