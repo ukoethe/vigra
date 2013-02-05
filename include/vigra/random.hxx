@@ -134,7 +134,8 @@ void seed(RandomSeedTag, RandomState<EngineTag> & engine)
     
     std::size_t ptr((char*)&engine - (char*)0);
     seedData.push_back((UInt32)(ptr & 0xffffffff));
-    seedData.push_back((UInt32)(ptr >> 32));
+    static const UInt32 shift = sizeof(ptr) > 4 ? 32 : 16;
+    seedData.push_back((UInt32)(ptr >> shift));
     
 #ifdef _MSC_VER
     seedData.push_back((UInt32)GetCurrentProcessId());
