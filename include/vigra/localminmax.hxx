@@ -1484,6 +1484,7 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     // allow plateaus with tolerance
     minima.init(0);
     vigra::extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
+                               FourNeighborCode(),
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
 
@@ -1801,6 +1802,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     // allow plateaus with tolerance
     maxima.init(0);
     vigra::extendedLocalMaxima(srcImageRange(src), destImage(maxima), 1.0,
+                               FourNeighborCode(),
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
 
