@@ -46,7 +46,7 @@
 #include "numpy_array_traits.hxx"
 #include "numpy_array_taggedshape.hxx"
 
-// NumPy function called by NumPy’s import_array() macro (and our import_vigranumpy() below)
+// NumPy function called by NumPy's import_array() macro (and our import_vigranumpy() below)
 int _import_array();
 
 namespace vigra {
@@ -57,9 +57,13 @@ static inline void import_vigranumpy()
     if(_import_array() < 0)
         pythonToCppException(0);
 
-    // in addition, import vigra.vigranumpycore:
-    python_ptr module(PyImport_ImportModule("vigra.vigranumpycore"), python_ptr::keep_count);
-    pythonToCppException(module);
+    // Import vigra to activate the numpy array converters, but ensure that 
+    // cyclic imports (from within vigra itself) are avoided.
+    char const * load_vigra = 
+        "import sys\n"
+        "if not sys.modules.has_key('vigra.vigranumpycore'):\n"
+        "    import vigra\n";
+    pythonToCppException(PyRun_SimpleString(load_vigra) == 0);
 }
 
 /********************************************************/
