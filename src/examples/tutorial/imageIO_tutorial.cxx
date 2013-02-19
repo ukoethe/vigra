@@ -3,9 +3,6 @@
 #include <vigra/stdimage.hxx>
 #include "vigra/impex.hxx"
 
-using namespace vigra; 
-
-
 int main(int argc, char ** argv) {
     
     // read image given as first argument

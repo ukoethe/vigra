@@ -56,28 +56,28 @@
     0, set the second row to 5 and print the array eventually:
 
     \code
-        #include <vigra/multi_array.hxx>
-        #include <iostream>
+    #include <vigra/multi_array.hxx>
+    #include <iostream>
 
-        using namespace vigra;
+    using namespace vigra;
 
-        int main (int argc, char ** argv) {
-            // initialize 2x3-matrix and declare iterator
-            vigra::MultiArray<2, int> intArray(Shape2(3,2));
-            intArray.init(0);
-            vigra::MultiArray<2, int>::iterator iter;
+    int main (int argc, char ** argv) {
+        // initialize 2x3-matrix and declare iterator
+        vigra::MultiArray<2, int> intArray(Shape2(3,2));
+        intArray.init(0);
+        vigra::MultiArray<2, int>::iterator iter;
 
-            // set 1st row (equivalent to dimension 1 and index 0) to 5
-            intArray.bind<1>(0) = 5;
+        // set 1st row (equivalent to dimension 1 and index 0) to 5
+        intArray.bind<1>(0) = 5;
 
-            // print the array on console
-            for (iter = intArray.begin(); iter != intArray.end(); iter++) {
-		        std::cout << *iter << "  ";
-	        }
-            std::cout << std::endl;
-
-            return 0;
+        // print the array on console
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+	        std::cout << *iter << "  ";
         }
+        std::cout << std::endl;
+
+        return 0;
+    }
     \endcode
 
     The output is:

@@ -93,25 +93,23 @@
     So with Shape2(x,y) you create a y-x-matrix.
 
     \code
-        #include <vigra/multi_array.hxx>
-        #include <iostream>
-        
-        using namespace vigra;
-        
-        int main (int argc, char ** argv) {
-        
-            // declare 2-dimensional MultiArray with 2 integer elements in first dimension  
-            // and 3 integer elements in second dimension
-            vigra::MultiArray<2, int> matrix(Shape2(2,3));
-        
-            // set all elements to 3
-            matrix.init(3);
-        
-            // print element in second column and third row
-            std::cout << matrix[Shape2(1,2)] << std::endl;      // output: 3
+    #include <vigra/multi_array.hxx>
+    #include <iostream>
+          
+    int main (int argc, char ** argv) {
 
-            return 0;
-        }
+        // declare 2-dimensional MultiArray with 2 integer elements in first dimension  
+        // and 3 integer elements in second dimension
+        vigra::MultiArray<2, int> matrix(vigra::Shape2(2,3));
+
+        // set all elements to 3
+        matrix.init(3);
+
+        // print element in second column and third row
+        std::cout << matrix[vigra::Shape2(1,2)] << std::endl;      // output: 3
+
+        return 0;
+    }
     \endcode
 
     A convenient and equivalent way is just to use the coordinates with round brackets (x,y):
@@ -139,10 +137,10 @@
 
     \code
         // iterating over a Shape-Object
-        vigra::MultiArray<2, int> matrix84(Shape2(4,8));
+        vigra::MultiArray<2, int> matrix84(vigra::Shape2(4,8));
         matrix84.init(5);
         // instantiate Shape-Object
-        Shape2 p;
+        vigra::Shape2 p;
         // iterate over 3rd column :
         // set first dimension on 2 (equals 3rd column)
         // then iterate over second dimension (equals rows)
