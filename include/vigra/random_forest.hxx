@@ -154,13 +154,6 @@ class RandomForest
     typedef  DT_StackEntry<ArrayVectorView<Int32>::iterator>
                     StackEntry_t;
     typedef LabelType                       LabelT; 
-  protected:
-
-    /** optimisation for predictLabels
-     * */
-    mutable MultiArray<2, double> garbage_prediction_;
-
-  public:
 
     //problem independent data.
     Options_t                                   options_;
@@ -1009,11 +1002,10 @@ LabelType RandomForest<LabelType, Tag>
     vigra_precondition(rowCount(features) == 1,
         "RandomForestn::predictLabel():"
             " Feature matrix must have a singlerow.");
-    typedef MultiArrayShape<2>::type Shp;
-    garbage_prediction_.reshape(Shp(1, ext_param_.class_count_), 0.0);
+    MultiArray<2, double> probabilities(Shape2(1, ext_param_.class_count_), 0.0);
     LabelType          d;
-    predictProbabilities(features, garbage_prediction_, stop);
-    ext_param_.to_classlabel(argMax(garbage_prediction_), d);
+    predictProbabilities(features, probabilities, stop);
+    ext_param_.to_classlabel(argMax(probabilities), d);
     return d;
 }
 
