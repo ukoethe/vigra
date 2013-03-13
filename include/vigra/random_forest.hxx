@@ -98,7 +98,7 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *          as they may need the data to be in a different format. 
  *          \sa Preprocessor
  *  
- *  Basic usage for classification (regression is not yet supported):
+ *  Simple usage for classification (regression is not yet supported):
  *  look at RandomForest::learn() as well as RandomForestOptions() for additional
  *  options. 
  *
@@ -130,8 +130,8 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *  MultiArrayView<2, double> prob(pf.shape(0), rf.class_count());
  *      
  *  // perform prediction on new data
- *  rf.predict_labels(pf, prediction);
- *  rf.predict_probabilities(pf, prob);
+ *  rf.predictLabels(pf, prediction);
+ *  rf.predictProbabilities(pf, prob);
  *
  *  \endcode
  *
@@ -430,7 +430,7 @@ class RandomForest
      *                  see also: SplitFunctor, Preprocessing
      *
      * \param visitor   visitor which is to be applied after each split,
-     *                  tree and at the end. Use rf_default for using
+     *                  tree and at the end. Use rf_default() for using
      *                  default value. (No Visitors)
      *                  see also: rf::visitors
      * \param split     split functor to be used to calculate each split
@@ -906,7 +906,7 @@ void RandomForest<LabelType, PreprocessorTag>::
     // default values and initialization
     // Value Chooser chooses second argument as value if first argument
     // is of type RF_DEFAULT. (thanks to template magic - don't care about
-    // it - just smile and wave.
+    // it - just smile and wave).
     
     #define RF_CHOOSER(type_) detail::Value_Chooser<type_, Default_##type_> 
     Default_Stop_t default_stop(options_);

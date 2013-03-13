@@ -337,7 +337,7 @@ void defineRandomForest()
              registerConverters(&pythonLearnRandomForest<UInt32,float>),
              (arg("trainData"), arg("trainLabels")),
              "Trains a random Forest using 'trainData' and 'trainLabels'.\n\n"
-             "and returns the OOB. See the vigra documentation for the meaning af the rest of the paremeters.\n")
+             "and returns the OOB. See the vigra documentation for the meaning af the rest of the parameters.\n")
         .def("reLearnTree",
              registerConverters(&pythonRFReLearnTree<UInt32,float>),
             (arg("trainData"), arg("trainLabels"), arg("treeId")),
