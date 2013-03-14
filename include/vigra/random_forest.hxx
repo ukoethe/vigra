@@ -90,14 +90,15 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
 
 /** Random Forest class
  *
- * \tparam <PrprocessorTag = ClassificationTag> Class used to preprocess
+ * \tparam <LabelType = double> Type used for predicted labels.
+ * \tparam <PreprocessorTag = ClassificationTag> Class used to preprocess
  *          the input while learning and predicting. Currently Available:
  *          ClassificationTag and RegressionTag. It is recommended to use
  *          Splitfunctor::Preprocessor_t while using custom splitfunctors
  *          as they may need the data to be in a different format. 
  *          \sa Preprocessor
  *  
- *  simple usage for classification (regression is not yet supported):
+ *  Basic usage for classification (regression is not yet supported):
  *  look at RandomForest::learn() as well as RandomForestOptions() for additional
  *  options. 
  *
@@ -111,7 +112,7 @@ inline SamplerOptions make_sampler_opt ( RandomForestOptions     & RF_opt)
  *  MultiArrayView<2, feature_t> f = get_training_features();
  *  MultiArrayView<2, label_t>   l = get_training_labels();
  *  
- *  RandomForest<> rf;
+ *  RandomForest<label_t> rf;
  *
  *  // construct visitor to calculate out-of-bag error
  *  visitors::OOB_Error oob_v;
