@@ -183,8 +183,10 @@ void BmpInfoHeader::from_stream( std::ifstream & stream, byteorder & bo )
                         || bit_count == 24, "illegal bit count" );
     read_field( stream, bo, compression );
     read_field( stream, bo, image_size );
-    vigra_precondition( image_size != 0 || bit_count == 24,
-                        "illegal image size" );
+    if(image_size == 0)
+    {
+        image_size = height * width * ((bit_count == 24) ? 3 : 1);
+    }
     read_field( stream, bo, x_pixels_per_meter );
     read_field( stream, bo, y_pixels_per_meter );
     read_field( stream, bo, clr_used );
