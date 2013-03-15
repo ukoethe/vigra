@@ -386,7 +386,7 @@ void SamplerTests::testSamplingWithReplacementChi2()
 
     /* when sampling k times without replacement
     the probability p of a sample not being picked is ((k-1)/k)^k
-    The distribution of the number of samples not being choosen is a
+    The distribution of the number of samples not being chosen is a
     binomial distribution with n = k and p = ((k-1)/k)^k.
     The expectation value of a binomial distribution is n*p ==>
     The percentage of samples not used is (n*p)/k = p
