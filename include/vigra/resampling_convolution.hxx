@@ -354,8 +354,8 @@ createResamplingKernels(Kernel const & kernel,
         double idsrc = mapCoordinate.toDouble(idest);
         double offset = idsrc - isrc;
         double radius = kernel.radius();
-        int left = int(ceil(-radius - offset));
-        int right = int(floor(radius - offset));
+        int left = std::min(0, int(ceil(-radius - offset)));
+        int right = std::max(0, int(floor(radius - offset)));
         kernels[idest].initExplicitly(left, right);
 
         double x = left + offset;
