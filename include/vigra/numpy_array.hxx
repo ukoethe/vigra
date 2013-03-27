@@ -146,7 +146,7 @@ template <class TYPECODE> // pseudo-template to avoid inline expansion of the fu
                           // will always be NPY_TYPES
 PyObject *
 constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init,
-               python_ptr arraytype = python_ptr());
+               python_ptr arraytype = python_ptr(), int order = -1);
 
 /********************************************************/
 /*                                                      */
@@ -502,30 +502,31 @@ nontrivialPermutation(ArrayVector<npy_intp> const & p)
 template <class TYPECODE> // pseudo-template to avoid inline expansion of the function
                           // will always be NPY_TYPES
 PyObject *
-constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_ptr arraytype)
+constructArray(TaggedShape tagged_shape, TYPECODE typeCode, bool init, python_ptr arraytype, int order)
 {
     ArrayVector<npy_intp> shape = finalizeTaggedShape(tagged_shape);
     PyAxisTags axistags(tagged_shape.axistags);
 
     int ndim = (int)shape.size();
     ArrayVector<npy_intp> inverse_permutation;
-    int order = 1; // Fortran order
 
     if(axistags)
     {
         if(!arraytype)
             arraytype = NumpyAnyArray::getArrayTypeObject();
-
+        
+        order = 1; // construct in Fortran order, and then permute to the order specified by axistags
         inverse_permutation = axistags.permutationFromNormalOrder();
         vigra_precondition(ndim == (int)inverse_permutation.size(),
                      "axistags.permutationFromNormalOrder(): permutation has wrong size.");
     }
     else
     {
+        if(order == -1) // if order is not explicitly specified ...
+            order = 0;  // ... use numpy's default 'C' order
         arraytype = python_ptr((PyObject*)&PyArray_Type);
-        order = 0; // C order
     }
-
+    
 //    std::cerr << "constructArray: " << shape << "\n" << inverse_permutation << "\n";
 
     python_ptr array(PyArray_New((PyTypeObject *)arraytype.get(), ndim, shape.begin(),
@@ -666,7 +667,8 @@ class NumpyArray
         vigra_precondition(order == "" || order == "C" || order == "F" ||
                            order == "V" || order == "A",
             "NumpyArray.init(): order must be in ['C', 'F', 'V', 'A', ''].");
-        return python_ptr(constructArray(ArrayTraits::taggedShape(shape, order), typeCode, init),
+        return python_ptr(constructArray(ArrayTraits::taggedShape(shape, order), 
+                                         typeCode, init, python_ptr(), ArrayTraits::orderFlag(order)),
                           python_ptr::keep_count);
     }
 
@@ -943,6 +945,12 @@ class NumpyArray
          */
     static bool isReferenceCompatible(PyObject *obj)
     {
+#if VIGRA_REFERENCE_DEBUG
+        std::cerr << "class " << typeid(NumpyArray).name() << " got " << obj->ob_type->tp_name << "\n";
+        std::cerr << "using traits " << typeid(ArrayTraits).name() << "\n";
+        std::cerr<<"isArray: "<< ArrayTraits::isArray(obj)<<std::endl;
+        std::cerr<<"isPropertyCompatible: "<< ArrayTraits::isPropertyCompatible((PyArrayObject *)obj)<<std::endl;
+#endif
         return ArrayTraits::isArray(obj) &&
                ArrayTraits::isPropertyCompatible((PyArrayObject *)obj);
     }

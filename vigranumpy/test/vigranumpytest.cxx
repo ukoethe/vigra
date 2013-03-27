@@ -116,6 +116,17 @@ checkTaggedShape(NumpyArray<N, T> in)
     return python::make_tuple(res1, res2, res3, res4, res5, res6); 
 }
 
+PyObject * testUntaggedArrayConstruction()
+{
+    typedef vigra::NumpyArray<3, vigra::UInt32, vigra::UnstridedArrayTag> UIntArray3D;
+    typedef vigra::MultiArrayShape<3>::type Shape3D;
+
+    UIntArray3D result(Shape3D(10, 20, 30));
+    PyObject * sipRes = result.pyObject();
+    Py_INCREF(sipRes);
+    return sipRes;
+}
+
 } // namespace vigra
 
 using namespace boost::python;
@@ -175,4 +186,6 @@ BOOST_PYTHON_MODULE_INIT(vigranumpytest)
     
     def("checkTaggedShapeMultiband", registerConverters(&checkTaggedShape<3, Multiband<float> >));
     def("checkTaggedShapeSingleband", registerConverters(&checkTaggedShape<2, Singleband<float> >));
+
+    def("testUntaggedArrayConstruction", registerConverters(&testUntaggedArrayConstruction));
 }
