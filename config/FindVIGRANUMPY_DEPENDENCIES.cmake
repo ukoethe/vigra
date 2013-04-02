@@ -40,8 +40,8 @@ IF(PYTHONINTERP_V2_FOUND)
         execute_process(COMMAND ${PYTHON_EXECUTABLE} -c
                          "import sys; skip = 2 if sys.platform.startswith('win') else 1; print 'python' + sys.version[0:3:skip]"
                           OUTPUT_VARIABLE PYTHON_LIBRARY_NAME OUTPUT_STRIP_TRAILING_WHITESPACE)
-        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} PATHS "${PYTHON_PREFIX}" 
-                     PATH_SUFFIXES lib lib64 libs DOC "Python libraries" NO_DEFAULT_PATH)
+        FIND_LIBRARY(PYTHON_LIBRARIES ${PYTHON_LIBRARY_NAME} HINTS "${PYTHON_PREFIX}" 
+                     PATH_SUFFIXES lib lib64 libs DOC "Python libraries")
     ENDIF()
 
     # find Python includes
