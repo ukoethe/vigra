@@ -69,7 +69,7 @@ pythonConstructRandomForest(int treeCount,
                             bool sample_with_replacement,
                             bool sample_classes_individually,
                             bool prepare_online,
-                            unsigned int label_count = 0)
+                            ArrayVector<MultiArrayIndex> const & labels = ArrayVector<MultiArrayIndex>())
 
 
 {
@@ -93,10 +93,8 @@ pythonConstructRandomForest(int treeCount,
 
     ProblemSpec<LabelType> ext_param;
     
-    if(label_count > 0)
+    if(labels.size() > 0)
     {
-        ArrayVector<LabelType> labels(label_count);
-        linearSequence(labels.begin(), labels.end());
         ext_param.classes_(labels.begin(), labels.end());
     }
     
@@ -305,16 +303,17 @@ void defineRandomForest()
                                                    arg("sample_with_replacement")=true,
                                                    arg("sample_classes_individually")=false,
                                                    arg("prepare_online_learning")=false,
-                                                   arg("label_count")=0)),
+                                                   arg("labels")=python::list())),
              "Constructor::\n\n"
              "  RandomForest(treeCount = 255, mtry=RF_SQRT, min_split_node_size=1,\n"
              "               training_set_size=0, training_set_proportions=1.0,\n"
              "               sample_with_replacement=True, sample_classes_individually=False,\n"
              "               prepare_online_learning=False)\n\n"
              "'treeCount' controls the number of trees that are created.\n"
-             "'label_count' specifies that labels are in the range 0 ... label_count-1.\n"
-             "              If 0 (default), the number of labels is automatically\n"
-             "              determined from the training data.\n\n"
+             "'labels' is a list specifying the permitted labels.\n"
+             "         If empty (default), the labels are automatically determined\n"
+             "         from the training data. A non-empty list is useful when some\n"
+             "         labels lack training examples.\n\n"
              "See RandomForest_ and RandomForestOptions_ in the C++ documentation "
              "for the meaning of the other parameters.\n")
 #ifdef HasHDF5
