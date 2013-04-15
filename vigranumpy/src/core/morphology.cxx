@@ -412,14 +412,24 @@ template < class VoxelType >
 NumpyAnyArray 
 pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
                           bool background, 
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
                           NumpyArray<3, Singleband<VoxelType> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "distanceTransform3D(): Output array has wrong shape.");
     
+    if (pixelPitch.size() == 0)
+    {
+        pixelPitch = ArrayVector<double>(3, 1.0);
+    }
+    else
+    {
+        pixelPitch = volume.permuteLikewise(pixelPitch);
+    }
+    
     {
         PyAllowThreads _pythread;
-        separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background);
+        separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
     }
     return res;
 }
@@ -728,6 +738,7 @@ void defineMorphology()
         registerConverters(&pythonDistanceTransform3D<float>),
         (arg("array"), 
          arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
          arg("out")=python::object()),
         "Compute the Euclidean distance transform of a 3D scalar float volume.\n"
         "All voxels with a value of 0.0 are considered to be background voxels,\n"
@@ -737,7 +748,10 @@ void defineMorphology()
         "(if it is 'True', default) or vice versa (if it is 'False').\n"
         "Hence in the destination volume, for background==True all background voxels\n"
         "will be assigned their distance value, while all foreground voxels will be assigned 0.\n"
-        "For background==False, it is exactly the other way around.\n"
+        "For background==False, it is exactly the other way around.\n\n"
+        "If 'pixel_pitch' is given, it must contain the pixel distance along the three axes.\n"
+        "They are then used to compute the distance anisotropically. If no 'pixel_pitch' is\n"
+        "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 }
