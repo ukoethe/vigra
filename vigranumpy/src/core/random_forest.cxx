@@ -203,6 +203,7 @@ template<class LabelType,class FeatureType>
 NumpyAnyArray 
 pythonRFPredictLabels(RandomForest<LabelType> const & rf,
                       NumpyArray<2,FeatureType> testData,
+                      python::object pyNaNLabel,
                       NumpyArray<2,LabelType> res)
 {
     vigra_precondition(!testData.axistags() && !res.axistags(),
@@ -211,6 +212,16 @@ pythonRFPredictLabels(RandomForest<LabelType> const & rf,
     
     res.reshapeIfEmpty(MultiArrayShape<2>::type(testData.shape(0), 1),
                        "RandomForest.predictLabels(): Output array has wrong dimensions.");
+    
+    python::extract<LabelType> nanLabel(pyNaNLabel);
+    
+    if(nanLabel.check())
+    {
+        LabelType nan_label(nanLabel());
+        PyAllowThreads _pythread;
+        rf.predictLabels(testData, res, nan_label);
+    }
+    else
     {
         PyAllowThreads _pythread;
         rf.predictLabels(testData, res);
@@ -335,9 +346,12 @@ void defineRandomForest()
              "Returns the 'treeCount', that was set when constructing the RandomForest.\n")
         .def("predictLabels",
              registerConverters(&pythonRFPredictLabels<LabelType,float>),
-             (arg("testData"), arg("out")=object()),
+             (arg("testData"), arg("nanLabel")=object(), arg("out")=object()),
              "Predict labels on 'testData'.\n\n"
-             "The output is an array containing a labels for every test samples.\n")
+             "If a 'nanLabel' is provided, it will be returned for all rows of\n"
+             "the 'testData' that contain an NaN value. Otherwise, an exception is\n"
+             "thrown whenever Nan is encountered.\n\n"
+             "The output is an array containing a label for every test samples.\n")
         .def("predictProbabilities",
              registerConverters(&pythonRFPredictProbabilities<LabelType,float>),
              (arg("testData"), arg("out")=object()),
