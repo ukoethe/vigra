@@ -2320,22 +2320,22 @@ public:
         rv = dv*sqrt(bv);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               Arg2()*sqrt(Arg1()));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
         r1 = sqrt(b)*(d*2.0);
         rv = sqrt(bv)*(dv*2.0);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               sqrt(Arg1())*(Arg2()*Param(2.0)));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
         r1 = (d*2.0)*sqrt(b);
         rv = (dv*2.0)*sqrt(bv);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               (Arg2()*Param(2.0))*sqrt(Arg1()));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
 
         r1 = b*(-c);
