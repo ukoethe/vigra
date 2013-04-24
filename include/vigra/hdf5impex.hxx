@@ -2031,9 +2031,14 @@ class HDF5File
         else if(compressionParameter > 0)
         {
             // set default chunks to enable compression 
-            // (arbitrarily include about 300k pixels into each chunk)
+            // (arbitrarily include about 300k pixels into each chunk, but make sure
+            //  that the chunk size doesn't exceed the shape)
+            ArrayVector<hsize_t> cSize(array.shape().begin(), array.shape().end());
+            std::reverse(cSize.begin(), cSize.end());
             hsize_t chunk_length = (hsize_t)std::pow(300000.0, 1.0 / N);
-            ArrayVector<hsize_t> cSize(N, chunk_length);
+            for(int k=0; k < N; ++k)
+                if(cSize[k] > chunk_length)
+                    cSize[k] = chunk_length;
             if(numBandsOfType > 1)
                 cSize.push_back(numBandsOfType);
             

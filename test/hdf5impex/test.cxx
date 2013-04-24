@@ -422,7 +422,7 @@ public:
         file.createDataset<3,unsigned char>("/newset", shape, init );
 
         //test compressed
-        MultiArray<3, double> out_data_6(Shape3(100,100,100), 42.0);
+        MultiArray<3, double> out_data_6(Shape3(100,100,30), 42.0);
         file.write("/compressed", out_data_6, 0, 6);
 
         file.close();
