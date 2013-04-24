@@ -415,11 +415,15 @@ public:
         file.write("/atomicint", (int)-42);
         file.write("/atomicuint", (unsigned int)42);
         file.write("/atomicdouble", (double)3.1);
-        
+
         //create a new dataset
         MultiArrayShape<3>::type shape (50,50,50);
         unsigned char init = 42;
         file.createDataset<3,unsigned char>("/newset", shape, init );
+
+        //test compressed
+        MultiArray<3, double> out_data_6(Shape3(100,100,100), 42.0);
+        file.write("/compressed", out_data_6, 0, 6);
 
         file.close();
         file.open(file_name, HDF5File::Open);
@@ -440,6 +444,9 @@ public:
 
         MultiArray< 3, unsigned char > in_data_5 (shape);
         file.read("/newset",in_data_5);
+
+        MultiArray< 3, double > in_data_6 (out_data_6.shape());
+        file.read("/compressed",in_data_6);
 
         int atomicint;
         file.read("/atomicint",atomicint);
@@ -462,6 +469,8 @@ public:
         should (in_data_4 == out_data_4);
         // ...data 5
         should (in_data_5(1,2,3) == init);
+        // ...data 6
+        should (in_data_6 == out_data_6);
 
         should (atomicint == -42);
         should (atomicuint == 42);

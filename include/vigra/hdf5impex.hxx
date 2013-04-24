@@ -1046,7 +1046,11 @@ class HDF5File
             Chunks can be activated by setting 
             \code iChunkSize = size; //size \> 0 
             \endcode .
-            The chunks will be hypercubes with edge length size.
+            The chunks will be hypercubes with edge length size. When <tt>iChunkSize == 0</tt>
+            (default), the behavior depends on the <tt>compression</tt> setting: If no
+            compression is requested, the data is written without chunking. Otherwise,
+            chuning is required, and the chunk size is automatically selected such that
+            each chunk contains about 300k pixels.
 
             Compression can be activated by setting 
             \code compression = parameter; // 0 \< parameter \<= 9 
@@ -1102,14 +1106,6 @@ class HDF5File
 
         /** \brief Write a multi array into a larger volume.
             blockOffset determines the position, where array is written.
-
-            Chunks can be activated by providing a MultiArrayShape as chunkSize.
-            chunkSize must have equal dimension as array.
-
-            Compression can be activated by setting 
-            \code compression = parameter; // 0 \< parameter \<= 9 
-            \endcode
-            where 0 stands for no compression and 9 for maximum compression.
 
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
@@ -2027,6 +2023,17 @@ class HDF5File
         {
             ArrayVector<hsize_t> cSize(chunkSize.begin(), chunkSize.end());
             std::reverse(cSize.begin(), cSize.end());
+            if(numBandsOfType > 1)
+                cSize.push_back(numBandsOfType);
+            
+            H5Pset_chunk (plist, cSize.size(), cSize.begin());
+        }
+        else if(compressionParameter > 0)
+        {
+            // set default chunks to enable compression 
+            // (arbitrarily include about 300k pixels into each chunk)
+            hsize_t chunk_length = (hsize_t)std::pow(300000.0, 1.0 / N);
+            ArrayVector<hsize_t> cSize(N, chunk_length);
             if(numBandsOfType > 1)
                 cSize.push_back(numBandsOfType);
             
