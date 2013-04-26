@@ -237,9 +237,17 @@
     
     <h2>Important MultiArray Methods</h2>
 
-    In this part of the tutorial we'll introduce you to some important methods.
+    This part of the tutorial introduces important methods of MultiArray. However, before we proceed, we need to introduce the class \rev vigra::MultiArrayView.
+    
+    <h3>MultiArrayView</h3>
+    
+    A \rev vigra::MultiArrayView has the same interface as a MultiArray (with the exception of <tt>reshape()</tt> and <tt>swap()</tt>), but it doesn't own its data. Instead, it provides a <i>view</i> onto the data of some other array. In contrast, a MultiArray owns its data and is responsible for freeing it in the destructor. MultiArrays are automatically converted into MultiArrayViews when needed.
+    
+    The point of this distinction is that MultiArrayViews can be used to access and manipulate the same data in many different ways <i>without any need for creating copies</i>. For example, we can work with a 2-dimensional slice of a volume dataset (i.e. a lower dimensional part of a 3D array) without first copying the slice into a 2D image data structure. 
+    
+    This possibility is a key ingredient for efficient computation with multi-dimensional arrays (and is realized in other packages like Matlab and numpy similarly). Thus, most VIGRA functions actually receive MultiArrayViews to maximize flexibility. The functions described here are the most important ways to create a MultiArrayView for an existing array or view.
 
-    <h2> subarray(p,q) </h2>
+    <h3> subarray(p,q) </h3>
     This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
     array between the points p and q, where p is included, q is not. Compared to the <dfn>bind
     </dfn>-method, subarray doesn't change the dimension.
@@ -285,7 +293,7 @@
 
     <hr>
 
-    <h2> bind<M>(i) </h2>
+    <h3> bind<M>(i) </h3>
     This method is part of the MultiArrayView-Class and binds the dimension M to the index i.
     As you probably remember, we tried to set the elements of a certain column or row of a 
     matrix in the \ref Indexing part. We used a for-loop, but it's getting more easily with
@@ -461,7 +469,7 @@
 
     <hr>
 
-    <h2> transpose() </h2>
+    <h3> transpose() </h3>
     <dfn> vigra::MultiArrayView </dfn> class provides a method to transpose a N-dimensional
     array. Regarding matrices (2-dimensional arrays) this operation is well known. As explained
     with the <dfn> bind<M>(i) </dfn> method, it is possible to make a transposed copy of a
@@ -539,7 +547,7 @@
 
     <hr>
 
-    <h2> permuteDimensions(vector) / transpose(vector) </h2>
+    <h3> permuteDimensions(vector) / transpose(vector) </h3>
 
     <B> Note: </B>
     The usage of <dfn> permuteDimensions() </dfn> and <dfn> transpose() </dfn> with a vector
