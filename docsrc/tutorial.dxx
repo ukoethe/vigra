@@ -1,301 +1,586 @@
 /** \page Tutorial Tutorial
     
-    This tutorial will help you to get to know the most important methods of VIGRA and 
-	shows you how to use them by giving some simple examples. The tutorial consists of
-	the following parts:
+    This tutorial will help you to learn VIGRA's most important concepts by means of simple examples. The tutorial consists of the following parts:
     
-    <ul>
-    
-    <li> \ref Basics
-    
-    <li> \ref Indexing
-		<BR>&nbsp;&nbsp;&nbsp;<em>how to access an element of MultiArray</em>
-
-    <li> \ref ImageInputOutput
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref MultiDimensionalArrayTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA's most important data structure</em>
+    <li> \ref MultiMathModule "Calculating with Arrays"
+        <BR>&nbsp;&nbsp;&nbsp;<em>element-wise operations on MultiArrays</em>
+    <li> \ref ImageInputOutputTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>importing and exporting images</em>
-    
-    <li> \ref ImportantMethods
-		<BR>&nbsp;&nbsp;&nbsp;<em>the methods subarray, bind, transpose and permuteDimensions</em>
-
-    <li> Calculating with \ref MultiMathModule
-        <BR>element-wise operations on MultiArrays</em>
-
     <li> \ref ImageProcessingTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>some applications of VIGRA's methods</em>
     </ul>
 */
 
-/** \page Basics Basic ideas
-    <p>The aim of this tutorial is to show you some easy examples of Image Processing using 
-    arrays, particularly VIGRA's MultiArray. An image can be interpreted as a matrix or
-    2-dimensional arrays, where each element contains the information of a specific pixel.
-    In fact, matrices or 2-dimensional arrays are implemented as 1-dimensional array, but for 
-    us it seems more natural to describe an image by 2 coordinates (ergo dimensions).
-    Each pixel of an image with 800x600 pixels can be identified by a pair (x,y) with 
-    x = 0,...,799 and y = 0,...,599.</p>
-    <p> In VIGRA, we call the structure of the matrix or multidimensional array 
-    <dfn>shape</dfn>. The image described above has the shape (800,600). A 3x3-matrix has the 
-    shape (3,3).
-    Shapes like (n,m, ...) define the possible values of the coordinates for each 
-    dimension: <br/>
-    possible coordinates in dimension 0: 0, 1, ..., n-1 <br/>
-    possible coordinates in dimension 1: 0, 1, ..., m-1 <br/>
-    ... </p>
-    <p> To represent the data of a gray scale image, we just need to store one value, so we 
-    choose a 2-dimensional array, where each element has the <dfn> unsigned char </dfn> type. 
-    With VIGRA we instantiate an gray scale image object like this:</p>
+/** \page MultiDimensionalArrayTutorial Multi-Dimensional Arrays
+
+    <h2>Basic MultiArray Usage</h2>
     
+    MultiArray is the most fundamental data structure in VIGRA. It holds a rectangular block of values in arbitrary many dimensions. Most VIGRA functions operate on top of MultiArray or the associated class MultiArrayView (see ???). 
+    
+    A 2D image can be interpreted as a matrix, i.e. a 2-dimensional array, where each element holds the information of a specific pixel. Internally, the data are stored in a single 1-dimensional piece of memory, and MultiArray encapsulates the entire mapping between our familiar 2-dimensional notation and the raw memory. Pixels in an image are identified by a coordinate pair (x,y), where indexing starts at 0. That is, the pixels in a 800x600 image are indexed by <tt>x = 0,...,799 and y = 0,...,599</tt>. The principle analoguously extends to higher dimensions.
+    
+    The structure of a multidimensional array is given by its <dfn>shape</dfn> vector, and the length of the shape vector is the array's <i>dimension</i>. The dimension must be fixed as a template parameter at compule time, while the shape is passed to the array's constructor. The second important template parameter is the pixel's <tt>value_type</tt>, as you know it form <tt>std::vector</tt>. 
+    
+    To represent the data of a gray scale image, we just need to store one value per pixel, so we 
+    choose a 2-dimensional array, where each element has the <dfn> unsigned char </dfn> type. 
+    With VIGRA we instantiate an gray scale image object like this:
+
     \code
         #include <vigra/multi_array.hxx>
-        vigra::MultiArray<2, unsigned char> imageArray;
+        
+        using namespace vigra; // for brevity in the examples - don't do this in header files!
+        
+        int width = ...,  height = ...;
+        MultiArray<2, unsigned char> image(Shape2(width, height));
     \endcode
+    
+    By default, VIGRA arrays are always zero-initialized. Another initial value can be provided in the constructor, or later via the <tt>init()</tt> function:
+    
+    \code
+        MultiArray<2, unsigned char> image(Shape2(width, height), 255); // init with value 255
+        
+        image.init(128);  // same effect, different initial value
+    \endcode
+     
+    The <tt>Shape2</tt> typedef also exists for higher dimensions up to five as <tt>Shape3</tt> etc. If you need even more dimensions, use <tt>MultiArrayShape<N>::type</tt> instead, were N is the number of dimensions: 
 
-    <p> Considering RGB-images it is obvious that we can't use the unsigned char type to store
-    color images because every pixel contains 3 informations: values for red, green and blue.
-    Mathematically you intend to store the data in a vector. For this special purpose, VIGRA
+    \code
+        // dimension 0 runs from 0, 1, ..., 299
+        // dimension 1 runs from 0, 1, ..., 199
+        // dimension 2 runs from 0, 1, ...,  99
+        MultiArray<3, double> volume(Shape3(300, 200, 100));
+        
+        MultiArray<7, float> array7D(MultiArrayShape<7>::type(20, 10, ...));
+    \endcode     
+
+    When storing RGB images we obviously can't simply use the unsigned char type because every pixel contains 3 numbers: values for red, green and blue. Mathematically, you want to store a data vector for each pixel. To this end, VIGRA
     provides the <dfn>vigra::RGBValue<ValueType></dfn> class. So for RGB-images just use: </p>
 
     \code
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > RGBImageArray;
+        MultiArray<2, RGBValue<unsigned char> > rgb_image(Shape2(256, 128));
     \endcode
 
-    In fact, vigra::RGBValue<ValueType> is a special kind of a 3-dimensional vector
-    containing ValueType elements. The vector data type in VIGRA is implemented in the
-    <dfn> TinyVector<T, SIZE> </dfn> class.
+    vigra::RGBValue<ValueType> is a specialised 3-dimensional vector containing ValueType elements. Arbitrary short vectors can be stored in the <dfn>TinyVector<ValueType, SIZE></dfn> class, which is the base class of RGBValue. It's length must be specified at compile time in the template parameter <tt>SIZE</tt>. Vectors whose length is known at compile time are very useful for the compiler to produce highly optimized code. Therefore, <tt>Shape2</tt> and it's higher-dimensional coursins are instances of <tt>TinyVector</tt> as well.
 
     Alternatively you can use a 3-dimensional array <dfn>vigra::MultiArray<3, unsigned
     char></dfn> to represent a color image. The third dimension has size 3 and contains the
-    information for red, green and blue channel. We won't use the 3-dimensional array for
-    color images because <dfn>vigra::RGBValue<ValueType></dfn> provides a lot of helpful
-    methods.
+    information for the red, green and blue channel. 
+    
+    \code
+        MultiArray<3, unsigned char> rgb_array(Shape3(256, 128, 3));
+    \endcode
 
-    Maybe you've recognized in the last paragraph that there is no need to restrict oneself
-    to 2-dimensional arrays. With VIGRA an <B>arbitrary number of dimensions</B> is possible
-    for instance:
+    However, we are not going to use this form in the tutorial because <dfn>vigra::RGBValue<ValueType></dfn> provides many helpful methods that are not available when color is just another array dimension.
+
+    <h2>Array Indexing via Coordinates</h2>
+
+    The easiest way to access the values of an array is via the coordinates. A tuple of coordinates can again be specified by the appropriate shape object, which must be passed to the array's indexing operator:
 
     \code
-        vigra::MultiArray<7, float> otherArray;
+        int width = 300, height = 200;
+        MultiArray<2, int> image(Shape2(width, height));
+
+        // set all elements to 3
+        image.init(3);
+
+        // print pixel at x=1 and y=2
+        int x=1, y=2;
+        std::cout << image[Shape2(x,y)] << std::endl;  // output: 3
     \endcode
-*/
 
-/** \page Indexing Indexing
+    <B>Important Remark:</B> Notice that VIGRA follows the mathematical convention of the index order: dimension 0 corresponds to the x (horizontal) coordinate, dimension 2 to the y (vertical) coordinate, and so on. Accordingly, the dimension 0 is changing fastest in memory: when we increase x by one, we get to the next memory location. In matrix jargon, this is also known as <i>Fortran order</i>. Many image processing libraries (e.g. <a href="http://www.imagemagick.org/">Image Magick</a>, <a href="http://opencv.willowgarage.com/">OpenCV</a>, and <a href="http://qt-project.org/">Qt</a>) use the same convention. However, others like Matlab and numpy, use the reverse order (so called <i>C order</i>). Don't be confused!
+    
+    In some circumstances, it is more convenientto provide the coordinates individually rather than with a shape object. This is possible with round brackets (x,y):
 
-    <h2> Access via coordinates </h2>
+    \code
+        // access via individual coordinates
+        image(1,2) = 22;
+    \endcode
+	
+    This kind of indexing is supported for dimensions up to five, and only if the array's dimension is known (this is not always the case: in a generic function where the dimension is a template parameter, you must use shape objects).
+	In combination with the method <tt>shape(n)</tt>, that returns the length of the n-th dimension, 
+    we can use the coordinates to set the element of an entire row or column:
 
-    Regarding matrices it is common to index the elements with a tuple of coordinates.
-    Using a 3x2 matrix from the section above we can access for instance the element of 
-    <dfn> matrix </dfn> in the second column and third row by using the MultiArrayShape::type, 
-    which is a kind of a TinyVector. For this example we use the type Shape2(x,y), the 
-    specific type definition for 2-dimensional arrays.
+    \code
+        // set all elements of first row to 13
+        for (int i = 0; i < image.shape(1); i++)
+            image(1,i) = 13;
+    \endcode
 
-    <B> Note: </B> Don't get confused with the indexing of our arrays and matrices. Unfortunately
-    a 3x2-matrix means that the matrix has 3 rows (y-coordinate!) and 2 columns (x-coordinate!).
-    So with Shape2(x,y) you create a y-x-matrix.
+    On first sight, individual coordinates may be necessary to iterator of the image or parts of it. But the following example shows that the same effect can be achieved with a shape object that is allocated outside the loop:
+    3rd column of a 8x4-matrix (initialized with 5) to 7.
+
+    \code
+        // instantiate shape object (zero intialized by default)
+        Shape2 p;
+        // bind x=2
+        p[0] = 2;
+        // iterator over row 2
+        for(p[1]=0; p[1]<image.shape(1); ++p[1])   
+            image[p] = 7;
+    \endcode
+
+    Later in this tutorial, we will discuss more powerful methods to access certain parts of an array.
+
+    <h2> One-dimensional Indexing and StridedScanOrderIterator </h2>
+	
+    Regardless of the array's dimension, it is always possible to access elements with 1-dimensional index, its <i>scan-order index</tt>, via the normal indexing operator. For example, <dfn>array[1]</dfn> refers to the index of the second array element. Defining a scan order is often called <i>flattening</tt> of an array, because a high-dimensional data structure is accessed like a 1-dimensional vector. Notive that scan-order access in VIGRA does not require the data to be copied. 
+    
+	VIGRA defines scan-order by considering the dimensions from front to back. Thus, items are accessed such that only the x coordinate is incremented, while y (and possibly further coordinates) are held fixed at 0. When x is exhausted, y is incremented by one and the iteration starts again at x=0. To control iteration, the function <tt>array.size()</tt> returns the total number of elements: 
+
+    \code
+        MultiArray<2, int> intArray(Shape2(3,2));
+    
+        for(int k=0; k<intArray.size(); ++k=
+            intArray[k] = k+1;
+        
+        // the array now contains the values
+        //
+        //   1 2 3
+        //   4 5 6
+    \endcode
+	
+    Alternatively, scan-order access can be achieved with an STL-compatible iterator pair obtained by calling <tt>array.begin()</tt> and <tt>array.end()</tt>. Continuing with the example above, we can write:
+
+	\code
+		// declare an alias for the iterator type
+		typedef MultiArray<2, int>::iterator Iter;
+
+		// iterate over intArray and print the elements in scan order
+		for (Iter i = intArray.begin(); i != intArray.end(); ++i)
+		    std::cout << *i << " ";
+        std::cout << std::endl;
+        
+        // output: 1 2 3 4 5 6
+	\endcode
+
+    The iterator is implemented by class <dfn>StridedScanOrderIterator</dfn> which encapsulates all the bookkeeping necessary to get the elements in the correct order, even when the array was transposed (see below). 
+
+	Scan-order access is convenient to implement pointwise operations, e.g. the addition of two matrices. The following code adds two matrices and stores the result in the first one: 
+
+	\code
+		MultiArray<2, int> matrix1(Shape2(3,3)),
+                           matrix2(Shape2(3,3));
+		... // fill in data
+	
+		// use indexing
+		for (int i=0; i < matrix1.size(); ++i)
+			matrix1[i] += matrix2[i];
+		
+        // use iterators
+        for (Iter i = matrix1.begin(), j = matrix2.begin(); i != matrix1.end(); ++i, ++j)
+            *i += *j;
+	\endcode
+
+	This is convenient, because the actual high-dimensional shapes of the arrays is of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So thefollowing code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
+
+	\code
+		MultiArray<2, int> matrix3(Shape2(3,2)),
+                           matrix4(Shape2(2,3));  // transposed shape of matrix3
+		... // fill in data
+	
+	    for (int i=0; i < matrix3.size(); ++i)
+		    matrix3[i] += matrix4[i];  // works, but may not have the intended effect
+	\endcode
+
+    By the way: VIGRA provides the += operator (and is cousins) to write this more concisely, and this operator throws an exception if the shapes don't match:
+
+    \code
+        matrix1 += matrix2;          // works fine!
+        matrix3 += matrix4;          // error: shape mismatch!
+    \endcode
+
+    For more information on mathematical operations on arrays see the \ref MultiMathModule "multi_math" module.
+
+    As mentioned, VIGRA's scan order is similar to the NumPy-method <dfn>array.flatten()</dfn>. You use it, 
+    to copy a multi-dimensional array into an one-dimensional array, or to access elements in flattened order. The only
+    difference is that NumPy uses "C-order" , i.e. the rightmost dimension takes priority, whereas
+    VIGRA uses Fortran-order, i.e. the leftmost dimension takes priority. A method like flatten can be implemented in VIGRA as:
+
+    \code
+        MultiArray<2, int> intArray(Shape2(3,2));
+    
+        for(int k=0; k<intArray.size(); ++k=
+            intArray[k] = k+1;
+        
+        // create 1D-array of appropriate size
+        std::vector<int> flatArray(intArray.size());
+        
+        // copy 2D-array into 1D-array using the STL
+        std::copy(intArray.begin(), intArray.end(), flatArray.begin());
+        
+        // print 1D-array on console
+        // (same output as printing from the StridedScanOrderIterator directly) 
+        for (std::vector<int>::iterator i = flatArray.begin(); i != flatArray.end(); ++i)
+             std::cout << *iter << " ";
+        std::cout << std::endl;
+    \endcode
+
+    To show the difference between VIGRA and NumPy we'll add the NumPy output, i.e. the result when we had
+    used C-order in the code above:
+
+    \verbatim
+    flatArray - index     0       1       2       3       4       5 
+    -----------------------------------------------------------------
+    VIGRA-output:         1       2       3       4       5       6
+    intArray - index    [0,0]   [1,0]   [2,0]   [0,1]   [1,1]   [2,1]
+    -----------------------------------------------------------------
+    NumPy-output:         1       4       2       5       3       6
+    intArray - index    [0,0]   [0,1]   [1,0]   [1,1]   [2,0]   [2,1]
+    \endverbatim
+
+    To change the axis priorities of the StridedScanOrderIterator, look at the transpose-function
+    in the next section.
+    
+    <h2>Important MultiArray Methods</h2>
+
+    In this part of the tutorial we'll introduce you to some important methods.
+
+    <h2> subarray(p,q) </h2>
+    This method is part of the MultiArrayView-Class and creates a rectangular subarray of your
+    array between the points p and q, where p is included, q is not. Compared to the <dfn>bind
+    </dfn>-method, subarray doesn't change the dimension.
+    To give an example, let's say that you want to copy the upper-left subsquare of a 
+    4x4-matrix (initialized with 1).
+
+    \code
+        // copy the upper-left subsquare of a 4x4-matrix
+        vigra::MultiArray<2, int> _44Matrix(Shape2(4,4));
+        _44Matrix.init(1);
+        vigra::MultiArray<2, int> subsquare = _44Matrix.subarray(Shape2(0,0), Shape2(2,2));
+    \endcode
+
+    To determine the positions p and q, we use <dfn>Shape</dfn>. In this example we copy the 
+    element with the x,y-coordinates from 0 to 1. Subarray can be used to set elements as
+    well. We now set the lower half of the 4x4-matrix to 0.
+
+    \code
+       // change the elements of a subarray
+       _44Matrix.subarray(Shape2(0,2),Shape2(4,4)) = 0;
+    \endcode
+
+    In Image Processing you can use <dfn>subarray</dfn> to create a subimage of a given image.
+    In the next example we create a half-sized subimage with the middle part of the original
+    image:
+    <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
+    The relevant part of this code is shown here:
+
+    \dontinclude subimage_tutorial.cxx
+    \skip // write
+    \until exportImage
+
+    After reading the (here: gray scale) image data to an array we need to calculate the 
+    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
+    Afterwards we write the subimage into a new array. Look at the results.
+
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_sub.gif "subimage output file" </TD>
+    </TR>
+    </Table>
+
+    <hr>
+
+    <h2> bind<M>(i) </h2>
+    This method is part of the MultiArrayView-Class and binds the dimension M to the index i.
+    As you probably remember, we tried to set the elements of a certain column or row of a 
+    matrix in the \ref Indexing part. We used a for-loop, but it's getting more easily with
+    the bind-method. Look at the following example. We initialize a 2x3-matrix with the value
+    0, set the second row to 5 and print the array eventually:
 
     \code
     #include <vigra/multi_array.hxx>
     #include <iostream>
-          
+
+    using namespace vigra;
+
     int main (int argc, char ** argv) {
+        // initialize 2x3-matrix and declare iterator
+        vigra::MultiArray<2, int> intArray(Shape2(3,2));
+        intArray.init(0);
+        vigra::MultiArray<2, int>::iterator iter;
 
-        // declare 2-dimensional MultiArray with 2 integer elements in first dimension  
-        // and 3 integer elements in second dimension
-        vigra::MultiArray<2, int> matrix(vigra::Shape2(2,3));
+        // set 1st row (equivalent to dimension 1 and index 0) to 5
+        intArray.bind<1>(0) = 5;
 
-        // set all elements to 3
-        matrix.init(3);
-
-        // print element in second column and third row
-        std::cout << matrix[vigra::Shape2(1,2)] << std::endl;      // output: 3
+        // print the array on console
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+	        std::cout << *iter << "  ";
+        }
+        std::cout << std::endl;
 
         return 0;
     }
     \endcode
 
-    A convenient and equivalent way is just to use the coordinates with round brackets (x,y):
+    The output is:
+
+    \verbatim
+    5  5  5  0  0  0
+    \endverbatim
+
+    Binding a dimension reduces a N-dimensional array to dimension N-1. Furthermore you can
+    initialize a lower-dimensional array with the bind-method.
 
     \code
-        // access via simple coordinates, set element in second column and third row
-        matrix(1,2) = 22;
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
     \endcode
-	
-    This kind of indexing is only possible if the array's dimension is well known. For generic
-    methods you have to use indexing via Shape-object.
-	In combination with the method size(n), that gives us the size of the n-th dimension, 
-    we can use the coordinates to set the element of an entire row or column:
+
+    The array <dfn> lowArray </dfn> contains the elements the 3rd column of intArray. At this
+    point we have to distinguish between the classes <dfn> MultiArray </dfn> and 
+    <dfn> MultiArrayView </dfn>. MultiArray inherits from MultiArrayView and contains the
+    memory management of the array. With MultiArrayView we can view the data stored in a 
+    MultiArray. The code above produces a copy of the 3rd column of intArray. If we change the
+    elements of <dfn>lowArray</dfn> nothing happens to <dfn> intArray </dfn>.
 
     \code
-        // set all elements of second column to 13
-        for (int i = 0; i < matrix.size(1); i++) {
-            matrix(1,i) = 13;
-        }
+        // initialize new array with 3rd column of intArray
+        vigra::MultiArray<1, int> lowArray = intArray.bind<0>(2);
+        // set elements of lowArray to ten
+        lowArray = 10;
+        // print lowArray
+        std::cout << "lowArray:\n";
+        for (iter = lowArray.begin(); iter != lowArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArray:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
     \endcode
 
-    Every call with round brackets creates a new Shape-Object.
-    It is better to iterate over a Shape-Object. In the following example, we want to set the
-    3rd column of a 8x4-matrix (initialized with 5) to 7.
+    Output:
+    \verbatim
+    lowArray:
+    10  10  
+    intArray after changing lowArray:
+    0  0  0  5  5  5  
+    \endverbatim
+
+    But if we use bind in combination with MultiArrayView instead, we don't get a copy of
+    intArray's 3rd column, rather a view of it:
 
     \code
-        // iterating over a Shape-Object
-        vigra::MultiArray<2, int> matrix84(vigra::Shape2(4,8));
-        matrix84.init(5);
-        // instantiate Shape-Object
-        vigra::Shape2 p;
-        // iterate over 3rd column :
-        // set first dimension on 2 (equals 3rd column)
-        // then iterate over second dimension (equals rows)
-        p[0] = 2;                                  
-        for(p[1]=0; p[1]<matrix84.size(1); p[1]++) {   
-            matrix84[p] = 7;
-        }
+        // initialize array view of 3rd column of intArray
+        vigra::MultiArrayView<1, int, StridedArrayTag> lowArrayView = intArray.bind<0>(2);
+        // initialize ArrayView-Iterator
+        vigra::MultiArrayView<1,int>::iterator viewIter;
+        // set elements of lowArrayView to ten
+        lowArrayView = 10;
+        // print lowArrayView
+        std::cout << "lowArrayView:\n";
+        for (viewIter = lowArrayView.begin(); viewIter != lowArrayView.end(); viewIter++) {
+		    std::cout << *viewIter << "  ";
+	    }
+        std::cout << std::endl;
+        // print intArray
+        std::cout << "intArray after changing lowArrayView:\n";
+        for (iter = intArray.begin(); iter != intArray.end(); iter++) {
+		    std::cout << *iter << "  ";
+	    }
+        std::cout << std::endl;
     \endcode
 
-    Later in this tutorial, we will discuss special methods to set certain parts of the array.
+    Output:
+    \verbatim
+    lowArrayView:
+    10  10  
+    intArray after changing lowArrayView:
+    0  0  10  5  5  10 
+    \endverbatim
+
+    In this case, changing lowArrayView causes changes in intArray because we changed a view
+    of intArray and not a copy. An equivalent and easier way to change the 3rd column is
+    analogous to the first example:
+
+    \code
+        // set 3rd column to ten
+        intArray.bind<0>(2) = 10;
+    \endcode
+
+    NumPy-Users know the bind mechanism as "slicing". In the example above they had written:
+    \verbatim
+    intArray[:,2] = 10      // NumPy-equivalent of bind
+    \endverbatim
+
+    Moving on to Image Processing we'll give an example how you can flip an image by using 
+    bind. We save a gray scale image in a 2-dimensional array called <dfn> imageArray </dfn>. 
+    Then we initalize a new array <dfn> newImageArray </dfn> of the same dimension and size
+    and set the first row of <dfn> newImageArray </dfn> to the values of the last row of 
+    <dfn> imageArray </dfn>, the second row to the values of the second last row and so on.
+    Hence, we flip the image top to bottom.
+
+    \include mirror_tutorial.cxx
+    
+    This code needs an infile and an outfile as arguments. For this example, just the 
+    commented for-loop is important. The rest contains the code for
+    \ref ImageInputOutput and is explained in that part of the Tutorial. We bind dimension 1
+    to fix the y-coordinate. To flip left to right you have to fix the x-coordinate, so bind
+    dimension 0. <br/>
+    Here you can see what happens to an input file:
+
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_mirror.gif "mirrored output file" <TD>
+    </TR>
+    </Table>
+
+    A detailed example is given here:
+    <a href="mirror_8cxx-example.html">mirror.cxx</a> 
+    There you can flip RGB-images as well and decide whether to flip top to bottom (horizontal)
+    or left to right (vertical).
+
+    You don't need to implement a method like this because VIGRA already provides the 
+    <dfn> vigra::reflectimage() </dfn> - method.
+
+    Furthermore there are some special bind-methods:
+    
+    <DL>
+    <DT> bindAt(M,i) </DT>
+        <DD> equivalent to bind<M>(i) </DD>
+    <DT> bindInner(i) </DT>
+        <DD> if i is an <dfn> integer </dfn>, the innermost dimension is fixed to i, if i is a 
+        <dfn>TinyVector </dfn> of size M, then the M innermost dimensions are fixed to the 
+        values of the vector </DD>
+    <DT> bindOuter(i) </DT>
+        <DD> if i is an <dfn> integer </dfn>, the outmost dimension is fixed to i, if i is a
+        <dfn>TinyVector </dfn> of size M, then the M outmost dimensions are fixed to the 
+        values of the vector </DD>
+    </DL>
+
+    See \ref vigra::MultiArrayView for a detailed description and examples.
 
     <hr>
 
-    <h2> One-dimensional []-Operator and StridedScanOrderIterator </h2>
-	
-    The access via <dfn> intArray[0] </dfn> refers to the index of the scan order.
-	Scan order means, that you iterate the dimensions from front to back.
+    <h2> transpose() </h2>
+    <dfn> vigra::MultiArrayView </dfn> class provides a method to transpose a N-dimensional
+    array. Regarding matrices (2-dimensional arrays) this operation is well known. As explained
+    with the <dfn> bind<M>(i) </dfn> method, it is possible to make a transposed copy of a
+    matrix or just to create a transposed view. For usage of transpose() and the difference
+    between copy and view, see the following example. In the first part of the example we 
+    implement some print-method to make the code more readable.
 
-    \code
-        #include <vigra/multi_array.hxx>
-        #include <iostream>
-        
-        using namespace vigra;
-        
-        int main (int argc, char ** argv) {
-        
-            // declare 2-dimensional MultiArray with 3 integer elements in first dimension  
-            // and 2 integer elements in second dimension
-            vigra::MultiArray<2, int> intArray(Shape2(3,2));
-        
-            // set all elements on 3
-            intArray.init(3);
-        
-            // print the first element on console
-            std::cout << intArray[0] << std::endl;
-        
-            return 0;
-        }
-    \endcode
-	
-    The <dfn> vigra::MultiArray </dfn> - class provides methods to determine the scan order index of 
-    given coordinates and vice versa. The <dfn>StridedScanOrderIterator</dfn> lets you iterate
-    over the array elements in scan order. You can easily build instances of this Iterator 
-    by calling the <dfn>MultiArrayView::begin()</dfn> and <dfn>MultiArrayView::end()</dfn> 
-    methods. To give an example we iterate over all elements and set a new value:
+    \dontinclude transpose.cxx
+    \skip #include
+    \until setting transarrayView to 5
+    \skipline print(intarray);
+    \skip return
+    \until }
 
-	\code
-		// declare iterator
-		vigra::MultiArray<2, int>::iterator iter;
-		int count = 0;
-		// iterate over intArray, set a new value and print the element
-		for (iter = intArray.begin(); iter != intArray.end(); iter++) {
-			*iter = ++count;
-		    std::cout << *iter << " ";
-	    }
-        std::cout << std::endl;
-	\endcode
-
-    This creates the output:
+    The output is:
 
     \verbatim
-        1 2 3 4 5 6
+    intarray:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    transarray:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    transArrayView:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    intarray after setting transarray to 5:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    intarray after setting transarrayView to 5:
+    5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
     \endverbatim
 
-	Let's do some maths: We use the MultiArray class to represent matrices and want to add
-	two 3x3-matrices by adding the elements on the same position. The result will be stored
-	in the first matrix. We can implement the addition like this:
+    As already mentioned it is possible to transpose an array of arbitrary number of 
+    dimensions. In this case, the innermost dimension is swapped with the outermost, the 
+    2nd innermost with the 2nd outermost and so on...
+    In the following example we transpose a 5D array and print out its shape.
 
-	\code
-		vigra::MultiArray<2, int> matrix1(Shape2(3,3));
-		vigra::MultiArray<2, int> matrix2(Shape2(3,3));
-		matrix1.init(1);
-		matrix2.init(3);
-	
-		int size = matrix1.size();			// number of array elements
-		for (int i=0; i < size; i++) {
-			matrix1[i] += matrix2[i];
-		}
-	\endcode
+    \dontinclude transpose.cxx
+    \skip transposing a 5D array
+    \until std::endl
+    \until std::endl
 
-	Be careful: The StridedScanOrderIterator doesn't check if the matrices' shapes match
-    to each other.
-
-	\code
-	    vigra::MultiArray<2, int> matrix32(Shape2(2,3));
-	    vigra::MultiArray<2, int> matrix23(Shape2(3,2));
-	    matrix32.init(1);
-        matrix23.init(3);
-	
-	    int size = matrix32.size();			// number of array elements
-	    for (int i=0; i < size; i++) {
-		    matrix32[i] += matrix23[i];
-        }
-	\endcode
-
-	<B> This implementation works but it's probably not what you're mathematically intending
-    to do! </B>
-
-    By the way: VIGRA provides the += Operator for this purpose and throws an exception if 
-    the matrix-sizes don't match:
-
-    \code
-        matrix1 += matrix2;                   // works fine!
-        matrix32 += matrix23;                 // error: wrong matrix sizes!
-    \endcode
-
-    For further mathematical implementations see \ref MultiMathModule .
-
-    VIGRA's scan order is similar to the NumPy-method <dfn> array.flatten </dfn>. You use it, 
-    to copy a multidimensional array into an one-dimensional array. The only
-    difference is that NumPy uses "C-order" (that means the outmost dimension first), but
-    VIGRA from first to last dimension. A method like flatten can be implemented in VIGRA like
-    this:
-
-    \code
-        // initialize array for flattening
-        // set first row of matrix23 to 1 2 3, second row to 4 5 6
-        count = 0;
-        for (iter = matrix23.begin(); iter != matrix23.end(); iter++) {
-            *iter = count++;
-        }
-
-        // flatten an array in scan order
-        // create 1D-array of appropriate size
-        vigra::MultiArray<1, int> flatArray(Shape1(matrix23.size()));
-        // copy 2D-array into 1D-array
-        std::copy(matrix23.begin(), matrix23.end(), flatArray.begin());
-        
-        // print 1D-array on console; 
-        for (iter = flatArray.begin(); iter != flatArray.end(); iter++) {
-             std::cout << *iter << " ";
-        }
-        std::cout << std::endl;
-    \endcode
-
-    To show the difference between VIGRA and NumPy we'll add the NumPy output if we had
-    used the flatten-method to the output of the code above
+    The output is:
 
     \verbatim
-    flatarray - index     0       1       2       3       4       5 
-    -----------------------------------------------------------------
-    VIGRA-output:         0       1       2       3       4       5
-    matrix23 - index    [0,0]   [1,0]   [2,0]   [0,1]   [1,1]   [2,1]
-    -----------------------------------------------------------------
-    NumPy-output:         0       3       1       4       2       5
-    matrix23 - index    [0,0]   [0,1]   [1,0]   [1,1]   [2,0]   [2,1]
+    Shape of Array5D:
+    12345
+    Shape of transposed Array5D:
+    54321
     \endverbatim
 
-    However, NumPy's flat-method returns an iterator like matrix23.begin() in VIGRA.
+    <B>Remark:</B> You probably think, that the transpose-method is quite inefficient because 
+    every array element has to be copied. This not true. For a transposed view of an array, 
+    you just need to change the strides.
 
-    To change the direction of the StridedScanOrderIterator, look at the transpose-function
-    in \ref ImportantMethods
+    An image can be transposed like this:
+
+    \include transpose_image_tutorial.cxx
+
+    The result is:
+
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD>\image html lenna_transposed.gif "output file" </TD>
+    </TR>
+    </Table>
+
+    In VIGRA, there is already a method <dfn>vigra::transposeImage(...)</dfn>. The difference
+    is, that transposeImage changes the whole image data, whereas transpose just changes the
+    strides.
+
+    Transposing an array changes the direction of the StridedScanOrderIterator. Imagine a 3x4-
+    matrix. ScanOrder means that we iterate from left to right, row by row. Now, let's 
+    transpose the matrix to a 4x3-matrix. If this transposed array is just a View and we 
+    iterate using ScanOrder, it means that we iterate top to bottom, column by column in the 
+    original array.
+
+    <hr>
+
+    <h2> permuteDimensions(vector) / transpose(vector) </h2>
+
+    <B> Note: </B>
+    The usage of <dfn> permuteDimensions() </dfn> and <dfn> transpose() </dfn> with a vector
+    argument is completely equivalent.
+
+    An augmentation of transposing an array is to permute the dimensions by an arbitrary
+    permutation. In two dimensions, transpose and permuteDimensions are equal.
+    The method needs a vector that contains the permutation. The length of the vector is
+    equal to the number of array dimensions. The first value of the vector contains the
+    dimension of the original array that should be now the first dimension and so on. In the
+    following example we want to permute an array of shape (1,2,3,4) to an array of shape
+    (2,3,4,1). Remember, that VIGRA counts the dimensions from 0:
+
+    \include permute.cxx
+
+    The output is:
+
+    \verbatim
+    Shape of intarray:
+    1234
+    Shape of permuted intarray:
+    2341
+    \endverbatim
+
+    
 */
 
-/** \page ImageInputOutput Image Input Output 
+/** \example mirror.cxx
+    Mirror an image file (horizontal or vertical)
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+/** \example subimage_tutorial.cxx
+    Create a half-sized subimage
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+
+/** \page ImageInputOutputTutorial Image Input Output 
 
     In this chapter we'd like to show you how to import and export an image with Vigra. If you
     you want to import an image from disk and enquire about its properties, you must use an 
