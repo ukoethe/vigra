@@ -235,9 +235,9 @@ class Processor<ClassificationTag, LabelType, T1, C1, T2, C2>
 
     /** Access processed labels
      */
-    MultiArrayView<2, LabelInt>& response()
+    MultiArrayView<2, LabelInt> response()
     {
-        return intLabels_;
+        return MultiArrayView<2, LabelInt>(intLabels_);
     }
 
     /** Access processed strata

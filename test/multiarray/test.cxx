@@ -383,7 +383,7 @@ public:
         }
         catch(vigra::ContractViolation & c)
         {
-            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &) size mismatch");
+            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &): shape mismatch");
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }

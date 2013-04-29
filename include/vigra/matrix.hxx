@@ -126,7 +126,7 @@ class Matrix
   public:
     typedef Matrix<T, ALLOC>                        matrix_type;
     typedef TemporaryMatrix<T, ALLOC>               temp_type;
-    typedef MultiArrayView<2, T, UnstridedArrayTag> view_type;
+    typedef MultiArrayView<2, T>                    view_type;
     typedef typename BaseType::value_type           value_type;
     typedef typename BaseType::pointer              pointer;
     typedef typename BaseType::const_pointer        const_pointer;

@@ -1065,8 +1065,8 @@ class HDF5File
             whose indices represent the 'x'-, 'y'-, and 'z'-axis in that order, is reversed
             upon writing to an HDF5 file, i.e. in the file the axis order is 'z', 'y', 'x'. 
         */
-    template<unsigned int N, class T>
-    inline void write(std::string datasetName, const MultiArrayView<N, T, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
+    template<unsigned int N, class T, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, T, Stride> & array, int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1095,8 +1095,8 @@ class HDF5File
             whose indices represent the 'x'-, 'y'-, and 'z'-axis in that order, is reversed
             upon writing to an HDF5 file, i.e. in the file the axis order is 'z', 'y', 'x'. 
         */
-    template<unsigned int N, class T>
-    inline void write(std::string datasetName, const MultiArrayView<N, T, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
+    template<unsigned int N, class T, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, T, Stride> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1125,8 +1125,8 @@ class HDF5File
     }
 
     // non-scalar (TinyVector) and unstrided multi arrays
-    template<unsigned int N, class T, int SIZE>
-    inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
+    template<unsigned int N, class T, int SIZE, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array, int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1138,8 +1138,8 @@ class HDF5File
         write_(datasetName, array, detail::getH5DataType<T>(), SIZE, chunkSize, compression);
     }
 
-    template<unsigned int N, class T, int SIZE>
-    inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
+    template<unsigned int N, class T, int SIZE, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1178,8 +1178,8 @@ class HDF5File
     }
 
     // non-scalar (RGBValue) and unstrided multi arrays
-    template<unsigned int N, class T>
-    inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array, int iChunkSize = 0, int compression = 0)
+    template<unsigned int N, class T, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, Stride> & array, int iChunkSize = 0, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1191,8 +1191,8 @@ class HDF5File
         write_(datasetName, array, detail::getH5DataType<T>(), 3, chunkSize, compression);
     }
 
-    template<unsigned int N, class T>
-    inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
+    template<unsigned int N, class T, class Stride>
+    inline void write(std::string datasetName, const MultiArrayView<N, RGBValue<T>, Stride> & array, typename MultiArrayShape<N>::type chunkSize, int compression = 0)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1844,12 +1844,15 @@ class HDF5File
 
         /* low-level write function to write vigra MultiArray data as an attribute
          */
-    template<unsigned int N, class T>
+    template<unsigned int N, class T, class Stride>
     void write_attribute_(std::string name, const std::string & attribute_name,
-                          const MultiArrayView<N, T, UnstridedArrayTag> & array,
+                          const MultiArrayView<N, T, Stride> & array,
                           const hid_t datatype, 
                           const int numBandsOfType)
     {
+        vigra_precondition(array.isUnstrided(),
+            "HDF5File::write_attribute(): array must be unstrided.");
+
         // shape of the array. Add one dimension, if array contains non-scalars.
         ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
         std::reverse(shape.begin(), shape.end());
@@ -1916,9 +1919,13 @@ class HDF5File
 
         /* low-level read function to write vigra MultiArray data from attributes
          */
-    template<unsigned int N, class T>
-    inline void read_attribute_(std::string datasetName, std::string attributeName, MultiArrayView<N, T, UnstridedArrayTag> array, const hid_t datatype, const int numBandsOfType)
+    template<unsigned int N, class T, class Stride>
+    inline void read_attribute_(std::string datasetName, std::string attributeName, 
+                                MultiArrayView<N, T, Stride> array, const hid_t datatype, const int numBandsOfType)
     {
+        vigra_precondition(array.isUnstrided(),
+            "HDF5File::read_attribute(): array must be unstrided.");
+
         std::string dataset_path = get_absolute_path(datasetName);
         // open Attribute handle
         std::string message = "Error: could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
@@ -1983,14 +1990,17 @@ class HDF5File
 
         /* low-level write function to write vigra unstrided MultiArray data
         */
-    template<unsigned int N, class T>
+    template<unsigned int N, class T, class Stride>
     inline void write_(std::string &datasetName, 
-                       const MultiArrayView<N, T, UnstridedArrayTag> & array, 
+                       const MultiArrayView<N, T, Stride> & array, 
                        const hid_t datatype, 
                        const int numBandsOfType, 
                        typename MultiArrayShape<N>::type &chunkSize, 
                        int compressionParameter = 0)
     {
+        vigra_precondition(array.isUnstrided(),
+            "HDF5File::write(): array must be unstrided.");
+
         std::string groupname = SplitString(datasetName).first();
         std::string setname = SplitString(datasetName).last();
 
@@ -2086,11 +2096,14 @@ class HDF5File
 
         /* low-level read function to read vigra unstrided MultiArray data
          */
-    template<unsigned int N, class T>
+    template<unsigned int N, class T, class Stride>
     inline void read_(std::string datasetName, 
-                      MultiArrayView<N, T, UnstridedArrayTag> array, 
+                      MultiArrayView<N, T, Stride> array, 
                       const hid_t datatype, const int numBandsOfType)
     {
+        vigra_precondition(array.isUnstrided(),
+            "HDF5File::read_attribute(): array must be unstrided.");
+
         //Prepare to read without using HDF5ImportInfo
         ArrayVector<hsize_t> dimshape = getDatasetShape(datasetName);
 
