@@ -4,18 +4,13 @@
 
 using namespace vigra;
 
-void print(vigra::MultiArrayView<2,int, StridedArrayTag> array) {
-    vigra::MultiArrayView<2,int>::iterator iter;
-    for (iter = array.begin(); iter != array.end(); iter++) {
-        std::cout << *iter << " ";
-    }
-    std::cout << std::endl;
-}
-
-void print(vigra::MultiArrayView<3,int, StridedArrayTag> array) {
-    vigra::MultiArrayView<3,int>::iterator iter;
-    for (iter = array.begin(); iter != array.end(); iter++) {
-        std::cout << *iter << " ";
+template <unsigned int N, class T, class Stride>
+void print(MultiArrayView<N, T, Stride> array) 
+{
+    typedef typename MultiArrayView<N, T, Stride>::iterator iterator;
+    
+    for (iterator i = array.begin(); i != array.end(); ++i) {
+        std::cout << *i << " ";
     }
     std::cout << std::endl;
 }
@@ -23,17 +18,17 @@ void print(vigra::MultiArrayView<3,int, StridedArrayTag> array) {
 int main (int argc, char ** argv) {
 
     // initialize array
-    vigra::MultiArray<2, int> intarray(Shape2(4,4));
+    MultiArray<2, int> intarray(Shape2(4,4));
     for (int i = 0; i < intarray.size(); i++) {
-        intarray[i] = i % intarray.size(0);
+        intarray[i] = i % intarray.shape(0);
     }
 
     std::cout << "intarray:\n";
     print(intarray);
 
     // create a transposed array and a transposed view
-    vigra::MultiArray<2, int> transarray = intarray.transpose();
-    vigra::MultiArrayView<2, int, StridedArrayTag> transarrayView = intarray.transpose();
+    MultiArray<2, int> transarray = intarray.transpose();
+    MultiArrayView<2, int> transarrayView = intarray.transpose();
 
     std::cout << "transarray:\n";
     print(transarray);
@@ -50,27 +45,37 @@ int main (int argc, char ** argv) {
     std::cout << "intarray after setting transarrayView to 5:\n";
     print(intarray);
 
-
     // transposing a 5D array
     // instantiate 5D array
-    vigra::MultiArray<5, int> array5D(Shape5(1,2,3,4,5));
+    MultiArray<5, int> array5D(Shape5(1,2,3,4,5));
 
     // print the shape of the original array
     std::cout << "Shape of Array5D:\n";
-    for (int i = 0; i < array5D.shape().size(); i++) {
-        std::cout << array5D.size(i);
+    for (int i = 0; i < 5; i++) {
+        std::cout << array5D.shape(i);
     }
     std::cout << std::endl;
 
     // transpose array
-    array5D = array5D.transpose();
+    MultiArrayView<5, int> arrayview5D = array5D.transpose();
 
     // print the shape of transposed array
     std::cout << "Shape of transposed Array5D:\n";
-    for (int i = 0; i < array5D.shape().size(); i++) {
-        std::cout << array5D.size(i);
+    for (int i = 0; i < 5; i++) {
+        std::cout << arrayview5D.shape(i);
     }
     std::cout << std::endl;
+    
+    // transpose to an explicitly specified axis permutation
+    MultiArrayView<5, int> arrayview5D_permuted = array5D.permuteDimensions(Shape5(2,1,3,4,0));
+
+    // print the shape of transposed array
+    std::cout << "Shape of transposed Array5D:\n";
+    for (int i = 0; i < 5; i++) {
+        std::cout << arrayview5D_permuted.shape(i);
+    }
+    std::cout << std::endl;
+    
 
     return 0;
 }

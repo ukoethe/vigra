@@ -924,8 +924,9 @@ public:
 
             <ul>
             <li> When this <tt>MultiArrayView</tt> does not point to valid data
-                 (e.g. after default construction), it becomes a copy of \a rhs.
-            <li> When the shapes of the two arrays match, the array contents are copied.
+                 (e.g. after default construction), it becomes a new view of \a rhs.
+            <li> Otherwise, when the shapes of the two arrays match, the contents 
+                 (i.e. the elements) of \a rhs are copied.
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
          */
@@ -943,14 +944,15 @@ public:
         return *this;
     }
 
-        /** Assignment of a differently typed MultiArrayView. Fails with
-            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+        /** Assignment of a differently typed MultiArrayView. It copies the elements
+            of\a rhs or fails with <tt>PreconditionViolation</tt> exception when 
+            the shapes do not match.
          */
     template<class U, class C1>
     MultiArrayView & operator=(MultiArrayView<N, U, C1> const & rhs)
     {
         vigra_precondition(this->shape() == rhs.shape(),
-            "MultiArrayView::operator=() size mismatch.");
+            "MultiArrayView::operator=(): shape mismatch.");
         this->copyImpl(rhs);
         return *this;
     }
@@ -1948,7 +1950,7 @@ MultiArrayView <N, T, Stride1>::assignImpl(MultiArrayView<N, T, Stride2> const &
     if(m_ptr == 0)
     {
         vigra_precondition(rhs.checkInnerStride(Stride1()),
-            "MultiArrayView::operator=(MultiArrayView const &): cannot assign strided array to unstrided view.");
+            "MultiArrayView<..., UnstridedArrayTag>::operator=(MultiArrayView const &): cannot create unstrided view from strided array.");
                            
         m_shape  = rhs.shape();
         m_stride = rhs.stride();
