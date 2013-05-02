@@ -2,19 +2,30 @@
     
     In this chapter we'll use VIGRA's methods for some applications of Image Processing.
 
-    <h2> Inverting </h2>
+    \section CallingConventions Calling Conventions
+    
+    VIGRA's image processing functions follow a uniform calling convention: The argument list start with the input images or arrays, followed by the output images or arrays, followed by the function's parameters (if any). Some functions additionally support an option object that allows more fine-grained control of the function's actions and must be passed as the last argument.
+    
+    Depending on the kind of function (and mainly for historical reasons), the input and output arrays must be specified in different ways:
+    
+    <ul>
+    <li> Functions that can only act on 2-dimensional images usually contain the term "Image" in their name and are implemented in terms of \ref ImageIterators. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. We will see many examples of this calling conventions below, and a detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories.
+    <li> Functions that can act on arbitrary many dimensions usually contain the term "multi" in their name and are implemented in terms of hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories.
+    <li> Functions that use 2-dimensional arrays as matrices (rather than images), are implemented in terms of \ref vigra::MultiArrayView. You pass the arrays to these functions directly, without any convenience function.
+    </ul>
+    
+    \section ImageInversion Inverting an Image
+    
     Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's 
-    value from white (255). 
-    The namespace \ref MultiMathModule provides element-wise operations on a MultiArray.
-    To avoid confusion you always have to use the using namespace command before working with
-    \ref MultiMathModule. By a given imageArray inverting works as follows:
+    value from white (255). This simple task doesn't need an explicit function call at all, but is best solved with a arithmetic expression implemented in namespace \ref MultiMathModule. To avoid possible overload ambiguities, 
+    you must explicitly activate array arithmetic via the command <tt>using namespace vigra::multi_math</tt> before use. To invert <tt>imageArray</tt> and overwrite its original contents, you write:
 
     \code
     using namespace vigra::multi_math;
     imageArray = 255-imageArray;
     \endcode
 
-    See here a whole example:
+    See here for a complete example:
     <a href="invert_tutorial_8cxx-example.html">invert_tutorial.cxx</a>
 
     This is the result:
@@ -27,48 +38,52 @@
 
     <hr>
 
-    <h2> Dissolving </h2>
-    In this example, we have two input images and want to dissolve them. In the dissolved 
-    output image every pixel value is the mean of the two appropriate original pixels.
+    \section ImageBlending Image Blending
+    
+    In this example, we have two input images and want to blend them into one another. 
+    In the combined output image every pixel value is the mean of the two appropriate original pixels. This is also best solved with array arithmetic:
 
     \code
     using namespace vigra::multi_math;
     exportArray = 0.5*imageArray1 + 0.5*imageArray2;
     \endcode
 
-    Since it is not guaranteed that the two input images have the same size, we first
-    determine the maximum possible size of the dissolved image. With the help of subarray-
-    method we just dissolve the appropriate parts of the two images. These parts (subimages)
-    are aligned in the center of the original images.
+    Since it is not guaranteed that the two input images have the same shape, we first
+    determine the maximum possible shape of the blended image, which equals the minimum 
+    size along each axis. With the help of subarray-method we just blend the appropriate 
+    parts of the two images. These parts (subimages) are aligned around the centers 
+    of the original images.
 
     Here's the code:
     <a href="dissolve_8cxx-example.html">dissolve.cxx</a>
 
     And here are the results:
-    <Table cellspacing = "10">
+    <table cellspacing = "10">
     <TR valign = "bottom">
     <TD> \image html lenna_color_small.gif "input file 1" </TD>
     <TD> \image html oi_small.jpg "input file 2" </TD>
     <TD> \image html dissolved_color.gif "dissolved output file" </TD>
-    <TR>
-    </Table>
+    </TR>
+    </table>
 
     <hr>
 
-    <h2> Composite </h2>
+    \section CompositeImage Creating a Composite Image
+    
     Let's come to a little gimmick. Given one input image we want to create a composite image 
-    of 4 images reflected to each other. The result looks as if someone had put a mirror on the
-    right and lower edge of the input image. Two of Vigra's methods are enough for this
-    purpose: subarray and reflectImage (already mentioned in \ref ImportantMethods).
-    reflectImage needs some iterators, accessors and a reflection axis. The axis can either
-    be horizontal, vertical or both. Use reflectImage with srcImageRange and destImage.
+    of 4 images reflected with respect to each other. The result resembles the effect of a
+    kaleidoscope. Two of VIGRA's functions are sufficient for this purpose: \ref MultiArray_subarray 
+    and \ref reflectImage(). Input and output images of reflectImage() are specified by iterators
+    which are best created by the convenience functions srcImageRange() and destImage(). The third 
+    parameter specifies the desired reflection axis. The axis can either
+    be horizontal, vertical or both (as in this example):
 
     \code
-    vigra::reflectImage(srcImageRange(imageArray), destImage(exportArray), vigra::horizontal | vigra::vertical);
+    reflectImage(srcImageRange(inputArray), destImage(outputArray), vigra::horizontal | vigra::vertical);
     \endcode
 
     Here's the code:
-    <a href="dissolve_8cxx-example.html">composite.cxx</a>
+    <a href="composite_8cxx-example.html">composite.cxx</a>
 
     And here are the results:
     <Table cellspacing = "10">
@@ -80,10 +95,11 @@
 
     <hr>
 
-    <h2> Smoothing </h2>
-    There are a lot of different ways to smooth an image. Before we use VIGRA's methods, we 
-    want to write a smoothing code by our own. The idea is to choose a pixel and give it the
-    mean of the surrounding pixels in 3x3-box around the pixel as the new value.
+    \section SmoothingTutorial Smoothing
+    
+    There are many different ways to smooth an image. Before we use VIGRA's methods, we 
+    want to write a smoothing code of our own. The idea is to choose each pixel in turn and 
+    replace it with the mean of itself and the pixels in 3x3-box around it.
     MultiArray provides two useful methods: sum and size. If we want to calculate the mean of
     an array we need the sum of all elements and divide it by the number of elements (size).
     In our code we iterate over every pixel, look on the 3x3-box surrounding via subarray,

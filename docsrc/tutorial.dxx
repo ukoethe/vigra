@@ -5,11 +5,10 @@
     <ul style="list-style-image:url(documents/bullet.gif)">
     <li> \ref MultiDimensionalArrayTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA's most important data structure</em>
-        
         <ul style="list-style-image:url(documents/bullet.gif)">
         <li> \ref MultiArrayBasics
-        <li> \ref MultiArrayScanOrder
         <li> \ref MultiArrayIndexing
+        <li> \ref MultiArrayScanOrder
         <li> \ref MultiArrayMethods
             <ul type="disc">
             <li> \ref MultiArrayViewBasics
@@ -19,10 +18,22 @@
             </ul>
         </ul>
         
-    <li> \ref MultiMathModule "Calculating with Arrays"
-        <BR>&nbsp;&nbsp;&nbsp;<em>element-wise operations on MultiArrays</em>
+    <li> \ref MultiArrayArithmeticTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>mathematical operations on MultiArrays</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref MultiMathModule "Array Experessions"
+        <li> \ref LinearAlgebraModule "Linear Algebra"
+        <li> \ref MultiPointoperators "STL-style transformation algorithms"
+        <li> \ref FeatureAccumulators
+        </ul>
+        
     <li> \ref ImageInputOutputTutorial
-        <BR>&nbsp;&nbsp;&nbsp;<em>importing and exporting images</em>
+        <BR>&nbsp;&nbsp;&nbsp;<em>importing and exporting images and arbitrary-dimensional arrays</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref Impex2D
+        <li> \ref ImpexND
+        </ul>
+
     <li> \ref ImageProcessingTutorial
         <BR>&nbsp;&nbsp;&nbsp;<em>some applications of VIGRA's methods</em>
     </ul>
@@ -33,8 +44,8 @@
     <h2>Section Contents</h2>
     <ul style="list-style-image:url(documents/bullet.gif)">
     <li> \ref MultiArrayBasics
-    <li> \ref MultiArrayScanOrder
     <li> \ref MultiArrayIndexing
+    <li> \ref MultiArrayScanOrder
     <li> \ref MultiArrayMethods
         <ul type="disc">
         <li> \ref MultiArrayViewBasics
@@ -119,9 +130,11 @@
         std::cout << image[Shape2(x,y)] << std::endl;  // output: 3
     \endcode
 
-    <B>Important Remark:</B> Notice that VIGRA follows the mathematical convention of the index order: dimension 0 corresponds to the x (horizontal) coordinate, dimension 2 to the y (vertical) coordinate, and so on. Accordingly, the dimension 0 is changing fastest in memory: when we increase x by one, we get to the next memory location. In matrix jargon, this is also known as <i>Fortran order</i>. Many image processing libraries (e.g. <a href="http://www.imagemagick.org/">Image Magick</a>, <a href="http://opencv.willowgarage.com/">OpenCV</a>, and <a href="http://qt-project.org/">Qt</a>) use the same convention. However, others like Matlab and numpy, use the reverse order (so called <i>C order</i>). Don't be confused!
+    <B>Important Remark:</B> Notice that VIGRA follows the mathematical convention of the index order: dimension 0 corresponds to the x (horizontal) coordinate, dimension 1 to the y (vertical) coordinate, and so on. Accordingly,  dimension 0 is changing fastest in memory: when we increase x by one, we get to the next memory location. In matrix jargon, this is also known as <i>Fortran order</i>. Many image processing libraries (e.g. <a href="http://www.imagemagick.org/">Image Magick</a>, <a href="http://opencv.willowgarage.com/">OpenCV</a>, and <a href="http://qt-project.org/">Qt</a>) use the same convention. However, others like Matlab and numpy, use the reverse order (so called <i>C order</i>). Don't be confused!
     
-    In some circumstances, it is more convenientto provide the coordinates individually rather than with a shape object. This is possible with round brackets (x,y):
+    Internally, shape objects are implemented in terms of the powerful \ref vigra::TinyVector class. This means that shape objects support the usual mathematical operations like addition, multiplication and scalar products. Coordinate computations can thus be performed on entire coordinate objects at once - there is no need to manipulate the individual coordinates separately.
+    
+    Nonetheless, in some circumstances it is more convenient to provide coordinates individually rather than in a shape object. This is possible with round brackets (x,y):
 
     \code
         // access via individual coordinates
@@ -151,7 +164,7 @@
             image[p] = 7;
     \endcode
 
-    Later in this tutorial, we will discuss more powerful methods to access certain parts of an array.
+    We will discuss more powerful methods to access certain parts of an array in section \ref MultiArrayMethods.
 
     \section MultiArrayScanOrder One-dimensional Indexing and Scan-Order Iterator
 	
@@ -267,7 +280,7 @@
 
     This part of the tutorial explains important methods of MultiArray. However, before we proceed, we need to introduce the class \ref vigra::MultiArrayView.
     
-    \subsection MultiArrayViewBasics MultiArrayView
+    \subsection MultiArrayViewBasics The MultiArrayView Interface
     
     A \ref vigra::MultiArrayView has the same interface as a MultiArray (with the exception of <tt>reshape()</tt> and <tt>swap()</tt>), but it doesn't own its data. Instead, it provides a <i>view</i> onto the data of some other array. In contrast, a MultiArray owns its data and is responsible for freeing it in the destructor. MultiArrays are automatically converted into MultiArrayViews when needed.
     
@@ -624,10 +637,10 @@
     The handling of <b>color images</b> is exactly the same, but instead of instantiating
     a <tt>vigra::MultiArray<2, unsigned char></tt> you need a
     <tt> vigra::MultiArray<2, vigra::RGBValue<unsigned char> > </tt> array as described in
-    \ref MultiArrayBasics.
+    \ref MultiArrayBasics. Images with alpha channel are supported by \ref importImageAlpha() and exportImageAlpha().
 
-    Note that image processing often requires more complicated calculations as seen in these examples.
-    In this case, it is better to import and convert the data into a <tt>float</tt> array (i.e. <tt>vigra::MultiArray<2, float></tt>) instead of the <tt>unsigned char</tt> type to minimize rounding errors. When a file is read, the conversion is automatically performed by the importImage() function. When an array is to be exported, the handling of <tt>float</tt> depends on the file format: If the file format supports float (currently: TIFF and VIFF), the data are written verbatim (unless this is explicitly overridden, see below). Otherwise, the data are mapped to <tt>unsigned char</tt> via a linear transform of the orginal range, followed by rounding (use \ref vigra::linearRangeMapping() to override this behavior by an explicit user-defined mapping).
+    Note that image processing often requires more complicated calculations than in these examples.
+    In this case, it is better to import and convert the data into a <tt>float</tt> array (i.e. <tt>vigra::MultiArray<2, float></tt>) instead of the simple <tt>unsigned char</tt> type in order to minimize rounding errors. When a file is imported into such an array, the conversion is automatically performed by the importImage() function. When an array is to be exported, the handling of <tt>float</tt> depends on the file format: If the file format supports float (currently: TIFF and VIFF), the data are written verbatim (unless this is explicitly overridden, see below). Otherwise, the data are mapped to <tt>unsigned char</tt> via a linear transform of the orginal range, followed by rounding (use \ref vigra::linearRangeMapping() to override this behavior by an explicit user-defined mapping).
 
     The <tt>ImageExportInfo</tt> class provides a number of additional methods to <b>customize data export</b>, including:
     
@@ -654,4 +667,20 @@
     <li> Raw data must be accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) and can then be read by an overload of \ref vigra::importVolume().
     <li> Multipage TIFF can be imported one page at a time by constructing <tt>vigra::ImageImportInfo</tt> objects with the appropriate page number in a loop. 
     </ul>
+*/
+
+/** \page MultiArrayArithmeticTutorial Mathematics with Multi-Dimensional Arrays
+    
+    VIGRA supports various way to perform mathematical operations (arithmetic and algebraic functions, linear alebra) on arrays. Most of these functions operate element-wise.
+    
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref MultiMathModule "Array Expressions"
+        <BR>The \ref MultiMathModule "vigra::multi_math" module overloads the usual arithmetic operators and algebraic functions for array arguments, similar to Matlab and numpy. This leads to very efficient and readable code.
+    <li> \ref LinearAlgebraModule "Linear Algebra"
+        <BR>The \ref LinearAlgebraModule "vigra::linalg" module implements linear algebra for 2-dimensional arrays. The main difference to multi_math (besides a different internal implementation) is that the multiplication operator realizes matrix multiplication here. In addition, this modul implements linear system solvers, eigenvalue decomposition, and other standard matrix algorithms.
+    <li> \ref MultiPointoperators "STL-style transformation algorithms"
+        <BR>VIGRA also provides functions like <tt>transformMultiArray()</tt> that generalize the corresponding STL functions to multiple dimensions. The functors needed for these functions are most easily created with the \ref FunctorExpressions module, VIGRA's "lambda library". This approach offers more flexibility than the array expressions above.
+    <li> \ref FeatureAccumulators
+        <BR>The \ref FeatureAccumulators "vigra::acc" module provides powerful and efficient methods to compute statistics accross entire arrays or arbitrary subparts of them.
+    </ul>    
 */
