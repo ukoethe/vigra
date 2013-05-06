@@ -889,6 +889,20 @@ public:
         : m_shape (diff_zero_t(0)), m_stride (diff_zero_t(0)), m_ptr (0)
     {}
 
+        /** construct from another array view.
+            Throws a precondition error if this array has UnstridedArrayTag, but the 
+            innermost dimension of \a other is strided.
+         */
+    template <class Stride>
+    MultiArrayView (const MultiArrayView<N, T, Stride> &other)
+    : m_shape (other.shape()),
+      m_stride (other.stride()),
+      m_ptr (other.data())
+    {
+        vigra_precondition(other.checkInnerStride(StrideTag()),
+            "MultiArrayView<..., UnstridedArrayTag>(MultiArrayView const &): cannot create unstrided view from strided array.");
+    }
+
         /** construct from shape and pointer
          */
     MultiArrayView (const difference_type &shape, pointer ptr)
@@ -2411,13 +2425,14 @@ The template parameters are as follows
 Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
-class MultiArray : public MultiArrayView <N, T, UnstridedArrayTag>
+class MultiArray 
+: public MultiArrayView <N, T, StridedArrayTag>
 {
   public:
 
         /** the view type associated with this array.
          */
-    typedef MultiArrayView <N, T, UnstridedArrayTag> view_type;
+    typedef MultiArrayView <N, T, StridedArrayTag> view_type;
     
     using view_type::actual_dimension;
 
@@ -2464,13 +2479,13 @@ class MultiArray : public MultiArrayView <N, T, UnstridedArrayTag>
         /** traverser type
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type
+        StridedArrayTag>::template Traverser <N, T, T &, T *>::type
     traverser;
 
         /** traverser type to const data
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
+        StridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
     const_traverser;
 
         /** sequential (random access) iterator type
@@ -3331,10 +3346,12 @@ maskImage(MultiArrayView<2, PixelType, UnstridedArrayTag> const & img)
     The \ref vigra::BasicImageView will have the same <tt>value_type </tt>
     as the original \ref vigra::MultiArrayView.
 */
-template <class T>
+template <class T, class Stride>
 BasicImageView <T>
-makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> const &array)
+makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
 {
+    vigra_precondition(array.isUnstrided(),
+       "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1));
 }
@@ -3363,12 +3380,14 @@ makeBasicImageView (MultiArray <3, T> const &array)
     the data array as a 2-dimensional array with value_type
     <tt>RGBValue<T></tt>.
 */
-template <class T>
+template <class T, class Stride>
 BasicImageView <RGBValue<T> >
-makeRGBImageView (MultiArray<3, T> const &array)
+makeRGBImageView (MultiArrayView<3, T, Stride> const &array)
 {
-    vigra_precondition (
-        array.shape (0) == 3, "makeRGBImageView(): array.shape(0) must be 3.");
+    vigra_precondition(array.shape (0) == 3, 
+       "makeRGBImageView(): array.shape(0) must be 3.");
+    vigra_precondition(array.isUnstrided(),
+       "makeRGBImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
     return BasicImageView <RGBValue<T> > (
         reinterpret_cast <RGBValue <T> *> (array.data ()),
         array.shape (1), array.shape (2));
