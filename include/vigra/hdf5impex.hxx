@@ -1917,65 +1917,7 @@ class HDF5File
                           const std::string & attribute_name,
                           const MultiArrayView<N, T, Stride> & array,
                           const hid_t datatype, 
-                          const int numBandsOfType)
-    {
-        // shape of the array. Add one dimension, if array contains non-scalars.
-        ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
-        std::reverse(shape.begin(), shape.end());
-        if(numBandsOfType > 1)
-            shape.push_back(numBandsOfType);
-
-        HDF5Handle dataspace(H5Screate_simple(shape.size(),
-                                              shape.begin(), NULL),
-                             &H5Sclose, "HDF5File::writeAttribute(): Can not"
-                                        " create dataspace.");
-
-        std::string errorMessage ("HDF5File::writeAttribute(): can not find "
-                                  "object '" + name + "'.");
-
-        H5O_type_t h5_type = get_object_type_(name);
-        bool is_group = h5_type == H5O_TYPE_GROUP;
-        if (!is_group && h5_type != H5O_TYPE_DATASET)
-            vigra_precondition(0, "HDF5File::writeAttribute(): object \""
-                                   + name + "\" is neither a group nor a "
-                                   "dataset.");
-        // get parent object handle
-        HDF5Handle object_handle(is_group
-                                     ? openCreateGroup_(name)
-                                     : getDatasetHandle_(name),
-                                 is_group
-                                     ? &H5Gclose
-                                     : &H5Dclose,
-                                 errorMessage.c_str());
-        // create / open attribute
-        bool exists = existsAttribute(name, attribute_name);
-        HDF5Handle attributeHandle(exists
-                                   ? H5Aopen(object_handle,
-                                             attribute_name.c_str(),
-                                             H5P_DEFAULT)
-                                   : H5Acreate(object_handle,
-                                               attribute_name.c_str(), datatype,
-                                               dataspace, H5P_DEFAULT,
-                                               H5P_DEFAULT),
-                                   &H5Aclose,
-                                   "HDF5File::writeAttribute(): Can not create"
-                                   " attribute.");
-        herr_t status = 0;
-        if(array.isUnstrided())
-        {
-            // write the data directly from the array data buffer
-            status = H5Awrite(attributeHandle, datatype, array.data());
-        }
-        else
-        {
-            // write the data via an unstrided copy
-            // (we assume that attributes are small arrays, so that the wasted memory is uncritical)
-            MultiArray<N, T> buffer(array);
-            status = H5Awrite(attributeHandle, datatype, buffer.data());
-        }
-        vigra_postcondition(status >= 0,
-            "HDF5File::writeAttribute(): write to attribute '" + attribute_name + "' via H5Awrite() failed.");
-    }
+                          const int numBandsOfType);
 
         /* Write single value attribute
            This function allows to write data of atomic datatypes (int, long, double)
@@ -1998,62 +1940,10 @@ class HDF5File
         /* low-level read function to read vigra MultiArray data from attributes
          */
     template<unsigned int N, class T, class Stride>
-    inline void read_attribute_(std::string datasetName, 
-                                std::string attributeName, 
-                                MultiArrayView<N, T, Stride> array, 
-                                const hid_t datatype, const int numBandsOfType)
-    {
-        std::string dataset_path = get_absolute_path(datasetName);
-        // open Attribute handle
-        std::string message = "Error: could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-        HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
-
-        // get Attribute dataspace
-        message = "Error: could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
-        HDF5Handle attr_dataspace_handle (H5Aget_space(attr_handle),&H5Sclose,message.c_str());
-
-        // obtain Attribute shape
-        int raw_dims = H5Sget_simple_extent_ndims(attr_dataspace_handle);
-        int dims = std::max(raw_dims, 1); // scalar attributes may be stored with raw_dims==0
-        ArrayVector<hsize_t> dimshape(dims);
-        if(raw_dims > 0)
-            H5Sget_simple_extent_dims(attr_dataspace_handle, dimshape.data(), NULL);
-        else
-            dimshape[0] = 1;
-        
-        // invert the dimensions to guarantee VIGRA-compatible order
-        std::reverse(dimshape.begin(), dimshape.end());
-
-        int offset = (numBandsOfType > 1)
-                        ? 1
-                        : 0;
-        message = "Error: Array dimension disagrees with dataset dimension.";
-        // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-        vigra_precondition((N + offset) == MultiArrayIndex(dims), message);
-
-        for(int k=offset; k < (int)dimshape.size(); ++k)
-            vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
-                               "Error: Array shape disagrees with dataset shape");
-
-        herr_t status = 0;
-        if(array.isUnstrided())
-        {
-            // when the array is unstrided, we can read the data directly into the array buffer
-            status = H5Aread( attr_handle, datatype, array.data());
-        }
-        else
-        {
-            // otherwise, we need an unstrided extra buffer ...
-            // (we assume that attributes are small arrays, so that the wasted memory is uncritical)
-            MultiArray<N, T> buffer(array.shape());
-            status = H5Aread( attr_handle, datatype, buffer.data() );
-            // ... and must copy the values
-            if(status >= 0)
-                array = buffer;
-        }
-        vigra_postcondition(status >= 0,
-            "HDF5File::readAttribute(): read from attribute '" + attributeName + "' via H5Aread() failed.");
-    }
+    void read_attribute_(std::string datasetName, 
+                         std::string attributeName, 
+                         MultiArrayView<N, T, Stride> array, 
+                         const hid_t datatype, const int numBandsOfType);
 
         /* Read a single value attribute.
            This functions allows to read a single value attribute of atomic datatype (int, long, double)
@@ -2168,6 +2058,8 @@ class HDF5File
                     MultiArrayView<N, T, Stride> &array, 
                     const hid_t datatype, const int numBandsOfType);
 };  /* class HDF5File */
+
+/********************************************************************/
 
 template<unsigned int N, class T, class Stride>
 void HDF5File::write_(std::string &datasetName, 
@@ -2306,6 +2198,8 @@ void HDF5File::write_(std::string &datasetName,
         "HDF5File::write(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
 }
 
+/********************************************************************/
+
 template<unsigned int N, class T, class Stride>
 void HDF5File::writeBlock_(std::string datasetName, 
                            typename MultiArrayShape<N>::type &blockOffset, 
@@ -2350,6 +2244,75 @@ void HDF5File::writeBlock_(std::string datasetName,
     vigra_postcondition(status >= 0,
         "HDF5File::writeBlock(): write to dataset '" + datasetName + "' via H5Dwrite() failed.");
 }
+
+/********************************************************************/
+
+template<unsigned int N, class T, class Stride>
+void HDF5File::write_attribute_(std::string name, 
+                                const std::string & attribute_name,
+                                const MultiArrayView<N, T, Stride> & array,
+                                const hid_t datatype, 
+                                const int numBandsOfType)
+{
+    // shape of the array. Add one dimension, if array contains non-scalars.
+    ArrayVector<hsize_t> shape(array.shape().begin(), array.shape().end());
+    std::reverse(shape.begin(), shape.end());
+    if(numBandsOfType > 1)
+        shape.push_back(numBandsOfType);
+
+    HDF5Handle dataspace(H5Screate_simple(shape.size(),
+                                          shape.begin(), NULL),
+                         &H5Sclose, "HDF5File::writeAttribute(): Can not"
+                                    " create dataspace.");
+
+    std::string errorMessage ("HDF5File::writeAttribute(): can not find "
+                              "object '" + name + "'.");
+
+    H5O_type_t h5_type = get_object_type_(name);
+    bool is_group = h5_type == H5O_TYPE_GROUP;
+    if (!is_group && h5_type != H5O_TYPE_DATASET)
+        vigra_precondition(0, "HDF5File::writeAttribute(): object \""
+                               + name + "\" is neither a group nor a "
+                               "dataset.");
+    // get parent object handle
+    HDF5Handle object_handle(is_group
+                                 ? openCreateGroup_(name)
+                                 : getDatasetHandle_(name),
+                             is_group
+                                 ? &H5Gclose
+                                 : &H5Dclose,
+                             errorMessage.c_str());
+    // create / open attribute
+    bool exists = existsAttribute(name, attribute_name);
+    HDF5Handle attributeHandle(exists
+                               ? H5Aopen(object_handle,
+                                         attribute_name.c_str(),
+                                         H5P_DEFAULT)
+                               : H5Acreate(object_handle,
+                                           attribute_name.c_str(), datatype,
+                                           dataspace, H5P_DEFAULT,
+                                           H5P_DEFAULT),
+                               &H5Aclose,
+                               "HDF5File::writeAttribute(): Can not create"
+                               " attribute.");
+    herr_t status = 0;
+    if(array.isUnstrided())
+    {
+        // write the data directly from the array data buffer
+        status = H5Awrite(attributeHandle, datatype, array.data());
+    }
+    else
+    {
+        // write the data via an unstrided copy
+        // (we assume that attributes are small arrays, so that the wasted memory is uncritical)
+        MultiArray<N, T> buffer(array);
+        status = H5Awrite(attributeHandle, datatype, buffer.data());
+    }
+    vigra_postcondition(status >= 0,
+        "HDF5File::writeAttribute(): write to attribute '" + attribute_name + "' via H5Awrite() failed.");
+}
+    
+/********************************************************************/
 
 template<unsigned int N, class T, class Stride>
 void HDF5File::read_(std::string datasetName, 
@@ -2464,6 +2427,8 @@ void HDF5File::read_(std::string datasetName,
         "HDF5File::read(): read from dataset '" + datasetName + "' via H5Dread() failed.");
 }
 
+/********************************************************************/
+
 template<unsigned int N, class T, class Stride>
 void HDF5File::readBlock_(std::string datasetName, 
                           typename MultiArrayShape<N>::type &blockOffset, 
@@ -2529,6 +2494,68 @@ void HDF5File::readBlock_(std::string datasetName,
     vigra_postcondition(status >= 0,
         "HDF5File::readBlock(): read from dataset '" + datasetName + "' via H5Dread() failed.");
 }
+
+/********************************************************************/
+
+template<unsigned int N, class T, class Stride>
+void HDF5File::read_attribute_(std::string datasetName, 
+                               std::string attributeName, 
+                               MultiArrayView<N, T, Stride> array, 
+                               const hid_t datatype, const int numBandsOfType)
+{
+    std::string dataset_path = get_absolute_path(datasetName);
+    // open Attribute handle
+    std::string message = "Error: could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+    HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
+
+    // get Attribute dataspace
+    message = "Error: could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+    HDF5Handle attr_dataspace_handle (H5Aget_space(attr_handle),&H5Sclose,message.c_str());
+
+    // obtain Attribute shape
+    int raw_dims = H5Sget_simple_extent_ndims(attr_dataspace_handle);
+    int dims = std::max(raw_dims, 1); // scalar attributes may be stored with raw_dims==0
+    ArrayVector<hsize_t> dimshape(dims);
+    if(raw_dims > 0)
+        H5Sget_simple_extent_dims(attr_dataspace_handle, dimshape.data(), NULL);
+    else
+        dimshape[0] = 1;
+    
+    // invert the dimensions to guarantee VIGRA-compatible order
+    std::reverse(dimshape.begin(), dimshape.end());
+
+    int offset = (numBandsOfType > 1)
+                    ? 1
+                    : 0;
+    message = "Error: Array dimension disagrees with dataset dimension.";
+    // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
+    vigra_precondition((N + offset) == MultiArrayIndex(dims), message);
+
+    for(int k=offset; k < (int)dimshape.size(); ++k)
+        vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
+                           "Error: Array shape disagrees with dataset shape");
+
+    herr_t status = 0;
+    if(array.isUnstrided())
+    {
+        // when the array is unstrided, we can read the data directly into the array buffer
+        status = H5Aread( attr_handle, datatype, array.data());
+    }
+    else
+    {
+        // otherwise, we need an unstrided extra buffer ...
+        // (we assume that attributes are small arrays, so that the wasted memory is uncritical)
+        MultiArray<N, T> buffer(array.shape());
+        status = H5Aread( attr_handle, datatype, buffer.data() );
+        // ... and must copy the values
+        if(status >= 0)
+            array = buffer;
+    }
+    vigra_postcondition(status >= 0,
+        "HDF5File::readAttribute(): read from attribute '" + attributeName + "' via H5Aread() failed.");
+}
+
+/********************************************************************/
 
 namespace detail {
 
