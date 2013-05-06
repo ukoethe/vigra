@@ -2178,13 +2178,13 @@ void HDF5File::write_(std::string &datasetName,
                 count[N-1-offset-k] = buffer.shape(k);
             }
             HDF5Handle filespace(H5Dget_space(datasetHandle),
-                                 &H5Sclose, "HDF5File::read(): unable to create hyperslabs.");
+                                 &H5Sclose, "HDF5File::write(): unable to create hyperslabs.");
             status = H5Sselect_hyperslab(filespace, H5S_SELECT_SET, start.data(), NULL, count.data(), NULL);
             if(status < 0)
                 break;
                 
             HDF5Handle dataspace(H5Screate_simple(count.size(), count.data(), NULL),
-                                 &H5Sclose, "HDF5File::read(): unable to create hyperslabs."); 
+                                 &H5Sclose, "HDF5File::write(): unable to create hyperslabs."); 
             status = H5Sselect_hyperslab(dataspace, H5S_SELECT_SET, null.data(), NULL, count.data(), NULL);
             if(status < 0)
                 break;
@@ -2448,10 +2448,10 @@ void HDF5File::readBlock_(std::string datasetName,
                      : 0;
 
     vigra_precondition(( (N + offset ) ==  MultiArrayIndex(dimensions)), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-        "readHDF5_block(): Array dimension disagrees with data dimension.");
+        "HDF5File::readBlock(): Array dimension disagrees with data dimension.");
 
     vigra_precondition(blockShape == array.shape(),
-         "readHDF5_block(): Array shape disagrees with block size.");
+         "HDF5File::readBlock(): Array shape disagrees with block size.");
 
     // hyperslab parameters for position, size, ...
     hsize_t boffset [N];
@@ -2505,11 +2505,11 @@ void HDF5File::read_attribute_(std::string datasetName,
 {
     std::string dataset_path = get_absolute_path(datasetName);
     // open Attribute handle
-    std::string message = "Error: could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+    std::string message = "HDF5File::readAttribute(): could not get handle for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
     HDF5Handle attr_handle (H5Aopen_by_name(fileHandle_,dataset_path.c_str(),attributeName.c_str(),H5P_DEFAULT,H5P_DEFAULT),&H5Aclose, message.c_str());
 
     // get Attribute dataspace
-    message = "Error: could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
+    message = "HDF5File::readAttribute(): could not get dataspace for attribute '"+attributeName+"'' of object '"+dataset_path+"'.";
     HDF5Handle attr_dataspace_handle (H5Aget_space(attr_handle),&H5Sclose,message.c_str());
 
     // obtain Attribute shape
@@ -2527,13 +2527,13 @@ void HDF5File::read_attribute_(std::string datasetName,
     int offset = (numBandsOfType > 1)
                     ? 1
                     : 0;
-    message = "Error: Array dimension disagrees with dataset dimension.";
+    message = "HDF5File::readAttribute(): Array dimension disagrees with dataset dimension.";
     // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
     vigra_precondition((N + offset) == MultiArrayIndex(dims), message);
 
     for(int k=offset; k < (int)dimshape.size(); ++k)
         vigra_precondition(array.shape()[k-offset] == (MultiArrayIndex)dimshape[k],
-                           "Error: Array shape disagrees with dataset shape");
+                           "HDF5File::readAttribute(): Array shape disagrees with dataset shape");
 
     herr_t status = 0;
     if(array.isUnstrided())
