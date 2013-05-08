@@ -988,7 +988,7 @@ class HDF5File
     template<unsigned int N, class T, class Stride>
     inline void readAttribute(std::string object_name, 
                               std::string attribute_name, 
-                              const MultiArrayView<N, T, Stride> & array)
+                              MultiArrayView<N, T, Stride> array)
     {
         // make object_name clean
         object_name = get_absolute_path(object_name);
@@ -999,7 +999,7 @@ class HDF5File
     template<unsigned int N, class T, int SIZE, class Stride>
     inline void readAttribute(std::string datasetName, 
                               std::string attributeName, 
-                              const MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array)
+                              MultiArrayView<N, TinyVector<T, SIZE>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1010,7 +1010,7 @@ class HDF5File
     template<unsigned int N, class T, class Stride>
     inline void readAttribute(std::string datasetName, 
                               std::string attributeName, 
-                              const MultiArrayView<N, RGBValue<T>, Stride> & array)
+                              MultiArrayView<N, RGBValue<T>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1261,7 +1261,7 @@ class HDF5File
     inline void write(std::string datasetName, std::string const & data) { writeAtomic(datasetName,data.c_str()); }
 
     // Reading data
-
+    
         /** \brief Read data into a multi array.
             If the first character of datasetName is a "/", the path will be interpreted as absolute path,
             otherwise it will be interpreted as path relative to the current group.
@@ -1272,7 +1272,7 @@ class HDF5File
             upon reading into a MultiArrayView, i.e. in the array axis order must be 'x', 'y', 'z'. 
         */
     template<unsigned int N, class T, class Stride>
-    inline void read(std::string datasetName, MultiArrayView<N, T, Stride> & array)
+    inline void read(std::string datasetName, MultiArrayView<N, T, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1316,7 +1316,7 @@ class HDF5File
           otherwise it will be interpreted as path relative to the current group.
         */
     template<class T>
-    inline void read(const std::string & datasetName, ArrayVectorView<T> & array)
+    inline void read(const std::string & datasetName, ArrayVectorView<T> array)
     {
         // convert to a (trivial) MultiArrayView and forward.
         MultiArrayShape<1>::type shape(array.size());
@@ -1370,7 +1370,7 @@ class HDF5File
     inline void readBlock(std::string datasetName, 
                           typename MultiArrayShape<N>::type blockOffset, 
                           typename MultiArrayShape<N>::type blockShape, 
-                          MultiArrayView<N, T, Stride> & array)
+                          MultiArrayView<N, T, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1380,7 +1380,7 @@ class HDF5File
 
     // non-scalar (TinyVector) and unstrided target MultiArrayView
     template<unsigned int N, class T, int SIZE, class Stride>
-    inline void read(std::string datasetName, MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array)
+    inline void read(std::string datasetName, MultiArrayView<N, TinyVector<T, SIZE>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1416,7 +1416,7 @@ class HDF5File
     inline void readBlock(std::string datasetName, 
                           typename MultiArrayShape<N>::type blockOffset, 
                           typename MultiArrayShape<N>::type blockShape, 
-                          MultiArrayView<N, TinyVector<T, SIZE>, Stride> & array)
+                          MultiArrayView<N, TinyVector<T, SIZE>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1426,7 +1426,7 @@ class HDF5File
 
     // non-scalar (RGBValue) and unstrided target MultiArrayView
     template<unsigned int N, class T, class Stride>
-    inline void read(std::string datasetName, MultiArrayView<N, RGBValue<T>, Stride> & array)
+    inline void read(std::string datasetName, MultiArrayView<N, RGBValue<T>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -1462,7 +1462,7 @@ class HDF5File
     inline void readBlock(std::string datasetName, 
                           typename MultiArrayShape<N>::type blockOffset, 
                           typename MultiArrayShape<N>::type blockShape, 
-                          MultiArrayView<N, RGBValue<T>, Stride> & array)
+                          MultiArrayView<N, RGBValue<T>, Stride> array)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
