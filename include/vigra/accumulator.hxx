@@ -66,8 +66,8 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
 <b>\#include</b> \<vigra/accumulator.hxx\>
     
     <b>Basic statistics:</b>
-    - PowerSum<N> (@f$ \sum_i x_i^N @f$)
-    - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
+    - PowerSum<N> (computes @f$ \sum_i x_i^N @f$)
+    - AbsPowerSum<N> (computes @f$ \sum_i |x_i|^N @f$)
     - Skewness, UnbiasedSkewness
     - Kurtosis, UnbiasedKurtosis
     - Minimum, Maximum
@@ -95,8 +95,7 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
       <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
       </table>
       
-    Aliases for a couple of important features are implemented (mainly as <tt>typedef FullName Alias</tt>). The alias names are equivalent to full names. 
-    Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
+    Aliases for many important features are implemented (mainly as <tt>typedef FullName Alias</tt>). The alias names are equivalent to full names. Below are some examples for supported alias names. A full list of all available statistics and alias names can be found in the namespace reference <tt>vigra::acc</tt>. These examples also show how to compose statistics from the fundamental statistics and modifiers:
     
     <table border="0">
     <tr><th> Alias           </th><th>   Full Name                 </th></tr>
