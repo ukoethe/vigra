@@ -1564,23 +1564,30 @@ public:
         return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
-        /** permute the dimensions of the array.
-            The function exchanges the meaning of the dimensions without copying the data.
-            In case of a 2-dimensional array, this is simply array transposition. In higher dimensions,
-            there are more possibilities.
+        /** Permute the dimensions of the array.
+            The function exchanges the orer of the array's axes without copying the data.
+            Argument\a permutation specifies the desired order such that 
+            <tt>permutation[k] = j</tt> means that axis <tt>j</tt> in the original array
+            becomes axis <tt>k</tt> in the transposed array. 
 
             <b>Usage:</b><br>
             \code
             typedef MultiArray<2, double>::difference_type Shape;
             MultiArray<2, double> array(10, 20);
 
-            MultiArray<2, double, StridedArrayTag> transposed = array.permuteDimensions(Shape(1,0));
+            MultiArray<2, double, StridedArrayTag> transposed = array.transpose(Shape(1,0));
 
             for(int i=0; i<array.shape(0), ++i)
                 for(int j=0; j<array.shape(1); ++j)
                     assert(array(i, j) == transposed(j, i));
             \endcode
         */
+    MultiArrayView <N, T, StridedArrayTag>
+    transpose(const difference_type &permutation) const
+    {
+        return permuteDimensions(permutation);
+    }
+
     MultiArrayView <N, T, StridedArrayTag>
     permuteDimensions (const difference_type &s) const;
 
@@ -2079,7 +2086,7 @@ MultiArrayView <N, T, StrideTag>::permuteDimensions (const difference_type &s) c
         ++check[s[i]];
     }
     vigra_precondition(check == difference_type(1),
-       "MultiArrayView::permuteDimensions(): every dimension must occur exactly once.");
+       "MultiArrayView::transpose(): every dimension must occur exactly once.");
     return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
 }
 
