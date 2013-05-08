@@ -1,6 +1,20 @@
 /** \page ImageProcessingTutorial Image Processing
+
+    <h2>Section Contents</h2>
     
     In this chapter we'll use VIGRA's methods for some applications of Image Processing.
+
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref CallingConventions
+    <li> \ref ImageInversion
+    <li> \ref ImageBlending
+    <li> \ref CompositeImage
+    <li> \ref SmoothingTutorial
+       <ul type="disc">
+        <li> \ref Convolve2DTutorial
+        <li> \ref SeparableConvolveTutorial
+        </ul>
+    </ul>
 
     \section CallingConventions Calling Conventions
     
@@ -9,11 +23,35 @@
     Depending on the kind of function (and mainly for historical reasons), the input and output arrays must be specified in different ways:
     
     <ul>
-    <li> Functions that can only act on 2-dimensional images usually contain the term "Image" in their name and are implemented in terms of \ref ImageIterators. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. We will see many examples of this calling conventions below, and a detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories.
-    <li> Functions that can act on arbitrary many dimensions usually contain the term "multi" in their name and are implemented in terms of hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories.
+    <li> Functions that can only act on 2-dimensional images usually contain the term "Image" in their name and are implemented in terms of \ref ImageIterators. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. We will see many examples of this calling conventions below, and a detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories. Example:
+    \code
+    // compute the pixel-wise square root of an image
+    MultiArray<2, float> input(Shape2(200, 100)),
+                         result(imput.shape());
+    ... // fill input with data
+    transformImage(srcImageRange(input), destImage(result), &sqrt);
+    \endcode
+    
+    <li> Functions that can act on arbitrary many dimensions usually contain the term "multi" in their name and are implemented in terms of hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories. Example:
+    \code
+    // compute the element-wise square root of a 4-dimensional array
+    MultiArray<4, float> input(Shape4(200, 100, 50, 30)),
+                         result(imput.shape());
+    ... // fill input with data
+    transformMultiArray(srcMultiArrayRange(input), destMultiArray(result), &sqrt);
+    \endcode
+    
     <li> Functions that use 2-dimensional arrays as matrices (rather than images), are implemented in terms of \ref vigra::MultiArrayView. You pass the arrays to these functions directly, without any convenience function.
+    \code
+    // compute the determinant of a 5x5 matrix
+    MultiArray<2, float> input(Shape2(5, 5));
+    ... // fill input with data
+    float det = linalg::determinant(input);
+    \endcode
     </ul>
     
+    <hr>
+
     \section ImageInversion Inverting an Image
     
     Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's 
@@ -97,17 +135,18 @@
 
     \section SmoothingTutorial Smoothing
     
+    \subsection Convolve2DTutorial 2-dimensional Convolution
+    
     There are many different ways to smooth an image. Before we use VIGRA's methods, we 
     want to write a smoothing code of our own. The idea is to choose each pixel in turn and 
-    replace it with the mean of itself and the pixels in 3x3-box around it.
-    MultiArray provides two useful methods: sum and size. If we want to calculate the mean of
-    an array we need the sum of all elements and divide it by the number of elements (size).
-    In our code we iterate over every pixel, look on the 3x3-box surrounding via subarray,
-    calculate the sum of this subarray and divide it by its size. This is the new value of
-    the pixel.
-
-    On the edges of the image we can't build a box around the pixel. We can only average the
-    remaining neighbours of the pixel.
+    replace it with the mean of itself and the pixels in 3x3 window around it.
+    To calculate the mean in a window, we can just devide the sum of the pixel values 
+    within the corresponding subarray by their number. MultiArrayView provides two useful 
+    methods for doing this: <tt>sum</tt> and <tt>size</tt>. 
+    In our code we iterate over every pixel, construct the surrounding 3x3 window via 
+    <tt>subarray</tt>, and write the average of the window into the corresponding output pixel.
+    Near the borders of the image we truncate the window appropriately so that it remains
+    inside the image, and only take the average over the actually existing neighbours of the pixel.
 
     See the code:
     <a href="smooth_explicitly_8cxx-example.html">smooth_explicitly.cxx</a>
@@ -120,132 +159,157 @@
     </TR>
     </Table>
 
-    A more comfortable way of such convolving operations is provided by the method 
-    <dfn>convolveImage</dfn>. You may use it as follows:
+    The technical term for this kind of operation is <i>convolution</i>. VIGRA provides the 
+    <dfn>convolveImage</dfn> as a comfortable way to perform 2-dimensional convolutions 
+    with arbitrary filters. You may use it as follows:
 
     \code
-    vigra::convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
+    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
     \endcode
 
-    It needs a convolution kernel, which is given as argument object by <dfn>kernel2d()</dfn>.
-    For the kernel itself there are different possibilities. You may want to have an
-    averaging kernel or weight some elements more than others or maybe you want the kernel
-    to be a Gaussian curve... We now want to discuss these three possibilities among others.
-    
-    <h3> Simple averaging </h3>
-    Concerning our smoothing example above, this equivalent way for averaging a 3x3-box is:
-
-    \code
-    vigra::Kernel2D<float> kernel; 
-    kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0;
-    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
-    \endcode
-
-    Pointing to the center (0,0) of the kernel our 3x3-box starts at the coordinates (-1,-1) 
-    and has its lower-right corner at (1,1). Since we want to average homogeneously every pixel
-    in the kernel is weighted with 1/9 (the kernel has 9 elements).
-
-    <h3> Weighting manually </h3>
-    If we want to have a certain weighting, we can do this by hand. In the following example
-    we just want to average the corners of the 3x3-box.
+    The filter of <i>convolution kernel</i> is given as argument object by <dfn>kernel2d()</dfn>.
+    To implement the above smoothing by taking averages in 3x3 windows, you need an averaging 
+    kernel with radius 1. Kernel truncation near the image borders is performed when the 
+    filter's border treatment mode is set to <tt>BORDER_TREATMENT_CLIP</tt>:
     
     \code
-    vigra::Kernel2D<float> kernel; 
-    kernel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
-                        0.25, 0.0, 0.25, 
-                        0.0,  0.0, 0.0,
-                        0.25, 0.0, 0.25;
-    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
-    \endcode
-
-    You can type in a comma separated list with the weights of each element. Consider that the
-    sum of all weights has to be 1.
-
-    <h3> Gaussian convolution </h3>
-    The kernel-class has a special <dfn>initGaussian(std_dev)</dfn>-method, that creates the
-    appropriate element weightings for any arbitrary standard deviation std_dev:
-
-    \code
-    vigra::Kernel2D<float> kernel; 
-    kernel.initGaussian(1.5);
-    convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel));
-    \endcode
-
-    <h3> Separable convolution </h3>
-    Actually, convolveImage isn't exactly the same method as our explicit implementation of
-    3x3-averaging. It rather uses the methods <dfn> separableConvolveX </dfn> and 
-    <dfn> separableConvolveY </dfn>. These methods convolve the x- respectively the y-
-    dimension. The advantage is that we need less operations. Instead of averaging 9 pixels
-    with weight 1/9 (in total 9 additions), we average every line (3 pixels with weight 1/3 
-    ==> 3 additions) and afterwards every column (3 pixels with weight 1/3 ==> 3 additions 
-    as well). So in total we need 6 additions instead of 9. With bigger sizes and more 
-    dimensions there's a huge difference so it's better to convolve every dimension separately.
-    But why do I get the same result? Given a 3x3-matrix
-
-    \f[ \left( \begin{array}{ccc} x_{11} & x_{12} & x_{13} \\ x_{21} & x_{22} & x_{23} 
-    \\ x_{31} & x_{32} & x_{33} \end{array} \right) \f]
-
-    We now calculate the averaged value \f$ \widehat{x_{22}}\f$ separated for x and y dimension:
-
-    \f[ \sum_{i=1}^3 \frac{1}{3}\widetilde{x_{i2}} = \sum_{i=1}^3 \frac{1}{3} \sum_{j=1}^3 
-    \frac{1}{3}x_{ij} = \sum_{i,j=1}^3 \frac{1}{9}x_{ij} \f]
-
-    which is exactly the 3x3-box average.
-
-    Except that we need a 1D kernel, the use of separableConvolveX resp. separableConvolveY
-    is similar to convolveImage.
-
-    \code
-    vigra::Kernel1D<double> kernel; 
-    kernel.initExplicitly(-1,1) = 1.0/3.0;
-    separateConvolveX(srcImageRange(imageArray), destImage(imageArray), kernel1d(kernel));
-    separateConvolveY(srcImageRange(imageArray), destImage(exportArray), kernel1d(kernel));
-    \endcode
-
-    We give you now an example, where you can choose one of the three methods to smooth an 
-    image:
-    <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>
-
-    <B> Remark: </B> When using RGBValue for color images you have to use double-type in your
-    kernel because some operators are not overloaded for float-type (cf. example).
-
-    The results:
-    <Table cellspacing = "10">
-    <TR valign = "bottom">
-    <TD> \image html testimage.gif "input file" </TD>
-    <TD> \image html conv1.gif "simple averaging" </TD>
-    <TD> \image html conv4.gif "separate convolution" </TD>
-    <TD> \image html conv2.gif "weighting manually (corners)" </TD>
-    <TD> \image html conv3.gif "Gaussian (std_dev=1.5)" </TD>
-    </TR>
-    </Table>
-
-    <h3> Convenience methods </h3>
-    VIGRA already provides some convenient methods and filters for convolution e.g. 
-    <dfn>gaussianSmoothing()</dfn>. For more information see \ref CommonConvolutionFilters and
-    \ref Convolution .
-
-    <h3> Convolution of N dimensional arrays </h3>
-    VIGRA provides a wide range of convolution filters for N dimensional arrays as well 
-    (vigra::MultiArrayView, vigra::MultiArray, etc.). The convolution can be done with a single
-    1D kernel used for every dimension or with a vector of 1D kernels each for a single 
-    dimension. See also \ref MultiArrayConvolutionFilters.
-
-    <B> Remark: </B>
-    The convolution of N dimensional arrays has a little different interface. Instead of using
-    <dfn>srcImageRange()</dfn> and <dfn>destImage()</dfn> you have to call the filters with
-    <dfn> srcMultiArrayRange() </dfn> and <dfn> destMultiArray() </dfn>. See the following 
-    example for Gaussian smoothing of a MultiArray.
-
-    \code
-    vigra::MultiArray<3, unsigned char>::size_type shape(width, height, depth);
-    vigra::MultiArray<3, unsigned char> imageArray(shape);
-    vigra::MultiArray<3, float> exportArray(shape);
-
-    // perform isotropic Gaussian smoothing at scale 'sigma'
-    gaussianSmoothMultiArray(srcMultiArrayRange(imageArray), destMultiArray(exportArray), sigma);
+    Kernel2D<double> filter;
+    filter.initAveraging(1);
+    filter.setBorderTreatment(BORDER_TREATMENT_CLIP);
     \endcode
     
+    By default, VIGRA's convolution functions use <tt>BORDER_TREATMENT_REFLECT</tt> (i.e. the
+    image is virtually enlarged by reflecting the pixel values about the border), which usually
+    leads to superior results. The strength of smoothing can be controlled by increasing the filter 
+    radius.
+    
+    Another improvement over simple averaging can be achieved when one takes a <i>weighted 
+    average</i> such that pixels near the center have more influence on the result.
+    A popular choice here is the 5x5 binomial filter. VIGRA allows to specify arbitrary filter
+    shapes and coefficients via the <tt>Kernel2D::initExplicitly()</tt>:
+    
+     \code
+    Kernel2D<float> filter;
+    
+    // specify filter shape (lower right corner is inclusive here!)
+    filter.initExplicitly(Shape2(-2,-2), Shape2(2,2));
+    
+    // specify filter coefficients
+    filter =  1.0/256.0,  4.0/256.0,  6.0/256.0,  4.0/256.0,  1.0/256.0,
+              4.0/256.0, 16.0/256.0, 24.0/256.0, 16.0/256.0,  4.0/256.0,
+              6.0/256.0, 24.0/256.0, 36.0/256.0, 24.0/256.0,  6.0/256.0,
+              4.0/256.0, 16.0/256.0, 24.0/256.0, 16.0/256.0,  4.0/256.0,
+              1.0/256.0,  4.0/256.0,  6.0/256.0,  4.0/256.0,  1.0/256.0;
+              
+    // apply filter
+    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
+    \endcode
+   
+    <tt>initExplicitly()</tt> receives the upper left and lower right corners of the 
+    filter window. Note that the lower right corner here is <i>included</i> in the window,
+    in contrast to <tt>MultiArray::subarray()</tt> where the end point is not included. 
+
+    The filter weights are provided in a comma separated list. Normally, the sum of the 
+    coefficients should to be 1 in order to preserve the average intensity of the image. 
+    You must provide either as many coefficients as needed for the given filter size, 
+    or exactly one value which will be used for all filter coefficients. Thus, the 3x3 
+    averaging filter can also be created like this:
+    
+    \code
+    Kernel2D<double> filter;
+    filter.initExplicitly(Shape2(-1,-1), Shape2(1,1)) = 1.0/9.0;
+    \endcode
+
+    For various theoretical and practical reasons, the Gaussian filter is the best choice
+    in most situations. Its coefficients are chosen according to a Gaussian (i.e. 
+    bell-shaped) function with given standard deviation. The kernel class has a 
+    convenient <dfn>initGaussian(std_dev)</dfn> method that creates the appropriate 
+    coefficients:
+
+    \code
+    vigra::Kernel2D<float> filter; 
+    filter.initGaussian(1.5);
+    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
+    \endcode
+
+    <hr>
+
+    \subsection SeparableConvolveTutorial Separable Convolution in 2D and nD Images
+    
+    When filtering is implemented with 2-dimensional windows as in the previous section, 
+    we need as many multiplications per pixel as there are coefficients in the filter. 
+    Fortunately, many important filters (including averaging and Gaussian smoothing) 
+    have the property of beeing <i>separable</i>, which allows a much more efficient 
+    implementation in terms  of 1-dimensional windows. A 2-dimensional filter is 
+    separable if its coefficients \f$f_{ij}\f$ can be expressend as an outer product 
+    of two 1-dimensional filters \f$h_i\f$ and \f$c_j\f$:
+
+    \f[
+        f_{ij} = h_i \cdot c_j
+    \f]
+    
+    For example, the 3x3 averaging filter (with coefficients 1/9) is obtained as the outer 
+    product of two 3x1 filters (with coefficients 1/3):
+    
+    \f[ \left( \begin{array}{ccc} \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] 
+                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \\[1ex] 
+                                  \frac{1}{9} & \frac{1}{9} & \frac{1}{9} \end{array} \right) = 
+    \left( \begin{array}{c} \frac{1}{3} \\[1ex]  \frac{1}{3} \\[1ex]  \frac{1}{3} \end{array} \right)  \cdot
+    \left( \begin{array}{ccc} \frac{1}{3} & \frac{1}{3} & \frac{1}{3} \end{array} \right)
+    \f]
+    
+    The convolution with separable filters can be implemented by two consecutive 1-dimensional
+    convolutions: first, one filters all rows of the image with the horizontal filter, and then
+    all columns of the result with the vertical filter. Instead of the (n x m) operations required
+    for a 2-dimensional window, we now only need (n + m) operations for the two 1-dimensional ones.
+    Already for a 5x5 window, this reduces the number of operations from 25 to 10, and the difference
+    becomes even bigger with increasing window size.
+    
+    To construct and apply 1-dimensional filters, VIGRA provides the class \ref vigra::Kernel1D and
+    the functions separableConvolveX() resp. separableConvolveY(). To compute a 2D Gaussian filter
+    we use the following code:
+
+    \code
+    Kernel1D<double> filter; 
+    filter.initGaussian(1.5);
+    
+    MultiArray<2, float> tmpImage(inputImage.shape());
+    separateConvolveX(srcImageRange(inputImage), destImage(tmpImage), kernel1d(filter));
+    separateConvolveY(srcImageRange(tmpImage), destImage(resultImage), kernel1d(filter));
+    \endcode
+
+    Note that we need an intermediate image to hold the result of the horizontal filtering.
+    The same result is more conveniently achieved by the function \ref gaussianSmoothing():
+    
+    \code
+    gaussianSmoothing(srcImageRange(inputImage), destImage(resultImage), 1.5);
+    \endcode
+    
+    It is, of course, also possible to apply different filters in the x- and y-directions. 
+    This is especially useful for derivative filters which are commonly used to compute
+    image features, for example \ref gaussianGradient() and \ref gaussianGradientMagnitude().
+    For more information see \ref CommonConvolutionFilters and \ref Convolution.
+    
+    Separable filters are also the key for efficient convolution of higher-dimensional images
+    and arrays: An n-dimensional filter is simply implemented by n consecutive 1-dimensional 
+    filter applications, regardsless of the size of n. This is the basis for VIGRA's 
+    multi-dimensional filter functions. For example, Gaussian smoothing in arbitrary many
+    dimensions is implemented in \ref gaussianSmoothMultiArray():
+    
+    \code
+    MultiArray<3, unsigned char> inputArray(Shape3(100, 100, 100));
+    ... // fill inputArray with data
+    
+    MultiArray<3, float> resultArray(inputArray.shape());
+    
+    // perform isotropic Gaussian smoothing at scale 1.5
+    gaussianSmoothMultiArray(srcMultiArrayRange(inputArray), destMultiArray(resultArray), 1.5);
+    \endcode
+    
+    (Note the different calling convention for multi-dimensional arrays in terms of 
+    <tt>srcMultiArrayRange()</tt> etc. instead of the 2D <tt>srcImageRange()</tt> ect.)
+    More information about VIGRA's multi-dimensional convolution funcions can be found in
+    the reference manual under \ref MultiArrayConvolutionFilters
 */
 
 /** \example invert_tutorial.cxx

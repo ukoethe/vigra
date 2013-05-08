@@ -35,13 +35,29 @@
         </ul>
 
     <li> \ref ImageProcessingTutorial
-        <BR>&nbsp;&nbsp;&nbsp;<em>some applications of VIGRA's methods</em>
+        <BR>&nbsp;&nbsp;&nbsp;<em>basic applications of VIGRA's functions</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref CallingConventions
+        <li> \ref ImageInversion
+        <li> \ref ImageBlending
+        <li> \ref CompositeImage
+        <li> \ref SmoothingTutorial
+           <ul type="disc">
+            <li> \ref Convolve2DTutorial
+            <li> \ref SeparableConvolveTutorial
+            </ul>
+        </ul>
+
+    <li> \ref OwnFunctionsTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>... without getting confused by templates</em>
+        
     </ul>
 */
 
 /** \page MultiDimensionalArrayTutorial Multi-Dimensional Arrays
 
     <h2>Section Contents</h2>
+    
     <ul style="list-style-image:url(documents/bullet.gif)">
     <li> \ref MultiArrayBasics
     <li> \ref MultiArrayIndexing
@@ -286,7 +302,7 @@
     
     The point of this distinction is that MultiArrayViews can be used to access and manipulate the same data in many different ways <i>without any need for creating copies</i>. For example, we can work with a 2-dimensional slice of a volume dataset (i.e. a lower dimensional part of a 3D array) without first copying the slice into a 2D image. This is possible whenever the desired view can be realized by just manipulating the internal <i>mapping</i> from indices and shapes to memory locations, and not the memory layout itself.
     
-    This possibility -- which is similarly implemented in other packages like Matlab and numpy -- is a key ingredient for efficient computation with multi-dimensional arrays . Thus, most VIGRA functions actually receive MultiArrayViews to maximize flexibility. This section describes the most important ways to create new MultiArrayViews from an existing array or view. The complete documentation is available in the \ref vigra::MultiArrayView reference.
+    This possibility -- which is similarly implemented in other packages like Matlab and numpy -- is a key ingredient for efficient computations with multi-dimensional arrays. Thus, most VIGRA functions actually receive MultiArrayViews to maximize flexibility. This section describes the most important ways to create new MultiArrayViews from an existing array or view. The complete documentation is available in the \ref vigra::MultiArrayView reference.
 
     <hr>
 
@@ -447,7 +463,7 @@
 
     <hr>
 
-    \subsection MultiArray_transpose transpose() and permuteDimensions()
+    \subsection MultiArray_transpose transpose()
     Everyone is familiar with the <tt>transpose()</tt> function of a matrix (i.e. a 2-dimensional array). Once again, this is possible without copying the data by just manipulating the internal access functions. The following example demonstrates the difference between a transposed copy and view:
 
     \dontinclude transpose.cxx
@@ -486,13 +502,13 @@
     54321
     \endverbatim
     
-    Finally, the function <tt>MultiArrayView::permuteDimensions()</tt> generalizes transpose() such that the user can explcitly specify the desired axis permutation. The permutation is given in a shape object. Element i of this object provides the information which axis of the original array is to be shifted to position i (remember, that VIGRA counts the dimensions from 0):
+    Finally, <tt>MultiArrayView::transpose()</tt> can also be called with a shape object that specifies the desired permutation of the axes: When <tt>permutation[k] = j</tt>, axis <tt>j</tt> of the original array becomes axis <tt>k</tt> of the transposed array (remember, that VIGRA counts the axes from 0):
     
     \dontinclude transpose.cxx
     \skip transpose to an explicitly specified axis permutation
     \until std::endl
     
-    The permutaiton in the example is 2,1,3,4,0. Thus, original dimension 0 appears in the last position of the new view, original dimension 2 appears in the first position, and so on as demonstrate by the output of the example:
+    The permutaiton in the example is 2,1,3,4,0. Thus, original dimension 0 appears in the last position of the new view, original dimension 2 appears in the first position, and so on as demonstrated by the output of the example:
     
     \verbatim
     Shape of transposed Array5D:
@@ -513,10 +529,10 @@
     </table>
 
     In VIGRA, image transposition is also implemented in function <tt>vigra::transposeImage(...)</tt>. The difference
-    is, that transposeImage copies the image data, whereas MultiArrayView::transpose() just changes the internal mapping from indices to memory locations.
+    is that transposeImage() copies the image data, whereas MultiArrayView::transpose() just changes the internal mapping from indices to memory locations.
 
     <b>Important note:</b> Transposing an array also changes the direction of the StridedScanOrderIterator. Imagine a 3x4-
-    matrix. Scan-order means that we iterate from left to right, row by row. Now, let's transpose the matrix to a 4x3 view. Than, scan-order in the new view is again left to right, row by row. However, in the original matrix this now corresponds to a transposed scan: from top to bottom, clumn by column. The same applies to the index operator with integer argument.
+    matrix. Scan-order means that we iterate from left to right, row by row. Now, let's transpose the matrix to a 4x3 view. Than, scan-order in the new view is again left to right, row by row. However, in the original matrix this now corresponds to a transposed scan: from top to bottom, column by column. The same applies to the array's index operator with integer argument.
 */
 
 
@@ -683,4 +699,85 @@
     <li> \ref FeatureAccumulators
         <BR>The \ref FeatureAccumulators "vigra::acc" module provides powerful and efficient methods to compute statistics accross entire arrays or arbitrary subparts of them.
     </ul>    
+*/
+
+/** \page OwnFunctionsTutorial Writing your own Functions
+    
+    Sooner or later, you will want to implement your own functions on the basis of VIGRA's functionality. Some people believe that this is very difficult because one needs to provide a lot of template magic and full genericity. However, this is <i>not</i> true: Your VIGRA functions need not be templated at all -- function arguments can simply be hard-wired. In other cases, it makes sense to template on the pixel type, but leave averything else fixed. Full genericity should only be implemented step-by-step as needed. 
+    
+    As an example, consider again the image smoothing example program <a href="smooth_explicitly_8cxx-example.html">smooth_explicitly.cxx</a>. It makes sense to encapsulate the smoothing algorithm into a function of its own. When we only need to support <tt>float</tt> images, the function is simply a verbatim copy of the algorithm. In contrast to the original version, we now allow an arbitrary window radius to be passed to the algorithm, so that the amount of smoothing can be controlled (this also nicely illustrates the use of <tt>vigra_precondition()</tt> for \ref ErrorReporting): 
+    
+    \code
+    void smooth(MultiArrayView<2, float> input, MultiArrayView<2, float> result, int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        Shape2 current;
+        for(current[1] = 0; current[1] < input.shape(1); ++current[1])
+        {
+            for (current[0] = 0; current[0] < input.shape(0); ++current[0])
+            {
+                Shape2 windowStart = max(Shape2(0),     current - Shape2(radius));
+                Shape2 windowStop  = min(input.shape(), current + Shape2(radius+1));
+                MultiArrayView<2, float> window = input.subarray(windowStart, windowStop);
+                result[current] = window.sum<float>() / window.size();
+            }
+        }
+    }
+    \endcode
+    
+    If you don't need to support any higher dimension or other pixel type, you can just leave it at this -- no templates are required then. 
+    
+    But suppose now that we want to generalize this code for arbitrary dimensional arrays. To do so, we specify the dimension <tt>N</tt> as a template parameter. Then we can no longer use <tt>Shape2</tt> because this class only works for 2-dimensional arrays. Instead, we use the <tt>MultiArrayShape</tt> traits class to ask for the appropriate shape object. Moreover, we cannot iterate over the array with two explicitly nested loops because the number of loops must correspond to the (unknown) number of dimensions. We can solve this problems by means of a \ref vigra::MultiCoordinateIterator from <tt>multi_iterator_coupled.hxx</tt> that iterates over all coordinates of an array, regardless of dimension. The current coordinate is returned by dereferencing the iterator:
+    
+    \code
+    #include <vigra/multi_iterator_coupled.hxx>
+    
+    template <unsigned int N>
+    void smooth(MultiArrayView<N, float> input, MultiArrayView<N, float> result, int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        typedef typename MultiArrayShape<N>::type  Shape;
+        
+        typename MultiCoordinateIterator<N> current(input.shape()),
+                                            end = current.getEndIterator();
+             
+        for(; current != end; ++current)
+        {
+                Shape windowStart = max(Shape(0),      *current - Shape(radius));
+                Shape windowStop  = min(input.shape(), *current + Shape(radius+1));
+                MultiArrayView<N, float> window = input.subarray(windowStart, windowStop);
+                result[*current] = window.sum<float>() / window.size();
+        }
+    }
+    \endcode
+    
+    Another useful generalization is in terms of the array's value_type. For one, we want to be able to smooth color images as well. Furthermore, most images are stored with pixel type <tt>unsigned char</tt>, and we don't want to force the user to convert them into <tt>float</tt> images before smoothing. We therefore specify the value_types as template parameters as well (notice that we allow input and result to have different types). In addition, we have to make the type of the sum in <tt>window.sum<...>()</tt> generic. However, there is a caveat: We cannot simply use the input value_type here, because this might lead to overflow. This is easily seen when the value_type is <tt>unsigned char</tt>: This type already overflows when the sum exceeds the value 255, which is very likely to happen even if the windows is only 3x3. In situations like this, a suitable temporary type for the sum can be obtained from the <tt>RealPromote</tt> type in VIGRA's \ref NumericTraits "NumericTraits" class:
+   
+    \code
+    template <unsigned int N, class InputValue, class ResultValue>
+    void smooth(MultiArrayView<N, InputValue>  input, 
+                MultiArrayView<N, ResultValue> result, 
+                int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        typedef typename MultiArrayShape<N>::type                Shape;
+        typedef typename NumericTraits<InputValue>::RealPromote  SumType;
+        
+        typename MultiCoordinateIterator<N> current(input.shape()),
+                                            end = current.getEndIterator();
+             
+        for(; current != end; ++current)
+        {
+                Shape windowStart = max(Shape(0),      *current - Shape(radius));
+                Shape windowStop  = min(input.shape(), *current + Shape(radius+1));
+                MultiArrayView<N, InputValue> window = input.subarray(windowStart, windowStop);
+                result[*current] = window.template sum<SumType>() / window.size();
+        }
+    }
+    \endcode
+    
+    These simple tricks already get you a long way in the advanced use of VIGRA.
 */

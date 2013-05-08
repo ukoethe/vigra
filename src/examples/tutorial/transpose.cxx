@@ -67,7 +67,7 @@ int main (int argc, char ** argv) {
     std::cout << std::endl;
     
     // transpose to an explicitly specified axis permutation
-    MultiArrayView<5, int> arrayview5D_permuted = array5D.permuteDimensions(Shape5(2,1,3,4,0));
+    MultiArrayView<5, int> arrayview5D_permuted = array5D.transpose(Shape5(2,1,3,4,0));
 
     // print the shape of transposed array
     std::cout << "Shape of transposed Array5D:\n";
