@@ -55,11 +55,21 @@
 
       <li> Frank Lenzen contributed his implementations of total variation filters.
 
+      <li> Patrick Fahner helped writing the tutorial.
+
       <li> Numerous people reported bugs and made suggestions.
 </UL>
 
 Many thanks to all!
 <p>
+
+<b> Changes from Version 1.9.0 to 1.9.1</b>
+
+<UL>  
+      <li> VIGRA got a \ref Tutorial !
+      
+      <li> Minor improvements and bug fixes in the code and documentation. 
+ </UL>
 
 <b> Changes from Version 1.8.0 to 1.9.0</b>
 
