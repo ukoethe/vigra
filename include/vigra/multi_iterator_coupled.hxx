@@ -530,8 +530,7 @@ get(Handle const & handle)
     To get the type of a CoupledScanOrderIterator for arrays of a certain dimension and element types use CoupledIteratorType::type.
 
     The iterator supports all functions listed in the STL documentation for
-        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random
-Access Iterators</a>.
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
 
     Example of use:
     \code
@@ -556,9 +555,8 @@ Access Iterators</a>.
     std::cout << "image1: " << get<1>(handle) << std::endl;
     \endcode
     
-<b>\#include</b> \<vigra/multi_iterator_coupled.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_iterator_coupled.hxx\> <br/>
+    Namespace: vigra
 */
 
 template <unsigned int N,

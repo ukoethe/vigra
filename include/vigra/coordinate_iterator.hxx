@@ -383,12 +383,14 @@ class CoordinateStride : protected S
     CoordinateStride(const S & x, double s0)
         : S(x), stride_0(s0) {}
 
+#ifndef DOXYGEN
     using S::operator*;
     using S::idx0;
     using S::idx;
     using S::dim0;
     using S::operator+=;
     using S::operator-=;
+#endif
 
     void operator++()
     {

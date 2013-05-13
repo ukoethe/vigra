@@ -49,7 +49,7 @@
 
 namespace vigra {
 
-    /*!
+    /**
      *  \class WignerMatrix 
      *  \brief computation of Wigner D matrix + rotation functions 
      *         in SH,VH and R³
@@ -68,7 +68,7 @@ class WignerMatrix
     typedef std::complex<Real> Complex;
     typedef ArrayVector<ArrayVector<ArrayVector<Complex> > > NestedArray;
     
-         /*! \brief constructor
+         /** \brief constructor
           * 
           * \param l_max    maximum expansion band (used to pre-compute 
           *         the D matrix)
@@ -76,7 +76,7 @@ class WignerMatrix
           */
     WignerMatrix(int l_max);
     
-         /*! \brief Compute D with fixed theta = pi/2, phi=0, psi=0.
+         /** \brief Compute D with fixed theta = pi/2, phi=0, psi=0.
           *
           * \param band expansion band
           *
@@ -84,7 +84,7 @@ class WignerMatrix
           */
     void compute_D(int band);
 
-         /*! \brief Compute D for arbitrary rotations.
+         /** \brief Compute D for arbitrary rotations.
           *
           * \param l        expansion band
           * \param phi  rotation angle  
@@ -94,7 +94,7 @@ class WignerMatrix
           */
     void compute_D(int l, Real phi, Real theta, Real psi);
 
-         /*! \brief  Get the (n,m) entry of D.
+         /** \brief  Get the (n,m) entry of D.
           *
           * \param l        expansion band
           * \param n        
@@ -118,7 +118,7 @@ class WignerMatrix
         }
     }
 
-         /*! \brief Return the rotation matrix D for the lth band.
+         /** \brief Return the rotation matrix D for the lth band.
           *
           * \param l        expansion band
           */
@@ -131,7 +131,7 @@ class WignerMatrix
         return D[l];
     }
 
-         /*! \brief Rotate in PH.
+         /** \brief Rotate in PH.
           *
           * \param PH       input PH expansion 
           * \param phi      rotation angle

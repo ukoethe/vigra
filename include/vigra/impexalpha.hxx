@@ -309,7 +309,7 @@ namespace vigra
     } // end namespace detail
 
 
-    /*!
+    /**
      * \brief Read the image specified by the given \ref
      * vigra::ImageImportInfo object including its alpha channel.
      *
@@ -847,7 +847,7 @@ namespace vigra
     } // end namespace detail
 
 
-    /*!
+    /**
      * \brief Write the image specified by the given \ref
      * vigra::ImageExportInfo object including an alpha channel.
      *

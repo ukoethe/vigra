@@ -2177,23 +2177,23 @@ class AccumulatorChainArray
 
 #ifdef DOXYGEN // hide AccumulatorChainImpl from documentation
 
-  /** \copydoc AccumulatorChain::setHistogramOptions(HistogramOptions const &) */
+  /** \copydoc vigra::acc::AccumulatorChain::setHistogramOptions(HistogramOptions const &) */
   void setHistogramOptions(HistogramOptions const & options);
 
   /** Set regional and global options for all histograms in the accumulator chain.
    */
   void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions);
   
-  /** \copydoc AccumulatorChain::reset() */
+  /** \copydoc vigra::acc::AccumulatorChain::reset() */
   void reset(unsigned int reset_to_pass = 0);
 
-  /** \copydoc AccumulatorChain::operator+=() */
+  /** \copydoc vigra::acc::AccumulatorChain::operator+=() */
   void operator+=(AccumulatorChainImpl const & o);
     
-  /** \copydoc AccumulatorChain::updatePassN(T const &,unsigned int) */
+  /** \copydoc vigra::acc::AccumulatorChain::updatePassN(T const &,unsigned int) */
   void updatePassN(T const & t, unsigned int N);
   
-  /** \copydoc AccumulatorChain::updatePassN(T const &,double,unsigned int) */
+  /** \copydoc vigra::acc::AccumulatorChain::updatePassN(T const &,double,unsigned int) */
   void updatePassN(T const & t, double weight, unsigned int N);
   
 #endif

@@ -248,8 +248,8 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     #include <cmath>         // for sqrt()
@@ -367,7 +367,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/transformimage.hxx\>
-
+    Namespace: vigra	
 
     \code
     vigra::FImage src(w,h), magnitude(w,h);
@@ -643,8 +643,8 @@ class FunctorTraits<ScalarIntensityTransform<DestValueType, Multiplier> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::IImage src(width, height);
@@ -727,8 +727,8 @@ linearIntensityTransform(Multiplier scale)
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::IImage src(width, height);
@@ -832,8 +832,8 @@ linearRangeMapping(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::BImage src(width, height), dest(width, height);
@@ -947,8 +947,8 @@ class FunctorTraits<Threshold<SrcValueType, DestValueType> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::BImage bimage(width, height);
@@ -1214,8 +1214,8 @@ class BrightnessContrastFunctor<RGBValue<unsigned char> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::BImage bimage(width, height);
@@ -1450,8 +1450,8 @@ class GammaFunctor<RGBValue<unsigned char> >
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/transformimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/transformimage.hxx\><br>
+    Namespace: vigra
 
     \code
     typedef vigra::TinyVector<float, 2> Vector;

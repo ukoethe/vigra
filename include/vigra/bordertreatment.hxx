@@ -40,7 +40,7 @@
 namespace vigra {
 
 
-/*! \page BorderTreatmentMode BorderTreatmentMode
+/** \page BorderTreatmentMode BorderTreatmentMode
 
     Choose between different border treatment modes. In the convolution 
     algorithms, these modes apply to 

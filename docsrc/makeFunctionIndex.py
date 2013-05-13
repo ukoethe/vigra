@@ -4,6 +4,7 @@ import re
 import glob
 import sys
 import xml.etree.ElementTree as ET
+from itertools import chain
 
 if len(sys.argv) != 2:
     print 'usage: python makeFunctionIndex.py directory'
@@ -13,7 +14,7 @@ path = str(sys.argv[1])
 
 
 def getClassList():
-    tree = ET.parse(path + "/../../../vigra_build/docsrc/tagfile.tag")
+    tree = ET.parse("tagfile.tag")
     root = tree.getroot()
 
     class_list = []
@@ -32,11 +33,11 @@ def getClassList():
 
 
 def getFunctionList():
-    tree = ET.parse(path + "/../../../vigra_build/docsrc/tagfile.tag")
+    tree = ET.parse("tagfile.tag")
     root = tree.getroot()
 
     function_list = []
-    for function in root.findall("*[@kind='namespace']/*[@kind='function']"):
+    for function in chain(root.findall("*[@kind='group']/*[@kind='function']"),root.findall("*[@kind='namespace']/*[@kind='function']")):
         name = function.find('name').text
         anchorfile = function.find('anchorfile').text
         anchor = function.find('anchor').text
@@ -51,6 +52,9 @@ def getFunctionList():
     for k in ['srcIterRange', 'srcIter', 'destIterRange', 'destIter', 'maskIter']:
         function_list.append(('group__ImageIterators.html#IteratorBasedArgumentObjectFactories', k))
 
+    unique = set()
+    set_add = unique.add
+    function_list = [ x for x in function_list if x not in unique and not set_add(x)]    
     function_list.sort(lambda a,b: cmp(a[1], b[1]))
     function_list = disambiguateOverloadedFunctions(function_list)
     return function_list

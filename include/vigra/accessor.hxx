@@ -44,16 +44,17 @@ namespace vigra {
 
 /** \addtogroup DataAccessors Data Accessors
 
-    Basic templates to encapsulate access to the data of an iterator.
+Basic templates to encapsulate access to the data of an iterator.
 
-    Data accessors are used to allow for flexible access to the data
-    an iterator points to. When we access the data directly, we
-    are bound to what <TT>operator*()</TT> returns, if this method exists at
-    all. Encapsulating access in an accessor enables a better
-    decoupling of data structures and algorithms.
-    <a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/DataAccessors.ps">This paper</a> contains
-    a detailed description of the concept. Here is a brief list of the basic
-    accessor requirements:
+Data accessors are used to allow for flexible access to the data
+an iterator points to. When we access the data directly, we
+are bound to what <TT>operator*()</TT> returns, if this method exists at
+all. Encapsulating access in an accessor enables a better
+decoupling of data structures and algorithms.
+<a href="http://hci.iwr.uni-heidelberg.de/vigra/documents/DataAccessors.ps">This paper</a> contains
+a detailed description of the concept. Here is a brief list of the basic
+accessor requirements:
+
 <p>
 <table border=2 cellspacing=0 cellpadding=2 width="100%">
 <tr><th>
@@ -95,13 +96,13 @@ namespace vigra {
 </table>
 </p>
 
-    The template <tt>AccessorTraits<T></tt> can be used to find the default accessor
-    associated with the type <tt>T</tt>, e.g.
-    
-    \code
-    typedef typename AccessorTraits<typename Image::value_type>::default_accessor       Accessor;
-    typedef typename AccessorTraits<typename Image::value_type>::default_const_accessor ConstAccessor;
-    \endcode
+The template <tt>AccessorTraits<T></tt> can be used to find the default accessor
+associated with the type <tt>T</tt>, e.g.
+
+\code
+typedef typename AccessorTraits<typename Image::value_type>::default_accessor       Accessor;
+typedef typename AccessorTraits<typename Image::value_type>::default_const_accessor ConstAccessor;
+\endcode
 */
 //@{
 

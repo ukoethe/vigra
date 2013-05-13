@@ -185,8 +185,8 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/initimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/initimage.hxx\><br>
+    Namespace: vigra
     
     Initialize with a constant:
     
@@ -287,8 +287,8 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/initimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/initimage.hxx\><br>
+    Namespace: vigra
     
     \code
     struct Counter {
@@ -401,8 +401,8 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/initimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/initimage.hxx\><br>
+    Namespace: vigra
     
     \code
     vigra::BImage img(100, 100);
@@ -510,8 +510,8 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/initimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/initimage.hxx\><br>
+    Namespace: vigra
     
     \code
     vigra::BImage img(100, 100);

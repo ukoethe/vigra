@@ -69,7 +69,7 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/*! Calculate the greatest common divisor.
+/** Calculate the greatest common divisor.
 
     This function works for arbitrary integer types, including user-defined
     (e.g. infinite precision) ones.
@@ -110,7 +110,7 @@ IntType gcd(IntType n, IntType m)
 /*                                                      */
 /********************************************************/
 
-/*! Calculate the lowest common multiple.
+/** Calculate the lowest common multiple.
 
     This function works for arbitrary integer types, including user-defined
     (e.g. infinite precision) ones.

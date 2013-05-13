@@ -135,7 +135,7 @@ ostream & operator<<(ostream & s, std::pair<T1, T2> const & p)
 
 }
 
-/*! \page Utilities Utilities
+/** \page Utilities Utilities
     Basic helper functionality needed throughout.
 
     <UL style="list-style-image:url(documents/bullet.gif)">

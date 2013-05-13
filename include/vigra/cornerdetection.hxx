@@ -197,7 +197,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
+    <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
     
     \code
@@ -355,7 +355,7 @@ void cornerResponseFunction(
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
+    <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
     
     \code
@@ -503,7 +503,7 @@ void foerstnerCornerDetector(
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
+    <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
     
     \code
@@ -641,7 +641,7 @@ void rohrCornerDetector(
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
+    <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
     
     \code

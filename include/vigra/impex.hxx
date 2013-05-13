@@ -35,7 +35,7 @@
 /************************************************************************/
 
 
-/*!
+/**
  * \file  impex.hxx
  * \brief image import and export functions
  *
@@ -604,7 +604,7 @@ namespace vigra
         }
     }  // end namespace detail
 
-    /*!
+    /**
      * \brief Read the image specified by the given \ref
      * vigra::ImageImportInfo object.
      *
@@ -721,7 +721,7 @@ namespace vigra
                     image.first, image.second);
     }
 
-    /*!
+    /**
      * \brief Write an image given a \ref vigra::ImageExportInfo object.
      *
      * If the file format to be exported to supports the pixel type of

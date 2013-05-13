@@ -52,8 +52,7 @@ template <unsigned int N, class T,
 
 /** \page MultiIteratorPage  Multi-dimensional Array Iterators
 
-    General iterators for arrays of arbitrary dimension.
-
+General iterators for arrays of arbitrary dimension.
 
 <p>
 <UL style="list-style-image:url(documents/bullet.gif)">
@@ -780,11 +779,10 @@ class MultiIterator<2, T, REFERENCE, POINTER>
 /** \brief A multi-dimensional hierarchical iterator to be used with 
            \ref vigra::MultiArrayView if it is not strided.
 
-     See \ref MultiIteratorPage for further documentation.
+    See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> \<vigra/multi_iterator.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_iterator.hxx\> <br>
+    Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
 class MultiIterator 
@@ -1547,11 +1545,10 @@ class StridedMultiIterator<2, T, REFERENCE, POINTER>
 /** \brief A multi-dimensional hierarchical iterator to be used with 
            \ref vigra::MultiArrayView if it is not strided.
 
-     See \ref MultiIteratorPage for further documentation.
+    See \ref MultiIteratorPage for further documentation.
 
-<b>\#include</b> \<vigra/multi_iterator.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_iterator.hxx\> <br>
+    Namespace: vigra
 */
 template <unsigned int N, class T, class REFERENCE, class POINTER>
 class StridedMultiIterator 

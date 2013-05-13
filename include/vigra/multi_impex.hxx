@@ -69,7 +69,7 @@ namespace vigra {
     to define the properties of a volume data set to be read from disk.
     Sorry, no \ref detailedDocumentation() available yet.
 
-    <b>\#include</b> \<vigra/multi_impex.hxx\><br>
+    <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
 **/
 class VolumeImportInfo
@@ -190,7 +190,7 @@ class VolumeImportInfo
     See \ref exportVolume() for usage example. This object must be used
     to define the properties of a volume to be written to disk.
 
-    <b>\#include</b> \<vigra/imageinfo.hxx\><br>
+    <b>\#include</b> \<vigra/imageinfo.hxx\> <br/>
     Namespace: vigra
 **/
 class VolumeExportInfo
@@ -505,9 +505,7 @@ VIGRA_EXPORT void findImageSequence(const std::string &name_base,
     same size. The <tt>volume</tt> will be reshaped to match the count and
     size of the slices found.
 
-    <b>\#include</b>
-    \<vigra/multi_impex.hxx\>
-
+    <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
 */
 template <class T, class Allocator>
@@ -554,9 +552,7 @@ void importVolume (MultiArray <3, T, Allocator> & volume,
     In either case, the <tt>volume</tt> will be reshaped to match the count and
     size of the slices found.
 
-    <b>\#include</b>
-    \<vigra/multi_impex.hxx\>
-
+    <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
 */
 template <class T, class Allocator>
@@ -577,9 +573,7 @@ void importVolume(MultiArray <3, T, Allocator> &volume,
     The <tt>volume</tt> will be reshaped to match the count and
     size of the slices found.
 
-    <b>\#include</b>
-    \<vigra/multi_impex.hxx\>
-
+    <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
 */
 template <class T, class Stride>
@@ -675,9 +669,7 @@ void setRangeMapping(MultiArrayView <3, T, Tag> const & volume,
     does not support the source voxel type, all slices will be mapped simultaneously
     to the appropriate target range.
 
-    <b>\#include</b>
-    \<vigra/multi_impex.hxx\>
-
+    <b>\#include</b> \<vigra/multi_impex.hxx\> <br/>
     Namespace: vigra
 */
 template <class T, class Tag>

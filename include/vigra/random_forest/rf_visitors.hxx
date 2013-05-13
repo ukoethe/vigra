@@ -1259,7 +1259,7 @@ class VariableImportanceVisitor : public VisitorBase
     }
 #endif
 
-    /** Constructor
+    /* Constructor
      * \param rep_cnt (defautl: 10) how often should 
      * the permutation take place. Set to 1 to make calculation faster (but
      * possibly more instable)

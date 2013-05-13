@@ -50,8 +50,6 @@
     \endcode
     </ul>
     
-    <hr>
-
     \section ImageInversion Inverting an Image
     
     Inverting an (gray scale) image is quite easy. We just need to subtract every pixel's 
@@ -73,8 +71,6 @@
     <TD> \image html lenna_inverted.gif "inverted output file" </TD>
     </TR>
     </Table>
-
-    <hr>
 
     \section ImageBlending Image Blending
     
@@ -104,8 +100,6 @@
     </TR>
     </table>
 
-    <hr>
-
     \section CompositeImage Creating a Composite Image
     
     Let's come to a little gimmick. Given one input image we want to create a composite image 
@@ -130,8 +124,6 @@
     <TD> \image html lenna_composite_color.gif "composite output file" </TD>
     </TR>
     </Table>
-
-    <hr>
 
     \section SmoothingTutorial Smoothing
     

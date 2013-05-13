@@ -94,7 +94,7 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
+    <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
     
     \code

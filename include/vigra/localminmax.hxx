@@ -1101,8 +1101,8 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/localminmax.hxx\><br>
-        <b>\#include</b> \<vigra/multi_localminmax.hxx\><br>
+    <b>\#include</b> \<vigra/localminmax.hxx\><br>
+    <b>\#include</b> \<vigra/multi_localminmax.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1453,7 +1453,7 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/localminmax.hxx\><br>
+    <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1771,7 +1771,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/localminmax.hxx\><br>
+    <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
     \code

@@ -174,8 +174,8 @@ internalResizeMultiArrayOneDimension(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/multi_resize.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/multi_resize.hxx\><br>
+    Namespace: vigra
 
     \code
     typedef vigra::MultiArray<3, float>::difference_type Shape;

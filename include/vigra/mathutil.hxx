@@ -50,7 +50,7 @@
 #include "numerictraits.hxx"
 #include "algorithm.hxx"
 
-/*! \page MathConstants Mathematical Constants
+/** \page MathConstants Mathematical Constants
 
     <TT>M_PI, M_SQRT2 etc.</TT>
 
@@ -191,7 +191,7 @@ inline long double pow(long double v, double e)
     return std::pow(v, (long double)e);
 }
 
-    /*! The rounding function.
+    /** \brief The rounding function.
 
         Defined for all floating point types. Rounds towards the nearest integer 
         such that <tt>abs(round(t)) == round(abs(t))</tt> for all <tt>t</tt>.
@@ -225,7 +225,7 @@ inline long double round(long double t)
 }
 
 
-    /*! Round and cast to integer.
+    /** \brief Round and cast to integer.
 
         Rounds to the nearest integer like round(), but casts the result to 
         <tt>int</tt> (this will be faster and is usually needed anyway).
@@ -240,7 +240,7 @@ inline int roundi(double t)
                 : int(t - 0.5);
 }
 
-    /*! Round up to the nearest power of 2.
+    /** \brief Round up to the nearest power of 2.
 
         Efficient algorithm for finding the smallest power of 2 which is not smaller than \a x
         (function clp2() from Henry Warren: "Hacker's Delight", Addison-Wesley, 2003,
@@ -263,7 +263,7 @@ inline UInt32 ceilPower2(UInt32 x)
     return x + 1;
 } 
     
-    /*! Round down to the nearest power of 2.
+    /** \brief Round down to the nearest power of 2.
 
         Efficient algorithm for finding the largest power of 2 which is not greater than \a x
         (function flp2() from Henry Warren: "Hacker's Delight", Addison-Wesley, 2003,
@@ -300,7 +300,7 @@ Int32 IntLog2<T>::table[64] = {
 
 } // namespace detail
 
-    /*! Compute the base-2 logarithm of an integer.
+    /** \brief Compute the base-2 logarithm of an integer.
 
         Returns the position of the left-most 1-bit in the given number \a x, or
         -1 if \a x == 0. That is,
@@ -328,7 +328,7 @@ inline Int32 log2i(UInt32 x)
     return detail::IntLog2<Int32>::table[x >> 26];
 }
 
-    /*! The square function.
+    /** \brief The square function.
 
         <tt>sq(x) = x*x</tt> is needed so often that it makes sense to define it as a function.
 
@@ -376,7 +376,7 @@ struct power_static<V, 0>
 
 } // namespace detail
 
-    /*! Exponentiation to a positive integer power by squaring.
+    /** \brief Exponentiation to a positive integer power by squaring.
 
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
@@ -486,7 +486,7 @@ UInt32 IntSquareRoot<T>::exec(UInt32 x)
 
 using VIGRA_CSTD::sqrt;
 
-    /*! Signed integer square root.
+    /** \brief Signed integer square root.
     
         Useful for fast fixed-point computations.
 
@@ -500,7 +500,7 @@ inline Int32 sqrti(Int32 v)
     return (Int32)detail::IntSquareRoot<UInt32>::exec((UInt32)v);
 }
 
-    /*! Unsigned integer square root.
+    /** \brief Unsigned integer square root.
 
         Useful for fast fixed-point computations.
 
@@ -513,7 +513,7 @@ inline UInt32 sqrti(UInt32 v)
 }
 
 #ifdef VIGRA_NO_HYPOT
-    /*! Compute the Euclidean distance (length of the hypotenuse of a right-angled triangle).
+    /** \brief Compute the Euclidean distance (length of the hypotenuse of a right-angled triangle).
 
         The  hypot()  function  returns  the  sqrt(a*a  +  b*b).
         It is implemented in a way that minimizes round-off error.
@@ -538,7 +538,7 @@ using ::hypot;
 
 #endif
 
-    /*! The sign function.
+    /** \brief The sign function.
 
         Returns 1, 0, or -1 depending on the sign of \a t, but with the same type as \a t.
 
@@ -555,7 +555,7 @@ inline T sign(T t)
                     : NumericTraits<T>::zero();
 }
 
-    /*! The integer sign function.
+    /** \brief The integer sign function.
 
         Returns 1, 0, or -1 depending on the sign of \a t, converted to int.
 
@@ -572,7 +572,7 @@ inline int signi(T t)
                     : 0;
 }
 
-    /*! The binary sign function.
+    /** \brief The binary sign function.
 
         Transfers the sign of \a t2 to \a t1.
 
@@ -589,13 +589,13 @@ inline T1 sign(T1 t1, T2 t2)
 
 
 #ifdef DOXYGEN // only for documentation
-    /*! Check if an integer is even.
+    /** \brief Check if an integer is even.
 
         Defined for all integral types.
     */
 bool even(int t);
 
-    /*! Check if an integer is odd.
+    /** \brief Check if an integer is odd.
 
         Defined for all integral types.
     */
@@ -649,18 +649,20 @@ squaredNorm(std::complex<T> const & t)
 }
 
 #ifdef DOXYGEN // only for documentation
-    /*! The squared norm of a numerical object.
+    /** \brief The squared norm of a numerical object.
 
-        For scalar types: equals <tt>vigra::sq(t)</tt><br>.
-        For vectorial types: equals <tt>vigra::dot(t, t)</tt><br>.
-        For complex types: equals <tt>vigra::sq(t.real()) + vigra::sq(t.imag())</tt><br>.
-        For matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).
+        <ul>
+        <li>For scalar types: equals <tt>vigra::sq(t)</tt>.
+        <li>For vectorial types: equals <tt>vigra::dot(t, t)</tt>.
+        <li>For complex types: equals <tt>vigra::sq(t.real()) + vigra::sq(t.imag())</tt>.
+        <li>For matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).
+        </ul>
     */
 NormTraits<T>::SquaredNormType squaredNorm(T const & t);
 
 #endif
 
-    /*! The norm of a numerical object.
+    /** \brief The norm of a numerical object.
 
         For scalar types: implemented as <tt>abs(t)</tt><br>
         otherwise: implemented as <tt>sqrt(squaredNorm(t))</tt>.
@@ -676,13 +678,13 @@ norm(T const & t)
     return sqrt(static_cast<typename SquareRootTraits<SNT>::SquareRootArgument>(squaredNorm(t)));
 }
 
-    /*! Compute the eigenvalues of a 2x2 real symmetric matrix.
-    
+    /** \brief Compute the eigenvalues of a 2x2 real symmetric matrix.
+      
         This uses the analytical eigenvalue formula 
         \f[
            \lambda_{1,2} = \frac{1}{2}\left(a_{00} + a_{11} \pm \sqrt{(a_{00} - a_{11})^2 + 4 a_{01}^2}\right)
         \f]
-
+      
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -696,14 +698,13 @@ void symmetric2x2Eigenvalues(T a00, T a01, T a11, T * r0, T * r1)
         std::swap(*r0, *r1);
 }
 
-    /*! Compute the eigenvalues of a 3x3 real symmetric matrix.
-    
+    /** \brief Compute the eigenvalues of a 3x3 real symmetric matrix.
+        
         This uses a numerically stable version of the analytical eigenvalue formula according to
         <p>
         David Eberly: <a href="http://www.geometrictools.com/Documentation/EigenSymmetric3x3.pdf">
         <em>"Eigensystems for 3 × 3 Symmetric Matrices (Revisited)"</em></a>, Geometric Tools Documentation, 2006
-
-
+        
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -793,14 +794,14 @@ T ellipticRF(T x, T y, T z)
 
 } // namespace detail
 
-    /*! The incomplete elliptic integral of the first kind.
+    /** \brief The incomplete elliptic integral of the first kind.
+    
+        This function computes
 
-        Computes
-        
         \f[
-            \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
+             \mbox{F}(x, k) = \int_0^x \frac{1}{\sqrt{1 - k^2 \sin(t)^2}} dt
         \f]
-        
+  
         according to the algorithm given in Press et al. "Numerical Recipes". 
 
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
@@ -816,20 +817,20 @@ inline double ellipticIntegralF(double x, double k)
     return s*detail::ellipticRF(c2, 1.0 - sq(k*s), 1.0);
 }
 
-    /*! The incomplete elliptic integral of the second kind.
-
-        Computes
-        
+    /** \brief The incomplete elliptic integral of the second kind.
+      
+        This function computes
+      
         \f[
             \mbox{E}(x, k) = \int_0^x \sqrt{1 - k^2 \sin(t)^2} dt
         \f]
-        
+      
         according to the algorithm given in Press et al. "Numerical Recipes". The
         complete elliptic integral of the second kind is simply <tt>ellipticIntegralE(M_PI/2, k)</TT>.
-        
+      
         Note: In some libraries (e.g. Mathematica), the second parameter of the elliptic integral
         functions must be k^2 rather than k. Check the documentation when results disagree!
-
+      
         <b>\#include</b> \<vigra/mathutil.hxx\><br>
         Namespace: vigra
     */
@@ -861,7 +862,7 @@ double erfImpl(T x)
 
 } // namespace detail 
 
-    /*! The error function.
+    /** \brief The error function.
 
         If <tt>erf()</tt> is not provided in the C standard math library (as it should according to the
         new C99 standard ?), VIGRA implements <tt>erf()</tt> as an approximation of the error 
@@ -987,7 +988,7 @@ std::pair<double, double> noncentralChi2CDF(unsigned int degreesOfFreedom, T non
 
 } // namespace detail
 
-    /*! Chi square distribution. 
+    /** \brief Chi square distribution. 
 
         Computes the density of a chi square distribution with \a degreesOfFreedom 
         and tolerance \a accuracy at the given argument \a arg
@@ -1001,7 +1002,7 @@ inline double chi2(unsigned int degreesOfFreedom, double arg, double accuracy = 
     return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).first;
 }
 
-    /*! Cumulative chi square distribution. 
+    /** \brief Cumulative chi square distribution. 
 
         Computes the cumulative density of a chi square distribution with \a degreesOfFreedom 
         and tolerance \a accuracy at the given argument \a arg, i.e. the probability that
@@ -1016,7 +1017,7 @@ inline double chi2CDF(unsigned int degreesOfFreedom, double arg, double accuracy
     return detail::noncentralChi2CDF(degreesOfFreedom, 0.0, arg, accuracy).second;
 }
 
-    /*! Non-central chi square distribution. 
+    /** \brief Non-central chi square distribution. 
 
         Computes the density of a non-central chi square distribution with \a degreesOfFreedom, 
         noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
@@ -1033,7 +1034,7 @@ inline double noncentralChi2(unsigned int degreesOfFreedom,
     return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).first;
 }
 
-    /*! Cumulative non-central chi square distribution. 
+    /** \brief Cumulative non-central chi square distribution. 
 
         Computes the cumulative density of a chi square distribution with \a degreesOfFreedom, 
         noncentrality parameter \a noncentrality and tolerance \a accuracy at the given argument 
@@ -1051,7 +1052,7 @@ inline double noncentralChi2CDF(unsigned int degreesOfFreedom,
     return detail::noncentralChi2CDF(degreesOfFreedom, noncentrality, arg, accuracy).second;
 }
 
-    /*! Cumulative non-central chi square distribution (approximate). 
+    /** \brief Cumulative non-central chi square distribution (approximate). 
 
         Computes approximate values of the cumulative density of a chi square distribution with \a degreesOfFreedom, 
         and noncentrality parameter \a noncentrality at the given argument 
@@ -1085,7 +1086,7 @@ T facLM(T l, T m)
 
 } // namespace detail
 
-    /*! Associated Legendre polynomial. 
+    /** \brief Associated Legendre polynomial. 
 
         Computes the value of the associated Legendre polynomial of order <tt>l, m</tt> 
         for argument <tt>x</tt>. <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, 
@@ -1134,7 +1135,7 @@ REAL legendre(unsigned int l, int m, REAL x)
     return other;
 }
 
-    /*! Legendre polynomial. 
+    /** \brief \brief Legendre polynomial. 
 
         Computes the value of the Legendre polynomial of order <tt>l</tt> for argument <tt>x</tt>.
         <tt>x</tt> must be in the range <tt>[-1.0, 1.0]</tt>, otherwise an exception is thrown.
@@ -1148,7 +1149,7 @@ REAL legendre(unsigned int l, REAL x)
     return legendre(l, 0, x);
 }
 
-    /*! sin(pi*x). 
+    /** \brief sin(pi*x). 
 
         Essentially calls <tt>std::sin(M_PI*x)</tt> but uses a more accurate implementation
         to make sure that <tt>sin_pi(1.0) == 0.0</tt> (which does not hold for
@@ -1187,7 +1188,7 @@ REAL sin_pi(REAL x)
               : rem;
 }
 
-    /*! cos(pi*x). 
+    /** \brief cos(pi*x). 
 
         Essentially calls <tt>std::cos(M_PI*x)</tt> but uses a more accurate implementation
         to make sure that <tt>cos_pi(1.0) == -1.0</tt> and <tt>cos_pi(0.5) == 0.0</tt>.
@@ -1530,7 +1531,7 @@ REAL GammaImpl<REAL>::loggamma(REAL x)
 
 } // namespace detail
 
-    /*! The gamma function.
+    /** \brief The gamma function.
 
         This function implements the algorithm from<br>
         Zhang and Jin: "Computation of Special Functions", John Wiley and Sons, 1996.
@@ -1546,7 +1547,7 @@ inline double gamma(double x)
     return detail::GammaImpl<double>::gamma(x);
 }
 
-    /*! The natural logarithm of the gamma function.
+    /** \brief The natural logarithm of the gamma function.
 
         This function is based on a free implementation by Sun Microsystems, Inc., see
         <a href="http://www.sourceware.org/cgi-bin/cvsweb.cgi/~checkout~/src/newlib/libm/mathfp/er_lgamma.c?rev=1.6&content-type=text/plain&cvsroot=src">sourceware.org</a> archive. It can be removed once all compilers support the new C99
@@ -1580,7 +1581,7 @@ FPT safeFloatDivision( FPT f1, FPT f2 )
 
 } // namespace detail
     
-    /*! Tolerance based floating-point comparison.
+    /** \brief Tolerance based floating-point comparison.
 
         Check whether two floating point numbers are equal within the given tolerance.
         This is useful because floating point numbers that should be equal in theory are

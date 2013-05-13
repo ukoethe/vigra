@@ -94,10 +94,8 @@ struct VigraFalseType
 
 /** tag for marking a MultiArray strided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra
 */
 struct StridedArrayTag {};
 
@@ -109,10 +107,8 @@ struct StridedArrayTag {};
 
 /** tag for marking a MultiArray unstrided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra
 */
 struct UnstridedArrayTag {};
 

@@ -96,7 +96,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/symmetry.hxx\><br>
+    <b>\#include</b> \<vigra/symmetry.hxx\><br>
     Namespace: vigra
 
     \code

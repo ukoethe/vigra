@@ -191,10 +191,8 @@ struct CoordinatesToOffest<UnstridedArrayTag>
     indexed at the zero'th dimension as strided, and all others as
     unstrided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <class StrideTag, unsigned int N>
 struct MaybeStrided
@@ -217,10 +215,8 @@ struct MaybeStrided <StrideTag, 0>
 /* metatag implementing a test (by pattern matching) for marking
     MultiArrays that were indexed at the zero'th dimension as strided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <class O>
 struct MultiIteratorChooser
@@ -242,10 +238,8 @@ struct MultiIteratorChooser
 
 /* specialization of the MultiIteratorChooser for strided arrays.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <>
 struct MultiIteratorChooser <StridedArrayTag>
@@ -265,10 +259,8 @@ struct MultiIteratorChooser <StridedArrayTag>
 
 /* specialization of the MultiIteratorChooser for unstrided arrays.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <>
 struct MultiIteratorChooser <UnstridedArrayTag>
@@ -758,9 +750,7 @@ The template parameter are as follows
        Possible values: UnstridedArrayTag (default), StridedArrayTag
 \endcode
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
+<b>\#include</b> \<vigra/multi_array.hxx\> <br/>
 Namespace: vigra
 */
 template <unsigned int N, class T, class StrideTag>
@@ -2426,9 +2416,7 @@ The template parameters are as follows
        (default: std::allocator<T>)
 \endcode
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
+<b>\#include</b> \<vigra/multi_array.hxx\> <br/>
 Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
