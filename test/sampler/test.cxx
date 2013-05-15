@@ -308,9 +308,10 @@ void SamplerTests::testSamplingWithoutReplacementChi2()
     // Use fixed random numbers so that the sampling is reproducible.
     int nsamples = 120000;
     int nclasses = 120;
+    MersenneTwister randomGenerator;
     Sampler<> sampler( 5, 
                 SamplerOptions().withoutReplacement().sampleSize(5),
-                MersenneTwister());
+                &randomGenerator);
     std::map<unsigned int, int> wierdmap;
     std::map<unsigned int , int>::iterator iter;
     for(int ii = 0; ii < 1000; ++ii)
@@ -367,9 +368,10 @@ void SamplerTests::testSamplingWithReplacementChi2()
            ratio = double(numOfSamples) / totalDataCount;
 
     {
+        MersenneTwister randomGenerator;
         Sampler<> sampler(totalDataCount, 
              SamplerOptions().withReplacement().sampleSize(numOfSamples),
-             MersenneTwister());
+             &randomGenerator);
 
         sampler.sample();
         for(int ii = 0; ii < numOfSamples; ++ii)

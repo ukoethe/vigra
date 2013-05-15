@@ -888,7 +888,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                                preprocessor.strata().end(),
                                detail::make_sampler_opt(options_)
                                         .sampleSize(ext_param().actual_msample_),
-                                    random);
+                               &random);
     //initialize First region/node/stack entry
     sampler
         .sample();
@@ -996,7 +996,7 @@ void RandomForest<LabelType, PreprocessorTag>::
                                preprocessor.strata().end(),
                                detail::make_sampler_opt(options_)
                                         .sampleSize(ext_param().actual_msample_),
-                                    random);
+                               &random);
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!

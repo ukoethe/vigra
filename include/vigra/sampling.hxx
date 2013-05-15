@@ -239,30 +239,31 @@ class Sampler
         */
     typedef Int32                               IndexType;
     
-    typedef ArrayVector     <IndexType>  IndexArrayType;
+    typedef ArrayVector<IndexType>              IndexArrayType;
     
         /** Type of the array view object that is returned by 
             sampledIndices() and oobIndices().
         */
-    typedef ArrayVectorView <IndexType>  IndexArrayViewType;
+    typedef ArrayVectorView <IndexType>         IndexArrayViewType;
 
   private:
     typedef std::map<IndexType, IndexArrayType> StrataIndicesType;
-    typedef std::map<IndexType, int> StrataSizesType;
-    typedef ArrayVector     <bool>       IsUsedArrayType;
-    typedef ArrayVectorView <bool>       IsUsedArrayViewType;
+    typedef std::map<IndexType, int>            StrataSizesType;
+    typedef ArrayVector<bool>                   IsUsedArrayType;
+    typedef ArrayVectorView<bool>               IsUsedArrayViewType;
     
-    static const int oobInvalid = -1;
+    static const int        oobInvalid = -1;
 
-    int total_count_, sample_size_;
-    mutable int current_oob_count_;
-    StrataIndicesType     strata_indices_;
-    StrataSizesType       strata_sample_size_;
-    IndexArrayType        current_sample_;
-    mutable IndexArrayType        current_oob_sample_;
-    IsUsedArrayType       is_used_;
-    Random const & random_;
-    SamplerOptions options_;
+    int                     total_count_, sample_size_;
+    mutable int             current_oob_count_;
+    StrataIndicesType       strata_indices_;
+    StrataSizesType         strata_sample_size_;
+    IndexArrayType          current_sample_;
+    mutable IndexArrayType  current_oob_sample_;
+    IsUsedArrayType         is_used_;
+    Random                  default_random_;
+    Random const &          random_;
+    SamplerOptions          options_;
 
     void initStrataCount()
     {
@@ -295,7 +296,7 @@ class Sampler
             <tt>totalCount</tt> indices will be drawn with replacement.
         */
     Sampler(UInt32 totalCount, SamplerOptions const & opt = SamplerOptions(), 
-            Random const & rnd = Random(RandomSeed))
+            Random const * rnd = 0)
     : total_count_(totalCount),
       sample_size_(opt.sample_size == 0
                          ? (int)(std::ceil(total_count_ * opt.sample_proportion))
@@ -304,7 +305,8 @@ class Sampler
       current_sample_(sample_size_),
       current_oob_sample_(total_count_),
       is_used_(total_count_),
-      random_(rnd),
+      default_random_(RandomSeed),
+      random_(rnd ? *rnd : default_random_),
       options_(opt)
     {
         vigra_precondition(opt.sample_with_replacement || sample_size_ <= total_count_,
@@ -334,7 +336,7 @@ class Sampler
         */
     template <class Iterator>
     Sampler(Iterator strataBegin, Iterator strataEnd, SamplerOptions const & opt = SamplerOptions(), 
-            Random const & rnd = Random(RandomSeed))
+            Random const * rnd = 0)
     : total_count_(strataEnd - strataBegin),
       sample_size_(opt.sample_size == 0
                          ? (int)(std::ceil(total_count_ * opt.sample_proportion))
@@ -343,7 +345,8 @@ class Sampler
       current_sample_(sample_size_),
       current_oob_sample_(total_count_),
       is_used_(total_count_),
-      random_(rnd),
+      default_random_(RandomSeed),
+      random_(rnd ? *rnd : default_random_),
       options_(opt)
     {
         vigra_precondition(opt.sample_with_replacement || sample_size_ <= total_count_,
