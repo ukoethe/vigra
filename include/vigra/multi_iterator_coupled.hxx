@@ -33,53 +33,17 @@
 /*                                                                      */
 /************************************************************************/
 
-#ifndef MULTI_ITERATOR_COUPLED_HXX_
-#define MULTI_ITERATOR_COUPLED_HXX_
+#ifndef MULTI_ITERATOR_COUPLED_HXX
+#define MULTI_ITERATOR_COUPLED_HXX
 
 #include "metaprogramming.hxx"
-#include "multi_iterator.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
 /** \addtogroup MultiIteratorGroup
 */
 //@{
-
-
-    // FIXME: this should go into its separate header file,
-    //        together with the calculation of neighborhod offsets for GridGraph
-template <unsigned int N, unsigned int DIMENSION=N-1>
-struct NeighborhoodTypeImpl
-{
-    typedef typename MultiArrayShape<N>::type shape_type;
-    
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
-    {
-        unsigned int res = NeighborhoodTypeImpl<N, DIMENSION-1>::exec(point, shape);
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
-        return res;
-    }
-};
-
-template <unsigned int N>
-struct NeighborhoodTypeImpl<N, 0>
-{
-    typedef typename MultiArrayShape<N>::type shape_type;
-    static const unsigned int DIMENSION = 0;
-    
-    static unsigned int exec(shape_type const & point, shape_type const & shape)
-    {
-        unsigned int res = 0;
-        if(point[DIMENSION] == 0)
-            res |= (1 << 2*DIMENSION);
-        if(point[DIMENSION] == shape[DIMENSION]-1)
-            res |= (2 << 2*DIMENSION);
-        return res;
-    }
-};
 
   /**
      Handle class, used by CoupledScanOrderIterator as the value type to simultaneously itearate over multiple images.
@@ -317,17 +281,14 @@ public:
         return &point_;
     }
     
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
-        return NeighborhoodTypeImpl<N>::exec(point_, shape_);
+        return detail::BorderTypeImpl<N>::exec(point_, shape_);
     }
 
     value_type point_, shape_;
     MultiArrayIndex scanOrderIndex_;
 };
-
-template <class T>
-struct Multiband;
 
 template <unsigned int N, class T, class StrideTag>
 class MultiArrayView<N, Multiband<T>, StrideTag>
@@ -560,7 +521,7 @@ get(Handle const & handle)
 */
 
 template <unsigned int N,
-          class HANDLES,
+          class HANDLES=CoupledHandle<TinyVector<MultiArrayIndex, N>, void>,
           int DIMENSION = N-1>
 class CoupledScanOrderIterator
 #ifndef DOXYGEN  // doxygen doesn't understand this inheritance
@@ -589,7 +550,7 @@ class CoupledScanOrderIterator
     typedef typename base_type::const_reference const_reference; // FIXME: do we need both?
     typedef typename base_type::pointer         pointer;
 
-    CoupledScanOrderIterator(value_type const & handles = value_type())
+    explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : base_type(handles)
     {}
 
@@ -666,9 +627,9 @@ class CoupledScanOrderIterator
     */
     CoupledScanOrderIterator getEndIterator() const
     {
-        return operator+(prod(this->shape()));
+        return operator+(prod(this->shape()) - this->scanOrderIndex());
     }
-
+    
     CoupledScanOrderIterator operator+(MultiArrayIndex d) const
     {
         return CoupledScanOrderIterator(*this) += d;
@@ -694,7 +655,7 @@ class CoupledScanOrderIterator
         return base_type::operator-(r);
     }
 
-    bool operator==(CoupledScanOrderIterator const & r)
+    bool operator==(CoupledScanOrderIterator const & r) const
     {
         return base_type::operator==(r);
     }
@@ -729,28 +690,25 @@ class CoupledScanOrderIterator
     using base_type::shape;
     using base_type::scanOrderIndex;
     using base_type::atBorder;
-    using base_type::neighborhoodType;
+    using base_type::borderType;
     using base_type::get;
+    using base_type::isValid;
+    using base_type::atEnd;
 
 #ifdef DOXYGEN
   
-  /** Returns reference to the element in the band with index TARGET_INDEX.
-  */
-  template<unsigned int TARGET_INDEX> 
-  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
-  get() 
-  {
-    return vigra::get<TARGET_INDEX>(handles_);
-  }
+    /** Returns reference to the element in the band with index TARGET_INDEX.
+    */
+    template<unsigned int TARGET_INDEX> 
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::reference
+    get();
 
-  /** Returns constant reference to the element in the band with index TARGET_INDEX.
-  */
-  template<unsigned int TARGET_INDEX> 
-  typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
-  get() const
-  {
-    return vigra::get<TARGET_INDEX>(handles_);
-  }
+    /** Returns constant reference to the element in the band with index TARGET_INDEX.
+    */
+    template<unsigned int TARGET_INDEX> 
+    typename CoupledHandleCast<TARGET_INDEX, value_type>::type::const_reference
+    get() const;
+    
 #endif
 
   protected:
@@ -790,7 +748,7 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
     typedef CoupledScanOrderIterator                 iterator;
     typedef std::random_access_iterator_tag          iterator_category;
 
-    CoupledScanOrderIterator(value_type const & handles = value_type())
+    explicit CoupledScanOrderIterator(value_type const & handles = value_type())
     : handles_(handles)
     {}
 
@@ -881,40 +839,44 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return scanOrderIndex() - r.scanOrderIndex();
     }
 
-    bool
-    operator==(CoupledScanOrderIterator const & r)
+    bool operator==(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() == r.scanOrderIndex();
     }
 
-    bool
-    operator!=(CoupledScanOrderIterator const & r) const
+    bool operator!=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() != r.scanOrderIndex();
     }
 
-    bool
-    operator<(CoupledScanOrderIterator const & r) const
+    bool operator<(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() < r.scanOrderIndex();
     }
 
-    bool
-    operator<=(CoupledScanOrderIterator const & r) const
+    bool operator<=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() <= r.scanOrderIndex();
     }
 
-    bool
-    operator>(CoupledScanOrderIterator const & r) const
+    bool operator>(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() > r.scanOrderIndex();
     }
 
-    bool
-    operator>=(CoupledScanOrderIterator const & r) const
+    bool operator>=(CoupledScanOrderIterator const & r) const
     {
         return scanOrderIndex() >= r.scanOrderIndex();
+    }
+
+    bool isValid() const
+    {
+        return handles_.scanOrderIndex() < prod(shape());
+    }
+
+    bool atEnd() const
+    {
+        return handles_.scanOrderIndex() >= prod(shape());
     }
 
     MultiArrayIndex scanOrderIndex() const
@@ -950,17 +912,17 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
 
     CoupledScanOrderIterator getEndIterator() const
     {
-        return operator+(prod(shape()));
+        return operator+(prod(shape())-scanOrderIndex());
     }
 
     bool atBorder() const
     {
-        return (handles_.neighborhoodType() != 0);
+        return (handles_.borderType() != 0);
     }
 
-    unsigned int neighborhoodType() const
+    unsigned int borderType() const
     {
-        return handles_.neighborhoodType();
+        return handles_.borderType();
     }
 
     template<unsigned int TARGET_INDEX> 
@@ -1191,201 +1153,17 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
 
 //@}
 
-/********************************************************/
-/*                                                      */
-/*                MultiCoordinateIterator               */
-/*                                                      */
-/********************************************************/
-
-/** \addtogroup MultiIteratorGroup
-*/
-//@{
-
-    /** \brief Iterate over a virtual array where each element contains its coordinate.
-
-        MultiCoordinateIterator behaves like a read-only random access iterator. 
-        It moves accross the given region of interest in scan-order (with the first
-        index changing most rapidly), and dereferencing the iterator returns the 
-        coordinate (i.e. multi-dimensional index) of the current array element. 
-        The functionality is thus similar to a meshgrid in Matlab or numpy. 
-        
-        Internally, it is just a wrapper of a \ref CoupledScanOrderIterator that
-        has been created without any array and whose reference type is not a 
-        \ref CoupledHandle, but the coordinate itself.
-                
-        The iterator supports all functions listed in the STL documentation for 
-        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
-
-        <b>Usage:</b>
-
-        <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
-        Namespace: vigra
-        
-        \code
-        MultiCoordinateIterator<3> i(Shape3(3,2,1)), end = i.getEndIterator();
-        
-        for(; i != end; ++i)
-            std::cout << *i << "\n";
-            
-        // Output:
-        // (0, 0, 0)
-        // (1, 0, 0)
-        // (2, 0, 0)
-        // (0, 1, 0)
-        // (1, 1, 0)
-        // (2, 1, 0)
-        \endcode
-    */
-template<unsigned int N>
-class MultiCoordinateIterator
-    : public CoupledIteratorType<N>::type
-{
-  public:
-    typedef typename CoupledIteratorType<N>::type base_type;
-
-    typedef typename base_type::shape_type         shape_type;
-    typedef typename base_type::difference_type    difference_type;
-    typedef MultiCoordinateIterator                iterator;
-    typedef std::random_access_iterator_tag        iterator_category;
-
-    typedef typename base_type::value_type         handle_type;
-    typedef typename handle_type::value_type       value_type;
-    typedef typename handle_type::reference        reference;
-    typedef typename handle_type::const_reference  const_reference;
-    typedef typename handle_type::pointer          pointer;
-    typedef typename handle_type::const_pointer    const_pointer;
-
-    MultiCoordinateIterator() 
-        : base_type(handle_type())
-    {}
-
-    explicit MultiCoordinateIterator(shape_type const & shape) 
-        : base_type(handle_type(shape))
-    {}
-
-    // dereferencing the iterator yields the coordinate object
-    // (used as vertex_descriptor)
-    reference operator*()
-    {
-        return this->template get<0>();
-    }
-    
-    const_reference operator*() const
-    {
-        return this->template get<0>();
-    }
-    
-    operator value_type() const
-    {
-        return *(*this);
-    }
-
-    pointer operator->()
-    {
-        return &this->template get<0>();
-    }
-    
-    const_pointer operator->() const
-    {
-        return &this->template get<0>();
-    }
-
-    value_type operator[](MultiArrayIndex i)
-    {
-        return *(MultiCoordinateIterator(*this) += i);
-    }
-
-    value_type operator[](MultiArrayIndex i) const
-    {
-        return *(MultiCoordinateIterator(*this) += i);
-    }
-
-    MultiCoordinateIterator & operator++()
-    {
-        base_type::operator++();
-        return *this;
-    }
-    
-    MultiCoordinateIterator operator++(int)
-    {
-        MultiCoordinateIterator res(*this);
-        ++*this;
-        return res;
-    }
-
-    MultiCoordinateIterator & operator+=(MultiArrayIndex i)
-    {
-        base_type::operator+=(i);
-        return *this;
-    }
-
-    MultiCoordinateIterator & operator+=(const shape_type &coordOffset)
-    {
-        base_type::operator+=(coordOffset);
-        return *this;
-    }
-
-    MultiCoordinateIterator & operator--()
-    {
-        base_type::operator--();
-        return *this;
-    }
-
-    MultiCoordinateIterator operator--(int)
-    {
-        MultiCoordinateIterator res(*this);
-        --*this;
-        return res;
-    }
-
-    MultiCoordinateIterator & operator-=(MultiArrayIndex i)
-    {
-        return operator+=(-i);
-    }
-
-    MultiCoordinateIterator & operator-=(const shape_type &coordOffset)
-    {
-        return operator+=(-coordOffset);
-    }
-
-    MultiCoordinateIterator getEndIterator() const
-    {
-        return MultiCoordinateIterator(base_type::getEndIterator());
-    }
-
-    MultiCoordinateIterator operator+(MultiArrayIndex d) const
-    {
-        return MultiCoordinateIterator(*this) += d;
-    }
-
-    MultiCoordinateIterator operator-(MultiArrayIndex d) const
-    {
-        return MultiCoordinateIterator(*this) -= d;
-    }
-
-    MultiCoordinateIterator operator+(const shape_type &coordOffset) const
-    {
-        return MultiCoordinateIterator(*this) += coordOffset;
-    }
-
-    MultiCoordinateIterator operator-(const shape_type &coordOffset) const
-    {
-        return MultiCoordinateIterator(*this) -= coordOffset;
-    }
-
-    MultiArrayIndex operator-(const MultiCoordinateIterator & other) const
-    {
-        return base_type::operator-(other);
-    }
-    
-  protected:
-    MultiCoordinateIterator(base_type const & base) 
-        : base_type(base)
-    {}
-};
-
-//@}
-
 } // namespace vigra
 
-#endif /* MULTI_ITERATOR_COUPLED_HXX_ */
+namespace std {
+
+template <unsigned int N, class HANDLES, int DIMENSION>
+ostream & operator<<(ostream & o, vigra::CoupledScanOrderIterator<N, HANDLES, DIMENSION> const & i)
+{
+    o << i.point();
+    return o;
+}
+
+} // namespace std
+
+#endif /* MULTI_ITERATOR_COUPLED_HXX */
