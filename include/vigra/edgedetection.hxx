@@ -123,7 +123,7 @@ namespace vigra {
               class GradValue,
               class DestValue = DestAccessor::value_type>
         void differenceOfExponentialEdgeImage(
-               \triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
                double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
