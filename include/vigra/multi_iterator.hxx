@@ -109,6 +109,12 @@ class MultiCoordinateIterator
         : base_type(handle_type(shape))
     {}
 
+    explicit MultiCoordinateIterator(shape_type const & start, shape_type const & end) 
+        : base_type(handle_type(end))
+    {
+        this->restrictToSubarray(start, end);
+    }
+
 //    template<class DirectedTag>
 //    explicit MultiCoordinateIterator(GridGraph<N, DirectedTag> const & g) 
 //        : base_type(handle_type(g.shape()))
