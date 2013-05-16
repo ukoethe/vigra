@@ -685,6 +685,13 @@ class CoupledScanOrderIterator
         return base_type::operator>=(r);
     }
 
+    CoupledScanOrderIterator & restrictToSubarray(shape_type const & start, shape_type const & end)
+    {
+        this->operator+=(-point());
+        this->handles_.restrictToSubarray(start, end);
+        return *this;
+    }
+
     using base_type::operator*;
     using base_type::point;
     using base_type::shape;
@@ -904,10 +911,11 @@ class CoupledScanOrderIterator<N, HANDLES, 0>
         return handles_;
     }
 
-    void restrictToSubarray(shape_type const & start, shape_type const & end) const
+    CoupledScanOrderIterator & restrictToSubarray(shape_type const & start, shape_type const & end)
     {
         operator+=(-point());
-        handles_.restricToSubarray(start, end);
+        handles_.restrictToSubarray(start, end);
+        return *this;
     }
 
     CoupledScanOrderIterator getEndIterator() const
@@ -1026,8 +1034,16 @@ struct CoupledIteratorType
     typedef typename CoupledHandleType<N, T1, T2, T3, T4, T5>::type HandleType;
   
     /** Type of the CoupledScanOrderIterator.*/
-    typedef CoupledScanOrderIterator<HandleType::dimensions, HandleType> type;
+    typedef CoupledScanOrderIterator<HandleType::dimensions, HandleType> IteratorType;
+    typedef IteratorType                                                 type;
 };
+
+/** Alias for \ref vigra::CoupledIteratorType (maybe easier to remember).
+ */
+template <unsigned int N, class T1=void, class T2=void, class T3=void, class T4=void, class T5=void>
+struct CoupledArrays
+: public CoupledIteratorType<N, T1, T2, T3, T4, T5>
+{};
 
 /** Returns a CoupledScanOrderIterator from shape to iterate over coordinates. 
  */
