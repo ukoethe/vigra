@@ -85,8 +85,8 @@ struct SlicTest
         gaussianGradientMagnitude(srcImageRange(lennaImage),destImage(gradMag),3.0);
 
         IArray labels(lennaImage.shape());
-        int max_radius = generateSlicSeeds(gradMag, labels, 10, 1);
-        shouldEqual(max_radius, 39);
+        int maxSeedlabel = generateSlicSeeds(gradMag, labels, 39, 1);
+        shouldEqual(maxSeedlabel, 9);
 
         auto iter = ((typename IArray::view_type &)labels).begin(),
              end  = iter.getEndIterator();
@@ -95,7 +95,7 @@ struct SlicTest
         {
             if(*iter == 0)
                 continue;
-            should(*iter <= 9);
+            should(*iter <= 9 && *iter > 0);
             shouldEqual(iter.point(), seeds_ref[*iter-1]);
             ++count;
         }
@@ -109,9 +109,10 @@ struct SlicTest
         gaussianGradientMagnitude(srcImageRange(lennaImage), destImage(gradMag), 3.0);
 
         IArray labels(lennaImage.shape()), labels_ref(lennaImage.shape());
-        int max_radius = generateSlicSeeds(gradMag, labels, 10, 1);
+        int seedDistance = 39;
+        generateSlicSeeds(gradMag, labels, seedDistance, 1);
 
-        slicSuperpixels(lennaImage, labels, 10.0, max_radius);
+        slicSuperpixels(lennaImage, labels, 10.0, seedDistance);
 
         //exportImage(srcImageRange(labels), ImageExportInfo("slic.xv"));
         importImage(ImageImportInfo("slic.xv"), destImage(labels_ref));

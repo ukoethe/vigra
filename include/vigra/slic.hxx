@@ -61,15 +61,13 @@ template <unsigned int N, class T, class Label>
 int generateSlicSeedsImpl(
     MultiArrayView<N, T> const &  boundaryIndicatorImage,
     MultiArrayView<N, Label>      seeds,
-    int                           seedCount,
+    int                           seedDist,
     int                           searchRadius)
 {
     typedef typename MultiArrayShape<N>::type   Shape;
 
     seeds.init(0);
-    Shape shape(boundaryIndicatorImage.shape());
-    
-    int seedDist = int(std::pow(boundaryIndicatorImage.size()/double(seedCount), 1.0/N));
+    Shape shape(boundaryIndicatorImage.shape());   
     Shape seedShape(floor(shape / double(seedDist)));
     
     int label = 0;
@@ -83,21 +81,17 @@ int generateSlicSeedsImpl(
         Shape endCoord   = min(center+Shape(searchRadius+1), shape);
         
         // find the coordinate of minimum boundary indicator in window
-        typedef typename CoupledIteratorType<N, T>::type Iterator;
-        acc::AccumulatorChain<typename Iterator::value_type, 
-                              acc::Select<acc::WeightArg<1>, acc::Coord<acc::ArgMinWeight> > > a;
-        
-        Iterator sub = createCoupledIterator(boundaryIndicatorImage.subarray(startCoord, endCoord)),
-                 endsub = sub.getEndIterator();
-             
-        extractFeatures(sub, endsub, a);
+        using namespace acc;
+        AccumulatorChain<CoupledArrays<N, T>,
+                         Select<WeightArg<1>, Coord<ArgMinWeight> > > a;
+        extractFeatures(boundaryIndicatorImage.subarray(startCoord, endCoord), a);
 
         // add seed at minimum position, if not already set
-        Shape minCoord = get<acc::Coord<acc::ArgMinWeight> >(a) + startCoord;
+        Shape minCoord = get<Coord<ArgMinWeight> >(a) + startCoord;
         if(seeds[minCoord] == 0)
             seeds[minCoord] = ++label;
     }
-    return seedDist;
+    return label;
 }
 
 struct SlicOptions
@@ -150,7 +144,6 @@ class Slic
 
     DistanceType updateAssigments();
     void updateMeans();
-    DistanceType distance( const size_t  centerIndex, ShapeType const & pixelCoord)const;
     size_t postProcessing();
     
     typedef MultiArray<N,DistanceType>  DistanceImageType;
@@ -164,9 +157,9 @@ class Slic
     int                             max_radius_;
     DistanceType                    normalization_;
     
-    typedef typename CoupledIteratorType<N, T, Label>::type       CoupledIter;
     typedef acc::Select<acc::DataArg<1>, acc::LabelArg<2>, acc::Mean, acc::RegionCenter> Statistics;
-    acc::AccumulatorChainArray<typename CoupledIter::value_type, Statistics> centers_;
+    typedef acc::AccumulatorChainArray<CoupledArrays<N, T, Label>, Statistics> RegionFeatures;
+    RegionFeatures centers_;
 };
 
 
@@ -186,7 +179,9 @@ Slic<N, T, Label>::Slic(
     shape_(dataImage.shape()),
     max_radius_(maxRadius),
     normalization_(sq(intensityScaling) / sq(max_radius_))
-{}
+{
+    centers_.ignoreLabel(0);
+}
 
 template <unsigned int N, class T, class Label>
 int Slic<N, T, Label>::execute()
@@ -225,24 +220,39 @@ template <unsigned int N, class T, class Label>
 typename Slic<N, T, Label>::DistanceType 
 Slic<N, T, Label>::updateAssigments()
 {
+    using namespace acc;
     distance_.init(NumericTraits<DistanceType>::max());
     for(unsigned int c=1; c<=centers_.maxRegionLabel(); ++c)
     {
+        if(get<Count>(centers_, c) == 0) // label doesn't exist
+            continue;
+            
+        typedef typename LookupTag<RegionCenter, RegionFeatures>::value_type CenterType;
+        CenterType center = get<RegionCenter>(centers_, c);
+
+        // get ROI limits around region center
         ShapeType pixelCoord, startCoord, endCoord;
-        // get window limits
-        getWindowLimits(round(get<acc::RegionCenter>(centers_, c)), startCoord, endCoord, max_radius_);
-        // => only pixels within the radius/searchSize of a cluster can be assigned to a cluster
-        // FIXME: refactor this in terms of a ROI scan-order iterator
-        for(pixelCoord[1]=startCoord[1]; pixelCoord[1]<endCoord[1]; ++pixelCoord[1])
-        for(pixelCoord[0]=startCoord[0]; pixelCoord[0]<endCoord[0]; ++pixelCoord[0])
+        getWindowLimits(round(center), startCoord, endCoord, max_radius_);
+        center -= startCoord; // need center relative to ROI
+        
+        // setup iterators for ROI
+        typedef typename CoupledArrays<N, T, Label, DistanceType>::IteratorType Iterator;
+        Iterator iter = createCoupledIterator(dataImage_, labelImage_, distance_).
+                            restrictToSubarray(startCoord, endCoord),
+                 end = iter.getEndIterator();
+        
+        // only pixels within the ROI can be assigned to a cluster
+        for(; iter != end; ++iter)
         {
             // compute distance between cluster center and pixel
-            DistanceType dist = distance(c, pixelCoord);
+            DistanceType spatialDist   = squaredNorm(center-iter.point());
+            DistanceType colorDist     = squaredNorm(get<Mean>(centers_, c)-iter.get<1>());
+            DistanceType dist =  colorDist + normalization_*spatialDist;
             // update label?
-            if(dist<=distance_[pixelCoord])
+            if(dist < iter.get<3>())
             {
-                labelImage_[pixelCoord] = static_cast<Label>(c);
-                distance_[pixelCoord] = dist;
+                iter.get<2>() = static_cast<Label>(c);
+                iter.get<3>() = dist;
             }
         }
     }
@@ -270,31 +280,23 @@ Slic<N, T, Label>::updateMeans()
 {
     // get mean for each cluster
     centers_.reset();
-    centers_.ignoreLabel(0);
-    CoupledIter iter(createCoupledIterator(dataImage_, labelImage_)),
-                end = iter.getEndIterator();
-    extractFeatures(iter, end, centers_);
-}
-
-template <unsigned int N, class T, class Label>
-inline typename Slic<N, T, Label>::DistanceType 
-Slic<N, T, Label>::distance(
-    const size_t         centerIndex,
-    ShapeType const &    pixelCoord) const
-{
-    // SLIC costs
-    DistanceType spatialDist   = squaredNorm(get<acc::RegionCenter>(centers_, centerIndex)-pixelCoord);
-    DistanceType colorDist     = squaredNorm(get<acc::Mean>(centers_, centerIndex)-dataImage_[pixelCoord]);
-    // FINAL COST
-    return  colorDist + normalization_*spatialDist;
+    extractFeatures(dataImage_, labelImage_, centers_);
 }
 
 template <unsigned int N, class T, class Label>
 size_t 
 Slic<N, T, Label>::postProcessing()
 {
-    // get ride of disjoint regions (we need a temp image because 
-    // labelImage() cannot be applied in-place):
+    // get rid of disjoint regions
+    // The original SLIC algorithm is much simpler: whenever it finds a new region, it remembers
+    // any of the adjacent existing labels and relabels the new regions with the existing label 
+    // in case the new region is too small (i.e. less than 1/4 of the average region size).
+    // Labeling in the original algorithm is performed by flood-fill, which makes relabeling
+    // easy because we still know the coordinates of the new region and the replacement label
+    // when we find out its size.
+    // They use 4-neighborhood in 2D, but 10-neighborhood in 3D (indirect nh within slices and 
+    // direct nh between slices)
+    
     // FIXME: use dimension-independent labeling algorithm
     tmpLabelImage_ = labelImage_;
     size_t numLabels = 1 + labelImage(srcImageRange(tmpLabelImage_), destImage(labelImage_), false);
@@ -327,7 +329,9 @@ Slic<N, T, Label>::postProcessing()
         regionsPixels[l1].push_back(point);
     }
     // fill region size
-    const size_t sizeLimit_ = options_.sizeLimit;
+    const size_t sizeLimit_ = options_.sizeLimit == 0
+                                 ? (size_t)std::pow((double)labelImage_.size() / numLabels, 1.0 / N)
+                                 : options_.sizeLimit;
     std::vector<size_t> cSize(numLabels);
     for(size_t c=1;c<numLabels;++c)
     {
@@ -379,19 +383,20 @@ Slic<N, T, Label>::postProcessing()
                         labelImage_(regionsPixels[c][p][0],regionsPixels[c][p][1])=mergeWith;
                     }
                 }
-                // did not found one.
+                // did not find one.
                 else
                 {
                     ++blocked;
                 }
             }
-            // did not found one.
+            // did not find one.
             else
             {
                 ++blocked;
             }
         }
     }
+    std::cerr << numChanges << " " << blocked << "\n";
     if(numChanges==0)
         return 0;
     return blocked;
@@ -402,10 +407,10 @@ inline int
 generateSlicSeeds(
     MultiArrayView<N, T> const &  boundaryIndicatorImage,
     MultiArrayView<N, Label>      seeds,
-    int                           seedCount,
+    int                           seedDistance,
     int                           searchRadius=1)
 {
-    return generateSlicSeedsImpl( boundaryIndicatorImage, seeds, seedCount, searchRadius);
+    return generateSlicSeedsImpl( boundaryIndicatorImage, seeds, seedDistance, searchRadius);
 }
 
 
@@ -415,10 +420,10 @@ slicSuperpixels(
     const MultiArrayView<N, T> &    dataImage,
     MultiArrayView<N, Label>        labelImage,
     typename Slic<N, T, Label>::DistanceType intensityScaling,
-    int                             maxRadius, 
+    int                             seedDistance, 
     const SlicOptions &             parameter = SlicOptions())
 {
-    return Slic<N, T, Label>(dataImage, labelImage, intensityScaling, maxRadius, parameter).execute();
+    return Slic<N, T, Label>(dataImage, labelImage, intensityScaling, seedDistance, parameter).execute();
 }
 
 } // namespace vigra
