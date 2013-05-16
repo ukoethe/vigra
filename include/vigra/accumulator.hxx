@@ -1964,7 +1964,12 @@ class AccumulatorChain
         std::sort(n.begin(), n.end());
         return n;
     }
-};   
+}; 
+
+template <unsigned int N, class T1, class T2, class T3, class T4, class T5, class Selected, bool dynamic>
+class AccumulatorChain<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected, dynamic>
+: public AccumulatorChain<typename CoupledArrays<N, T1, T2, T3, T4, T5>::HandleType, Selected, dynamic>
+{};
 
 
     // Create a dynamic accumulator chain containing the Selected statistics and their dependencies.
@@ -2075,6 +2080,13 @@ class DynamicAccumulatorChain
         return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, normalizeString(tag), v);
     }
 };
+
+template <unsigned int N, class T1, class T2, class T3, class T4, class T5, class Selected>
+class DynamicAccumulatorChain<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected>
+: public DynamicAccumulatorChain<typename CoupledArrays<N, T1, T2, T3, T4, T5>::HandleType, Selected>
+{};
+
+
 
 /** \brief Create an array of accumulator chains containing the selected per-region and global statistics and their dependencies.
 
@@ -2197,8 +2209,6 @@ class AccumulatorChainArray
   void updatePassN(T const & t, double weight, unsigned int N);
   
 #endif
-
-
     
   private:
     static ArrayVector<std::string> collectTagNames()
@@ -2208,7 +2218,12 @@ class AccumulatorChainArray
         std::sort(n.begin(), n.end());
         return n;
     }
-};   
+};
+
+template <unsigned int N, class T1, class T2, class T3, class T4, class T5, class Selected, bool dynamic>
+class AccumulatorChainArray<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected, dynamic>
+: public AccumulatorChainArray<typename CoupledArrays<N, T1, T2, T3, T4, T5>::HandleType, Selected, dynamic>
+{};
 
 /** \brief Create an array of dynamic accumulator chains containing the selected per-region and global statistics and their dependencies.
 
@@ -2305,6 +2320,11 @@ class DynamicAccumulatorChainArray
         return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, normalizeString(tag), v);
     }
 };
+
+template <unsigned int N, class T1, class T2, class T3, class T4, class T5, class Selected>
+class DynamicAccumulatorChainArray<CoupledArrays<N, T1, T2, T3, T4, T5>, Selected>
+: public DynamicAccumulatorChainArray<typename CoupledArrays<N, T1, T2, T3, T4, T5>::HandleType, Selected>
+{};
 
 /****************************************************************************/
 /*                                                                          */
@@ -2718,6 +2738,81 @@ void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
     for(unsigned int k=1; k <= a.passesRequired(); ++k)
         for(ITERATOR i=start; i < end; ++i)
             a.updatePassN(*i, k);
+}
+
+template <unsigned int N, class T1, class S1,
+          class ACCUMULATOR>
+void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                     ACCUMULATOR & a)
+{
+    typedef typename CoupledIteratorType<N, T1>::type Iterator;
+    Iterator start = createCoupledIterator(a1),
+             end   = start.getEndIterator();
+    extractFeatures(start, end, a);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class ACCUMULATOR>
+void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                     MultiArrayView<N, T2, S2> const & a2, 
+                     ACCUMULATOR & a)
+{
+    typedef typename CoupledIteratorType<N, T1, T2>::type Iterator;
+    Iterator start = createCoupledIterator(a1, a2),
+             end   = start.getEndIterator();
+    extractFeatures(start, end, a);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+                          class T3, class S3,
+          class ACCUMULATOR>
+void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                     MultiArrayView<N, T2, S2> const & a2, 
+                     MultiArrayView<N, T3, S3> const & a3, 
+                     ACCUMULATOR & a)
+{
+    typedef typename CoupledIteratorType<N, T1, T2, T3>::type Iterator;
+    Iterator start = createCoupledIterator(a1, a2, a3),
+             end   = start.getEndIterator();
+    extractFeatures(start, end, a);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+                          class T3, class S3,
+                          class T4, class S4,
+          class ACCUMULATOR>
+void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                     MultiArrayView<N, T2, S2> const & a2, 
+                     MultiArrayView<N, T3, S3> const & a3, 
+                     MultiArrayView<N, T4, S4> const & a4, 
+                     ACCUMULATOR & a)
+{
+    typedef typename CoupledIteratorType<N, T1, T2, T3, T4>::type Iterator;
+    Iterator start = createCoupledIterator(a1, a2, a3, a4),
+             end   = start.getEndIterator();
+    extractFeatures(start, end, a);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+                          class T3, class S3,
+                          class T4, class S4,
+                          class T5, class S5,
+          class ACCUMULATOR>
+void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                     MultiArrayView<N, T2, S2> const & a2, 
+                     MultiArrayView<N, T3, S3> const & a3, 
+                     MultiArrayView<N, T4, S4> const & a4, 
+                     MultiArrayView<N, T5, S5> const & a5, 
+                     ACCUMULATOR & a)
+{
+    typedef typename CoupledIteratorType<N, T1, T2, T3, T4, T5>::type Iterator;
+    Iterator start = createCoupledIterator(a1, a2, a3, a4, a5),
+             end   = start.getEndIterator();
+    extractFeatures(start, end, a);
 }
 
 /****************************************************************************/
