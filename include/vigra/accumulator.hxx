@@ -469,7 +469,7 @@ getDependency(A const & a);
 
 #endif
 
-namespace detail {
+namespace acc_detail {
 
 /****************************************************************************/
 /*                                                                          */
@@ -1460,7 +1460,7 @@ struct AccumulatorFactory
         {
             flags.template set<index>();
             typedef typename StandardizeDependencies<Tag>::type StdDeps;
-            detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
+            acc_detail::ActivateDependencies<StdDeps>::template exec<ThisType>(flags);
         }
         
         template <class Accu, class ActiveFlags, class GlobalFlags>
@@ -1468,7 +1468,7 @@ struct AccumulatorFactory
         {
             flags.template set<index>();
             typedef typename StandardizeDependencies<Tag>::type StdDeps;
-            detail::ActivateDependencies<StdDeps>::template exec<Accu>(flags, gflags);
+            acc_detail::ActivateDependencies<StdDeps>::template exec<Accu>(flags, gflags);
         }
         
         template <class ActiveFlags>
@@ -1683,7 +1683,7 @@ struct ConfigureAccumulatorChainArray<T, TypeList<HEAD, TAIL>, dynamic>
     typedef LabelDispatch<T, GlobalAccumulatorChain, RegionAccumulatorChain> type;
 };
 
-} // namespace detail 
+} // namespace acc_detail 
 
 /****************************************************************************/
 /*                                                                          */
@@ -1751,7 +1751,7 @@ class AccumulatorChainImpl
         {
             current_pass_ = N;
             if(N == 1)
-                next_.resize(detail::shapeOf(t));
+                next_.resize(acc_detail::shapeOf(t));
             next_.template pass<N>(t);
         }
         else
@@ -1773,7 +1773,7 @@ class AccumulatorChainImpl
         {
             current_pass_ = N;
             if(N == 1)
-                next_.resize(detail::shapeOf(t));
+                next_.resize(acc_detail::shapeOf(t));
             next_.template pass<N>(t, weight);
         }
         else
@@ -1899,12 +1899,12 @@ class AccumulatorChainImpl
 template <class T, class Selected, bool dynamic=false>
 class AccumulatorChain
 #ifndef DOXYGEN // hide AccumulatorChainImpl from documentation
-: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
+: public AccumulatorChainImpl<T, typename acc_detail::ConfigureAccumulatorChain<T, Selected, dynamic>::type>
 #endif
 {
   public:
   // \brief TypeList of Tags in the accumulator chain (?).
-    typedef typename detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
+    typedef typename acc_detail::ConfigureAccumulatorChain<T, Selected, dynamic>::TagList AccumulatorTags;
   
     /** Before having seen data (current_pass_==0), the shape of the data can be changed... (?)
     */
@@ -1960,7 +1960,7 @@ class AccumulatorChain
     static ArrayVector<std::string> collectTagNames()
     {
         ArrayVector<std::string> n;
-        detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
+        acc_detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
         std::sort(n.begin(), n.end());
         return n;
     }
@@ -2030,7 +2030,7 @@ class DynamicAccumulatorChain
     */
     bool isActive(std::string tag) const
     {
-        detail::TagIsActive_Visitor v;
+        acc_detail::TagIsActive_Visitor v;
         vigra_precondition(isActiveImpl(tag, v),
             std::string("DynamicAccumulatorChain::isActive(): Tag '") + tag + "' not found.");
         return v.result;
@@ -2066,13 +2066,13 @@ class DynamicAccumulatorChain
   
     bool activateImpl(std::string tag)
     {
-        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
-                                         normalizeString(tag), detail::ActivateTag_Visitor());
+        return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, 
+                                         normalizeString(tag), acc_detail::ActivateTag_Visitor());
     }
     
-    bool isActiveImpl(std::string tag, detail::TagIsActive_Visitor & v) const
+    bool isActiveImpl(std::string tag, acc_detail::TagIsActive_Visitor & v) const
     {
-        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, normalizeString(tag), v);
+        return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(*this, normalizeString(tag), v);
     }
 };
 
@@ -2099,11 +2099,11 @@ class DynamicAccumulatorChain
 template <class T, class Selected, bool dynamic=false>
 class AccumulatorChainArray
 #ifndef DOXYGEN //hide AccumulatorChainImpl vom documentation
-: public AccumulatorChainImpl<T, typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
+: public AccumulatorChainImpl<T, typename acc_detail::ConfigureAccumulatorChainArray<T, Selected, dynamic>::type>
 #endif
 {
   public:
-    typedef typename detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
+    typedef typename acc_detail::ConfigureAccumulatorChainArray<T, Selected, dynamic> Creator;
     typedef typename Creator::TagList AccumulatorTags;
     typedef typename Creator::GlobalTags GlobalTags;
     typedef typename Creator::RegionTags RegionTags;
@@ -2204,7 +2204,7 @@ class AccumulatorChainArray
     static ArrayVector<std::string> collectTagNames()
     {
         ArrayVector<std::string> n;
-        detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
+        acc_detail::CollectAccumulatorNames<AccumulatorTags>::exec(n);
         std::sort(n.begin(), n.end());
         return n;
     }
@@ -2262,7 +2262,7 @@ class DynamicAccumulatorChainArray
      */
     bool isActive(std::string tag) const
     {
-        detail::TagIsActive_Visitor v;
+        acc_detail::TagIsActive_Visitor v;
         vigra_precondition(isActiveImpl(tag, v),
             std::string("DynamicAccumulatorChainArray::isActive(): Tag '") + tag + "' not found.");
         return v.result;
@@ -2296,13 +2296,13 @@ class DynamicAccumulatorChainArray
   
     bool activateImpl(std::string tag)
     {
-        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
-                                         normalizeString(tag), detail::ActivateTag_Visitor());
+        return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, 
+                                         normalizeString(tag), acc_detail::ActivateTag_Visitor());
     }
     
-    bool isActiveImpl(std::string tag, detail::TagIsActive_Visitor & v) const
+    bool isActiveImpl(std::string tag, acc_detail::TagIsActive_Visitor & v) const
     {
-        return detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, normalizeString(tag), v);
+        return acc_detail::ApplyVisitorToTag<AccumulatorTags>::exec(this->next_, normalizeString(tag), v);
     }
 };
 
@@ -2315,7 +2315,7 @@ class DynamicAccumulatorChainArray
 template <class TAG>
 struct Error__Attempt_to_access_inactive_statistic;
 
-namespace detail {
+namespace acc_detail {
 
     // accumulator lookup rules: find the accumulator that implements TAG
     
@@ -2421,12 +2421,12 @@ struct LookupTagImpl<LabelDispatchTag, A, LabelDispatchTag>
     typedef void result_type;
 };
 
-} // namespace detail
+} // namespace acc_detail
 
     // Lookup the accumulator in the chain A that implements the given TAG.
 template <class Tag, class A>
 struct LookupTag
-: public detail::LookupTagImpl<typename StandardizeTag<Tag>::type, A>
+: public acc_detail::LookupTagImpl<typename StandardizeTag<Tag>::type, A>
 {};
 
     // Lookup the dependency TAG of the accumulator A.
@@ -2435,12 +2435,12 @@ struct LookupTag
     // actually returns Weighted<Count>, wheras Count will be returned for plain Mean.
 template <class Tag, class A, class TargetTag>
 struct LookupDependency
-: public detail::LookupTagImpl<
+: public acc_detail::LookupTagImpl<
        typename TransferModifiers<TargetTag, typename StandardizeTag<Tag>::type>::type, A>
 {};
  
 
-namespace detail {
+namespace acc_detail {
 
     // CastImpl applies the same rules as LookupTagImpl, but returns a reference to an 
     // accumulator instance rather than an accumulator type
@@ -2558,7 +2558,7 @@ struct CastImpl<LabelDispatchTag, LabelDispatchTag, reference>
     }
 };
 
-} // namespace detail
+} // namespace acc_detail
 
     // Get a reference to the accumulator TAG in the accumulator chain A
 /** Get a reference to the accumulator 'TAG' in the accumulator chain 'a'. This can be useful for example to update a certain accumulator with data, set individual options or get information about a certain accumulator.\n
@@ -2591,7 +2591,7 @@ getAccumulator(A & a)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::reference reference;
-    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
+    return acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
 }
 
     // Get a reference to the accumulator TAG for region 'label' in the accumulator chain A
@@ -2603,7 +2603,7 @@ getAccumulator(A & a, MultiArrayIndex label)
 {
     typedef typename LookupTag<TAG, A>::Tag StandardizedTag;
     typedef typename LookupTag<TAG, A>::reference reference;
-    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a, label);
+    return acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a, label);
 }
 
     // get the result of the accumulator specified by TAG
@@ -2662,7 +2662,7 @@ getDependency(A const & a)
 {
     typedef typename LookupDependency<TAG, A>::Tag StandardizedTag;
     typedef typename LookupDependency<TAG, A>::reference reference;
-    return detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a)();
+    return acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a)();
 }
 
     // activate the dynamic accumulator specified by Tag
@@ -2910,7 +2910,7 @@ class DataFromHandle
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shapeOf(DataIndex::exec(t)));
+            ImplType::reshape(acc_detail::shapeOf(DataIndex::exec(t)));
         }
         
         template <class U, class NEXT>
@@ -2996,7 +2996,7 @@ class Coord
         template <class U, class NEXT>
         void reshape(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::reshape(detail::shapeOf(CoordIndex::exec(t)));
+            ImplType::reshape(acc_detail::shapeOf(CoordIndex::exec(t)));
         }
         
         template <class U, class NEXT>
@@ -3132,7 +3132,7 @@ class Centralize
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            acc_detail::reshapeImpl(value_, s);
         }
         
         void update(U const & t) const
@@ -3279,7 +3279,7 @@ class PrincipalProjection
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            acc_detail::reshapeImpl(value_, s);
         }
         
         void update(U const & t) const
@@ -3418,7 +3418,7 @@ class CoordinateSystem
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            acc_detail::reshapeImpl(value_, s);
         }
         
         result_type operator()() const
@@ -3452,7 +3452,7 @@ struct SumBaseImpl
     template <class Shape>
     void reshape(Shape const & s)
     {
-        detail::reshapeImpl(value_, s);
+        acc_detail::reshapeImpl(value_, s);
     }
     
     void operator+=(SumBaseImpl const & o)
@@ -3650,7 +3650,7 @@ struct CachedResultBase
     template <class Shape>
     void reshape(Shape const & s)
     {
-        detail::reshapeImpl(value_, s);
+        acc_detail::reshapeImpl(value_, s);
     }
 
     void operator+=(CachedResultBase const &)
@@ -4119,7 +4119,7 @@ class UnbiasedKurtosis
     };
 };
 
-namespace detail {
+namespace acc_detail {
 
 template <class Scatter, class Sum>
 void updateFlatScatterMatrix(Scatter & sc, Sum const & s, double w)
@@ -4178,7 +4178,7 @@ void flatScatterMatrixToCovariance(double & cov, Scatter const & sc, double n)
     cov = sc / n;
 }
 
-} // namespace detail
+} // namespace acc_detail
 
 // we only store the flattened upper triangular part of the scatter matrix
 /** \brief Basic statistic. Flattened uppter-triangular part of scatter matrix.
@@ -4224,8 +4224,8 @@ class FlatScatterMatrix
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
-            detail::reshapeImpl(diff_, s);
+            acc_detail::reshapeImpl(value_, Shape1(size*(size+1)/2));
+            acc_detail::reshapeImpl(diff_, s);
         }
         
         void operator+=(Impl const & o)
@@ -4239,7 +4239,7 @@ class FlatScatterMatrix
             {
                 using namespace vigra::multi_math;
                 diff_ = getDependency<Mean>(*this) - getDependency<Mean>(o);
-                detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
+                acc_detail::updateFlatScatterMatrix(value_, diff_, n1 * n2 / (n1 + n2));
                 value_ += o.value_;
             }
         }
@@ -4267,7 +4267,7 @@ class FlatScatterMatrix
             {
                 using namespace vigra::multi_math;
                 diff_ = getDependency<Mean>(*this) - t;
-                detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
+                acc_detail::updateFlatScatterMatrix(value_, diff_, n * weight / (n - weight));
             }
         }
     };
@@ -4298,14 +4298,14 @@ class DivideByCount<FlatScatterMatrix>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(this->value_, Shape2(size,size));
+            acc_detail::reshapeImpl(this->value_, Shape2(size,size));
         }
         
         result_type operator()() const
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(this->value_, getDependency<FlatScatterMatrix>(*this), getDependency<Count>(*this));
+                acc_detail::flatScatterMatrixToCovariance(this->value_, getDependency<FlatScatterMatrix>(*this), getDependency<Count>(*this));
                 this->setClean();
             }
             return this->value_;
@@ -4338,14 +4338,14 @@ class DivideUnbiased<FlatScatterMatrix>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(this->value_, Shape2(size,size));
+            acc_detail::reshapeImpl(this->value_, Shape2(size,size));
         }
         
         result_type operator()() const
         {
             if(this->isDirty())
             {
-                detail::flatScatterMatrixToCovariance(this->value_, getDependency<FlatScatterMatrix>(*this), getDependency<Count>(*this) - 1.0);
+                acc_detail::flatScatterMatrixToCovariance(this->value_, getDependency<FlatScatterMatrix>(*this), getDependency<Count>(*this) - 1.0);
                 this->setClean();
             }
             return this->value_;
@@ -4409,8 +4409,8 @@ class ScatterMatrixEigensystem
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_.first, Shape1(size));
-            detail::reshapeImpl(value_.second, Shape2(size,size));
+            acc_detail::reshapeImpl(value_.first, Shape1(size));
+            acc_detail::reshapeImpl(value_.second, Shape2(size,size));
         }
         
         result_type operator()() const
@@ -4428,7 +4428,7 @@ class ScatterMatrixEigensystem
         static void compute(Flat const & flatScatter, EW & ew, EV & ev)
         {
             EigenvectorType scatter(ev.shape());
-            detail::flatScatterMatrixToScatterMatrix(scatter, flatScatter);
+            acc_detail::flatScatterMatrixToScatterMatrix(scatter, flatScatter);
             // create a view because EW could be a TinyVector
             MultiArrayView<2, element_type> ewview(Shape2(ev.shape(0), 1), &ew[0]);
             symmetricEigensystem(scatter, ewview, ev);
@@ -4498,7 +4498,7 @@ class DivideByCount<ScatterMatrixEigensystem>
         void reshape(Shape const & s)
         {
             int size = prod(s);
-            detail::reshapeImpl(value_.first, Shape2(size,1));
+            acc_detail::reshapeImpl(value_.first, Shape2(size,1));
         }
         
         result_type operator()() const
@@ -4563,8 +4563,8 @@ class DivideByCount<ScatterMatrixEigensystem>
         // void reshape(Shape const & s)
         // {
             // int size = prod(s);
-            // detail::reshapeImpl(value_.first, Shape2(size,1));
-            // detail::reshapeImpl(value_.second, Shape2(size,size));
+            // acc_detail::reshapeImpl(value_.first, Shape2(size,1));
+            // acc_detail::reshapeImpl(value_.second, Shape2(size,size));
         // }
         
         // result_type operator()() const
@@ -4694,7 +4694,7 @@ class Minimum
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
+            acc_detail::reshapeImpl(value_, s, NumericTraits<element_type>::max());
         }
         
         void operator+=(Impl const & o)
@@ -4772,7 +4772,7 @@ class Maximum
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
+            acc_detail::reshapeImpl(value_, s, NumericTraits<element_type>::min());
         }
         
         void operator+=(Impl const & o)
@@ -4852,7 +4852,7 @@ class ArgMinWeight
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            acc_detail::reshapeImpl(value_, s);
         }
         
         void operator+=(Impl const & o)
@@ -4927,7 +4927,7 @@ class ArgMaxWeight
         template <class Shape>
         void reshape(Shape const & s)
         {
-            detail::reshapeImpl(value_, s);
+            acc_detail::reshapeImpl(value_, s);
         }
         
         void operator+=(Impl const & o)

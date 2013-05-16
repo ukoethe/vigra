@@ -222,7 +222,7 @@ typedef Weighted<RegionAxes>                        AxesOfInertia;
 /*                                                                        */
 /**************************************************************************/
 
-namespace detail {
+namespace acc_detail {
 
 template <class A>
 struct ModifierRule
@@ -230,13 +230,13 @@ struct ModifierRule
     typedef A type;
 };
 
-} // namespace detail
+} // namespace acc_detail
 
 template <class A>
 struct Error___Tag_modifiers_of_same_kind_must_not_be_combined;
 
     // apply rules as long as the Tag type changes ...
-template <class A, class S=typename detail::ModifierRule<A>::type>
+template <class A, class S=typename acc_detail::ModifierRule<A>::type>
 struct StandardizeTag
 {
     typedef typename StandardizeTag<S>::type type;
@@ -255,7 +255,7 @@ struct StandardizeTag<A, Error___Tag_modifiers_of_same_kind_must_not_be_combined
     : public Error___Tag_modifiers_of_same_kind_must_not_be_combined<B>
 {};
 
-namespace detail {
+namespace acc_detail {
 
     // Assign priorities to modifiers to determine their standard order (by ascending priority).
     // SubstitutionMask determines which modifiers must be automatically transferred to dependencies.
@@ -505,7 +505,7 @@ struct ShouldBeWeighted<B<A> >
 : public ShouldBeWeighted<A>
 {};
 
-} // namespace detail
+} // namespace acc_detail
 
 template <class A>
 struct IsCoordinateFeature
@@ -562,7 +562,7 @@ struct IsPrincipalFeature<Whitened<A> >
 /*                                                                        */
 /**************************************************************************/
 
-namespace detail {
+namespace acc_detail {
 
 template <class A>
 struct DefaultModifier;
@@ -697,17 +697,17 @@ struct SubstituteModifiers<A1<A0>, B1<B0>, false>
     typedef B1<typename SubstituteModifiers<A0, B0>::type> type;
 };
 
-} // namespace detail
+} // namespace acc_detail
 
 template <class A, class B>
 struct TransferModifiers
 {
     typedef typename StandardizeTag<A>::type StdA;
     typedef typename StandardizeTag<B>::type StdB;
-    typedef typename detail::TagLongForm<StdA, detail::MinPriority>::type AA;
-    typedef typename detail::TagLongForm<StdB, detail::MinPriority>::type BB;
-    typedef typename detail::SubstituteModifiers<AA, BB>::type AB;
-    typedef typename detail::StandardizeTagLongForm<AB>::type StdAB;
+    typedef typename acc_detail::TagLongForm<StdA, acc_detail::MinPriority>::type AA;
+    typedef typename acc_detail::TagLongForm<StdB, acc_detail::MinPriority>::type BB;
+    typedef typename acc_detail::SubstituteModifiers<AA, BB>::type AB;
+    typedef typename acc_detail::StandardizeTagLongForm<AB>::type StdAB;
     typedef typename StandardizeTag<StdAB>::type type;
 };
 
