@@ -2241,4 +2241,15 @@ public:
 
 } // namespace vigra
 
+namespace std {
+
+template <unsigned int N, class T, class REFERENCE, class POINTER>
+ostream & operator<<(ostream & o, vigra::StridedScanOrderIterator<N, T, REFERENCE, POINTER> const & i)
+{
+    o << *i;
+    return o;
+}
+
+} // namespace std
+
 #endif // VIGRA_MULTI_ITERATOR_HXX
