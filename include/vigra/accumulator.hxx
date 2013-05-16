@@ -161,56 +161,68 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
     ...
     \endcode
 
-    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), the accumulator chain can be used with \ref CoupledScanOrderIterator. The coupled iterator provides simultaneous access to several images (e.g. weight and data) and pixel coordinates. The first parameter in the accumulator chain is the type of the CoupledHandle. The indeces at which the CoupledHandle holds the data, weights etc. can be specified inside the Select wrapper. 
+    To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), the accumulator chain can be used with several coupled arrays, one for the data and another for the weights and/or the labels. "Coupled" means that statistics are computed over the corresponding elements of the involved arrays. This is internally done by means of \ref CoupledScanOrderIterator and \ref vigra::CoupledHandle which provide simultaneous access to several arrays (e.g. weight and data) and corresponding coordinates. The types of the coupled arrays are best specified by means of the helper class \ref vigra::CoupledArrays :
+    
+    \code 
+    vigra::MultiArray<3, RGBValue<unsigned char> > data(...);
+    vigra::MultiArray<3, double>                   weights(...);
+    
+    AccumulatorChain<CoupledArrays<3, RGBValue<unsigned char>, double>,
+                     Select<...> > a;
+    \endcode
+    
+This works likewise for label images which are needed for region statistics (see below). The indxx of the array holding data, weights, or labels respectively can be specified inside the Select wrapper. These <b>index specifiers</b> are: (INDEX is of type int)
+    - DataArg<INDEX>: data are in array 'INDEX' (default INDEX=1)
+    - LabelArg<INDEX>: labels are in array 'INDEX' (default INDEX=2)
+    - WeightArg<INDEX>: weights are in array 'INDEX' (default INDEX=rightmost index)
 
-These <b>index specifiers</b> are: (INDEX is of type int)
-    - DataArg<INDEX>: CoupledHandle holds data at index 'INDEX' (default INDEX=1)
-    - LabelArg<INDEX>: CoupledHandle holds labels at index 'INDEX' (default INDEX=2)
-    - WeightArg<INDEX>: CoupledHandle holds weights at index 'INDEX' (default INDEX=outermost index)
-
-Pixel coordinates are always at index 0.
+Pixel coordinates are always at index 0. To collect statistics, you simply pass all arrays to the <tt>extractFeatures()</tt> function:
     \code
     using namespace vigra::acc;
     vigra::MultiArray<3, double> data(...), weights(...);
-    typedef vigra::CoupledIteratorType<3, double, double>::type Iterator; //type of the CoupledScanOrderIterator
-    typedef Iterator::value_type Handle; //type of the corresponding CoupledHandle
     
-    AccumulatorChain<Handle,
-        Select<DataArg<1>, WeightArg<2>,       //where to look in the Handle (coordinates are always arg 0)
+    AccumulatorChain<CoupledArrays<3, double, double>, // two 3D arrays for data and weights
+        Select<DataArg<1>, WeightArg<2>,           // in which array to look (coordinates are always arg 0)
                Mean, Variance,                     //statistics over values  
                Coord<Mean>, Coord<Variance>,       //statistics over coordinates,
                Weighted<Mean>, Weighted<Variance>, //weighted values,
                Weighted<Coord<Mean> > > >          //weighted coordinates.
         a;
-
-    Iterator start = createCoupledIterator(data, weights); //coord->index 0, data->index 1, weights->index 2
-    Iterator end = start.getEndIterator();
      
-    extractFeatures(start,end,a);
+    extractFeatures(data, weights, a);
     \endcode
-
-    To compute <b>region statistics</b>, use \ref acc::AccumulatorChainArray :
+    
+    This even works for a single array, which is useful if you want to combine values with coordinates. For example, to find the location of the minimum element in an array, you interpret the data as weights and select the <tt>Coord<ArgMinWeight></tt> statistic (note that the version of <tt>extractFeatures()</tt> below only works in conjunction with <tt>CoupledArrays</tt>, despite the fact that there is only one array involved):
+    \code 
+    using namespace vigra::acc;
+    vigra::MultiArray<3, double> data(...);
+    
+    AccumulatorChain<CoupledArrays<3, double>,
+                     Select<WeightArg<1>,           // we interprete the data as weights
+                            Coord<ArgMinWeight> > > // and look for the coordinate with minimal weight
+        a;
+        
+    extractFeatures(data, a);
+    std::cout << "minimum is at " << get<Coord<ArgMinWeight> >(a) << std::endl;
+    \endcode
+    
+    To compute <b>region statistics</b>, you use \ref acc::AccumulatorChainArray. Regions are defined by means of a label array whose elements specify the region ID of the corresponding point. Therefore, you will always need at least two arrays here, which are again best specified using the <tt>CoupledArrays</tt> helper:
     
     \code
     using namespace vigra::acc;
     vigra::MultiArray<3, double> data(...);
     vigra::MultiArray<3, int> labels(...);
-    typedef vigra::CoupledIteratorType<3, double, int>::type Iterator;
-    typedef Iterator::value_type Handle;
 
-    AccumulatorChainArray<Handle,
-        Select<DataArg<1>, LabelArg<2>,       //where to look in the Handle (coordinates are always arg 0)
+    AccumulatorChainArray<CoupledArrays<3, double, int>,
+        Select<DataArg<1>, LabelArg<2>,       // in which array to look (coordinates are always arg 0)
                Mean, Variance,                    //per-region statistics over values
                Coord<Mean>, Coord<Variance>,      //per-region statistics over coordinates
                Global<Mean>, Global<Variance> > > //global statistics
     a;
 
-    Iterator start = createCoupledIterator(data, labels);
-    Iterator end = start.getEndIterator();
-
     a.ignoreLabel(0); //statistics will not be computed for region 0 (e.g. background)
 
-    extractFeatures(start,end,a);
+    extractFeatures(data, labels, a);
 
     int regionlabel = ...;
     std::cout << get<Mean>(a, regionlabel) << std::endl; //get Mean of region with label 'regionlabel'
@@ -244,7 +256,7 @@ Pixel coordinates are always at index 0.
     extractFeatures(data.begin(), data.end(), a); //process entire data set at once
     extractFeatures(data.begin(), data.begin()+data.size()/2, a1); //process first half
     extractFeatures(data.begin()+data.size()/2, data.end(), a2); //process second half
-    a1 += a2; // merge: a1 now equals a0 (with numerical tolerances)
+    a1 += a2; // merge: a1 now equals a0 (within numerical tolerances)
     \endcode
 
     Not all statistics can be merged (e.g. Principal<A> usually cannot, except for some important specializations). A statistic can be merged if the "+=" operator is supported (see the documentation of that particular statistic). If the accumulator chain only requires one pass to collect the data, it is also possible to just apply the extractFeatures() function repeatedly:
@@ -255,7 +267,7 @@ Pixel coordinates are always at index 0.
     AccumulatorChain<double, Select<Mean, Variance> > a;
 
     extractFeatures(data.begin(), data.begin()+data.size()/2, a); // this works because 
-    extractFeatures(data.begin()+data.size()/2, data.end(), a);   // all statistics only work in pass 1
+    extractFeatures(data.begin()+data.size()/2, data.end(), a);   // all statistics only need pass 1
 
     \endcode
 
@@ -2713,25 +2725,75 @@ isActive(A const & a)
 /*                                                                          */
 /****************************************************************************/
 
-/** Generic loop to collect the statistics of the accumulator chain 'a' in as many passes over the data as necessary.\n
+/** Generic loop to collect statistics from one or several arrays.
 
-Example of use:
+This function automatically performs as many passes over the data as necessary for the selected statistics. The basic version of <tt>extractFeatures()</tt> takes an iterator pair and a reference to an accumulator chain:
 \code
-    vigra::MultiArray<3, double> data(...);
-    vigra::MultiArray<3, int> labels(...);
-    typedef vigra::CoupledIteratorType<3, double, int>::type Iterator;
-    typedef Iterator::value_type Handle;
+namespace vigra { namespace acc {
 
-    AccumulatorChainArray<Handle,
-        Select<DataArg<1>, LabelArg<2>, Mean, Variance> > a;
-
-    Iterator start = createCoupledIterator(data, labels);
-    Iterator end = start.getEndIterator();
-
-    extractFeatures(start,end,a);
+    template <class ITERATOR, class ACCUMULATOR>
+    void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a);
+}}
 \endcode
+The <tt>ITERATOR</tt> can be any STL-conforming <i>forward iterator</i> (including raw pointers and \ref vigra::CoupledScanOrderIterator). The <tt>ACCUMULATOR</tt> must be instantiated with the <tt>ITERATOR</tt>'s <tt>value_type</tt> as its first template argument. For example, to use a raw pointer you write:
+\code
+    AccumulatorChain<double, Select<Mean, Variance> > a;
+
+    double * start = ...,
+           * end   = ...;
+    extractFeatures(start, end, a);
+\endcode
+Similarly, you can use MultiArray's scan-order iterator:
+\code    
+    AccumulatorChain<TinyVector<float, 2>, Select<Mean, Variance> > a;
+
+    MultiArray<3, TinyVector<float, 2> > data(...);
+    extractFeatures(data.begin(), data.end(), a);
+\endcode
+An alternative syntax is used when you want to compute weighted or region statistics (or both). Then it is necessary to iterate over several arrays simultaneously. This fact is best conveyed to the accumulator via the helper class \ref vigra::CoupledArrays that is used as the accumulator's first template argument and holds the dimension and value types of the arrays involved. To actually compute the features, you then pass appropriate arrays to the <tt>extractfeatures()</tt> function directly. For example, region statistics can be obtained like this:
+\code
+    MultiArray<3, double> data(...);
+    MultiArray<3, int> labels(...);
+
+    AccumulatorChainArray<CoupledArrays<3, double, int>,
+                          Select<DataArg<1>, LabelArg<2>, // where to look for data and region labels
+                                 Mean, Variance> >        // what statistics to compute
+        a;
+
+    extractFeatures(data, labels, a);
+\endcode
+This form of <tt>extractFeatures()</tt> is supported for up to five arrays (although at most three are currently making sense in practice):
+\code
+namespace vigra { namespace acc {
+
+    template <unsigned int N, class T1, class S1,
+              class ACCUMULATOR>
+    void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                         ACCUMULATOR & a);
+                         
+    ...
+
+    template <unsigned int N, class T1, class S1,
+                              class T2, class S2,
+                              class T3, class S3,
+                              class T4, class S4,
+                              class T5, class S5,
+              class ACCUMULATOR>
+    void extractFeatures(MultiArrayView<N, T1, S1> const & a1, 
+                         MultiArrayView<N, T2, S2> const & a2, 
+                         MultiArrayView<N, T3, S3> const & a3, 
+                         MultiArrayView<N, T4, S4> const & a4, 
+                         MultiArrayView<N, T5, S5> const & a5, 
+                         ACCUMULATOR & a);
+}}
+\endcode
+Of course, the number and types of the arrays specified in <tt>CoupledArrays</tt> must conform to the number and types of the arrays passed to <tt>extractFeatures()</tt>.
+
 See \ref FeatureAccumulators for more information about feature computation via accumulators.
 */
+doxygen_overloaded_function(template <...> void extractFeatures)
+
+
 template <class ITERATOR, class ACCUMULATOR>
 void extractFeatures(ITERATOR start, ITERATOR end, ACCUMULATOR & a)
 {

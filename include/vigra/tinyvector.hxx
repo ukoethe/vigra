@@ -813,7 +813,7 @@ class TinyVectorBase
     
         /** Get a view to the subarray with length <tt>(TO-FROM)</tt> starting at <tt>FROM</tt>.
             The bounds must fullfill <tt>0 <= FROM < TO <= SIZE</tt>, but this is only
-            checked when <tt>VIGRA_CHECK_BOUNDS</tt> is #define'd.
+            checked when <tt>VIGRA_CHECK_BOUNDS</tt> is \#define'd.
         */
     template <int FROM, int TO>
     TinyVectorView<VALUETYPE, TO-FROM> subarray() const
