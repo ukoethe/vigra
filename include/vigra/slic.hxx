@@ -396,7 +396,6 @@ Slic<N, T, Label>::postProcessing()
             }
         }
     }
-    std::cerr << numChanges << " " << blocked << "\n";
     if(numChanges==0)
         return 0;
     return blocked;
