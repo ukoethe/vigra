@@ -88,8 +88,8 @@ struct SlicTest
         int maxSeedlabel = generateSlicSeeds(gradMag, labels, 39, 1);
         shouldEqual(maxSeedlabel, 9);
 
-        auto iter = ((typename IArray::view_type &)labels).begin(),
-             end  = iter.getEndIterator();
+        typename IArray::iterator iter = labels.begin(),
+                                  end  = iter.getEndIterator();
         int count = 0;
         for(; iter != end; ++iter)
         {
