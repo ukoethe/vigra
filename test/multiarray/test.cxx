@@ -144,7 +144,7 @@ public:
     void test_bind ()
     {
         MultiArrayView <2, scalar_type, array3_stride>
-            array = array3.bind <1> (4);
+            array = array3.template bind<1>(4);
         shouldEqual ((array [TinyVector <int, 2> (0, 0)]), 40);
         shouldEqual ((array [TinyVector <int, 2> (1, 0)]), 41);
         shouldEqual ((array [TinyVector <int, 2> (0, 1)]), 140);
