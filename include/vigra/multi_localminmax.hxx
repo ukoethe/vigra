@@ -41,8 +41,11 @@
 #include <functional>
 #include "multi_array.hxx"
 #include "localminmax.hxx"
-#if 0
+#include "multi_gridgraph.hxx"
+
 namespace vigra {
+
+#if 0
 
 namespace detail {
 
@@ -495,8 +498,90 @@ extendedLocalMaxima(MultiArrayView<3, T1, C1> src,
           "extendedLocalMaxima(): Invalid neighborhood.");
 }
 
-} // namespace vigra
-
 #endif
+
+namespace boost_graph { 
+
+// vigra::boost_graph contains algorithms that are compatible to the Boost Graph Library
+using namespace boost;
+using boost::get;
+
+  // Attempt without LValue propmaps, using only the free functions
+  // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
+template <class Graph, class T1Map, class T2Map, class Compare>
+void
+localMinMaxGraph(Graph const &G, 
+                 T1Map const &src,
+                 T2Map &dest,
+                 typename property_traits<T2Map>::value_type marker,
+                 typename property_traits<T1Map const>::value_type threshold,
+                 Compare const &compare)
+{
+    typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
+    typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
+
+    typedef typename property_traits<T1Map const>::value_type T1;
+
+    graph_scanner srcit, srcend;
+    neighbor_iterator nbit, nbend;
+
+    tie(srcit, srcend) = vertices(G);
+    for (; srcit != srcend; ++srcit) 
+    {
+        const T1 refval = get(src, *srcit);
+
+        if (!compare(refval, threshold))
+            continue;
+          
+        tie(nbit, nbend) = adjacent_vertices(*srcit, G);
+        for (;nbit != nbend; ++nbit) 
+            if (!compare(refval, get(src, *nbit))) 
+                break;
+                
+        if (nbit == nbend)
+            put(dest, *srcit, marker);
+    }
+}
+
+} // namespace boost_graph
+
+namespace lemon_graph { 
+
+// vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library
+using namespace lemon;
+
+
+template <class Graph, class T1Map, class T2Map, class Compare>
+void
+localMinMaxGraph(Graph const &G, 
+                 T1Map const &src,
+                 T2Map &dest,
+                 typename T2Map::value_type marker,
+                 typename T1Map::value_type threshold,
+                 Compare const &compare)
+{
+    typedef typename Graph::NodeIt    graph_scanner;
+    typedef typename Graph::OutArcIt  neighbor_iterator;
+
+    for (graph_scanner srcit(G); srcit != INVALID; ++srcit) 
+    {
+        typename T1Map::value_type refval = src[*srcit];
+
+        if (!compare(refval, threshold))
+            continue;
+          
+        neighbor_iterator nbit(G, srcit);
+        for (; nbit != INVALID; ++nbit) 
+            if (!compare(refval, src[G.target(*nbit)])) 
+                break;
+                
+        if (nbit == INVALID)
+            dest[*srcit] = marker;
+    }
+}
+
+} // namespace lemon_graph
+
+} // namespace vigra
 
 #endif // VIGRA_MULTI_LOCALMINMAX_HXX
