@@ -902,7 +902,12 @@ struct AccumulatorTest
         shouldEqual(1.0, get<ArgMaxWeight>(a));
         shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(a));
         shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
-        
+
+        AccumulatorChain<CoupledArrays<3, double>, Select<WeightArg<1>, Coord<ArgMinWeight> > > b;
+
+        extractFeatures(weights, b);
+
+        shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(b));
     }
   
     void testHistogram()
@@ -1243,11 +1248,12 @@ struct AccumulatorTest
             typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
-            typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
-                                                                AutoRangeHistogram<3>, 
-                                                                Global<Count>, Global<Coord<Mean> >, 
-                                                                StandardQuantiles<GlobalRangeHistogram<3> >, 
-                                                                LabelArg<2>, DataArg<1>
+            typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>, 
+                                                Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
+                                                       AutoRangeHistogram<3>, 
+                                                       Global<Count>, Global<Coord<Mean> >, 
+                                                       StandardQuantiles<GlobalRangeHistogram<3> >, 
+                                                       LabelArg<2>, DataArg<1>
                                                  > > A;
 
             A a;
@@ -1337,7 +1343,7 @@ struct AccumulatorTest
             A b;
             b.activateAll();
 
-            extractFeatures(start, end, b);
+            extractFeatures(data, labels, b);
             
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));
