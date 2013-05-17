@@ -46,12 +46,14 @@
 #include "tinyvector.hxx"
 
 #ifdef WITH_BOOST_GRAPH
+
 #  include <boost/tuple/tuple.hpp>
 #  include <boost/graph/graph_traits.hpp>
 #  include <boost/graph/properties.hpp>
+
 #else // not WITH_BOOST_GRAPH
 
-// emulate the BGL-style interface in our namespace
+// emulate the BGL-style interface
 namespace boost {
 
 struct no_property {};
@@ -156,43 +158,25 @@ struct property_traits
     typedef typename PropMap::category    category;
 };
 
+namespace {
 
+vertex_index_t vertex_index;
 
-#if 0
-    // CHECKME
-#define vertex_index vertex_index_t()
+} // anonymous namespace
 
-// iterator_property_map necessary?
-
-// property_map class template
-template<class GRAPH, class T>
-struct property_map 
-{
-};
-
-
-// put_get_helper, copied from BGL:
-template <class Reference, class LvaluePropertyMap>
-struct put_get_helper { };
-
-template <class PropertyMap, class Reference, class K>
-inline Reference
-get(const put_get_helper<Reference, PropertyMap>& pa, const K& k)
-{
-    Reference v = static_cast<const PropertyMap&>(pa)[k];
-    return v;
-}
-template <class PropertyMap, class Reference, class K, class V>
-inline void
-put(const put_get_helper<Reference, PropertyMap>& pa, K k, const V& v)
-{
-    static_cast<const PropertyMap&>(pa)[k] = v;
-}
-
-#endif
 } // namespace boost
 
 #endif // WITH_BOOST_GRAPH
+
+namespace vigra {
+namespace boost_graph { 
+
+// vigra::boost_graph contains algorithms that are compatible to the Boost Graph Library
+using namespace boost;
+
+}} // namespace vigra::boost_graph
+
+
 
 
 #if 0
@@ -290,5 +274,13 @@ inline bool operator!=(Invalid, T const & t)
 }
 
 } // namespace lemon
+
+namespace vigra {
+namespace lemon_graph { 
+
+// vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library
+using namespace lemon;
+
+}} // namespace vigra::lemon_graph
 
 #endif // VIGRA_GRAPH_HXX
