@@ -1163,7 +1163,7 @@ struct GridGraphAlgorithmTests
         
         src[Shape(1)] = 1;
         
-        boost_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>());
+        should(1 == boost_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>()));
         
         shouldEqualSequence(src.begin(), src.end(), dest.begin());
         
