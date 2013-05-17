@@ -888,8 +888,7 @@ struct LocalMinMaxTest
 
     void extendedLocalMinimum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
@@ -900,7 +899,7 @@ struct LocalMinMaxTest
         desired(7,1,15)=1;
         desired(7,1,19)=1;
 
-        desired(3,15,26)=1; //plateaux
+        desired(3,15,26)=1; //plateau
         desired(3,15,27)=1;
         desired(3,15,28)=1;
         desired(3,16,26)=1;
@@ -910,12 +909,13 @@ struct LocalMinMaxTest
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
+        should(4 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
     
     void extendedLocalMinimum3DTest2()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
 
@@ -936,6 +936,8 @@ struct LocalMinMaxTest
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
+        should(4 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(1).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
 
     void localMaximum3DTest()
@@ -961,8 +963,7 @@ struct LocalMinMaxTest
 
     void extendedLocalMaximum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
@@ -980,12 +981,14 @@ struct LocalMinMaxTest
             for(int y=0; y<vol.shape(1); ++y)
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
+
+        should(3 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
     
     void extendedLocalMaximum3DTest2()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
 
@@ -1003,6 +1006,9 @@ struct LocalMinMaxTest
             for(int y=0; y<vol.shape(1); ++y)
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
+
+        should(3 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(1).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
 
     void localMinimumTest()
@@ -1221,8 +1227,7 @@ struct LocalMinMaxTest
 
     void extendedLocalMinimumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMinima(srcImageRange(img), destImage(res), 1.0);
 
@@ -1244,18 +1249,26 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(4 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus()));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[8] = 1.0;
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(6 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
+        should(res == res2);
     }
 
     void extendedLocalMinimum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMinima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
 
@@ -1277,6 +1290,10 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(7 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus().neighborhood(0)));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
@@ -1284,12 +1301,16 @@ struct LocalMinMaxTest
         desired[26] = 1.0;
         desired[53] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(10 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
+        should(res == res2);
    }
 
     void extendedLocalMaximumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0);
 
@@ -1310,18 +1331,26 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(4 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus()));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[0] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(6 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
+        should(res == res2);
    }
 
     void extendedLocalMaximum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
 
@@ -1343,6 +1372,10 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(6 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus().neighborhood(DirectNeighborhood)));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
@@ -1350,6 +1383,11 @@ struct LocalMinMaxTest
         desired[27] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(9 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
+        should(res == res2);
    }
 
     void plateauWithHolesTest()
@@ -1366,7 +1404,7 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         std::copy(in, in+81, img.begin());
-        Image res(img.shape(), 0.0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0,
                             EightNeighborCode(),
