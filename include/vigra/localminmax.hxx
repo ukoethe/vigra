@@ -627,12 +627,19 @@ class LocalMinmaxOptions
             The value '0' indicates direct neighborhood (i.e. 4-neighborhood 
             in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), the value '1'
             indicates indirect neighborhood (i.e. 8-neighborhood in 2D, 
-            26-neighborhood in 3D, 3<sup>N</sup>-1 neighborhood in N-D). The specific number 
-            of neighbors for the desired dimension can also be used.
+            26-neighborhood in 3D, 3<sup>N</sup>-1 neighborhood in N-D). The appropriate 
+            number of neighbors for the desired dimension and the constants
+            <tt>DirectNeighborhood</tt> and <tt>IndirectNeighborhood</tt> can be used as well.
         
             Default: 1 (indirect neighborhood)
          */
     LocalMinmaxOptions & neighborhood(unsigned int n)
+    {
+        neigh = n;
+        return *this;
+    }
+    
+    LocalMinmaxOptions & neighborhood(NeighborhoodType n)
     {
         neigh = n;
         return *this;

@@ -371,7 +371,7 @@ extendLocalMinMax(MultiArrayView<3, T1, C1> src,
 // documentation is in localminmax.hxx
 template <unsigned int N, class T1, class C1, class T2, class C2>
 void
-localMinima(MultiArrayView<N, T1, C1> src,
+localMinimaOld(MultiArrayView<N, T1, C1> src,
             MultiArrayView<N, T2, C2> dest,
             LocalMinmaxOptions const & options = LocalMinmaxOptions())
 {
@@ -402,7 +402,7 @@ localMinima(MultiArrayView<N, T1, C1> src,
 // documentation is in localminmax.hxx
 template <unsigned int N, class T1, class C1, class T2, class C2>
 void
-localMaxima(MultiArrayView<N, T1, C1> src,
+localMaximaOld(MultiArrayView<N, T1, C1> src,
             MultiArrayView<N, T2, C2> dest,
             LocalMinmaxOptions const & options = LocalMinmaxOptions())
 {
@@ -505,13 +505,14 @@ namespace boost_graph {
   // Attempt without LValue propmaps, using only the free functions
   // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
 template <class Graph, class T1Map, class T2Map, class Compare>
-void
+unsigned int
 localMinMaxGraph(Graph const &G, 
                  T1Map const &src,
                  T2Map &dest,
                  typename property_traits<T2Map>::value_type marker,
                  typename property_traits<T1Map const>::value_type threshold,
-                 Compare const &compare)
+                 Compare const &compare,
+                 bool allowAtBorder = true)
 {
     typedef typename graph_traits<Graph>::vertex_iterator graph_scanner;
     typedef typename graph_traits<Graph>::adjacency_iterator neighbor_iterator;
@@ -521,6 +522,7 @@ localMinMaxGraph(Graph const &G,
     graph_scanner srcit, srcend;
     neighbor_iterator nbit, nbend;
 
+    unsigned int count = 0;
     tie(srcit, srcend) = vertices(G);
     for (; srcit != srcend; ++srcit) 
     {
@@ -529,14 +531,21 @@ localMinMaxGraph(Graph const &G,
         if (!compare(refval, threshold))
             continue;
           
+        if(!allowAtBorder && srcit.atBorder())
+            continue;
+        
         tie(nbit, nbend) = adjacent_vertices(*srcit, G);
         for (;nbit != nbend; ++nbit) 
             if (!compare(refval, get(src, *nbit))) 
                 break;
                 
         if (nbit == nbend)
+        {
             put(dest, *srcit, marker);
+            ++count;
+        }
     }
+    return count;
 }
 
 } // namespace boost_graph
@@ -582,6 +591,78 @@ localMinMaxGraph(Graph const &G,
 }
 
 } // namespace lemon_graph
+
+template <unsigned int N, class T1, class C1, 
+                          class T2, class C2,
+          class Compare>
+unsigned int
+localMinMax(MultiArrayView<N, T1, C1> const & src,
+            MultiArrayView<N, T2, C2> dest,
+            T1 threshold,
+            Compare const & compare,
+            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "localMinMax(): shape mismatch between input and output.");
+        
+    NeighborhoodType neighborhood;
+    
+    if(options.neigh == 0 || options.neigh == 2*N)
+        neighborhood = DirectNeighborhood;
+    else if(options.neigh == 1 || options.neigh == pow(3, N) - 1)
+        neighborhood = IndirectNeighborhood;
+    else
+        vigra_precondition(false,
+            "localMinMax(): option object specifies invalid neighborhood type.");
+    
+    T2 marker = (T2)options.marker;
+    
+    vigra_precondition(!options.allow_plateaus,
+        "localMinMax(): Option 'allowPlateaus' is not implemented for arbitrary dimensions,\n"
+        "               use extendedLocalMinima() for 2D and 3D problems.");
+
+    GridGraph<N, undirected_tag> graph(src.shape(), neighborhood);
+    return lemon_graph::localMinMaxGraph(graph, src, dest, marker, threshold, 
+                                         compare, options.allow_at_border);
+}
+
+/********************************************************/
+/*                                                      */
+/*                       localMinima                    */
+/*                                                      */
+/********************************************************/
+
+// documentation is in localminmax.hxx
+template <unsigned int N, class T1, class C1, class T2, class C2>
+inline unsigned int
+localMinima(MultiArrayView<N, T1, C1> const & src,
+            MultiArrayView<N, T2, C2> dest,
+            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+{
+    T1 threshold = options.use_threshold
+                           ? std::min(NumericTraits<T1>::max(), (T1)options.thresh)
+                           : NumericTraits<T1>::max();
+    return localMinMax(src, dest, threshold, std::less<T1>(), options);
+}
+
+/********************************************************/
+/*                                                      */
+/*                       localMaxima                    */
+/*                                                      */
+/********************************************************/
+
+// documentation is in localminmax.hxx
+template <unsigned int N, class T1, class C1, class T2, class C2>
+inline unsigned int
+localMaxima(MultiArrayView<N, T1, C1> const & src,
+            MultiArrayView<N, T2, C2> dest,
+            LocalMinmaxOptions const & options = LocalMinmaxOptions())
+{
+    T1 threshold = options.use_threshold
+                           ? std::max(NumericTraits<T1>::min(), (T1)options.thresh)
+                           : NumericTraits<T1>::min();
+    return localMinMax(src, dest, threshold, std::greater<T1>(), options);
+}
 
 } // namespace vigra
 
