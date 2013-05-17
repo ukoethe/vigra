@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 1998-2010 by Ullrich Koethe                  */
+/*               Copyright 2012-2013 by Ullrich Koethe                  */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -500,11 +500,7 @@ extendedLocalMaxima(MultiArrayView<3, T1, C1> src,
 
 #endif
 
-namespace boost_graph { 
-
-// vigra::boost_graph contains algorithms that are compatible to the Boost Graph Library
-using namespace boost;
-using boost::get;
+namespace boost_graph {
 
   // Attempt without LValue propmaps, using only the free functions
   // to access ReadablePropertyMap (input) and WritablePropertyMap (label)
@@ -547,22 +543,20 @@ localMinMaxGraph(Graph const &G,
 
 namespace lemon_graph { 
 
-// vigra::lemon_graph contains algorithms that are compatible to the LEMON graph library
-using namespace lemon;
-
-
 template <class Graph, class T1Map, class T2Map, class Compare>
-void
+unsigned int
 localMinMaxGraph(Graph const &G, 
                  T1Map const &src,
                  T2Map &dest,
                  typename T2Map::value_type marker,
                  typename T1Map::value_type threshold,
-                 Compare const &compare)
+                 Compare const &compare,
+                 bool allowAtBorder = true)
 {
     typedef typename Graph::NodeIt    graph_scanner;
     typedef typename Graph::OutArcIt  neighbor_iterator;
 
+    unsigned int count = 0;
     for (graph_scanner srcit(G); srcit != INVALID; ++srcit) 
     {
         typename T1Map::value_type refval = src[*srcit];
@@ -570,14 +564,21 @@ localMinMaxGraph(Graph const &G,
         if (!compare(refval, threshold))
             continue;
           
+        if(!allowAtBorder && srcit.atBorder())
+            continue;
+        
         neighbor_iterator nbit(G, srcit);
         for (; nbit != INVALID; ++nbit) 
             if (!compare(refval, src[G.target(*nbit)])) 
                 break;
                 
         if (nbit == INVALID)
+        {
             dest[*srcit] = marker;
+            ++count;
+        }
     }
+    return count;
 }
 
 } // namespace lemon_graph

@@ -1169,7 +1169,7 @@ struct GridGraphAlgorithmTests
         
         dest.init(0);
         
-        lemon_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>());
+        should(1 == lemon_graph::localMinMaxGraph(g, src, dest, 1, -9999, std::greater<int>()));
         
         shouldEqualSequence(src.begin(), src.end(), dest.begin());
     }
