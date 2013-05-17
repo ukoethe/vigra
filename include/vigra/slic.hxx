@@ -46,11 +46,7 @@
 #include <assert.h>
 
 #include "multi_array.hxx"
-#include "multi_iterator_coupled.hxx"
-#include "tinyvector.hxx"
-#include "labelimage.hxx"
-#include "imageiteratoradapter.hxx"
-#include "copyimage.hxx"
+#include "multi_labeling.hxx"
 #include "numerictraits.hxx"
 #include "accumulator.hxx"
 
@@ -148,14 +144,14 @@ class Slic
     
     typedef MultiArray<N,DistanceType>  DistanceImageType;
 
+    ShapeType                       shape_;
     DataImageType                   dataImage_;
     LabelImageType                  labelImage_;
-    SlicOptions                     options_;
     MultiArray<N,Label>             tmpLabelImage_;
     DistanceImageType               distance_;
-    const ShapeType                 shape_;
     int                             max_radius_;
     DistanceType                    normalization_;
+    SlicOptions                     options_;
     
     typedef acc::Select<acc::DataArg<1>, acc::LabelArg<2>, acc::Mean, acc::RegionCenter> Statistics;
     typedef acc::AccumulatorChainArray<CoupledArrays<N, T, Label>, Statistics> RegionFeatures;
@@ -171,14 +167,14 @@ Slic<N, T, Label>::Slic(
     DistanceType          intensityScaling,
     int                   maxRadius,
     SlicOptions const &   options)
-:   dataImage_(dataImage),
+:   shape_(dataImage.shape()),
+    dataImage_(dataImage),
     labelImage_(labelImage),
-    options_(options),
-    tmpLabelImage_(dataImage.shape()),
-    distance_(dataImage.shape()),
-    shape_(dataImage.shape()),
+    tmpLabelImage_(shape_),
+    distance_(shape_),
     max_radius_(maxRadius),
-    normalization_(sq(intensityScaling) / sq(max_radius_))
+    normalization_(sq(intensityScaling) / sq(max_radius_)),
+    options_(options)
 {
     centers_.ignoreLabel(0);
 }
@@ -211,9 +207,9 @@ int Slic<N, T, Label>::execute()
         // remove all regions which are smaller than a sizeLimit
         nBlocked = postProcessing();
     }
-    // FIXME: use dimension-independent labeling algorithm
+
     tmpLabelImage_ = labelImage_;
-    return labelImage(srcImageRange(tmpLabelImage_), destImage(labelImage_), false);
+    return labelMultiArray(tmpLabelImage_, labelImage_, DirectNeighborhood);
 }
 
 template <unsigned int N, class T, class Label>
@@ -297,9 +293,8 @@ Slic<N, T, Label>::postProcessing()
     // They use 4-neighborhood in 2D, but 10-neighborhood in 3D (indirect nh within slices and 
     // direct nh between slices)
     
-    // FIXME: use dimension-independent labeling algorithm
     tmpLabelImage_ = labelImage_;
-    size_t numLabels = 1 + labelImage(srcImageRange(tmpLabelImage_), destImage(labelImage_), false);
+    size_t numLabels = 1 + labelMultiArray(tmpLabelImage_, labelImage_, DirectNeighborhood);
     
     // FIXME: refactor this in terms of a graph-based algorithm
     std::vector< std::vector< ShapeType> >  regionsPixels(numLabels);
@@ -413,16 +408,16 @@ generateSlicSeeds(
 }
 
 
-template <unsigned int N, class T, class Label>
+template <unsigned int N, class T, class Label, class DistanceType>
 inline int 
 slicSuperpixels(
-    const MultiArrayView<N, T> &    dataImage,
-    MultiArrayView<N, Label>        labelImage,
-    typename Slic<N, T, Label>::DistanceType intensityScaling,
-    int                             seedDistance, 
-    const SlicOptions &             parameter = SlicOptions())
+    MultiArrayView<N, T> const &  dataImage,
+    MultiArrayView<N, Label>      labelImage,
+    DistanceType                  intensityScaling,
+    int                           seedDistance, 
+    SlicOptions const &           options = SlicOptions())
 {
-    return Slic<N, T, Label>(dataImage, labelImage, intensityScaling, seedDistance, parameter).execute();
+    return Slic<N, T, Label>(dataImage, labelImage, intensityScaling, seedDistance, options).execute();
 }
 
 } // namespace vigra
