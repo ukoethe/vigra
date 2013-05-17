@@ -56,10 +56,10 @@ MACRO(VIGRA_FIND_PACKAGE package)
                 SET(CMAKE_INCLUDE_PATH ${path}/include)
                 SET(CMAKE_LIBRARY_PATH ${path}/lib)
             ENDIF()
-            SET(${package}_INCLUDE_DIR ${package}_INCLUDE_DIR-NOTFOUND)
-            SET(${package}_LIBRARIES ${package}_LIBRARIES-NOTFOUND)
-            SET(${package}_LIBRARY ${package}_LIBRARY-NOTFOUND)
-            MESSAGE(STATUS "Searching for ${package}${VERSION_MESSAGE} in ${path}")
+            # SET(${package}_INCLUDE_DIR ${package}_INCLUDE_DIR-NOTFOUND)
+            # SET(${package}_LIBRARIES ${package}_LIBRARIES-NOTFOUND)
+            # SET(${package}_LIBRARY ${package}_LIBRARY-NOTFOUND)
+            MESSAGE(STATUS "   in prefix ${path}")
             FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
             IF(${package} STREQUAL "Boost")
                 SET(BOOST_INCLUDEDIR)
@@ -73,6 +73,9 @@ MACRO(VIGRA_FIND_PACKAGE package)
    
     # search the package in the default locations if not found 
     # in the DEPENDENCY_SEARCH_PREFIX 
-    FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
- 
+    if(NOT ${package}_FOUND)
+        MESSAGE(STATUS "   in default locations")
+        FIND_PACKAGE(${package} ${VERSION_SPEC} ${COMPONENTS})
+    endif()
+    
 ENDMACRO(VIGRA_FIND_PACKAGE)    
