@@ -437,6 +437,19 @@ public:
 
     <b> Declarations:</b>
 
+    use arbitrary-dimensional arrays:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2>
+        Label
+        generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
+                               MultiArrayView<N, Label, S2> seeds,
+                               NeighborhoodType neighborhood = IndirectNeighborhood,
+                               SeedOptions const & options = SeedOptions());
+    }
+    \endcode
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -467,10 +480,11 @@ public:
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/watersheds.hxx\><br>
+    <b>\#include</b> \<vigra/_multi_watersheds.hxx\> (first form)<br>
+    <b>\#include</b> \<vigra/watersheds.hxx\> (second and third form)<br>
     Namespace: vigra
 
-    For detailed examples see watershedsRegionGrowing().
+    For detailed examples see watershedsRegionGrowing() and watershedsMultiArray().
 */
 doxygen_overloaded_function(template <...> unsigned int generateWatershedSeeds)
 
@@ -563,7 +577,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Region segmentation by means of the union-find watershed algorithm.
 
     This function implements the union-find version of the watershed algorithms
-    as described in
+    described as algorithm 4.7 in
 
     J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
     and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
