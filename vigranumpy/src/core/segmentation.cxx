@@ -694,19 +694,16 @@ pythonWatersheds2D(NumpyArray<2, Singleband<PixelType> > image,
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2D, pythonWatersheds2D)
 
-template < class PixelType >
+template <unsigned int N, class PixelType >
 python::tuple 
-pythonWatersheds2DNew(NumpyArray<2, Singleband<PixelType> > image,
-                      int neighborhood = 4,
-                      NumpyArray<2, Singleband<npy_uint32> > seeds = NumpyArray<2, Singleband<npy_uint32> >(),
-                      std::string method = "", 
-                      SRGType srgType = CompleteGrow, 
-                      PixelType max_cost = 0.0, 
-                      NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
+pythonWatershedsNew(NumpyArray<N, Singleband<PixelType> > image,
+                    int neighborhood = 0,
+                    NumpyArray<N, Singleband<npy_uint32> > seeds = NumpyArray<N, Singleband<npy_uint32> >(),
+                    std::string method = "", 
+                    SRGType srgType = CompleteGrow, 
+                    PixelType max_cost = 0.0, 
+                    NumpyArray<N, Singleband<npy_uint32> > res = NumpyArray<N, Singleband<npy_uint32> >())
 {
-    vigra_precondition(neighborhood == 4 || neighborhood == 8,
-           "watersheds2D(): neighborhood must be 4 or 8.");
-
     method = tolower(method);
     if(method == "" || method == "turbo")
     {
@@ -753,7 +750,7 @@ pythonWatersheds2DNew(NumpyArray<2, Singleband<PixelType> > image,
         vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
     }
     
-    NeighborhoodType n = (neighborhood == 4)
+    NeighborhoodType n = (neighborhood == 0)
                              ? DirectNeighborhood
                              : IndirectNeighborhood;    
     npy_uint32 maxRegionLabel = 0;
@@ -765,7 +762,44 @@ pythonWatersheds2DNew(NumpyArray<2, Singleband<PixelType> > image,
     return python::make_tuple(res, maxRegionLabel);
 }
 
+template <class PixelType >
+python::tuple 
+pythonWatersheds2DNew(NumpyArray<2, Singleband<PixelType> > image,
+                      int neighborhood = 4,
+                      NumpyArray<2, Singleband<npy_uint32> > seeds = NumpyArray<2, Singleband<npy_uint32> >(),
+                      std::string method = "", 
+                      SRGType srgType = CompleteGrow, 
+                      PixelType max_cost = 0.0, 
+                      NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
+{
+    vigra_precondition(neighborhood == 4 || neighborhood == 8,
+           "watersheds2D(): neighborhood must be 4 or 8.");
+    neighborhood = (neighborhood == 4)
+                        ? 0
+                        : 1;
+    return pythonWatershedsNew(image, neighborhood, seeds, method, srgType, max_cost, res);
+}
+
+template <class PixelType >
+python::tuple 
+pythonWatersheds3DNew(NumpyArray<3, Singleband<PixelType> > image,
+                      int neighborhood = 6,
+                      NumpyArray<3, Singleband<npy_uint32> > seeds = NumpyArray<3, Singleband<npy_uint32> >(),
+                      std::string method = "", 
+                      SRGType srgType = CompleteGrow, 
+                      PixelType max_cost = 0.0, 
+                      NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
+{
+    vigra_precondition(neighborhood == 6 || neighborhood == 26,
+           "watersheds2D(): neighborhood must be 6 or 26.");
+    neighborhood = (neighborhood == 6)
+                        ? 0
+                        : 1;
+    return pythonWatershedsNew(image, neighborhood, seeds, method, srgType, max_cost, res);
+}
+
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds2DNew, pythonWatersheds2DNew)
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3DNew, pythonWatersheds3DNew)
 
 template < class PixelType >
 python::tuple 
@@ -1124,6 +1158,16 @@ void defineSegmentation()
     multidef("watershedsNew", pywatersheds2DNew< npy_uint8, float >(),
       (arg("image"), 
        arg("neighborhood") = 4, 
+       arg("seeds")=python::object(), 
+       arg("method")="",
+       arg("terminate")=CompleteGrow,
+       arg("max_cost")=0,
+       arg("out")=python::object()),
+       "graph-based watershed");
+
+    multidef("watershedsNew", pywatersheds3DNew< npy_uint8, float >(),
+      (arg("image"), 
+       arg("neighborhood") = 6, 
        arg("seeds")=python::object(), 
        arg("method")="",
        arg("terminate")=CompleteGrow,
