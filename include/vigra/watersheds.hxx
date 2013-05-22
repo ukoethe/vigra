@@ -703,10 +703,15 @@ watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 class WatershedOptions
 {
   public:
+    enum Method { RegionGrowing, UnionFind };
+  
     double max_cost, bias;
     SRGType terminate;
+    Method method;
     unsigned int biased_label, bucket_count;
     SeedOptions seed_options;
+    
+    
     
         /** \brief Create options object with default settings.
 
@@ -718,6 +723,7 @@ class WatershedOptions
     : max_cost(0.0),
       bias(1.0),
       terminate(CompleteGrow),
+      method(RegionGrowing),
       biased_label(0),
       bucket_count(0),
       seed_options(SeedOptions().unspecified())
@@ -785,6 +791,7 @@ class WatershedOptions
     WatershedOptions & turboAlgorithm(unsigned int bucket_count = 256)
     {
         this->bucket_count = bucket_count;
+        method = RegionGrowing;
         return *this;
     }
     
@@ -816,6 +823,46 @@ class WatershedOptions
     {
         biased_label = label;
         bias = factor;
+        return *this;
+    }
+    
+        /** \brief Specify the algorithm to be used.
+        
+            Possible values are <tt>WatershedOptions::RegionGrowing</tt> and
+            <tt>WatershedOptions::UnionFind</tt>. The latter algorithms is fastest
+            but doesn't support seeds and any other option.
+        
+            Default: RegionGrowing.
+        */
+    WatershedOptions & useMethod(Method method)
+    {
+        this->method = method;
+        return *this;
+    }
+    
+        /** \brief Use region-growing watershed.
+        
+            Use this method when you want to specify seeds explicitly (seeded watersheds) 
+            or use any of the other options.
+        
+            Default: true.
+        */
+    WatershedOptions & regionGrowing()
+    {
+        method = RegionGrowing;
+        return *this;
+    }
+    
+        /** \brief Use union-find watershed.
+        
+            This is the fasted method, but it doesn't support seeds and any of the other 
+            options (they will be silently ignored).
+        
+            Default: false.
+        */
+    WatershedOptions & unionFind()
+    {
+        method = UnionFind;
         return *this;
     }
 };
