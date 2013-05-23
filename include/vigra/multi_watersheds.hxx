@@ -82,48 +82,6 @@ prepareWatersheds(Graph const & g,
     }
 }
 
-// template <class Graph, class T1Map, class T2Map>
-// typename T2Map::value_type
-// unionFindWatersheds(Graph const & g, 
-                    // T1Map const & lowestNeighborIndex,
-                    // T2Map & labels)
-// {
-    // typedef typename Graph::NodeIt        graph_scanner;
-    // typedef typename Graph::OutBackArcIt  neighbor_iterator;
-    // typedef typename T2Map::value_type    LabelType;
-
-    // vigra::detail::UnionFindArray<LabelType>  regions;
-
-    // // pass 1: find connected components
-    // for (graph_scanner node(g); node != INVALID; ++node) 
-    // {
-        // // define tentative label for current node
-        // LabelType currentLabel = regions.nextFreeLabel();
-        
-        // for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
-        // {
-            // // merge regions if current target is center's lowest neighbor or vice versa
-            // if(lowestNeighborIndex[*node] == arc.neighborIndex() || 
-               // lowestNeighborIndex[g.target(*arc)] == g.oppositeIndex(arc.neighborIndex()))
-            // {
-                // LabelType neighborLabel = regions[labels[g.target(*arc)]];
-                // currentLabel = regions.makeUnion(neighborLabel, currentLabel);
-            // }
-        // }
-        // // set label of current node
-        // labels[*node] = regions.finalizeLabel(currentLabel);
-    // }
-    
-    // LabelType count = regions.makeContiguous();
-
-    // // pass 2: make component labels contiguous
-    // for (graph_scanner node(g); node != INVALID; ++node) 
-    // {
-        // labels[*node] = regions[labels[*node]];
-    // }
-    // return count;
-// }
-
 template <class Graph, class T1Map, class T2Map, class T3Map>
 typename T2Map::value_type
 unionFindWatersheds(Graph const & g,
@@ -144,7 +102,7 @@ unionFindWatersheds(Graph const & g,
     {
         // define tentative label for current node
         LabelType currentLabel = regions.nextFreeLabel();
-        Node plateauNeighbor(INVALID);
+        bool hasPlateauNeighbor = false;
         
         for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
@@ -153,13 +111,13 @@ unionFindWatersheds(Graph const & g,
                lowestNeighborIndex[g.target(*arc)] == g.oppositeIndex(arc.neighborIndex()))
             {
                 if(data[*node] == data[g.target(*arc)])
-                    plateauNeighbor = g.target(*arc);
+                    hasPlateauNeighbor = true;
                 LabelType neighborLabel = regions[labels[g.target(*arc)]];
                 currentLabel = regions.makeUnion(neighborLabel, currentLabel);
             }
         }
         
-        if(plateauNeighbor != INVALID)
+        if(hasPlateauNeighbor)
         {
             // we are on a plateau => link all plateau points
             for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
@@ -297,8 +255,8 @@ seededWatersheds(Graph const & g,
             }
             else if(keepContours && (label != neighborLabel) && (neighborLabel != contourLabel))
             {
-                // Check if the present point is adjacent to more than one region
-                // and if so, mark it as contour.
+                // The present neighbor is adjacent to more than one region
+                // => mark it as contour.
                 CostType priority = (neighborLabel == options.biased_label)
                                        ? data[g.target(*arc)] * options.bias
                                        : data[g.target(*arc)];
