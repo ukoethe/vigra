@@ -312,8 +312,7 @@ watershedsGraph(Graph const & g,
         else
         {
             // otherwise, don't compute seeds if 'labels' already contains them 
-            using namespace multi_math;
-            if(any(labels > LabelType(0)))
+            if(labels.any())
                 seed_options.mini = SeedOptions::Unspecified;
         }
 

@@ -480,7 +480,7 @@ public:
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/_multi_watersheds.hxx\> (first form)<br>
+    <b>\#include</b> \<vigra/multi_watersheds.hxx\> (first form)<br>
     <b>\#include</b> \<vigra/watersheds.hxx\> (second and third form)<br>
     Namespace: vigra
 
@@ -1043,7 +1043,7 @@ class BiasedWatershedStatistics
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(), and the destination is a label image
-    designating membership of each pixel in one of the regions. Plateaus in the boundary
+    designating membership of each point in one of the regions. Plateaus in the boundary
     indicator (i.e. regions of constant gray value) are handled via a Euclidean distance
     transform by default.
     
