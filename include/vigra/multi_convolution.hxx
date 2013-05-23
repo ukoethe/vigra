@@ -1296,6 +1296,12 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                                 dest.first, dest.second, sigma, opt );
 }
 
+/********************************************************/
+/*                                                      */
+/*              gaussianGradientMagnitude               */
+/*                                                      */
+/********************************************************/
+
 namespace detail {
 
 template <unsigned int N, class T1, class S1,
@@ -1328,6 +1334,7 @@ gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
 
 } // namespace detail
 
+    // documentation is in convolution.hxx
 template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 inline void 

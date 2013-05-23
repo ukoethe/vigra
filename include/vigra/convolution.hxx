@@ -772,6 +772,32 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
+    use arbitrary-dimensional arrays:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
+                                  MultiArrayView<N, T2, S2> dest,
+                                  double sigma,
+                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
+
+        template <unsigned int N, class MT, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<MT>, S1> const & src,
+                                  MultiArrayView<N,   T2, S2> dest,
+                                  double sigma,
+                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
+    }
+    \endcode
+    Here, the input element types <tt>T1</tt> and <tt>MT</tt> can be arbitrary scalar types, and <tt>T1</tt> 
+    may also be <tt>TinyVector</tt> or <tt>RGBValue</tt>. The output element type <tt>T2</tt> should 
+    be the corresponding norm type (see \ref vigra::NormTraits). In the <tt>Multiband<MT></tt>-version,
+    the input array's right-most dimension is interpreted as a channel axis, therefore it must 
+    have one dimension more than the output array.
+
     pass arguments explicitly:
     \code
     namespace vigra {
@@ -803,12 +829,55 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 
     \code
-    vigra::FImage src(w,h), grad(w,h);
-    ...
+    
+    // example 1
+    {
+        // use a traditional float or RGB image
+        FImage image(w, h), grad(w, h);
+        FRGBImage rgb(w, h);
+        ...
 
-    // calculate gradient magnitude at scale = 3.0
-    vigra::gaussianGradientMagnitude(srcImageRange(src), destImage(grad), 3.0);
+        // calculate gradient magnitude at scale = 3.0
+        gaussianGradientMagnitude(srcImageRange(image), destImage(grad), 3.0);
+        
+        // calculate color gradient magnitude at scale = 3.0
+        gaussianGradientMagnitude(srcImageRange(rgb), destImage(grad), 3.0);
+    }
+    
+    // example 2
+    {
+        // use a 3-dimensional float array
+        MultiArray<3, float> volume(Shape3(w, h, d)), grad(volume.shape());
+        ...
 
+        // calculate gradient magnitude at scale = 3.0
+        gaussianGradientMagnitude(volume, grad, 3.0);
+    }
+    
+    // example 3
+    {
+        // use a 2-dimensional RGB array
+        MultiArray<2, RGBValue<float> > rgb(Shape2(w, h));
+        MultiArray<2, float> grad(rgb.shape());
+        ...
+
+        // calculate the color gradient magnitude at scale = 3.0
+        gaussianGradientMagnitude(rgb, grad, 3.0);
+    }
+    
+    // example 4
+    {
+        // use a 3-dimensional array whose right-most axis is interpreted as 
+        // a multi-spectral axis with arbitrary many channels
+        MultiArray<3, Multiband<float> > spectral(Shape3(w, h, channelCount));
+        MultiArray<2, float> grad(Shape2(w, h));
+        ...
+
+        // calculate the multi-channel gradient magnitude at scale = 3.0
+        // (note the syntax differences)
+        MultiArrayView<3, Multiband<float> > view(spectral);
+        gaussianGradientMagnitude<2>(view, grad, 3.0);
+    }
     \endcode
 
 */
