@@ -344,7 +344,7 @@ struct MultiMathUnaryOperator
 };
 
 #define VIGRA_MULTIMATH_UNARY_OPERATOR(NAME, FCT, OPNAME, RESTYPE) \
-namespace detail { \
+namespace math_detail { \
 struct NAME \
 { \
     template <class T> \
@@ -364,31 +364,31 @@ struct NAME \
  \
 template <unsigned int N, class T, class C> \
 MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<MultiArrayView<N, T, C> >, \
-                                        detail::NAME> > \
+                                        math_detail::NAME> > \
 OPNAME(MultiArrayView<N, T, C> const & v) \
 { \
     typedef MultiMathOperand<MultiArrayView<N, T, C> > O; \
-    typedef MultiMathUnaryOperator<O, detail::NAME> OP; \
+    typedef MultiMathUnaryOperator<O, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v)); \
 } \
  \
 template <unsigned int N, class T, class A> \
 MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<MultiArray<N, T, A> >, \
-                                        detail::NAME> > \
+                                        math_detail::NAME> > \
 OPNAME(MultiArray<N, T, A> const & v) \
 { \
     typedef MultiMathOperand<MultiArray<N, T, A> > O; \
-    typedef MultiMathUnaryOperator<O, detail::NAME> OP; \
+    typedef MultiMathUnaryOperator<O, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v)); \
 } \
  \
 template <class T> \
 MultiMathOperand<MultiMathUnaryOperator<MultiMathOperand<T>, \
-                                        detail::NAME> > \
+                                        math_detail::NAME> > \
 OPNAME(MultiMathOperand<T> const & v) \
 { \
     typedef MultiMathOperand<T> O; \
-    typedef MultiMathUnaryOperator<O, detail::NAME> OP; \
+    typedef MultiMathUnaryOperator<O, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v)); \
 }
 
@@ -507,7 +507,7 @@ struct MultiMathBinaryOperator
 //
 #define VIGRA_MULTIMATH_BINARY_OPERATOR(NAME, FCT, OPNAME, SEP, RESTYPE) \
 \
-namespace detail { \
+namespace math_detail { \
 struct NAME \
 { \
     template <class T1, class T2> \
@@ -528,108 +528,108 @@ struct NAME \
 template <unsigned int N, class T1, class A1, class T2, class A2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1> >, \
                                          MultiMathOperand<MultiArrayView<N, T2> >, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiArray<N, T1, A1> const & v1, MultiArray<N, T2, A2> const & v2) \
 { \
     typedef MultiMathOperand<MultiArrayView<N, T1> > O1; \
     typedef MultiMathOperand<MultiArrayView<N, T2> > O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP((MultiArrayView<N, T1> const &)v1, (MultiArrayView<N, T2> const &)v2)); \
 } \
 \
 template <unsigned int N, class T1, class C1, class T2, class C2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1> >, \
                                          MultiMathOperand<MultiArrayView<N, T2, C2> >, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiArrayView<N, T1, C1> const & v1, MultiArrayView<N, T2, C2> const & v2) \
 { \
     typedef MultiMathOperand<MultiArrayView<N, T1, C1> > O1; \
     typedef MultiMathOperand<MultiArrayView<N, T2, C2> > O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
 \
 template <unsigned int N, class T1, class T2, class C2> \
 MultiMathOperand<MultiMathBinaryOperator<typename MultiMathOperand<T1>::AllowOverload, \
                                          MultiMathOperand<MultiArrayView<N, T2, C2> >, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(T1 const & v1, MultiArrayView<N, T2, C2> const & v2) \
 { \
     typedef MultiMathOperand<T1> O1; \
     typedef MultiMathOperand<MultiArrayView<N, T2, C2> > O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
  \
 template <unsigned int N, class T1, class C1, class T2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1> >, \
                                          typename MultiMathOperand<T2>::AllowOverload, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiArrayView<N, T1, C1> const & v1, T2 const & v2) \
 { \
     typedef MultiMathOperand<MultiArrayView<N, T1, C1> > O1; \
     typedef MultiMathOperand<T2> O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
  \
 template <unsigned int N, class T1, class T2, class C2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>, \
                                          MultiMathOperand<MultiArrayView<N, T2, C2> >, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiMathOperand<T1> const & v1, MultiArrayView<N, T2, C2> const & v2) \
 { \
     typedef MultiMathOperand<T1> O1; \
     typedef MultiMathOperand<MultiArrayView<N, T2, C2> > O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
  \
 template <unsigned int N, class T1, class C1, class T2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<MultiArrayView<N, T1, C1> >, \
                                          MultiMathOperand<T2>, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiArrayView<N, T1, C1> const & v1, MultiMathOperand<T2> const & v2) \
 { \
     typedef MultiMathOperand<MultiArrayView<N, T1, C1> > O1; \
     typedef MultiMathOperand<T2> O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
  \
 template <class T1, class T2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>, \
                                          MultiMathOperand<T2>, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiMathOperand<T1> const & v1, MultiMathOperand<T2> const & v2) \
 { \
     typedef MultiMathOperand<T1> O1; \
     typedef MultiMathOperand<T2> O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
 \
 template <class T1, class T2> \
 MultiMathOperand<MultiMathBinaryOperator<typename MultiMathOperand<T1>::AllowOverload, \
                                          MultiMathOperand<T2>, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(T1 const & v1, MultiMathOperand<T2> const & v2) \
 { \
     typedef MultiMathOperand<T1> O1; \
     typedef MultiMathOperand<T2> O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 } \
 \
 template <class T1, class T2> \
 MultiMathOperand<MultiMathBinaryOperator<MultiMathOperand<T1>, \
                                          typename MultiMathOperand<T2>::AllowOverload, \
-                                         detail::NAME> > \
+                                         math_detail::NAME> > \
 OPNAME(MultiMathOperand<T1> const & v1, T2 const & v2) \
 { \
     typedef MultiMathOperand<T1> O1; \
     typedef MultiMathOperand<T2> O2; \
-    typedef MultiMathBinaryOperator<O1, O2, detail::NAME> OP; \
+    typedef MultiMathBinaryOperator<O1, O2, math_detail::NAME> OP; \
     return MultiMathOperand<OP>(OP(v1, v2)); \
 }
 
@@ -672,7 +672,7 @@ VIGRA_MULTIMATH_BINARY_OPERATOR(Maximum, std::max, maximum, VIGRA_COMMA, VIGRA_P
 #undef VIGRA_REALPROMOTE
 #undef VIGRA_MULTIMATH_BINARY_OPERATOR
 
-namespace detail {
+namespace math_detail {
 
 // We pass 'strideOrder' to the recursion in order to make sure
 // that the inner loop iterates over the output's major axis.
@@ -814,7 +814,7 @@ struct MultiMathReduceAny
 };
 
 
-} // namespace detail
+} // namespace math_detail
 
 template <class U, class T>
 U
@@ -823,7 +823,7 @@ sum(MultiMathOperand<T> const & v, U res = NumericTraits<U>::zero())
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
-    detail::MultiMathReduce<ndim, detail::MultiMathplusAssign>::exec(res, shape, v);
+    math_detail::MultiMathReduce<ndim, math_detail::MultiMathplusAssign>::exec(res, shape, v);
     return res;
 }
 
@@ -841,7 +841,7 @@ product(MultiMathOperand<T> const & v, U res = NumericTraits<U>::one())
     static const int ndim = MultiMathOperand<T>::ndim;
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
-    detail::MultiMathReduce<ndim, detail::MultiMathmultiplyAssign>::exec(res, shape, v);
+    math_detail::MultiMathReduce<ndim, math_detail::MultiMathmultiplyAssign>::exec(res, shape, v);
     return res;
 }
 
@@ -860,7 +860,7 @@ all(MultiMathOperand<T> const & v)
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     bool res = true;
-    detail::MultiMathReduce<ndim, detail::MultiMathReduceAll>::exec(res, shape, v);
+    math_detail::MultiMathReduce<ndim, math_detail::MultiMathReduceAll>::exec(res, shape, v);
     return res;
 }
 
@@ -872,7 +872,7 @@ any(MultiMathOperand<T> const & v)
     typename MultiArrayShape<ndim>::type shape;
     v.checkShape(shape);
     bool res = false;
-    detail::MultiMathReduce<ndim, detail::MultiMathReduceAny>::exec(res, shape, v);
+    math_detail::MultiMathReduce<ndim, math_detail::MultiMathReduceAny>::exec(res, shape, v);
     return res;
 }
 
