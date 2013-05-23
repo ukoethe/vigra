@@ -395,9 +395,8 @@ struct MultiArraySeparableConvolutionTest
         MultiArrayShape<2>::type shape(30,40);
         int size = shape[0]*shape[1];
 
-        MultiArray<2, double > src(shape), mgrad(shape);
+        MultiArray<2, double > src(shape), mgrad(shape), rmgrad(shape);
         MultiArray<2, TinyVector<double, 2> > grad(shape);
-        BasicImage<double> rmgrad(shape[0], shape[1]);
         
         makeRandom(src);
         
@@ -406,6 +405,19 @@ struct MultiArraySeparableConvolutionTest
         transformMultiArray(srcMultiArrayRange(grad), destMultiArray(mgrad), norm(Arg1()));
 
         shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
+
+        rmgrad.init(0);
+        gaussianGradientMagnitude(src, rmgrad, 1.0);
+        shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
+
+        MultiArray<2, TinyVector<double, 3> > rgb(shape);
+        
+        makeRandom(rgb.expandElements(0));
+        
+        gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
+        gaussianGradientMagnitude(rgb, rmgrad, 1.0);
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
+
     }
 
     void test_laplacian()

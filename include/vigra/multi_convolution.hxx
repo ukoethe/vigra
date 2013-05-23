@@ -46,6 +46,7 @@
 #include "navigator.hxx"
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
+#include "multi_math.hxx"
 #include "functorexpression.hxx"
 #include "tinyvector.hxx"
 #include "algorithm.hxx"
@@ -1293,6 +1294,82 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 {
     gaussianGradientMultiArray( source.first, source.second, source.third,
                                 dest.first, dest.second, sigma, opt );
+}
+
+namespace detail {
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+void 
+gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    vigra_precondition((src.shape().template subarray<0,N>() == dest.shape()),
+              "gaussianGradientMagnitudeMultiArray(): Shape mismatch between input and output.");
+              
+    opt.stdDev(sigma);
+    dest.init(0.0);
+    MultiArray<N, TinyVector<T1, N> > grad(dest.shape());
+    
+    using namespace multi_math;
+    
+    for(int k=0; k<src.shape(N); ++k)
+    {
+        MultiArrayView<N, T1, StridedArrayTag> band = src.bindOuter(k);
+    
+        gaussianGradientMultiArray(srcMultiArrayRange(band), destMultiArray(grad), opt);
+        
+        dest += squaredNorm(grad);
+    }
+    dest = sqrt(dest);
+}
+
+} // namespace detail
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src, dest, sigma, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.insertSingletonDimension(N), dest, sigma, opt);
+}
+
+template <unsigned int N, class T1, int M, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, TinyVector<T1, M>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.expandElements(N), dest, sigma, opt);
+}
+
+template <unsigned int N, class T1, unsigned int R, unsigned int G, unsigned int B, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.expandElements(N), dest, sigma, opt);
 }
 
 /********************************************************/
