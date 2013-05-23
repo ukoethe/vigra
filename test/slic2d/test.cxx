@@ -66,7 +66,7 @@ struct SlicTest
         lennaImage(info.shape())
     {
         importImage(info, destImage(lennaImage));
-        transformImage(srcImageRange(lennaImage), destImage(lennaImage), RGBPrime2LabFunctor<float>());
+        transformMultiArray(srcMultiArrayRange(lennaImage), destMultiArray(lennaImage), RGBPrime2LabFunctor<float>());    
     }
 
     void test_seeding()
@@ -107,23 +107,16 @@ struct SlicTest
 
     void test_slic()
     {
-        return;
-        // get grad mag image
-        FArray gradMag(lennaImage.shape());
-        gaussianGradientMagnitude(lennaImage, gradMag, 1.0);
-
         IArray labels(lennaImage.shape()), labels_ref(lennaImage.shape());
 
         int seedDistance = 8;
-        generateSlicSeeds(gradMag, labels, seedDistance, 1);
+        // compute seeds automatically
+        slicSuperpixels(lennaImage, labels, 20.0, seedDistance, SlicOptions().minSize(0).iterations(40));
 
-        slicSuperpixels(lennaImage, labels, 20.0, seedDistance, SlicOptions().minSize(0));
-
-        //exportImage(srcImageRange(labels), ImageExportInfo("slic.xv"));
+        // exportImage(srcImageRange(labels), ImageExportInfo("slic.xv"));
         importImage(ImageImportInfo("slic.xv"), destImage(labels_ref));
 
-        using namespace vigra::multi_math;
-        should(all(labels == labels_ref));
+        should(labels == labels_ref);
     }
 };
 
