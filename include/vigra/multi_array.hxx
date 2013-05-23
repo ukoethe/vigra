@@ -489,7 +489,7 @@ namespace multi_math {
 template <class T>
 struct MultiMathOperand;
 
-namespace detail {
+namespace math_detail {
 
 template <unsigned int N, class T, class C, class E>
 void assign(MultiArrayView<N, T, C>, MultiMathOperand<E> const &);
@@ -521,7 +521,7 @@ void multiplyAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
 template <unsigned int N, class T, class A, class E>
 void divideAssignOrResize(MultiArray<N, T, A> &, MultiMathOperand<E> const &);
 
-} // namespace detail
+} // namespace math_detail
 
 } // namespace multi_math
 
@@ -931,7 +931,7 @@ public:
     template<class Expression>
     MultiArrayView & operator=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::assign(*this, rhs);
+        multi_math::math_detail::assign(*this, rhs);
         return *this;
     }
 
@@ -941,7 +941,7 @@ public:
     template<class Expression>
     MultiArrayView & operator+=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::plusAssign(*this, rhs);
+        multi_math::math_detail::plusAssign(*this, rhs);
         return *this;
     }
 
@@ -951,7 +951,7 @@ public:
     template<class Expression>
     MultiArrayView & operator-=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::minusAssign(*this, rhs);
+        multi_math::math_detail::minusAssign(*this, rhs);
         return *this;
     }
 
@@ -961,7 +961,7 @@ public:
     template<class Expression>
     MultiArrayView & operator*=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::multiplyAssign(*this, rhs);
+        multi_math::math_detail::multiplyAssign(*this, rhs);
         return *this;
     }
 
@@ -971,7 +971,7 @@ public:
     template<class Expression>
     MultiArrayView & operator/=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::divideAssign(*this, rhs);
+        multi_math::math_detail::divideAssign(*this, rhs);
         return *this;
     }
 
@@ -2488,7 +2488,7 @@ public:
                 difference_type (diff_zero_t(0)), 0),
       m_alloc (alloc)
     {
-        multi_math::detail::assignOrResize(*this, rhs);
+        multi_math::math_detail::assignOrResize(*this, rhs);
     }
 
         /** construct by copying from a MultiArrayView
@@ -2629,7 +2629,7 @@ public:
     template<class Expression>
     MultiArray & operator=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::assignOrResize(*this, rhs);
+        multi_math::math_detail::assignOrResize(*this, rhs);
         return *this;
     }
 
@@ -2639,7 +2639,7 @@ public:
     template<class Expression>
     MultiArray & operator+=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::plusAssignOrResize(*this, rhs);
+        multi_math::math_detail::plusAssignOrResize(*this, rhs);
         return *this;
     }
 
@@ -2649,7 +2649,7 @@ public:
     template<class Expression>
     MultiArray & operator-=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::minusAssignOrResize(*this, rhs);
+        multi_math::math_detail::minusAssignOrResize(*this, rhs);
         return *this;
     }
 
@@ -2659,7 +2659,7 @@ public:
     template<class Expression>
     MultiArray & operator*=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::multiplyAssignOrResize(*this, rhs);
+        multi_math::math_detail::multiplyAssignOrResize(*this, rhs);
         return *this;
     }
 
@@ -2669,7 +2669,7 @@ public:
     template<class Expression>
     MultiArray & operator/=(multi_math::MultiMathOperand<Expression> const & rhs)
     {
-        multi_math::detail::divideAssignOrResize(*this, rhs);
+        multi_math::math_detail::divideAssignOrResize(*this, rhs);
         return *this;
     }
 
