@@ -414,10 +414,21 @@ struct MultiArraySeparableConvolutionTest
         
         makeRandom(rgb.expandElements(0));
         
+        mgrad.init(0);
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
+        rmgrad.init(0);
         gaussianGradientMagnitude(rgb, rmgrad, 1.0);
         shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
 
+        MultiArrayView<3, Multiband<double> > expanded(rgb.expandElements(2));
+
+        rmgrad.init(0);
+        gaussianGradientMagnitude<2>(expanded, rmgrad, 1.0);
+        shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
+
+        MultiArray<3, Multiband<double> > spectral(Shape3(shape[0], shape[1], 10));
+        MultiArrayView<3, Multiband<double> > spectral_expanded(spectral);
+        gaussianGradientMagnitude<2>(spectral_expanded, rmgrad, 1.0);
     }
 
     void test_laplacian()
