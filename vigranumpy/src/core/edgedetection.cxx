@@ -323,7 +323,7 @@ pythonRegionImageToCrackEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
 template < class PixelType >
 NumpyAnyArray 
 pythonRegionImageToEdgeImage(NumpyArray<2, Singleband<PixelType> > image,
-                             PixelType edgeLabel = 0,
+                             PixelType edgeLabel = 1,
                              NumpyArray<2, Singleband<PixelType> > res = python::object())
 {
     res.reshapeIfEmpty(image.taggedShape(), 
@@ -441,7 +441,7 @@ void defineEdgedetection()
     def("regionImageToEdgeImage",
         registerConverters(&pythonRegionImageToEdgeImage<npy_uint32>),
         (arg("image"), 
-         arg("edgeLabel") = 0,
+         arg("edgeLabel") = 1,
          arg("out")=python::object()),
         "Transform a labeled uint32 image into an edge image.\n\n"
         "For details see regionImageToEdgeImage_ in the vigra C++ documentation.\n");
@@ -449,7 +449,7 @@ void defineEdgedetection()
     def("regionImageToEdgeImage",
         registerConverters(&pythonRegionImageToEdgeImage<npy_uint64>),
         (arg("image"), 
-         arg("edgeLabel") = 0,
+         arg("edgeLabel") = 1,
          arg("out")=python::object()),
          "Likewise for a uint64 image.\n");
 
