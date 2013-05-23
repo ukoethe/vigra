@@ -36,29 +36,84 @@
 #ifndef VIGRA_SLIC_HXX
 #define VIGRA_SLIC_HXX
 
-#include <vector>
-#include <algorithm>
-#include <cmath>
-#include <set>
-#include <map>
-#include <numeric>
-#include <iostream>
-#include <assert.h>
-
 #include "multi_array.hxx"
+#include "multi_convolution.hxx"
 #include "multi_labeling.hxx"
 #include "numerictraits.hxx"
 #include "accumulator.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
 
-// move slic seeds to the smallest boundary indicator within search resius
-template <unsigned int N, class T, class Label>
-int generateSlicSeedsImpl(
-    MultiArrayView<N, T> const &  boundaryIndicatorImage,
-    MultiArrayView<N, Label>      seeds,
-    int                           seedDist,
-    int                           searchRadius)
+/** \addtogroup SeededRegionGrowing
+*/
+//@{
+
+/********************************************************/
+/*                                                      */
+/*                  generateSlicSeeds                   */
+/*                                                      */
+/********************************************************/
+
+/** \brief Generate seeds for SLIC superpixel computation in arbitrary dimensions.
+
+    The source array \a src must be a scalar boundary indicator such as the gradient 
+    magnitude. Seeds are initially placed on a regular Cartesian grid with spacing
+    \a seedDist und then moved to the point with smallest boundary indicator within
+    a search region of radius \a searchRadius around the initial position. The resulting
+    points are then marked in the output array \a seeds by consecutive labels.
+    
+    The function returns the number of selected seeds, which equals the largest seed label 
+    because labeling starts at 1.
+
+    <b> Declaration:</b>
+
+    use arbitrary-dimensional arrays:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2>
+        unsigned int 
+        generateSlicSeeds(MultiArrayView<N, T, S1> const & src,
+                          MultiArrayView<N, Label, S2>     seeds,
+                          unsigned int                     seedDist,
+                          unsigned int                     searchRadius = 1);
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/slic.hxx\><br>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<float> > src(Shape2(w, h));
+    ... // fill src image
+    
+    // transform image to Lab color space
+    transformImage(srcImageRange(src), destImage(src), RGBPrime2LabFunctor<float>());
+    
+    // compute image gradient magnitude at scale 1.0 as a boundary indicator
+    MultiArray<2, float> grad(src.shape());
+    gaussianGradientMagnitude(srcImageRange(src), destImage(grad), 1.0);
+    
+    MultiArray<2, unsigned int>  seeds(src.shape());
+    int seedDistance = 15;
+    
+    // place seeds on a grid with distance 15, but then move it to the lowest gradient
+    // poistion in a 3x3 window
+    generateSlicSeeds(grad, seeds, seedDistance);
+    \endcode
+
+    For more details and examples see slicSuperpixels().
+*/
+template <unsigned int N, class T, class S1,
+                          class Label, class S2>
+unsigned int 
+generateSlicSeeds(MultiArrayView<N, T, S1> const & boundaryIndicatorImage,
+                  MultiArrayView<N, Label, S2>     seeds,
+                  unsigned int                     seedDist,
+                  unsigned int                     searchRadius = 1)
 {
     typedef typename MultiArrayShape<N>::type   Shape;
 
@@ -67,7 +122,7 @@ int generateSlicSeedsImpl(
           seedShape(floor(shape / double(seedDist))),
           offset((shape - (seedShape - Shape(1))*seedDist) / 2);
     
-    int label = 0;
+    unsigned int label = 0;
     MultiCoordinateIterator<N> iter(seedShape),
                                end = iter.getEndIterator();
     for(; iter != end; ++iter)
@@ -91,28 +146,50 @@ int generateSlicSeedsImpl(
     return label;
 }
 
+/** \brief Options object for slicSuperpixels().
+
+    <b> Usage:</b>
+
+    see slicSuperpixels() for detailed examples.
+*/
 struct SlicOptions
 {
+        /** \brief Create options object with default settings.
+
+            Defaults are: perform 10 iterations, determine a size limit for superpixels automatically.
+        */
     SlicOptions()
-    : iterations(40),
-      sizeLimit(4)
+    : iter(10),
+      sizeLimit(0)
     {}
     
-    SlicOptions & maxIterations(unsigned int i)
+        /** \brief Number of iterations.
+
+            Default: 10
+        */
+    SlicOptions & iterations(unsigned int i)
     {
-        iterations = i;
+        iter = i;
         return *this;
     }
     
+        /** \brief Minimum superpixel size.
+        
+            If you set this to 1, no size filtering will be performed.
+
+            Default: 0 (determine size limit automatically as <tt>average size / 4</tt>)
+        */
     SlicOptions & minSize(unsigned int s)
     {
         sizeLimit = s;
         return *this;
     }
     
-    unsigned int iterations;
+    unsigned int iter;
     unsigned int sizeLimit;
 };
+
+namespace detail {
 
 template <unsigned int N, class T, class Label>
 class Slic
@@ -136,7 +213,7 @@ class Slic
     unsigned int execute();
 
   private:
-    DistanceType updateAssigments();
+    void updateAssigments();
     unsigned int postProcessing();
     
     typedef MultiArray<N,DistanceType>  DistanceImageType;
@@ -178,29 +255,21 @@ template <unsigned int N, class T, class Label>
 unsigned int Slic<N, T, Label>::execute()
 {
     // Do SLIC
-    DistanceType err = NumericTraits< DistanceType >::max();
-    for(size_t i=0; i<options_.iterations; ++i)
+    for(size_t i=0; i<options_.iter; ++i)
     {
         // update mean for each cluster
         clusters_.reset();
         extractFeatures(dataImage_, labelImage_, clusters_);
         
         // update which pixels get assigned to which cluster
-        const DistanceType err2 = updateAssigments();
-
-        // convergence?
-        if(err2+std::numeric_limits<DistanceType>::epsilon()>=err)
-        {
-            break;
-        }
-        err=err2;
+        updateAssigments();
     }
 
     return postProcessing();
 }
 
 template <unsigned int N, class T, class Label>
-typename Slic<N, T, Label>::DistanceType 
+void
 Slic<N, T, Label>::updateAssigments()
 {
     using namespace acc;
@@ -240,8 +309,6 @@ Slic<N, T, Label>::updateAssigments()
             }
         }
     }
-    // return total distance
-    return distance_.sum<DistanceType>();
 }
 
 template <unsigned int N, class T, class Label>
@@ -271,6 +338,7 @@ Slic<N, T, Label>::postProcessing()
 
     ArrayVector<Label> regions(maxLabel+1);
 
+    // make sure that all regions exceed the sizeLimit
     for (graph_scanner node(graph); node != lemon::INVALID; ++node) 
     {
         Label label = labelImage_[*node];
@@ -280,9 +348,9 @@ Slic<N, T, Label>::postProcessing()
             
         regions[label] = label;
         
-        // merge region into neighborng one if too small
         if(get<Count>(sizes, label) < sizeLimit)
         {
+            // region is too small => merge into an existing neighbor
             for (neighbor_iterator arc(graph, node); arc != lemon::INVALID; ++arc)
             {
                 regions[label] = regions[labelImage_[graph.target(*arc)]];
@@ -314,29 +382,105 @@ Slic<N, T, Label>::postProcessing()
     return maxLabel;
 }
 
-template <unsigned int N, class T, class Label>
-inline int 
-generateSlicSeeds(
-    MultiArrayView<N, T> const &  boundaryIndicatorImage,
-    MultiArrayView<N, Label>      seeds,
-    int                           seedDistance,
-    int                           searchRadius=1)
-{
-    return generateSlicSeedsImpl( boundaryIndicatorImage, seeds, seedDistance, searchRadius);
-}
+} // namespace detail
 
 
-template <unsigned int N, class T, class Label, class DistanceType>
-inline int 
-slicSuperpixels(
-    MultiArrayView<N, T> const &  dataImage,
-    MultiArrayView<N, Label>      labelImage,
-    DistanceType                  intensityScaling,
-    int                           seedDistance, 
-    SlicOptions const &           options = SlicOptions())
+/** \brief Compute SLIC superpixels in arbitrary dimensions.
+
+    This function implements the algorithm described in 
+    
+    R. Achanta et al.: "<i>SLIC Superpixels Compared to State-of-the-Art 
+    Superpixel Methods</i>", IEEE Trans. Patt. Analysis Mach. Intell. 34(11):2274-2281, 2012
+    
+    The value type <tt>T</tt> of the source array \a src must provide the necessary functionality 
+    to compute averages and squared distances (i.e. it must fulfill the requirements of a 
+    \ref LinearSpace and support squaredNorm()). This is true for all scalar types as well as
+    \ref vigra::TinyVector and \ref vigra::RGBValue. The output array \a labels will be filled
+    with labels designating membership of each point in one of the superpixel regions.
+    
+    The output array can optionally contain seeds (which will be overwritten by the output) 
+    to give you full control over seed placement. If \a labels is empty, seeds will be created
+    automatically by an internal call to generateSlicSeeds(). 
+    
+    The parameter \a seedDistance specifies the radius of the window around each seed (or, more
+    precisely, around the present regions centers) where the algorithm looks for potential members 
+    of the corresponding superpixel. It thus places an upper limit on the superpixel size. When seeds
+    are computed automatically, this parameter also determines the grid spacing for seed placement.
+    
+    The parameter \a intensityScaling is used to normalize (i.e. divide) the color/intensity difference 
+    before it is compared with the spatial distance. This corresponds to parameter <i>m</i> in equation
+    (2) of the paper.
+    
+    The options object can be used to specify the number of iterations (<tt>SlicOptions::iterations()</tt>)
+    and an explicit minimal superpixel size (<tt>SlicOptions::minSize()</tt>). By default, the algorithm 
+    merges all regions that are smaller than 1/4 the average superpixel size.
+    
+    The function returns the number of superpixels, which equals the largest label 
+    because labeling starts at 1.
+
+    <b> Declaration:</b>
+
+    use arbitrary-dimensional arrays:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2,
+                  class DistanceType>
+        unsigned int 
+        slicSuperpixels(MultiArrayView<N, T, S1> const &  src,
+                        MultiArrayView<N, Label, S2>      labels,
+                        DistanceType                      intensityScaling,
+                        unsigned int                      seedDistance, 
+                        SlicOptions const &               options = SlicOptions());
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/slic.hxx\><br>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<float> > src(Shape2(w, h));
+    ... // fill src image
+    
+    // transform image to Lab color space
+    transformMultiArray(srcMultiArrayRange(src), destMultiArray(src), RGBPrime2LabFunctor<float>());    
+    
+    MultiArray<2, unsigned int>  labels(src.shape());
+    int seedDistance = 15;
+    double intensityScaling = 20.0;
+    
+    // compute seeds automatically, perform 40 iterations, scaling intensity differences
+    // down to 1/20 before comparing with spatial distances
+    slicSuperpixels(src, labels, intensityScaling, seedDistance, SlicOptions().iterations(40));
+    \endcode
+    
+    This works for arbitrary-dimensional arrays.
+*/
+doxygen_overloaded_function(template <...> unsigned int slicSuperpixels)
+
+template <unsigned int N, class T, class S1,
+                          class Label, class S2,
+          class DistanceType>
+unsigned int 
+slicSuperpixels(MultiArrayView<N, T, S1> const &  src,
+                MultiArrayView<N, Label, S2>      labels,
+                DistanceType                      intensityScaling,
+                unsigned int                      seedDistance, 
+                SlicOptions const &               options = SlicOptions())
 {
-    return Slic<N, T, Label>(dataImage, labelImage, intensityScaling, seedDistance, options).execute();
+    if(!labels.any())
+    {
+        typedef typename NormTraits<T>::NormType TmpType;
+        MultiArray<N, TmpType> grad(src.shape());
+        gaussianGradientMagnitude(src, grad, 1.0);
+        generateSlicSeeds(grad, labels, seedDistance);
+    }
+    return detail::Slic<N, T, Label>(src, labels, intensityScaling, seedDistance, options).execute();
 }
+
+//@}
 
 } // namespace vigra
 

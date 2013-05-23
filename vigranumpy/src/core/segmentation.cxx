@@ -951,11 +951,12 @@ pythonSlic(NumpyArray<N, PixelType > array,
            double intensityScaling,
            unsigned int seedDistance,
            unsigned int minSize = 0,            // choose minSize automatically 
-           unsigned int maxIterations = 40, 
+           unsigned int iterations = 10, 
            NumpyArray<N, Singleband<npy_uint32> > res = NumpyArray<N, Singleband<npy_uint32> >())
 {
-    typedef typename NormTraits<PixelType>::NormType TmpType;
-    typedef typename NumpyArray<N, PixelType >::view_type View;
+    typedef typename detail::ResolveMultiband<PixelType>::type ValueType;
+    typedef typename NormTraits<ValueType>::NormType TmpType;
+    typedef typename NumpyArray<N, ValueType >::view_type View;
     
     std::string description("Slic superpixels");
     
@@ -974,7 +975,7 @@ pythonSlic(NumpyArray<N, PixelType > array,
         generateSlicSeeds(gradMag, res, seedDistance, 1);
         
         maxRegionLabel = slicSuperpixels(array, res, intensityScaling, seedDistance,
-                                         SlicOptions().maxIterations(maxIterations)
+                                         SlicOptions().iterations(iterations)
                                                       .minSize(minSize));
     }
 
@@ -987,10 +988,10 @@ pythonSlic2D(NumpyArray<2, PixelType > image,
              double intensityScaling,
              unsigned int seedDistance,
              unsigned int minSize = 0,            // choose minSize automatically 
-             unsigned int maxIterations = 40, 
+             unsigned int iterations = 10, 
              NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
 {
-    return pythonSlic(image, intensityScaling, seedDistance, minSize, maxIterations, res);
+    return pythonSlic(image, intensityScaling, seedDistance, minSize, iterations, res);
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic2D, pythonSlic2D)
@@ -1001,10 +1002,10 @@ pythonSlic3D(NumpyArray<3, PixelType > image,
              double intensityScaling,
              unsigned int seedDistance,
              unsigned int minSize = 0,            // choose minSize automatically 
-             unsigned int maxIterations = 40, 
+             unsigned int iterations = 10, 
              NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
 {
-    return pythonSlic(image, intensityScaling, seedDistance, minSize, maxIterations, res);
+    return pythonSlic(image, intensityScaling, seedDistance, minSize, iterations, res);
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic3D, pythonSlic3D)
@@ -1242,21 +1243,21 @@ void defineSegmentation()
        arg("out")=python::object()),
        "graph-based watershed");
 
-    multidef("slicSuperpixels", pySlic2D< TinyVector<float, 3>, float >(),
+    multidef("slicSuperpixels", pySlic2D< TinyVector<float, 3>, Singleband<float> >(),
       (arg("image"), 
        arg("intensityScaling"), 
        arg("seedDistance"), 
        arg("minSize")=0,
-       arg("maxIterations")=40,
+       arg("iterations")=10,
        arg("out")=python::object()),
        "Slic superpixels");
 
-    multidef("slicSuperpixels", pySlic3D< TinyVector<float, 3>, float >(),
+    multidef("slicSuperpixels", pySlic3D< TinyVector<float, 3>, Singleband<float> >(),
       (arg("image"), 
        arg("intensityScaling"), 
        arg("seedDistance"), 
        arg("minSize")=0,
-       arg("maxIterations")=40,
+       arg("iterations")=10,
        arg("out")=python::object()),
        "Slic superpixels");
 }
