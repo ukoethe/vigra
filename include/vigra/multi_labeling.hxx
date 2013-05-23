@@ -50,7 +50,7 @@ namespace lemon_graph {
 
 template <class Graph, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
-labelGraph(Graph const & G, 
+labelGraph(Graph const & g, 
            T1Map const & data,
            T2Map & labels,
            Equal const & equal)
@@ -62,19 +62,19 @@ labelGraph(Graph const & G,
     vigra::detail::UnionFindArray<LabelType>  regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(G); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node) 
     {
         typename T1Map::value_type center = data[*node];
         
         // define tentative label for current node
         LabelType currentLabel = regions.nextFreeLabel();
         
-        for (neighbor_iterator arc(G, node); arc != INVALID; ++arc)
+        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
-            if(equal(center, data[G.target(*arc)]))
+            if(equal(center, data[g.target(*arc)]))
             {
-                LabelType neighborLabel = regions[labels[G.target(*arc)]];
+                LabelType neighborLabel = regions[labels[g.target(*arc)]];
                 currentLabel = regions.makeUnion(neighborLabel, currentLabel);
             }
         }
@@ -85,7 +85,7 @@ labelGraph(Graph const & G,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(G); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node) 
     {
         labels[*node] = regions[labels[*node]];
     }
@@ -94,7 +94,7 @@ labelGraph(Graph const & G,
 
 template <class Graph, class T1Map, class T2Map, class Equal>
 typename T2Map::value_type
-labelGraphWithBackground(Graph const & G, 
+labelGraphWithBackground(Graph const & g, 
                          T1Map const & data,
                          T2Map & labels,
                          typename T1Map::value_type backgroundValue,
@@ -107,7 +107,7 @@ labelGraphWithBackground(Graph const & G,
     vigra::detail::UnionFindArray<LabelType>  regions;
 
     // pass 1: find connected components
-    for (graph_scanner node(G); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node) 
     {
         typename T1Map::value_type center = data[*node];
         
@@ -121,12 +121,12 @@ labelGraphWithBackground(Graph const & G,
         // define tentative label for current node
         LabelType currentLabel = regions.nextFreeLabel();
         
-        for (neighbor_iterator arc(G, node); arc != INVALID; ++arc)
+        for (neighbor_iterator arc(g, node); arc != INVALID; ++arc)
         {
             // merge regions if colors are equal
-            if(equal(center, data[G.target(*arc)]))
+            if(equal(center, data[g.target(*arc)]))
             {
-                LabelType neighborLabel = regions[labels[G.target(*arc)]];
+                LabelType neighborLabel = regions[labels[g.target(*arc)]];
                 currentLabel = regions.makeUnion(neighborLabel, currentLabel);
             }
         }
@@ -137,7 +137,7 @@ labelGraphWithBackground(Graph const & G,
     LabelType count = regions.makeContiguous();
 
     // pass 2: make component labels contiguous
-    for (graph_scanner node(G); node != INVALID; ++node) 
+    for (graph_scanner node(g); node != INVALID; ++node) 
     {
         labels[*node] = regions[labels[*node]];
     }
