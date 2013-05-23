@@ -46,6 +46,9 @@
 #include <vigra/watersheds3d.hxx>
 #include <vigra/seededregiongrowing3d.hxx>
 #include <vigra/multi_watersheds.hxx>
+#include <vigra/convolution.hxx>
+#include <vigra/multi_convolution.hxx>
+#include <vigra/slic.hxx>
 
 #include <string>
 #include <cmath>
@@ -719,6 +722,19 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType> > image,
     WatershedOptions options;
     options.srgType(srgType);
     
+    if(method == "regiongrowing")
+    {
+        options.regionGrowing();
+    }
+    else if(method == "unionfind")
+    {
+        options.unionFind();
+    }
+    else
+    {
+        vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
+    }
+    
     if(max_cost > 0.0)
     {
         vigra_precondition(method != "unionfind",
@@ -735,19 +751,6 @@ pythonWatershedsNew(NumpyArray<N, Singleband<PixelType> > image,
     else
     {
         options.seedOptions(SeedOptions().extendedMinima());
-    }
-    
-    if(method == "regiongrowing")
-    {
-        options.regionGrowing();
-    }
-    else if(method == "unionfind")
-    {
-        options.unionFind();
-    }
-    else
-    {
-        vigra_precondition(false, "watersheds(): Unknown watershed method requested.");
     }
     
     NeighborhoodType n = (neighborhood == 0)
@@ -791,7 +794,7 @@ pythonWatersheds3DNew(NumpyArray<3, Singleband<PixelType> > image,
                       NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
 {
     vigra_precondition(neighborhood == 6 || neighborhood == 26,
-           "watersheds2D(): neighborhood must be 6 or 26.");
+           "watersheds3D(): neighborhood must be 6 or 26.");
     neighborhood = (neighborhood == 6)
                         ? 0
                         : 1;
@@ -941,6 +944,70 @@ pythonWatersheds3D(NumpyArray<3, Singleband<PixelType> > image,
 }
 
 VIGRA_PYTHON_MULTITYPE_FUNCTOR(pywatersheds3D, pythonWatersheds3D)
+
+template <unsigned int N, class PixelType >
+python::tuple 
+pythonSlic(NumpyArray<N, PixelType > array,
+           double intensityScaling,
+           unsigned int seedDistance,
+           unsigned int minSize = 0,            // choose minSize automatically 
+           unsigned int maxIterations = 40, 
+           NumpyArray<N, Singleband<npy_uint32> > res = NumpyArray<N, Singleband<npy_uint32> >())
+{
+    typedef typename NormTraits<PixelType>::NormType TmpType;
+    typedef typename NumpyArray<N, PixelType >::view_type View;
+    
+    std::string description("Slic superpixels");
+    
+    res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+            "slicSuperpixels(): Output array has wrong shape.");
+    
+    npy_uint32 maxRegionLabel = 0;
+    {
+        PyAllowThreads _pythread;
+        
+        MultiArray<N, TmpType> gradMag(array.shape());
+        
+        // the original code uses the symmetric difference instead of a Gaussian gradient
+        gaussianGradientMagnitude(array, gradMag, 1.0);
+        // search radius of 1 is also used in the original code
+        generateSlicSeeds(gradMag, res, seedDistance, 1);
+        
+        maxRegionLabel = slicSuperpixels(array, res, intensityScaling, seedDistance,
+                                         SlicOptions().maxIterations(maxIterations)
+                                                      .minSize(minSize));
+    }
+
+    return python::make_tuple(res, maxRegionLabel);
+}
+
+template <class PixelType >
+python::tuple 
+pythonSlic2D(NumpyArray<2, PixelType > image,
+             double intensityScaling,
+             unsigned int seedDistance,
+             unsigned int minSize = 0,            // choose minSize automatically 
+             unsigned int maxIterations = 40, 
+             NumpyArray<2, Singleband<npy_uint32> > res = NumpyArray<2, Singleband<npy_uint32> >())
+{
+    return pythonSlic(image, intensityScaling, seedDistance, minSize, maxIterations, res);
+}
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic2D, pythonSlic2D)
+
+template <class PixelType >
+python::tuple 
+pythonSlic3D(NumpyArray<3, PixelType > image,
+             double intensityScaling,
+             unsigned int seedDistance,
+             unsigned int minSize = 0,            // choose minSize automatically 
+             unsigned int maxIterations = 40, 
+             NumpyArray<3, Singleband<npy_uint32> > res = NumpyArray<3, Singleband<npy_uint32> >())
+{
+    return pythonSlic(image, intensityScaling, seedDistance, minSize, maxIterations, res);
+}
+
+VIGRA_PYTHON_MULTITYPE_FUNCTOR(pySlic3D, pythonSlic3D)
 
 void defineSegmentation()
 {
@@ -1174,6 +1241,24 @@ void defineSegmentation()
        arg("max_cost")=0,
        arg("out")=python::object()),
        "graph-based watershed");
+
+    multidef("slicSuperpixels", pySlic2D< TinyVector<float, 3>, float >(),
+      (arg("image"), 
+       arg("intensityScaling"), 
+       arg("seedDistance"), 
+       arg("minSize")=0,
+       arg("maxIterations")=40,
+       arg("out")=python::object()),
+       "Slic superpixels");
+
+    multidef("slicSuperpixels", pySlic3D< TinyVector<float, 3>, float >(),
+      (arg("image"), 
+       arg("intensityScaling"), 
+       arg("seedDistance"), 
+       arg("minSize")=0,
+       arg("maxIterations")=40,
+       arg("out")=python::object()),
+       "Slic superpixels");
 }
 
 void defineEdgedetection();
