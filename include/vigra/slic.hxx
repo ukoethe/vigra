@@ -52,7 +52,7 @@
 
 namespace vigra {
 
-// move slic seeds to a minima of the boundary indicator image (gradient-magnitude)
+// move slic seeds to the smallest boundary indicator within search resius
 template <unsigned int N, class T, class Label>
 int generateSlicSeedsImpl(
     MultiArrayView<N, T> const &  boundaryIndicatorImage,
@@ -63,8 +63,9 @@ int generateSlicSeedsImpl(
     typedef typename MultiArrayShape<N>::type   Shape;
 
     seeds.init(0);
-    Shape shape(boundaryIndicatorImage.shape());   
-    Shape seedShape(floor(shape / double(seedDist)));
+    Shape shape(boundaryIndicatorImage.shape()),
+          seedShape(floor(shape / double(seedDist))),
+          offset((shape - (seedShape - Shape(1))*seedDist) / 2);
     
     int label = 0;
     MultiCoordinateIterator<N> iter(seedShape),
@@ -72,7 +73,7 @@ int generateSlicSeedsImpl(
     for(; iter != end; ++iter)
     {
         // define search window around current seed center
-        Shape center = (*iter)*seedDist + Shape(seedDist/2);
+        Shape center = (*iter)*seedDist + offset;
         Shape startCoord = max(Shape(0), center-Shape(searchRadius));
         Shape endCoord   = min(center+Shape(searchRadius+1), shape);
         
@@ -82,7 +83,7 @@ int generateSlicSeedsImpl(
                          Select<WeightArg<1>, Coord<ArgMinWeight> > > a;
         extractFeatures(boundaryIndicatorImage.subarray(startCoord, endCoord), a);
 
-        // add seed at minimum position, if not already set
+        // add seed at minimum position, if not already occupied
         Shape minCoord = get<Coord<ArgMinWeight> >(a) + startCoord;
         if(seeds[minCoord] == 0)
             seeds[minCoord] = ++label;
@@ -132,22 +133,17 @@ class Slic
          int maxRadius, 
          SlicOptions const & options = SlicOptions());
     
-    int execute();
+    unsigned int execute();
 
   private:
-    void getWindowLimits(ShapeType const & centerCoord,
-                         ShapeType & startCoord, ShapeType & endCoord, const int radius) const;
-
     DistanceType updateAssigments();
-    void updateMeans();
-    size_t postProcessing();
+    unsigned int postProcessing();
     
     typedef MultiArray<N,DistanceType>  DistanceImageType;
 
     ShapeType                       shape_;
     DataImageType                   dataImage_;
     LabelImageType                  labelImage_;
-    MultiArray<N,Label>             tmpLabelImage_;
     DistanceImageType               distance_;
     int                             max_radius_;
     DistanceType                    normalization_;
@@ -155,7 +151,7 @@ class Slic
     
     typedef acc::Select<acc::DataArg<1>, acc::LabelArg<2>, acc::Mean, acc::RegionCenter> Statistics;
     typedef acc::AccumulatorChainArray<CoupledArrays<N, T, Label>, Statistics> RegionFeatures;
-    RegionFeatures centers_;
+    RegionFeatures clusters_;
 };
 
 
@@ -170,24 +166,26 @@ Slic<N, T, Label>::Slic(
 :   shape_(dataImage.shape()),
     dataImage_(dataImage),
     labelImage_(labelImage),
-    tmpLabelImage_(shape_),
     distance_(shape_),
     max_radius_(maxRadius),
     normalization_(sq(intensityScaling) / sq(max_radius_)),
     options_(options)
 {
-    centers_.ignoreLabel(0);
+    clusters_.ignoreLabel(0);
 }
 
 template <unsigned int N, class T, class Label>
-int Slic<N, T, Label>::execute()
+unsigned int Slic<N, T, Label>::execute()
 {
     // Do SLIC
     DistanceType err = NumericTraits< DistanceType >::max();
     for(size_t i=0; i<options_.iterations; ++i)
     {
-        updateMeans();
-        // update which pixels gets assigned to which cluster
+        // update mean for each cluster
+        clusters_.reset();
+        extractFeatures(dataImage_, labelImage_, clusters_);
+        
+        // update which pixels get assigned to which cluster
         const DistanceType err2 = updateAssigments();
 
         // convergence?
@@ -197,19 +195,8 @@ int Slic<N, T, Label>::execute()
         }
         err=err2;
     }
-    // update assignments bevore postprocessing
-    // FIXME: is this really necessary?
-    updateMeans();
-    err = updateAssigments();
-    size_t nBlocked=1;
-    while(nBlocked!=0)
-    {
-        // remove all regions which are smaller than a sizeLimit
-        nBlocked = postProcessing();
-    }
 
-    tmpLabelImage_ = labelImage_;
-    return labelMultiArray(tmpLabelImage_, labelImage_, DirectNeighborhood);
+    return postProcessing();
 }
 
 template <unsigned int N, class T, class Label>
@@ -218,17 +205,18 @@ Slic<N, T, Label>::updateAssigments()
 {
     using namespace acc;
     distance_.init(NumericTraits<DistanceType>::max());
-    for(unsigned int c=1; c<=centers_.maxRegionLabel(); ++c)
+    for(unsigned int c=1; c<=clusters_.maxRegionLabel(); ++c)
     {
-        if(get<Count>(centers_, c) == 0) // label doesn't exist
+        if(get<Count>(clusters_, c) == 0) // label doesn't exist
             continue;
             
         typedef typename LookupTag<RegionCenter, RegionFeatures>::value_type CenterType;
-        CenterType center = get<RegionCenter>(centers_, c);
+        CenterType center = get<RegionCenter>(clusters_, c);
 
         // get ROI limits around region center
-        ShapeType pixelCoord, startCoord, endCoord;
-        getWindowLimits(round(center), startCoord, endCoord, max_radius_);
+        ShapeType pixelCenter(round(center)), 
+                  startCoord(max(ShapeType(0), pixelCenter - ShapeType(max_radius_))), 
+                  endCoord(min(shape_, pixelCenter + ShapeType(max_radius_+1)));
         center -= startCoord; // need center relative to ROI
         
         // setup iterators for ROI
@@ -242,7 +230,7 @@ Slic<N, T, Label>::updateAssigments()
         {
             // compute distance between cluster center and pixel
             DistanceType spatialDist   = squaredNorm(center-iter.point());
-            DistanceType colorDist     = squaredNorm(get<Mean>(centers_, c)-iter.get<1>());
+            DistanceType colorDist     = squaredNorm(get<Mean>(clusters_, c)-iter.get<1>());
             DistanceType dist =  colorDist + normalization_*spatialDist;
             // update label?
             if(dist < iter.get<3>())
@@ -257,143 +245,73 @@ Slic<N, T, Label>::updateAssigments()
 }
 
 template <unsigned int N, class T, class Label>
-inline void 
-Slic<N, T, Label>::getWindowLimits
-(
-    const ShapeType &  centerCoord,
-    ShapeType &        startCoord,
-    ShapeType &        endCoord,
-    const int radius) const
-{
-    startCoord = max(ShapeType(0), centerCoord - ShapeType(radius));
-    endCoord   = min(shape_, centerCoord + ShapeType(radius+1));
-}
-
-
-template <unsigned int N, class T, class Label>
-void 
-Slic<N, T, Label>::updateMeans()
-{
-    // get mean for each cluster
-    centers_.reset();
-    extractFeatures(dataImage_, labelImage_, centers_);
-}
-
-template <unsigned int N, class T, class Label>
-size_t 
+unsigned int 
 Slic<N, T, Label>::postProcessing()
 {
-    // get rid of disjoint regions
-    // The original SLIC algorithm is much simpler: whenever it finds a new region, it remembers
-    // any of the adjacent existing labels and relabels the new regions with the existing label 
-    // in case the new region is too small (i.e. less than 1/4 of the average region size).
-    // Labeling in the original algorithm is performed by flood-fill, which makes relabeling
-    // easy because we still know the coordinates of the new region and the replacement label
-    // when we find out its size.
-    // They use 4-neighborhood in 2D, but 10-neighborhood in 3D (indirect nh within slices and 
-    // direct nh between slices)
+    // get rid of regions below a size limit
+    MultiArray<N,Label> tmpLabelImage(labelImage_);
+    unsigned int maxLabel = labelMultiArray(tmpLabelImage, labelImage_, DirectNeighborhood);
     
-    tmpLabelImage_ = labelImage_;
-    size_t numLabels = 1 + labelMultiArray(tmpLabelImage_, labelImage_, DirectNeighborhood);
-    
-    // FIXME: refactor this in terms of a graph-based algorithm
-    std::vector< std::vector< ShapeType> >  regionsPixels(numLabels);
-    std::vector< std::vector<Label> >   regionAdjacency(numLabels);
-    
-    typename LabelImageType::iterator iter = labelImage_.begin(),
-                                      end  = iter.getEndIterator();
-    for(; iter != end; ++iter)
-    {
-        Label l1 = *iter;
-        ShapeType point = iter.point();
-        
-        for(int d=0; d<N; ++d)
-        {
-            if(point[d]+1 < shape_[d])
-            {
-                point[d] += 1;
-                Label l2 = labelImage_[point];
-                if(l1!=l2)
-                {
-                    regionAdjacency[l1].push_back(l2);
-                    regionAdjacency[l2].push_back(l1);
-                }
-                point[d] -= 1;
-            }
-        }
-        regionsPixels[l1].push_back(point);
-    }
-    // fill region size
-    const size_t sizeLimit_ = options_.sizeLimit == 0
-                                 ? (size_t)std::pow((double)labelImage_.size() / numLabels, 1.0 / N)
+    unsigned int sizeLimit = options_.sizeLimit == 0
+                                 ? (unsigned int)(0.25 * labelImage_.size() / maxLabel)
                                  : options_.sizeLimit;
-    std::vector<size_t> cSize(numLabels);
-    for(size_t c=1;c<numLabels;++c)
+    if(sizeLimit == 1)
+        return maxLabel;
+        
+    // determine region size
+    using namespace acc;
+    AccumulatorChainArray<CoupledArrays<N, Label>, Select<LabelArg<1>, Count> > sizes;
+    extractFeatures(labelImage_, sizes);
+        
+    typedef GridGraph<N, undirected_tag> Graph;
+    Graph graph(labelImage_.shape(), DirectNeighborhood);
+    
+    typedef typename Graph::NodeIt        graph_scanner;
+    typedef typename Graph::OutBackArcIt  neighbor_iterator;
+
+    ArrayVector<Label> regions(maxLabel+1);
+
+    for (graph_scanner node(graph); node != lemon::INVALID; ++node) 
     {
-        cSize[c]=regionsPixels[c].size();
-    }
-    size_t numChanges=0,blocked=0;
-    std::vector<bool> merged(numLabels,false);
-    //search for regions which are smaller than size limit
-    for(size_t c=1;c<numLabels;++c)
-    {
-        const size_t regionSize=regionsPixels[c].size();
-        // a region is to small?
-        if(regionSize<sizeLimit_ )
+        Label label = labelImage_[*node];
+        
+        if(regions[label] > 0)
+            continue;   // already processed
+            
+        regions[label] = label;
+        
+        // merge region into neighborng one if too small
+        if(get<Count>(sizes, label) < sizeLimit)
         {
-            // the region is not a merged one (get ride of this check?)
-            if(merged[c]==false)
+            for (neighbor_iterator arc(graph, node); arc != lemon::INVALID; ++arc)
             {
-                size_t mergeWith=0,maxSize=0;
-                bool found=false; // search for a region to merge the smaller region with
-                for(size_t i=0;i<regionAdjacency[c].size();++i)
-                {
-                    const size_t c2=regionAdjacency[c][i];
-                    assert(c2!=c);
-                    const size_t size2=regionsPixels[c2].size();
-                    if(size2 >=maxSize && merged[c2]==false)
-                    {
-                        found=true;
-                        mergeWith=c2;
-                        maxSize=size2;
-                    }
-                }
-                // found a region to merge with?
-                if(found)
-                {
-                    cSize[mergeWith]+=regionSize;
-                    // is there size > sizeLimit
-                    if(cSize[mergeWith]<sizeLimit_)
-                    {
-                        merged[mergeWith]=true;
-                        ++blocked;
-                    }
-                    merged[c]=true;
-                    assert(c!=mergeWith);
-                    ++numChanges;
-                    for(size_t p=0;p<regionsPixels[c].size();++p)
-                    {
-                        ////std::cout<<"change stuff\n";
-                        assert(labelImage_(regionsPixels[c][p][0],regionsPixels[c][p][1])!=mergeWith);
-                        labelImage_(regionsPixels[c][p][0],regionsPixels[c][p][1])=mergeWith;
-                    }
-                }
-                // did not find one.
-                else
-                {
-                    ++blocked;
-                }
-            }
-            // did not find one.
-            else
-            {
-                ++blocked;
+                regions[label] = regions[labelImage_[graph.target(*arc)]];
+                break;
             }
         }
     }
-    if(numChanges==0)
-        return 0;
-    return blocked;
+    
+    // make labels contiguous after possible merging
+    maxLabel = 0; 
+    for(unsigned int i=1; i<=maxLabel; ++i)
+    {
+        if(regions[i] == i)
+        {
+                regions[i] = (Label)++maxLabel;
+        }
+        else
+        {
+                regions[i] = regions[regions[i]]; 
+        }
+    }
+
+    // update labels
+    for (graph_scanner node(graph); node != lemon::INVALID; ++node) 
+    {
+        labelImage_[*node] = regions[labelImage_[*node]];
+    }
+    
+    return maxLabel;
 }
 
 template <unsigned int N, class T, class Label>
