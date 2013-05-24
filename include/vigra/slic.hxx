@@ -107,6 +107,8 @@ namespace vigra {
 
     For more details and examples see slicSuperpixels().
 */
+doxygen_overloaded_function(template <...> unsigned int generateSlicSeeds)
+
 template <unsigned int N, class T, class S1,
                           class Label, class S2>
 unsigned int 
@@ -389,12 +391,12 @@ Slic<N, T, Label>::postProcessing()
 
     This function implements the algorithm described in 
     
-    R. Achanta et al.: "<i>SLIC Superpixels Compared to State-of-the-Art 
-    Superpixel Methods</i>", IEEE Trans. Patt. Analysis Mach. Intell. 34(11):2274-2281, 2012
+    R. Achanta et al.: <em>"SLIC Superpixels Compared to State-of-the-Art 
+    Superpixel Methods"</em>, IEEE Trans. Patt. Analysis Mach. Intell. 34(11):2274-2281, 2012
     
     The value type <tt>T</tt> of the source array \a src must provide the necessary functionality 
     to compute averages and squared distances (i.e. it must fulfill the requirements of a 
-    \ref LinearSpace and support squaredNorm()). This is true for all scalar types as well as
+    \ref LinearSpace and support squaredNorm(T const &)). This is true for all scalar types as well as
     \ref vigra::TinyVector and \ref vigra::RGBValue. The output array \a labels will be filled
     with labels designating membership of each point in one of the superpixel regions.
     
@@ -413,7 +415,7 @@ Slic<N, T, Label>::postProcessing()
     
     The options object can be used to specify the number of iterations (<tt>SlicOptions::iterations()</tt>)
     and an explicit minimal superpixel size (<tt>SlicOptions::minSize()</tt>). By default, the algorithm 
-    merges all regions that are smaller than 1/4 the average superpixel size.
+    merges all regions that are smaller than 1/4 of the average superpixel size.
     
     The function returns the number of superpixels, which equals the largest label 
     because labeling starts at 1.
@@ -451,7 +453,7 @@ Slic<N, T, Label>::postProcessing()
     int seedDistance = 15;
     double intensityScaling = 20.0;
     
-    // compute seeds automatically, perform 40 iterations, scaling intensity differences
+    // compute seeds automatically, perform 40 iterations, and scale intensity differences
     // down to 1/20 before comparing with spatial distances
     slicSuperpixels(src, labels, intensityScaling, seedDistance, SlicOptions().iterations(40));
     \endcode

@@ -81,7 +81,16 @@ typedef MultiArrayShape<3>::type Shape3; ///< shape type for MultiArray<3, T>
 typedef MultiArrayShape<4>::type Shape4; ///< shape type for MultiArray<4, T>
 typedef MultiArrayShape<5>::type Shape5; ///< shape type for MultiArray<5, T>
 
-enum NeighborhoodType { DirectNeighborhood=0, IndirectNeighborhood=1 };
+    /** \brief Choose the neighborhood system in a dimension-independent way.  
+    
+        DirectNeighborhood corresponds to 4-neighborhood in 2D and 6-neighborhood in 3D, whereas
+        IndirectNeighborhood means 8-neighborhood in 2D and 26-neighborhood in 3D. The general
+        formula for N dimensions are 2*N for direct neighborhood and 3^N-1 for indirect neighborhood. 
+    */
+enum NeighborhoodType { 
+        DirectNeighborhood=0,   ///< use only direct neighbors
+        IndirectNeighborhood=1  ///< use direct and indirect neighbors
+};
 
 // Helper functions
 

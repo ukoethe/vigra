@@ -653,9 +653,9 @@ squaredNorm(std::complex<T> const & t)
 
         <ul>
         <li>For scalar types: equals <tt>vigra::sq(t)</tt>.
-        <li>For vectorial types: equals <tt>vigra::dot(t, t)</tt>.
-        <li>For complex types: equals <tt>vigra::sq(t.real()) + vigra::sq(t.imag())</tt>.
-        <li>For matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).
+        <li>For vectorial types (including TinyVector): equals <tt>vigra::dot(t, t)</tt>.
+        <li>For complex number types: equals <tt>vigra::sq(t.real()) + vigra::sq(t.imag())</tt>.
+        <li>For array and matrix types: results in the squared Frobenius norm (sum of squares of the matrix elements).
         </ul>
     */
 NormTraits<T>::SquaredNormType squaredNorm(T const & t);

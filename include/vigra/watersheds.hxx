@@ -430,10 +430,10 @@ public:
     (typically, you will use <tt>UInt32</tt>). The function will label seeds by consecutive integers
     (starting from 1) and returns the largest label it used.
     
-    Pass \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode to determine the 
+    Pass \ref vigra::NeighborhoodType "IndirectNeighborhood" or \ref vigra::NeighborhoodType "DirectNeighborhood" 
+    (first form of the function) 
+    or \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode (second and third forms) to determine the 
     neighborhood where pixel values are compared. 
-    
-    The function uses accessors.
 
     <b> Declarations:</b>
 
@@ -579,8 +579,8 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This function implements the union-find version of the watershed algorithms
     described as algorithm 4.7 in
 
-    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    J. Roerdink, R. Meijster: <em>"The watershed transform: definitions, algorithms,
+    and parallelization strategies"</em>, Fundamenta Informaticae, 41:187-228, 2000
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
@@ -1038,8 +1038,8 @@ class BiasedWatershedStatistics
     This function implements variants of the watershed algorithm
     described in
 
-    L. Vincent and P. Soille: "<em>Watersheds in digital spaces: An efficient algorithm
-    based on immersion simulations</em>", IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
+    L. Vincent and P. Soille: <em>"Watersheds in digital spaces: An efficient algorithm
+    based on immersion simulations"</em>, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(), and the destination is a label image

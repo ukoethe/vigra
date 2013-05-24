@@ -794,7 +794,7 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     Here, the input element types <tt>T1</tt> and <tt>MT</tt> can be arbitrary scalar types, and <tt>T1</tt> 
     may also be <tt>TinyVector</tt> or <tt>RGBValue</tt>. The output element type <tt>T2</tt> should 
-    be the corresponding norm type (see \ref vigra::NormTraits). In the <tt>Multiband<MT></tt>-version,
+    be the corresponding norm type (see \ref NormTraits "NormTraits"). In the <tt>Multiband<MT></tt>-version,
     the input array's right-most dimension is interpreted as a channel axis, therefore it must 
     have one dimension more than the output array.
 

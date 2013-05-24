@@ -184,7 +184,7 @@ enum SRGType {
 
     This algorithm implements seeded region growing as described in
 
-    R. Adams, L. Bischof: "<em> Seeded Region Growing</em>", IEEE Trans. on Pattern
+    R. Adams, L. Bischof: <em>"Seeded Region Growing"</em>, IEEE Trans. on Pattern
     Analysis and Maschine Intelligence, vol 16, no 6, 1994, and
 
     Ullrich K&ouml;the:

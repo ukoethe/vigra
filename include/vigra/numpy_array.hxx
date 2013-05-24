@@ -36,6 +36,10 @@
 #ifndef VIGRA_NUMPY_ARRAY_HXX
 #define VIGRA_NUMPY_ARRAY_HXX
 
+#ifndef NPY_NO_DEPRECATED_API
+# define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif 
+
 #include <Python.h>
 #include <string>
 #include <iostream>
@@ -283,7 +287,7 @@ class NumpyAnyArray
     MultiArrayIndex ndim() const
     {
         if(hasData())
-            return PyArray_NDIM(pyObject());
+            return PyArray_NDIM(pyArray());
         return 0;
     }
 
@@ -327,7 +331,7 @@ class NumpyAnyArray
     difference_type shape() const
     {
         if(hasData())
-            return difference_type(PyArray_DIMS(pyObject()), PyArray_DIMS(pyObject()) + ndim());
+            return difference_type(PyArray_DIMS(pyArray()), PyArray_DIMS(pyArray()) + ndim());
         return difference_type();
     }
 
@@ -340,7 +344,7 @@ class NumpyAnyArray
         if(!hasData())
             return difference_type();
         MultiArrayIndex N = ndim();
-        difference_type stride(PyArray_STRIDES(pyObject()), PyArray_STRIDES(pyObject()) + N),
+        difference_type stride(PyArray_STRIDES(pyArray()), PyArray_STRIDES(pyArray()) + N),
                         permutation(N);
         for(MultiArrayIndex k=0; k<N; ++k)
             permutation[k] = k;
@@ -393,7 +397,7 @@ class NumpyAnyArray
     int dtype() const
     {
         if(hasData())
-            return PyArray_DESCR(pyObject())->type_num;
+            return PyArray_DESCR(pyArray())->type_num;
         return -1;
     }
 
@@ -559,9 +563,15 @@ python_ptr constructNumpyArrayFromData(
 {
     ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
 
+#if NPY_NO_DEPRECATED_API < NPY_1_7_API_VERSION    // old API
     python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(),
                                  typeCode, strides, data, 0, NPY_WRITEABLE, 0),
                      python_ptr::keep_count);
+#else
+    python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(),
+                                 typeCode, strides, data, 0, NPY_ARRAY_WRITEABLE, 0),
+                     python_ptr::keep_count);
+#endif
     pythonToCppException(array);
 
     return array;
@@ -1118,9 +1128,9 @@ void NumpyArray<N, T, Stride>::setupArrayView()
             "NumpyArray::setupArrayView(): got array of incompatible shape (should never happen).");
 
         applyPermutation(permute.begin(), permute.end(),
-                         pyArray()->dimensions, this->m_shape.begin());
+                         PyArray_DIMS(pyArray()), this->m_shape.begin());
         applyPermutation(permute.begin(), permute.end(),
-                         pyArray()->strides, this->m_stride.begin());
+                         PyArray_STRIDES(pyArray()), this->m_stride.begin());
 
         if((int)permute.size() == actual_dimension - 1)
         {
@@ -1129,7 +1139,7 @@ void NumpyArray<N, T, Stride>::setupArrayView()
         }
 
         this->m_stride /= sizeof(value_type);
-        this->m_ptr = reinterpret_cast<pointer>(pyArray()->data);
+        this->m_ptr = reinterpret_cast<pointer>(PyArray_DATA(pyArray()));
         vigra_precondition(this->checkInnerStride(Stride()),
             "NumpyArray<..., UnstridedArrayTag>::setupArrayView(): First dimension of given array is not unstrided (should never happen).");
 
