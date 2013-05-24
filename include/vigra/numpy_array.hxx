@@ -563,15 +563,13 @@ python_ptr constructNumpyArrayFromData(
 {
     ArrayVector<npy_intp> pyShape(shape.begin(), shape.end());
 
-#if NPY_NO_DEPRECATED_API < NPY_1_7_API_VERSION    // old API
-    python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(),
-                                 typeCode, strides, data, 0, NPY_WRITEABLE, 0),
-                     python_ptr::keep_count);
-#else
+#ifndef NPY_ARRAY_WRITEABLE
+#  define NPY_ARRAY_WRITEABLE NPY_WRITEABLE    // old API compatibility
+#endif
+
     python_ptr array(PyArray_New(&PyArray_Type, shape.size(), pyShape.begin(),
                                  typeCode, strides, data, 0, NPY_ARRAY_WRITEABLE, 0),
                      python_ptr::keep_count);
-#endif
     pythonToCppException(array);
 
     return array;
