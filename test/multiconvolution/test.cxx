@@ -411,16 +411,15 @@ struct MultiArraySeparableConvolutionTest
         shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
 
         MultiArray<2, TinyVector<double, 3> > rgb(shape);
-        
-        makeRandom(rgb.expandElements(0));
+        MultiArrayView<3, Multiband<double> > expanded(rgb.expandElements(2));
+       
+        makeRandom(expanded);
         
         mgrad.init(0);
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(mgrad), 1.0);
         rmgrad.init(0);
         gaussianGradientMagnitude(rgb, rmgrad, 1.0);
         shouldEqualSequenceTolerance(mgrad.data(), mgrad.data()+size, rmgrad.data(), 1e-14);
-
-        MultiArrayView<3, Multiband<double> > expanded(rgb.expandElements(2));
 
         rmgrad.init(0);
         gaussianGradientMagnitude<2>(expanded, rmgrad, 1.0);
