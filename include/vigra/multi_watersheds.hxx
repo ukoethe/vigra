@@ -356,11 +356,11 @@ generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
     This function implements variants of the watershed algorithms
     described in
 
-    [1] L. Vincent and P. Soille: "<em>Watersheds in digital spaces: An efficient algorithm
-    based on immersion simulations</em>", IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
+    [1] L. Vincent and P. Soille: <em>"Watersheds in digital spaces: An efficient algorithm
+    based on immersion simulations"</em>, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
 
-    [2] J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    [2] J. Roerdink, R. Meijster: <em>"The watershed transform: definitions, algorithms,
+    and parallelization strategies"</em>, Fundamenta Informaticae, 41:187-228, 2000
 
     The source array \a data is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(), and the destination \a labels is a label array
@@ -396,7 +396,7 @@ generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
     </ul>
     
     The option <tt>turboAlgorithm()</tt> is implied by method <tt>regionGrowing()</tt> (this is
-    in contrast to watershedsRegionGrowing()).
+    in contrast to watershedsRegionGrowing(), which supports an additional algorithm in 2D only).
 
     watershedsMultiArray() returns the number of regions found (= the highest region label, because 
     labels start at 1). 
@@ -488,6 +488,8 @@ generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
     }
     \endcode
 */
+doxygen_overloaded_function(template <...> Label watershedsMultiArray)
+
 template <unsigned int N, class T, class S1,
                           class Label, class S2>
 inline Label

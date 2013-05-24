@@ -441,8 +441,8 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This function implements the union-find version of the watershed algorithms
     as described in
 
-    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    J. Roerdink, R. Meijster: <em>"The watershed transform: definitions, algorithms,
+    and parallelization strategies"</em>, Fundamenta Informaticae, 41:187-228, 2000
 
     The source volume is a boundary indicator such as the gradient magnitude
     of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator

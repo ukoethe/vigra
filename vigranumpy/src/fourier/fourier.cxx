@@ -53,8 +53,8 @@ struct NumpyArrayValuetypeTraits<FFTWComplex<float> >
 {
     static bool isValuetypeCompatible(PyArrayObject const * obj) /* obj must not be NULL */
     {
-        return PyArray_EquivTypenums(NPY_CFLOAT, PyArray_DESCR((PyObject *)obj)->type_num) &&
-               PyArray_ITEMSIZE((PyObject *)obj) == sizeof(FFTWComplex<float>);
+        return PyArray_EquivTypenums(NPY_CFLOAT, PyArray_DESCR((PyArrayObject *)obj)->type_num) &&
+               PyArray_ITEMSIZE((PyArrayObject *)obj) == sizeof(FFTWComplex<float>);
     }
 
     static NPY_TYPES const typeCode = NPY_CFLOAT;
