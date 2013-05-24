@@ -43,6 +43,7 @@
 #include "localminmax.hxx"
 #include "multi_gridgraph.hxx"
 #include "multi_labeling.hxx"
+#include "metaprogramming.hxx"
 
 namespace vigra {
 
@@ -212,7 +213,7 @@ localMinMax(MultiArrayView<N, T1, C1> const & src,
     
     if(options.neigh == 0 || options.neigh == 2*N)
         neighborhood = DirectNeighborhood;
-    else if(options.neigh == 1 || options.neigh == pow(3, N) - 1)
+    else if(options.neigh == 1 || options.neigh == MetaPow<3, N>::value - 1)
         neighborhood = IndirectNeighborhood;
     else
         vigra_precondition(false,

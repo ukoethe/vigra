@@ -3025,7 +3025,7 @@ class DataFromHandle
         static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
         exec(CoupledHandle<U, NEXT> const & t)
         {
-            return get<value>(t);
+            return vigra::get<value>(t);
         }
     };
     
@@ -3038,7 +3038,7 @@ class DataFromHandle
         static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
         exec(CoupledHandle<U, NEXT> const & t)
         {
-            return get<value>(t);
+            return vigra::get<value>(t);
         }
     };
     
@@ -3111,7 +3111,7 @@ class Coord
         static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference 
         exec(CoupledHandle<U, NEXT> const & t)
         {
-            return get<value>(t);
+            return vigra::get<value>(t);
         }
     };
     
@@ -3124,7 +3124,7 @@ class Coord
         static typename CoupledHandleCast<value, CoupledHandle<U, NEXT> >::type::const_reference
         exec(CoupledHandle<U, NEXT> const & t)
         {
-            return get<value>(t);
+            return vigra::get<value>(t);
         }
     };
      

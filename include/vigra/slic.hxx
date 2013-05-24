@@ -299,13 +299,13 @@ Slic<N, T, Label>::updateAssigments()
         {
             // compute distance between cluster center and pixel
             DistanceType spatialDist   = squaredNorm(center-iter.point());
-            DistanceType colorDist     = squaredNorm(get<Mean>(clusters_, c)-iter.get<1>());
+            DistanceType colorDist     = squaredNorm(get<Mean>(clusters_, c)-iter.template get<1>());
             DistanceType dist =  colorDist + normalization_*spatialDist;
             // update label?
-            if(dist < iter.get<3>())
+            if(dist < iter.template get<3>())
             {
-                iter.get<2>() = static_cast<Label>(c);
-                iter.get<3>() = dist;
+                iter.template get<2>() = static_cast<Label>(c);
+                iter.template get<3>() = dist;
             }
         }
     }
