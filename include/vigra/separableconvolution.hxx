@@ -44,8 +44,12 @@
 #include "bordertreatment.hxx"
 #include "gaussians.hxx"
 #include "array_vector.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
+
+template <class ARITHTYPE>
+class Kernel1D;
 
 /********************************************************/
 /*                                                      */
@@ -1116,17 +1120,27 @@ template <class SrcIterator, class SrcAccessor,
           class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  tuple5<KernelIterator, KernelAccessor,
-                         int, int, BorderTreatmentMode> kernel)
+                   pair<DestIterator, DestAccessor> dest,
+                   tuple5<KernelIterator, KernelAccessor,
+                           int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveX(src.first, src.second, src.third,
-                 dest.first, dest.second,
-                 kernel.first, kernel.second,
-                 kernel.third, kernel.fourth, kernel.fifth);
+                       dest.first, dest.second,
+                       kernel.first, kernel.second,
+                       kernel.third, kernel.fourth, kernel.fifth);
 }
 
-
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
+inline void
+separableConvolveX(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   Kernel1D<T3> const & kernel)
+{
+    separableConvolveX(srcImageRange(src),
+                       destImage(dest), kernel1d(kernel));
+}
 
 /********************************************************/
 /*                                                      */
@@ -1242,14 +1256,26 @@ template <class SrcIterator, class SrcAccessor,
           class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  tuple5<KernelIterator, KernelAccessor,
+                   pair<DestIterator, DestAccessor> dest,
+                   tuple5<KernelIterator, KernelAccessor,
                          int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveY(src.first, src.second, src.third,
-                 dest.first, dest.second,
-                 kernel.first, kernel.second,
-                 kernel.third, kernel.fourth, kernel.fifth);
+                       dest.first, dest.second,
+                       kernel.first, kernel.second,
+                       kernel.third, kernel.fourth, kernel.fifth);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
+inline void
+separableConvolveY(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   Kernel1D<T3> const & kernel)
+{
+    separableConvolveY(srcImageRange(src),
+                       destImage(dest), kernel1d(kernel));
 }
 
 //@}

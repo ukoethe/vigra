@@ -43,14 +43,6 @@
 
 namespace vigra {
 
-template <unsigned int N, class T, class C = StridedArrayTag>
-class MultiArrayView;
-
-template <class T>
-struct Multiband;
-
-
-
 /** \addtogroup MultiIteratorGroup  Multi-dimensional Shapes and Array Iterators
 
     \brief Shape objects and general iterators for arrays of arbitrary dimension.
@@ -61,6 +53,135 @@ struct Multiband;
         MultiArray.
     */
 typedef std::ptrdiff_t MultiArrayIndex;
+
+/********************************************************/
+/*                                                      */
+/*              Singleband and Multiband                */
+/*                                                      */
+/********************************************************/
+
+template <class T>
+struct Singleband  // the resulting MultiArray has no explicit channel axis 
+                   // (i.e. the number of channels is implicitly one)
+{
+    typedef T value_type;
+};
+
+template <class T>
+struct Multiband  // the last axis is explicitly designated as channel axis
+{
+    typedef T value_type;
+};
+
+template<class T>
+struct NumericTraits<Singleband<T> >
+: public NumericTraits<T>
+{};
+
+template<class T>
+struct NumericTraits<Multiband<T> >
+{
+    typedef Multiband<T> Type;
+/*
+    typedef int Promote;
+    typedef unsigned int UnsignedPromote;
+    typedef double RealPromote;
+    typedef std::complex<RealPromote> ComplexPromote;
+*/
+    typedef Type ValueType;
+
+    typedef typename NumericTraits<T>::isIntegral isIntegral;
+    typedef VigraFalseType isScalar;
+    typedef typename NumericTraits<T>::isSigned isSigned;
+    typedef typename NumericTraits<T>::isSigned isOrdered;
+    typedef typename NumericTraits<T>::isSigned isComplex;
+/*
+    static signed char zero() { return 0; }
+    static signed char one() { return 1; }
+    static signed char nonZero() { return 1; }
+    static signed char min() { return SCHAR_MIN; }
+    static signed char max() { return SCHAR_MAX; }
+
+#ifdef NO_INLINE_STATIC_CONST_DEFINITION
+    enum { minConst = SCHAR_MIN, maxConst = SCHAR_MIN };
+#else
+    static const signed char minConst = SCHAR_MIN;
+    static const signed char maxConst = SCHAR_MIN;
+#endif
+
+    static Promote toPromote(signed char v) { return v; }
+    static RealPromote toRealPromote(signed char v) { return v; }
+    static signed char fromPromote(Promote v) {
+        return ((v < SCHAR_MIN) ? SCHAR_MIN : (v > SCHAR_MAX) ? SCHAR_MAX : v);
+    }
+    static signed char fromRealPromote(RealPromote v) {
+        return ((v < 0.0)
+                   ? ((v < (RealPromote)SCHAR_MIN)
+                       ? SCHAR_MIN
+                       : static_cast<signed char>(v - 0.5))
+                   : (v > (RealPromote)SCHAR_MAX)
+                       ? SCHAR_MAX
+                       : static_cast<signed char>(v + 0.5));
+    }
+*/
+};
+
+namespace detail {
+
+template <class T>
+struct ResolveMultiband
+{
+    typedef T type;
+    typedef StridedArrayTag Stride;
+    static const bool value = false;
+
+    template <int N>
+    static TinyVector <MultiArrayIndex, N>
+    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    {
+        return vigra::detail::defaultStride(shape);
+    }
+};
+
+template <class T>
+struct ResolveMultiband<Singleband<T> >
+{
+    typedef T type;
+    typedef StridedArrayTag Stride;
+    static const bool value = false;
+
+    template <int N>
+    static TinyVector <MultiArrayIndex, N>
+    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    {
+        return vigra::detail::defaultStride(shape);
+    }
+};
+
+template <class T>
+struct ResolveMultiband<Multiband<T> >
+{
+    typedef T type;
+    typedef StridedArrayTag Stride;
+    static const bool value = true;
+
+    template <int N>
+    static TinyVector <MultiArrayIndex, N>
+    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+    {
+        return vigra::detail::defaultMultibandStride(shape);
+    }
+};
+
+} // namespace detail
+
+template <unsigned int N, class T, class C = StridedArrayTag>
+class MultiArrayView;
+
+template <unsigned int N, class T, 
+          class A = std::allocator<typename vigra::detail::ResolveMultiband<T>::type> >
+class MultiArray;
+
 
     /** Traits class for the difference type of all MultiIterator, MultiArrayView, and
         MultiArray variants.
@@ -496,127 +617,6 @@ makeArrayNeighborhood(ArrayVector<Shape> & neighborOffsets,
 } // namespace detail
 
 //@}
-
-/********************************************************/
-/*                                                      */
-/*              Singleband and Multiband                */
-/*                                                      */
-/********************************************************/
-
-template <class T>
-struct Singleband  // the resulting MultiArray has no explicit channel axis 
-                   // (i.e. the number of channels is implicitly one)
-{
-    typedef T value_type;
-};
-
-template <class T>
-struct Multiband  // the last axis is explicitly designated as channel axis
-{
-    typedef T value_type;
-};
-
-template<class T>
-struct NumericTraits<Singleband<T> >
-: public NumericTraits<T>
-{};
-
-template<class T>
-struct NumericTraits<Multiband<T> >
-{
-    typedef Multiband<T> Type;
-/*
-    typedef int Promote;
-    typedef unsigned int UnsignedPromote;
-    typedef double RealPromote;
-    typedef std::complex<RealPromote> ComplexPromote;
-*/
-    typedef Type ValueType;
-
-    typedef typename NumericTraits<T>::isIntegral isIntegral;
-    typedef VigraFalseType isScalar;
-    typedef typename NumericTraits<T>::isSigned isSigned;
-    typedef typename NumericTraits<T>::isSigned isOrdered;
-    typedef typename NumericTraits<T>::isSigned isComplex;
-/*
-    static signed char zero() { return 0; }
-    static signed char one() { return 1; }
-    static signed char nonZero() { return 1; }
-    static signed char min() { return SCHAR_MIN; }
-    static signed char max() { return SCHAR_MAX; }
-
-#ifdef NO_INLINE_STATIC_CONST_DEFINITION
-    enum { minConst = SCHAR_MIN, maxConst = SCHAR_MIN };
-#else
-    static const signed char minConst = SCHAR_MIN;
-    static const signed char maxConst = SCHAR_MIN;
-#endif
-
-    static Promote toPromote(signed char v) { return v; }
-    static RealPromote toRealPromote(signed char v) { return v; }
-    static signed char fromPromote(Promote v) {
-        return ((v < SCHAR_MIN) ? SCHAR_MIN : (v > SCHAR_MAX) ? SCHAR_MAX : v);
-    }
-    static signed char fromRealPromote(RealPromote v) {
-        return ((v < 0.0)
-                   ? ((v < (RealPromote)SCHAR_MIN)
-                       ? SCHAR_MIN
-                       : static_cast<signed char>(v - 0.5))
-                   : (v > (RealPromote)SCHAR_MAX)
-                       ? SCHAR_MAX
-                       : static_cast<signed char>(v + 0.5));
-    }
-*/
-};
-
-namespace detail {
-
-template <class T>
-struct ResolveMultiband
-{
-    typedef T type;
-    typedef StridedArrayTag Stride;
-    static const bool value = false;
-
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
-    {
-        return vigra::detail::defaultStride(shape);
-    }
-};
-
-template <class T>
-struct ResolveMultiband<Singleband<T> >
-{
-    typedef T type;
-    typedef StridedArrayTag Stride;
-    static const bool value = false;
-
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
-    {
-        return vigra::detail::defaultStride(shape);
-    }
-};
-
-template <class T>
-struct ResolveMultiband<Multiband<T> >
-{
-    typedef T type;
-    typedef StridedArrayTag Stride;
-    static const bool value = true;
-
-    template <int N>
-    static TinyVector <MultiArrayIndex, N>
-    defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
-    {
-        return vigra::detail::defaultMultibandStride(shape);
-    }
-};
-
-} // namespace detail
 
 } // namespace vigra
 

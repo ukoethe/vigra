@@ -38,6 +38,7 @@
 #define VIGRA_COPYIMAGE_HXX
 
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

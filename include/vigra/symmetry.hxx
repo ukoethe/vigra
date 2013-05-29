@@ -40,6 +40,7 @@
 #include "numerictraits.hxx"
 #include "stdimage.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -257,15 +258,26 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void radialSymmetryTransform(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-       pair<DestIterator, DestAccessor> dest,
-       double scale)
+inline void
+radialSymmetryTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        double scale)
 {
     radialSymmetryTransform(src.first, src.second, src.third,
                             dest.first, dest.second,
-                scale);
+                            scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale)
+{
+    radialSymmetryTransform(srcImageRange(src),
+                            destImage(dest),
+                            scale);
 }
 
 

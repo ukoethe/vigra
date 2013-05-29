@@ -41,6 +41,7 @@
 #include "stdimagefunctions.hxx"
 #include "imageiteratoradapter.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

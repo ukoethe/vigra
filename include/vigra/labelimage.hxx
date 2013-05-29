@@ -43,6 +43,7 @@
 #include "stdimage.hxx"
 #include "union_find.hxx"
 #include "sized_int.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

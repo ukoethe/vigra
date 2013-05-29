@@ -51,6 +51,7 @@
 #include "stdimage.hxx"
 #include "transformimage.hxx"
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -627,6 +628,14 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
                SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
 {
     slantedEdgeMTF(src.first, src.second, src.third, mtf, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
+               SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
+{
+    slantedEdgeMTF(srcImageRange(src), mtf, options);
 }
 
 /********************************************************/

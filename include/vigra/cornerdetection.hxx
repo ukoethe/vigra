@@ -43,6 +43,7 @@
 #include "combineimages.hxx"
 #include "convolution.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

@@ -39,6 +39,7 @@
 
 #include <cmath>
 #include "stdimage.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

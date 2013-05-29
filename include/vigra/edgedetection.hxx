@@ -52,7 +52,7 @@
 #include "pixelneighborhood.hxx"
 #include "linear_solve.hxx"
 #include "functorexpression.hxx"
-
+#include "multi_shape.hxx"
 
 namespace vigra {
 

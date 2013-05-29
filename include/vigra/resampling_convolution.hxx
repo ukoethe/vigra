@@ -44,6 +44,7 @@
 #include "functorexpression.hxx"
 #include "transformimage.hxx"
 #include "imagecontainer.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -512,6 +513,20 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                         kernel, samplingRatio, offset);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Kernel const & kernel,
+                    Rational<int> const & samplingRatio, Rational<int> const & offset)
+{
+    resamplingConvolveX(srcImageRange(src),
+                        destImageRange(dest),
+                        kernel, samplingRatio, offset);
+}
+
 /********************************************************/
 /*                                                      */
 /*                  resamplingConvolveY                 */
@@ -652,17 +667,31 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
     }
 }
 
-template <class SrcIter, class SrcAcc,
-          class DestIter, class DestAcc,
+template <class SrcIter, class SrcAccessor,
+          class DestIter, class DestAccessor,
           class Kernel>
 inline void
-resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
-                    triple<DestIter, DestIter, DestAcc> dest,
+resamplingConvolveY(triple<SrcIter, SrcIter, SrcAccessor> src,
+                    triple<DestIter, DestIter, DestAccessor> dest,
                     Kernel const & kernel,
                     Rational<int> const & samplingRatio, Rational<int> const & offset)
 {
     resamplingConvolveY(src.first, src.second, src.third,
                         dest.first, dest.second, dest.third,
+                        kernel, samplingRatio, offset);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Kernel const & kernel,
+                    Rational<int> const & samplingRatio, Rational<int> const & offset)
+{
+    resamplingConvolveY(srcImageRange(src),
+                        destImageRange(dest),
                         kernel, samplingRatio, offset);
 }
 
@@ -782,14 +811,31 @@ template <class SrcIterator, class SrcAccessor,
           class KernelX, class KernelY>
 inline void
 resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                   triple<DestIterator, DestIterator, DestAccessor> dest,
-                   KernelX const & kx,
-                   Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                   KernelY const & ky,
-                   Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
+                        triple<DestIterator, DestIterator, DestAccessor> dest,
+                        KernelX const & kx,
+                        Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                        KernelY const & ky,
+                        Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
 {
     resamplingConvolveImage(src.first, src.second, src.third,
                             dest.first, dest.second, dest.third,
+                            kx, samplingRatioX, offsetX,
+                            ky, samplingRatioY, offsetY);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class KernelX, class KernelY>
+inline void
+resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        KernelX const & kx,
+                        Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                        KernelY const & ky,
+                        Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
+{
+    resamplingConvolveImage(srcImageRange(src),
+                            destImageRange(dest),
                             kx, samplingRatioX, offsetX,
                             ky, samplingRatioY, offsetY);
 }
@@ -1073,9 +1119,9 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     Namespace: vigra
 */
 template <class Image, class Alloc>
-inline
-void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                             double centerValue = 0.4)
+inline void
+pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                           double centerValue = 0.4)
 {
     using namespace functor;
     
@@ -1097,9 +1143,9 @@ void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLe
     Namespace: vigra
 */
 template <class Image, class Alloc>
-inline
-void pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                                double centerValue = 0.4)
+inline void
+pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                           double centerValue = 0.4)
 {
     using namespace functor;
     

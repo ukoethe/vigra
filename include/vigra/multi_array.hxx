@@ -480,10 +480,6 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 // forward declarations
 
-template <unsigned int N, class T, 
-          class A = std::allocator<typename vigra::detail::ResolveMultiband<T>::type> >
-class MultiArray;
-
 namespace multi_math {
 
 template <class T>

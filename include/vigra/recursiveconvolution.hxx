@@ -44,6 +44,7 @@
 #include "imageiteratoradapter.hxx"
 #include "bordertreatment.hxx"
 #include "array_vector.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -966,13 +967,24 @@ void recursiveFilterX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double b, BorderTreatmentMode border)
+inline void 
+recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b, BorderTreatmentMode border)
 {
     recursiveFilterX(src.first, src.second, src.third,
-                      dest.first, dest.second, b, border);
+                     dest.first, dest.second, b, border);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b, BorderTreatmentMode border)
+{
+    recursiveFilterX(srcImageRange(src),
+                     destImage(dest), b, border);
 }
 
 /********************************************************/
@@ -1006,16 +1018,25 @@ void recursiveFilterX(SrcImageIterator supperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
+inline void 
+recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b1, double b2)
 {
     recursiveFilterX(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
+                     dest.first, dest.second, b1, b2);
 }
-            
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b1, double b2)
+{
+    recursiveFilterX(srcImageRange(src),
+                     destImage(dest), b1, b2);
+}
 
 /********************************************************/
 /*                                                      */
@@ -1120,7 +1141,17 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
-            
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double sigma)
+{
+    recursiveGaussianFilterX(srcImageRange(src),
+                             destImage(dest), sigma);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    recursiveSmoothX                  */
@@ -1213,15 +1244,26 @@ void recursiveSmoothX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSmoothX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSmoothX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double scale)
 {
     recursiveSmoothX(src.first, src.second, src.third,
-                     dest. first, dest.second, scale);
+                     dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double scale)
+{
+    recursiveSmoothX(srcImageRange(src),
+                     destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     recursiveFilterY                 */
@@ -1341,13 +1383,24 @@ void recursiveFilterY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double b, BorderTreatmentMode border)
+inline void
+recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b, BorderTreatmentMode border)
 {
     recursiveFilterY(src.first, src.second, src.third,
-                      dest.first, dest.second, b, border);
+                     dest.first, dest.second, b, border);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b, BorderTreatmentMode border)
+{
+    recursiveFilterY(srcImageRange(src),
+                     destImage(dest), b, border);
 }
 
 /********************************************************/
@@ -1381,15 +1434,25 @@ void recursiveFilterY(SrcImageIterator supperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
+inline void
+recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b1, double b2)
 {
     recursiveFilterY(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
+                     dest.first, dest.second, b1, b2);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b1, double b2)
+{
+    recursiveFilterY(srcImageRange(src),
+                     destImage(dest), b1, b2);
+}
 
 /********************************************************/
 /*                                                      */
@@ -1494,6 +1557,17 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double sigma)
+{
+    recursiveGaussianFilterY(srcImageRange(src),
+                             destImage(dest), sigma);
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -1587,15 +1661,26 @@ void recursiveSmoothY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSmoothY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double scale)
+inline void 
+recursiveSmoothY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double scale)
 {
     recursiveSmoothY(src.first, src.second, src.third,
-                     dest. first, dest.second, scale);
+                     dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double scale)
+{
+    recursiveSmoothY(srcImageRange(src),
+                     destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*              recursiveFirstDerivativeX               */
@@ -1689,15 +1774,26 @@ void recursiveFirstDerivativeX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFirstDerivativeX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveFirstDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                          pair<DestImageIterator, DestAccessor> dest, 
+                          double scale)
 {
     recursiveFirstDerivativeX(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                              dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest, 
+                          double scale)
+{
+    recursiveFirstDerivativeX(srcImageRange(src),
+                              destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*              recursiveFirstDerivativeY               */
@@ -1791,15 +1887,26 @@ void recursiveFirstDerivativeY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFirstDerivativeY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveFirstDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                          pair<DestImageIterator, DestAccessor> dest, 
+                          double scale)
 {
     recursiveFirstDerivativeY(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                              dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest, 
+                          double scale)
+{
+    recursiveFirstDerivativeY(srcImageRange(src),
+                              destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*             recursiveSecondDerivativeX               */
@@ -1893,15 +2000,26 @@ void recursiveSecondDerivativeX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSecondDerivativeX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSecondDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                           pair<DestImageIterator, DestAccessor> dest, 
+                           double scale)
 {
     recursiveSecondDerivativeX(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                               dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest, 
+                           double scale)
+{
+    recursiveSecondDerivativeX(srcImageRange(src),
+                               destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*             recursiveSecondDerivativeY               */
@@ -1995,15 +2113,25 @@ void recursiveSecondDerivativeY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSecondDerivativeY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSecondDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                           pair<DestImageIterator, DestAccessor> dest, 
+                           double scale)
 {
     recursiveSecondDerivativeY(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                               dest.first, dest.second, scale);
 }
             
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest, 
+                           double scale)
+{
+    recursiveSecondDerivativeY(srcImageRange(src),
+                               destImage(dest), scale);
+}
             
 //@}
 

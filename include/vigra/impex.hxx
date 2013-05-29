@@ -51,6 +51,7 @@
 #include "stdimage.hxx"
 #include "imageinfo.hxx"
 #include "impexbase.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra
 {

@@ -45,6 +45,7 @@
 #include "functortraits.hxx"
 #include "rgbvalue.hxx"
 #include "inspector_passes.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

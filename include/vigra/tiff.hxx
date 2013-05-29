@@ -39,6 +39,8 @@
 #include "utilities.hxx"
 #include "numerictraits.hxx"
 #include "rgbvalue.hxx"
+#include "multi_shape.hxx"
+
 extern "C"
 {
 #include <tiff.h>
@@ -150,6 +152,13 @@ inline void
 importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 {
     importTiffImage(tiff, dest.first, dest.second);
+}
+
+template <class T, class S>
+inline void
+importTiffImage(TiffImage * tiff, MultiArrayView<2, T, S> dest)
+{
+    importTiffImage(tiff, destImage(dest));
 }
 
 template <class ImageIterator, class Accessor>
@@ -1117,6 +1126,13 @@ inline void
 createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * tiff)
 {
     createTiffImage(src.first, src.second, src.third, tiff);
+}
+
+template <class T, class S>
+inline void
+createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
+{
+    createTiffImage(srcImageRange(src), tiff);
 }
 
 /********************************************************/

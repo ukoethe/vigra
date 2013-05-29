@@ -44,8 +44,12 @@
 #include "utilities.hxx"
 #include "sized_int.hxx"
 #include "multi_iterator.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
+
+template <class ARITHTYPE>
+class Kernel2D;
 
 /** \addtogroup StandardConvolution Two-dimensional convolution functions
 
@@ -397,12 +401,11 @@ void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelIterator, class KernelAccessor>
-inline
-void convolveImage(
-                   triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                   pair<DestIterator, DestAccessor> dest,
-                   tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-                   BorderTreatmentMode> kernel)
+inline void
+convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+              pair<DestIterator, DestAccessor> dest,
+              tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
+              BorderTreatmentMode> kernel)
 {
     convolveImage(src.first, src.second, src.third,
                   dest.first, dest.second,
@@ -410,6 +413,18 @@ void convolveImage(
                   kernel.fourth, kernel.fifth);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
+inline void
+convolveImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest,
+              Kernel2D<T3> const & kernel)
+{
+    convolveImage(srcImageRange(src),
+                  destImage(dest),
+                  kernel2d(kernel));
+}
 
 /** \brief Performs a 2-dimensional normalized convolution, i.e. convolution with a mask image.
 
@@ -697,19 +712,34 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class MaskIterator, class MaskAccessor,
           class KernelIterator, class KernelAccessor>
-inline
-void normalizedConvolveImage(
-                           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           pair<MaskIterator, MaskAccessor> mask,
-                           pair<DestIterator, DestAccessor> dest,
-                           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-                           BorderTreatmentMode> kernel)
+inline void
+normalizedConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<MaskIterator, MaskAccessor> mask,
+                        pair<DestIterator, DestAccessor> dest,
+                        tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
+                        BorderTreatmentMode> kernel)
 {
     normalizedConvolveImage(src.first, src.second, src.third,
                             mask.first, mask.second,
                             dest.first, dest.second,
                             kernel.first, kernel.second, kernel.third,
                             kernel.fourth, kernel.fifth);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class T3>
+inline void
+normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, TM, SM> const & mask,
+                        MultiArrayView<2, T2, S2> dest,
+                        Kernel2D<T3> const & kernel)
+{
+    normalizedConvolveImage(srcImageRange(src),
+                            maskImage(mask),
+                            destImage(dest),
+                            kernel2d(kernel));
 }
 
 /** \brief Deprecated name of 2-dimensional normalized convolution, i.e. convolution with a mask image.

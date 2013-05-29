@@ -43,6 +43,8 @@
 #include "recursiveconvolution.hxx"
 #include "nonlineardiffusion.hxx"
 #include "combineimages.hxx"
+#include "multi_shape.hxx"
+
 
 /** \page Convolution Functions to Convolve Images and Signals
 
@@ -960,18 +962,6 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     the input array's right-most dimension is interpreted as a channel axis, therefore it must 
     have one dimension more than the output array.
 
-    pass 2D array views:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void gaussianGradientMagnitude(SrcIterator sul,
-                                       SrcIterator slr, SrcAccessor src,
-                                       DestIterator dupperleft, DestAccessor dest,
-                                       double scale);
-    }
-    \endcode
-
     pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
@@ -1082,17 +1072,6 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     gaussianGradientMagnitude(src.first, src.second, src.third,
                               dest.first, dest.second, scale);
-}
-
-template <class T1, class S1,
-          class T2, class S2>
-inline void
-gaussianGradientMagnitude(MultiArrayView<2, T1, S1> const & src,
-                          MultiArrayView<2, T2, S2> dest,
-                          double scale)
-{
-    gaussianGradientMagnitude(srcImageRange(src),
-                              destImage(dest), scale);
 }
 
 /********************************************************/
@@ -1368,14 +1347,14 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 template <class T1, class S1,
-          class T2, class S2X,
-          class T2, class S2XY,
-          class T2, class S2Y>
+          class T2X, class S2X,
+          class T2XY, class S2XY,
+          class T2Y, class S2Y>
 inline void
 hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2X> destx,
-                        MultiArrayView<2, T2, S2XY> destxy,
-                        MultiArrayView<2, T2, S2Y> desty,
+                        MultiArrayView<2, T2X, S2X> destx,
+                        MultiArrayView<2, T2XY, S2XY> destxy,
+                        MultiArrayView<2, T2Y, S2Y> desty,
                         double scale)
 {
     hessianMatrixOfGaussian(srcImageRange(src),
