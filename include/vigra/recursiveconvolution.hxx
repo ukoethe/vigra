@@ -860,7 +860,28 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // first order filter
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void recursiveFilterX(SrcImageIterator supperleft, 
+                               SrcImageIterator slowerright, SrcAccessor as,
+                               DestImageIterator dupperleft, DestAccessor ad, 
+                               double b, BorderTreatmentMode border);
+
+        // second order filter
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void recursiveFilterX(SrcImageIterator supperleft, 
+                               SrcImageIterator slowerright, SrcAccessor as,
+                               DestImageIterator dupperleft, DestAccessor ad, 
+                               double b1, double b2);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         // first order filter
@@ -1012,7 +1033,19 @@ inline void recursiveFilterX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterX(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                                 DestImageIterator dupperleft, DestAccessor ad, 
+                                 double sigma);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1102,7 +1135,19 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1191,7 +1236,28 @@ inline void recursiveSmoothX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // first order filter
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void recursiveFilterY(SrcImageIterator supperleft, 
+                               SrcImageIterator slowerright, SrcAccessor as,
+                               DestImageIterator dupperleft, DestAccessor ad, 
+                               double b, BorderTreatmentMode border);
+
+        // second order filter
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void recursiveFilterY(SrcImageIterator supperleft, 
+                               SrcImageIterator slowerright, SrcAccessor as,
+                               DestImageIterator dupperleft, DestAccessor ad, 
+                               double b1, double b2);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         // first order filter
@@ -1341,7 +1407,19 @@ inline void recursiveFilterY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void 
+        recursiveGaussianFilterY(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
+                                 DestImageIterator dupperleft, DestAccessor ad, 
+                                 double sigma);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1431,7 +1509,19 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSmoothY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1521,7 +1611,19 @@ inline void recursiveSmoothY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1611,7 +1713,19 @@ inline void recursiveFirstDerivativeX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveFirstDerivativeY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1701,7 +1815,19 @@ inline void recursiveFirstDerivativeY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeX(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1791,7 +1917,19 @@ inline void recursiveSecondDerivativeX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void recursiveSecondDerivativeY(SrcImageIterator supperleft, 
+                  SrcImageIterator slowerright, SrcAccessor as,
+                  DestImageIterator dupperleft, DestAccessor ad, 
+                  double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

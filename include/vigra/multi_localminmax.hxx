@@ -249,6 +249,17 @@ localMinima(MultiArrayView<N, T1, C1> const & src,
     return localMinMax(src, dest, threshold, std::less<T1>(), options);
 }
 
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline unsigned int
+extendedLocalMinima(MultiArrayView<N, T1, S1> const & src,
+                    MultiArrayView<N, T2, S2> dest,
+                    LocalMinmaxOptions options = LocalMinmaxOptions())
+{
+    options.allowPlateaus();
+    return localMinima(src, dest, options);
+}
 /********************************************************/
 /*                                                      */
 /*                       localMaxima                    */
@@ -266,6 +277,18 @@ localMaxima(MultiArrayView<N, T1, C1> const & src,
                            ? std::max(NumericTraits<T1>::min(), (T1)options.thresh)
                            : NumericTraits<T1>::min();
     return localMinMax(src, dest, threshold, std::greater<T1>(), options);
+}
+
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline unsigned int
+extendedLocalMaxima(MultiArrayView<N, T1, S1> const & src,
+                    MultiArrayView<N, T2, S2> dest,
+                    LocalMinmaxOptions options = LocalMinmaxOptions())
+{
+    options.allowPlateaus();
+    localMaxima(src, dest, options);
 }
 
 } // namespace vigra

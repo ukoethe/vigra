@@ -391,7 +391,21 @@ createResamplingKernels(Kernel const & kernel,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIter, class SrcAcc,
+                  class DestIter, class DestAcc,
+                  class Kernel>
+        void
+        resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
+                            DestIter dul, DestIter dlr, DestAcc dest,
+                            Kernel const & kernel,
+                            Rational<int> const & samplingRatio, Rational<int> const & offset);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -530,7 +544,21 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIter, class SrcAcc,
+                  class DestIter, class DestAcc,
+                  class Kernel>
+        void
+        resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
+                            DestIter dul, DestIter dlr, DestAcc dest,
+                            Kernel const & kernel,
+                            Rational<int> const & samplingRatio, Rational<int> const & offset);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -653,7 +681,22 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelX, class KernelY>
+        void resamplingConvolveImage(SrcIterator sul,SrcIterator slr, SrcAccessor src,
+                           DestIterator dul, DestIterator dlr, DestAccessor dest,
+                           KernelX const & kx,
+                           Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                           KernelY const & ky,
+                           Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -760,7 +803,18 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -883,7 +937,18 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

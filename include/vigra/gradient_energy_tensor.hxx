@@ -81,7 +81,18 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                                  DestIterator dupperleft, DestAccessor dest,
+                                  Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -176,13 +187,24 @@ void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAc
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                          pair<DestIterator, DestAccessor> dest,
-                          Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+inline void
+gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                     pair<DestIterator, DestAccessor> dest,
+                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
 {
     gradientEnergyTensor(src.first, src.second, src.third,
                          dest.first, dest.second, derivKernel, smoothKernel);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest,
+                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+{
+    gradientEnergyTensor(srcImageRange(src),
+                         destImage(dest), derivKernel, smoothKernel);
 }
 
 //@}

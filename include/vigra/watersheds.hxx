@@ -450,7 +450,7 @@ public:
     }
     \endcode
 
-    pass arguments explicitly:
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -595,7 +595,20 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class Neighborhood = EightNeighborCode>
+        unsigned int
+        watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                            DestIterator upperleftd, DestAccessor da,
+                            Neighborhood neighborhood = EightNeighborCode())
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1081,7 +1094,28 @@ class BiasedWatershedStatistics
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class Neighborhood = EightNeighborCode>
+        unsigned int
+        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                                DestIterator upperleftd, DestAccessor da, 
+                                Neighborhood neighborhood = EightNeighborCode(),
+                                WatershedOptions const & options = WatershedOptions());
+
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        unsigned int
+        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
+                                DestIterator upperleftd, DestAccessor da, 
+                                WatershedOptions const & options = WatershedOptions());
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

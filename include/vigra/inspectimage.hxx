@@ -128,7 +128,17 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class Functor>
+        void
+        inspectImage(ImageIterator upperleft, ImageIterator lowerright,
+                     Accessor a, Functor & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
@@ -211,12 +221,19 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
 }
 
 template <class ImageIterator, class Accessor, class Functor>
-inline
-void
+inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-         Functor & f)
+             Functor & f)
 {
     inspectImage(img.first, img.second, img.third, f);
+}
+
+template <class T, class S, class Functor>
+inline void
+inspectImage(MultiArrayView<2, T, S> const & img,
+             Functor & f)
+{
+    inspectImage(srcImageRange(src), f);
 }
 
 namespace functor
@@ -235,12 +252,20 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
 }
 
 template <class ImageIterator, class Accessor, class Functor>
-inline
-void
+inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-         functor::UnaryAnalyser<Functor> const & f)
+             functor::UnaryAnalyser<Functor> const & f)
 {
     inspectImage(img.first, img.second, img.third,
+                 const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T, class S, class Functor>
+inline void
+inspectImage(MultiArrayView<2, T, S> const & img,
+             functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImage(srcImageRange(src),
                  const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
@@ -261,7 +286,19 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor,
+                  class MaskImageIterator, class MaskAccessor, class Functor>
+        void
+        inspectImageIf(ImageIterator upperleft, ImageIterator lowerright,
+               MaskImageIterator mask_upperleft, MaskAccessor ma,
+               Functor & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
@@ -369,18 +406,6 @@ inspectImageIf(ImageIterator upperleft,
 
 template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
-inline
-void
-inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
-               pair<MaskImageIterator, MaskAccessor> mask,
-               Functor & f)
-{
-    inspectImageIf(img.first, img.second, img.third,
-                   mask.first, mask.second, f);
-}
-
-template <class ImageIterator, class Accessor,
-      class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(ImageIterator upperleft,
                ImageIterator lowerright, Accessor a,
@@ -392,7 +417,18 @@ inspectImageIf(ImageIterator upperleft,
 }
 
 template <class ImageIterator, class Accessor,
-      class MaskImageIterator, class MaskAccessor, class Functor>
+          class MaskImageIterator, class MaskAccessor, class Functor>
+inline void
+inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
+               pair<MaskImageIterator, MaskAccessor> mask,
+               Functor & f)
+{
+    inspectImageIf(img.first, img.second, img.third,
+                   mask.first, mask.second, f);
+}
+
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
@@ -400,6 +436,28 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 {
     inspectImageIf(img.first, img.second, img.third,
                    mask.first, mask.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T, class S,
+          class TM, class SM, class Functor>
+inline void
+inspectImageIf(MultiArrayView<2, T, S> const & img,
+               MultiArrayView<2, TM, SM> const & mask,
+               Functor & f)
+{
+    inspectImageIf(srcImageRange(src),
+                   maskImage(mask), f);
+}
+
+template <class T, class S,
+          class TM, class SM, class Functor>
+inline void
+inspectImageIf(MultiArrayView<2, T, S> const & img,
+               MultiArrayView<2, TM, SM> const & mask,
+               functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImageIf(srcImageRange(src),
+                   maskImage(mask), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 /********************************************************/
@@ -418,7 +476,20 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+              class ImageIterator2, class Accessor2,
+              class Functor>
+        void
+        inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
+                 ImageIterator2 upperleft2, Accessor2 a2,
+                 Functor & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -524,19 +595,6 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
 }
 
 template <class ImageIterator1, class Accessor1,
-      class ImageIterator2, class Accessor2,
-      class Functor>
-inline
-void
-inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         Functor & f)
-{
-    inspectTwoImages(img1.first, img1.second, img1.third,
-                     img2.first, img2.second, f);
-}
-
-template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class Functor>
 inline void
@@ -549,16 +607,53 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor
 }
 
 template <class ImageIterator1, class Accessor1,
-      class ImageIterator2, class Accessor2,
-      class Functor>
-inline
-void
+          class ImageIterator2, class Accessor2,
+          class Functor>
+inline void
 inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         functor::UnaryAnalyser<Functor> const & f)
+                 pair<ImageIterator2, Accessor2> img2,
+                 Functor & f)
+{
+    inspectTwoImages(img1.first, img1.second, img1.third,
+                     img2.first, img2.second, f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
+inline void
+inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                 pair<ImageIterator2, Accessor2> img2,
+                 functor::UnaryAnalyser<Functor> const & f)
 {
     inspectTwoImages(img1.first, img1.second, img1.third,
                      img2.first, img2.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
+inline void
+inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                 MultiArrayView<2, T2, S2> const & img2,
+                 Functor & f)
+{
+    inspectTwoImages(srcImageRange(img1),
+                     srcImage(img2),
+                     f);
+}
+
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
+inline void
+inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                 MultiArrayView<2, T2, S2> const & img2,
+                 functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImages(srcImageRange(img1),
+                     srcImage(img2), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 /********************************************************/
@@ -578,7 +673,22 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator1, class Accessor1,
+                  class ImageIterator2, class Accessor2,
+                  class MaskImageIterator, class MaskAccessor,
+                  class Functor>
+        void
+        inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
+                         ImageIterator2 upperleft2, Accessor2 a2,
+                         MaskImageIterator mupperleft, MaskAccessor mask,
+                         Functor & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -705,23 +815,6 @@ template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class MaskImageIterator, class MaskAccessor,
           class Functor>
-inline
-void
-inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         pair<MaskImageIterator, MaskAccessor> m,
-         Functor & f)
-{
-    inspectTwoImagesIf(img1.first, img1.second, img1.third,
-                     img2.first, img2.second,
-                     m.first, m.second,
-                     f);
-}
-
-template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class Functor>
 inline void
 inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
@@ -738,16 +831,63 @@ template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class MaskImageIterator, class MaskAccessor,
           class Functor>
-inline
-void
+inline void
 inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         pair<MaskImageIterator, MaskAccessor> m,
-         functor::UnaryAnalyser<Functor> const & f)
+                   pair<ImageIterator2, Accessor2> img2,
+                   pair<MaskImageIterator, MaskAccessor> m,
+                   Functor & f)
 {
     inspectTwoImagesIf(img1.first, img1.second, img1.third,
                        img2.first, img2.second,
                        m.first, m.second,
+                       f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
+inline void
+inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                   pair<ImageIterator2, Accessor2> img2,
+                   pair<MaskImageIterator, MaskAccessor> m,
+                   functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImagesIf(img1.first, img1.second, img1.third,
+                       img2.first, img2.second,
+                       m.first, m.second,
+                       const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
+inline void
+inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                   MultiArrayView<2, T2, S2> const & img2,
+                   MultiArrayView<2, TM, SM> const & m,
+                   Functor & f)
+{
+    inspectTwoImagesIf(srcImageRange(img1),
+                       srcImage(img2),
+                       maskImage(m),
+                       f);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
+inline void
+inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                   MultiArrayView<2, T2, S2> const & img2,
+                   MultiArrayView<2, TM, SM> const & m,
+                   functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImagesIf(srcImageRange(img1),
+                       srcImage(img2),
+                       maskImage(m),
                        const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 

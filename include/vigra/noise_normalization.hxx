@@ -976,7 +976,17 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     BackInsertable & result,
+                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1051,12 +1061,21 @@ void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline
-void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           BackInsertable & result,
-                           NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline void
+noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     noiseVarianceEstimation(src.first, src.second, src.third, result, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    noiseVarianceEstimation(srcImageRange(src), result, options);
 }
 
 /********************************************************/
@@ -1078,7 +1097,17 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                BackInsertable & result,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1135,12 +1164,21 @@ void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline
-void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           BackInsertable & result,
-                           NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline void
+noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     noiseVarianceClustering(src.first, src.second, src.third, result, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    noiseVarianceClustering(srcImageRange(src), result, options);
 }
 
 /********************************************************/
@@ -1172,7 +1210,18 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        bool nonparametricNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                             DestIterator dul, DestAccessor dest,
+                                             NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1229,12 +1278,22 @@ nonparametricNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor sr
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                pair<DestIterator, DestAccessor> dest,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return nonparametricNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    return nonparametricNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
@@ -1252,7 +1311,18 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        bool quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                         DestIterator dul, DestAccessor dest,
+                                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1309,12 +1379,22 @@ quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    return quadraticNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
@@ -1335,7 +1415,18 @@ bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                         DestIterator dul, DestAccessor dest,
+                                         double a0, double a1, double a2);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1393,12 +1484,22 @@ quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                 pair<DestIterator, DestAccessor> dest,
-                                 double a0, double a1, double a2)
+inline void
+quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            double a0, double a1, double a2)
 {
     quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1, a2);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double a0, double a1, double a2)
+{
+    quadraticNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1, a2);
 }
 
 /********************************************************/
@@ -1416,7 +1517,18 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+        bool linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                      DestIterator dul, DestAccessor dest,
+                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1473,12 +1585,22 @@ linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    return linearNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
@@ -1499,7 +1621,18 @@ bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                      DestIterator dul, DestAccessor dest,
+                                      double a0, double a1);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1557,12 +1690,22 @@ void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                              pair<DestIterator, DestAccessor> dest,
-                              double a0, double a1)
+inline void
+linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         double a0, double a1)
 {
     linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         double a0, double a1)
+{
+    linearNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1);
 }
 
 //@}

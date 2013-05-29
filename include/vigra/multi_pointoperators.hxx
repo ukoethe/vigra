@@ -106,7 +106,21 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class Iterator, class Shape, class Accessor, class VALUETYPE>
+        void
+        initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v);
+
+
+        template <class Iterator, class Shape, class Accessor, class FUNCTOR>
+        void
+        initMultiArray(Iterator s, Shape const & shape, Accessor a,  FUNCTOR const & f);
+    }
+    \endcode
+    
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class VALUETYPE>
@@ -310,7 +324,26 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        copyMultiArray(SrcIterator s, 
+                       SrcShape const & shape, SrcAccessor src,
+                       DestIterator d, DestAccessor dest);
+
+
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestShape, class DestAccessor>
+        void
+        copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                       DestIterator d, DestShape const & dshape, DestAccessor dest);
+    }
+    \endcode
+    
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -611,7 +644,28 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, 
+                  class Functor>
+        void
+        transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                            DestIterator d, DestAccessor dest, Functor const & f);
+
+
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestShape, class DestAccessor, 
+                  class Functor>
+        void
+        transformMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
+                            DestIterator d, DestShape const & dshape, DestAccessor dest, 
+                            Functor const & f);
+    }
+    \endcode
+    
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1032,7 +1086,32 @@ combineTwoMultiArraysImpl(
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
+                  class SrcIterator2, class SrcAccessor2,
+                  class DestIterator, class DestAccessor, 
+                  class Functor>
+        void combineTwoMultiArrays(
+                       SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
+                       SrcIterator2 s2, SrcAccessor2 src2,
+                       DestIterator d, DestAccessor dest, Functor const & f);
+
+
+        template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
+                  class SrcIterator2, class SrcShape2, class SrcAccessor2,
+                  class DestIterator, class DestShape, class DestAccessor, 
+                  class Functor>
+        void combineTwoMultiArrays(
+                       SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
+                       SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
+                       DestIterator d, DestShape const & dshape, DestAccessor dest, 
+                       Functor const & f);
+            }
+    \endcode
+    
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1332,7 +1411,23 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
+                  class SrcIterator2, class SrcAccessor2,
+                  class SrcIterator3, class SrcAccessor3,
+                  class DestIterator, class DestAccessor, 
+                  class Functor>
+        void
+        combineThreeMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
+                       SrcIterator2 s2, SrcAccessor2 src2,
+                       SrcIterator3 s3, SrcAccessor3 src3,
+                       DestIterator d, DestAccessor dest, Functor const & f);
+                    }
+    \endcode
+    
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1460,7 +1555,16 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class Iterator, class Shape, class Accessor, class Functor>
+        void
+        inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class Functor>
@@ -1587,7 +1691,19 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class Iterator1, class Shape, class Accessor1, 
+                  class Iterator2, class Accessor2, 
+                  class Functor>
+        void
+        inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
+                              Iterator2 s2, Accessor2 a2, Functor & f);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class Iterator1, class Shape, class Accessor1, 

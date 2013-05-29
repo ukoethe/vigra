@@ -73,7 +73,19 @@ namespace vigra {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class DestImageIterator, class DestAccessor>
+        void createGaborFilter(DestImageIterator destUpperLeft,
+                               DestImageIterator destLowerRight,
+                               DestAccessor da,
+                               double orientation, double centerFrequency,
+                               double angularSigma, double radialSigma)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class DestImageIterator, class DestAccessor>
@@ -177,13 +189,23 @@ void createGaborFilter(DestImageIterator destUpperLeft,
 }
 
 template <class DestImageIterator, class DestAccessor>
-inline
-void createGaborFilter(triple<DestImageIterator, DestImageIterator,
-                              DestAccessor> dest,
-                              double orientation, double centerFrequency,
-                              double angularSigma, double radialSigma)
+inline void
+createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> dest,
+                  double orientation, double centerFrequency,
+                  double angularSigma, double radialSigma)
 {
     createGaborFilter(dest.first, dest.second, dest.third,
+                      orientation, centerFrequency,
+                      angularSigma, radialSigma);
+}
+
+template <class T, class S>
+inline void
+createGaborFilter(MultiArrayView<2, T, S> dest,
+                  double orientation, double centerFrequency,
+                  double angularSigma, double radialSigma)
+{
+    createGaborFilter(destImageRange(dest),
                       orientation, centerFrequency,
                       angularSigma, radialSigma);
 }
@@ -283,7 +305,7 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
     Namespace: vigra
 */
 template <class ImageType, 
-      class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
+          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
 class GaborFilterFamily 
 : public ImageArray<ImageType, Alloc>
 {

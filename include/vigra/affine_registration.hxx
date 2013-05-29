@@ -400,7 +400,22 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateTranslation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -481,6 +496,30 @@ estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         affineMatrix, AffineMotionEstimationOptions<>());
 }
 
+template <class T1, class S1, 
+          class T2, class S2, 
+          int SPLINEORDER>
+inline void 
+estimateTranslation(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Matrix<double> & affineMatrix, 
+                    AffineMotionEstimationOptions<SPLINEORDER> const & options)
+{
+    estimateTranslation(srcImageRange(src), destImageRange(dest),
+                        affineMatrix, options);
+}
+
+template <class T1, class S1, 
+          class T2, class S2>
+inline void 
+estimateTranslation(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Matrix<double> & affineMatrix)
+{
+    estimateTranslation(srcImageRange(src), destImageRange(dest),
+                        affineMatrix, AffineMotionEstimationOptions<>());
+}
+
 /********************************************************/
 /*                                                      */
 /*              estimateSimilarityTransform             */
@@ -497,7 +536,22 @@ estimateTranslation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateSimilarityTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -578,6 +632,30 @@ estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 affineMatrix, AffineMotionEstimationOptions<>());
 }
 
+template <class T1, class S1, 
+          class T2, class S2, 
+          int SPLINEORDER>
+inline void 
+estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Matrix<double> & affineMatrix, 
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options)
+{
+    estimateSimilarityTransform(srcImageRange(src), destImageRange(dest),
+                                affineMatrix, options);
+}
+
+template <class T1, class S1, 
+          class T2, class S2>
+inline void 
+estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Matrix<double> & affineMatrix)
+{
+    estimateSimilarityTransform(srcImageRange(src), destImageRange(dest),
+                                affineMatrix, AffineMotionEstimationOptions<>());
+}
+
 /********************************************************/
 /*                                                      */
 /*                estimateAffineTransform               */
@@ -594,7 +672,22 @@ estimateSimilarityTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <b>\#include</b> \<vigra/affine_registration.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  int SPLINEORDER = 2>
+        void
+        estimateAffineTransform(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest,
+                            Matrix<double> & affineMatrix,
+                            AffineMotionEstimationOptions<SPLINEORDER> const & options = 
+                                                        AffineMotionEstimationOptions<>())
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -672,6 +765,30 @@ estimateAffineTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         Matrix<double> & affineMatrix)
 {
     estimateAffineTransform(src.first, src.second, src.third, dest.first, dest.second, dest.third,
+                            affineMatrix, AffineMotionEstimationOptions<>());
+}
+             
+template <class T1, class S1, 
+          class T2, class S2, 
+          int SPLINEORDER>
+inline void 
+estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        Matrix<double> & affineMatrix, 
+                        AffineMotionEstimationOptions<SPLINEORDER> const & options)
+{
+    estimateAffineTransform(srcImageRange(src), destImageRange(dest),
+                            affineMatrix, options);
+}
+
+template <class T1, class S1, 
+          class T2, class S2>
+inline void 
+estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        Matrix<double> & affineMatrix)
+{
+    estimateAffineTransform(srcImageRange(src), destImageRange(dest),
                             affineMatrix, AffineMotionEstimationOptions<>());
 }
 

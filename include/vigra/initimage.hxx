@@ -159,7 +159,20 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
 
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
+                       Accessor a, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
+                       Accessor a, FUNCTOR const & v);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -245,11 +258,17 @@ initImage(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class VALUETYPE>
-inline 
-void
+inline void
 initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & v)
 {
     initImage(img.first, img.second, img.third, v);
+}
+    
+template <class T, class S, class VALUETYPE>
+inline void
+initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
+{
+    initImage(destImageRange(img), v);
 }
     
 /********************************************************/
@@ -266,7 +285,17 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void
+        initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
+                  Accessor a,  FUNCTOR & f);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
@@ -335,11 +364,17 @@ initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class FUNCTOR>
-inline 
-void
+inline void
 initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f)
 {
     initImageWithFunctor(img.first, img.second, img.third, f);
+}
+    
+template <class T, class S, class FUNCTOR>
+inline void
+initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
+{
+    initImageWithFunctor(destImageRange(img), f);
 }
     
 /********************************************************/
@@ -361,7 +396,25 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, 
+                  class MaskImageIterator, class MaskAccessor,
+                  class VALUETYPE>
+        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, 
+                  class MaskImageIterator, class MaskAccessor,
+                  class FUNCTOR>
+        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         FUNCTOR const & v);
+    }
+    \endcode     
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
@@ -454,13 +507,23 @@ initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
 template <class ImageIterator, class Accessor, 
           class MaskImageIterator, class MaskAccessor,
           class VALUETYPE>
-inline 
-void
+inline void
 initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
             pair<MaskImageIterator, MaskAccessor> mask,
             VALUETYPE const & v)
 {
     initImageIf(img.first, img.second, img.third, mask.first, mask.second, v);
+}
+    
+template <class T, class S, 
+          class TM, class SM,
+          class VALUETYPE>
+inline void
+initImageIf(MultiArrayView<2, T, S> img, 
+            MultiArrayView<2, TM, SM> const & mask,
+            VALUETYPE const & v)
+{
+    initImageIf(destImageRange(img), maskImage(mask), v);
 }
     
 /********************************************************/
@@ -482,7 +545,20 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor, class VALUETYPE>
+        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                             int border_width, VALUETYPE const & v);
+
+        template <class ImageIterator, class Accessor, class FUNCTOR>
+        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
+                             int border_width, FUNCTOR const & v);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -547,12 +623,19 @@ initImageBorder(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class VALUETYPE>
-inline 
-void
+inline void
 initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
                 int border_width, VALUETYPE const & v)
 {
     initImageBorder(img.first, img.second, img.third, border_width, v);
+}
+    
+template <class T, class S, class VALUETYPE>
+inline void
+initImageBorder(MultiArrayView<2, T, S> img, 
+                int border_width, VALUETYPE const & v)
+{
+    initImageBorder(destImageRange(img), border_width, v);
 }
     
 //@}

@@ -62,7 +62,27 @@ namespace vigra {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        unsigned int labelImage(SrcIterator upperlefts,
+                                SrcIterator lowerrights, SrcAccessor sa,
+                                DestIterator upperleftd, DestAccessor da,
+                                bool eight_neighbors);
+
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class EqualityFunctor>
+        unsigned int labelImage(SrcIterator upperlefts,
+                                SrcIterator lowerrights, SrcAccessor sa,
+                                DestIterator upperleftd, DestAccessor da,
+                                bool eight_neighbors, EqualityFunctor equal);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -253,18 +273,6 @@ unsigned int labelImage(SrcIterator upperlefts,
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class EqualityFunctor>
-inline
-unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                        pair<DestIterator, DestAccessor> dest,
-                        bool eight_neighbors, EqualityFunctor equal)
-{
-    return labelImage(src.first, src.second, src.third,
-                      dest.first, dest.second, eight_neighbors, equal);
-}
-
-template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline
 unsigned int labelImage(SrcIterator upperlefts,
@@ -278,15 +286,51 @@ unsigned int labelImage(SrcIterator upperlefts,
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                        pair<DestIterator, DestAccessor> dest,
-                        bool eight_neighbors)
+          class DestIterator, class DestAccessor,
+          class EqualityFunctor>
+inline unsigned int
+labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           bool eight_neighbors, EqualityFunctor equal)
 {
     return labelImage(src.first, src.second, src.third,
-                 dest.first, dest.second, eight_neighbors,
-                 std::equal_to<typename SrcAccessor::value_type>());
+                      dest.first, dest.second, eight_neighbors, equal);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline unsigned int
+labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+           pair<DestIterator, DestAccessor> dest,
+           bool eight_neighbors)
+{
+    return labelImage(src.first, src.second, src.third,
+                      dest.first, dest.second, eight_neighbors,
+                      std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class EqualityFunctor>
+inline unsigned int
+labelImage(MultiArrayView<2, T1, S1> const & src,
+           MultiArrayView<2, T2, S2> dest,
+           bool eight_neighbors, EqualityFunctor equal)
+{
+    return labelImage(srcImageRange(src),
+                      destImage(dest), eight_neighbors, equal);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+labelImage(MultiArrayView<2, T1, S1> const & src,
+           MultiArrayView<2, T2, S2> dest,
+           bool eight_neighbors)
+{
+    return labelImage(srcImageRange(src),
+                      destImage(dest), eight_neighbors,
+                      std::equal_to<typename SrcAccessor::value_type>());
 }
 
 /********************************************************/
@@ -300,7 +344,30 @@ unsigned int labelImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class ValueType>
+        int labelImageWithBackground(SrcIterator upperlefts,
+                       SrcIterator lowerrights, SrcAccessor sa,
+                       DestIterator upperleftd, DestAccessor da,
+                       bool eight_neighbors,
+                       ValueType background_value );
+
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class ValueType, class EqualityFunctor>
+        int labelImageWithBackground(SrcIterator upperlefts,
+                       SrcIterator lowerrights, SrcAccessor sa,
+                       DestIterator upperleftd, DestAccessor da,
+                       bool eight_neighbors,
+                       ValueType background_value, EqualityFunctor equal);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -545,37 +612,6 @@ unsigned int labelImageWithBackground(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
-          class ValueType, class EqualityFunctor>
-inline
-unsigned int labelImageWithBackground(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    bool eight_neighbors,
-    ValueType background_value, EqualityFunctor equal)
-{
-    return labelImageWithBackground(src.first, src.second, src.third,
-                                    dest.first, dest.second,
-                                    eight_neighbors, background_value, equal);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class ValueType>
-inline
-unsigned int labelImageWithBackground(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    bool eight_neighbors,
-    ValueType background_value)
-{
-    return labelImageWithBackground(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            eight_neighbors, background_value,
-                            std::equal_to<typename SrcAccessor::value_type>());
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
           class ValueType>
 inline
 unsigned int labelImageWithBackground(
@@ -591,6 +627,64 @@ unsigned int labelImageWithBackground(
                             std::equal_to<typename SrcAccessor::value_type>());
 }
 
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ValueType, class EqualityFunctor>
+inline unsigned int 
+labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         bool eight_neighbors,
+                         ValueType background_value, EqualityFunctor equal)
+{
+    return labelImageWithBackground(src.first, src.second, src.third,
+                                    dest.first, dest.second,
+                                    eight_neighbors, background_value, equal);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class ValueType>
+inline unsigned int
+labelImageWithBackground(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         bool eight_neighbors,
+                         ValueType background_value)
+{
+    return labelImageWithBackground(src.first, src.second, src.third,
+                                    dest.first, dest.second,
+                                    eight_neighbors, background_value,
+                                    std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class ValueType, class EqualityFunctor>
+inline unsigned int 
+labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         bool eight_neighbors,
+                         ValueType background_value, EqualityFunctor equal)
+{
+    return labelImageWithBackground(srcImageRange(src),
+                                    destImage(dest),
+                                    eight_neighbors, background_value, equal);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class ValueType>
+inline unsigned int
+labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         bool eight_neighbors,
+                         ValueType background_value)
+{
+    return labelImageWithBackground(srcImageRange(src),
+                                    destImage(dest),
+                                    eight_neighbors, background_value,
+                                    std::equal_to<typename SrcAccessor::value_type>());
+}
+
 /********************************************************/
 /*                                                      */
 /*            regionImageToCrackEdgeImage               */
@@ -601,7 +695,19 @@ unsigned int labelImageWithBackground(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class DestValue>
+        void regionImageToCrackEdgeImage(
+                       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                       DestIterator dul, DestAccessor da,
+                       DestValue edge_marker)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -798,15 +904,26 @@ void regionImageToCrackEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-inline
-void regionImageToCrackEdgeImage(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           DestValue edge_marker)
+inline void 
+regionImageToCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            DestValue edge_marker)
 {
     regionImageToCrackEdgeImage(src.first, src.second, src.third,
-                                        dest.first, dest.second,
-                                        edge_marker);
+                                dest.first, dest.second,
+                                edge_marker);
+}
+
+template <class T1, class S1,
+          class T2, class S2, class DestValue>
+inline void 
+regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            DestValue edge_marker)
+{
+    regionImageToCrackEdgeImage(srcImageRange(src),
+                                destImage(dest),
+                                edge_marker);
 }
 
 /********************************************************/
@@ -819,7 +936,19 @@ void regionImageToCrackEdgeImage(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class DestValue>
+        void regionImageToEdgeImage(
+                       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
+                       DestIterator dul, DestAccessor da,
+                       DestValue edge_marker)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -960,15 +1089,26 @@ void regionImageToEdgeImage(
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor, class DestValue>
-inline
-void regionImageToEdgeImage(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           DestValue edge_marker)
+inline void 
+regionImageToEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                       pair<DestIterator, DestAccessor> dest,
+                       DestValue edge_marker)
 {
     regionImageToEdgeImage(src.first, src.second, src.third,
-                                        dest.first, dest.second,
-                                        edge_marker);
+                           dest.first, dest.second,
+                           edge_marker);
+}
+
+template <class T1, class S1,
+          class T2, class S2, class DestValue>
+inline void 
+regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       DestValue edge_marker)
+{
+    regionImageToEdgeImage(srcImageRange(src),
+                           destImage(dest),
+                           edge_marker);
 }
 
 //@}

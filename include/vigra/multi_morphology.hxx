@@ -163,7 +163,19 @@ struct MultiBinaryMorphologyImpl<bool, bool>
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        multiBinaryErosion(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest, int radius);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -262,7 +274,19 @@ void multiBinaryErosion(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        multiBinaryDilation(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest, int radius);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -357,7 +381,19 @@ void multiBinaryDilation(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        multiGrayscaleErosion(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest, double sigma);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -476,7 +512,19 @@ void multiGrayscaleErosion(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        multiGrayscaleDilation(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest, double sigma);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,

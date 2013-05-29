@@ -117,7 +117,21 @@ internalResizeMultiArrayOneDimension(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class Shape, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class Kernel = BSpline<3, double> >
+        void
+        resizeMultiArraySplineInterpolation(
+                              SrcIterator si, Shape const & sshape, SrcAccessor src,
+                              DestIterator di, Shape const & dshape, DestAccessor dest,
+                              Kernel const & spline = BSpline<3, double>());
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class Shape, class SrcAccessor,

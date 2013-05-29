@@ -271,7 +271,25 @@ enum SRGType {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestIterator, class DestAccessor,
+                  class RegionStatisticsArray, class Neighborhood>
+        typename SeedAccessor::value_type 
+        seededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
+                            SeedImageIterator seedsul, SeedAccessor aseeds,
+                            DestIterator destul, DestAccessor ad,
+                            RegionStatisticsArray & stats,
+                            SRGType srgType = CompleteGrow,
+                            Neighborhood neighborhood = FourNeighborCode(),
+                            double max_cost = NumericTraits<double>::max());
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

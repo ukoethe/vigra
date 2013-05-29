@@ -702,7 +702,32 @@ scaleKernel(K & kernel, double a)
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // apply the same kernel to all dimensions
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class T>
+        void
+        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
+                                    Kernel1D<T> const & kernel,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
+
+        // apply each kernel from the sequence 'kernels' in turn
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class KernelIterator>
+        void
+        separableConvolveMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
+                                    KernelIterator kernels,
+                                    SrcShape const & start = SrcShape(),
+                                    SrcShape const & stop = SrcShape());
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         // apply the same kernel to all dimensions
@@ -886,7 +911,21 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class T>
+        void
+        convolveMultiArrayOneDimension(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                       DestIterator diter, DestAccessor dest,
+                                       unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                                       SrcShape const & start = SrcShape(),
+                                       SrcShape const & stop = SrcShape());
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1016,7 +1055,19 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        gaussianSmoothMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                 DestIterator diter, DestAccessor dest,
+                                 double sigma, const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1151,7 +1202,19 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        gaussianGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                   DestIterator diter, DestAccessor dest,
+                                   double sigma, const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1401,7 +1464,19 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        symmetricGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
+                                    const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1537,7 +1612,19 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        laplacianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                      DestIterator diter, DestAccessor dest,
+                                      double sigma, const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1712,7 +1799,19 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        hessianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                    DestIterator diter, DestAccessor dest,
+                                    double sigma, const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1920,7 +2019,20 @@ struct StructurTensorFunctor
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        structureTensorMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                  DestIterator diter, DestAccessor dest,
+                                  double innerScale, double outerScale,
+                                  const ConvolutionOptions<N> & opt);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,

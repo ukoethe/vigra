@@ -251,7 +251,30 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                   DestIterator d, DestAccessor dest, 
+                                   bool background,
+                                   Array const & pixelPitch);
+                                        
+        // use default pixel pitch = 1.0 for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        separableMultiDistSquared(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                                  DestIterator diter, DestAccessor dest, 
+                                  bool background);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
@@ -437,7 +460,30 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor, class Array>
+        void 
+        separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, 
+                                bool background,
+                                Array const & pixelPitch);
+                                        
+        // use default pixel pitch = 1.0 for each coordinate
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        separableMultiDistance(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
+                               DestIterator diter, DestAccessor dest, 
+                               bool background);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate

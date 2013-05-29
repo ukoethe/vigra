@@ -60,7 +60,18 @@ namespace vigra {
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                    DestIterator id, DestAccessor ad, int rotation);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -194,6 +205,15 @@ rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     rotateImage(src.first, src.second, src.third, dest.first, dest.second, rotation);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+rotateImage(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, T2, S2> dest, int rotation)
+{
+    rotateImage(srcImageRange(src), destImage(dest), rotation);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     reflectImage                     */
@@ -219,7 +239,18 @@ Reflect operator|(Reflect l, Reflect r)
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                     DestIterator id, DestAccessor ad, Reflect axis);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -342,6 +373,15 @@ reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     reflectImage(src.first, src.second, src.third, dest.first, dest.second, reflect);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+reflectImage(MultiArrayView<2, T1, S1> const & src,
+             MultiArrayView<2, T2, S2> dest, Reflect reflect)
+{
+    reflectImage(srcImageRange(src), destImage(dest), reflect);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    transposeImage                   */
@@ -366,7 +406,18 @@ enum Transpose{major = 1, minor = 2};
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
+                       DestIterator id, DestAccessor ad, Transpose axis);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -491,6 +542,15 @@ transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     transposeImage(src.first, src.second, src.third, dest.first, dest.second, transpose);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+transposeImage(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest, Transpose transpose)
+{
+    transposeImage(srcImageRange(src), destImage(dest), transpose);
+}
+
 /********************************************************/
 /*                                                      */
 /*                        resampleLine                  */
@@ -602,7 +662,24 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestAccessor ad, double factor);
+                      
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
+                      DestIterator id, DestAccessor ad, double xfactor, double yfactor);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -747,6 +824,24 @@ resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor)
 {
   resampleImage(src.first, src.second, src.third, dest.first, dest.second, xfactor, yfactor);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+resampleImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest, double factor)
+{
+  resampleImage(srcImageRange(src), destImage(dest), factor);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+resampleImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor)
+{
+  resampleImage(srcImageRange(src), destImage(dest), xfactor, yfactor);
 }
 
 //@}

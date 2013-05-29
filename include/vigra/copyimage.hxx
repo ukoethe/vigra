@@ -105,7 +105,19 @@ swapLine(SrcIterator s,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class DestImageIterator, class DestAccessor>
+        void
+        copyImage(SrcImageIterator src_upperleft, 
+              SrcImageIterator src_lowerright, SrcAccessor sa,
+              DestImageIterator dest_upperleft, DestAccessor da)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -179,10 +191,20 @@ template <class SrcImageIterator, class SrcAccessor,
 inline
 void
 copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-      pair<DestImageIterator, DestAccessor> dest)
+          pair<DestImageIterator, DestAccessor> dest)
 {
     copyImage(src.first, src.second, src.third, 
-                   dest.first, dest.second);
+              dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline
+void
+copyImage(MultiArrayView<2, T1, S1> const & src,
+          MultiArrayView<2, T2, S2> dest)
+{
+    copyImage(srcImageRange(src), destImage(dest));
 }
 
 template <class SrcImageIterator, class SrcAccessor,
@@ -213,6 +235,16 @@ swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                   dest.first, dest.second);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline
+void
+swapImageData(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest)
+{
+    swapImageData(srcImageRange(src), destImage(dest));
+}
+
 /********************************************************/
 /*                                                      */
 /*                       copyImageIf                    */
@@ -228,7 +260,21 @@ swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+              class MaskImageIterator, class MaskAccessor,
+              class DestImageIterator, clas DestAccessor>
+        void
+        copyImageIf(SrcImageIterator src_upperleft, 
+            SrcImageIterator src_lowerright, SrcAccessor sa,
+            MaskImageIterator mask_upperleft, MaskAccessor ma,
+            DestImageIterator dest_upperleft, DestAccessor da)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -316,12 +362,26 @@ template <class SrcImageIterator, class SrcAccessor,
 inline
 void
 copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-        pair<MaskImageIterator, MaskAccessor> mask,
-        pair<DestImageIterator, DestAccessor> dest)
+            pair<MaskImageIterator, MaskAccessor> mask,
+            pair<DestImageIterator, DestAccessor> dest)
 {
     copyImageIf(src.first, src.second, src.third, 
                 mask.first, mask.second, 
-        dest.first, dest.second);
+                dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
+inline
+void
+copyImageIf(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, TM, SM> const & mask,
+            MultiArrayView<2, T2, S2> dest)
+{
+    copyImageIf(srcImageRange(src), 
+                maskImage(mask), 
+                destImage(dest));
 }
 
 //@}

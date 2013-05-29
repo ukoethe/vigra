@@ -67,7 +67,18 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                            DestIterator dul, DestAccessor dest,
+                            bool negateComponent2 = false);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -192,7 +203,17 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                       DestIterator dul, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -291,7 +312,17 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                         DestIterator dul, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -376,7 +407,19 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator1, class DestAccessor1,
+                  class DestIterator2, class DestAccessor2>
+        void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                DestIterator1 edgeul, DestAccessor1 edge,
+                                DestIterator2 cornerul, DestAccessor2 corner);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

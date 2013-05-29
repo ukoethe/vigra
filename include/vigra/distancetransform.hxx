@@ -303,16 +303,29 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-                           class DestImageIterator, class DestAccessor,
-                           class ValueType>
+                  class DestImageIterator, class DestAccessor,
+                  class ValueType>
         void distanceTransform(SrcImageIterator src_upperleft, 
-                        SrcImageIterator src_lowerright, SrcAccessor sa,
-                        DestImageIterator dest_upperleft, DestAccessor da,
-                        ValueType background, int norm)
+                               SrcImageIterator src_lowerright, SrcAccessor sa,
+                               DestImageIterator dest_upperleft, DestAccessor da,
+                               ValueType background, int norm)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class ValueType>
+        void distanceTransform(SrcImageIterator src_upperleft, 
+                               SrcImageIterator src_lowerright, SrcAccessor sa,
+                               DestImageIterator dest_upperleft, DestAccessor da,
+                               ValueType background, int norm);
     }
     \endcode
     
@@ -321,12 +334,11 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-                           class DestImageIterator, class DestAccessor,
-                           class ValueType>
-        void distanceTransform(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest,
-            ValueType background, int norm)
+                  class DestImageIterator, class DestAccessor,
+                  class ValueType>
+        void distanceTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                               pair<DestImageIterator, DestAccessor> dest,
+                               ValueType background, int norm);
     }
     \endcode
     
@@ -406,16 +418,27 @@ distanceTransform(SrcImageIterator src_upperleft,
 }
 
 template <class SrcImageIterator, class SrcAccessor,
-                   class DestImageIterator, class DestAccessor,
-                   class ValueType>
+          class DestImageIterator, class DestAccessor,
+          class ValueType>
 inline void
-distanceTransform(
-    triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-    pair<DestImageIterator, DestAccessor> dest,
-    ValueType background, int norm)
+distanceTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                  pair<DestImageIterator, DestAccessor> dest,
+                  ValueType background, int norm)
 {
     distanceTransform(src.first, src.second, src.third,
                       dest.first, dest.second, background, norm);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class ValueType>
+inline void
+distanceTransform(MultiArrayView<2, T1, S1> const & src,
+                  MultiArrayView<2, T2, S2> dest,
+                  ValueType background, int norm)
+{
+    distanceTransform(srcImageRange(src),
+                      destImage(dest), background, norm);
 }
 
 //@}

@@ -80,7 +80,16 @@ typedef TIFF TiffImage;
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -169,7 +178,16 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -529,7 +547,16 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        void
+        tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
@@ -1019,7 +1046,17 @@ struct CreateTiffImage;
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        TiffImage *
+        createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                        Accessor a)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1096,7 +1133,17 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        TiffImage *
+        createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                  Accessor a)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1505,7 +1552,17 @@ struct CreateTiffImage<double>
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        TiffImage *
+        createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                   RGBAccessor a)
+                }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>

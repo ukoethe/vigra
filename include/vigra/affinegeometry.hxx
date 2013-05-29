@@ -167,7 +167,27 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // rotate about given center point
+        template <int ORDER, class T, 
+                  class DestIterator, class DestAccessor>
+        void rotateImage(SplineImageView<ORDER, T> const & src,
+                         DestIterator id, DestAccessor dest, 
+                         double angleInDegree, TinyVector<double, 2> const & center);
+                         
+        // rotate about image center
+        template <int ORDER, class T, 
+                  class DestIterator, class DestAccessor>
+        void 
+        rotateImage(SplineImageView<ORDER, T> const & src,
+                    DestIterator id, DestAccessor dest, 
+                    double angleInDegree)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         // rotate about given center point
@@ -296,6 +316,27 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     rotateImage(src, dest.first, dest.second, angleInDegree, center);
 }
 
+template <int ORDER, class T, 
+          class T2, class S2>
+inline void 
+rotateImage(SplineImageView<ORDER, T> const & src,
+            MultiArrayView<2, T2, S2> dest, 
+            double angleInDegree, TinyVector<double, 2> const & center)
+{
+    rotateImage(src, destImage(dest), angleInDegree, center);
+}
+
+template <int ORDER, class T, 
+          class T2, class S2>
+inline void 
+rotateImage(SplineImageView<ORDER, T> const & src,
+            MultiArrayView<2, T2, S2> dest, 
+            double angleInDegree)
+{
+    TinyVector<double, 2> center((src.width()-1.0) / 2.0, (src.height()-1.0) / 2.0);
+    rotateImage(src, destImage(dest), angleInDegree, center);
+}
+
 /********************************************************/
 /*                                                      */
 /*                  affineWarpImage                     */
@@ -306,7 +347,19 @@ rotateImage(SplineImageView<ORDER, T> const & src,
 
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <int ORDER, class T, 
+                class DestIterator, class DestAccessor,
+                class C>
+        void affineWarpImage(SplineImageView<ORDER, T> const & src,
+                            DestIterator dul, DestIterator dlr, DestAccessor dest, 
+                            MultiArrayView<2, double, C> const & affineMatrix);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <int ORDER, class T, 
@@ -424,6 +477,17 @@ void affineWarpImage(SplineImageView<ORDER, T> const & src,
                      MultiArrayView<2, double, C> const & affineMatrix)
 {
     affineWarpImage(src, dest.first, dest.second, dest.third, affineMatrix);
+}
+
+template <int ORDER, class T, 
+          class T2, class S2,
+          class C>
+inline
+void affineWarpImage(SplineImageView<ORDER, T> const & src,
+                     MultiArrayView<2, T2, S2> dest, 
+                     MultiArrayView<2, double, C> const & affineMatrix)
+{
+    affineWarpImage(src, destImageRange(dest), affineMatrix);
 }
 
 

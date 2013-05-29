@@ -315,7 +315,19 @@ namespace vigra
      *
      * <B>Declarations</B>
      *
-     * Pass arguments explicitly:
+     * pass 2D array views:
+     * \code
+     *     namespace vigra {
+     *         template <class ImageIterator, class ImageAccessor,
+     *                   class AlphaIterator, class AlphaAccessor>
+     *         void
+     *         importImageAlpha(const ImageImportInfo& importInfo,
+     *                          ImageIterator imageIterator, ImageAccessor imageAccessor,
+     *                          AlphaIterator alphaIterator, AlphaAccessor alphaAccessor)
+     *     }
+     * \endcode
+     *
+     * pass \ref ImageIterators and \ref DataAccessors:
      * \code
      *     namespace vigra {
      *         template <class ImageIterator, class ImageAccessor,
@@ -403,13 +415,23 @@ namespace vigra
     template <class ImageIterator, class ImageAccessor,
               class AlphaIterator, class AlphaAccessor>
     inline void
-    importImageAlpha(const ImageImportInfo& import_info,
-                     const vigra::pair<ImageIterator, ImageAccessor>& image,
-                     const vigra::pair<AlphaIterator, AlphaAccessor>& alpha)
+    importImageAlpha(ImageImportInfo const & import_info,
+                     pair<ImageIterator, ImageAccessor> image,
+                     pair<AlphaIterator, AlphaAccessor> alpha)
     {
         importImageAlpha(import_info,
                          image.first, image.second,
                          alpha.first, alpha.second);
+    }
+
+    template <class T1, class S1,
+              class T2, class S2>
+    inline void
+    importImageAlpha(ImageImportInfo const & import_info,
+                     MultiArrayView<2, T1, S1> image,
+                     MultiArrayView<2, T2, S2> alpha)
+    {
+        importImageAlpha(import_info, destImage(image), destImage(alpha));
     }
 
 
@@ -853,7 +875,19 @@ namespace vigra
      *
      * <B>Declarations</B>
      *
-     * Pass arguments explicitly:
+     * pass 2D array views:
+     * \code
+     *     namespace vigra {
+     *         template <class ImageIterator, class ImageAccessor,
+     *                   class AlphaIterator, class AlphaAccessor>
+     *         void
+     *         exportImageAlpha(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
+     *                          AlphaIterator alphaUpperLeft, AlphaAccessor alphaAccessor,
+     *                          const ImageExportInfo& exportInfo)
+     *     }
+     * \endcode
+     *
+     * pass \ref ImageIterators and \ref DataAccessors:
      * \code
      *     namespace vigra {
      *         template <class ImageIterator, class ImageAccessor,
@@ -956,12 +990,50 @@ namespace vigra
     template <class ImageIterator, class ImageAccessor,
               class AlphaIterator, class AlphaAccessor>
     inline void
-    exportImageAlpha(const vigra::triple<ImageIterator, ImageIterator, ImageAccessor>& image,
-                     const vigra::pair<AlphaIterator, AlphaAccessor>& alpha,
-                     const ImageExportInfo& export_info)
+    exportImageAlpha(triple<ImageIterator, ImageIterator, ImageAccessor> image,
+                     pair<AlphaIterator, AlphaAccessor> alpha,
+                     ImageExportInfo const & export_info)
     {
         exportImageAlpha(image.first, image.second, image.third,
                          alpha.first, alpha.second,
+                         export_info);
+    }
+
+    template <class T1, class S1,
+              class T2, class S2>
+    inline void
+    exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                     MultiArrayView<2, T2, S2> const & alpha,
+                     ImageExportInfo const & export_info)
+    {
+        exportImageAlpha(srcImageRange(image),
+                         srcImage(alpha),
+                         export_info);
+    }
+
+    template <class T1, class S1,
+              class T2, class S2>
+    inline void
+    exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                     MultiArrayView<2, T2, S2> const & alpha,
+                     char const * name)
+    {
+        ImageExportInfo export_info(name);
+        exportImageAlpha(srcImageRange(image),
+                         srcImage(alpha),
+                         export_info);
+    }
+
+    template <class T1, class S1,
+              class T2, class S2>
+    inline void
+    exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                     MultiArrayView<2, T2, S2> const & alpha,
+                     std::string const & name)
+    {
+        ImageExportInfo export_info(name.c_str());
+        exportImageAlpha(srcImageRange(image),
+                         srcImage(alpha),
                          export_info);
     }
 
