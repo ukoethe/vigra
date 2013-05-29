@@ -610,7 +610,17 @@ namespace vigra
      *
      * <B>Declarations</B>
      *
-     * Pass arguments explicitly:
+     * pass 2D array views:
+     * \code
+     * namespace vigra {
+     *     template <class ImageIterator, class Accessor>
+     *     void
+     *     importImage(const ImageImportInfo& importInfo,
+     *                 ImageIterator imageIterator, Accessor imageAccessor)
+     * }
+     * \endcode
+     *
+     * pass \ref ImageIterators and \ref DataAccessors:
      * \code
      * namespace vigra {
      *     template <class ImageIterator, class Accessor>
@@ -714,11 +724,37 @@ namespace vigra
 
     template <class ImageIterator, class ImageAccessor>
     inline void
-    importImage(const ImageImportInfo& import_info,
-                const vigra::pair<ImageIterator, ImageAccessor>& image)
+    importImage(ImageImportInfo const & import_info,
+                pair<ImageIterator, ImageAccessor> image)
     {
         importImage(import_info,
                     image.first, image.second);
+    }
+
+    template <class T, class S>
+    inline void
+    importImage(ImageImportInfo const & import_info,
+                MultiArrayView<2, T, S> image)
+    {
+        importImage(import_info, destImage(image));
+    }
+
+    template <class T, class A>
+    inline void
+    importImage(char const * name,
+                MultiArray<2, T, A> & image)
+    {
+        ImageImportInfo info(name);
+        image.resize(info.shape());
+        importImage(info, destImage(image));
+    }
+
+    template <class T, class A>
+    inline void
+    importImage(std::string const & name,
+                MultiArray<2, T, A> & image)
+    {
+        importImage(name.c_str(), image);
     }
 
     /**
@@ -751,7 +787,17 @@ namespace vigra
      *
      * <B>Declarations</B>
      *
-     * Pass arguments explicitly:
+     * pass 2D array views:
+     * \code
+     * namespace vigra {
+     *     template <class ImageIterator, class ImageAccessor>
+     *     void
+     *     exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
+     *                 const ImageExportInfo& exportInfo)
+     * }
+     * \endcode
+     *
+     * pass \ref ImageIterators and \ref DataAccessors:
      * \code
      * namespace vigra {
      *     template <class ImageIterator, class ImageAccessor>
@@ -823,14 +869,39 @@ namespace vigra
         }
     }
 
-
     template <class ImageIterator, class ImageAccessor>
     inline void
-    exportImage(const vigra::triple<ImageIterator, ImageIterator, ImageAccessor>& image,
-                const ImageExportInfo& export_info)
+    exportImage(triple<ImageIterator, ImageIterator, ImageAccessor> image,
+                ImageExportInfo const & export_info)
     {
         exportImage(image.first, image.second, image.third,
                     export_info);
+    }
+
+    template <class T, class S>
+    inline void
+    exportImage(MultiArrayView<2, T, S> const & image,
+                ImageExportInfo const & export_info)
+    {
+        exportImage(srcImageRange(image), export_info);
+    }
+
+    template <class T, class S>
+    inline void
+    exportImage(MultiArrayView<2, T, S> const & image,
+                char const * name)
+    {
+        ImageExportInfo export_info(name);
+        exportImage(srcImageRange(image), export_info);
+    }
+
+    template <class T, class S>
+    inline void
+    exportImage(MultiArrayView<2, T, S> const & image,
+                std::string const & name)
+    {
+        ImageExportInfo export_info(name.c_str());
+        exportImage(srcImageRange(image), export_info);
     }
 
 /** @} */

@@ -206,7 +206,18 @@ public:
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor src,
+                                 DestIterator di, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -294,7 +305,18 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        tensorTraceMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
+                              DestIterator di, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -373,7 +395,18 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
+                                    DestIterator di, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -462,7 +495,18 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcShape, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void 
+        tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
+                                    DestIterator di, DestAccessor dest);
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,

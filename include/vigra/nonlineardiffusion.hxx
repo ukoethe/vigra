@@ -244,7 +244,19 @@ void internalNonlinearDiffusionAOSStep(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class DiffusivityFunctor>
+        void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                                DestIterator dul, DestAccessor ad,
+                                DiffusivityFunctor const & weight, double scale);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -355,16 +367,30 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>
-inline
-void nonlinearDiffusion(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    DiffusivityFunc const & weight, double scale)
+inline void
+nonlinearDiffusion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   DiffusivityFunc const & weight, double scale)
 {
     nonlinearDiffusion(src.first, src.second, src.third,
-                           dest.first, dest.second,
-                           weight, scale);
+                       dest.first, dest.second,
+                       weight, scale);
 }
+
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
+inline void
+nonlinearDiffusion(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   DiffusivityFunc const & weight, double scale)
+{
+    nonlinearDiffusion(srcImageRange(src),
+                       destImage(dest),
+                       weight, scale);
+}
+
+/********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
           class WeightIterator, class WeightAccessor,
@@ -609,15 +635,27 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>
-inline
-void nonlinearDiffusionExplicit(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    DiffusivityFunc const & weight, double scale)
+inline void
+nonlinearDiffusionExplicit(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           pair<DestIterator, DestAccessor> dest,
+                           DiffusivityFunc const & weight, double scale)
 {
     nonlinearDiffusionExplicit(src.first, src.second, src.third,
-                           dest.first, dest.second,
-                           weight, scale);
+                               dest.first, dest.second,
+                               weight, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
+inline void
+nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           DiffusivityFunc const & weight, double scale)
+{
+    nonlinearDiffusionExplicit(srcImageRange(src),
+                               destImage(dest),
+                               weight, scale);
 }
 
 /********************************************************/

@@ -205,7 +205,20 @@ namespace vigra {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class T>
+        void convolveImage(SrcIterator supperleft,
+                           SrcIterator slowerright, SrcAccessor sa,
+                           DestIterator dupperleft, DestAccessor da,
+                           Kernel1D<T> const & kx, Kernel1D<T> const & ky);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -282,6 +295,30 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                   dest.first, dest.second, kx, ky);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class T>
+inline void
+convolveImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest,
+              Kernel1D<T> const & k)
+{
+    convolveImage(srcImageRange(src),
+                  destImage(dest), k, k);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class T>
+inline void
+convolveImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest,
+              Kernel1D<T> const & kx, Kernel1D<T> const & ky)
+{
+    convolveImage(srcImageRange(src),
+                  destImage(dest), kx, ky);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    simpleSharpening                  */
@@ -310,7 +347,18 @@ convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+      template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+      void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                            DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)
+
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -379,10 +427,20 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline
 void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                    pair<DestIterator, DestAccessor> dest, double sharpening_factor)
+                      pair<DestIterator, DestAccessor> dest, double sharpening_factor)
 {
     simpleSharpening(src.first, src.second, src.third,
                      dest.first, dest.second, sharpening_factor);
+}
+
+template <class T1, class S1, 
+          class T2, class S2>
+inline
+void simpleSharpening(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest, double sharpening_factor)
+{
+    simpleSharpening(srcImageRange(src),
+                     destImage(dest), sharpening_factor);
 }
 
 
@@ -411,7 +469,18 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+      template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+      void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                              DestIterator dest_ul, DestAccessor dest_acc, 
+                              double sharpening_factor, double scale)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -498,6 +567,18 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                        sharpening_factor, scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+void gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        double sharpening_factor, 
+                        double scale)
+{
+    gaussianSharpening(srcImageRange(src),
+                       destImage(dest),
+                       sharpening_factor, scale);
+}
+
 
 
 /********************************************************/
@@ -516,7 +597,19 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void gaussianSmoothing(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIterator dupperleft, DestAccessor da,
+                                double scale_x, double scale_y = scale_x);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -616,6 +709,28 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       dest.first, dest.second, scale, scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
+                  MultiArrayView<2, T2, S2> dest,
+                  double scale_x, double scale_y)
+{
+    gaussianSmoothing(srcImageRange(src),
+                      destImage(dest), scale_x, scale_y);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
+                  MultiArrayView<2, T2, S2> dest,
+                  double scale)
+{
+    gaussianSmoothing(srcImageRange(src),
+                      destImage(dest), scale, scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     gaussianGradient                 */
@@ -633,7 +748,30 @@ gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // write x and y component of the gradient into separate images
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIteratorX, class DestAccessorX,
+                  class DestIteratorY, class DestAccessorY>
+        void gaussianGradient(SrcIterator supperleft,
+                              SrcIterator slowerright, SrcAccessor sa,
+                              DestIteratorX dupperleftx, DestAccessorX dax,
+                              DestIteratorY dupperlefty, DestAccessorY day,
+                              double scale);
+
+        // write x and y component of the gradient into a vector-valued image
+        template <class SrcIterator, class SrcAccessor,
+                 class DestIterator, class DestAccessor>
+        void gaussianGradient(SrcIterator supperleft,
+                              SrcIterator slowerright, SrcAccessor src,
+                              DestIterator dupperleft, DestAccessor dest,
+                              double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         // write x and y component of the gradient into separate images
@@ -762,6 +900,30 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                      dest.first, dest.second, scale);
 }
 
+template <class T1, class S1,
+          class T2X, class S2X,
+          class T2Y, class S2Y>
+inline void
+gaussianGradient(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2X, S2X> destx,
+                 MultiArrayView<2, T2Y, S2Y> desty,
+                 double scale)
+{
+    gaussianGradient(srcImageRange(src),
+                     destImage(destx), destImage(desty), scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianGradient(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, TinyVector<T2, 2>, S2> dest,
+                 double scale)
+{
+    gaussianGradient(srcImageRange(src),
+                     destImage(dest), scale);
+}
+
 /** \brief Calculate the gradient magnitude by means of a 1st derivatives of
     Gaussian filter.
 
@@ -798,7 +960,19 @@ gaussianGradient(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     the input array's right-most dimension is interpreted as a channel axis, therefore it must 
     have one dimension more than the output array.
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void gaussianGradientMagnitude(SrcIterator sul,
+                                       SrcIterator slr, SrcAccessor src,
+                                       DestIterator dupperleft, DestAccessor dest,
+                                       double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -910,6 +1084,17 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                               dest.first, dest.second, scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianGradientMagnitude(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest,
+                          double scale)
+{
+    gaussianGradientMagnitude(srcImageRange(src),
+                              destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                 laplacianOfGaussian                  */
@@ -925,7 +1110,19 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void laplacianOfGaussian(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIterator dupperleft, DestAccessor da,
+                                double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1001,11 +1198,22 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  double scale)
+                    pair<DestIterator, DestAccessor> dest,
+                    double scale)
 {
     laplacianOfGaussian(src.first, src.second, src.third,
-                 dest.first, dest.second, scale);
+                        dest.first, dest.second, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    double scale)
+{
+    laplacianOfGaussian(srcImageRange(src),
+                        destImage(dest), scale);
 }
 
 /********************************************************/
@@ -1039,7 +1247,23 @@ laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIteratorX, class DestAccessorX,
+                  class DestIteratorXY, class DestAccessorXY,
+                  class DestIteratorY, class DestAccessorY>
+        void hessianMatrixOfGaussian(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIteratorX dupperleftx, DestAccessorX dax,
+                                DestIteratorXY dupperleftxy, DestAccessorXY daxy,
+                                DestIteratorY dupperlefty, DestAccessorY day,
+                                double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1131,16 +1355,50 @@ template <class SrcIterator, class SrcAccessor,
           class DestIteratorY, class DestAccessorY>
 inline void
 hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIteratorX, DestAccessorX> destx,
-                  pair<DestIteratorXY, DestAccessorXY> destxy,
-                  pair<DestIteratorY, DestAccessorY> desty,
-                  double scale)
+                        pair<DestIteratorX, DestAccessorX> destx,
+                        pair<DestIteratorXY, DestAccessorXY> destxy,
+                        pair<DestIteratorY, DestAccessorY> desty,
+                        double scale)
 {
     hessianMatrixOfGaussian(src.first, src.second, src.third,
-                 destx.first, destx.second,
-                 destxy.first, destxy.second,
-                 desty.first, desty.second,
-                 scale);
+                            destx.first, destx.second,
+                            destxy.first, destxy.second,
+                            desty.first, desty.second,
+                            scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2X,
+          class T2, class S2XY,
+          class T2, class S2Y>
+inline void
+hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2X> destx,
+                        MultiArrayView<2, T2, S2XY> destxy,
+                        MultiArrayView<2, T2, S2Y> desty,
+                        double scale)
+{
+    hessianMatrixOfGaussian(srcImageRange(src),
+                            destImage(destx),
+                            destImage(destxy),
+                            destImage(desty),
+                            scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
+                        double scale)
+{
+    MultiArrayView<3, T2> expanded(dest.expandElements(0));
+    
+    hessianMatrixOfGaussian(srcImageRange(src),
+                            destImage(expanded.bind<0>(0)),
+                            destImage(expanded.bind<0>(1)),
+                            destImage(expanded.bind<0>(2)),
+                            scale);
 }
 
 /********************************************************/
@@ -1182,7 +1440,32 @@ hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // create three separate destination images
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIteratorX, class DestAccessorX,
+                  class DestIteratorXY, class DestAccessorXY,
+                  class DestIteratorY, class DestAccessorY>
+        void structureTensor(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIteratorX dupperleftx, DestAccessorX dax,
+                                DestIteratorXY dupperleftxy, DestAccessorXY daxy,
+                                DestIteratorY dupperlefty, DestAccessorY day,
+                                double inner_scale, double outer_scale);
+
+        // create a single 3-band destination image
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void structureTensor(SrcIterator supperleft,
+                                SrcIterator slowerright, SrcAccessor sa,
+                                DestIterator dupperleft, DestAccessor da,
+                                double inner_scale, double outer_scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         // create three separate destination images
@@ -1372,11 +1655,23 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  double inner_scale, double outer_scale)
+                pair<DestIterator, DestAccessor> dest,
+                double inner_scale, double outer_scale)
 {
     structureTensor(src.first, src.second, src.third,
                     dest.first, dest.second,
+                    inner_scale, outer_scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+structureTensor(MultiArrayView<2, T1, S1> const & src,
+                MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
+                double inner_scale, double outer_scale)
+{
+    structureTensor(srcImageRange(src),
+                    destImage(dest),
                     inner_scale, outer_scale);
 }
 

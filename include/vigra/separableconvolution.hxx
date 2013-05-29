@@ -792,7 +792,21 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
+                          DestIterator id, DestAccessor da,
+                          KernelIterator ik, KernelAccessor ka,
+                          int kleft, int kright, BorderTreatmentMode border,
+                          int start = 0, int stop = 0 )
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1001,7 +1015,21 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void separableConvolveX(SrcImageIterator supperleft,
+                                SrcImageIterator slowerright, SrcAccessor sa,
+                                DestImageIterator dupperleft, DestAccessor da,
+                                KernelIterator ik, KernelAccessor ka,
+                                int kleft, int kright, BorderTreatmentMode border)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1113,7 +1141,21 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void separableConvolveY(SrcImageIterator supperleft,
+                                SrcImageIterator slowerright, SrcAccessor sa,
+                                DestImageIterator dupperleft, DestAccessor da,
+                                KernelIterator ik, KernelAccessor ka,
+                                int kleft, int kright, BorderTreatmentMode border)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

@@ -59,7 +59,28 @@ namespace vigra{
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+
+        template <class SrcIterator, class SrcAccessor,class SrcShape,
+                  class DestIterator, class DestAccessor,
+                  class Neighborhood3D>
+        unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                                 DestIterator d_Iter, DestAccessor da,
+                                 Neighborhood3D neighborhood3D);
+
+        template <class SrcIterator, class SrcAccessor,class SrcShape,
+                          class DestIterator, class DestAccessor,
+                          class Neighborhood3D, class EqualityFunctor>
+        unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                                 DestIterator d_Iter, DestAccessor da,
+                                 Neighborhood3D neighborhood3D, EqualityFunctor equal);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
 
@@ -350,7 +371,29 @@ unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 3D array views:
+    \code
+    namespace vigra {
+
+        template <class SrcIterator, class SrcAccessor,class SrcShape,
+                          class DestIterator, class DestAccessor,
+                          class Neighborhood3D, class ValueType>
+        unsigned int labelVolumeWithBackground(    SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                                                          DestIterator d_Iter, DestAccessor da,
+                                                          Neighborhood3D neighborhood3D, ValueType background_value);
+
+        template <class SrcIterator, class SrcAccessor,class SrcShape,
+                          class DestIterator, class DestAccessor,
+                          class Neighborhood3D, class ValueType, class EqualityFunctor>
+        unsigned int labelVolumeWithBackground(    SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                                                            DestIterator d_Iter, DestAccessor da,
+                                                          Neighborhood3D neighborhood3D, ValueType background_value,
+                                                            EqualityFunctor equal);
+
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
 

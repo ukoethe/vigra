@@ -83,7 +83,18 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                             DestIterator dul, DestAccessor dest,
+                             double sigma, double rho);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -191,12 +202,22 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                     pair<DestIterator, DestAccessor> d,
-                     double sigma, double rho)
+inline void
+hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+                pair<DestIterator, DestAccessor> d,
+                double sigma, double rho)
 {
     hourGlassFilter(s.first, s.second, s.third, d.first, d.second, sigma, rho);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
+                MultiArrayView<2, T2, S2> dest,
+                double sigma, double rho)
+{
+    hourGlassFilter(srcImageRange(src), destImage(dest), sigma, rho);
 }
 
 /********************************************************/
@@ -267,12 +288,22 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                      pair<DestIterator, DestAccessor> d,
-                      double sigmax, double sigmin)
+inline void
+ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                 pair<DestIterator, DestAccessor> dest,
+                 double sigmax, double sigmin)
 {
-    ellipticGaussian(s.first, s.second, s.third, d.first, d.second, sigmax, sigmin);
+    ellipticGaussian(src.first, src.second, src.third, dest.first, dest.second, sigmax, sigmin);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+ellipticGaussian(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest,
+                 double sigmax, double sigmin)
+{
+    ellipticGaussian(srcImageRange(src), destImage(dest), sigmax, sigmin);
 }
 
 /********************************************************/
@@ -562,12 +593,23 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Kernel>
-inline
-void orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                      pair<DestIterator, DestAccessor> d,
-                      Kernel const & kernel)
+inline void
+orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            Kernel const & kernel)
 {
-    orientedTrigonometricFilter(s.first, s.second, s.third, d.first, d.second, kernel);
+    orientedTrigonometricFilter(src.first, src.second, src.third, dest.first, dest.second, kernel);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Kernel const & kernel)
+{
+    orientedTrigonometricFilter(srcImageRange(src), destImage(dest), kernel);
 }
 
 //@}

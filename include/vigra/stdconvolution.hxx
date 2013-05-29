@@ -85,7 +85,20 @@ The functions need a suitable 2D kernel to operate.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                           DestIterator dest_ul, DestAccessor dest_acc,
+                           KernelIterator ki, KernelAccessor ak,
+                           Diff2D kul, Diff2D klr, BorderTreatmentMode border);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -436,7 +449,23 @@ void convolveImage(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void
+        normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                                MaskIterator mul, MaskAccessor am,
+                                DestIterator dest_ul, DestAccessor dest_acc,
+                                KernelIterator ki, KernelAccessor ak,
+                                Diff2D kul, Diff2D klr, BorderTreatmentMode border);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -689,7 +718,23 @@ void normalizedConvolveImage(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class MaskIterator, class MaskAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void
+        convolveImageWithMask(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                              MaskIterator mul, MaskAccessor am,
+                              DestIterator dest_ul, DestAccessor dest_acc,
+                              KernelIterator ki, KernelAccessor ak,
+                              Diff2D kul, Diff2D klr, BorderTreatmentMode border);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

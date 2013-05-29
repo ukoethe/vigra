@@ -382,7 +382,18 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                class DestIterator, class DestAccessor>
+        void rieszTransformOfLOG(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                                 DestIterator dupperleft, DestAccessor dest,
+                                 double scale, unsigned int xorder, unsigned int yorder);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -529,6 +540,18 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     rieszTransformOfLOG(src.first, src.second, src.third, dest.first, dest.second,
                         scale, xorder, yorder);
 }
+
+template <class T1, class S1,
+          class T2, class S2>
+inline
+void rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         double scale, unsigned int xorder, unsigned int yorder)
+{
+    rieszTransformOfLOG(srcImageRange(src), destImage(dest),
+                        scale, xorder, yorder);
+}
+
 //@}
 
 /** \addtogroup TensorImaging Tensor Image Processing
@@ -560,7 +583,18 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                            DestIterator dupperleft, DestAccessor dest,
+                            double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -624,6 +658,17 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    dest.first, dest.second, scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline
+void boundaryTensor(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    double scale)
+{
+    boundaryTensor(srcImageRange(src),
+                   destImage(dest), scale);
+}
+
 /** \brief Boundary tensor variant.
 
     This function implements a variant of the boundary tensor where the 
@@ -635,7 +680,18 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b>\#include</b> \<vigra/boundarytensor.hxx\>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void boundaryTensor1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
+                             DestIterator dupperleft, DestAccessor dest,
+                             double scale);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -685,6 +741,17 @@ void boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     boundaryTensor1(src.first, src.second, src.third,
                     dest.first, dest.second, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline
+void boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest,
+                     double scale)
+{
+    boundaryTensor1(srcImageRange(src),
+                    destImage(dest), scale);
 }
 
 /********************************************************/
@@ -793,6 +860,19 @@ void boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     boundaryTensor3(src.first, src.second, src.third,
                     even.first, even.second, odd.first, odd.second, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2Even,
+          class T2, class S2Odd>
+inline
+void boundaryTensor3(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2Even> even,
+                     MultiArrayView<2, T2, S2Odd> odd,
+                     double scale)
+{
+    boundaryTensor3(srcImageRange(src),
+                    destImage(even), destImage(odd), scale);
 }
 
 //@}

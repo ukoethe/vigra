@@ -103,7 +103,20 @@ transformLineIf(SrcIterator s,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor, class Functor>
+        void
+        transformImage(SrcImageIterator src_upperleft,
+               SrcImageIterator src_lowerright, SrcAccessor sa,
+               DestImageIterator dest_upperleft, DestAccessor da,
+               Functor const & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -214,7 +227,23 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class MaskImageIterator, class MaskAccessor,
+                  class DestImageIterator, clas DestAccessor,
+                  class Functor>
+        void
+        transformImageIf(SrcImageIterator src_upperleft,
+                         SrcImageIterator src_lowerright, SrcAccessor sa,
+                         MaskImageIterator mask_upperleft, MaskAccessor ma,
+                         DestImageIterator dest_upperleft, DestAccessor da,
+                         Functor const & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -341,7 +370,18 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class DestImageIterator, class DestAccessor, class Functor>
+        void
+        gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
+                               DestImageIterator destul, DestAccessor da, Functor const & f)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

@@ -250,7 +250,25 @@ public:
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 3D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class Shape, class SrcAccessor,
+                  class SeedImageIterator, class SeedAccessor,
+                  class DestImageIterator, class DestAccessor,
+                  class RegionStatisticsArray, class Neighborhood>
+        void 
+        seededRegionGrowing3D(SrcImageIterator srcul, Shape shape, SrcAccessor as,
+                              SeedImageIterator seedsul, SeedAccessor aseeds,
+                              DestImageIterator destul, DestAccessor ad,
+                              RegionStatisticsArray & stats, 
+                              SRGType srgType = CompleteGrow,
+                              Neighborhood neighborhood = NeighborCode3DSix(),
+                              double max_cost = NumericTraits<double>::max());
+    }
+    \endcode
+
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcImageIterator, class Shape, class SrcAccessor,

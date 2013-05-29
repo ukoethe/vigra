@@ -170,7 +170,19 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                               DestIterator dul, DestAccessor ad,
+                               double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -293,6 +305,16 @@ void cornerResponseFunction(
                             scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale)
+{
+    cornerResponseFunction(srcImageRange(src), destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*               foerstnerCornerDetector                */
@@ -328,7 +350,19 @@ void cornerResponseFunction(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                               DestIterator dul, DestAccessor ad,
+                               double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -432,14 +466,25 @@ foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void foerstnerCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        double scale)
 {
     foerstnerCornerDetector(src.first, src.second, src.third,
                             dest.first, dest.second,
+                            scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale)
+{
+    foerstnerCornerDetector(srcImageRange(src),
+                            destImage(dest),
                             scale);
 }
 
@@ -476,7 +521,19 @@ void foerstnerCornerDetector(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                           DestIterator dul, DestAccessor ad,
+                           double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -579,15 +636,26 @@ rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void rohrCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   double scale)
 {
     rohrCornerDetector(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            scale);
+                       dest.first, dest.second,
+                       scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   double scale)
+{
+    rohrCornerDetector(srcImageRange(src),
+                       destImage(dest),
+                       scale);
 }
 
 /********************************************************/
@@ -614,7 +682,19 @@ void rohrCornerDetector(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void
+        beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
+                           DestIterator dul, DestAccessor ad,
+                           double scale)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -717,15 +797,26 @@ beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void beaudetCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      pair<DestIterator, DestAccessor> dest,
+                      double scale)
 {
     beaudetCornerDetector(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            scale);
+                          dest.first, dest.second,
+                          scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      double scale)
+{
+    beaudetCornerDetector(srcImageRange(src),
+                          destImage(dest),
+                          scale);
 }
 
 
