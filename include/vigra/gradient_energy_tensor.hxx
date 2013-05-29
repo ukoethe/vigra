@@ -45,6 +45,7 @@
 #include "combineimages.hxx"
 #include "numerictraits.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

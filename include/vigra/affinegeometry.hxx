@@ -40,6 +40,8 @@
 #include "matrix.hxx"
 #include "tinyvector.hxx"
 #include "splineimageview.hxx"
+#include "multi_shape.hxx"
+
 #include <cmath>
 
 namespace vigra {

@@ -45,6 +45,7 @@
 #include "combineimages.hxx"
 #include "numerictraits.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -863,12 +864,12 @@ void boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 }
 
 template <class T1, class S1,
-          class T2, class S2Even,
-          class T2, class S2Odd>
+          class T2E, class S2Even,
+          class T2O, class S2Odd>
 inline
 void boundaryTensor3(MultiArrayView<2, T1, S1> const & src,
-                     MultiArrayView<2, T2, S2Even> even,
-                     MultiArrayView<2, T2, S2Odd> odd,
+                     MultiArrayView<2, T2E, S2Even> even,
+                     MultiArrayView<2, T2O, S2Odd> odd,
                      double scale)
 {
     boundaryTensor3(srcImageRange(src),

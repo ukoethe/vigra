@@ -43,6 +43,7 @@
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
 #include "inspectimage.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -197,14 +198,24 @@ transformImage(SrcImageIterator src_upperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
       class DestImageIterator, class DestAccessor, class Functor>
-inline
-void
+inline void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
                Functor const & f)
 {
     transformImage(src.first, src.second, src.third,
                    dest.first, dest.second, f);
+}
+
+template <class T1, class S1,
+      class T2, class S2, class Functor>
+inline void
+transformImage(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               Functor const & f)
+{
+    transformImage(srcImageRange(src),
+                   destImage(dest), f);
 }
 
 /********************************************************/
@@ -340,8 +351,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor,
           class Functor>
-inline
-void
+inline void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<MaskImageIterator, MaskAccessor> mask,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -350,6 +360,21 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     transformImageIf(src.first, src.second, src.third,
                      mask.first, mask.second,
                      dest.first, dest.second, f);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2,
+          class Functor>
+inline void
+transformImageIf(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, TM, SM> const & mask,
+                 MultiArrayView<2, T2, S2> dest,
+                 Functor const & f)
+{
+    transformImageIf(srcImageRange(src),
+                     maskImage(mask),
+                     destImage(dest), f);
 }
 
 /********************************************************/
@@ -525,13 +550,22 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
-inline
-void
+inline void
 gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
 {
     gradientBasedTransform(src.first, src.second, src.third,
                            dest.first, dest.second, grad);
+}
+
+template <class T1, class S1,
+          class T2, class S2, class Functor>
+inline void
+gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest, Functor const & grad)
+{
+    gradientBasedTransform(srcImageRange(src),
+                           destImage(dest), grad);
 }
 
 /** @} */

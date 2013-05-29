@@ -40,6 +40,8 @@
 #include "utilities.hxx"
 #include "numerictraits.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
+
 #include <cmath>
 
 namespace vigra {

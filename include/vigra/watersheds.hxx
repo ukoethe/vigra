@@ -45,6 +45,7 @@
 #include "seededregiongrowing.hxx"
 #include "functorexpression.hxx"
 #include "union_find.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -570,7 +571,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /********************************************************/
 /*                                                      */
-/*                      watersheds                      */
+/*                 watershedsUnionFind                  */
 /*                                                      */
 /********************************************************/
 
@@ -705,20 +706,41 @@ template <class SrcIterator, class SrcAccessor,
           class Neighborhood>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
+                    pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
 {
     return watershedsUnionFind(src.first, src.second, src.third, 
-                                dest.first, dest.second, neighborhood);
+                               dest.first, dest.second, neighborhood);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest)
+                    pair<DestIterator, DestAccessor> dest)
 {
     return watershedsUnionFind(src.first, src.second, src.third, 
-                                dest.first, dest.second);
+                               dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
+inline unsigned int
+watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest, Neighborhood neighborhood)
+{
+    return watershedsUnionFind(srcImageRange(src), 
+                               destImage(dest), neighborhood);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest)
+{
+    return watershedsUnionFind(srcImageRange(src), 
+                               destImage(dest));
 }
 
 /** \brief Options object for watershedsRegionGrowing().
@@ -1349,10 +1371,35 @@ watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         WatershedOptions const & options = WatershedOptions())
 {
     return watershedsRegionGrowing(src.first, src.second, src.third,
-                                    dest.first, dest.second,    
-                                    EightNeighborCode(), options);
+                                   dest.first, dest.second,    
+                                   EightNeighborCode(), options);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
+inline unsigned int
+watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        Neighborhood neighborhood,
+                        WatershedOptions const & options = WatershedOptions())
+{
+    return watershedsRegionGrowing(srcImageRange(src),
+                                   destImage(dest),    
+                                   neighborhood, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        WatershedOptions const & options = WatershedOptions())
+{
+    return watershedsRegionGrowing(srcImageRange(src),
+                                   destImage(dest),    
+                                   EightNeighborCode(), options);
+}
 
 //@}
 

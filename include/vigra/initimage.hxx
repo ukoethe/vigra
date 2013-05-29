@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "iteratortraits.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

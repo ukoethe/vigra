@@ -45,6 +45,7 @@
 #include "labelvolume.hxx"
 #include "pixelneighborhood.hxx"
 #include "voxelneighborhood.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra
 {
@@ -1406,7 +1407,7 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 template<class T1, class S1,
          class T2, class S2,
          class DestValue,
-         Class Neighborhood>
+         class Neighborhood>
 inline void 
 localMaxima3D(MultiArrayView<3, T1, S1> const & src,
               MultiArrayView<3, T2, S2> dest,

@@ -39,6 +39,8 @@
 #include "error.hxx"
 #include "stdimage.hxx"
 #include "copyimage.hxx"
+#include "multi_shape.hxx"
+
 #include <cmath>
 
 namespace vigra {

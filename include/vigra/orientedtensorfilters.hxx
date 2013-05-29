@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "initimage.hxx"
 #include "stdconvolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 

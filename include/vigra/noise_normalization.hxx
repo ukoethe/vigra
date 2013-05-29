@@ -49,6 +49,8 @@
 #include "linear_solve.hxx"
 #include "array_vector.hxx"
 #include "static_assert.hxx"
+#include "multi_shape.hxx"
+
 #include <algorithm>
 
 namespace vigra {

@@ -39,6 +39,7 @@
 #include <cmath>
 #include "utilities.hxx"
 #include "mathutil.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -169,21 +170,31 @@ void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                     pair<DestIterator, DestAccessor> d,
-                     bool negateComponent2)
+inline void
+vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+               pair<DestIterator, DestAccessor> d,
+               bool negateComponent2)
 {
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, negateComponent2);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                    pair<DestIterator, DestAccessor> d)
+inline void
+vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+               pair<DestIterator, DestAccessor> d)
 {
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, false);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+vectorToTensor(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               bool negateComponent2 = false)
+{
+    vectorToTensor(srcImageRange(src), destImage(dest), negateComponent2);
 }
 
 /********************************************************/
@@ -291,11 +302,20 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                               pair<DestIterator, DestAccessor> d)
+inline void
+tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          pair<DestIterator, DestAccessor> dest)
 {
-    tensorEigenRepresentation(s.first, s.second, s.third, d.first, d.second);
+    tensorEigenRepresentation(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest)
+{
+    tensorEigenRepresentation(srcImageRange(src), destImage(dest));
 }
 
 /********************************************************/
@@ -382,11 +402,20 @@ void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                 pair<DestIterator, DestAccessor> d)
+inline void
+tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+            pair<DestIterator, DestAccessor> dest)
 {
-    tensorTrace(s.first, s.second, s.third, d.first, d.second);
+    tensorTrace(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+tensorTrace(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, T2, S2> dest)
+{
+    tensorTrace(srcImageRange(src), destImage(dest));
 }
 
 /********************************************************/
@@ -506,13 +535,25 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator1, class DestAccessor1,
           class DestIterator2, class DestAccessor2>
-inline
-void tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                        pair<DestIterator1, DestAccessor1> edge,
-                        pair<DestIterator2, DestAccessor2> corner)
+inline void
+tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator1, DestAccessor1> edge,
+                   pair<DestIterator2, DestAccessor2> corner)
 {
-    tensorToEdgeCorner(s.first, s.second, s.third, 
+    tensorToEdgeCorner(src.first, src.second, src.third, 
                        edge.first, edge.second, corner.first, corner.second);
+}
+
+template <class T1, class S1,
+          class T21, class S21,
+          class T22, class S22>
+inline void
+tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T21, S21> edge,
+                   MultiArrayView<2, T22, S22> corner)
+{
+    tensorToEdgeCorner(srcImageRange(src), 
+                       destImage(edge), destImage(corner));
 }
 
 //@}

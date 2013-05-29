@@ -44,6 +44,7 @@
 #include "stdimagefunctions.hxx"
 #include "pixelneighborhood.hxx"
 #include "bucket_queue.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -608,30 +609,12 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     RegionStatisticsArray & stats,
                     SRGType srgType, 
                     Neighborhood n,
-                    double max_cost)
+                    double max_cost = NumericTraits<double>::max())
 {
     return seededRegionGrowing(img1.first, img1.second, img1.third,
                                 img3.first, img3.second,
                                 img4.first, img4.second,
                                 stats, srgType, n, max_cost);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestIterator, class DestAccessor,
-          class RegionStatisticsArray, class Neighborhood>
-inline typename SeedAccessor::value_type
-seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats,
-                    SRGType srgType, 
-                    Neighborhood n)
-{
-    return seededRegionGrowing(img1.first, img1.second, img1.third,
-                                img3.first, img3.second,
-                                img4.first, img4.second,
-                                stats, srgType, n, NumericTraits<double>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -666,6 +649,64 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                             img4.first, img4.second,
                             stats, CompleteGrow);
 }
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType, 
+                    Neighborhood n,
+                    double max_cost = NumericTraits<double>::max())
+{
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, srgType, n, max_cost);
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType)
+{
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, srgType, FourNeighborCode());
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats)
+{
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, CompleteGrow);
+}
+
+/********************************************************/
+/*                                                      */
+/*                fastSeededRegionGrowing               */
+/*                                                      */
+/********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -851,8 +892,25 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         std::ptrdiff_t bucket_count = 256)
 {
     return fastSeededRegionGrowing(src.first, src.second, src.third,
-                                    dest.first, dest.second,
-                                    stats, srgType, n, max_cost, bucket_count);
+                                   dest.first, dest.second,
+                                   stats, srgType, n, max_cost, bucket_count);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline T2
+fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        RegionStatisticsArray & stats,
+                        SRGType srgType, 
+                        Neighborhood n,
+                        double max_cost,
+                        std::ptrdiff_t bucket_count = 256)
+{
+    return fastSeededRegionGrowing(srcImageRange(src),
+                                   destImage(dest),
+                                   stats, srgType, n, max_cost, bucket_count);
 }
 
 /********************************************************/

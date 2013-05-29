@@ -44,6 +44,7 @@
 #include "transformimage.hxx"
 #include "combineimages.hxx"
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 #include <functional>
 #include <vector>
