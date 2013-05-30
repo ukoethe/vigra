@@ -40,6 +40,7 @@
 #include <vector>
 #include "resizeimage.hxx"
 #include "navigator.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -255,18 +256,6 @@ resizeMultiArraySplineInterpolation(
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class Kernel>
-inline void
-resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
-                      triple<DestIterator, Shape, DestAccessor> dest,
-                      Kernel const & spline)
-{
-    resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third, spline);
-}
-
-template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(
@@ -277,13 +266,47 @@ resizeMultiArraySplineInterpolation(
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class Kernel>
+inline void
+resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
+                                    triple<DestIterator, Shape, DestAccessor> dest,
+                                    Kernel const & spline)
+{
+    resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
+                                        dest.first, dest.second, dest.third, spline);
+}
+
+template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
-                      triple<DestIterator, Shape, DestAccessor> dest)
+                                    triple<DestIterator, Shape, DestAccessor> dest)
 {
     resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
+                                        dest.first, dest.second, dest.third);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class Kernel>
+inline void
+resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest,
+                                    Kernel const & spline)
+{
+    resizeMultiArraySplineInterpolation(srcMultiArrayRange(source),
+                                        destMultiArrayRange(dest), spline);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1>  const & source,
+                                    MultiArrayView<N, T2, S2> dest)
+{
+    resizeMultiArraySplineInterpolation(srcMultiArrayRange(source),
+                                        destMultiArrayRange(dest));
 }
 
 //@}

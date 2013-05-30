@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "mathutil.hxx"
 #include "metaprogramming.hxx"
+#include "multi_shape.hxx"
 #include "multi_pointoperators.hxx"
 
 namespace vigra {
@@ -289,6 +290,15 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     vectorToTensorMultiArray(s.first, s.second, s.third, d.first, d.second);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest)
+{
+    vectorToTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
 /********************************************************/
 /*                                                      */
 /*                tensorTraceMultiArray                 */
@@ -375,6 +385,15 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                       pair<DestIterator, DestAccessor> d)
 {
     tensorTraceMultiArray(s.first, s.second, s.third, d.first, d.second);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
+                      MultiArrayView<N, T2, S2> dest)
+{
+    tensorTraceMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 
@@ -479,6 +498,15 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     tensorEigenvaluesMultiArray(s.first, s.second, s.third, d.first, d.second);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest)
+{
+    tensorEigenvaluesMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
 /********************************************************/
 /*                                                      */
 /*             tensorDeterminantMultiArray              */
@@ -574,6 +602,15 @@ tensorDeterminantMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d)
 {
     tensorDeterminantMultiArray(s.first, s.second, s.third, d.first, d.second);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest)
+{
+    tensorDeterminantMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 //@}

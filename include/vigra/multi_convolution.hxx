@@ -845,20 +845,6 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator>
-inline
-void separableConvolveMultiArray(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, 
-    KernelIterator kit,
-    SrcShape const & start = SrcShape(),
-    SrcShape const & stop = SrcShape())
-{
-    separableConvolveMultiArray( source.first, source.second, source.third,
-                                 dest.first, dest.second, kit, start, stop );
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
 inline void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
@@ -870,6 +856,19 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
     ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
 
     separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin(), start, stop);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class KernelIterator>
+inline void
+separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest, 
+                            KernelIterator kit,
+                            SrcShape const & start = SrcShape(),
+                            SrcShape const & stop = SrcShape())
+{
+    separableConvolveMultiArray( source.first, source.second, source.third,
+                                 dest.first, dest.second, kit, start, stop );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -885,6 +884,36 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     separableConvolveMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, kernels.begin(), start, stop);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class KernelIterator>
+inline void
+separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest, 
+                            KernelIterator kit,
+                            typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
+                            typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type())
+{
+    separableConvolveMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), kit, start, stop );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class T>
+inline void
+separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest,
+                            Kernel1D<T> const & kernel,
+                            typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
+                            typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type())
+{
+    ArrayVector<Kernel1D<T> > kernels(source.second.size(), kernel);
+
+    separableConvolveMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), kernels.begin(), start, stop);
 }
 
 /********************************************************/
@@ -1025,12 +1054,28 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                pair<DestIterator, DestAccessor> const & dest,
-                               unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                               unsigned int dim,
+                               Kernel1D<T> const & kernel,
                                SrcShape const & start = SrcShape(),
                                SrcShape const & stop = SrcShape())
 {
     convolveMultiArrayOneDimension(source.first, source.second, source.third,
                                    dest.first, dest.second, dim, kernel, start, stop);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class T>
+inline void
+convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest,
+                               unsigned int dim, 
+                               Kernel1D<T> const & kernel,
+                               typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
+                               typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type())
+{
+    convolveMultiArrayOneDimension(srcMultiArrayRange(source),
+                                   destMultiArray(dest), dim, kernel, start, stop);
 }
 
 /********************************************************/
@@ -1160,8 +1205,8 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest,
-                  const ConvolutionOptions<SrcShape::static_size> & opt)
+                         pair<DestIterator, DestAccessor> const & dest,
+                         const ConvolutionOptions<SrcShape::static_size> & opt)
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, opt );
@@ -1171,11 +1216,34 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest, double sigma,
-                  const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                         pair<DestIterator, DestAccessor> const & dest, double sigma,
+                         const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, sigma, opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         const ConvolutionOptions<N> & opt)
+{
+    gaussianSmoothMultiArray( srcMultiArrayRange(source),
+                              destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         double sigma,
+                         const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    gaussianSmoothMultiArray( srcMultiArrayRange(source),
+                              destMultiArray(dest), sigma, opt );
 }
 
 
@@ -1359,6 +1427,29 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                                 dest.first, dest.second, sigma, opt );
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           ConvolutionOptions<N> const & opt )
+{
+    gaussianGradientMultiArray( srcMultiArrayRange(source),
+                                destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           double sigma,
+                           const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    gaussianGradientMultiArray( srcMultiArrayRange(source),
+                                destMultiArray(dest), sigma, opt );
+}
+
 /********************************************************/
 /*                                                      */
 /*              gaussianGradientMagnitude               */
@@ -1371,9 +1462,9 @@ template <unsigned int N, class T1, class S1,
                           class T2, class S2>
 void 
 gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
-                          MultiArrayView<N, T2, S2> dest,
-                          double sigma,
-                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+                              MultiArrayView<N, T2, S2> dest,
+                              double sigma,
+                              ConvolutionOptions<N> opt = ConvolutionOptions<N>())
 {
     vigra_precondition((src.shape().template subarray<0,N>() == dest.shape()),
               "gaussianGradientMagnitudeMultiArray(): Shape mismatch between input and output.");
@@ -1591,6 +1682,17 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                                 dest.first, dest.second, opt);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                            const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    symmetricGradientMultiArray(srcMultiArrayRange(source),
+                                destMultiArray(dest), opt);
+}
+
 /********************************************************/
 /*                                                      */
 /*            laplacianOfGaussianMultiArray             */
@@ -1775,6 +1877,29 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
 {
     laplacianOfGaussianMultiArray( source.first, source.second, source.third,
                                    dest.first, dest.second,  sigma, opt );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest,
+                              ConvolutionOptions<N> const & opt )
+{
+    laplacianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                   destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest,
+                              double sigma,
+                              const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    laplacianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                   destMultiArray(dest),  sigma, opt );
 }
 
 /********************************************************/
@@ -1966,6 +2091,29 @@ hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 {
     hessianOfGaussianMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, sigma, opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                            ConvolutionOptions<N> const & opt )
+{
+    hessianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                            double sigma,
+                            const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    hessianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), sigma, opt );
 }
 
 namespace detail {
@@ -2193,6 +2341,31 @@ structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sou
 {
     structureTensorMultiArray( source.first, source.second, source.third,
                                dest.first, dest.second,
+                               innerScale, outerScale, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest, 
+                          ConvolutionOptions<N> const & opt )
+{
+    structureTensorMultiArray( srcMultiArrayRange(source),
+                               destMultiArray(dest), opt );
+}
+
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                          double innerScale, double outerScale,
+                          const ConvolutionOptions<N> & opt = ConvolutionOptions<N>())
+{
+    structureTensorMultiArray( srcMultiArrayRange(source),
+                               destMultiArray(dest),
                                innerScale, outerScale, opt);
 }
 
