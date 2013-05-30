@@ -189,36 +189,6 @@ doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
-          class Neighborhood3D>
-unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
-                         DestIterator d_Iter, DestAccessor da,
-                         Neighborhood3D neighborhood3D)
-{
-        return labelVolume(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
-}
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D>
-unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest,
-                         Neighborhood3D neighborhood3D)
-{
-    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
-}
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D, class EqualityFunctor>
-unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
-                         pair<DestIterator, DestAccessor> dest,
-                         Neighborhood3D neighborhood3D, EqualityFunctor equal)
-{
-    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, equal);
-}
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
           class Neighborhood3D, class EqualityFunctor>
 unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
                          DestIterator d_Iter, DestAccessor da,
@@ -337,6 +307,56 @@ unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
     return count;
 }
 
+template <class SrcIterator, class SrcAccessor,class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D>
+unsigned int labelVolume(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                         DestIterator d_Iter, DestAccessor da,
+                         Neighborhood3D neighborhood3D)
+{
+        return labelVolume(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor, 
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D>
+unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         Neighborhood3D neighborhood3D)
+{
+    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D, class EqualityFunctor>
+unsigned int labelVolume(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         Neighborhood3D neighborhood3D, EqualityFunctor equal)
+{
+    return labelVolume(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, equal);
+}
+
+template <unsigned int N, class T1, class S1, 
+                          class T2, class S2,
+          class Neighborhood3D>
+unsigned int labelVolume(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         Neighborhood3D neighborhood3D)
+{
+    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2,
+          class Neighborhood3D, class EqualityFunctor>
+unsigned int labelVolume(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         Neighborhood3D neighborhood3D, EqualityFunctor equal)
+{
+    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, equal);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    labelVolumeSix                    */
@@ -357,8 +377,14 @@ unsigned int labelVolumeSix(triple<SrcIterator, SrcShape, SrcAccessor> src,
     return labelVolume(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
 }
 
-
-
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+unsigned int labelVolumeSix(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest)
+{
+    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), 
+                       NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
+}
 
 /********************************************************/
 /*                                                      */
@@ -494,28 +520,6 @@ doxygen_overloaded_function(template <...> unsigned int labelVolumeWithBackgroun
 template <class SrcIterator, class SrcAccessor,class SrcShape,
           class DestIterator, class DestAccessor,
           class Neighborhood3D,
-          class ValueType>
-unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
-                                       DestIterator d_Iter, DestAccessor da,
-                                       Neighborhood3D neighborhood3D, ValueType backgroundValue)
-{
-    return labelVolumeWithBackground(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
-}
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D,
-          class ValueType>
-unsigned int labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
-                                       pair<DestIterator, DestAccessor> dest,
-                                       Neighborhood3D neighborhood3D, ValueType backgroundValue)
-{
-    return labelVolumeWithBackground(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
-}
-
-template <class SrcIterator, class SrcAccessor,class SrcShape,
-          class DestIterator, class DestAccessor,
-          class Neighborhood3D,
           class ValueType, class EqualityFunctor>
 unsigned int labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                        pair<DestIterator, DestAccessor> dest,
@@ -640,6 +644,41 @@ unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, Sr
         }
     }
     return count;
+}
+
+template <class SrcIterator, class SrcAccessor,class SrcShape,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D,
+          class ValueType>
+unsigned int labelVolumeWithBackground(SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa,
+                                       DestIterator d_Iter, DestAccessor da,
+                                       Neighborhood3D neighborhood3D, ValueType backgroundValue)
+{
+    return labelVolumeWithBackground(s_Iter, srcShape, sa, d_Iter, da, neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor,
+          class Neighborhood3D,
+          class ValueType>
+unsigned int labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                                       pair<DestIterator, DestAccessor> dest,
+                                       Neighborhood3D neighborhood3D, ValueType backgroundValue)
+{
+    return labelVolumeWithBackground(src.first, src.second, src.third, dest.first, dest.second, neighborhood3D, backgroundValue, std::equal_to<typename SrcAccessor::value_type>());
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2,
+          class Neighborhood3D,
+          class ValueType>
+unsigned int labelVolumeWithBackground(MultiArrayView<N, T1, S1> const & source,
+                                       MultiArrayView<N, T2, S2> dest,
+                                       Neighborhood3D neighborhood3D, ValueType backgroundValue)
+{
+    return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest), 
+                                     neighborhood3D, backgroundValue,
+                                     std::equal_to<typename SrcAccessor::value_type>());
 }
 
 //@}

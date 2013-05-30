@@ -242,15 +242,23 @@ multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void multiBinaryErosion(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double radius)
+inline void
+multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                   pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryErosion( source.first, source.second, source.third,
-                                 dest.first, dest.second, radius );
+                        dest.first, dest.second, radius );
 }
 
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
+                   MultiArrayView<N, T2, S2> dest, double radius)
+{
+    multiBinaryErosion( srcMultiArrayRange(source),
+                        destMultiArray(dest), radius );
+}
 
 /********************************************************/
 /*                                                      */
@@ -353,13 +361,22 @@ multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void multiBinaryDilation(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double radius)
+inline void 
+multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                    pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryDilation( source.first, source.second, source.third,
-                                 dest.first, dest.second, radius );
+                         dest.first, dest.second, radius );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void 
+multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
+                    MultiArrayView<N, T2, S2> dest, double radius)
+{
+    multiBinaryDilation( srcMultiArrayRange(source),
+                         destMultiArray(dest), radius );
 }
 
 /********************************************************/
@@ -484,13 +501,22 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void multiGrayscaleErosion(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double sigma)
+inline void
+multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                      pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleErosion( source.first, source.second, source.third, 
-            dest.first, dest.second, sigma);
+                           dest.first, dest.second, sigma);
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
+                      MultiArrayView<N, T2, S2> dest, double sigma)
+{
+    multiGrayscaleErosion( srcMultiArrayRange(source), 
+                           destMultiArray(dest), sigma);
 }
 
 /********************************************************/
@@ -612,18 +638,25 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
 
 }
 
-
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void multiGrayscaleDilation(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double sigma)
+inline void
+multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                       pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleDilation( source.first, source.second, source.third, 
-            dest.first, dest.second, sigma);
+                            dest.first, dest.second, sigma);
 }
 
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest, double sigma)
+{
+    multiGrayscaleDilation( srcMultiArrayRange(source), 
+                            destMultiArray(dest), sigma);
+}
 
 //@}
 

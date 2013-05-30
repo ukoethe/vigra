@@ -422,6 +422,16 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, bool background)
+{
+    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class Array>
 inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                        pair<DestIterator, DestAccessor> const & dest, bool background,
@@ -433,21 +443,30 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest, bool background)
-{
-    ArrayVector<double> pixelPitch(shape.size(), 1.0);
-    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch );
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
 inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                        pair<DestIterator, DestAccessor> const & dest, bool background)
 {
     separableMultiDistSquared( source.first, source.second, source.third,
                                dest.first, dest.second, background );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
+inline void separableMultiDistSquared( MultiArrayView<N, T1, S1> const & source,
+                                       MultiArrayView<N, T2, S2> dest, bool background,
+                                       Array const & pixelPitch)
+{
+    separableMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest), background, pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void separableMultiDistSquared( MultiArrayView<N, T1, S1> const & source,
+                                       MultiArrayView<N, T2, S2> dest, bool background)
+{
+    separableMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest), background );
 }
 
 /********************************************************/
@@ -596,6 +615,25 @@ inline void separableMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> c
 {
     separableMultiDistance( source.first, source.second, source.third,
                             dest.first, dest.second, background );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
+inline void separableMultiDistance( MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest, bool background,
+                                    Array const & pixelPitch)
+{
+    separableMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest), background, pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void separableMultiDistance( MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest, bool background)
+{
+    separableMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest), background );
 }
 
 //@}

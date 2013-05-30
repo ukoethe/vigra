@@ -203,11 +203,17 @@ initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v
 }
     
 template <class Iterator, class Shape, class Accessor, class VALUETYPE>
-inline 
-void
+inline void
 initMultiArray(triple<Iterator, Shape, Accessor> const & s, VALUETYPE const & v)
 {
-    initMultiArray(s.first, s.second, s.third, v);
+     initMultiArrayImpl(s.first, s.second, s.third, v, MetaInt<Iterator::level>());
+}
+
+template <unsigned int N, class T, class S, class VALUETYPE>
+inline void
+initMultiArray(MultiArrayView<N, T, S> s, VALUETYPE const & v)
+{
+    initMultiArray(destMultiArrayRange(s), v);
 }
 
 /********************************************************/
@@ -241,12 +247,20 @@ inline void initMultiArrayBorder( Iterator upperleft, Diff_type shape,
 }
     
 template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
-inline void initMultiArrayBorder( triple<Iterator, Diff_type, Accessor> multiArray, 
-                                  int border_width, VALUETYPE v)
+inline void 
+initMultiArrayBorder( triple<Iterator, Diff_type, Accessor> multiArray, 
+                      int border_width, VALUETYPE v)
 {
     initMultiArrayBorder(multiArray.first, multiArray.second, multiArray.third, border_width, v);
 }
 
+template <unsigned int N, class T, class S, class VALUETYPE>
+inline void 
+initMultiArrayBorder( MultiArrayView<N, T, S> multiArray, 
+                      int border_width, VALUETYPE v)
+{
+    initMultiArrayBorder(destMultiArrayRange(multiArray), border_width, v);
+}
 
 /********************************************************/
 /*                                                      */
@@ -434,16 +448,6 @@ copyMultiArray(SrcIterator s,
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline void
-copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
-               pair<DestIterator, DestAccessor> const & dest)
-{
-    
-    copyMultiArray(src.first, src.second, src.third, dest.first, dest.second);
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor>
 void
 copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
@@ -460,6 +464,16 @@ copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+               pair<DestIterator, DestAccessor> const & dest)
+{
+    
+    copyMultiArray(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor>
 inline void
 copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
@@ -467,6 +481,18 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 {
     
     copyMultiArray(src.first, src.second, src.third, dest.first, dest.second, dest.third);
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+copyMultiArray(MultiArrayView<N, T1, S1> const & source,
+               MultiArrayView<N, T2, S2> dest)
+{
+    if(source.shape() == dest.shape())
+        copyMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+    else
+        copyMultiArray(srcMultiArrayRange(source), destMultiArrayRange(dest));
 }
 
 /********************************************************/
@@ -832,18 +858,6 @@ transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class Functor>
-inline void
-transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
-               pair<DestIterator, DestAccessor> const & dest, Functor const & f)
-{
-    
-    transformMultiArray(src.first, src.second, src.third, 
-                        dest.first, dest.second, f);
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor>
 void
@@ -862,6 +876,18 @@ transformMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class Functor>
+inline void
+transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
+                    pair<DestIterator, DestAccessor> const & dest, Functor const & f)
+{
+    
+    transformMultiArray(src.first, src.second, src.third, 
+                        dest.first, dest.second, f);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor>
 inline void
@@ -871,6 +897,19 @@ transformMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 {
     transformMultiArray(src.first, src.second, src.third, 
                         dest.first, dest.second, dest.third, f);
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, 
+          class Functor>
+inline void
+transformMultiArray(MultiArrayView<N, T1, S1> const & source,
+                    MultiArrayView<N, T2, S2> dest, Functor const & f)
+{
+    if(source.shape() == dest.shape())
+        transformMultiArray(srcMultiArrayRange(source), destMultiArray(dest), f);
+    else
+        transformMultiArray(srcMultiArrayRange(source), destMultiArrayRange(dest), f);
 }
 
 /********************************************************/
@@ -1309,20 +1348,6 @@ combineTwoMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1
                                     MetaInt<SrcIterator1::level>());
 }
 
-template <class SrcIterator1, class SrcShape, class SrcAccessor1,
-          class SrcIterator2, class SrcAccessor2,
-          class DestIterator, class DestAccessor, class Functor>
-inline void
-combineTwoMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
-               pair<SrcIterator2, SrcAccessor2> const & src2,
-               pair<DestIterator, DestAccessor> const & dest, Functor const & f)
-{
-    
-    combineTwoMultiArrays(
-           src1.first, src1.second, src1.third, 
-           src2.first, src2.second, dest.first, dest.second, f);
-}
-
 template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
           class SrcIterator2, class SrcShape2, class SrcAccessor2,
           class DestIterator, class DestShape, class DestAccessor, 
@@ -1345,20 +1370,54 @@ combineTwoMultiArrays(
                               f, isAnalyserInitializer());
 }
 
+template <class SrcIterator1, class SrcShape, class SrcAccessor1,
+          class SrcIterator2, class SrcAccessor2,
+          class DestIterator, class DestAccessor, class Functor>
+inline void
+combineTwoMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
+                      pair<SrcIterator2, SrcAccessor2> const & src2,
+                      pair<DestIterator, DestAccessor> const & dest, 
+                      Functor const & f)
+{
+    
+    combineTwoMultiArrays(
+           src1.first, src1.second, src1.third, 
+           src2.first, src2.second, dest.first, dest.second, f);
+}
+
 template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
           class SrcIterator2, class SrcShape2, class SrcAccessor2,
           class DestIterator, class DestShape, class DestAccessor, 
           class Functor>
 inline void
-combineTwoMultiArrays(
-               triple<SrcIterator1, SrcShape1, SrcAccessor1> const & src1,
-               triple<SrcIterator2, SrcShape2, SrcAccessor2> const & src2,
-               triple<DestIterator, DestShape, DestAccessor> const & dest, 
-               Functor const & f)
+combineTwoMultiArrays(triple<SrcIterator1, SrcShape1, SrcAccessor1> const & src1,
+                      triple<SrcIterator2, SrcShape2, SrcAccessor2> const & src2,
+                      triple<DestIterator, DestShape, DestAccessor> const & dest, 
+                      Functor const & f)
 {
     combineTwoMultiArrays(src1.first, src1.second, src1.third, 
                           src2.first, src2.second, src2.third, 
                           dest.first, dest.second, dest.third, f);
+}
+
+template <unsigned int N, class T11, class S11,
+                          class T12, class S12,
+                          class T2, class S2, 
+          class Functor>
+inline void
+combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
+                      MultiArrayView<N, T12, S12> const & source2,
+                      MultiArrayView<N, T2, S2> dest, 
+                      Functor const & f)
+{
+    
+    if(source1.shape() == source2.shape() && source1.shape() == dest.shape())
+        combineTwoMultiArrays(srcMultiArrayRange(source1), 
+                              srcMultiArray(source2), destMultiArray(dest), f);
+    else
+        combineTwoMultiArrays(srcMultiArrayRange(source1), 
+                              srcMultiArrayRange(source2), 
+                              destMultiArrayRange(dest), f);
 }
 
 /********************************************************/
@@ -1508,14 +1567,31 @@ template <class SrcIterator1, class SrcShape, class SrcAccessor1,
           class Functor>
 inline void
 combineThreeMultiArrays(triple<SrcIterator1, SrcShape, SrcAccessor1> const & src1,
-               pair<SrcIterator2, SrcAccessor2> const & src2,
-               pair<SrcIterator3, SrcAccessor3> const & src3,
-               pair<DestIterator, DestAccessor> const & dest, Functor const & f)
+                        pair<SrcIterator2, SrcAccessor2> const & src2,
+                        pair<SrcIterator3, SrcAccessor3> const & src3,
+                        pair<DestIterator, DestAccessor> const & dest, Functor const & f)
 {
     
     combineThreeMultiArrays(
            src1.first, src1.second, src1.third, 
            src2.first, src2.second, src3.first, src3.second, dest.first, dest.second, f);
+}
+
+template <unsigned int N, class T11, class S11,
+                          class T12, class S12, 
+                          class T13, class S13,
+                          class T2, class S2, 
+          class Functor>
+inline void
+combineThreeMultiArrays(MultiArrayView<N, T11, S11> const & source1,
+                        MultiArrayView<N, T12, S12> const & source2,
+                        MultiArrayView<N, T13, S13> const & source3,
+                        MultiArrayView<N, T2, S2> dest, Functor const & f)
+{
+    
+    combineThreeMultiArrays(
+           srcMultiArrayRange(source1), 
+           srcMultiArray(source2), srcMultiArray(source3), destMultiArray(dest), f);
 }
 
 /********************************************************/
@@ -1642,6 +1718,13 @@ inline void
 inspectMultiArray(triple<Iterator, Shape, Accessor> const & s, Functor & f)
 {
     inspectMultiArray(s.first, s.second, s.third, f);
+}
+    
+template <unsigned int N, class T, class S, class Functor>
+inline void
+inspectMultiArray(MultiArrayView<N, T, S> const & s, Functor & f)
+{
+    inspectMultiArray(srcMultiArrayRange(s), f);
 }
     
 /********************************************************/
@@ -1794,13 +1877,23 @@ inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
 template <class Iterator1, class Shape, class Accessor1, 
           class Iterator2, class Accessor2, 
           class Functor>
-inline 
-void
+inline void
 inspectTwoMultiArrays(triple<Iterator1, Shape, Accessor1> const & s1, 
                       pair<Iterator2, Accessor2> const & s2, Functor & f)
 {
     inspectTwoMultiArrays(s1.first, s1.second, s1.third, 
                           s2.first, s2.second, f);
+}
+    
+template <unsigned int N, class T1, class S1, 
+                          class T2, class S2, 
+          class Functor>
+inline void
+inspectTwoMultiArrays(MultiArrayView<N, T1, S1> const & s1, 
+                      MultiArrayView<N, T2, S2> const & s2, Functor & f)
+{
+    inspectTwoMultiArrays(srcMultiArrayRange(s1), 
+                          srcMultiArray(s2), f);
 }
     
 //@}
