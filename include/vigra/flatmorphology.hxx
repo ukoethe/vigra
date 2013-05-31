@@ -478,9 +478,7 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
             MultiArrayView<2, T2, S2> dest,
             int radius)
 {
-    discErosion(srcImageRange(src),
-                destImage(dest),
-                radius, 0.0);
+    discErosion(srcImageRange(src), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -573,9 +571,7 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
              MultiArrayView<2, T2, S2> dest,
              int radius)
 {
-    discDilation(srcImageRange(src),
-                 destImage(dest),
-                 radius, 1.0);
+    discDilation(srcImageRange(src), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -668,9 +664,7 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
            MultiArrayView<2, T2, S2> dest,
            int radius)
 {
-    discMedian(srcImageRange(src),
-               destImage(dest),
-               radius, 0.5);
+    discMedian(srcImageRange(src), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -1179,10 +1173,7 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest,
                     int radius)
 {
-    discErosionWithMask(srcImageRange(src),
-                        maskImage(mask),
-                        destImage(dest),
-                        radius, 0.0);
+    discErosionWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -1291,10 +1282,7 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
                      MultiArrayView<2, T2, S2> dest,
                      int radius)
 {
-    discDilationWithMask(srcImageRange(src),
-                         maskImage(mask),
-                         destImage(dest),
-                         radius, 1.0);
+    discDilationWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -1403,10 +1391,7 @@ discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    int radius)
 {
-    discMedianWithMask(srcImageRange(src),
-                       maskImage(mask),
-                       destImage(dest),
-                       radius, 0.5);
+    discMedianWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 //@}

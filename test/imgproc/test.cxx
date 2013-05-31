@@ -46,18 +46,33 @@
 #include "vigra/affinegeometry.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/meshgrid.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/multi_math.hxx"
+#include "vigra/functorexpression.hxx"
 
 using namespace vigra;
+
+struct Counter   // for initImageWithFunctor
+{
+    Counter() : count(0) {}
+        
+    int operator()() const { return count++; }
+    
+    mutable int count;
+};
+
 
 struct ImageFunctionsTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::DRGBImage RGBImage;
+    typedef vigra::MultiArrayView<2, RGBValue<double>> RGBView;
     typedef Image::value_type GrayValue;
     typedef RGBImage::value_type RGBValue;
 
     ImageFunctionsTest()
-    : img(3,3), mask(3,3), rgb(3,3), col(1.0, 2.0, 3.0)
+    : img(3,3), mask(Shape2(3,3)), rgb(3,3), col(1.0, 2.0, 3.0)
     {
         Image::Accessor acc = img.accessor();
         Image::ScanOrderIterator i = img.begin();
@@ -104,14 +119,20 @@ struct ImageFunctionsTest
             should(acc(i) == acc(i1));
         }
 
+        img1 = 0.0;
+        copyImage(View(img), View(img1));
+        should(View(img) == View(img1));
     }
 
     void copyImageIfTest()
     {
         Image img1(3,3);
         img1 = 42.0;
+        Image img2(3,3);
+        img2 = 42.0;
 
         copyImageIf(srcImageRange(img), maskImage(mask), destImage(img1));
+        copyImageIf(View(img), mask, View(img2));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -128,13 +149,17 @@ struct ImageFunctionsTest
         {
             should(acc(i) == acc(i1));
         }
+
+        should(View(img1) == View(img2));
     }
 
     void copyRedBandTest()
     {
         vigra::RedAccessor<RGBValue> red;
 
+        Image img1(3,3);
         copyImage(srcImageRange(rgb, red), destImage(img));
+        copyImage(RGBView(rgb).expandElements(0).bindInner(0), View(img1));
 
         Image::ScanOrderIterator i = img.begin();
         Image::Accessor acc = img.accessor();
@@ -143,6 +168,8 @@ struct ImageFunctionsTest
         {
             should(acc(i) == 1.0);
         }
+
+        should(View(img) == View(img1));
 
         img = 42.0;
         col.setRed(42.0);
@@ -156,6 +183,13 @@ struct ImageFunctionsTest
         {
             should(racc(ri) == col);
         }
+
+        img1 = 12.0;
+        col.setBlue(12.0);
+
+        copyImage(View(img1), RGBView(rgb).expandElements(0).bindInner(2));
+        using namespace multi_math;
+        should(all(RGBView(rgb) == col));
     }
 
     void copyGreenBandTest()
@@ -242,6 +276,21 @@ struct ImageFunctionsTest
             should(acc(i) == 42.0);
         }
 
+        initImage(View(img), 12.0);
+
+        i = img.begin();
+        for(; i != img.end(); ++i)
+        {
+            should(acc(i) == 12.0);
+        }
+
+        initImageWithFunctor(View(img), Counter());
+
+        i = img.begin();
+        for(int k=0; i != img.end(); ++i, ++k)
+        {
+            should(acc(i) == k);
+        }
     }
 
     void initImageIfTest()
@@ -259,6 +308,16 @@ struct ImageFunctionsTest
         for(; i != iend; ++i)
         {
             should(acc(i) == 42.0);
+        }
+
+        initImageIf(View(img), mask, 12.0);
+        i = img.begin();
+        should(acc(i) == 1.1);
+        should(acc(iend) == 9.9);
+        ++i;
+        for(; i != iend; ++i)
+        {
+            should(acc(i) == 12.0);
         }
     }
 
@@ -278,28 +337,50 @@ struct ImageFunctionsTest
                 should(acc(i) == 5.5);
         }
 
+        initImageBorder(View(img), 1, 12.0);
+
+        i = img.begin();
+        for(k=0; i != img.end(); ++i, ++k)
+        {
+            if(k != 4)
+                should(acc(i) == 12.0);
+            else
+                should(acc(i) == 5.5);
+        }
     }
 
     void findMinMaxTest()
     {
-        vigra::FindMinMax<Image::value_type> minmax;
+        vigra::FindMinMax<Image::value_type> minmax, minmax1;
 
         inspectImage(srcImageRange(img), minmax);
 
         should(minmax.count == 9);
         should(minmax.max == 9.9);
         should(minmax.min == 1.1);
+
+        inspectImage(View(img), minmax1);
+
+        should(minmax1.count == 9);
+        should(minmax1.max == 9.9);
+        should(minmax1.min == 1.1);
     }
 
     void findMinMaxIfTest()
     {
-        vigra::FindMinMax<Image::value_type> minmax;
+        vigra::FindMinMax<Image::value_type> minmax, minmax1;
 
         inspectImageIf(srcImageRange(img), maskImage(mask), minmax);
 
         should(minmax.count == 7);
         should(minmax.max == 8.8);
         should(minmax.min == 2.2);
+
+        inspectImageIf(View(img), mask, minmax1);
+
+        should(minmax1.count == 7);
+        should(minmax1.max == 8.8);
+        should(minmax1.min == 2.2);
     }
 
     void findAverageTest()
@@ -517,14 +598,14 @@ struct ImageFunctionsTest
 
     void arrayOfRegionStatisticsTest()
     {
-        vigra::BImage labels(3,3);
+        vigra::MultiArray<2, unsigned char> labels(Shape2(3,3));
         labels = 1;
-        labels.begin()[0] = 0;
-        labels.begin()[8] = 0;
+        labels[0] = 0;
+        labels[8] = 0;
 
         vigra::ArrayOfRegionStatistics<vigra::FindMinMax<Image::value_type> > stats(1);
 
-        inspectTwoImages(srcImageRange(img), srcImage(labels), stats);
+        inspectTwoImages(View(img), labels, stats);
 
         should(stats[0].count == 2);
         should(stats[0].min == 1.1);
@@ -540,7 +621,6 @@ struct ImageFunctionsTest
         inspectTwoImages(srcIterRange<Diff2D>(vigra::Diff2D(0,0), img.size()),
                          srcImage(labels), stats1);
 
-
         should(stats1[0].upperLeft.x == 0);
         should(stats1[0].upperLeft.y == 0);
         should(stats1[0].lowerRight.x == 3);
@@ -553,12 +633,12 @@ struct ImageFunctionsTest
 
     void arrayOfRegionStatisticsIfTest()
     {
-        vigra::BImage labels(3,3);
+        vigra::MultiArray<2, unsigned char> labels(Shape2(3,3));
         labels = 1;
-        labels.begin()[4] = 2;
-        labels.begin()[5] = 2;
+        labels[4] = 2;
+        labels[5] = 2;
 
-        vigra::ArrayOfRegionStatistics<vigra::FindMinMax<Image::value_type> > stats(2);
+        vigra::ArrayOfRegionStatistics<vigra::FindMinMax<Image::value_type> > stats(2), stats1(2);
 
         inspectTwoImagesIf(srcImageRange(img), srcImage(labels), maskImage(mask), stats);
 
@@ -569,6 +649,16 @@ struct ImageFunctionsTest
         should(stats[2].count == 2);
         should(stats[2].min == 5.5);
         should(stats[2].max == 6.6);
+
+        inspectTwoImagesIf(View(img), labels, mask, stats1);
+
+        should(stats1[0].count == 0);
+        should(stats1[1].count == 5);
+        should(stats1[1].min == 2.2);
+        should(stats1[1].max == 8.8);
+        should(stats1[2].count == 2);
+        should(stats1[2].min == 5.5);
+        should(stats1[2].max == 6.6);
     }
 
     void writeArrayOfRegionStatisticsTest()
@@ -605,7 +695,7 @@ struct ImageFunctionsTest
 
         Image img1(3,3);
 
-        transformImage(srcImageRange(img), destImage(img1), trans);
+        transformImage(View(img), View(img1), trans);
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -662,7 +752,7 @@ struct ImageFunctionsTest
         Image img1(3,3);
         img1 = 42.0;
 
-        transformImageIf(srcImageRange(img), maskImage(mask), destImage(img1), trans);
+        transformImageIf(View(img), mask, View(img1), trans);
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -799,9 +889,8 @@ struct ImageFunctionsTest
             }
         }
 
-        gradientBasedTransform(
-          srcImageRange(in),
-          destImage(res), vigra::RGBGradientMagnitudeFunctor<double>());
+        gradientBasedTransform(RGBView(in), View(res), 
+                               vigra::RGBGradientMagnitudeFunctor<double>());
 
         for(y=0; y<3; ++y)
         {
@@ -814,33 +903,40 @@ struct ImageFunctionsTest
 
     void additionTest()
     {
-        Image img1(3,3);
+        Image img1(3,3), img2(3,3), img3(3,3);
 
         std::plus<Image::value_type> add;
 
         combineTwoImages(srcImageRange(img), srcImage(img), destImage(img1), add);
+        combineTwoImages(View(img), View(img), View(img2), add);
+
+        using namespace functor;
+        combineThreeImages(View(img), View(img), View(img1), View(img3), Arg1() + Arg2() + Arg3());
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
+        Image::ScanOrderIterator i2 = img2.begin();
+        Image::ScanOrderIterator i3 = img3.begin();
         Image::Accessor acc = img.accessor();
 
-        for(; i != img.end(); ++i, ++i1)
+        for(; i != img.end(); ++i, ++i1, ++i2, ++i3)
         {
             should(2.0*acc(i) == acc(i1));
+            should(2.0*acc(i) == acc(i2));
+            should(4.0*acc(i) == acc(i3));
         }
-
     }
 
     void additionIfTest()
     {
-        Image img1(3,3);
+        Image img1(3,3), img2(3,3);
         img1 = 42.0;
+        img2 = 42.0;
 
         std::plus<Image::value_type> add;
 
         combineTwoImagesIf(srcImageRange(img), srcImage(img),
                            maskImage(mask), destImage(img1), add);
-
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i1 = img1.begin();
@@ -858,6 +954,8 @@ struct ImageFunctionsTest
             should(2.0*acc(i) == acc(i1));
         }
 
+        combineTwoImagesIf(View(img), View(img), mask, View(img2), add);
+        should(View(img1) == View(img2));
     }
 
     void resizeNoInterpolationTest()
@@ -922,7 +1020,7 @@ struct ImageFunctionsTest
         Image img2(3,3);
         img2 = 0;
 
-        resizeImageNoInterpolation(srcImageRange(img1), destImageRange(img2));
+        resizeImageNoInterpolation(View(img1), View(img2));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i2 = img2.begin();
@@ -932,7 +1030,7 @@ struct ImageFunctionsTest
             should(acc(i) == acc(i2));
         }
 
-        resizeImageSplineInterpolation(srcImageRange(img), destImageRange(img3), BSpline<0>());
+        resizeImageSplineInterpolation(View(img), View(img3), BSpline<0>());
         shouldEqualSequence(img1.begin(), img1.end(), img3.begin());
     }
 
@@ -1001,7 +1099,7 @@ struct ImageFunctionsTest
         Image img2(3,3);
         img2 = 0;
 
-        resizeImageNoInterpolation(srcImageRange(img1), destImageRange(img2));
+        resizeImageNoInterpolation(View(img1), View(img2));
 
         Image::ScanOrderIterator i = img.begin();
         Image::ScanOrderIterator i2 = img2.begin();
@@ -1014,7 +1112,7 @@ struct ImageFunctionsTest
 
 
     Image img;
-    vigra::BImage mask;
+    vigra::MultiArray<2, unsigned char> mask;
     RGBImage rgb;
     RGBValue col;
 };
@@ -1023,6 +1121,7 @@ struct ResizeImageTest
 {
     typedef vigra::FImage Image;
     typedef vigra::FRGBImage RGBImage;
+    typedef MultiArrayView<2, RGBValue<float> > View;
 
     ResizeImageTest()
     {
@@ -1054,7 +1153,7 @@ struct ResizeImageTest
 
         RGBImage rgbdest(inforgb.size());
 
-        resizeImageLinearInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        resizeImageLinearInterpolation(View(rgb), View(rgbdest));
 
         shouldEqualSequenceTolerance(rgbdest.begin(), rgbdest.end(), rgbref.begin(),
                                      RGBImage::value_type(1.0e-6f));
@@ -1096,7 +1195,7 @@ struct ResizeImageTest
 
         RGBImage img1(rgbex.width(), rgbex.height());
 
-        resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
+        resizeImageSplineInterpolation(View(rgb), View(img1));
 
         RGBImage::ScanOrderIterator i1 = img1.begin();
         RGBImage::ScanOrderIterator iex = rgbex.begin();
@@ -1119,7 +1218,7 @@ struct ResizeImageTest
 
         RGBImage img1(rgbred.width(), rgbred.height());
 
-        resizeImageSplineInterpolation(srcImageRange(rgb), destImageRange(img1));
+        resizeImageSplineInterpolation(View(rgb), View(img1));
 
         RGBImage::ScanOrderIterator i1 = img1.begin();
         RGBImage::ScanOrderIterator iref = rgbred.begin();
@@ -1169,7 +1268,7 @@ struct ResizeImageTest
 
         RGBImage rgbdest(inforgb.size());
 
-        resizeImageCatmullRomInterpolation(srcImageRange(rgb), destImageRange(rgbdest));
+        resizeImageCatmullRomInterpolation(View(rgb), View(rgbdest));
 
         RGBImage::ScanOrderIterator i1 = rgbdest.begin();
         RGBImage::ScanOrderIterator iref = rgbref.begin();
@@ -1484,6 +1583,7 @@ struct SplineImageViewTest
 struct GeometricTransformsTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
     Image img;
     int w, h;
 
@@ -1498,12 +1598,17 @@ struct GeometricTransformsTest
 
     void testSimpleGeometry()
     {
-        Image res1(img.size()), res2(h, w);
+        Image res1(img.size()), res11(img.size()), res2(h, w), res21(h, w);
 
         rotateImage(srcImageRange(img), destImage(res1), 180);
+        rotateImage(View(img), View(res11), 180);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
+            {
                 shouldEqual(img(x,y), res1(w-x-1, h-y-1));
+                shouldEqual(img(x,y), res11(w-x-1, h-y-1));
+            }
+        
         rotateImage(srcImageRange(img), destImage(res2), 90);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
@@ -1513,6 +1618,7 @@ struct GeometricTransformsTest
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res2(h-y-1, x));
 
+
         try
         {
             rotateImage(srcImageRange(img), destImage(res2), 22);
@@ -1521,18 +1627,30 @@ struct GeometricTransformsTest
         catch(vigra::PreconditionViolation) {}
 
         transposeImage(srcImageRange(img), destImage(res2), vigra::major);
+        transposeImage(View(img), View(res21), vigra::major);
+        View transposed(View(img).transpose());
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
+            {
                 shouldEqual(img(x,y), res2(y, x));
+                shouldEqual(img(x,y), res21(y, x));
+                shouldEqual(transposed(y,x), res21(y,x));
+            }
+
         transposeImage(srcImageRange(img), destImage(res2), vigra::minor);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
                 shouldEqual(img(x,y), res2(h-y-1, w-x-1));
 
         reflectImage(srcImageRange(img), destImage(res1), vigra::horizontal);
+        reflectImage(View(img), View(res11), vigra::horizontal);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
+            {
                 shouldEqual(img(x,y), res1(x, h-y-1));
+                shouldEqual(img(x,y), res11(x, h-y-1));
+            }
+
         reflectImage(srcImageRange(img), destImage(res1), vigra::vertical);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
@@ -1544,11 +1662,15 @@ struct GeometricTransformsTest
 
         double xfactor = 3.0;
         double yfactor = 2.0;
-        Image res3((int)(w*xfactor), (int)(h*yfactor));
+        Image res3((int)(w*xfactor), (int)(h*yfactor)), res31(res3.size());
         resampleImage(srcImageRange(img), destImage(res3), xfactor, yfactor);
+        resampleImage(View(img), View(res31), xfactor, yfactor);
         for(int y = 0; y < 10; ++y)
             for(int x = 0; x < 10; ++x)
+            {
                 shouldEqual(img(x,y), res3(int(x*xfactor), int(y*yfactor)));
+                shouldEqual(img(x,y), res31(int(x*xfactor), int(y*yfactor)));
+            }
     }
 
     void testAffineMatrix()
@@ -1593,18 +1715,23 @@ struct GeometricTransformsTest
 
     void testRotation()
     {
-        Image res(img.size()), ref(img.size());
+        Image res(img.size()), ref(img.size()), res1(img.size());
         importImage(vigra::ImageImportInfo("lenna_rotate.xv"), destImage(ref));
 
         SplineImageView<3, double> sp(srcImageRange(img));
 
         rotateImage(sp, destImage(res), 45.0);
-
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+
+        rotateImage(sp, View(res1), 45.0);
+        shouldEqualSequenceTolerance(res1.begin(), res1.end(), ref.begin(), 1e-12);
 
         TinyVector<double, 2> center((w-1.0)/2.0, (h-1.0)/2.0);
         affineWarpImage(sp, destImageRange(res), rotationMatrix2DDegrees(45.0, center));
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+
+        affineWarpImage(sp, View(res1), rotationMatrix2DDegrees(45.0, center));
+        shouldEqualSequenceTolerance(res1.begin(), res1.end(), ref.begin(), 1e-12);
     }
 
     void testScaling()

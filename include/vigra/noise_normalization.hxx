@@ -1370,8 +1370,8 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline bool
 quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                DestIterator dul, DestAccessor dest,
-                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+                            DestIterator dul, DestAccessor dest,
+                            NoiseNormalizationOptions const & options)
 {
     typedef typename SrcAccessor::value_type SrcType;
 

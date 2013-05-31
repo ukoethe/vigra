@@ -45,18 +45,20 @@
 #include "vigra/orientedtensorfilters.hxx"
 #include "vigra/boundarytensor.hxx"
 #include "vigra/gradient_energy_tensor.hxx"
+#include "vigra/multi_array.hxx"
+#include "vigra/multi_math.hxx"
 
 using namespace vigra;
 
 struct TensorUtilityTest
 {
-    typedef vigra::DImage Image;
-    typedef vigra::DVector2Image V2Image;
-    typedef vigra::DVector3Image V3Image;
+    typedef vigra::MultiArray<2, double> Image;
+    typedef vigra::MultiArray<2, TinyVector<double, 2> > V2Image;
+    typedef vigra::MultiArray<2, TinyVector<double, 3> > V3Image;
 
     TensorUtilityTest()
     : w(5), h(5),
-      img2(w, h), img3(w, h)
+      img2(Shape2(w, h)), img3(Shape2(w, h))
     {
         for(int y = 0; y < h; ++y)
         {
@@ -66,7 +68,7 @@ struct TensorUtilityTest
                 img2(x,y)[1] = y;
             }
         }
-        vectorToTensor(srcImageRange(img2), destImage(img3));
+        vectorToTensor(img2, img3);
     }
 
     void vector2TensorTest()
@@ -84,8 +86,8 @@ struct TensorUtilityTest
     
     void tensorEigenRepresentationTest()
     {
-        V3Image res(img3.size());
-        tensorEigenRepresentation(srcImageRange(img3), destImage(res));
+        V3Image res(img3.shape());
+        tensorEigenRepresentation(img3, res);
         
         for(int y = 0; y < h; ++y)
         {
@@ -109,8 +111,8 @@ struct TensorUtilityTest
     
     void tensorTraceTest()
     {
-        Image res(img3.size());
-        tensorTrace(srcImageRange(img3), destImage(res));
+        Image res(img3.shape());
+        tensorTrace(img3, res);
         
         for(int y = 0; y < h; ++y)
         {
@@ -124,11 +126,11 @@ struct TensorUtilityTest
     
     void tensorToEdgeCornerTest()
     {
-        V2Image edge(img3.size());
-        Image corner(img3.size());
-        tensorToEdgeCorner(srcImageRange(img3), destImage(edge), destImage(corner));
-        V3Image eigen(img3.size());
-        tensorEigenRepresentation(srcImageRange(img3), destImage(eigen));
+        V2Image edge(img3.shape());
+        Image corner(img3.shape());
+        tensorToEdgeCorner(img3, edge, corner);
+        V3Image eigen(img3.shape());
+        tensorEigenRepresentation(img3, eigen);
         
         for(int y = 0; y < h; ++y)
         {
@@ -156,6 +158,11 @@ struct TensorUtilityTest
         rieszTransformOfLOG(srcImageRange(img1), destImage(res), 2.0, xorder, yorder); \
         \
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12); \
+        \
+        res.init(0.0); \
+        rieszTransformOfLOG(View(img1), View(res), 2.0, xorder, yorder); \
+        \
+        shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12); \
     } \
     
 
@@ -163,8 +170,10 @@ struct TensorUtilityTest
 struct EdgeJunctionTensorTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::DVector2Image V2Image;
     typedef vigra::DVector3Image V3Image;
+    typedef vigra::MultiArrayView<2, TinyVector<double, 3> > View3;
 
     EdgeJunctionTensorTest()
     : img1(17, 17)
@@ -186,22 +195,24 @@ struct EdgeJunctionTensorTest
 
     void boundaryTensorTest0()
     {
-        V3Image res(img1.size()), ref(img1.size());
+        V3Image res(img1.size()), res1(img1.size()), ref(img1.size());
         ImageImportInfo iref("boundaryTensor.xv");
         importImage(iref, destImage(ref));
         
         boundaryTensor(srcImageRange(img1), destImage(res), 2.0);
+        boundaryTensor(View(img1), View3(res1), 2.0);
         
-        for(V3Image::iterator i = res.begin(), j = ref.begin(); i < res.end(); ++i, ++j)
+        for(V3Image::iterator i = res.begin(), j = res1.begin(), k = ref.begin(); i < res.end(); ++i, ++j, ++k)
         {
-            shouldEqualTolerance(i->magnitude(), j->magnitude(), 1e-12);
+            shouldEqualTolerance(i->magnitude(), k->magnitude(), 1e-12);
+            shouldEqualTolerance(j->magnitude(), k->magnitude(), 1e-12);
         }
     }
 
     void boundaryTensorTest1()
     {
-        V3Image bt(img2.size());
-        Image res(img2.size()), ref(img2.size());
+        V3Image bt(img2.size()), bt1(img2.size());
+        Image res(img2.size()), res1(img2.size()), ref(img2.size());
         ImageImportInfo iref("l2_boundary1.xv");
         importImage(iref, destImage(ref));
 
@@ -209,6 +220,11 @@ struct EdgeJunctionTensorTest
         tensorTrace(srcImageRange(bt), destImage(res));
         
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
+
+        boundaryTensor1(View(img2), View3(bt1), 2.0);
+        tensorTrace(View3(bt1), View(res1));
+        
+        shouldEqualSequenceTolerance(res1.begin(), res1.end(), ref.begin(), 1e-12);
     }
 
     void boundaryTensorTest2()
@@ -218,8 +234,8 @@ struct EdgeJunctionTensorTest
         ImageImportInfo iref("l2_boundary.xv");
         importImage(iref, destImage(ref));
 
-        boundaryTensor(srcImageRange(img2), destImage(bt), 2.0);
-        tensorTrace(srcImageRange(bt), destImage(res));
+        boundaryTensor(View(img2), View3(bt), 2.0);
+        tensorTrace(View3(bt), View(res));
         
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
     }
@@ -253,7 +269,7 @@ struct EdgeJunctionTensorTest
 
         gaussianGradient(srcImageRange(img2), destImage(gradient), 0.7);
         vectorToTensor(srcImageRange(gradient), destImage(tensor));
-        hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.8, 0.4);
+        hourGlassFilter(View3(tensor), View3(smoothedTensor), 2.8, 0.4);
         tensorTrace(srcImageRange(smoothedTensor), destImage(res));
   
         shouldEqualSequenceTolerance(res.begin(), res.end(), ref.begin(), 1e-12);
@@ -271,15 +287,11 @@ struct EdgeJunctionTensorTest
         Kernel1D<double> smooth, grad;
         smooth.initGaussian(1.0);
         grad.initGaussianDerivative(1.0, 1);
-        gradientEnergyTensor(srcImageRange(img2), destImage(get), grad, smooth);
-        tensorTrace(srcImageRange(get), destImage(res));
+        gradientEnergyTensor(View(img2), View3(get), grad, smooth);
+        tensorTrace(View3(get), View(res));
 
-        combineTwoImages(srcImageRange(res), srcImage(ref), destImage(res),
-                         Arg1() - Arg2());
-
-        Image::iterator i = res.begin(), end = res.end();        
-        for(; i != end; ++i)
-            shouldEqualTolerance(*i, 0.0, 1e-12);
+        using namespace multi_math;
+        should(all(View(res) - View(ref) < 1e-12));
     }
 
     Image img1, img2;

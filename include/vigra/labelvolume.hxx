@@ -344,7 +344,7 @@ unsigned int labelVolume(MultiArrayView<N, T1, S1> const & source,
                          MultiArrayView<N, T2, S2> dest,
                          Neighborhood3D neighborhood3D)
 {
-    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, std::equal_to<typename SrcAccessor::value_type>());
+    return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), neighborhood3D, std::equal_to<T1>());
 }
 
 template <unsigned int N, class T1, class S1,
@@ -383,7 +383,7 @@ unsigned int labelVolumeSix(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest)
 {
     return labelVolume(srcMultiArrayRange(source), destMultiArray(dest), 
-                       NeighborCode3DSix(), std::equal_to<typename SrcAccessor::value_type>());
+                       NeighborCode3DSix(), std::equal_to<T1>());
 }
 
 /********************************************************/
@@ -669,7 +669,7 @@ unsigned int labelVolumeWithBackground(triple<SrcIterator, SrcShape, SrcAccessor
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2,
+                          class T2, class S2,
           class Neighborhood3D,
           class ValueType>
 unsigned int labelVolumeWithBackground(MultiArrayView<N, T1, S1> const & source,
@@ -678,7 +678,7 @@ unsigned int labelVolumeWithBackground(MultiArrayView<N, T1, S1> const & source,
 {
     return labelVolumeWithBackground(srcMultiArrayRange(source), destMultiArray(dest), 
                                      neighborhood3D, backgroundValue,
-                                     std::equal_to<typename SrcAccessor::value_type>());
+                                     std::equal_to<T1>());
 }
 
 //@}

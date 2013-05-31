@@ -234,7 +234,7 @@ inline void
 inspectImage(MultiArrayView<2, T, S> const & img,
              Functor & f)
 {
-    inspectImage(srcImageRange(src), f);
+    inspectImage(srcImageRange(img), f);
 }
 
 namespace functor
@@ -446,7 +446,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
                MultiArrayView<2, TM, SM> const & mask,
                Functor & f)
 {
-    inspectImageIf(srcImageRange(src),
+    inspectImageIf(srcImageRange(img),
                    maskImage(mask), f);
 }
 
@@ -457,7 +457,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
                MultiArrayView<2, TM, SM> const & mask,
                functor::UnaryAnalyser<Functor> const & f)
 {
-    inspectImageIf(srcImageRange(src),
+    inspectImageIf(srcImageRange(img),
                    maskImage(mask), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 

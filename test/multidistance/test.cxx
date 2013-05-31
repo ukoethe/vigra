@@ -1038,9 +1038,7 @@ struct MultiDistanceTest
                 *(volume.traverser_begin()+*iter)=1;
             }
 
-            separableMultiDistSquared(srcMultiArrayRange(volume),
-                                      destMultiArray(volume),
-                                      true);
+            separableMultiDistSquared(volume, volume, true);
             shouldEqualSequence(volume.begin(),volume.end(),desired.begin());
         }
 
@@ -1062,13 +1060,13 @@ struct MultiDistanceTest
         MultiArray<3, double> res1(vol.shape()), res2(vol.shape());
         MultiArrayView<3, double, StridedArrayTag> pvol(vol.transpose()), pres2(res2.transpose());
         
-        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), true);
-        separableMultiDistSquared(srcMultiArrayRange(pvol), destMultiArray(pres2), true);
+        separableMultiDistSquared(vol, res1, true);
+        separableMultiDistSquared(pvol, pres2, true);
                 
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
         
-        separableMultiDistSquared(srcMultiArrayRange(vol), destMultiArray(res1), false);
-        separableMultiDistSquared(srcMultiArrayRange(pvol), destMultiArray(pres2), false);
+        separableMultiDistSquared(vol, res1, false);
+        separableMultiDistSquared(pvol, pres2, false);
                 
         shouldEqualSequence(res1.data(), res1.data()+res1.elementCount(), res2.data());
     }
@@ -1106,9 +1104,7 @@ struct MultiDistanceTest
                 }
 
 
-            separableMultiDistSquared(srcMultiArrayRange(volume),
-                                      destMultiArray(volume),
-                                      true, pixelPitch);
+            separableMultiDistSquared(volume, volume, true, pixelPitch);
             shouldEqualSequenceTolerance(volume.begin(),volume.end(),desired.begin(), epsilon);
         }
     }
@@ -1122,9 +1118,7 @@ struct MultiDistanceTest
 
             distanceTransform(srcImageRange(images[k]), destImage(res), 0.0, 2);
 
-            separableMultiDistance(srcMultiArrayRange(img_array),
-                                   destMultiArray(img_array),
-                                   true);
+            separableMultiDistance(img_array, img_array, true);
 
             Image::Iterator i = res.upperLeft();
             Image::Accessor acc = res.accessor();
@@ -1148,7 +1142,7 @@ struct MultiDistanceTest
         vigra::MultiArray<2,double> res(img2);
         
         static const int desired[] = {3, 2, 1, 0, 1, 2, 3};
-        separableMultiDistance(srcMultiArrayRange(img2), destMultiArray(res), true);
+        separableMultiDistance(img2, res, true);
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 };

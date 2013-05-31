@@ -37,12 +37,14 @@
 #include "unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/flatmorphology.hxx"
+#include "vigra/multi_array.hxx"
 
 using namespace vigra;
 
 struct FlatMorphologyTest
 {
     typedef vigra::BImage Image;
+    typedef vigra::MultiArrayView<2, unsigned char> View;
 
     FlatMorphologyTest()
     : img(7,7), mask(7,7)
@@ -87,7 +89,7 @@ struct FlatMorphologyTest
     
     void erosionTest()
     {
-        Image res(img);
+        Image res(img.size()), res1(img.size());
         
         discErosion(srcImageRange(img), destImage(res), 2);
         
@@ -109,12 +111,14 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discErosion(View(img), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     void erosionWithMaskTest()
     {
-        Image res(img);
-        res = 9;
+        Image res(img.size(), 9), res1(img.size(), 9);
         
         discErosionWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
@@ -137,11 +141,14 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discErosionWithMask(View(img), View(mask), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     void dilationTest()
     {
-        Image res(img);
+        Image res(img.size()), res1(img.size());
         
         discDilation(srcImageRange(img), destImage(res), 2);
         
@@ -163,12 +170,14 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discDilation(View(img), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     void dilationWithMaskTest()
     {
-        Image res(img);
-        res = 9;
+        Image res(img.size(), 9), res1(img.size(), 9);
         
         discDilationWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
@@ -191,12 +200,14 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discDilationWithMask(View(img), View(mask), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     void medianTest()
     {
-        Image res(img);
-        res = 0;
+        Image res(img.size()), res1(img.size());
         
         discMedian(srcImageRange(img), destImage(res), 2);
         
@@ -218,12 +229,14 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discMedian(View(img), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     void medianWithMaskTest()
     {
-        Image res(img);
-        res = 9;
+        Image res(img.size(), 9), res1(img.size(), 9);
         
         discMedianWithMask(srcImageRange(img), maskImage(mask),
                             destImage(res), 2);
@@ -246,6 +259,9 @@ struct FlatMorphologyTest
         {
             should(*i1 == acc(i2));
         }
+
+        discMedianWithMask(View(img), View(mask), View(res1), 2);
+        should(View(res) == View(res1));
     }
     
     Image img, mask;

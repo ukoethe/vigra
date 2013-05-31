@@ -149,6 +149,7 @@ struct ExecLoop
     VIGRA_EXEC_LOOP(sub, -=)
     VIGRA_EXEC_LOOP(mul, *=)
     VIGRA_EXEC_LOOP(div, /=)
+    VIGRA_EXEC_LOOP(mod, %=)
     VIGRA_EXEC_LOOP(neg, = -)
     VIGRA_EXEC_LOOP(abs, = vigra::abs)
     VIGRA_EXEC_LOOP(floor, = vigra::floor)
@@ -427,6 +428,7 @@ struct UnrollLoop
     VIGRA_UNROLL_LOOP(sub, -=)
     VIGRA_UNROLL_LOOP(mul, *=)
     VIGRA_UNROLL_LOOP(div, /=)
+    VIGRA_UNROLL_LOOP(mod, %=)
     VIGRA_UNROLL_LOOP(neg, = -)
     VIGRA_UNROLL_LOOP(abs, = vigra::abs)
     VIGRA_UNROLL_LOOP(floor, = vigra::floor)
@@ -530,6 +532,8 @@ struct UnrollLoop<0>
     static void mulScalar(T1, T2) {}
     template <class T1, class T2>
     static void div(T1, T2) {}
+    template <class T1, class T2>
+    static void mod(T1, T2) {}
     template <class T1, class T2>
     static void divScalar(T1, T2) {}
     template <class T1, class T2>
@@ -718,6 +722,15 @@ class TinyVectorBase
     DERIVED & operator/=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
     {
         Loop::div(data_, r.begin());
+        return static_cast<DERIVED &>(*this);
+    }
+
+        /** Component-wise modulo-assignment
+        */
+    template <class T1, class D1, class D2>
+    DERIVED & operator%=(TinyVectorBase<T1, SIZE, D1, D2> const & r)
+    {
+        Loop::mod(data_, r.begin());
         return static_cast<DERIVED &>(*this);
     }
 
@@ -1641,6 +1654,16 @@ operator/(TinyVectorBase<V1, SIZE, D1, D2> const & l,
           TinyVectorBase<V2, SIZE, D3, D4> const & r)
 {
     return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) /= r;
+}
+
+    /// component-wise modulo
+template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
+inline
+typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2, SIZE> >::Promote
+operator%(TinyVectorBase<V1, SIZE, D1, D2> const & l,
+          TinyVectorBase<V2, SIZE, D3, D4> const & r)
+{
+    return typename PromoteTraits<TinyVector<V1, SIZE>, TinyVector<V2 , SIZE> >::Promote(l) %= r;
 }
 
     /// component-wise left scalar multiplication

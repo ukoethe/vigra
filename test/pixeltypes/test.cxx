@@ -313,7 +313,16 @@ struct TinyVectorTest
         should(equalIter(fvp.begin(), fvp.end(), fp));
         fvp = fv3 / 2.0;
         float fp1[] = {0.6f, 1.2f, 1.8f, 2.4f, 4.05f, 4.85f};
-        should(equalIter(fvp.begin(), fvp.end(), fp1));
+        
+
+        int ivsq[] = { 1, 4, 16, 25, 64, 100 };
+        ivp = iv3*iv3;
+        should(equalIter(ivp.begin(), ivp.end(), ivsq));
+        shouldEqual(iv3 * iv1, iv3);
+        shouldEqual(iv0 * iv3, iv0);
+        shouldEqual(iv3 / iv3, iv1);
+        shouldEqual(iv3 % iv3, iv0);
+        shouldEqual(iv3 % (iv3+iv1), iv3);
 
         float minRef[] = { 1.0f, 2.0f, 3.6f, 4.8f, 8.0f, 9.7f };
         shouldEqualSequence(minRef, minRef+SIZE, min(iv3, fv3).begin());

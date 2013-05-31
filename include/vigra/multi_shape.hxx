@@ -394,6 +394,46 @@ struct CoordinatesToOffest<UnstridedArrayTag>
     }
 };
 
+/********************************************************/
+/*                                                      */
+/*            RelativeToAbsoluteCoordinate              */
+/*                                                      */
+/********************************************************/
+
+    /* transforms a coordinate object with negative indices into the corresponding 
+       'shape - abs(index)'.
+    */
+template <int M>
+struct RelativeToAbsoluteCoordinate
+{
+    template <int N>
+    static void
+    exec(const TinyVector<MultiArrayIndex, N> & shape, TinyVector<MultiArrayIndex, N> & coord)
+    {
+        RelativeToAbsoluteCoordinate<M-1>::exec(shape, coord);
+        if(coord[M] < 0)
+            coord[M] += shape[M];
+    }
+};
+
+template <>
+struct RelativeToAbsoluteCoordinate<0>
+{
+    template <int N>
+    static void
+    exec(const TinyVector<MultiArrayIndex, N> & shape, TinyVector<MultiArrayIndex, N> & coord)
+    {
+        if(coord[0] < 0)
+            coord[0] += shape[0];
+    }
+};
+
+/********************************************************/
+/*                                                      */
+/*                   BorderTypeImpl                     */
+/*                                                      */
+/********************************************************/
+
 // a border type is a compact bit-wise encoding of the fact that a 
 // given coordinate is at the border of the ROI. Each border corresponds
 // to one bit in the encoding, e.g. the left, right, top, bottom borders
@@ -433,6 +473,12 @@ struct BorderTypeImpl<N, 0>
         return res;
     }
 };
+
+/********************************************************/
+/*                                                      */
+/*                makeArrayNeighborhood                 */
+/*                                                      */
+/********************************************************/
 
 // Create the offsets to all direct neighbors, starting from the given Level (=dimension)
 // and append them to the given array. The algorithm is designed so that the offsets are 

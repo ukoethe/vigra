@@ -423,7 +423,7 @@ template <unsigned int N, class T1, class S1,
 inline unsigned int watersheds3DSix( MultiArrayView<N, T1, S1> const & source, 
                                      MultiArrayView<N, T2, S2> dest)
 {
-    return watersheds3D(srcMultiArrayRange(source), destMultiArray(dest), NeighborCode3DSix());
+    return watersheds3DSix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 template <unsigned int N, class T1, class S1,
@@ -431,7 +431,7 @@ template <unsigned int N, class T1, class S1,
 inline unsigned int watersheds3DTwentySix( MultiArrayView<N, T1, S1> const & source, 
                                            MultiArrayView<N, T2, S2> dest)
 {
-    return watersheds3D(srcMultiArrayRange(source), destMultiArray(dest), NeighborCode3DTwentySix());
+    return watersheds3DTwentySix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 }//namespace vigra

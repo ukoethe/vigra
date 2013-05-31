@@ -270,8 +270,7 @@ struct Watersheds3dTest
 
         IntVolume labelVolume(vol.shape()), labelVolume2(vol.shape());
 
-        int max_region_label = watersheds3DSix( srcMultiArrayRange(vol),
-                                                       destMultiArray(labelVolume));
+        int max_region_label = watersheds3DSix( vol, labelVolume);
 
         shouldEqual(max_region_label, 3);
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
@@ -460,8 +459,7 @@ struct Watersheds3dTest
             }
         }
 
-        max_region_label = watersheds3DTwentySix( srcMultiArrayRange(vol),
-                                                  destMultiArray(labelVolume2));
+        max_region_label = watersheds3DTwentySix( vol, labelVolume2);
         shouldEqual(8, max_region_label);
         should(labelVolume == labelVolume2);
 

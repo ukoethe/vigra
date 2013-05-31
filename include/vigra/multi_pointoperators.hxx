@@ -903,13 +903,39 @@ template <unsigned int N, class T1, class S1,
           class T2, class S2, 
           class Functor>
 inline void
-transformMultiArray(MultiArrayView<N, T1, S1> const & source,
-                    MultiArrayView<N, T2, S2> dest, Functor const & f)
+transformMultiArrayImpl(MultiArrayView<N, T1, S1> const & source,
+                        MultiArrayView<N, T2, S2> dest,
+                        Functor const & f, VigraFalseType)
 {
     if(source.shape() == dest.shape())
         transformMultiArray(srcMultiArrayRange(source), destMultiArray(dest), f);
     else
         transformMultiArray(srcMultiArrayRange(source), destMultiArrayRange(dest), f);
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, 
+          class Functor>
+inline void
+transformMultiArrayImpl(MultiArrayView<N, T1, S1> const & source,
+                        MultiArrayView<N, T2, S2> dest,
+                        Functor const & f, VigraTrueType)
+{
+    transformMultiArray(srcMultiArrayRange(source), destMultiArrayRange(dest), f);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class Functor>
+inline void
+transformMultiArray(MultiArrayView<N, T1, S1> const & source,
+                    MultiArrayView<N, T2, S2> dest, Functor const & f)
+{
+    typedef FunctorTraits<Functor> FT;
+    typedef typename 
+        And<typename FT::isInitializer, typename FT::isUnaryAnalyser>::result
+        isAnalyserInitializer;
+    transformMultiArrayImpl(source, dest, f, isAnalyserInitializer());
 }
 
 /********************************************************/
@@ -1405,10 +1431,10 @@ template <unsigned int N, class T11, class S11,
                           class T2, class S2, 
           class Functor>
 inline void
-combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
-                      MultiArrayView<N, T12, S12> const & source2,
-                      MultiArrayView<N, T2, S2> dest, 
-                      Functor const & f)
+combineTwoMultiArraysImpl(MultiArrayView<N, T11, S11> const & source1,
+                          MultiArrayView<N, T12, S12> const & source2,
+                          MultiArrayView<N, T2, S2> dest, 
+                          Functor const & f, VigraFalseType)
 {
     
     if(source1.shape() == source2.shape() && source1.shape() == dest.shape())
@@ -1418,6 +1444,39 @@ combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
         combineTwoMultiArrays(srcMultiArrayRange(source1), 
                               srcMultiArrayRange(source2), 
                               destMultiArrayRange(dest), f);
+}
+
+template <unsigned int N, class T11, class S11,
+                          class T12, class S12,
+                          class T2, class S2, 
+          class Functor>
+inline void
+combineTwoMultiArraysImpl(MultiArrayView<N, T11, S11> const & source1,
+                          MultiArrayView<N, T12, S12> const & source2,
+                          MultiArrayView<N, T2, S2> dest, 
+                          Functor const & f, VigraTrueType)
+{
+    
+    combineTwoMultiArrays(srcMultiArrayRange(source1), 
+                          srcMultiArrayRange(source2), 
+                          destMultiArrayRange(dest), f);
+}
+
+template <unsigned int N, class T11, class S11,
+                          class T12, class S12,
+                          class T2, class S2, 
+          class Functor>
+inline void
+combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
+                      MultiArrayView<N, T12, S12> const & source2,
+                      MultiArrayView<N, T2, S2> dest, 
+                      Functor const & f)
+{
+    typedef FunctorTraits<Functor> FT;
+    typedef typename 
+        And<typename FT::isInitializer, typename FT::isBinaryAnalyser>::result
+        isAnalyserInitializer;
+    combineTwoMultiArraysImpl(source1, source2, dest, f, isAnalyserInitializer());
 }
 
 /********************************************************/

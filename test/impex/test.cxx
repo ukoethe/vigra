@@ -64,6 +64,7 @@ void failCodec(Image const & img, ImageExportInfo const & info)
 class ByteImageExportImportTest
 {
     typedef vigra::BImage Image;
+    typedef vigra::MultiArrayView<2, unsigned char> View;
 
 public:
 
@@ -132,8 +133,7 @@ public:
 
     void testGIF ()
     {
-        vigra::ImageExportInfo exportinfo ("res.gif");
-        exportImage (srcImageRange (img), exportinfo);
+        exportImage (View(img), "res.gif");
 
         vigra::ImageImportInfo info ("res.gif");
 
@@ -144,7 +144,7 @@ public:
 
         Image res (info.width (), info.height ());
 
-        importImage (info, destImage (res));
+        importImage (info, View (res));
 
         Image::ScanOrderIterator i = img.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
@@ -155,6 +155,10 @@ public:
             sum += std::abs (acc (i) - acc (i1));
 
         should (sum / (info.width () * info.height ()) < 0.1);
+
+        MultiArray<2, unsigned char> res1;
+        importImage("res.gif", res1);
+        should(res1 == View(res));
     }
 
     void testJPEG ()
@@ -1490,6 +1494,7 @@ public:
     }
 
     void testFile(const char* filename);
+    void testFileMultiArray(const char* filename);
 
     void testTIFF()
     {
@@ -1497,6 +1502,7 @@ public:
 
 #if defined(HasTIFF)
         testFile(filename);
+        testFileMultiArray(filename);
 #else
         failCodec(image_, vigra::ImageExportInfo(filename));
 #endif
@@ -1508,6 +1514,7 @@ public:
 
 #if defined(HasPNG)
         testFile(filename);
+        testFileMultiArray(filename);
 #else
         failCodec(image_, vigra::ImageExportInfo(filename));
 #endif
@@ -1547,6 +1554,33 @@ GrayscaleImportExportAlphaTest::testFile(const char* filename)
     }
 
     for (BImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    {
+        should(*x == *xx);
+    }
+}
+
+void
+GrayscaleImportExportAlphaTest::testFileMultiArray(const char* filename)
+{
+    typedef MultiArrayView<2, unsigned char> View;
+
+    exportImageAlpha(View(image_), View(alpha_), vigra::ImageExportInfo(filename));
+
+    vigra::ImageImportInfo info(filename);
+    MultiArray<2, unsigned char> image(info.shape()),
+                                 alpha(info.shape());
+
+    importImageAlpha(info, image, alpha);
+
+    MultiArray<2, unsigned char>::iterator xx = alpha.begin();
+    for (BImage::const_iterator x = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    {
+        should(*x == 255);
+        should(*x == *xx);
+    }
+
+    xx = image.begin();
+    for (BImage::const_iterator x = image_.begin(); x != image_.end(); ++x, ++xx)
     {
         should(*x == *xx);
     }
