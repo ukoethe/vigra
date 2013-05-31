@@ -202,6 +202,15 @@ public:
         shouldEqual (array [Shape (5,2,1)], 236);
         shouldEqual (array (0,0,0), 111);
         shouldEqual (array (5,2,1), 236);
+
+        shouldEqual(array.shape(), array3.subarray(offset, Shape3(-5)).shape());
+        shouldEqualSequence(array.begin(), array.end(), array3.subarray(offset, Shape3(-5)).begin());
+
+        shouldEqual(array.shape(), array3.subarray(Shape3(-9), size).shape());
+        shouldEqualSequence(array.begin(), array.end(), array3.subarray(offset, size).begin());
+
+        shouldEqual(array.shape(), array3.subarray(Shape3(-9), Shape3(-5)).shape());
+        shouldEqualSequence(array.begin(), array.end(), array3.subarray(Shape3(-9), Shape3(-5)).begin());
         
         // test swap
         array3.subarray(Shape(0,0,0), Shape(10,10,1)).swapData( 
@@ -1768,38 +1777,42 @@ struct MultiArrayPointoperatorsTest
         should(res.shape() == Size3(5,4,3));
 
         initMultiArray(destMultiArrayRange(res), ini);
-        
+
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), ini);
+
+        using namespace multi_math;
+        should(all(res == ini));
+
+        initMultiArray(res, 2.2f);
+        should(all(res == 2.2f));
+
+        res = 3.3f;
+        should(all(res == 3.3f));
+
+        res.init(4.4f);
+        should(all(res == 4.4f));
     }
 
     void testCopy()
     {
-        Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
+        Image3D res(img.shape(), 1.0), res1(img.shape(), 1.0);
         
         copyMultiArray(srcMultiArrayRange(img), destMultiArray(res));
-        
-        int x,y,z;
-        for(z=0; z<img.shape(2); ++z)
-            for(y=0; y<img.shape(1); ++y)
-                for(x=0; x<img.shape(0); ++x)
-                    shouldEqual(res(x,y,z), img(x,y,z));
+        copyMultiArray(img, res1);
+
+        should(img == res);
+        should(img == res1);
     }
 
     void testCopyOuterExpansion()
     {
         Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
-        
-        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+
+        copyMultiArray(img.subarray(Size3(0,0,0), Size3(5,1,1)), res);
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -1811,12 +1824,8 @@ struct MultiArrayPointoperatorsTest
     void testCopyInnerExpansion()
     {
         Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
-        
-        copyMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res));
+
+        copyMultiArray(img.subarray(Size3(0,0,0), Size3(1,1,3)), res);
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -1827,29 +1836,20 @@ struct MultiArrayPointoperatorsTest
 
     void testTransform()
     {
-        Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
+        Image3D res(img.shape()), res1(img.shape());
         transformMultiArray(srcMultiArrayRange(img), destMultiArray(res),
                             Arg1() + Arg1());
+        transformMultiArray(img, res1, Arg1() + Arg1());
         
-        int x,y,z;
-        for(z=0; z<img.shape(2); ++z)
-            for(y=0; y<img.shape(1); ++y)
-                for(x=0; x<img.shape(0); ++x)
-                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+        using namespace multi_math;
+        should(all(2.0*img == res));
+        should(all(2.0*img == res1));
     }
 
     void testTransformOuterExpand()
     {
         Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
-        
-        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+        transformMultiArray(img.subarray(Size3(0,0,0), Size3(5,1,1)), res,
                             Arg1() + Arg1());
         
         int x,y,z;
@@ -1862,12 +1862,8 @@ struct MultiArrayPointoperatorsTest
     void testTransformInnerExpand()
     {
         Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
-        
-        transformMultiArray(srcMultiArrayRange(view), destMultiArrayRange(res),
+
+        transformMultiArray(img.subarray(Size3(0,0,0), Size3(1,1,3)), res,
                             Arg1() + Arg1());
         
         int x,y,z;
@@ -1880,11 +1876,8 @@ struct MultiArrayPointoperatorsTest
     void testTransformOuterReduce()
     {
         Image3D res(Size3(5,1,1));
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
-                            reduceFunctor(Arg1() + Arg2(), 0.0));
+
+        transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
         
         int x,y,z;
         for(x=0; x<img.shape(0); ++x)
@@ -1898,9 +1891,7 @@ struct MultiArrayPointoperatorsTest
         
         Image1D res1(Size1(5));
         MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(1).insertSingletonDimension(2);
-        transformMultiArray(srcMultiArrayRange(img), 
-                            destMultiArrayRange(res3),
-                            FindSum<PixelType>());
+        transformMultiArray(img, res3, FindSum<PixelType>());
         shouldEqualSequenceTolerance(res1.data(), res1.data()+5, res.data(), 1e-7);       
     }
 
@@ -1908,10 +1899,7 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(Size3(1,1,3));
         
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        transformMultiArray(srcMultiArrayRange(img), destMultiArrayRange(res),
-                            reduceFunctor(Arg1() + Arg2(), 0.0));
+        transformMultiArray(img, res, reduceFunctor(Arg1() + Arg2(), 0.0));
         
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -1925,38 +1913,29 @@ struct MultiArrayPointoperatorsTest
         
         Image1D res1(Size1(3));
         MultiArrayView<3,PixelType> res3 = res1.insertSingletonDimension(0).insertSingletonDimension(0);
-        transformMultiArray(srcMultiArrayRange(img), 
-                            destMultiArrayRange(res3),
-                            FindSum<PixelType>());
+        transformMultiArray(img, res3, FindSum<PixelType>());
         shouldEqualSequenceTolerance(res1.data(), res1.data()+3, res.data(), 1e-6);       
     }
 
     void testCombine2()
     {
-        Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
+        Image3D res(img.shape()), res1(img.shape());
         
         combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArray(img), 
                               destMultiArray(res),
                               Arg1() + Arg2());
+        combineTwoMultiArrays(img, img, res1, Arg1() + Arg2());
         
-        int x,y,z;
-        for(z=0; z<img.shape(2); ++z)
-            for(y=0; y<img.shape(1); ++y)
-                for(x=0; x<img.shape(0); ++x)
-                    shouldEqual(res(x,y,z), 2.0*img(x,y,z));
+        using namespace multi_math;
+        should(all(2.0*img == res));
+        should(all(2.0*img == res1));
     }
 
     void testCombine2OuterExpand()
     {
         Image3D res(img.shape());
         
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
-        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(img.subarray(Size3(0,0,0), Size3(5,1,1)), img, res,
                               Arg1() + Param(2.0)*Arg2());       
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -1964,14 +1943,14 @@ struct MultiArrayPointoperatorsTest
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(x,0,0));
 
-        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(img, img.subarray(Size3(0,0,0), Size3(5,1,1)), res,
                               Arg1() + Param(2.0)*Arg2());       
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), img(x,y,z) + 2.0*img(x,0,0));
 
+        View3D view = img.subarray(Size3(0,0,0), Size3(5,1,1));
         combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(view), 
                               destMultiArrayRange(res),
                               Arg1() + Param(2.0)*Arg2());       
@@ -1985,11 +1964,8 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(img.shape());
         
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
         View3D view = img.subarray(Size3(0,0,0), Size3(1,1,3));
-        combineTwoMultiArrays(srcMultiArrayRange(view), srcMultiArrayRange(img), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(view, img, res,
                               Arg1() + Param(2.0)*Arg2());       
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
@@ -1997,8 +1973,7 @@ struct MultiArrayPointoperatorsTest
                 for(x=0; x<img.shape(0); ++x)
                     shouldEqual(res(x,y,z), 2.0*img(x,y,z) + img(0,0,z));
 
-        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(view), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(img, view, res,
                               Arg1() + Param(2.0)*Arg2());       
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
@@ -2018,10 +1993,7 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(Size3(5,1,1));
         
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(img, img, res,
                               reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
         
         int x,y,z;
@@ -2039,10 +2011,7 @@ struct MultiArrayPointoperatorsTest
     {
         Image3D res(Size3(1,1,3));
         
-        initMultiArray(destMultiArrayRange(res), 0.0);
-        
-        combineTwoMultiArrays(srcMultiArrayRange(img), srcMultiArrayRange(img), 
-                              destMultiArrayRange(res),
+        combineTwoMultiArrays(img, img, res,
                               reduceFunctor(Arg1() + Arg2() + Arg3(), 0.0));
         
         int x,y,z;
@@ -2058,20 +2027,23 @@ struct MultiArrayPointoperatorsTest
 
     void testCombine3()
     {
-        Image3D res(img.shape());
-        
-        initMultiArray(destMultiArrayRange(res), 0.0);
+        Image3D res(img.shape()), res1(img.shape());
         
         combineThreeMultiArrays(srcMultiArrayRange(img), 
                                 srcMultiArray(img), srcMultiArray(img), 
                                 destMultiArray(res),
                                 Arg1() + Arg2() + Arg3());
-        
+        combineThreeMultiArrays(img, img, img, res1,
+                                Arg1() + Arg2() + Arg3());
+
         int x,y,z;
         for(z=0; z<img.shape(2); ++z)
             for(y=0; y<img.shape(1); ++y)
                 for(x=0; x<img.shape(0); ++x)
+                {
                     shouldEqual(res(x,y,z), 3.0*img(x,y,z));
+                    shouldEqual(res1(x,y,z), 3.0*img(x,y,z));
+                }
     }
     
     void testInitMultiArrayBorder(){
@@ -2161,9 +2133,34 @@ struct MultiArrayPointoperatorsTest
         
         for(IntVolume::iterator iter=vol2.begin(); iter!=vol2.end(); ++iter)
             *iter=5;
-        initMultiArrayBorder(destMultiArrayRange(vol2),9,0);
+        initMultiArrayBorder(vol2, 9, 0);
         shouldEqualSequence(vol2.begin(), vol2.end(), desired_vol2);
 
+    }
+
+    void testInspect()
+    {
+        vigra::FindMinMax<PixelType> minmax;
+
+        inspectMultiArray(img, minmax);
+
+        shouldEqual(minmax.count, img.size());
+        shouldEqual(minmax.min, 0.1f);
+        shouldEqual(minmax.max, 59.1f);
+
+        vigra::MultiArray<3, unsigned char> labels(img.shape());
+        labels.subarray(Shape3(1,0,0), img.shape()-Shape3(1,0,0)) = 1;
+
+        vigra::ArrayOfRegionStatistics<vigra::FindMinMax<PixelType> > stats(1);
+
+        inspectTwoMultiArrays(img, labels, stats);
+
+        shouldEqual(stats[0].count, 24);
+        shouldEqual(stats[0].min, 0.1f);
+        shouldEqual(stats[0].max, 59.1f);
+        shouldEqual(stats[1].count, 36);
+        shouldEqual(stats[1].min, 1.1f);
+        shouldEqual(stats[1].max, 58.1f);
     }
     
     void testTensorUtilities()
@@ -2188,24 +2185,34 @@ struct MultiArrayPointoperatorsTest
         vectorToTensor(srcImageRange(vector), destImage(rtensor));
         vectorToTensorMultiArray(srcMultiArrayRange(vector), destMultiArray(tensor2));
         shouldEqualSequence(tensor2.data(), tensor2.data()+size, rtensor.data());
+        tensor2.init(TinyVector<double, 3>());
+        vectorToTensorMultiArray(vector, tensor2);
+        shouldEqualSequence(tensor2.data(), tensor2.data()+size, rtensor.data());
                 
         tensorTrace(srcImageRange(tensor1), destImage(rtrace));
         tensorTraceMultiArray(srcMultiArrayRange(tensor1), destMultiArray(trace));
         shouldEqualSequence(trace.data(), trace.data()+size, rtrace.data());
+        trace = 0;
+        tensorTraceMultiArray(tensor1, trace);
+        shouldEqualSequence(trace.data(), trace.data()+size, rtrace.data());
                 
         tensorDeterminantMultiArray(srcMultiArrayRange(tensor1), destMultiArray(determinant));
         shouldEqualSequence(determinant.data(), determinant.data()+size, rdet.data());
+        determinant = 0;
+        tensorDeterminantMultiArray(tensor1, determinant);
+        shouldEqualSequence(determinant.data(), determinant.data()+size, rdet.data());
                 
+        determinant = 1000.0;
         tensorDeterminantMultiArray(srcMultiArrayRange(tensor2), destMultiArray(determinant));
         shouldEqualTolerance(norm(determinant), 0.0, 1e-14);
 
         tensorEigenRepresentation(srcImageRange(tensor1), destImage(rtensor));
         tensorEigenvaluesMultiArray(srcMultiArrayRange(tensor1), destMultiArray(vector));
-        for(int k=0; k<size; ++k)
-        {
-            shouldEqualTolerance(vector[k][0], rtensor[k][0], 1e-14);
-            shouldEqualTolerance(vector[k][1], rtensor[k][1], 1e-14);
-        }
+        shouldEqualSequenceTolerance(vector.begin(), vector.end(), rtensor.begin(), (TinyVector<double, 2>(1e-14)));
+
+        vector = TinyVector<double, 2>();
+        tensorEigenvaluesMultiArray(tensor1, vector);
+        shouldEqualSequenceTolerance(vector.begin(), vector.end(), rtensor.begin(), (TinyVector<double, 2>(1e-14)));
     }
 };
 
@@ -2880,6 +2887,7 @@ struct MultiArrayPointOperatorsTestSuite
         add( testCase( &MultiArrayPointoperatorsTest::testCombine2InnerReduce ) );
         add( testCase( &MultiArrayPointoperatorsTest::testCombine3 ) );
         add( testCase( &MultiArrayPointoperatorsTest::testInitMultiArrayBorder ) );
+        add( testCase( &MultiArrayPointoperatorsTest::testInspect ) );
         add( testCase( &MultiArrayPointoperatorsTest::testTensorUtilities ) );
 
         add( testCase( &MultiMathTest::testSpeed ) );

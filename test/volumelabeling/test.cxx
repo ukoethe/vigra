@@ -188,6 +188,16 @@ struct VolumeLabelingTest
         maxLabel = labelMultiArray(vol1, res2, DirectNeighborhood);
         should(2 == maxLabel);
         should(res == res2);
+
+        res2 = 0;
+        maxLabel = labelVolumeSix(vol1, res2);
+        should(2 == maxLabel);
+        should(res == res2);
+
+        res2 = 0;
+        maxLabel = labelVolume(vol1, res2, NeighborCode3DSix());
+        should(2 == maxLabel);
+        should(res == res2);
     }
 
     void labelingSixTest2()
@@ -282,6 +292,10 @@ struct VolumeLabelingTest
         }
 
         should(4 == labelMultiArrayWithBackground(vol5, res2, DirectNeighborhood));
+        should(res == res2);
+
+        res2 = 0;
+        should(4 == labelVolumeWithBackground(vol5, res2, NeighborCode3DSix(), 0));
         should(res == res2);
     }
 

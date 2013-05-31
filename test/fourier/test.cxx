@@ -736,6 +736,8 @@ struct CompareFunctor
 
 struct GaborTests
 {
+    typedef MultiArrayView<2, fftw_real> RView;
+
     ImageImportInfo info;
     int w, h;
     BasicImage<fftw_real> image;
@@ -777,7 +779,8 @@ struct GaborTests
         int dir= 1, scale= 1;
         double angle = dir * M_PI / directionCount;
         double centerFrequency = 3.0/8.0 / VIGRA_CSTD::pow(2.0,scale);
-        createGaborFilter(destImageRange(filter),
+
+        createGaborFilter(RView(filter),
                           angle, centerFrequency,
                           angularGaborSigma(directionCount, centerFrequency),
                           radialGaborSigma(centerFrequency));

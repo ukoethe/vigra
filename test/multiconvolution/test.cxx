@@ -169,6 +169,18 @@ struct MultiArraySeparableConvolutionTest
  
             shouldEqualSequence(    dn.begin(), dn.end(), d1.begin() );
         }
+
+        for( int d = 0; d < 3; ++d ) 
+        {
+            std::vector<vigra::Kernel1D<float> > kernels( 3 );
+            kernels[d].initGaussianDerivative( ksize, 1 );
+
+            separableConvolveMultiArray(src, dn, kernels.begin());
+
+            convolveMultiArrayOneDimension(src, d1, d, kernels[d] );
+ 
+            shouldEqualSequence(    dn.begin(), dn.end(), d1.begin() );
+        }
     }
 
     // - - - - - - - - - - - - - - - - - - - - - - - -
@@ -310,7 +322,7 @@ struct MultiArraySeparableConvolutionTest
         for(int k=0; k<9; ++k)
         {
             Image3D subarray(stop[k]-start[k]);
-            separableConvolveMultiArray(srcMultiArrayRange(srcImage), destMultiArray(subarray), 
+            separableConvolveMultiArray(srcImage, subarray, 
                                         kernels.begin(), start[k], stop[k]);
 
             shouldEqualSequenceTolerance(subarray.begin(), subarray.end(), 
@@ -334,17 +346,11 @@ struct MultiArraySeparableConvolutionTest
         {
             const int d = 2-i;
 
-            vigra::convolveMultiArrayOneDimension( srcMultiArrayRange(src),
-                                                    destMultiArray(da),
-                                                    d,
-                                                    kernel );
+            convolveMultiArrayOneDimension(src, da, d, kernel );
 
-            copyMultiArray(srcMultiArrayRange(src), destMultiArray(db));
+            copyMultiArray(src, db);
 
-            vigra::convolveMultiArrayOneDimension( srcMultiArrayRange(db),
-                                                    destMultiArray(db),
-                                                    d,
-                                                    kernel );
+            convolveMultiArrayOneDimension(db, db, d, kernel );
 
             shouldEqualSequence( da.begin(), da.end(), db.begin() );
         }
@@ -362,9 +368,9 @@ struct MultiArraySeparableConvolutionTest
         makeWedge( src );
 
         if( ! useGaussian )
-            symmetricGradientMultiArray( srcMultiArrayRange(src), destMultiArray(grad) );
+            symmetricGradientMultiArray(src, grad);
         else
-            gaussianGradientMultiArray( srcMultiArrayRange(src), destMultiArray(grad), sigma );
+            gaussianGradientMultiArray(src, grad, sigma );
 
         Image3x3::value_type v;
         v[0] = 1; v[1] = 1; v[2] = 1;
@@ -400,9 +406,9 @@ struct MultiArraySeparableConvolutionTest
         
         makeRandom(src);
         
-        gaussianGradientMagnitude(srcImageRange(src), destImage(rmgrad), 1.0);
-        gaussianGradientMultiArray(srcMultiArrayRange(src), destMultiArray(grad), 1.0 );
-        transformMultiArray(srcMultiArrayRange(grad), destMultiArray(mgrad), norm(Arg1()));
+        gaussianGradientMagnitude(src, rmgrad, 1.0);
+        gaussianGradientMultiArray(src, grad, 1.0 );
+        transformMultiArray(grad, mgrad, norm(Arg1()));
 
         shouldEqualSequence(mgrad.data(), mgrad.data()+size, rmgrad.data());
 
@@ -444,6 +450,10 @@ struct MultiArraySeparableConvolutionTest
         laplacianOfGaussianMultiArray(srcMultiArrayRange(src), destMultiArray(laplacian), 2.0 );
 
         shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
+
+        laplacian = 0;
+        laplacianOfGaussianMultiArray(src, laplacian, 2.0 );
+        shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
     }
 
     void test_hessian()
@@ -452,7 +462,7 @@ struct MultiArraySeparableConvolutionTest
         int size = shape[0]*shape[1];
 
         MultiArray<2, double > src(shape);
-        MultiArray<2, TinyVector<double, 3> > hessian(shape);
+        MultiArray<2, TinyVector<double, 3> > hessian(shape), hessian1(shape);
         BasicImage<TinyVector<double, 3> > rhessian(shape[0], shape[1]);
         
         makeRandom(src);
@@ -467,6 +477,9 @@ struct MultiArraySeparableConvolutionTest
 
         TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
         shouldEqualSequenceTolerance(hessian.data(), hessian.data()+size, rhessian.data(), epsilon);
+
+        hessianOfGaussianMultiArray(src, hessian1, 2.0 );
+        shouldEqualSequenceTolerance(hessian1.data(), hessian1.data()+size, rhessian.data(), epsilon);
     }
 
     void test_structureTensor()
@@ -475,7 +488,7 @@ struct MultiArraySeparableConvolutionTest
         int size = shape[0]*shape[1];
 
         MultiArray<2, double > src(shape);
-        MultiArray<2, TinyVector<double, 3> > st(shape);
+        MultiArray<2, TinyVector<double, 3> > st(shape), st1(shape);
         BasicImage<TinyVector<double, 3> > rst(shape[0], shape[1]);
         
         makeRandom(src);
@@ -490,6 +503,9 @@ struct MultiArraySeparableConvolutionTest
 
         TinyVector<double, 3> epsilon(1e-12, 1e-12, 1e-12);
         shouldEqualSequenceTolerance(st.data(), st.data()+size, rst.data(), epsilon);
+
+        structureTensorMultiArray(src, st1, 1.5, 3.0 );
+        shouldEqualSequenceTolerance(st1.data(), st1.data()+size, rst.data(), epsilon);
     }
 
     //--------------------------------------------
@@ -644,7 +660,7 @@ template<class IM>
 double min_max_delta(const IM & image)
 {
     vigra::FindMinMax<double> minmax;
-    vigra::inspectMultiArray(srcMultiArrayRange(image), minmax);
+    vigra::inspectMultiArray(image, minmax);
     return minmax.max - minmax.min;
 }
 
@@ -652,7 +668,7 @@ template<class IM>
 double max(const IM & image)
 {
     vigra::FindMinMax<double> minmax;
-    vigra::inspectMultiArray(srcMultiArrayRange(image), minmax);
+    vigra::inspectMultiArray(image, minmax);
     return minmax.max;
 }
 
@@ -660,7 +676,7 @@ template<class IM>
 double min(const IM & image)
 {
     vigra::FindMinMax<double> minmax;
-    vigra::inspectMultiArray(srcMultiArrayRange(image), minmax);
+    vigra::inspectMultiArray(image, minmax);
     return minmax.min;
 }
 
@@ -713,9 +729,13 @@ template<unsigned order>
 void resize_n(const array_2d & a, array_2d & b)
 {
     typedef typename vigra::BSpline<order, double> my_spline;
-    vigra::resizeMultiArraySplineInterpolation(srcMultiArrayRange(a),
-                                               destMultiArrayRange(b),
-                                               my_spline());
+
+    if(order <=3) // arbitrarily use the different APIs for small and large orders
+        vigra::resizeMultiArraySplineInterpolation(srcMultiArrayRange(a),
+                                                   destMultiArrayRange(b),
+                                                   my_spline());
+    else
+        vigra::resizeMultiArraySplineInterpolation(a, b, my_spline());
 }
 
 struct t_func
@@ -1046,8 +1066,7 @@ void test_downscaled(void (*resize)(const array_2d &, array_2d &),
     double sigmas[2] = { 0, 0 };
     sigmas[0] = std_dev_factor * x_scale;
     sigmas[1] = std_dev_factor * y_scale;
-    vigra::gaussianSmoothMultiArray(vigra::srcMultiArrayRange(test_image),
-                                    vigra::destMultiArray(pre_scale_image),
+    vigra::gaussianSmoothMultiArray(test_image, pre_scale_image,
                                     options_2d().stdDev(sigmas));
     // downscale:
     array_2d downscaled_image(resized_shape(size_info,

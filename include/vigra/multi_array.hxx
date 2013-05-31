@@ -42,7 +42,7 @@
 #include "accessor.hxx"
 #include "tinyvector.hxx"
 #include "rgbvalue.hxx"
-#include "basicimageview.hxx"
+#include "basicimage.hxx"
 #include "imageiterator.hxx"
 #include "numerictraits.hxx"
 #include "multi_iterator.hxx"
@@ -814,6 +814,18 @@ public:
             "MultiArrayView<..., UnstridedArrayTag>::MultiArrayView(): First dimension of given array is not unstrided.");
     }
     
+        /** Construct from shape, strides (offset of a sample to the
+            next) for every dimension, and pointer.  (Note that
+            strides are not given in bytes, but in offset steps of the
+            respective pointer type.)
+         */
+    template <class ALLOC>
+    MultiArrayView (BasicImage<T, ALLOC> const & image)
+    : m_shape (Shape2(image.width(), image.height())),
+      m_stride (detail::defaultStride<actual_dimension>(m_shape)),
+      m_ptr (const_cast<pointer>(image.data()))
+    {}
+    
         /** Conversion to a strided view.
          */
     operator MultiArrayView<N, T, StridedArrayTag>() const
@@ -1394,7 +1406,9 @@ public:
     }
 
         /** create a rectangular subarray that spans between the
-            points p and q, where p is in the subarray, q not.
+            points p and q, where p is in the subarray, q not. 
+            If an element of p or q is negative, it is subtracted
+            from the correspongng shape.
 
             <b>Usage:</b>
             \code
@@ -1403,12 +1417,16 @@ public:
             MultiArray<3, double> array3(Shape(40, 30, 20));
 
             // get a subarray set is smaller by one element at all sides
-            MultiArrayView <3, double> subarray = array3.subarray(Shape(1,1,1), Shape(39, 29, 19));
+            MultiArrayView <3, double> subarray  = array3.subarray(Shape(1,1,1), Shape(39, 29, 19));
+            
+            // specifying the end point with a vector of '-1' is equivalent
+            MultiArrayView <3, double> subarray2 = array3.subarray(Shape(1,1,1), Shape(-1, -1, -1));
             \endcode
         */
-    MultiArrayView subarray (const difference_type &p,
-                             const difference_type &q) const
+    MultiArrayView subarray (difference_type p, difference_type q) const
     {
+        detail::RelativeToAbsoluteCoordinate<actual_dimension-1>::exec(shape(), p);
+        detail::RelativeToAbsoluteCoordinate<actual_dimension-1>::exec(shape(), q);
         const difference_type_1 offset = dot (m_stride, p);
         return MultiArrayView (q - p, m_stride, m_ptr + offset);
     }

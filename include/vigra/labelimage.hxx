@@ -331,7 +331,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
 {
     return labelImage(srcImageRange(src),
                       destImage(dest), eight_neighbors,
-                      std::equal_to<typename SrcAccessor::value_type>());
+                      std::equal_to<T1>());
 }
 
 /********************************************************/
@@ -683,7 +683,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     return labelImageWithBackground(srcImageRange(src),
                                     destImage(dest),
                                     eight_neighbors, background_value,
-                                    std::equal_to<typename SrcAccessor::value_type>());
+                                    std::equal_to<T1>());
 }
 
 /********************************************************/

@@ -63,6 +63,7 @@ using namespace vigra;
 struct LabelingTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     LabelingTest()
     : img1(5,5), img2(5,5), img3(9,5), img4(11,11)
@@ -231,14 +232,14 @@ struct LabelingTest
         }
     }
 
-    void labelingToCrackEdgeTest()
+    void labelingToEdgeTest()
     {
         Image tmp(img1);
-        Image res(9, 9);
+        Image res(9, 9), res2(img1.size());
 
-        should(2 == labelImage(srcImageRange(img1), destImage(tmp), false));
+        should(2 == labelImage(View(img1), View(tmp), false));
 
-        regionImageToCrackEdgeImage(srcImageRange(tmp), destImage(res), 0.0);
+        regionImageToCrackEdgeImage(View(tmp), View(res), 0.0);
 
         static const double desired[] = {
                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -260,6 +261,17 @@ struct LabelingTest
         {
             should(*i1 == acc(i2));
         }
+
+        regionImageToEdgeImage(View(tmp), View(res2), 1.0);
+
+        static const double edges[] = {
+            0, 1, 1, 1, 0, 
+            1, 0, 0, 1, 0, 
+            1, 0, 0, 1, 0, 
+            1, 1, 1, 1, 0, 
+            0, 0, 0, 0, 0};
+
+        shouldEqualSequence(res2.begin(), res2.end(), edges);
     }
 
     void labelingEightTest1()
@@ -351,7 +363,7 @@ struct LabelingTest
 
     void labelingEightWithBackgroundTest()
     {
-        Image res(img2);
+        Image res(img2), res2(img2);
 
         should(1 == labelImageWithBackground(srcImageRange(img2),
                                              destImage(res),
@@ -366,6 +378,10 @@ struct LabelingTest
         {
             should(acc(i1) == acc(i2));
         }
+
+        should(1 == labelImageWithBackground(View(img2), View(res2),
+                                             true, 0.0));
+        should(View(res) == View(res2));
     }
 
     Image img1, img2, img3, img4;
@@ -374,6 +390,7 @@ struct LabelingTest
 struct EdgeDetectionTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     EdgeDetectionTest()
     : img1(5,5), img2(9,11), imgCanny(40, 40)
@@ -435,8 +452,8 @@ struct EdgeDetectionTest
         Image res(img1);
         res = 0.0;
 
-        differenceOfExponentialEdgeImage(srcImageRange(img1), destImage(res),
-            0.7, 0.1, 1.0);
+        differenceOfExponentialEdgeImage(View(img1), View(res),
+                                         0.7, 0.1, 1.0);
 
         static const double desired[] = {0.0, 1.0, 1.0, 1.0, 0.0,
                                          1.0, 0.0, 0.0, 0.0, 1.0,
@@ -462,9 +479,8 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -495,10 +511,9 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
-        removeShortEdges(destImageRange(res), 9, 0.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
+        removeShortEdges(View(res), 9, 0.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -529,10 +544,9 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
-        beautifyCrackEdgeImage(destImageRange(res), 1.0, 0.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
+        beautifyCrackEdgeImage(View(res), 1.0, 0.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -558,7 +572,7 @@ struct EdgeDetectionTest
 
     void closeGapsInCrackEdgeTest()
     {
-        closeGapsInCrackEdgeImage(destImageRange(img2), 1.0);
+        closeGapsInCrackEdgeImage(View(img2), 1.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -587,7 +601,7 @@ struct EdgeDetectionTest
     void cannyEdgelListTest()
     {
         std::vector<vigra::Edgel> edgels;
-        cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
+        cannyEdgelList(View(imgCanny), edgels, 1.0);
         int count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -601,7 +615,7 @@ struct EdgeDetectionTest
 
         std::vector<vigra::Edgel> edgelsThresh;
         double threshold = 1.25;
-        cannyEdgelListThreshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
+        cannyEdgelListThreshold(View(imgCanny), edgelsThresh, 1.0, threshold);
         count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -617,7 +631,7 @@ struct EdgeDetectionTest
     void cannyEdgelList3x3Test()
     {
         std::vector<vigra::Edgel> edgels;
-        cannyEdgelList3x3(srcImageRange(imgCanny), edgels, 1.0);
+        cannyEdgelList3x3(View(imgCanny), edgels, 1.0);
         int count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -631,7 +645,7 @@ struct EdgeDetectionTest
 
         std::vector<vigra::Edgel> edgelsThresh;
         double threshold = 1.3;
-        cannyEdgelList3x3Threshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
+        cannyEdgelList3x3Threshold(View(imgCanny), edgelsThresh, 1.0, threshold);
         count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -649,7 +663,7 @@ struct EdgeDetectionTest
         vigra::BImage result(40, 40);
         result = 0;
 
-        cannyEdgeImage(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
+        cannyEdgeImage(View(imgCanny), MultiArrayView<2, unsigned char>(result), 1.0, 0.1, 1);
 
         for(int y=1; y<39; ++y)
         {
@@ -668,7 +682,7 @@ struct EdgeDetectionTest
         vigra::BImage result(40, 40);
         result = 0;
 
-        cannyEdgeImageWithThinning(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1, false);
+        cannyEdgeImageWithThinning(View(imgCanny), MultiArrayView<2, unsigned char>(result), 1.0, 0.1, 1, false);
 
         for(int y=1; y<39; ++y)
         {
@@ -688,6 +702,7 @@ struct EdgeDetectionTest
 struct DistanceTransformTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     DistanceTransformTest()
     : img(7,7)
@@ -715,6 +730,7 @@ struct DistanceTransformTest
     void distanceTransformL1Test()
     {
         Image res(img);
+        Image res1(img);
 
         distanceTransform(srcImageRange(img), destImage(res), 0.0, 1);
 
@@ -734,6 +750,9 @@ struct DistanceTransformTest
                 shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
+
+        distanceTransform(View(img), View(res1), 0.0, 1);
+        should(View(res) == View(res1));
     }
 
     void distanceTransformL2Test()
@@ -741,7 +760,7 @@ struct DistanceTransformTest
 
         Image res(img);
 
-        distanceTransform(srcImageRange(img), destImage(res), 0.0, 2);
+        distanceTransform(View(img), View(res), 0.0, 2);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -768,7 +787,7 @@ struct DistanceTransformTest
 
         Image res(img);
 
-        distanceTransform(srcImageRange(img), destImage(res), 0.0, 0);
+        distanceTransform(View(img), View(res), 0.0, 0);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -868,7 +887,7 @@ struct LocalMinMaxTest
     {
         Volume res(vol.shape()), res2(vol.shape());
 
-        localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMinima3D(srcMultiArrayRange(vol), destMultiArray(res), 1, NeighborCode3DSix());
 
         Volume desired(vol);
         desired.init(0);
@@ -884,6 +903,10 @@ struct LocalMinMaxTest
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
         should(3 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1)));
+        should(res == res2);
+
+        res2 = 0;
+        localMinima3D(vol, res2, 1, NeighborCode3DSix());
         should(res == res2);
     }
 
@@ -945,7 +968,7 @@ struct LocalMinMaxTest
     {
         Volume res(vol.shape()), res2(vol.shape());
 
-        localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res), 1, NeighborCode3DSix());
 
         Volume desired(vol);
         desired.init(0);
@@ -959,6 +982,10 @@ struct LocalMinMaxTest
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
         should(2 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1)));
+        should(res == res2);
+
+        res2 = 0;
+        localMaxima3D(vol, res2, 1, NeighborCode3DSix());
         should(res == res2);
     }
 
@@ -1742,6 +1769,7 @@ struct WatershedsTest
 struct RegionGrowingTest
 {
     typedef vigra::DImage Image;
+    typedef MultiArrayView<2, double> View;
 
     RegionGrowingTest()
     : img(7,7), seeds(7,7)
@@ -1793,8 +1821,7 @@ struct RegionGrowingTest
         Image res(img);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
-        seededRegionGrowing(srcImageRange(img), srcImage(seeds),
-                            destImage(res), cost);
+        seededRegionGrowing(View(img), View(seeds), View(res), cost);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -1851,6 +1878,7 @@ struct RegionGrowingTest
 struct InterestOperatorTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     InterestOperatorTest()
     : img(9,9)
@@ -1880,6 +1908,7 @@ struct InterestOperatorTest
     void cornerResponseFunctionTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1906,11 +1935,15 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        cornerResponseFunction(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void foerstnerCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1937,11 +1970,15 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        foerstnerCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void rohrCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1968,12 +2005,16 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        rohrCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
 
     void beaudetCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -2000,6 +2041,9 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        beaudetCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void radialSymmetryTest()
@@ -2008,7 +2052,7 @@ struct InterestOperatorTest
         Image res(img);
         res = 0.0;
 
-        radialSymmetryTransform(srcImageRange(img), destImage(tmp), 1.0);
+        radialSymmetryTransform(View(img), View(tmp), 1.0);
         localMaxima(srcImageRange(tmp), destImage(res), 1.0);
         localMinima(srcImageRange(tmp), destImage(res), -1.0);
 
@@ -2042,6 +2086,7 @@ struct NoiseNormalizationTest
     typedef vigra::BImage U8Image;
     typedef vigra::DImage GrayImage;
     typedef vigra::DRGBImage RGBImage;
+    typedef MultiArrayView<2, double> View;
     U8Image u8image;
     GrayImage image;
     RGBImage rgb;
@@ -2102,13 +2147,13 @@ struct NoiseNormalizationTest
     void testParametricNoiseNormalization()
     {
         GrayImage res(image.size());
-        linearNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02);
+        linearNoiseNormalization(View(image), View(res), 1.0, 0.02);
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        linearNoiseNormalization(srcImageRange(image), destImage(res));
+        linearNoiseNormalization(View(image), View(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        quadraticNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02, 0.0);
+        quadraticNoiseNormalization(View(image), View(res), 1.0, 0.02, 0.0);
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        quadraticNoiseNormalization(srcImageRange(image), destImage(res));
+        quadraticNoiseNormalization(View(image), View(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
    }
   
@@ -2170,7 +2215,7 @@ struct NoiseNormalizationTest
 #ifdef HasFFTW3
 struct SlantedEdgeMTFTest
 {
-    typedef vigra::DImage Image;
+    typedef vigra::MultiArray<2, double> Image;
     typedef vigra::ArrayVector<vigra::TinyVector<double, 2> > Result;
     typedef Result::value_type Pair;
     
@@ -2181,7 +2226,7 @@ struct SlantedEdgeMTFTest
     {
         vigra::ImageImportInfo info("slantedEdgeMTF.xv");
            
-        image.resize(info.size());
+        image.reshape(info.shape());
         importImage(info, destImage(image));
         
         reference.push_back(Pair(0, 1));
@@ -2206,7 +2251,7 @@ struct SlantedEdgeMTFTest
     void testSlantedEdgeMTF()
     {
         Result res;
-        slantedEdgeMTF(srcImageRange(image), res);
+        slantedEdgeMTF(image, res);
         
         shouldEqual(res.size(), reference.size());
         
@@ -2224,6 +2269,7 @@ struct SlantedEdgeMTFTest
 struct AffineRegistrationTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::TinyVector<double, 2> Vector2;
     typedef vigra::ArrayVector<Vector2> PointList;
     
@@ -2276,6 +2322,13 @@ struct AffineRegistrationTest
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+        
+        estimated = identityMatrix<double>(3);
+        estimateTranslation(View(image), View(timg), estimated,
+                            AffineMotionEstimationOptions<1>().highestPyramidLevel(3));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
     }
 
     void testSimilarityRegistration()
@@ -2299,6 +2352,13 @@ struct AffineRegistrationTest
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
+
+        estimated = identityMatrix<double>(3);
+        estimateSimilarityTransform(View(image),View(timg).subarray(Shape2(), Shape2(-20)), estimated,
+                            AffineMotionEstimationOptions<>().useLaplacianPyramid(true));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
     }
 
     void testAffineRegistration()
@@ -2310,6 +2370,12 @@ struct AffineRegistrationTest
 
         Matrix<double> estimated = identityMatrix<double>(3);
         estimateAffineTransform(srcImageRange(image), srcImageRange(timg), estimated);
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+
+        estimated = identityMatrix<double>(3);
+        estimateAffineTransform(View(image), View(timg), estimated);
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
@@ -2326,7 +2392,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LabelingTest::labelingFourTest2));
         add( testCase( &LabelingTest::labelingFourTest3));
         add( testCase( &LabelingTest::labelingFourTest4));
-        add( testCase( &LabelingTest::labelingToCrackEdgeTest));
+        add( testCase( &LabelingTest::labelingToEdgeTest));
         add( testCase( &LabelingTest::labelingEightTest1));
         add( testCase( &LabelingTest::labelingEightTest2));
         add( testCase( &LabelingTest::labelingFourWithBackgroundTest1));

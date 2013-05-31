@@ -746,7 +746,7 @@ namespace vigra
                 MultiArray<2, T, A> & image)
     {
         ImageImportInfo info(name);
-        image.resize(info.shape());
+        image.reshape(info.shape());
         importImage(info, destImage(image));
     }
 

@@ -266,6 +266,8 @@ namespace vigra {
     \endcode
 
 */
+doxygen_overloaded_function(template <...> void convolveImage)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class T>
@@ -1567,6 +1569,22 @@ structureTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                  destxy.first, destxy.second,
                  desty.first, desty.second,
                  inner_scale, outer_scale);
+}
+
+template <class T, class S,
+          class TX, class SX,
+          class TXY, class SXY,
+          class TY, class SY>
+inline void
+structureTensor(MultiArrayView<2, S, T> const & src,
+                MultiArrayView<2, TX, SX> destx,
+                MultiArrayView<2, TXY, SXY> destxy,
+                MultiArrayView<2, TY, SY> desty,
+                double inner_scale, double outer_scale)
+{
+    structureTensor(srcImageRange(src),
+                    destImage(destx), destImage(destxy), destImage(desty),
+                    inner_scale, outer_scale);
 }
 
 namespace detail {

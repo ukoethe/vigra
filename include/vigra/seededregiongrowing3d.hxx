@@ -581,14 +581,14 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
                           stats);
 }
 
-template <unsigned int N, class T1, class S1,
+template <class T1, class S1,
           class TS, class AS,
           class T2, class S2,
           class RegionStatisticsArray, class Neighborhood>
 inline void
-seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
-                      MultiArrayView<2, TS, AS> const & img3,
-                      MultiArrayView<N, T2, S2> img4,
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats, 
                       SRGType srgType, Neighborhood n, double max_cost)
 {
@@ -598,14 +598,14 @@ seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
                           stats, srgType, n, max_cost);
 }
 
-template <unsigned int N, class T1, class S1,
+template <class T1, class S1,
           class TS, class AS,
           class T2, class S2,
           class RegionStatisticsArray, class Neighborhood>
 inline void
-seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
-                      MultiArrayView<2, TS, AS> const & img3,
-                      MultiArrayView<N, T2, S2> img4,
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats, 
                       SRGType srgType, Neighborhood n)
 {
@@ -615,14 +615,14 @@ seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
                           stats, srgType, n, NumericTraits<double>::max());
 }
 
-template <unsigned int N, class T1, class S1,
+template <class T1, class S1,
           class TS, class AS,
           class T2, class S2,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
-                      MultiArrayView<2, TS, AS> const & img3,
-                      MultiArrayView<N, T2, S2> img4,
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats, SRGType srgType)
 {
     seededRegionGrowing3D(srcMultiArrayRange(img1),
@@ -631,14 +631,14 @@ seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
                           stats, srgType, NeighborCode3DSix());
 }
 
-template <unsigned int N, class T1, class S1,
+template <class T1, class S1,
           class TS, class AS,
           class T2, class S2,
           class RegionStatisticsArray>
 inline void
-seededRegionGrowing3D(MultiArrayView<N, T1, S1> const & img1,
-                      MultiArrayView<2, TS, AS> const & img3,
-                      MultiArrayView<N, T2, S2> img4,
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats)
 {
     seededRegionGrowing3D(srcMultiArrayRange(img1),

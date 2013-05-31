@@ -42,6 +42,7 @@
 #include "iteratortraits.hxx"
 #include "accessor.hxx"
 #include "memory.hxx"
+#include "basicimageview.hxx"
 
 // Bounds checking Macro used if VIGRA_CHECK_BOUNDS is defined.
 #ifdef VIGRA_CHECK_BOUNDS
