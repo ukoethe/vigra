@@ -288,7 +288,7 @@ extendedLocalMaxima(MultiArrayView<N, T1, S1> const & src,
                     LocalMinmaxOptions options = LocalMinmaxOptions())
 {
     options.allowPlateaus();
-    localMaxima(src, dest, options);
+    return localMaxima(src, dest, options);
 }
 
 } // namespace vigra

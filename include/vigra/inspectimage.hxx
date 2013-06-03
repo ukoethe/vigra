@@ -266,7 +266,7 @@ inline void
 inspectImage(MultiArrayView<2, T, S> const & img,
              functor::UnaryAnalyser<Functor> const & f)
 {
-    inspectImage(srcImageRange(src),
+    inspectImage(srcImageRange(img),
                  const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 

@@ -1987,10 +1987,12 @@ squaredNorm(TinyVector<V, SIZE> const & t)
     return t.squaredMagnitude();
 }
 
+using std::reverse;
+
     /// reversed copy
 template <class V, int SIZE>
 inline
-typename TinyVector<V, SIZE>
+TinyVector<V, SIZE>
 reverse(TinyVector<V, SIZE> const & t)
 {
     return TinyVector<V, SIZE>(t.begin(), TinyVector<V, SIZE>::ReverseCopy);
