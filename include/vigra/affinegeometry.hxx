@@ -191,7 +191,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // rotate about given center point
@@ -364,7 +364,7 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <int ORDER, class T, 

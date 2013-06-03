@@ -2028,7 +2028,7 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -2269,7 +2269,7 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, class FilterType>
@@ -2501,7 +2501,7 @@ void applyFourierFilterFamilyImpl(
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcTraverser, class SrcAccessor,

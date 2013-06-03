@@ -274,7 +274,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
@@ -508,7 +508,7 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate

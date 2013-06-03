@@ -740,7 +740,7 @@ class LocalMinmaxOptions
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1109,7 +1109,7 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1478,7 +1478,7 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
                             LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1796,7 +1796,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

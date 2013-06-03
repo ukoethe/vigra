@@ -139,7 +139,7 @@ combineThreeLines(SrcIterator1 s1,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -310,7 +310,7 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -495,7 +495,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,

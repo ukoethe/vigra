@@ -85,7 +85,7 @@ namespace vigra {
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class DestImageIterator, class DestAccessor>
