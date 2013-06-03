@@ -511,14 +511,33 @@ public:
 
     void test_first_ctor ()
     {
-        TinyVector <int, 1> s;
-        s[0] = 2;
-        typedef MultiArray <1, unsigned char> array1_t;
-        array1_t a (s);
+        using namespace multi_math;
+        array1_t a (shape1_t(2));
         should (a.shape (0) == 2);
+        should (a.size() == 2);
+        should(all(a == 0));
 
         array1_t b(4);
         should (b.shape (0) == 4);
+        should (b.size() == 4);
+        should(all(b == 0));
+
+        typedef MultiArray <2, unsigned char> array2_t;
+        array2_t a2 (Shape2(2, 4));
+        should (a2.shape (0) == 2);
+        should (a2.shape (1) == 4);
+        should (a2.width() == 2);
+        should (a2.height() == 4);
+        should (a2.size() == 8);
+        should(all(a2 == 0));
+
+        array2_t b2(5,3);
+        should (b2.shape (0) == 5);
+        should (b2.shape (1) == 3);
+        should (b2.width() == 5);
+        should (b2.height() == 3);
+        should (b2.size() == 15);
+        should(all(b2 == 0));
     }
 
     void test_second_ctor ()
