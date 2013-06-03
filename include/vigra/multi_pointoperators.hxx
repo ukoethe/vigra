@@ -143,17 +143,24 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     }
     \endcode
     
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
     
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
     
     \code
     typedef vigra::MultiArray<3, int> Array;
-    Array array(Array::size_type(100, 200, 50));
+    Array array(Shape3(100, 200, 50));
     
-    // zero the array
-    vigra::initMultiArray(destMultiArrayRange(array), 0);
+    // make an array of all ones
+    vigra::initMultiArray(array, 1);
+    \endcode
+
+    <b> Usage (old API):</b>
+    
+    \code
+    // make an array of all twos
+    vigra::initMultiArray(destMultiArrayRange(array), 2);
     \endcode
 
     <b> Required Interface:</b>
@@ -387,27 +394,37 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     
     \code
     typedef vigra::MultiArray<3, int> Array;
+    Array src(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
+    ...
+    
+    vigra::copyMultiArray(src, dest);
+    \endcode
+
+    <b> Usage - Expanding Mode:</b>
+    
+    The source array is effectively only a 2D image (it has a 3D shape, but 'depth' is a
+    singleton dimension with length 1). Thus, the destination will contain 50 identical 
+    copies of this image:
+    
+    \code
+    typedef vigra::MultiArray<3, int> Array;
+    Array src(Shape3(100, 200, 1)),
+          dest(Shape3(100, 200, 50));
+    ...
+    
+    vigra::copyMultiArray(src, dest);
+    \endcode
+
+    <b> Usage - Old API:</b>
+    
+    \code
+    typedef vigra::MultiArray<3, int> Array;
     Array src(Array::size_type(100, 200, 50)),
           dest(Array::size_type(100, 200, 50));
     ...
     
     vigra::copyMultiArray(srcMultiArrayRange(src), destMultiArray(dest));
-    \endcode
-
-    <b> Usage - Expanding Mode:</b>
-    
-    The source array is only 2D (it has depth 1). Thus, the destination
-    will contain 50 identical copies of this image. Note that the destination shape
-    must be passed to the algorithm for the expansion to work, so we use 
-    <tt>destMultiArrayRange()</tt> rather than <tt>destMultiArray()</tt>.
-    
-    \code
-    typedef vigra::MultiArray<3, int> Array;
-    Array src(Array::size_type(100, 200, 1)),
-          dest(Array::size_type(100, 200, 50));
-    ...
-    
-    vigra::copyMultiArray(srcMultiArrayRange(src), destMultiArrayRange(dest));
     \endcode
 
     <b> Required Interface:</b>
@@ -724,56 +741,49 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     #include <cmath>         // for sqrt()
 
     typedef vigra::MultiArray<3, float> Array;
-    Array src(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(100, 200, 50));
+    Array src(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
     ...
     
-    vigra::transformMultiArray(srcMultiArrayRange(src),
-                               destMultiArray(dest),
+    vigra::transformMultiArray(src,
+                               dest,
                                (float(*)(float))&std::sqrt );
 
     \endcode
 
     <b> Usage - Expand Mode:</b>
 
-    The source array is only 2D (it has depth 1). Thus, the destination
-    will contain 50 identical copies of the transformed source array. 
-    Note that the destination shape must be passed to the algorithm for 
-    the expansion to work, so we use <tt>destMultiArrayRange()</tt> 
-    rather than <tt>destMultiArray()</tt>.
+    The source array is effectively only a 2D image(it has a 3D shape, but depth is a singleton dimension 
+    with length 1). Thus, the destination will contain 50 identical copies of the transformed source image. 
     
     \code
     #include <cmath>         // for sqrt()
 
     typedef vigra::MultiArray<3, float> Array;
-    Array src(Array::size_type(100, 200, 1)),
-          dest(Array::size_type(100, 200, 50));
+    Array src(Shape3(100, 200, 1)),
+          dest(Shape3(100, 200, 50));
     ...
     
-    vigra::transformMultiArray(srcMultiArrayRange(src),
-                               destMultiArrayRange(dest),
+    vigra::transformMultiArray(src, dest,
                                (float(*)(float))&std::sqrt );
 
     \endcode
 
     <b> Usage - Reduce Mode:</b>
 
-    The destination array is only 1D (it's width and height are 1). 
+    The destination array is effectively only 1D (it's width and height are singleton dimensions). 
     Thus, it will contain accumulated data for every slice of the source volume
     (or for every frame, if the source is interpreted as an image sequence).
     In the example, we use the functor \ref vigra::FindAverage to calculate
-    the average gray value of every slice. Note that the destination shape
-    must also be passed for the reduction to work, so we use 
-    <tt>destMultiArrayRange()</tt> rather than <tt>destMultiArray()</tt>.
+    the average gray value of every slice. 
     
     \code
     typedef vigra::MultiArray<3, float> Array;
-    Array src(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(1, 1, 50));
+    Array src(Shape3(100, 200, 50)),
+          dest(Shape3(1, 1, 50));
     ...
     
-    vigra::transformMultiArray(srcMultiArrayRange(src),
-                               destMultiArrayRange(dest),
+    vigra::transformMultiArray(src, dest,
                                vigra::FindAverage<float>() );
 
     \endcode
@@ -781,6 +791,22 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     Note that the functor must define the appropriate traits described below in order to be 
     recognized as a reduce functor. This is most easily achieved by deriving from 
     <tt>UnaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
+
+    <b> Usage - Old API:</b>
+
+    \code
+    #include <cmath>         // for sqrt()
+
+    typedef vigra::MultiArray<3, float> Array;
+    Array src(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
+    ...
+    
+    vigra::transformMultiArray(srcMultiArrayRange(src),
+                               destMultiArray(dest),
+                               (float(*)(float))&std::sqrt );
+
+    \endcode
 
     <b> Required Interface:</b>
 
@@ -1210,72 +1236,56 @@ combineTwoMultiArraysImpl(
     #include <functional>     // for std::plus
 
     typedef vigra::MultiArray<3, int> Array;
-    Array src1(Array::size_type(100, 200, 50)),
-          src2(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(100, 200, 50));
+    Array src1(Shape3(100, 200, 50)),
+          src2(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
     ...
     
-    vigra::combineTwoMultiArrays(
-                srcMultiArrayRange(src1), 
-                srcMultiArray(src2), 
-                destMultiArray(dest),  
-                std::plus<int>());
+    vigra::combineTwoMultiArrays(src1, src2, dest,  
+                                 std::plus<int>());
     
     \endcode
     
     <b> Usage - Expand Mode:</b>
 
-    One source array is only 2D (it has depth 1). This image will be added
-    to every slice of the other source array, and the result
-    if written into the corresponding destination slice. Note that the shapes
-    of all arrays must be passed to the algorithm, so we use 
-    <tt>srcMultiArrayRange()</tt> and <tt>destMultiArrayRange()</tt> 
-    rather than <tt>srcMultiArray()</tt> and <tt>destMultiArray()</tt>.
+    One source array is effectively only a 2D image (it has depth 1). This image will be added
+    to every slice of the other source array, and the result is written into the 
+    corresponding destination slice. 
     
     \code
     #include <functional>     // for std::plus
 
     typedef vigra::MultiArray<3, int> Array;
-    Array src1(Array::size_type(100, 200, 1)),
-          src2(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(100, 200, 50));
+    Array src1(Shape3(100, 200, 1)),
+          src2(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
     ...
     
-    vigra::combineTwoMultiArrays(
-                srcMultiArrayRange(src1), 
-                srcMultiArray(src2), 
-                destMultiArray(dest),  
-                std::plus<int>());
+    vigra::combineTwoMultiArrays(src1, src2, dest,  
+                                 std::plus<int>());
 
     \endcode
 
     <b> Usage - Reduce Mode:</b>
 
-    The destination array is only 1D (it's width and height are 1). 
+    The destination array is only 1D (it's width and height are singleton dimensions). 
     Thus, it will contain accumulated data for every slice of the source volumes
     (or for every frame, if the sources are interpreted as image sequences).
     In the example, we use \ref vigra::ReduceFunctor together with a functor 
-    expression (see \ref FunctorExpressions)
-    to calculate the total absolute difference of the gray values in every pair of 
-    source slices. Note that the shapes of all arrays must be passed 
-    to the algorithm in order for the reduction to work, so we use 
-    <tt>srcMultiArrayRange()</tt> and <tt>destMultiArrayRange()</tt> 
-    rather than <tt>srcMultiArray()</tt> and <tt>destMultiArray()</tt>.
+    expression (see \ref FunctorExpressions) to calculate the total absolute difference 
+    of the gray values in every pair of source slices.
     
     \code
     #include <vigra/functorexpression.hxx>
     using namespace vigra::functor;
         
     typedef vigra::MultiArray<3, int> Array;
-    Array src1(Array::size_type(100, 200, 50)),
-          src2(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(1, 1, 50));
+    Array src1(Shape3(100, 200, 50)),
+          src2(Shape3(100, 200, 50)),
+          dest(Shape3(1, 1, 50));
     ...
     
-    vigra::combineTwoMultiArrays(
-                srcMultiArrayRange(src1), 
-                srcMultiArray(src2), 
-                destMultiArray(dest),  
+    vigra::combineTwoMultiArrays(src1, src2, dest,  
                 reduceFunctor(Arg1() + abs(Arg2() - Arg3()), 0) );
                 // Arg1() is the sum accumulated so far, initialized with 0
 
@@ -1285,6 +1295,26 @@ combineTwoMultiArraysImpl(
     recognized as a reduce functor. This is most easily achieved by deriving from 
     <tt>BinaryReduceFunctorTag</tt> (see \ref vigra::FunctorTraits).
 
+    <b> Usage - Old API:</b>
+    
+    Source and destination arrays have the same size.
+    
+    \code
+    #include <functional>     // for std::plus
+
+    typedef vigra::MultiArray<3, int> Array;
+    Array src1(Shape3(100, 200, 50)),
+          src2(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
+    ...
+    
+    vigra::combineTwoMultiArrays(
+                srcMultiArrayRange(src1), 
+                srcMultiArray(src2), 
+                destMultiArray(dest),  
+                std::plus<int>());
+    \endcode
+    
     <b> Required Interface:</b>
     
     In standard and expand mode, the functor must be a model of BinaryFunction
@@ -1560,7 +1590,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     }
     \endcode
     
-    <b> Usage:</b>
+    <b> Usage - MultiArrayView API:</b>
     
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
@@ -1569,10 +1599,30 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     #include <functional>     // for plus
 
     typedef vigra::MultiArray<3, int> Array;
-    Array src1(Array::size_type(100, 200, 50)),
-          src2(Array::size_type(100, 200, 50)),
-          src3(Array::size_type(100, 200, 50)),
-          dest(Array::size_type(100, 200, 50));
+    Array src1(Shape3(100, 200, 50)),
+          src2(Shape3(100, 200, 50)),
+          src3(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
+    ...
+    
+    vigra::combineThreeMultiArrays(src1, src2, src3, dest,  
+                                   SomeThreeArgumentFunctor());
+    
+    \endcode
+    
+    <b> Usage - Old API:</b>
+    
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
+    Namespace: vigra
+    
+    \code
+    #include <functional>     // for plus
+
+    typedef vigra::MultiArray<3, int> Array;
+    Array src1(Shape3(100, 200, 50)),
+          src2(Shape3(100, 200, 50)),
+          src3(Shape3(100, 200, 50)),
+          dest(Shape3(100, 200, 50));
     ...
     
     vigra::combineThreeMultiArrays(
@@ -1703,14 +1753,32 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage - MultiArrayView API:</b>
 
     <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
     Namespace: vigra
 
     \code
     typedef vigra::MultiArray<3, int> Array;
-    Array array(Array::size_type(100, 200, 50));
+    Array array(Shape3(100, 200, 50));
+
+    // init functor
+    vigra::FindMinMax<int> minmax;
+
+    vigra::inspectMultiArray(array, minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+
+    \endcode
+
+    <b> Usage - Old API:</b>
+
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br>
+    Namespace: vigra
+
+    \code
+    typedef vigra::MultiArray<3, int> Array;
+    Array array(Shape3(100, 200, 50));
 
     // init functor
     vigra::FindMinMax<int> minmax;

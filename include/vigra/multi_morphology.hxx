@@ -205,13 +205,13 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic binary erosion
-    multiBinaryErosion(srcMultiArrayRange(source), destMultiArray(dest), 3);
+    multiBinaryErosion(source, dest, 3);
     \endcode
 
     \see vigra::discErosion()
@@ -327,13 +327,13 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic binary erosion
-    multiBinaryDilation(srcMultiArrayRange(source), destMultiArray(dest), 3);
+    multiBinaryDilation(source, dest, 3);
     \endcode
 
     \see vigra::discDilation()
@@ -446,13 +446,13 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic grayscale erosion
-    multiGrayscaleErosion(srcMultiArrayRange(source), destMultiArray(dest), 3.0);
+    multiGrayscaleErosion(source, dest, 3.0);
     \endcode
 
     \see vigra::discErosion()
@@ -589,13 +589,13 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_morphology.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic grayscale erosion
-    multiGrayscaleDilation(srcMultiArrayRange(source), destMultiArray(dest), 3.0);
+    multiGrayscaleDilation(source, dest, 3.0);
     \endcode
 
     \see vigra::discErosion()

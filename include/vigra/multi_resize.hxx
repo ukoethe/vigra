@@ -192,11 +192,13 @@ internalResizeMultiArrayOneDimension(
     Namespace: vigra
 
     \code
-    typedef vigra::MultiArray<3, float>::difference_type Shape;
-    vigra::MultiArray<3, float> src(Shape(5, 7, 10)),
-                                dest(Shape(9, 13, 19)); // double the size
+    vigra::MultiArray<3, float> src(Shape3(5, 7, 10)),
+                                dest(Shape3(9, 13, 19)); // double the size
 
-    // use default cubic spline interpolator
+    // use linear interpolator with MultiArrayView API
+    vigra::resizeMultiArraySplineInterpolation(src, dest, BSpline<1, double>());
+
+    // use default cubic spline interpolator with old API
     vigra::resizeMultiArraySplineInterpolation(
                srcMultiArrayRange(src),
                destMultiArrayRange(dest));

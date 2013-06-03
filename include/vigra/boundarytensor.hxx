@@ -418,16 +418,16 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
     <b>\#include</b> \<vigra/boundarytensor.hxx\>
 
     \code
-    FImage impulse(17,17), res(17, 17);
+    MultiArrayView<2, double> impulse(17,17), res(17, 17);
     impulse(8,8) = 1.0;
 
     // calculate the impulse response of the first order Riesz transform in x-direction
-    rieszTransformOfLOG(srcImageRange(impulse), destImage(res), 2.0, 1, 0);
+    rieszTransformOfLOG(impulse, res, 2.0, 1, 0);
     \endcode
 
 */
@@ -621,15 +621,16 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br/>
+    Namespace: vigra
 
     \code
-    FImage img(w,h);
-    FVector3Image bt(w,h);
+    MultiArray<2, float>               img(w,h);
+    MultiArray<2, TinyVector<float, 3> bt(w,h);
     ...
-    boundaryTensor(srcImageRange(img), destImage(bt), 2.0);
+    boundaryTensor(img, bt, 2.0);
     \endcode
 
 */

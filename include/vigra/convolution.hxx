@@ -270,11 +270,11 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);
+    vigra::MultiArray<2, float> src(w,h), dest(w,h);
     ...
 
     // implement sobel filter in x-direction
@@ -282,8 +282,11 @@ namespace vigra {
     kx.initSymmetricGradient();
     ky.initBinomial(1);
     
+    // use MultiArrayView API
+    vigra::convolveImage(src, dest, kx, ky);
+    
+    // use old API
     vigra::convolveImage(srcImageRange(src), destImage(dest), kx, ky);
-
     \endcode
 
 */
@@ -418,8 +421,8 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     vigra::FImage src(w,h), dest(w,h);
@@ -540,8 +543,8 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     vigra::FImage src(w,h), dest(w,h);
@@ -633,6 +636,9 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     Gaussian kernel of the given scale. If two scales are provided, 
     smoothing in x and y direction will have different strength. 
     The function uses <TT>BORDER_TREATMENT_REFLECT</TT>. 
+    
+    Function \ref gaussianSmoothMultiArray() performs the same filter operation
+    on arbitrary dimensional arrays.
 
     <b> Declarations:</b>
 
@@ -673,10 +679,23 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    vigra::MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // smooth with scale = 3.0
+    vigra::gaussianSmoothing(src, dest, 3.0);
+    \endcode
+
+    <b> Usage (old API):</b>
+
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     vigra::FImage src(w,h), dest(w,h);
@@ -684,7 +703,6 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
 
     // smooth with scale = 3.0
     vigra::gaussianSmoothing(srcImageRange(src), destImage(dest), 3.0);
-
     \endcode
 
 */
@@ -789,6 +807,9 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     two separate result images for the x- and y-components of the gradient, or write
     into a vector valued image (with at least two components).
 
+    Function \ref gaussiangradientMultiArray() performs the same filter operation
+    on arbitrary dimensional arrays.
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -861,9 +882,10 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code
@@ -873,7 +895,17 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     // calculate gradient vector at scale = 3.0
     vigra::gaussianGradient(srcImageRange(src),
                              destImage(gradx), destImage(grady), 3.0);
+    \endcode
 
+    <b> Usage (old API):</b>
+
+    \code
+    vigra::FImage src(w,h), gradx(w,h), grady(w,h);
+    ...
+
+    // calculate gradient vector at scale = 3.0
+    vigra::gaussianGradient(srcImageRange(src),
+                             destImage(gradx), destImage(grady), 3.0);
     \endcode
 
 */
@@ -1034,12 +1066,12 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     
-    // example 1
+    // example 1 (old API)
     {
         // use a traditional float or RGB image
         FImage image(w, h), grad(w, h);
@@ -1053,7 +1085,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
         gaussianGradientMagnitude(srcImageRange(rgb), destImage(grad), 3.0);
     }
     
-    // example 2
+    // example 2 (MultiArrayView API)
     {
         // use a 3-dimensional float array
         MultiArray<3, float> volume(Shape3(w, h, d)), grad(volume.shape());
@@ -1131,6 +1163,9 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     This function calls \ref separableConvolveX() and \ref separableConvolveY() with the appropriate 2nd derivative
     of Gaussian kernels in x- and y-direction and then sums the results
     to get the Laplacian.
+    
+    Function \ref laplacianOfGaussianMultiArray() performs the same filter operation
+    on arbitrary dimensional arrays.
 
     <b> Declarations:</b>
 
@@ -1171,10 +1206,20 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    vigra::MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // calculate Laplacian of Gaussian at scale = 3.0
+    vigra::laplacianOfGaussian(src, dest, 3.0);
+    \endcode
+
+    <b> Usage (old API):</b>
 
     \code
     vigra::FImage src(w,h), dest(w,h);
@@ -1182,7 +1227,6 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     // calculate Laplacian of Gaussian at scale = 3.0
     vigra::laplacianOfGaussian(srcImageRange(src), destImage(dest), 3.0);
-
     \endcode
 
 */
@@ -1270,6 +1314,9 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     the three destination images. The first destination image will
     contain the second derivative in x-direction, the second one the mixed
     derivative, and the third one holds the derivative in y-direction.
+    
+    Function \ref hessianOfGaussianMultiArray() performs the same filter operation
+    on arbitrary dimensional arrays.
 
     <b> Declarations:</b>
 
@@ -1318,19 +1365,30 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), hxx(w,h), hxy(w,h), hyy(w,h);
+    vigra::MultiArray<2, float>                  src(w,h);
+    vigra::MultiArray<2, TinyVector<float, 3> >  hessian(w,h);  // will hold the three components of the Hessian
     ...
 
-    // calculate Hessian of Gaussian at scale = 3.0
-    vigra::hessianMatrixOfGaussian(srcImageRange(src),
-        destImage(hxx), destImage(hxy), destImage(hyy), 3.0);
+    // calculate Hessian of Gaussian at scale = 3.0, use a 3-band output image
+    vigra::hessianMatrixOfGaussian(src, hessian, 3.0);
+    \endcode
 
+    <b> Usage (old API):</b>
+
+    \code
+    vigra::FImage src(w,h), 
+                  hxx(w,h), hxy(w,h), hyy(w,h); // use a separate image for each component of the Hessian
+    ...
+
+    // calculate Hessian of Gaussian at scale = 3.0, use 3 single.band output images
+    vigra::hessianMatrixOfGaussian(srcImageRange(src),
+                                   destImage(hxx), destImage(hxy), destImage(hyy), 3.0);
     \endcode
 
 */
@@ -1464,6 +1522,9 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     hold the result in the same order as above). The latter form is also applicable when
     the source image is a multi-band image (e.g. RGB). In this case, tensors are
     first computed for each band separately, and then summed up to get a single result tensor.
+    
+    Function \ref structureTensorMultiArray() performs the same filter operation
+    on arbitrary dimensional arrays.
 
     <b> Declarations:</b>
 
@@ -1543,23 +1604,36 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/convolution.hxx\>
-
+    <b>\#include</b> \<vigra/convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), stxx(w,h), stxy(w,h), styy(w,h);
-    vigra::BasicImage<TinyVector<float, 3> > st(w,h);
+    vigra::MultiArray<2, flost> src(w,h), 
+                                stxx(w,h), stxy(w,h), styy(w,h);  // use a separate image for each component
+    vigra::MultiArray<TinyVector<float, 3> > st(w,h);             // single image for the three components
     ...
 
     // calculate Structure Tensor at inner scale = 1.0 and outer scale = 3.0
-    vigra::structureTensor(srcImageRange(src),
-        destImage(stxx), destImage(stxy), destImage(styy), 1.0, 3.0);
+    vigra::structureTensor(src, stxx, stxy, styy, 1.0, 3.0);
 
     // dto. with a single 3-band destination image
-    vigra::structureTensor(srcImageRange(src), destImage(st), 1.0, 3.0);
+    vigra::structureTensor(src, st, 1.0, 3.0);
+    \endcode
 
+    <b> Usage (old API):</b>
+
+    \code
+    vigra::FImage src(w,h), 
+                  stxx(w,h), stxy(w,h), styy(w,h);
+    vigra::BasicImage<TinyVector<float, 3> > st(w,h);
+    ...
+
+    vigra::structureTensor(srcImageRange(src),
+                           destImage(stxx), destImage(stxy), destImage(styy), 1.0, 3.0);
+
+    vigra::structureTensor(srcImageRange(src), destImage(st), 1.0, 3.0);
     \endcode
 
 */
