@@ -96,7 +96,20 @@ namespace vigra {
     }
     \endcode
     
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
+    
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
+    
+    \code
+    MultiArray<2, float> src(width, height),
+                         dest(height, width); // note that width and height are exchanged
+    ... // fill src
+    vigra::rotateImage(src, dest, 90);
+    
+    \endcode
+
+    <b> Usage (old API):</b>
     
     <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
     Namespace: vigra
@@ -282,7 +295,21 @@ Reflect operator|(Reflect l, Reflect r)
     }
     \endcode
     
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
+    
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
+    
+    \code
+    MultiArray<2, float> src(width, height),
+                         dest(width, height);
+    ... // fill src
+    // reflect about both dimensions
+    vigra::reflectImage(src, dest, vigra::horizontal | vigra::vertical);
+    
+    \endcode
+
+    <b> Usage (old API):</b>
     
     <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
     Namespace: vigra
@@ -416,6 +443,11 @@ enum Transpose{major = 1, minor = 2};
     aware that some <sys/types.h> define major/minor, too.  Do not omit
     the vigra namespace prefix.)
     
+    Note that a similar effect can be chieved by MultiArrayView::transpose(). However,
+    the latter can only transpose about the major diagonal, and it doesn't rearrange the data
+    -  it just creates a view with transposed axis ordering. It depends on the context
+    which function is more appropriate.
+    
     <b> Declarations:</b>
     
     pass 2D array views:
@@ -451,7 +483,27 @@ enum Transpose{major = 1, minor = 2};
     }
     \endcode
     
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
+    
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
+    
+    \code
+    MultiArray<2, float> src(width, height),
+                         dest(height, width);   // note that dimensions are transposed
+    ... // fill src
+    
+    // transpose about the major diagonal
+    vigra::transposeImage(src, dest, vigra::major);
+    
+    // this produces the same data as transposing the view
+    assert(dest == src.transpose());
+    
+    // transposition about the minor diagonal has no correspondence in MultiArrayView
+    vigra::transposeImage(src, dest, vigra::minor);
+    \endcode
+
+    <b> Usage (old API):</b>
     
     <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
     Namespace: vigra
@@ -459,6 +511,7 @@ enum Transpose{major = 1, minor = 2};
     \code
     Image dest(src.width(), src.height());
     
+    // transpose about both diagonals simultaneously
     vigra::transposeImage(srcImageRange(src), destImage(dest), vigra::major | vigra::minor);
     
     \endcode
@@ -734,10 +787,15 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     \code
     double factor = 2.0;
-    Image dest((int)(factor*src.width()), (int)(factor*src.height()));
+    MultiArrayView<2, float> src(width, height),
+                             dest((int)(factor*width), (int)(factor*height));   // enlarge image by factor
+    ... // fill src
     
-    vigra::resampleImage(srcImageRange(src), destImage(dest), factor);
+    // use MultiArrayView API
+    vigra::resampleImage(src, dest, factor);
     
+    // use old API
+    vigra::resampleImage(srcImageRange(src), destImage(dest), factor);    
     \endcode
 
     <b> Required Interface:</b>

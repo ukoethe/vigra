@@ -240,7 +240,7 @@ public:
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
@@ -249,8 +249,8 @@ public:
     MultiArray<3, TinyVector<float, 3> > gradient(shape);
     MultiArray<3, TinyVector<float, 6> > tensor(shape);
     
-    gaussianGradientMultiArray(srcMultiArrayRange(vol), destMultiArray(gradient), 2.0);
-    vectorToTensorMultiArray(srcMultiArrayRange(gradient), destMultiArray(tensor));
+    gaussianGradientMultiArray(vol, gradient, 2.0);
+    vectorToTensorMultiArray(gradient, tensor);
     \endcode
 
 */
@@ -351,7 +351,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
@@ -360,8 +360,8 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, TinyVector<float, 6> > hessian(shape);
     MultiArray<3, float> trace(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorTraceMultiArray(srcMultiArrayRange(hessian), destMultiArray(trace));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorTraceMultiArray(hessian, trace);
     \endcode
 
 */
@@ -452,7 +452,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
@@ -461,8 +461,8 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, TinyVector<float, 6> > hessian(shape);
     MultiArray<3, TinyVector<float, 3> > eigenvalues(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorEigenvaluesMultiArray(srcMultiArrayRange(hessian), destMultiArray(eigenvalues));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorEigenvaluesMultiArray(hessian, eigenvalues);
     \endcode
 
 */
@@ -563,7 +563,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
 
@@ -572,8 +572,8 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     MultiArray<3, TinyVector<float, 6> > hessian(shape);
     MultiArray<3, float> determinant(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorDeterminantMultiArray(srcMultiArrayRange(hessian), destMultiArray(determinant));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorDeterminantMultiArray(hessian, determinant);
     \endcode
 
 */

@@ -346,13 +346,13 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     <b>\#include</b> \<vigra/multi_distance.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned int> dest(shape);
     ...
 
     // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistSquared(srcMultiArrayRange(source), destMultiArray(dest), true);
+    separableMultiDistSquared(source, dest, true);
     \endcode
 
     \see vigra::distanceTransform(), vigra::separableMultiDistance()
@@ -564,13 +564,13 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_distance.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
 
     // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistance(srcMultiArrayRange(source), destMultiArray(dest), true);
+    separableMultiDistance(source, dest, true);
     \endcode
 
     \see vigra::distanceTransform(), vigra::separableMultiDistSquared()

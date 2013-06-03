@@ -794,7 +794,7 @@ scaleKernel(K & kernel, double a)
     ArrayVector<Kernel1D<float> > kernels(3, gauss);
 
     // perform Gaussian smoothing on all dimensions
-    separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), 
+    separableConvolveMultiArray(source, dest, 
                                 kernels.begin());
     \endcode
 
@@ -803,8 +803,10 @@ scaleKernel(K & kernel, double a)
     see \ref separableConvolveMultiArray(), in addition:
 
     \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
+    NumericTraits<T1>::RealPromote s = src[0];
+
+    s = s + s;
+    s = kernel(0) * s;
     \endcode
 
     \see vigra::Kernel1D, convolveLine()
@@ -1003,15 +1005,15 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
     Kernel1D<float> gauss;
     gauss.initGaussian(sigma);
 
-    // perform Gaussian smoothing along dimensions 1 (height)
-    convolveMultiArrayOneDimension(srcMultiArrayRange(source), destMultiArray(dest), 1, gauss);
+    // perform Gaussian smoothing along dimension 1 (height)
+    convolveMultiArrayOneDimension(source, dest, 1, gauss);
     \endcode
 
     \see separableConvolveMultiArray()
@@ -1176,12 +1178,12 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
     // perform isotropic Gaussian smoothing at scale 'sigma'
-    gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    gaussianSmoothMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
@@ -1189,14 +1191,14 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     TinyVector<float, 3> step_size;
     TinyVector<float, 3> resolution_sigmas;
     ...
     // perform anisotropic Gaussian smoothing at scale 'sigma'
-    gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    gaussianSmoothMultiArray(source, dest, sigma,
                              ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
@@ -1372,12 +1374,12 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     ...
     // compute Gaussian gradient at scale sigma
-    gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    gaussianGradientMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
@@ -1385,14 +1387,14 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     TinyVector<float, 3> step_size;
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Gaussian gradient at scale sigma
-    gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    gaussianGradientMultiArray(source, dest, sigma,
                                ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
@@ -1688,13 +1690,13 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     TinyVector<float, 3> step_size;
     ...
     // compute gradient
-    symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest),
+    symmetricGradientMultiArray(source, dest,
                                 ConvolutionOptions<3>().stepSize(step_size));
     \endcode
 
@@ -1853,11 +1855,12 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, float> source(shape);
     MultiArray<3, float> laplacian(shape);
     ...
     // compute Laplacian at scale sigma
-    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma);
+    laplacianOfGaussianMultiArray(source, laplacian, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
@@ -1871,7 +1874,7 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Laplacian at scale sigma
-    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma,
+    laplacianOfGaussianMultiArray(source, laplacian, sigma,
                                   ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
@@ -2089,11 +2092,12 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, float> source(shape);
     MultiArray<3, TinyVector<float, 6> > dest(shape);
     ...
     // compute Hessian at scale sigma
-    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    hessianOfGaussianMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
@@ -2107,7 +2111,7 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Hessian at scale sigma
-    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    hessianOfGaussianMultiArray(source, dest, sigma,
                                 ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
@@ -2358,11 +2362,12 @@ struct StructurTensorFunctor
     <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, RGBValue<float> > source(shape);
     MultiArray<3, TinyVector<float, 6> > dest(shape);
     ...
     // compute structure tensor at scales innerScale and outerScale
-    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale);
+    structureTensorMultiArray(source, dest, innerScale, outerScale);
     \endcode
 
     <b> Usage with anisotropic data:</b>
@@ -2376,7 +2381,7 @@ struct StructurTensorFunctor
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute structure tensor at scales innerScale and outerScale
-    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale,
+    structureTensorMultiArray(source, dest, innerScale, outerScale,
                               ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
