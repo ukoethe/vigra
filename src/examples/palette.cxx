@@ -33,6 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
+#include <stdio.h>
 #include <iostream>
 #include <algorithm>
 #include "vigra/stdimage.hxx"

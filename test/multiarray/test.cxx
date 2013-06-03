@@ -258,7 +258,7 @@ public:
                     ref(m,k,l) = array3(k,l,m);
 
         MultiArrayView <3, scalar_type, StridedArrayTag>
-                parray = array3.permuteDimensions (difference3_type (2, 0, 1));        
+                parray = array3.transpose (difference3_type (2, 0, 1));        
         shouldEqual(ref.shape(), parray.shape());
         should(ref == parray);
 
@@ -289,12 +289,12 @@ public:
         should(ref2 == array2);
 
         try {
-            array3.permuteDimensions (difference3_type (2, 0, 0));   
+            array3.transpose (difference3_type (2, 0, 0));   
             failTest("no exception thrown");
         }
         catch(vigra::ContractViolation & c)
         {
-            std::string expected("\nPrecondition violation!\nMultiArrayView::permuteDimensions(): every dimension must occur exactly once");
+            std::string expected("\nPrecondition violation!\nMultiArrayView::transpose(): every dimension must occur exactly once");
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
@@ -383,7 +383,7 @@ public:
         }
         catch(vigra::ContractViolation & c)
         {
-            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &) size mismatch");
+            std::string expected("\nPrecondition violation!\nMultiArrayView::operator=(MultiArrayView const &): shape mismatch");
             std::string message(c.what());
             should(0 == expected.compare(message.substr(0,expected.size())));
         }
@@ -511,6 +511,32 @@ public:
         iterator3_t i2 = av.begin();
         iterator3_t iend = av.end();
         iterator3_t i3;
+        MultiCoordinateIterator<3> c(av.shape()),
+                                   cend = c.getEndIterator();
+
+        shouldEqual(i1.point(), *c);
+        shouldEqual((i1+0).point(), *(c+0));
+        shouldEqual((i1+1).point(), *(c+1));
+        shouldEqual((i1+2).point(), *(c+2));
+        shouldEqual((i1+3).point(), *(c+3));
+        shouldEqual((i1+6).point(), *(c+6));
+        shouldEqual((i1+7).point(), *(c+7));
+        shouldEqual((i1+9).point(), *(c+9));
+
+        shouldEqual((i1+0).point(), c[0]);
+        shouldEqual((i1+1).point(), c[1]);
+        shouldEqual((i1+2).point(), c[2]);
+        shouldEqual((i1+3).point(), c[3]);
+        shouldEqual((i1+6).point(), c[6]);
+        shouldEqual((i1+7).point(), c[7]);
+        shouldEqual((i1+9).point(), c[9]);
+
+        shouldEqual((iend-1).point(), *(cend-1));
+        shouldEqual((iend-2).point(), *(cend-2));
+        shouldEqual((iend-3).point(), *(cend-3));
+        shouldEqual((iend-7).point(), *(cend-7));
+        shouldEqual((iend-8).point(), *(cend-8));
+        shouldEqual((iend-10).point(), *(cend-10));
 
         shouldEqual(&i1[0], &a3(0,0,0));
         shouldEqual(&i1[1], &a3(1,0,0));
@@ -592,12 +618,13 @@ public:
         {
             for (p[1]=0; p[1] != s[1]; ++p[1]) 
             {
-                for (p[0]=0; p[0] != s[0]; ++p[0], ++i1, i2 += 1, ++count)
+                for (p[0]=0; p[0] != s[0]; ++p[0], ++i1, ++c, i2 += 1, ++count)
                 {
                     shouldEqual(&*i1, &a3[p]);
                     shouldEqual(&*i2, &a3[p]);
                     shouldEqual(i1.operator->(), &a3[p]);
                     shouldEqual(i2.operator->(), &a3[p]);
+                    shouldEqual(*c, p);
                     shouldEqual(i1.point(), p);
                     shouldEqual(i2.point(), p);
                     shouldEqual(i1.index(), count);
@@ -628,6 +655,7 @@ public:
             }
         }
 
+        should(c == cend);
         should(i1 == iend);
         should(!(i1 != iend));
         should(!(i1 < iend));
@@ -2320,22 +2348,22 @@ public:
         rv = dv*sqrt(bv);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               Arg2()*sqrt(Arg1()));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
         r1 = sqrt(b)*(d*2.0);
         rv = sqrt(bv)*(dv*2.0);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               sqrt(Arg1())*(Arg2()*Param(2.0)));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
         r1 = (d*2.0)*sqrt(b);
         rv = (dv*2.0)*sqrt(bv);
         combineTwoMultiArrays(srcMultiArrayRange(b), srcMultiArray(d), destMultiArray(r2),
                               (Arg2()*Param(2.0))*sqrt(Arg1()));
-        shouldEqualSequence(r1.begin(), r1.end(), r2.begin());
-        shouldEqualSequence(rv.begin(), rv.end(), r2.begin());
+        shouldEqualSequenceTolerance(r1.begin(), r1.end(), r2.begin(), 1e-15);
+        shouldEqualSequenceTolerance(rv.begin(), rv.end(), r2.begin(), 1e-15);
 
 
         r1 = b*(-c);

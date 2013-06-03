@@ -68,7 +68,7 @@ namespace linalg
 
     <b>\#include</b> \<vigra/singular_value_decomposition.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
 unsigned int

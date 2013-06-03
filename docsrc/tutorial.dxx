@@ -1,0 +1,783 @@
+/** \page Tutorial Tutorial
+    
+    This tutorial will help you to learn VIGRA's most important concepts by means of simple examples. The tutorial consists of the following parts:
+    
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref MultiDimensionalArrayTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>VIGRA's most important data structure</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref MultiArrayBasics
+        <li> \ref MultiArrayIndexing
+        <li> \ref MultiArrayScanOrder
+        <li> \ref MultiArrayMethods
+            <ul type="disc">
+            <li> \ref MultiArrayViewBasics
+            <li> \ref MultiArray_subarray
+            <li> \ref MultiArray_bind
+            <li> \ref MultiArray_transpose
+            </ul>
+        </ul>
+        
+    <li> \ref MultiArrayArithmeticTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>mathematical operations on MultiArrays</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref MultiMathModule "Array Experessions"
+        <li> \ref LinearAlgebraModule "Linear Algebra"
+        <li> \ref MultiPointoperators "STL-style transformation algorithms"
+        <li> \ref FeatureAccumulators
+        </ul>
+        
+    <li> \ref ImageInputOutputTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>importing and exporting images and arbitrary-dimensional arrays</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref Impex2D
+        <li> \ref ImpexND
+        </ul>
+
+    <li> \ref ImageProcessingTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>basic applications of VIGRA's functions</em>
+        <ul style="list-style-image:url(documents/bullet.gif)">
+        <li> \ref CallingConventions
+        <li> \ref ImageInversion
+        <li> \ref ImageBlending
+        <li> \ref CompositeImage
+        <li> \ref SmoothingTutorial
+           <ul type="disc">
+            <li> \ref Convolve2DTutorial
+            <li> \ref SeparableConvolveTutorial
+            </ul>
+        </ul>
+
+    <li> \ref OwnFunctionsTutorial
+        <BR>&nbsp;&nbsp;&nbsp;<em>... without getting confused by templates</em>
+        
+    </ul>
+*/
+
+/** \page MultiDimensionalArrayTutorial Multi-Dimensional Arrays
+
+    <h2>Section Contents</h2>
+    
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref MultiArrayBasics
+    <li> \ref MultiArrayIndexing
+    <li> \ref MultiArrayScanOrder
+    <li> \ref MultiArrayMethods
+        <ul type="disc">
+        <li> \ref MultiArrayViewBasics
+        <li> \ref MultiArray_subarray
+        <li> \ref MultiArray_bind
+        <li> \ref MultiArray_transpose
+        </ul>
+    </ul>
+    
+    \section MultiArrayBasics Basic MultiArray Usage
+    
+    MultiArray is the most fundamental data structure in VIGRA. It holds a rectangular block of values in arbitrary many dimensions. Most VIGRA functions operate on top of MultiArray or the associated class MultiArrayView (see ???). 
+    
+    A 2D image can be interpreted as a matrix, i.e. a 2-dimensional array, where each element holds the information of a specific pixel. Internally, the data are stored in a single 1-dimensional piece of memory, and MultiArray encapsulates the entire mapping between our familiar 2-dimensional notation and the raw memory. Pixels in an image are identified by a coordinate pair (x,y), where indexing starts at 0. That is, the pixels in a 800x600 image are indexed by <tt>x = 0,...,799 and y = 0,...,599</tt>. The principle analoguously extends to higher dimensions.
+    
+    The structure of a multidimensional array is given by its <tt>shape</tt> vector, and the length of the shape vector is the array's <i>dimension</i>. The dimension must be fixed as a template parameter at compule time, while the shape is passed to the array's constructor. The second important template parameter is the pixel's <tt>value_type</tt>, as you know it form <tt>std::vector</tt>. 
+    
+    To represent the data of a gray scale image, we just need to store one value per pixel, so we 
+    choose a 2-dimensional array, where each element has the <tt> unsigned char </tt> type. 
+    With VIGRA we instantiate an gray scale image object like this:
+
+    \code
+        #include <vigra/multi_array.hxx>
+        
+        using namespace vigra; // for brevity in the examples - don't do this in header files!
+        
+        int width = ...,  height = ...;
+        MultiArray<2, unsigned char> image(Shape2(width, height));
+    \endcode
+    
+    By default, VIGRA arrays are always zero-initialized. Another initial value can be provided in the constructor, or later via the <tt>init()</tt> function:
+    
+    \code
+        MultiArray<2, unsigned char> image(Shape2(width, height), 255); // init with value 255
+        
+        image.init(128);  // same effect, different initial value
+    \endcode
+     
+    The <tt>Shape2</tt> typedef also exists for higher dimensions up to five as <tt>Shape3</tt> etc. If you need even more dimensions, use <tt>MultiArrayShape<N>::type</tt> instead, were N is the number of dimensions: 
+
+    \code
+        // dimension 0 runs from 0, 1, ..., 299
+        // dimension 1 runs from 0, 1, ..., 199
+        // dimension 2 runs from 0, 1, ...,  99
+        MultiArray<3, double> volume(Shape3(300, 200, 100));
+        
+        MultiArray<7, float> array7D(MultiArrayShape<7>::type(20, 10, ...));
+    \endcode     
+
+    When storing RGB images we obviously can't simply use the unsigned char type because every pixel contains 3 numbers: values for red, green and blue. Mathematically, you want to store a data vector for each pixel. To this end, VIGRA
+    provides the <tt>vigra::RGBValue<ValueType></tt> class. So for RGB-images just use: </p>
+
+    \code
+        MultiArray<2, RGBValue<unsigned char> > rgb_image(Shape2(256, 128));
+    \endcode
+
+    vigra::RGBValue<ValueType> is a specialised 3-dimensional vector containing ValueType elements. Arbitrary short vectors can be stored in the <tt>TinyVector<ValueType, SIZE></tt> class, which is the base class of RGBValue. It's length must be specified at compile time in the template parameter <tt>SIZE</tt>. Vectors whose length is known at compile time are very useful for the compiler to produce highly optimized code. Therefore, <tt>Shape2</tt> and it's higher-dimensional coursins are instances of <tt>TinyVector</tt> as well.
+
+    Alternatively you can use a 3-dimensional array <tt>vigra::MultiArray<3, unsigned
+    char></tt> to represent a color image. The third dimension has size 3 and contains the
+    information for the red, green and blue channel. 
+    
+    \code
+        MultiArray<3, unsigned char> rgb_array(Shape3(256, 128, 3));
+    \endcode
+
+    However, we are not going to use this form in the tutorial because <tt>vigra::RGBValue<ValueType></tt> provides many helpful methods that are not available when color is just another array dimension.
+
+    \section MultiArrayIndexing Array Indexing via Coordinates
+
+    The easiest way to access the values of an array is via the coordinates. A tuple of coordinates can again be specified by the appropriate shape object, which must be passed to the array's indexing operator:
+
+    \code
+        int width = 300, height = 200;
+        MultiArray<2, int> image(Shape2(width, height));
+
+        // set all elements to 3
+        image.init(3);
+
+        // print pixel at x=1 and y=2
+        int x=1, y=2;
+        std::cout << image[Shape2(x,y)] << std::endl;  // output: 3
+    \endcode
+
+    <B>Important Remark:</B> Notice that VIGRA follows the mathematical convention of the index order: dimension 0 corresponds to the x (horizontal) coordinate, dimension 1 to the y (vertical) coordinate, and so on. Accordingly,  dimension 0 is changing fastest in memory: when we increase x by one, we get to the next memory location. In matrix jargon, this is also known as <i>Fortran order</i>. Many image processing libraries (e.g. <a href="http://www.imagemagick.org/">Image Magick</a>, <a href="http://opencv.willowgarage.com/">OpenCV</a>, and <a href="http://qt-project.org/">Qt</a>) use the same convention. However, others like Matlab and numpy, use the reverse order (so called <i>C order</i>). Don't be confused!
+    
+    Internally, shape objects are implemented in terms of the powerful \ref vigra::TinyVector class. This means that shape objects support the usual mathematical operations like addition, multiplication and scalar products. Coordinate computations can thus be performed on entire coordinate objects at once - there is no need to manipulate the individual coordinates separately.
+    
+    Nonetheless, in some circumstances it is more convenient to provide coordinates individually rather than in a shape object. This is possible with round brackets (x,y):
+
+    \code
+        // access via individual coordinates
+        image(1,2) = 22;
+    \endcode
+	
+    This kind of indexing is supported for dimensions up to five, and only if the array's dimension is known (this is not always the case: in a generic function where the dimension is a template parameter, you must use shape objects).
+	In combination with the method <tt>shape(n)</tt>, that returns the length of the n-th dimension, 
+    we can use the coordinates to set the element of an entire row or column:
+
+    \code
+        // set all elements of first row to 13
+        for (int i = 0; i < image.shape(1); i++)
+            image(1,i) = 13;
+    \endcode
+
+    On first sight, individual coordinates may be necessary to iterator of the image or parts of it. But the following example shows that the same effect can be achieved with a shape object that is allocated outside the loop:
+    3rd column of a 8x4-matrix (initialized with 5) to 7.
+
+    \code
+        // instantiate shape object (zero intialized by default)
+        Shape2 p;
+        // bind x=2
+        p[0] = 2;
+        // iterator over row 2
+        for(p[1]=0; p[1]<image.shape(1); ++p[1])   
+            image[p] = 7;
+    \endcode
+
+    We will discuss more powerful methods to access certain parts of an array in section \ref MultiArrayMethods.
+
+    \section MultiArrayScanOrder One-dimensional Indexing and Scan-Order Iterator
+	
+    Regardless of the array's dimension, it is always possible to access elements with 1-dimensional index, its <i>scan-order index</i>, via the normal indexing operator. For example, <tt>array[1]</tt> refers to the index of the second array element. Defining a scan order is often called <i>flattening</i> of an array, because a high-dimensional data structure is accessed like a 1-dimensional vector. Notive that scan-order access in VIGRA does not require the data to be copied. 
+    
+	VIGRA defines scan-order by considering the dimensions from front to back. Thus, items are accessed such that only the x coordinate is incremented, while y (and possibly further coordinates) are held fixed at 0. When x is exhausted, y is incremented by one and the iteration starts again at x=0. To control iteration, the function <tt>array.size()</tt> returns the total number of elements: 
+
+    \code
+        MultiArray<2, int> intArray(Shape2(3,2));
+    
+        for(int k=0; k<intArray.size(); ++k=
+            intArray[k] = k+1;
+        
+        // the array now contains the values
+        //
+        //   1 2 3
+        //   4 5 6
+    \endcode
+	
+    Alternatively, scan-order access can be achieved with an STL-compatible iterator pair obtained by calling <tt>array.begin()</tt> and <tt>array.end()</tt>. Continuing with the example above, we can write:
+
+	\code
+		// declare an alias for the iterator type
+		typedef MultiArray<2, int>::iterator Iter;
+
+		// iterate over intArray and print the elements in scan order
+		for (Iter i = intArray.begin(); i != intArray.end(); ++i)
+		    std::cout << *i << " ";
+        std::cout << std::endl;
+        
+        // output: 1 2 3 4 5 6
+	\endcode
+
+    The iterator is implemented by class <tt>StridedScanOrderIterator</tt> which encapsulates all the bookkeeping necessary to get the elements in the correct order, even when the array was transposed (see below). 
+
+	Scan-order access is convenient to implement pointwise operations, e.g. the addition of two matrices. The following code adds two matrices and stores the result in the first one: 
+
+	\code
+		MultiArray<2, int> matrix1(Shape2(3,3)),
+                           matrix2(Shape2(3,3));
+		... // fill in data
+	
+		// use indexing
+		for (int i=0; i < matrix1.size(); ++i)
+			matrix1[i] += matrix2[i];
+		
+        // use iterators
+        for (Iter i = matrix1.begin(), j = matrix2.begin(); i != matrix1.end(); ++i, ++j)
+            *i += *j;
+	\endcode
+
+	This is convenient, because the actual high-dimensional shapes of the arrays is of no significance for point-wise operations as long as the shapes match. Be careful: the arrays themselves have no way of checking this condition. So thefollowing code using two transposed shapes is perfectly valid C++, but has probably not the intended effect:
+
+	\code
+		MultiArray<2, int> matrix3(Shape2(3,2)),
+                           matrix4(Shape2(2,3));  // transposed shape of matrix3
+		... // fill in data
+	
+	    for (int i=0; i < matrix3.size(); ++i)
+		    matrix3[i] += matrix4[i];  // works, but may not have the intended effect
+	\endcode
+
+    By the way: VIGRA provides the += operator (and is cousins) to write this more concisely, and this operator throws an exception if the shapes don't match:
+
+    \code
+        matrix1 += matrix2;          // works fine!
+        matrix3 += matrix4;          // error: shape mismatch!
+    \endcode
+
+    For more information on mathematical operations on arrays see the \ref MultiMathModule "multi_math" module.
+
+    As mentioned, VIGRA's scan order is similar to the NumPy-method <tt>array.flatten()</tt>. You use it, 
+    to copy a multi-dimensional array into an one-dimensional array, or to access elements in flattened order. The only
+    difference is that NumPy uses "C-order" , i.e. the rightmost dimension takes priority, whereas
+    VIGRA uses Fortran-order, i.e. the leftmost dimension takes priority. A method like flatten can be implemented in VIGRA as:
+
+    \code
+        MultiArray<2, int> intArray(Shape2(3,2));
+    
+        for(int k=0; k<intArray.size(); ++k=
+            intArray[k] = k+1;
+        
+        // create 1D-array of appropriate size
+        std::vector<int> flatArray(intArray.size());
+        
+        // copy 2D-array into 1D-array using the STL
+        std::copy(intArray.begin(), intArray.end(), flatArray.begin());
+        
+        // print 1D-array on console
+        // (same output as printing from the StridedScanOrderIterator directly) 
+        for (std::vector<int>::iterator i = flatArray.begin(); i != flatArray.end(); ++i)
+             std::cout << *iter << " ";
+        std::cout << std::endl;
+    \endcode
+
+    To show the difference between VIGRA and NumPy we'll add the NumPy output, i.e. the result when we had
+    used C-order in the code above:
+
+    \verbatim
+    flatArray - index     0       1       2       3       4       5 
+    -----------------------------------------------------------------
+    VIGRA-output:         1       2       3       4       5       6
+    intArray - index    [0,0]   [1,0]   [2,0]   [0,1]   [1,1]   [2,1]
+    -----------------------------------------------------------------
+    NumPy-output:         1       4       2       5       3       6
+    intArray - index    [0,0]   [0,1]   [1,0]   [1,1]   [2,0]   [2,1]
+    \endverbatim
+
+    To change the axis priorities of the StridedScanOrderIterator, look at the transpose-function
+    in the next section.
+    
+    \section MultiArrayMethods Important MultiArray Methods
+
+    This part of the tutorial explains important methods of MultiArray. However, before we proceed, we need to introduce the class \ref vigra::MultiArrayView.
+    
+    \subsection MultiArrayViewBasics The MultiArrayView Interface
+    
+    A \ref vigra::MultiArrayView has the same interface as a MultiArray (with the exception of <tt>reshape()</tt> and <tt>swap()</tt>), but it doesn't own its data. Instead, it provides a <i>view</i> onto the data of some other array. In contrast, a MultiArray owns its data and is responsible for freeing it in the destructor. MultiArrays are automatically converted into MultiArrayViews when needed.
+    
+    The point of this distinction is that MultiArrayViews can be used to access and manipulate the same data in many different ways <i>without any need for creating copies</i>. For example, we can work with a 2-dimensional slice of a volume dataset (i.e. a lower dimensional part of a 3D array) without first copying the slice into a 2D image. This is possible whenever the desired view can be realized by just manipulating the internal <i>mapping</i> from indices and shapes to memory locations, and not the memory layout itself.
+    
+    This possibility -- which is similarly implemented in other packages like Matlab and numpy -- is a key ingredient for efficient computations with multi-dimensional arrays. Thus, most VIGRA functions actually receive MultiArrayViews to maximize flexibility. This section describes the most important ways to create new MultiArrayViews from an existing array or view. The complete documentation is available in the \ref vigra::MultiArrayView reference.
+
+    <hr>
+
+    \subsection MultiArray_subarray subarray(p,q)
+    
+    This method creates a rectangular subarray of your array between the points p and q, where p (the starting point of the subregion) is included, q (the ending point) is not. <tt>subarray</tt> does not change the dimension of the array (this is the task of the various <tt>bind</tt>-methods).
+    
+    To give an example, we create a 4x4 array that consitst of a checkerboard with 2x2 squares:
+
+    \code
+        MultiArray<2, float> array_4x4(Shape2(4,4));  // zero (black) initialized
+        
+        // paint the upper left 2x2 square white
+        array_4x4.subarray(Shape2(0,0), Shape2(2,2)) = 1.0;
+        
+        // likewise for the lower right 2x2 square, but this time we 
+        // store the array view explicitly for illustration
+        MultiArrayView<2, int> lower_right_square = array_4x4.subarray(Shape2(2,2), Shape2(4,4));
+        lower_right_square = 1.0;
+        
+        // contents of array_4x4 now:
+        //    1 1 0 0
+        //    1 1 0 0
+        //    0 0 1 1
+        //    0 0 1 1
+    \endcode
+
+    The positions p and q are specified with the familiar <tt>Shape</tt> objects. In this example we simply overwrite parts of the array. The following larger example uses <tt>subarray</tt> to output a half-sized subimage around the center of the original image: <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
+    The relevant part of this code is shown here (the functions <tt>importImage</tt> and <tt>exportImage</tt> are described in section \ref ImageInputOutputTutorial):
+
+    \dontinclude subimage_tutorial.cxx
+    \skip // write
+    \until exportImage
+
+    After reading the (here: gray scale) image data to an array we need to calculate the 
+    coordinates of our subimage. In this case we want to cut out the middle part of the image. 
+    Afterwards we write the subimage into a new array. Look at the result:
+
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_sub.gif "subimage output file" </TD>
+    </TR>
+    </Table>
+
+    <hr>
+
+    \subsection MultiArray_bind bind<M>(i) and bindAt(M, i)
+    
+    These methods bind axis M to the index i and thus reduce the dimension of the array by one. The only difference between the two forms is that the axis to be bound must be known at compile time in the first form, whereas it can be specified at runtime in the second. 
+    
+    Binding is useful when we want to access and/or manipulate a particular row or column of an image, or a single slice of a volume. In principle, the same can also be achieved by explicit loops, but use of <tt>bind</tt> often leads to more elegant and more generic code. Consider the following code to initialize the third column of an image with the constant 5:
+
+    \code
+        // initialize 200x100 image
+        MultiArray<2, int> array2d(Shape2(200,100)); // zero initialized
+
+        // initialize column 2 with value 5 using a loop
+        for(int y=0; y<array2d.shape(1); ++y)
+            array2d(2, y) = 5;
+            
+        // the same using bind
+        array2d.bind<0>(2) = 5;
+    \endcode
+
+    NumPy-Users are familiar with the bind mechanism as "slicing". The example above written in numpy syntax becomes:
+    \verbatim
+    array2d[2, :] = 5      // NumPy-equivalent of array2d.bind<0>(2) = 5
+    \endverbatim
+
+    You can also initialize a lower-dimensional array with the bind-method:
+
+    \code
+        // initialize new 1D array with 3rd column of a 2D array
+        MultiArray<1, int> array1d = array2d.bind<0>(2);
+    \endcode
+
+    The array <tt>array1d</tt> contains the elements the 3rd column of <tt>array2d</tt>. This bahavior nicely illustrates the difference between a copy and a view: <tt>array1d</tt> contains a copy of the 3rd column, whereas the <tt>bind</tt> function only creates a new view to the existing data in <tt>array2d</tt>. 
+    
+    At this
+    point we have to distinguish between the classes <tt> MultiArray </tt> and 
+    <tt> MultiArrayView </tt>. MultiArray inherits from MultiArrayView and contains the
+    memory management of the array. With MultiArrayView we can view the data stored in a 
+    MultiArray. The code above produces a copy of the 3rd column of intArray. If we change the
+    elements of <tt>lowArray</tt> nothing happens to <tt> intArray </tt>.
+
+    \code
+         // initialize 200x100 image
+        MultiArray<2, int> array2d(Shape2(200,100)); // zero initialized
+
+        // initialize new 1D array with 3rd column of a 2D array
+        MultiArray<1, int> array1d = array2d.bind<0>(2);
+        
+        // overwrite element [0] of array1d
+        array1d[0] = 1;
+        
+        // this has no effect on the original array2d
+        // output: 0 1
+        std::cout << array2d(2, 0) << " " << array1d[0] << std::endl;
+        
+        // initialize a view and overwrite element [0]
+        MultiArrayView<1, int> array_view = array2d.bind<0>(2);
+        array_view[0] = 2;
+        
+        // now, the original array2d has changed as well
+        // output: 2 2
+        std::cout << array2d(2, 0) << " " << array_view[0] << std::endl;
+    \endcode
+
+    Moving on to image processing we'll give an example how you can flip an image by using 
+    bind. We save a gray scale image in a 2-dimensional array called <tt> imageArray </tt>. 
+    Then we initalize a new array <tt> newImageArray </tt> of the same dimension and size
+    and set the first row of <tt> newImageArray </tt> to the values of the last row of 
+    <tt> imageArray </tt>, the second row to the values of the second last row and so on.
+    Hence, we flip the image top to bottom.
+
+    \include mirror_tutorial.cxx
+    
+    This code needs an infile and an outfile as arguments. For this example, just the 
+    commented for-loop is important. The rest contains the code for
+    \ref ImageInputOutputTutorial and is explained in that part of the tutorial. We bind dimension 1
+    to fix the y-coordinate. To flip left to right you have to fix the x-coordinate, so bind
+    dimension 0. <br/>
+    Here you can see what happens to an input file:
+
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD> \image html lenna_mirror.gif "mirrored output file" <TD>
+    </TR>
+    </Table>
+
+    A detailed example is given here:
+    <a href="mirror_8cxx-example.html">mirror.cxx</a> 
+    There you can flip RGB-images as well and decide whether to flip top to bottom (horizontal)
+    or left to right (vertical).
+
+    However, you don't need to implement a method like this yourself because VIGRA already provides the 
+    function <tt> vigra::reflectImage() </tt>.
+
+    For completeness, there are five additional versions of the bind()-method:
+    
+    <DL>
+    <DT><b> bindInner(i) </b></DT>
+        <DD> if i is an <tt> integer </tt>, the innermost dimension (axis 0) is fixed to i, <br>
+             if i is <tt>MultiArrayShape<M>::type</tt> (a shape of size M), then the M innermost 
+             dimensions (axes 0...M-1) are fixed to the values in the shape vector </DD>
+    <DT><b> bindOuter(i) </b></DT>
+        <DD> if i is an <tt> integer </tt>, the outmost dimension (axis N-1) is fixed to i, <br>
+        if i is <tt>MultiArrayShape<M>::type</tt> (a shape of size M), then the M outmost dimensions 
+        (axes N-M ... N-1) are fixed to the values in the shape vector </DD>
+    <DT><b> diagonal() </b></DT>
+        <DD> Create a 1-dimensional view to the diagonal elements of the original array 
+        (i.e. <tt>view[i] == array(i,i,i)</tt> for a 3D original array). </DD>
+    </DL>
+
+    See \ref vigra::MultiArrayView for a detailed description and examples.
+
+    <hr>
+
+    \subsection MultiArray_transpose transpose()
+    Everyone is familiar with the <tt>transpose()</tt> function of a matrix (i.e. a 2-dimensional array). Once again, this is possible without copying the data by just manipulating the internal access functions. The following example demonstrates the difference between a transposed copy and view:
+
+    \dontinclude transpose.cxx
+    \skip  // initialize array
+    \until setting transarrayView to 5
+    \line print
+
+    The output is:
+
+    \verbatim
+    intarray:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    transarray:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    transArrayView:
+    0 0 0 0 1 1 1 1 2 2 2 2 3 3 3 3 
+    intarray after setting transarray to 5:
+    0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 
+    intarray after setting transarrayView to 5:
+    5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 5 
+    \endverbatim
+
+    The function <tt>MultiArrayView::transpose()</tt> generalizes transposition to arrays of arbitrary dimensions. Here, it just reverses the order of the axes: axis 0 becomes axis N-1, axis 1 becomes axis N-2 and so on. In the following example we transpose a 5D array and print out its shape.
+
+    \dontinclude transpose.cxx
+    \skip transposing a 5D array
+    \until std::endl
+    \until std::endl
+
+    The output is:
+
+    \verbatim
+    Shape of Array5D:
+    12345
+    Shape of transposed Array5D:
+    54321
+    \endverbatim
+    
+    Finally, <tt>MultiArrayView::transpose()</tt> can also be called with a shape object that specifies the desired permutation of the axes: When <tt>permutation[k] = j</tt>, axis <tt>j</tt> of the original array becomes axis <tt>k</tt> of the transposed array (remember, that VIGRA counts the axes from 0):
+    
+    \dontinclude transpose.cxx
+    \skip transpose to an explicitly specified axis permutation
+    \until std::endl
+    
+    The permutaiton in the example is 2,1,3,4,0. Thus, original dimension 0 appears in the last position of the new view, original dimension 2 appears in the first position, and so on as demonstrated by the output of the example:
+    
+    \verbatim
+    Shape of transposed Array5D:
+    32451
+    \endverbatim
+
+    An image can be transposed like this:
+
+    \include transpose_image_tutorial.cxx
+
+    The result is:
+
+    <table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input file" </TD>
+    <TD>\image html lenna_transposed.gif "output file" </TD>
+    </TR>
+    </table>
+
+    In VIGRA, image transposition is also implemented in function <tt>vigra::transposeImage(...)</tt>. The difference
+    is that transposeImage() copies the image data, whereas MultiArrayView::transpose() just changes the internal mapping from indices to memory locations.
+
+    <b>Important note:</b> Transposing an array also changes the direction of the StridedScanOrderIterator. Imagine a 3x4-
+    matrix. Scan-order means that we iterate from left to right, row by row. Now, let's transpose the matrix to a 4x3 view. Than, scan-order in the new view is again left to right, row by row. However, in the original matrix this now corresponds to a transposed scan: from top to bottom, column by column. The same applies to the array's index operator with integer argument.
+*/
+
+
+/** \example mirror.cxx
+    Mirror an image file (horizontal or vertical)
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+/** \example subimage_tutorial.cxx
+    Create a half-sized subimage
+    <br>
+    Usage: <TT>mirror infile outfile</TT>
+*/
+
+
+/** \page ImageInputOutputTutorial Image Input and Output 
+
+    <h2>Section Contents</h2>
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref Impex2D
+    <li> \ref ImpexND
+    </ul>
+
+    \section Impex2D Two-Dimensional Images
+    
+    In this section we'll show you how to import and export an image with VIGRA. If you
+    want to import an image from disk and enquire about its properties, you must use an 
+    object of <tt>vigra::ImageImportInfo</tt> class. It reads the header of the image file. 
+    The constructor expects the file name, the file type will be determined automatically. 
+    
+    The <tt>vigra::ImageImportInfo</tt> class currently recognizes the following file formats:
+
+    <DL>
+    <DT><b>BMP:</b></dt>
+              <DD> Microsoft Windows bitmap image file.</DD>
+    <DT><b>EXR:</b></dt>
+              <DD> OpenEXR high dynamic range image format. (only available if libopenexr is installed)</DD>
+    <DT><b>GIF:</b></dt>
+              <DD> CompuServe graphics interchange format; 8-bit color.</DD>
+    <DT><b>HDR:</b></dt>
+              <DD> Radiance RGBE high dynamic range image format.</DD>
+    <DT><b>JPEG:</b></dt>
+              <DD> Joint Photographic Experts Group JFIF format - compressed 24-bit color (only available if libjpeg is installed).</DD>
+    <DT><b>PNG:</b></dt>
+              <DD> Portable Network Graphic (only available if libpng is installed).</DD>
+    <DT><b>PBM:</b></dt>
+              <DD> Portable bitmap format (black and white).</DD>
+    <DT><b>PGM:</b></dt>
+              <DD> Portable graymap format (gray scale).</DD>
+    <DT><b>PNM:</b></dt>
+              <DD> Portable anymap.</DD>
+    <DT><b>PPM:</b></dt>
+              <DD> Portable pixmap format (color).</DD>
+    <DT><b>SUN:</b></dt>
+              <DD> SUN Rasterfile.</DD>
+    <DT><b>TIFF:</b></dt>
+              <DD> Tagged Image File Format. (only available if libtiff is installed.)</DD>
+    <DT><b>VIFF:</b></dt>
+              <DD> Khoros Visualization image file.</DD>
+    </DL>
+
+    In the following example, the image file name is given in the first command line argument, and the most important image metadata are printed:
+
+    \include imageImportInfo_tutorial.cxx
+
+    As you can see, the <tt> ImageImportInfo </tt> object contains a lot of information,
+    some of it is printed in the example. Using this image
+
+    \image html lenna_small.gif "input file"
+
+    we get the following output:
+
+    \verbatim
+    Image information:
+    Filetype: GIF
+    Width: 154
+    Height: 145
+    Color Image: no
+    \endverbatim
+
+    To process the image, we must load the actual image data into an array such as the one described in \ref MultiArrayBasics. To do so, we create a <tt>vigra::MultiArray</tt> with the appropriate shape and then call 
+    <tt> importImage(...) </tt>. This function needs an <tt> ImageImportInfo </tt> object specifying the image to be loaded and an <tt>ImageIterator</tt> specifying the array where the data should be imported into. To create a suitable iterator, just use <tt>destImage(imageArray)</tt> convenience function, where imageArray is the MultiArray object to copy the image data in. The code looks like this:
+
+    \dontinclude imageIO_tutorial.cxx
+    \skip read image
+    \until importImage
+
+    Writing the image data from an array to a file is quite similar. For this purpose, you use the function 
+    <tt>exportImage(...)</tt>. It needs an image iterator range (a pair of iterators, one pointing at the upper-left point of an image, one at the lower-right) and a <tt>vigra::ImageExportInfo</tt> object. To create the iterator pair, you should use the <tt>srcImageRange(imageArray)</tt> convenience function.
+    
+    The ImageExportInfo object needs a file name. The desired file format is guessed from the
+    file name's extension (but can be overridden with the method <tt>ImageExportInfo::setFileType</tt>. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr' (as for reading, '.exr' requires libopenexr, '.jpg' requires libjpeg, '.png' requires 
+    libpng and '.tif' requires libtiff). In the following example, we create and save a 160x160 pixels image, where the image is a checkerboard. The image is saved as "testimage.gif" in the same folder as the executed code.
+
+    \include imageExportInfo_tutorial.cxx
+
+    The resulting image is the following:
+
+    \image html testimage.gif "testimage.gif"
+
+    Finally, we give a whole example of importing, editing and exporting an image.
+    After importing, we set every other horizontal line to black. This can be done
+    with the <tt>bind<M>(i)</tt> method explained in \ref MultiArray_bind.
+    Input and output file names are specified via command line arguments.
+
+    \include imageIO_tutorial.cxx
+
+    The input image and the resulting output image are:
+    
+    <Table cellspacing = "10">
+    <TR valign="bottom">
+    <TD> \image html lenna_small.gif "input image" </TD>
+    <TD> \image html lenna_stripes.gif "output image" </TD>
+    </TR>
+    </Table>
+
+    The handling of <b>color images</b> is exactly the same, but instead of instantiating
+    a <tt>vigra::MultiArray<2, unsigned char></tt> you need a
+    <tt> vigra::MultiArray<2, vigra::RGBValue<unsigned char> > </tt> array as described in
+    \ref MultiArrayBasics. Images with alpha channel are supported by \ref importImageAlpha() and exportImageAlpha().
+
+    Note that image processing often requires more complicated calculations than in these examples.
+    In this case, it is better to import and convert the data into a <tt>float</tt> array (i.e. <tt>vigra::MultiArray<2, float></tt>) instead of the simple <tt>unsigned char</tt> type in order to minimize rounding errors. When a file is imported into such an array, the conversion is automatically performed by the importImage() function. When an array is to be exported, the handling of <tt>float</tt> depends on the file format: If the file format supports float (currently: TIFF and VIFF), the data are written verbatim (unless this is explicitly overridden, see below). Otherwise, the data are mapped to <tt>unsigned char</tt> via a linear transform of the orginal range, followed by rounding (use \ref vigra::linearRangeMapping() to override this behavior by an explicit user-defined mapping).
+
+    The <tt>ImageExportInfo</tt> class provides a number of additional methods to <b>customize data export</b>, including:
+    
+    <DL>
+    <DT><b>setCompression():</b></dt>
+              <DD>Request compressed storage if the file format supports it.</DD>
+    <DT><b>setFileType():</b></dt>
+              <DD>Provide the file format explicitly instead of guessing from the filename extension.</DD>
+    <DT><b>setPixelType():</b></dt>
+              <DD>Request pixels to be stored as the given type (results in an exception if the type is unsupported by the file format).</DD>
+    <DT><b> setXResolution(),  setYResolution:</b></dt>
+              <DD>Store resolution information for the two axes (ignored if unsupported by the file format).</DD>
+    </DL>
+    
+    See \ref vigra::ImageExportInfo for a complete list and more details.
+
+    \section ImpexND Higher Dimensional Arrays
+    
+    The recommended file format for arrays of arbitrary dimension is <a href="http://www.hdfgroup.org/HDF5/">HDF5</a>. It supports all possible pixel types, arbitrary dimensions, on-the-fly compression, arbitrary many arrays per file, and flexible metadata storage along with arrays. See \ref VigraHDF5Impex for more information.
+
+    In case of 3D volume data, three additional import and export methods are supported:
+    <ul>
+    <li> Image stacks (consisting of one 2D image per slice) can be read by the function \ref vigra::importVolume() and written by \ref vigra::exportVolume().
+    <li> Raw data must be accompanied with an additional text file providing the necessary metadata (shape, pixel type etc.) and can then be read by an overload of \ref vigra::importVolume().
+    <li> Multipage TIFF can be imported one page at a time by constructing <tt>vigra::ImageImportInfo</tt> objects with the appropriate page number in a loop. 
+    </ul>
+*/
+
+/** \page MultiArrayArithmeticTutorial Mathematics with Multi-Dimensional Arrays
+    
+    VIGRA supports various way to perform mathematical operations (arithmetic and algebraic functions, linear alebra) on arrays. Most of these functions operate element-wise.
+    
+    <ul style="list-style-image:url(documents/bullet.gif)">
+    <li> \ref MultiMathModule "Array Expressions"
+        <BR>The \ref MultiMathModule "vigra::multi_math" module overloads the usual arithmetic operators and algebraic functions for array arguments, similar to Matlab and numpy. This leads to very efficient and readable code.
+    <li> \ref LinearAlgebraModule "Linear Algebra"
+        <BR>The \ref LinearAlgebraModule "vigra::linalg" module implements linear algebra for 2-dimensional arrays. The main difference to multi_math (besides a different internal implementation) is that the multiplication operator realizes matrix multiplication here. In addition, this modul implements linear system solvers, eigenvalue decomposition, and other standard matrix algorithms.
+    <li> \ref MultiPointoperators "STL-style transformation algorithms"
+        <BR>VIGRA also provides functions like <tt>transformMultiArray()</tt> that generalize the corresponding STL functions to multiple dimensions. The functors needed for these functions are most easily created with the \ref FunctorExpressions module, VIGRA's "lambda library". This approach offers more flexibility than the array expressions above.
+    <li> \ref FeatureAccumulators
+        <BR>The \ref FeatureAccumulators "vigra::acc" module provides powerful and efficient methods to compute statistics accross entire arrays or arbitrary subparts of them.
+    </ul>    
+*/
+
+/** \page OwnFunctionsTutorial Writing your own Functions
+    
+    Sooner or later, you will want to implement your own functions on the basis of VIGRA's functionality. Some people believe that this is very difficult because one needs to provide a lot of template magic and full genericity. However, this is <i>not</i> true: Your VIGRA functions need not be templated at all -- function arguments can simply be hard-wired. In other cases, it makes sense to template on the pixel type, but leave averything else fixed. Full genericity should only be implemented step-by-step as needed. 
+    
+    As an example, consider again the image smoothing example program <a href="smooth_explicitly_8cxx-example.html">smooth_explicitly.cxx</a>. It makes sense to encapsulate the smoothing algorithm into a function of its own. When we only need to support <tt>float</tt> images, the function is simply a verbatim copy of the algorithm. In contrast to the original version, we now allow an arbitrary window radius to be passed to the algorithm, so that the amount of smoothing can be controlled (this also nicely illustrates the use of <tt>vigra_precondition()</tt> for \ref ErrorReporting): 
+    
+    \code
+    void smooth(MultiArrayView<2, float> input, MultiArrayView<2, float> result, int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        Shape2 current;
+        for(current[1] = 0; current[1] < input.shape(1); ++current[1])
+        {
+            for (current[0] = 0; current[0] < input.shape(0); ++current[0])
+            {
+                Shape2 windowStart = max(Shape2(0),     current - Shape2(radius));
+                Shape2 windowStop  = min(input.shape(), current + Shape2(radius+1));
+                MultiArrayView<2, float> window = input.subarray(windowStart, windowStop);
+                result[current] = window.sum<float>() / window.size();
+            }
+        }
+    }
+    \endcode
+    
+    If you don't need to support any higher dimension or other pixel type, you can just leave it at this -- no templates are required then. 
+    
+    But suppose now that we want to generalize this code for arbitrary dimensional arrays. To do so, we specify the dimension <tt>N</tt> as a template parameter. Then we can no longer use <tt>Shape2</tt> because this class only works for 2-dimensional arrays. Instead, we use the <tt>MultiArrayShape</tt> traits class to ask for the appropriate shape object. Moreover, we cannot iterate over the array with two explicitly nested loops because the number of loops must correspond to the (unknown) number of dimensions. We can solve this problems by means of a \ref vigra::MultiCoordinateIterator from <tt>multi_iterator_coupled.hxx</tt> that iterates over all coordinates of an array, regardless of dimension. The current coordinate is returned by dereferencing the iterator:
+    
+    \code
+    #include <vigra/multi_iterator_coupled.hxx>
+    
+    template <unsigned int N>
+    void smooth(MultiArrayView<N, float> input, MultiArrayView<N, float> result, int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        typedef typename MultiArrayShape<N>::type  Shape;
+        
+        typename MultiCoordinateIterator<N> current(input.shape()),
+                                            end = current.getEndIterator();
+             
+        for(; current != end; ++current)
+        {
+                Shape windowStart = max(Shape(0),      *current - Shape(radius));
+                Shape windowStop  = min(input.shape(), *current + Shape(radius+1));
+                MultiArrayView<N, float> window = input.subarray(windowStart, windowStop);
+                result[*current] = window.sum<float>() / window.size();
+        }
+    }
+    \endcode
+    
+    Another useful generalization is in terms of the array's value_type. For one, we want to be able to smooth color images as well. Furthermore, most images are stored with pixel type <tt>unsigned char</tt>, and we don't want to force the user to convert them into <tt>float</tt> images before smoothing. We therefore specify the value_types as template parameters as well (notice that we allow input and result to have different types). In addition, we have to make the type of the sum in <tt>window.sum<...>()</tt> generic. However, there is a caveat: We cannot simply use the input value_type here, because this might lead to overflow. This is easily seen when the value_type is <tt>unsigned char</tt>: This type already overflows when the sum exceeds the value 255, which is very likely to happen even if the windows is only 3x3. In situations like this, a suitable temporary type for the sum can be obtained from the <tt>RealPromote</tt> type in VIGRA's \ref NumericTraits "NumericTraits" class:
+   
+    \code
+    template <unsigned int N, class InputValue, class ResultValue>
+    void smooth(MultiArrayView<N, InputValue>  input, 
+                MultiArrayView<N, ResultValue> result, 
+                int radius)
+    {
+        vigra_precondition(radius >= 0, "smooth(): window radius must not be negative.");
+        
+        typedef typename MultiArrayShape<N>::type                Shape;
+        typedef typename NumericTraits<InputValue>::RealPromote  SumType;
+        
+        typename MultiCoordinateIterator<N> current(input.shape()),
+                                            end = current.getEndIterator();
+             
+        for(; current != end; ++current)
+        {
+                Shape windowStart = max(Shape(0),      *current - Shape(radius));
+                Shape windowStop  = min(input.shape(), *current + Shape(radius+1));
+                MultiArrayView<N, InputValue> window = input.subarray(windowStart, windowStop);
+                result[*current] = window.template sum<SumType>() / window.size();
+        }
+    }
+    \endcode
+    
+    These simple tricks already get you a long way in the advanced use of VIGRA.
+*/

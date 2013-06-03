@@ -46,6 +46,7 @@
 #include <cmath>
 #include <vigra/random_forest.hxx>
 #include <vigra/random_forest_deprec.hxx>
+#include <vigra/multi_math.hxx>
 #include <unittest.hxx>
 #include <vector>
 #include <limits>
@@ -277,7 +278,7 @@ struct ClassifierTest
             }
             shouldEqual(detail::contains_nan(dfeatures), false);
             shouldEqual(detail::contains_nan(ffeatures), false);
-                    
+
             dfeatures(2, 3) = std::numeric_limits<double>::quiet_NaN();
             ffeatures(2, 3) = std::numeric_limits<float>::quiet_NaN();
             
@@ -335,27 +336,63 @@ struct ClassifierTest
             }
             dlabels(ii, 0) = ii%2;
         }
+
+        RandomForest<> rf_good;
+		rf_good.learn(dfeatures, dlabels);
+
         dlabels(9,0) = std::numeric_limits<double>::quiet_NaN();
-        RandomForest<> rf;
+       
         try
         {
-            rf.learn(dfeatures, dlabels);
-            shouldEqual(0, 1);
+            RandomForest<> rf;
+			rf.learn(dfeatures, dlabels);
+            failTest("RandomForest::learn() didn't throw on NaN inputs.");
         }
-        catch( ... )
+		catch( PreconditionViolation const & p )
         {
+			std::string expected("\nPrecondition violation!\nRandomForest(): Response contains NaNs");
+			std::string message(p.what());
+			shouldEqual(expected, message.substr(0, expected.size()));
         }
         dfeatures(9,0) = dlabels(9,0);
         dlabels(9,0) = 9%2;
         try
         {
+            RandomForest<> rf;
             rf.learn(dfeatures, dlabels);
-            shouldEqual(0, 1);
+            failTest("RandomForest::learn() didn't throw on NaN inputs.");
         }
-        catch( ... )
+		catch( PreconditionViolation const & p )
         {
+			std::string expected("\nPrecondition violation!\nRandomForest(): Feature matrix contains NaNs");
+			std::string message(p.what());
+			shouldEqual(expected, message.substr(0, expected.size()));
         }
 
+		MultiArray<2, double> probs(Shape2(1,2), 1.0);
+
+		// probs for all classes must be zero for invlaid (NaN) input
+		rf_good.predictProbabilities(dfeatures.subarray(Shape2(9,0), Shape2(10,5)), probs);
+
+		using namespace multi_math;
+		should(all(probs == 0.0));
+
+		// predictLabels() on NaN inputs should return the 'nanLabel' if given, or throw otherwise.
+		MultiArray<2, double> rlabels(Shp_t(10, 1));
+        try
+        {
+            rf_good.predictLabels(dfeatures, rlabels);
+            failTest("RandomForest::predictLabels() didn't throw on NaN inputs.");
+        }
+		catch( PreconditionViolation const & p )
+        {
+			std::string expected("\nPrecondition violation!\nRandomForest::predictLabels(): NaN in feature matrix");
+			std::string message(p.what());
+			shouldEqual(expected, message.substr(0, expected.size()));
+        }
+		rf_good.predictLabels(dfeatures, rlabels, -9999.0);
+		shouldEqual(rlabels(9,0), -9999.0);
+		should(all(rlabels.subarray(Shape2(0,0), Shape2(9,1)) != -9999.0));
     }
     
     

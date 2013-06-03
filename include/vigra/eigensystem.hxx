@@ -999,8 +999,8 @@ bool hessenbergQrDecomposition(MultiArrayView<2, T, C1> & H, MultiArrayView<2, T
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1098,8 +1098,8 @@ symmetricEigensystem2x2(MultiArrayView<2, T, C1> const & a,
         converge. It can be applied in-place, i.e. <tt>&a == &ev</tt> is allowed.
         The code of this function was adapted from JAMA.
 
-    <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/eigensystem.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>

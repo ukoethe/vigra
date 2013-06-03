@@ -43,6 +43,7 @@
 #include "separableconvolution.hxx"
 #include "utilities.hxx"
 #include "sized_int.hxx"
+#include "multi_iterator.hxx"
 
 namespace vigra {
 
@@ -1055,6 +1056,15 @@ public:
         }
     }
 
+        /** Init as a 2D box filter with given radius.
+         */    
+    void initAveraging(int radius)
+    {
+        Kernel1D<value_type> avg;
+        avg.initAveraging(radius);
+        initSeparable(avg, avg);
+    }
+    
         /** Init as a 2D Gaussian function with given standard deviation and norm.
          */    
     void initGaussian(double std_dev, value_type norm)
@@ -1134,9 +1144,9 @@ public:
     }
 
         /** Init the kernel by an explicit initializer list.
-            The upper left and lower right corners of the kernel must be passed.
-            A comma-separated initializer list is given after the assignment operator.
-            This function is used like this:
+            The upper left and lower right corners (inclusive) of the kernel must be passed
+            either as <tt>Shape2</tt> or <tt>Diff2D</tt> objects. A comma-separated initializer 
+            list for the kernel's weights is given after the assignment operator like this:
 
             \code
             // define horizontal Sobel filter
@@ -1155,7 +1165,7 @@ public:
             \code
             vigra::Kernel2D<float> average3x3;
 
-            average3x3.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0;
+            average3x3.initExplicitly(Shape2(-1,-1), Shape2(1,1)) = 1.0/9.0;
             \endcode
 
             Here, the norm is set to value*width()*height().
@@ -1171,21 +1181,26 @@ public:
             is 1 or equals the size of the kernel.
             \endcode
         */
-    Kernel2D & initExplicitly(Diff2D upperleft, Diff2D lowerright)
+    Kernel2D & initExplicitly(Shape2 const & upperleft, Shape2 const & lowerright)
     {
-        vigra_precondition(upperleft.x <= 0 && upperleft.y <= 0,
+        vigra_precondition(upperleft[0] <= 0 && upperleft[1] <= 0,
                            "Kernel2D::initExplicitly(): left borders must be <= 0.");
-        vigra_precondition(lowerright.x >= 0 && lowerright.y >= 0,
+        vigra_precondition(lowerright[0] >= 0 && lowerright[1] >= 0,
                            "Kernel2D::initExplicitly(): right borders must be >= 0.");
 
-        left_ = Point2D(upperleft);
-        right_ = Point2D(lowerright);
+        left_ = Point2D(upperleft[0], upperleft[1]);
+        right_ = Point2D(lowerright[0], lowerright[1]);
 
         int w = right_.x - left_.x + 1;
         int h = right_.y - left_.y + 1;
         kernel_.resize(w, h);
 
         return *this;
+    }
+
+    Kernel2D & initExplicitly(Diff2D const & upperleft, Diff2D const & lowerright)
+    {
+        return initExplicitly(Shape2(upperleft), Shape2(lowerright));
     }
 
         /** Coordinates of the upper left corner of the kernel.

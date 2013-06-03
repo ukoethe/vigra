@@ -40,7 +40,7 @@
 
 namespace vigra {
 
-/*! \page TupleTypes Tuple Types
+/** \page TupleTypes Tuple Types
 
     pair, triple, tuple4, tuple5
 

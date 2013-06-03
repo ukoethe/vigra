@@ -3,6 +3,8 @@
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref Installation
         <BR>&nbsp;&nbsp;&nbsp;<em>how to get started</em>
+	<LI> \ref Tutorial
+		<BR>&nbsp;&nbsp;&nbsp;<em>first steps with VIGRA</em>
     <LI> \ref Concepts
         <BR>&nbsp;&nbsp;&nbsp;<em>generic interface definitions</em>
     <LI> \ref Utilities
@@ -580,6 +582,7 @@ of \ref AlgebraicField and \ref DivisionAlgebra.
 /** \namespace vigra
     all VIGRA functionality is located in namespace vigra
 */
+
 
 #if 0
 //@{

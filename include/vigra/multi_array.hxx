@@ -191,10 +191,8 @@ struct CoordinatesToOffest<UnstridedArrayTag>
     indexed at the zero'th dimension as strided, and all others as
     unstrided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <class StrideTag, unsigned int N>
 struct MaybeStrided
@@ -217,10 +215,8 @@ struct MaybeStrided <StrideTag, 0>
 /* metatag implementing a test (by pattern matching) for marking
     MultiArrays that were indexed at the zero'th dimension as strided.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <class O>
 struct MultiIteratorChooser
@@ -242,10 +238,8 @@ struct MultiIteratorChooser
 
 /* specialization of the MultiIteratorChooser for strided arrays.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <>
 struct MultiIteratorChooser <StridedArrayTag>
@@ -265,10 +259,8 @@ struct MultiIteratorChooser <StridedArrayTag>
 
 /* specialization of the MultiIteratorChooser for unstrided arrays.
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
-Namespace: vigra::detail
+    <b>\#include</b> \<vigra/multi_array.hxx\> <br/>
+    Namespace: vigra::detail
 */
 template <>
 struct MultiIteratorChooser <UnstridedArrayTag>
@@ -590,7 +582,7 @@ swapDataImpl(SrcIterator s, Shape const & shape, DestIterator d, MetaInt<N>)
 
 // forward declarations
 
-template <unsigned int N, class T, class C = UnstridedArrayTag>
+template <unsigned int N, class T, class C = StridedArrayTag>
 class MultiArrayView;
 template <unsigned int N, class T, class A = std::allocator<T> >
 class MultiArray;
@@ -758,9 +750,7 @@ The template parameter are as follows
        Possible values: UnstridedArrayTag (default), StridedArrayTag
 \endcode
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
+<b>\#include</b> \<vigra/multi_array.hxx\> <br/>
 Namespace: vigra
 */
 template <unsigned int N, class T, class StrideTag>
@@ -835,7 +825,17 @@ public:
          */
     typedef MultiArray <N, T> matrix_type;
 
-protected:
+    bool checkInnerStride(UnstridedArrayTag) const
+    {
+        return m_stride[0] <= 1;
+    }
+    
+    bool checkInnerStride(StridedArrayTag) const
+    {
+        return true;
+    }
+
+  protected:
 
     typedef typename difference_type::value_type diff_zero_t;
 
@@ -852,6 +852,9 @@ protected:
          */
     pointer m_ptr;
 
+    template <class CN>
+    void assignImpl(const MultiArrayView <N, T, CN>& rhs);
+
     template <class U, class CN>
     void copyImpl(const MultiArrayView <N, U, CN>& rhs);
 
@@ -866,16 +869,6 @@ protected:
     {
         return false;
     }
-    
-    bool checkInnerStride(UnstridedArrayTag)
-    {
-        return m_stride[0] <= 1;
-    }
-    
-    bool checkInnerStride(StridedArrayTag)
-    {
-        return true;
-    }
 
 public:
 
@@ -885,6 +878,20 @@ public:
     MultiArrayView ()
         : m_shape (diff_zero_t(0)), m_stride (diff_zero_t(0)), m_ptr (0)
     {}
+
+        /** construct from another array view.
+            Throws a precondition error if this array has UnstridedArrayTag, but the 
+            innermost dimension of \a other is strided.
+         */
+    template <class Stride>
+    MultiArrayView (const MultiArrayView<N, T, Stride> &other)
+    : m_shape (other.shape()),
+      m_stride (other.stride()),
+      m_ptr (other.data())
+    {
+        vigra_precondition(other.checkInnerStride(StrideTag()),
+            "MultiArrayView<..., UnstridedArrayTag>(MultiArrayView const &): cannot create unstrided view from strided array.");
+    }
 
         /** construct from shape and pointer
          */
@@ -921,21 +928,35 @@ public:
 
             <ul>
             <li> When this <tt>MultiArrayView</tt> does not point to valid data
-                 (e.g. after default construction), it becomes a copy of \a rhs.
-            <li> When the shapes of the two arrays match, the array contents are copied.
+                 (e.g. after default construction), it becomes a new view of \a rhs.
+            <li> Otherwise, when the shapes of the two arrays match, the contents 
+                 (i.e. the elements) of \a rhs are copied.
             <li> Otherwise, a <tt>PreconditionViolation</tt> exception is thrown.
             </ul>
          */
-    MultiArrayView & operator=(MultiArrayView const & rhs);
+    MultiArrayView & operator=(MultiArrayView const & rhs)
+    {
+        if(this != &rhs)
+            assignImpl(rhs);
+        return *this;
+    }
 
-        /** Assignment of a differently typed MultiArrayView. Fails with
-            <tt>PreconditionViolation</tt> exception when the shapes do not match.
+    template<class Stride2>
+    MultiArrayView & operator=(MultiArrayView<N, T, Stride2> const & rhs)
+    {
+        assignImpl(rhs);
+        return *this;
+    }
+
+        /** Assignment of a differently typed MultiArrayView. It copies the elements
+            of\a rhs or fails with <tt>PreconditionViolation</tt> exception when 
+            the shapes do not match.
          */
     template<class U, class C1>
     MultiArrayView & operator=(MultiArrayView<N, U, C1> const & rhs)
     {
         vigra_precondition(this->shape() == rhs.shape(),
-            "MultiArrayView::operator=() size mismatch.");
+            "MultiArrayView::operator=(): shape mismatch.");
         this->copyImpl(rhs);
         return *this;
     }
@@ -1533,23 +1554,30 @@ public:
         return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
     }
 
-        /** permute the dimensions of the array.
-            The function exchanges the meaning of the dimensions without copying the data.
-            In case of a 2-dimensional array, this is simply array transposition. In higher dimensions,
-            there are more possibilities.
+        /** Permute the dimensions of the array.
+            The function exchanges the orer of the array's axes without copying the data.
+            Argument\a permutation specifies the desired order such that 
+            <tt>permutation[k] = j</tt> means that axis <tt>j</tt> in the original array
+            becomes axis <tt>k</tt> in the transposed array. 
 
             <b>Usage:</b><br>
             \code
             typedef MultiArray<2, double>::difference_type Shape;
             MultiArray<2, double> array(10, 20);
 
-            MultiArray<2, double, StridedArrayTag> transposed = array.permuteDimensions(Shape(1,0));
+            MultiArray<2, double, StridedArrayTag> transposed = array.transpose(Shape(1,0));
 
             for(int i=0; i<array.shape(0), ++i)
                 for(int j=0; j<array.shape(1); ++j)
                     assert(array(i, j) == transposed(j, i));
             \endcode
         */
+    MultiArrayView <N, T, StridedArrayTag>
+    transpose(const difference_type &permutation) const
+    {
+        return permuteDimensions(permutation);
+    }
+
     MultiArrayView <N, T, StridedArrayTag>
     permuteDimensions (const difference_type &s) const;
 
@@ -1925,23 +1953,26 @@ public:
     }
 };
 
-template <unsigned int N, class T, class StrideTag>
-MultiArrayView<N, T, StrideTag> &
-MultiArrayView <N, T, StrideTag>::operator=(MultiArrayView const & rhs)
+template <unsigned int N, class T, class Stride1>
+template <class Stride2>
+void
+MultiArrayView <N, T, Stride1>::assignImpl(MultiArrayView<N, T, Stride2> const & rhs)
 {
-    if(this == &rhs)
-        return *this;
-    vigra_precondition(this->shape() == rhs.shape() || m_ptr == 0,
-        "MultiArrayView::operator=(MultiArrayView const &) size mismatch.");
     if(m_ptr == 0)
     {
-        m_shape  = rhs.m_shape;
-        m_stride = rhs.m_stride;
-        m_ptr    = rhs.m_ptr;
+        vigra_precondition(rhs.checkInnerStride(Stride1()),
+            "MultiArrayView<..., UnstridedArrayTag>::operator=(MultiArrayView const &): cannot create unstrided view from strided array.");
+                           
+        m_shape  = rhs.shape();
+        m_stride = rhs.stride();
+        m_ptr    = rhs.data();
     }
     else
+    {
+        vigra_precondition(this->shape() == rhs.shape(),
+            "MultiArrayView::operator=(MultiArrayView const &): shape mismatch.");
         this->copyImpl(rhs);
-    return *this;
+    }
 }
 
 template <unsigned int N, class T, class StrideTag>
@@ -2045,7 +2076,7 @@ MultiArrayView <N, T, StrideTag>::permuteDimensions (const difference_type &s) c
         ++check[s[i]];
     }
     vigra_precondition(check == difference_type(1),
-       "MultiArrayView::permuteDimensions(): every dimension must occur exactly once.");
+       "MultiArrayView::transpose(): every dimension must occur exactly once.");
     return MultiArrayView <N, T, StridedArrayTag>(shape, stride, m_ptr);
 }
 
@@ -2385,25 +2416,24 @@ The template parameters are as follows
        (default: std::allocator<T>)
 \endcode
 
-<b>\#include</b>
-\<vigra/multi_array.hxx\>
-
+<b>\#include</b> \<vigra/multi_array.hxx\> <br/>
 Namespace: vigra
 */
 template <unsigned int N, class T, class A /* default already declared above */>
-class MultiArray : public MultiArrayView <N, T>
+class MultiArray 
+: public MultiArrayView <N, T, StridedArrayTag>
 {
+  public:
 
-public:
-    using MultiArrayView <N, T>::actual_dimension;
+        /** the view type associated with this array.
+         */
+    typedef MultiArrayView <N, T, StridedArrayTag> view_type;
+    
+    using view_type::actual_dimension;
 
         /** the allocator type used to allocate the memory
          */
     typedef A allocator_type;
-
-        /** the view type associated with this array.
-         */
-    typedef MultiArrayView <N, T> view_type;
 
         /** the matrix type associated with this array.
          */
@@ -2444,13 +2474,13 @@ public:
         /** traverser type
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T &, T *>::type
+        StridedArrayTag>::template Traverser <N, T, T &, T *>::type
     traverser;
 
         /** traverser type to const data
          */
     typedef typename vigra::detail::MultiIteratorChooser <
-        UnstridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
+        StridedArrayTag>::template Traverser <N, T, T const &, T const *>::type
     const_traverser;
 
         /** sequential (random access) iterator type
@@ -2496,15 +2526,15 @@ public:
         /** default constructor
          */
     MultiArray ()
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0)
+    : view_type (difference_type (diff_zero_t(0)),
+                 difference_type (diff_zero_t(0)), 0)
     {}
 
         /** construct with given allocator
          */
     MultiArray (allocator_type const & alloc)
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0),
+    : view_type(difference_type (diff_zero_t(0)),
+                difference_type (diff_zero_t(0)), 0),
       m_alloc(alloc)
     {}
 
@@ -2533,7 +2563,7 @@ public:
         /** copy constructor
          */
     MultiArray (const MultiArray &rhs)
-    : MultiArrayView <N, T> (rhs.m_shape, rhs.m_stride, 0),
+    : view_type(rhs.m_shape, rhs.m_stride, 0),
       m_alloc (rhs.m_alloc)
     {
         allocate (this->m_ptr, this->elementCount (), rhs.data ());
@@ -2544,8 +2574,8 @@ public:
     template<class Expression>
     MultiArray (multi_math::MultiMathOperand<Expression> const & rhs,
                 allocator_type const & alloc = allocator_type())
-    : MultiArrayView <N, T> (difference_type (diff_zero_t(0)),
-                             difference_type (diff_zero_t(0)), 0),
+    : view_type(difference_type (diff_zero_t(0)),
+                difference_type (diff_zero_t(0)), 0),
       m_alloc (alloc)
     {
         multi_math::detail::assignOrResize(*this, rhs);
@@ -2812,8 +2842,8 @@ public:
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (difference_type_1 length,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (difference_type(length),
-                         detail::defaultStride <1> (difference_type(length)),
+: view_type(difference_type(length),
+            detail::defaultStride <1> (difference_type(length)),
                          0),
   m_alloc(alloc)
 {
@@ -2823,9 +2853,9 @@ MultiArray <N, T, A>::MultiArray (difference_type_1 length,
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            detail::defaultStride <actual_dimension> (shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2839,9 +2869,9 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference init,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            detail::defaultStride <actual_dimension> (shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2855,9 +2885,9 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference 
 template <unsigned int N, class T, class A>
 MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_pointer init,
                                   allocator_type const & alloc)
-: MultiArrayView <N, T> (shape,
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (shape),
-                         0),
+: view_type(shape,
+            detail::defaultStride <actual_dimension> (shape),
+            0),
   m_alloc(alloc)
 {
     if (N == 0)
@@ -2872,9 +2902,9 @@ template <unsigned int N, class T, class A>
 template <class U, class StrideTag>
 MultiArray <N, T, A>::MultiArray(const MultiArrayView<N, U, StrideTag>  &rhs,
                                  allocator_type const & alloc)
-: MultiArrayView <N, T> (rhs.shape(),
-                         detail::defaultStride <MultiArrayView<N,T>::actual_dimension>(rhs.shape()),
-                         0),
+: view_type(rhs.shape(),
+            detail::defaultStride <actual_dimension>(rhs.shape()),
+            0),
   m_alloc (alloc)
 {
     allocate (this->m_ptr, rhs);
@@ -2908,8 +2938,8 @@ void MultiArray <N, T, A>::reshape (const difference_type & new_shape,
     }
     else
     {
-        difference_type new_stride = detail::defaultStride <MultiArrayView<N,T>::actual_dimension> (new_shape);
-        difference_type_1 new_size = new_shape [MultiArrayView<N,T>::actual_dimension-1] * new_stride [MultiArrayView<N,T>::actual_dimension-1];
+        difference_type new_stride = detail::defaultStride <actual_dimension> (new_shape);
+        difference_type_1 new_size = new_shape[actual_dimension-1] * new_stride[actual_dimension-1];
         T *new_ptr;
         allocate (new_ptr, new_size, initial);
         deallocate (this->m_ptr, this->elementCount ());
@@ -3311,10 +3341,12 @@ maskImage(MultiArrayView<2, PixelType, UnstridedArrayTag> const & img)
     The \ref vigra::BasicImageView will have the same <tt>value_type </tt>
     as the original \ref vigra::MultiArrayView.
 */
-template <class T>
+template <class T, class Stride>
 BasicImageView <T>
-makeBasicImageView (MultiArrayView <2, T, UnstridedArrayTag> const &array)
+makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
 {
+    vigra_precondition(array.isUnstrided(),
+       "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
                                array.shape (1));
 }
@@ -3343,12 +3375,14 @@ makeBasicImageView (MultiArray <3, T> const &array)
     the data array as a 2-dimensional array with value_type
     <tt>RGBValue<T></tt>.
 */
-template <class T>
+template <class T, class Stride>
 BasicImageView <RGBValue<T> >
-makeRGBImageView (MultiArray<3, T> const &array)
+makeRGBImageView (MultiArrayView<3, T, Stride> const &array)
 {
-    vigra_precondition (
-        array.shape (0) == 3, "makeRGBImageView(): array.shape(0) must be 3.");
+    vigra_precondition(array.shape (0) == 3, 
+       "makeRGBImageView(): array.shape(0) must be 3.");
+    vigra_precondition(array.isUnstrided(),
+       "makeRGBImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
     return BasicImageView <RGBValue<T> > (
         reinterpret_cast <RGBValue <T> *> (array.data ()),
         array.shape (1), array.shape (2));

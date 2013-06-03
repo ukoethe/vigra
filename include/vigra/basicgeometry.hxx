@@ -84,8 +84,8 @@ namespace vigra {
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
     
     \code
     Image dest(src.height(), src.width()); // note that width and height are exchanged
@@ -243,8 +243,8 @@ Reflect operator|(Reflect l, Reflect r)
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
     
     \code
     Image dest(src.width(), src.height());
@@ -390,8 +390,8 @@ enum Transpose{major = 1, minor = 2};
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
     
     \code
     Image dest(src.width(), src.height());
@@ -638,8 +638,8 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/basicgeometry.hxx\><br>
+    Namespace: vigra
     
     \code
     double factor = 2.0;

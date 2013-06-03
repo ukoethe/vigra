@@ -2493,8 +2493,8 @@ void applyFourierFilterFamilyImpl(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/fftw3.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/fftw3.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::FImage spatial(width,height), fourier(width,height);

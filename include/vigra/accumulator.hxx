@@ -64,10 +64,11 @@ The namespace <tt>vigra::acc</tt> provides the function \ref vigra::acc::extract
 The function \ref acc::extractFeatures() "extractFeatures()" scans the data in as few passes as the selected statstics permit (usually one or two passes are sufficient). Statistics are computed by accurate incremental algorithms, whose internal state is maintained by accumulator objects. The state is updated by passing data to the accumulator one sample at a time. Accumulators are grouped within an accumulator chain. Dependencies between accumulators in the accumulator chain are automatically resolved and missing dependencies are inserted. For example, to compute the mean, you also need to count the number of samples. This allows accumulators to offload some of their computations on other accumulators, making the algorithms more efficient. Each accumulator only sees data in the appropriate pass through the data, called its "working pass". 
 
 <b>\#include</b> \<vigra/accumulator.hxx\>
+
     
-    <b>Basic statistics:</b>
-    - PowerSum<N> (@f$ \sum_i x_i^N @f$)
-    - AbsPowerSum<N> (@f$ \sum_i |x_i|^N @f$)
+<b>Basic statistics:</b>
+    - PowerSum<N> (computes @f$ \sum_i x_i^N @f$)
+    - AbsPowerSum<N> (computes @f$ \sum_i |x_i|^N @f$)
     - Skewness, UnbiasedSkewness
     - Kurtosis, UnbiasedKurtosis
     - Minimum, Maximum
@@ -95,8 +96,7 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
       <tr><td>  Global<S>       </td><td> compute S globally rather than per region (per region is default if labels are given)   </td></tr>
       </table>
       
-    Aliases for a couple of important features are implemented (mainly as <tt>typedef FullName Alias</tt>). The alias names are equivalent to full names. 
-    Here are some examples for supported alias names (these examples also show how to compose statistics from the fundamental statistics and modifiers):
+    Aliases for many important features are implemented (mainly as <tt>typedef FullName Alias</tt>). The alias names are equivalent to full names. Below are some examples for supported alias names. A full list of all available statistics and alias names can be found in the namespace reference <tt>vigra::acc</tt>. These examples also show how to compose statistics from the fundamental statistics and modifiers:
     
     <table border="0">
     <tr><th> Alias           </th><th>   Full Name                 </th></tr>
@@ -155,7 +155,7 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
 
     The Accumulators can also be used with vector-valued data (vigra::RGBValue, vigra::TinyVector, vigra::MultiArray or vigra::MultiArrayView):
     
-    \code 
+    \code
     typedef vigra::RGBValue<double> DataType;
     AccumulatorChain<DataType, Select<...> > a;
     ...
@@ -164,13 +164,11 @@ The function \ref acc::extractFeatures() "extractFeatures()" scans the data in a
     To compute <b>weighted statistics</b> (Weighted<>) or <b>statistics over coordinates</b> (Coord<>), the accumulator chain can be used with \ref CoupledScanOrderIterator. The coupled iterator provides simultaneous access to several images (e.g. weight and data) and pixel coordinates. The first parameter in the accumulator chain is the type of the CoupledHandle. The indeces at which the CoupledHandle holds the data, weights etc. can be specified inside the Select wrapper. 
 
 These <b>index specifiers</b> are: (INDEX is of type int)
-
     - DataArg<INDEX>: CoupledHandle holds data at index 'INDEX' (default INDEX=1)
     - LabelArg<INDEX>: CoupledHandle holds labels at index 'INDEX' (default INDEX=2)
     - WeightArg<INDEX>: CoupledHandle holds weights at index 'INDEX' (default INDEX=outermost index)
 
 Pixel coordinates are always at index 0.
-
     \code
     using namespace vigra::acc;
     vigra::MultiArray<3, double> data(...), weights(...);
@@ -2179,23 +2177,23 @@ class AccumulatorChainArray
 
 #ifdef DOXYGEN // hide AccumulatorChainImpl from documentation
 
-  /** \copydoc AccumulatorChain::setHistogramOptions(HistogramOptions const &) */
+  /** \copydoc vigra::acc::AccumulatorChain::setHistogramOptions(HistogramOptions const &) */
   void setHistogramOptions(HistogramOptions const & options);
 
   /** Set regional and global options for all histograms in the accumulator chain.
    */
   void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions);
   
-  /** \copydoc AccumulatorChain::reset() */
+  /** \copydoc vigra::acc::AccumulatorChain::reset() */
   void reset(unsigned int reset_to_pass = 0);
 
-  /** \copydoc AccumulatorChain::operator+=() */
+  /** \copydoc vigra::acc::AccumulatorChain::operator+=() */
   void operator+=(AccumulatorChainImpl const & o);
     
-  /** \copydoc AccumulatorChain::updatePassN(T const &,unsigned int) */
+  /** \copydoc vigra::acc::AccumulatorChain::updatePassN(T const &,unsigned int) */
   void updatePassN(T const & t, unsigned int N);
   
-  /** \copydoc AccumulatorChain::updatePassN(T const &,double,unsigned int) */
+  /** \copydoc vigra::acc::AccumulatorChain::updatePassN(T const &,double,unsigned int) */
   void updatePassN(T const & t, double weight, unsigned int N);
   
 #endif

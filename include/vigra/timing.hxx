@@ -43,15 +43,15 @@
 #include <sstream>
 #include <vector>
 
-/*! \page TimingMacros  Timing macros for runtime measurements
+/** \page TimingMacros  Timing macros for runtime measurements
 
-    <b>\#include</b> \<vigra/timing.hxx\>
+<b>\#include</b> \<vigra/timing.hxx\>
 
-    These macros allow to perform execution speed measurements. Results are reported
-    in <i>milliseconds</i>.
-    However, note that timings below 1 msec are generally subject to round-off errors. 
-    Under LINUX, you can \#define VIGRA_HIRES_TIMING to get better
-    accuracy, but this requires linking against librt.
+These macros allow to perform execution speed measurements. Results are reported
+in <i>milliseconds</i>.
+However, note that timings below 1 msec are generally subject to round-off errors. 
+Under LINUX, you can \#define VIGRA_HIRES_TIMING to get better
+accuracy, but this requires linking against librt.
 
 Basic usage:
 \code
@@ -69,11 +69,11 @@ Basic usage:
    }
 \endcode
 
-   Instead of TOC, which outputs the time difference to std::cerr, 
-   you may use TOCN (the time difference in <i>msec</i> as a double)
-   or TOCS (the time difference as a std::string). 
-  
-   Alternatively, you can perform nested timing like so:
+Instead of TOC, which outputs the time difference to std::cerr, 
+you may use TOCN (the time difference in <i>msec</i> as a double)
+or TOCS (the time difference as a std::string). 
+
+Alternatively, you can perform nested timing like so:
 \code
    void time_it()
    {
@@ -91,7 +91,7 @@ Basic usage:
   
 */
 
-/*! \file timing.hxx  Timing macros for runtime measurements
+/** \file timing.hxx  Timing macros for runtime measurements
 
   This header defines timing macros for runtime measurements. See \ref TimingMacros for examples.
 

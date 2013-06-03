@@ -115,7 +115,7 @@ enum RawArrayMemoryLayout { RowMajor, ColumnMajor };
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 */
 template <class T, class ALLOC = std::allocator<T> >
 class Matrix
@@ -126,7 +126,7 @@ class Matrix
   public:
     typedef Matrix<T, ALLOC>                        matrix_type;
     typedef TemporaryMatrix<T, ALLOC>               temp_type;
-    typedef MultiArrayView<2, T, UnstridedArrayTag> view_type;
+    typedef MultiArrayView<2, T>                    view_type;
     typedef typename BaseType::value_type           value_type;
     typedef typename BaseType::pointer              pointer;
     typedef typename BaseType::const_pointer        const_pointer;
@@ -660,8 +660,8 @@ class TemporaryMatrix
 
     /** Number of rows of a matrix represented as a <tt>MultiArrayView<2, ...></tt>
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -673,8 +673,8 @@ rowCount(const MultiArrayView<2, T, C> &x)
 
     /** Number of columns of a matrix represented as a <tt>MultiArrayView<2, ...></tt>
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -686,8 +686,8 @@ columnCount(const MultiArrayView<2, T, C> &x)
 
     /** Create a row vector view for row \a d of the matrix \a m
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -702,8 +702,8 @@ rowVector(MultiArrayView <2, T, C> const & m, MultiArrayIndex d)
     /** Create a row vector view of the matrix \a m starting at element \a first and ranging 
         to column \a end (non-inclusive).
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -716,8 +716,8 @@ rowVector(MultiArrayView <2, T, C> const & m, MultiArrayShape<2>::type first, Mu
 
     /** Create a column vector view for column \a d of the matrix \a m
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -731,8 +731,8 @@ columnVector(MultiArrayView<2, T, C> const & m, MultiArrayIndex d)
     /** Create a column vector view of the matrix \a m starting at element \a first and 
         ranging to row \a end (non-inclusive).
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      **/
 template <class T, class C>
@@ -750,8 +750,8 @@ columnVector(MultiArrayView<2, T, C> const & m, MultiArrayShape<2>::type first, 
         <tt>columnCount(m) == 1</tt>, i.e. when \a m really represents a vector. 
         Otherwise, a PreconditionViolation exception is raised.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      **/
 template <class T, class C>
@@ -768,8 +768,8 @@ subVector(MultiArrayView<2, T, C> const & m, int first, int end)
 
     /** Check whether matrix \a m is symmetric.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -790,8 +790,8 @@ isSymmetric(MultiArrayView<2, T, C> const & m)
 
     /** Compute the trace of a square matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -814,7 +814,7 @@ trace(MultiArrayView<2, T, C> const & m)
     /** calculate the squared Frobenius norm of a matrix.
         Equal to the sum of squares of the matrix elements.
 
-    <b>\#include</b> \<vigra/matrix.hxx\>
+        <b>\#include</b> \<vigra/matrix.hxx\>
         Namespace: vigra
      */
 template <class T, class ALLOC>
@@ -824,7 +824,7 @@ squaredNorm(const Matrix<T, ALLLOC> &a);
     /** calculate the Frobenius norm of a matrix.
         Equal to the root of the sum of squares of the matrix elements.
 
-    <b>\#include</b> \<vigra/matrix.hxx\>
+        <b>\#include</b> \<vigra/matrix.hxx\>
         Namespace: vigra
      */
 template <class T, class ALLOC>
@@ -835,8 +835,8 @@ norm(const Matrix<T, ALLLOC> &a);
 
     /** initialize the given square matrix as an identity matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -859,8 +859,8 @@ void identityMatrix(MultiArrayView<2, T, C> &r)
         vigra::Matrix<double> m = vigra::identityMatrix<double>(size);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T>
@@ -879,8 +879,8 @@ TemporaryMatrix<T> identityMatrix(MultiArrayIndex size)
         vigra::Matrix<double> m = vigra::ones<double>(rows, cols);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T>
@@ -905,8 +905,8 @@ void diagonalMatrixImpl(MultiArrayView<1, T, C1> const & v, MultiArrayView<2, T,
         The vector is given as matrix \a v, which must either have a single
         row or column. The result is written into the square matrix \a r.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -933,8 +933,8 @@ void diagonalMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2>
         vigra::Matrix<double> m = diagonalMatrix(v);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -955,8 +955,8 @@ TemporaryMatrix<T> diagonalMatrix(MultiArrayView<2, T, C> const & v)
         The result is written into \a r which must have the correct (i.e.
         transposed) shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -984,8 +984,8 @@ void transpose(const MultiArrayView<2, T, C1> &v, MultiArrayView<2, T, C2> &r)
         vigra::Matrix<double> m = transpose(v);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -999,8 +999,8 @@ transpose(MultiArrayView<2, T, C> const & v)
         The two matrices must have the same number of columns.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1025,8 +1025,8 @@ joinVertically(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2>
         The two matrices must have the same number of rows.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1053,8 +1053,8 @@ joinHorizontally(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C
         and \a horizontalCount side-by-side repetitions. When \a v has size <tt>m</tt> by <tt>n</tt>,
         \a r must have size <tt>(m*verticalCount)</tt> by <tt>(n*horizontalCount)</tt>.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1083,8 +1083,8 @@ void repeatMatrix(MultiArrayView<2, T, C1> const & v, MultiArrayView<2, T, C2> &
         <tt>(m*verticalCount)</tt> by <tt>(n*horizontalCount)</tt> when \a v has size <tt>m</tt> by <tt>n</tt>.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1100,8 +1100,8 @@ repeatMatrix(MultiArrayView<2, T, C> const & v, unsigned int verticalCount, unsi
     /** add matrices \a a and \a b.
         The result is written into \a r. All three matrices must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1125,8 +1125,8 @@ void add(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         The two matrices must have the same shape.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1160,8 +1160,8 @@ operator+(const TemporaryMatrix<T> &a, const TemporaryMatrix<T> &b)
     /** add scalar \a b to every element of the matrix \a a.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1181,8 +1181,8 @@ operator+(const TemporaryMatrix<T> &a, T b)
     /** add scalar \a a to every element of the matrix \a b.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1202,8 +1202,8 @@ operator+(T a, const TemporaryMatrix<T> &b)
     /** subtract matrix \a b from \a a.
         The result is written into \a r. All three matrices must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1227,8 +1227,8 @@ void sub(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         The two matrices must have the same shape.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1270,8 +1270,8 @@ operator-(const TemporaryMatrix<T> &a, const TemporaryMatrix<T> &b)
     /** negate matrix \a a.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1291,8 +1291,8 @@ operator-(const TemporaryMatrix<T> &a)
     /** subtract scalar \a b from every element of the matrix \a a.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1312,8 +1312,8 @@ operator-(const TemporaryMatrix<T> &a, T b)
     /** subtract every element of the matrix \a b from scalar \a a.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1331,8 +1331,8 @@ operator-(T a, const MultiArrayView<2, T, C> &b)
         A <tt>PreconditionViolation</tt> exception is thrown when
         the shape conditions are violated. 
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1373,8 +1373,8 @@ dot(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     /** calculate the inner product of two vectors. The vector
         lengths must match.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1394,8 +1394,8 @@ dot(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y)
     /** calculate the cross product of two vectors of length 3.
         The result is written into \a r.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1413,8 +1413,8 @@ void cross(const MultiArrayView<1, T, C1> &x, const MultiArrayView<1, T, C2> &y,
         That is, \a x, \a y, and \a r must have a single column of length 3. The result
         is written into \a r.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1432,8 +1432,8 @@ void cross(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
         That is, \a x, and \a y must have a single column of length 3. The result
         is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1449,8 +1449,8 @@ cross(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
         have a single row, and the other dimensions must match. The result
         is written into \a r.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1472,8 +1472,8 @@ void outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y,
         have a single row, and the other dimensions must match. The result
         is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1492,8 +1492,8 @@ outer(const MultiArrayView<2, T, C1> &x, const MultiArrayView<2, T, C2> &y)
     /** calculate the outer product of a matrix (representing a vector) with itself.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
 template <class T, class C>
@@ -1543,8 +1543,8 @@ PointWise<T> pointWise(T const & t)
     /** multiply matrix \a a with scalar \a b.
         The result is written into \a r. \a a and \a r must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1563,8 +1563,8 @@ void smul(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
     /** multiply scalar \a a with matrix \a b.
         The result is written into \a r. \a b and \a r must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C2, class C3>
@@ -1576,8 +1576,8 @@ void smul(T a, const MultiArrayView<2, T, C2> &b, MultiArrayView<2, T, C3> &r)
     /** perform matrix multiplication of matrices \a a and \a b.
         The result is written into \a r. The three matrices must have matching shapes.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1605,8 +1605,8 @@ void mmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1621,8 +1621,8 @@ mmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
     /** multiply two matrices \a a and \a b pointwise.
         The result is written into \a r. All three matrices must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1646,8 +1646,8 @@ void pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1673,8 +1673,8 @@ pmul(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
         // Matrix<double> c = pmul(a, b);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C, class U>
@@ -1687,8 +1687,8 @@ operator*(const MultiArrayView<2, T, C> &a, PointWise<U> b)
     /** multiply matrix \a a with scalar \a b.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1708,8 +1708,8 @@ operator*(const TemporaryMatrix<T> &a, T b)
     /** multiply scalar \a a with matrix \a b.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1730,8 +1730,8 @@ operator*(T a, const TemporaryMatrix<T> &b)
         \a a must be of size <tt>N x N</tt>. Vector \a b and the result
         vector are interpreted as column vectors.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class A, int N, class DATA, class DERIVED>
@@ -1751,8 +1751,8 @@ operator*(const Matrix<T, A> &a, const TinyVectorBase<T, N, DATA, DERIVED> &b)
         \a b must be of size <tt>N x N</tt>. Vector \a a and the result
         vector are interpreted as row vectors.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, int N, class DATA, class DERIVED, class A>
@@ -1772,8 +1772,8 @@ operator*(const TinyVectorBase<T, N, DATA, DERIVED> &a, const Matrix<T, A> &b)
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1788,8 +1788,8 @@ operator*(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
     /** divide matrix \a a by scalar \a b.
         The result is written into \a r. \a a and \a r must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1808,8 +1808,8 @@ void sdiv(const MultiArrayView<2, T, C1> &a, T b, MultiArrayView<2, T, C2> &r)
     /** divide two matrices \a a and \a b pointwise.
         The result is written into \a r. All three matrices must have the same shape.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2, class C3>
@@ -1833,8 +1833,8 @@ void pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b,
         \a a and \a b must have matching shapes.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C1, class C2>
@@ -1860,8 +1860,8 @@ pdiv(const MultiArrayView<2, T, C1> &a, const MultiArrayView<2, T, C2> &b)
         // Matrix<double> c = pdiv(a, b);
         \endcode
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C, class U>
@@ -1874,8 +1874,8 @@ operator/(const MultiArrayView<2, T, C> &a, PointWise<U> b)
     /** divide matrix \a a by scalar \a b.
         The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1895,8 +1895,8 @@ operator/(const TemporaryMatrix<T> &a, T b)
     /** Create a matrix whose elements are the quotients between scalar \a a and
         matrix \a b. The result is returned as a temporary matrix.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: vigra::linalg
      */
 template <class T, class C>
@@ -1911,7 +1911,7 @@ using vigra::argMinIf;
 using vigra::argMax;
 using vigra::argMaxIf;
 
-    /*! Find the index of the minimum element in a matrix.
+    /** \brief Find the index of the minimum element in a matrix.
     
         The function returns the index in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
@@ -1944,7 +1944,7 @@ int argMin(MultiArrayView<2, T, C> const & a)
     return best;
 }
 
-    /*! Find the index of the maximum element in a matrix.
+    /** \brief Find the index of the maximum element in a matrix.
     
         The function returns the index in column-major scan-order sense,
         i.e. according to the order used by <tt>MultiArrayView::operator[]</tt>.
@@ -1977,7 +1977,7 @@ int argMax(MultiArrayView<2, T, C> const & a)
     return best;
 }
 
-    /*! Find the index of the minimum element in a matrix subject to a condition.
+    /** \brief Find the index of the minimum element in a matrix subject to a condition.
     
         The function returns <tt>-1</tt> if no element conforms to \a condition.
         Otherwise, the index of the maximum element is returned in column-major scan-order sense,
@@ -2012,7 +2012,7 @@ int argMinIf(MultiArrayView<2, T, C> const & a, UnaryFunctor condition)
     return best;
 }
 
-    /*! Find the index of the maximum element in a matrix subject to a condition.
+    /** \brief Find the index of the maximum element in a matrix subject to a condition.
     
         The function returns <tt>-1</tt> if no element conforms to \a condition.
         Otherwise, the index of the maximum element is returned in column-major scan-order sense,
@@ -2294,8 +2294,8 @@ namespace std {
 
     /** print a matrix \a m to the stream \a s.
 
-    <b>\#include</b> \<vigra/matrix.hxx\> or<br>
-    <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespace: std
      */
 template <class T, class C>
@@ -2427,7 +2427,7 @@ columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A,
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 
     \code
     Matrix A(rows, columns);
@@ -2437,7 +2437,7 @@ columnStatistics2PassImpl(MultiArrayView<2, T1, C1> const & A,
     columnStatistics(A, columnMean, columnStdDev, columnNorm);
 
     \endcode
-     */
+    */
 doxygen_overloaded_function(template <...> void columnStatistics)
 
 template <class T1, class C1, class T2, class C2>
@@ -2530,7 +2530,7 @@ columnStatistics(MultiArrayView<2, T1, C1> const & A,
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 
     \code
     Matrix A(rows, columns);
@@ -2631,7 +2631,7 @@ void updateCovarianceMatrix(MultiArrayView<2, T1, C1> const & features,
 
 } // namespace detail
 
-    /*! Compute the covariance matrix between the columns of a matrix \a features.
+    /** \brief Compute the covariance matrix between the columns of a matrix \a features.
     
         The result matrix \a covariance must by a square matrix with as many rows and
         columns as the number of columns in matrix \a features.
@@ -2654,7 +2654,7 @@ void covarianceMatrixOfColumns(MultiArrayView<2, T1, C1> const & features,
     covariance /= T2(m - 1);
 }
 
-    /*! Compute the covariance matrix between the columns of a matrix \a features.
+    /** \brief Compute the covariance matrix between the columns of a matrix \a features.
     
         The result is returned as a square temporary matrix with as many rows and
         columns as the number of columns in matrix \a features.
@@ -2671,7 +2671,7 @@ covarianceMatrixOfColumns(MultiArrayView<2, T, C> const & features)
     return res;
 }
 
-    /*! Compute the covariance matrix between the rows of a matrix \a features.
+    /** \brief Compute the covariance matrix between the rows of a matrix \a features.
     
         The result matrix \a covariance must by a square matrix with as many rows and
         columns as the number of rows in matrix \a features.
@@ -2694,7 +2694,7 @@ void covarianceMatrixOfRows(MultiArrayView<2, T1, C1> const & features,
     covariance /= T2(m - 1);
 }
 
-    /*! Compute the covariance matrix between the rows of a matrix \a features.
+    /** \brief Compute the covariance matrix between the rows of a matrix \a features.
     
         The result is returned as a square temporary matrix with as many rows and
         columns as the number of rows in matrix \a features.
@@ -2816,7 +2816,7 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
 
 } // namespace detail
 
-    /*! Standardize the columns of a matrix according to given <tt>DataPreparationGoals</tt>.
+    /** \brief Standardize the columns of a matrix according to given <tt>DataPreparationGoals</tt>.
     
     For every column of the matrix \a A, this function computes mean, 
     standard deviation, and norm. It then applies a linear transformation to the values of 
@@ -2873,7 +2873,7 @@ prepareDataImpl(const MultiArrayView<2, T, C1> & A,
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 
     \code
     Matrix A(rows, columns);
@@ -2909,7 +2909,7 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
     detail::prepareDataImpl(A, res, offset, scaling, goals);
 }
 
-    /*! Standardize the rows of a matrix according to given <tt>DataPreparationGoals</tt>.
+    /** \brief Standardize the rows of a matrix according to given <tt>DataPreparationGoals</tt>.
     
     This algorithm works in the same way as \ref prepareColumns() (see there for detailed
     documentation), but is applied to the rows of the matrix \a A instead. Accordingly, the
@@ -2949,7 +2949,7 @@ prepareColumns(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> & re
 
     <b>\#include</b> \<vigra/matrix.hxx\> or<br>
     <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 
     \code
     Matrix A(rows, columns);

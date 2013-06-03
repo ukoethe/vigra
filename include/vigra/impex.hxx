@@ -35,7 +35,7 @@
 /************************************************************************/
 
 
-/*!
+/**
  * \file  impex.hxx
  * \brief image import and export functions
  *
@@ -604,7 +604,7 @@ namespace vigra
         }
     }  // end namespace detail
 
-    /*!
+    /**
      * \brief Read the image specified by the given \ref
      * vigra::ImageImportInfo object.
      *
@@ -659,24 +659,41 @@ namespace vigra
      *
      * <B>Preconditions</B>
      *
-     * - The image file must be readable and
+     * - The image file must be readable,
+     * - the required support library must be installed (if no such library is given, 
+     *   VIGRA supports the format natively), and
      * - the file type must be one of the following:
      *
-     * | Type | Extension | Name                                                       | Support Library |
-     * |------|-----------|------------------------------------------------------------|-----------------|
-     * | BMP  | bmp       | Microsoft Windows bitmap image file                        | |
-     * | EXR  | exr       | OpenEXR high dynamic range image format                    | libopenexr |
-     * | GIF  | gif       | CompuServe graphics interchange format, 8-bit color        | |
-     * | HDR  | hdr       | Radiance RGBE high dynamic range image format              | libexr? |
-     * | JPEG | jpg, jpeg | Joint Photographic Experts Group JFIF format, 24-bit color | libjpeg |
-     * | PBM  | pbm       | Portable bitmap format (black and white)                   | |
-     * | PGM  | pgm       | Portable graymap format (gray scale)                       | |
-     * | PNG  | png       | Portable Network Graphic                                   | libpng |
-     * | PNM  | pnm       | Portable anymap                                            | |
-     * | PPM  | ppm       | Portable pixmap format (color)                             | |
-     * | SUN  | ras       | SUN Rasterfile                                             | |
-     * | TIFF | tif, tiff | Tagged Image File Format                                   | libtiff |
-     * | VIFF | xv        | Khoros Visualization image file                            | |
+    <table cellspacing="10">
+    <tr align="left">
+    <th>Type</th><th> Extension </th><th> Name                           </th><th> Support Library </th>
+    </tr><tr>
+       <td> BMP  </td><td> bmp       </td><td> Microsoft Windows bitmap image file                        </td><td> </td>
+       </tr><tr>
+       <td> EXR  </td><td> exr       </td><td> OpenEXR high dynamic range image format                    </td><td> libopenexr </td>
+       </tr><tr>
+       <td> GIF  </td><td> gif       </td><td> CompuServe graphics interchange format, 8-bit color        </td><td> </td>
+       </tr><tr>
+       <td> HDR  </td><td> hdr       </td><td> Radiance RGBE high dynamic range image format              </td><td> </td>
+       </tr><tr>
+       <td> JPEG </td><td> jpg, jpeg </td><td> Joint Photographic Experts Group JFIF format, 24-bit color </td><td> libjpeg </td>
+       </tr><tr>
+       <td> PBM  </td><td> pbm       </td><td> Portable bitmap format (black and white)                   </td><td> </td>
+       </tr><tr>
+       <td> PGM  </td><td> pgm       </td><td> Portable graymap format (gray scale)                       </td><td> </td>
+       </tr><tr>
+       <td> PNG  </td><td> png       </td><td> Portable Network Graphic                                   </td><td> libpng </td>
+       </tr><tr>
+       <td> PNM  </td><td> pnm       </td><td> Portable anymap                                            </td><td> </td>
+       </tr><tr>
+       <td> PPM  </td><td> ppm       </td><td> Portable pixmap format (color)                             </td><td> </td>
+       </tr><tr>
+       <td> SUN  </td><td> ras       </td><td> SUN Rasterfile                                             </td><td> </td>
+       </tr><tr>
+       <td> TIFF </td><td> tif, tiff </td><td> Tagged Image File Format                                   </td><td> libtiff </td>
+       </tr><tr>
+       <td> VIFF </td><td> xv        </td><td> Khoros Visualization image file                            </td><td> </td>
+       </table>
      */
     doxygen_overloaded_function(template <...> inline void importImage)
 
@@ -704,7 +721,7 @@ namespace vigra
                     image.first, image.second);
     }
 
-    /*!
+    /**
      * \brief Write an image given a \ref vigra::ImageExportInfo object.
      *
      * If the file format to be exported to supports the pixel type of

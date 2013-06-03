@@ -72,8 +72,8 @@ namespace linalg
        <tt>false</tt> when the rank of \a A is less than <tt>n</tt>.
        See \ref linearSolve() for more documentation.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
 inline bool
@@ -114,8 +114,8 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
 bool
@@ -174,8 +174,8 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
 bool
@@ -247,8 +247,8 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
 bool
@@ -301,8 +301,8 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class Array>
 bool
@@ -346,7 +346,7 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 /** \brief Pass options to leastAngleRegression().
 
     <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+    Namespaces: vigra and vigra::linalg
 */
 class LeastAngleRegressionOptions
 {
@@ -732,33 +732,33 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
 } // namespace detail
 
-   /** Least Angle Regression.
+/** Least Angle Regression.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
+     
+       <b> Declarations:</b>
+     
+       \code
+       namespace vigra {
+          namespace linalg {
+            // compute either LASSO or least squares solutions
+            template <class T, class C1, class C2, class Array1, class Array2>
+            unsigned int
+            leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
+                     Array1 & activeSets, Array2 & solutions,
+                     LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
 
-   <b> Declarations:</b>
-
-    \code
-    namespace vigra {
-      namespace linalg {
-        // compute either LASSO or least squares solutions
-        template <class T, class C1, class C2, class Array1, class Array2>
-        unsigned int
-        leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
-                             Array1 & activeSets, Array2 & solutions,
-                             LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
-
-        // compute LASSO and least squares solutions
-        template <class T, class C1, class C2, class Array1, class Array2>
-        unsigned int
-        leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
-                             Array1 & activeSets, Array2 & lasso_solutions, Array2 & lsq_solutions,
-                             LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
-      }
-      using linalg::leastAngleRegression;
-    }
-    \endcode
+            // compute LASSO and least squares solutions
+            template <class T, class C1, class C2, class Array1, class Array2>
+            unsigned int
+            leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2> const &b,
+                     Array1 & activeSets, Array2 & lasso_solutions, Array2 & lsq_solutions,
+                     LeastAngleRegressionOptions const & options = LeastAngleRegressionOptions());
+          }
+          using linalg::leastAngleRegression;
+       }
+       \endcode
 
        This function implements Least Angle Regression (LARS) as described in
 
@@ -913,8 +913,8 @@ leastAngleRegression(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T, C2
        Note that all matrices must already have the correct shape. The solution is computed by means
        of \ref leastAngleRegression() with non-negativity constraint.
 
-    <b>\#include</b> \<vigra/regression.hxx\>
-        Namespaces: vigra and vigra::linalg
+       <b>\#include</b> \<vigra/regression.hxx\>
+       Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
 inline void

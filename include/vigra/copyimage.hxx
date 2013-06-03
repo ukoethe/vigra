@@ -131,8 +131,8 @@ swapLine(SrcIterator s,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/copyimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/copyimage.hxx\><br>
+    Namespace: vigra
     
     \code
     vigra::copyImage(srcImageRange(src), destImage(dest));
@@ -258,8 +258,8 @@ swapImageData(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     
     <b> Usage:</b>
     
-        <b>\#include</b> \<vigra/copyimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/copyimage.hxx\><br>
+    Namespace: vigra
     
     \code
     vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));

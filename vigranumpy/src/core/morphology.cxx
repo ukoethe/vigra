@@ -387,11 +387,13 @@ NumpyAnyArray
 pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
                           bool background, 
                           int norm,
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
                           NumpyArray<2, Singleband<DestPixelType> > res = python::object())
 {
     res.reshapeIfEmpty(image.taggedShape(), 
             "distanceTransform2D(): Output array has wrong shape.");
     
+    if(pixelPitch.size() == 0)
     {
         PyAllowThreads _pythread;
         if(background)
@@ -405,6 +407,16 @@ pythonDistanceTransform2D(NumpyArray<2, Singleband<PixelType> > image,
                               destImage(res), false, norm);
         }
     }
+    else
+    {
+        vigra_precondition(norm == 2,
+             "distanceTransform2D(): Anisotropic transform is only supported for norm=2.");
+        pixelPitch = image.permuteLikewise(pixelPitch);
+        
+        PyAllowThreads _pythread;
+        separableMultiDistance(srcMultiArrayRange(image), destMultiArray(res), background, pixelPitch);
+    }
+
     return res;
 }
 
@@ -412,14 +424,24 @@ template < class VoxelType >
 NumpyAnyArray 
 pythonDistanceTransform3D(NumpyArray<3, Singleband<VoxelType> > volume, 
                           bool background, 
+                          ArrayVector<double> pixelPitch = ArrayVector<double>(),
                           NumpyArray<3, Singleband<VoxelType> > res=python::object())
 {
     res.reshapeIfEmpty(volume.taggedShape(), 
             "distanceTransform3D(): Output array has wrong shape.");
     
+    if (pixelPitch.size() == 0)
+    {
+        pixelPitch = ArrayVector<double>(3, 1.0);
+    }
+    else
+    {
+        pixelPitch = volume.permuteLikewise(pixelPitch);
+    }
+    
     {
         PyAllowThreads _pythread;
-        separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background);
+        separableMultiDistance(srcMultiArrayRange(volume), destMultiArray(res), background, pixelPitch);
     }
     return res;
 }
@@ -702,6 +724,7 @@ void defineMorphology()
         (arg("image"), 
          arg("background")=true, 
          arg("norm")=2,
+         arg("pixel_pitch") = ArrayVector<double>(), 
          arg("out")=python::object()),
         "Compute the distance transform of a 2D scalar float image.\n"
         "All pixels with a value of 0.0 are considered to be background pixels,\n"
@@ -714,6 +737,11 @@ void defineMorphology()
         "For background==False, it is exactly the other way around.\n\n"
         "The 'norm' parameter gives the distance norm to use\n"
         "(0: infinity norm, 1: L1 norm, 2: Euclidean norm).\n\n"
+        "If 'pixel_pitch' is given, it must contain the pixel distance along the two axes.\n"
+        "They are then used to compute the distance anisotropically. If no 'pixel_pitch' is\n"
+        "given, the data is treated isotropically with unit distance between pixels.\n"
+        "The anisotropic distance transform is only supported for norm =2 (Euclidean).\n"
+        "\n"
         "For details see distanceTransform_ in the vigra C++ documentation.\n");
 
         def("distanceTransform2D",
@@ -721,6 +749,7 @@ void defineMorphology()
         (arg("image"), 
          arg("background")=true, 
          arg("norm")=2,
+         arg("pixel_pitch") = ArrayVector<double>(), 
          arg("out")=python::object()),
         "Likewise for a 2D uint8 input array.\n");
 
@@ -728,6 +757,7 @@ void defineMorphology()
         registerConverters(&pythonDistanceTransform3D<float>),
         (arg("array"), 
          arg("background") = true, 
+         arg("pixel_pitch") = ArrayVector<double>(), 
          arg("out")=python::object()),
         "Compute the Euclidean distance transform of a 3D scalar float volume.\n"
         "All voxels with a value of 0.0 are considered to be background voxels,\n"
@@ -737,7 +767,10 @@ void defineMorphology()
         "(if it is 'True', default) or vice versa (if it is 'False').\n"
         "Hence in the destination volume, for background==True all background voxels\n"
         "will be assigned their distance value, while all foreground voxels will be assigned 0.\n"
-        "For background==False, it is exactly the other way around.\n"
+        "For background==False, it is exactly the other way around.\n\n"
+        "If 'pixel_pitch' is given, it must contain the pixel distance along the three axes.\n"
+        "They are then used to compute the distance anisotropically. If no 'pixel_pitch' is\n"
+        "given, the data is treated isotropically with unit distance between pixels.\n"
         "\n"
         "For more details see separableMultiDistance_ in the vigra C++ documentation.\n");
 }

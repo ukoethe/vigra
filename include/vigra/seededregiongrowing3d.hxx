@@ -323,15 +323,16 @@ seededRegionGrowing3D(SrcImageIterator srcul, Diff_type shape, SrcAccessor as,
                                  std::vector<Voxel *>,
                                  typename Voxel::Compare >  SeedRgVoxelHeap;
     typedef MultiArray<3, int> IVolume;
+    typedef IVolume::traverser Traverser;
 
     // copy seed image in an image with border
     Diff_type regionshape = shape + Diff_type(2,2,2);
     IVolume regions(regionshape);
-    MultiIterator<3,int> ir = regions.traverser_begin();
+    Traverser ir = regions.traverser_begin();
     ir = ir + Diff_type(1,1,1);
     
     //IVolume::Iterator iry, irx, irz;
-    MultiIterator<3,int> iry, irx, irz;
+   Traverser iry, irx, irz;
 
     //initImageBorder(destImageRange(regions), 1, SRGWatershedLabel);
     initMultiArrayBorder(destMultiArrayRange(regions), 1, SRGWatershedLabel); 

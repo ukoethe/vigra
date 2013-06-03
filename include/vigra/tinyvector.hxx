@@ -897,7 +897,8 @@ class TinyVector
 
         /** Constructor from C array.
         */
-    explicit TinyVector(const_pointer data)
+    template <class U>
+    explicit TinyVector(U const * data)
     : BaseType()
     {
         Loop::assign(BaseType::data_, data);
@@ -908,7 +909,7 @@ class TinyVector
             Usage:
             \code
             TinyVector<int, 3> v(1,2,3);
-            TinyVector<int, 3> reverse(v.begin(), TinyVector<int, 3>::ReverseCopy);
+            TinyVector<int, 3> reversed(v.begin(), TinyVector<int, 3>::ReverseCopy);
             \endcode
         */
     explicit TinyVector(const_pointer data, ReverseCopyTag)

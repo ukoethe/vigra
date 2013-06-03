@@ -54,7 +54,7 @@ namespace vigra {
 /*                                                               */
 /*****************************************************************/
 
-/*! The Coscot interpolation function.
+/** The Coscot interpolation function.
 
     Implements the Coscot interpolation function proposed by Maria Magnusson Seger
     (maria@isy.liu.se) in the context of tomographic reconstruction. It provides a fast
@@ -232,8 +232,8 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::resizeImageNoInterpolation(
@@ -417,8 +417,8 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::resizeImageLinearInterpolation(
@@ -617,8 +617,8 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/resizeimage.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
+    Namespace: vigra
 
     \code
     vigra::resizeImageSplineInterpolation(

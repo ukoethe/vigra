@@ -543,8 +543,8 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Principal<Sum> >(a), W(0.0), W(1e-15));
             shouldEqualTolerance(get<Principal<Minimum> >(a), W(-1.3739261246727945, -1.2230658133989472, -0.6526113546697957), W(1e-15));
             shouldEqualTolerance(get<Principal<Maximum> >(a), W(1.4669637815066938,  1.1452966161690161, 0.60253363030808593), W(1e-15));
-            shouldEqualTolerance(get<Principal<Skewness> >(a), W(0.01148108748350361, -0.07581454384153662, -0.09140344434535799), W(1e-14));
-            shouldEqualTolerance(get<Principal<Kurtosis> >(a), W(-1.9829394126459396, -1.6241963546875782, -1.6255854346698215), W(1e-14));
+            shouldEqualTolerance(get<Principal<Skewness> >(a), W(0.01148108748350361, -0.07581454384153662, -0.09140344434535799), W(1e-13));
+            shouldEqualTolerance(get<Principal<Kurtosis> >(a), W(-1.9829394126459396, -1.6241963546875782, -1.6255854346698215), W(1e-13));
             shouldEqualTolerance(get<Principal<SumOfAbsDifferences> >(a), W(5.3819863149157, 3.5369487298822575, 1.8777415203686885), W(1e-14));
         }
 
@@ -694,8 +694,9 @@ struct AccumulatorTest
             shouldEqualTolerance(get<Variance>(a), principalVariance, V(1e-15));
             shouldEqualTolerance(get<Principal<Variance> >(a), principalVariance, V(1e-15));
 
-            Var ref = linalg::identityMatrix<double>(2);
-            shouldEqualTolerance(get<Principal<CoordinateSystem> >(a), ref, eps);
+            Var res = abs(get<Principal<CoordinateSystem> >(a)),
+                ref = linalg::identityMatrix<double>(2);
+            shouldEqualTolerance(res, ref, eps);
             ref(0,0) = principalVariance[0];
             ref(1,1) = principalVariance[1];
             shouldEqualTolerance(get<Covariance>(a), ref, eps);

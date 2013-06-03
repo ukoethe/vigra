@@ -48,7 +48,7 @@ namespace vigra {
 /** \addtogroup MathFunctions
 */
 //@{
-    /*! Find the minimum element in a sequence.
+    /** \brief Find the minimum element in a sequence.
     
         The function returns the iterator referring to the minimum element.
         This is identical to the function <tt>std::min_element()</tt>.
@@ -76,7 +76,7 @@ Iterator argMin(Iterator first, Iterator last)
     return best;
 }
 
-    /*! Find the maximum element in a sequence.
+    /** \brief Find the maximum element in a sequence.
     
         The function returns the iterator referring to the maximum element.
         This is identical to the function <tt>std::max_element()</tt>.
@@ -104,7 +104,7 @@ Iterator argMax(Iterator first, Iterator last)
     return best;
 }
 
-    /*! Find the minimum element in a sequence conforming to a condition.
+    /** \brief Find the minimum element in a sequence conforming to a condition.
     
         The function returns the iterator referring to the minimum element,
         where only elements conforming to the condition (i.e. where 
@@ -140,7 +140,7 @@ Iterator argMinIf(Iterator first, Iterator last, UnaryFunctor condition)
     return best;
 }
 
-    /*! Find the maximum element in a sequence conforming to a condition.
+    /** \brief Find the maximum element in a sequence conforming to a condition.
     
         The function returns the iterator referring to the maximum element,
         where only elements conforming to the condition (i.e. where 
@@ -176,7 +176,7 @@ Iterator argMaxIf(Iterator first, Iterator last, UnaryFunctor condition)
     return best;
 }
 
-    /*! Fill an array with a sequence of numbers.
+    /** \brief Fill an array with a sequence of numbers.
     
         The sequence starts at \a start and is incremented with \a step. Default start
         and stepsize are 0 and 1 respectively.
@@ -311,7 +311,7 @@ struct IndexCompare
 
 } // namespace detail
 
-    /*! Return the index permutation that would sort the input array.
+    /** \brief Return the index permutation that would sort the input array.
     
         To actually sort an array according to the ordering thus determined, use 
         \ref applyPermutation().
@@ -357,7 +357,7 @@ void indexSort(Iterator first, Iterator last, IndexIterator index_first)
     indexSort(first, last, index_first, std::less<Value>());
 }
 
-    /*! Sort an array according to the given index permutation.
+    /** \brief Sort an array according to the given index permutation.
     
         The iterators \a in and \a out may not refer to the same array, as
         this would overwrite the input prematurely.
@@ -393,7 +393,7 @@ void applyPermutation(IndexIterator index_first, IndexIterator index_last,
 }
 
 
-    /*! Compute the inverse of a given permutation.
+    /** \brief Compute the inverse of a given permutation.
     
         This is just another name for \ref indexSort(), referring to
         another semantics.
@@ -689,7 +689,7 @@ UInt32 ChecksumImpl<INT>::exec(InIterator i, unsigned int size, UInt32 crc)
 
 } // namespace detail
 
-    /*! Compute the CRC-32 checksum of a byte array.
+    /** \brief Compute the CRC-32 checksum of a byte array.
     
         Implementation note: This function is slower on big-endian machines
         because the "4 bytes at a time" optimization is only implemented for 
@@ -700,7 +700,7 @@ inline UInt32 checksum(const char * data, unsigned int size)
     return detail::ChecksumImpl<UInt32>::exec(data, size);
 }
 
-    /*! Concatenate a byte array to an existing CRC-32 checksum.
+    /** Concatenate a byte array to an existing CRC-32 checksum.
     */
 inline UInt32 concatenateChecksum(UInt32 checksum, const char * data, unsigned int size)
 {

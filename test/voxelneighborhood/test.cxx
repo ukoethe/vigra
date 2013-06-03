@@ -46,8 +46,8 @@ using namespace vigra;
 struct NeighborhoodCirculator3dTest
 {
 
-    typedef vigra::NeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
-    typedef vigra::NeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
+    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
+    typedef vigra::NeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
 
     typedef vigra::MultiArray<3,int> IntVolume;
 
@@ -340,8 +340,8 @@ struct NeighborhoodCirculator3dTest
 struct RestrictedNeighborhoodCirculator3dTest
 {
 
-    typedef vigra::RestrictedNeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
-    typedef vigra::RestrictedNeighborhoodCirculator<vigra::MultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
+    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DSix> SixTraverser;
+    typedef vigra::RestrictedNeighborhoodCirculator<vigra::StridedMultiIterator<3,int>, vigra::NeighborCode3DTwentySix> TwentySixTraverser;
     typedef vigra::MultiArray<3,int> IntVolume;
 
     IntVolume vol;

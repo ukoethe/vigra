@@ -530,8 +530,7 @@ get(Handle const & handle)
     To get the type of a CoupledScanOrderIterator for arrays of a certain dimension and element types use CoupledIteratorType::type.
 
     The iterator supports all functions listed in the STL documentation for
-        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random
-Access Iterators</a>.
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
 
     Example of use:
     \code
@@ -556,9 +555,8 @@ Access Iterators</a>.
     std::cout << "image1: " << get<1>(handle) << std::endl;
     \endcode
     
-<b>\#include</b> \<vigra/multi_iterator_coupled.hxx\>
-
-Namespace: vigra
+    <b>\#include</b> \<vigra/multi_iterator_coupled.hxx\> <br/>
+    Namespace: vigra
 */
 
 template <unsigned int N,
@@ -1190,6 +1188,201 @@ createCoupledIterator(MultiArrayView<N1, T1, S1> const & m1,
                         P1(m1, 
                         P0(m1.shape())))))));
 }
+
+//@}
+
+/********************************************************/
+/*                                                      */
+/*                MultiCoordinateIterator               */
+/*                                                      */
+/********************************************************/
+
+/** \addtogroup MultiIteratorGroup
+*/
+//@{
+
+    /** \brief Iterate over a virtual array where each element contains its coordinate.
+
+        MultiCoordinateIterator behaves like a read-only random access iterator. 
+        It moves accross the given region of interest in scan-order (with the first
+        index changing most rapidly), and dereferencing the iterator returns the 
+        coordinate (i.e. multi-dimensional index) of the current array element. 
+        The functionality is thus similar to a meshgrid in Matlab or numpy. 
+        
+        Internally, it is just a wrapper of a \ref CoupledScanOrderIterator that
+        has been created without any array and whose reference type is not a 
+        \ref CoupledHandle, but the coordinate itself.
+                
+        The iterator supports all functions listed in the STL documentation for 
+        <a href="http://www.sgi.com/tech/stl/RandomAccessIterator.html">Random Access Iterators</a>.
+
+        <b>Usage:</b>
+
+        <b>\#include</b> \<vigra/multi_iterator.hxx\><br/>
+        Namespace: vigra
+        
+        \code
+        MultiCoordinateIterator<3> i(Shape3(3,2,1)), end = i.getEndIterator();
+        
+        for(; i != end; ++i)
+            std::cout << *i << "\n";
+            
+        // Output:
+        // (0, 0, 0)
+        // (1, 0, 0)
+        // (2, 0, 0)
+        // (0, 1, 0)
+        // (1, 1, 0)
+        // (2, 1, 0)
+        \endcode
+    */
+template<unsigned int N>
+class MultiCoordinateIterator
+    : public CoupledIteratorType<N>::type
+{
+  public:
+    typedef typename CoupledIteratorType<N>::type base_type;
+
+    typedef typename base_type::shape_type         shape_type;
+    typedef typename base_type::difference_type    difference_type;
+    typedef MultiCoordinateIterator                iterator;
+    typedef std::random_access_iterator_tag        iterator_category;
+
+    typedef typename base_type::value_type         handle_type;
+    typedef typename handle_type::value_type       value_type;
+    typedef typename handle_type::reference        reference;
+    typedef typename handle_type::const_reference  const_reference;
+    typedef typename handle_type::pointer          pointer;
+    typedef typename handle_type::const_pointer    const_pointer;
+
+    MultiCoordinateIterator() 
+        : base_type(handle_type())
+    {}
+
+    explicit MultiCoordinateIterator(shape_type const & shape) 
+        : base_type(handle_type(shape))
+    {}
+
+    // dereferencing the iterator yields the coordinate object
+    // (used as vertex_descriptor)
+    reference operator*()
+    {
+        return this->template get<0>();
+    }
+    
+    const_reference operator*() const
+    {
+        return this->template get<0>();
+    }
+    
+    operator value_type() const
+    {
+        return *(*this);
+    }
+
+    pointer operator->()
+    {
+        return &this->template get<0>();
+    }
+    
+    const_pointer operator->() const
+    {
+        return &this->template get<0>();
+    }
+
+    value_type operator[](MultiArrayIndex i)
+    {
+        return *(MultiCoordinateIterator(*this) += i);
+    }
+
+    value_type operator[](MultiArrayIndex i) const
+    {
+        return *(MultiCoordinateIterator(*this) += i);
+    }
+
+    MultiCoordinateIterator & operator++()
+    {
+        base_type::operator++();
+        return *this;
+    }
+    
+    MultiCoordinateIterator operator++(int)
+    {
+        MultiCoordinateIterator res(*this);
+        ++*this;
+        return res;
+    }
+
+    MultiCoordinateIterator & operator+=(MultiArrayIndex i)
+    {
+        base_type::operator+=(i);
+        return *this;
+    }
+
+    MultiCoordinateIterator & operator+=(const shape_type &coordOffset)
+    {
+        base_type::operator+=(coordOffset);
+        return *this;
+    }
+
+    MultiCoordinateIterator & operator--()
+    {
+        base_type::operator--();
+        return *this;
+    }
+
+    MultiCoordinateIterator operator--(int)
+    {
+        MultiCoordinateIterator res(*this);
+        --*this;
+        return res;
+    }
+
+    MultiCoordinateIterator & operator-=(MultiArrayIndex i)
+    {
+        return operator+=(-i);
+    }
+
+    MultiCoordinateIterator & operator-=(const shape_type &coordOffset)
+    {
+        return operator+=(-coordOffset);
+    }
+
+    MultiCoordinateIterator getEndIterator() const
+    {
+        return MultiCoordinateIterator(base_type::getEndIterator());
+    }
+
+    MultiCoordinateIterator operator+(MultiArrayIndex d) const
+    {
+        return MultiCoordinateIterator(*this) += d;
+    }
+
+    MultiCoordinateIterator operator-(MultiArrayIndex d) const
+    {
+        return MultiCoordinateIterator(*this) -= d;
+    }
+
+    MultiCoordinateIterator operator+(const shape_type &coordOffset) const
+    {
+        return MultiCoordinateIterator(*this) += coordOffset;
+    }
+
+    MultiCoordinateIterator operator-(const shape_type &coordOffset) const
+    {
+        return MultiCoordinateIterator(*this) -= coordOffset;
+    }
+
+    MultiArrayIndex operator-(const MultiCoordinateIterator & other) const
+    {
+        return base_type::operator-(other);
+    }
+    
+  protected:
+    MultiCoordinateIterator(base_type const & base) 
+        : base_type(base)
+    {}
+};
 
 //@}
 

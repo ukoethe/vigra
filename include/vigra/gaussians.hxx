@@ -49,7 +49,7 @@ namespace vigra {
 */
 //@{
 #endif
-/*! The Gaussian function and its derivatives.
+/** The Gaussian function and its derivatives.
 
     Implemented as a unary functor. Since it supports the <tt>radius()</tt> function
     it can also be used as a kernel in \ref resamplingConvolveImage().

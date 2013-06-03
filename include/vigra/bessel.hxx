@@ -258,7 +258,7 @@ void bessjyn(int n, REAL x,int &nm, double *jn, double *yn)
  
 } // namespace detail
 
-    /*! Bessel function of the first kind. 
+    /** \brief Bessel function of the first kind. 
 
         Computes the value of BesselJ of integer order <tt>n</tt> and argument <tt>x</tt>.
         Negative <tt>x</tt> are unsupported and will result in a <tt>std::domain_error</tt>.
@@ -294,7 +294,7 @@ inline double besselJ(int n, double x)
 #endif
 }
 
-    /*! Bessel function of the second kind. 
+    /** \brief Bessel function of the second kind. 
 
         Computes the value of BesselY of integer order <tt>n</tt> and argument <tt>x</tt>.
         Negative <tt>x</tt> are unsupported and will result in a <tt>std::domain_error</tt>.

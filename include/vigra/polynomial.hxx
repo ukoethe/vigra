@@ -920,8 +920,8 @@ struct PolynomialRootCompare
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/polynomial.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/polynomial.hxx\><br>
+    Namespace: vigra
 
     \code
     // encode the polynomial  x^4 - 1
@@ -1058,8 +1058,8 @@ polynomialRoots(POLYNOMIAL const & poriginal, VECTOR & roots)
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/polynomial.hxx\><br>
-        Namespace: vigra
+    <b>\#include</b> \<vigra/polynomial.hxx\><br>
+    Namespace: vigra
 
     \code
     // encode the polynomial  x^4 - 1

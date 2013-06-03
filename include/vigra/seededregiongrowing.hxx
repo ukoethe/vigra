@@ -854,9 +854,9 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     Namespace: vigra
 
 
-     <b> Required Interface:</b>
+    <b> Required Interface:</b>
 
-     no requirements
+    no requirements
 */
 template <class Value>
 class SeedRgDirectValueFunctor

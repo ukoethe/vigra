@@ -575,6 +575,8 @@ class RandomForest
      *        classification setting)
      * \param labels: a n by 1 matrix passed by reference to store
      *        output.
+     *
+     * If the input contains an NaN value, an precondition exception is thrown.
      */
     template <class U, class C1, class T, class C2>
     void predictLabels(MultiArrayView<2, U, C1>const & features,
@@ -583,9 +585,48 @@ class RandomForest
         vigra_precondition(features.shape(0) == labels.shape(0),
             "RandomForest::predictLabels(): Label array has wrong size.");
         for(int k=0; k<features.shape(0); ++k)
+        {
+            vigra_precondition(!detail::contains_nan(rowVector(features, k)),
+                "RandomForest::predictLabels(): NaN in feature matrix.");
             labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
+        }
     }
 
+    /** \brief predict multiple labels with given features
+     *
+     * \param features: a n by featureCount matrix containing
+     *        data point to be predicted (this only works in
+     *        classification setting)
+     * \param labels: a n by 1 matrix passed by reference to store
+     *        output.
+     * \param nanLabel: label to be returned for the row of the input that
+     *        contain an NaN value.
+     */
+    template <class U, class C1, class T, class C2>
+    void predictLabels(MultiArrayView<2, U, C1>const & features,
+                       MultiArrayView<2, T, C2> & labels,
+                       LabelType nanLabel) const
+    {
+        vigra_precondition(features.shape(0) == labels.shape(0),
+            "RandomForest::predictLabels(): Label array has wrong size.");
+        for(int k=0; k<features.shape(0); ++k)
+        {
+            if(detail::contains_nan(rowVector(features, k)))
+                labels(k,0) = nanLabel;
+            else
+                labels(k,0) = detail::RequiresExplicitCast<T>::cast(predictLabel(rowVector(features, k), rf_default()));
+        }
+    }
+
+    /** \brief predict multiple labels with given features
+     *
+     * \param features: a n by featureCount matrix containing
+     *        data point to be predicted (this only works in
+     *        classification setting)
+     * \param labels: a n by 1 matrix passed by reference to store
+     *        output.
+     * \param stop: an early stopping criterion.
+     */
     template <class U, class C1, class T, class C2, class Stop>
     void predictLabels(MultiArrayView<2, U, C1>const & features,
                        MultiArrayView<2, T, C2> & labels,
@@ -603,6 +644,10 @@ class RandomForest
      *  save class probabilities
      *  \param stop earlystopping criterion
      *  \sa EarlyStopping
+     
+        When a row of the feature array contains an NaN, the corresponding instance
+        cannot belong to any of the classes. The corresponding row in the probability 
+        array will therefore contain all zeros.
      */
     template <class U, class C1, class T, class C2, class Stop>
     void predictProbabilities(MultiArrayView<2, U, C1>const &   features,
@@ -843,7 +888,7 @@ void RandomForest<LabelType, PreprocessorTag>::reLearnTree(MultiArrayView<2,U,C1
                                preprocessor.strata().end(),
                                detail::make_sampler_opt(options_)
                                         .sampleSize(ext_param().actual_msample_),
-                                    random);
+                               &random);
     //initialize First region/node/stack entry
     sampler
         .sample();
@@ -951,7 +996,7 @@ void RandomForest<LabelType, PreprocessorTag>::
                                preprocessor.strata().end(),
                                detail::make_sampler_opt(options_)
                                         .sampleSize(ext_param().actual_msample_),
-                                    random);
+                               &random);
 
     visitor.visit_at_beginning(*this, preprocessor);
     // THE MAIN EFFING RF LOOP - YEAY DUDE!
@@ -1217,6 +1262,16 @@ void RandomForest<LabelType, PreprocessorTag>
     //Classify for each row.
     for(int row=0; row < rowCount(features); ++row)
     {
+        MultiArrayView<2, U, StridedArrayTag> currentRow(rowVector(features, row));
+        
+        // when the features contain an NaN, the instance doesn't belong to any class
+        // => indicate this by returning a zero probability array.
+        if(detail::contains_nan(currentRow))
+        {
+            rowVector(prob, row).init(0.0);
+            continue;
+        }
+    
         ArrayVector<double>::const_iterator weights;
 
         //totalWeight == totalVoteCount!
@@ -1226,7 +1281,7 @@ void RandomForest<LabelType, PreprocessorTag>
         for(int k=0; k<options_.tree_count_; ++k)
         {
             //get weights predicted by single tree
-            weights = trees_[k /*tree_indices_[k]*/].predict(rowVector(features, row));
+            weights = trees_[k /*tree_indices_[k]*/].predict(currentRow);
 
             //update votecount.
             int weighted = options_.predict_weighted_;

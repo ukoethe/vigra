@@ -123,7 +123,7 @@ namespace vigra {
               class GradValue,
               class DestValue = DestAccessor::value_type>
         void differenceOfExponentialEdgeImage(
-               triple<SrcIterator, SrcIterator, SrcAccessor> src,
+               \triple<SrcIterator, SrcIterator, SrcAccessor> src,
                pair<DestIterator, DestAccessor> dest,
                double scale, GradValue gradient_threshold,
                DestValue edge_marker = NumericTraits<DestValue>::one())
@@ -132,7 +132,7 @@ namespace vigra {
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -352,13 +352,13 @@ void differenceOfExponentialEdgeImage(
     proceeds as follows:
 
     \code
-sign of difference image     insert zero- and one-cells     resulting edge points (*)
-
-                                     + . - . -                   . * . . .
-      + - -                          . . . . .                   . * * * .
-      + + -               =>         + . + . -           =>      . . . * .
-      + + +                          . . . . .                   . . . * *
-                                     + . + . +                   . . . . .
+    sign of difference image     insert zero- and one-cells     resulting edge points (*)
+    
+                                         + . - . -                   . * . . .
+          + - -                          . . . . .                   . * * * .
+          + + -               =>         + . + . -           =>      . . . * .
+          + + +                          . . . . .                   . . . * *
+                                         + . + . +                   . . . . .
     \endcode
 
     Thus the edge points are marked where they actually are - in between the pixels.
@@ -411,7 +411,7 @@ sign of difference image     insert zero- and one-cells     resulting edge point
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -711,7 +711,7 @@ void differenceOfExponentialCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -844,7 +844,7 @@ void removeShortEdges(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1057,7 +1057,7 @@ void closeGapsInCrackEdgeImage(
 
     <b> Usage:</b>
 
-        <b>\#include</b> \<vigra/edgedetection.hxx\><br>
+    <b>\#include</b> \<vigra/edgedetection.hxx\><br>
     Namespace: vigra
 
     \code
@@ -1168,8 +1168,9 @@ class Edgel
         */
     value_type strength;
 
-        /**
-        The edgel's orientation. This is the clockwise angle in radians
+        /** \brief The edgel's orientation. 
+        
+        This is the clockwise angle in radians
         between the x-axis and the edge, so that the bright side of the
         edge is on the left when one looks along the orientation vector. 
         The angle is measured clockwise because the y-axis increases 
@@ -1177,18 +1178,18 @@ class Edgel
 
         \code
 
-  edgel axis
-       \  
-  (dark \  (bright side)
-  side)  \ 
-          \ 
-           +------------> x-axis
-           |\    |
-           | \ /_/  orientation angle
-           |  \\
-           |   \
-           |   
-    y-axis V
+        edgel axis
+             \  
+        (dark \  (bright side)
+        side)  \ 
+                \ 
+                 +------------> x-axis
+                 |\    |
+                 | \ /_/  orientation angle
+                 |  \\
+                 |   \
+                 |   
+          y-axis V  
         \endcode
 
         So, for example a vertical edge with its dark side on the left
