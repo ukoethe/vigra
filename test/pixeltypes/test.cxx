@@ -178,6 +178,10 @@ struct TinyVectorTest
             iv[k] = 0;
             should(!iv.any());
         }
+
+        IV r = reverse(iv3);
+        for(int k=0; k<SIZE; ++k)
+            shouldEqual(iv3[k], r[SIZE-1-k]);
     }
 
     void testComparison()
