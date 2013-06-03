@@ -1364,7 +1364,7 @@ struct ConvolutionTest
         structureTensor(View(lenna), 
                         View(resxx), View(resxy), View(resyy), 1.0, 2.0);
 
-        structureTensor(View(lenna), MultiArrayView<2, TinyVector<double, 3>>(resst), 1.0, 2.0);
+        structureTensor(View(lenna), MultiArrayView<2, TinyVector<double, 3> >(resst), 1.0, 2.0);
             
         importImage(vigra::ImageImportInfo("lennastxx.xv"), destImage(refxx));
         importImage(vigra::ImageImportInfo("lennastyy.xv"), destImage(refyy));

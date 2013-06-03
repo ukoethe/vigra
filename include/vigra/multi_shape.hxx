@@ -128,6 +128,47 @@ struct NumericTraits<Multiband<T> >
 
 namespace detail {
 
+/********************************************************/
+/*                                                      */
+/*                    defaultStride                     */
+/*                                                      */
+/********************************************************/
+
+    /* generates the stride for a gapless shape.
+    */
+template <int N>
+inline TinyVector <MultiArrayIndex, N>
+defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
+{
+    TinyVector <MultiArrayIndex, N> ret;
+    ret [0] = 1;
+    for (int i = 1; i < (int)N; ++i)
+        ret [i] = ret [i-1] * shape [i-1];
+    return ret;
+}
+
+    /* generates the stride for a gapless shape.
+    */
+template <int N>
+inline TinyVector <MultiArrayIndex, N>
+defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
+{
+    TinyVector <MultiArrayIndex, N> ret;
+    ret [N-1] = 1;
+    for (int i = 0; i < (int)N-1; ++i)
+    {
+        int j = (i + int(N - 1)) % N;
+        ret [i] = ret [j] * shape [j];
+    }
+    return ret;
+}
+
+/********************************************************/
+/*                                                      */
+/*                  ResolveMultiband                    */
+/*                                                      */
+/********************************************************/
+
 template <class T>
 struct ResolveMultiband
 {
@@ -216,41 +257,6 @@ enum NeighborhoodType {
 // Helper functions
 
 namespace detail {
-
-/********************************************************/
-/*                                                      */
-/*                    defaultStride                     */
-/*                                                      */
-/********************************************************/
-
-    /* generates the stride for a gapless shape.
-    */
-template <int N>
-inline TinyVector <MultiArrayIndex, N>
-defaultStride(const TinyVector <MultiArrayIndex, N> &shape)
-{
-    TinyVector <MultiArrayIndex, N> ret;
-    ret [0] = 1;
-    for (int i = 1; i < (int)N; ++i)
-        ret [i] = ret [i-1] * shape [i-1];
-    return ret;
-}
-
-    /* generates the stride for a gapless shape.
-    */
-template <int N>
-inline TinyVector <MultiArrayIndex, N>
-defaultMultibandStride(const TinyVector <MultiArrayIndex, N> &shape)
-{
-    TinyVector <MultiArrayIndex, N> ret;
-    ret [N-1] = 1;
-    for (int i = 0; i < (int)N-1; ++i)
-    {
-        int j = (i + int(N - 1)) % N;
-        ret [i] = ret [j] * shape [j];
-    }
-    return ret;
-}
 
 /********************************************************/
 /*                                                      */

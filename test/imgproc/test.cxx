@@ -67,9 +67,9 @@ struct ImageFunctionsTest
     typedef vigra::DImage Image;
     typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::DRGBImage RGBImage;
-    typedef vigra::MultiArrayView<2, RGBValue<double>> RGBView;
+    typedef vigra::MultiArrayView<2, RGBValue<double> > RGBView;
     typedef Image::value_type GrayValue;
-    typedef RGBImage::value_type RGBValue;
+    typedef RGBImage::value_type RGBPixel;
 
     ImageFunctionsTest()
     : img(3,3), mask(Shape2(3,3)), rgb(3,3), col(1.0, 2.0, 3.0)
@@ -155,7 +155,7 @@ struct ImageFunctionsTest
 
     void copyRedBandTest()
     {
-        vigra::RedAccessor<RGBValue> red;
+        vigra::RedAccessor<RGBPixel> red;
 
         Image img1(3,3);
         copyImage(srcImageRange(rgb, red), destImage(img));
@@ -194,7 +194,7 @@ struct ImageFunctionsTest
 
     void copyGreenBandTest()
     {
-        vigra::GreenAccessor<RGBValue> green;
+        vigra::GreenAccessor<RGBPixel> green;
 
         copyImage(srcImageRange(rgb, green), destImage(img));
 
@@ -222,7 +222,7 @@ struct ImageFunctionsTest
 
     void copyBlueBandTest()
     {
-        vigra::BlueAccessor<RGBValue> blue;
+        vigra::BlueAccessor<RGBPixel> blue;
 
         copyImage(srcImageRange(rgb, blue), destImage(img));
 
@@ -250,7 +250,7 @@ struct ImageFunctionsTest
 
     void rgbToGrayTest()
     {
-        vigra::RGBToGrayAccessor<RGBValue> gray;
+        vigra::RGBToGrayAccessor<RGBPixel> gray;
 
         copyImage(srcImageRange(rgb, gray), destImage(img));
 
@@ -284,7 +284,8 @@ struct ImageFunctionsTest
             should(acc(i) == 12.0);
         }
 
-        initImageWithFunctor(View(img), Counter());
+        Counter counter;
+        initImageWithFunctor(View(img), counter);
 
         i = img.begin();
         for(int k=0; i != img.end(); ++i, ++k)
@@ -709,15 +710,15 @@ struct ImageFunctionsTest
         RGBImage img2(3,3);
 
         transformImage(srcImageRange(rgb), destImage(img2),
-                        linearIntensityTransform(2.0, RGBValue(0.0, -1.0, -2.0)));
+                        linearIntensityTransform(2.0, RGBPixel(0.0, -1.0, -2.0)));
 
-        shouldEqual(img2(0,0), RGBValue(2.0, 2.0, 2.0));
+        shouldEqual(img2(0,0), RGBPixel(2.0, 2.0, 2.0));
 
         transformImage(srcImageRange(rgb), destImage(img2),
-                        linearIntensityTransform(RGBValue(2.0, 3.0, 4.0),
-                                                 RGBValue(0.0, -1.0, -2.0)));
+                        linearIntensityTransform(RGBPixel(2.0, 3.0, 4.0),
+                                                 RGBPixel(0.0, -1.0, -2.0)));
 
-        shouldEqual(img2(0,0), RGBValue(2.0, 3.0, 4.0));
+        shouldEqual(img2(0,0), RGBPixel(2.0, 3.0, 4.0));
     }
 
     void scalarIntensityTransformTest()
@@ -739,10 +740,10 @@ struct ImageFunctionsTest
         RGBImage img2(3,3);
 
         transformImage(srcImageRange(rgb), destImage(img2),
-                        linearIntensityTransform<RGBValue>(
-                                                 RGBValue(1.0, 2.0, 3.0)));
+                        linearIntensityTransform<RGBPixel>(
+                                                 RGBPixel(1.0, 2.0, 3.0)));
 
-        shouldEqual(img2(0,0), RGBValue(1.0, 4.0, 9.0));
+        shouldEqual(img2(0,0), RGBPixel(1.0, 4.0, 9.0));
     }
 
     void linearIntensityTransformIfTest()
@@ -799,8 +800,8 @@ struct ImageFunctionsTest
         BRGBImage img2(3,3);
 
         transformImage(srcImageRange(rgb), destImage(img2),
-                       linearRangeMapping(RGBValue(1.0, 1.0, 1.0),
-                                          RGBValue(3.0, 3.0, 3.0),
+                       linearRangeMapping(RGBPixel(1.0, 1.0, 1.0),
+                                          RGBPixel(3.0, 3.0, 3.0),
                                           BRGBImage::value_type(0, 0, 0),
                                           BRGBImage::value_type(255, 255, 255)));
 
@@ -855,7 +856,7 @@ struct ImageFunctionsTest
         should(0 == charf(0));
         should(255 == charf(255));
 
-        vigra::BrightnessContrastFunctor<RGBValue > rgbf(2.0, 1.0, RGBValue(0.0), RGBValue(255.0));
+        vigra::BrightnessContrastFunctor<RGBPixel > rgbf(2.0, 1.0, RGBPixel(0.0), RGBPixel(255.0));
 
         should(col.red() < rgbf(col).red());
         should(col.green() < rgbf(col).green());
@@ -871,14 +872,14 @@ struct ImageFunctionsTest
         {
             for(int x=0; x<3; ++x)
             {
-                in(x,y) = RGBValue(float(x+y));
+                in(x,y) = RGBPixel(float(x+y));
             }
         }
 
         Image res(3,3);
 
         gradientBasedTransform(
-          srcImageRange(in, vigra::RedAccessor<RGBValue >()),
+          srcImageRange(in, vigra::RedAccessor<RGBPixel >()),
           destImage(res), vigra::MagnitudeFunctor<double>());
 
         for(y=0; y<3; ++y)
@@ -1114,7 +1115,7 @@ struct ImageFunctionsTest
     Image img;
     vigra::MultiArray<2, unsigned char> mask;
     RGBImage rgb;
-    RGBValue col;
+    RGBPixel col;
 };
 
 struct ResizeImageTest
