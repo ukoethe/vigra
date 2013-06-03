@@ -3331,8 +3331,10 @@ maskImage(MultiArrayView<2, PixelType, UnstridedArrayTag> const & img)
 /*                                                      */
 /********************************************************/
 
-/** \addtogroup MultiArrayToImage Wrap a \ref vigra::MultiArrayView in
-                                  a \ref vigra::BasicImageView
+/** \addtogroup MultiArrayToImage Create BasicImageView from MultiArrayViews
+
+  Some convenience functions for wrapping a \ref vigra::MultiArrayView's
+  data in a \ref vigra::BasicImageView.
 */
 //@{
 /** Create a \ref vigra::BasicImageView from an unstrided 2-dimensional
@@ -3348,7 +3350,7 @@ makeBasicImageView (MultiArrayView <2, T, Stride> const &array)
     vigra_precondition(array.isUnstrided(),
        "makeBasicImageView(array): array must be unstrided (i.e. array.isUnstrided() == true).");
     return BasicImageView <T> (array.data (), array.shape (0),
-                               array.shape (1));
+                               array.shape (1), array.stride(1));
 }
 
 /** Create a \ref vigra::BasicImageView from a 3-dimensional
@@ -3363,8 +3365,11 @@ template <class T>
 BasicImageView <T>
 makeBasicImageView (MultiArray <3, T> const &array)
 {
+	vigra_precondition(array.stride(1) == array.shape(0),
+					   "makeBasicImageView(): cannot join strided dimensions");
     return BasicImageView <T> (array.data (),
-                               array.shape (0)*array.shape (1), array.shape (2));
+                               array.shape (0)*array.shape (1), array.shape (2),
+							   array.stride(2));
 }
 
 /** Create a \ref vigra::BasicImageView from a 3-dimensional
