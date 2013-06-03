@@ -210,11 +210,11 @@ public:
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void 
-        vectorToTensorMultiArray(SrcIterator  si, SrcShape const & shape, SrcAccessor src,
-                                 DestIterator di, DestAccessor dest);
+        vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                 MultiArrayView<N, T2, S2> dest);
     }
     \endcode
 
@@ -296,6 +296,8 @@ inline void
 vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
                          MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "vectorToTensorMultiArray(): shape mismatch between input and output.");
     vectorToTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
@@ -318,11 +320,11 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void 
-        tensorTraceMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
-                              DestIterator di, DestAccessor dest);
+        tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest);
     }
     \endcode
 
@@ -393,6 +395,8 @@ inline void
 tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
                       MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorTraceMultiArray(): shape mismatch between input and output.");
     tensorTraceMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
@@ -417,11 +421,11 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void 
-        tensorEigenvaluesMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
-                                    DestIterator di, DestAccessor dest);
+        tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest);
     }
     \endcode
 
@@ -504,6 +508,8 @@ inline void
 tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorEigenvaluesMultiArray(): shape mismatch between input and output.");
     tensorEigenvaluesMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
@@ -526,11 +532,11 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void 
-        tensorDeterminantMultiArray(SrcIterator si,  SrcShape const & shape, SrcAccessor src,
-                                    DestIterator di, DestAccessor dest);
+        tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest);
     }
     \endcode
 
@@ -610,6 +616,8 @@ inline void
 tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
                             MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorDeterminantMultiArray(): shape mismatch between input and output.");
     tensorDeterminantMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 

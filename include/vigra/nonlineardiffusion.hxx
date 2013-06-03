@@ -248,12 +248,13 @@ void internalNonlinearDiffusionAOSStep(
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class DiffusivityFunctor>
-        void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                                DestIterator dul, DestAccessor ad,
-                                DiffusivityFunctor const & weight, double scale);
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class DiffusivityFunc>
+        void
+        nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest,
+                                   DiffusivityFunc const & weight, double scale);
     }
     \endcode
     
@@ -386,6 +387,8 @@ nonlinearDiffusion(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    DiffusivityFunc const & weight, double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonlinearDiffusion(): shape mismatch between input and output.");
     nonlinearDiffusion(srcImageRange(src),
                        destImage(dest),
                        weight, scale);
@@ -654,6 +657,8 @@ nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
                            MultiArrayView<2, T2, S2> dest,
                            DiffusivityFunc const & weight, double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonlinearDiffusionExplicit(): shape mismatch between input and output.");
     nonlinearDiffusionExplicit(srcImageRange(src),
                                destImage(dest),
                                weight, scale);

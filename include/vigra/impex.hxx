@@ -605,76 +605,89 @@ namespace vigra
         }
     }  // end namespace detail
 
-    /**
-     * \brief Read the image specified by the given \ref
-     * vigra::ImageImportInfo object.
-     *
-     * <B>Declarations</B>
-     *
-     * pass 2D array views:
-     * \code
-     * namespace vigra {
-     *     template <class ImageIterator, class Accessor>
-     *     void
-     *     importImage(const ImageImportInfo& importInfo,
-     *                 ImageIterator imageIterator, Accessor imageAccessor)
-     * }
-     * \endcode
-     *
-     * pass \ref ImageIterators and \ref DataAccessors:
-     * \code
-     * namespace vigra {
-     *     template <class ImageIterator, class Accessor>
-     *     void
-     *     importImage(const ImageImportInfo& importInfo,
-     *                 ImageIterator imageIterator, Accessor imageAccessor)
-     * }
-     * \endcode
-     *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
-     * \code
-     * namespace vigra {
-     *     template <class ImageIterator, class Accessor>
-     *     inline void
-     *     importImage(const ImageImportInfo& importInfo,
-     *                 const pair<ImageIterator, Accessor>& image)
-     * }
-     * \endcode
-     *
-     * <B>Usage</B>
-     *
-     * <B>\#include \<vigra/impex.hxx\></B>
-     *
-     * Namespace: vigra
-     *
-     * \code
-     *     ImageImportInfo info("myimage.gif");
-     *
-     *     if (info.isGrayscale())
-     *     {
-     *         // create byte image of appropriate size
-     *         BImage image(info.width(), info.height());
-     *
-     *         importImage(info, destImage(image));
-     *         ...
-     *     }
-     *     else
-     *     {
-     *         // create byte RGB image of appropriate size
-     *         BRGBImage image(info.width(), info.height());
-     *
-     *         importImage(info, destImage(image));
-     *         ...
-     *     }
-     * \endcode
-     *
-     * <B>Preconditions</B>
-     *
-     * - The image file must be readable,
-     * - the required support library must be installed (if no such library is given, 
-     *   VIGRA supports the format natively), and
-     * - the file type must be one of the following:
-     *
+    /** 
+    \brief Read the image specified by the given \ref vigra::ImageImportInfo object.
+   
+    If the first parameter is \ref vigra::ImageImportInfo, this function assumes that the destination
+    image has already the appropriate shape. If the first parameter is a string, the destination
+    must be a \ref vigra::MultiArray reference, which will be reshaped automatically.
+    
+    <B>Declarations</B>
+   
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S>
+        void
+        importImage(ImageImportInfo const & import_info,
+                    MultiArrayView<2, T, S> image);
+
+        template <class T, class A>
+        void
+        importImage(char const * filename,
+                    MultiArray<2, T, A> & image);
+
+        template <class T, class A>
+        void
+        importImage(std::string const & filename,
+                    MultiArray<2, T, A> & image);
+    }
+    \endcode
+   
+    pass \ref ImageIterators and \ref DataAccessors:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importImage(const ImageImportInfo& importInfo,
+                    ImageIterator imageIterator, Accessor imageAccessor)
+    }
+    \endcode
+   
+    Use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        importImage(const ImageImportInfo& importInfo,
+                    const pair<ImageIterator, Accessor>& image)
+    }
+    \endcode
+   
+    <B>Usage</B>
+   
+    <B>\#include \<vigra/impex.hxx\></B>
+   
+    Namespace: vigra
+   
+    \code
+        ImageImportInfo info("myimage.gif");
+   
+        if (info.isGrayscale())
+        {
+            // create byte image of appropriate size
+            BImage image(info.width(), info.height());
+   
+            importImage(info, destImage(image));
+            ...
+        }
+        else
+        {
+            // create byte RGB image of appropriate size
+            BRGBImage image(info.width(), info.height());
+   
+            importImage(info, destImage(image));
+            ...
+        }
+    \endcode
+   
+    <B>Preconditions</B>
+   
+    - The image file must be readable,
+    - the required support library must be installed (if no such library is given, 
+      VIGRA supports the format natively), and
+    - the file type must be one of the following:
+   
     <table cellspacing="10">
     <tr align="left">
     <th>Type</th><th> Extension </th><th> Name                           </th><th> Support Library </th>
@@ -706,7 +719,7 @@ namespace vigra
        <td> VIFF </td><td> xv        </td><td> Khoros Visualization image file                            </td><td> </td>
        </table>
      */
-    doxygen_overloaded_function(template <...> inline void importImage)
+    doxygen_overloaded_function(template <...> void importImage)
 
 
     template <class ImageIterator, class ImageAccessor>
@@ -737,6 +750,8 @@ namespace vigra
     importImage(ImageImportInfo const & import_info,
                 MultiArrayView<2, T, S> image)
     {
+        vigra_precondition(import_info.shape() == image.shape(),
+            "importImage(): shape mismatch between input and output.");
         importImage(import_info, destImage(image));
     }
 
@@ -758,91 +773,100 @@ namespace vigra
         importImage(name.c_str(), image);
     }
 
-    /**
-     * \brief Write an image given a \ref vigra::ImageExportInfo object.
-     *
-     * If the file format to be exported to supports the pixel type of
-     * the source image, the pixel type will be kept
-     * (e.g. <tt>float</tt> can be stored as TIFF without conversion,
-     * in contrast to most other image export toolkits).  Otherwise,
-     * the pixel values are transformed to the range 0..255 and
-     * converted to <tt>unsigned char</tt>.  Currently, the following
-     * file formats are supported.  The pixel types given in brackets
-     * are those that are written without conversion:
-     *     - BMP: Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB);
-     *     - GIF: CompuServe graphics interchange format, 8-bit color (pixel types: UINT8 as gray and RGB);
-     *     - JPEG: Joint Photographic Experts Group JFIF format, compressed 24-bit color
-     *             (pixel types: UINT8 as gray and RGB), only available if libjpeg is installed;
-     *     - PNG: Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels),
-     *             only available if libpng is installed;
-     *     - PBM: Portable bitmap format (black and white);
-     *     - PGM: Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale);
-     *     - PNM: Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB);
-     *     - PPM: Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB);
-     *     - SUN: SUN Rasterfile (pixel types: UINT8 as gray and RGB);
-     *     - TIFF: Tagged Image File Format
-     *           (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels),
-     *           only available if libtiff is installed;
-     *     - VIFF: Khoros Visualization image file
-     *           (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels);
-     *
-     * <B>Declarations</B>
-     *
-     * pass 2D array views:
-     * \code
-     * namespace vigra {
-     *     template <class ImageIterator, class ImageAccessor>
-     *     void
-     *     exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
-     *                 const ImageExportInfo& exportInfo)
-     * }
-     * \endcode
-     *
-     * pass \ref ImageIterators and \ref DataAccessors:
-     * \code
-     * namespace vigra {
-     *     template <class ImageIterator, class ImageAccessor>
-     *     void
-     *     exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
-     *                 const ImageExportInfo& exportInfo)
-     * }
-     * \endcode
-     *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor>
-     *         void exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
-     *                          const ImageExportInfo& exportInfo)
-     *     }
-     * \endcode
-     *
-     * <B>Usage</B>
-     *
-     * <B>\#include \<vigra/impex.hxx\></B>
-     *
-     * Namespace: vigra
-     * \code
-     *     BRGBImage image(width, height);
-     *     ...
-     *
-     *     // write as JPEG image, using compression quality 80
-     *     exportImage(srcImageRange(image),
-     *                 ImageExportInfo("my-image.jpg").setCompression("80"));
-     *
-     *     // Force it to a particular pixel type.  The pixel type must be supported by the
-     *     // desired image file format, otherwise an \ref vigra::PreconditionViolation
-     *     // exception will be thrown.
-     *     exportImage(srcImageRange(image),
-     *                 ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
-     * \endcode
-     *
-     * <B>Preconditions</B>
-     *
-     * - The image file must be writable and
-     * - the file type must be one of the supported file types.
-     */
-    doxygen_overloaded_function(template <...> inline void exportImage)
+    /** \brief Write an image given a \ref vigra::ImageExportInfo object.
+    
+    If the file format to be exported to supports the pixel type of
+    the source image, the pixel type will be kept
+    (e.g. <tt>float</tt> can be stored as TIFF without conversion,
+    in contrast to most other image export toolkits).  Otherwise,
+    the pixel values are transformed to the range 0..255 and
+    converted to <tt>unsigned char</tt>.  Currently, the following
+    file formats are supported.  The pixel types given in brackets
+    are those that are written without conversion:
+        - BMP: Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB);
+        - GIF: CompuServe graphics interchange format, 8-bit color (pixel types: UINT8 as gray and RGB);
+        - JPEG: Joint Photographic Experts Group JFIF format, compressed 24-bit color
+                (pixel types: UINT8 as gray and RGB), only available if libjpeg is installed;
+        - PNG: Portable Network Graphic (pixel types: UINT8 and UINT16 with up to 4 channels),
+                only available if libpng is installed;
+        - PBM: Portable bitmap format (black and white);
+        - PGM: Portable graymap format (pixel types: UINT8, INT16, INT32 as gray scale);
+        - PNM: Portable anymap (pixel types: UINT8, INT16, INT32 as gray and RGB);
+        - PPM: Portable pixmap format (pixel types: UINT8, INT16, INT32 as RGB);
+        - SUN: SUN Rasterfile (pixel types: UINT8 as gray and RGB);
+        - TIFF: Tagged Image File Format
+              (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with up to 4 channels),
+              only available if libtiff is installed;
+        - VIFF: Khoros Visualization image file
+              (pixel types: UINT8, INT16, INT32, FLOAT, DOUBLE with arbitrary many channels);
+    
+    <B>Declarations</B>
+    
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S>
+        void
+        exportImage(MultiArrayView<2, T, S> const & image,
+                    ImageExportInfo const & export_info);
+
+        template <class T, class S>
+        void
+        exportImage(MultiArrayView<2, T, S> const & image,
+                    char const * filename);
+
+        template <class T, class S>
+        void
+        exportImage(MultiArrayView<2, T, S> const & image,
+                    std::string const & filename);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
+    \code
+    namespace vigra {
+        template <class ImageIterator, class ImageAccessor>
+        void
+        exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
+                    const ImageExportInfo& exportInfo)
+    }
+    \endcode
+    
+    Use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+        namespace vigra {
+            template <class ImageIterator, class ImageAccessor>
+            void exportImage(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
+                             const ImageExportInfo& exportInfo)
+        }
+    \endcode
+    
+    <B>Usage</B>
+    
+    <B>\#include \<vigra/impex.hxx\></B>
+    
+    Namespace: vigra
+    \code
+        BRGBImage image(width, height);
+        ...
+    
+        // write as JPEG image, using compression quality 80
+        exportImage(srcImageRange(image),
+                    ImageExportInfo("my-image.jpg").setCompression("80"));
+    
+        // Force it to a particular pixel type.  The pixel type must be supported by the
+        // desired image file format, otherwise an \ref vigra::PreconditionViolation
+        // exception will be thrown.
+        exportImage(srcImageRange(image),
+                    ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
+    \endcode
+    
+    <B>Preconditions</B>
+    
+    - The image file must be writable and
+    - the file type must be one of the supported file types.
+    */
+    doxygen_overloaded_function(template <...> void exportImage)
 
 
     template <class ImageIterator, class ImageAccessor>

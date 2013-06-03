@@ -103,15 +103,15 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-              class DestIterator, class DestAccessor,
-              class GradValue,
-              class DestValue = DestAccessor::value_type>
-        void differenceOfExponentialEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               DestIterator dul, DestAccessor da,
-               double scale, GradValue gradient_threshold,
-               DestValue edge_marker = NumericTraits<DestValue>::one())
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class GradValue, class DestValue>
+        void 
+        differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                                         MultiArrayView<2, T2, S2> dest,
+                                         double scale,
+                                         GradValue gradient_threshold,
+                                         DestValue edge_marker = NumericTraits<DestValue>::one());
     }
     \endcode
 
@@ -348,9 +348,12 @@ template <class T1, class S1,
 inline void 
 differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                  MultiArrayView<2, T2, S2> dest,
-                                 double scale, GradValue gradient_threshold,
+                                 double scale,
+                                 GradValue gradient_threshold,
                                  DestValue edge_marker)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "differenceOfExponentialEdgeImage(): shape mismatch between input and output.");
     differenceOfExponentialEdgeImage(srcImageRange(src),
                                      destImage(dest),
                                      scale, gradient_threshold, edge_marker);
@@ -364,6 +367,8 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                  MultiArrayView<2, T2, S2> dest,
                                  double scale, GradValue gradient_threshold)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "differenceOfExponentialEdgeImage(): shape mismatch between input and output.");
     differenceOfExponentialEdgeImage(srcImageRange(src),
                                      destImage(dest),
                                      scale, gradient_threshold, T2(1));
@@ -421,15 +426,15 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-              class DestIterator, class DestAccessor,
-              class GradValue,
-              class DestValue = DestAccessor::value_type>
-        void differenceOfExponentialCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               DestIterator dul, DestAccessor da,
-               double scale, GradValue gradient_threshold,
-               DestValue edge_marker = NumericTraits<DestValue>::one())
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class GradValue, class DestValue>
+        void
+        differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                                              MultiArrayView<2, T2, S2> dest,
+                                              double scale,
+                                              GradValue gradient_threshold,
+                                              DestValue edge_marker = NumericTraits<DestValue>::one());
     }
     \endcode
 
@@ -722,9 +727,12 @@ template <class T1, class S1,
 inline void
 differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                                       MultiArrayView<2, T2, S2> dest,
-                                      double scale, GradValue gradient_threshold,
+                                      double scale,
+                                      GradValue gradient_threshold,
                                       DestValue edge_marker)
 {
+    vigra_precondition(2*src.shape() - Shape2(1) == dest.shape(),
+        "differenceOfExponentialCrackEdgeImage(): shape mismatch between input and output.");
     differenceOfExponentialCrackEdgeImage(srcImageRange(src),
                                           destImage(dest),
                                           scale, gradient_threshold, edge_marker);
@@ -758,10 +766,10 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class Iterator, class Accessor, class SrcValue>
-        void removeShortEdges(
-               Iterator sul, Iterator slr, Accessor sa,
-               int min_edge_length, SrcValue non_edge_marker)
+        template <class T, class S, class Value>
+        void
+        removeShortEdges(MultiArrayView<2, T, S> image,
+                         unsigned int min_edge_length, Value non_edge_marker);
     }
     \endcode
 
@@ -909,10 +917,9 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor, class SrcValue>
-        void closeGapsInCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               SrcValue edge_marker)
+        template <class T, class S, class Value>
+        void
+        closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker);
     }
     \endcode
 
@@ -1138,10 +1145,10 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor, class SrcValue>
-        void beautifyCrackEdgeImage(
-               SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-               SrcValue edge_marker, SrcValue background_marker)
+        template <class T, class S, class Value>
+        void
+        beautifyCrackEdgeImage(MultiArrayView<2, T, S> image,
+                               Value edge_marker, Value background_marker);
     }
     \endcode
 
@@ -1257,7 +1264,7 @@ beautifyCrackEdgeImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class T, class S, class Value>
 inline void
 beautifyCrackEdgeImage(MultiArrayView<2, T, S> image,
-                      Value edge_marker, Value background_marker)
+                       Value edge_marker, Value background_marker)
 {
     beautifyCrackEdgeImage(destImageRange(image),
                            edge_marker, background_marker);
@@ -1414,17 +1421,18 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     pass 2D array views:
     \code
     namespace vigra {
-        // compute edgels from a gradient image
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void 
-        cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                       BackInsertable & edgels);
-
         // compute edgels from a scalar image (determine gradient internally at 'scale')
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        template <class T, class S, class BackInsertable>
         void
-        cannyEdgelList(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                       BackInsertable & edgels, double scale);
+        cannyEdgelList(MultiArrayView<2, T, S> const & src,
+                       BackInsertable & edgels,
+                       double scale);
+
+        // compute edgels from a pre-computed gradient image
+        template <class T, class S, class BackInsertable>
+        void
+        cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
+                       BackInsertable & edgels);
     }
     \endcode
 
@@ -1554,7 +1562,7 @@ cannyEdgelList(MultiArrayView<2, T, S> const & src,
 
 template <class T, class S, class BackInsertable>
 inline void
-cannyEdgelList(MultiArrayView<2, T, S> const & src,
+cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                BackInsertable & edgels)
 {
     cannyEdgelList(srcImageRange(src), edgels);
@@ -1578,19 +1586,22 @@ cannyEdgelList(MultiArrayView<2, T, S> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        // compute edgels from a gradient image
-        template <class SrcIterator, class SrcAccessor, 
-                  class BackInsertable, class GradValue>
-        void 
-        cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                                BackInsertable & edgels, GradValue grad_threshold);
-
         // compute edgels from a scalar image (determine gradient internally at 'scale')
-        template <class SrcIterator, class SrcAccessor, 
+        template <class T, class S, 
                   class BackInsertable, class GradValue>
-        void 
-        cannyEdgelListThreshold(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                                BackInsertable & edgels, double scale, GradValue grad_threshold);
+        void
+        cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
+                                BackInsertable & edgels,
+                                double scale,
+                                GradValue grad_threshold);
+
+        // compute edgels from a pre-computed gradient image
+        template <class T, class S, 
+                  class BackInsertable, class GradValue>
+        void
+        cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
+                                BackInsertable & edgels,
+                                GradValue grad_threshold);
     }
     \endcode
 
@@ -1722,7 +1733,9 @@ template <class T, class S,
           class BackInsertable, class GradValue>
 inline void
 cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
-                        BackInsertable & edgels, double scale, GradValue grad_threshold)
+                        BackInsertable & edgels,
+                        double scale,
+                        GradValue grad_threshold)
 {
     cannyEdgelListThreshold(srcImageRange(src), edgels, scale, grad_threshold);
 }
@@ -1730,8 +1743,9 @@ cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
 template <class T, class S, 
           class BackInsertable, class GradValue>
 inline void
-cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
-                        BackInsertable & edgels, GradValue grad_threshold)
+cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
+                        BackInsertable & edgels,
+                        GradValue grad_threshold)
 {
     cannyEdgelListThreshold(srcImageRange(src), edgels, grad_threshold);
 }
@@ -1745,7 +1759,7 @@ cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
 
 /** \brief Detect and mark edges in an edge image using Canny's algorithm.
 
-    This operator first calls \ref cannyEdgelList() to generate an
+    This operator first calls \ref cannyEdgelList() with the given scale to generate an
     edgel list for the given image. Then it scans this list and selects edgels
     whose strength is above the given <TT>gradient_threshold</TT>. For each of these
     edgels, the edgel's location is rounded to the nearest pixel, and that
@@ -1756,13 +1770,15 @@ cannyEdgelListThreshold(MultiArrayView<2, T, S> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class GradValue, class DestValue>
-        void cannyEdgeImage(
-                   SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-                   DestIterator dul, DestAccessor da,
-                   double scale, GradValue gradient_threshold, DestValue edge_marker);
+        void 
+        cannyEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale,
+                       GradValue gradient_threshold,
+                       DestValue edge_marker);
     }
     \endcode
 
@@ -1877,6 +1893,8 @@ cannyEdgeImage(MultiArrayView<2, T1, S1> const & src,
                MultiArrayView<2, T2, S2> dest,
                double scale, GradValue gradient_threshold, DestValue edge_marker)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "cannyEdgeImage(): shape mismatch between input and output.");
     cannyEdgeImage(srcImageRange(src),
                    destImage(dest),
                    scale, gradient_threshold, edge_marker);
@@ -2015,14 +2033,15 @@ void cannyEdgeImageFromGrad(
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class GradValue, class DestValue>
-        void cannyEdgeImageFromGradWithThinning(
-                   SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-                   DestIterator dul, DestAccessor da,
-                   GradValue gradient_threshold,
-                   DestValue edge_marker, bool addBorder = true);
+        void 
+        cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> const & src,
+                                           MultiArrayView<2, T2, S2> dest,
+                                           GradValue gradient_threshold,
+                                           DestValue edge_marker,
+                                           bool addBorder = true);
     }
     \endcode
 
@@ -2108,7 +2127,7 @@ void cannyEdgeImageFromGradWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
            GradValue gradient_threshold,
-           DestValue edge_marker, bool addBorder)
+           DestValue edge_marker, bool addBorder = true)
 {
     int w = slr.x - sul.x;
     int h = slr.y - sul.y;
@@ -2204,40 +2223,14 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
 inline void cannyEdgeImageFromGradWithThinning(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-           DestIterator dul, DestAccessor da,
-           GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageFromGradWithThinning(sul, slr, sa,
-                               dul, da,
-                               gradient_threshold, edge_marker, true);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue, class DestValue>
-inline void cannyEdgeImageFromGradWithThinning(
            triple<SrcIterator, SrcIterator, SrcAccessor> src,
            pair<DestIterator, DestAccessor> dest,
            GradValue gradient_threshold,
-           DestValue edge_marker, bool addBorder)
+           DestValue edge_marker, bool addBorder = true)
 {
     cannyEdgeImageFromGradWithThinning(src.first, src.second, src.third,
                                dest.first, dest.second,
                                gradient_threshold, edge_marker, addBorder);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue, class DestValue>
-inline void cannyEdgeImageFromGradWithThinning(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageFromGradWithThinning(src.first, src.second, src.third,
-                               dest.first, dest.second,
-                               gradient_threshold, edge_marker, true);
 }
 
 template <class T1, class S1,
@@ -2247,24 +2240,13 @@ inline void
 cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> const & src,
                                    MultiArrayView<2, T2, S2> dest,
                                    GradValue gradient_threshold,
-                                   DestValue edge_marker, bool addBorder)
+                                   DestValue edge_marker, bool addBorder = true)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "cannyEdgeImageFromGradWithThinning(): shape mismatch between input and output.");
     cannyEdgeImageFromGradWithThinning(srcImageRange(src),
                                        destImage(dest),
                                        gradient_threshold, edge_marker, addBorder);
-}
-
-template <class T1, class S1,
-          class T2, class S2,
-          class GradValue, class DestValue>
-inline void 
-cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> const & src,
-                                   MultiArrayView<2, T2, S2> dest,
-                                   GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageFromGradWithThinning(srcImageRange(src),
-                                       destImage(dest),
-                                       gradient_threshold, edge_marker, true);
 }
 
 /********************************************************/
@@ -2284,14 +2266,16 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class GradValue, class DestValue>
-        void cannyEdgeImageWithThinning(
-                   SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-                   DestIterator dul, DestAccessor da,
-                   double scale, GradValue gradient_threshold,
-                   DestValue edge_marker, bool addBorder = true);
+        void 
+        cannyEdgeImageWithThinning(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest,
+                                   double scale, 
+                                   GradValue gradient_threshold,
+                                   DestValue edge_marker, 
+                                   bool addBorder = true);
     }
     \endcode
 
@@ -2368,7 +2352,7 @@ void cannyEdgeImageWithThinning(
            SrcIterator sul, SrcIterator slr, SrcAccessor sa,
            DestIterator dul, DestAccessor da,
            double scale, GradValue gradient_threshold,
-           DestValue edge_marker, bool addBorder)
+           DestValue edge_marker, bool addBorder = true)
 {
     // mark pixels that are higher than their neighbors in gradient direction
     typedef typename NumericTraits<typename SrcAccessor::value_type>::RealPromote TmpType;
@@ -2381,41 +2365,15 @@ void cannyEdgeImageWithThinning(
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class GradValue, class DestValue>
-inline void cannyEdgeImageWithThinning(
-           SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-           DestIterator dul, DestAccessor da,
-           double scale, GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageWithThinning(sul, slr, sa,
-                               dul, da,
-                               scale, gradient_threshold, edge_marker, true);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue, class DestValue>
 inline void 
 cannyEdgeImageWithThinning(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            pair<DestIterator, DestAccessor> dest,
                            double scale, GradValue gradient_threshold,
-                           DestValue edge_marker, bool addBorder)
+                           DestValue edge_marker, bool addBorder = true)
 {
     cannyEdgeImageWithThinning(src.first, src.second, src.third,
                                dest.first, dest.second,
                                scale, gradient_threshold, edge_marker, addBorder);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class GradValue, class DestValue>
-inline void 
-cannyEdgeImageWithThinning(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           pair<DestIterator, DestAccessor> dest,
-                           double scale, GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageWithThinning(src.first, src.second, src.third,
-                               dest.first, dest.second,
-                               scale, gradient_threshold, edge_marker, true);
 }
 
 template <class T1, class S1,
@@ -2425,24 +2383,13 @@ inline void
 cannyEdgeImageWithThinning(MultiArrayView<2, T1, S1> const & src,
                            MultiArrayView<2, T2, S2> dest,
                            double scale, GradValue gradient_threshold,
-                           DestValue edge_marker, bool addBorder)
+                           DestValue edge_marker, bool addBorder = true)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "cannyEdgeImageWithThinning(): shape mismatch between input and output.");
     cannyEdgeImageWithThinning(srcImageRange(src),
                                destImage(dest),
                                scale, gradient_threshold, edge_marker, addBorder);
-}
-
-template <class T1, class S1,
-          class T2, class S2,
-          class GradValue, class DestValue>
-inline void 
-cannyEdgeImageWithThinning(MultiArrayView<2, T1, S1> const & src,
-                           MultiArrayView<2, T2, S2> dest,
-                           double scale, GradValue gradient_threshold, DestValue edge_marker)
-{
-    cannyEdgeImageWithThinning(srcImageRange(src),
-                               destImage(dest),
-                               scale, gradient_threshold, edge_marker, true);
 }
 
 /********************************************************/
@@ -2541,15 +2488,18 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     pass 2D array views:
     \code
     namespace vigra {
-        // compute edgels from a gradient image
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                               BackInsertable & edgels);
-
         // compute edgels from a scalar image (determine gradient internally at 'scale')
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void cannyEdgelList3x3(SrcIterator ul, SrcIterator lr, SrcAccessor src,
-                               BackInsertable & edgels, double scale);
+        template <class T, class S, class BackInsertable>
+        void
+        cannyEdgelList3x3(MultiArrayView<2, T, S> const & src,
+                          BackInsertable & edgels, 
+                          double scale);
+
+        // compute edgels from a pre-computed gradient image
+        template <class T, class S, class BackInsertable>
+        void
+        cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
+                          BackInsertable & edgels);
     }
     \endcode
 
@@ -2676,7 +2626,7 @@ cannyEdgelList3x3(MultiArrayView<2, T, S> const & src,
 
 template <class T, class S, class BackInsertable>
 inline void
-cannyEdgelList3x3(MultiArrayView<2, T, S> const & src,
+cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                   BackInsertable & edgels)
 {
     cannyEdgelList3x3(srcImageRange(src), edgels);
@@ -2849,8 +2799,9 @@ cannyEdgelList3x3Threshold(MultiArrayView<2, T, S> const & src,
 template <class T, class S, 
           class BackInsertable, class GradValue>
 inline void
-cannyEdgelList3x3Threshold(MultiArrayView<2, T, S> const & src,
-                           BackInsertable & edgels, GradValue grad_thresh)
+cannyEdgelList3x3Threshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
+                           BackInsertable & edgels,
+                           GradValue grad_thresh)
 {
     cannyEdgelList3x3Threshold(srcImageRange(src), edgels, grad_thresh);
 }

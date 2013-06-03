@@ -73,12 +73,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                                DestIterator dul, DestAccessor ad,
-                                double scale)
+        radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                double scale);
     }
     \endcode
 
@@ -275,6 +275,8 @@ radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest,
                         double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "radialSymmetryTransform(): shape mismatch between input and output.");
     radialSymmetryTransform(srcImageRange(src),
                             destImage(dest),
                             scale);

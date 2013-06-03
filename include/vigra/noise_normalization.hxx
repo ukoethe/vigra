@@ -981,10 +981,11 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                     BackInsertable & result,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+        template <class T1, class S1, class BackInsertable>
+        void
+        noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
+                                BackInsertable & result,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
     
@@ -1102,8 +1103,9 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
-        void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+        template <class T1, class S1, class BackInsertable>
+        void
+        noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
                                 BackInsertable & result,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
@@ -1215,11 +1217,12 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        bool nonparametricNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                             DestIterator dul, DestAccessor dest,
-                                             NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                        MultiArrayView<2, T2, S2> dest,
+                                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
     
@@ -1295,6 +1298,8 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                 MultiArrayView<2, T2, S2> dest,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonparametricNoiseNormalization(): shape mismatch between input and output.");
     return nonparametricNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
@@ -1316,11 +1321,12 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        bool quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                         DestIterator dul, DestAccessor dest,
-                                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
     
@@ -1396,6 +1402,8 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
                             NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "quadraticNoiseNormalization(): shape mismatch between input and output.");
     return quadraticNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
@@ -1420,11 +1428,12 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                         DestIterator dul, DestAccessor dest,
-                                         double a0, double a1, double a2);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    double a0, double a1, double a2);
     }
     \endcode
     
@@ -1501,6 +1510,8 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
                             double a0, double a1, double a2)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "quadraticNoiseNormalization(): shape mismatch between input and output.");
     quadraticNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1, a2);
 }
 
@@ -1522,11 +1533,12 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-        bool linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                      DestIterator dul, DestAccessor dest,
-                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
     
@@ -1602,6 +1614,8 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                          MultiArrayView<2, T2, S2> dest,
                          NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "linearNoiseNormalization(): shape mismatch between input and output.");
     return linearNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
@@ -1626,11 +1640,12 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                      DestIterator dul, DestAccessor dest,
-                                      double a0, double a1);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 double a0, double a1);
     }
     \endcode
     
@@ -1707,6 +1722,8 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                          MultiArrayView<2, T2, S2> dest,
                          double a0, double a1)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "linearNoiseNormalization(): shape mismatch between input and output.");
     linearNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1);
 }
 

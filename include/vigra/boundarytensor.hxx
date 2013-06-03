@@ -386,11 +386,12 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-        void rieszTransformOfLOG(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
-                                 DestIterator dupperleft, DestAccessor dest,
-                                 double scale, unsigned int xorder, unsigned int yorder);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double scale, unsigned int xorder, unsigned int yorder);
     }
     \endcode
 
@@ -544,11 +545,13 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-inline
-void rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
-                         MultiArrayView<2, T2, S2> dest,
-                         double scale, unsigned int xorder, unsigned int yorder)
+inline void
+rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    double scale, unsigned int xorder, unsigned int yorder)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "rieszTransformOfLOG(): shape mismatch between input and output.");
     rieszTransformOfLOG(srcImageRange(src), destImage(dest),
                         scale, xorder, yorder);
 }
@@ -587,11 +590,12 @@ void rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void boundaryTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
-                            DestIterator dupperleft, DestAccessor dest,
-                            double scale);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        boundaryTensor(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale);
     }
     \endcode
 
@@ -661,11 +665,13 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-inline
-void boundaryTensor(MultiArrayView<2, T1, S1> const & src,
-                    MultiArrayView<2, T2, S2> dest,
-                    double scale)
+inline void
+boundaryTensor(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "boundaryTensor(): shape mismatch between input and output.");
     boundaryTensor(srcImageRange(src),
                    destImage(dest), scale);
 }
@@ -684,11 +690,12 @@ void boundaryTensor(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void boundaryTensor1(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
-                             DestIterator dupperleft, DestAccessor dest,
-                             double scale);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale);
     }
     \endcode
 
@@ -746,11 +753,13 @@ void boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-inline
-void boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
-                     MultiArrayView<2, T2, S2> dest,
-                     double scale)
+inline void
+boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
+                MultiArrayView<2, T2, S2> dest,
+                double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "boundaryTensor1(): shape mismatch between input and output.");
     boundaryTensor1(srcImageRange(src),
                     destImage(dest), scale);
 }
@@ -872,6 +881,8 @@ void boundaryTensor3(MultiArrayView<2, T1, S1> const & src,
                      MultiArrayView<2, T2O, S2Odd> odd,
                      double scale)
 {
+    vigra_precondition(src.shape() == even.shape() && src.shape() == odd.shape(),
+        "boundaryTensor3(): shape mismatch between input and output.");
     boundaryTensor3(srcImageRange(src),
                     destImage(even), destImage(odd), scale);
 }

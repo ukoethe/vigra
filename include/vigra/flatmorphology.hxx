@@ -70,13 +70,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        discRankOrderFilter(SrcIterator upperleft1, 
-                            SrcIterator lowerright1, SrcAccessor sa,
-                            DestIterator upperleft2, DestAccessor da,
-                            int radius, float rank)
+        discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            int radius, float rank);
     }
     \endcode
     
@@ -366,7 +365,7 @@ discRankOrderFilter(SrcIterator upperleft1,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void
+inline void
 discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
                     int radius, float rank)
@@ -378,11 +377,13 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-void
+inline void
 discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest,
                     int radius, float rank)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "discRankOrderFilter(): shape mismatch between input and output.");
     discRankOrderFilter(srcImageRange(src),
                         destImage(dest),
                         radius, rank);
@@ -404,13 +405,12 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void 
-        discErosion(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discErosion(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    int radius);
     }
     \endcode
     
@@ -478,6 +478,8 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
             MultiArrayView<2, T2, S2> dest,
             int radius)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "discErosion(): shape mismatch between input and output.");
     discErosion(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -497,13 +499,12 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void 
-        discDilation(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discDilation(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest,
+                     int radius);
     }
     \endcode
     
@@ -571,6 +572,8 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
              MultiArrayView<2, T2, S2> dest,
              int radius)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "discDilation(): shape mismatch between input and output.");
     discDilation(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -590,13 +593,12 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void 
-        discMedian(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discMedian(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   int radius);
     }
     \endcode
     
@@ -664,6 +666,8 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
            MultiArrayView<2, T2, S2> dest,
            int radius)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "discMedian(): shape mismatch between input and output.");
     discMedian(srcImageRange(src), destImage(dest), radius);
 }
 
@@ -692,15 +696,14 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class MaskIterator, class MaskAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
         void
-        discRankOrderFilterWithMask(SrcIterator upperleft1, 
-                                    SrcIterator lowerright1, SrcAccessor sa,
-                                    MaskIterator upperleftm, MaskAccessor mask,
-                                    DestIterator upperleft2, DestAccessor da,
-                                    int radius, float rank)
+        discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, TM, SM> const & mask,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    int radius, float rank);
     }
     \endcode
     
@@ -1040,7 +1043,7 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-void
+inline void
 discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
                             pair<DestIterator, DestAccessor> dest,
@@ -1055,12 +1058,14 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 template <class T1, class S1,
           class TM, class SM,
           class T2, class S2>
-void
+inline void
 discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, TM, SM> const & mask,
                             MultiArrayView<2, T2, S2> dest,
                             int radius, float rank)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discRankOrderFilterWithMask(): shape mismatch between input and output.");
     discRankOrderFilterWithMask(srcImageRange(src),
                                 maskImage(mask),
                                 destImage(dest),
@@ -1084,15 +1089,14 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class MaskIterator, class MaskAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
         void 
-        discErosionWithMask(SrcIterator upperleft1, 
-                            SrcIterator lowerright1, SrcAccessor sa,
-                            MaskIterator upperleftm, MaskAccessor mask,
-                            DestIterator upperleft2, DestAccessor da,
-                            int radius)
+        discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, TM, SM> const & mask,
+                            MultiArrayView<2, T2, S2> dest,
+                            int radius);
     }
     \endcode
     
@@ -1173,6 +1177,8 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest,
                     int radius)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discErosionWithMask(): shape mismatch between input and output.");
     discErosionWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
@@ -1193,15 +1199,14 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class MaskIterator, class MaskAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
         void 
-        discDilationWithMask(SrcIterator upperleft1, 
-                            SrcIterator lowerright1, SrcAccessor sa,
-                            MaskIterator upperleftm, MaskAccessor mask,
-                            DestIterator upperleft2, DestAccessor da,
-                            int radius)
+        discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
+                             MultiArrayView<2, TM, SM> const & mask,
+                             MultiArrayView<2, T2, S2> dest,
+                             int radius);
     }
     \endcode
     
@@ -1282,6 +1287,8 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
                      MultiArrayView<2, T2, S2> dest,
                      int radius)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discDilationWithMask(): shape mismatch between input and output.");
     discDilationWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
@@ -1302,15 +1309,14 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class MaskIterator, class MaskAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
         void 
-        discMedianWithMask(SrcIterator upperleft1, 
-                            SrcIterator lowerright1, SrcAccessor sa,
-                            MaskIterator upperleftm, MaskAccessor mask,
-                            DestIterator upperleft2, DestAccessor da,
-                            int radius)
+        discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           MultiArrayView<2, T2, S2> dest,
+                           int radius);
     }
     \endcode
     
@@ -1391,6 +1397,8 @@ discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    int radius)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discMedianWithMask(): shape mismatch between input and output.");
     discMedianWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 

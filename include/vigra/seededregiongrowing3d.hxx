@@ -254,18 +254,18 @@ public:
     pass 3D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class Shape, class SrcAccessor,
-                  class SeedImageIterator, class SeedAccessor,
-                  class DestImageIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class TS, class AS,
+                  class T2, class S2,
                   class RegionStatisticsArray, class Neighborhood>
-        void 
-        seededRegionGrowing3D(SrcImageIterator srcul, Shape shape, SrcAccessor as,
-                              SeedImageIterator seedsul, SeedAccessor aseeds,
-                              DestImageIterator destul, DestAccessor ad,
-                              RegionStatisticsArray & stats, 
-                              SRGType srgType = CompleteGrow,
-                              Neighborhood neighborhood = NeighborCode3DSix(),
-                              double max_cost = NumericTraits<double>::max());
+        void
+        seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & src,
+                              MultiArrayView<3, TS, AS> const & seeds,
+                              MultiArrayView<3, T2, S2>         labels,
+                              RegionStatisticsArray &           stats, 
+                              SRGType                           srgType = CompleteGrow,
+                              Neighborhood                      neighborhood = NeighborCode3DSix(),
+                              double                            max_cost = NumericTraits<double>::max());
     }
     \endcode
 
@@ -592,6 +592,8 @@ seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       RegionStatisticsArray & stats, 
                       SRGType srgType, Neighborhood n, double max_cost)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
     seededRegionGrowing3D(srcMultiArrayRange(img1),
                           srcMultiArray(img3),
                           destMultiArray(img4),
@@ -609,6 +611,8 @@ seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       RegionStatisticsArray & stats, 
                       SRGType srgType, Neighborhood n)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
     seededRegionGrowing3D(srcMultiArrayRange(img1),
                           srcMultiArray(img3),
                           destMultiArray(img4),
@@ -625,6 +629,8 @@ seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats, SRGType srgType)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
     seededRegionGrowing3D(srcMultiArrayRange(img1),
                           srcMultiArray(img3),
                           destMultiArray(img4),
@@ -641,6 +647,8 @@ seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
                       MultiArrayView<3, T2, S2> img4,
                       RegionStatisticsArray & stats)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
     seededRegionGrowing3D(srcMultiArrayRange(img1),
                           srcMultiArray(img3),
                           destMultiArray(img4),

@@ -85,11 +85,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src,
-                                  DestIterator dupperleft, DestAccessor dest,
-                                  Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
+                             MultiArrayView<2, T2, S2> dest,
+                             Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
     }
     \endcode
 
@@ -204,6 +205,8 @@ gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
                      MultiArrayView<2, T2, S2> dest,
                      Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gradientEnergyTensor(): shape mismatch between input and output.");
     gradientEnergyTensor(srcImageRange(src),
                          destImage(dest), derivKernel, smoothKernel);
 }

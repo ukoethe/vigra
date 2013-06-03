@@ -307,13 +307,13 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class ValueType>
-        void distanceTransform(SrcImageIterator src_upperleft, 
-                               SrcImageIterator src_lowerright, SrcAccessor sa,
-                               DestImageIterator dest_upperleft, DestAccessor da,
-                               ValueType background, int norm)
+        void
+        distanceTransform(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest,
+                          ValueType background, int norm);
     }
     \endcode
     
@@ -438,6 +438,8 @@ distanceTransform(MultiArrayView<2, T1, S1> const & src,
                   MultiArrayView<2, T2, S2> dest,
                   ValueType background, int norm)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "distanceTransform(): shape mismatch between input and output.");
     distanceTransform(srcImageRange(src),
                       destImage(dest), background, norm);
 }

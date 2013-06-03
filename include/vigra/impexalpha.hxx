@@ -311,89 +311,90 @@ namespace vigra
 
 
     /**
-     * \brief Read the image specified by the given \ref
-     * vigra::ImageImportInfo object including its alpha channel.
-     *
-     * <B>Declarations</B>
-     *
-     * pass 2D array views:
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor,
-     *                   class AlphaIterator, class AlphaAccessor>
-     *         void
-     *         importImageAlpha(const ImageImportInfo& importInfo,
-     *                          ImageIterator imageIterator, ImageAccessor imageAccessor,
-     *                          AlphaIterator alphaIterator, AlphaAccessor alphaAccessor)
-     *     }
-     * \endcode
-     *
-     * pass \ref ImageIterators and \ref DataAccessors:
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor,
-     *                   class AlphaIterator, class AlphaAccessor>
-     *         void
-     *         importImageAlpha(const ImageImportInfo& importInfo,
-     *                          ImageIterator imageIterator, ImageAccessor imageAccessor,
-     *                          AlphaIterator alphaIterator, AlphaAccessor alphaAccessor)
-     *     }
-     * \endcode
-     *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor,
-     *                   class AlphaIterator, class AlphaAccessor>
-     *         void
-     *         importImageAlpha(const ImageImportInfo& importInfo,
-     *                          const pair<ImageIterator, ImageAccessor>& image,
-     *                          const pair<AlphaIterator, AlphaAccessor>& alpha)
-     *     }
-     * \endcode
-     *
-     * <B>Usage</B>
-     *
-     * <B>\#include \<vigra/impexalpha.hxx\></B>
-     *
-     * Namespace: vigra
-     * \code
-     *     typedef UInt8 value_t;
-     *     ImageImportInfo info("zorro.tif");
-     *
-     *     if (info.isGrayscale())
-     *     {
-     *         BasicImage<value_t> alpha(info.size());
-     *         BasicImage<value_t> image(info.size());
-     *
-     *         importImageAlpha(info,
-     *                          image.upperLeft(), image.accessor(),
-     *                          alpha.upperLeft(), alpha.accessor());
-     *         ...
-     *     }
-     *     else
-     *     {
-     *         BasicImage<value_t> alpha(info.size());
-     *         BasicImage<vigra::RGBValue<value_t> > image(info.size());
-     *
-     *         importImageAlpha(info,
-     *                          image.upperLeft(), image.accessor(),
-     *                          alpha.upperLeft(), alpha.accessor());
-     *         ...
-     *     }
-     * \endcode
-     *
-     * <B>Preconditions</B>
-     *
-     * - The same preconditions hold as for importImage(), however the
-     *   only image formats that support alpha channels are
-     *   + TIFF and
-     *   + PNG.
-     *   In particular, JPEG does <B>not</B> support alpha channels.
-     * - The alpha channel always is scalar-valued, i.e. comprises a
-     *   single band.
-     */
-    doxygen_overloaded_function(template <...> inline void importImageAlpha)
+    
+    \brief Read the image specified by the given \ref
+    vigra::ImageImportInfo object including its alpha channel.
+    
+    <B>Declarations</B>
+    
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        importImageAlpha(ImageImportInfo const & import_info,
+                         MultiArrayView<2, T1, S1> image,
+                         MultiArrayView<2, T2, S2> alpha);
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
+    \code
+        namespace vigra {
+            template <class ImageIterator, class ImageAccessor,
+                      class AlphaIterator, class AlphaAccessor>
+            void
+            importImageAlpha(const ImageImportInfo& importInfo,
+                             ImageIterator imageIterator, ImageAccessor imageAccessor,
+                             AlphaIterator alphaIterator, AlphaAccessor alphaAccessor)
+        }
+    \endcode
+    
+    Use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+        namespace vigra {
+            template <class ImageIterator, class ImageAccessor,
+                      class AlphaIterator, class AlphaAccessor>
+            void
+            importImageAlpha(const ImageImportInfo& importInfo,
+                             const pair<ImageIterator, ImageAccessor>& image,
+                             const pair<AlphaIterator, AlphaAccessor>& alpha)
+        }
+    \endcode
+    
+    <B>Usage</B>
+    
+    <B>\#include \<vigra/impexalpha.hxx\></B>
+    
+    Namespace: vigra
+    \code
+        typedef UInt8 value_t;
+        ImageImportInfo info("zorro.tif");
+    
+        if (info.isGrayscale())
+        {
+            BasicImage<value_t> alpha(info.size());
+            BasicImage<value_t> image(info.size());
+    
+            importImageAlpha(info,
+                             image.upperLeft(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor());
+            ...
+        }
+        else
+        {
+            BasicImage<value_t> alpha(info.size());
+            BasicImage<vigra::RGBValue<value_t> > image(info.size());
+    
+            importImageAlpha(info,
+                             image.upperLeft(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor());
+            ...
+        }
+    \endcode
+    
+    <B>Preconditions</B>
+    
+    - The same preconditions hold as for importImage(), however the
+      only image formats that support alpha channels are
+      + TIFF and
+      + PNG.
+      In particular, JPEG does <B>not</B> support alpha channels.
+    - The alpha channel always is scalar-valued, i.e. comprises a
+      single band.
+    */
+    doxygen_overloaded_function(template <...> void importImageAlpha)
 
 
     template <class ImageIterator, class ImageAccessor,
@@ -432,6 +433,8 @@ namespace vigra
                      MultiArrayView<2, T1, S1> image,
                      MultiArrayView<2, T2, S2> alpha)
     {
+        vigra_precondition(import_info.shape() == image.shape() && import_info.shape() == alpha.shape(),
+            "importImageAlpha(): shape mismatch between input and output.");
         importImageAlpha(import_info, destImage(image), destImage(alpha));
     }
 
@@ -871,91 +874,105 @@ namespace vigra
 
 
     /**
-     * \brief Write the image specified by the given \ref
-     * vigra::ImageExportInfo object including an alpha channel.
-     *
-     * <B>Declarations</B>
-     *
-     * pass 2D array views:
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor,
-     *                   class AlphaIterator, class AlphaAccessor>
-     *         void
-     *         exportImageAlpha(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
-     *                          AlphaIterator alphaUpperLeft, AlphaAccessor alphaAccessor,
-     *                          const ImageExportInfo& exportInfo)
-     *     }
-     * \endcode
-     *
-     * pass \ref ImageIterators and \ref DataAccessors:
-     * \code
-     *     namespace vigra {
-     *         template <class ImageIterator, class ImageAccessor,
-     *                   class AlphaIterator, class AlphaAccessor>
-     *         void
-     *         exportImageAlpha(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
-     *                          AlphaIterator alphaUpperLeft, AlphaAccessor alphaAccessor,
-     *                          const ImageExportInfo& exportInfo)
-     *     }
-     * \endcode
-     *
-     * Use argument objects in conjunction with \ref ArgumentObjectFactories :
-     * \code
-     *     namespace vigra {
-     *     template <class ImageIterator, class ImageAccessor,
-     *               class AlphaIterator, class AlphaAccessor>
-     *     void
-     *     exportImageAlpha(const triple<ImageIterator, ImageIterator, ImageAccessor>& image,
-     *                      const pair<AlphaIterator, AlphaAccessor>& alpha,
-     *                      const ImageExportInfo& exportInfo)
-     *     }
-     * \endcode
-     *
-     * <B>Usage</B>
-     *
-     * <B>\#include \<vigra/impexalpha.hxx\></B>
-     *
-     * Namespace: vigra
-     * \code
-     *     typedef UInt8 value_t;
-     *     ImageExportInfo info("zorro.tif");
-     *
-     *     if (info.isGrayscale())
-     *     {
-     *         BasicImage<value_t> alpha;
-     *         BasicImage<value_t> image;
-     *
-     *         ...
-     *
-     *         exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-     *                          alpha.upperLeft(), alpha.accessor(),
-     *                          info);
-     *     }
-     *     else
-     *     {
-     *         BasicImage<value_t> alpha;
-     *         BasicImage<vigra::RGBValue<value_t> > image;
-     *
-     *         ...
-     *
-     *         exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-     *                          alpha.upperLeft(), alpha.accessor(),
-     *                          info);
-     *     }
-     * \endcode
-     *
-     * <B>Preconditions</B>
-     *
-     * - The same preconditions hold as for exportImage(), however the
-     *   only image formats that support alpha channels are
-     *   + TIFF and
-     *   + PNG.
-     *   In particular, JPEG does <B>not</B> support alpha channels.
-     * - The alpha channel always is scalar-valued, i.e. comprises a
-     *   single band.
-     */
-    doxygen_overloaded_function(template <...> inline void exportImageAlpha)
+    \brief Write the image specified by the given \ref
+    vigra::ImageExportInfo object including an alpha channel.
+    
+    <B>Declarations</B>
+    
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                         MultiArrayView<2, T2, S2> const & alpha,
+                         ImageExportInfo const & export_info);
+
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                         MultiArrayView<2, T2, S2> const & alpha,
+                         char const * filename)
+
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        exportImageAlpha(MultiArrayView<2, T1, S1> const & image,
+                         MultiArrayView<2, T2, S2> const & alpha,
+                         std::string const & filename)
+    }
+    \endcode
+    
+    pass \ref ImageIterators and \ref DataAccessors:
+    \code
+        namespace vigra {
+            template <class ImageIterator, class ImageAccessor,
+                      class AlphaIterator, class AlphaAccessor>
+            void
+            exportImageAlpha(ImageIterator imageUpperLeft, ImageIterator imageLowerRight, ImageAccessor imageAccessor,
+                             AlphaIterator alphaUpperLeft, AlphaAccessor alphaAccessor,
+                             const ImageExportInfo& exportInfo)
+        }
+    \endcode
+    
+    Use argument objects in conjunction with \ref ArgumentObjectFactories :
+    \code
+        namespace vigra {
+        template <class ImageIterator, class ImageAccessor,
+                  class AlphaIterator, class AlphaAccessor>
+        void
+        exportImageAlpha(const triple<ImageIterator, ImageIterator, ImageAccessor>& image,
+                         const pair<AlphaIterator, AlphaAccessor>& alpha,
+                         const ImageExportInfo& exportInfo)
+        }
+    \endcode
+    
+    <B>Usage</B>
+    
+    <B>\#include \<vigra/impexalpha.hxx\></B>
+    
+    Namespace: vigra
+    \code
+        typedef UInt8 value_t;
+        ImageExportInfo info("zorro.tif");
+    
+        if (info.isGrayscale())
+        {
+            BasicImage<value_t> alpha;
+            BasicImage<value_t> image;
+    
+            ...
+    
+            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor(),
+                             info);
+        }
+        else
+        {
+            BasicImage<value_t> alpha;
+            BasicImage<vigra::RGBValue<value_t> > image;
+    
+            ...
+    
+            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor(),
+                             info);
+        }
+    \endcode
+    
+    <B>Preconditions</B>
+    
+    - The same preconditions hold as for exportImage(), however the
+      only image formats that support alpha channels are
+      + TIFF and
+      + PNG.
+      In particular, JPEG does <B>not</B> support alpha channels.
+    - The alpha channel always is scalar-valued, i.e. comprises a
+      single band.
+    */
+    doxygen_overloaded_function(template <...> void exportImageAlpha)
 
 
     template <class ImageIterator, class ImageAccessor,

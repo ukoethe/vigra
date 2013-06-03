@@ -109,14 +109,9 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class Iterator, class Shape, class Accessor, class VALUETYPE>
+        template <unsigned int N, class T, class S, class VALUETYPE>
         void
-        initMultiArray(Iterator s, Shape const & shape, Accessor a,  VALUETYPE const & v);
-
-
-        template <class Iterator, class Shape, class Accessor, class FUNCTOR>
-        void
-        initMultiArray(Iterator s, Shape const & shape, Accessor a,  FUNCTOR const & f);
+        initMultiArray(MultiArrayView<N, T, S> s, VALUETYPE const & v);
     }
     \endcode
     
@@ -224,7 +219,8 @@ initMultiArray(MultiArrayView<N, T, S> s, VALUETYPE const & v)
 
 /** \brief Write value to the specified border values in the array.
 
-*/template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
+*/
+template <class Iterator, class Diff_type, class Accessor, class VALUETYPE>
 inline void initMultiArrayBorder( Iterator upperleft, Diff_type shape, 
                                   Accessor a,  int border_width, VALUETYPE v)
 {
@@ -341,19 +337,11 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
         void
-        copyMultiArray(SrcIterator s, 
-                       SrcShape const & shape, SrcAccessor src,
-                       DestIterator d, DestAccessor dest);
-
-
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestShape, class DestAccessor>
-        void
-        copyMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
-                       DestIterator d, DestShape const & dshape, DestAccessor dest);
+        copyMultiArray(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest);
     }
     \endcode
     
@@ -484,11 +472,14 @@ copyMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & src,
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+                          class T2, class S2>
 inline void
 copyMultiArray(MultiArrayView<N, T1, S1> const & source,
                MultiArrayView<N, T2, S2> dest)
 {
+    for(int k=0; k<N; ++k)
+        vigra_precondition(source.shape(k) == dest.shape(k) || source.shape(k) == 1 || 1 == dest.shape(k),
+            "copyMultiArray(): shape mismatch between input and output.");
     if(source.shape() == dest.shape())
         copyMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
     else
@@ -673,21 +664,12 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor, 
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
                   class Functor>
         void
-        transformMultiArray(SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                            DestIterator d, DestAccessor dest, Functor const & f);
-
-
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestShape, class DestAccessor, 
-                  class Functor>
-        void
-        transformMultiArray(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
-                            DestIterator d, DestShape const & dshape, DestAccessor dest, 
-                            Functor const & f);
+        transformMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest, Functor const & f);
     }
     \endcode
     
@@ -931,6 +913,10 @@ inline void
 transformMultiArray(MultiArrayView<N, T1, S1> const & source,
                     MultiArrayView<N, T2, S2> dest, Functor const & f)
 {
+    for(int k=0; k<N; ++k)
+        vigra_precondition(source.shape(k) == dest.shape(k) || source.shape(k) == 1 || 1 == dest.shape(k),
+            "transformMultiArray(): shape mismatch between input and output.");
+
     typedef FunctorTraits<Functor> FT;
     typedef typename 
         And<typename FT::isInitializer, typename FT::isUnaryAnalyser>::result
@@ -1154,26 +1140,16 @@ combineTwoMultiArraysImpl(
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
-                  class SrcIterator2, class SrcAccessor2,
-                  class DestIterator, class DestAccessor, 
+        template <unsigned int N, class T11, class S11,
+                                  class T12, class S12,
+                                  class T2, class S2, 
                   class Functor>
-        void combineTwoMultiArrays(
-                       SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
-                       SrcIterator2 s2, SrcAccessor2 src2,
-                       DestIterator d, DestAccessor dest, Functor const & f);
-
-
-        template <class SrcIterator1, class SrcShape1, class SrcAccessor1,
-                  class SrcIterator2, class SrcShape2, class SrcAccessor2,
-                  class DestIterator, class DestShape, class DestAccessor, 
-                  class Functor>
-        void combineTwoMultiArrays(
-                       SrcIterator1 s1, SrcShape1 const & sshape1, SrcAccessor1 src1,
-                       SrcIterator2 s2, SrcShape2 const & sshape2, SrcAccessor2 src2,
-                       DestIterator d, DestShape const & dshape, DestAccessor dest, 
-                       Functor const & f);
-            }
+        void
+        combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
+                              MultiArrayView<N, T12, S12> const & source2,
+                              MultiArrayView<N, T2, S2> dest, 
+                              Functor const & f);
+    }
     \endcode
     
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
@@ -1472,6 +1448,11 @@ combineTwoMultiArrays(MultiArrayView<N, T11, S11> const & source1,
                       MultiArrayView<N, T2, S2> dest, 
                       Functor const & f)
 {
+    for(int k=0; k<N; ++k)
+        vigra_precondition((source1.shape(k) == source2.shape(k) || source1.shape(k) == 1 || 1 == source2.shape(k)) &&
+                           (source1.shape(k) == dest.shape(k) || source1.shape(k) == 1 || 1 == dest.shape(k)),
+            "combineTwoMultiArrays(): shape mismatch between inputs and/or output.");
+
     typedef FunctorTraits<Functor> FT;
     typedef typename 
         And<typename FT::isInitializer, typename FT::isBinaryAnalyser>::result
@@ -1532,17 +1513,18 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator1, class SrcShape, class SrcAccessor1,
-                  class SrcIterator2, class SrcAccessor2,
-                  class SrcIterator3, class SrcAccessor3,
-                  class DestIterator, class DestAccessor, 
+        template <unsigned int N, class T11, class S11,
+                                  class T12, class S12, 
+                                  class T13, class S13,
+                                  class T2, class S2, 
                   class Functor>
         void
-        combineThreeMultiArrays(SrcIterator1 s1, SrcShape const & shape, SrcAccessor1 src1,
-                       SrcIterator2 s2, SrcAccessor2 src2,
-                       SrcIterator3 s3, SrcAccessor3 src3,
-                       DestIterator d, DestAccessor dest, Functor const & f);
-                    }
+        combineThreeMultiArrays(MultiArrayView<N, T11, S11> const & source1,
+                                MultiArrayView<N, T12, S12> const & source2,
+                                MultiArrayView<N, T13, S13> const & source3,
+                                MultiArrayView<N, T2, S2> dest,
+                                Functor const & f);
+    }
     \endcode
     
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
@@ -1647,6 +1629,8 @@ combineThreeMultiArrays(MultiArrayView<N, T11, S11> const & source1,
                         MultiArrayView<N, T13, S13> const & source3,
                         MultiArrayView<N, T2, S2> dest, Functor const & f)
 {
+    vigra_precondition(source1.shape() == source2.shape() && source1.shape() == source3.shape() && source1.shape() == dest.shape(),
+        "combineThreeMultiArrays(): shape mismatch between inputs and/or output.");
     
     combineThreeMultiArrays(
            srcMultiArrayRange(source1), 
@@ -1693,9 +1677,11 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class Iterator, class Shape, class Accessor, class Functor>
+        template <unsigned int N, class T, class S, 
+                  class Functor>
         void
-        inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f);
+        inspectMultiArray(MultiArrayView<N, T, S> const & s, 
+                          Functor & f);
     }
     \endcode
 
@@ -1836,12 +1822,13 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class Iterator1, class Shape, class Accessor1, 
-                  class Iterator2, class Accessor2, 
+        template <unsigned int N, class T1, class S1, 
+                                  class T2, class S2, 
                   class Functor>
         void
-        inspectTwoMultiArrays(Iterator1 s1, Shape const & shape, Accessor1 a1,
-                              Iterator2 s2, Accessor2 a2, Functor & f);
+        inspectTwoMultiArrays(MultiArrayView<N, T1, S1> const & s1, 
+                              MultiArrayView<N, T2, S2> const & s2,
+                              Functor & f);
     }
     \endcode
 
@@ -1951,6 +1938,9 @@ inline void
 inspectTwoMultiArrays(MultiArrayView<N, T1, S1> const & s1, 
                       MultiArrayView<N, T2, S2> const & s2, Functor & f)
 {
+    vigra_precondition(s1.shape() == s2.shape(),
+        "inspectTwoMultiArrays(): shape mismatch between inputs.");
+    
     inspectTwoMultiArrays(srcMultiArrayRange(s1), 
                           srcMultiArray(s2), f);
 }

@@ -121,14 +121,13 @@ internalResizeMultiArrayOneDimension(
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class Shape, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
                   class Kernel = BSpline<3, double> >
         void
-        resizeMultiArraySplineInterpolation(
-                              SrcIterator si, Shape const & sshape, SrcAccessor src,
-                              DestIterator di, Shape const & dshape, DestAccessor dest,
-                              Kernel const & spline = BSpline<3, double>());
+        resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,
+                                            MultiArrayView<N, T2, S2> dest,
+                                            Kernel const & spline = BSpline<3, double>());
     }
     \endcode
 

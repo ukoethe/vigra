@@ -209,12 +209,11 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        resizeImageNoInterpolation(
-              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-              DestImageIterator id, DestImageIterator idend, DestAccessor da)
+        resizeImageNoInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 
@@ -415,12 +414,11 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        resizeImageLinearInterpolation(
-              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-              DestImageIterator id, DestImageIterator idend, DestAccessor da)
+        resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 
@@ -632,14 +630,13 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class SPLINE>
         void
-        resizeImageSplineInterpolation(
-              SrcImageIterator is, SrcImageIterator iend, SrcAccessor sa,
-              DestImageIterator id, DestImageIterator idend, DestAccessor da,
-              SPLINE spline = BSpline<3, double>())
+        resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest,
+                                       SPLINE const & spline = BSpline<3, double>());
     }
     \endcode
 
@@ -942,11 +939,11 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        resizeImageCatmullRomInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                              DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
+        resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                           MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 
@@ -1028,11 +1025,11 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        resizeImageCoscotInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                              DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
+        resizeImageCoscotInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 

@@ -1022,14 +1022,13 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void separableConvolveX(SrcImageIterator supperleft,
-                                SrcImageIterator slowerright, SrcAccessor sa,
-                                DestImageIterator dupperleft, DestAccessor da,
-                                KernelIterator ik, KernelAccessor ka,
-                                int kleft, int kright, BorderTreatmentMode border)
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        separableConvolveX(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           Kernel1D<T3> const & kernel);
     }
     \endcode
 
@@ -1138,6 +1137,8 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    Kernel1D<T3> const & kernel)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "separableConvolveX(): shape mismatch between input and output.");
     separableConvolveX(srcImageRange(src),
                        destImage(dest), kernel1d(kernel));
 }
@@ -1158,14 +1159,13 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void separableConvolveY(SrcImageIterator supperleft,
-                                SrcImageIterator slowerright, SrcAccessor sa,
-                                DestImageIterator dupperleft, DestAccessor da,
-                                KernelIterator ik, KernelAccessor ka,
-                                int kleft, int kright, BorderTreatmentMode border)
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        separableConvolveY(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           Kernel1D<T3> const & kernel);
     }
     \endcode
 
@@ -1274,6 +1274,8 @@ separableConvolveY(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    Kernel1D<T3> const & kernel)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "separableConvolveY(): shape mismatch between input and output.");
     separableConvolveY(srcImageRange(src),
                        destImage(dest), kernel1d(kernel));
 }

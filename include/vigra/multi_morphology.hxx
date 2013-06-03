@@ -166,12 +166,12 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void
-        multiBinaryErosion(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, int radius);
-
+        multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, T2, S2> dest, 
+                           double radius);
     }
     \endcode
 
@@ -251,11 +251,14 @@ multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+                          class T2, class S2>
 inline void
 multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
-                   MultiArrayView<N, T2, S2> dest, double radius)
+                   MultiArrayView<N, T2, S2> dest, 
+                   double radius)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiBinaryErosion(): shape mismatch between input and output.");
     multiBinaryErosion( srcMultiArrayRange(source),
                         destMultiArray(dest), radius );
 }
@@ -285,12 +288,12 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void
-        multiBinaryDilation(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, int radius);
-
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest,
+                            double radius);
     }
     \endcode
 
@@ -370,11 +373,14 @@ multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+                          class T2, class S2>
 inline void 
 multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
-                    MultiArrayView<N, T2, S2> dest, double radius)
+                    MultiArrayView<N, T2, S2> dest,
+                    double radius)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiBinaryDilation(): shape mismatch between input and output.");
     multiBinaryDilation( srcMultiArrayRange(source),
                          destMultiArray(dest), radius );
 }
@@ -401,12 +407,12 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void
-        multiGrayscaleErosion(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, double sigma);
-
+        multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest, 
+                              double sigma);
     }
     \endcode
 
@@ -510,11 +516,14 @@ multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+                          class T2, class S2>
 inline void
 multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
-                      MultiArrayView<N, T2, S2> dest, double sigma)
+                      MultiArrayView<N, T2, S2> dest, 
+                      double sigma)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiGrayscaleErosion(): shape mismatch between input and output.");
     multiGrayscaleErosion( srcMultiArrayRange(source), 
                            destMultiArray(dest), sigma);
 }
@@ -541,12 +550,12 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     pass arbitrary-dimensional array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
         void
-        multiGrayscaleDilation(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                    DestIterator diter, DestAccessor dest, double sigma);
-
+        multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest,
+                               double sigma);
     }
     \endcode
 
@@ -649,11 +658,14 @@ multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
+                          class T2, class S2>
 inline void
 multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
-                       MultiArrayView<N, T2, S2> dest, double sigma)
+                       MultiArrayView<N, T2, S2> dest,
+                       double sigma)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiGrayscaleDilation(): shape mismatch between input and output.");
     multiGrayscaleDilation( srcMultiArrayRange(source), 
                             destMultiArray(dest), sigma);
 }

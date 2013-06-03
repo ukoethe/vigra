@@ -92,13 +92,13 @@ The functions need a suitable 2D kernel to operate.
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                           DestIterator dest_ul, DestAccessor dest_acc,
-                           KernelIterator ki, KernelAccessor ak,
-                           Diff2D kul, Diff2D klr, BorderTreatmentMode border);
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        convolveImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      Kernel2D<T3> const & kernel);
     }
     \endcode
 
@@ -421,6 +421,8 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest,
               Kernel2D<T3> const & kernel)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "convolveImage(): shape mismatch between input and output.");
     convolveImage(srcImageRange(src),
                   destImage(dest),
                   kernel2d(kernel));
@@ -467,16 +469,15 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class MaskIterator, class MaskAccessor,
-                  class DestIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class TM, class SM,
+                  class T3>
         void
-        normalizedConvolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                                MaskIterator mul, MaskAccessor am,
-                                DestIterator dest_ul, DestAccessor dest_acc,
-                                KernelIterator ki, KernelAccessor ak,
-                                Diff2D kul, Diff2D klr, BorderTreatmentMode border);
+        normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, TM, SM> const & mask,
+                                MultiArrayView<2, T2, S2> dest,
+                                Kernel2D<T3> const & kernel);
     }
     \endcode
 
@@ -736,6 +737,8 @@ normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest,
                         Kernel2D<T3> const & kernel)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "normalizedConvolveImage(): shape mismatch between input and output.");
     normalizedConvolveImage(srcImageRange(src),
                             maskImage(mask),
                             destImage(dest),

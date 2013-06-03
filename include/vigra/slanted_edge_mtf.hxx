@@ -539,10 +539,10 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor, class BackInsertable>
+        template <class T1, class S1, class BackInsertable>
         void
-        slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,
-                    SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
+        slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
+                       SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
     }
     \endcode
     
@@ -552,7 +552,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,
-                    SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
+                       SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
     }
     \endcode
     
