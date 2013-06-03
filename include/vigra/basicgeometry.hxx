@@ -65,11 +65,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
-                    DestIterator id, DestAccessor ad, int rotation);
+        rotateImage(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    int rotation);
     }
     \endcode
     
@@ -89,7 +90,7 @@ namespace vigra {
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, int rotation);
     }
@@ -211,8 +212,15 @@ template <class T1, class S1,
           class T2, class S2>
 inline void 
 rotateImage(MultiArrayView<2, T1, S1> const & src,
-            MultiArrayView<2, T2, S2> dest, int rotation)
+            MultiArrayView<2, T2, S2> dest,
+            int rotation)
 {
+    if(rotation % 180 == 0)
+        vigra_precondition(src.shape() == dest.shape(),
+            "rotateImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(src.shape() == reverse(dest.shape()),
+            "rotateImage(): shape mismatch between input and output.");
     rotateImage(srcImageRange(src), destImage(dest), rotation);
 }
 
@@ -244,11 +252,11 @@ Reflect operator|(Reflect l, Reflect r)
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        reflectImage(SrcIterator is, SrcIterator end, SrcAccessor as,
-                     DestIterator id, DestAccessor ad, Reflect axis);
+        reflectImage(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest, Reflect reflect);
     }
     \endcode
     
@@ -268,7 +276,7 @@ Reflect operator|(Reflect l, Reflect r)
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      pair<DestImageIterator, DestAccessor> dest, Reflect axis);
     }
@@ -381,6 +389,8 @@ inline void
 reflectImage(MultiArrayView<2, T1, S1> const & src,
              MultiArrayView<2, T2, S2> dest, Reflect reflect)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "reflectImage(): shape mismatch between input and output.");
     reflectImage(srcImageRange(src), destImage(dest), reflect);
 }
 
@@ -411,11 +421,11 @@ enum Transpose{major = 1, minor = 2};
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        transposeImage(SrcIterator is, SrcIterator end, SrcAccessor as,
-                       DestIterator id, DestAccessor ad, Transpose axis);
+        transposeImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest, Transpose axis);
     }
     \endcode
     
@@ -435,7 +445,7 @@ enum Transpose{major = 1, minor = 2};
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Transpose axis);
     }
@@ -539,7 +549,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline void 
 transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-              pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
+               pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
 {
     transposeImage(src.first, src.second, src.third, dest.first, dest.second, transpose);
 }
@@ -550,6 +560,8 @@ inline void
 transposeImage(MultiArrayView<2, T1, S1> const & src,
                MultiArrayView<2, T2, S2> dest, Transpose transpose)
 {
+    vigra_precondition(src.shape() == reverse(dest.shape()),
+        "transposeImage(): shape mismatch between input and output.");
     transposeImage(srcImageRange(src), destImage(dest), transpose);
 }
 
@@ -667,17 +679,17 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                      DestIterator id, DestAccessor ad, double factor);
-                      
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        resampleImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest, double factor);
+
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        resampleImage(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                      DestIterator id, DestAccessor ad, double xfactor, double yfactor);
+        resampleImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor);
     }
     \endcode
     
@@ -703,13 +715,13 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       pair<DestImageIterator, DestAccessor> dest, double factor);
                       
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor);
     }
@@ -834,7 +846,14 @@ inline void
 resampleImage(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest, double factor)
 {
-  resampleImage(srcImageRange(src), destImage(dest), factor);
+    if(factor > 1.0)
+        vigra_precondition(floor(factor*src.shape()) == dest.shape(),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(factor*src.shape()) == dest.shape(),
+            "resampleImage(): shape mismatch between input and output.");
+            
+    resampleImage(srcImageRange(src), destImage(dest), factor);
 }
 
 template <class T1, class S1,
@@ -843,7 +862,20 @@ inline void
 resampleImage(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor)
 {
-  resampleImage(srcImageRange(src), destImage(dest), xfactor, yfactor);
+    if(xfactor > 1.0)
+        vigra_precondition(floor(xfactor*src.shape(0)) == dest.shape(0),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(xfactor*src.shape(0)) == dest.shape(0),
+            "resampleImage(): shape mismatch between input and output.");
+    if(yfactor > 1.0)
+        vigra_precondition(floor(yfactor*src.shape(1)) == dest.shape(1),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(yfactor*src.shape(1)) == dest.shape(1),
+            "resampleImage(): shape mismatch between input and output.");
+            
+    resampleImage(srcImageRange(src), destImage(dest), xfactor, yfactor);
 }
 
 //@}

@@ -85,9 +85,9 @@ typedef TIFF TiffImage;
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor>
+        template <class T, class S>
         void
-        importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+        importTiffImage(TiffImage * tiff, MultiArrayView<2, T, S> dest);
     }
     \endcode
     
@@ -1058,10 +1058,9 @@ struct CreateTiffImage;
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor>
-        TiffImage *
-        createTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
-                        Accessor a)
+        template <class T, class S>
+        void
+        createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff);
     }
     \endcode
     

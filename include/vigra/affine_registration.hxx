@@ -779,6 +779,8 @@ estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
                         Matrix<double> & affineMatrix, 
                         AffineMotionEstimationOptions<SPLINEORDER> const & options)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "estimateAffineTransform(): shape mismatch between input and output.");
     estimateAffineTransform(srcImageRange(src), destImageRange(dest),
                             affineMatrix, options);
 }
@@ -790,6 +792,8 @@ estimateAffineTransform(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest,
                         Matrix<double> & affineMatrix)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "estimateAffineTransform(): shape mismatch between input and output.");
     estimateAffineTransform(srcImageRange(src), destImageRange(dest),
                             affineMatrix, AffineMotionEstimationOptions<>());
 }

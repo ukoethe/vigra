@@ -188,7 +188,8 @@ namespace vigra {
 /** \addtogroup CommonConvolutionFilters Common Filters
 
     These functions calculate common filters by appropriate sequences of calls 
-    to \ref separableConvolveX() and \ref separableConvolveY().
+    to \ref separableConvolveX() and \ref separableConvolveY() or explicit 2-dimensional
+    convolution.
 */
 //@{
 
@@ -198,25 +199,45 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief Apply two separable filters successively, the first in x-direction, 
-           the second in y-direction.
+/** \brief Convolve an image with the given kernel(s).
 
-    This function is a shorthand for the concatenation of a call to
-    \ref separableConvolveX() and \ref separableConvolveY() 
-    with the given kernels.
+    If you pass \ref vigra::Kernel2D to this function, it will perform an explicit 2-dimensional 
+    convolution. If you pass a single \ref vigra::Kernel1D, it performs a separable convolution,
+    i.e. it concatenates two 1D convolutions (along the x-axis and along the y-axis) with the same
+    kernel via internal calls to \ref separableConvolveX() and \ref separableConvolveY(). If two
+    1D kernels are specified, separable convolution uses different kernels for the x- and y-axis.
 
     <b> Declarations:</b>
 
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        // use the same 1D kernel for all axes
+        template <class T1, class S1,
+                  class T2, class S2,
                   class T>
-        void convolveImage(SrcIterator supperleft,
-                           SrcIterator slowerright, SrcAccessor sa,
-                           DestIterator dupperleft, DestAccessor da,
-                           Kernel1D<T> const & kx, Kernel1D<T> const & ky);
+        void
+        convolveImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      Kernel1D<T> const & k);
+
+        // use a different kernel for each axis
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T>
+        void
+        convolveImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      Kernel1D<T> const & kx, Kernel1D<T> const & ky);
+                      
+        // use a non-separable 2D kernel
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        convolveImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      Kernel2D<T3> const & kernel);
     }
     \endcode
 
@@ -240,7 +261,7 @@ namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class T>
-        inline void
+        void
         convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
                       Kernel1D<T> const & kx, Kernel1D<T> const & ky);
@@ -307,6 +328,8 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest,
               Kernel1D<T> const & k)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "convolveImage(): shape mismatch between input and output.");
     convolveImage(srcImageRange(src),
                   destImage(dest), k, k);
 }
@@ -319,6 +342,8 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest,
               Kernel1D<T> const & kx, Kernel1D<T> const & ky)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "convolveImage(): shape mismatch between input and output.");
     convolveImage(srcImageRange(src),
                   destImage(dest), kx, ky);
 }
@@ -354,11 +379,12 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-      template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-      void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                            DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)
-
+        template <class T1, class S1, 
+                  class T2, class S2>
+        void
+        simpleSharpening(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double sharpening_factor);
     }
     \endcode
 
@@ -439,10 +465,13 @@ void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1, 
           class T2, class S2>
-inline
-void simpleSharpening(MultiArrayView<2, T1, S1> const & src,
-                      MultiArrayView<2, T2, S2> dest, double sharpening_factor)
+inline void
+simpleSharpening(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double sharpening_factor)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "simpleSharpening(): shape mismatch between input and output.");
     simpleSharpening(srcImageRange(src),
                      destImage(dest), sharpening_factor);
 }
@@ -476,11 +505,13 @@ void simpleSharpening(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-      template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-      void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                              DestIterator dest_ul, DestAccessor dest_acc, 
-                              double sharpening_factor, double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest, 
+                           double sharpening_factor, 
+                           double scale);
     }
     \endcode
 
@@ -562,9 +593,10 @@ void gaussianSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                        pair<DestIterator, DestAccessor> dest, double sharpening_factor, 
-                        double scale)
+inline void
+gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest, double sharpening_factor, 
+                   double scale)
 {
     gaussianSharpening(src.first, src.second, src.third,
                        dest.first, dest.second,
@@ -573,11 +605,14 @@ void gaussianSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-void gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
-                        MultiArrayView<2, T2, S2> dest, 
-                        double sharpening_factor, 
-                        double scale)
+inline void
+gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest, 
+                   double sharpening_factor, 
+                   double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gaussianSharpening(): shape mismatch between input and output.");
     gaussianSharpening(srcImageRange(src),
                        destImage(dest),
                        sharpening_factor, scale);
@@ -604,12 +639,12 @@ void gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void gaussianSmoothing(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIterator dupperleft, DestAccessor da,
-                                double scale_x, double scale_y = scale_x);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest,
+                          double scale_x, double scale_y = scale_x);
     }
     \endcode
 
@@ -631,7 +666,7 @@ void gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline void
+        void
         gaussianSmoothing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
                           double scale_x, double scale_y = scale_x);
@@ -720,6 +755,8 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
                   MultiArrayView<2, T2, S2> dest,
                   double scale_x, double scale_y)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gaussianSmoothing(): shape mismatch between input and output.");
     gaussianSmoothing(srcImageRange(src),
                       destImage(dest), scale_x, scale_y);
 }
@@ -731,6 +768,8 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
                   MultiArrayView<2, T2, S2> dest,
                   double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gaussianSmoothing(): shape mismatch between input and output.");
     gaussianSmoothing(srcImageRange(src),
                       destImage(dest), scale, scale);
 }
@@ -756,22 +795,22 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     \code
     namespace vigra {
         // write x and y component of the gradient into separate images
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIteratorX, class DestAccessorX,
-                  class DestIteratorY, class DestAccessorY>
-        void gaussianGradient(SrcIterator supperleft,
-                              SrcIterator slowerright, SrcAccessor sa,
-                              DestIteratorX dupperleftx, DestAccessorX dax,
-                              DestIteratorY dupperlefty, DestAccessorY day,
-                              double scale);
+        template <class T1, class S1,
+                  class T2X, class S2X,
+                  class T2Y, class S2Y>
+        void
+        gaussianGradient(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2X, S2X> destx,
+                         MultiArrayView<2, T2Y, S2Y> desty,
+                         double scale);
 
-        // write x and y component of the gradient into a vector-valued image
-        template <class SrcIterator, class SrcAccessor,
-                 class DestIterator, class DestAccessor>
-        void gaussianGradient(SrcIterator supperleft,
-                              SrcIterator slowerright, SrcAccessor src,
-                              DestIterator dupperleft, DestAccessor dest,
-                              double scale);
+       // write x and y component of the gradient into a vector-valued image
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        gaussianGradient(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, TinyVector<T2, 2>, S2> dest,
+                         double scale);
     }
     \endcode
 
@@ -913,6 +952,8 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2Y, S2Y> desty,
                  double scale)
 {
+    vigra_precondition(src.shape() == destx.shape(),
+        "gaussianGradient(): shape mismatch between input and output.");
     gaussianGradient(srcImageRange(src),
                      destImage(destx), destImage(desty), scale);
 }
@@ -924,6 +965,8 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, TinyVector<T2, 2>, S2> dest,
                  double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gaussianGradient(): shape mismatch between input and output.");
     gaussianGradient(srcImageRange(src),
                      destImage(dest), scale);
 }
@@ -1094,12 +1137,12 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void laplacianOfGaussian(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIterator dupperleft, DestAccessor da,
-                                double scale);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double scale);
     }
     \endcode
 
@@ -1121,7 +1164,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline void
+        void
         laplacianOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIterator, DestAccessor> dest,
                           double scale);
@@ -1193,6 +1236,8 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest,
                     double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "laplacianOfGaussian(): shape mismatch between input and output.");
     laplacianOfGaussian(srcImageRange(src),
                         destImage(dest), scale);
 }
@@ -1231,15 +1276,11 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIteratorX, class DestAccessorX,
-                  class DestIteratorXY, class DestAccessorXY,
-                  class DestIteratorY, class DestAccessorY>
-        void hessianMatrixOfGaussian(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIteratorX dupperleftx, DestAccessorX dax,
-                                DestIteratorXY dupperleftxy, DestAccessorXY daxy,
-                                DestIteratorY dupperlefty, DestAccessorY day,
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
                                 double scale);
     }
     \endcode
@@ -1268,7 +1309,7 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
                   class DestIteratorX, class DestAccessorX,
                   class DestIteratorXY, class DestAccessorXY,
                   class DestIteratorY, class DestAccessorY>
-        inline void
+        void
         hessianMatrixOfGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           pair<DestIteratorX, DestAccessorX> destx,
                           pair<DestIteratorXY, DestAccessorXY> destxy,
@@ -1359,6 +1400,8 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2Y, S2Y> desty,
                         double scale)
 {
+    vigra_precondition(src.shape() == destx.shape() && src.shape() == destxy.shape() && src.shape() == desty.shape(),
+        "hessianMatrixOfGaussian(): shape mismatch between input and output.");
     hessianMatrixOfGaussian(srcImageRange(src),
                             destImage(destx),
                             destImage(destxy),
@@ -1373,6 +1416,9 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
                         double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "hessianMatrixOfGaussian(): shape mismatch between input and output.");
+        
     MultiArrayView<3, T2> expanded(dest.expandElements(0));
     
     hessianMatrixOfGaussian(srcImageRange(src),
@@ -1425,24 +1471,24 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     \code
     namespace vigra {
         // create three separate destination images
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIteratorX, class DestAccessorX,
-                  class DestIteratorXY, class DestAccessorXY,
-                  class DestIteratorY, class DestAccessorY>
-        void structureTensor(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIteratorX dupperleftx, DestAccessorX dax,
-                                DestIteratorXY dupperleftxy, DestAccessorXY daxy,
-                                DestIteratorY dupperlefty, DestAccessorY day,
-                                double inner_scale, double outer_scale);
+        template <class T, class S,
+                  class TX, class SX,
+                  class TXY, class SXY,
+                  class TY, class SY>
+        void
+        structureTensor(MultiArrayView<2, S, T> const & src,
+                        MultiArrayView<2, TX, SX>       destx,
+                        MultiArrayView<2, TXY, SXY>     destxy,
+                        MultiArrayView<2, TY, SY>       desty,
+                        double inner_scale, double outer_scale);
 
         // create a single 3-band destination image
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void structureTensor(SrcIterator supperleft,
-                                SrcIterator slowerright, SrcAccessor sa,
-                                DestIterator dupperleft, DestAccessor da,
-                                double inner_scale, double outer_scale);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        structureTensor(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
+                        double inner_scale, double outer_scale);
     }
     \endcode
 
@@ -1582,6 +1628,8 @@ structureTensor(MultiArrayView<2, S, T> const & src,
                 MultiArrayView<2, TY, SY> desty,
                 double inner_scale, double outer_scale)
 {
+    vigra_precondition(src.shape() == destx.shape(),
+        "structureTensor(): shape mismatch between input and output.");
     structureTensor(srcImageRange(src),
                     destImage(destx), destImage(destxy), destImage(desty),
                     inner_scale, outer_scale);
@@ -1667,6 +1715,8 @@ structureTensor(MultiArrayView<2, T1, S1> const & src,
                 MultiArrayView<2, TinyVector<T2, 3>, S2> dest,
                 double inner_scale, double outer_scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "structureTensor(): shape mismatch between input and output.");
     structureTensor(srcImageRange(src),
                     destImage(dest),
                     inner_scale, outer_scale);

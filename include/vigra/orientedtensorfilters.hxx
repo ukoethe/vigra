@@ -87,11 +87,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                             DestIterator dul, DestAccessor dest,
-                             double sigma, double rho);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double sigma, double rho);
     }
     \endcode
 
@@ -218,6 +219,8 @@ hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
                 MultiArrayView<2, T2, S2> dest,
                 double sigma, double rho)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "hourGlassFilter(): shape mismatch between input and output.");
     hourGlassFilter(srcImageRange(src), destImage(dest), sigma, rho);
 }
 
@@ -304,6 +307,8 @@ ellipticGaussian(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest,
                  double sigmax, double sigmin)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "ellipticGaussian(): shape mismatch between input and output.");
     ellipticGaussian(srcImageRange(src), destImage(dest), sigmax, sigmin);
 }
 
@@ -610,6 +615,8 @@ orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
                             Kernel const & kernel)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "orientedTrigonometricFilter(): shape mismatch between input and output.");
     orientedTrigonometricFilter(srcImageRange(src), destImage(dest), kernel);
 }
 

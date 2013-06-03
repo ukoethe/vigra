@@ -77,12 +77,11 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class DestImageIterator, class DestAccessor>
-        void createGaborFilter(DestImageIterator destUpperLeft,
-                               DestImageIterator destLowerRight,
-                               DestAccessor da,
-                               double orientation, double centerFrequency,
-                               double angularSigma, double radialSigma)
+        template <class T, class S>
+        void
+        createGaborFilter(MultiArrayView<2, T, S> dest,
+                          double orientation, double centerFrequency,
+                          double angularSigma, double radialSigma);
     }
     \endcode
 

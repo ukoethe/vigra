@@ -107,13 +107,12 @@ transformLineIf(SrcIterator s,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor, class Functor>
+        template <class T1, class S1,
+              class T2, class S2, class Functor>
         void
-        transformImage(SrcImageIterator src_upperleft,
-               SrcImageIterator src_lowerright, SrcAccessor sa,
-               DestImageIterator dest_upperleft, DestAccessor da,
-               Functor const & f)
+        transformImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       Functor const & f);
     }
     \endcode
 
@@ -214,6 +213,8 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
                MultiArrayView<2, T2, S2> dest,
                Functor const & f)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "transformImage(): shape mismatch between input and output.");
     transformImage(srcImageRange(src),
                    destImage(dest), f);
 }
@@ -241,16 +242,15 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class MaskImageIterator, class MaskAccessor,
-                  class DestImageIterator, clas DestAccessor,
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2,
                   class Functor>
         void
-        transformImageIf(SrcImageIterator src_upperleft,
-                         SrcImageIterator src_lowerright, SrcAccessor sa,
-                         MaskImageIterator mask_upperleft, MaskAccessor ma,
-                         DestImageIterator dest_upperleft, DestAccessor da,
-                         Functor const & f)
+        transformImageIf(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, TM, SM> const & mask,
+                         MultiArrayView<2, T2, S2> dest,
+                         Functor const & f);
     }
     \endcode
 
@@ -372,6 +372,8 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest,
                  Functor const & f)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "transformImageIf(): shape mismatch between input and output.");
     transformImageIf(srcImageRange(src),
                      maskImage(mask),
                      destImage(dest), f);
@@ -398,11 +400,13 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor, class Functor>
+        template <class T1, class S1,
+                  class T2, class S2, 
+                  class Functor>
         void
-        gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccessor sa,
-                               DestImageIterator destul, DestAccessor da, Functor const & f)
+        gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest, 
+                               Functor const & grad);
     }
     \endcode
 
@@ -564,6 +568,8 @@ inline void
 gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
                        MultiArrayView<2, T2, S2> dest, Functor const & grad)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "gradientBasedTransform(): shape mismatch between input and output.");
     gradientBasedTransform(srcImageRange(src),
                            destImage(dest), grad);
 }

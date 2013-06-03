@@ -395,12 +395,12 @@ createResamplingKernels(Kernel const & kernel,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIter, class SrcAcc,
-                  class DestIter, class DestAcc,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class Kernel>
         void
-        resamplingConvolveX(SrcIter sul, SrcIter slr, SrcAcc src,
-                            DestIter dul, DestIter dlr, DestAcc dest,
+        resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
                             Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
@@ -562,12 +562,12 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIter, class SrcAcc,
-                  class DestIter, class DestAcc,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class Kernel>
         void
-        resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
-                            DestIter dul, DestIter dlr, DestAcc dest,
+        resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
                             Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
@@ -713,15 +713,16 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class KernelX, class KernelY>
-        void resamplingConvolveImage(SrcIterator sul,SrcIterator slr, SrcAccessor src,
-                           DestIterator dul, DestIterator dlr, DestAccessor dest,
-                           KernelX const & kx,
-                           Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                           KernelY const & ky,
-                           Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
+        void
+        resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                KernelX const & kx,
+                                Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                                KernelY const & ky,
+                                Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
 

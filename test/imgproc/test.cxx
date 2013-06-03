@@ -1363,6 +1363,7 @@ struct ResizeImageTest
 template <int N>
 struct SplineImageViewTest
 {
+    //typedef vigra::MultiArray<2, double> Image;
     typedef vigra::DImage Image;
     Image img;
 
@@ -1371,6 +1372,7 @@ struct SplineImageViewTest
         ImageImportInfo ginfo("lenna128.xv");
         img.resize(ginfo.width(), ginfo.height());
         importImage(ginfo, destImage(img));
+        //importImage("lenna128.xv", img);
     }
 
     void testPSF()

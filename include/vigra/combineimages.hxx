@@ -127,16 +127,15 @@ combineThreeLines(SrcIterator1 s1,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator1, class SrcAccessor1,
-              class SrcImageIterator2, class SrcAccessor2,
-              class DestImageIterator, class DestAccessor,
-              class Functor>
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class T2, class S2,
+                  class Functor>
         void
-        combineTwoImages(SrcImageIterator1 src1_upperleft, 
-                 SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                 SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                 DestImageIterator dest_upperleft, DestAccessor da,
-                 Functor const & f)
+        combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
+                         MultiArrayView<2, T12, S12> const & src2,
+                         MultiArrayView<2, T2, S2> dest,
+                         Functor const & f);
     }
     \endcode
     
@@ -261,13 +260,14 @@ template <class T11, class S11,
           class T12, class S12,
           class T2, class S2,
           class Functor>
-inline
-void
+inline void
 combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
                  MultiArrayView<2, T12, S12> const & src2,
                  MultiArrayView<2, T2, S2> dest,
                  Functor const & f)
 {
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == dest.shape(),
+        "combineTwoImages(): shape mismatch between inputs and/or output.");
     combineTwoImages(srcImageRange(src1), 
                      srcImage(src2), 
                      destImage(dest), f);
@@ -296,18 +296,17 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator1, class SrcAccessor1,
-              class SrcImageIterator2, class SrcAccessor2,
-              class MaskImageIterator, class MaskAccessor,
-              class DestImageIterator, clas DestAccessor,
-              class Functor>
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class TM, class SM,
+                  class T2, class S2,
+                  class Functor>
         void
-        combineTwoImagesIf(SrcImageIterator1 src1_upperleft, 
-                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                   MaskImageIterator mask_upperleft, MaskAccessor ma,
-                   DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor const & f)
+        combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
+                           MultiArrayView<2, T12, S12> const & src2,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           MultiArrayView<2, T2, S2> dest,
+                           Functor const & f);
     }
     \endcode
     
@@ -449,14 +448,15 @@ template <class T11, class S11,
           class TM, class SM,
           class T2, class S2,
           class Functor>
-inline
-void
+inline void
 combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
                    MultiArrayView<2, T12, S12> const & src2,
                    MultiArrayView<2, TM, SM> const & mask,
                    MultiArrayView<2, T2, S2> dest,
                    Functor const & f)
 {
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == mask.shape() && src1.shape() == dest.shape(),
+        "combineTwoImagesIf(): shape mismatch between inputs and/or output.");
     combineTwoImagesIf(srcImageRange(src1), 
                        srcImage(src2), 
                        maskImage(mask), 
@@ -481,18 +481,17 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator1, class SrcAccessor1,
-              class SrcImageIterator2, class SrcAccessor2,
-              class SrcImageIterator3, class SrcAccessor3,
-              class DestImageIterator, class DestAccessor,
-              class Functor>
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class T13, class S13,
+                  class T2, class S2,
+                  class Functor>
         void
-        combineThreeImages(SrcImageIterator1 src1_upperleft, 
-                   SrcImageIterator1 src1_lowerright, SrcAccessor1 sa1,
-                   SrcImageIterator2 src2_upperleft, SrcAccessor2 sa2,
-                   SrcImageIterator3 src2_upperleft, SrcAccessor3 sa3,
-                   DestImageIterator dest_upperleft, DestAccessor da,
-                   Functor const & f)
+        combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
+                           MultiArrayView<2, T12, S12> const & src2,
+                           MultiArrayView<2, T13, S13> const & src3,
+                           MultiArrayView<2, T2, S2> dest,
+                           Functor const & f);
     }
     \endcode
     
@@ -629,14 +628,15 @@ template <class T11, class S11,
           class T13, class S13,
           class T2, class S2,
           class Functor>
-inline
-void
+inline void
 combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
                    MultiArrayView<2, T12, S12> const & src2,
                    MultiArrayView<2, T13, S13> const & src3,
                    MultiArrayView<2, T2, S2> dest,
                    Functor const & f)
 {
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == src3.shape() && src1.shape() == dest.shape(),
+        "combineThreeImages(): shape mismatch between inputs and/or output.");
     combineThreeImages(srcImageRange(src1), 
                        srcImage(src2), 
                        srcImage(src3), 

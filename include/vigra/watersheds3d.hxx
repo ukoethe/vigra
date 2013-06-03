@@ -419,18 +419,24 @@ inline unsigned int watersheds3DTwentySix( triple<SrcIterator, SrcShape, SrcAcce
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
-inline unsigned int watersheds3DSix( MultiArrayView<N, T1, S1> const & source, 
-                                     MultiArrayView<N, T2, S2> dest)
+                          class T2, class S2>
+inline unsigned int 
+watersheds3DSix(MultiArrayView<N, T1, S1> const & source, 
+                MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "watersheds3DSix(): shape mismatch between input and output.");
     return watersheds3DSix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2>
-inline unsigned int watersheds3DTwentySix( MultiArrayView<N, T1, S1> const & source, 
-                                           MultiArrayView<N, T2, S2> dest)
+inline unsigned int
+watersheds3DTwentySix(MultiArrayView<N, T1, S1> const & source, 
+                      MultiArrayView<N, T2, S2> dest)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "watersheds3DTwentySix(): shape mismatch between input and output.");
     return watersheds3DTwentySix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 

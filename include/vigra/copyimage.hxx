@@ -109,12 +109,11 @@ swapLine(SrcIterator s,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        copyImage(SrcImageIterator src_upperleft, 
-              SrcImageIterator src_lowerright, SrcAccessor sa,
-              DestImageIterator dest_upperleft, DestAccessor da)
+        copyImage(MultiArrayView<2, T1, S1> const & src,
+                  MultiArrayView<2, T2, S2> dest);
     }
     \endcode
     
@@ -122,10 +121,9 @@ swapLine(SrcIterator s,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
-        copyImage(SrcImageIterator src_upperleft, 
-              SrcImageIterator src_lowerright, SrcAccessor sa,
+        copyImage(SrcImageIterator src_upperleft, SrcImageIterator src_lowerright, SrcAccessor sa,
               DestImageIterator dest_upperleft, DestAccessor da)
     }
     \endcode
@@ -135,10 +133,10 @@ swapLine(SrcIterator s,
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
+                  class DestImageIterator, class DestAccessor>
         void
         copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-              pair<DestImageIterator, DestAccessor> dest)
+                  pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
     
@@ -200,11 +198,12 @@ copyImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
 template <class T1, class S1,
           class T2, class S2>
-inline
-void
+inline void
 copyImage(MultiArrayView<2, T1, S1> const & src,
           MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "copyImage(): shape mismatch between input and output.");
     copyImage(srcImageRange(src), destImage(dest));
 }
 
@@ -243,6 +242,8 @@ void
 swapImageData(MultiArrayView<2, T1, S1> const & src,
               MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "swapImageData(): shape mismatch between input and output.");
     swapImageData(srcImageRange(src), destImage(dest));
 }
 
@@ -264,14 +265,13 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class MaskImageIterator, class MaskAccessor,
-              class DestImageIterator, clas DestAccessor>
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
         void
-        copyImageIf(SrcImageIterator src_upperleft, 
-            SrcImageIterator src_lowerright, SrcAccessor sa,
-            MaskImageIterator mask_upperleft, MaskAccessor ma,
-            DestImageIterator dest_upperleft, DestAccessor da)
+        copyImageIf(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, TM, SM> const & mask,
+                    MultiArrayView<2, T2, S2> dest);
     }
     \endcode
     
@@ -374,12 +374,13 @@ copyImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 template <class T1, class S1,
           class TM, class SM,
           class T2, class S2>
-inline
-void
+inline void
 copyImageIf(MultiArrayView<2, T1, S1> const & src,
             MultiArrayView<2, TM, SM> const & mask,
             MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "copyImageIf(): shape mismatch between input and output.");
     copyImageIf(srcImageRange(src), 
                 maskImage(mask), 
                 destImage(dest));

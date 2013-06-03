@@ -132,10 +132,10 @@ inspectTwoLinesIf(SrcIterator1 s1,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor, class Functor>
+        template <class T, class S, class Functor>
         void
-        inspectImage(ImageIterator upperleft, ImageIterator lowerright,
-                     Accessor a, Functor & f)
+        inspectImage(MultiArrayView<2, T, S> const & img,
+                     Functor & f);
     }
     \endcode
 
@@ -144,8 +144,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
-        inspectImage(ImageIterator upperleft, ImageIterator lowerright,
-                     Accessor a, Functor & f)
+        inspectImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a, 
+                     Functor & f)
     }
     \endcode
 
@@ -155,7 +155,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
         template <class ImageIterator, class Accessor, class Functor>
         void
         inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-             Functor & f)
+                     Functor & f)
     }
     \endcode
 
@@ -290,12 +290,12 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor,
-                  class MaskImageIterator, class MaskAccessor, class Functor>
+        template <class T, class S,
+                  class TM, class SM, class Functor>
         void
-        inspectImageIf(ImageIterator upperleft, ImageIterator lowerright,
-               MaskImageIterator mask_upperleft, MaskAccessor ma,
-               Functor & f)
+        inspectImageIf(MultiArrayView<2, T, S> const & img,
+                       MultiArrayView<2, TM, SM> const & mask,
+                       Functor & f);
     }
     \endcode
 
@@ -446,6 +446,8 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
                MultiArrayView<2, TM, SM> const & mask,
                Functor & f)
 {
+    vigra_precondition(img.shape() == mask.shape(),
+        "inspectImageIf(): shape mismatch between input and output.");
     inspectImageIf(srcImageRange(img),
                    maskImage(mask), f);
 }
@@ -480,13 +482,13 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator1, class Accessor1,
-              class ImageIterator2, class Accessor2,
-              class Functor>
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Functor>
         void
-        inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
-                 ImageIterator2 upperleft2, Accessor2 a2,
-                 Functor & f)
+        inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                         MultiArrayView<2, T2, S2> const & img2,
+                         Functor & f);
     }
     \endcode
 
@@ -639,6 +641,8 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
                  MultiArrayView<2, T2, S2> const & img2,
                  Functor & f)
 {
+    vigra_precondition(img1.shape() == img2.shape(),
+        "inspectTwoImages(): shape mismatch between input and output.");
     inspectTwoImages(srcImageRange(img1),
                      srcImage(img2),
                      f);
@@ -653,6 +657,8 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
                  MultiArrayView<2, T2, S2> const & img2,
                  functor::UnaryAnalyser<Functor> const & f)
 {
+    vigra_precondition(img1.shape() == img2.shape(),
+        "inspectTwoImages(): shape mismatch between input and output.");
     inspectTwoImages(srcImageRange(img1),
                      srcImage(img2), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
@@ -677,15 +683,15 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator1, class Accessor1,
-                  class ImageIterator2, class Accessor2,
-                  class MaskImageIterator, class MaskAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class TM, class SM,
                   class Functor>
         void
-        inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
-                         ImageIterator2 upperleft2, Accessor2 a2,
-                         MaskImageIterator mupperleft, MaskAccessor mask,
-                         Functor & f)
+        inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                           MultiArrayView<2, T2, S2> const & img2,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           Functor & f);
     }
     \endcode
 
@@ -867,12 +873,14 @@ template <class T1, class S1,
 inline void
 inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
                    MultiArrayView<2, T2, S2> const & img2,
-                   MultiArrayView<2, TM, SM> const & m,
+                   MultiArrayView<2, TM, SM> const & mask,
                    Functor & f)
 {
+    vigra_precondition(img1.shape() == img2.shape() && img1.shape() == mask.shape(),
+        "inspectTwoImagesIf(): shape mismatch between input and output.");
     inspectTwoImagesIf(srcImageRange(img1),
                        srcImage(img2),
-                       maskImage(m),
+                       maskImage(mask),
                        f);
 }
 
@@ -883,12 +891,14 @@ template <class T1, class S1,
 inline void
 inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
                    MultiArrayView<2, T2, S2> const & img2,
-                   MultiArrayView<2, TM, SM> const & m,
+                   MultiArrayView<2, TM, SM> const & mask,
                    functor::UnaryAnalyser<Functor> const & f)
 {
+    vigra_precondition(img1.shape() == img2.shape() && img1.shape() == mask.shape(),
+        "inspectTwoImagesIf(): shape mismatch between input and output.");
     inspectTwoImagesIf(srcImageRange(img1),
                        srcImage(img2),
-                       maskImage(m),
+                       maskImage(mask),
                        const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 

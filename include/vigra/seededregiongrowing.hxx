@@ -275,18 +275,18 @@ enum SRGType {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class SeedImageIterator, class SeedAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class TS, class AS,
+                  class T2, class S2,
                   class RegionStatisticsArray, class Neighborhood>
-        typename SeedAccessor::value_type 
-        seededRegionGrowing(SrcIterator srcul, SrcIterator srclr, SrcAccessor as,
-                            SeedImageIterator seedsul, SeedAccessor aseeds,
-                            DestIterator destul, DestAccessor ad,
-                            RegionStatisticsArray & stats,
-                            SRGType srgType = CompleteGrow,
-                            Neighborhood neighborhood = FourNeighborCode(),
-                            double max_cost = NumericTraits<double>::max());
+        TS
+        seededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, TS, AS> const & seeds,
+                            MultiArrayView<2, T2, S2>         labels,
+                            RegionStatisticsArray &           stats,
+                            SRGType                           srgType = CompleteGrow, 
+                            Neighborhood                      n = FourNeighborCode(),
+                            double                            max_cost = NumericTraits<double>::max());
     }
     \endcode
 
@@ -663,6 +663,8 @@ seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
                     Neighborhood n,
                     double max_cost = NumericTraits<double>::max())
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
     return seededRegionGrowing(srcImageRange(img1),
                                srcImage(img3),
                                destImage(img4),
@@ -680,6 +682,8 @@ seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
                     RegionStatisticsArray & stats,
                     SRGType srgType)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
     return seededRegionGrowing(srcImageRange(img1),
                                srcImage(img3),
                                destImage(img4),
@@ -696,6 +700,8 @@ seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
                     MultiArrayView<2, T2, S2> img4,
                     RegionStatisticsArray & stats)
 {
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
     return seededRegionGrowing(srcImageRange(img1),
                                srcImage(img3),
                                destImage(img4),
@@ -908,6 +914,8 @@ fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
                         double max_cost,
                         std::ptrdiff_t bucket_count = 256)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "fastSeededRegionGrowing(): shape mismatch between input and output.");
     return fastSeededRegionGrowing(srcImageRange(src),
                                    destImage(dest),
                                    stats, srgType, n, max_cost, bucket_count);

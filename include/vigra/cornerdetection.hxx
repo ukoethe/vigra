@@ -174,12 +174,12 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void
-        cornerResponseFunction(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                               DestIterator dul, DestAccessor ad,
-                               double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest,
+                               double scale);
     }
     \endcode
     
@@ -200,7 +200,6 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void cornerResponseFunction(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -313,6 +312,8 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
                        MultiArrayView<2, T2, S2> dest,
                        double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "cornerResponseFunction(): shape mismatch between input and output.");
     cornerResponseFunction(srcImageRange(src), destImage(dest), scale);
 }
 
@@ -354,12 +355,12 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                               DestIterator dul, DestAccessor ad,
-                               double scale)
+        foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                double scale);
     }
     \endcode
     
@@ -380,8 +381,7 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
-        void foerstnerCornerDetector(
+         void foerstnerCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale)
@@ -484,6 +484,8 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest,
                         double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "foerstnerCornerDetector(): shape mismatch between input and output.");
     foerstnerCornerDetector(srcImageRange(src),
                             destImage(dest),
                             scale);
@@ -525,12 +527,12 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                           DestIterator dul, DestAccessor ad,
-                           double scale)
+        rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           double scale);
     }
     \endcode
     
@@ -551,7 +553,6 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void rohrCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -654,6 +655,8 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
                    double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "rohrCornerDetector(): shape mismatch between input and output.");
     rohrCornerDetector(srcImageRange(src),
                        destImage(dest),
                        scale);
@@ -686,12 +689,12 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void
-        beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
-                           DestIterator dul, DestAccessor ad,
-                           double scale)
+        beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                              MultiArrayView<2, T2, S2> dest,
+                              double scale);
     }
     \endcode
     
@@ -712,7 +715,6 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void beaudetCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
@@ -815,6 +817,8 @@ beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
                       MultiArrayView<2, T2, S2> dest,
                       double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "beaudetCornerDetector(): shape mismatch between input and output.");
     beaudetCornerDetector(srcImageRange(src),
                           destImage(dest),
                           scale);

@@ -255,22 +255,22 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor, class Array>
-        void 
-        separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                   DestIterator d, DestAccessor dest, 
-                                   bool background,
-                                   Array const & pixelPitch);
-                                        
-        // use default pixel pitch = 1.0 for each coordinate
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class Array>
         void
-        separableMultiDistSquared(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                                  DestIterator diter, DestAccessor dest, 
-                                  bool background);
+        separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, T2, S2> dest,
+                                  bool background,
+                                  Array const & pixelPitch);
 
+        // use default pixel pitch = 1.0 for each coordinate
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, T2, S2> dest, 
+                                  bool background);
     }
     \endcode
 
@@ -451,20 +451,27 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2, class Array>
-inline void separableMultiDistSquared( MultiArrayView<N, T1, S1> const & source,
-                                       MultiArrayView<N, T2, S2> dest, bool background,
-                                       Array const & pixelPitch)
+                          class T2, class S2, 
+          class Array>
+inline void
+separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest, bool background,
+                          Array const & pixelPitch)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistSquared(): shape mismatch between input and output.");
     separableMultiDistSquared( srcMultiArrayRange(source),
                                destMultiArray(dest), background, pixelPitch );
 }
 
 template <unsigned int N, class T1, class S1,
-          class T2, class S2>
-inline void separableMultiDistSquared( MultiArrayView<N, T1, S1> const & source,
-                                       MultiArrayView<N, T2, S2> dest, bool background)
+                          class T2, class S2>
+inline void
+separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest, bool background)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistSquared(): shape mismatch between input and output.");
     separableMultiDistSquared( srcMultiArrayRange(source),
                                destMultiArray(dest), background );
 }
@@ -483,22 +490,21 @@ inline void separableMultiDistSquared( MultiArrayView<N, T1, S1> const & source,
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor, class Array>
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2, class Array>
         void 
-        separableMultiDistance( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest, 
-                                bool background,
-                                Array const & pixelPitch);
-                                        
-        // use default pixel pitch = 1.0 for each coordinate
-        template <class SrcIterator, class SrcShape, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void
-        separableMultiDistance(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
-                               DestIterator diter, DestAccessor dest, 
-                               bool background);
+        separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest, 
+                               bool background,
+                               Array const & pixelPitch);
 
+        // use default pixel pitch = 1.0 for each coordinate
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
+        void 
+        separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest, 
+                               bool background);
     }
     \endcode
 
@@ -619,19 +625,27 @@ inline void separableMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> c
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2, class Array>
-inline void separableMultiDistance( MultiArrayView<N, T1, S1> const & source,
-                                    MultiArrayView<N, T2, S2> dest, bool background,
-                                    Array const & pixelPitch)
+inline void 
+separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest, 
+                       bool background,
+                       Array const & pixelPitch)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistance(): shape mismatch between input and output.");
     separableMultiDistance( srcMultiArrayRange(source),
                             destMultiArray(dest), background, pixelPitch );
 }
 
 template <unsigned int N, class T1, class S1,
           class T2, class S2>
-inline void separableMultiDistance( MultiArrayView<N, T1, S1> const & source,
-                                    MultiArrayView<N, T2, S2> dest, bool background)
+inline void 
+separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest, 
+                       bool background)
 {
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistance(): shape mismatch between input and output.");
     separableMultiDistance( srcMultiArrayRange(source),
                             destMultiArray(dest), background );
 }

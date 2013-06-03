@@ -66,20 +66,20 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        unsigned int labelImage(SrcIterator upperlefts,
-                                SrcIterator lowerrights, SrcAccessor sa,
-                                DestIterator upperleftd, DestAccessor da,
-                                bool eight_neighbors);
+        template <class T1, class S1,
+                  class T2, class S2>
+        unsigned int
+        labelImage(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   bool eight_neighbors);
 
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class EqualityFunctor>
-        unsigned int labelImage(SrcIterator upperlefts,
-                                SrcIterator lowerrights, SrcAccessor sa,
-                                DestIterator upperleftd, DestAccessor da,
-                                bool eight_neighbors, EqualityFunctor equal);
+        unsigned int
+        labelImage(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   bool eight_neighbors, EqualityFunctor equal);
     }
     \endcode
 
@@ -318,6 +318,8 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
            MultiArrayView<2, T2, S2> dest,
            bool eight_neighbors, EqualityFunctor equal)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "labelImage(): shape mismatch between input and output.");
     return labelImage(srcImageRange(src),
                       destImage(dest), eight_neighbors, equal);
 }
@@ -348,23 +350,24 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class ValueType>
-        int labelImageWithBackground(SrcIterator upperlefts,
-                       SrcIterator lowerrights, SrcAccessor sa,
-                       DestIterator upperleftd, DestAccessor da,
-                       bool eight_neighbors,
-                       ValueType background_value );
-
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        unsigned int 
+        labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 bool eight_neighbors,
+                                 ValueType background_value);
+                                 
+        template <class T1, class S1,
+                  class T2, class S2,
                   class ValueType, class EqualityFunctor>
-        int labelImageWithBackground(SrcIterator upperlefts,
-                       SrcIterator lowerrights, SrcAccessor sa,
-                       DestIterator upperleftd, DestAccessor da,
-                       bool eight_neighbors,
-                       ValueType background_value, EqualityFunctor equal);
+        unsigned int 
+        labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 bool eight_neighbors,
+                                 ValueType background_value, 
+                                 EqualityFunctor equal = std::equal_to<T1>());
     }
     \endcode
 
@@ -666,6 +669,8 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                          bool eight_neighbors,
                          ValueType background_value, EqualityFunctor equal)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "labelImageWithBackground(): shape mismatch between input and output.");
     return labelImageWithBackground(srcImageRange(src),
                                     destImage(dest),
                                     eight_neighbors, background_value, equal);
@@ -680,6 +685,8 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                          bool eight_neighbors,
                          ValueType background_value)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "labelImageWithBackground(): shape mismatch between input and output.");
     return labelImageWithBackground(srcImageRange(src),
                                     destImage(dest),
                                     eight_neighbors, background_value,
@@ -699,12 +706,12 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, class DestValue>
-        void regionImageToCrackEdgeImage(
-                       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-                       DestIterator dul, DestAccessor da,
-                       DestValue edge_marker)
+        template <class T1, class S1,
+                  class T2, class S2, class DestValue>
+        void 
+        regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    DestValue edge_marker);
     }
     \endcode
 
@@ -922,6 +929,8 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                             MultiArrayView<2, T2, S2> dest,
                             DestValue edge_marker)
 {
+    vigra_precondition(2*src.shape()-Shape2(1) == dest.shape(),
+        "regionImageToCrackEdgeImage(): shape mismatch between input and output.");
     regionImageToCrackEdgeImage(srcImageRange(src),
                                 destImage(dest),
                                 edge_marker);
@@ -940,12 +949,12 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor, class DestValue>
-        void regionImageToEdgeImage(
-                       SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-                       DestIterator dul, DestAccessor da,
-                       DestValue edge_marker)
+        template <class T1, class S1,
+                  class T2, class S2, class DestValue>
+        void 
+        regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest,
+                               DestValue edge_marker);
     }
     \endcode
 
@@ -1107,6 +1116,8 @@ regionImageToEdgeImage(MultiArrayView<2, T1, S1> const & src,
                        MultiArrayView<2, T2, S2> dest,
                        DestValue edge_marker)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "regionImageToEdgeImage(): shape mismatch between input and output.");
     regionImageToEdgeImage(srcImageRange(src),
                            destImage(dest),
                            edge_marker);

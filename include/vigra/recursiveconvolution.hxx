@@ -865,20 +865,20 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     \code
     namespace vigra {
         // first order filter
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void recursiveFilterX(SrcImageIterator supperleft, 
-                               SrcImageIterator slowerright, SrcAccessor as,
-                               DestImageIterator dupperleft, DestAccessor ad, 
-                               double b, BorderTreatmentMode border);
-
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b, BorderTreatmentMode border);
+                         
         // second order filter
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void recursiveFilterX(SrcImageIterator supperleft, 
-                               SrcImageIterator slowerright, SrcAccessor as,
-                               DestImageIterator dupperleft, DestAccessor ad, 
-                               double b1, double b2);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b1, double b2);
     }
     \endcode
     
@@ -983,6 +983,8 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double b, BorderTreatmentMode border)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterX(): shape mismatch between input and output.");
     recursiveFilterX(srcImageRange(src),
                      destImage(dest), b, border);
 }
@@ -1034,6 +1036,8 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double b1, double b2)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterX(): shape mismatch between input and output.");
     recursiveFilterX(srcImageRange(src),
                      destImage(dest), b1, b2);
 }
@@ -1057,11 +1061,11 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        recursiveGaussianFilterX(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
-                                 DestImageIterator dupperleft, DestAccessor ad, 
+        recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest, 
                                  double sigma);
     }
     \endcode
@@ -1148,6 +1152,8 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
                          MultiArrayView<2, T2, S2> dest, 
                          double sigma)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveGaussianFilterX(): shape mismatch between input and output.");
     recursiveGaussianFilterX(srcImageRange(src),
                              destImage(dest), sigma);
 }
@@ -1169,12 +1175,12 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveSmoothX(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double scale);
     }
     \endcode
     
@@ -1260,6 +1266,8 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSmoothX(): shape mismatch between input and output.");
     recursiveSmoothX(srcImageRange(src),
                      destImage(dest), scale);
 }
@@ -1282,20 +1290,20 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     \code
     namespace vigra {
         // first order filter
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void recursiveFilterY(SrcImageIterator supperleft, 
-                               SrcImageIterator slowerright, SrcAccessor as,
-                               DestImageIterator dupperleft, DestAccessor ad, 
-                               double b, BorderTreatmentMode border);
-
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b, BorderTreatmentMode border);
+                         
         // second order filter
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
-        void recursiveFilterY(SrcImageIterator supperleft, 
-                               SrcImageIterator slowerright, SrcAccessor as,
-                               DestImageIterator dupperleft, DestAccessor ad, 
-                               double b1, double b2);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b1, double b2);
     }
     \endcode
     
@@ -1399,6 +1407,8 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double b, BorderTreatmentMode border)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterY(): shape mismatch between input and output.");
     recursiveFilterY(srcImageRange(src),
                      destImage(dest), b, border);
 }
@@ -1450,6 +1460,8 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double b1, double b2)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterY(): shape mismatch between input and output.");
     recursiveFilterY(srcImageRange(src),
                      destImage(dest), b1, b2);
 }
@@ -1473,11 +1485,11 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-                  class DestImageIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         void 
-        recursiveGaussianFilterY(SrcImageIterator supperleft, SrcImageIterator slowerright, SrcAccessor as,
-                                 DestImageIterator dupperleft, DestAccessor ad, 
+        recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest, 
                                  double sigma);
     }
     \endcode
@@ -1564,6 +1576,8 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
                          MultiArrayView<2, T2, S2> dest, 
                          double sigma)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveGaussianFilterY(): shape mismatch between input and output.");
     recursiveGaussianFilterY(srcImageRange(src),
                              destImage(dest), sigma);
 }
@@ -1586,12 +1600,12 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveSmoothY(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double scale);
     }
     \endcode
     
@@ -1677,6 +1691,8 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
                  MultiArrayView<2, T2, S2> dest, 
                  double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSmoothY(): shape mismatch between input and output.");
     recursiveSmoothY(srcImageRange(src),
                      destImage(dest), scale);
 }
@@ -1699,12 +1715,12 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveFirstDerivativeX(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest, 
+                                  double scale);
     }
     \endcode
     
@@ -1790,6 +1806,8 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
                           MultiArrayView<2, T2, S2> dest, 
                           double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFirstDerivativeX(): shape mismatch between input and output.");
     recursiveFirstDerivativeX(srcImageRange(src),
                               destImage(dest), scale);
 }
@@ -1812,12 +1830,12 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveFirstDerivativeY(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest, 
+                                  double scale);
     }
     \endcode
     
@@ -1903,6 +1921,8 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
                           MultiArrayView<2, T2, S2> dest, 
                           double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFirstDerivativeY(): shape mismatch between input and output.");
     recursiveFirstDerivativeY(srcImageRange(src),
                               destImage(dest), scale);
 }
@@ -1925,12 +1945,12 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveSecondDerivativeX(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest, 
+                                   double scale);
     }
     \endcode
     
@@ -2016,6 +2036,8 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
                            MultiArrayView<2, T2, S2> dest, 
                            double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSecondDerivativeX(): shape mismatch between input and output.");
     recursiveSecondDerivativeX(srcImageRange(src),
                                destImage(dest), scale);
 }
@@ -2038,12 +2060,12 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcImageIterator, class SrcAccessor,
-              class DestImageIterator, class DestAccessor>
-        void recursiveSecondDerivativeY(SrcImageIterator supperleft, 
-                  SrcImageIterator slowerright, SrcAccessor as,
-                  DestImageIterator dupperleft, DestAccessor ad, 
-                  double scale)
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest, 
+                                   double scale);
     }
     \endcode
     
@@ -2129,6 +2151,8 @@ recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const & src,
                            MultiArrayView<2, T2, S2> dest, 
                            double scale)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSecondDerivativeY(): shape mismatch between input and output.");
     recursiveSecondDerivativeY(srcImageRange(src),
                                destImage(dest), scale);
 }

@@ -163,13 +163,9 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor, class VALUETYPE>
-        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
-                       Accessor a, VALUETYPE const & v);
-
-        template <class ImageIterator, class Accessor, class FUNCTOR>
-        void initImage(ImageIterator upperleft, ImageIterator lowerright, 
-                       Accessor a, FUNCTOR const & v);
+        template <class T, class S, class VALUETYPE>
+        void
+        initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v);
     }
     \endcode
     
@@ -289,10 +285,9 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor, class FUNCTOR>
+        template <class T, class S, class FUNCTOR>
         void
-        initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright, 
-                  Accessor a,  FUNCTOR & f);
+        initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f);
     }
     \endcode
     
@@ -400,19 +395,13 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor, 
-                  class MaskImageIterator, class MaskAccessor,
+        template <class T, class S, 
+                  class TM, class SM,
                   class VALUETYPE>
-        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-                         MaskImageIterator mask_upperleft, MaskAccessor ma,
-                         VALUETYPE const & v);
-
-        template <class ImageIterator, class Accessor, 
-                  class MaskImageIterator, class MaskAccessor,
-                  class FUNCTOR>
-        void initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-                         MaskImageIterator mask_upperleft, MaskAccessor ma,
-                         FUNCTOR const & v);
+        void
+        initImageIf(MultiArrayView<2, T, S> img, 
+                    MultiArrayView<2, TM, SM> const & mask,
+                    VALUETYPE const & v);
     }
     \endcode     
     pass \ref ImageIterators and \ref DataAccessors:
@@ -524,6 +513,8 @@ initImageIf(MultiArrayView<2, T, S> img,
             MultiArrayView<2, TM, SM> const & mask,
             VALUETYPE const & v)
 {
+    vigra_precondition(img.shape() == mask.shape(),
+        "initImageIf(): shape mismatch between input and mask.");
     initImageIf(destImageRange(img), maskImage(mask), v);
 }
     
@@ -549,13 +540,10 @@ initImageIf(MultiArrayView<2, T, S> img,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class ImageIterator, class Accessor, class VALUETYPE>
-        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-                             int border_width, VALUETYPE const & v);
-
-        template <class ImageIterator, class Accessor, class FUNCTOR>
-        void initImageBorder(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
-                             int border_width, FUNCTOR const & v);
+        template <class T, class S, class VALUETYPE>
+        void
+        initImageBorder(MultiArrayView<2, T, S> img, 
+                        int border_width, VALUETYPE const & v);
     }
     \endcode
     

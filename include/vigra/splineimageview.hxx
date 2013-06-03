@@ -135,7 +135,28 @@ class SplineImageView
     enum { ksize_ = ORDER + 1, kcenter_ = ORDER / 2 };
 
   public:
-        /** Construct SplineImageView for the given image.
+
+        /** Construct SplineImageView for a 2D MultiArrayView.
+
+            If <tt>skipPrefiltering = true</tt> (default: <tt>false</tt>), the recursive
+            prefilter of the cardinal spline function is not applied, resulting
+            in an approximating (smoothing) rather than interpolating spline. This is
+            especially useful if customized prefilters are to be applied.
+        */
+    template <class U, class S>
+    SplineImageView(MultiArrayView<2, U, S> const & s, bool skipPrefiltering = false)
+    : w_(s.shape(0)), h_(s.shape(1)), w1_(w_-1), h1_(h_-1),
+      x0_(kcenter_), x1_(w_ - kcenter_ - 2), y0_(kcenter_), y1_(h_ - kcenter_ - 2),
+      image_(w_, h_),
+      x_(-1.0), y_(-1.0),
+      u_(-1.0), v_(-1.0)
+    {
+        copyImage(srcImageRange(s), destImage(image_));
+        if(!skipPrefiltering)
+            init();
+    }
+
+        /** Construct SplineImageView for an image given by \ref ImageIterators and \ref DataAccessors.
 
             If <tt>skipPrefiltering = true</tt> (default: <tt>false</tt>), the recursive
             prefilter of the cardinal spline function is not applied, resulting
@@ -155,7 +176,7 @@ class SplineImageView
             init();
     }
 
-        /** Construct SplineImageView for the given image.
+        /** Construct SplineImageView for an image given by  \ref ArgumentObjectFactories.
 
             If <tt>skipPrefiltering = true</tt> (default: <tt>false</tt>), the recursive
             prefilter of the cardinal spline function is not applied, resulting
@@ -1760,9 +1781,10 @@ class SplineImageView1<VALUETYPE, MultiArrayView<2, VALUETYPE, StridedOrUnstride
     : Base(i.shape(0), i.shape(1)),
       image_(i.shape(0), i.shape(1))
     {
-        for(unsigned int y=0; y<this->height(); ++y)
-            for(unsigned int x=0; x<this->width(); ++x)
-                image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
+        copyImage(srcImageRange(i), destImage(image_));
+        // for(unsigned int y=0; y<this->height(); ++y)
+            // for(unsigned int x=0; x<this->width(); ++x)
+                // image_(x,y) = detail::RequiresExplicitCast<VALUETYPE>::cast(i(x,y));
         this->internalIndexer_ = InternalIndexer(typename InternalIndexer::difference_type(this->width(), this->height()),
                                                  image_.data());
     }
@@ -1847,6 +1869,11 @@ public:
     {
         copyImage(s, destImage(this->image_));
     }
+    
+    template<class T, class SU>
+    SplineImageView(MultiArrayView<2, T, SU> const & i, bool /* unused */ = false)
+    : Base(i)
+    {}
 };
 
 } // namespace vigra

@@ -600,32 +600,51 @@ struct EdgeDetectionTest
 
     void cannyEdgelListTest()
     {
-        std::vector<vigra::Edgel> edgels;
-        cannyEdgelList(View(imgCanny), edgels, 1.0);
-        int count = 0;
-        for(unsigned int i=0; i<edgels.size(); ++i)
         {
-            if (edgels[i].strength < 1.0e-10)
-                continue;  // ignore edgels that result from round off error during convolution
-            ++count;
-            should(edgels[i].x == edgels[i].y);
-            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
-        }
-        should(count == 75);
+            std::vector<vigra::Edgel> edgels;
+            cannyEdgelList(View(imgCanny), edgels, 1.0);
+            int count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength < 1.0e-10)
+                    continue;  // ignore edgels that result from round off error during convolution
+                ++count;
+                should(edgels[i].x == edgels[i].y);
+                should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
+            }
+            should(count == 75);
 
-        std::vector<vigra::Edgel> edgelsThresh;
-        double threshold = 1.25;
-        cannyEdgelListThreshold(View(imgCanny), edgelsThresh, 1.0, threshold);
-        count = 0;
-        for(unsigned int i=0; i<edgels.size(); ++i)
-        {
-            if (edgels[i].strength <= threshold)
-                continue;  // ignore edgels below threshold
-            should(edgels[i].x == edgelsThresh[count].x);
-            should(edgels[i].y == edgelsThresh[count].y);
-            ++count;
+            std::vector<vigra::Edgel> edgelsThresh;
+            double threshold = 1.25;
+            cannyEdgelListThreshold(View(imgCanny), edgelsThresh, 1.0, threshold);
+            count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength <= threshold)
+                    continue;  // ignore edgels below threshold
+                should(edgels[i].x == edgelsThresh[count].x);
+                should(edgels[i].y == edgelsThresh[count].y);
+                ++count;
+            }
+            should(count == 38);
         }
-        should(count == 38);
+        {
+            std::vector<vigra::Edgel> edgels;
+            MultiArray<2, TinyVector<double, 2> > grad(imgCanny.width(), imgCanny.height());
+            gaussianGradient(View(imgCanny), grad, 1.0);
+
+            cannyEdgelList(grad, edgels);
+            int count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength < 1.0e-10)
+                    continue;  // ignore edgels that result from round off error during convolution
+                ++count;
+                should(edgels[i].x == edgels[i].y);
+                should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
+            }
+            should(count == 75);
+        }
     }
 
     void cannyEdgelList3x3Test()

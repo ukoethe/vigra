@@ -71,11 +71,12 @@ namespace vigra {
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                            DestIterator dul, DestAccessor dest,
-                            bool negateComponent2 = false);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        vectorToTensor(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       bool negateComponent2 = false);
     }
     \endcode
 
@@ -194,6 +195,8 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
                MultiArrayView<2, T2, S2> dest,
                bool negateComponent2 = false)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "vectorToTensor(): shape mismatch between input and output.");
     vectorToTensor(srcImageRange(src), destImage(dest), negateComponent2);
 }
 
@@ -217,10 +220,11 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                       DestIterator dul, DestAccessor dest);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 
@@ -315,6 +319,8 @@ inline void
 tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
                           MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "tensorEigenRepresentation(): shape mismatch between input and output.");
     tensorEigenRepresentation(srcImageRange(src), destImage(dest));
 }
 
@@ -335,10 +341,11 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                         DestIterator dul, DestAccessor dest);
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        tensorTrace(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest);
     }
     \endcode
 
@@ -415,6 +422,8 @@ inline void
 tensorTrace(MultiArrayView<2, T1, S1> const & src,
             MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "tensorTrace(): shape mismatch between input and output.");
     tensorTrace(srcImageRange(src), destImage(dest));
 }
 
@@ -439,12 +448,13 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator1, class DestAccessor1,
-                  class DestIterator2, class DestAccessor2>
-        void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                DestIterator1 edgeul, DestAccessor1 edge,
-                                DestIterator2 cornerul, DestAccessor2 corner);
+        template <class T1, class S1,
+                  class T21, class S21,
+                  class T22, class S22>
+        void
+        tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T21, S21> edge,
+                           MultiArrayView<2, T22, S22> corner);
     }
     \endcode
 
@@ -552,6 +562,8 @@ tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T21, S21> edge,
                    MultiArrayView<2, T22, S22> corner)
 {
+    vigra_precondition(src.shape() == edge.shape(),
+        "tensorToEdgeCorner(): shape mismatch between input and output.");
     tensorToEdgeCorner(srcImageRange(src), 
                        destImage(edge), destImage(corner));
 }

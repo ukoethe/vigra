@@ -174,18 +174,20 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
     namespace vigra {
         // rotate about given center point
         template <int ORDER, class T, 
-                  class DestIterator, class DestAccessor>
-        void rotateImage(SplineImageView<ORDER, T> const & src,
-                         DestIterator id, DestAccessor dest, 
-                         double angleInDegree, TinyVector<double, 2> const & center);
-                         
-        // rotate about image center
-        template <int ORDER, class T, 
-                  class DestIterator, class DestAccessor>
+                  class T2, class S2>
         void 
         rotateImage(SplineImageView<ORDER, T> const & src,
-                    DestIterator id, DestAccessor dest, 
-                    double angleInDegree)
+                    MultiArrayView<2, T2, S2> dest, 
+                    double angleInDegree, 
+                    TinyVector<double, 2> const & center);
+
+        // rotate about image center (i.e. (src.shape() - Shape2(1)) / 2.0  )
+        template <int ORDER, class T, 
+                  class T2, class S2>
+        void 
+        rotateImage(SplineImageView<ORDER, T> const & src,
+                    MultiArrayView<2, T2, S2> dest, 
+                    double angleInDegree);
     }
     \endcode
     
@@ -353,11 +355,12 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     \code
     namespace vigra {
         template <int ORDER, class T, 
-                class DestIterator, class DestAccessor,
-                class C>
-        void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                            DestIterator dul, DestIterator dlr, DestAccessor dest, 
-                            MultiArrayView<2, double, C> const & affineMatrix);
+                  class T2, class S2,
+                  class C>
+        void
+        affineWarpImage(SplineImageView<ORDER, T> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
     
@@ -473,10 +476,10 @@ void affineWarpImage(SplineImageView<ORDER, T> const & src,
 template <int ORDER, class T, 
           class DestIterator, class DestAccessor,
           class C>
-inline
-void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                     triple<DestIterator, DestIterator, DestAccessor> dest, 
-                     MultiArrayView<2, double, C> const & affineMatrix)
+inline void
+affineWarpImage(SplineImageView<ORDER, T> const & src,
+                triple<DestIterator, DestIterator, DestAccessor> dest, 
+                MultiArrayView<2, double, C> const & affineMatrix)
 {
     affineWarpImage(src, dest.first, dest.second, dest.third, affineMatrix);
 }
@@ -484,10 +487,10 @@ void affineWarpImage(SplineImageView<ORDER, T> const & src,
 template <int ORDER, class T, 
           class T2, class S2,
           class C>
-inline
-void affineWarpImage(SplineImageView<ORDER, T> const & src,
-                     MultiArrayView<2, T2, S2> dest, 
-                     MultiArrayView<2, double, C> const & affineMatrix)
+inline void
+affineWarpImage(SplineImageView<ORDER, T> const & src,
+                MultiArrayView<2, T2, S2> dest, 
+                MultiArrayView<2, double, C> const & affineMatrix)
 {
     affineWarpImage(src, destImageRange(dest), affineMatrix);
 }

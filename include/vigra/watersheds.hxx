@@ -599,13 +599,13 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class Neighborhood = EightNeighborCode>
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Neighborhood>
         unsigned int
-        watershedsUnionFind(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                            DestIterator upperleftd, DestAccessor da,
-                            Neighborhood neighborhood = EightNeighborCode())
+        watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest, 
+                            Neighborhood neighborhood = EightNeighborCode());
     }
     \endcode
 
@@ -739,6 +739,8 @@ inline unsigned int
 watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
                     MultiArrayView<2, T2, S2> dest)
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsUnionFind(): shape mismatch between input and output.");
     return watershedsUnionFind(srcImageRange(src), 
                                destImage(dest));
 }
@@ -1119,20 +1121,20 @@ class BiasedWatershedStatistics
     pass 2D array views:
     \code
     namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
+        template <class T1, class S1,
+                  class T2, class S2,
                   class Neighborhood = EightNeighborCode>
         unsigned int
-        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                                DestIterator upperleftd, DestAccessor da, 
+        watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest, 
                                 Neighborhood neighborhood = EightNeighborCode(),
                                 WatershedOptions const & options = WatershedOptions());
 
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
+        template <class T1, class S1,
+                  class T2, class S2>
         unsigned int
-        watershedsRegionGrowing(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                                DestIterator upperleftd, DestAccessor da, 
+        watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest, 
                                 WatershedOptions const & options = WatershedOptions());
     }
     \endcode
@@ -1384,6 +1386,8 @@ watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
                         Neighborhood neighborhood,
                         WatershedOptions const & options = WatershedOptions())
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsRegionGrowing(): shape mismatch between input and output.");
     return watershedsRegionGrowing(srcImageRange(src),
                                    destImage(dest),    
                                    neighborhood, options);
@@ -1396,6 +1400,8 @@ watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
                         MultiArrayView<2, T2, S2> dest, 
                         WatershedOptions const & options = WatershedOptions())
 {
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsRegionGrowing(): shape mismatch between input and output.");
     return watershedsRegionGrowing(srcImageRange(src),
                                    destImage(dest),    
                                    EightNeighborCode(), options);
