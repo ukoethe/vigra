@@ -1305,7 +1305,7 @@ class VigraArray(numpy.ndarray):
         '''
         if axistags is not None and len(shape) != len(axistags):
             raise RuntimeError("VigraArray.reshape(): size mismatch between shape and axistags.")
-        res = numpy.ndarray.reshape(self, shape, order)
+        res = numpy.ndarray.reshape(self, shape, order=order)
         if axistags is not None:
             res.axistags = copy.copy(axistags)
         else:
