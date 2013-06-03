@@ -117,7 +117,7 @@ swapLine(SrcIterator s,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -275,7 +275,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

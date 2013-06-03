@@ -241,7 +241,7 @@ namespace vigra {
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -388,7 +388,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -515,7 +515,7 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
       template <class SrcIterator, class SrcAccessor,
@@ -648,7 +648,7 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -814,7 +814,7 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // write x and y component of the gradient into separate images
@@ -1007,7 +1007,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     the input array's right-most dimension is interpreted as a channel axis, therefore it must 
     have one dimension more than the output array.
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1146,7 +1146,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1285,7 +1285,7 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1492,7 +1492,7 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // create three separate destination images

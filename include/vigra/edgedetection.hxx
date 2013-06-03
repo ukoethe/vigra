@@ -115,7 +115,7 @@ namespace vigra {
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -438,7 +438,7 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -773,7 +773,7 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class Iterator, class Accessor, class SrcValue>
@@ -923,7 +923,7 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
@@ -1152,7 +1152,7 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class SrcValue>
@@ -1436,7 +1436,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // compute edgels from a gradient image
@@ -1605,7 +1605,7 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // compute edgels from a gradient image
@@ -1782,7 +1782,7 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -2045,7 +2045,7 @@ void cannyEdgeImageFromGrad(
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -2279,7 +2279,7 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -2503,7 +2503,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // compute edgels from a gradient image
@@ -2666,7 +2666,7 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // compute edgels from a gradient image

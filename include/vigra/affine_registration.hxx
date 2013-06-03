@@ -417,7 +417,7 @@ estimateAffineMotionImpl(SrcIterator sul, SrcIterator slr, SrcAccessor src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -553,7 +553,7 @@ estimateTranslation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -689,7 +689,7 @@ estimateSimilarityTransform(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

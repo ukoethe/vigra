@@ -131,7 +131,7 @@ internalResizeMultiArrayOneDimension(
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class Shape, class SrcAccessor,

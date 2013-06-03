@@ -169,7 +169,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -291,7 +291,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
@@ -404,7 +404,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
                     VALUETYPE const & v);
     }
     \endcode     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
@@ -547,7 +547,7 @@ initImageIf(MultiArrayView<2, T, S> img,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>

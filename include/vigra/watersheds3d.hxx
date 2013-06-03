@@ -252,7 +252,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
     <b> Declarations:</b>
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,class SrcShape,

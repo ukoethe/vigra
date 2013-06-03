@@ -634,7 +634,7 @@ namespace vigra
     }
     \endcode
    
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -822,7 +822,7 @@ namespace vigra
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class ImageAccessor>

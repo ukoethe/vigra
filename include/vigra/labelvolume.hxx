@@ -81,7 +81,7 @@ namespace vigra{
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
 
@@ -432,7 +432,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
 

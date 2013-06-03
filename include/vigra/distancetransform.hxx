@@ -317,7 +317,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

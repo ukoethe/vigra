@@ -115,7 +115,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     }
     \endcode
     
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class VALUETYPE>
@@ -345,7 +345,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     \endcode
     
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -673,7 +673,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     \endcode
     
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1152,7 +1152,7 @@ combineTwoMultiArraysImpl(
     }
     \endcode
     
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1527,7 +1527,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     }
     \endcode
     
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator1, class SrcShape, class SrcAccessor1,
@@ -1685,7 +1685,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class Iterator, class Shape, class Accessor, class Functor>
@@ -1832,7 +1832,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class Iterator1, class Shape, class Accessor1, 

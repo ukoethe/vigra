@@ -139,7 +139,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
@@ -299,7 +299,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
@@ -492,7 +492,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -695,7 +695,7 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,

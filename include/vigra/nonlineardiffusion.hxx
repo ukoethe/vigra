@@ -258,7 +258,7 @@ void internalNonlinearDiffusionAOSStep(
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,

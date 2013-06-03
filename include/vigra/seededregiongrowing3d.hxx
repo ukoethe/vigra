@@ -269,7 +269,7 @@ public:
     }
     \endcode
 
-    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors:
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class Shape, class SrcAccessor,

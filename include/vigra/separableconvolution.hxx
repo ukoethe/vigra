@@ -810,7 +810,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1032,7 +1032,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1169,7 +1169,7 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,

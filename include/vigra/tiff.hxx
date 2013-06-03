@@ -91,7 +91,7 @@ typedef TIFF TiffImage;
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -196,7 +196,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -565,7 +565,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
@@ -1064,7 +1064,7 @@ struct CreateTiffImage;
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1158,7 +1158,7 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
     }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1577,7 +1577,7 @@ struct CreateTiffImage<double>
                 }
     \endcode
     
-    pass \ref ImageIterators and \ref DataAccessors:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
