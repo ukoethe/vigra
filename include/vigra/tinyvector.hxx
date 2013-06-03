@@ -1986,6 +1986,16 @@ squaredNorm(TinyVector<V, SIZE> const & t)
 {
     return t.squaredMagnitude();
 }
+
+    /// reversed copy
+template <class V, int SIZE>
+inline
+typename TinyVector<V, SIZE>
+reverse(TinyVector<V, SIZE> const & t)
+{
+    return TinyVector<V, SIZE>(t.begin(), TinyVector<V, SIZE>::ReverseCopy);
+}
+
 //@}
 
 // mask cl.exe shortcomings [end]
