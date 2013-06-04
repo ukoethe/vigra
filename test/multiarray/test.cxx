@@ -1593,6 +1593,22 @@ struct ImageViewTest
         should(acc(i, 4) == data[4]);
     }
 
+    void testStridedImageView()
+    {
+        // create stride MultiArrayView
+        typename MA::difference_type
+            start(1,1), end(3,3);
+        MA roi = ma.subarray(start, end);
+
+        // inspect both the MultiArrayView and the corresponding BasicImageView
+        vigra::FindMinMax<typename Image::value_type> minmax1, minmax2;
+        vigra::inspectMultiArray(srcMultiArrayRange(roi), minmax1);
+        vigra::inspectImage(srcImageRange(makeBasicImageView(roi)), minmax2);
+
+        should(minmax1.max() == minmax2.max());
+        should(minmax1.min() == minmax2.min());
+    }
+
     void testImageIterator()
     {
         vigra::ImageIterator<typename Image::value_type>
