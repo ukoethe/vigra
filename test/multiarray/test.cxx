@@ -1666,6 +1666,22 @@ struct ImageViewTest
         should(c3 == end);
     }
 
+    void testStridedImageView()
+    {
+        // create stride MultiArrayView
+        typename MA::difference_type
+            start(0,0), end(2,2);
+        MA roi = ma.subarray(start, end);
+
+        // inspect both the MultiArrayView and the corresponding BasicImageView
+        vigra::FindSum<typename Image::value_type> sum1, sum2;
+        vigra::inspectMultiArray(srcMultiArrayRange(roi), sum1);
+        vigra::inspectImage(srcImageRange(makeBasicImageView(roi)), sum2);
+
+        shouldEqual(sum1.sum(), sum2.sum());
+        shouldEqual(data[0] + data[1] + data[3] + data[4], sum2.sum());
+    }
+
     void testBasicImageIterator()
     {
         typename Image::Iterator ul = img.upperLeft();
@@ -2789,15 +2805,19 @@ struct ImageViewTestSuite
     ImageViewTestSuite()
     : vigra::test_suite("ImageViewTestSuite")
     {
+		add( testCase( &BImageViewTest::testStridedImageView));
         add( testCase( &BImageViewTest::testBasicImageIterator));
         add( testCase( &BImageViewTest::testImageIterator));
         add( testCase( &BImageViewTest::copyImage));
+		add( testCase( &DImageViewTest::testStridedImageView));
         add( testCase( &DImageViewTest::testBasicImageIterator));
         add( testCase( &DImageViewTest::testImageIterator));
         add( testCase( &DImageViewTest::copyImage));
+		add( testCase( &BRGBImageViewTest::testStridedImageView));
         add( testCase( &BRGBImageViewTest::testBasicImageIterator));
         add( testCase( &BRGBImageViewTest::testImageIterator));
         add( testCase( &BRGBImageViewTest::copyImage));
+		add( testCase( &FRGBImageViewTest::testStridedImageView));
         add( testCase( &FRGBImageViewTest::testBasicImageIterator));
         add( testCase( &FRGBImageViewTest::testImageIterator));
         add( testCase( &FRGBImageViewTest::copyImage));
