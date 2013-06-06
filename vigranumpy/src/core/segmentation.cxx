@@ -1251,10 +1251,7 @@ void defineSegmentation()
        arg("iterations")=10,
        arg("out")=python::object()),
        "Compute Slic superpixels for a 2D image.\n"
-        "\n"
-        "   slicSuperpixels(image, intensityScaling, seedDistance,"
-        "                   minsiSize=0, iterations=10, out=None) -> (labelImage, maxRegionLabel)"
-        "\n"
+
         "Parameters:\n\n"
         " image:\n"
         "    The 2D-image on which the superpixels will be calculated. Accepts single- and threeband images. \n\n"
