@@ -1250,13 +1250,13 @@ void defineSegmentation()
        arg("minSize")=0,
        arg("iterations")=10,
        arg("out")=python::object()),
-       "Compute Slic superpixels for a 2D image.\n"
+        "Compute Slic superpixels for a 2D image.\n\n"
 
         "Parameters:\n\n"
         " image:\n"
         "    The 2D-image on which the superpixels will be calculated. Accepts single- and threeband images. \n\n"
         " intensityScaling:\n"
-        "    Scale (divide) color/intensity difference by this parameter before compareing to spatial distance. \n\n"
+        "    Scale (divide) color/intensity difference by this parameter before comparing to spatial distance. \n\n"
         " seedDistance:\n"
         "    specify the radius of the window around each seed in which the algorithm looks for potential members of the corresponding superpixel"
         " thus limiting the superpixel size. The grid spacing for seed placement is determined by this parameter.\n\n"
@@ -1276,7 +1276,7 @@ void defineSegmentation()
        arg("minSize")=0,
        arg("iterations")=10,
        arg("out")=python::object()),
-       "Likewise compute Slic superpixels for a 3D volume.\n");
+       "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
 }
 
 void defineEdgedetection();
