@@ -1250,7 +1250,24 @@ void defineSegmentation()
        arg("minSize")=0,
        arg("iterations")=10,
        arg("out")=python::object()),
-       "Slic superpixels");
+        "Compute Slic superpixels for a 2D image.\n\n"
+
+        "Parameters:\n\n"
+        " image:\n"
+        "    The 2D-image on which the superpixels will be calculated. Accepts single- and threeband images. \n\n"
+        " intensityScaling:\n"
+        "    Scale (divide) color/intensity difference by this parameter before comparing to spatial distance. \n\n"
+        " seedDistance:\n"
+        "    specify the radius of the window around each seed in which the algorithm looks for potential members of the corresponding superpixel"
+        " thus limiting the superpixel size. The grid spacing for seed placement is determined by this parameter.\n\n"
+        " minSize:\n"
+        "    Minimum size for superpixels. By default the algorithm merges all regions smaller than a quarter of the average superpixel size.\n\n"
+        " iterations:\n"
+        "    Specify number of iterations. The default is 10."
+        " out:\n"
+        "    The label image (with dtype=numpy.uint32) to be filled by the algorithm. "
+        "    It will be allocated by the slicSuperpixels function if not provided)\n\n"
+        "The function returns a Python tuple (labelImage, maxRegionLabel)\n\n");
 
     multidef("slicSuperpixels", pySlic3D< TinyVector<float, 3>, Singleband<float> >(),
       (arg("image"), 
@@ -1259,7 +1276,7 @@ void defineSegmentation()
        arg("minSize")=0,
        arg("iterations")=10,
        arg("out")=python::object()),
-       "Slic superpixels");
+       "Likewise compute Slic superpixels for a 3D volume, either single- or threeband.\n");
 }
 
 void defineEdgedetection();
