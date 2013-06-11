@@ -197,6 +197,7 @@ class RandomForestOptions
     bool predict_weighted_; 
     int tree_count_;
     int min_split_node_size_;
+    int max_tree_depth_;
     bool prepare_online_learning_;
     /*\}*/
 
@@ -222,6 +223,7 @@ class RandomForestOptions
         COMPARE(mtry_);
         COMPARE(tree_count_);
         COMPARE(min_split_node_size_);
+        COMPARE(max_tree_depth_);
         COMPARE(predict_weighted_);
         #undef COMPARE
 
@@ -250,6 +252,7 @@ class RandomForestOptions
         ++iter; //PULL(mtry_func_, double);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
+        PULL(max_tree_depth_, int);
         PULL(predict_weighted_, 0 !=);
         #undef PULL
     }
@@ -286,6 +289,7 @@ class RandomForestOptions
         }
         PUSH(tree_count_);
         PUSH(min_split_node_size_);
+        PUSH(max_tree_depth_);
         PUSH(predict_weighted_);
         #undef PUSH
     }
@@ -300,6 +304,7 @@ class RandomForestOptions
         PULL(mtry_, int);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
+        PULL(max_tree_depth_, int);
         PULLBOOL(sample_with_replacement_, bool);
         PULLBOOL(prepare_online_learning_, bool);
         PULLBOOL(predict_weighted_, bool);
@@ -325,6 +330,7 @@ class RandomForestOptions
         PUSH(mtry_, int);
         PUSH(tree_count_, int);
         PUSH(min_split_node_size_, int);
+        PUSH(max_tree_depth_, int);
         PUSH(sample_with_replacement_, bool);
         PUSH(prepare_online_learning_, bool);
         PUSH(predict_weighted_, bool);
@@ -359,6 +365,7 @@ class RandomForestOptions
         predict_weighted_(false),
         tree_count_(256),
         min_split_node_size_(1),
+        max_tree_depth_(0),
         prepare_online_learning_(false)
     {}
 
@@ -511,6 +518,20 @@ class RandomForestOptions
     RandomForestOptions & min_split_node_size(int in)
     {
         min_split_node_size_ = in;
+        return *this;
+    }
+
+    /**\brief maximum depth of a decision tree.
+     *
+     *  When the depth of a node is equal to this number
+     *  the node is not split even if class separation is not yet perfect.
+     *  Instead, the node returns the proportion of each class
+     *  (among the remaining examples) during the prediction phase.
+     *  <br> Default: 0 (complete growing)
+     */
+    RandomForestOptions & max_tree_depth(int in)
+    {
+        max_tree_depth_ = in;
         return *this;
     }
 };
@@ -883,10 +904,12 @@ class EarlyStoppStd
 {
     public:
     int min_split_node_size_;
+    int max_tree_depth_;
 
     template<class Opt>
     EarlyStoppStd(Opt opt)
-    :   min_split_node_size_(opt.min_split_node_size_)
+    :   min_split_node_size_(opt.min_split_node_size_),
+        max_tree_depth_(opt.max_tree_depth_)
     {}
 
     template<class T>
@@ -896,7 +919,7 @@ class EarlyStoppStd
     template<class Region>
     bool operator()(Region& region)
     {
-        return region.size() < min_split_node_size_;
+        return (region.size() < min_split_node_size_)||(!((max_tree_depth_ == 0)|| (region.depth() < max_tree_depth_)));
     }
 
     template<class WeightIter, class T, class C>
