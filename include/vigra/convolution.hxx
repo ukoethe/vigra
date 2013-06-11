@@ -807,7 +807,7 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     two separate result images for the x- and y-components of the gradient, or write
     into a vector valued image (with at least two components).
 
-    Function \ref gaussiangradientMultiArray() performs the same filter operation
+    Function \ref gaussianGradientMultiArray() performs the same filter operation
     on arbitrary dimensional arrays.
 
     <b> Declarations:</b>
