@@ -903,14 +903,11 @@ class EarlyStoppStd
 
     template<class Opt>
     EarlyStoppStd(Opt opt)
-    :   min_split_node_size_(opt.min_split_node_size_)
-    {
-        if(opt.max_tree_depth_ == 0) {
-            max_tree_depth_ = std::numeric_limits<int>::max();
-        } else {
-            max_tree_depth_ = opt.max_tree_depth_;
-        }
-    }
+    :   min_split_node_size_(opt.min_split_node_size_),
+        max_tree_depth_(opt.max_tree_depth_ == 0 ?
+                            std::numeric_limits<int>::max()
+                            : opt.max_tree_depth_)
+    {}
 
     template<class T>
     void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
