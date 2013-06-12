@@ -223,7 +223,6 @@ class RandomForestOptions
         COMPARE(mtry_);
         COMPARE(tree_count_);
         COMPARE(min_split_node_size_);
-        COMPARE(max_tree_depth_);
         COMPARE(predict_weighted_);
         #undef COMPARE
 
@@ -252,7 +251,6 @@ class RandomForestOptions
         ++iter; //PULL(mtry_func_, double);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
-        PULL(max_tree_depth_, int);
         PULL(predict_weighted_, 0 !=);
         #undef PULL
     }
@@ -289,7 +287,6 @@ class RandomForestOptions
         }
         PUSH(tree_count_);
         PUSH(min_split_node_size_);
-        PUSH(max_tree_depth_);
         PUSH(predict_weighted_);
         #undef PUSH
     }
@@ -304,7 +301,6 @@ class RandomForestOptions
         PULL(mtry_, int);
         PULL(tree_count_, int);
         PULL(min_split_node_size_, int);
-        PULL(max_tree_depth_, int);
         PULLBOOL(sample_with_replacement_, bool);
         PULLBOOL(prepare_online_learning_, bool);
         PULLBOOL(predict_weighted_, bool);
@@ -330,7 +326,6 @@ class RandomForestOptions
         PUSH(mtry_, int);
         PUSH(tree_count_, int);
         PUSH(min_split_node_size_, int);
-        PUSH(max_tree_depth_, int);
         PUSH(sample_with_replacement_, bool);
         PUSH(prepare_online_learning_, bool);
         PUSH(predict_weighted_, bool);
@@ -908,9 +903,14 @@ class EarlyStoppStd
 
     template<class Opt>
     EarlyStoppStd(Opt opt)
-    :   min_split_node_size_(opt.min_split_node_size_),
-        max_tree_depth_(opt.max_tree_depth_)
-    {}
+    :   min_split_node_size_(opt.min_split_node_size_)
+    {
+        if(opt.max_tree_depth_ == 0) {
+            max_tree_depth_ = std::numeric_limits<int>::max();
+        } else {
+            max_tree_depth_ = opt.max_tree_depth_;
+        }
+    }
 
     template<class T>
     void set_external_parameters(ProblemSpec<T>const  &, int /* tree_count */ = 0, bool /* is_weighted_ */ = false)
@@ -919,7 +919,7 @@ class EarlyStoppStd
     template<class Region>
     bool operator()(Region& region)
     {
-        return (region.size() < min_split_node_size_)||(!((max_tree_depth_ == 0)|| (region.depth() < max_tree_depth_)));
+        return (region.size() < min_split_node_size_)||(region.depth() >= max_tree_depth_);
     }
 
     template<class WeightIter, class T, class C>
