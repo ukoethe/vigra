@@ -442,7 +442,7 @@ struct MultiArraySeparableConvolutionTest
         int size = shape[0]*shape[1];
 
         MultiArray<2, double > src(shape), laplacian(shape);
-        BasicImage<double> rlaplacian(shape[0], shape[1]);
+        MultiArray<2, double> rlaplacian(shape[0], shape[1]);
         
         makeRandom(src);
         
@@ -454,6 +454,20 @@ struct MultiArraySeparableConvolutionTest
         laplacian = 0;
         laplacianOfGaussianMultiArray(src, laplacian, 2.0 );
         shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
+
+        // test divergence of gradient - theoretically, it equals the Laplacian, but in practice this requires
+        //                               large kernel windows, a high tolerance, and doesn't hold near the border
+        rlaplacian = 0;
+        laplacianOfGaussianMultiArray(src, rlaplacian, 2.0, ConvolutionOptions<2>().filterWindowSize(5));
+
+        laplacian = 0;
+        MultiArray<2, TinyVector<double, 2> > grad(laplacian.shape());
+        gaussianGradientMultiArray(src, grad, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
+        gaussianDivergenceMultiArray(grad, laplacian, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
+
+        MultiArrayView <2, double> center(laplacian.subarray(Shape2(10,10), Shape2(-10,-10))),
+                                   rcenter(rlaplacian.subarray(Shape2(10,10), Shape2(-10,-10)));
+        shouldEqualSequenceTolerance(center.begin(), center.end(), rcenter.begin(), 0.001);
     }
 
     void test_hessian()

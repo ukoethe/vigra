@@ -1789,7 +1789,7 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
 
 /** \brief Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.
 
-    This function computes the Laplacian the given N-dimensional
+    This function computes the Laplacian of the given N-dimensional
     array with a sequence of second-derivative-of-Gaussian filters at the given
     standard deviation <tt>sigma</tt>. Both source and destination arrays
     are represented by iterators, shape objects and accessors. Both source and destination 
@@ -2015,6 +2015,181 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     laplacianOfGaussianMultiArray( srcMultiArrayRange(source),
                                    destMultiArray(dest),  sigma, opt );
+}
+
+/********************************************************/
+/*                                                      */
+/*             gaussianDivergenceMultiArray             */
+/*                                                      */
+/********************************************************/
+
+/** \brief Calculate the divergence of a vector field using Gaussian derivative filters.
+
+    This function computes the divergence of the given N-dimensional vector field
+    with a sequence of first-derivative-of-Gaussian filters at the given
+    standard deviation <tt>sigma</tt>. The input vector field can either be given as a sequence
+    of scalar array views (one for each vector field component), represented by an
+    iterator range, or by a single vector array with the appropriate shape.
+    This function is implemented by calls to
+    \ref separableConvolveMultiArray() with the suitable kernels, followed by summation.
+
+    Anisotropic data should be passed with appropriate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is left out.
+
+    <b> Declarations:</b>
+
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // specify input vector field as a sequence of scalar arrays
+        template <class Iterator, 
+                  unsigned int N, class T, class S>
+        void 
+        gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                                     MultiArrayView<N, T, S> divergence,
+                                     ConvolutionOptions<N> const & opt);
+        
+        template <class Iterator, 
+                  unsigned int N, class T, class S>
+        void 
+        gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                                     MultiArrayView<N, T, S> divergence,
+                                     double sigma,
+                                     ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+        
+        // pass input vector field as an array of vectors
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                                     MultiArrayView<N, T2, S2> divergence,
+                                     ConvolutionOptions<N> const & opt);
+                                     
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                                     MultiArrayView<N, T2, S2> divergence,
+                                     double sigma,
+                                     ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, TinyVector<float, 3> > source(shape);
+    MultiArray<3, float> laplacian(shape);
+    ...
+    // compute divergence at scale sigma
+    gaussianDivergenceMultiArray(source, laplacian, sigma);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+
+    \code
+    MultiArray<3, TinyVector<float, 3> > source(shape);
+    MultiArray<3, float> laplacian(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute divergence at scale sigma
+    gaussianDivergenceMultiArray(source, laplacian, sigma,
+                                 ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void gaussianDivergenceMultiArray)
+
+template <class Iterator, 
+          unsigned int N, class T, class S>
+void 
+gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                             MultiArrayView<N, T, S> divergence,
+                             ConvolutionOptions<N> const & opt)
+{
+    typedef typename MultiArrayShape<N>::type                    Shape;
+    typedef typename std::iterator_traits<Iterator>::value_type  ArrayType;
+    typedef typename ArrayType::value_type                       SrcType;
+    typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
+    typedef Kernel1D<double>                                     Kernel;
+    
+    unsigned int count = std::distance(vectorField, vectorFieldEnd);
+    
+    vigra_precondition(count == N,
+        "gaussianDivergenceMultiArray(): wrong number of input arrays.");
+    // more checks are performed in separableConvolveMultiArray()
+    
+    typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
+    ArrayVector<double> sigmas(N);
+    ArrayVector<Kernel> kernels(N);
+    for(unsigned int k = 0; k < N; ++k, ++params)
+    {
+        sigmas[k] = params.sigma_scaled("gaussianDivergenceMultiArray");
+        kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
+    }
+    
+    MultiArray<N, TmpType> tmpDeriv(divergence.shape());
+    Shape center(divergence.shape()/2);
+    
+    for(unsigned int k=0; k < N; ++k, ++vectorField)
+    {
+        kernels[k].initGaussianDerivative(sigmas[k], 1, 1.0, opt.window_ratio);
+        if(k == 0)
+        {
+            separableConvolveMultiArray(*vectorField, divergence, kernels.begin(), opt.from_point, opt.to_point);
+        }
+        else
+        {
+            separableConvolveMultiArray(*vectorField, tmpDeriv, kernels.begin(), opt.from_point, opt.to_point);
+            divergence += tmpDeriv;
+        }
+        kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
+    }
+}
+
+template <class Iterator, 
+          unsigned int N, class T, class S>
+inline void 
+gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                             MultiArrayView<N, T, S> divergence,
+                             double sigma,
+                             ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianDivergenceMultiArray(vectorField, vectorFieldEnd, divergence, opt.stdDev(sigma));
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                             MultiArrayView<N, T2, S2> divergence,
+                             ConvolutionOptions<N> const & opt)
+{
+    vigra_precondition(vectorField.shape() == divergence.shape(),
+        "gaussianDivergenceMultiArray(): shape mismatch between input and output.");
+        
+    ArrayVector<MultiArrayView<N, T1> > field;
+    for(unsigned int k=0; k<N; ++k)
+        field.push_back(vectorField.bindElementChannel(k));
+
+    gaussianDivergenceMultiArray(field.begin(), field.end(), divergence, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                             MultiArrayView<N, T2, S2> divergence,
+                             double sigma,
+                             ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianDivergenceMultiArray(vectorField, divergence, opt.stdDev(sigma));
 }
 
 /********************************************************/

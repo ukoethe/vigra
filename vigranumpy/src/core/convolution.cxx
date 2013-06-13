@@ -385,6 +385,47 @@ pythonLaplacianOfGaussian(NumpyArray<N, Multiband<PixelType> > array,
     return res;
 }
 
+template <class PixelType, unsigned int N>
+NumpyAnyArray 
+pythonGaussianDivergence(NumpyArray<N, TinyVector<PixelType, N> > array,
+                         python::object scale,
+                         NumpyArray<N, Singleband<PixelType> > res=python::object(),
+                         python::object sigma_d = python::object(0.0), 
+                         python::object step_size = python::object(1.0),
+                         double window_size = 0.0, 
+                         python::object roi = python::object())
+{
+    pythonScaleParam<N> params(scale, sigma_d, step_size, "gaussianDivergence");
+    params.permuteLikewise(array);
+    
+    std::string description("divergence of a vector field using Gaussian derivatives, scale=");
+    description += asString(scale);
+    
+    ConvolutionOptions<N> opt(params().filterWindowSize(window_size));
+    
+    if(roi != python::object())
+    {
+        typedef typename MultiArrayShape<N>::type Shape;
+        Shape start = array.permuteLikewise(python::extract<Shape>(roi[0])());
+        Shape stop  = array.permuteLikewise(python::extract<Shape>(roi[1])());
+        opt.subarray(start, stop);
+        res.reshapeIfEmpty(array.taggedShape().resize(stop-start).setChannelDescription(description), 
+                "gaussianDivergence(): Output array has wrong shape.");
+    }
+    else
+    {
+        res.reshapeIfEmpty(array.taggedShape().setChannelDescription(description), 
+                "gaussianDivergence(): Output array has wrong shape.");
+    }
+    
+    {
+        PyAllowThreads _pythread;
+        gaussianDivergenceMultiArray(array, res, opt);
+    }
+    
+    return res;
+}
+
 template <class PixelType>
 NumpyAnyArray 
 pythonRecursiveFilter1(NumpyArray<3, Multiband<PixelType> > image,
@@ -652,6 +693,29 @@ void defineConvolutionFunctions()
          (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
          "Likewise for a scalar volume.\n");
+
+    def("gaussianDivergence", 
+         registerConverters(&pythonGaussianDivergence<float,2>),
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+          arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
+          "Compute the divergence of a 2D vector field with a first derivative of Gaussian at the given scale.\n\n"
+          "If 'sigma' is a single value, an isotropic filter at this scale is "
+          "applied (i.e., each dimension is filtered in the same way). "
+          "If 'sigma' is a tuple or list of values, the amount of smoothing "
+          "will be different for each spatial dimension.\n"
+          "The optional 'sigma_d' (single, tuple, or list) denotes the resolution standard deviation "
+          "per axis, the optional 'step_size' (single, tuple, or list) the distance between two adjacent "
+          "pixels for each dimension. "
+          "The length of the tuples or lists must be equal to the "
+          "number of spatial dimensions.\n\n" 
+          "'window_size' and 'roi' have the same meaning as in :func:`gaussianSmoothing`.\n\n"
+          "For details see gaussianDivergenceMultiArray_ and ConvolutionOptions_ in the vigra C++ documentation.\n");
+
+    def("gaussianDivergence", 
+         registerConverters(&pythonGaussianDivergence<float,3>),
+         (arg("array"), arg("scale") = 1.0, arg("out") = python::object(), 
+         arg("sigma_d") = 0.0, arg("step_size") = 1.0, arg("window_size")=0.0, arg("roi")=python::object()),
+         "Likewise for a 3D vector field.\n");
 
     def("recursiveFilter2D", registerConverters(&pythonRecursiveFilter1<float>),
               (arg("image"), arg("b"), arg("borderTreament") = BORDER_TREATMENT_REFLECT, arg("out") = python::object()),
