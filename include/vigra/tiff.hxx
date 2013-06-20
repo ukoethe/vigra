@@ -91,6 +91,7 @@ typedef TIFF TiffImage;
     }
     \endcode
     
+    \deprecatedAPI{importTiffImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -99,7 +100,6 @@ typedef TIFF TiffImage;
         importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -108,6 +108,7 @@ typedef TIFF TiffImage;
         importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
 
@@ -196,6 +197,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     }
     \endcode
     
+    \deprecatedAPI{tiffToScalarImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -204,7 +206,6 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
         tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -213,6 +214,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
         tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
 
@@ -565,6 +567,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
     
+    \deprecatedAPI{tiffToRGBImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -573,7 +576,6 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
         tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -582,6 +584,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
         tiffToRGBImage(TiffImage * tiff, pair<RGBImageIterator, RGBAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1064,6 +1067,7 @@ struct CreateTiffImage;
     }
     \endcode
     
+    \deprecatedAPI{createTiffImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1073,7 +1077,6 @@ struct CreateTiffImage;
                         Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1082,6 +1085,7 @@ struct CreateTiffImage;
         createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1158,6 +1162,7 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
     }
     \endcode
     
+    \deprecatedAPI{createScalarTiffImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1167,7 +1172,6 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
                   Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1176,6 +1180,7 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
         createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1577,6 +1582,7 @@ struct CreateTiffImage<double>
                 }
     \endcode
     
+    \deprecatedAPI{createRGBTiffImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1586,7 +1592,6 @@ struct CreateTiffImage<double>
                    RGBAccessor a)
                 }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1595,6 +1600,7 @@ struct CreateTiffImage<double>
         createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

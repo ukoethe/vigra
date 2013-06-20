@@ -218,6 +218,7 @@ public:
     }
     \endcode
 
+    \deprecatedAPI{vectorToTensorMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -228,7 +229,6 @@ public:
                                  DestIterator di, DestAccessor dest);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -239,6 +239,7 @@ public:
                                  pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -328,6 +329,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{tensorTraceMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -338,8 +340,6 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
                               DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -350,6 +350,7 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
                               pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -429,6 +430,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{tensorEigenvaluesMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -439,8 +441,6 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -451,6 +451,7 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -540,6 +541,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{tensorDeterminantMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -550,8 +552,6 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -562,6 +562,7 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
                                     pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 

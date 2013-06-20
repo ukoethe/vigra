@@ -546,6 +546,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     }
     \endcode
     
+    \deprecatedAPI{slantedEdgeMTF}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -555,7 +556,6 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
                        SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -565,6 +565,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
                        SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

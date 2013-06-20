@@ -395,6 +395,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     }
     \endcode
 
+    \deprecatedAPI{rieszTransformOfLOG}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -405,8 +406,6 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
                                  double scale, unsigned int xorder, unsigned int yorder);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -417,6 +416,7 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
                                  double scale, unsigned int xorder, unsigned int yorder);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -599,6 +599,7 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{boundaryTensor}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -609,7 +610,6 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
                             double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -620,6 +620,7 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
                             double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -700,6 +701,7 @@ boundaryTensor(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{boundaryTensor1}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -710,7 +712,6 @@ boundaryTensor(MultiArrayView<2, T1, S1> const & src,
                              double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -721,6 +722,7 @@ boundaryTensor(MultiArrayView<2, T1, S1> const & src,
                              double scale);
     }
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void boundaryTensor1)
 

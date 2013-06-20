@@ -81,6 +81,7 @@ namespace vigra{
     }
     \endcode
 
+    \deprecatedAPI{labelVolume}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -101,7 +102,6 @@ namespace vigra{
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -122,6 +122,7 @@ namespace vigra{
 
     }
     \endcode
+    \deprecatedEnd
     
     use with 3D-Six-Neighborhood:
     \code
@@ -432,6 +433,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{labelVolumeWithBackground}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -453,7 +455,6 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -475,6 +476,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 
     }
     \endcode
+    \deprecatedEnd
 
     Connected components are defined as regions with uniform voxel
     values. Thus, <TT>SrcAccessor::value_type</TT> either must be

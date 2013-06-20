@@ -169,6 +169,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     }
     \endcode
     
+    \deprecatedAPI{initImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -181,7 +182,6 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
                        Accessor a, FUNCTOR const & v);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -192,6 +192,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         void initImage(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -291,6 +292,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     }
     \endcode
     
+    \deprecatedAPI{initImageWithFunctor}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -300,7 +302,6 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
                   Accessor a,  FUNCTOR & f);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -309,6 +310,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
         initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -404,6 +406,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
                     VALUETYPE const & v);
     }
     \endcode     
+    \deprecatedAPI{initImageIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -421,8 +424,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
                          MaskImageIterator mask_upperleft, MaskAccessor ma,
                          FUNCTOR const & v);
     }
-    \endcode    
-    
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -441,6 +443,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
                          FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -547,6 +550,7 @@ initImageIf(MultiArrayView<2, T, S> img,
     }
     \endcode
     
+    \deprecatedAPI{initImageBorder}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -559,7 +563,6 @@ initImageIf(MultiArrayView<2, T, S> img,
                              int border_width, FUNCTOR const & v);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -572,6 +575,7 @@ initImageIf(MultiArrayView<2, T, S> img,
                              int border_width, FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

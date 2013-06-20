@@ -317,6 +317,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     }
     \endcode
     
+    \deprecatedAPI{distanceTransform}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -329,8 +330,6 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                                ValueType background, int norm);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -342,6 +341,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                                ValueType background, int norm);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

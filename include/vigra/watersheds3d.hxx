@@ -252,6 +252,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
     <b> Declarations:</b>
 
+    \deprecatedAPI{watersheds3D}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -263,7 +264,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                                   Neighborhood3D neighborhood3D);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -299,6 +299,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
                                     
     }
     \endcode
+    \deprecatedEnd
 
     This function implements the union-find version of the watershed algorithms
     as described in

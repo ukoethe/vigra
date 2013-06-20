@@ -102,6 +102,7 @@ The functions need a suitable 2D kernel to operate.
     }
     \endcode
 
+    \deprecatedAPI{convolveImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -114,8 +115,6 @@ The functions need a suitable 2D kernel to operate.
                            Diff2D kul, Diff2D klr, BorderTreatmentMode border);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -128,6 +127,7 @@ The functions need a suitable 2D kernel to operate.
                            BorderTreatmentMode> kernel);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -481,6 +481,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{normalizedConvolveImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -496,8 +497,6 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
                                 Diff2D kul, Diff2D klr, BorderTreatmentMode border);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -512,6 +511,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
                                      BorderTreatmentMode> kernel);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -767,6 +767,7 @@ normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{convolveImageWithMask}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -782,8 +783,6 @@ normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
                               Diff2D kul, Diff2D klr, BorderTreatmentMode border);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -798,6 +797,7 @@ normalizedConvolveImage(MultiArrayView<2, T1, S1> const & src,
                                    BorderTreatmentMode> kernel);
     }
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void convolveImageWithMask)
 

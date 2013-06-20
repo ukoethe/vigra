@@ -94,6 +94,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{gradientEnergyTensor}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -104,7 +105,6 @@ namespace vigra {
                                   Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -115,6 +115,7 @@ namespace vigra {
                                   Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

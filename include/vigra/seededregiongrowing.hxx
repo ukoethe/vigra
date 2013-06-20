@@ -290,6 +290,7 @@ enum SRGType {
     }
     \endcode
 
+    \deprecatedAPI{seededRegionGrowing}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -307,7 +308,6 @@ enum SRGType {
                             double max_cost = NumericTraits<double>::max());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -325,6 +325,7 @@ enum SRGType {
                             double max_cost = NumericTraits<double>::max());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

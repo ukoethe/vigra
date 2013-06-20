@@ -82,6 +82,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{radialSymmetryTransform}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -93,7 +94,6 @@ namespace vigra {
                                 double scale)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -106,6 +106,7 @@ namespace vigra {
                double scale)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

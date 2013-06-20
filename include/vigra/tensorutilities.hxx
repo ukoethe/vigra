@@ -80,6 +80,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{vectorToTensor}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -90,8 +91,6 @@ namespace vigra {
                             bool negateComponent2 = false);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -102,6 +101,7 @@ namespace vigra {
                             bool negateComponent2 = false);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -228,6 +228,7 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{tensorEigenRepresentation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -237,8 +238,6 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
                                        DestIterator dul, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -248,6 +247,7 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
                                        pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -349,6 +349,7 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{tensorTrace}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -358,8 +359,6 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
                          DestIterator dul, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -369,6 +368,7 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
                          pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -458,6 +458,7 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{tensorToEdgeCorner}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -469,8 +470,6 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
                                 DestIterator2 cornerul, DestAccessor2 corner);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -482,6 +481,7 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
                                 pair<DestIterator2, DestAccessor2> corner);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

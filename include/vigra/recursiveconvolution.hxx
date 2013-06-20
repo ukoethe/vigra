@@ -882,6 +882,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     }
     \endcode
     
+    \deprecatedAPI{recursiveFilterX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -902,8 +903,6 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
                                double b1, double b2);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -924,6 +923,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
                     double b1, double b2);
             }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1070,6 +1070,7 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveGaussianFilterX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1081,8 +1082,6 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
                                  double sigma);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1094,6 +1093,7 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
                                  double sigma);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1184,6 +1184,7 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveSmoothX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1195,8 +1196,6 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1208,6 +1207,7 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1307,6 +1307,7 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveFilterY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1327,8 +1328,6 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
                                double b1, double b2);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1349,6 +1348,7 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
                     double b1, double b2);
             }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1494,6 +1494,7 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveGaussianFilterY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1505,8 +1506,6 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
                                  double sigma);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1518,6 +1517,7 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
                                  double sigma);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1609,6 +1609,7 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveSmoothY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1620,8 +1621,6 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1633,6 +1632,7 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1724,6 +1724,7 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveFirstDerivativeX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1735,8 +1736,6 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1748,6 +1747,7 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1839,6 +1839,7 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveFirstDerivativeY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1850,8 +1851,6 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1863,6 +1862,7 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1954,6 +1954,7 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveSecondDerivativeX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1965,8 +1966,6 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1978,6 +1977,7 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -2069,6 +2069,7 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{recursiveSecondDerivativeY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2080,8 +2081,6 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2093,6 +2092,7 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

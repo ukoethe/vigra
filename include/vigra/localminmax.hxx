@@ -740,6 +740,7 @@ class LocalMinmaxOptions
     }
     \endcode
 
+    \deprecatedAPI{localMinima}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -751,7 +752,6 @@ class LocalMinmaxOptions
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -763,6 +763,7 @@ class LocalMinmaxOptions
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1109,6 +1110,7 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{localMaxima}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1120,7 +1122,6 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1132,6 +1133,7 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1478,6 +1480,7 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
                             LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
+    \deprecatedAPI{extendedLocalMinima}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1494,7 +1497,6 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
                             EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1511,6 +1513,7 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
                             EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1796,6 +1799,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
+    \deprecatedAPI{extendedLocalMaxima}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1812,7 +1816,6 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             EqualityFunctor equal = EqualityFunctor())
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1829,6 +1832,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             EqualityFunctor equal = EqualityFunctor())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

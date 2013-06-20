@@ -241,6 +241,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{convolveImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -253,8 +254,6 @@ namespace vigra {
                            Kernel1D<T> const & kx, Kernel1D<T> const & ky);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -267,6 +266,7 @@ namespace vigra {
                       Kernel1D<T> const & kx, Kernel1D<T> const & ky);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -391,6 +391,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{simpleSharpening}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -401,8 +402,6 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
 
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -418,6 +417,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -518,6 +518,7 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{gaussianSharpening}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -528,8 +529,6 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
                               double sharpening_factor, double scale)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -540,6 +539,7 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
                                double sharpening_factor, double scale)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -654,6 +654,7 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{gaussianSmoothing}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -665,8 +666,6 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
                                 double scale_x, double scale_y = scale_x);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -678,6 +677,7 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
                           double scale_x, double scale_y = scale_x);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -835,6 +835,7 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{gaussianGradient}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -857,8 +858,6 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
                               double scale);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -881,6 +880,7 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
                          double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -1039,6 +1039,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     the input array's right-most dimension is interpreted as a channel axis, therefore it must 
     have one dimension more than the output array.
 
+    \deprecatedAPI{gaussianGradientMagnitude}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1050,8 +1051,6 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
                                        double scale);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1063,6 +1062,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
                                   double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1181,6 +1181,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
+    \deprecatedAPI{laplacianOfGaussian}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1192,8 +1193,6 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 double scale);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1205,6 +1204,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                           double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -1332,6 +1332,7 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{hessianMatrixOfGaussian}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1347,8 +1348,6 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
                                 double scale);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1364,6 +1363,7 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
                           double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 
@@ -1553,6 +1553,7 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{structureTensor}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1577,8 +1578,6 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
                                 double inner_scale, double outer_scale);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1603,6 +1602,7 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
                           double nner_scale, double outer_scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage (MultiArrayView API):</b>
 

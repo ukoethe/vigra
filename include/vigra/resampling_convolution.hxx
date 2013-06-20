@@ -406,6 +406,7 @@ createResamplingKernels(Kernel const & kernel,
     }
     \endcode
 
+    \deprecatedAPI{resamplingConvolveX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -419,8 +420,6 @@ createResamplingKernels(Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -434,6 +433,7 @@ createResamplingKernels(Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -573,6 +573,7 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{resamplingConvolveY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -586,8 +587,6 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -601,6 +600,7 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -726,6 +726,7 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{resamplingConvolveImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -740,8 +741,6 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -757,6 +756,7 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -861,6 +861,7 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{pyramidReduceBurtFilter}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -871,7 +872,6 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
                                      double centerValue = 0.4);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -882,6 +882,7 @@ resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
                                      double centerValue = 0.4);
     }
     \endcode
+    \deprecatedEnd
 
     use a \ref vigra::ImagePyramid :
     \code
@@ -995,6 +996,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     }
     \endcode
 
+    \deprecatedAPI{pyramidExpandBurtFilter}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1005,8 +1007,6 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
                                      double centerValue = 0.4);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1017,6 +1017,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
                                      double centerValue = 0.4);
     }
     \endcode
+    \deprecatedEnd
 
     use a \ref vigra::ImagePyramid :
     \code

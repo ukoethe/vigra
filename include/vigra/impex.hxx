@@ -634,6 +634,7 @@ namespace vigra
     }
     \endcode
    
+    \deprecatedAPI{importImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -643,7 +644,6 @@ namespace vigra
                     ImageIterator imageIterator, Accessor imageAccessor)
     }
     \endcode
-   
     Use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -653,6 +653,7 @@ namespace vigra
                     const pair<ImageIterator, Accessor>& image)
     }
     \endcode
+    \deprecatedEnd
    
     <B>Usage</B>
    
@@ -822,6 +823,7 @@ namespace vigra
     }
     \endcode
     
+    \deprecatedAPI{exportImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -831,7 +833,6 @@ namespace vigra
                     const ImageExportInfo& exportInfo)
     }
     \endcode
-    
     Use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
         namespace vigra {
@@ -840,6 +841,7 @@ namespace vigra
                              const ImageExportInfo& exportInfo)
         }
     \endcode
+    \deprecatedEnd
     
     <B>Usage</B>
     

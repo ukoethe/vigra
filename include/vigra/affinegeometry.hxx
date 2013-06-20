@@ -191,6 +191,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
     }
     \endcode
     
+    \deprecatedAPI{rotateImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -210,7 +211,6 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
                     double angleInDegree)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -231,6 +231,7 @@ linalg::TemporaryMatrix<double> rotationMatrix2DDegrees(double angle, TinyVector
                     double angleInDegree);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -364,6 +365,7 @@ rotateImage(SplineImageView<ORDER, T> const & src,
     }
     \endcode
     
+    \deprecatedAPI{affineWarpImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -375,7 +377,6 @@ rotateImage(SplineImageView<ORDER, T> const & src,
                             MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -387,6 +388,7 @@ rotateImage(SplineImageView<ORDER, T> const & src,
                             MultiArrayView<2, double, C> const & affineMatrix);
     }
     \endcode
+    \deprecatedEnd
     
     The algorithm applies the given \a affineMatrix to the <i>destination coordinates</i> and copies
     the image value from the resulting source coordinates, using the given SplineImageView \a src for interpolation. 

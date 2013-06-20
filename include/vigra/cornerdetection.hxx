@@ -183,6 +183,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     }
     \endcode
     
+    \deprecatedAPI{cornerResponseFunction}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -194,7 +195,6 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
                                double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -206,6 +206,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -364,6 +365,7 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{foerstnerCornerDetector}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -375,7 +377,6 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
                                double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -387,6 +388,7 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -536,6 +538,7 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{rohrCornerDetector}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -547,7 +550,6 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
                            double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -559,6 +561,7 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -698,6 +701,7 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{beaudetCornerDetector}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -709,7 +713,6 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
                            double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -721,6 +724,7 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

@@ -115,6 +115,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
     }
     \endcode
     
+    \deprecatedAPI{initMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -128,7 +129,6 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
         initMultiArray(Iterator s, Shape const & shape, Accessor a,  FUNCTOR const & f);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -142,6 +142,7 @@ initMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,
         initMultiArray(triple<Iterator, Shape, Accessor> const & s, FUNCTOR const & f);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage (MultiArrayView API):</b>
     
@@ -352,6 +353,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     \endcode
     
+    \deprecatedAPI{copyMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -370,8 +372,6 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                        DestIterator d, DestShape const & dshape, DestAccessor dest);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -389,6 +389,7 @@ copyMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                        triple<DestIterator, DestShape, DestAccessor> const & dest);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage - Standard Mode:</b>
     
@@ -690,6 +691,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
     }
     \endcode
     
+    \deprecatedAPI{transformMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -710,8 +712,6 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                             Functor const & f);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -732,6 +732,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                             Functor const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage - Standard Mode:</b>
 
@@ -1178,6 +1179,7 @@ combineTwoMultiArraysImpl(
     }
     \endcode
     
+    \deprecatedAPI{combineTwoMultiArrays}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1202,8 +1204,6 @@ combineTwoMultiArraysImpl(
                        Functor const & f);
             }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1227,6 +1227,7 @@ combineTwoMultiArraysImpl(
                        Functor const & f);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage - Standard Mode:</b>
     
@@ -1557,6 +1558,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
     }
     \endcode
     
+    \deprecatedAPI{combineThreeMultiArrays}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1572,8 +1574,6 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
                        DestIterator d, DestAccessor dest, Functor const & f);
                     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1589,6 +1589,7 @@ combineThreeMultiArraysImpl(SrcIterator1 s1, SrcShape const & shape, SrcAccessor
                        pair<DestIterator, DestAccessor> const & dest, Functor const & f);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage - MultiArrayView API:</b>
     
@@ -1735,6 +1736,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
     }
     \endcode
 
+    \deprecatedAPI{inspectMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1743,7 +1745,6 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
         inspectMultiArray(Iterator s, Shape const & shape, Accessor a,  Functor & f);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1752,6 +1753,7 @@ inspectMultiArrayImpl(Iterator s, Shape const & shape, Accessor a,  Functor & f,
         inspectMultiArray(triple<Iterator, Shape, Accessor> const & s, Functor & f);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage - MultiArrayView API:</b>
 
@@ -1900,6 +1902,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
     }
     \endcode
 
+    \deprecatedAPI{inspectTwoMultiArrays}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1911,7 +1914,6 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
                               Iterator2 s2, Accessor2 a2, Functor & f);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1923,6 +1925,7 @@ inspectTwoMultiArraysImpl(Iterator1 s1, Shape const & shape, Accessor1 a1,
                               pair<Iterator2, Accessor2> const & s2, Functor & f);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

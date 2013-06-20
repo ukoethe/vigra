@@ -83,6 +83,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{labelImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -102,7 +103,6 @@ namespace vigra {
                                 bool eight_neighbors, EqualityFunctor equal);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -120,6 +120,7 @@ namespace vigra {
                                 bool eight_neighbors, EqualityFunctor equal)
     }
     \endcode
+    \deprecatedEnd
 
     Connected components are defined as regions with uniform pixel
     values. Thus, <TT>SrcAccessor::value_type</TT> either must be
@@ -371,6 +372,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{labelImageWithBackground}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -393,7 +395,6 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
                        ValueType background_value, EqualityFunctor equal);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -414,6 +415,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
                                      ValueType background_value, EqualityFunctor equal);
     }
     \endcode
+    \deprecatedEnd
 
     Connected components are defined as regions with uniform pixel
     values. Thus, <TT>SrcAccessor::value_type</TT> either must be
@@ -715,6 +717,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{regionImageToCrackEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -726,7 +729,6 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                        DestValue edge_marker)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -738,6 +740,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                    DestValue edge_marker)
     }
     \endcode
+    \deprecatedEnd
 
     This algorithm inserts border pixels (so called "crack edges")
     between regions in a labeled image like this (<TT>a</TT> and
@@ -958,6 +961,7 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{regionImageToEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -969,7 +973,6 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                        DestValue edge_marker)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -981,6 +984,7 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                    DestValue edge_marker)
     }
     \endcode
+    \deprecatedEnd
 
     This algorithm marks all pixels with the given <TT>edge_marker</TT>
     which belong to a different region (label) than their right or lower

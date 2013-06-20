@@ -139,6 +139,7 @@ combineThreeLines(SrcIterator1 s1,
     }
     \endcode
     
+    \deprecatedAPI{combineTwoImages}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -154,8 +155,6 @@ combineThreeLines(SrcIterator1 s1,
                  Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -170,6 +169,7 @@ combineThreeLines(SrcIterator1 s1,
                  Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -310,6 +310,7 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     }
     \endcode
     
+    \deprecatedAPI{combineTwoImagesIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -327,8 +328,6 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
                    Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -345,6 +344,7 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
                    Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -495,6 +495,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     }
     \endcode
     
+    \deprecatedAPI{combineThreeImages}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -512,8 +513,6 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
                    Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -530,6 +529,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
                  Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

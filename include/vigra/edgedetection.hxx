@@ -115,6 +115,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{differenceOfExponentialEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -129,7 +130,6 @@ namespace vigra {
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -144,6 +144,7 @@ namespace vigra {
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -438,6 +439,7 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{differenceOfExponentialCrackEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -452,7 +454,6 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -467,6 +468,7 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
                DestValue edge_marker = NumericTraits<DestValue>::one())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -773,6 +775,7 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{removeShortEdges}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -782,7 +785,6 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                int min_edge_length, SrcValue non_edge_marker)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -792,6 +794,7 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
                int min_edge_length, SrcValue non_edge_marker)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -923,6 +926,7 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     }
     \endcode
 
+    \deprecatedAPI{closeGapsInCrackEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -932,7 +936,6 @@ removeShortEdges(MultiArrayView<2, T, S> image,
                SrcValue edge_marker)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -942,6 +945,7 @@ removeShortEdges(MultiArrayView<2, T, S> image,
                SrcValue edge_marker)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1152,6 +1156,7 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     }
     \endcode
 
+    \deprecatedAPI{beautifyCrackEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1161,7 +1166,6 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
                SrcValue edge_marker, SrcValue background_marker)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1171,6 +1175,7 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
                SrcValue edge_marker, SrcValue background_marker)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1436,6 +1441,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgelList}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1452,7 +1458,6 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
                        BackInsertable & edgels, double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1469,6 +1474,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
                        BackInsertable & edgels, double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1605,6 +1611,7 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgelListThreshold}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1623,7 +1630,6 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                                 BackInsertable & edgels, double scale, GradValue grad_threshold);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1642,6 +1648,7 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                                 BackInsertable & edgels, double scale, GradValue grad_threshold);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1782,6 +1789,7 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1794,7 +1802,6 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                    double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1807,6 +1814,7 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                    double scale, GradValue gradient_threshold, DestValue edge_marker);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2045,6 +2053,7 @@ void cannyEdgeImageFromGrad(
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgeImageFromGradWithThinning}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2058,7 +2067,6 @@ void cannyEdgeImageFromGrad(
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2072,6 +2080,7 @@ void cannyEdgeImageFromGrad(
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2279,6 +2288,7 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgeImageWithThinning}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2292,7 +2302,6 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2306,6 +2315,7 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
                    DestValue edge_marker, bool addBorder = true);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2503,6 +2513,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgelList3x3}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2517,7 +2528,6 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
                                BackInsertable & edgels, double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2534,6 +2544,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
                           BackInsertable & edgels, double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2666,6 +2677,7 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     }
     \endcode
 
+    \deprecatedAPI{cannyEdgelList3x3Threshold}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2684,7 +2696,6 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                                    BackInsertable & edgels, double scale, GradValue grad_thresh);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2703,6 +2714,7 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
                                    BackInsertable & edgels, double scale, GradValue grad_thresh);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

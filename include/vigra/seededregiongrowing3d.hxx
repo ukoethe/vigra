@@ -269,6 +269,7 @@ public:
     }
     \endcode
 
+    \deprecatedAPI{seededRegionGrowing3D}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -286,7 +287,6 @@ public:
                               double max_cost = NumericTraits<double>::max());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -304,6 +304,7 @@ public:
                               double max_cost = NumericTraits<double>::max());
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void seededRegionGrowing3D)

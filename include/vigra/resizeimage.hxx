@@ -217,6 +217,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     }
     \endcode
 
+    \deprecatedAPI{resizeImageNoInterpolation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -228,8 +229,6 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -241,6 +240,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -422,6 +422,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     }
     \endcode
 
+    \deprecatedAPI{resizeImageLinearInterpolation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -433,8 +434,6 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -446,6 +445,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -640,6 +640,7 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{resizeImageSplineInterpolation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -653,8 +654,6 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
               SPLINE spline = BSpline<3, double>())
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -668,6 +667,7 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
               SPLINE spline = BSpline<3, double>())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -947,6 +947,7 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{resizeImageCatmullRomInterpolation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -957,8 +958,6 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
                               DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -969,6 +968,7 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
                               triple<DestIterator, DestIterator, DestAccessor> dest);
     }
     \endcode
+    \deprecatedEnd
 
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
@@ -1033,6 +1033,7 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{resizeImageCoscotInterpolation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1043,8 +1044,6 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
                               DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1055,6 +1054,7 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
                               triple<DestIterator, DestIterator, DestAccessor> dest);
     }
     \endcode
+    \deprecatedEnd
 
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>

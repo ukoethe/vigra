@@ -274,6 +274,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     }
     \endcode
 
+    \deprecatedAPI{separableMultiDistSquared}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -296,7 +297,6 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -319,6 +319,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     }
     \endcode
+    \deprecatedEnd
 
     This function performs a squared Euclidean squared distance transform on the given
     multi-dimensional array. Both source and destination
@@ -508,6 +509,7 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{separableMultiDistance}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -530,7 +532,6 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -553,6 +554,7 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
+    \deprecatedEnd
 
     This function performs a Euclidean distance transform on the given
     multi-dimensional array. It simply calls \ref separableMultiDistSquared()

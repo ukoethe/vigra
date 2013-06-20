@@ -258,6 +258,7 @@ void internalNonlinearDiffusionAOSStep(
     }
     \endcode
     
+    \deprecatedAPI{nonlinearDiffusion}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -269,8 +270,6 @@ void internalNonlinearDiffusionAOSStep(
                                 DiffusivityFunctor const & weight, double scale);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -283,6 +282,7 @@ void internalNonlinearDiffusionAOSStep(
                   DiffusivityFunctor const & weight, double scale);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

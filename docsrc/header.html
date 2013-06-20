@@ -3,6 +3,23 @@
 <link rel=stylesheet type="text/css" href="vigra.css">
 <link rel=stylesheet type="text/css" href="vigra_1_8_2.css">
 <link rel="shortcut icon" href="vigra-icon.ico" />
+<script type="text/javascript">
+function showDeprecatedAPI( where, sender ){ 
+	if( document.getElementById(where).style.display == 'block' )
+    {
+		document.getElementById(where).style.display='none';
+        //document.getElementById(sender).innerHTML = "deprecated APIs <img src=\"plus.png\">:";
+        document.getElementById(sender).innerHTML = "show deprecated declarations";
+	}
+    else
+    {
+		document.getElementById(where).style.display='block';
+        //document.getElementById(sender).innerHTML = "deprecated APIs <img src=\"minus.png\">:";
+        document.getElementById(sender).innerHTML = "hide deprecated declarations";
+    }
+    return false;
+}
+</script>
 </head>
 <body  bgcolor="#f8f0e0" link="#0040b0" vlink="#a00040">
 <basefont face="Helvetica,Arial,sans-serif" size=3>

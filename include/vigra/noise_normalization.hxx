@@ -989,6 +989,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     }
     \endcode
     
+    \deprecatedAPI{noiseVarianceEstimation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -998,7 +999,6 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1008,6 +1008,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1111,6 +1112,7 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{noiseVarianceClustering}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1120,7 +1122,6 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1130,6 +1131,7 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1226,6 +1228,7 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{nonparametricNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1236,7 +1239,6 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
                                              NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1247,6 +1249,7 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
                                              NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1330,6 +1333,7 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{quadraticNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1340,7 +1344,6 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                          NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1351,6 +1354,7 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                          NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1437,6 +1441,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{quadraticNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1447,7 +1452,6 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                          double a0, double a1, double a2);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1458,6 +1462,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                         double a0, double a1, double a2);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1542,6 +1547,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{linearNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1552,7 +1558,6 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                       NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1563,6 +1568,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                       NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1649,6 +1655,7 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{linearNoiseNormalization}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1659,7 +1666,6 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                       double a0, double a1);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1670,6 +1676,7 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                       double a0, double a1);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

@@ -810,6 +810,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
     }
     \endcode
 
+    \deprecatedAPI{convolveLine}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -823,8 +824,6 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                           int start = 0, int stop = 0 )
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -838,6 +837,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                            int start = 0, int stop = 0)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1032,6 +1032,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
+    \deprecatedAPI{separableConvolveX}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1045,8 +1046,6 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1059,6 +1058,7 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                              int, int, BorderTreatmentMode> kernel)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1169,6 +1169,7 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{separableConvolveY}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1182,8 +1183,6 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
                                 int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1196,6 +1195,7 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
                                              int, int, BorderTreatmentMode> kernel)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

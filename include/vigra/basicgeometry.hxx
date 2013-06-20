@@ -74,6 +74,7 @@ namespace vigra {
     }
     \endcode
     
+    \deprecatedAPI{rotateImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -84,7 +85,6 @@ namespace vigra {
                     DestIterator id, DestAccessor ad, int rotation);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -95,6 +95,7 @@ namespace vigra {
                     pair<DestImageIterator, DestAccessor> dest, int rotation);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage (MultiArrayView API):</b>
     
@@ -461,6 +462,7 @@ enum Transpose{major = 1, minor = 2};
     }
     \endcode
     
+    \deprecatedAPI{transposeImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -471,7 +473,6 @@ enum Transpose{major = 1, minor = 2};
                        DestIterator id, DestAccessor ad, Transpose axis);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -482,6 +483,7 @@ enum Transpose{major = 1, minor = 2};
                        pair<DestImageIterator, DestAccessor> dest, Transpose axis);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage (MultiArrayView API):</b>
     
@@ -746,6 +748,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     }
     \endcode
     
+    \deprecatedAPI{resampleImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -762,7 +765,6 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
                       DestIterator id, DestAccessor ad, double xfactor, double yfactor);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -779,6 +781,7 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
                       pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

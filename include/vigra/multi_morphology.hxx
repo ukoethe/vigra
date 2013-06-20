@@ -175,6 +175,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     }
     \endcode
 
+    \deprecatedAPI{multiBinaryErosion}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -186,7 +187,6 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -199,6 +199,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -297,6 +298,7 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{multiBinaryDilation}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -308,7 +310,6 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -321,6 +322,7 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -416,6 +418,7 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{multiGrayscaleErosion}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -427,7 +430,6 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -440,6 +442,7 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -559,6 +562,7 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{multiGrayscaleDilation}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -570,7 +574,6 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -583,6 +586,7 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

@@ -131,6 +131,7 @@ internalResizeMultiArrayOneDimension(
     }
     \endcode
 
+    \deprecatedAPI{resizeMultiArraySplineInterpolation}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -144,8 +145,6 @@ internalResizeMultiArrayOneDimension(
                               Kernel const & spline = BSpline<3, double>());
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -159,6 +158,7 @@ internalResizeMultiArrayOneDimension(
                               Kernel const & spline = BSpline<3, double>());
     }
     \endcode
+    \deprecatedEnd
 
     The function implements separable spline interpolation algorithm described in
 

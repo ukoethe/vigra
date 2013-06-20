@@ -116,6 +116,7 @@ transformLineIf(SrcIterator s,
     }
     \endcode
 
+    \deprecatedAPI{transformImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -128,8 +129,6 @@ transformLineIf(SrcIterator s,
                Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -141,6 +140,7 @@ transformLineIf(SrcIterator s,
                Functor const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -254,6 +254,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{transformImageIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -269,8 +270,6 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
                          Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -285,6 +284,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
                          Functor const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -410,6 +410,7 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedAPI{gradientBasedTransform}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -420,8 +421,6 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
                                DestImageIterator destul, DestAccessor da, Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -432,6 +431,7 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
                                pair<DestImageIterator, DestAccessor> dest, Functor const & const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

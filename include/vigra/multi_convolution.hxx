@@ -729,6 +729,7 @@ scaleKernel(K & kernel, double a)
     }
     \endcode
 
+    \deprecatedAPI{separableConvolveMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -753,7 +754,6 @@ scaleKernel(K & kernel, double a)
                                     SrcShape const & stop = SrcShape());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -778,6 +778,7 @@ scaleKernel(K & kernel, double a)
                                     SrcShape const & stop = SrcShape());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -972,6 +973,7 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{convolveMultiArrayOneDimension}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -985,7 +987,6 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                                        SrcShape const & stop = SrcShape());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -999,6 +1000,7 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
                                        SrcShape const & stop = SrcShape());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1147,6 +1149,7 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{gaussianSmoothMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1159,7 +1162,6 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1172,6 +1174,7 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1343,6 +1346,7 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{gaussianGradientMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1355,7 +1359,6 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1368,6 +1371,7 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1648,6 +1652,7 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
     }
     \endcode
 
+    \deprecatedAPI{symmetricGradientMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1659,7 +1664,6 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
                                     const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1671,6 +1675,7 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
                                     const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1824,6 +1829,7 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
     }
     \endcode
 
+    \deprecatedAPI{laplacianOfGaussianMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1836,7 +1842,6 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
                                       const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1849,6 +1854,7 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
                                       const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2233,6 +2239,7 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
     }
     \endcode
 
+    \deprecatedAPI{hessianOfGaussianMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2245,7 +2252,6 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
                                     const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2258,6 +2264,7 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
                                     const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -2503,6 +2510,7 @@ struct StructurTensorFunctor
     }
     \endcode
 
+    \deprecatedAPI{structureTensorMultiArray}
     pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
@@ -2515,7 +2523,6 @@ struct StructurTensorFunctor
                                   const ConvolutionOptions<N> & opt);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -2528,6 +2535,7 @@ struct StructurTensorFunctor
                                   const ConvolutionOptions<N> & opt);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

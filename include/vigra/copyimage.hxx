@@ -117,6 +117,7 @@ swapLine(SrcIterator s,
     }
     \endcode
     
+    \deprecatedAPI{copyImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -127,8 +128,6 @@ swapLine(SrcIterator s,
               DestImageIterator dest_upperleft, DestAccessor da)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -139,6 +138,7 @@ swapLine(SrcIterator s,
                   pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -275,6 +275,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{copyImageIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -288,8 +289,6 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
             DestImageIterator dest_upperleft, DestAccessor da)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -302,6 +301,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
             pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     

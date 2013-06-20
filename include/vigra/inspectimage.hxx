@@ -139,6 +139,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
     }
     \endcode
 
+    \deprecatedAPI{inspectImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -148,7 +149,6 @@ inspectTwoLinesIf(SrcIterator1 s1,
                      Functor & f)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -158,6 +158,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
                      Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -299,6 +300,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     }
     \endcode
 
+    \deprecatedAPI{inspectImageIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -310,8 +312,6 @@ inspectImage(MultiArrayView<2, T, S> const & img,
                Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -323,6 +323,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
                Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -492,6 +493,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     }
     \endcode
 
+    \deprecatedAPI{inspectTwoImages}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -504,8 +506,6 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
                  Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -518,6 +518,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
                  Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -695,6 +696,7 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     }
     \endcode
 
+    \deprecatedAPI{inspectTwoImagesIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -709,8 +711,6 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
                          Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -725,6 +725,7 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
                  Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 

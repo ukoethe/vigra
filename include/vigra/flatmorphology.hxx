@@ -79,6 +79,7 @@ namespace vigra {
     }
     \endcode
     
+    \deprecatedAPI{discRankOrderFilter}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -91,8 +92,6 @@ namespace vigra {
                             int radius, float rank)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -104,6 +103,7 @@ namespace vigra {
                             int radius, float rank)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -414,6 +414,7 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discErosion}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -426,8 +427,6 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -439,6 +438,7 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discErosion)
@@ -508,6 +508,7 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discDilation}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -520,8 +521,6 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -533,6 +532,7 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discDilation)
@@ -602,6 +602,7 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discMedian}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -614,8 +615,6 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -627,6 +626,7 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
                     int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discMedian)
@@ -707,6 +707,7 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discRankOrderFilterWithMask}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -721,8 +722,6 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
                                     int radius, float rank)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -736,6 +735,7 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
                                     int radius, float rank)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -1100,6 +1100,7 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discErosionWithMask}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1114,8 +1115,6 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -1129,6 +1128,7 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discErosionWithMask)
@@ -1210,6 +1210,7 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discDilationWithMask}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1224,8 +1225,6 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -1239,6 +1238,7 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discDilationWithMask)
@@ -1320,6 +1320,7 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
+    \deprecatedAPI{discMedianWithMask}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -1334,8 +1335,6 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -1349,6 +1348,7 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
                             int radius)
     }
     \endcode
+    \deprecatedEnd
 
 */
 doxygen_overloaded_function(template <...> void discMedianWithMask)

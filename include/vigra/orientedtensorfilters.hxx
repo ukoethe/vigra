@@ -96,6 +96,7 @@ namespace vigra {
     }
     \endcode
 
+    \deprecatedAPI{hourGlassFilter}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -106,8 +107,6 @@ namespace vigra {
                              double sigma, double rho);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -119,6 +118,7 @@ namespace vigra {
                              double sigma, double rho);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
