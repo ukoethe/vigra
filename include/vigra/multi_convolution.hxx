@@ -2119,9 +2119,7 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
     typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
     typedef Kernel1D<double>                                     Kernel;
     
-    unsigned int count = std::distance(vectorField, vectorFieldEnd);
-    
-    vigra_precondition(count == N,
+    vigra_precondition(std::distance(vectorField, vectorFieldEnd) == N,
         "gaussianDivergenceMultiArray(): wrong number of input arrays.");
     // more checks are performed in separableConvolveMultiArray()
     
@@ -2135,7 +2133,6 @@ gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
     }
     
     MultiArray<N, TmpType> tmpDeriv(divergence.shape());
-    Shape center(divergence.shape()/2);
     
     for(unsigned int k=0; k < N; ++k, ++vectorField)
     {
