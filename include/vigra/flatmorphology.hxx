@@ -109,7 +109,7 @@ namespace vigra {
     
     <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::CImage src, dest;
     
@@ -117,8 +117,14 @@ namespace vigra {
     vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{discRankOrderFilter}
+    \code
+    vigra::CImage src, dest;
     
+    // do median filtering
+    vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
@@ -133,6 +139,7 @@ namespace vigra {
     
     dest_accessor.set(value, dest_upperleft, x, y);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -142,7 +149,6 @@ namespace vigra {
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void discRankOrderFilter)
 
@@ -741,7 +747,7 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::CImage src, dest, mask;
     
@@ -750,8 +756,15 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
                                 maskImage(mask), destImage(dest), 10, 0.5);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{discRankOrderFilterWithMask}
+    \code
+    vigra::CImage src, dest, mask;
     
+    // do median filtering
+    vigra::discRankOrderFilterWithMask(srcImageRange(src), 
+                                maskImage(mask), destImage(dest), 10, 0.5);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
@@ -770,6 +783,7 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     
     dest_accessor.set(value, dest_upperleft, x, y);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -779,7 +793,6 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void discRankOrderFilterWithMask)
 

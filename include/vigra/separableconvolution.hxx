@@ -796,21 +796,6 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Declarations:</b>
 
-    pass 2D array views:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void convolveLine(SrcIterator is, SrcIterator isend, SrcAccessor sa,
-                          DestIterator id, DestAccessor da,
-                          KernelIterator ik, KernelAccessor ka,
-                          int kleft, int kright, BorderTreatmentMode border,
-                          int start = 0, int stop = 0 )
-    }
-    \endcode
-
-    \deprecatedAPI{convolveLine}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -837,11 +822,11 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                            int start = 0, int stop = 0)
     }
     \endcode
-    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code
@@ -905,7 +890,6 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
-
 */
 doxygen_overloaded_function(template <...> void convolveLine)
 
@@ -1062,9 +1046,23 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D<double> kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D filter along the x-axis
+    separableConvolveX(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{separableConvolveX}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1073,10 +1071,10 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra::Kernel1D<double> kernel;
     kernel.initGaussian(3.0);
 
+    // apply 1D filter along the x-axis
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
-
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void separableConvolveX)
 
@@ -1199,9 +1197,23 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D filter along the y-axis
+    separableConvolveY(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{separableConvolveY}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1211,9 +1223,8 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     kernel.initGaussian(3.0);
 
     vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
-
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void separableConvolveY)
 
@@ -1303,14 +1314,26 @@ separableConvolveY(MultiArrayView<2, T1, S1> const & src,
     properties. The kernel's value_type must be a linear space, i.e. it
     must define multiplication with doubles and NumericTraits.
 
-
-    The kernel defines a factory function kernel1d() to create an argument object
-    (see \ref KernelArgumentObjectFactories).
-
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/stdconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D kernel along the x-axis
+    separableConvolveX(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{Kernel1D}
+    The kernel defines a factory function kernel1d() to create an argument object
+    (see \ref KernelArgumentObjectFactories).
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1321,9 +1344,7 @@ separableConvolveY(MultiArrayView<2, T1, S1> const & src,
 
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not
                                                             // given explicitly
@@ -1331,6 +1352,7 @@ separableConvolveY(MultiArrayView<2, T1, S1> const & src,
 
     v = d * v;
     \endcode
+    \deprecatedEnd
 */
 
 template <class ARITHTYPE>

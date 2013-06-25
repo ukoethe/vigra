@@ -157,8 +157,17 @@ transformLineIf(SrcIterator s,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{transformImage}
+    \code
 
+    #include <cmath>         // for sqrt()
+
+    vigra::transformImage(srcImageRange(src),
+                          destImage(dest),
+                          (double(*)(double))&std::sqrt );
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
@@ -173,7 +182,7 @@ transformLineIf(SrcIterator s,
     dest_accessor.set(functor(src_accessor(sx)), dx);
 
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void transformImage)
 
@@ -301,8 +310,17 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{transformImageIf}
+    \code
+    #include <cmath>         // for sqrt()
 
+    vigra::transformImageIf(srcImageRange(src),
+                            maskImage(mask),
+                            destImage(dest),
+                            (double(*)(double))&std::sqrt );
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator  dest_upperleft;
@@ -320,7 +338,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
        dest_accessor.set(functor(src_accessor(sx)), dx);
 
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void transformImageIf)
 
@@ -435,7 +453,8 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/transformimage.hxx\>
+    <b>\#include</b> \<vigra/transformimage.hxx\><br/>
+    Namespace: vigra
     Namespace: vigra	
 
     \code
@@ -446,8 +465,15 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
                                 vigra::MagnitudeFunctor<float>());
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{gradientBasedTransform}
+    \code
+    vigra::FImage src(w,h), magnitude(w,h);
+    ...
 
+    gradientBasedTransform(srcImageRange(src), destImage(magnitude),
+                                vigra::MagnitudeFunctor<float>());
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator is, isend;
     DestImageIterator id;
@@ -466,7 +492,7 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
     dest_accessor.set(f(diffx, diffy), id);
 
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gradientBasedTransform)
 

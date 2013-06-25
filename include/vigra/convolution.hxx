@@ -274,7 +274,29 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    vigra::MultiArray<2, float> src(w,h), dest(w,h);
+    MultiArray<2, float> src(w,h), dest1(w,h), dest2(w,h);
+    ...
+
+    // create horizontal sobel filter (symmetric difference in x-direction, smoothing in y direction)
+    Kernel1D<double> kx, ky;
+    kx.initSymmetricGradient();
+    ky.initBinomial(1);
+    
+    convolveImage(src, dest1, kx, ky);
+    
+    // create a 3x3 Laplacian filter
+    Kernel2D<double> lap;
+    lap.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =
+            0.375,  0.25, 0.375,
+            0.25,  -2.5,  0.25,
+            0.375,  0.25, 0.375;
+    
+    convolveImage(src, dest2, lap);
+    \endcode
+
+    \deprecatedUsage{convolveImage}
+    \code
+    vigra::FImage src(w,h), dest(w,h);
     ...
 
     // implement sobel filter in x-direction
@@ -282,13 +304,9 @@ namespace vigra {
     kx.initSymmetricGradient();
     ky.initBinomial(1);
     
-    // use MultiArrayView API
-    vigra::convolveImage(src, dest, kx, ky);
-    
-    // use old API
     vigra::convolveImage(srcImageRange(src), destImage(dest), kx, ky);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void convolveImage)
 
@@ -359,7 +377,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Perform simple sharpening function.
 
-    This function uses \ref convolveImage() with the following filter:
+    This function uses \ref convolveImage() with the following 3x3 filter:
     
     \code
     -sharpening_factor/16.0,    -sharpening_factor/8.0,    -sharpening_factor/16.0,
@@ -374,8 +392,6 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     1. sharpening_factor >= 0
     2. scale >= 0
     \endcode
-
-    <b> Declarations:</b>
 
     <b> Declarations:</b>
 
@@ -395,26 +411,19 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
-      template <class SrcIterator, class SrcAccessor,
-                class DestIterator, class DestAccessor>
-      void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                            DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor)
-
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void simpleSharpening(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                              DestIterator dest_ul, DestAccessor dest_acc, double sharpening_factor);
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
-      template <class SrcIterator, class SrcAccessor, 
-                class DestIterator, class DestAccessor>
-      inline
-      void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                    pair<DestIterator, DestAccessor> dest, double sharpening_factor)
-      {
-          simpleSharpening(src.first, src.second, src.third,
-                             dest.first, dest.second, sharpening_factor);
-      }
-
+        template <class SrcIterator, class SrcAccessor, 
+                  class DestIterator, class DestAccessor>
+        void simpleSharpening(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                              pair<DestIterator, DestAccessor> dest, double sharpening_factor);
     }
     \endcode
     \deprecatedEnd
@@ -425,6 +434,15 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // sharpening with sharpening_factor = 0.1
+    vigra::simpleSharpening(src, dest, 0.1);
+    \endcode
+
+    \deprecatedUsage{simpleSharpening}
+    \code
     vigra::FImage src(w,h), dest(w,h);
     ...
 
@@ -432,7 +450,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     vigra::simpleSharpening(srcImageRange(src), destImage(dest), 0.1);
 
     \endcode
-
+    \deprecatedEnd
 */    
 doxygen_overloaded_function(template <...> void simpleSharpening)
 
@@ -547,15 +565,24 @@ simpleSharpening(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // sharpening with sharpening_factor = 3.0
+    // smoothing with scale = 0.5
+    gaussianSharpening(src, dest, 3.0, 0.5);
+    \endcode
+
+    \deprecatedUsage{gaussianSharpening}
+    \code
     vigra::FImage src(w,h), dest(w,h);
     ...
 
     // sharpening with sharpening_factor = 3.0
     // smoothing with scale = 0.5
-    vigra::gaussianSmoothing(srcImageRange(src), destImage(dest), 3.0, 0.5);
-
+    vigra::gaussianSharpening(srcImageRange(src), destImage(dest), 3.0, 0.5);
     \endcode
-
+    \deprecatedEnd
 */    
 doxygen_overloaded_function(template <...> void gaussianSharpening)
 
@@ -679,24 +706,20 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/convolution.hxx\><br/>
     Namespace: vigra
 
     \code
-    vigra::MultiArray<2, float> src(w,h), dest(w,h);
+    MultiArray<2, float> src(w,h), dest(w,h);
     ...
 
     // smooth with scale = 3.0
-    vigra::gaussianSmoothing(src, dest, 3.0);
+    gaussianSmoothing(src, dest, 3.0);
     \endcode
 
-    <b> Usage (old API):</b>
-
-    <b>\#include</b> \<vigra/convolution.hxx\><br/>
-    Namespace: vigra
-
+    \deprecatedUsage{gaussianSmoothing}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -704,7 +727,7 @@ gaussianSharpening(MultiArrayView<2, T1, S1> const & src,
     // smooth with scale = 3.0
     vigra::gaussianSmoothing(srcImageRange(src), destImage(dest), 3.0);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gaussianSmoothing)
 
@@ -882,12 +905,24 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/convolution.hxx\><br/>
     Namespace: vigra
 
+    \code
+    MultiArray<2, float> src(w,h), gradx(w,h), grady(w,h);
+    ...
 
+    // calculate gradient vector at scale = 3.0
+    gaussianGradient(src, gradx, grady, 3.0);
+    
+    // likewise, but use a vector image to store the gradient
+    MultiArray<2, TinyVector<float, 2> > dest(w,h);
+    gaussianGradient(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{gaussianGradient}
     \code
     vigra::FImage src(w,h), gradx(w,h), grady(w,h);
     ...
@@ -896,18 +931,7 @@ gaussianSmoothing(MultiArrayView<2, T1, S1> const & src,
     vigra::gaussianGradient(srcImageRange(src),
                              destImage(gradx), destImage(grady), 3.0);
     \endcode
-
-    <b> Usage (old API):</b>
-
-    \code
-    vigra::FImage src(w,h), gradx(w,h), grady(w,h);
-    ...
-
-    // calculate gradient vector at scale = 3.0
-    vigra::gaussianGradient(srcImageRange(src),
-                             destImage(gradx), destImage(grady), 3.0);
-    \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gaussianGradient)
 
@@ -1070,22 +1094,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    
-    // example 1 (old API)
-    {
-        // use a traditional float or RGB image
-        FImage image(w, h), grad(w, h);
-        FRGBImage rgb(w, h);
-        ...
-
-        // calculate gradient magnitude at scale = 3.0
-        gaussianGradientMagnitude(srcImageRange(image), destImage(grad), 3.0);
-        
-        // calculate color gradient magnitude at scale = 3.0
-        gaussianGradientMagnitude(srcImageRange(rgb), destImage(grad), 3.0);
-    }
-    
-    // example 2 (MultiArrayView API)
+    // example 1
     {
         // use a 3-dimensional float array
         MultiArray<3, float> volume(Shape3(w, h, d)), grad(volume.shape());
@@ -1095,7 +1104,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
         gaussianGradientMagnitude(volume, grad, 3.0);
     }
     
-    // example 3
+    // example 2
     {
         // use a 2-dimensional RGB array
         MultiArray<2, RGBValue<float> > rgb(Shape2(w, h));
@@ -1106,7 +1115,7 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
         gaussianGradientMagnitude(rgb, grad, 3.0);
     }
     
-    // example 4
+    // example 3
     {
         // use a 3-dimensional array whose right-most axis is interpreted as 
         // a multi-spectral axis with arbitrary many channels
@@ -1121,6 +1130,20 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
 
+    \deprecatedUsage{gaussianGradientMagnitude}
+    \code
+    // use a traditional float or RGB image
+    FImage image(w, h), grad(w, h);
+    FRGBImage rgb(w, h);
+    ...
+
+    // calculate gradient magnitude at scale = 3.0
+    gaussianGradientMagnitude(srcImageRange(image), destImage(grad), 3.0);
+    
+    // calculate color gradient magnitude at scale = 3.0
+    gaussianGradientMagnitude(srcImageRange(rgb), destImage(grad), 3.0);
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gaussianGradientMagnitude)
 
@@ -1206,21 +1229,20 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/convolution.hxx\><br/>
     Namespace: vigra
 
     \code
-    vigra::MultiArray<2, float> src(w,h), dest(w,h);
+    MultiArray<2, float> src(w,h), dest(w,h);
     ...
 
     // calculate Laplacian of Gaussian at scale = 3.0
-    vigra::laplacianOfGaussian(src, dest, 3.0);
+    laplacianOfGaussian(src, dest, 3.0);
     \endcode
 
-    <b> Usage (old API):</b>
-
+    \deprecatedUsage{laplacianOfGaussian}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1228,7 +1250,7 @@ gaussianGradientMagnitude(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     // calculate Laplacian of Gaussian at scale = 3.0
     vigra::laplacianOfGaussian(srcImageRange(src), destImage(dest), 3.0);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void laplacianOfGaussian)
 
@@ -1365,22 +1387,21 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/convolution.hxx\><br/>
     Namespace: vigra
 
     \code
-    vigra::MultiArray<2, float>                  src(w,h);
-    vigra::MultiArray<2, TinyVector<float, 3> >  hessian(w,h);  // will hold the three components of the Hessian
+    MultiArray<2, float>                  src(w,h);
+    MultiArray<2, TinyVector<float, 3> >  hessian(w,h);  // will hold the three components of the Hessian
     ...
 
     // calculate Hessian of Gaussian at scale = 3.0, use a 3-band output image
-    vigra::hessianMatrixOfGaussian(src, hessian, 3.0);
+    hessianMatrixOfGaussian(src, hessian, 3.0);
     \endcode
 
-    <b> Usage (old API):</b>
-
+    \deprecatedUsage{hessianMatrixOfGaussian}
     \code
     vigra::FImage src(w,h), 
                   hxx(w,h), hxy(w,h), hyy(w,h); // use a separate image for each component of the Hessian
@@ -1390,7 +1411,7 @@ laplacianOfGaussian(MultiArrayView<2, T1, S1> const & src,
     vigra::hessianMatrixOfGaussian(srcImageRange(src),
                                    destImage(hxx), destImage(hxy), destImage(hyy), 3.0);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void hessianMatrixOfGaussian)
 
@@ -1604,26 +1625,25 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/convolution.hxx\><br/>
     Namespace: vigra
 
     \code
-    vigra::MultiArray<2, flost> src(w,h), 
-                                stxx(w,h), stxy(w,h), styy(w,h);  // use a separate image for each component
-    vigra::MultiArray<TinyVector<float, 3> > st(w,h);             // single image for the three components
+    MultiArray<2, flost> src(w,h), 
+                         stxx(w,h), stxy(w,h), styy(w,h);  // use a separate image for each component
     ...
 
     // calculate Structure Tensor at inner scale = 1.0 and outer scale = 3.0
-    vigra::structureTensor(src, stxx, stxy, styy, 1.0, 3.0);
+    structureTensor(src, stxx, stxy, styy, 1.0, 3.0);
 
-    // dto. with a single 3-band destination image
-    vigra::structureTensor(src, st, 1.0, 3.0);
+    // likwise with a single 3-band destination image
+    MultiArray<2, TinyVector<float, 3> > st(w,h);
+    structureTensor(src, st, 1.0, 3.0);
     \endcode
 
-    <b> Usage (old API):</b>
-
+    \deprecatedUsage{structureTensor}
     \code
     vigra::FImage src(w,h), 
                   stxx(w,h), stxy(w,h), styy(w,h);
@@ -1635,7 +1655,7 @@ hessianMatrixOfGaussian(MultiArrayView<2, T1, S1> const & src,
 
     vigra::structureTensor(srcImageRange(src), destImage(st), 1.0, 3.0);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void structureTensor)
 

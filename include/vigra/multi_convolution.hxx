@@ -234,7 +234,8 @@ struct multiArrayScaleParam
 
 /** \brief  Options class template for convolutions.
  
-  <b>\#include</b> \<vigra/multi_convolution.hxx\>
+  <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+  Namespace: vigra
   
   This class enables the calculation of scale space convolutions
   such as \ref gaussianGradientMultiArray() on data with anisotropic
@@ -782,7 +783,8 @@ scaleKernel(K & kernel, double a)
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -799,16 +801,31 @@ scaleKernel(K & kernel, double a)
                                 kernels.begin());
     \endcode
 
-    <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
+    \deprecatedUsage{separableConvolveMultiArray}
     \code
+    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, float> dest(shape);
+    ...
+    Kernel1D<float> gauss;
+    gauss.initGaussian(sigma);
+    // create 3 Gauss kernels, one for each dimension
+    ArrayVector<Kernel1D<float> > kernels(3, gauss);
+
+    // perform Gaussian smoothing on all dimensions
+    separableConvolveMultiArray(source, dest, 
+                                kernels.begin());
+    \endcode
+    <b> Required Interface:</b>
+    \code
+    see \ref separableConvolveImage(), in addition:
+
     NumericTraits<T1>::RealPromote s = src[0];
 
     s = s + s;
     s = kernel(0) * s;
     \endcode
+    \deprecatedEnd
 
     \see vigra::Kernel1D, convolveLine()
 */
@@ -1004,7 +1021,8 @@ separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1178,7 +1196,8 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1191,7 +1210,8 @@ convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1375,7 +1395,8 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1388,7 +1409,8 @@ gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1679,7 +1701,8 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -1692,7 +1715,8 @@ gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & s
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1858,7 +1882,8 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -1871,7 +1896,8 @@ symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> source(shape);
@@ -2084,7 +2110,8 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -2097,7 +2124,8 @@ laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, TinyVector<float, 3> > source(shape);
@@ -2268,7 +2296,8 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -2281,7 +2310,8 @@ gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & ve
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> source(shape);
@@ -2539,7 +2569,8 @@ struct StructurTensorFunctor
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -2552,7 +2583,8 @@ struct StructurTensorFunctor
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, RGBValue<float> > source(shape);

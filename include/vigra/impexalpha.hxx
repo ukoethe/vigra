@@ -354,11 +354,11 @@ namespace vigra
     \endcode
     \deprecatedEnd
     
-    <B>Usage</B>
+    <b> Usage:</b>
     
     <B>\#include \<vigra/impexalpha.hxx\></B>
     
-    Namespace: vigra
+
     \code
         typedef UInt8 value_t;
         ImageImportInfo info("zorro.tif");
@@ -384,6 +384,34 @@ namespace vigra
             ...
         }
     \endcode
+
+        \deprecatedUsage{importImageAlpha}
+    \code
+        typedef UInt8 value_t;
+        ImageImportInfo info("zorro.tif");
+    
+        if (info.isGrayscale())
+        {
+            BasicImage<value_t> alpha(info.size());
+            BasicImage<value_t> image(info.size());
+    
+            importImageAlpha(info,
+                             image.upperLeft(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor());
+            ...
+        }
+        else
+        {
+            BasicImage<value_t> alpha(info.size());
+            BasicImage<vigra::RGBValue<value_t> > image(info.size());
+    
+            importImageAlpha(info,
+                             image.upperLeft(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor());
+            ...
+        }
+    \endcode
+        \deprecatedEnd
     
     <B>Preconditions</B>
     
@@ -394,7 +422,7 @@ namespace vigra
       In particular, JPEG does <B>not</B> support alpha channels.
     - The alpha channel always is scalar-valued, i.e. comprises a
       single band.
-    */
+*/
     doxygen_overloaded_function(template <...> void importImageAlpha)
 
 
@@ -931,11 +959,11 @@ namespace vigra
     \endcode
     \deprecatedEnd
     
-    <B>Usage</B>
+    <b> Usage:</b>
     
     <B>\#include \<vigra/impexalpha.hxx\></B>
     
-    Namespace: vigra
+
     \code
         typedef UInt8 value_t;
         ImageExportInfo info("zorro.tif");
@@ -963,6 +991,36 @@ namespace vigra
                              info);
         }
     \endcode
+
+        \deprecatedUsage{exportImageAlpha}
+    \code
+        typedef UInt8 value_t;
+        ImageExportInfo info("zorro.tif");
+    
+        if (info.isGrayscale())
+        {
+            BasicImage<value_t> alpha;
+            BasicImage<value_t> image;
+    
+            ...
+    
+            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor(),
+                             info);
+        }
+        else
+        {
+            BasicImage<value_t> alpha;
+            BasicImage<vigra::RGBValue<value_t> > image;
+    
+            ...
+    
+            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                             alpha.upperLeft(), alpha.accessor(),
+                             info);
+        }
+    \endcode
+        \deprecatedEnd
     
     <B>Preconditions</B>
     
@@ -973,7 +1031,7 @@ namespace vigra
       In particular, JPEG does <B>not</B> support alpha channels.
     - The alpha channel always is scalar-valued, i.e. comprises a
       single band.
-    */
+*/
     doxygen_overloaded_function(template <...> void exportImageAlpha)
 
 

@@ -182,7 +182,8 @@ TAB_SIZE               = 4
 ALIASES                = configured_docdir="\@docdir\@"
 ALIASES                += stl_link="\"http://www.sgi.com/tech/stl/\""
 ALIASES                += vigra_version=@vigra_version@
-ALIASES                += deprecatedAPI{1}="<a href=\"#\" id=\"\1_OldAPIToggle\" onclick=\"return showDeprecatedAPI('\1_OldAPI', '\1_OldAPIToggle');\">show deprecated declarations</a><div id=\"\1_OldAPI\" style=\"display:none\">"
+ALIASES                += deprecatedAPI{1}="<a href=\"#\" id=\"\1_OldAPIToggle\" onclick=\"return toggleHiddenDocumentation('\1_OldAPI', '\1_OldAPIToggle', 'deprecated declarations');\">show deprecated declarations</a><div id=\"\1_OldAPI\" style=\"display:none\">"
+ALIASES                += deprecatedUsage{1}="<a href=\"#\" id=\"\1_OldUsageToggle\" onclick=\"return toggleHiddenDocumentation('\1_OldUsage', '\1_OldUsageToggle', 'deprecated examples');\">show deprecated examples</a><div id=\"\1_OldUsage\" style=\"display:none\">"
 ALIASES                += deprecatedEnd="</div>"
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 

@@ -152,6 +152,16 @@ namespace vigra {
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    differenceOfExponentialEdgeImage(src, edges,
+                                     0.8, 4.0, 1);
+    \endcode
+
+    \deprecatedUsage{differenceOfExponentialEdgeImage}
+    \code
     vigra::BImage src(w,h), edges(w,h);
 
     // empty edge image
@@ -162,9 +172,7 @@ namespace vigra {
     vigra::differenceOfExponentialEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -185,6 +193,7 @@ namespace vigra {
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -476,6 +485,16 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(2*w-1,2*h-1);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    differenceOfExponentialCrackEdgeImage(src, edges,
+                                          0.8, 4.0, 1);
+    \endcode
+
+    \deprecatedUsage{differenceOfExponentialCrackEdgeImage}
+    \code
     vigra::BImage src(w,h), edges(2*w-1,2*h-1);
 
     // empty edge image
@@ -486,9 +505,7 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     vigra::differenceOfExponentialCrackEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -509,6 +526,7 @@ differenceOfExponentialEdgeImage(MultiArrayView<2, T1, S1> const & src,
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -802,6 +820,19 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    differenceOfExponentialEdgeImage(src, edges,
+                                     0.8, 4.0, 1);
+
+    // zero edges shorter than 10 pixels
+    removeShortEdges(edges, 10, 0);
+    \endcode
+
+    \deprecatedUsage{removeShortEdges}
+    \code
     vigra::BImage src(w,h), edges(w,h);
 
     // empty edge image
@@ -815,9 +846,7 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     // zero edges shorter than 10 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -832,6 +861,7 @@ differenceOfExponentialCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     SrcValue non_edge_marker;
     src_accessor.set(non_edge_marker, src_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void removeShortEdges)
 
@@ -953,6 +983,22 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(2*w-1, 2*h-1);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    differenceOfExponentialCrackEdgeImage(src, edges,
+                                          0.8, 4.0, 1);
+
+    // close gaps, mark with 1
+    closeGapsInCrackEdgeImage(edges, 1);
+
+    // zero edges shorter than 20 pixels
+    removeShortEdges(edges, 10, 0);
+    \endcode
+
+    \deprecatedUsage{closeGapsInCrackEdgeImage}
+    \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
 
     // empty edge image
@@ -969,9 +1015,7 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     // zero edges shorter than 20 pixels
     vigra::removeShortEdges(srcImageRange(edges), 10, 0);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
 
@@ -986,6 +1030,7 @@ removeShortEdges(MultiArrayView<2, T, S> image,
     SrcValue edge_marker;
     src_accessor.set(edge_marker, src_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void closeGapsInCrackEdgeImage)
 
@@ -1183,6 +1228,22 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(2*w-1, 2*h-1);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    differenceOfExponentialCrackEdgeImage(src, edges,
+                                          0.8, 4.0, 1);
+
+    // beautify edge image for visualization
+    beautifyCrackEdgeImage(edges, 1, 0);
+
+    // show to the user ('window' is an unspecified GUI widget to display VIGRA images)
+    window.open(edges);
+    \endcode
+
+    \deprecatedUsage{beautifyCrackEdgeImage}
+    \code
     vigra::BImage src(w,h), edges(2*w-1, 2*h-1);
 
     // empty edge image
@@ -1199,9 +1260,7 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     // show to the user
     window.open(edges);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
 
@@ -1216,6 +1275,7 @@ closeGapsInCrackEdgeImage(MultiArrayView<2, T, S> image, Value edge_marker)
     SrcValue background_marker;
     src_accessor.set(background_marker, src_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void beautifyCrackEdgeImage)
 
@@ -1482,6 +1542,18 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h);
+
+    // create empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8
+    cannyEdgelList(src, edgels, 0.8);
+    \endcode
+
+    \deprecatedUsage{cannyEdgelList}
+    \code
     vigra::BImage src(w,h);
 
     // empty edgel list
@@ -1491,9 +1563,7 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     // find edgels at scale 0.8
     vigra::cannyEdgelList(srcImageRange(src), edgels, 0.8);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
@@ -1503,8 +1573,8 @@ void internalCannyFindEdgels(SrcIterator ul, SrcAccessor grad,
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-
     SrcAccessor::value_type must be a type convertible to float
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -1656,6 +1726,18 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h);
+
+    // create empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8, only considering gradient magnitudes above 2.0
+    cannyEdgelListThreshold(src, edgels, 0.8, 2.0);
+    \endcode
+
+    \deprecatedUsage{cannyEdgelListThreshold}
+    \code
     vigra::BImage src(w,h);
 
     // empty edgel list
@@ -1665,9 +1747,7 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     // find edgels at scale 0.8, only considering gradient above 2.0
     vigra::cannyEdgelListThreshold(srcImageRange(src), edgels, 0.8, 2.0);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
@@ -1677,8 +1757,8 @@ cannyEdgelList(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-
     SrcAccessor::value_type must be a type convertible to float
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -1822,6 +1902,15 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1
+    cannyEdgeImage(src, edges, 0.8, 4.0, 1);
+    \endcode
+
+    \deprecatedUsage{cannyEdgeImage}
+    \code
     vigra::BImage src(w,h), edges(w,h);
 
     // empty edge image
@@ -1832,11 +1921,8 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     vigra::cannyEdgeImage(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1);
     \endcode
-
     <b> Required Interface:</b>
-
     see also: \ref cannyEdgelList().
-
     \code
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
@@ -1844,7 +1930,8 @@ cannyEdgelListThreshold(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
 
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
-
+    \deprecatedEnd
+    
     <b> Preconditions:</b>
 
     \code
@@ -2088,6 +2175,18 @@ void cannyEdgeImageFromGrad(
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+
+    MultiArray<2, TinyVector<float, 2> > grad(w,h);
+    // compute the image gradient at scale 0.8
+    gaussianGradient(src, grad, 0.8);
+
+    // find edges with gradient larger than 4.0, mark with 1, and add border
+    cannyEdgeImageFromGradWithThinning(grad, edges, 4.0, 1, true);
+    \endcode
+    
+    \deprecatedUsage{cannyEdgeImageFromGradWithThinning)
+    \code
     vigra::BImage src(w,h), edges(w,h);
 
     vigra::FVector2Image grad(w,h);
@@ -2100,9 +2199,7 @@ void cannyEdgeImageFromGrad(
     vigra::cannyEdgeImageFromGradWithThinning(srcImageRange(grad), destImage(edges),
                                               4.0, 1, true);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     // the input pixel type must be a vector with two elements
     SrcImageIterator src_upperleft;
@@ -2120,6 +2217,7 @@ void cannyEdgeImageFromGrad(
 
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -2323,6 +2421,15 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+    ...
+
+    // find edges at scale 0.8 with gradient larger than 4.0, mark with 1, and add border
+    cannyEdgeImageWithThinning(src, edges, 0.8, 4.0, 1, true);
+    \endcode
+
+    \deprecatedUsage{cannyEdgeImageWithThinning}
+    \code
     vigra::BImage src(w,h), edges(w,h);
 
     // empty edge image
@@ -2333,11 +2440,8 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
     vigra::cannyEdgeImageWithThinning(srcImageRange(src), destImage(edges),
                                      0.8, 4.0, 1, true);
     \endcode
-
     <b> Required Interface:</b>
-
     see also: \ref cannyEdgelList().
-
     \code
     DestImageIterator dest_upperleft;
     DestAccessor dest_accessor;
@@ -2345,6 +2449,7 @@ cannyEdgeImageFromGradWithThinning(MultiArrayView<2, TinyVector<T1, 2>, S1> cons
 
     dest_accessor.set(edge_marker, dest_upperleft, vigra::Diff2D(1,1));
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -2470,7 +2575,6 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     }
 }
 
-
 /********************************************************/
 /*                                                      */
 /*                   cannyEdgelList3x3                  */
@@ -2552,6 +2656,18 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h);
+
+    // create empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8
+    cannyEdgelList3x3(src, edgels, 0.8);
+    \endcode
+
+    \deprecatedUsage{cannyEdgelList3x3}
+    \code
     vigra::BImage src(w,h);
 
     // empty edgel list
@@ -2561,9 +2677,7 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     // find edgels at scale 0.8
     vigra::cannyEdgelList3x3(srcImageRange(src), edgels, 0.8);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
@@ -2573,8 +2687,8 @@ void internalCannyFindEdgels3x3(SrcIterator ul, SrcAccessor grad,
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-
     SrcAccessor::value_type must be a type convertible to float
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -2722,18 +2836,28 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w,h);
+
+    // create empty edgel list
+    std::vector<vigra::Edgel> edgels;
+    ...
+
+    // find edgels at scale 0.8 whose gradient is at least 4.0
+    cannyEdgelList3x3Threshold(src, edgels, 0.8, 4.0);
+    \endcode
+
+    \deprecatedUsage{cannyEdgelList3x3Threshold}
+    \code
     vigra::BImage src(w,h);
 
     // empty edgel list
     std::vector<vigra::Edgel> edgels;
     ...
 
-    // find edgels at scale 0.8
-    vigra::cannyEdgelList3x3(srcImageRange(src), edgels, 0.8);
+    // find edgels at scale 0.8 whose gradient is at least 4.0
+    vigra::cannyEdgelList3x3Threshold(srcImageRange(src), edgels, 0.8, 4.0);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft;
     SrcAccessor src_accessor;
@@ -2743,8 +2867,8 @@ cannyEdgelList3x3(MultiArrayView<2, TinyVector<T, 2>, S> const & src,
     BackInsertable edgels;
     edgels.push_back(Edgel());
     \endcode
-
     SrcAccessor::value_type must be a type convertible to float
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 

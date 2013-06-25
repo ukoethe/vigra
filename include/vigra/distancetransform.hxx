@@ -347,8 +347,21 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     
     <b>\#include</b> \<vigra/distancetransform.hxx\><br>
     Namespace: vigra
-    
-    
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), edges(w,h);
+    MultiArray<2, float>         distance(w, h);
+    ...
+
+    // detect edges in src image (edges will be marked 1, background 0)
+    differenceOfExponentialEdgeImage(src, edges, 0.8, 4.0);
+     
+    // find distance of all pixels from nearest edge
+    distanceTransform(edges, distance, 0,                   2);
+    //                                 ^ background label   ^ norm (Euclidean)
+    \endcode
+
+    \deprecatedUsage{distanceTransform}
     \code
     
     vigra::BImage src(w,h), edges(w,h);
@@ -367,9 +380,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
                              0,                   2);
     //                       ^ background label   ^ norm (Euclidean)
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     
     SrcImageIterator src_upperleft, src_lowerright;
@@ -386,6 +397,7 @@ internalDistanceTransform(SrcImageIterator src_upperleft,
     da.set(distance, dest_upperleft);
  
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void distanceTransform)
 

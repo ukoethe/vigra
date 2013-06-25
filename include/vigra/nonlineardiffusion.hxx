@@ -286,9 +286,10 @@ void internalNonlinearDiffusionAOSStep(
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<vigra/nonlineardiffusion.hxx\>
+    <b>\#include</b> \<vigra/nonlineardiffusion.hxx\><br/>
+    Namespace: vigra
     
-    
+
     \code
     FImage src(w,h), dest(w,h);
     float edge_threshold, scale;
@@ -297,6 +298,17 @@ void internalNonlinearDiffusionAOSStep(
     nonlinearDiffusion(srcImageRange(src), destImage(dest),
                        DiffusivityFunctor<float>(edge_threshold), scale);
     \endcode
+
+    \deprecatedUsage{nonlinearDiffusion}
+    \code
+    FImage src(w,h), dest(w,h);
+    float edge_threshold, scale;
+    ...
+    
+    nonlinearDiffusion(srcImageRange(src), destImage(dest),
+                       DiffusivityFunctor<float>(edge_threshold), scale);
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     

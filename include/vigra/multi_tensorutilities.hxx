@@ -243,7 +243,8 @@ public:
 
     <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> vol(shape);
@@ -354,7 +355,8 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> vol(shape);
@@ -455,7 +457,8 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> vol(shape);
@@ -566,7 +569,8 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, float> vol(shape);

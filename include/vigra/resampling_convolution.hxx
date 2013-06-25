@@ -248,7 +248,8 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 
     <b> Declaration:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     namespace vigra {
@@ -437,7 +438,8 @@ createResamplingKernels(Kernel const & kernel,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code
@@ -455,14 +457,29 @@ createResamplingKernels(Kernel const & kernel,
                         smooth, ratio, offset);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{resamplingConvolveX}
+    \code
+    Rational<int> ratio(2), offset(0);
 
+    FImage src(w,h),
+           dest(rational_cast<int>(ratio*w), h);
+
+    float sigma = 2.0;
+    Gaussian<float> smooth(sigma);
+    ...
+
+    // simultaneously enlarge and smooth source image
+    resamplingConvolveX(srcImageRange(src), destImageRange(dest),
+                        smooth, ratio, offset);
+    \endcode
+    <b> Required Interface:</b>
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
     double x = ...;  // must be <= radius()
     double value = kernel(x);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveX)
 
@@ -604,7 +621,8 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code
@@ -622,14 +640,29 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
                         smooth, ratio, offset);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{resamplingConvolveY}
+    \code
+    Rational<int> ratio(2), offset(0);
 
+    FImage src(w,h),
+           dest(w, rational_cast<int>(ratio*h));
+
+    float sigma = 2.0;
+    Gaussian<float> smooth(sigma);
+    ...
+
+    // simultaneously enlarge and smooth source image
+    resamplingConvolveY(srcImageRange(src), destImageRange(dest),
+                        smooth, ratio, offset);
+    \endcode
+    <b> Required Interface:</b>
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
     double y = ...;  // must be <= radius()
     double value = kernel(y);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveY)
 
@@ -760,7 +793,8 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code

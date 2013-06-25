@@ -105,7 +105,8 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     FImage img(w,h);
@@ -116,6 +117,16 @@ namespace vigra {
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     \endcode
 
+    \deprecatedUsage{vectorToTensor}
+    \code
+    FImage img(w,h);
+    FVector2Image gradient(w,h);
+    FVector3Image tensor(w,h);
+    
+    gaussianGradient(srcImageRange(img), destImage(gradient), 2.0);
+    vectorToTensor(srcImageRange(gradient), destImage(tensor));
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void vectorToTensor)
 
@@ -251,7 +262,8 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     FVector3Image tensor(w,h);
@@ -260,6 +272,14 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     tensorEigenRepresentation(srcImageRange(tensor), destImage(eigen));
     \endcode
 
+    \deprecatedUsage{tensorEigenRepresentation}
+    \code
+    FVector3Image tensor(w,h);
+    FVector3Image eigen(w,h);
+    
+    tensorEigenRepresentation(srcImageRange(tensor), destImage(eigen));
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorEigenRepresentation)
 
@@ -372,7 +392,8 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     FVector3Image tensor(w,h);
@@ -381,6 +402,14 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     tensorTrace(srcImageRange(tensor), destImage(trace));
     \endcode
 
+    \deprecatedUsage{tensorTrace}
+    \code
+    FVector3Image tensor(w,h);
+    FImage trace(w,h);
+    
+    tensorTrace(srcImageRange(tensor), destImage(trace));
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorTrace)
 
@@ -485,7 +514,8 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
     FVector3Image tensor(w,h);
@@ -495,6 +525,15 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     tensorTrace(srcImageRange(tensor), destImage(edgePart), destImage(cornerPart));
     \endcode
 
+    \deprecatedUsage{tensorToEdgeCorner}
+    \code
+    FVector3Image tensor(w,h);
+    FVector2Image edgePart(w,h);
+    FImage cornerPart(w,h);
+    
+    tensorTrace(srcImageRange(tensor), destImage(edgePart), destImage(cornerPart));
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorToEdgeCorner)
 

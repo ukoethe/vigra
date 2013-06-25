@@ -254,8 +254,14 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{resizeImageNoInterpolation}
+    \code
+    vigra::resizeImageNoInterpolation(
+               src.upperLeft(), src.lowerRight(), src.accessor(),
+               dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -266,6 +272,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -275,7 +282,6 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void resizeImageNoInterpolation)
 
@@ -459,8 +465,14 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{resizeImageLinearInterpolation}
+    \code
+    vigra::resizeImageLinearInterpolation(
+               src.upperLeft(), src.lowerRight(), src.accessor(),
+               dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -481,6 +493,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -490,7 +503,6 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void resizeImageLinearInterpolation)
 
@@ -681,8 +693,14 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{resizeImageSplineInterpolation}
+    \code
+    vigra::resizeImageSplineInterpolation(
+               src.upperLeft(), src.lowerRight(), src.accessor(),
+               dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -707,6 +725,7 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -716,7 +735,6 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     dest_lowerright.x - dest_upperleft.x > 1
     dest_lowerright.y - dest_upperleft.y > 1
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void resizeImageSplineInterpolation)
 

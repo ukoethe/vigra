@@ -153,8 +153,20 @@ namespace vigra {
     vigra::labelImage(srcImageRange(src), destImage(labels), false);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{labelImage}
+    \code
+    vigra::BImage src(w,h);
+    vigra::IImage labels(w,h);
 
+    // threshold at 128
+    vigra::transformImage(srcImageRange(src), destImage(src),
+       vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
+                                                    128, 256, 0, 255));
+
+    // find 4-connected regions
+    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -172,7 +184,7 @@ namespace vigra {
     int i;
     dest_accessor.set(i, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int labelImage)
 
@@ -453,8 +465,21 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
                              false, 0);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{labelImageWithBackground}
+    \code
+    vigra::BImage src(w,h);
+    vigra::IImage labels(w,h);
 
+    // threshold at 128
+    vigra::transformImage(srcImageRange(src), destImage(src),
+        vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
+                                                    128, 256, 0, 255));
+
+    // find 4-connected regions of foreground (= white pixels) only
+    vigra::labelImageWithBackground(srcImageRange(src), destImage(labels),
+                             false, 0);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -475,7 +500,7 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     int i;
     dest_accessor.set(i, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int labelImageWithBackground)
     
@@ -788,8 +813,24 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     vigra::regionImageToCrackEdgeImage(srcImageRange(labels), destImage(cellgrid), 0);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{regionImageToCrackEdgeImage}
+    \code
+    vigra::BImage src(w,h);
+    vigra::IImage labels(w,h);
+    vigra::IImage cellgrid(2*w-1, 2*h-1);
 
+    // threshold at 128
+    vigra::transformImage(srcImageRange(src), destImage(src),
+       vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
+                                                    128, 256, 0, 255));
+
+    // find 4-connected regions
+    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+
+    // create cell grid image, mark edges with 0
+    vigra::regionImageToCrackEdgeImage(srcImageRange(labels), destImage(cellgrid), 0);
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator src_upperleft, src_lowerright;
     ImageIterator dest_upperleft;
@@ -804,6 +845,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -1026,8 +1068,25 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     vigra::regionImageToEdgeImage(srcImageRange(labels), destImage(edges), 0);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{regionImageToEdgeImage}
+    \code
+    vigra::BImage src(w,h);
+    vigra::IImage labels(w,h);
+    vigra::IImage edges(w, h);
+    edges = 255;  // init background (non-edge) to 255
 
+    // threshold at 128
+    vigra::transformImage(srcImageRange(src), destImage(src),
+      vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
+                                                    128, 256, 0, 255));
+
+    // find 4-connected regions
+    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+
+    // create edge image, mark edges with 0
+    vigra::regionImageToEdgeImage(srcImageRange(labels), destImage(edges), 0);
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator src_upperleft, src_lowerright;
     ImageIterator dest_upperleft;
@@ -1042,7 +1101,7 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     DestValue edge_marker;
     dest_accessor.set(edge_marker, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void regionImageToEdgeImage)
 

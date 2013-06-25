@@ -760,7 +760,8 @@ fftwBestPaddedShapeR2C(TinyVector<T, N> shape)
     computes the appropriate frequency domain shape for a given shape in the spatial domain.
     It simply replaces <tt>shape[0]</tt> with <tt>shape[0] / 2 + 1</tt>.
     
-    <b>\#include</b> \<vigra/multi_fft.hxx\>
+    <b>\#include</b> \<vigra/multi_fft.hxx\><br/>
+    Namespace: vigra
 */
 template <class T, int N>
 TinyVector<T, N>

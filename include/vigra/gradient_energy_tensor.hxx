@@ -119,7 +119,8 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/gradient_energy_tensor.hxx\>
+    <b>\#include</b> \<vigra/gradient_energy_tensor.hxx\><br/>
+    Namespace: vigra
 
     \code
     FImage img(w,h);
@@ -131,6 +132,17 @@ namespace vigra {
     gradientEnergyTensor(srcImageRange(img), destImage(get), grad, smooth);
     \endcode
 
+    \deprecatedUsage{gradientEnergyTensor}
+    \code
+    FImage img(w,h);
+    FVector3Image get(w,h);
+    Kernel1D<double> grad, smooth;
+    grad.initGaussianDerivative(0.7, 1);
+    smooth.initGaussian(0.7);
+    ...
+    gradientEnergyTensor(srcImageRange(img), destImage(get), grad, smooth);
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gradientEnergyTensor)
 

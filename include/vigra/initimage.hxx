@@ -200,7 +200,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     Namespace: vigra
     
     Initialize with a constant:
-    
+
     \code
     vigra::BImage img(100, 100);
     
@@ -224,10 +224,27 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     // write the current count in every pixel
     vigra::initImage(destImageRange(img), Counter());
     \endcode
-    
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{initImage}
+    \code
+    vigra::BImage img(100, 100);
     
+    // init the image with the value 128
+    vigra::initImage(destImageRange(img), 128);
+
+    // Initialize with a functor:
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
+    
+        mutable int count;
+    };
+    
+    // write the current count in every pixel
+    vigra::initImage(destImageRange(img), Counter());
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator upperleft, lowerright;
     ImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -237,7 +254,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     
     accessor.set(v, ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImage)
 
@@ -316,7 +333,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     struct Counter {
         Counter() : count(0) {}
@@ -333,8 +350,23 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     vigra::initImageWithFunctor(destImageRange(img), counter);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{initImageWithFunctor}
+    \code
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
     
+        mutable int count;
+    };
+    
+    vigra::IImage img(100, 100);
+        
+    // write the current count in every pixel
+    Counter counter;
+    vigra::initImageWithFunctor(destImageRange(img), counter);
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator upperleft, lowerright;
     ImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -344,7 +376,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
     
     accessor.set(f(), ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageWithFunctor)
 
@@ -449,7 +481,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
     
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage img(100, 100);
     vigra::BImage mask(100, 100);
@@ -460,8 +492,17 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
                 vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{initImageIf}
+    \code
+    vigra::BImage img(100, 100);
+    vigra::BImage mask(100, 100);
     
+    // zero the ROI
+    vigra::initImageIf(destImageRange(img), 
+                maskImage(mask),
+                vigra::NumericTraits<vigra::BImage::PixelType>::zero());
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
@@ -474,7 +515,7 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
     
     if(mask_accessor(mx)) accessor.set(v, ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageIf)
 
@@ -582,6 +623,7 @@ initImageIf(MultiArrayView<2, T, S> img,
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
     
+    \deprecatedUsage{initImageBorder}
     \code
     vigra::BImage img(100, 100);
     
@@ -589,11 +631,9 @@ initImageIf(MultiArrayView<2, T, S> img,
     vigra::initImageBorder(destImageRange(img),
                     5, vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \endcode
-
     <b> Required Interface:</b>
-    
-    see \ref initImage()
-    
+    <br/>see \ref initImage()
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageBorder)
 

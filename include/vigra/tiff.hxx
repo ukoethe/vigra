@@ -112,7 +112,8 @@ typedef TIFF TiffImage;
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
     
     \code
     uint32 w, h;
@@ -218,8 +219,9 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     uint32 w, h;
     uint16 photometric
@@ -240,9 +242,29 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     TIFFClose(tiff);
     \endcode
+
+    \deprecatedUsage{tiffToScalarImage}
+    \code
+    uint32 w, h;
+    uint16 photometric
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_MINISWHITE &&
+       photometric != PHOTOMETRIC_MINISBLACK)
+    {
+        // not a scalar image - handle error
+    }
     
+    vigra::BImage img(w,h);
+    
+    vigra::tiffToScalarImage(tiff, destImage(img));
+    
+    TIFFClose(tiff);
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> value;
@@ -251,6 +273,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
                
     accessor.set(value, upperleft);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -275,7 +298,6 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
        bitsPerSample == 64
     
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void tiffToScalarImage)
 
@@ -588,8 +610,9 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     uint32 w, h;
     uint16 photometric
@@ -610,9 +633,29 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     
     TIFFClose(tiff);
     \endcode
+
+    \deprecatedUsage{tiffToRGBImage}
+    \code
+    uint32 w, h;
+    uint16 photometric
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_RGB &&
+       photometric != PHOTOMETRIC_PALETTE)
+    {
+        // not an RGB image - handle error
+    }
     
+    vigra::BRGBImage img(w, h);
+    
+    vigra::tiffToRGBImage(tiff, destImage(img));
+    
+    TIFFClose(tiff);
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> rvalue, gvalue, bvalue;
@@ -623,6 +666,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     accessor.setGreen(gvalue, upperleft);
     accessor.setBlue(bvalue, upperleft);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -646,7 +690,6 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
        bitsPerSample == 32 || 
        bitsPerSample == 64
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void tiffToRGBImage)
 
@@ -1089,8 +1132,9 @@ struct CreateTiffImage;
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     vigra::BImage img(width, height);
     
@@ -1102,16 +1146,27 @@ struct CreateTiffImage;
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
+
+    \deprecatedUsage{createTiffImage}
+    \code
+    vigra::BImage img(width, height);
     
+    ...
+    
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    vigra::createTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createTiffImage)
 
@@ -1184,8 +1239,9 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     vigra::BImage img(width, height);
     
@@ -1197,16 +1253,27 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
+
+    \deprecatedUsage{*/}
+    \code
+    vigra::BImage img(width, height);
     
+    ...
+    
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    vigra::createScalarTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createScalarTiffImage)
 
@@ -1604,8 +1671,9 @@ struct CreateTiffImage<double>
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     vigra::BRGBImage img(width, height);
     
@@ -1617,9 +1685,20 @@ struct CreateTiffImage<double>
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
+
+    \deprecatedUsage{createRGBTiffImage}
+    \code
+    vigra::BRGBImage img(width, height);
     
+    ...
+    
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    vigra::createRGBTiffImage(srcImageRange(img), tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     RGBAccessor accessor;
@@ -1628,7 +1707,7 @@ struct CreateTiffImage<double>
     accessor.green(upperleft);   // result written into TiffImage
     accessor.blue(upperleft);    // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createRGBTiffImage)
 

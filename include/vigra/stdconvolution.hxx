@@ -151,8 +151,23 @@ The functions need a suitable 2D kernel to operate.
     vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{convolveImage}
+    \code
+    vigra::FImage src(w,h), dest(w,h);
+    ...
 
+    // define horizontal Sobel filter
+    vigra::Kernel2D<float> sobel;
+
+    sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
+                         0.125, 0.0, -0.125,
+                         0.25,  0.0, -0.25,
+                         0.125, 0.0, -0.125;
+    sobel.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);
+
+    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator src_ul, src_lr;
     ImageIterator dest_ul;
@@ -178,6 +193,7 @@ The functions need a suitable 2D kernel to operate.
     k = k / k;
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -192,7 +208,6 @@ The functions need a suitable 2D kernel to operate.
 
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
-
 */
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -535,8 +550,23 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     vigra::normalizedConvolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{normalizedConvolveImage}
+    \code
+    vigra::FImage src(w,h), dest(w,h);
+    vigra::CImage mask(w,h);
+    ...
 
+    // define 3x3 binomial filter
+    vigra::Kernel2D<float> binom;
+
+    binom.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =   // upper left and lower right
+                         0.0625, 0.125, 0.0625,
+                         0.125,  0.25,  0.125,
+                         0.0625, 0.125, 0.0625;
+
+    vigra::normalizedConvolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator src_ul, src_lr;
     ImageIterator mul;
@@ -566,6 +596,7 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     k = k / k;
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
@@ -580,7 +611,6 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
 
     Sum of kernel elements must be != 0.
-
 */
 doxygen_overloaded_function(template <...> void normalizedConvolveImage)
 

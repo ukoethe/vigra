@@ -929,7 +929,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -939,6 +939,16 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     \endcode
 
+    \deprecatedUsage{recursiveFilterX}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 
+           0.5, BORDER_TREATMENT_REFLECT);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFilterX)
 
@@ -1099,7 +1109,7 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1108,6 +1118,15 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveGaussianFilterX}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveGaussianFilterX(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveGaussianFilterX)
 
@@ -1213,7 +1232,7 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1222,6 +1241,15 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveGaussianFilterX}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSmoothX)
 
@@ -1354,7 +1382,7 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1363,6 +1391,15 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveFilterY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveFilterY(srcImageRange(src), destImage(dest), -0.6, -0.06);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFilterY)
 
@@ -1523,7 +1560,7 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1532,6 +1569,15 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveGaussianFilterY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveGaussianFilterY(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveGaussianFilterY)
 
@@ -1638,7 +1684,7 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1647,6 +1693,15 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveSmoothY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSmoothY)
 
@@ -1753,7 +1808,7 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1762,6 +1817,15 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveFirstDerivativeX}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFirstDerivativeX)
 
@@ -1868,7 +1932,7 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1877,6 +1941,15 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveFirstDerivativeY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFirstDerivativeY)
 
@@ -1983,7 +2056,7 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -1992,6 +2065,15 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveSecondDerivativeX}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSecondDerivativeX)
 
@@ -2098,7 +2180,7 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
@@ -2107,6 +2189,15 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     
     \endcode
 
+    \deprecatedUsage{recursiveSecondDerivativeY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
+    
+    \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSecondDerivativeY)
 

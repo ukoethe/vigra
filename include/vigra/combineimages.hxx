@@ -175,24 +175,34 @@ combineThreeLines(SrcIterator1 s1,
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
     #include <functional>     // for plus
-
+    FImage src1(width, height), src2(width, height),
+           dest(width, height);
+    ... // fill source images 
+    
     vigra::combineTwoImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
                 destIter(dest.upperLeft()),  
-                std::plus<SrcValueType>());
-    
+                std::plus<float>());
     \endcode
+
+    \deprecatedUsage{combineTwoImages}
+    \code
+    #include <functional>     // for plus
+    FImage src1(width, height), src2(width, height),
+           dest(width, height);
+    ... // fill source images 
     
-    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
-    the promote type of the input images' pixel type, see also 
-    \ref NumericPromotionTraits)
-    
+    vigra::combineTwoImages(
+                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
+                srcIter(src2.upperLeft()), 
+                destIter(dest.upperLeft()),  
+                std::plus<float>());
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -212,8 +222,7 @@ combineThreeLines(SrcIterator1 s1,
           dx);
 
     \endcode
-    
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void combineTwoImages)
 
@@ -350,9 +359,12 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
     #include <functional>     // for plus
+    FImage src1(width, height), src2(width, height), mask(width, height),
+           dest(width, height);
+    ... // fill source and mask images 
 
     vigra::combineTwoImagesIf(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
@@ -363,12 +375,22 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     
     \endcode
 
-    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
-    the promote type of the input images' pixel type, see also 
-    \ref NumericPromotionTraits)
+    \deprecatedUsage{combineTwoImagesIf}
+    \code
+    #include <functional>     // for plus
+    FImage src1(width, height), src2(width, height), mask(width, height),
+           dest(width, height);
+    ... // fill source and mask images 
+
+    vigra::combineTwoImagesIf(
+                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
+                srcIter(src2.upperLeft()), 
+                maskIter(mask.upperLeft()), 
+                destIter(dest.upperLeft()),
+                std::plus<SrcValueType>());
     
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -393,6 +415,7 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
           dx);
 
     \endcode
+    \deprecatedEnd
     
 */
 doxygen_overloaded_function(template <...> void combineTwoImagesIf)
@@ -535,8 +558,12 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
+    FImage src1(width, height), src2(width, height), src3(width, height),
+           dest(width, height);
+    ... // fill source images 
+    
     vigra::combineThreeImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
@@ -546,8 +573,21 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{combineThreeImages}
+    \code
+    FImage src1(width, height), src2(width, height), src3(width, height),
+           dest(width, height);
+    ... // fill source images 
     
+    vigra::combineThreeImages(
+                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
+                srcIter(src2.upperLeft()), 
+                srcIter(src3.upperLeft()), 
+                destIter(dest.upperLeft()),  
+                SomeThreeArgumentFunctor());
+    
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -572,6 +612,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
           dx);
 
     \endcode
+    \deprecatedEnd
     
     
 */

@@ -137,8 +137,31 @@ namespace vigra {
     localMaxima(srcImageRange(symmetry), destImage(centers), 255);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{radialSymmetryTransform}
+    \code
+    vigra::BImage src(w,h), centers(w,h);
+    vigra::FImage symmetry(w,h);
 
+    // empty result image
+    centers.init(128);
+    symmetry.init(0.0);
+
+    // input width of edge detection filter
+    for(double scale = 2.0; scale <= 8.0; scale *= 2.0)
+    {
+        vigra::FImage tmp(w,h);
+
+        // find centers of symmetry
+        radialSymmetryTransform(srcImageRange(src), destImage(tmp), scale);
+
+        combineTwoImages(srcImageRange(symmetry), srcImage(tmp), destImage(symmetry),
+                         std::plus<float>());
+    }
+
+    localMinima(srcImageRange(symmetry), destImage(centers), 0);
+    localMaxima(srcImageRange(symmetry), destImage(centers), 255);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -151,6 +174,7 @@ namespace vigra {
 
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void radialSymmetryTransform)
 

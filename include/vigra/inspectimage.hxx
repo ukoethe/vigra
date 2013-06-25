@@ -177,8 +177,19 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{inspectImage}
+    \code
+    // init functor
+    vigra::BImage img;
 
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
+
+    vigra::inspectImage(srcImageRange(img), minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     ConstImageIterator upperleft, lowerright;
     ConstImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -188,7 +199,7 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     functor(accessor(ix));         // return not used
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void inspectImage)
 
@@ -344,8 +355,21 @@ inspectImage(MultiArrayView<2, T, S> const & img,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{inspectImageIf}
+    \code
+    vigra::BImage img(100, 100);
+    vigra::BImage mask(100, 100);
 
+    // init functor
+    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
+
+    vigra::inspectImageIf(srcImageRange(img),
+                          maskImage(mask), minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     ConstImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
@@ -359,7 +383,7 @@ inspectImage(MultiArrayView<2, T, S> const & img,
 
     if(mask_accessor(mx)) functor(accessor(ix));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void inspectImageIf)
 
@@ -537,8 +561,19 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{inspectTwoImages}
+    \code
+    vigra::BImage image1;
+    vigra::BImage image2;
 
+    SomeStatisticsFunctor stats(...);     // init functor
+
+    vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
+                            stats);
+
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
@@ -551,7 +586,7 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     Functor functor;
     functor(accessor1(ix1), accessor2(ix2));  // return not used
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void inspectTwoImages)
 
@@ -744,8 +779,19 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
 
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{inspectTwoImagesIf}
+    \code
+    vigra::BImage image1;
+    vigra::BImage image2;
+    vigra::BImage maskimage;
 
+    SomeStatisticsFunctor stats(...);     // init functor
+
+    vigra::inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
+                              srcImage(maskimage), region_stats);
+
+    \endcode
+    <b> Required Interface:</b>
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
@@ -762,7 +808,7 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     if(mask(mx))
         functor(accessor1(ix1), accessor2(ix2));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
 

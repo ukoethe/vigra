@@ -122,7 +122,8 @@ namespace vigra {
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/orientedtensorfilters.hxx\>
+    <b>\#include</b> \<vigra/orientedtensorfilters.hxx\><br/>
+    Namespace: vigra
 
     \code
     FImage img(w,h);
@@ -133,6 +134,18 @@ namespace vigra {
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
     \endcode
+
+    \deprecatedUsage{hourGlassFilter}
+    \code
+    FImage img(w,h);
+    FVector2Image gradient(w,h);
+    FVector3Image tensor(w,h), smoothedTensor(w,h);
+    
+    gaussianGradient(srcImageRange(img), destImage(gradient), 1.0);
+    vectorToTensor(srcImageRange(gradient), destImage(tensor));
+    hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
+    \endcode
+    \deprecatedEnd
     
     \see vectorToTensor()
 */

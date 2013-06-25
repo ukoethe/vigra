@@ -655,12 +655,11 @@ namespace vigra
     \endcode
     \deprecatedEnd
    
-    <B>Usage</B>
+    <b> Usage:</b>
    
     <B>\#include \<vigra/impex.hxx\></B>
-   
     Namespace: vigra
-   
+
     \code
         ImageImportInfo info("myimage.gif");
    
@@ -681,6 +680,29 @@ namespace vigra
             ...
         }
     \endcode
+
+    \deprecatedUsage{importImage}
+    \code
+        ImageImportInfo info("myimage.gif");
+   
+        if (info.isGrayscale())
+        {
+            // create byte image of appropriate size
+            BImage image(info.width(), info.height());
+   
+            importImage(info, destImage(image));
+            ...
+        }
+        else
+        {
+            // create byte RGB image of appropriate size
+            BRGBImage image(info.width(), info.height());
+   
+            importImage(info, destImage(image));
+            ...
+        }
+    \endcode
+    \deprecatedEnd
    
     <B>Preconditions</B>
    
@@ -719,7 +741,7 @@ namespace vigra
        </tr><tr>
        <td> VIFF </td><td> xv        </td><td> Khoros Visualization image file                            </td><td> </td>
        </table>
-     */
+*/
     doxygen_overloaded_function(template <...> void importImage)
 
 
@@ -843,11 +865,11 @@ namespace vigra
     \endcode
     \deprecatedEnd
     
-    <B>Usage</B>
+    <b> Usage:</b>
     
     <B>\#include \<vigra/impex.hxx\></B>
     
-    Namespace: vigra
+
     \code
         BRGBImage image(width, height);
         ...
@@ -862,12 +884,29 @@ namespace vigra
         exportImage(srcImageRange(image),
                     ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
     \endcode
+
+        \deprecatedUsage{exportImage}amespace: vigra
+    \code
+        BRGBImage image(width, height);
+        ...
+    
+        // write as JPEG image, using compression quality 80
+        exportImage(srcImageRange(image),
+                    ImageExportInfo("my-image.jpg").setCompression("80"));
+    
+        // Force it to a particular pixel type.  The pixel type must be supported by the
+        // desired image file format, otherwise an \ref vigra::PreconditionViolation
+        // exception will be thrown.
+        exportImage(srcImageRange(image),
+                    ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
+    \endcode
+        \deprecatedEnd
     
     <B>Preconditions</B>
     
     - The image file must be writable and
     - the file type must be one of the supported file types.
-    */
+*/
     doxygen_overloaded_function(template <...> void exportImage)
 
 

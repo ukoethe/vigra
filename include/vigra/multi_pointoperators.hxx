@@ -58,7 +58,8 @@ namespace vigra
     specified by a pair: an iterator referring to the first point of the array 
     and a shape object specifying the size of the (rectangular) ROI.
 
-    <b>\#include</b> \<vigra/multi_pointoperators.hxx\>
+    <b>\#include</b> \<vigra/multi_pointoperators.hxx\><br/>
+    Namespace: vigra
 */
 //@{
 

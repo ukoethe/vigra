@@ -61,7 +61,7 @@ namespace vigra {
 /** \brief Create homogeneous matrix that maps corresponding points onto each other.
  
     For use with \ref affineWarpImage(). When only two corresponding points are given,
-    the matrix will not use a full affine transform, but only a similarity transform 
+    the matrix will only represent a similarity transform 
     (translation, rotation, and uniform scaling). When only one point pair is given,
     the result will be a pure translation.
 */

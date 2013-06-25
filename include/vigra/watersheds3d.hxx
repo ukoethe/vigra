@@ -350,8 +350,30 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{watersheds3D}
+    \code
+    typedef vigra::MultiArray<3,int> IntVolume;
+    typedef vigra::MultiArray<3,double> DVolume;
+    DVolume src(DVolume::difference_type(w,h,d));
+    IntVolume dest(IntVolume::difference_type(w,h,d));
 
+    float gauss=1;
+
+    vigra::MultiArray<3, vigra::TinyVector<float,3> > temp(IntVolume::difference_type(w,h,d));
+    vigra::gaussianGradientMultiArray(srcMultiArrayRange(vol),destMultiArray(temp),gauss);
+
+    IntVolume::iterator temp_iter=temp.begin();
+    for(DVolume::iterator iter=src.begin(); iter!=src.end(); ++iter, ++temp_iter)
+        *iter = norm(*temp_iter);
+    
+    // find 6-connected regions
+    int max_region_label = vigra::watersheds3DSix(srcMultiArrayRange(src), destMultiArray(dest));
+
+    // find 26-connected regions
+    max_region_label = vigra::watersheds3DTwentySix(srcMultiArrayRange(src), destMultiArray(dest));
+    
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_begin;
     SrcShape src_shape;
@@ -367,6 +389,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     int label;
     dest_accessor.set(label, dest_begin);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int watersheds3D)
 

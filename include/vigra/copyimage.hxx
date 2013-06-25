@@ -144,14 +144,18 @@ swapLine(SrcIterator s,
     
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::copyImage(srcImageRange(src), destImage(dest));
     
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{copyImage}
+    \code
+    vigra::copyImage(srcImageRange(src), destImage(dest));
     
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
@@ -164,7 +168,7 @@ swapLine(SrcIterator s,
     dest_accessor.set(src_accessor(sx), dx);
 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void copyImage)
 
@@ -307,14 +311,18 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
 
     \endcode
 
+    \deprecatedUsage{copyImageIf}
+    \code
+    vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
+
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -332,7 +340,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
         dest_accessor.set(src_accessor(sx), dx);
 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void copyImageIf)
 

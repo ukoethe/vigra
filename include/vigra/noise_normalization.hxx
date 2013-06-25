@@ -1014,7 +1014,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
@@ -1027,6 +1027,21 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     for(int k=0; k<result.size(); ++k)
         std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
     \endcode
+
+    \deprecatedUsage{noiseVarianceEstimation}
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > result;
+    
+    ...
+    vigra::noiseVarianceEstimation(srcImageRange(src), result, 
+                                  vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
+    
+    // print the intensity / variance pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1137,7 +1152,7 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
@@ -1151,6 +1166,22 @@ noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
     for(int k=0; k<result.size(); ++k)
         std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
     \endcode
+
+    \deprecatedUsage{noiseVarianceClustering}
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > result;
+    
+    ...
+    vigra::noiseVarianceClustering(srcImageRange(src), result, 
+                                  vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                  clusterCount(15));
+    
+    // print the intensity / variance pairs representing the cluster centers
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1255,7 +1286,7 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1264,6 +1295,17 @@ noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
                                            vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                            clusterCount(15));
     \endcode
+
+    \deprecatedUsage{nonparametricNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    vigra::nonparametricNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                           vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                           clusterCount(15));
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1360,7 +1402,7 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1369,6 +1411,17 @@ nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                        vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                        clusterCount(15));
     \endcode
+
+    \deprecatedUsage{quadraticNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                       vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                       clusterCount(15));
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1468,7 +1521,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1476,6 +1529,16 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
                                        100, 0.02, 1e-6);
     \endcode
+
+    \deprecatedUsage{quadraticNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                       100, 0.02, 1e-6);
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1574,7 +1637,7 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1583,6 +1646,17 @@ quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
                                     vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                     clusterCount(15));
     \endcode
+
+    \deprecatedUsage{linearNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                    vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                    clusterCount(15));
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
@@ -1682,7 +1756,7 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1690,6 +1764,16 @@ linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
     vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
                                     100, 0.02);
     \endcode
+
+    \deprecatedUsage{linearNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                    100, 0.02);
+    \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     

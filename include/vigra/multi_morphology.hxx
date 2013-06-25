@@ -203,7 +203,8 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -214,6 +215,18 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     // perform isotropic binary erosion
     multiBinaryErosion(source, dest, 3);
     \endcode
+
+    \deprecatedUsage{multiBinaryErosion}
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, unsigned char> dest(shape);
+    ...
+
+    // perform isotropic binary erosion
+    multiBinaryErosion(source, dest, 3);
+    \endcode
+    \deprecatedEnd
 
     \see vigra::discErosion()
 */
@@ -326,7 +339,8 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -337,6 +351,18 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     // perform isotropic binary erosion
     multiBinaryDilation(source, dest, 3);
     \endcode
+
+    \deprecatedUsage{multiBinaryDilation}
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, unsigned char> dest(shape);
+    ...
+
+    // perform isotropic binary erosion
+    multiBinaryDilation(source, dest, 3);
+    \endcode
+    \deprecatedEnd
 
     \see vigra::discDilation()
 */
@@ -446,7 +472,8 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -457,6 +484,18 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     // perform isotropic grayscale erosion
     multiGrayscaleErosion(source, dest, 3.0);
     \endcode
+
+    \deprecatedUsage{multiGrayscaleErosion}
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, unsigned char> dest(shape);
+    ...
+
+    // perform isotropic grayscale erosion
+    multiGrayscaleErosion(source, dest, 3.0);
+    \endcode
+    \deprecatedEnd
 
     \see vigra::discErosion()
 */
@@ -590,7 +629,8 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
     Shape3 shape(width, height, depth);
@@ -601,6 +641,18 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     // perform isotropic grayscale erosion
     multiGrayscaleDilation(source, dest, 3.0);
     \endcode
+
+    \deprecatedUsage{multiGrayscaleDilation}
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, unsigned char> dest(shape);
+    ...
+
+    // perform isotropic grayscale erosion
+    multiGrayscaleDilation(source, dest, 3.0);
+    \endcode
+    \deprecatedEnd
 
     \see vigra::discErosion()
 */

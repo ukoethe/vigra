@@ -571,7 +571,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     
     <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
@@ -584,8 +584,19 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
         std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{slantedEdgeMTF}
+    \code
+    vigra::BImage src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > mtf;
     
+    ...
+    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    
+    // print the frequency / attenuation pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator upperleft, lowerright;
     SrcAccessor src;
@@ -601,6 +612,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     double intensity, variance;
     result.push_back(ResultType(intensity, variance));
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void slantedEdgeMTF)
 

@@ -212,7 +212,28 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         corner_response(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    cornerResponseFunction(src, corner_response, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(corner_response, corners);
+    
+    // threshold corner response to keep only strong corners (above 400.0)
+    transformImage(corner_response, corner_response,
+                   Threshold<double, double>(400.0, std::numeric_limits<double>::max(), 0.0, 1.0)); 
+
+    // combine thresholding and local maxima
+    combineTwoImages(corners, corner_response,
+                     corners, std::multiplies<float>());
+    \endcode
+
+    \deprecatedUsage{cornerResponseFunction}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage corner_response(w,h);
@@ -237,9 +258,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     vigra::combineTwoImages(srcImageRange(corners), srcImage(corner_response),
                      destImage(corners), std::multiplies<float>());
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -257,6 +276,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void cornerResponseFunction)
 
@@ -336,7 +356,8 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     another detector invented by Harris.
     
     The algorithm first determines the structure tensor at each pixel by calling
-    \ref structureTensor(). Then the entries of the structure tensor are combined as 
+    \ref structureTensor(), where the given scale is used for both the inner and outer scales. 
+    Then the entries of the structure tensor are combined as 
     
     \f[
         \mbox{\rm FoerstnerCornerStrength} = \frac{\mbox{\rm det(StructureTensor)}}{\mbox{\rm tr(StructureTensor)}} = 
@@ -394,7 +415,20 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         foerstner_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    foerstnerCornerDetector(src, foerstner_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(foerstner_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{foerstnerCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage foerstner_corner_strength(w,h);
@@ -410,9 +444,7 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(foerstner_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -431,6 +463,7 @@ cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void foerstnerCornerDetector)
 
@@ -510,7 +543,8 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     Direct Corner Detectors"</em>, J. of Mathematical Imaging and Vision 4:2 (1994) 139-150]. 
     
     The algorithm first determines the structure tensor at each pixel by calling
-    \ref structureTensor(). Then the entries of the structure tensor are combined as 
+    \ref structureTensor(), where the given scale is used for both the inner and outer scales. 
+    Then the entries of the structure tensor are combined as 
     
     \f[
         \mbox{\rm RohrCornerStrength} = \mbox{\rm det(StructureTensor)} = A B - C^2
@@ -521,8 +555,7 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     
     The source value type must be a linear algebra, i.e. addition, subtraction, and
     multiplication with itself, multiplication with doubles and 
-    \ref NumericTraits "NumericTraits" must 
-    be defined.
+    \ref NumericTraits "NumericTraits" must be defined.
     
     <b> Declarations:</b>
     
@@ -567,7 +600,20 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         rohr_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    rohrCornerDetector(src, rohr_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(rohr_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{rohrCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage rohr_corner_strength(w,h);
@@ -583,9 +629,7 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(rohr_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -603,6 +647,7 @@ foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void rohrCornerDetector)
 
@@ -730,7 +775,20 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         beaudet_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    beaudetCornerDetector(src, beaudet_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(beaudet_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{beaudetCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage beaudet_corner_strength(w,h);
@@ -746,9 +804,7 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(beaudet_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -766,6 +822,7 @@ rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void beaudetCornerDetector)
 

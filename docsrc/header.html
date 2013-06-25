@@ -4,19 +4,18 @@
 <link rel=stylesheet type="text/css" href="vigra_1_8_2.css">
 <link rel="shortcut icon" href="vigra-icon.ico" />
 <script type="text/javascript">
-function showDeprecatedAPI( where, sender ){ 
-	if( document.getElementById(where).style.display == 'block' )
+function toggleHiddenDocumentation( textID, toggleID, toggleMessage )
+{ 
+	if( document.getElementById(textID).style.display == 'none' )
     {
-		document.getElementById(where).style.display='none';
-        //document.getElementById(sender).innerHTML = "deprecated APIs <img src=\"plus.png\">:";
-        document.getElementById(sender).innerHTML = "show deprecated declarations";
-	}
+		document.getElementById(textID).style.display = 'block';
+        document.getElementById(toggleID).innerHTML = "hide " + toggleMessage;
+    }
     else
     {
-		document.getElementById(where).style.display='block';
-        //document.getElementById(sender).innerHTML = "deprecated APIs <img src=\"minus.png\">:";
-        document.getElementById(sender).innerHTML = "hide deprecated declarations";
-    }
+		document.getElementById(textID).style.display = 'none';
+        document.getElementById(toggleID).innerHTML = "show " + toggleMessage;
+	}
     return false;
 }
 </script>

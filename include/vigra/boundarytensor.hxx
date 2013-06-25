@@ -418,9 +418,10 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br>
+    Namespace: vigra
 
     \code
     MultiArrayView<2, double> impulse(17,17), res(17, 17);
@@ -429,7 +430,6 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
     // calculate the impulse response of the first order Riesz transform in x-direction
     rieszTransformOfLOG(impulse, res, 2.0, 1, 0);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void rieszTransformOfLOG)
 
@@ -622,7 +622,7 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/boundarytensor.hxx\><br/>
     Namespace: vigra
@@ -633,7 +633,6 @@ rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
     ...
     boundaryTensor(img, bt, 2.0);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void boundaryTensor)
 
@@ -687,7 +686,8 @@ boundaryTensor(MultiArrayView<2, T1, S1> const & src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br/>
+    Namespace: vigra
 
     pass 2D array views:
     \code

@@ -360,8 +360,33 @@ enum SRGType {
                                destImage(points), stats);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{seededRegionGrowing}
+    \code
+    vigra::BImage points(w,h);
+    vigra::FImage dist(x,y);
 
+    // empty edge image
+    points = 0;
+    dist = 0;
+
+    int max_region_label = 100;
+
+    // throw in some random points:
+    for(int i = 1; i <= max_region_label; ++i)
+           points(w * rand() / RAND_MAX , h * rand() / RAND_MAX) = i;
+
+    // calculate Euclidean distance transform
+    vigra::distanceTransform(srcImageRange(points), destImage(dist), 2);
+
+    // init statistics functor
+    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> >
+                                              stats(max_region_label);
+
+    // find voronoi region of each point
+    vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points),
+                               destImage(points), stats);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_upperleft, src_lowerright;
     SeedImageIterator seed_upperleft;
@@ -386,6 +411,7 @@ enum SRGType {
     // set result
     dest_accessor.set(seed_accessor(seed_upperleft), dest_upperleft);
     \endcode
+    \deprecatedEnd
 
     Further requirements are determined by the <TT>RegionStatisticsArray</TT>.
 */

@@ -164,6 +164,20 @@ namespace vigra{
     int max_region_label = vigra::labelVolume(srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DTwentySix());
     \endcode
 
+    \deprecatedUsage{labelVolume}
+    \code
+    typedef vigra::MultiArray<3,int> IntVolume;
+    IntVolume src(IntVolume::difference_type(w,h,d));
+    IntVolume dest(IntVolume::difference_type(w,h,d));
+    
+    // find 6-connected regions
+    int max_region_label = vigra::labelVolumeSix(srcMultiArrayRange(src), destMultiArray(dest));
+
+    // find 26-connected regions
+    int max_region_label = vigra::labelVolume(srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DTwentySix());
+    \endcode
+    \deprecatedEnd
+
     <b> Required Interface:</b>
 
     \code
@@ -184,7 +198,6 @@ namespace vigra{
     int i;
     dest_accessor.set(i, dest_begin);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
@@ -508,6 +521,18 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DSix(), 0);
     \endcode
 
+    \deprecatedUsage{labelVolumeWithBackground}
+    \code
+    typedef vigra::MultiArray<3,int> IntVolume;
+    IntVolume src(IntVolume::difference_type(w,h,d));
+    IntVolume dest(IntVolume::difference_type(w,h,d));
+
+    // find 6-connected regions
+    int max_region_label = vigra::labelVolumeWithBackground(
+    srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DSix(), 0);
+    \endcode
+    \deprecatedEnd
+
     <b> Required Interface:</b>
 
     \code
@@ -528,7 +553,6 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     int i;
     dest_accessor.set(i, dest_begin);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> unsigned int labelVolumeWithBackground)
 

@@ -811,8 +811,47 @@ class LocalMinmaxOptions
                        LocalMinmaxOptions().allowPlateaus().markWith(255));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{localMinima}
+    \code
+    // 3D examples using MultiArray
+    MultiArrayShape<3>::type shape(w,h,d);
+    MultiArray<3, unsigned char> src(shape), minima(shape);
+    ... // fill src
 
+    // use default parameterisation
+    localMinima(src, minima);
+
+    // reset destination image
+    minima = 0;
+
+    // use 6-neighborhood and allow minima at the image border
+    localMinima(src, minima,
+                       LocalMinmaxOptions().neighborhood(6).allowAtBorder());
+    \endcode
+
+    \code
+    // 2D examples using BasicImage
+    BImage src(w,h), minima(w,h);
+    ... // fill src
+
+    // use default parameterisation
+    localMinima(srcImageRange(src), destImage(minima));
+
+    // reset destination image
+    minima = 0;
+
+    // use 4-neighborhood and allow minima at the image border
+    localMinima(srcImageRange(src), destImage(minima),
+                       LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+
+    // reset destination image
+    minima = 0;
+
+    // allow extended minima (minimal plateaus) and use value '255' as a marker
+    localMinima(srcImageRange(src), destImage(minima),
+                       LocalMinmaxOptions().allowPlateaus().markWith(255));
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -824,6 +863,7 @@ class LocalMinmaxOptions
 
     u < u
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void localMinima)
 
@@ -1181,8 +1221,47 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
                        LocalMinmaxOptions().allowPlateaus().markWith(255));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{localMaxima}
+    \code
+    // 3D examples using MultiArray
+    MultiArrayShape<3>::type shape(w,h,d);
+    MultiArray<3, unsigned char> src(shape), maxima(shape);
+    ... // fill src
 
+    // use default parameterisation
+    localMaxima(src, maxima);
+
+    // reset destination image
+    maxima = 0;
+
+    // use 6-neighborhood and allow maxima at the image border
+    localMaxima(src, maxima,
+                       LocalMinmaxOptions().neighborhood(6).allowAtBorder());
+    \endcode
+
+    \code
+    // 2D examples using BasicImage
+    BImage src(w,h), maxima(w,h);
+    ... // fill src
+
+    // use default parameterisation
+    localMaxima(srcImageRange(src), destImage(maxima));
+
+    // reset destination image
+    maxima = 0;
+
+    // use 4-neighborhood and allow maxima at the image border
+    localMaxima(srcImageRange(src), destImage(maxima),
+                       LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+
+    // reset destination image
+    maxima = 0;
+
+    // allow extended maxima (maximal plateaus) and use value '255' as a marker
+    localMaxima(srcImageRange(src), destImage(maxima),
+                       LocalMinmaxOptions().allowPlateaus().markWith(255));
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -1194,6 +1273,7 @@ localMinima3D(MultiArrayView<2, T1, S1> const & src,
 
     u < u
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void localMaxima)
 
@@ -1552,8 +1632,39 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{extendedLocalMinima}
+    \code
 
+    // optional: define an equality functor
+    template <class T>
+    struct EqualWithToleranceFunctor
+    {
+        EqualWithToleranceFunctor(T tolerance)
+        : t(tolerance)
+        {}
+
+        bool operator()(T l, T r) const
+        {
+            return abs(l-r) <= t;
+        }
+
+        T t;
+    };
+
+    BImage src(w,h), minima(w,h);
+
+    // init destiniation image
+    minima.init(0);
+
+    extendedLocalMinima(srcImageRange(src), destImage(minima));
+
+    // allow plateaus with tolerance
+    minima.init(0);
+    extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
+                               FourNeighborCode(),
+                               EqualWithToleranceFunctor<unsigned char>(1));
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -1571,7 +1682,7 @@ localMaxima3D(MultiArrayView<3, T1, S1> const & src,
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void extendedLocalMinima)
 
@@ -1871,8 +1982,39 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{extendedLocalMaxima}
+    \code
 
+    // optional: define an equality functor
+    template <class T>
+    struct EqualWithToleranceFunctor
+    {
+        EqualWithToleranceFunctor(T tolerance)
+        : t(tolerance)
+        {}
+
+        bool operator()(T l, T r) const
+        {
+            return abs(l-r) <= t;
+        }
+
+        T t;
+    };
+
+    BImage src(w,h), maxima(w,h);
+
+    // init destiniation image
+    maxima.init(0);
+
+    extendedLocalMaxima(srcImageRange(src), destImage(maxima));
+
+    // allow plateaus with tolerance
+    maxima.init(0);
+    extendedLocalMaxima(srcImageRange(src), destImage(maxima), 1.0,
+                               FourNeighborCode(),
+                               EqualWithToleranceFunctor<unsigned char>(1));
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -1890,7 +2032,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void extendedLocalMaxima)
 
