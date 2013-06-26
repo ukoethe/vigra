@@ -73,13 +73,13 @@ typedef TIFF TiffImage;
 /*                                                      */
 /********************************************************/
 
-/** \brief Convert given TiffImage into image specified by iterator range.
+/** \brief Read a given TIFF image.
 
-    Accessors are used to write the data.    
     This function calls \ref tiffToScalarImage() or \ref tiffToRGBImage(), depending on 
-    the accessor's value_type.
+    the destinations's value_type. Usually, it is better to use \ref importImage().
+    importTiffImage() should only be used if explicit access to the TIFF object
+    <tt>TiffImage</tt> is required.
 
-    
     <b> Declarations:</b>
     
     pass 2D array views:
@@ -121,9 +121,9 @@ typedef TIFF TiffImage;
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
     
-    vigra::BImage img(w,h);
+    MultiArray<2, unsigned char> img(w,h);
     
-    vigra::importTiffImage(tiff, destImage(img));
+    importTiffImage(tiff, img);
     
     TIFFClose(tiff);
     \endcode
@@ -185,8 +185,9 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 
 /** \brief Convert single-band TiffImage to scalar image.
 
-    This function uses accessors to write the data.
-    
+    Note that unexpected results can occur when the destination pixel type is weaker than the pixel type
+    in the file (e.g. when a <tt>float</tt> file is imported into a <tt>unsigned char</tt> image).
+
     <b> Declarations:</b>
     
     pass 2D array views:
@@ -224,7 +225,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 
     \code
     uint32 w, h;
-    uint16 photometric
+    uint16 photometric;
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
@@ -236,9 +237,9 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
         // not a scalar image - handle error
     }
     
-    vigra::BImage img(w,h);
+    MultiArray<2, unsigned char> img(w,h);
     
-    vigra::tiffToScalarImage(tiff, destImage(img));
+    tiffToScalarImage(tiff, img);
     
     TIFFClose(tiff);
     \endcode
@@ -246,7 +247,8 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     \deprecatedUsage{tiffToScalarImage}
     \code
     uint32 w, h;
-    uint16 photometric
+    uint16 photometric;
+    
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
@@ -277,7 +279,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     <b> Preconditions:</b>
     
-    ImageIterator must refer to a large enough image.
+    The output array must have the correct shape.
     
     \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
@@ -289,14 +291,12 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 
     sampleFormat != SAMPLEFORMAT_VOID
     samplesPerPixel == 1
-    photometric == PHOTOMETRIC_MINISWHITE ||
-       photometric == PHOTOMETRIC_MINISBLACK
+    photometric == PHOTOMETRIC_MINISWHITE || photometric == PHOTOMETRIC_MINISBLACK
     bitsPerSample == 1 || 
        bitsPerSample == 8 || 
        bitsPerSample == 16 || 
        bitsPerSample == 32 || 
        bitsPerSample == 64
-    
     \endcode
 */
 doxygen_overloaded_function(template <...> void tiffToScalarImage)
@@ -571,12 +571,11 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** \brief Convert RGB (3-band or color-mapped) TiffImage 
-    to RGB image.
-    
-    This function uses \ref RGBAccessor to write the data.
-    A RGBImageIterator is an iterator which is associated with a
-    RGBAccessor.
+/** \brief Import a RGB (3-band or color-mapped) TiffImage 
+    into a RGB image.
+
+    Note that unexpected results can occur when the destination pixel type is weaker than the pixel type
+    in the file (e.g. when a <tt>float</tt> file is imported into a <tt>unsigned char</tt> image).
     
     <b> Declarations:</b>
     
@@ -627,9 +626,9 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
         // not an RGB image - handle error
     }
     
-    vigra::BRGBImage img(w, h);
+    MultiArray<2, RGBValue<unsigned char> > img(w, h);
     
-    vigra::tiffToRGBImage(tiff, destImage(img));
+    tiffToRGBImage(tiff, img);
     
     TIFFClose(tiff);
     \endcode
@@ -670,7 +669,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     
     <b> Preconditions:</b>
     
-    ImageIterator must refer to a large enough image.
+    The destination image must have the appropriate size.
     
     \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
@@ -1097,7 +1096,9 @@ struct CreateTiffImage;
     Type and size of the TiffImage are determined by the input image. 
     Currently, the function can create scalar images and RGB images of type 
     unsigned char, short, int, float, and double.
-    This function uses accessors to read the data.
+   
+    Usually, it is better to use \ref exportImage(). createTiffImage() should only be used if explicit access to the TIFF object
+    <tt>TiffImage</tt> is required.    
     
     <b> Declarations:</b>
     
@@ -1136,13 +1137,13 @@ struct CreateTiffImage;
     Namespace: vigra
 
     \code
-    vigra::BImage img(width, height);
+    MultiArray<2, float> img(width, height);
     
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
 
-    vigra::createTiffImage(srcImageRange(img), tiff);
+    createTiffImage(img, tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
@@ -1203,7 +1204,6 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
 
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, short, int, float, or double).
-    This function uses accessors to read the data.
     
     <b> Declarations:</b>
     
@@ -1243,21 +1243,19 @@ createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
     Namespace: vigra
 
     \code
-    vigra::BImage img(width, height);
-    
+    MultiArray<2, float> img(width, height);
     ...
-    
+   
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
 
-    vigra::createScalarTiffImage(srcImageRange(img), tiff);
+    createScalarTiffImage(img, tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
 
-    \deprecatedUsage{*/}
+    \deprecatedUsage{createScalarTiffImage}
     \code
     vigra::BImage img(width, height);
-    
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
@@ -1633,9 +1631,6 @@ struct CreateTiffImage<double>
 
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, int, float, or double).
-    This function uses \ref RGBAccessor to read the data. A
-    RGBImageIterator is an iterator that is associated with a
-    RGBAccessor.
     
     <b> Declarations:</b>
     
@@ -1675,13 +1670,12 @@ struct CreateTiffImage<double>
     Namespace: vigra
 
     \code
-    vigra::BRGBImage img(width, height);
-    
+    MultiArray<2, RGBValue<unsigned char> > img(width, height);
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
 
-    vigra::createRGBTiffImage(srcImageRange(img), tiff);
+    createRGBTiffImage(img, tiff);
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
@@ -1689,7 +1683,6 @@ struct CreateTiffImage<double>
     \deprecatedUsage{createRGBTiffImage}
     \code
     vigra::BRGBImage img(width, height);
-    
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");

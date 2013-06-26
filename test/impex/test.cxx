@@ -43,6 +43,10 @@
 #include "unittest.hxx"
 #include "vigra/multi_array.hxx"
 
+#if HasTIFF
+# include "vigra/tiff.hxx"
+#endif
+
 using namespace vigra;
 
 template <class Image>
@@ -219,6 +223,23 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             should (acc (i) == acc (i1));
+
+        TiffImage * tiff = TIFFOpen("res2.tif", "w");
+        createTiffImage(View(img), tiff);
+        TIFFClose(tiff);
+
+        uint32 w, h;
+        tiff = TIFFOpen("res2.tif", "r");
+        TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+        shouldEqual(w, img.width());
+        shouldEqual(h, img.height());
+    
+        MultiArray<2, unsigned char> res2(w,h);
+        importTiffImage(tiff, res2);
+        TIFFClose(tiff);
+
+        shouldEqualSequence(res2.begin(), res2.end(), img.data());
 #endif
     }
 
@@ -475,6 +496,23 @@ public:
             {
                 should (acc (i) == acc (i1));
             }
+
+        TiffImage * tiff = TIFFOpen("res2.tif", "w");
+        createTiffImage(MultiArrayView<2, RGBValue<unsigned char> >(img), tiff);
+        TIFFClose(tiff);
+
+        uint32 w, h;
+        tiff = TIFFOpen("res2.tif", "r");
+        TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+        shouldEqual(w, img.width());
+        shouldEqual(h, img.height());
+    
+        MultiArray<2, RGBValue<unsigned char> > res2(w,h);
+        importTiffImage(tiff, res2);
+        TIFFClose(tiff);
+
+        shouldEqualSequence(res2.begin(), res2.end(), img.data());
 #endif
     }
 
