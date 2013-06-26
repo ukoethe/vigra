@@ -388,7 +388,7 @@ createResamplingKernels(Kernel const & kernel,
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
+    \ref resizeImageSplineInterpolation() is implemented by means of resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
@@ -441,19 +441,18 @@ createResamplingKernels(Kernel const & kernel,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
     Namespace: vigra
 
-
     \code
     Rational<int> ratio(2), offset(0);
 
-    FImage src(w,h),
-           dest(rational_cast<int>(ratio*w), h);
+    MultiArray<2, float> src(w,h),
+                         dest(rational_cast<int>(ratio*w), h);
 
     float sigma = 2.0;
     Gaussian<float> smooth(sigma);
     ...
 
     // simultaneously enlarge and smooth source image
-    resamplingConvolveX(srcImageRange(src), destImageRange(dest),
+    resamplingConvolveX(src, dest,
                         smooth, ratio, offset);
     \endcode
 
@@ -571,7 +570,7 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
+    \ref resizeImageSplineInterpolation() is implemented by means of resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
@@ -624,19 +623,18 @@ resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
     Namespace: vigra
 
-
     \code
     Rational<int> ratio(2), offset(0);
 
-    FImage src(w,h),
-           dest(w, rational_cast<int>(ratio*h));
+    MultiArray<2, float> src(w,h),
+                         dest(w, rational_cast<int>(ratio*h));
 
     float sigma = 2.0;
     Gaussian<float> smooth(sigma);
     ...
 
     // simultaneously enlarge and smooth source image
-    resamplingConvolveY(srcImageRange(src), destImageRange(dest),
+    resamplingConvolveY(src, dest,
                         smooth, ratio, offset);
     \endcode
 
@@ -796,24 +794,21 @@ resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
     Namespace: vigra
 
-
     \code
     Rational<int> xratio(2), yratio(3), offset(0);
 
-    FImage src(w,h),
-           dest(rational_cast<int>(xratio*w), rational_cast<int>(yratio*h));
+    MultiArray<2, float> src(w,h),
+                         dest(rational_cast<int>(xratio*w), rational_cast<int>(yratio*h));
 
     float sigma = 2.0;
     Gaussian<float> smooth(sigma);
     ...
 
     // simultaneously enlarge and smooth source image
-    resamplingConvolveImage(srcImageRange(src), destImageRange(dest),
+    resamplingConvolveImage(src, dest,
                             smooth, xratio, offset,
                             smooth, yratio, offset);
-
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveImage)
 

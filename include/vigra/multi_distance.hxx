@@ -357,18 +357,6 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
     separableMultiDistSquared(source, dest, true);
     \endcode
 
-    \deprecatedUsage{separableMultiDistSquared}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned int> dest(shape);
-    ...
-
-    // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistSquared(source, dest, true);
-    \endcode
-    \deprecatedEnd
-
     \see vigra::distanceTransform(), vigra::separableMultiDistance()
 */
 doxygen_overloaded_function(template <...> void separableMultiDistSquared)
@@ -588,18 +576,6 @@ separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
     // Calculate Euclidean distance squared for all background pixels 
     separableMultiDistance(source, dest, true);
     \endcode
-
-    \deprecatedUsage{separableMultiDistSquared}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, float> dest(shape);
-    ...
-
-    // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistance(source, dest, true);
-    \endcode
-    \deprecatedEnd
 
     \see vigra::distanceTransform(), vigra::separableMultiDistSquared()
 */

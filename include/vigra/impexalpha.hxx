@@ -358,7 +358,7 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impexalpha.hxx\></B><br/>
+    <B>\#include</B> \<vigra/impexalpha.hxx\><br/>
     Namespace: vigra
 
     \code
@@ -960,7 +960,7 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impexalpha.hxx\></B><br/>
+    <B>\#include</B> \<vigra/impexalpha.hxx\><br/>
     Namespace: vigra
     
     \code

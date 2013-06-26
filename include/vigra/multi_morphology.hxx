@@ -216,19 +216,7 @@ struct MultiBinaryMorphologyImpl<bool, bool>
     multiBinaryErosion(source, dest, 3);
     \endcode
 
-    \deprecatedUsage{multiBinaryErosion}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned char> dest(shape);
-    ...
-
-    // perform isotropic binary erosion
-    multiBinaryErosion(source, dest, 3);
-    \endcode
-    \deprecatedEnd
-
-    \see vigra::discErosion()
+    \see vigra::discErosion(), vigra::multiGrayscaleErosion()
 */
 doxygen_overloaded_function(template <...> void multiBinaryErosion)
 
@@ -352,19 +340,7 @@ multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
     multiBinaryDilation(source, dest, 3);
     \endcode
 
-    \deprecatedUsage{multiBinaryDilation}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned char> dest(shape);
-    ...
-
-    // perform isotropic binary erosion
-    multiBinaryDilation(source, dest, 3);
-    \endcode
-    \deprecatedEnd
-
-    \see vigra::discDilation()
+    \see vigra::discDilation(), vigra::multiGrayscaleDilation()
 */
 doxygen_overloaded_function(template <...> void multiBinaryDilation)
 
@@ -485,19 +461,7 @@ multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
     multiGrayscaleErosion(source, dest, 3.0);
     \endcode
 
-    \deprecatedUsage{multiGrayscaleErosion}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned char> dest(shape);
-    ...
-
-    // perform isotropic grayscale erosion
-    multiGrayscaleErosion(source, dest, 3.0);
-    \endcode
-    \deprecatedEnd
-
-    \see vigra::discErosion()
+    \see vigra::discErosion(), vigra::multiBinaryErosion()
 */
 doxygen_overloaded_function(template <...> void multiGrayscaleErosion)
 
@@ -642,19 +606,7 @@ multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
     multiGrayscaleDilation(source, dest, 3.0);
     \endcode
 
-    \deprecatedUsage{multiGrayscaleDilation}
-    \code
-    Shape3 shape(width, height, depth);
-    MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, unsigned char> dest(shape);
-    ...
-
-    // perform isotropic grayscale erosion
-    multiGrayscaleDilation(source, dest, 3.0);
-    \endcode
-    \deprecatedEnd
-
-    \see vigra::discErosion()
+    \see vigra::discDilation(), vigra::multiBinaryDilation()
 */
 doxygen_overloaded_function(template <...> void multiGrayscaleDilation)
 

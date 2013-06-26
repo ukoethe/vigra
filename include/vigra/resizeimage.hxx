@@ -202,8 +202,6 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     scaling factors are then calculated accordingly. Destination
     pixels are directly copied from the appropriate source pixels.
 
-    The function uses accessors.
-
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -248,10 +246,10 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     Namespace: vigra
 
     \code
-    vigra::resizeImageNoInterpolation(
-               src.upperLeft(), src.lowerRight(), src.accessor(),
-               dest.upperLeft(), dest.lowerRight(), dest.accessor());
-
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageNoInterpolation(src, dest);
     \endcode
 
     \deprecatedUsage{resizeImageNoInterpolation}
@@ -276,12 +274,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageNoInterpolation)
 
@@ -413,7 +406,6 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     exponential filter. The source value_type (SrcAccessor::value_type) must
     be a linear space, i.e. it must support addition, multiplication
     with a scalar real number and \ref NumericTraits "NumericTraits".
-    The function uses accessors.
 
     <b> Declarations:</b>
 
@@ -459,10 +451,10 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     Namespace: vigra
 
     \code
-    vigra::resizeImageLinearInterpolation(
-               src.upperLeft(), src.lowerRight(), src.accessor(),
-               dest.upperLeft(), dest.lowerRight(), dest.accessor());
-
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageLinearInterpolation(src, dest);
     \endcode
 
     \deprecatedUsage{resizeImageLinearInterpolation}
@@ -497,12 +489,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageLinearInterpolation)
 
@@ -687,10 +674,14 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::resizeImageSplineInterpolation(
-               src.upperLeft(), src.lowerRight(), src.accessor(),
-               dest.upperLeft(), dest.lowerRight(), dest.accessor());
-
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    // use default cubic spline interpolator
+    resizeImageSplineInterpolation(src, dest);
+    
+    // use 5th-order spline interpolator
+    resizeImageSplineInterpolation(src, dest, BSpline<5, double>());
     \endcode
 
     \deprecatedUsage{resizeImageSplineInterpolation}
@@ -729,12 +720,7 @@ resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 3
-    src_lowerright.y - src_upperleft.y > 3
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageSplineInterpolation)
 
@@ -988,10 +974,15 @@ resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-
+    
+    \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageCatmullRomInterpolation(src, dest);
+    \endcode
 */
 doxygen_overloaded_function(template <...> void resizeImageCatmullRomInterpolation)
 
@@ -1077,7 +1068,13 @@ resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-
+    
+    \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageCoscotInterpolation(src, dest);
+    \endcode
 */
 doxygen_overloaded_function(template <...> void resizeImageCoscotInterpolation)
 

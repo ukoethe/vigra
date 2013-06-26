@@ -126,13 +126,13 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    FImage img(w,h);
-    FVector2Image gradient(w,h);
-    FVector3Image tensor(w,h), smoothedTensor(w,h);
+    MultiArray<2, float>                  img(w,h);
+    MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h), smoothedTensor(w,h);
     
-    gaussianGradient(srcImageRange(img), destImage(gradient), 1.0);
-    vectorToTensor(srcImageRange(gradient), destImage(tensor));
-    hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
+    gaussianGradient(img, gradient, 1.0);
+    vectorToTensor(gradient, tensor);
+    hourGlassFilter(tensor, smoothedTensor, 2.0, 0.4);
     \endcode
 
     \deprecatedUsage{hourGlassFilter}

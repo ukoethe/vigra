@@ -125,12 +125,12 @@ namespace vigra {
     vector<float> src, dest;    
     ...
     
-    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    DefaultAccessor<vector<float>::iterator, float> FAccessor;
     
     
-    vigra::recursiveFilterLine(src.begin(), src.end(), FAccessor(), 
-                               dest.begin(), FAccessor(), 
-                               0.5, BORDER_TREATMENT_REFLECT);
+    recursiveFilterLine(src.begin(), src.end(), FAccessor(), 
+                        dest.begin(), FAccessor(), 
+                        0.5, BORDER_TREATMENT_REFLECT);
     \endcode
 
     <b> Required Interface:</b>
@@ -150,7 +150,6 @@ namespace vigra {
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -432,7 +431,6 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -576,7 +574,6 @@ recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -665,7 +662,6 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -786,7 +782,6 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -921,7 +916,7 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
                     triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, 
                     double b1, double b2);
-            }
+    }
     \endcode
     \deprecatedEnd
     
@@ -931,12 +926,11 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 
-           0.5, BORDER_TREATMENT_REFLECT);
-    
+    // apply a first-order filter to the x-axis
+    recursiveFilterX(src, dest, 0.5, BORDER_TREATMENT_REFLECT);
     \endcode
 
     \deprecatedUsage{recursiveFilterX}
@@ -944,9 +938,8 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 
+    vigra::recursiveFilterX(srcImageRange(src), destImage(dest), 
            0.5, BORDER_TREATMENT_REFLECT);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1111,11 +1104,10 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveGaussianFilterX(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveGaussianFilterX(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveGaussianFilterX}
@@ -1124,7 +1116,6 @@ recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveGaussianFilterX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1234,11 +1225,10 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveSmoothX(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveGaussianFilterX}
@@ -1247,7 +1237,6 @@ recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1374,7 +1363,7 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
                     triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, 
                     double b1, double b2);
-            }
+    }
     \endcode
     \deprecatedEnd
     
@@ -1384,11 +1373,11 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveFilterY(srcImageRange(src), destImage(dest), -0.6, -0.06);
-    
+    // apply a second-order filter to the y-axis
+    recursiveFilterY(src, dest, -0.6, -0.06);
     \endcode
 
     \deprecatedUsage{recursiveFilterY}
@@ -1397,7 +1386,6 @@ recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveFilterY(srcImageRange(src), destImage(dest), -0.6, -0.06);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1562,11 +1550,10 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveGaussianFilterY(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveGaussianFilterY(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveGaussianFilterY}
@@ -1575,7 +1562,6 @@ recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveGaussianFilterY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1686,11 +1672,10 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveSmoothY(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveSmoothY}
@@ -1699,7 +1684,6 @@ recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1810,11 +1794,10 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveFirstDerivativeX(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveFirstDerivativeX}
@@ -1823,7 +1806,6 @@ recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -1934,11 +1916,10 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveFirstDerivativeY(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveFirstDerivativeY}
@@ -1947,7 +1928,6 @@ recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -2058,11 +2038,10 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveSecondDerivativeX(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveSecondDerivativeX}
@@ -2071,7 +2050,6 @@ recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */
@@ -2182,11 +2160,10 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);    
+    MultiArray<2, float> src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
+    recursiveSecondDerivativeY(src, dest, 3.0);
     \endcode
 
     \deprecatedUsage{recursiveSecondDerivativeY}
@@ -2195,7 +2172,6 @@ recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
     ...
     
     vigra::recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
     \deprecatedEnd
 */

@@ -659,7 +659,7 @@ namespace vigra
    
     <b> Usage:</b>
    
-    <B>\#include \<vigra/impex.hxx\></B>
+    <B>\#include</B> \<vigra/impex.hxx\><br/>
     Namespace: vigra
 
     \code
@@ -886,7 +886,7 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impex.hxx\></B><br/>
+    <B>\#include</B> \<vigra/impex.hxx\><br/>
     Namespace: vigra
 
     \code

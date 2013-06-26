@@ -55,13 +55,11 @@
 
     <UL style="list-style-image:url(documents/bullet.gif)">
     <LI> \ref CommonConvolutionFilters
-         <BR>&nbsp;&nbsp;&nbsp;<em>Short-hands for the most common 2D convolution filters</em>
+         <BR>&nbsp;&nbsp;&nbsp;<em>Short-hands for many common 2D convolution filters (including normalized convolution)</em>
     <LI> \ref MultiArrayConvolutionFilters
          <BR>&nbsp;&nbsp;&nbsp;<em>Convolution filters for arbitrary dimensional arrays (MultiArray etc.)</em>
     <LI> \ref ResamplingConvolutionFilters
          <BR>&nbsp;&nbsp;&nbsp;<em>Resampling convolution filters</em>
-    <LI> \ref StandardConvolution
-         <BR>&nbsp;&nbsp;&nbsp;<em>2D non-separable convolution, with and without ROI mask </em>
     <LI> \ref vigra::Kernel2D
          <BR>&nbsp;&nbsp;&nbsp;<em>Generic 2-dimensional discrete convolution kernel </em>
     <LI> \ref SeparableConvolution
@@ -127,8 +125,7 @@
 
         </table>
 
-        For usage examples see
-        \ref SeparableConvolution "one-dimensional and separable convolution functions".
+        For usage examples see \ref convolveImage().
 
     \section Kernel2dFactory kernel2d()
 
@@ -172,7 +169,7 @@
 
         </table>
 
-        For usage examples see \ref StandardConvolution "two-dimensional convolution functions".
+        For usage examples see \ref convolveImage().
 */
 
 namespace vigra {
@@ -193,12 +190,6 @@ namespace vigra {
 */
 //@{
 
-/********************************************************/
-/*                                                      */
-/*                    convolveImage                     */
-/*                                                      */
-/********************************************************/
-
 /** \brief Convolve an image with the given kernel(s).
 
     If you pass \ref vigra::Kernel2D to this function, it will perform an explicit 2-dimensional 
@@ -207,6 +198,14 @@ namespace vigra {
     kernel via internal calls to \ref separableConvolveX() and \ref separableConvolveY(). If two
     1D kernels are specified, separable convolution uses different kernels for the x- and y-axis.
 
+    All \ref vigra::BorderTreatmentMode "border treatment modes" are supported.
+
+    The unput pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over 
+    the kernel's value_type <tt>T</tt>, i.e. addition of source values, multiplication with kernel values,
+    and NumericTraits must be defined. The kernel's value_type must be an \ref AlgebraicField "algebraic field",
+    i.e. the arithmetic operations (+, -, *, /) and NumericTraits must be defined. Typically, you will use 
+    <tt>double</tt> for the kernel type.
+    
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -245,6 +244,7 @@ namespace vigra {
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
+        // use a different kernel for each axis
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class T>
@@ -252,11 +252,21 @@ namespace vigra {
                            SrcIterator slowerright, SrcAccessor sa,
                            DestIterator dupperleft, DestAccessor da,
                            Kernel1D<T> const & kx, Kernel1D<T> const & ky);
+
+        // use a non-separable 2D kernel
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
+                           DestIterator dest_ul, DestAccessor dest_acc,
+                           KernelIterator ki, KernelAccessor ak,
+                           Diff2D kul, Diff2D klr, BorderTreatmentMode border);
     }
     \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // use a different kernel for each axis
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor,
                   class T>
@@ -264,6 +274,15 @@ namespace vigra {
         convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                       pair<DestIterator, DestAccessor> dest,
                       Kernel1D<T> const & kx, Kernel1D<T> const & ky);
+
+        // use a non-separable 2D kernel
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor,
+                  class KernelIterator, class KernelAccessor>
+        void convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           pair<DestIterator, DestAccessor> dest,
+                           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
+                           BorderTreatmentMode> kernel);
     }
     \endcode
     \deprecatedEnd
@@ -282,16 +301,18 @@ namespace vigra {
     kx.initSymmetricGradient();
     ky.initBinomial(1);
     
+    // calls separable convolution with the two 1D kernels
     convolveImage(src, dest1, kx, ky);
     
     // create a 3x3 Laplacian filter
-    Kernel2D<double> lap;
-    lap.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =
+    Kernel2D<double> laplace;
+    laplace.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =
             0.375,  0.25, 0.375,
             0.25,  -2.5,  0.25,
             0.375,  0.25, 0.375;
     
-    convolveImage(src, dest2, lap);
+    // calls 2D convolution
+    convolveImage(src, dest2, laplace);
     \endcode
 
     \deprecatedUsage{convolveImage}
@@ -299,14 +320,36 @@ namespace vigra {
     vigra::FImage src(w,h), dest(w,h);
     ...
 
-    // implement sobel filter in x-direction
+    // create horizontal sobel filter (symmetric difference in x-direction, smoothing in y direction)
     Kernel1D<double> kx, ky;
     kx.initSymmetricGradient();
     ky.initBinomial(1);
     
+    // calls separable convolution with the two 1D kernels
     vigra::convolveImage(srcImageRange(src), destImage(dest), kx, ky);
+    
+    // create a 3x3 Laplacian filter
+    Kernel2D<double> laplace;
+    laplace.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =
+            0.375,  0.25, 0.375,
+            0.25,  -2.5,  0.25,
+            0.375,  0.25, 0.375;
+
+    // calls 2D convolution
+    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(laplace));
     \endcode
     \deprecatedEnd
+
+    <b> Preconditions:</b>
+
+    The image must be larger than the kernel radius. 
+    <ul>
+    <li>For 1D kernels, <tt>w > std::max(xkernel.right(), -xkernel.keft())</tt> and 
+         <tt>h > std::max(ykernel.right(), -ykernel.left())</tt> are required.
+    <li>For 2D kernels, <tt>w > std::max(kernel.lowerRight().x, -kernel.upperLeft().x)</tt> and 
+         <tt>h > std::max(kernel.lowerRight().y, -kernel.upperLeft().y)</tt> are required.
+    </ul>
+    If <tt>BORDER_TREATMENT_CLIP</tt> is requested: the sum of kernel elements must be != 0.
 */
 doxygen_overloaded_function(template <...> void convolveImage)
 
@@ -1140,7 +1183,8 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
         ...
 
         // calculate the multi-channel gradient magnitude at scale = 3.0
-        // (note the syntax differences)
+        // (note that the template parameter N (number of spatial dimensions)
+        //  must be provided explicitly as gaussianGradientMagnitude<2>(...) )
         MultiArrayView<3, Multiband<float> > view(spectral);
         gaussianGradientMagnitude<2>(view, grad, 3.0);
     }

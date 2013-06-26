@@ -1049,7 +1049,6 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
     Namespace: vigra
 
-
     \code
     MultiArray<2, float> src(w,h), dest(w,h);
     ...
@@ -1075,6 +1074,13 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
     \deprecatedEnd
+    
+    <b>Preconditions:</b>
+    
+    <ul>
+    <li> The x-axis must be longer than the kernel radius: <tt>w > std::max(kernel.right(), -kernel.left())</tt>.
+    <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
+    </ul>
 */
 doxygen_overloaded_function(template <...> void separableConvolveX)
 
@@ -1225,6 +1231,13 @@ separableConvolveX(MultiArrayView<2, T1, S1> const & src,
     vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
     \deprecatedEnd
+    
+    <b>Preconditions:</b>
+    
+    <ul>
+    <li> The y-axis must be longer than the kernel radius: <tt>h > std::max(kernel.right(), -kernel.left())</tt>.
+    <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
+    </ul>
 */
 doxygen_overloaded_function(template <...> void separableConvolveY)
 

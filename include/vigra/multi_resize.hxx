@@ -192,17 +192,14 @@ internalResizeMultiArrayOneDimension(
     Namespace: vigra
 
     \code
-    vigra::MultiArray<3, float> src(Shape3(5, 7, 10)),
-                                dest(Shape3(9, 13, 19)); // double the size
+    MultiArray<3, float> src(Shape3(5, 7, 10)),
+                         dest(Shape3(9, 13, 19)); // double the size
 
-    // use linear interpolator with MultiArrayView API
-    vigra::resizeMultiArraySplineInterpolation(src, dest, BSpline<1, double>());
+    // use default cubic spline interpolator
+    resizeMultiArraySplineInterpolation(src, dest);
 
-    // use default cubic spline interpolator with old API
-    vigra::resizeMultiArraySplineInterpolation(
-               srcMultiArrayRange(src),
-               destMultiArrayRange(dest));
-
+    // use linear interpolator
+    resizeMultiArraySplineInterpolation(src, dest, BSpline<1, double>());
     \endcode
 
     \deprecatedUsage{resizeMultiArraySplineInterpolation}
@@ -210,21 +207,20 @@ internalResizeMultiArrayOneDimension(
     vigra::MultiArray<3, float> src(Shape3(5, 7, 10)),
                                 dest(Shape3(9, 13, 19)); // double the size
 
-    // use linear interpolator with MultiArrayView API
-    vigra::resizeMultiArraySplineInterpolation(src, dest, BSpline<1, double>());
+    // use linear interpolator
+    vigra::resizeMultiArraySplineInterpolation(srcMultiArrayRange(src),
+               destMultiArrayRange(dest), BSpline<1, double>());
 
-    // use default cubic spline interpolator with old API
+    // use default cubic spline interpolator
     vigra::resizeMultiArraySplineInterpolation(
                srcMultiArrayRange(src),
                destMultiArrayRange(dest));
 
     \endcode
-    \deprecatedEnd
-
     <b> Required Interface:</b>
-
     The source and destination iterators must be compatible with \ref vigra::MultiIterator. The array value
     types must be models of \ref LinearSpace.
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resizeMultiArraySplineInterpolation)
 

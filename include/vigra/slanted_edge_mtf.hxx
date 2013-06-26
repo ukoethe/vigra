@@ -79,12 +79,12 @@ namespace vigra {
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h);
+    MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
     
     ...
-    vigra::slantedEdgeMTF(srcImageRange(src), mtf,
-                          vigra::SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
+    slantedEdgeMTF(src, mtf,
+                   SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
     
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
@@ -529,8 +529,9 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
          from the estimated MTF.
     </ul>
     
-    The source value type (<TT>SrcAccessor::value_type</TT>) must be a scalar type which is convertible to <tt>double</tt>.
-    The result is written into the \a result sequence, whose <tt>value_type</tt> must be constructible 
+    The source value type <TT>T1</TT> must be a scalar type which is convertible to <tt>double</tt>.
+    The result is written into the \a result sequence, which must be back-insertable (supports <tt>push_back()</tt>)
+    and whose <tt>value_type</tt> must be constructible 
     from two <tt>double</tt> values. Algorithm options can be set via the \a options object 
     (see \ref vigra::NoiseNormalizationOptions for details).
     
@@ -573,11 +574,12 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h);
+    MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
     
     ...
-    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    // keep all options at their default values
+    slantedEdgeMTF(src, mtf);
     
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
@@ -681,11 +683,11 @@ slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h);
+    MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
     
     ...
-    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    slantedEdgeMTF(src, mtf);
     double scale = vigra::mtfFitGaussian(mtf)
     
     std::cout << "The camera PSF is approximately a Gaussian at scale " << scale << std::endl;

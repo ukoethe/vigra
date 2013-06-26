@@ -109,12 +109,13 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    FImage img(w,h);
-    FVector2Image gradient(w,h);
-    FVector3Image tensor(w,h);
+    MultiArray<2, float>                  img(w,h);
+    MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    ...
     
-    gaussianGradient(srcImageRange(img), destImage(gradient), 2.0);
-    vectorToTensor(srcImageRange(gradient), destImage(tensor));
+    gaussianGradient(img, gradient, 2.0);
+    vectorToTensor(gradient, tensor);
     \endcode
 
     \deprecatedUsage{vectorToTensor}
@@ -266,10 +267,10 @@ vectorToTensor(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    FVector3Image tensor(w,h);
-    FVector3Image eigen(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h),
+                                          eigen(w,h);
     
-    tensorEigenRepresentation(srcImageRange(tensor), destImage(eigen));
+    tensorEigenRepresentation(tensor, eigen);
     \endcode
 
     \deprecatedUsage{tensorEigenRepresentation}
@@ -396,10 +397,10 @@ tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    FVector3Image tensor(w,h);
-    FImage trace(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    MultiArray<2, float>                  trace(w,h);
     
-    tensorTrace(srcImageRange(tensor), destImage(trace));
+    tensorTrace(tensor, trace);
     \endcode
 
     \deprecatedUsage{tensorTrace}
@@ -518,11 +519,12 @@ tensorTrace(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    FVector3Image tensor(w,h);
-    FVector2Image edgePart(w,h);
-    FImage cornerPart(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    MultiArray<2, TinyVector<float, 2> >  edgePart(w,h);
+    MultiArray<2, float>                  cornerPart(w,h);
+    ...
     
-    tensorTrace(srcImageRange(tensor), destImage(edgePart), destImage(cornerPart));
+    tensorTrace(tensor, edgePart, cornerPart);
     \endcode
 
     \deprecatedUsage{tensorToEdgeCorner}

@@ -241,20 +241,19 @@ public:
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
     Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 3> > gradient(shape);
-    MultiArray<3, TinyVector<float, 6> > tensor(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 3> >  gradient(shape);
+    MultiArray<3, TinyVector<float, 6> >  tensor(shape);
     
     gaussianGradientMultiArray(vol, gradient, 2.0);
     vectorToTensorMultiArray(gradient, tensor);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void vectorToTensorMultiArray)
 
@@ -353,20 +352,23 @@ vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
     \endcode
     \deprecatedEnd
 
-    <b> Usage (MultiArrayView API):</b>
+    <b> Usage:</b>
 
     <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
     Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, float> trace(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, float>                  trace(shape);
     
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorTraceMultiArray(hessian, trace);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorTraceMultiArray)
 
@@ -461,14 +463,17 @@ tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
     Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, TinyVector<float, 3> > eigenvalues(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, TinyVector<float, 3> >  eigenvalues(shape);
     
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorEigenvaluesMultiArray(hessian, eigenvalues);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorEigenvaluesMultiArray)
 
@@ -573,14 +578,17 @@ tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
     Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, float> determinant(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, float>                  determinant(shape);
     
     hessianOfGaussianMultiArray(vol, hessian, 2.0);
     tensorDeterminantMultiArray(hessian, determinant);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorDeterminantMultiArray)
 

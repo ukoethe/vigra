@@ -193,48 +193,7 @@ localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 
     if (allowExtremaAtBorder)
     {
-        throw std::runtime_error("not implemented!");
-        /*
-        SrcIterator is = sul;
-        DestIterator id = dul;
-
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(x, 0, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(0,1);
-        id = dul + Diff2D(0,1);
-
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(0, y, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(w-1,1);
-        id = dul + Diff2D(w-1,1);
-
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(w-1, y, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(0,h-1);
-        id = dul + Diff2D(0,h-1);
-
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(x, h-1, w, h)))
-            da.set(marker, id);
-        }
-    */
+        throw std::runtime_error("Not implemented (use localMinima() or localMaxima() instead).");
     }
 
     w -= 2;
@@ -506,77 +465,6 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
                 if(isExtremum[*xl])
                     da.set(marker, xd);
             }
-        }
-    }
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue,
-          class Neighborhood, class Compare, class Equal>
-void
-extendedLocalMinMaxOld(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, DestValue marker,
-            Neighborhood /*neighborhood*/,
-            Compare compare, Equal equal, 
-            typename SrcAccessor::value_type threshold,
-            bool allowExtremaAtBorder = false)
-{
-    typedef typename SrcAccessor::value_type SrcType;
-
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
-
-    int i,x,y;
-
-    BasicImage<int> labels(w,h);
-
-    int number_of_regions =
-        labelImage(sul, slr, sa, labels.upperLeft(), labels.accessor(),
-                   (Neighborhood::DirectionCount == 8), equal);
-
-    // assume that a region is a extremum until the opposite is proved
-    std::vector<unsigned char> isExtremum(number_of_regions+1, (unsigned char)1);
-
-    BasicImage<int>::traverser ly = labels.upperLeft();
-
-    for(y=0; y<h; ++y, ++sul.y, ++ly.y)
-    {
-        SrcIterator  sx = sul;
-        BasicImage<int>::traverser lx(ly);
-
-        for(x=0; x<w; ++x, ++sx.x, ++lx.x)
-        {
-            int lab = *lx;
-            SrcType v = sa(sx);
-            if(x == 0 || y == 0 || x == w-1 || y == h-1 || !compare(v, threshold))
-            {
-                // mark all regions that touch the image border as non-extremum
-                // likewise for all pixels that don't exceed the threshold
-                isExtremum[lab] = 0;
-                continue;
-            }
-
-            NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-            NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
-            for(i=0; i<Neighborhood::DirectionCount; ++i, ++sc, ++lc)
-            {
-                if(lab != *lc && compare(sa(sc),v))
-                    isExtremum[lab] = 0;
-            }
-
-        }
-    }
-
-    ly = labels.upperLeft();
-    for(y=0; y<h; ++y, ++dul.y, ++ly.y)
-    {
-        DestIterator  xd = dul;
-        BasicImage<int>::Iterator lx(ly);
-
-        for(x=0; x<w; ++x, ++xd.x, ++lx.x)
-        {
-            if(isExtremum[*lx])
-                da.set(marker, xd);
         }
     }
 }

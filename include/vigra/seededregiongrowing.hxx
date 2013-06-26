@@ -335,12 +335,8 @@ enum SRGType {
     Example: implementation of the voronoi tesselation
 
     \code
-    vigra::BImage points(w,h);
-    vigra::FImage dist(x,y);
-
-    // empty edge image
-    points = 0;
-    dist = 0;
+    MultiArray<2, int>      points(w,h);
+    MultiArray<2, float>    dist(x,y);
 
     int max_region_label = 100;
 
@@ -349,15 +345,14 @@ enum SRGType {
            points(w * rand() / RAND_MAX , h * rand() / RAND_MAX) = i;
 
     // calculate Euclidean distance transform
-    vigra::distanceTransform(srcImageRange(points), destImage(dist), 2);
+    distanceTransform(points, dist, 2);
 
     // init statistics functor
-    vigra::ArrayOfRegionStatistics<vigra::SeedRgDirectValueFunctor<float> >
-                                              stats(max_region_label);
+    ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> >  stats(max_region_label);
 
-    // find voronoi region of each point
-    vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points),
-                               destImage(points), stats);
+    // find voronoi region of each point (the point image is overwritten with the 
+    // voronoi region labels)
+    seededRegionGrowing(dist, points, points, stats);
     \endcode
 
     \deprecatedUsage{seededRegionGrowing}
@@ -963,11 +958,6 @@ fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
 
     <b>\#include</b> \<vigra/seededregiongrowing.hxx\><br>
     Namespace: vigra
-
-
-    <b> Required Interface:</b>
-
-    no requirements
 */
 template <class Value>
 class SeedRgDirectValueFunctor

@@ -114,27 +114,24 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h), centers(w,h);
-    vigra::FImage symmetry(w,h);
+    MultiArray<2, unsigned char>  src(w,h), centers(w,h);
+    MultiArray<2, float>          symmetry(w,h);
 
-    // empty result image
-    centers.init(128);
-    symmetry.init(0.0);
-
-    // input width of edge detection filter
+    // use edge detection filters at various scales
     for(double scale = 2.0; scale <= 8.0; scale *= 2.0)
     {
-        vigra::FImage tmp(w,h);
+        MultiArray<2, float> tmp(w,h);
 
         // find centers of symmetry
-        radialSymmetryTransform(srcImageRange(src), destImage(tmp), scale);
+        radialSymmetryTransform(src, tmp, scale);
 
-        combineTwoImages(srcImageRange(symmetry), srcImage(tmp), destImage(symmetry),
-                         std::plus<float>());
+        symmetry += tmp;
     }
 
-    localMinima(srcImageRange(symmetry), destImage(centers), 0);
-    localMaxima(srcImageRange(symmetry), destImage(centers), 255);
+    // mark centers of symmetry
+    centers.init(128);
+    localMinima(symmetry, centers, 0);
+    localMaxima(symmetry, centers, 255);
     \endcode
 
     \deprecatedUsage{radialSymmetryTransform}
@@ -306,7 +303,6 @@ radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
                             destImage(dest),
                             scale);
 }
-
 
 //@}
 

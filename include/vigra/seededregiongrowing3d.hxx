@@ -306,6 +306,12 @@ public:
     \endcode
     \deprecatedEnd
 
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<vigra/seededregiongrowing3d.hxx\><br>
+    Namespace: vigra
+    
+    See \ref seededRegionGrowing() for an example
 */
 doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 

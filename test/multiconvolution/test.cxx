@@ -467,7 +467,7 @@ struct MultiArraySeparableConvolutionTest
 
         MultiArrayView <2, double> center(laplacian.subarray(Shape2(10,10), Shape2(-10,-10))),
                                    rcenter(rlaplacian.subarray(Shape2(10,10), Shape2(-10,-10)));
-        shouldEqualSequenceTolerance(center.begin(), center.end(), rcenter.begin(), 0.001);
+        shouldEqualSequenceTolerance(center.begin(), center.end(), rcenter.begin(), 0.01);
     }
 
     void test_hessian()

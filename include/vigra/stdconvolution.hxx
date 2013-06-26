@@ -51,164 +51,11 @@ namespace vigra {
 template <class ARITHTYPE>
 class Kernel2D;
 
-/** \addtogroup StandardConvolution Two-dimensional convolution functions
-
-Perform 2D non-separable convolution, with and without ROI mask.
-
-These generic convolution functions implement
-the standard 2D convolution operation for images that fit
-into the required interface. Arbitrary ROI's are supported
-by the mask version of the algorithm.
-The functions need a suitable 2D kernel to operate.
+/** \addtogroup CommonConvolutionFilters
 */
 //@{
 
-/** \brief Performs a 2 dimensional convolution of the source image using the given
-    kernel.
-
-    The KernelIterator must point to the center of the kernel, and
-    the kernel's size is given by its upper left (x and y of distance <= 0) and
-    lower right (distance >= 0) corners. The image must always be larger than the
-    kernel. At those positions where the kernel does not completely fit
-    into the image, the specified \ref BorderTreatmentMode is
-    applied. You can choice between following BorderTreatmentModes:
-    <ul>
-    <li>BORDER_TREATMENT_CLIP</li>
-    <li>BORDER_TREATMENT_AVOID</li>
-    <li>BORDER_TREATMENT_WRAP</li>
-    <li>BORDER_TREATMENT_REFLECT</li>
-    <li>BORDER_TREATMENT_REPEAT</li>
-    </ul><br>
-    The images's pixel type (SrcAccessor::value_type) must be a
-    linear space over the kernel's value_type (KernelAccessor::value_type),
-    i.e. addition of source values, multiplication with kernel values,
-    and NumericTraits must be defined.
-    The kernel's value_type must be an algebraic field,
-    i.e. the arithmetic operations (+, -, *, /) and NumericTraits must
-    be defined.
-
-    <b> Declarations:</b>
-
-    pass 2D array views:
-    \code
-    namespace vigra {
-        template <class T1, class S1,
-                  class T2, class S2,
-                  class T3>
-        void
-        convolveImage(MultiArrayView<2, T1, S1> const & src,
-                      MultiArrayView<2, T2, S2> dest,
-                      Kernel2D<T3> const & kernel);
-    }
-    \endcode
-
-    \deprecatedAPI{convolveImage}
-    pass \ref ImageIterators and \ref DataAccessors :
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void convolveImage(SrcIterator src_ul, SrcIterator src_lr, SrcAccessor src_acc,
-                           DestIterator dest_ul, DestAccessor dest_acc,
-                           KernelIterator ki, KernelAccessor ak,
-                           Diff2D kul, Diff2D klr, BorderTreatmentMode border);
-    }
-    \endcode
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class KernelIterator, class KernelAccessor>
-        void convolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           pair<DestIterator, DestAccessor> dest,
-                           tuple5<KernelIterator, KernelAccessor, Diff2D, Diff2D,
-                           BorderTreatmentMode> kernel);
-    }
-    \endcode
-    \deprecatedEnd
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/stdconvolution.hxx\><br>
-    Namespace: vigra
-
-
-    \code
-    vigra::FImage src(w,h), dest(w,h);
-    ...
-
-    // define horizontal Sobel filter
-    vigra::Kernel2D<float> sobel;
-
-    sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
-                         0.125, 0.0, -0.125,
-                         0.25,  0.0, -0.25,
-                         0.125, 0.0, -0.125;
-    sobel.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);
-
-    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
-    \endcode
-
-    \deprecatedUsage{convolveImage}
-    \code
-    vigra::FImage src(w,h), dest(w,h);
-    ...
-
-    // define horizontal Sobel filter
-    vigra::Kernel2D<float> sobel;
-
-    sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
-                         0.125, 0.0, -0.125,
-                         0.25,  0.0, -0.25,
-                         0.125, 0.0, -0.125;
-    sobel.setBorderTreatment(vigra::BORDER_TREATMENT_REFLECT);
-
-    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
-    \endcode
-    <b> Required Interface:</b>
-    \code
-    ImageIterator src_ul, src_lr;
-    ImageIterator dest_ul;
-    ImageIterator ik;
-
-    SrcAccessor src_accessor;
-    DestAccessor dest_accessor;
-    KernelAccessor kernel_accessor;
-
-    NumericTraits<SrcAccessor::value_type>::RealPromote s = src_accessor(src_ul);
-
-    s = s + s;
-    s = kernel_accessor(ik) * s;
-    s -= s;
-
-    dest_accessor.set(
-    NumericTraits<DestAccessor::value_type>::fromRealPromote(s), dest_ul);
-
-    NumericTraits<KernelAccessor::value_type>::RealPromote k = kernel_accessor(ik);
-
-    k += k;
-    k -= k;
-    k = k / k;
-
-    \endcode
-    \deprecatedEnd
-
-    <b> Preconditions:</b>
-
-    \code
-    kul.x <= 0
-    kul.y <= 0
-    klr.x >= 0
-    klr.y >= 0
-    src_lr.x - src_ul.x >= klr.x + kul.x + 1
-    src_lr.y - src_ul.y >= klr.y + kul.y + 1
-    \endcode
-
-    If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
-    != 0.
-*/
+    // documentation is in convolution.hxx
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class KernelIterator, class KernelAccessor>
@@ -533,21 +380,18 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
     <b>\#include</b> \<vigra/stdconvolution.hxx\><br>
     Namespace: vigra
 
-
     \code
-    vigra::FImage src(w,h), dest(w,h);
-    vigra::CImage mask(w,h);
+    MultiArray<2, float>          src(w,h), dest(w,h);
+    MultiArray<2, unsigned char>  mask(w,h);
     ...
-
     // define 3x3 binomial filter
     vigra::Kernel2D<float> binom;
-
     binom.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =   // upper left and lower right
                          0.0625, 0.125, 0.0625,
                          0.125,  0.25,  0.125,
                          0.0625, 0.125, 0.0625;
 
-    vigra::normalizedConvolveImage(srcImageRange(src), maskImage(mask), destImage(dest), kernel2d(binom));
+    normalizedConvolveImage(src, mask, dest, binom);
     \endcode
 
     \deprecatedUsage{normalizedConvolveImage}
@@ -600,17 +444,12 @@ convolveImage(MultiArrayView<2, T1, S1> const & src,
 
     <b> Preconditions:</b>
 
-    \code
-    kul.x <= 0
-    kul.y <= 0
-    klr.x >= 0
-    klr.y >= 0
-    src_lr.x - src_ul.x >= klr.x + kul.x + 1
-    src_lr.y - src_ul.y >= klr.y + kul.y + 1
-    border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID
-    \endcode
-
-    Sum of kernel elements must be != 0.
+    <ul>
+    <li> The image must be longer than the kernel radius: <tt>w > std::max(kernel.lowerRight().x, -kernel.upperLeft().x)</tt> and 
+         <tt>h > std::max(kernel.lowerRight().y, -kernel.upperLeft().y)</tt>.
+    <li> The sum of kernel elements must be != 0.
+    <li> <tt>border == BORDER_TREATMENT_CLIP || border == BORDER_TREATMENT_AVOID</tt>
+    </ul>
 */
 doxygen_overloaded_function(template <...> void normalizedConvolveImage)
 
@@ -885,15 +724,10 @@ void convolveImageWithMask(
     (upperLeft().x <= 0, upperLeft().y <= 0)
     and lowerRight() (lowerRight().x >= 0, lowerRight().y >= 0) methods.
     The desired border treatment mode is returned by borderTreatment().
-    (Note that the \ref StandardConvolution "2D convolution functions" don't currently
-    support all modes.)
 
     The different init functions create a kernel with the specified
     properties. The requirements for the kernel's value_type depend
     on the init function used. At least NumericTraits must be defined.
-
-    The kernel defines a factory function kernel2d() to create an argument object
-    (see \ref KernelArgumentObjectFactories).
 
     <b> Usage:</b>
 
@@ -901,18 +735,17 @@ void convolveImageWithMask(
     Namespace: vigra
 
     \code
-    vigra::FImage src(w,h), dest(w,h);
+    MultiArray<2, float> src(w,h), dest(w,h);
     ...
 
     // define horizontal Sobel filter
     vigra::Kernel2D<float> sobel;
-
     sobel.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) =  // upper left and lower right
                          0.125, 0.0, -0.125,
                          0.25,  0.0, -0.25,
                          0.125, 0.0, -0.125;
 
-    vigra::convolveImage(srcImageRange(src), destImage(dest), kernel2d(sobel));
+    convolveImage(src, dest, sobel);
     \endcode
 
     <b> Required Interface:</b>

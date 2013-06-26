@@ -250,6 +250,8 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 
 /** \brief Region Segmentation by means of the watershed algorithm.
 
+    This function is deprecated, use \ref watershedsMultiArray() instead.
+    
     <b> Declarations:</b>
 
     \deprecatedAPI{watersheds3D}
@@ -300,7 +302,7 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     }
     \endcode
     \deprecatedEnd
-
+    
     This function implements the union-find version of the watershed algorithms
     as described in
 
@@ -313,12 +315,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     region as their lowest neighbor. Pass \ref vigra::NeighborCode3DSix or 
     \ref vigra::NeighborCode3DTwentySix to determine the neighborhood where voxel values 
     are compared. The voxel type of the input volume must be <tt>LessThanComparable</tt>.
-    The function uses accessors. 
-    
-    ...probably soon in VIGRA:
-    Note that VIGRA provides an alternative implementation of the watershed transform via
-    \ref seededRegionGrowing3D(). It is slower, but handles plateaus better 
-    and allows to keep a one pixel wide boundary between regions.
     
     <b> Usage:</b>
 
@@ -328,26 +324,21 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
     Example: watersheds3D of the gradient magnitude.
 
     \code
-    typedef vigra::MultiArray<3,int> IntVolume;
-    typedef vigra::MultiArray<3,double> DVolume;
-    DVolume src(DVolume::difference_type(w,h,d));
-    IntVolume dest(IntVolume::difference_type(w,h,d));
-
-    float gauss=1;
-
-    vigra::MultiArray<3, vigra::TinyVector<float,3> > temp(IntVolume::difference_type(w,h,d));
-    vigra::gaussianGradientMultiArray(srcMultiArrayRange(vol),destMultiArray(temp),gauss);
-
-    IntVolume::iterator temp_iter=temp.begin();
-    for(DVolume::iterator iter=src.begin(); iter!=src.end(); ++iter, ++temp_iter)
-        *iter = norm(*temp_iter);
+    Shape3 shape(w, h, d);
+    
+    MultiArray<3, float> src(shape), grad(shape);
+    ...
+    
+    double scale = 1;
+    gaussianGradientMagnitude(src, grad, scale);
+    
+    MultiArray<3, int> labels(shape);
     
     // find 6-connected regions
-    int max_region_label = vigra::watersheds3DSix(srcMultiArrayRange(src), destMultiArray(dest));
+    int max_region_label = watersheds3DSix(grad, labels);
 
     // find 26-connected regions
-    max_region_label = vigra::watersheds3DTwentySix(srcMultiArrayRange(src), destMultiArray(dest));
-    
+    max_region_label = watersheds3DTwentySix(grad, labels);
     \endcode
 
     \deprecatedUsage{watersheds3D}
