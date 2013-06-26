@@ -123,13 +123,13 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    FImage img(w,h);
-    FVector3Image get(w,h);
+    MultiArray<2, float> img(w,h);
+    MultiArray<2, TinyVector<float, 3> > get(w,h);
     Kernel1D<double> grad, smooth;
     grad.initGaussianDerivative(0.7, 1);
     smooth.initGaussian(0.7);
     ...
-    gradientEnergyTensor(srcImageRange(img), destImage(get), grad, smooth);
+    gradientEnergyTensor(img, get, grad, smooth);
     \endcode
 
     \deprecatedUsage{gradientEnergyTensor}

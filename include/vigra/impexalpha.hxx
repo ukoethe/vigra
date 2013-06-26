@@ -313,7 +313,9 @@ namespace vigra
     /**
     
     \brief Read the image specified by the given \ref
-    vigra::ImageImportInfo object including its alpha channel.
+    vigra::ImageImportInfo object including its alpha channel. 
+    
+    See \ref importImage() for more information.
     
     <B>Declarations</B>
     
@@ -356,62 +358,58 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impexalpha.hxx\></B>
-    
+    <B>\#include \<vigra/impexalpha.hxx\></B><br/>
+    Namespace: vigra
 
     \code
-        typedef UInt8 value_t;
-        ImageImportInfo info("zorro.tif");
-    
-        if (info.isGrayscale())
-        {
-            BasicImage<value_t> alpha(info.size());
-            BasicImage<value_t> image(info.size());
-    
-            importImageAlpha(info,
-                             image.upperLeft(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor());
-            ...
-        }
-        else
-        {
-            BasicImage<value_t> alpha(info.size());
-            BasicImage<vigra::RGBValue<value_t> > image(info.size());
-    
-            importImageAlpha(info,
-                             image.upperLeft(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor());
-            ...
-        }
+    typedef UInt8 value_t;
+    ImageImportInfo info("zorro.tif");
+
+    if (info.isGrayscale())
+    {
+        MultiArray<2, value_t> alpha(info.shape());
+        MultiArray<2, value_t> image(info.shape());
+
+        importImageAlpha(info, image, alpha);
+        ...
+    }
+    else
+    {
+        MultiArray<2, value_t>            alpha(info.shape());
+        MultiArray<2, RGBValue<value_t> > image(info.shape());
+
+        importImageAlpha(info, image, alpha);
+        ...
+    }
     \endcode
 
-        \deprecatedUsage{importImageAlpha}
+    \deprecatedUsage{importImageAlpha}
     \code
-        typedef UInt8 value_t;
-        ImageImportInfo info("zorro.tif");
-    
-        if (info.isGrayscale())
-        {
-            BasicImage<value_t> alpha(info.size());
-            BasicImage<value_t> image(info.size());
-    
-            importImageAlpha(info,
-                             image.upperLeft(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor());
-            ...
-        }
-        else
-        {
-            BasicImage<value_t> alpha(info.size());
-            BasicImage<vigra::RGBValue<value_t> > image(info.size());
-    
-            importImageAlpha(info,
-                             image.upperLeft(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor());
-            ...
-        }
+    typedef UInt8 value_t;
+    ImageImportInfo info("zorro.tif");
+
+    if (info.isGrayscale())
+    {
+        BasicImage<value_t> alpha(info.size());
+        BasicImage<value_t> image(info.size());
+
+        importImageAlpha(info,
+                         image.upperLeft(), image.accessor(),
+                         alpha.upperLeft(), alpha.accessor());
+        ...
+    }
+    else
+    {
+        BasicImage<value_t> alpha(info.size());
+        BasicImage<vigra::RGBValue<value_t> > image(info.size());
+
+        importImageAlpha(info,
+                         image.upperLeft(), image.accessor(),
+                         alpha.upperLeft(), alpha.accessor());
+        ...
+    }
     \endcode
-        \deprecatedEnd
+    \deprecatedEnd
     
     <B>Preconditions</B>
     
@@ -903,8 +901,9 @@ namespace vigra
 
 
     /**
-    \brief Write the image specified by the given \ref
-    vigra::ImageExportInfo object including an alpha channel.
+    \brief Write the image and its alpha channel to a file.
+    
+    See \ref exportImage() for more information.
     
     <B>Declarations</B>
     
@@ -961,66 +960,53 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impexalpha.hxx\></B>
+    <B>\#include \<vigra/impexalpha.hxx\></B><br/>
+    Namespace: vigra
     
-
     \code
-        typedef UInt8 value_t;
-        ImageExportInfo info("zorro.tif");
-    
-        if (info.isGrayscale())
-        {
-            BasicImage<value_t> alpha;
-            BasicImage<value_t> image;
-    
-            ...
-    
-            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor(),
-                             info);
-        }
-        else
-        {
-            BasicImage<value_t> alpha;
-            BasicImage<vigra::RGBValue<value_t> > image;
-    
-            ...
-    
-            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor(),
-                             info);
-        }
-    \endcode
+    typedef UInt8 value_t;
 
-        \deprecatedUsage{exportImageAlpha}
+    MultiArray<2, value_t>            alpha(width, height);
+    MultiArray<2, RGBValue<value_t> > image(width, height);
+
+   ... // do some image processing
+
+    // specify the output filename 
+    exportImageAlpha(image, alpha, "zorro.tif");
+    
+    // use a ImageExportInfo if you need more control over the export
+    exportImageAlpha(image, alpha, ImageExportInfo("zorro.tif").setPixelType("FLOAT"));
+   \endcode
+
+    \deprecatedUsage{exportImageAlpha}
     \code
-        typedef UInt8 value_t;
-        ImageExportInfo info("zorro.tif");
-    
-        if (info.isGrayscale())
-        {
-            BasicImage<value_t> alpha;
-            BasicImage<value_t> image;
-    
-            ...
-    
-            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor(),
-                             info);
-        }
-        else
-        {
-            BasicImage<value_t> alpha;
-            BasicImage<vigra::RGBValue<value_t> > image;
-    
-            ...
-    
-            exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
-                             alpha.upperLeft(), alpha.accessor(),
-                             info);
-        }
+    typedef UInt8 value_t;
+    ImageExportInfo info("zorro.tif");
+
+    if (info.isGrayscale())
+    {
+        BasicImage<value_t> alpha;
+        BasicImage<value_t> image;
+
+        ...
+
+        exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                         alpha.upperLeft(), alpha.accessor(),
+                         info);
+    }
+    else
+    {
+        BasicImage<value_t> alpha;
+        BasicImage<vigra::RGBValue<value_t> > image;
+
+        ...
+
+        exportImageAlpha(image.upperLeft(), image.lowerRight(), image.accessor(),
+                         alpha.upperLeft(), alpha.accessor(),
+                         info);
+    }
     \endcode
-        \deprecatedEnd
+    \deprecatedEnd
     
     <B>Preconditions</B>
     

@@ -111,10 +111,10 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    vigra::CImage src, dest;
+    MultiArray<2, unsigned char> src(w, h), dest(w, h);
     
-    // do median filtering
-    vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
+    // do median filtering (because rank=0.5) in a cricle with radius 10
+    discRankOrderFilter(src, dest, 10, 0.5);
     \endcode
 
     \deprecatedUsage{discRankOrderFilter}
@@ -403,7 +403,7 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Apply erosion (minimum) filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 0.0.
+    This is an abbreviation for the rank order filter with rank = 0.0.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
@@ -445,7 +445,6 @@ discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discErosion)
 
@@ -497,7 +496,7 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Apply dilation (maximum) filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 1.0.
+    This is an abbreviation for the rank order filter with rank = 1.0.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
@@ -539,7 +538,6 @@ discErosion(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discDilation)
 
@@ -591,7 +589,7 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Apply median filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 0.5.
+    This is an abbreviation for the rank order filter with rank = 0.5.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
@@ -633,7 +631,6 @@ discDilation(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discMedian)
 
@@ -749,11 +746,11 @@ discMedian(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::CImage src, dest, mask;
-    
-    // do median filtering
-    vigra::discRankOrderFilterWithMask(srcImageRange(src), 
-                                maskImage(mask), destImage(dest), 10, 0.5);
+    MultiArray<2, unsigned char> src(w, h), dest(w, h), mask(w, h);
+    ...
+    // do median filtering (since rank=0.5) in a circle with radius 10
+    // but change only the pixels under the mask
+    discRankOrderFilterWithMask(src, mask, dest, 10, 0.5);
     \endcode
 
     \deprecatedUsage{discRankOrderFilterWithMask}
@@ -1094,7 +1091,7 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
 /** \brief Apply erosion (minimum) filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 0.0. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
@@ -1142,7 +1139,6 @@ discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discErosionWithMask)
 
@@ -1204,7 +1200,7 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
 /** \brief Apply dilation (maximum) filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 1.0. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
@@ -1252,7 +1248,6 @@ discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discDilationWithMask)
 
@@ -1314,7 +1309,7 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
 /** \brief Apply median filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 0.5. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
@@ -1362,7 +1357,6 @@ discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     \deprecatedEnd
-
 */
 doxygen_overloaded_function(template <...> void discMedianWithMask)
 

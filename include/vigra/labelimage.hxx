@@ -61,25 +61,34 @@ namespace vigra {
 
 /** \brief Find the connected components of a segmented image.
 
+    Connected components are defined as regions with uniform pixel
+    values. Thus, <TT>T1</TT> either must be
+    equality comparable, or a suitable EqualityFunctor must be
+    provided that realizes the desired predicate. The
+    destination's value type <tt>T2</tt> should be large enough to hold the labels
+    without overflow. Region numbers will be a consecutive sequence
+    starting with one and ending with the region number returned by
+    the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
+    determines whether the regions should be 4-connected or
+    8-connected. 
+
+    Return:  the number of regions found (= largest region label)
+    
+    See \ref labelMultiArray() for a dimension-independent implementation of 
+    connected components labelling.
+    
     <b> Declarations:</b>
 
     pass 2D array views:
     \code
     namespace vigra {
         template <class T1, class S1,
-                  class T2, class S2>
-        unsigned int
-        labelImage(MultiArrayView<2, T1, S1> const & src,
-                   MultiArrayView<2, T2, S2> dest,
-                   bool eight_neighbors);
-
-        template <class T1, class S1,
                   class T2, class S2,
-                  class EqualityFunctor>
+                  class EqualityFunctor = std::equal_to<T1> >
         unsigned int
         labelImage(MultiArrayView<2, T1, S1> const & src,
                    MultiArrayView<2, T2, S2> dest,
-                   bool eight_neighbors, EqualityFunctor equal);
+                   bool eight_neighbors, EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
 
@@ -122,35 +131,20 @@ namespace vigra {
     \endcode
     \deprecatedEnd
 
-    Connected components are defined as regions with uniform pixel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). The
-    destination's value type should be large enough to hold the labels
-    without overflow. Region numbers will be a consecutive sequence
-    starting with one and ending with the region number returned by
-    the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
-    determines whether the regions should be 4-connected or
-    8-connected. The function uses accessors.
-
-    Return:  the number of regions found (= largest region label)
-
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h);
-    vigra::IImage labels(w,h);
+    MultiArray<2, unsigned char> src(w,h);
+    MultiArray<2, unsigned int>  labels(w,h);
 
     // threshold at 128
-    vigra::transformImage(srcImageRange(src), destImage(src),
-       vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-                                                    128, 256, 0, 255));
+    transformImage(src, src, Threshold<int, int>(128, 256, 0, 255));
 
     // find 4-connected regions
-    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+    labelImage(src, labels, false);
     \endcode
 
     \deprecatedUsage{labelImage}
@@ -358,6 +352,17 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
 /** \brief Find the connected components of a segmented image,
     excluding the background from labeling.
 
+    This function works like \ref labelImage(), but considers all background pixels
+    (i.e. pixels having the given '<TT>background_value</TT>') as a single region that
+    is ignored when determining connected components and remains untouched in the
+    destination image. Usually, you will zero-initialize the output image, so that
+    the background gets label 0 (remember that actual region labels start at one).
+
+    Return:  the number of non-background regions found (= largest region label)
+    
+    See \ref labelMultiArrayWithBackground() for a dimension-independent implementation
+    if this algorithm.
+
     <b> Declarations:</b>
 
     pass 2D array views:
@@ -365,22 +370,14 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2,
-                  class ValueType>
-        unsigned int 
-        labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
-                                 MultiArrayView<2, T2, S2> dest,
-                                 bool eight_neighbors,
-                                 ValueType background_value);
-                                 
-        template <class T1, class S1,
-                  class T2, class S2,
-                  class ValueType, class EqualityFunctor>
+                  class ValueType, 
+                  class EqualityFunctor = std::equal_to<T1> >
         unsigned int 
         labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
                                  MultiArrayView<2, T2, S2> dest,
                                  bool eight_neighbors,
                                  ValueType background_value, 
-                                 EqualityFunctor equal = std::equal_to<T1>());
+                                 EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
 
@@ -429,40 +426,20 @@ labelImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    Connected components are defined as regions with uniform pixel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). All
-    pixel equal to the given '<TT>background_value</TT>' are ignored
-    when determining connected components and remain untouched in the
-    destination image and
-
-    The destination's value type should be large enough to hold the
-    labels without overflow. Region numbers will be a consecutive
-    sequence starting with one and ending with the region number
-    returned by the function (inclusive). The parameter
-    '<TT>eight_neighbors</TT>' determines whether the regions should
-    be 4-connected or 8-connected. The function uses accessors.
-
-    Return:  the number of regions found (= largest region label)
-
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/labelimage.hxx\><br>
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h);
-    vigra::IImage labels(w,h);
+    MultiArray<2, unsigned char> src(w,h);
+    MultiArray<2, unsigned int>  labels(w,h);
 
     // threshold at 128
-    vigra::transformImage(srcImageRange(src), destImage(src),
-        vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-                                                    128, 256, 0, 255));
+    transformImage(src, src, Threshold<int, int>(128, 256, 0, 255));
 
     // find 4-connected regions of foreground (= white pixels) only
-    vigra::labelImageWithBackground(srcImageRange(src), destImage(labels),
-                             false, 0);
+    labelImageWithBackground(src, labels, false, 0);
     \endcode
 
     \deprecatedUsage{labelImageWithBackground}
@@ -726,7 +703,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
 /*                                                      */
 /********************************************************/
 
-/** \brief Transform a labeled image into a crack edge image.
+/** \brief Transform a labeled image into a crack edge (interpixel edge) image.
 
     <b> Declarations:</b>
 
@@ -767,7 +744,7 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     \endcode
     \deprecatedEnd
 
-    This algorithm inserts border pixels (so called "crack edges")
+    This algorithm inserts border pixels (so called "crack edges" or "interpixel edges")
     between regions in a labeled image like this (<TT>a</TT> and
     <TT>c</TT> are the original labels, and <TT>0</TT> is the value of
     <TT>edge_marker</TT> and denotes the inserted edges):
@@ -797,20 +774,18 @@ labelImageWithBackground(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h);
-    vigra::IImage labels(w,h);
-    vigra::IImage cellgrid(2*w-1, 2*h-1);
+    MultiArray<2, unsigned char> src(w,h);
+    MultiArray<2, unsigned int>  labels(w,h),
+                                 cellgrid(2*w-1, 2*h-1);
 
     // threshold at 128
-    vigra::transformImage(srcImageRange(src), destImage(src),
-       vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-                                                    128, 256, 0, 255));
+    transformImage(src, src, Threshold<int, int>(128, 256, 0, 255));
 
     // find 4-connected regions
-    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+    labelImage(src, labels, false);
 
     // create cell grid image, mark edges with 0
-    vigra::regionImageToCrackEdgeImage(srcImageRange(labels), destImage(cellgrid), 0);
+    regionImageToCrackEdgeImage(labels, cellgrid, 0);
     \endcode
 
     \deprecatedUsage{regionImageToCrackEdgeImage}
@@ -1042,7 +1017,7 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     \endcode
 
     The non-edge pixels of the destination image will not be touched.
-    The source value type (<TT>SrcAccessor::value-type</TT>) must be
+    The source value type <TT>T1</TT> must be
     equality-comparable.
 
     <b> Usage:</b>
@@ -1051,21 +1026,20 @@ regionImageToCrackEdgeImage(MultiArrayView<2, T1, S1> const & src,
     Namespace: vigra
 
     \code
-    vigra::BImage src(w,h);
-    vigra::IImage labels(w,h);
-    vigra::IImage edges(w, h);
+    MultiArray<2, unsigned char> src(w,h),
+                                 edges(w,h);
+    MultiArray<2, unsigned int>  labels(w,h);
+
     edges = 255;  // init background (non-edge) to 255
 
     // threshold at 128
-    vigra::transformImage(srcImageRange(src), destImage(src),
-      vigra::Threshold<vigra::BImage::PixelType, vigra::BImage::PixelType>(
-                                                    128, 256, 0, 255));
+    transformImage(src, src, Threshold<int, int>(128, 256, 0, 255));
 
     // find 4-connected regions
-    vigra::labelImage(srcImageRange(src), destImage(labels), false);
+    labelImage(src, labels, false);
 
     // create edge image, mark edges with 0
-    vigra::regionImageToEdgeImage(srcImageRange(labels), destImage(edges), 0);
+    regionImageToEdgeImage(labels, edges, 0);
     \endcode
 
     \deprecatedUsage{regionImageToEdgeImage}

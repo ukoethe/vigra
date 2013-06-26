@@ -57,6 +57,20 @@ namespace vigra{
 
 /** \brief Find the connected components of a segmented volume.
 
+    Connected components are defined as regions with uniform voxel
+    values. Thus, <TT>T1</TT> either must be equality comparable, 
+    or an EqualityFunctor must be provided explicitly that realizes 
+    the desired equivalence predicate. The destination's value type 
+    <tt>T2</tt> should be large enough to hold the labels
+    without overflow. Region numbers will be a consecutive sequence
+    starting with one and ending with the region number returned by
+    the function (inclusive).
+
+    Return:  the number of regions found (= largest region label)
+    
+    See \ref labelMultiArray() for a dimension-independent implementation of 
+    connected components labelling.
+
     <b> Declarations:</b>
 
     pass 3D array views:
@@ -64,20 +78,14 @@ namespace vigra{
     namespace vigra {
         template <class T1, class S1,
                   class T2, class S2,
-                  class Neighborhood3D, class EqualityFunctor>
+                  class Neighborhood3D, 
+                  class EqualityFunctor = std::equal_to<T1> >
         unsigned int
         labelVolume(MultiArrayView<3, T1, S1> const & source,
                     MultiArrayView<3, T2, S2> dest,
                     Neighborhood3D neighborhood3D,
-                    EqualityFunctor equal);
+                    EqualityFunctor equal  = EqualityFunctor());
 
-        template <class T1, class S1, 
-                  class T2, class S2,
-                  class Neighborhood3D>
-        unsigned int
-        labelVolume(MultiArrayView<3, T1, S1> const & source,
-                    MultiArrayView<3, T2, S2> dest,
-                    Neighborhood3D neighborhood3D);
     }
     \endcode
 
@@ -122,8 +130,6 @@ namespace vigra{
 
     }
     \endcode
-    \deprecatedEnd
-    
     use with 3D-Six-Neighborhood:
     \code
     namespace vigra {    
@@ -135,17 +141,7 @@ namespace vigra{
                                     
     }
     \endcode
-
-    Connected components are defined as regions with uniform voxel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). The
-    destination's value type should be large enough to hold the labels
-    without overflow. Region numbers will be a consecutive sequence
-    starting with one and ending with the region number returned by
-    the function (inclusive).
-
-    Return:  the number of regions found (= largest region label)
+    \deprecatedEnd    
 
     <b> Usage:</b>
 
@@ -153,15 +149,15 @@ namespace vigra{
     Namespace: vigra
 
     \code
-    typedef vigra::MultiArray<3,int> IntVolume;
-    IntVolume src(IntVolume::difference_type(w,h,d));
-    IntVolume dest(IntVolume::difference_type(w,h,d));
+    typedef MultiArray<3,int> IntVolume;
+    IntVolume src(Shape3(w,h,d));
+    IntVolume dest(Shape3(w,h,d));
     
     // find 6-connected regions
-    int max_region_label = vigra::labelVolumeSix(srcMultiArrayRange(src), destMultiArray(dest));
+    int max_region_label = labelVolumeSix(src, dest);
 
     // find 26-connected regions
-    int max_region_label = vigra::labelVolume(srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DTwentySix());
+    int max_region_label = labelVolume(src, dest, NeighborCode3DTwentySix());
     \endcode
 
     \deprecatedUsage{labelVolume}
@@ -176,10 +172,7 @@ namespace vigra{
     // find 26-connected regions
     int max_region_label = vigra::labelVolume(srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DTwentySix());
     \endcode
-    \deprecatedEnd
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_begin;
     SrcShape shape;
@@ -198,6 +191,7 @@ namespace vigra{
     int i;
     dest_accessor.set(i, dest_begin);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int labelVolume)
 
@@ -417,6 +411,17 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 /** \brief Find the connected components of a segmented volume,
      excluding the background from labeling.
 
+    This function works like \ref labelVolume(), but considers all background voxels
+    (i.e. voxels having the given '<TT>background_value</TT>') as a single region that
+    is ignored when determining connected components and remains untouched in the
+    destination array. Usually, you will zero-initialize the output array, so that
+    the background gets label 0 (remember that actual region labels start at one).
+
+    Return:  the number of regions found (= largest region label)
+
+    See \ref labelMultiArrayWithBackground() for a dimension-independent implementation
+    if this algorithm.
+
     <b> Declarations:</b>
 
     pass 3D array views:
@@ -426,23 +431,13 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
                   class T2, class S2,
                   class Neighborhood3D,
                   class ValueType,
-                  class EqualityFunctor>
+                  class EqualityFunctor = std::equalt_to<T1> >
         unsigned int
         labelVolumeWithBackground(MultiArrayView<3, T1, S1> const & source,
                                   MultiArrayView<3, T2, S2> dest,
                                   Neighborhood3D neighborhood3D,
                                   ValueType backgroundValue,
-                                  EqualityFunctor equal);
-
-        template <class T1, class S1,
-                  class T2, class S2,
-                  class Neighborhood3D,
-                  class ValueType>
-        unsigned int
-        labelVolumeWithBackground(MultiArrayView<3, T1, S1> const & source,
-                                  MultiArrayView<3, T2, S2> dest,
-                                  Neighborhood3D neighborhood3D,
-                                  ValueType backgroundValue);
+                                  EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
 
@@ -491,21 +486,6 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     \endcode
     \deprecatedEnd
 
-    Connected components are defined as regions with uniform voxel
-    values. Thus, <TT>SrcAccessor::value_type</TT> either must be
-    equality comparable (first form), or an EqualityFunctor must be
-    provided that realizes the desired predicate (second form). All
-    voxel equal to the given '<TT>background_value</TT>' are ignored
-    when determining connected components and remain untouched in the
-    destination volume.
-
-    The destination's value type should be large enough to hold the
-    labels without overflow. Region numbers will be a consecutive
-    sequence starting with one and ending with the region number
-    returned by the function (inclusive).
-
-    Return:  the number of regions found (= largest region label)
-
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/labelvolume.hxx\><br>
@@ -513,12 +493,12 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
 
     \code
     typedef vigra::MultiArray<3,int> IntVolume;
-    IntVolume src(IntVolume::difference_type(w,h,d));
-    IntVolume dest(IntVolume::difference_type(w,h,d));
+    
+    IntVolume src(Shape3(w,h,d));
+    IntVolume dest(Shape3(w,h,d));
 
     // find 6-connected regions
-    int max_region_label = vigra::labelVolumeWithBackground(
-    srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DSix(), 0);
+    int max_region_label = labelVolumeWithBackground(src, dest, NeighborCode3DSix(), 0);
     \endcode
 
     \deprecatedUsage{labelVolumeWithBackground}
@@ -531,10 +511,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     int max_region_label = vigra::labelVolumeWithBackground(
     srcMultiArrayRange(src), destMultiArray(dest), NeighborCode3DSix(), 0);
     \endcode
-    \deprecatedEnd
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_begin;
     SrcShape shape;
@@ -553,6 +530,7 @@ unsigned int labelVolumeSix(MultiArrayView<3, T1, S1> const & source,
     int i;
     dest_accessor.set(i, dest_begin);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int labelVolumeWithBackground)
 

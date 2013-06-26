@@ -116,11 +116,11 @@ namespace vigra {
     Namespace: vigra
 
     \code
-    vigra::FImage gabor(w,h);
+    MultiArray<2, float> gabor(w,h);
 
-    vigra::createGaborFilter(destImageRange(gabor), orient, freq,
-                             angularGaborSigma(directionCount, freq)
-                             radialGaborSigma(freq));
+    createGaborFilter(gabor, orient, freq,
+                      angularGaborSigma(directionCount, freq),
+                      radialGaborSigma(freq));
     \endcode
 
     \deprecatedUsage{createGaborFilter}
@@ -128,7 +128,7 @@ namespace vigra {
     vigra::FImage gabor(w,h);
 
     vigra::createGaborFilter(destImageRange(gabor), orient, freq,
-                             angularGaborSigma(directionCount, freq)
+                             angularGaborSigma(directionCount, freq),
                              radialGaborSigma(freq));
     \endcode
     \deprecatedEnd
@@ -313,7 +313,6 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
     The template parameter ImageType should be a scalar image type suitable for filling in
 
     <b>\#include</b> \<vigra/gaborfilter.hxx\><br/>
-    Namespace: vigra <br/>
     Namespace: vigra
 */
 template <class ImageType, 

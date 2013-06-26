@@ -1040,13 +1040,14 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
     use arbitrary-dimensional arrays:
     \code
     namespace vigra {
+        // pass filter scale explicitly
         template <unsigned int N, class T1, class S1,
                                   class T2, class S2>
         void 
         gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
                                   MultiArrayView<N, T2, S2> dest,
                                   double sigma,
-                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
+                                  ConvolutionOptions<N> opt = ConvolutionOptions<N>());
 
         template <unsigned int N, class MT, class S1,
                                   class T2, class S2>
@@ -1054,7 +1055,22 @@ gaussianGradient(MultiArrayView<2, T1, S1> const & src,
         gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<MT>, S1> const & src,
                                   MultiArrayView<N,   T2, S2> dest,
                                   double sigma,
-                                  const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
+                                  ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+                                  
+        // pass filter scale(s) in option object
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
+                                  MultiArrayView<N, T2, S2> dest,
+                                  ConvolutionOptions<N> const & opt);
+
+        template <unsigned int N, class MT, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<MT>, S1> const & src,
+                                  MultiArrayView<N,   T2, S2> dest,
+                                  ConvolutionOptions<N> const & opt);
     }
     \endcode
     Here, the input element types <tt>T1</tt> and <tt>MT</tt> can be arbitrary scalar types, and <tt>T1</tt> 

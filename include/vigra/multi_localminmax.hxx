@@ -198,12 +198,14 @@ extendedLocalMinMaxGraph(Graph const &g,
 
 template <unsigned int N, class T1, class C1, 
                           class T2, class C2,
-          class Compare>
+          class Compare,
+          class EqualityFunctor>
 unsigned int
 localMinMax(MultiArrayView<N, T1, C1> const & src,
             MultiArrayView<N, T2, C2> dest,
             T1 threshold,
             Compare const & compare,
+            EqualityFunctor const & equal,
             LocalMinmaxOptions const & options = LocalMinmaxOptions())
 {
     vigra_precondition(src.shape() == dest.shape(),
@@ -224,7 +226,7 @@ localMinMax(MultiArrayView<N, T1, C1> const & src,
     GridGraph<N, undirected_tag> graph(src.shape(), neighborhood);
     if(options.allow_plateaus)
         return lemon_graph::extendedLocalMinMaxGraph(graph, src, dest, marker, threshold, 
-                                            compare, std::equal_to<T1>(), options.allow_at_border);
+                                            compare, equal, options.allow_at_border);
     else
         return lemon_graph::localMinMaxGraph(graph, src, dest, marker, threshold, 
                                              compare, options.allow_at_border);
@@ -246,19 +248,24 @@ localMinima(MultiArrayView<N, T1, C1> const & src,
     T1 threshold = options.use_threshold
                            ? std::min(NumericTraits<T1>::max(), (T1)options.thresh)
                            : NumericTraits<T1>::max();
-    return localMinMax(src, dest, threshold, std::less<T1>(), options);
+    return localMinMax(src, dest, threshold, std::less<T1>(), std::equal_to<T1>(), options);
 }
 
 
 template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+                          class T2, class S2,
+          class EqualityFunctor>
 inline unsigned int
 extendedLocalMinima(MultiArrayView<N, T1, S1> const & src,
                     MultiArrayView<N, T2, S2> dest,
+                    EqualityFunctor const & equal,
                     LocalMinmaxOptions options = LocalMinmaxOptions())
 {
     options.allowPlateaus();
-    return localMinima(src, dest, options);
+    T1 threshold = options.use_threshold
+                           ? std::min(NumericTraits<T1>::max(), (T1)options.thresh)
+                           : NumericTraits<T1>::max();
+    return localMinMax(src, dest, threshold, std::less<T1>(), equal, options);
 }
 /********************************************************/
 /*                                                      */
@@ -276,19 +283,24 @@ localMaxima(MultiArrayView<N, T1, C1> const & src,
     T1 threshold = options.use_threshold
                            ? std::max(NumericTraits<T1>::min(), (T1)options.thresh)
                            : NumericTraits<T1>::min();
-    return localMinMax(src, dest, threshold, std::greater<T1>(), options);
+    return localMinMax(src, dest, threshold, std::greater<T1>(), std::equal_to<T1>(), options);
 }
 
 
 template <unsigned int N, class T1, class S1,
-                          class T2, class S2>
+                          class T2, class S2,
+          class EqualityFunctor>
 inline unsigned int
 extendedLocalMaxima(MultiArrayView<N, T1, S1> const & src,
                     MultiArrayView<N, T2, S2> dest,
+                    EqualityFunctor const & equal,
                     LocalMinmaxOptions options = LocalMinmaxOptions())
 {
     options.allowPlateaus();
-    return localMaxima(src, dest, options);
+    T1 threshold = options.use_threshold
+                           ? std::max(NumericTraits<T1>::min(), (T1)options.thresh)
+                           : NumericTraits<T1>::min();
+    return localMinMax(src, dest, threshold, std::greater<T1>(), equal, options);
 }
 
 } // namespace vigra

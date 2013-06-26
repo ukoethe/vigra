@@ -606,7 +606,7 @@ namespace vigra
     }  // end namespace detail
 
     /** 
-    \brief Read the image specified by the given \ref vigra::ImageImportInfo object.
+    \brief Read an image from a file.
    
     If the first parameter is \ref vigra::ImageImportInfo, this function assumes that the destination
     image has already the appropriate shape. If the first parameter is a string, the destination
@@ -617,11 +617,13 @@ namespace vigra
     pass 2D array views:
     \code
     namespace vigra {
+        // read the data into an array view of appropriate size
         template <class T, class S>
         void
         importImage(ImageImportInfo const & import_info,
                     MultiArrayView<2, T, S> image);
 
+        // resize the given array and then read the data
         template <class T, class A>
         void
         importImage(char const * filename,
@@ -661,24 +663,32 @@ namespace vigra
     Namespace: vigra
 
     \code
-        ImageImportInfo info("myimage.gif");
-   
-        if (info.isGrayscale())
-        {
-            // create byte image of appropriate size
-            BImage image(info.width(), info.height());
-   
-            importImage(info, destImage(image));
-            ...
-        }
-        else
-        {
-            // create byte RGB image of appropriate size
-            BRGBImage image(info.width(), info.height());
-   
-            importImage(info, destImage(image));
-            ...
-        }
+    ImageImportInfo info("myimage.gif");
+
+    if (info.isGrayscale())
+    {
+        // create byte image of appropriate size
+        MultiArray<2, unsigned char> image(info.width(), info.height());
+
+        importImage(info, image);
+        ...
+    }
+    else
+    {
+        // create byte RGB image of appropriate size
+        MultiArray<2, RGBValue<unsigned char> > image(info.width(), info.height());
+
+        importImage(info, image);
+        ...
+    }
+    \endcode
+    When the type of input image is already known, this can be shortened:
+    \code
+    // create empty float image
+    MultiArray<2, float> image;
+    
+    // resize image and read the data
+    importImage("myimage.png", image);
     \endcode
 
     \deprecatedUsage{importImage}
@@ -706,10 +716,10 @@ namespace vigra
    
     <B>Preconditions</B>
    
-    - The image file must be readable,
-    - the required support library must be installed (if no such library is given, 
-      VIGRA supports the format natively), and
-    - the file type must be one of the following:
+    - The image file must be readable.
+    - The required support library must be installed (if the table doesn't specify an external library, 
+      VIGRA supports the format natively).
+    - The file type must be one of the following:
    
     <table cellspacing="10">
     <tr align="left">
@@ -796,15 +806,24 @@ namespace vigra
         importImage(name.c_str(), image);
     }
 
-    /** \brief Write an image given a \ref vigra::ImageExportInfo object.
+    /** \brief Write an image to a file.
     
-    If the file format to be exported to supports the pixel type of
-    the source image, the pixel type will be kept
-    (e.g. <tt>float</tt> can be stored as TIFF without conversion,
-    in contrast to most other image export toolkits).  Otherwise,
-    the pixel values are transformed to the range 0..255 and
-    converted to <tt>unsigned char</tt>.  Currently, the following
-    file formats are supported.  The pixel types given in brackets
+    The file can be specified either by a file name or by a \ref vigra::ImageExportInfo object.
+    In the latter case, you have much more control about how the file is written. By default,
+    the file format to be created is guessed from the filename extension. This can be 
+    overridden by an explicit file type in the ImageExportInfo object. If the file format
+    supports compression (e.g. JPEG and TIFF), default compression parameters are used
+    which can be overridden by the ImageExportInfo object.
+    
+    If the file format to be created supports the pixel type of the source image, this
+    pixel type will be kept in the file (e.g. <tt>float</tt> can be stored by TIFF without 
+    conversion) unless the ImageExportInfo object
+    explicitly requests a different storage type. If the array's pixel type is not supported by 
+    the file format, the pixel values are transformed to the range 0..255 and
+    converted to <tt>unsigned char</tt>, unless another mapping is explicitly requested by
+    the ImageExportInfo object.  
+    
+    Currently, the following file formats are supported.  The pixel types given in brackets
     are those that are written without conversion:
         - BMP: Microsoft Windows bitmap image file (pixel types: UINT8 as gray and RGB);
         - GIF: CompuServe graphics interchange format, 8-bit color (pixel types: UINT8 as gray and RGB);
@@ -867,40 +886,40 @@ namespace vigra
     
     <b> Usage:</b>
     
-    <B>\#include \<vigra/impex.hxx\></B>
-    
+    <B>\#include \<vigra/impex.hxx\></B><br/>
+    Namespace: vigra
 
     \code
-        BRGBImage image(width, height);
-        ...
-    
-        // write as JPEG image, using compression quality 80
-        exportImage(srcImageRange(image),
-                    ImageExportInfo("my-image.jpg").setCompression("80"));
-    
-        // Force it to a particular pixel type.  The pixel type must be supported by the
-        // desired image file format, otherwise an \ref vigra::PreconditionViolation
-        // exception will be thrown.
-        exportImage(srcImageRange(image),
-                    ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
+    MultiArray<2, RGBValue<unsigned char> > image(width, height);
+    ...
+
+    // write as JPEG image, using compression quality 80
+    exportImage(image,
+                ImageExportInfo("my-image.jpg").setCompression("80"));
+
+    // Force it to a particular pixel type.  The pixel type must be supported by the
+    // desired image file format, otherwise an \ref vigra::PreconditionViolation
+    // exception will be thrown.
+    exportImage(image,
+                ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
     \endcode
 
-        \deprecatedUsage{exportImage}amespace: vigra
+    \deprecatedUsage{exportImage}
     \code
-        BRGBImage image(width, height);
-        ...
-    
-        // write as JPEG image, using compression quality 80
-        exportImage(srcImageRange(image),
-                    ImageExportInfo("my-image.jpg").setCompression("80"));
-    
-        // Force it to a particular pixel type.  The pixel type must be supported by the
-        // desired image file format, otherwise an \ref vigra::PreconditionViolation
-        // exception will be thrown.
-        exportImage(srcImageRange(image),
-                    ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
+    BRGBImage image(width, height);
+    ...
+
+    // write as JPEG image, using compression quality 80
+    exportImage(srcImageRange(image),
+                ImageExportInfo("my-image.jpg").setCompression("80"));
+
+    // Force it to a particular pixel type.  The pixel type must be supported by the
+    // desired image file format, otherwise an \ref vigra::PreconditionViolation
+    // exception will be thrown.
+    exportImage(srcImageRange(image),
+                ImageExportInfo("my-INT16-image.tif").setPixelType("INT16"));
     \endcode
-        \deprecatedEnd
+    \deprecatedEnd
     
     <B>Preconditions</B>
     
