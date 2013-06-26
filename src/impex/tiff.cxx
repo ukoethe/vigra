@@ -762,7 +762,7 @@ namespace vigra {
         // ctor, dtor
 
         TIFFEncoderImpl( const std::string & filename, const std::string & mode )
-            : tiffcomp(COMPRESSION_NONE), finalized(false)
+            : tiffcomp(COMPRESSION_LZW), finalized(false)
         {
             tiff = TIFFOpen( filename.c_str(), mode.c_str() );
             if (!tiff)
