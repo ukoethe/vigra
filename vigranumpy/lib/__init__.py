@@ -192,9 +192,9 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
        stored along with the data in an attribute 'axistags'.
 
        'compression' can be set to GZIP, SZIP or LZF
-       GZIP (Standard compression),
-       SZIP (Faster compression, limited types),
-       LZF (Very fast compression, all types).
+       GZIP (standard compression),
+       SZIP (available, if HDF5 is compiled with szip. Faster compression, limited types),
+       LZF (very fast compression, all types).
        The LZF compression filter is many times faster than GZIP 
        at the cost of a lower compresion ratio.
 
