@@ -298,7 +298,7 @@ namespace vigra {
 
     // create horizontal sobel filter (symmetric difference in x-direction, smoothing in y direction)
     Kernel1D<double> kx, ky;
-    kx.initSymmetricGradient();
+    kx.initSymmetricDifference();
     ky.initBinomial(1);
     
     // calls separable convolution with the two 1D kernels
@@ -322,7 +322,7 @@ namespace vigra {
 
     // create horizontal sobel filter (symmetric difference in x-direction, smoothing in y direction)
     Kernel1D<double> kx, ky;
-    kx.initSymmetricGradient();
+    kx.initSymmetricDifference();
     ky.initBinomial(1);
     
     // calls separable convolution with the two 1D kernels

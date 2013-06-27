@@ -1772,7 +1772,7 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         "symmetricGradientMultiArray(): Wrong number of channels in output array.");
 
     Kernel1D<KernelType> filter;
-    filter.initSymmetricGradient();
+    filter.initSymmetricDifference();
 
     StepType step_size_it = opt.stepParams();
 

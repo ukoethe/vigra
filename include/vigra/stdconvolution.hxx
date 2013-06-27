@@ -756,7 +756,7 @@ void convolveImageWithMask(
 
     See also the init functions.
 */
-template <class ARITHTYPE>
+template <class ARITHTYPE = double>
 class Kernel2D
 {
 public:
@@ -897,6 +897,8 @@ public:
             of type \ref Kernel1D. The norm becomes the product of the two original
             norms.
 
+            The function returns a reference to the kernel.
+
             <b> Required Interface:</b>
 
             The kernel's value_type must be a linear algebra.
@@ -906,8 +908,8 @@ public:
             v = v * v;
             \endcode
         */
-    void initSeparable(Kernel1D<value_type> const & kx,
-                       Kernel1D<value_type> const & ky)
+    Kernel2D & initSeparable(Kernel1D<value_type> const & kx,
+                             Kernel1D<value_type> const & ky)
     {
         left_ = Diff2D(kx.left(), ky.left());
         right_ = Diff2D(kx.right(), ky.right());
@@ -932,11 +934,14 @@ public:
                 *ix = ka(kix) * ka(kiy);
             }
         }
+        return *this;
     }
 
         /** Init the 2D kernel as the cartesian product of two 1D kernels
             given explicitly by iterators and sizes. The norm becomes the
             sum of the resulting kernel values.
+
+            The function returns a reference to the kernel.
 
             <b> Required Interface:</b>
 
@@ -958,8 +963,8 @@ public:
             \endcode
         */
     template <class KernelIterator>
-    void initSeparable(KernelIterator kxcenter, int xleft, int xright,
-                       KernelIterator kycenter, int yleft, int yright)
+    Kernel2D & initSeparable(KernelIterator kxcenter, int xleft, int xright,
+                             KernelIterator kycenter, int yleft, int yright)
     {
         vigra_precondition(xleft <= 0 && yleft <= 0,
                            "Kernel2D::initSeparable(): left borders must be <= 0.");
@@ -995,37 +1000,46 @@ public:
         {
             norm_ += *i;
         }
+        return *this;
     }
 
-        /** Init as a 2D box filter with given radius.
+        /** \brief Init as a 2D box filter with given radius.
+        
+            The function returns a reference to the kernel.
          */    
-    void initAveraging(int radius)
+    Kernel2D & initAveraging(int radius)
     {
         Kernel1D<value_type> avg;
         avg.initAveraging(radius);
-        initSeparable(avg, avg);
+        return initSeparable(avg, avg);
     }
     
-        /** Init as a 2D Gaussian function with given standard deviation and norm.
+        /** \brief Init as a 2D Gaussian function with given standard deviation and norm.
+        
+            The function returns a reference to the kernel.
          */    
-    void initGaussian(double std_dev, value_type norm)
+    Kernel2D & initGaussian(double std_dev, value_type norm)
     {
         Kernel1D<value_type> gauss;
         gauss.initGaussian(std_dev, norm);
-        initSeparable(gauss, gauss);
+        return initSeparable(gauss, gauss);
     }
 
-        /** Init as a 2D Gaussian function with given standard deviation and unit norm.
+        /** \brief Init as a 2D Gaussian function with given standard deviation and unit norm.
+        
+            The function returns a reference to the kernel.
          */
-    void initGaussian(double std_dev)
+    Kernel2D & initGaussian(double std_dev)
     {
-        initGaussian(std_dev, NumericTraits<value_type>::one());
+        return initGaussian(std_dev, NumericTraits<value_type>::one());
     }
 
         /** Init the 2D kernel as a circular averaging filter. The norm will be
             calculated as
             <TT>NumericTraits<value_type>::one() / (number of non-zero kernel values)</TT>.
             The kernel's value_type must be a linear space.
+        
+            The function returns a reference to the kernel.
 
             <b> Required Interface:</b>
 
@@ -1042,7 +1056,7 @@ public:
             radius > 0;
             \endcode
         */
-    void initDisk(int radius)
+    Kernel2D & initDisk(int radius)
     {
         vigra_precondition(radius > 0,
                            "Kernel2D::initDisk(): radius must be > 0.");
@@ -1082,6 +1096,7 @@ public:
                 k(x,y) = count * k(x,y);
             }
         }
+        return *this;
     }
 
         /** Init the kernel by an explicit initializer list.
