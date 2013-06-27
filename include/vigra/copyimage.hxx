@@ -102,7 +102,9 @@ swapLine(SrcIterator s,
 /** \brief Copy source image into destination image.
 
     If necessary, type conversion takes place.
-    The function uses accessors to access the pixel data.
+    Some variants of this function use accessors to access the pixel data.
+    
+    See \ref copyMultiArray() for a dimension-independent version of this algorithm.
     
     <b> Declarations:</b>
     
@@ -117,7 +119,6 @@ swapLine(SrcIterator s,
     }
     \endcode
     
-    \deprecatedAPI{copyImage}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -138,24 +139,36 @@ swapLine(SrcIterator s,
                   pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
-    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
 
+    Use MultiArrayView API:
     \code
-    vigra::copyImage(srcImageRange(src), destImage(dest));
+    MultiArray<2, int> src(Shape2(100, 200)),
+                       dest(Shape2(100, 200));
+    ...
     
+    copyImage(src, dest);
+    
+    // equivalent to
+    dest = src;
     \endcode
 
-    \deprecatedUsage{copyImage}
+    Use iterator-based API with accessor:
     \code
-    vigra::copyImage(srcImageRange(src), destImage(dest));
+    MultiArray<2, RGBValue<unsigned char> > src(Shape2(100, 200)),
+    MultiArray<2, float>                    dest(Shape2(100, 200));
     
+    // convert RGB to gray values in the fly
+    copyImage(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()), 
+              destImage(dest));
     \endcode
+    
     <b> Required Interface:</b>
+    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
@@ -166,9 +179,7 @@ swapLine(SrcIterator s,
     DestAccessor dest_accessor;
 
     dest_accessor.set(src_accessor(sx), dx);
-
     \endcode
-    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void copyImage)
 
@@ -262,7 +273,7 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     Pixel values are copied whenever the return value of the mask's
     accessor is not zero.
     If necessary, type conversion takes place.
-    The function uses accessors to access the pixel data.
+    Some variants of this function use accessors to access the pixel data.
     
     <b> Declarations:</b>
     
@@ -279,7 +290,6 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
     }
     \endcode
     
-    \deprecatedAPI{copyImageIf}
     pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
@@ -305,24 +315,35 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
             pair<DestImageIterator, DestAccessor> dest)
     }
     \endcode
-    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/copyimage.hxx\><br>
     Namespace: vigra
 
+    Use MultiArrayView API:
     \code
-    vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
-
+    MultiArray<2, int> src(Shape2(100, 200)),
+                       mask(Shape2(100, 200)),
+                       dest(Shape2(100, 200));
+    ...
+    
+    copyImageIf(src, mask, dest);
     \endcode
 
-    \deprecatedUsage{copyImageIf}
+    Use iterator-based API with accessor:
     \code
-    vigra::copyImageIf(srcImageRange(src), maskImage(mask), destImage(dest));
-
+    MultiArray<2, RGBValue<unsigned char> > src(Shape2(100, 200)),
+    MultiArray<2, unsigned char>            mask(Shape2(100, 200));
+    MultiArray<2, float>                    dest(Shape2(100, 200));
+    
+    // convert RGB to gray values in the fly
+    copyImageIf(srcImageRange(src, RGBToGrayAccessor<RGBValue<unsigned char> >()), 
+                maskImage(mask), destImage(dest));
     \endcode
+
     <b> Required Interface:</b>
+
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -340,7 +361,6 @@ swapImageData(MultiArrayView<2, T1, S1> const & src,
         dest_accessor.set(src_accessor(sx), dx);
 
     \endcode
-    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void copyImageIf)
 

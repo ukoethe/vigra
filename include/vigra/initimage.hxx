@@ -150,13 +150,16 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
 /** \brief Write a value to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image.
-    It uses an accessor to access the pixel data.    
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
     cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
     yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
     <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
+    
+    Function \ref initMultiArray() implements the same functionality for arbitrary dimensional
+    arrays. In many situations, the assignment functions of \ref vigra::MultiArrayView offer
+    a simpler and more readable alternative to the init functions.
 
     <b> Declarations:</b>
     
@@ -166,6 +169,10 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         template <class T, class S, class VALUETYPE>
         void
         initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v);
+        
+        template <class T, class S, class FUNCTOR>
+        void
+        initImage(MultiArrayView<2, T, S> img, FUNCTOR const & v);
     }
     \endcode
     
@@ -200,16 +207,22 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     Namespace: vigra
     
     Initialize with a constant:
-
     \code
-    vigra::BImage img(100, 100);
+    MultiArray<2, unsigned char> img(100, 100);
     
     // init the image with the value 128
-    vigra::initImage(destImageRange(img), 128);
+    initImage(img, 128);
+    
+    // init the interior with the value 1
+    initImage(img.subarray(Shape2(10), Shape2(-10)), 1);
+    
+    // equivalent to
+    img = 128;
+    img.init(128);
+    img.subarray(Shape2(10), Shape2(-10)) = 1;
     \endcode
 
     Initialize with a functor:
-    
     \code
     struct Counter {
         Counter() : count(0) {}
@@ -219,10 +232,15 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         mutable int count;
     };
     
-    vigra::IImage img(100, 100);
+    MultiArray<2, int> img(100, 100);
         
     // write the current count in every pixel
-    vigra::initImage(destImageRange(img), Counter());
+    initImage(img, Counter());
+    
+    // equivalent to
+    #include <vigra/algorithm.hxx>
+    
+    linearSequence(img.begin(), img.end());
     \endcode
 
     \deprecatedUsage{initImage}
@@ -295,7 +313,7 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
 /** \brief Write the result of a functor call to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image by calling the given 
-    functor for each pixel. It uses an accessor to access the pixel data. The functor is 
+    functor for each pixel. The functor is 
     passed by reference, so that its internal state can be updated in each call.
     
     <b> Declarations:</b>
@@ -340,14 +358,19 @@ initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
         
         int operator()() const { return count++; }
     
-        mutable int count;
+        int count;
     };
     
-    vigra::IImage img(100, 100);
+    MultiArray<2, int> img(100, 100);
         
     // write the current count in every pixel
     Counter counter;
-    vigra::initImageWithFunctor(destImageRange(img), counter);
+    initImageWithFunctor(img, counter);
+    
+    // equivalent to
+    #include <vigra/algorithm.hxx>
+    
+    linearSequence(img.begin(), img.end());
     \endcode
 
     \deprecatedUsage{initImageWithFunctor}
@@ -416,7 +439,6 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
 /** \brief Write value to pixel in the image if mask is true.
 
     This function can be used to init a region-of-interest of the image.
-    It uses an accessor to access the pixel data.
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
@@ -436,6 +458,14 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
         initImageIf(MultiArrayView<2, T, S> img, 
                     MultiArrayView<2, TM, SM> const & mask,
                     VALUETYPE const & v);
+                    
+        template <class T, class S, 
+                  class TM, class SM,
+                  class FUNCTOR>
+        void
+        initImageIf(MultiArrayView<2, T, S> img, 
+                    MultiArrayView<2, TM, SM> const & mask,
+                    FUNCTOR const & v);
     }
     \endcode     
     \deprecatedAPI{initImageIf}
@@ -483,13 +513,13 @@ initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
     Namespace: vigra
 
     \code
-    vigra::BImage img(100, 100);
-    vigra::BImage mask(100, 100);
+    MultiArray<2, RGBValue<unsigned char> >  img(100, 100),
+    MultiArray<2, unsigned char>             mask(100, 100);
+    ... // init the ROI mask
     
-    // zero the ROI
-    vigra::initImageIf(destImageRange(img), 
-                maskImage(mask),
-                vigra::NumericTraits<vigra::BImage::PixelType>::zero());
+    // set the ROI to one
+    initImageIf(img, mask,
+                NumericTraits<RGBValue<unsigned char> >::one());
     \endcode
 
     \deprecatedUsage{initImageIf}
@@ -571,7 +601,7 @@ initImageIf(MultiArrayView<2, T, S> img,
 /** \brief Write value to the specified border pixels in the image.
 
     A pixel is initialized if its distance to the border 
-    is at most 'borderwidth'. It uses an accessor to access the pixel data.
+    is at most 'borderwidth'. 
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
@@ -588,6 +618,11 @@ initImageIf(MultiArrayView<2, T, S> img,
         void
         initImageBorder(MultiArrayView<2, T, S> img, 
                         int border_width, VALUETYPE const & v);
+                        
+        template <class T, class S, class FUNCTOR>
+        void
+        initImageBorder(MultiArrayView<2, T, S> img, 
+                        int border_width, FUNCTOR const & v);
     }
     \endcode
     
@@ -623,6 +658,15 @@ initImageIf(MultiArrayView<2, T, S> img,
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
     
+    \code
+    #include <vigra/random.hxx>
+    
+    MultiArray<2, int> img(100, 100);
+    
+    // fill a border of 5 pixels with random numbers
+    initImageBorder(img, 5, MersenneTwister());
+    \endcode
+
     \deprecatedUsage{initImageBorder}
     \code
     vigra::BImage img(100, 100);

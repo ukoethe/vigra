@@ -95,9 +95,12 @@ transformLineIf(SrcIterator s,
 
 /** \brief Apply unary point transformation to each pixel.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref transformMultiArray() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to every source
     pixel and the result written into the corresponding destination pixel.
-    The function uses accessors to access the pixel data.
     Note that the unary functors of the STL can be used in addition to
     the functors specifically defined in \ref TransformFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
@@ -148,19 +151,20 @@ transformLineIf(SrcIterator s,
     Namespace: vigra
 
     \code
-
     #include <cmath>         // for sqrt()
-
-    vigra::transformImage(srcImageRange(src),
-                          destImage(dest),
-                          (double(*)(double))&std::sqrt );
-
+    MultiArray<2, float>  src(100, 200),
+                          dest(100, 200);
+    ...
+    
+    transformImage(src, dest,
+                        (float(*)(float))&std::sqrt );
     \endcode
 
     \deprecatedUsage{transformImage}
     \code
-
     #include <cmath>         // for sqrt()
+    FImage  src(100, 200),
+            dest(100, 200);
 
     vigra::transformImage(srcImageRange(src),
                           destImage(dest),
@@ -183,6 +187,8 @@ transformLineIf(SrcIterator s,
 
     \endcode
     \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImage)
 
@@ -236,6 +242,10 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
 /** \brief Apply unary point transformation to each pixel within the ROI
     (i.e., where the mask is non-zero).
+
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
 
     The transformation given by the functor is applied to every source
     pixel in the ROI (i.e. when the return value of the mask's accessor
@@ -302,12 +312,14 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \code
     #include <cmath>         // for sqrt()
-
-    vigra::transformImageIf(srcImageRange(src),
-                            maskImage(mask),
-                            destImage(dest),
-                            (double(*)(double))&std::sqrt );
-
+    
+    MultiArray<2, unsigned char>  mask(100, 200),
+    MultiArray<2, float>          src(100, 200),
+                                  dest(100, 200);
+    ... // fill src and mask
+    
+    transformImageIf(src, mask, dest,
+                     (float(*)(float))&std::sqrt );
     \endcode
 
     \deprecatedUsage{transformImageIf}
@@ -339,6 +351,8 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
     \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImageIf)
 
@@ -409,7 +423,7 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
     are calculated in one go: for each location, the symmetric
     difference in x- and y-directions (asymmetric difference at the
     image borders) are passed to the given functor, and the result is
-    written the destination image. Functors to be used with this
+    written to the destination image. Functors to be used with this
     function include \ref MagnitudeFunctor and \ref
     RGBGradientMagnitudeFunctor.
 
@@ -455,14 +469,13 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
 
     <b>\#include</b> \<vigra/transformimage.hxx\><br/>
     Namespace: vigra
-    Namespace: vigra	
 
     \code
-    vigra::FImage src(w,h), magnitude(w,h);
+    MultiArray<2, float> src(w,h), magnitude(w,h);
     ...
 
-    gradientBasedTransform(srcImageRange(src), destImage(magnitude),
-                                vigra::MagnitudeFunctor<float>());
+    gradientBasedTransform(src, magnitude,
+                           MagnitudeFunctor<float>());
     \endcode
 
     \deprecatedUsage{gradientBasedTransform}
@@ -493,6 +506,8 @@ transformImageIf(MultiArrayView<2, T1, S1> const & src,
 
     \endcode
     \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void gradientBasedTransform)
 

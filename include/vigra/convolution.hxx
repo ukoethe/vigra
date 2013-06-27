@@ -198,7 +198,7 @@ namespace vigra {
     kernel via internal calls to \ref separableConvolveX() and \ref separableConvolveY(). If two
     1D kernels are specified, separable convolution uses different kernels for the x- and y-axis.
 
-    All \ref vigra::BorderTreatmentMode "border treatment modes" are supported.
+    All \ref BorderTreatmentMode "border treatment modes" are supported.
 
     The unput pixel type <tt>T1</tt> must be a \ref LinearSpace "linear space" over 
     the kernel's value_type <tt>T</tt>, i.e. addition of source values, multiplication with kernel values,

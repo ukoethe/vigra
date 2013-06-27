@@ -2185,7 +2185,7 @@ void cannyEdgeImageFromGrad(
     cannyEdgeImageFromGradWithThinning(grad, edges, 4.0, 1, true);
     \endcode
     
-    \deprecatedUsage{cannyEdgeImageFromGradWithThinning)
+    \deprecatedUsage{cannyEdgeImageFromGradWithThinning}
     \code
     vigra::BImage src(w,h), edges(w,h);
 

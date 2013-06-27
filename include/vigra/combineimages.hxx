@@ -114,10 +114,13 @@ combineThreeLines(SrcIterator1 s1,
 
 /** \brief Combine two source images into destination image.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
-    The function uses accessors to access the pixel data.
     Note that the binary functors of the STL can be used in addition to
     the functors specifically defined in \ref CombineFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
@@ -178,15 +181,12 @@ combineThreeLines(SrcIterator1 s1,
 
     \code
     #include <functional>     // for plus
-    FImage src1(width, height), src2(width, height),
-           dest(width, height);
+    MultiArray<2, float> src1(width, height), src2(width, height),
+                         dest(width, height);
     ... // fill source images 
     
-    vigra::combineTwoImages(
-                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
-                srcIter(src2.upperLeft()), 
-                destIter(dest.upperLeft()),  
-                std::plus<float>());
+    combineTwoImages(src1, src2, dest,
+                     std::plus<float>());
     \endcode
 
     \deprecatedUsage{combineTwoImages}
@@ -223,6 +223,8 @@ combineThreeLines(SrcIterator1 s1,
 
     \endcode
     \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineTwoImages)
 
@@ -291,11 +293,10 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
 /** \brief Combine ROI of two source images into destination image.
 
     The transformation given by the functor is applied to all source 
-    pixels in the ROI (i.e. whenever the return value of the mask's accessor
-    is not zero)
+    pixels in the ROI (i.e. whenever the corresponding value of the mask array
+    is non-zero)
     and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
-    The function uses accessors to access the pixel data.
     Note that the binary functors of the STL can be used in addition to
     the functors specifically defined in \ref CombineFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
@@ -362,17 +363,12 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
 
     \code
     #include <functional>     // for plus
-    FImage src1(width, height), src2(width, height), mask(width, height),
-           dest(width, height);
+    MultiArray<2, float> src1(width, height), src2(width, height), mask(width, height),
+                         dest(width, height);
     ... // fill source and mask images 
 
-    vigra::combineTwoImagesIf(
-                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
-                srcIter(src2.upperLeft()), 
-                maskIter(mask.upperLeft()), 
-                destIter(dest.upperLeft()),
-                std::plus<SrcValueType>());
-    
+    combineTwoImagesIf(src1, src2, mask, dest,
+                       std::plus<float>());
     \endcode
 
     \deprecatedUsage{combineTwoImagesIf}
@@ -417,6 +413,7 @@ combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
     \endcode
     \deprecatedEnd
     
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineTwoImagesIf)
 
@@ -494,9 +491,12 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
 
 /** \brief Combine three source images into destination image.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineThreeMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
-    The function uses accessors to access the pixel data.
     Creation of new functors is easiest by using \ref FunctorExpressions.
     
     <b> Declarations:</b>
@@ -560,17 +560,16 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     Namespace: vigra
 
     \code
-    FImage src1(width, height), src2(width, height), src3(width, height),
-           dest(width, height);
+    #include <vigra/functorexpression.hxx>
+    
+    MultiArray<2, float> src1(width, height), src2(width, height), src3(width, height),
+                         dest(width, height);
     ... // fill source images 
     
-    vigra::combineThreeImages(
-                srcIterRange(src1.upperLeft(), src1.lowerRight()), 
-                srcIter(src2.upperLeft()), 
-                srcIter(src3.upperLeft()), 
-                destIter(dest.upperLeft()),  
-                SomeThreeArgumentFunctor());
+    using namespace vigra::functor; // activate VIGRA's lambda library
     
+    combineThreeImages(src1, src2, src3, dest,
+                       Arg1()*exp(-abs(Arg2()-Arg3())));
     \endcode
 
     \deprecatedUsage{combineThreeImages}
@@ -614,7 +613,7 @@ combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
     \endcode
     \deprecatedEnd
     
-    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineThreeImages)
 

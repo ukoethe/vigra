@@ -51,7 +51,7 @@ namespace vigra {
 
 /** \addtogroup InspectAlgo Algorithms to Inspect Images
 
-    Apply read-only functor to every pixel
+    Collect information and statistics over all or selected pixels.
 */
 //@{
 
@@ -123,9 +123,11 @@ inspectTwoLinesIf(SrcIterator1 s1,
 /** \brief Apply read-only functor to every pixel in the image.
 
     This function can be used to collect statistics of the image etc.
-    The results must be stored in the functor, which serves as a return
-    value.
-    The function uses an accessor to access the pixel data.
+    The results must be stored in the functor, which serves as a return value
+    (and is therefore passed by reference).
+    
+    For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination with 
+    \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
 
@@ -166,15 +168,15 @@ inspectTwoLinesIf(SrcIterator1 s1,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> img(width, height);
+    ... // fill img
+    
     // init functor
-    vigra::BImage img;
+    FindMinMax<unsined char> minmax;
 
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
-
-    vigra::inspectImage(srcImageRange(img), minmax);
+    inspectImage(img, minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
 
     \deprecatedUsage{inspectImage}
@@ -187,7 +189,6 @@ inspectTwoLinesIf(SrcIterator1 s1,
     vigra::inspectImage(srcImageRange(img), minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
     <b> Required Interface:</b>
     \code
@@ -200,6 +201,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
     functor(accessor(ix));         // return not used
     \endcode
     \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImage)
 
@@ -290,12 +293,11 @@ inspectImage(MultiArrayView<2, T, S> const & img,
 
 /** \brief Apply read-only functor to every pixel in the ROI.
 
-    This function can be used to collect statistics of the roi etc.
+    This function can be used to collect statistics of the ROI etc.
     The functor is called whenever the return value of the mask's
     accessor is not zero.
     The results must be stored in the functor, which serves as a return
-    value.
-    Accessors are used to access the pixel and mask data.
+    value (and is therefore passed by reference.
 
     <b> Declarations:</b>
 
@@ -342,17 +344,16 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     Namespace: vigra
 
     \code
-    vigra::BImage img(100, 100);
-    vigra::BImage mask(100, 100);
-
+    MultiArray<2, unsigned char> img(100, 100),
+                                 mask(100, 100);
+    ... // fill img and mask
+    
     // init functor
-    vigra::FindMinMax<vigra::BImage::PixelType> minmax;
+    FindMinMax<unsigned char> minmax;
 
-    vigra::inspectImageIf(srcImageRange(img),
-                          maskImage(mask), minmax);
+    inspectImageIf(img, mask, minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
 
     \deprecatedUsage{inspectImageIf}
@@ -367,7 +368,6 @@ inspectImage(MultiArrayView<2, T, S> const & img,
                           maskImage(mask), minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
     <b> Required Interface:</b>
     \code
@@ -384,6 +384,8 @@ inspectImage(MultiArrayView<2, T, S> const & img,
     if(mask_accessor(mx)) functor(accessor(ix));
     \endcode
     \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImageIf)
 
@@ -500,7 +502,9 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     labeled image, especially in conjunction with
     the \ref ArrayOfRegionStatistics functor. The results must be
     stored in the functor which serves as a return value.
-    Accessors are used to access the pixel data.
+    
+    Note: For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination 
+    with \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
 
@@ -550,15 +554,11 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     Namespace: vigra
 
     \code
-    vigra::BImage image1;
-    vigra::BImage image2;
+    MultiArray<2, unsigned char> image1(width, height), image2(width, height);
 
     SomeStatisticsFunctor stats(...);     // init functor
 
-    vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
-                            stats);
-
-
+    inspectTwoImages(image1, image2, stats);
     \endcode
 
     \deprecatedUsage{inspectTwoImages}
@@ -570,8 +570,6 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
 
     vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
                             stats);
-
-
     \endcode
     <b> Required Interface:</b>
     \code
@@ -587,6 +585,8 @@ inspectImageIf(MultiArrayView<2, T, S> const & img,
     functor(accessor1(ix1), accessor2(ix2));  // return not used
     \endcode
     \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImages)
 
@@ -712,7 +712,6 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     labeled image, especially in conjunction with
     the \ref ArrayOfRegionStatistics functor. The results must be
     stored in the functor which serves as a return value.
-    Accessors are used to access the pixel data.
 
     <b> Declarations:</b>
 
@@ -768,15 +767,12 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
     Namespace: vigra
 
     \code
-    vigra::BImage image1;
-    vigra::BImage image2;
-    vigra::BImage maskimage;
+    MultiArray<2, unsigned char> image1(width, height), image2(width, height),
+                                 maskimage(width, height);
 
     SomeStatisticsFunctor stats(...);     // init functor
 
-    vigra::inspectTwoImagesIf(srcImageRange(image1), srcImage(image2),
-                              srcImage(maskimage), region_stats);
-
+    inspectTwoImagesIf(image1, image2, maskimage, region_stats);
     \endcode
 
     \deprecatedUsage{inspectTwoImagesIf}
@@ -809,6 +805,8 @@ inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
         functor(accessor1(ix1), accessor2(ix2));
     \endcode
     \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
 
