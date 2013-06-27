@@ -177,20 +177,27 @@ def readHDF5(filenameOrGroup, pathInFile, order=None):
             file.close()
     return data
         
-def writeHDF5(data, filenameOrGroup, pathInFile):
+def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
     '''Write an array to an HDF5 file.
-    
+
        'filenameOrGroup' can contain a filename or a group object
        referring to an already open HDF5 file. 'pathInFile' is the name of the
        dataset to be written, including intermediate groups. If the first
        argument is a group object, the path is relative to this group,
        otherwise it is relative to the file's root group. If the dataset already
        exists, it will be replaced without warning.
-       
-       If 'data' has an attribute 'axistags', the array is transposed to 
-       numpy order before writing. Moreover, the axistags will be 
+
+       If 'data' has an attribute 'axistags', the array is transposed to
+       numpy order before writing. Moreover, the axistags will be
        stored along with the data in an attribute 'axistags'.
-       
+
+       'compression' can be set to GZIP, SZIP or LZF
+       GZIP (Standard compression),
+       SZIP (Faster compression, limited types),
+       LZF (Very fast compression, all types).
+       The LZF compression filter is many times faster than GZIP 
+       at the cost of a lower compresion ratio.
+
        Requirements: the 'h5py' module must be installed.
     '''
     import h5py
@@ -220,9 +227,9 @@ def writeHDF5(data, filenameOrGroup, pathInFile):
                 raise IOError("writeHDF5(): cannot replace '%s' because it is not a dataset" % pathInFile)
         try:
             data = data.transposeToNumpyOrder()
-        except: 
+        except:
             pass
-        dataset = group.create_dataset(levels[-1], data=data)
+        dataset = group.create_dataset(levels[-1], data=data, compression=compression)
         if hasattr(data, 'axistags'):
             dataset.attrs['axistags'] = data.axistags.toJSON()
     finally:
