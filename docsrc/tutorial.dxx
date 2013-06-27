@@ -615,18 +615,18 @@
     \endverbatim
 
     To process the image, we must load the actual image data into an array such as the one described in \ref MultiArrayBasics. To do so, we create a <tt>vigra::MultiArray</tt> with the appropriate shape and then call 
-    <tt> importImage(...) </tt>. This function needs an <tt> ImageImportInfo </tt> object specifying the image to be loaded and an <tt>ImageIterator</tt> specifying the array where the data should be imported into. To create a suitable iterator, just use <tt>destImage(imageArray)</tt> convenience function, where imageArray is the MultiArray object to copy the image data in. The code looks like this:
+    <tt>importImage()</tt>. This function needs an <tt> ImageImportInfo </tt> object specifying the image to be loaded and a MultiArrayView object of apropriate size to copy the image data in. The code looks like this:
 
     \dontinclude imageIO_tutorial.cxx
     \skip read image
     \until importImage
+    
+    If you already know the type of data in the file, you can also just pass the filename and a MultiArray, which will then be resized as appropariate.
 
     Writing the image data from an array to a file is quite similar. For this purpose, you use the function 
-    <tt>exportImage(...)</tt>. It needs an image iterator range (a pair of iterators, one pointing at the upper-left point of an image, one at the lower-right) and a <tt>vigra::ImageExportInfo</tt> object. To create the iterator pair, you should use the <tt>srcImageRange(imageArray)</tt> convenience function.
-    
-    The ImageExportInfo object needs a file name. The desired file format is guessed from the
-    file name's extension (but can be overridden with the method <tt>ImageExportInfo::setFileType</tt>. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr' (as for reading, '.exr' requires libopenexr, '.jpg' requires libjpeg, '.png' requires 
-    libpng and '.tif' requires libtiff). In the following example, we create and save a 160x160 pixels image, where the image is a checkerboard. The image is saved as "testimage.gif" in the same folder as the executed code.
+    <tt>exportImage()</tt>, which takes an 2D MultiArrayView and an \ref vigra::ImageExportInfo object or a string (the filename).
+    The ImageExportInfo object also needs a file name, but gives you more control over how the image is written. The desired file format is guessed from the
+    file name's extension (but can be overridden with the method <tt>ImageExportInfo::setFileType</tt>. Recognized extensions are: '.bmp', '.exr', '.gif', '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras', '.tif', '.tiff', '.xv', '.hdr' (as for reading, '.exr' requires libopenexr, '.jpg' requires libjpeg, '.png' requires libpng and '.tif' requires libtiff). In the following example, we create and save a 160x160 pixels image, where the image is a checkerboard. The image is saved as "testimage.gif" in the same folder as the executed code.
 
     \include imageExportInfo_tutorial.cxx
 
@@ -726,7 +726,7 @@
     }
     \endcode
     
-    If you don't need to support any higher dimension or other pixel type, you can just leave it at this -- no templates are required then. 
+    If we don't need to support any higher dimension or other pixel type, we can just leave it at this -- no templates are required then. 
     
     But suppose now that we want to generalize this code for arbitrary dimensional arrays. To do so, we specify the dimension <tt>N</tt> as a template parameter. Then we can no longer use <tt>Shape2</tt> because this class only works for 2-dimensional arrays. Instead, we use the <tt>MultiArrayShape</tt> traits class to ask for the appropriate shape object. Moreover, we cannot iterate over the array with two explicitly nested loops because the number of loops must correspond to the (unknown) number of dimensions. We can solve this problems by means of a \ref vigra::MultiCoordinateIterator from <tt>multi_iterator_coupled.hxx</tt> that iterates over all coordinates of an array, regardless of dimension. The current coordinate is returned by dereferencing the iterator:
     

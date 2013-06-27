@@ -156,8 +156,7 @@ transformLineIf(SrcIterator s,
                           dest(100, 200);
     ...
     
-    transformImage(src, dest,
-                        (float(*)(float))&std::sqrt );
+    transformImage(src, dest, &std::sqrt );
     \endcode
 
     \deprecatedUsage{transformImage}
@@ -318,8 +317,7 @@ transformImage(MultiArrayView<2, T1, S1> const & src,
                                   dest(100, 200);
     ... // fill src and mask
     
-    transformImageIf(src, mask, dest,
-                     (float(*)(float))&std::sqrt );
+    transformImageIf(src, mask, dest, &std::sqrt );
     \endcode
 
     \deprecatedUsage{transformImageIf}

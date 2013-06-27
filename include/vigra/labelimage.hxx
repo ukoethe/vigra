@@ -69,8 +69,8 @@ namespace vigra {
     without overflow. Region numbers will be a consecutive sequence
     starting with one and ending with the region number returned by
     the function (inclusive). The parameter '<TT>eight_neighbors</TT>'
-    determines whether the regions should be 4-connected or
-    8-connected. 
+    determines whether the regions should be 4-connected (false) or
+    8-connected (true). 
 
     Return:  the number of regions found (= largest region label)
     

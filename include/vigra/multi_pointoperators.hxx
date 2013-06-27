@@ -820,8 +820,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                           dest(Shape3(100, 200, 50));
     ...
     
-    transformMultiArray(src, dest,
-                        (float(*)(float))&std::sqrt );
+    transformMultiArray(src, dest, &std::sqrt );
     \endcode
 
     <b> Usage - Expand Mode:</b>
@@ -836,8 +835,7 @@ transformMultiArrayImpl(SrcIterator s, SrcShape const & sshape, SrcAccessor src,
                          dest(Shape3(100, 200, 50));
     ...
     
-    transformMultiArray(src, dest,
-                        (float(*)(float))&std::sqrt );
+    transformMultiArray(src, dest, &std::sqrt );
     \endcode
 
     <b> Usage - Reduce Mode:</b>
