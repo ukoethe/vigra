@@ -24,8 +24,8 @@
     Examples: 
     \code
     // determine the connected components in a binary image, using the 8-neighborhood
-    MultiArray<2, unsigned char>  image(width, height);
-    MultiArray<2, unsigned int>   labels(width, height);
+    MultiArray<2, UInt8>   image(width, height);
+    MultiArray<2, UInt32>  labels(width, height);
     ... // fill image
     labelImage(image, labels, true);
     
@@ -300,7 +300,7 @@
     dimensions is implemented in \ref gaussianSmoothMultiArray():
     
     \code
-    MultiArray<3, unsigned char> inputArray(Shape3(100, 100, 100));
+    MultiArray<3, UInt8> inputArray(Shape3(100, 100, 100));
     ... // fill inputArray with data
     
     MultiArray<3, float> resultArray(inputArray.shape());

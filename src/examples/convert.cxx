@@ -35,8 +35,8 @@
  
 
 #include <iostream>
-#include "vigra/stdimage.hxx"
-#include "vigra/impex.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/impex.hxx>
 
 using namespace vigra; 
 
@@ -46,7 +46,7 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         
         return 1;
     }
@@ -55,34 +55,34 @@ int main(int argc, char ** argv)
     {
         // read image given as first argument
         // file type is determined automatically
-        vigra::ImageImportInfo info(argv[1]);
+        ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
             // create a gray scale image of appropriate size
-            vigra::BImage in(info.width(), info.height());
+            MultiArray<2, UInt8> in(info.width(), info.height());
             
             // import the image just read
-            importImage(info, destImage(in));
+            importImage(info, in);
             
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
+            exportImage(in, ImageExportInfo(argv[2]));
         }
         else
         {
             // create a RGB image of appropriate size
-            vigra::BRGBImage in(info.width(), info.height());
+            MultiArray<2, RGBValue<UInt8> > in(info.width(), info.height());
             
             // import the image just read
-            importImage(info, destImage(in));
+            importImage(info, in);
             
             // write the image to the file given as second argument
             // the file type will be determined from the file name's extension
-            exportImage(srcImageRange(in), vigra::ImageExportInfo(argv[2]));
+            exportImage(in, ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException & e)
+    catch (std::exception & e)
     {
         // catch any errors that might have occurred and print their reason
         std::cout << e.what() << std::endl;

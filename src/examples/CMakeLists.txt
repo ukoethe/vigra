@@ -8,6 +8,7 @@ SET(TARGETS
     profile
     pyramid
     edge
+    boundarytensor
     watershed
     weightedWatersheds
     voronoi

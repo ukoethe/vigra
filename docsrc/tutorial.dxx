@@ -14,7 +14,9 @@
             <li> \ref MultiArrayViewBasics
             <li> \ref MultiArray_subarray
             <li> \ref MultiArray_bind
+            <li> \ref MultiArray_vector_elements
             <li> \ref MultiArray_transpose
+            <li> \ref MultiArray_unstrided
             </ul>
         </ul>
         
@@ -67,7 +69,9 @@
         <li> \ref MultiArrayViewBasics
         <li> \ref MultiArray_subarray
         <li> \ref MultiArray_bind
+        <li> \ref MultiArray_vector_elements
         <li> \ref MultiArray_transpose
+        <li> \ref MultiArray_unstrided
         </ul>
     </ul>
     
@@ -80,8 +84,8 @@
     The structure of a multidimensional array is given by its <tt>shape</tt> vector, and the length of the shape vector is the array's <i>dimension</i>. The dimension must be fixed as a template parameter at compule time, while the shape is passed to the array's constructor. The second important template parameter is the pixel's <tt>value_type</tt>, as you know it form <tt>std::vector</tt>. 
     
     To represent the data of a gray scale image, we just need to store one value per pixel, so we 
-    choose a 2-dimensional array, where each element has the <tt> unsigned char </tt> type. 
-    With VIGRA we instantiate an gray scale image object like this:
+    choose a 2-dimensional array, where each element has the <tt> unsigned char </tt> type 
+    (in VIGRA, this type is also available as \ref vigra::UInt8). We instantiate a gray scale image object like this:
 
     \code
         #include <vigra/multi_array.hxx>
@@ -89,15 +93,16 @@
         using namespace vigra; // for brevity in the examples - don't do this in header files!
         
         int width = ...,  height = ...;
-        MultiArray<2, unsigned char> image(Shape2(width, height));
+        MultiArray<2, UInt8> image(Shape2(width, height));
     \endcode
     
-    By default, VIGRA arrays are always zero-initialized. Another initial value can be provided in the constructor, or later via the <tt>init()</tt> function:
+    By default, VIGRA arrays are <b>always zero-initialized</b>. Another initial value can be provided in the constructor, or later via the <tt>init()</tt> function or the assignment operator:
     
     \code
-        MultiArray<2, unsigned char> image(Shape2(width, height), 255); // init with value 255
+        MultiArray<2, UInt8> image(Shape2(width, height), 255); // init with value 255
         
         image.init(128);  // same effect, different initial value
+        image = 100;      // yet another way
     \endcode
      
     The <tt>Shape2</tt> typedef also exists for higher dimensions up to five as <tt>Shape3</tt> etc. If you need even more dimensions, use <tt>MultiArrayShape<N>::type</tt> instead, were N is the number of dimensions: 
@@ -115,7 +120,7 @@
     provides the <tt>vigra::RGBValue<ValueType></tt> class. So for RGB-images just use: </p>
 
     \code
-        MultiArray<2, RGBValue<unsigned char> > rgb_image(Shape2(256, 128));
+        MultiArray<2, RGBValue<UInt8> > rgb_image(Shape2(256, 128));
     \endcode
 
     vigra::RGBValue<ValueType> is a specialised 3-dimensional vector containing ValueType elements. Arbitrary short vectors can be stored in the <tt>TinyVector<ValueType, SIZE></tt> class, which is the base class of RGBValue. It's length must be specified at compile time in the template parameter <tt>SIZE</tt>. Vectors whose length is known at compile time are very useful for the compiler to produce highly optimized code. Therefore, <tt>Shape2</tt> and it's higher-dimensional coursins are instances of <tt>TinyVector</tt> as well.
@@ -125,7 +130,7 @@
     information for the red, green and blue channel. 
     
     \code
-        MultiArray<3, unsigned char> rgb_array(Shape3(256, 128, 3));
+        MultiArray<3, UInt8> rgb_array(Shape3(256, 128, 3));
     \endcode
 
     However, we are not going to use this form in the tutorial because <tt>vigra::RGBValue<ValueType></tt> provides many helpful methods that are not available when color is just another array dimension.
@@ -313,21 +318,21 @@
     To give an example, we create a 4x4 array that consitst of a checkerboard with 2x2 squares:
 
     \code
-        MultiArray<2, float> array_4x4(Shape2(4,4));  // zero (black) initialized
-        
-        // paint the upper left 2x2 square white
-        array_4x4.subarray(Shape2(0,0), Shape2(2,2)) = 1.0;
-        
-        // likewise for the lower right 2x2 square, but this time we 
-        // store the array view explicitly for illustration
-        MultiArrayView<2, int> lower_right_square = array_4x4.subarray(Shape2(2,2), Shape2(4,4));
-        lower_right_square = 1.0;
-        
-        // contents of array_4x4 now:
-        //    1 1 0 0
-        //    1 1 0 0
-        //    0 0 1 1
-        //    0 0 1 1
+    MultiArray<2, float> array_4x4(Shape2(4,4));  // zero (black) initialized
+    
+    // paint the upper left 2x2 square white
+    array_4x4.subarray(Shape2(0,0), Shape2(2,2)) = 1.0;
+    
+    // likewise for the lower right 2x2 square, but this time we 
+    // store the array view explicitly for illustration
+    MultiArrayView<2, int> lower_right_square = array_4x4.subarray(Shape2(2,2), Shape2(4,4));
+    lower_right_square = 1.0;
+    
+    // contents of array_4x4 now:
+    //    1 1 0 0
+    //    1 1 0 0
+    //    0 0 1 1
+    //    0 0 1 1
     \endcode
 
     The positions p and q are specified with the familiar <tt>Shape</tt> objects. In this example we simply overwrite parts of the array. The following larger example uses <tt>subarray</tt> to output a half-sized subimage around the center of the original image: <a href="subimage_tutorial_8cxx-example.html">subimage_tutorial.cxx</a> <br />
@@ -382,8 +387,7 @@
 
     The array <tt>array1d</tt> contains the elements the 3rd column of <tt>array2d</tt>. This bahavior nicely illustrates the difference between a copy and a view: <tt>array1d</tt> contains a copy of the 3rd column, whereas the <tt>bind</tt> function only creates a new view to the existing data in <tt>array2d</tt>. 
     
-    At this
-    point we have to distinguish between the classes <tt> MultiArray </tt> and 
+    At this point we have to distinguish between the classes <tt> MultiArray </tt> and 
     <tt> MultiArrayView </tt>. MultiArray inherits from MultiArrayView and contains the
     memory management of the array. With MultiArrayView we can view the data stored in a 
     MultiArray. The code above produces a copy of the 3rd column of intArray. If we change the
@@ -446,20 +450,47 @@
     For completeness, there are five additional versions of the bind()-method:
     
     <DL>
-    <DT><b> bindInner(i) </b></DT>
+    <DT><b> bindInner(i) </b> with scalar or multi-dimensional index i:</DT>
         <DD> if i is an <tt> integer </tt>, the innermost dimension (axis 0) is fixed to i, <br>
              if i is <tt>MultiArrayShape<M>::type</tt> (a shape of size M), then the M innermost 
              dimensions (axes 0...M-1) are fixed to the values in the shape vector </DD>
-    <DT><b> bindOuter(i) </b></DT>
+    <DT><b> bindOuter(i) </b> with scalar or multi-dimensional index i:</DT>
         <DD> if i is an <tt> integer </tt>, the outmost dimension (axis N-1) is fixed to i, <br>
         if i is <tt>MultiArrayShape<M>::type</tt> (a shape of size M), then the M outmost dimensions 
         (axes N-M ... N-1) are fixed to the values in the shape vector </DD>
-    <DT><b> diagonal() </b></DT>
+    <DT><b> diagonal() </b>:</DT>
         <DD> Create a 1-dimensional view to the diagonal elements of the original array 
         (i.e. <tt>view[i] == array(i,i,i)</tt> for a 3D original array). </DD>
     </DL>
+    
+    The opposite of binding - inserting a new axis - is also possible. However, since we must not alter the internal memory layout and thus cannot insert additional data elements, a new axis must be singleton axis, i.e. an axis with length 1. The argument of <tt>insertSingletonDimension(k)</tt> determines the position of the new axis, with <tt>0 <= k <= N</tt> when the original array has <tt>N</tt> dimensions:
+    
+    \code
+    MultiArray<2, int> array(20,10);
+    std::cout << array.insertSingletonDimension(1).shape() << "\n"; // prints "(20, 1, 10)"
+    \endcode
+    
+    <hr>
 
-    See \ref vigra::MultiArrayView for a detailed description and examples.
+    \subsection MultiArray_vector_elements expandElements(k) and bindElementChannel(i)
+    
+    When the array elements are vectors (i.e. \ref vigra::TinyVector or \ref vigra::RGBValue), we can expand these elements into an addtional array dimension:
+    \code
+    MultiArray<2, TinyVector<int, 3> > vector_array(20, 10);
+    std::cout << vector_array.shape() << "\n";  // prints "(20, 10)"
+    
+    MultiArrayView<3, int> expanded(vector_array.expandElements(2));
+    std::cout << expanded.shape() << "\n";  // prints "(20, 10, 3)"
+    \endcode
+    
+    The argument <tt>k</tt> of <tt>expandElements(k)</tt> determines the desired position of the channel axis, i.e. the index that refers to the vector elements. When the original vector array has <tt>N</tt> dimensions (not counting the channel axis), it is required that <tt>0 <= k <= N</tt>. 
+    
+    Often, we are only interested in a single channel of a vector-valued array. This can be achieved with the function <tt>bindElementChannel(i)</tt>. For example, we can extract the green channel (i.e. channel 1) from an RGB image like this:
+    \code
+    MultiArray<2, RGBValue<UInt8> > rgb_array(20, 10);
+    MultiArrayView<2, UInt8> green_channel(rgb_array.bindElementChannel(1));
+    \endcode
+    This is simply an abbreviation for <tt>rgb_array.expandElements(0).bindInner(1)</tt>.
 
     <hr>
 
@@ -533,6 +564,16 @@
 
     <b>Important note:</b> Transposing an array also changes the direction of the StridedScanOrderIterator. Imagine a 3x4-
     matrix. Scan-order means that we iterate from left to right, row by row. Now, let's transpose the matrix to a 4x3 view. Than, scan-order in the new view is again left to right, row by row. However, in the original matrix this now corresponds to a transposed scan: from top to bottom, column by column. The same applies to the array's index operator with integer argument.
+    
+    <hr>
+
+    \subsection MultiArray_unstrided isUnstrided(k)
+    
+    A MultiArray always accesses its elements in consecutive memory order, i.e. <tt>&array[i] == &array.data()[i]</tt> for all <tt>i</tt> in the range </tt>[0, array.size())</tt>. However, this does in general not hold for MultiArrayViews, because changing array access is the whole point of view creation. Sometimes, it is necessary to find out if a view still has consecutive, unstrided memory access, for example when you want to pass on the view's data to an external library that only accepts plain C arrays: When the view happens to be unstrided, you can avoid to create a copy of the data. You can determine this with the function <tt>isUnstrided(k)</tt> which returns <tt>true</tt> when the array is unstrided up to dimension <tt>k</tt> (<tt>k</tt> defaults to <tt>N-1</tt>, i.e. the entire array must be unstrided):
+    \code 
+    MultiArray<2, int> array(20,10);
+    std::cout << array.isUnstrided() << " " << array.transpose().isUnstrided() << "\n";  // prints "true false"
+    \endcode
 */
 
 
@@ -651,8 +692,8 @@
     </Table>
 
     The handling of <b>color images</b> is exactly the same, but instead of instantiating
-    a <tt>vigra::MultiArray<2, unsigned char></tt> you need a
-    <tt> vigra::MultiArray<2, vigra::RGBValue<unsigned char> > </tt> array as described in
+    a <tt>vigra::MultiArray<2, UInt8></tt> you need a
+    <tt> vigra::MultiArray<2, vigra::RGBValue<UInt8> > </tt> array as described in
     \ref MultiArrayBasics. Images with alpha channel are supported by \ref importImageAlpha() and exportImageAlpha().
 
     Note that image processing often requires more complicated calculations than in these examples.

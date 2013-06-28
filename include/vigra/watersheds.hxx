@@ -901,8 +901,8 @@ class WatershedOptions
         /** \brief Specify the algorithm to be used.
         
             Possible values are <tt>WatershedOptions::RegionGrowing</tt> and
-            <tt>WatershedOptions::UnionFind</tt>. The latter algorithms is fastest
-            but doesn't support seeds and any other option.
+            <tt>WatershedOptions::UnionFind</tt>. The latter algorithm is fastest
+            but doesn't support seeds and any of the other options.
         
             Default: RegionGrowing.
         */

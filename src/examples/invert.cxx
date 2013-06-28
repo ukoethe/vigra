@@ -35,9 +35,10 @@
  
 
 #include <iostream>
-#include "vigra/stdimage.hxx"
-#include "vigra/stdimagefunctions.hxx"
-#include "vigra/impex.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/stdimagefunctions.hxx>
+#include <vigra/multi_math.hxx>
+#include <vigra/impex.hxx>
 #include <string.h>
 
 using namespace vigra; 
@@ -48,68 +49,72 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        vigra::ImageImportInfo info(argv[1]);
+        ImageImportInfo info(argv[1]);
         
         if(info.isGrayscale())
         {
-            vigra::BImage in(info.width(), info.height());
-            vigra::BImage out(info.width(), info.height());
+            MultiArray<2, UInt8> in(info.width(), info.height()),
+                                 out(info.width(), info.height());
            
-            importImage(info, destImage(in));
+            importImage(info, in);
             
-            // create a negative image by applying the expression
+            // create an inverted image by applying the expression
             //       newvalue = -1 * (oldvalue - 255)
             // to each pixel
-            transformImage(srcImageRange(in), destImage(out),
-                           vigra::linearIntensityTransform(-1, -255));
+            transformImage(in, out,
+                           linearIntensityTransform(-1, -255));
+            
+            // the same can be achieved using array expressions
+            using namespace multi_math;   // activate array expressions
+            out = 255 - in;
             
             if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
-                exportImage(srcImageRange(out), 
-                 vigra::ImageExportInfo(argv[2]).setFileType(info.getFileType()));
+                exportImage(out, ImageExportInfo(argv[2]).setFileType(info.getFileType()));
             }
             else
             {
-                exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+                exportImage(out, ImageExportInfo(argv[2]));
             }
         }
         else
         {
-            vigra::BRGBImage in(info.width(), info.height());
-            vigra::BRGBImage out(info.width(), info.height());
+            MultiArray<2, RGBValue<UInt8> > in(info.width(), info.height()),
+                                            out(info.width(), info.height());
            
-            importImage(info, destImage(in));
-            
-            vigra::RGBValue<int> offset(-255, -255, -255);
-            
+            importImage(info, in);
             
             // create a negative image by applying the expression
             //       newvalue = -1 * (oldvalue + RGBValue<int>(-255, -255, -255))
             // to each pixel
-            transformImage(srcImageRange(in), destImage(out),
-                           vigra::linearIntensityTransform(-1, offset));
+            transformImage(in, out,
+                           linearIntensityTransform(-1, RGBValue<int>(-255)));
+            
+            // the same can be achieved using array expressions
+            using namespace multi_math;   // activate array expressions
+            out = RGBValue<int>(255) - in;
             
             if(strcmp(argv[2], "-") == 0)
             {
                 // write stdout
-                exportImage(srcImageRange(out), 
-                 vigra::ImageExportInfo(argv[2]).setFileType(info.getFileType()));
+                exportImage(out, 
+                 ImageExportInfo(argv[2]).setFileType(info.getFileType()));
             }
             else
             {
-                exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+                exportImage(out, ImageExportInfo(argv[2]));
             }
         }
     }
-    catch (vigra::StdException & e)
+    catch (std::exception & e)
     {
         std::cout << e.what() << std::endl;
         return 1;
