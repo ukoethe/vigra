@@ -193,7 +193,7 @@ def writeHDF5(data, filenameOrGroup, pathInFile, compression=None):
 
        'compression' can be set to GZIP, SZIP or LZF
        GZIP (standard compression),
-       SZIP (available, if HDF5 is compiled with szip. Faster compression, limited types),
+       SZIP (available if HDF5 is compiled with szip. Faster compression, limited types),
        LZF (very fast compression, all types).
        The LZF compression filter is many times faster than GZIP 
        at the cost of a lower compresion ratio.
