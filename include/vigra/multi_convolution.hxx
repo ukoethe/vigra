@@ -1581,15 +1581,15 @@ gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
     }
               
     dest.init(0.0);
-    MultiArray<N, TinyVector<T1, N> > grad(dest.shape());
+    
+    typedef typename NumericTraits<T1>::RealPromote TmpType;
+    MultiArray<N, TinyVector<TmpType, N> > grad(dest.shape());
     
     using namespace multi_math;
     
     for(int k=0; k<src.shape(N); ++k)
     {
-        MultiArrayView<N, T1, StridedArrayTag> band = src.bindOuter(k);
-    
-        gaussianGradientMultiArray(srcMultiArrayRange(band), destMultiArray(grad), opt);
+        gaussianGradientMultiArray(src.bindOuter(k), grad, opt);
         
         dest += squaredNorm(grad);
     }
