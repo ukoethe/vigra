@@ -1,114 +1,116 @@
 #include <vigra/multi_array.hxx>
-#include "vigra/impex.hxx"
-#include <vigra/stdconvolution.hxx>
+#include <vigra/impex.hxx>
+#include <vigra/convolution.hxx>
 #include <iostream>
 
 using namespace vigra;
 
-int main (int argc, char ** argv) {
-
-    // read image given as first argument
-    vigra::ImageImportInfo info(argv[1]);
-
-    // process grayscale image
-    if (info.isGrayscale()) {
-       
-        // instantiate arrays for image data and for smoothed image of appropriate size
-        vigra::MultiArray<2, float> imageArray(info.shape());
-        vigra::MultiArray<2, float> exportArray(info.shape());
-
-        // copy image data into array
-        importImage(info, destImage(imageArray));
-
-        // instantiate convolving kernel
-        vigra::Kernel2D<double> kernel2dim;
-        vigra::Kernel1D<double> kernel1dim;
+int main (int argc, char ** argv) 
+{
+    if(argc != 3) 
+    {
+        std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         
-        // choose of convolving mode
-        std::cout << "Which mode of convolution?\n";
-        std::cout << "1 - 3x3-average\n";
-        std::cout << "2 - 3x3-box just corners\n";
-        std::cout << "3 - gaussian\n";
-        std::cout << "4 - X- and Y-dimension separately\n";
-        int mode;
-        std::cin >> mode;
-        
-        // initializing kernel       
-        switch(mode) {
-            // homogenous averaging of 3x3-box
-            case 1: kernel2dim.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0; break;
-            // averaging corners of 3x3-box
-            case 2: kernel2dim.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
-                        0.25, 0.0, 0.25, 
-                        0.0,  0.0, 0.0,
-                        0.25, 0.0, 0.25; break;
-            // gaussian convolving
-            case 3: kernel2dim.initGaussian(1.5); break;
-            case 4: kernel1dim.initExplicitly(-1,1) = 1.0/3.0; break;
-        }
-       
-        // convolve image
-        if (mode == 4) {
-             separableConvolveX(srcImageRange(imageArray), destImage(imageArray), kernel1d(kernel1dim));
-             separableConvolveY(srcImageRange(imageArray), destImage(exportArray), kernel1d(kernel1dim));
-        }
-        else {
-            convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel2dim));
-        }
-
-        // write image data to the file given as second argument
-        exportImage(srcImageRange(exportArray), vigra::ImageExportInfo(argv[2]));
+        return 1;
     }
 
-    // process color image
-    else {
-       
-        // instantiate arrays for image data and for smoothed image of appropriate size
-        vigra::MultiArray<2, vigra::RGBValue<float> > imageArray(info.shape());
-        vigra::MultiArray<2, vigra::RGBValue<float> > exportArray(info.shape());
+    try
+    {
+        // read image given as first argument
+        ImageImportInfo info(argv[1]);
 
-        // copy image data into array
-        importImage(info, destImage(imageArray));
-
-        // instantiate convolving kernel
-        vigra::Kernel2D<double> kernel2dim;
-        vigra::Kernel1D<double> kernel1dim;
-        
-        // choose of convolving mode
+        // choose convolving mode
         std::cout << "Which mode of convolution?\n";
-        std::cout << "1 - 3x3-average\n";
-        std::cout << "2 - 3x3-box just corners\n";
-        std::cout << "3 - gaussian\n";
-        std::cout << "4 - X- and Y-dimension separately\n";
+        std::cout << "1 - disk average\n";
+        std::cout << "2 - corners of a 3x3-box\n";
+        std::cout << "3 - Gaussian filter\n";
+        std::cout << "4 - separable Gaussian filter (x- and x-dimension separately)\n";
         int mode;
         std::cin >> mode;
         
-        // initializing kernel       
-        switch(mode) {
-            // homogenous averaging of 3x3-box
-            case 1: kernel2dim.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 1.0/9.0; break;
-            // averaging corners of 3x3-box
-            case 2: kernel2dim.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
+        // instantiate convolution kernels
+        Kernel2D<double> kernel2dim;
+        Kernel1D<double> kernel1dim;
+        
+        // initialize kernel
+        switch(mode) 
+        {
+            case 1: 
+                // homogenous averaging within a disk of radius 2
+                kernel2dim.initDisk(2); 
+                break;
+            case 2: 
+                // strange custom-made filter: averaging the corners of a 3x3-box
+                kernel2dim.initExplicitly(Diff2D(-1,-1), Diff2D(1,1)) = 
                         0.25, 0.0, 0.25, 
                         0.0,  0.0, 0.0,
-                        0.25, 0.0, 0.25; break;
-            // gaussian convolving
-            case 3: kernel2dim.initGaussian(1.5); break;
-            case 4: kernel1dim.initExplicitly(-1,1) = 1.0/3.0; break;
+                        0.25, 0.0, 0.25; 
+                        break;
+            case 3: 
+                // gaussian convolution
+                kernel2dim.initGaussian(1.5);
+                break;
+            case 4: 
+                // separable gaussian convolution
+                kernel1dim.initGaussian(1.5);
+                break;
+            default:
+                vigra_precondition(false, "mode must be between 1 and 4.");
         }
-       
-        // convolve image
-        if (mode == 4) {
-             separableConvolveX(srcImageRange(imageArray), destImage(imageArray), kernel1d(kernel1dim));
-             separableConvolveY(srcImageRange(imageArray), destImage(exportArray), kernel1d(kernel1dim));
-        }
-        else {
-            convolveImage(srcImageRange(imageArray), destImage(exportArray), kernel2d(kernel2dim));
-        }
+           
+        // process grayscale image
+        if (info.isGrayscale()) 
+        {
+            // instantiate arrays for image data and for smoothed image of appropriate size
+            MultiArray<2, float> imageArray(info.shape()),
+                                 exportArray(info.shape());
 
-        // write image data to the file given as second argument
-        exportImage(srcImageRange(exportArray), vigra::ImageExportInfo(argv[2]));
-        
+            // copy image data into array
+            importImage(info, imageArray);
+
+            // convolve image
+            if (mode == 4) 
+            {
+                 convolveImage(imageArray, exportArray, kernel1dim, kernel1dim);
+            }
+            else 
+            {
+                convolveImage(imageArray, exportArray, kernel2dim);
+            }
+
+            // write image data to the file given as second argument
+            exportImage(exportArray, ImageExportInfo(argv[2]));
+        }
+        // process color image
+        else 
+        {
+            // instantiate arrays for image data and for smoothed image of appropriate size
+            MultiArray<2, RGBValue<float> > imageArray(info.shape());
+            MultiArray<2, RGBValue<float> > exportArray(info.shape());
+
+            // copy image data into array
+            importImage(info, imageArray);
+
+            // convolve image
+            if (mode == 4) 
+            {
+                 convolveImage(imageArray, exportArray, kernel1dim, kernel1dim);
+            }
+            else 
+            {
+                convolveImage(imageArray, exportArray, kernel2dim);
+            }
+
+            // write image data to the file given as second argument
+            exportImage(exportArray, ImageExportInfo(argv[2]));
+        }
+    }
+    catch (std::exception & e) 
+    {
+        // catch any errors that might have occurred and print their reason
+        std::cout << e.what() << std::endl;
+        return 1;
     }
     return 0;
 }

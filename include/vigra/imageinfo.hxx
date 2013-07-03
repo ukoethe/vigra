@@ -233,7 +233,7 @@ class ImageExportInfo
                            You can also specify a compression quality parameter by
                            passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100
                            (e.g. "JPEG-ARITH QUALITY=70").
-            <DT><b>RLE", "RunLength:</b><DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
+            <DT><b>RLE, RunLength:</b><DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
                           uses run-length encoding, but there it is not an option).
             <DT><b>PACKBITS:</b><DD> (recognized by TIFF): use packbits encoding (a variant of RLE).
             <DT><b>DEFLATE:</b><DD> (recognized by TIFF): use deflate encoding, as defined in zlib (PNG also
@@ -242,11 +242,11 @@ class ImageExportInfo
             <DT><b>ZIP:</b><DD> (recognized by EXR): use zip-style encoding.
             <DT><b>PIZ:</b><DD> (recognized by EXR): use wavelet encoding.
             <DT><b>PXR24:</b><DD> (recognized by EXR): reduce to 24-bit, then use zip-style encoding.
-            <DT><b>B44", "B44A:</b><DD> (recognized by EXR): see OpenEXR documentation.
+            <DT><b>B44, B44A:</b><DD> (recognized by EXR): see OpenEXR documentation.
             <DT><b>ASCII:</b><DD> (recognized by PNM): store pixels as ASCII (human readable numbers).
             <DT><b>RAW:</b><DD> (recognized by PNM): store pixels as uncompressed binary data.
             <DT><b>BILEVEL:</b><DD> (recognized by PNM): store as one bit per pixel.
-            <DT><b>1" ... "100:</b><DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt>
+            <DT><b>1 ... 100:</b><DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt>
                              where the number denotes the desired quality).
             </DL>
 
