@@ -36,15 +36,15 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
-#include "vigra/stdimage.hxx"
-#include "vigra/stdimagefunctions.hxx"
-#include "vigra/impex.hxx"
-#include "vigra/colorconversions.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/stdimagefunctions.hxx>
+#include <vigra/impex.hxx>
+#include <vigra/colorconversions.hxx>
 
 using namespace vigra;
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorVsSaturation(BRGBImage & result, double brightness, 
+void createColorVsSaturation(MultiArray<2, RGBValue<UInt8> > & result, double brightness, 
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
     int w = result.width(); 
@@ -76,7 +76,7 @@ void createColorVsSaturation(BRGBImage & result, double brightness,
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorVsBrightness(BRGBImage & result, double saturation, 
+void createColorVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double saturation, 
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
     int w = result.width(); 
@@ -108,7 +108,7 @@ void createColorVsBrightness(BRGBImage & result, double saturation,
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createSaturationVsBrightness(BRGBImage & result, double color, 
+void createSaturationVsBrightness(MultiArray<2, RGBValue<UInt8> > & result, double color, 
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
     int w = result.width(); 
@@ -140,7 +140,7 @@ void createSaturationVsBrightness(BRGBImage & result, double color,
 }
 
 template<class Polar2Cartesian, class Cartesian2RGB, class RGB2RGBPrime>
-void createColorCircle(BRGBImage & result, double brightness, 
+void createColorCircle(MultiArray<2, RGBValue<UInt8> > & result, double brightness, 
                  Polar2Cartesian polar2Cartesian, Cartesian2RGB cartesian2RGB, RGB2RGBPrime rgb2RGBPrime)
 {
     int w = result.width(); 
@@ -173,14 +173,14 @@ void createColorCircle(BRGBImage & result, double brightness,
     }
 }
 
-void write(char const * colorspace, char const * diagram, int i, BRGBImage const & img)
+void write(char const * colorspace, char const * diagram, int i, MultiArray<2, RGBValue<UInt8> > const & img)
 {
     char buf[1000];
     if(i < 10)
         sprintf(buf, "%s_%s_0%d.gif", colorspace, diagram, i);
     else
         sprintf(buf, "%s_%s_%d.gif", colorspace, diagram, i);
-    exportImage(srcImageRange(img), ImageExportInfo(buf));
+    exportImage(img, ImageExportInfo(buf));
     std::cout << "Wrote " << buf << std::endl;
 }
 
@@ -195,7 +195,7 @@ void createColorSpaceSlices(char const * colorspace,
     for(int i=0; i<=Ymax; ++i)
     {
 
-        BRGBImage result(w, h);
+        MultiArray<2, RGBValue<UInt8> > result(w, h);
 
         createColorVsSaturation(result, (float)i/Ymax, 
                         polar2Cartesian, cartesian2RGB, rgb2RGBPrime);
@@ -284,7 +284,7 @@ int main(int argc, char ** argv)
             return 1;
         }
     }
-    catch (StdException & e)
+    catch (std::exception & e)
     {
         std::cout << e.what() << std::endl;
         return 1;
