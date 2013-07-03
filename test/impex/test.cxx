@@ -1537,18 +1537,6 @@ public:
             should(rc);
         }
 
-        MultiArray<2, UInt8> gray;
-        
-        try {
-            importImage("lennargb.xv", gray);
-            failTest( "Failed to throw exception." );
-        }
-        catch( vigra::PreconditionViolation & e ) {
-            std::string expected = "\nPrecondition violation!\nimportImage(): Cannot read a multi-channel image into a single-band array.";
-            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
-            should(rc);
-        }
-
         MultiArray<2, TinyVector<UInt8, 4> > vec4;
         
         try {

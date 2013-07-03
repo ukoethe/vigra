@@ -201,9 +201,6 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraTrueType)
         {
-            vigra_precondition(import_info.numBands() == 1,
-                "importImage(): Cannot read a multi-channel image into a single-band array.");
-
             VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
             switch (pixel_t_of_string(decoder->getPixelType()))
@@ -642,7 +639,8 @@ namespace vigra
     must be a \ref vigra::MultiArray reference, which will be reshaped automatically.
     
     If the input image has only a single band, but the destination has multiple bands (e.g. is an RGB
-    image), all bands will receive the same data. Any other mismatch between the number of bands in
+    image), all bands will receive the same data. When a multi-band file is read into a single-band 
+    destination array, only the first band is read. Any other mismatch between the number of bands in
     input and output is an error and will throw a precondition exception.
     
     <B>Declarations</B>
