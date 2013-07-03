@@ -575,7 +575,7 @@ void defineConvolutionFunctions()
         "  is performed (non-separable filtering). This is only applicable to 2D images.\n"
         "\n"
         "For details see separableConvolveMultiArray_ and "
-        "|StandardConvolution.convolveImage|_ in the vigra C++ documentation.\n");
+        "convolveImage_ in the vigra C++ documentation.\n");
 
     def("convolve", registerConverters(&pythonSeparableConvolveND_1Kernel<float,4>),
         (arg("volume"), arg("kernel"), arg("out")=python::object()),
