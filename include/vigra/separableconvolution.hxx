@@ -1540,8 +1540,6 @@ class Kernel1D
             <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
             is required).
             
-            The function returns a reference to the kernel.
-
             Precondition:
             \code
             std_dev >= 0.0
@@ -1555,13 +1553,13 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initGaussian(double std_dev, value_type norm, double windowRatio = 0.0);
+    void initGaussian(double std_dev, value_type norm, double windowRatio = 0.0);
 
         /** Init as a Gaussian function with norm 1.
          */
-    Kernel1D & initGaussian(double std_dev)
+    void initGaussian(double std_dev)
     {
-        return initGaussian(std_dev, one());
+        initGaussian(std_dev, one());
     }
 
 
@@ -1569,8 +1567,6 @@ class Kernel1D
             Init as Lindeberg's discrete analog of the Gaussian function. The radius of the kernel is
             always 3*std_dev. 'norm' denotes the sum of all bins of the kernel.
 
-            The function returns a reference to the kernel.
-
             Precondition:
             \code
             std_dev >= 0.0
@@ -1584,14 +1580,14 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initDiscreteGaussian(double std_dev, value_type norm);
+    void initDiscreteGaussian(double std_dev, value_type norm);
 
         /** Init as a Lindeberg's discrete analog of the Gaussian function
             with norm 1.
          */
-    Kernel1D & initDiscreteGaussian(double std_dev)
+    void initDiscreteGaussian(double std_dev)
     {
-        return initDiscreteGaussian(std_dev, one());
+        initDiscreteGaussian(std_dev, one());
     }
 
         /**
@@ -1613,8 +1609,6 @@ class Kernel1D
             otherwise it is <tt>radius = round(windowRatio * std_dev)</tt> (where 
             <tt>windowRatio > 0.0</tt> is required).
 
-            The function returns a reference to the kernel.
-
             Preconditions:
             \code
             1. std_dev >= 0.0
@@ -1629,13 +1623,13 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initGaussianDerivative(double std_dev, int order, value_type norm, double windowRatio = 0.0);
+    void initGaussianDerivative(double std_dev, int order, value_type norm, double windowRatio = 0.0);
 
         /** Init as a Gaussian derivative with norm 1.
          */
-    Kernel1D & initGaussianDerivative(double std_dev, int order)
+    void initGaussianDerivative(double std_dev, int order)
     {
-        return initGaussianDerivative(std_dev, order, one());
+        initGaussianDerivative(std_dev, order, one());
     }
 
         /**
@@ -1650,8 +1644,6 @@ class Kernel1D
             of this filter is the best possible 3x3 approximation to a Gaussian filter.
             The equivalent Gaussian has sigma = 0.680.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -1
@@ -1660,11 +1652,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalSmoothing3()
+    void initOptimalSmoothing3()
     {
         this->initExplicitly(-1, 1) = 0.216, 0.568, 0.216;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1681,8 +1672,6 @@ class Kernel1D
             this filter with the symmetric difference is the best possible 3x3 approximation to a 
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.675.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -1
@@ -1691,11 +1680,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalFirstDerivativeSmoothing3()
+    void initOptimalFirstDerivativeSmoothing3()
     {
         this->initExplicitly(-1, 1) = 0.224365, 0.55127, 0.224365;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1712,8 +1700,6 @@ class Kernel1D
             this filter with the 3-tap second difference is the best possible 3x3 approximation to a 
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.433.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -1
@@ -1722,11 +1708,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalSecondDerivativeSmoothing3()
+    void initOptimalSecondDerivativeSmoothing3()
     {
         this->initExplicitly(-1, 1) = 0.13, 0.74, 0.13;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1741,8 +1726,6 @@ class Kernel1D
             of this filter is the best possible 5x5 approximation to a Gaussian filter.
             The equivalent Gaussian has sigma = 0.867.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -2
@@ -1751,11 +1734,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalSmoothing5()
+    void initOptimalSmoothing5()
     {
         this->initExplicitly(-2, 2) = 0.03134, 0.24, 0.45732, 0.24, 0.03134;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1772,8 +1754,6 @@ class Kernel1D
             this filter with the optimal 5-tap first derivative is the best possible 5x5 approximation to a 
             Gaussian first derivative filter. The equivalent Gaussian has sigma = 0.906.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -2
@@ -1782,11 +1762,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalFirstDerivativeSmoothing5()
+    void initOptimalFirstDerivativeSmoothing5()
     {
         this->initExplicitly(-2, 2) = 0.04255, 0.241, 0.4329, 0.241, 0.04255;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1803,8 +1782,6 @@ class Kernel1D
             this filter with the optimal 5-tap second derivative is the best possible 5x5 approximation to a 
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -2
@@ -1813,11 +1790,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalSecondDerivativeSmoothing5()
+    void initOptimalSecondDerivativeSmoothing5()
     {
         this->initExplicitly(-2, 2) = 0.0243, 0.23556, 0.48028, 0.23556, 0.0243;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
@@ -1836,8 +1812,6 @@ class Kernel1D
             sigma = 5.1 * a + 0.731
             \endcode
  
-            The function returns a reference to the kernel.
-
             Preconditions:
             \code
             0 <= a <= 0.125
@@ -1851,20 +1825,17 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initBurtFilter(double a = 0.04785)
+    void initBurtFilter(double a = 0.04785)
     {
         vigra_precondition(a >= 0.0 && a <= 0.125,
             "Kernel1D::initBurtFilter(): 0 <= a <= 0.125 required.");
         this->initExplicitly(-2, 2) = a, 0.25, 0.5 - 2.0*a, 0.25, a;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /**
             Init as a Binomial filter. 'norm' denotes the sum of all bins
             of the kernel.
-
-            The function returns a reference to the kernel.
 
             Precondition:
             \code
@@ -1879,20 +1850,18 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initBinomial(int radius, value_type norm);
+    void initBinomial(int radius, value_type norm);
 
         /** Init as a Binomial filter with norm 1.
          */
-    Kernel1D & initBinomial(int radius)
+    void initBinomial(int radius)
     {
-        return initBinomial(radius, one());
+        initBinomial(radius, one());
     }
 
         /**
             Init as an Averaging filter. 'norm' denotes the sum of all bins
             of the kernel. The window size is (2*radius+1) * (2*radius+1)
-
-            The function returns a reference to the kernel.
 
             Precondition:
             \code
@@ -1907,21 +1876,19 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initAveraging(int radius, value_type norm);
+    void initAveraging(int radius, value_type norm);
 
         /** Init as an Averaging filter with norm 1.
          */
-    Kernel1D & initAveraging(int radius)
+    void initAveraging(int radius)
     {
-        return initAveraging(radius, one());
+        initAveraging(radius, one());
     }
 
         /**
             Init as a symmetric gradient filter of the form
             <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
            
-            The function returns a reference to the kernel.
-
             <b>Deprecated</b>. Use initSymmetricDifference() instead.
 
             Postconditions:
@@ -1932,20 +1899,19 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    Kernel1D & initSymmetricGradient(value_type norm )
+    void initSymmetricGradient(value_type norm )
     {
         initSymmetricDifference(norm);
         setBorderTreatment(BORDER_TREATMENT_REPEAT);
-        return *this;
     }
 
         /** Init as a symmetric gradient filter with norm 1.
            
            <b>Deprecated</b>. Use initSymmetricDifference() instead.
          */
-    Kernel1D & initSymmetricGradient()
+    void initSymmetricGradient()
     {
-        return initSymmetricGradient(one());
+        initSymmetricGradient(one());
     }
 
         /** Init as the 2-tap forward difference filter.
@@ -1958,8 +1924,6 @@ class Kernel1D
             (note that filters are reflected by the convolution algorithm,
              and we get a forward difference after reflection).
 
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -1
@@ -1968,11 +1932,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
           */
-    Kernel1D & initForwardDifference()
+    void initForwardDifference()
     {
         this->initExplicitly(-1, 0) = 1.0, -1.0;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /** Init as the 2-tap backward difference filter.
@@ -1985,8 +1948,6 @@ class Kernel1D
             (note that filters are reflected by the convolution algorithm,
              and we get a forward difference after reflection).
 
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == 0
@@ -1995,14 +1956,13 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
           */
-    Kernel1D & initBackwardDifference()
+    void initBackwardDifference()
     {
         this->initExplicitly(0, 1) = 1.0, -1.0;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
-    Kernel1D & initSymmetricDifference(value_type norm );
+    void initSymmetricDifference(value_type norm );
 
         /** Init as the 3-tap symmetric difference filter
             The filter values are
@@ -2010,8 +1970,6 @@ class Kernel1D
             \code
             [0.5, 0, -0.5]
             \endcode
-
-            The function returns a reference to the kernel.
 
             Postconditions:
             \code
@@ -2021,9 +1979,9 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
           */
-    Kernel1D & initSymmetricDifference()
+    void initSymmetricDifference()
     {
-        return initSymmetricDifference(one());
+        initSymmetricDifference(one());
     }
 
         /**
@@ -2034,8 +1992,6 @@ class Kernel1D
             [1, -2, 1]
             \endcode
 
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -1
@@ -2044,11 +2000,10 @@ class Kernel1D
             4. norm() == 1
             \endcode
         */
-    Kernel1D & initSecondDifference3()
+    void initSecondDifference3()
     {
         this->initExplicitly(-1, 1) = 1.0, -2.0, 1.0;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
     
         /**
@@ -2069,8 +2024,6 @@ class Kernel1D
             If the filter is instead separably combined with itself, an almost optimal approximation of the
             mixed second Gaussian derivative at scale sigma = 0.899 results.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -2
@@ -2079,11 +2032,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalFirstDerivative5()
+    void initOptimalFirstDerivative5()
     {
         this->initExplicitly(-2, 2) = 0.1, 0.3, 0.0, -0.3, -0.1;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
     
         /**
@@ -2101,8 +2053,6 @@ class Kernel1D
             this filter with the corresponding 5-tap smoothing filter is the best possible 5x5 approximation to a 
             Gaussian second derivative filter. The equivalent Gaussian has sigma = 0.817.
  
-            The function returns a reference to the kernel.
-
             Postconditions:
             \code
             1. left()  == -2
@@ -2111,11 +2061,10 @@ class Kernel1D
             4. norm() == 1.0
             \endcode
         */
-    Kernel1D & initOptimalSecondDerivative5()
+    void initOptimalSecondDerivative5()
     {
         this->initExplicitly(-2, 2) = 0.22075, 0.117, -0.6755, 0.117, 0.22075;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
-        return *this;
     }
 
         /** Init the kernel by an explicit initializer list.
@@ -2141,8 +2090,6 @@ class Kernel1D
             \endcode
 
             Here, the norm is set to value*size().
-
-            The function returns a reference to the kernel.
 
             <b> Preconditions:</b>
 
@@ -2306,7 +2253,7 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
                                   value_type norm, 
                                   double windowRatio)
@@ -2355,13 +2302,12 @@ Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 
     // best border treatment for Gaussians is BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;
-    return *this;
 }
 
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
                                           value_type norm)
 {
@@ -2427,13 +2373,12 @@ Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
 
     // best border treatment for Gaussians is BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;
-    return *this;
 }
 
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
                                             int order,
                                             value_type norm, 
@@ -2443,8 +2388,11 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
               "Kernel1D::initGaussianDerivative(): Order must be >= 0.");
 
     if(order == 0)
-        return initGaussian(std_dev, norm, windowRatio);
-
+    {
+        initGaussian(std_dev, norm, windowRatio);
+        return;
+    }
+    
     vigra_precondition(std_dev > 0.0,
               "Kernel1D::initGaussianDerivative(): "
               "Standard deviation must be > 0.");
@@ -2497,13 +2445,12 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
     // best border treatment for Gaussian derivatives is
     // BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;
-    return *this;
 }
 
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initBinomial(int radius,
                                   value_type norm)
 {
@@ -2532,13 +2479,12 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 
     // best border treatment for Binomial is BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;
-    return *this;
 }
 
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initAveraging(int radius,
                                    value_type norm)
 {
@@ -2563,13 +2509,12 @@ Kernel1D<ARITHTYPE>::initAveraging(int radius,
 
     // best border treatment for Averaging is BORDER_TREATMENT_CLIP
     border_treatment_ = BORDER_TREATMENT_CLIP;
-    return *this;
 }
 
 /***********************************************************************/
 
 template <class ARITHTYPE>
-Kernel1D<ARITHTYPE> &
+void
 Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
 {
     kernel_.erase(kernel_.begin(), kernel_.end());
@@ -2586,7 +2531,6 @@ Kernel1D<ARITHTYPE>::initSymmetricDifference(value_type norm)
     // best border treatment for symmetric difference is
     // BORDER_TREATMENT_REFLECT
     border_treatment_ = BORDER_TREATMENT_REFLECT;
-    return *this;
 }
 
 /**************************************************************/
