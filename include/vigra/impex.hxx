@@ -103,9 +103,10 @@ namespace vigra
 
             const unsigned width(decoder->getWidth());
             const unsigned height(decoder->getHeight());
+            const unsigned bands(decoder->getNumBands());
             const unsigned offset(decoder->getOffset());
             const unsigned accessor_size(image_accessor.size(image_iterator));
-
+            
             // OPTIMIZATION: Specialization for the most common case
             // of an RGB-image, i.e. 3 channels.
             if (accessor_size == 3U)
@@ -119,9 +120,18 @@ namespace vigra
                     decoder->nextScanline();
 
                     scanline_0 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
-                    scanline_1 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(1));
-                    scanline_2 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(2));
-
+                    
+                    if(bands == 1)
+                    {
+                        scanline_1 = scanline_0;
+                        scanline_2 = scanline_0;
+                    }
+                    else
+                    {
+                        scanline_1 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(1));
+                        scanline_2 = static_cast<const ValueType*>(decoder->currentScanlineOfBand(2));
+                    }
+                    
                     ImageRowIterator is(image_iterator.rowIterator());
                     const ImageRowIterator is_end(is + width);
 
@@ -148,12 +158,24 @@ namespace vigra
                 for (unsigned y = 0U; y != height; ++y)
                 {
                     decoder->nextScanline();
+                    
+                    scanlines[0] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(0));
 
-                    for (unsigned i = 0U; i != accessor_size; ++i)
+                    if(bands == 1)
                     {
-                        scanlines[i] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(i));
+                        for (unsigned i = 1U; i != accessor_size; ++i)
+                        {
+                            scanlines[i] = scanlines[0];
+                        }
                     }
-
+                    else
+                    {
+                        for (unsigned i = 1U; i != accessor_size; ++i)
+                        {
+                            scanlines[i] = static_cast<const ValueType*>(decoder->currentScanlineOfBand(i));
+                        }
+                    }
+                    
                     ImageRowIterator is(image_iterator.rowIterator());
                     const ImageRowIterator is_end(is + width);
 
@@ -179,6 +201,9 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraTrueType)
         {
+            vigra_precondition(import_info.numBands() == 1,
+                "importImage(): Cannot read a multi-channel image into a single-band array.");
+
             VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
 
             switch (pixel_t_of_string(decoder->getPixelType()))
@@ -218,8 +243,12 @@ namespace vigra
                     ImageIterator image_iterator, ImageAccessor image_accessor,
                     /* isScalar? */ VigraFalseType)
         {
-            VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
+            vigra_precondition(import_info.numBands() == ImageAccessor::value_type::static_size ||
+                               import_info.numBands() == 1,
+                "importImage(): Number of channels in input and destination image don't match.");
 
+            VIGRA_UNIQUE_PTR<Decoder> decoder(vigra::decoder(import_info));
+            
             switch (pixel_t_of_string(decoder->getPixelType()))
             {
             case UNSIGNED_INT_8:
@@ -611,6 +640,10 @@ namespace vigra
     If the first parameter is \ref vigra::ImageImportInfo, this function assumes that the destination
     image has already the appropriate shape. If the first parameter is a string, the destination
     must be a \ref vigra::MultiArray reference, which will be reshaped automatically.
+    
+    If the input image has only a single band, but the destination has multiple bands (e.g. is an RGB
+    image), all bands will receive the same data. Any other mismatch between the number of bands in
+    input and output is an error and will throw a precondition exception.
     
     <B>Declarations</B>
    

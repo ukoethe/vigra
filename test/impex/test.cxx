@@ -165,6 +165,19 @@ public:
         should(res1 == View(res));
     }
 
+    void testGrayToRGB()
+    {
+        MultiArray<2, RGBValue<unsigned char> > rgb;
+
+        importImage("lenna.xv", rgb);
+
+        should (rgb.shape(0) == img.width());
+        should (rgb.shape(1) == img.height());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(0).begin());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(1).begin());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(2).begin());
+    }
+
     void testJPEG ()
     {
         vigra::ImageExportInfo exportinfo ("res.jpg");
@@ -1509,6 +1522,45 @@ public:
             should(rc);
         }
     }
+
+    void testShapeMismatch ()
+    {
+        MultiArray<2, RGBValue<UInt8> > rgb(1,1);
+
+        try {
+            importImage(ImageImportInfo("lennargb.xv"), rgb);
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) {
+            std::string expected = "\nPrecondition violation!\nimportImage(): shape mismatch between input and output.";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+
+        MultiArray<2, UInt8> gray;
+        
+        try {
+            importImage("lennargb.xv", gray);
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) {
+            std::string expected = "\nPrecondition violation!\nimportImage(): Cannot read a multi-channel image into a single-band array.";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+
+        MultiArray<2, TinyVector<UInt8, 4> > vec4;
+        
+        try {
+            importImage("lennargb.xv", vec4);
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) {
+            std::string expected = "\nPrecondition violation!\nimportImage(): Number of channels in input and destination image don't match.";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+    }
 };
 
 class GrayscaleImportExportAlphaTest
@@ -1729,7 +1781,8 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteImageExportImportTest::testSUN));
         add(testCase(&ByteImageExportImportTest::testVIFF1));
         add(testCase(&ByteImageExportImportTest::testVIFF2));
-
+        add(testCase(&ByteImageExportImportTest::testGrayToRGB));
+        
         // rgb byte images
         add(testCase(&ByteRGBImageExportImportTest::testGIF));
         add(testCase(&ByteRGBImageExportImportTest::testJPEG));
@@ -1797,6 +1850,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ImageExportImportFailureTest::testSUNImport));
         add(testCase(&ImageExportImportFailureTest::testVIFFExport));
         add(testCase(&ImageExportImportFailureTest::testVIFFImport));
+        add(testCase(&ImageExportImportFailureTest::testShapeMismatch));
 
         // alpha-channel tests
         add(testCase(&GrayscaleImportExportAlphaTest::testTIFF));
