@@ -792,10 +792,10 @@ public:
 
         /** construct from shape and pointer
          */
-    MultiArrayView (const difference_type &shape, pointer ptr)
+    MultiArrayView (const difference_type &shape, const_pointer ptr)
     : m_shape (shape),
       m_stride (detail::defaultStride<actual_dimension>(shape)),
-      m_ptr (ptr)
+      m_ptr (const_cast<pointer>(ptr))
     {}
 
         /** Construct from shape, strides (offset of a sample to the
@@ -805,10 +805,10 @@ public:
          */
     MultiArrayView (const difference_type &shape,
                     const difference_type &stride,
-                    pointer ptr)
+                    const_pointer ptr)
     : m_shape (shape),
       m_stride (stride),
-      m_ptr (ptr)
+      m_ptr (const_cast<pointer>(ptr))
     {
         vigra_precondition(checkInnerStride(StrideTag()),
             "MultiArrayView<..., UnstridedArrayTag>::MultiArrayView(): First dimension of given array is not unstrided.");

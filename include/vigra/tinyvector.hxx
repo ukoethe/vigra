@@ -997,7 +997,7 @@ class TinyVector
     TinyVector()
     : BaseType()
     {
-        Loop::assignScalar(BaseType::data_, NumericTraits<value_type>::zero());
+        Loop::assignScalar(BaseType::data_, value_type());
     }
 
         /** Construct without initializing the vector elements.

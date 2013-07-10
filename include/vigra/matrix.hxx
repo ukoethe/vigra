@@ -1522,6 +1522,25 @@ outer(const MultiArrayView<2, T, C> &x)
     return ret;
 }
 
+    /** calculate the outer product of a TinyVector with itself.
+        The result is returned as a temporary matrix.
+
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, int N>
+TemporaryMatrix<T>
+outer(const TinyVector<T, N> &x)
+{
+    TemporaryMatrix<T> ret(N, N);
+
+    for(MultiArrayIndex i = 0; i < N; ++i)
+        for(MultiArrayIndex j = 0; j < N; ++j)
+            ret(j, i) = x[j] * x[i];
+    return ret;
+}
+
 template <class T>
 class PointWise
 {
