@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*                  Copyright 2008 by Ullrich Koethe                    */
+/*             Copyright 2008-2013 by Ullrich Koethe                    */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -42,6 +42,7 @@
 #include "singular_value_decomposition.hxx"
 #include "numerictraits.hxx"
 #include "functorexpression.hxx"
+#include "autodiff.hxx"
 
 
 namespace vigra
@@ -950,6 +951,104 @@ using linalg::ridgeRegressionSeries;
 using linalg::nonnegativeLeastSquares;
 using linalg::leastAngleRegression;
 using linalg::LeastAngleRegressionOptions;
+
+namespace detail {
+
+template <class T, class S>
+inline T 
+getRow(MultiArrayView<1, T, S> const & a, MultiArrayIndex i)
+{
+    return a(i);
+}
+
+template <class T, class S>
+inline MultiArrayView<2, T>
+getRow(MultiArrayView<2, T, S> const & a, MultiArrayIndex i)
+{
+    return rowVector(a, i);
+}
+
+} // namespace detail
+
+template <unsigned int D, class T, class S1, class S2, 
+         class U, int N, 
+         class Functor>
+T
+levenbergMarquart(MultiArrayView<D, T, S1> const & features,
+                  MultiArrayView<1, T, S2> const & response,
+                  TinyVector<U, N> & p, 
+                  Functor model)
+{
+    vigra_precondition(features.shape(0) == response.shape(0),
+                       "levenbergMarquart(): shape mismatch between features and response.");
+                       
+    double t = 1.4, l = 0.1;  // initial regularization parameters
+    
+    double epsilonT = NumericTraits<T>::epsilon()*10.0,
+           epsilonU = NumericTraits<U>::epsilon()*10.0,
+           epsilon = std::max(epsilonT, epsilonU);
+    
+    linalg::Matrix<T> j(N,1), jj(N,N);  // Jacobian and its outer product
+    TinyVector<U, N> jr, dp;
+    
+    T residual = 0.0;
+    bool didStep = true;
+    
+    for(int iter=0; iter<30; ++iter)
+    {
+        if(didStep)
+        {
+            // update the residual and Jacobian
+            residual = 0.0;
+            jr = 0.0;
+            jj = 0.0;
+            j = 0.0;
+            
+            for(int i=0; i<features.shape(0); ++i)
+            {
+                autodiff::DualVector<U, N> res = model(detail::getRow(features, i), autodiff::dualMatrix(p));
+                
+                T r = response(i) - res.v;
+                jr += r * res.d;
+                jj += outer(res.d);
+                residual += sq(r);
+            }
+        }
+        
+        // perform a regularized gradient step
+        linalg::Matrix<T> djj(jj);
+        djj.diagonal() *= 1.0 + l;        
+        linearSolve(djj, jr, dp);
+        
+        TinyVector<U, N> p_new = p + dp;
+        
+        // compute the new residual
+        T residual_new = 0.0;
+        for(int i=0; i<features.shape(0); ++i)
+        {
+            residual_new += sq(response(i) - model(detail::getRow(features, i), p_new));
+        }
+        
+        if(residual_new < residual)
+        {
+            // accept the step
+            p = p_new;
+            if(std::abs((residual - residual_new) / residual) < epsilon)
+                return residual_new;
+            // try less regularization in the next iteration
+            l /= t;
+            didStep = true;
+        }
+        else
+        {
+            // reject the step und use more regularization in the next iteration
+            l *= t;
+            didStep = false;
+        }
+    }
+    
+    return residual;
+}
 
 } // namespace vigra
 
