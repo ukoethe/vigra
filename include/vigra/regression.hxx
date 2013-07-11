@@ -962,31 +962,102 @@ getRow(MultiArrayView<1, T, S> const & a, MultiArrayIndex i)
 }
 
 template <class T, class S>
-inline MultiArrayView<2, T>
+inline MultiArrayView<1, T>
 getRow(MultiArrayView<2, T, S> const & a, MultiArrayIndex i)
 {
-    return rowVector(a, i);
+    return a.bindInner(i);
 }
 
 } // namespace detail
 
+/** \addtogroup Optimization
+ */
+//@{
+
+/** \brief Pass options to nonlinearLeastSquares().
+
+    <b>\#include</b> \<vigra/regression.hxx\>
+    Namespace: vigra
+*/
+class NonlinearLSQOptions
+{
+  public:
+  
+    double epsilon, lambda, tau;
+    int max_iter;
+    
+        /** \brief Initialize options with default values.
+        */
+    NonlinearLSQOptions()
+    : epsilon(0.0),
+      lambda(0.1),
+      tau(1.4),
+      max_iter(50)
+    {}
+    
+        /** \brief Set minimum relative improvement in residual.
+        
+            The algorithm stops when the relative improvement in residuals
+            between consecutive iterations is less than this value.
+            
+            Default: 0 (i.e. choose tolerance automatically, will be 10*epsilon of the numeric type)
+        */
+    NonlinearLSQOptions & tolerance(double eps)
+    {
+        epsilon = eps;
+        return *this;
+    }
+    
+        /** \brief Set maximum number of iterations.
+        
+            Default: 50
+        */
+    NonlinearLSQOptions & maxIterations(int iter)
+    {
+        max_iter = iter;
+        return *this;
+    }
+    
+        /** \brief Set damping parameters for Levenberg-Marquardt algorithm.
+        
+            \a lambda determines by how much the diagonal is emphasized, and \a v is 
+            the factor by which lambda will be increased if more damping is needed 
+            for convergence
+            (see <a href="http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">Wikipedia</a>
+            for more explanations).
+        
+            Default: lambda = 0.1, v = 1.4
+        */
+    NonlinearLSQOptions & dampingParamters(double lambda, double v)
+    {
+        vigra_precondition(lambda > 0.0 && v > 0.0,
+            "NonlinearLSQOptions::dampingParamters(): parameters must be positive.");
+        this->lambda = lambda;
+        tau = v;
+        return *this;
+    }
+};
+
 template <unsigned int D, class T, class S1, class S2, 
-         class U, int N, 
-         class Functor>
+          class U, int N, 
+          class Functor>
 T
-levenbergMarquart(MultiArrayView<D, T, S1> const & features,
-                  MultiArrayView<1, T, S2> const & response,
-                  TinyVector<U, N> & p, 
-                  Functor model)
+nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
+                          MultiArrayView<1, T, S2> const & response,
+                          TinyVector<U, N> & p, 
+                          Functor model,
+                          NonlinearLSQOptions const & options)
 {
     vigra_precondition(features.shape(0) == response.shape(0),
-                       "levenbergMarquart(): shape mismatch between features and response.");
+                       "nonlinearLeastSquares(): shape mismatch between features and response.");
                        
-    double t = 1.4, l = 0.1;  // initial regularization parameters
+    double t = options.tau, l = options.lambda;  // initial regularization parameters
     
     double epsilonT = NumericTraits<T>::epsilon()*10.0,
            epsilonU = NumericTraits<U>::epsilon()*10.0,
-           epsilon = std::max(epsilonT, epsilonU);
+           epsilon = options.epsilon <= 0.0
+                         ? std::max(epsilonT, epsilonU)
+                         : options.epsilon;
     
     linalg::Matrix<T> j(N,1), jj(N,N);  // Jacobian and its outer product
     TinyVector<U, N> jr, dp;
@@ -994,7 +1065,7 @@ levenbergMarquart(MultiArrayView<D, T, S1> const & features,
     T residual = 0.0;
     bool didStep = true;
     
-    for(int iter=0; iter<30; ++iter)
+    for(int iter=0; iter<options.max_iter; ++iter)
     {
         if(didStep)
         {
@@ -1049,6 +1120,95 @@ levenbergMarquart(MultiArrayView<D, T, S1> const & features,
     
     return residual;
 }
+
+/********************************************************/
+/*                                                      */
+/*                 nonlinearLeastSquares                */
+/*                                                      */
+/********************************************************/
+
+/** \brief Performs 1 dimensional recursive smoothing in y direction.
+
+    It calls \ref recursiveSmoothLine() for every column of the
+    image. See \ref recursiveSmoothLine() for more information about 
+    required interfaces and vigra_preconditions.
+    
+    <b> Declarations:</b>
+    
+    \code
+    namespace vigra {
+        template <class T, class S1, class S2, 
+                  class U, int N, 
+                  class Functor>
+        T
+        nonlinearLeastSquares(MultiArrayView<1, T, S1> const & features,
+                              MultiArrayView<1, T, S2> const & response,
+                              TinyVector<U, N> & p, 
+                              Functor model,
+                              NonlinearLSQOptions const & options = NonlinearLSQOptions());
+
+        template <class T, class S1, class S2, 
+                  class U, int N, 
+                  class Functor>
+        T
+        nonlinearLeastSquares(MultiArrayView<2, T, S1> const & features,
+                              MultiArrayView<1, T, S2> const & response,
+                              TinyVector<U, N> & p, 
+                              Functor model,
+                              NonlinearLSQOptions const & options = NonlinearLSQOptions());
+    }
+    \endcode
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<vigra/regression.hxx\><br>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
+    
+    recursiveSmoothY(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveSmoothY}
+    \code
+    vigra::FImage src(w,h), dest(w,h);    
+    ...
+    
+    vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
+    \endcode
+    \deprecatedEnd
+*/
+doxygen_overloaded_function(template <...> void nonlinearLeastSquares)
+
+template <class T, class S1, class S2, 
+          class U, int N, 
+          class Functor>
+inline T
+nonlinearLeastSquares(MultiArrayView<1, T, S1> const & features,
+                      MultiArrayView<1, T, S2> const & response,
+                      TinyVector<U, N> & p, 
+                      Functor model,
+                      NonlinearLSQOptions const & options = NonlinearLSQOptions())
+{
+    return nonlinearLeastSquaresImpl(features, response, p, model, options);
+}
+
+template <class T, class S1, class S2, 
+          class U, int N, 
+          class Functor>
+inline T
+nonlinearLeastSquares(MultiArrayView<2, T, S1> const & features,
+                      MultiArrayView<1, T, S2> const & response,
+                      TinyVector<U, N> & p, 
+                      Functor model,
+                      NonlinearLSQOptions const & options = NonlinearLSQOptions())
+{
+    return nonlinearLeastSquaresImpl(features, response, p, model, options);
+}
+
+//@}
 
 } // namespace vigra
 
