@@ -106,6 +106,10 @@
 #    define M_SQRT2  1.41421356237309504880
 #endif
 
+#ifndef M_E
+#    define M_E      2.71828182845904523536
+#endif
+
 #ifndef M_EULER_GAMMA
 #    define M_EULER_GAMMA  0.5772156649015329
 #endif
