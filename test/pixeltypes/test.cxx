@@ -199,6 +199,8 @@ struct TinyVectorTest
         should(iv3 == bv3);
         should(iv3 != fv3);
         should(fv3 != bv3);
+
+        should(closeAtTolerance(fv3, fv3));
         
         should(!bv0.any() && !bv0.all() && bv1.any() && bv1.all());
         should(!iv0.any() && !iv0.all() && iv1.any() && iv1.all());

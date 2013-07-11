@@ -215,6 +215,18 @@ struct ExecLoop
         }
         return false;
     }
+    
+    template <class T>
+    static bool closeAtTolerance(T const * left, T const * right, T epsilon)
+    {
+        bool res = true;
+        for(int i=0; i<LEVEL; ++i)
+        {
+            res = res && vigra::closeAtTolerance(left[i], right[i], epsilon);
+        }
+        return res;
+    }
+    
     template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
@@ -484,6 +496,13 @@ struct UnrollLoop
     }
 
     template <class T>
+    static bool closeAtTolerance(T const * left, T const * right, T epsilon)
+    {
+        return vigra::closeAtTolerance(*left, *right, epsilon) && 
+                  UnrollLoop<LEVEL - 1>::closeAtTolerance(left+1, right+1, epsilon);
+    }
+    
+    template <class T>
     static typename NumericTraits<T>::Promote
     dot(T const * d)
     {
@@ -568,6 +587,8 @@ struct UnrollLoop<0>
     static bool all(T const *, T const &) { return true; }
     template <class T>
     static bool any(T const *, T const &) { return false; }
+    template <class T>
+    static bool closeAtTolerance(T const *, T const *, T) { return true; }
 };
 
 template <int SIZE>
@@ -1242,7 +1263,7 @@ operator!=(TinyVectorBase<V1, SIZE, D1, D2> const & l,
     return ltype::notEqual(l.begin(), r.begin());
 }
 
-    /// component-wise lexicographical comparison
+    /// lexicographical comparison
 template <class V1, int SIZE, class D1, class D2, class V2, class D3, class D4>
 inline bool
 operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
@@ -1250,6 +1271,26 @@ operator<(TinyVectorBase<V1, SIZE, D1, D2> const & l,
 {
     typedef typename detail::LoopType<SIZE>::type ltype;
     return ltype::less(l.begin(), r.begin());
+}
+
+template <class V, int SIZE, class D1, class D2, class D3, class D4>
+bool 
+closeAtTolerance(TinyVectorBase<V, SIZE, D1, D2> const & l,
+                 TinyVectorBase<V, SIZE, D3, D4> const & r, 
+                 V epsilon = NumericTraits<V>::epsilon())
+{
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    return ltype::closeAtTolerance(l.begin(), r.begin(), epsilon);
+}
+
+template <class V, int SIZE>
+bool 
+closeAtTolerance(TinyVector<V, SIZE> const & l,
+                 TinyVector<V, SIZE> const & r, 
+                 V epsilon = NumericTraits<V>::epsilon())
+{
+    typedef typename detail::LoopType<SIZE>::type ltype;
+    return ltype::closeAtTolerance(l.begin(), r.begin(), epsilon);
 }
 
 /********************************************************/
