@@ -50,7 +50,23 @@ struct DualVector
     T v;
     TinyVector<T, N> d;
     
-    DualVector(T const & iv = 0.0, TinyVector<T, N> const & id = TinyVector<T, N>())
+    DualVector()
+    : v(), d()
+    {}
+    
+    explicit DualVector(T const & iv)
+    : v(iv), d()
+    {}
+    
+    DualVector(T const & iv, T const & id)
+    : v(iv), d(id)
+    {}
+    
+    DualVector(T const & iv, T const & d0, T const & d1)
+    : v(iv), d(d0, d1)
+    {}
+    
+    DualVector(T const & iv, TinyVector<T, N> const & id)
     : v(iv), d(id)
     {}
     
@@ -126,6 +142,19 @@ struct DualVector
 };
 
 template <class T, int N>
+TinyVector<DualVector<T, N>, N>
+dualMatrix(TinyVector<T, N> const & v)
+{
+    TinyVector<DualVector<T, N>, N> res;
+    for(int k=0; k<N; ++k)
+    {
+        res[k].v = v[k];
+        res[k].d[k] = T(1.0);
+    }
+    return res;
+}
+
+template <class T, int N>
 inline DualVector<T, N> operator+(DualVector<T, N> v1, DualVector<T, N> const & v2)
 {
     return v1 += v2;
@@ -198,7 +227,7 @@ inline DualVector<T, N> operator/(T v1, DualVector<T, N> const & v2)
 }
 
 using vigra::abs;
-// abs(x + h) ~= x + h or -(x + h)
+// abs(x + h) => x + h or -(x + h)
 template <typename T, int N>
 inline DualVector<T, N> abs(DualVector<T, N> const & v)
 {
@@ -206,7 +235,7 @@ inline DualVector<T, N> abs(DualVector<T, N> const & v)
 }
 
 using std::log;
-// log(a + h) ~= log(a) + h / a
+// log(a + h) => log(a) + h / a
 template <typename T, int N>
 inline DualVector<T, N> log(DualVector<T, N> v) 
 {
@@ -216,7 +245,7 @@ inline DualVector<T, N> log(DualVector<T, N> v)
 }
 
 using std::exp;
-// exp(a + h) ~= exp(a) + exp(a) h
+// exp(a + h) => exp(a) + exp(a) h
 template <class T, int N>
 inline DualVector<T, N> exp(DualVector<T, N> v)
 {
@@ -226,7 +255,7 @@ inline DualVector<T, N> exp(DualVector<T, N> v)
 }
 
 using vigra::sqrt;
-// sqrt(a + h) ~= sqrt(a) + h / (2 sqrt(a))
+// sqrt(a + h) => sqrt(a) + h / (2 sqrt(a))
 template <typename T, int N>
 inline DualVector<T, N> sqrt(DualVector<T, N> v)
 {
@@ -237,7 +266,7 @@ inline DualVector<T, N> sqrt(DualVector<T, N> v)
 
 using std::sin;
 using std::cos;
-// sin(a + h) ~= sin(a) + cos(a) h
+// sin(a + h) => sin(a) + cos(a) h
 template <typename T, int N>
 inline DualVector<T, N> sin(DualVector<T, N> v)
 {
@@ -246,7 +275,7 @@ inline DualVector<T, N> sin(DualVector<T, N> v)
     return v;
 }
 
-// cos(a + h) ~= cos(a) - sin(a) h
+// cos(a + h) => cos(a) - sin(a) h
 template <typename T, int N>
 inline DualVector<T, N> cos(DualVector<T, N> v)
 {
@@ -255,10 +284,30 @@ inline DualVector<T, N> cos(DualVector<T, N> v)
     return v;
 }
 
-using std::asin;
-// asin(a + h) ~= asin(a) + 1 / sqrt(1 - a^2) h
+using vigra::sin_pi;
+using vigra::cos_pi;
+// sin_pi(a + h) => sin_pi(a) + pi cos_pi(a) h
 template <typename T, int N>
-inline DualVector<T, N> asin(DualVector<T, N> )
+inline DualVector<T, N> sin_pi(DualVector<T, N> v)
+{
+    v.d *= M_PI*cos_pi(v.v);
+    v.v = sin_pi(v.v);
+    return v;
+}
+
+// cos_pi(a + h) => cos_pi(a) - pi sin_pi(a) h
+template <typename T, int N>
+inline DualVector<T, N> cos_pi(DualVector<T, N> v)
+{
+    v.d *= -M_PI*sin_pi(v.v);
+    v.v = cos_pi(v.v);
+    return v;
+}
+
+using std::asin;
+// asin(a + h) => asin(a) + 1 / sqrt(1 - a^2) h
+template <typename T, int N>
+inline DualVector<T, N> asin(DualVector<T, N> v)
 {
     v.d /= sqrt(T(1.0) - sq(v.v));
     v.v = asin(v.v);
@@ -266,27 +315,27 @@ inline DualVector<T, N> asin(DualVector<T, N> )
 }
 
 using std::acos;
-// acos(a + h) ~= acos(a) - 1 / sqrt(1 - a^2) h
+// acos(a + h) => acos(a) - 1 / sqrt(1 - a^2) h
 template <typename T, int N>
 inline DualVector<T, N> acos(DualVector<T, N> v) 
 {
-    v.d /= sqrt(T(1.0) - sq(v.v));
+    v.d /= -sqrt(T(1.0) - sq(v.v));
     v.v = acos(v.v);
     return v;
 }
 
 using std::tan;
-// tan(a + h) ~= tan(a) + (1 + tan(a)^2) h
+// tan(a + h) => tan(a) + (1 + tan(a)^2) h
 template <typename T, int N>
 inline DualVector<T, N> tan(DualVector<T, N> v)
 {
     v.v = tan(v.v);
-    v.d *= T(1.0) * sq(v.v);
+    v.d *= T(1.0) + sq(v.v);
     return v;
 }
 
 using std::atan;
-// atan(a + h) ~= atan(a) + 1 / (1 + a^2) h
+// atan(a + h) => atan(a) + 1 / (1 + a^2) h
 template <typename T, int N>
 inline DualVector<T, N> atan(DualVector<T, N> v)
 {
@@ -297,7 +346,7 @@ inline DualVector<T, N> atan(DualVector<T, N> v)
 
 using std::sinh;
 using std::cosh;
-// sinh(a + h) ~= sinh(a) + cosh(a) h
+// sinh(a + h) => sinh(a) + cosh(a) h
 template <typename T, int N>
 inline DualVector<T, N> sinh(DualVector<T, N> v)
 {
@@ -306,7 +355,7 @@ inline DualVector<T, N> sinh(DualVector<T, N> v)
     return v;
 }
 
-// cosh(a + h) ~= cosh(a) + sinh(a) h
+// cosh(a + h) => cosh(a) + sinh(a) h
 template <typename T, int N>
 inline DualVector<T, N> cosh(DualVector<T, N> v) 
 {
@@ -316,7 +365,7 @@ inline DualVector<T, N> cosh(DualVector<T, N> v)
 }
 
 using std::tanh;
-// tanh(a + h) ~= tanh(a) + (1 - tanh(a)^2) h
+// tanh(a + h) => tanh(a) + (1 - tanh(a)^2) h
 template <typename T, int N>
 inline DualVector<T, N> tanh(DualVector<T, N> v)
 {
@@ -326,20 +375,17 @@ inline DualVector<T, N> tanh(DualVector<T, N> v)
 }
 
 using vigra::sq;
-// (a + h)^2 ~= a^2 + 2 a h
+// (a + h)^2 => a^2 + 2 a h
 template <class T, int N>
 inline DualVector<T, N> sq(DualVector<T, N> v)
 {
-    v.d *= 2.0*v.v;
+    v.d *= T(2.0)*v.v;
     v.v *= v.v;
     return v;
 }
 
 using std::atan2;
-// atan2(b + db, a + da) ~= atan2(b, a) + (- b da + a db) / (a^2 + b^2)
-//
-// In words: the rate of change of theta is 1/r times the rate of
-// change of (x, y) in the positive angular direction.
+// atan2(b + db, a + da) => atan2(b, a) + (- b da + a db) / (a^2 + b^2)
 template <typename T, int N> 
 inline DualVector<T, N> atan2(DualVector<T, N> v1, DualVector<T, N> const & v2) 
 {
@@ -350,19 +396,17 @@ inline DualVector<T, N> atan2(DualVector<T, N> v1, DualVector<T, N> const & v2)
 
 
 using vigra::pow;
-// pow -- base is a differentiable function, exponent is a constant.
-// (a+da)^p ~= a^p + p*a^(p-1) da
+// (a+da)^p => a^p + p*a^(p-1) da
 template <typename T, int N> 
-inline DualVector<T, N> pow(DualVector<T, N> v, double p)
+inline DualVector<T, N> pow(DualVector<T, N> v, T p)
 {
-    T pow_p_1 = pow(v.v, p-1.0);
-    v.d *= T(p) * pow_p_1;
+    T pow_p_1 = pow(v.v, p-T(1.0));
+    v.d *= p * pow_p_1;
     v.v *= pow_p_1;
     return v;
 }
 
-// pow -- base is a constant, exponent is a differentiable function.
-// (a)^(p+dp) ~= a^p + a^p log(a) dp
+// (a)^(p+dp) => a^p + a^p log(a) dp
 template <typename T, int N> 
 inline DualVector<T, N> pow(T v, DualVector<T, N> p)
 {
@@ -372,8 +416,7 @@ inline DualVector<T, N> pow(T v, DualVector<T, N> p)
 }
 
 
-// pow -- both base and exponent are differentiable functions.
-// (a+da)^(b+db) ~= a^b + b * a^(b-1) da + a^b log(a) * db
+// (a+da)^(b+db) => a^b + b * a^(b-1) da + a^b log(a) * db
 template <typename T, int N> 
 inline DualVector<T, N> pow(DualVector<T, N> v, DualVector<T, N> const & p)
 {
@@ -393,6 +436,22 @@ inline DualVector<T, N> min(DualVector<T, N> const & v1, DualVector<T, N> const 
                : v2;
 }
 
+template <class T, int N>
+inline DualVector<T, N> min(T v1, DualVector<T, N> const & v2)
+{
+    return v1 < v2.v
+               ? DualVector<T, N>(v1)
+               : v2;
+}
+
+template <class T, int N>
+inline DualVector<T, N> min(DualVector<T, N> const & v1, T v2)
+{
+    return v1.v < v2
+               ? v1
+               : DualVector<T, N>(v2);
+}
+
 using vigra::max;
 template <class T, int N>
 inline DualVector<T, N> max(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
@@ -403,16 +462,50 @@ inline DualVector<T, N> max(DualVector<T, N> const & v1, DualVector<T, N> const 
 }
 
 template <class T, int N>
-TinyVector<DualVector<T, N>, N>
-dualMatrix(TinyVector<T, N> const & v)
+inline DualVector<T, N> max(T v1, DualVector<T, N> const & v2)
 {
-    TinyVector<DualVector<T, N>, N> res;
-    for(int k=0; k<N; ++k)
-    {
-        res[k].v = v[k];
-        res[k].d[k] = 1.0;
-    }
-    return res;
+    return v1 > v2.v
+               ? DualVector<T, N>(v1)
+               : v2;
+}
+
+template <class T, int N>
+inline DualVector<T, N> max(DualVector<T, N> const & v1, T v2)
+{
+    return v1.v > v2
+               ? v1
+               : DualVector<T, N>(v2);
+}
+
+template <class T, int N>
+inline bool 
+operator==(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
+{
+    return v1.v == v2.v && v1.d == v2.d;
+}
+
+template <class T, int N>
+inline bool 
+operator!=(DualVector<T, N> const & v1, DualVector<T, N> const & v2)
+{
+    return v1.v != v2.v || v1.d != v2.d;
+}
+
+template <class T, int N>
+inline bool 
+closeAtTolerance(DualVector<T, N> const & v1, DualVector<T, N> const & v2, 
+                 T epsilon = NumericTraits<T>::epsilon())
+{
+    return vigra::closeAtTolerance(v1.v, v2.v, epsilon) && vigra::closeAtTolerance(v1.d, v2.d, epsilon);
+}
+
+   /// stream output
+template <class T, int N>
+std::ostream &
+operator<<(std::ostream & out, DualVector<T, N> const & l)
+{
+    out << l.v << " " << l.d;
+    return out;
 }
 
 } // namespace autodiff

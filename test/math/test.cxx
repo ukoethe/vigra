@@ -54,6 +54,7 @@
 #include "vigra/gaussians.hxx"
 #include "vigra/rational.hxx"
 #include "vigra/fixedpoint.hxx"
+#include "vigra/autodiff.hxx"
 #include "vigra/linear_algebra.hxx"
 #include "vigra/singular_value_decomposition.hxx"
 #include "vigra/regression.hxx"
@@ -953,6 +954,112 @@ struct RationalTest
     }
 };
 
+struct AutodiffTest
+{
+    typedef vigra::autodiff::DualVector<double, 1> N1;
+    typedef vigra::autodiff::DualVector<double, 2> N2;
+
+    void testOStreamShifting()
+    {
+        std::ostringstream out;
+        out << N1(1.0,2.0);
+        out << "Testing.." << N1(42.0,23.0) << 3.141592653589793238 << std::endl;
+    }
+
+    void testOperators()
+    {
+        should(N1(3.0,4.0) == N1(3.0,4.0));
+        should(!(N1(3.0,4.0) == N1(2.0,4.0)));
+        should(!(N1(3.0,4.0) == N1(3.0,2.0)));
+        should(!(N1(3.0,4.0) != N1(3.0,4.0)));
+        should(N1(3.0,4.0) != N1(2.0,4.0));
+        should(N1(3.0,4.0) != N1(3.0,2.0));
+        should(closeAtTolerance(N1(3.0,4.0), N1(3.0,4.0)));
+        should(!closeAtTolerance(N1(3.0,4.0), N1(2.0,4.0)));
+        should(!closeAtTolerance(N1(3.0,4.0), N1(3.0,2.0)));
+        should(closeAtTolerance(N1(3.0,4.0), N1(2.0,4.0), 1.0));
+        should(closeAtTolerance(N1(3.0,4.0), N1(3.0,2.0), 1.0));
+
+        shouldEqual(N1(3.0,4.0), N1(3.0,4.0));
+        shouldEqual(-N1(3.0,4.0), N1(-3.0,-4.0));
+
+        vigra::TinyVector<N2, 2> v = vigra::autodiff::dualMatrix(vigra::TinyVector<double, 2>(2.0, 3.0));
+        shouldEqual(v[0], N2(2.0, 1.0, 0.0));
+        shouldEqual(v[1], N2(3.0, 0.0, 1.0));
+
+        shouldEqual(N2(5.0,1.0,0.0) + N2(2.0,0.0,1.0), N2(7.0,1.0,1.0));
+        shouldEqual(N2(5.0,1.0,0.0) - N2(2.0,0.0,1.0), N2(3.0,1.0,-1.0));
+        shouldEqual(N2(5.0,1.0,0.0) * N2(2.0,0.0,1.0), N2(10.0,2.0,5.0));
+        shouldEqual(N2(5.0,1.0,0.0) / N2(2.0,0.0,1.0), N2(2.5,0.5,-1.25));
+
+        shouldEqual(5.0 + N2(2.0,0.0,1.0), N2(7.0,0.0,1.0));
+        shouldEqual(5.0 - N2(2.0,0.0,1.0), N2(3.0,0.0,-1.0));
+        shouldEqual(5.0 * N2(2.0,0.0,1.0), N2(10.0,0.0,5.0));
+        shouldEqual(5.0 / N2(2.0,0.0,1.0), N2(2.5,0.0,-1.25));
+
+        shouldEqual(N2(5.0,1.0,0.0) + 2.0, N2(7.0,1.0,0.0));
+        shouldEqual(N2(5.0,1.0,0.0) - 2.0, N2(3.0,1.0,0.0));
+        shouldEqual(N2(5.0,1.0,0.0) * 2.0, N2(10.0,2.0,0.0));
+        shouldEqual(N2(5.0,1.0,0.0) / 2.0, N2(2.5,0.5,0.0));
+
+        shouldEqual(abs(N1(3.0,4.0)), N1(3.0,4.0));
+        shouldEqual(abs(N1(-3.0,4.0)), N1(3.0,-4.0));
+        shouldEqual(abs(N1(-3.0,-4.0)), N1(3.0,4.0));
+        shouldEqual(abs(N1(3.0,-4.0)), N1(3.0,-4.0));
+
+        shouldEqual(max(N2(5.0,1.0,0.0), N2(2.0,0.0,1.0)), N2(5.0,1.0,0.0));
+        shouldEqual(min(N2(5.0,1.0,0.0), N2(2.0,0.0,1.0)), N2(2.0,0.0,1.0));
+        shouldEqual(max(5.0, N2(2.0,0.0,1.0)), N2(5.0,0.0,0.0));
+        shouldEqual(min(5.0, N2(2.0,0.0,1.0)), N2(2.0,0.0,1.0));
+        shouldEqual(max(N2(5.0,1.0,0.0), 2.0), N2(5.0,1.0,0.0));
+        shouldEqual(min(N2(5.0,1.0,0.0), 2.0), N2(2.0,0.0,0.0));
+    }
+
+    void testFunctions()
+    {
+        // check numbers
+        should(closeAtTolerance(log(N1(M_E, 1.0)), N1(1.0, 1.0 / M_E)));
+        should(closeAtTolerance(exp(N1(0.0, 1.0)), N1(1.0, 1.0)));
+        should(closeAtTolerance(sqrt(N1(4.0, 1.0)), N1(2.0, 0.25)));
+        should(closeAtTolerance(sq(N1(3.0, 1.0)), N1(9.0, 6.0)));
+        should(closeAtTolerance(sin(N1(M_PI_2, 1.0)), N1(1.0, 0.0)));
+        should(closeAtTolerance(sin(N1(M_PI, 1.0)), N1(0.0, -1.0)));
+        should(closeAtTolerance(sin_pi(N1(0.5, 1.0)), N1(1.0, 0.0)));
+        should(closeAtTolerance(sin_pi(N1(1.0, 1.0)), N1(0.0, -M_PI)));
+        should(closeAtTolerance(cos(N1(0.0, 1.0)), N1(1.0, 0.0)));
+        should(closeAtTolerance(cos(N1(M_PI_2, 1.0)), N1(0.0, -1.0)));
+        should(closeAtTolerance(cos_pi(N1(1.0, 1.0)), N1(-1.0, 0.0)));
+        should(closeAtTolerance(cos_pi(N1(0.5, 1.0)), N1(0.0, -M_PI)));
+        should(closeAtTolerance(asin(N1(0.5, 1.0)), N1(M_PI/6.0, 2.0/sqrt(3.0)), 1e-15));
+        should(closeAtTolerance(acos(N1(0.5, 1.0)), N1(M_PI/3.0, -2.0/sqrt(3.0)), 1e-15));
+        should(closeAtTolerance(tan(N1(M_PI/4.0, 1.0)), N1(1.0, 2.0)));
+        should(closeAtTolerance(atan(N1(1.0, 1.0)), N1(0.25*M_PI, 0.5)));
+        should(closeAtTolerance(sinh(N1(1.0, 1.0)), N1(sinh(1.0), cosh(1.0))));
+        should(closeAtTolerance(cosh(N1(1.0, 1.0)), N1(cosh(1.0), sinh(1.0))));
+        should(closeAtTolerance(tanh(N1(0.0, 1.0)), N1(0.0, 1.0)));
+        should(closeAtTolerance(atan2(N2(-1.0, 1.0, 0.0), N2(-1.0, 0.0, 1.0)), N2(-0.75*M_PI, -0.5, 0.5)));
+        should(closeAtTolerance(pow(N1(3.0, 1.0), 2.0), N1(9.0, 6.0)));
+        should(closeAtTolerance(pow(3.0, N1(2.0, 1.0)), N1(9.0, 9.0*log(3.0))));
+        should(closeAtTolerance(pow(N2(3.0, 1.0, 0.0), N2(2.0, 0.0, 1.0)), N2(9.0, 6.0, 9.0*log(3.0))));
+        
+        // check constraints
+        N1 x(2.3, 1.0);
+        N2 a(1.2,2.3,3.4), b(4.5,5.6,6.7);
+        should(closeAtTolerance(sq(sqrt(a)), a));
+        should(closeAtTolerance(exp(log(a)), a));
+        should(closeAtTolerance(sq(sin(x)) + sq(cos(x)), N1(1.0, 0.0)));
+        should(closeAtTolerance(sin(2.0*a), 2.0*cos(a)*sin(a), 1e-13));
+        should(closeAtTolerance(cos(2.0*a), sq(cos(a)) - sq(sin(a)), 1e-13));
+        should(closeAtTolerance(sin(a) / cos(a), tan(a), 1e-13));
+        should(closeAtTolerance(tan(atan(a)), a, 1e-13));
+        should(closeAtTolerance(sq(cosh(x)) - sq(sinh(x)), N1(1.0, 0.0)));
+        should(closeAtTolerance(tanh(a+b), (tanh(a) + tanh(b)) / (1.0 + tanh(a) * tanh(b)), 1e-12));
+        should(closeAtTolerance(atan2(b*sin(a), b*cos(a)), a, 1e-13));
+        should(closeAtTolerance(pow(a, 1.0), a));
+        should(closeAtTolerance(pow(pow(a, b), 1.0 / b), a, 1e-13));
+    }
+};
+
 struct QuaternionTest
 {
     typedef vigra::Quaternion<double> Q;
@@ -1796,6 +1903,20 @@ struct LinalgTest
             for(int j=0; j<g.columnCount(); ++j)
                 shouldEqual(g(i,j), data[i]*tref[j]);
 
+        Matrix g1 = outer(e);
+        shouldEqual(g1.rowCount(), e.rowCount());
+        shouldEqual(g1.columnCount(), e.rowCount());
+        for(int i=0; i<g1.rowCount(); ++i)
+            for(int j=0; j<g1.columnCount(); ++j)
+                shouldEqual(g1(i,j), data[i]*data[j]);
+
+        Matrix g2 = outer(vigra::TinyVector<double, 6>(data));
+        shouldEqual(g2.rowCount(), 6);
+        shouldEqual(g2.columnCount(), 6);
+        for(int i=0; i<g2.rowCount(); ++i)
+            for(int j=0; j<g2.columnCount(); ++j)
+                shouldEqual(g2(i,j), data[i]*data[j]);
+
         Matrix h = transpose(a) * a;
         shouldEqual(h.rowCount(), c);
         shouldEqual(h.columnCount(), c);
@@ -2139,6 +2260,16 @@ struct LinalgTest
             ax = c * x;
             shouldEqualSequenceTolerance(ax.data(), ax.data()+size, d.data(), epsilon);
         }
+
+        size = 4;
+        Matrix a = random_matrix (size, size);
+        Matrix b = random_matrix (size, 1);
+        Matrix x(size, 1);
+
+        vigra::TinyVector<double, 4> vb(b.data()), vx;
+        should(linearSolve (a, b, x));
+        should(linearSolve (a, vb, vx));
+        shouldEqualSequenceTolerance(x.data(), x.data()+size, vx.data(), epsilon);
     }
 
     void testUnderdetermined()
@@ -2843,6 +2974,10 @@ struct MathTestSuite
         add( testCase(&RationalTest::testConversion));
         add( testCase(&RationalTest::testFunctions));
         add( testCase(&RationalTest::testInf));
+
+        add( testCase(&AutodiffTest::testOStreamShifting));
+        add( testCase(&AutodiffTest::testOperators));
+        add( testCase(&AutodiffTest::testFunctions));
 
         add( testCase(&QuaternionTest::testContents));
         add( testCase(&QuaternionTest::testStreamIO));
