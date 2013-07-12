@@ -968,6 +968,10 @@ struct AutodiffTest
 
     void testOperators()
     {
+        should(N2(3.0,4.0,5.0).value() == 3.0);
+        should(N2(3.0,4.0,5.0).gradient() == N2::Gradient(4.0,5.0));
+        should(N2(3.0,4.0,5.0) == N2(3.0, N2::Gradient(4.0,5.0)));
+
         should(N1(3.0,4.0) == N1(3.0,4.0));
         should(!(N1(3.0,4.0) == N1(2.0,4.0)));
         should(!(N1(3.0,4.0) == N1(3.0,2.0)));

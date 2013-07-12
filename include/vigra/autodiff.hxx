@@ -44,36 +44,112 @@ namespace vigra {
 
 namespace autodiff {
 
-template <class T, int N>
-struct DualVector
-{
-    T v;
-    TinyVector<T, N> d;
+/** Number type for automatic differentiation.
+
+    <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">Automatic differentiation</a> 
+    allows one to compute the value of a numeric expression and its gradient 
+    with respect to the expression's arguments automatically and in one go. 
+    To support this, one needs a special number type that holds a scalar value
+    and the corresponding gradient vector of appropriate length. This is the
+    purpose of hte template class <tt>DualVector<T, N></tt>, where <tt>T</tt> is the
+    underlying numerical type (usually 'double'), and <tt>N</tt> denotes the 
+    length of the gradient vector. 
     
+    The standard arithmetic and algebraic functions are overloaded for 
+    <tt>DualVector</tt> in order to implement the required arithmetic of 
+    dual numbers. When you replace all arguments in a numeric expression
+    with the appropriate <tt>DualVector</tt> instances, the result will be
+    a <tt>DualVector</tt> that contains the result value and gradient of
+    the expression, evaluated at the point defined by the input values.
+    
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<vigra/autodiff.hxx\><br>
+    Namespace: vigra::autodiff
+
+    \code
+    typedef DualVector<double, 2> N;  // for expressions with two arguments
+    
+    N x(1.0, 0);  // first argument of the expression
+    N s(2.0, 1);  // second argument of the expression
+    
+    N y = exp(-0.5 * sq(x / s));
+    
+    std::cout << "Evaluated exp(- x^2 / (2 s^2)) at x=1 and s = 2:\n";
+    std::cout << "result = " << y.value() <<", gradient = " << y.gradient() << "\n";
+    \endcode
+    Note that the second argument of the <tt>DualVector</tt> constructors specifies that 
+    the derivative w.r.t 'x' shall be the element 0 of the gradient vector, and the
+    derivative w.r.t. 's' shall be element 1.
+*/
+template <class T, int N>
+class DualVector
+{
+  public:
+    typedef T                 value_type; ///< type of function values and gradient elements
+    typedef TinyVector<T, N>  Gradient;   ///< type of the gradient vector
+    
+    T v;
+    Gradient d;
+    
+        /** Zero initialization.
+        */
     DualVector()
     : v(), d()
     {}
     
-    explicit DualVector(T const & iv)
-    : v(iv), d()
+        /** Provide a value, but zero-initialize the gradient.
+        */
+    explicit DualVector(T const & val)
+    : v(val), d()
     {}
     
-    DualVector(T const & iv, T const & id)
-    : v(iv), d(id)
+        /** Initialize with given value and gradient.
+        */
+    DualVector(T const & val, Gradient const & grad)
+    : v(val), d(grad)
     {}
     
-    DualVector(T const & iv, T const & d0, T const & d1)
-    : v(iv), d(d0, d1)
+        /** Shorthand for <tt>DualVector(val, Gradient(g0))</tt> when <tt>N == 1</tt>.
+        
+            Not to be used when <tt>N != 1</tt>.
+        */
+    DualVector(T const & val, T const & g0)
+    : v(val), d(g0)
     {}
     
-    DualVector(T const & iv, TinyVector<T, N> const & id)
-    : v(iv), d(id)
+        /** Shorthand for <tt>DualVector(val, Gradient(g0, g1))</tt> when <tt>N == 2</tt>.
+        
+            Not to be used when <tt>N != 2</tt>.
+        */
+    DualVector(T const & val, T const & g0, T const & g1)
+    : v(val), d(g0, g1)
     {}
     
-    DualVector(T const & iv, int target)
-    : v(iv), d()
+        /** Initialize value to represent the argument number 'targetElement' in an
+            expression. 
+
+            The derivative of the expression w.r.t. this variable will be element 'targetElement'
+            of the resulting gradient vector.
+        */
+    DualVector(T const & val, int targetElement)
+    : v(val), d()
     {
-        d[target] = 1.0;
+        d[targetElement] = T(1.0);
+    }
+    
+        /** Get current value.
+        */
+    T value() const
+    {
+        return v;
+    }
+    
+        /** Get current gradient.
+        */
+    Gradient const & gradient() const
+    {
+        return d;
     }
     
     DualVector operator+() const
@@ -141,6 +217,9 @@ struct DualVector
     }
 };
 
+    /** Given a vector 'v' of expression arguments, create the corresponding
+        vector of dual numbers for automatic differentiation.
+    */
 template <class T, int N>
 TinyVector<DualVector<T, N>, N>
 dualMatrix(TinyVector<T, N> const & v)

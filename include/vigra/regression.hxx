@@ -73,7 +73,7 @@ namespace linalg
        <tt>false</tt> when the rank of \a A is less than <tt>n</tt>.
        See \ref linearSolve() for more documentation.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -115,7 +115,7 @@ leastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns
        <tt>false</tt> when the rank of the weighted matrix \a A is less than <tt>n</tt>.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -175,7 +175,7 @@ weightedLeastSquares(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3>
@@ -248,7 +248,7 @@ ridgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> if the rank of \a A is less than <tt>n</tt>
        and <tt>lambda == 0.0</tt>.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class C4>
@@ -302,7 +302,7 @@ weightedRidgeRegression(MultiArrayView<2, T, C1> const & A,
        The function returns <tt>false</tt> when the matrix \a A is rank deficient. If this
        happens, and one of the lambdas is zero, the corresponding column of \a x will be skipped.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
    */
 template <class T, class C1, class C2, class C3, class Array>
@@ -346,7 +346,7 @@ ridgeRegressionSeries(MultiArrayView<2, T, C1> const & A,
 
 /** \brief Pass options to leastAngleRegression().
 
-    <b>\#include</b> \<vigra/regression.hxx\>
+    <b>\#include</b> \<vigra/regression.hxx\><br/>
     Namespaces: vigra and vigra::linalg
 */
 class LeastAngleRegressionOptions
@@ -735,7 +735,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
 /** Least Angle Regression.
 
-       <b>\#include</b> \<vigra/regression.hxx\>
+       <b>\#include</b> \<vigra/regression.hxx\><br/>
        Namespaces: vigra and vigra::linalg
      
        <b> Declarations:</b>
@@ -782,12 +782,12 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
 
        where \a A is a matrix with <tt>m</tt> rows and <tt>n</tt> columns (often with <tt>m \< n</tt>),
        \a b a vector of length <tt>m</tt>, and a regularization parameter s \>= 0.0.
-       L1-regularization has the desirable effect that it causes the solution \a x to be sparse, i.e. only
-       the most important variables (called the <em>active set</em>) have non-zero values. The
-       key insight of the LARS algorithm is the following: When the solution vector is considered
+       L1-regularization has the desirable effect that it causes the solution <b>x</b> to be sparse, i.e. only
+       the most important elements in <b>x</b> (called the <em>active set</em>) have non-zero values. The
+       key insight of the LARS algorithm is the following: When the solution vector <b>x</b> is considered
        as a function of the regularization parameter s, then <b>x</b>(s) is a piecewise
-       linear function, i.e. a polyline in n-dimensional space. The knots of the polyline
-       occur precisely at those values of s where one variable enters or leaves the active set,
+       linear function, i.e. a polyline in n-dimensional space. The knots of the polyline <b>x</b>(s)
+       are located precisely at those values of s where one variable enters or leaves the active set
        and can be efficiently computed.
 
        Therefore, leastAngleRegression() returns the entire solution path as a sequence of knot points, starting
@@ -795,7 +795,7 @@ leastAngleRegressionImpl(MultiArrayView<2, T, C1> const & A, MultiArrayView<2, T
        \f$\textrm{\bf x}(s=\infty)\f$ (where the solution becomes the ordinary least squares solution). Actually,
        the initial null solution is not explicitly returned, i.e. the sequence starts at the first non-zero
        solution with one variable in the active set. The function leastAngleRegression() returns the number
-       of solutions( i.e. knot points) computed.
+       of solutions (i.e. knot points) computed.
 
        The sequences of active sets and corresponding variable weights are returned in \a activeSets and
        \a solutions respectively. That is, <tt>activeSets[i]</tt> is an \ref vigra::ArrayVector "ArrayVector\<int\>"
@@ -1051,7 +1051,7 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
     vigra_precondition(features.shape(0) == response.shape(0),
                        "nonlinearLeastSquares(): shape mismatch between features and response.");
                        
-    double t = options.tau, l = options.lambda;  // initial regularization parameters
+    double t = options.tau, l = options.lambda;  // initial damping parameters
     
     double epsilonT = NumericTraits<T>::epsilon()*10.0,
            epsilonU = NumericTraits<U>::epsilon()*10.0,
@@ -1086,7 +1086,7 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             }
         }
         
-        // perform a regularized gradient step
+        // perform a damped gradient step
         linalg::Matrix<T> djj(jj);
         djj.diagonal() *= 1.0 + l;        
         linearSolve(djj, jr, dp);
@@ -1106,13 +1106,13 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             p = p_new;
             if(std::abs((residual - residual_new) / residual) < epsilon)
                 return residual_new;
-            // try less regularization in the next iteration
+            // try less damping in the next iteration
             l /= t;
             didStep = true;
         }
         else
         {
-            // reject the step und use more regularization in the next iteration
+            // reject the step und use more damping in the next iteration
             l *= t;
             didStep = false;
         }
@@ -1127,58 +1127,128 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
 /*                                                      */
 /********************************************************/
 
-/** \brief Performs 1 dimensional recursive smoothing in y direction.
+/** \brief Fit a non-linear model to given data by minimizing least squares loss.
 
-    It calls \ref recursiveSmoothLine() for every column of the
-    image. See \ref recursiveSmoothLine() for more information about 
-    required interfaces and vigra_preconditions.
-    
     <b> Declarations:</b>
     
     \code
     namespace vigra {
+        // variant 1: optimize a univariate model ('x' is a 1D array of scalar data points)
         template <class T, class S1, class S2, 
                   class U, int N, 
                   class Functor>
         T
-        nonlinearLeastSquares(MultiArrayView<1, T, S1> const & features,
-                              MultiArrayView<1, T, S2> const & response,
-                              TinyVector<U, N> & p, 
+        nonlinearLeastSquares(MultiArrayView<1, T, S1> const & x,
+                              MultiArrayView<1, T, S2> const & y,
+                              TinyVector<U, N> & model_parameters, 
                               Functor model,
                               NonlinearLSQOptions const & options = NonlinearLSQOptions());
 
+        // variant 2: optimize a multivariate model ('x' is a 2D array of vector-valued data points)
         template <class T, class S1, class S2, 
                   class U, int N, 
                   class Functor>
         T
-        nonlinearLeastSquares(MultiArrayView<2, T, S1> const & features,
-                              MultiArrayView<1, T, S2> const & response,
-                              TinyVector<U, N> & p, 
+        nonlinearLeastSquares(MultiArrayView<2, T, S1> const & x,
+                              MultiArrayView<1, T, S2> const & y,
+                              TinyVector<U, N> & model_parameters, 
                               Functor model,
                               NonlinearLSQOptions const & options = NonlinearLSQOptions());
     }
     \endcode
     
+    This function implements the 
+    <a href="http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm">Levenberg-Marquardt algorithm</a>
+    to fit a non-linear model to given data. The model depends on a vector of 
+    parameters <b>p</b> which are to be choosen such that the least-squares residual 
+    between the data and the model's predictions is minimized according to the objective function:
+
+    \f[ \tilde \textrm{\bf p} = \textrm{argmin}_{\textrm{\bf p}} \sum_i \left( y_i - f(\textrm{\bf x}_i; \textrm{\bf p}) \right)^2
+    \f]
+
+    where \f$f(\textrm{\bf x}; \textrm{\bf p})\f$ is the model to be optimized 
+    (with arguments \f$\textrm{\bf x}\f$ and parameters \f$\textrm{\bf p}\f$), and 
+    \f$(\textrm{\bf x}_i; y_i)\f$ are the feature/response pairs of the given data. 
+    Since the model is non-linear (otherwise, you should use ordinary \ref leastSquares()), 
+    it must be linearized in terms of a first-order Taylor expansion, and the optimal 
+    parameters <b>p</b> have to be determined iteratively. In order for the iterations to 
+    converge to the desired solution, a good initial guess on <b>p</b> is required.
+    
+    The model must be specified by a functor which takes one of the following forms:
+    \code
+    typedef double DataType;   // type of your data samples, may be any numeric type
+    static const int N = ...;  // number of model parameters
+    
+    // variant 1: the features x are scalars
+    struct UnivariateModel 
+    {
+        template <class T>
+        T operator()(DataType x, TinyVector<T, N> const & p) const { ... }
+    };
+    
+    // variant 2: the features x are vectors
+    struct MultivariateModel
+    {
+        template <class T>
+        T operator()(MultiArrayView<1, DataType> const & x, TinyVector<T, N> const & p) const { ... }
+    };
+    \endcode
+    Each call to the functor's <tt>operator()</tt> computes the model's prediction for a single data
+    point. The current model parameters are specified in a TinyVector of appropriate length. 
+    The type <tt>T</tt> must be templated: normally, it is the same as <tt>DataType</tt>, but
+    the nonlinearLeastSquares() function will temporarily replace it with a special number type
+    that supports <a href="http://en.wikipedia.org/wiki/Automatic_differentiation">automatic differentiation</a> 
+    (see \ref vigra::autodiff::DualVector). In this way, the derivatives needed in the model's Taylor 
+    expansion can be computed automatically.
+    
+    When the model is univariate (has a single scalar argument), the samples must be passed to 
+    nonlinearLeastSquares() in a pair 'x', 'y' of 1D <tt>MultiArrayView</tt>s (variant 1).
+    When the model is multivariate (has a vector-valued argument), the 'x' input must
+    be a 2D <tt>MultiArrayView</tt> (variant 2) whose rows represent a single data sample 
+    (i.e. the number of columns corresponds to the length of the model's argument vector). 
+    The number of rows in 'x' defines the number of data samples and must match the length
+    of array 'y'.
+    
+    The <tt>TinyVector</tt> 'model_parameters' holds the initial guess for the model parameters and
+    will be overwritten by the optimal values found by the algorithm. The algorithm's internal behavior
+    can be controlled by customizing the option object \ref vigra::NonlinearLSQOptions. 
+    
+    The function returns the residual sum of squared errors of the final solution.
+    
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/regression.hxx\><br>
     Namespace: vigra
-
-    \code
-    MultiArray<2, float> src(w,h), dest(w,h);    
-    ...
     
-    recursiveSmoothY(src, dest, 3.0);
-    \endcode
-
-    \deprecatedUsage{recursiveSmoothY}
+    Suppose that we want to fit a centered Gaussian function of the form
+    \f[ f(x ; a, s, b) = a \exp\left(-\frac{x^2}{2 s^2}\right) + b  \f]
+    to noisy data \f$(x_i, y_i)\f$, i.e. we want to find parameters a, s, b such that
+    the residual \f$\sum_i \left(y_i - f(x_i; a,s,b)\right)^2\f$ is minimized.
+    The model parameters are placed in a <tt>TinyVector<T, 3></tt> <b>p</b> according to the rules<br/>
+    <tt>p[0] <=> a</tt>, <tt>p[1] <=> s</tt> and <tt>p[2] <=> b</tt>.<br/> The following
+    functor computes the model's prediction for a single data point <tt>x</tt>:
     \code
-    vigra::FImage src(w,h), dest(w,h);    
-    ...
-    
-    vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
+    struct GaussianModel
+    {
+        template <class T>
+        T operator()(double x, TinyVector<T, 3> const & p) const
+        {
+            return p[0] * exp(-0.5 * sq(x / p[1])) + p[2];
+        }
+    };
     \endcode
-    \deprecatedEnd
+    Now we can find optimal values for the parameters like this:
+    \code
+    int size = ...;  // number of data points
+    MultiArray<1, double> x(size), y(size);    
+    ...   // fill the data arrays
+    
+    TinyVector<double, 3> p(2.0, 1.0, 0.5);  // your initial guess of the parameters
+                                             // (will be overwritten with the optimal values)
+    double residual = nonlinearLeastSquares(x, y, p, GaussianModel());
+    
+    std::cout << "Model parameters: a=" << p[0] << ", s=" << p[1] << ", b=" << p[2] << " (residual: " << residual << ")\n";
+    \endcode
 */
 doxygen_overloaded_function(template <...> void nonlinearLeastSquares)
 
