@@ -840,7 +840,7 @@ void defineSegmentation()
     
     docstring_options doc_options(true, true, false);
 
-    multidef("labelImage", pyLabelImage<npy_uint8, float>(),
+    multidef("labelImage", pyLabelImage<npy_uint8, npy_uint32, float>(),
         (arg("image"), 
         arg("neighborhood") = 4,
         arg("out")=python::object()),
@@ -848,7 +848,7 @@ void defineSegmentation()
         "the pixel neighborhood to be used and can be 4 (default) or 8.\n\n"
         "For details see labelImage_ in the vigra C++ documentation.\n");
 
-    multidef("labelImageWithBackground", pyLabelImageWithBackground<npy_uint8, float>(),
+    multidef("labelImageWithBackground", pyLabelImageWithBackground<npy_uint8, npy_uint32, float>(),
         (arg("image"), 
         arg("neighborhood") = 4,
         arg("background_value") = 0,
