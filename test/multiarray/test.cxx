@@ -1490,10 +1490,11 @@ struct MultiImpexTest
         Array result;
         
         VolumeImportInfo import_info("test", ext1);
+        shouldEqual(Shape(2,3,4), import_info.shape());
+
         result.reshape(import_info.shape());
         importVolume(import_info, result);
         
-        shouldEqual(result.shape(), Shape(2,3,4));
         shouldEqual(result(0,1,0), 1);
         shouldEqual(result(0,1,1), 2);
         shouldEqual(result(0,1,2), 3);
@@ -1526,6 +1527,24 @@ struct MultiImpexTest
         shouldEqual(result(0,1,3), 4);
 #endif // _WIN32
     }
+
+#if defined(HasTIFF)
+    void testMultipageTIFF()
+    {
+        exportVolume(array, VolumeExportInfo("multipage.tif"));
+
+        VolumeImportInfo info("multipage.tif");
+        shouldEqual(Shape(2,3,4), info.shape());
+
+        Array result(info.shape());
+        importVolume(info, result);
+        shouldEqual(result(0,1,0), 1);
+        shouldEqual(result(0,1,1), 2);
+        shouldEqual(result(0,1,2), 3);
+        shouldEqual(result(0,1,3), 4);
+    }
+#endif
+
 };
 
 template <class IMAGE>
@@ -2853,6 +2872,9 @@ struct MultiArrayTestSuite
         add( testCase( &MultiArrayTest::test_expandElements ) );
 
         add( testCase( &MultiImpexTest::testImpex ) );
+#if defined(HasTIFF)
+        add( testCase( &MultiImpexTest::testMultipageTIFF ) );
+#endif
     }
 };
 

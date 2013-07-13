@@ -36,6 +36,11 @@
 #include "unittest.hxx"
 #include "vigra/sifImport.hxx"
 #include "vigra/multi_array.hxx"
+#include "vigra/multi_impex.hxx"
+
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
+#endif
 
 #include "testSif_ref_4_16_30001.hxx"
 
@@ -56,15 +61,31 @@ public:
         
         // read SIF data to MultiArrayView
         char sifFile[] = "testSif_4_16_30001.sif";
-        SIFImportInfo infoSIF(sifFile);
-        MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
-        readSIF(infoSIF, in_data);
+        {
+            SIFImportInfo infoSIF(sifFile);
+            MultiArray<3,float> in_data(MultiArrayShape<3>::type(infoSIF.width(), infoSIF.height(), infoSIF.stacksize()));
+            readSIF(infoSIF, in_data);
 
-        // compare content
-        should (infoSIF.shape()[0] == 128);
-        should (infoSIF.shape()[1] == 128);
-        should (infoSIF.shape()[2] == 1);
-        should (in_data == reference_data);
+            // compare content
+            should (infoSIF.shape()[0] == 128);
+            should (infoSIF.shape()[1] == 128);
+            should (infoSIF.shape()[2] == 1);
+            should (in_data == reference_data);
+        }
+        {
+            // read via importVolume()
+            VolumeImportInfo info(sifFile);
+
+            // compare content
+            should (info.getFileType() == std::string("SIF"));
+            should (info.shape() == Shape3(128, 128, 1));
+            should (info.getPixelType() == std::string("FLOAT"));
+            should (info.numBands() == 1);
+
+            MultiArray<3,float> in_data(info.shape());
+            importVolume(info, in_data);
+            should (in_data == reference_data);
+        }
     }
 
     // SIF from Andor software version 4.13.30000

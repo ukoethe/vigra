@@ -1,6 +1,6 @@
 /************************************************************************/
 /*                                                                      */
-/*               Copyright 2002 by Gunnar Kedenburg                     */
+/*    Copyright 2002-2013 by Gunnar Kedenburg and Ullrich Koethe        */
 /*                                                                      */
 /*    This file is part of the VIGRA computer vision library.           */
 /*    The VIGRA Website is                                              */
@@ -62,11 +62,18 @@
 #include "vigra/imageinfo.hxx"
 #include "codecmanager.hxx"
 #include "vigra/multi_impex.hxx"
+#include "vigra/sifImport.hxx"
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 #  include "vigra/windows.h"
+#  include <io.h>
 #else
 #  include <dirent.h>
+#  include <unistd.h>
+#endif
+
+#ifdef HasHDF5
+# include "vigra/hdf5impex.hxx"
 #endif
 
 namespace vigra
@@ -316,7 +323,11 @@ std::string impexListExtensions()
 
 bool isImage(char const * filename)
 {
-    return CodecManager::manager().getFileTypeByMagicString(filename) != "";
+#ifdef _MSC_VER
+    return _access(filename, 0) != -1 && CodecManager::manager().getFileTypeByMagicString(filename) != "";
+#else
+    return access(filename, F_OK) == 0 && CodecManager::manager().getFileTypeByMagicString(filename) != "";
+#endif
 }
 
 // class ImageExportInfo
@@ -707,11 +718,24 @@ VIGRA_UNIQUE_PTR<Decoder> decoder( const ImageImportInfo & info )
 
 // class VolumeExportInfo
 
+VolumeExportInfo::VolumeExportInfo( const char * filename ) :
+        m_x_res(0), m_y_res(0), m_z_res(0),
+        m_filetype("MULTIPAGE"),
+        m_filename_base(filename), m_filename_ext(".tif"),
+        fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
+{
+}
+
 VolumeExportInfo::VolumeExportInfo( const char * name_base, const char * name_ext ) :
         m_x_res(0), m_y_res(0), m_z_res(0),
         m_filename_base(name_base), m_filename_ext(name_ext),
         fromMin_(0.0), fromMax_(0.0), toMin_(0.0), toMax_(0.0)
 {
+    if(m_filename_ext == "")
+    {
+        m_filename_ext = ".tif";
+        m_filetype = "MULTIPAGE";
+    }
 }
 
 VolumeExportInfo::~VolumeExportInfo()
@@ -864,44 +888,169 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
   resolution_(1.f, 1.f, 1.f),
   numBands_(0)
 {
-    // first try image sequence loading
-    std::string::const_reverse_iterator
-        numBeginIt(filename.rbegin()), numEndIt(numBeginIt);
-
-    do
+    std::string message;
+    
+#if 0 // defined(HasHDF5)
+    // Deactivate this code because it effectively forces multi_impex.hxx to be compiled with HDF5 only.
+    
+    // try reading from HDF5
+    // (do this first because it uses mangled 'filename/dataset_name' format)
     {
-        numEndIt = std::find_if(numBeginIt, filename.rend(),(int (*)(int)) &isdigit);
-        numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun((int (*)(int))&isdigit)));
-
-        if(numEndIt != filename.rend())
+        // split the filename into external (true filename) and internal (dataset name) part
+        // FIXME: at present, the delimiter must be the extension '.h5' or '.hdf5' - define a more robust rule
+        std::string name, datasetName;
+        std::size_t ext = filename.rfind(".h5");
+        if(ext != std::string::npos)
         {
-            std::string
-                baseName(filename.begin(),
-                         filename.begin() + (filename.rend()-numBeginIt)),
-                extension(filename.begin() + (filename.rend()-numEndIt),
-                          filename.end());
-
-            std::vector<std::string> numbers;
-
-            findImageSequence(baseName, extension, numbers);
-            if(numbers.size() > 0)
+            name = filename.substr(0, ext+3);
+            datasetName = filename.substr(ext+3); 
+        }
+        else
+        {
+            ext = filename.rfind(".hdf5");
+            if(ext != std::string::npos)
             {
-                getVolumeInfoFromFirstSlice(baseName + numbers[0] + extension);
-                splitPathFromFilename(baseName, path_, name_);
-                baseName_ = baseName;
-                extension_ = extension;
-                shape_[2] = numbers.size();
-                std::swap(numbers, numbers_);
-
-                break;
+                name = filename.substr(0, ext+5);
+                datasetName = filename.substr(ext+5); 
+            }
+            else
+            {
+                name = filename;
             }
         }
-    }
-    while(numEndIt != filename.rend());
+        
+        if(H5Fis_hdf5(name.c_str()))
+        {
+            message = std::string("VolumeImportInfo(): File '");
+            message += name + "' is HDF5, but filename doesn't contain an internal dataset path.";
+            vigra_precondition(datasetName.size() > 0, message.c_str());
 
-    // no numbered images found, try .info file loading
-    if(!numbers_.size())
+            HDF5File hdf5file(name, HDF5File::OpenReadOnly);
+            
+            message = std::string("VolumeImportInfo(): Dataset '");
+            message += datasetName + "' not found in HDF5 file '" + name + "'.";
+            vigra_precondition(hdf5file.existsDataset(datasetName), message.c_str());
+            
+            ArrayVector<hsize_t> shape(hdf5file.getDatasetShape(datasetName));
+            message = std::string("VolumeImportInfo(): Dataset '");
+            message += datasetName + "' in HDF5 file '" + name + "' is not a volume.";
+            vigra_precondition(shape.size() == 3 || shape.size() == 4, message.c_str());
+            
+            shape_[0] = shape[0];
+            shape_[1] = shape[1];
+            shape_[2] = shape[2];
+            pixelType_ = hdf5file.getDatasetType(datasetName);
+            numBands_ = shape.size() == 4
+                            ? shape[3]
+                            : 1;
+            baseName_ = name;
+            extension_ = datasetName;
+            fileType_ = "HDF5";
+            return;
+        }
+    }
+#endif // HasHDF5
+
+    // check if file exists
+    message = std::string("VolumeImportInfo(): File '");
+    message += filename + "' not found.";
+#ifdef _MSC_VER
+    vigra_precondition(_access(filename.c_str(), 0) != -1, message.c_str());
+#else
+    vigra_precondition(access(filename.c_str(), F_OK) == 0, message.c_str());
+#endif
+
+    // try Andor SIF format
     {
+        std::string magic_string;
+        {
+            std::ifstream siffile (filename);
+            if( !siffile.is_open() )
+            {
+                message = std::string("VolumeImportInfo(): Unable to open file '");
+                message += filename + "'.";
+                vigra_precondition(false, message.c_str());
+            }    
+            
+            getline(siffile, magic_string);
+        }
+        if(magic_string == "Andor Technology Multi-Channel File")
+        {
+            SIFImportInfo info(filename.c_str());
+            shape_[0] = info.shapeOfDimension(0);
+            shape_[1] = info.shapeOfDimension(1);
+            shape_[2] = info.shapeOfDimension(2);
+            pixelType_ = "FLOAT";
+            numBands_ = 1;
+            baseName_ = filename;
+            fileType_ = "SIF";
+            return;            
+        }
+    }
+    
+    // try multi-page TIFF or image stack
+    if(isImage(filename.c_str()))
+    {
+        ImageImportInfo info(filename.c_str());
+        shape_[0] = info.width();
+        shape_[1] = info.height();
+        resolution_[1] = -1.f; // assume images to be right-handed
+        pixelType_ = info.getPixelType();
+        numBands_ = info.numBands();
+        
+        if(info.numImages() > 1)
+        {
+            // must be a multi-page TIFF
+            splitPathFromFilename(filename, path_, name_);
+            baseName_ = filename;
+            fileType_ = "MULTIPAGE";
+            shape_[2] = info.numImages();
+            return;
+        }
+        else
+        {
+            // try image stack loading
+            std::string::const_reverse_iterator
+                numBeginIt(filename.rbegin()), numEndIt(numBeginIt);
+
+            do
+            {
+                numEndIt = std::find_if(numBeginIt, filename.rend(),(int (*)(int)) &isdigit);
+                numBeginIt = std::find_if(numEndIt, filename.rend(), not1(std::ptr_fun((int (*)(int))&isdigit)));
+
+                if(numEndIt != filename.rend())
+                {
+                    std::string
+                        baseName(filename.begin(),
+                                 filename.begin() + (filename.rend()-numBeginIt)),
+                        extension(filename.begin() + (filename.rend()-numEndIt),
+                                  filename.end());
+
+                    std::vector<std::string> numbers;
+
+                    findImageSequence(baseName, extension, numbers);
+                    if(numbers.size() > 0)
+                    {
+                        splitPathFromFilename(baseName, path_, name_);
+                        baseName_ = baseName;
+                        extension_ = extension;
+                        shape_[2] = numbers.size();
+                        std::swap(numbers, numbers_);
+                        fileType_ = "STACK";
+                        return;
+                    }
+                }
+            }
+            while(numEndIt != filename.rend());
+        }
+        
+        message = std::string("VolumeImportInfo(): File '");
+        message += filename + "' is neither a multi-page TIFF nor a valid image stack.";
+        vigra_precondition(false, message.c_str());
+    }
+    
+    {
+        // try .info file loading
         std::ifstream stream(filename.c_str());
 
         while(stream.good())
@@ -971,13 +1120,14 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
             {
                 splitPathFromFilename(baseName_, path_, name_);
             }
+            fileType_ = "RAW";
             return;
         }
-
-        std::string message("VolumeImportInfo(): Unable to load volume '");
-        message += filename + "'.";
-        vigra_fail(message.c_str());
     }
+
+    message = std::string("VolumeImportInfo(): Unable to load file '");
+    message += filename + "' - not a recognized format.";
+    vigra_precondition(false, message.c_str());
 }
 
 VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::string &extension)
@@ -999,6 +1149,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &baseName, const std::strin
     extension_ = extension;
     shape_[2] = numbers.size();
     std::swap(numbers, numbers_);
+    fileType_ = "STACK";
 }
 
 void VolumeImportInfo::getVolumeInfoFromFirstSlice(const std::string &filename)
@@ -1036,6 +1187,10 @@ VolumeImportInfo::PixelType VolumeImportInfo::pixelType() const
 const char * VolumeImportInfo::getPixelType() const
 {
     return pixelType_.c_str();
+}
+const char * VolumeImportInfo::getFileType() const
+{
+    return fileType_.c_str();
 }
 MultiArrayIndex VolumeImportInfo::numBands() const { return numBands_; }
 bool VolumeImportInfo::isGrayscale() const { return numBands_ == 1; }

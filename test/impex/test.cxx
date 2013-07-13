@@ -131,6 +131,7 @@ public:
     {
         should(isImage("lenna.xv"));
         should(!isImage("no-image.txt"));
+        should(!isImage("filename-does-not-exist.gif"));
     }
 
     void testFile (const char *filename);

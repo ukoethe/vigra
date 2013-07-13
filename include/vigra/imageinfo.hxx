@@ -135,15 +135,20 @@ class ImageExportInfo
   public:
         /** Construct ImageExportInfo object.
 
-            The image will be stored under the given filename.
+            The image will be stored under the given \a filename.
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
+            
             EXR support requires libopenexr, JPEG support requires libjpeg,
             PNG support requires libpng and TIFF support requires libtiff.
+            
+            If the data is exported to TIFF, the \a mode may be "a", in which case
+            the exported image is appended to the existing file, resulting in a 
+            multi-page TIFF image.
          **/
-    VIGRA_EXPORT ImageExportInfo( const char *, const char * = "w" );
+    VIGRA_EXPORT ImageExportInfo( const char * filename, const char * mode = "w" );
     VIGRA_EXPORT ~ImageExportInfo();
 
         /** Set image file name.
@@ -188,7 +193,7 @@ class ImageExportInfo
             </DL>
 
             With the exception of TIFF, VIFF, PNG, and PNM all file types store
-            1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
+            only 1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
             pixel.
 
             PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
