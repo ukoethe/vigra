@@ -294,7 +294,7 @@ readVolume(const char * filename, python::object import_type, std::string order 
 }
 
 template <class T>
-void writeVolume(NumpyArray<3, Multiband<T> > const & volume,
+void writeVolume(NumpyArray<3, T > const & volume,
                     const char * filename_base, 
                     const char * filename_ext, 
                     python::object export_type,  
@@ -420,12 +420,16 @@ void defineImpexFunctions()
         "\n"
         "For details see the help for :func:`readImage`.\n");
         
-    multidef("writeVolume", pywriteVolume<Int8, UInt64, Int64, UInt16, Int16, UInt32, Int32, double, float, UInt8>(), 
+    multidef("writeVolume", pywriteVolume<Singleband<Int8>, Singleband<UInt64>, Singleband<Int64>, Singleband<UInt16>, 
+                                          Singleband<Int16>, Singleband<UInt32>, Singleband<Int32>, Singleband<double>, 
+                                          Singleband<float>, Singleband<UInt8>, TinyVector<float, 3>, TinyVector<UInt8, 3> >(), 
        (arg("volume"), arg("filename_base"), arg("filename_ext"), arg("dtype") = "", arg("compression") = ""),
-       "Wrtie a volume as a sequence of images::\n\n"
+       "Write a volume as a sequence of images::\n\n"
        "   writeVolume(volume, filename_base, filename_ext, dtype = '', compression = '')\n\n"
        "The resulting image sequence will be enumerated in the form::\n\n"
        "    filename_base+[0-9]+filename_ext\n\n"
+       "Write a volume as a multi-page tiff (filename_ext must be an empty string)::\n\n"
+       "   writeVolume(volume, filename, '', dtype = '', compression = '')\n\n"
        "Parameters 'dtype' and 'compression' will be handled as in :func:`writeImage`.\n\n");
     
     def("readImage", &readImage, 
