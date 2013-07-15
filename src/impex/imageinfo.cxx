@@ -1050,6 +1050,17 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
     }
     
     {
+        static std::string pixelTypes[] = { std::string("UNSIGNED_CHAR"), 
+                                            std::string("UNSIGNED_BYTE"), 
+                                            std::string("UINT8"), 
+                                            std::string("INT16"), 
+                                            std::string("UINT16"), 
+                                            std::string("INT32"), 
+                                            std::string("UINT32"), 
+                                            std::string("FLOAT"), 
+                                            std::string("DOUBLE"), 
+                                            std::string() };
+        
         // try .info file loading
         std::ifstream stream(filename.c_str());
 
@@ -1077,14 +1088,20 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
                     shape_[2] = atoi(value.c_str());
                 else if(key == "datatype")
                 {
-                    // FUTURE: store bit depth / signedness
-                    if((value == "UNSIGNED_CHAR") || (value == "UNSIGNED_BYTE"))
-                        numBands_ = 1;
-                    else
+                    std::string * type = pixelTypes;
+                    while(*type != "")
                     {
-                        std::cerr << "Unknown datatype '" << value << "'!\n";
-                        break;
+                        if(*type == value)
+                        {
+                            pixelType_ = value;
+                            break;
+                        }
+                        ++type;
                     }
+                    vigra_precondition(*type != "",
+                        "VolumeImportInfo(): Invalid datatype '" + value +"' in .info file.");
+                    if(pixelType_ == "UNSIGNED_CHAR" || pixelType_ == "UNSIGNED_BYTE")
+                        pixelType_ = "UINT8";
                 }
                 else if(key == "description")
                     description_ = value;
@@ -1094,21 +1111,20 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
                     rawFilename_ = value;
                 else
                 {
-                    std::cerr << "WARNING: Unknown key '" << key
+                    std::cerr << "VolumeImportInfo(): WARNING: Unknown key '" << key
                               << "' (value '" << value << "') in info file!\n";
                 }
             }
             else
             {
                 if(line[0]) // non-empty line?
-                    std::cerr << "WARNING: could not parse line '" << line << "'!\n";
+                    std::cerr << "VolumeImportInfo(): WARNING: could not parse line '" << line << "'!\n";
             }
         }
 
         if((shape_[0]*shape_[1]*shape_[2] > 0) && (rawFilename_.size() > 0))
         {
-            if(!numBands_)
-                numBands_ = 1; // default to UNSIGNED_CHAR datatype
+            numBands_ = 1;
 
             baseName_ = filename;
             if(name_.size() > 0)

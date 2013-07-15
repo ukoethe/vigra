@@ -430,6 +430,11 @@ public:
         file.write("/compressed_transposed", out_data_6.transpose(), 0, 6);
 
         file.close();
+
+        should(isHDF5(file_name.c_str()));
+        should(!isHDF5("testsuccess.cxx"));
+        should(!isHDF5("file_does_not_exist.txt"));
+
         file.open(file_name, HDF5File::Open);
         
         // check if data is really written
@@ -635,18 +640,6 @@ public:
         file.read("set_string2",read_string2);
         should(read_string2 == "abcdef");
         file.close();
-
-        // test opening via importVolume()
-        //{
-        //    VolumeImportInfo info(file_name+"/newset");
-        //    should(info.getFileType() == std::string("HDF5"));
-        //    should(info.shape() == shape);
-        //    should(info.numBands() == 1);
-        //    should(info.getPixelType() == std::string("UINT8"));
-        //    MultiArray< 3, unsigned char > import_data(info.shape());
-        //    importVolume(info, import_data);
-        //    should (import_data(1,2,3) == init);
-        //}
     }
 
     // reading and writing attributes. get handles of groups, datasets and attributes

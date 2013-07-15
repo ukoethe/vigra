@@ -79,6 +79,12 @@
 
 #include <algorithm>
 
+#if defined(_MSC_VER)
+#  include <io.h>
+#else
+#  include <unistd.h>
+#endif
+
 namespace vigra {
 
 /** \addtogroup VigraHDF5Impex Import/Export of Images and Arrays in HDF5 Format
@@ -88,6 +94,17 @@ namespace vigra {
     information on the HDF5 file format.
 */
 //@{
+
+    /** \brief Check if given filename refers to a HDF5 file.
+    */
+inline bool isHDF5(char const * filename)
+{
+#ifdef _MSC_VER
+    return _access(filename, 0) != -1 && H5Fis_hdf5(filename);
+#else
+    return access(filename, F_OK) == 0 && H5Fis_hdf5(filename);
+#endif
+}
 
     /** \brief Wrapper for hid_t objects.
 
@@ -254,7 +271,6 @@ public:
         return handle_ != h;
     }
 };
-
 
 /********************************************************/
 /*                                                      */
