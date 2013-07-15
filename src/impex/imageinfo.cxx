@@ -964,7 +964,7 @@ VolumeImportInfo::VolumeImportInfo(const std::string &filename)
     {
         std::string magic_string;
         {
-            std::ifstream siffile (filename);
+            std::ifstream siffile (filename.c_str());
             if( !siffile.is_open() )
             {
                 message = std::string("VolumeImportInfo(): Unable to open file '");
