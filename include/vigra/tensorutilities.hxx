@@ -39,6 +39,7 @@
 #include <cmath>
 #include "utilities.hxx"
 #include "mathutil.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -67,7 +68,20 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        vectorToTensor(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       bool negateComponent2 = false);
+    }
+    \endcode
+
+    \deprecatedAPI{vectorToTensor}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -77,8 +91,6 @@ namespace vigra {
                             bool negateComponent2 = false);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -89,11 +101,24 @@ namespace vigra {
                             bool negateComponent2 = false);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float>                  img(w,h);
+    MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    ...
+    
+    gaussianGradient(img, gradient, 2.0);
+    vectorToTensor(gradient, tensor);
+    \endcode
+
+    \deprecatedUsage{vectorToTensor}
     \code
     FImage img(w,h);
     FVector2Image gradient(w,h);
@@ -102,7 +127,7 @@ namespace vigra {
     gaussianGradient(srcImageRange(img), destImage(gradient), 2.0);
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void vectorToTensor)
 
@@ -158,21 +183,33 @@ void vectorToTensor(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                     pair<DestIterator, DestAccessor> d,
-                     bool negateComponent2)
+inline void
+vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+               pair<DestIterator, DestAccessor> d,
+               bool negateComponent2)
 {
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, negateComponent2);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                    pair<DestIterator, DestAccessor> d)
+inline void
+vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+               pair<DestIterator, DestAccessor> d)
 {
     vectorToTensor(s.first, s.second, s.third, d.first, d.second, false);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+vectorToTensor(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               bool negateComponent2 = false)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "vectorToTensor(): shape mismatch between input and output.");
+    vectorToTensor(srcImageRange(src), destImage(dest), negateComponent2);
 }
 
 /********************************************************/
@@ -192,7 +229,19 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorEigenRepresentation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -201,8 +250,6 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                                        DestIterator dul, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -212,18 +259,28 @@ void vectorToTensor(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                                        pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h),
+                                          eigen(w,h);
+    
+    tensorEigenRepresentation(tensor, eigen);
+    \endcode
+
+    \deprecatedUsage{tensorEigenRepresentation}
     \code
     FVector3Image tensor(w,h);
     FVector3Image eigen(w,h);
     
     tensorEigenRepresentation(srcImageRange(tensor), destImage(eigen));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorEigenRepresentation)
 
@@ -270,11 +327,22 @@ void tensorEigenRepresentation(SrcIterator sul, SrcIterator slr, SrcAccessor src
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                               pair<DestIterator, DestAccessor> d)
+inline void
+tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                          pair<DestIterator, DestAccessor> dest)
 {
-    tensorEigenRepresentation(s.first, s.second, s.third, d.first, d.second);
+    tensorEigenRepresentation(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+tensorEigenRepresentation(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "tensorEigenRepresentation(): shape mismatch between input and output.");
+    tensorEigenRepresentation(srcImageRange(src), destImage(dest));
 }
 
 /********************************************************/
@@ -291,7 +359,19 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        tensorTrace(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorTrace}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -300,8 +380,6 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                          DestIterator dul, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -311,18 +389,28 @@ void tensorEigenRepresentation(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                          pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    MultiArray<2, float>                  trace(w,h);
+    
+    tensorTrace(tensor, trace);
+    \endcode
+
+    \deprecatedUsage{tensorTrace}
     \code
     FVector3Image tensor(w,h);
     FImage trace(w,h);
     
     tensorTrace(srcImageRange(tensor), destImage(trace));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorTrace)
 
@@ -351,11 +439,22 @@ void tensorTrace(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                 pair<DestIterator, DestAccessor> d)
+inline void
+tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+            pair<DestIterator, DestAccessor> dest)
 {
-    tensorTrace(s.first, s.second, s.third, d.first, d.second);
+    tensorTrace(src.first, src.second, src.third, dest.first, dest.second);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+tensorTrace(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, T2, S2> dest)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "tensorTrace(): shape mismatch between input and output.");
+    tensorTrace(srcImageRange(src), destImage(dest));
 }
 
 /********************************************************/
@@ -376,7 +475,21 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T21, class S21,
+                  class T22, class S22>
+        void
+        tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T21, S21> edge,
+                           MultiArrayView<2, T22, S22> corner);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorToEdgeCorner}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -387,8 +500,6 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                                 DestIterator2 cornerul, DestAccessor2 corner);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -400,11 +511,23 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
                                 pair<DestIterator2, DestAccessor2> corner);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/tensorutilities.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h);
+    MultiArray<2, TinyVector<float, 2> >  edgePart(w,h);
+    MultiArray<2, float>                  cornerPart(w,h);
+    ...
+    
+    tensorTrace(tensor, edgePart, cornerPart);
+    \endcode
+
+    \deprecatedUsage{tensorToEdgeCorner}
     \code
     FVector3Image tensor(w,h);
     FVector2Image edgePart(w,h);
@@ -412,7 +535,7 @@ void tensorTrace(triple<SrcIterator, SrcIterator, SrcAccessor> s,
     
     tensorTrace(srcImageRange(tensor), destImage(edgePart), destImage(cornerPart));
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void tensorToEdgeCorner)
 
@@ -463,13 +586,27 @@ void tensorToEdgeCorner(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator1, class DestAccessor1,
           class DestIterator2, class DestAccessor2>
-inline
-void tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                        pair<DestIterator1, DestAccessor1> edge,
-                        pair<DestIterator2, DestAccessor2> corner)
+inline void
+tensorToEdgeCorner(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator1, DestAccessor1> edge,
+                   pair<DestIterator2, DestAccessor2> corner)
 {
-    tensorToEdgeCorner(s.first, s.second, s.third, 
+    tensorToEdgeCorner(src.first, src.second, src.third, 
                        edge.first, edge.second, corner.first, corner.second);
+}
+
+template <class T1, class S1,
+          class T21, class S21,
+          class T22, class S22>
+inline void
+tensorToEdgeCorner(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T21, S21> edge,
+                   MultiArrayView<2, T22, S22> corner)
+{
+    vigra_precondition(src.shape() == edge.shape(),
+        "tensorToEdgeCorner(): shape mismatch between input and output.");
+    tensorToEdgeCorner(srcImageRange(src), 
+                       destImage(edge), destImage(corner));
 }
 
 //@}

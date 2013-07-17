@@ -45,6 +45,7 @@
 #include "combineimages.hxx"
 #include "numerictraits.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -81,7 +82,20 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
+                             MultiArrayView<2, T2, S2> dest,
+                             Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
+    }
+    \endcode
+
+    \deprecatedAPI{gradientEnergyTensor}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -91,7 +105,6 @@ namespace vigra {
                                   Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -102,11 +115,24 @@ namespace vigra {
                                   Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/gradient_energy_tensor.hxx\>
+    <b>\#include</b> \<vigra/gradient_energy_tensor.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float> img(w,h);
+    MultiArray<2, TinyVector<float, 3> > get(w,h);
+    Kernel1D<double> grad, smooth;
+    grad.initGaussianDerivative(0.7, 1);
+    smooth.initGaussian(0.7);
+    ...
+    gradientEnergyTensor(img, get, grad, smooth);
+    \endcode
+
+    \deprecatedUsage{gradientEnergyTensor}
     \code
     FImage img(w,h);
     FVector3Image get(w,h);
@@ -116,7 +142,7 @@ namespace vigra {
     ...
     gradientEnergyTensor(srcImageRange(img), destImage(get), grad, smooth);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void gradientEnergyTensor)
 
@@ -176,13 +202,26 @@ void gradientEnergyTensor(SrcIterator supperleft, SrcIterator slowerright, SrcAc
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                          pair<DestIterator, DestAccessor> dest,
-                          Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+inline void
+gradientEnergyTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                     pair<DestIterator, DestAccessor> dest,
+                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
 {
     gradientEnergyTensor(src.first, src.second, src.third,
                          dest.first, dest.second, derivKernel, smoothKernel);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+gradientEnergyTensor(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest,
+                     Kernel1D<double> const & derivKernel, Kernel1D<double> const & smoothKernel)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "gradientEnergyTensor(): shape mismatch between input and output.");
+    gradientEnergyTensor(srcImageRange(src),
+                         destImage(dest), derivKernel, smoothKernel);
 }
 
 //@}

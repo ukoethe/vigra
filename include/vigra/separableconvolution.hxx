@@ -44,8 +44,12 @@
 #include "bordertreatment.hxx"
 #include "gaussians.hxx"
 #include "array_vector.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
+
+template <class ARITHTYPE>
+class Kernel1D;
 
 /********************************************************/
 /*                                                      */
@@ -792,7 +796,7 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -805,8 +809,6 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
                           int start = 0, int stop = 0 )
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -823,7 +825,8 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
 
     \code
@@ -887,7 +890,6 @@ void internalConvolveLineAvoid(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
     If border == BORDER_TREATMENT_CLIP: Sum of kernel elements must be
     != 0.
-
 */
 doxygen_overloaded_function(template <...> void convolveLine)
 
@@ -1001,7 +1003,21 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        separableConvolveX(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           Kernel1D<T3> const & kernel);
+    }
+    \endcode
+
+    \deprecatedAPI{separableConvolveX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1014,8 +1030,6 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1028,12 +1042,26 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                              int, int, BorderTreatmentMode> kernel)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
 
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D<double> kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D filter along the x-axis
+    separableConvolveX(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{separableConvolveX}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1042,10 +1070,17 @@ void convolveLine(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra::Kernel1D<double> kernel;
     kernel.initGaussian(3.0);
 
+    // apply 1D filter along the x-axis
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
-
     \endcode
-
+    \deprecatedEnd
+    
+    <b>Preconditions:</b>
+    
+    <ul>
+    <li> The x-axis must be longer than the kernel radius: <tt>w > std::max(kernel.right(), -kernel.left())</tt>.
+    <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
+    </ul>
 */
 doxygen_overloaded_function(template <...> void separableConvolveX)
 
@@ -1088,17 +1123,29 @@ template <class SrcIterator, class SrcAccessor,
           class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  tuple5<KernelIterator, KernelAccessor,
-                         int, int, BorderTreatmentMode> kernel)
+                   pair<DestIterator, DestAccessor> dest,
+                   tuple5<KernelIterator, KernelAccessor,
+                           int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveX(src.first, src.second, src.third,
-                 dest.first, dest.second,
-                 kernel.first, kernel.second,
-                 kernel.third, kernel.fourth, kernel.fifth);
+                       dest.first, dest.second,
+                       kernel.first, kernel.second,
+                       kernel.third, kernel.fourth, kernel.fifth);
 }
 
-
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
+inline void
+separableConvolveX(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   Kernel1D<T3> const & kernel)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "separableConvolveX(): shape mismatch between input and output.");
+    separableConvolveX(srcImageRange(src),
+                       destImage(dest), kernel1d(kernel));
+}
 
 /********************************************************/
 /*                                                      */
@@ -1113,7 +1160,21 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class T3>
+        void
+        separableConvolveY(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           Kernel1D<T3> const & kernel);
+    }
+    \endcode
+
+    \deprecatedAPI{separableConvolveY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1126,8 +1187,6 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 int kleft, int kright, BorderTreatmentMode border)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1140,12 +1199,27 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                              int, int, BorderTreatmentMode> kernel)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/separableconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D filter along the y-axis
+    separableConvolveY(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{separableConvolveY}
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1155,9 +1229,15 @@ separableConvolveX(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     kernel.initGaussian(3.0);
 
     vigra::separableConvolveY(srcImageRange(src), destImage(dest), kernel1d(kernel));
-
     \endcode
-
+    \deprecatedEnd
+    
+    <b>Preconditions:</b>
+    
+    <ul>
+    <li> The y-axis must be longer than the kernel radius: <tt>h > std::max(kernel.right(), -kernel.left())</tt>.
+    <li> If <tt>border == BORDER_TREATMENT_CLIP</tt>: The sum of kernel elements must be != 0.
+    </ul>
 */
 doxygen_overloaded_function(template <...> void separableConvolveY)
 
@@ -1200,14 +1280,28 @@ template <class SrcIterator, class SrcAccessor,
           class KernelIterator, class KernelAccessor>
 inline void
 separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                  pair<DestIterator, DestAccessor> dest,
-                  tuple5<KernelIterator, KernelAccessor,
+                   pair<DestIterator, DestAccessor> dest,
+                   tuple5<KernelIterator, KernelAccessor,
                          int, int, BorderTreatmentMode> kernel)
 {
     separableConvolveY(src.first, src.second, src.third,
-                 dest.first, dest.second,
-                 kernel.first, kernel.second,
-                 kernel.third, kernel.fourth, kernel.fifth);
+                       dest.first, dest.second,
+                       kernel.first, kernel.second,
+                       kernel.third, kernel.fourth, kernel.fifth);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class T3>
+inline void
+separableConvolveY(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   Kernel1D<T3> const & kernel)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "separableConvolveY(): shape mismatch between input and output.");
+    separableConvolveY(srcImageRange(src),
+                       destImage(dest), kernel1d(kernel));
 }
 
 //@}
@@ -1233,14 +1327,26 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     properties. The kernel's value_type must be a linear space, i.e. it
     must define multiplication with doubles and NumericTraits.
 
-
-    The kernel defines a factory function kernel1d() to create an argument object
-    (see \ref KernelArgumentObjectFactories).
-
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/stdconvolution.hxx\>
+    <b>\#include</b> \<vigra/separableconvolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    ...
+
+    // define Gaussian kernel with std. deviation 3.0
+    Kernel1D kernel;
+    kernel.initGaussian(3.0);
+
+    // apply 1D kernel along the x-axis
+    separableConvolveX(src, dest, kernel);
+    \endcode
+
+    \deprecatedUsage{Kernel1D}
+    The kernel defines a factory function kernel1d() to create an argument object
+    (see \ref KernelArgumentObjectFactories).
     \code
     vigra::FImage src(w,h), dest(w,h);
     ...
@@ -1251,9 +1357,7 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     vigra::separableConvolveX(srcImageRange(src), destImage(dest), kernel1d(kernel));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     value_type v = vigra::NumericTraits<value_type>::one(); // if norm is not
                                                             // given explicitly
@@ -1261,9 +1365,10 @@ separableConvolveY(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     v = d * v;
     \endcode
+    \deprecatedEnd
 */
 
-template <class ARITHTYPE>
+template <class ARITHTYPE = double>
 class Kernel1D
 {
   public:
@@ -1434,7 +1539,7 @@ class Kernel1D
             window is <tt>radius = round(3.0 * std_dev)</tt>, otherwise it is 
             <tt>radius = round(windowRatio * std_dev)</tt> (where <tt>windowRatio > 0.0</tt>
             is required).
-
+            
             Precondition:
             \code
             std_dev >= 0.0
@@ -1781,10 +1886,10 @@ class Kernel1D
     }
 
         /**
-           Init as a symmetric gradient filter of the form
-           <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
+            Init as a symmetric gradient filter of the form
+            <TT>[ 0.5 * norm, 0.0 * norm, -0.5 * norm]</TT>
            
-           <b>Deprecated</b>. Use initSymmetricDifference() instead.
+            <b>Deprecated</b>. Use initSymmetricDifference() instead.
 
             Postconditions:
             \code
@@ -1794,8 +1899,7 @@ class Kernel1D
             4. norm() == norm
             \endcode
         */
-    void
-    initSymmetricGradient(value_type norm )
+    void initSymmetricGradient(value_type norm )
     {
         initSymmetricDifference(norm);
         setBorderTreatment(BORDER_TREATMENT_REPEAT);
@@ -1858,8 +1962,7 @@ class Kernel1D
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
     }
 
-    void
-    initSymmetricDifference(value_type norm );
+    void initSymmetricDifference(value_type norm );
 
         /** Init as the 3-tap symmetric difference filter
             The filter values are
@@ -1897,8 +2000,7 @@ class Kernel1D
             4. norm() == 1
             \endcode
         */
-    void
-    initSecondDifference3()
+    void initSecondDifference3()
     {
         this->initExplicitly(-1, 1) = 1.0, -2.0, 1.0;
         this->setBorderTreatment(BORDER_TREATMENT_REFLECT);
@@ -1906,8 +2008,8 @@ class Kernel1D
     
         /**
             Init an optimal 5-tap first derivative filter.
-           This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
-           (see initOptimalFirstDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
+            This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+            (see initOptimalFirstDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
             and the smoothing filter along the other.
             The filter values are 
             
@@ -1938,8 +2040,8 @@ class Kernel1D
     
         /**
             Init an optimal 5-tap second derivative filter.
-           This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
-           (see initOptimalSecondDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
+            This filter must be used in conjunction with the corresponding 5-tap smoothing filter 
+            (see initOptimalSecondDerivativeSmoothing5()), such that the derivative filter is applied along one dimension,
             and the smoothing filter along the other.
             The filter values are 
             
@@ -2151,9 +2253,10 @@ void Kernel1D<ARITHTYPE>::normalize(value_type norm,
 /***********************************************************************/
 
 template <class ARITHTYPE>
-void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
-                                       value_type norm, 
-                                       double windowRatio)
+void
+Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
+                                  value_type norm, 
+                                  double windowRatio)
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initGaussian(): Standard deviation must be >= 0.");
@@ -2204,8 +2307,9 @@ void Kernel1D<ARITHTYPE>::initGaussian(double std_dev,
 /***********************************************************************/
 
 template <class ARITHTYPE>
-void Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
-                                       value_type norm)
+void
+Kernel1D<ARITHTYPE>::initDiscreteGaussian(double std_dev,
+                                          value_type norm)
 {
     vigra_precondition(std_dev >= 0.0,
               "Kernel1D::initDiscreteGaussian(): Standard deviation must be >= 0.");
@@ -2288,7 +2392,7 @@ Kernel1D<ARITHTYPE>::initGaussianDerivative(double std_dev,
         initGaussian(std_dev, norm, windowRatio);
         return;
     }
-
+    
     vigra_precondition(std_dev > 0.0,
               "Kernel1D::initGaussianDerivative(): "
               "Standard deviation must be > 0.");
@@ -2380,8 +2484,9 @@ Kernel1D<ARITHTYPE>::initBinomial(int radius,
 /***********************************************************************/
 
 template <class ARITHTYPE>
-void Kernel1D<ARITHTYPE>::initAveraging(int radius,
-                                        value_type norm)
+void
+Kernel1D<ARITHTYPE>::initAveraging(int radius,
+                                   value_type norm)
 {
     vigra_precondition(radius > 0,
               "Kernel1D::initAveraging(): Radius must be > 0.");

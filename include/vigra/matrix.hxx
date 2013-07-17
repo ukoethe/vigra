@@ -550,7 +550,7 @@ class TemporaryMatrix
   public:
     typedef Matrix<T, ALLOC>                        matrix_type;
     typedef TemporaryMatrix<T, ALLOC>               temp_type;
-    typedef MultiArrayView<2, T, UnstridedArrayTag> view_type;
+    typedef MultiArrayView<2, T, StridedArrayTag>   view_type;
     typedef typename BaseType::value_type           value_type;
     typedef typename BaseType::pointer              pointer;
     typedef typename BaseType::const_pointer        const_pointer;
@@ -1519,6 +1519,25 @@ outer(const MultiArrayView<2, T, C> &x)
             for(MultiArrayIndex j = 0; j < size; ++j)
                 ret(j, i) = x(j, 0) * x(i, 0);
     }
+    return ret;
+}
+
+    /** calculate the outer product of a TinyVector with itself.
+        The result is returned as a temporary matrix.
+
+        <b>\#include</b> \<vigra/matrix.hxx\> or<br>
+        <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
+        Namespaces: vigra and vigra::linalg
+     */
+template <class T, int N>
+TemporaryMatrix<T>
+outer(const TinyVector<T, N> &x)
+{
+    TemporaryMatrix<T> ret(N, N);
+
+    for(MultiArrayIndex i = 0; i < N; ++i)
+        for(MultiArrayIndex j = 0; j < N; ++j)
+            ret(j, i) = x[j] * x[i];
     return ret;
 }
 

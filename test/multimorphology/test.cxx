@@ -138,6 +138,10 @@ struct MultiMorphologyTest
         
         multiBinaryErosion(srcMultiArrayRange(img), destMultiArray(res), 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
+        
+        res = 0;
+        multiBinaryErosion(img, res, 2);
+        shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
     void binaryErosionTest2()
@@ -154,7 +158,7 @@ struct MultiMorphologyTest
                    0, 0, 0, foreground, foreground, foreground, foreground,
                    0, 0, 0, foreground, foreground, foreground, foreground};
 
-        multiBinaryErosion(srcMultiArrayRange(img2), destMultiArray(res), 2);
+        multiBinaryErosion(img2, res, 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
@@ -164,13 +168,13 @@ struct MultiMorphologyTest
         int foreground = NumericTraits<int>::one();
         
         static const int desired[] = {0, 0, 0, foreground, 0, 0, 0};
-        multiBinaryErosion(srcMultiArrayRange(lin), destMultiArray(res), 2);
+        multiBinaryErosion(lin, res, 2);
         shouldEqualSequence(res.begin(), res.end(), desired);
     }
 
-    void binaryErosionTest3D()
+    void binaryErosionAndDilationTest3D()
     {
-        IntVolume res(vol);
+        IntVolume res(vol.shape()), res2(vol.shape());
         int f = NumericTraits<int>::one();
         
         static const int desired[] = {  0, 0, 0, 0, 0, 
@@ -203,8 +207,11 @@ struct MultiMorphologyTest
                                         0, 0, 0, 0, 0,  
                                         0, 0, 0, 0, 0};
 
-        multiBinaryErosion(srcMultiArrayRange(vol), destMultiArray(res), 1);
+        multiBinaryErosion(vol, res, 1);
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        multiBinaryDilation(res, res2, 1.8);
+        shouldEqualSequence(res2.begin(), res2.end(), vol.begin());
     }
     
     void grayErosionTest2D()
@@ -225,7 +232,7 @@ struct MultiMorphologyTest
             *iter+=2.9f;
         }
         //erosion on compare image (image+2)
-        multiGrayscaleErosion(srcMultiArrayRange(in), destMultiArray(res_cmp), 1);
+        multiGrayscaleErosion(in, res_cmp, 1);
         
         shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
     }
@@ -248,7 +255,7 @@ struct MultiMorphologyTest
             *iter+=2.9f;
         }
         //dilation on compare image (image+2)
-        multiGrayscaleDilation(srcMultiArrayRange(in), destMultiArray(res_cmp), 1);
+        multiGrayscaleDilation(in, res_cmp, 1);
 
         shouldEqualSequence(res.begin(), res.end(), res_cmp.begin());
     }
@@ -259,12 +266,12 @@ struct MultiMorphologyTest
         FloatImage in(img), di_res(img), er_res(img);
 
         //erosion on original image
-        multiGrayscaleErosion(srcMultiArrayRange(in),destMultiArray(er_res),1);
+        multiGrayscaleErosion(in, er_res, 1);
         //dilation on original inverted image
         for(FloatImage::iterator iter=in.begin(); iter!=in.end(); ++iter){
             *iter*=-1.0f;
         }
-        multiGrayscaleDilation(srcMultiArrayRange(in),destMultiArray(di_res),1);
+        multiGrayscaleDilation(in, di_res, 1);
         //Invert dilation res
         for(FloatImage::iterator iter=di_res.begin(); iter!=di_res.end(); ++iter){
             *iter*=-1.0f;
@@ -297,7 +304,7 @@ struct MorphologyTestSuite
         add( testCase( &MultiMorphologyTest::binaryErosionTest));
         add( testCase( &MultiMorphologyTest::binaryErosionTest2));
         add( testCase( &MultiMorphologyTest::binaryErosionTest1D));
-        add( testCase( &MultiMorphologyTest::binaryErosionTest3D));
+        add( testCase( &MultiMorphologyTest::binaryErosionAndDilationTest3D));
         add( testCase( &MultiMorphologyTest::grayErosionTest2D));
         add( testCase( &MultiMorphologyTest::grayDilationTest2D));
         add( testCase( &MultiMorphologyTest::grayErosionAndDilationTest2D));

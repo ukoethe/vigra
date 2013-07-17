@@ -45,12 +45,13 @@
 #include "functortraits.hxx"
 #include "rgbvalue.hxx"
 #include "inspector_passes.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
 /** \addtogroup InspectAlgo Algorithms to Inspect Images
 
-    Apply read-only functor to every pixel
+    Collect information and statistics over all or selected pixels.
 */
 //@{
 
@@ -122,37 +123,63 @@ inspectTwoLinesIf(SrcIterator1 s1,
 /** \brief Apply read-only functor to every pixel in the image.
 
     This function can be used to collect statistics of the image etc.
-    The results must be stored in the functor, which serves as a return
-    value.
-    The function uses an accessor to access the pixel data.
+    The results must be stored in the functor, which serves as a return value
+    (and is therefore passed by reference).
+    
+    For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination with 
+    \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S, class Functor>
+        void
+        inspectImage(MultiArrayView<2, T, S> const & img,
+                     Functor & f);
+    }
+    \endcode
+
+    \deprecatedAPI{inspectImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
-        inspectImage(ImageIterator upperleft, ImageIterator lowerright,
-                     Accessor a, Functor & f)
+        inspectImage(ImageIterator upperleft, ImageIterator lowerright, Accessor a, 
+                     Functor & f)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class Functor>
         void
         inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-             Functor & f)
+                     Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/inspectimage.hxx\><br>
     Namespace: vigra
 
+    \code
+    MultiArray<2, unsigned char> img(width, height);
+    ... // fill img
+    
+    // init functor
+    FindMinMax<unsined char> minmax;
+
+    inspectImage(img, minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+    \endcode
+
+    \deprecatedUsage{inspectImage}
     \code
     // init functor
     vigra::BImage img;
@@ -162,11 +189,8 @@ inspectTwoLinesIf(SrcIterator1 s1,
     vigra::inspectImage(srcImageRange(img), minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     ConstImageIterator upperleft, lowerright;
     ConstImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -176,7 +200,9 @@ inspectTwoLinesIf(SrcIterator1 s1,
 
     functor(accessor(ix));         // return not used
     \endcode
-
+    \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImage)
 
@@ -211,12 +237,19 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
 }
 
 template <class ImageIterator, class Accessor, class Functor>
-inline
-void
+inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-         Functor & f)
+             Functor & f)
 {
     inspectImage(img.first, img.second, img.third, f);
+}
+
+template <class T, class S, class Functor>
+inline void
+inspectImage(MultiArrayView<2, T, S> const & img,
+             Functor & f)
+{
+    inspectImage(srcImageRange(img), f);
 }
 
 namespace functor
@@ -235,12 +268,20 @@ inspectImage(ImageIterator upperleft, ImageIterator lowerright,
 }
 
 template <class ImageIterator, class Accessor, class Functor>
-inline
-void
+inline void
 inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
-         functor::UnaryAnalyser<Functor> const & f)
+             functor::UnaryAnalyser<Functor> const & f)
 {
     inspectImage(img.first, img.second, img.third,
+                 const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T, class S, class Functor>
+inline void
+inspectImage(MultiArrayView<2, T, S> const & img,
+             functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImage(srcImageRange(img),
                  const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
@@ -252,16 +293,28 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 
 /** \brief Apply read-only functor to every pixel in the ROI.
 
-    This function can be used to collect statistics of the roi etc.
+    This function can be used to collect statistics of the ROI etc.
     The functor is called whenever the return value of the mask's
     accessor is not zero.
     The results must be stored in the functor, which serves as a return
-    value.
-    Accessors are used to access the pixel and mask data.
+    value (and is therefore passed by reference.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S,
+                  class TM, class SM, class Functor>
+        void
+        inspectImageIf(MultiArrayView<2, T, S> const & img,
+                       MultiArrayView<2, TM, SM> const & mask,
+                       Functor & f);
+    }
+    \endcode
+
+    \deprecatedAPI{inspectImageIf}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor,
@@ -272,8 +325,6 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -285,12 +336,27 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/inspectimage.hxx\><br>
     Namespace: vigra
 
+    \code
+    MultiArray<2, unsigned char> img(100, 100),
+                                 mask(100, 100);
+    ... // fill img and mask
+    
+    // init functor
+    FindMinMax<unsigned char> minmax;
+
+    inspectImageIf(img, mask, minmax);
+
+    cout << "Min: " << minmax.min << " Max: " << minmax.max;
+    \endcode
+
+    \deprecatedUsage{inspectImageIf}
     \code
     vigra::BImage img(100, 100);
     vigra::BImage mask(100, 100);
@@ -302,11 +368,8 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
                           maskImage(mask), minmax);
 
     cout << "Min: " << minmax.min << " Max: " << minmax.max;
-
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     ConstImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
@@ -320,7 +383,9 @@ inspectImage(triple<ImageIterator, ImageIterator, Accessor> img,
 
     if(mask_accessor(mx)) functor(accessor(ix));
     \endcode
-
+    \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectImageIf)
 
@@ -369,18 +434,6 @@ inspectImageIf(ImageIterator upperleft,
 
 template <class ImageIterator, class Accessor,
       class MaskImageIterator, class MaskAccessor, class Functor>
-inline
-void
-inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
-               pair<MaskImageIterator, MaskAccessor> mask,
-               Functor & f)
-{
-    inspectImageIf(img.first, img.second, img.third,
-                   mask.first, mask.second, f);
-}
-
-template <class ImageIterator, class Accessor,
-      class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(ImageIterator upperleft,
                ImageIterator lowerright, Accessor a,
@@ -392,7 +445,18 @@ inspectImageIf(ImageIterator upperleft,
 }
 
 template <class ImageIterator, class Accessor,
-      class MaskImageIterator, class MaskAccessor, class Functor>
+          class MaskImageIterator, class MaskAccessor, class Functor>
+inline void
+inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
+               pair<MaskImageIterator, MaskAccessor> mask,
+               Functor & f)
+{
+    inspectImageIf(img.first, img.second, img.third,
+                   mask.first, mask.second, f);
+}
+
+template <class ImageIterator, class Accessor,
+          class MaskImageIterator, class MaskAccessor, class Functor>
 inline void
 inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                pair<MaskImageIterator, MaskAccessor> mask,
@@ -400,6 +464,30 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 {
     inspectImageIf(img.first, img.second, img.third,
                    mask.first, mask.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T, class S,
+          class TM, class SM, class Functor>
+inline void
+inspectImageIf(MultiArrayView<2, T, S> const & img,
+               MultiArrayView<2, TM, SM> const & mask,
+               Functor & f)
+{
+    vigra_precondition(img.shape() == mask.shape(),
+        "inspectImageIf(): shape mismatch between input and output.");
+    inspectImageIf(srcImageRange(img),
+                   maskImage(mask), f);
+}
+
+template <class T, class S,
+          class TM, class SM, class Functor>
+inline void
+inspectImageIf(MultiArrayView<2, T, S> const & img,
+               MultiArrayView<2, TM, SM> const & mask,
+               functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectImageIf(srcImageRange(img),
+                   maskImage(mask), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 /********************************************************/
@@ -414,11 +502,27 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     labeled image, especially in conjunction with
     the \ref ArrayOfRegionStatistics functor. The results must be
     stored in the functor which serves as a return value.
-    Accessors are used to access the pixel data.
+    
+    Note: For many common statistics, the use of \ref vigra::acc::extractFeatures() in combination 
+    with \ref FeatureAccumulators is more convenient.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Functor>
+        void
+        inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                         MultiArrayView<2, T2, S2> const & img2,
+                         Functor & f);
+    }
+    \endcode
+
+    \deprecatedAPI{inspectTwoImages}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -430,8 +534,6 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                  Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -444,12 +546,22 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                  Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/inspectimage.hxx\><br>
     Namespace: vigra
 
+    \code
+    MultiArray<2, unsigned char> image1(width, height), image2(width, height);
+
+    SomeStatisticsFunctor stats(...);     // init functor
+
+    inspectTwoImages(image1, image2, stats);
+    \endcode
+
+    \deprecatedUsage{inspectTwoImages}
     \code
     vigra::BImage image1;
     vigra::BImage image2;
@@ -458,12 +570,8 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 
     vigra::inspectTwoImages(srcImageRange(image1), srcImage(image2),
                             stats);
-
-
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
@@ -476,7 +584,9 @@ inspectImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     Functor functor;
     functor(accessor1(ix1), accessor2(ix2));  // return not used
     \endcode
-
+    \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImages)
 
@@ -524,19 +634,6 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1,
 }
 
 template <class ImageIterator1, class Accessor1,
-      class ImageIterator2, class Accessor2,
-      class Functor>
-inline
-void
-inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         Functor & f)
-{
-    inspectTwoImages(img1.first, img1.second, img1.third,
-                     img2.first, img2.second, f);
-}
-
-template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class Functor>
 inline void
@@ -549,16 +646,57 @@ inspectTwoImages(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor
 }
 
 template <class ImageIterator1, class Accessor1,
-      class ImageIterator2, class Accessor2,
-      class Functor>
-inline
-void
+          class ImageIterator2, class Accessor2,
+          class Functor>
+inline void
 inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         functor::UnaryAnalyser<Functor> const & f)
+                 pair<ImageIterator2, Accessor2> img2,
+                 Functor & f)
+{
+    inspectTwoImages(img1.first, img1.second, img1.third,
+                     img2.first, img2.second, f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class Functor>
+inline void
+inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                 pair<ImageIterator2, Accessor2> img2,
+                 functor::UnaryAnalyser<Functor> const & f)
 {
     inspectTwoImages(img1.first, img1.second, img1.third,
                      img2.first, img2.second, const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
+inline void
+inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                 MultiArrayView<2, T2, S2> const & img2,
+                 Functor & f)
+{
+    vigra_precondition(img1.shape() == img2.shape(),
+        "inspectTwoImages(): shape mismatch between input and output.");
+    inspectTwoImages(srcImageRange(img1),
+                     srcImage(img2),
+                     f);
+}
+
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Functor>
+inline void
+inspectTwoImages(MultiArrayView<2, T1, S1> const & img1,
+                 MultiArrayView<2, T2, S2> const & img2,
+                 functor::UnaryAnalyser<Functor> const & f)
+{
+    vigra_precondition(img1.shape() == img2.shape(),
+        "inspectTwoImages(): shape mismatch between input and output.");
+    inspectTwoImages(srcImageRange(img1),
+                     srcImage(img2), const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 
 /********************************************************/
@@ -574,11 +712,26 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     labeled image, especially in conjunction with
     the \ref ArrayOfRegionStatistics functor. The results must be
     stored in the functor which serves as a return value.
-    Accessors are used to access the pixel data.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class TM, class SM,
+                  class Functor>
+        void
+        inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                           MultiArrayView<2, T2, S2> const & img2,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           Functor & f);
+    }
+    \endcode
+
+    \deprecatedAPI{inspectTwoImagesIf}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator1, class Accessor1,
@@ -592,8 +745,6 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                          Functor & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -608,12 +759,23 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                  Functor & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/inspectimage.hxx\><br>
     Namespace: vigra
 
+    \code
+    MultiArray<2, unsigned char> image1(width, height), image2(width, height),
+                                 maskimage(width, height);
+
+    SomeStatisticsFunctor stats(...);     // init functor
+
+    inspectTwoImagesIf(image1, image2, maskimage, region_stats);
+    \endcode
+
+    \deprecatedUsage{inspectTwoImagesIf}
     \code
     vigra::BImage image1;
     vigra::BImage image2;
@@ -625,9 +787,7 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
                               srcImage(maskimage), region_stats);
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     ImageIterator1 upperleft1, lowerright1;
     ImageIterator2 upperleft2;
@@ -644,7 +804,9 @@ inspectTwoImages(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
     if(mask(mx))
         functor(accessor1(ix1), accessor2(ix2));
     \endcode
-
+    \deprecatedEnd
+    
+    \see InspectFunctor, FeatureAccumulators
 */
 doxygen_overloaded_function(template <...> void inspectTwoImagesIf)
 
@@ -705,23 +867,6 @@ template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class MaskImageIterator, class MaskAccessor,
           class Functor>
-inline
-void
-inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         pair<MaskImageIterator, MaskAccessor> m,
-         Functor & f)
-{
-    inspectTwoImagesIf(img1.first, img1.second, img1.third,
-                     img2.first, img2.second,
-                     m.first, m.second,
-                     f);
-}
-
-template <class ImageIterator1, class Accessor1,
-          class ImageIterator2, class Accessor2,
-          class MaskImageIterator, class MaskAccessor,
-          class Functor>
 inline void
 inspectTwoImagesIf(ImageIterator1 upperleft1, ImageIterator1 lowerright1, Accessor1 a1,
                  ImageIterator2 upperleft2, Accessor2 a2,
@@ -738,16 +883,67 @@ template <class ImageIterator1, class Accessor1,
           class ImageIterator2, class Accessor2,
           class MaskImageIterator, class MaskAccessor,
           class Functor>
-inline
-void
+inline void
 inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
-         pair<ImageIterator2, Accessor2> img2,
-         pair<MaskImageIterator, MaskAccessor> m,
-         functor::UnaryAnalyser<Functor> const & f)
+                   pair<ImageIterator2, Accessor2> img2,
+                   pair<MaskImageIterator, MaskAccessor> m,
+                   Functor & f)
 {
     inspectTwoImagesIf(img1.first, img1.second, img1.third,
                        img2.first, img2.second,
                        m.first, m.second,
+                       f);
+}
+
+template <class ImageIterator1, class Accessor1,
+          class ImageIterator2, class Accessor2,
+          class MaskImageIterator, class MaskAccessor,
+          class Functor>
+inline void
+inspectTwoImagesIf(triple<ImageIterator1, ImageIterator1, Accessor1> img1,
+                   pair<ImageIterator2, Accessor2> img2,
+                   pair<MaskImageIterator, MaskAccessor> m,
+                   functor::UnaryAnalyser<Functor> const & f)
+{
+    inspectTwoImagesIf(img1.first, img1.second, img1.third,
+                       img2.first, img2.second,
+                       m.first, m.second,
+                       const_cast<functor::UnaryAnalyser<Functor> &>(f));
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
+inline void
+inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                   MultiArrayView<2, T2, S2> const & img2,
+                   MultiArrayView<2, TM, SM> const & mask,
+                   Functor & f)
+{
+    vigra_precondition(img1.shape() == img2.shape() && img1.shape() == mask.shape(),
+        "inspectTwoImagesIf(): shape mismatch between input and output.");
+    inspectTwoImagesIf(srcImageRange(img1),
+                       srcImage(img2),
+                       maskImage(mask),
+                       f);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class TM, class SM,
+          class Functor>
+inline void
+inspectTwoImagesIf(MultiArrayView<2, T1, S1> const & img1,
+                   MultiArrayView<2, T2, S2> const & img2,
+                   MultiArrayView<2, TM, SM> const & mask,
+                   functor::UnaryAnalyser<Functor> const & f)
+{
+    vigra_precondition(img1.shape() == img2.shape() && img1.shape() == mask.shape(),
+        "inspectTwoImagesIf(): shape mismatch between input and output.");
+    inspectTwoImagesIf(srcImageRange(img1),
+                       srcImage(img2),
+                       maskImage(mask),
                        const_cast<functor::UnaryAnalyser<Functor> &>(f));
 }
 

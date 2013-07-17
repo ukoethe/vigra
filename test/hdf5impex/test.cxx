@@ -41,6 +41,7 @@
 #include "unittest.hxx"
 #include "vigra/hdf5impex.hxx"
 #include "vigra/multi_array.hxx"
+#include "vigra/multi_impex.hxx"
 
 using namespace vigra;
 
@@ -429,45 +430,63 @@ public:
         file.write("/compressed_transposed", out_data_6.transpose(), 0, 6);
 
         file.close();
+
+        should(isHDF5(file_name.c_str()));
+        should(!isHDF5("testsuccess.cxx"));
+        should(!isHDF5("file_does_not_exist.txt"));
+
         file.open(file_name, HDF5File::Open);
         
         // check if data is really written
 
         MultiArray<2,int> in_data_1 (Shape2(10, 11));
+        should(file.existsDataset("dataset"));
         file.read("dataset",in_data_1);
 
         MultiArray<2,int> in_data_1_transposed_write (Shape2(10, 11));
+        should(file.existsDataset("dataset_transposed"));
         file.read("dataset_transposed",in_data_1_transposed_write.transpose());
 
         MultiArray<2,int> in_data_1_transposed_read (Shape2(11, 10));
         file.read("dataset", in_data_1_transposed_read.transpose());
 
         MultiArray<4,double> in_data_2 (Shape4(10, 2, 3, 4));
+        should(file.existsDataset("/group/dataset"));
+        should(file.getDatasetType("/group/dataset") == "DOUBLE");
         file.read("/group/dataset",in_data_2);
 
         MultiArray< 2, TinyVector<double, 4> > in_data_3 (Shape2(5,8));
+        should(file.existsDataset("/group/subgroup1/dataset"));
         file.read("/group/subgroup1/dataset",in_data_3);
 
         MultiArray< 2, RGBValue<double> > in_data_4(Shape2(5,8));
+        should(file.existsDataset("/dataset_rgb"));
         file.read("/dataset_rgb", in_data_4);
 
         MultiArray< 3, unsigned char > in_data_5 (shape);
+        should(file.existsDataset("/newset"));
+        should(file.getDatasetType("/newset") == "UINT8");
         file.read("/newset",in_data_5);
 
         MultiArray< 3, double > in_data_6 (out_data_6.shape());
+        should(file.existsDataset("/compressed"));
         file.read("/compressed",in_data_6);
 
         MultiArray< 3, double > in_data_6_transposed_write (out_data_6.shape());
+        should(file.existsDataset("/compressed_transposed"));
         file.read("/compressed_transposed",in_data_6_transposed_write.transpose());
 
         MultiArray< 3, double > in_data_6_transposed_read (out_data_6.transpose().shape());
         file.read("/compressed",in_data_6_transposed_read.transpose());
 
         int atomicint;
+        should(file.existsDataset("/atomicint"));
         file.read("/atomicint",atomicint);
         int atomicuint;
+        should(file.existsDataset("/atomicuint"));
         file.read("/atomicuint",atomicuint);
         double atomicdouble;
+        should(file.existsDataset("/atomicdouble"));
         file.read("/atomicdouble",atomicdouble);
 
         file.flushToDisk();

@@ -135,15 +135,20 @@ class ImageExportInfo
   public:
         /** Construct ImageExportInfo object.
 
-            The image will be stored under the given filename.
+            The image will be stored under the given \a filename.
             The file type will be guessed from the extension unless overridden
             by \ref setFileType(). Recognized extensions: '.bmp', '.exr', '.gif',
             '.jpeg', '.jpg', '.p7', '.png', '.pbm', '.pgm', '.pnm', '.ppm', '.ras',
             '.tif', '.tiff', '.xv', '.hdr'.
+            
             EXR support requires libopenexr, JPEG support requires libjpeg,
             PNG support requires libpng and TIFF support requires libtiff.
+            
+            If the data is exported to TIFF, the \a mode may be "a", in which case
+            the exported image is appended to the existing file, resulting in a 
+            multi-page TIFF image.
          **/
-    VIGRA_EXPORT ImageExportInfo( const char *, const char * = "w" );
+    VIGRA_EXPORT ImageExportInfo( const char * filename, const char * mode = "w" );
     VIGRA_EXPORT ~ImageExportInfo();
 
         /** Set image file name.
@@ -188,7 +193,7 @@ class ImageExportInfo
             </DL>
 
             With the exception of TIFF, VIFF, PNG, and PNM all file types store
-            1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
+            only 1 byte (gray scale and mapped RGB) or 3 bytes (RGB) per
             pixel.
 
             PNG can store UInt8 and UInt16 values, and supports 1 and 3 channel
@@ -233,7 +238,7 @@ class ImageExportInfo
                            You can also specify a compression quality parameter by
                            passing "JPEG-ARITH QUALITY=N", where "N" must be an integer between 1 and 100
                            (e.g. "JPEG-ARITH QUALITY=70").
-            <DT><b>RLE", "RunLength:</b><DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
+            <DT><b>RLE, RunLength:</b><DD> (recognized by EXR and TIFF): use run-length encoding. (BMP also
                           uses run-length encoding, but there it is not an option).
             <DT><b>PACKBITS:</b><DD> (recognized by TIFF): use packbits encoding (a variant of RLE).
             <DT><b>DEFLATE:</b><DD> (recognized by TIFF): use deflate encoding, as defined in zlib (PNG also
@@ -242,11 +247,11 @@ class ImageExportInfo
             <DT><b>ZIP:</b><DD> (recognized by EXR): use zip-style encoding.
             <DT><b>PIZ:</b><DD> (recognized by EXR): use wavelet encoding.
             <DT><b>PXR24:</b><DD> (recognized by EXR): reduce to 24-bit, then use zip-style encoding.
-            <DT><b>B44", "B44A:</b><DD> (recognized by EXR): see OpenEXR documentation.
+            <DT><b>B44, B44A:</b><DD> (recognized by EXR): see OpenEXR documentation.
             <DT><b>ASCII:</b><DD> (recognized by PNM): store pixels as ASCII (human readable numbers).
             <DT><b>RAW:</b><DD> (recognized by PNM): store pixels as uncompressed binary data.
             <DT><b>BILEVEL:</b><DD> (recognized by PNM): store as one bit per pixel.
-            <DT><b>1" ... "100:</b><DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt>
+            <DT><b>1 ... 100:</b><DD> deprecated (equivalent to <tt>setCompression("JPEG QUALITY=number")</tt>
                              where the number denotes the desired quality).
             </DL>
 

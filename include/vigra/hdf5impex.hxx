@@ -79,6 +79,12 @@
 
 #include <algorithm>
 
+#if defined(_MSC_VER)
+#  include <io.h>
+#else
+#  include <unistd.h>
+#endif
+
 namespace vigra {
 
 /** \addtogroup VigraHDF5Impex Import/Export of Images and Arrays in HDF5 Format
@@ -88,6 +94,17 @@ namespace vigra {
     information on the HDF5 file format.
 */
 //@{
+
+    /** \brief Check if given filename refers to a HDF5 file.
+    */
+inline bool isHDF5(char const * filename)
+{
+#ifdef _MSC_VER
+    return _access(filename, 0) != -1 && H5Fis_hdf5(filename);
+#else
+    return access(filename, F_OK) == 0 && H5Fis_hdf5(filename);
+#endif
+}
 
     /** \brief Wrapper for hid_t objects.
 
@@ -255,7 +272,6 @@ public:
     }
 };
 
-
 /********************************************************/
 /*                                                      */
 /*                   HDF5ImportInfo                     */
@@ -339,11 +355,14 @@ class HDF5ImportInfo
 
             Possible values are:
             <DL>
+            <DT>"INT8"<DD> 8-bit signed integer (unsigned char)
             <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
             <DT>"INT16"<DD> 16-bit signed integer (short)
             <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
             <DT>"INT32"<DD> 32-bit signed integer (long)
             <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
+            <DT>"INT64"<DD> 64-bit signed integer (long long)
+            <DT>"UINT64"<DD> 64-bit unsigned integer (unsigned long long)
             <DT>"FLOAT"<DD> 32-bit floating point (float)
             <DT>"DOUBLE"<DD> 64-bit floating point (double)
             </DL>
@@ -802,11 +821,20 @@ class HDF5File
         return fileName_();
     }
 
+        /** \brief Check if given datasetName exists.
+        */
+    inline bool existsDataset(std::string datasetName)
+    {
+        // make datasetName clean
+        datasetName = get_absolute_path(datasetName);
+        return (H5Lexists(fileHandle_, datasetName.c_str(), H5P_DEFAULT) > 0);
+    }
+
         /** \brief Get the number of dimensions of a certain dataset
              If the first character is a "/", the path will be interpreted as absolute path,
              otherwise it will be interpreted as path relative to the current group.
         */
-    inline hssize_t getDatasetDimensions(std::string datasetName)
+    hssize_t getDatasetDimensions(std::string datasetName)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -835,7 +863,7 @@ class HDF5File
             ordered as 'z', 'y', 'x', this function will return the shape in the order
             'x', 'y', 'z'.
         */
-    inline ArrayVector<hsize_t> getDatasetShape(std::string datasetName)
+    ArrayVector<hsize_t> getDatasetShape(std::string datasetName)
     {
         // make datasetName clean
         datasetName = get_absolute_path(datasetName);
@@ -859,12 +887,73 @@ class HDF5File
         return shape;
     }
 
+        /** Query the pixel type of the dataset.
+
+            Possible values are:
+            <DL>
+            <DT>"INT8"<DD> 8-bit signed integer (unsigned char)
+            <DT>"UINT8"<DD> 8-bit unsigned integer (unsigned char)
+            <DT>"INT16"<DD> 16-bit signed integer (short)
+            <DT>"UINT16"<DD> 16-bit unsigned integer (unsigned short)
+            <DT>"INT32"<DD> 32-bit signed integer (long)
+            <DT>"UINT32"<DD> 32-bit unsigned integer (unsigned long)
+            <DT>"INT64"<DD> 64-bit signed integer (long long)
+            <DT>"UINT64"<DD> 64-bit unsigned integer (unsigned long long)
+            <DT>"FLOAT"<DD> 32-bit floating point (float)
+            <DT>"DOUBLE"<DD> 64-bit floating point (double)
+            <DT>"UNKNOWN"<DD> any other type
+            </DL>
+         */
+    std::string getDatasetType(std::string const & datasetName)
+    {
+        HDF5Handle datasetHandle = getDatasetHandle(datasetName);
+
+        hid_t datatype = H5Dget_type(datasetHandle);
+        H5T_class_t dataclass = H5Tget_class(datatype);
+        size_t datasize  = H5Tget_size(datatype);
+        H5T_sign_t datasign  = H5Tget_sign(datatype);
+
+        if(dataclass == H5T_FLOAT)
+        {
+            if(datasize == 4)
+                return "FLOAT";
+            else if(datasize == 8)
+                return "DOUBLE";
+        }
+        else if(dataclass == H5T_INTEGER)   
+        {
+            if(datasign == H5T_SGN_NONE)
+            {
+                if(datasize ==  1)
+                    return "UINT8";
+                else if(datasize == 2)
+                    return "UINT16";
+                else if(datasize == 4)
+                    return "UINT32";
+                else if(datasize == 8)
+                    return "UINT64";
+            }
+            else
+            {
+                if(datasize ==  1)
+                    return "INT8";
+                else if(datasize == 2)
+                    return "INT16";
+                else if(datasize == 4)
+                    return "INT32";
+                else if(datasize == 8)
+                    return "INT64";
+            }
+        }
+        return "UNKNOWN";
+    }
+        
         /** \brief Obtain the HDF5 handle of a dataset.
         */
-    inline HDF5Handle getDatasetHandle(std::string dataset_name)
+    inline HDF5Handle getDatasetHandle(std::string const & datasetName)
     {
-        std::string errorMessage = "HDF5File::getDatasetHandle(): Unable to open dataset '" + dataset_name + "'.";
-        return HDF5Handle(getDatasetHandle_(dataset_name), &H5Dclose, errorMessage.c_str());
+        std::string errorMessage = "HDF5File::getDatasetHandle(): Unable to open dataset '" + datasetName + "'.";
+        return HDF5Handle(getDatasetHandle_(get_absolute_path(datasetName)), &H5Dclose, errorMessage.c_str());
     }
 
         /** \brief Obtain the HDF5 handle of a group.
@@ -1886,7 +1975,7 @@ class HDF5File
         }
 
         // Open parent group
-        HDF5Handle groupHandle(openCreateGroup_(groupname), &H5Gclose, "Internal error");
+        HDF5Handle groupHandle(openCreateGroup_(groupname), &H5Gclose, "HDF5File::getDatasetHandle_(): Internal error");
 
         return H5Dopen(groupHandle, setname.c_str(), H5P_DEFAULT);
     }

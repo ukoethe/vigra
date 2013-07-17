@@ -196,8 +196,7 @@ struct SeededRegionGrowing3DTest
         DoubleVolume res(vol2);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
-        seededRegionGrowing3D(srcMultiArrayRange(distvol2), srcMultiArray(vol2),
-                              destMultiArray(res), cost, CompleteGrow);
+        seededRegionGrowing3D(distvol2, vol2, res, cost, CompleteGrow);
 
         DoubleVolume::iterator i = res.begin();
 

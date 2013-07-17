@@ -39,6 +39,8 @@
 #include "error.hxx"
 #include "stdimage.hxx"
 #include "copyimage.hxx"
+#include "multi_shape.hxx"
+
 #include <cmath>
 
 namespace vigra {
@@ -53,34 +55,86 @@ namespace vigra {
 /*                                                      */
 /********************************************************/
 
-/** \brief Rotate image by a multiple of 90 degrees.
+/** \brief Rotate an image by a multiple of 90 degrees or by an arbitrary angle.
 
-    This algorithm just copies the pixels in the appropriate new order. It expects the 
-    destination image to have the correct shape for the desired rotation.
+    If you specify the angle as an integer which is a multiple of 90 degrees, rotateImage()
+    just copies the pixels in the appropriate new order. It expects the destination image to 
+    have the correct shape for the desired rotation. That is, when the rotation is a multiple
+    of 180 degrees, source and destination must have the same shape, otherwise destination
+    must have the transposed shape of the source.
+    
+    If you want to rotate by an arbitrary angle and around an arbitrary center point,
+    you must specify the source image as a \ref vigra::SplineImageView, which is used for
+    interpolation at the required subpixel positions. If no center point is provided, the image 
+    center is used by default. The destination image must have the same size
+    as the source SplineImageView. 
+    
+    Positive angles refer to counter-clockwise rotation, negative ones to clockwise rotation.
+    All angles must be given in degrees.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
+        // rotate by a multiple of 90 degrees
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        rotateImage(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    int rotation);
+        
+        // rotate by an arbitrary angle around the given center point
+        template <int ORDER, class T, 
+                  class T2, class S2>
+        void 
+        rotateImage(SplineImageView<ORDER, T> const & src,
+                    MultiArrayView<2, T2, S2> dest, 
+                    double angleInDegree, 
+                    TinyVector<double, 2> const & center = (src.shape() - Shape2(1)) / 2.0);
+    }
+    \endcode
+    
+    \deprecatedAPI{rotateImage}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        // rotate by a multiple of 90 degrees
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         void 
         rotateImage(SrcIterator is, SrcIterator end, SrcAccessor as,
                     DestIterator id, DestAccessor ad, int rotation);
+
+        // rotate by an arbitrary angle around the given center point
+        template <int ORDER, class T, 
+                  class DestIterator, class DestAccessor>
+        void rotateImage(SplineImageView<ORDER, T> const & src,
+                         DestIterator id, DestAccessor dest, 
+                         double angleInDegree, TinyVector<double, 2> const & center = (src.shape() - Shape2(1)) / 2.0);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // rotate by a multiple of 90 degrees
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, int rotation);
+                    
+        // rotate by an arbitrary angle around the given center point
+        template <int ORDER, class T, 
+                  class DestIterator, class DestAccessor>
+        void 
+        rotateImage(SplineImageView<ORDER, T> const & src,
+                    pair<DestImageIterator, DestAccessor> dest, 
+                    double angleInDegree, TinyVector<double, 2> const & center = (src.shape() - Shape2(1)) / 2.0);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -88,14 +142,35 @@ namespace vigra {
     Namespace: vigra
     
     \code
-    Image dest(src.height(), src.width()); // note that width and height are exchanged
+    // rotate counter-clockwise by 90 degrees (no interpolation required)
+    MultiArray<2, float> src(width, height),
+                         dest(height, width); // note that width and height are exchanged
+    ... // fill src
+    rotateImage(src, dest, 90);
     
-    vigra::rotateImage(srcImageRange(src), destImage(dest), 90);
+    // rotate clockwise by 38.5 degrees, using a SplieImageView for cubic interpolation
+    SplineImageView<3, float> spline(srcImageRange(src));
+    MultiArray<2, float>  dest2(src.shape());
     
+    vigra::rotateImage(spline, dest2, -38.5);
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{rotateImage}
+    \code
+    // rotate counter-clockwise by 90 degrees (no interpolation required)
+    BImage src(width, height),
+           dest(height, width);    // note that width and height are exchanged
+    ... // fill src
     
+    rotateImage(srcImageRange(src), destImage(dest), 90);
+    
+    // rotate clockwise by 38.5 degrees, using a SplieImageView for cubic interpolation
+    SplineImageView<3, float> spline(srcImageRange(src));
+    FImage dest2(width, height);
+    
+    rotateImage(spline, destImage(dest), -38.5);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -103,16 +178,13 @@ namespace vigra {
     SrcAccessor src_accessor;
     
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
-
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
-    
     \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
+    src.shape(0) > 1  &&  src.shape(1) > 1  
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void rotateImage)
 
@@ -194,6 +266,22 @@ rotateImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     rotateImage(src.first, src.second, src.third, dest.first, dest.second, rotation);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+rotateImage(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, T2, S2> dest,
+            int rotation)
+{
+    if(rotation % 180 == 0)
+        vigra_precondition(src.shape() == dest.shape(),
+            "rotateImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(src.shape() == reverse(dest.shape()),
+            "rotateImage(): shape mismatch between input and output.");
+    rotateImage(srcImageRange(src), destImage(dest), rotation);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     reflectImage                     */
@@ -219,7 +307,19 @@ Reflect operator|(Reflect l, Reflect r)
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        reflectImage(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest, Reflect reflect);
+    }
+    \endcode
+    
+    \deprecatedAPI{reflectImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -229,17 +329,17 @@ Reflect operator|(Reflect l, Reflect r)
                      DestIterator id, DestAccessor ad, Reflect axis);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                      pair<DestImageIterator, DestAccessor> dest, Reflect axis);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -247,14 +347,23 @@ Reflect operator|(Reflect l, Reflect r)
     Namespace: vigra
     
     \code
-    Image dest(src.width(), src.height());
-    
-    vigra::reflectImage(srcImageRange(src), destImage(dest), vigra::horizontal | vigra::vertical);
+    MultiArray<2, float> src(width, height),
+                         dest(width, height);
+    ... // fill src
+    // reflect about both dimensions
+    vigra::reflectImage(src, dest, vigra::horizontal | vigra::vertical);
     
     \endcode
 
-    <b> Required Interface:</b>
+    \deprecatedUsage{reflectImage}
+    \code
+    BImage src(width, height),
+           dest(width, height);
+    ... // fill src
     
+    vigra::reflectImage(srcImageRange(src), destImage(dest), vigra::horizontal | vigra::vertical);
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -262,16 +371,13 @@ Reflect operator|(Reflect l, Reflect r)
     SrcAccessor src_accessor;
     
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
-
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
-    
     \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
+    src.shape(0) > 1  &&  src.shape(1) > 1  
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void reflectImage)
 
@@ -342,6 +448,17 @@ reflectImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     reflectImage(src.first, src.second, src.third, dest.first, dest.second, reflect);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+reflectImage(MultiArrayView<2, T1, S1> const & src,
+             MultiArrayView<2, T2, S2> dest, Reflect reflect)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "reflectImage(): shape mismatch between input and output.");
+    reflectImage(srcImageRange(src), destImage(dest), reflect);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    transposeImage                   */
@@ -364,9 +481,26 @@ enum Transpose{major = 1, minor = 2};
     aware that some <sys/types.h> define major/minor, too.  Do not omit
     the vigra namespace prefix.)
     
+    Note that a similar effect can be chieved by MultiArrayView::transpose(). However,
+    the latter can only transpose about the major diagonal, and it doesn't rearrange the data
+    -  it just creates a view with transposed axis ordering. It depends on the context
+    which function is more appropriate.
+    
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        transposeImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest, Transpose axis);
+    }
+    \endcode
+    
+    \deprecatedAPI{transposeImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -376,17 +510,17 @@ enum Transpose{major = 1, minor = 2};
                        DestIterator id, DestAccessor ad, Transpose axis);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Transpose axis);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -394,14 +528,30 @@ enum Transpose{major = 1, minor = 2};
     Namespace: vigra
     
     \code
-    Image dest(src.width(), src.height());
+    MultiArray<2, float> src(width, height),
+                         dest(height, width);   // note that dimensions are transposed
+    ... // fill src
     
-    vigra::transposeImage(srcImageRange(src), destImage(dest), vigra::major | vigra::minor);
+    // transpose about the major diagonal
+    vigra::transposeImage(src, dest, vigra::major);
     
+    // this produces the same data as transposing the view
+    assert(dest == src.transpose());
+    
+    // transposition about the minor diagonal has no correspondence in MultiArrayView
+    vigra::transposeImage(src, dest, vigra::minor);
     \endcode
 
+    \deprecatedUsage{transposeImage}
+    \code
+    BImage src(width, height),
+           dest(width, height);
+    ... // fill src
+   
+    // transpose about both diagonals simultaneously
+    vigra::transposeImage(srcImageRange(src), destImage(dest), vigra::major | vigra::minor);
+    \endcode
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -409,16 +559,13 @@ enum Transpose{major = 1, minor = 2};
     SrcAccessor src_accessor;
     
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
-
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
-    
     \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
+    src.shape(0) > 1  &&  src.shape(1) > 1  
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void transposeImage)
 
@@ -486,9 +633,20 @@ template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
 inline void 
 transposeImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-              pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
+               pair<DestImageIterator, DestAccessor> dest, Transpose transpose)
 {
     transposeImage(src.first, src.second, src.third, dest.first, dest.second, transpose);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+transposeImage(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest, Transpose transpose)
+{
+    vigra_precondition(src.shape() == reverse(dest.shape()),
+        "transposeImage(): shape mismatch between input and output.");
+    transposeImage(srcImageRange(src), destImage(dest), transpose);
 }
 
 /********************************************************/
@@ -591,18 +749,36 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     function \ref resizeImageNoInterpolation():
     there, the result size is calculated as <tt>n*(old_width-1)+1</tt> and 
     <tt>n*(old_height-1)+1</tt>. This is because \ref resizeImageNoInterpolation() 
-    does not replicate the last pixel in every row/column in order to make it compatible
+    does not replicate the last pixel of every row/column in order to make it compatible
     with the other functions of the <tt>resizeImage...</tt> family.
     
     The function can be called with different resampling factors for x and y, or
     with a single factor to be used for both directions.
 
     It should also be noted that resampleImage() is implemented so that an enlargement followed
-    by the corresponding shrinking reproduces the original image. The function uses accessors. 
+    by the corresponding shrinking reproduces the original image. 
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        resampleImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest, double factor);
+
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        resampleImage(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor);
+    }
+    \endcode
+    
+    \deprecatedAPI{resampleImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -618,23 +794,23 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
                       DestIterator id, DestAccessor ad, double xfactor, double yfactor);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       pair<DestImageIterator, DestAccessor> dest, double factor);
                       
         template <class SrcImageIterator, class SrcAccessor,
               class DestImageIterator, class DestAccessor>
-        inline void 
+        void 
         resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                       pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -643,14 +819,19 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     
     \code
     double factor = 2.0;
-    Image dest((int)(factor*src.width()), (int)(factor*src.height()));
+    MultiArray<2, float> src(width, height),
+                         dest((int)(factor*width), (int)(factor*height));   // enlarge image by factor
+    ... // fill src
     
-    vigra::resampleImage(srcImageRange(src), destImage(dest), factor);
-    
+    resampleImage(src, dest, factor);
     \endcode
-
-    <b> Required Interface:</b>
     
+    \deprecatedUsage{resampleImage}
+    \code
+    // use old API
+    vigra::resampleImage(srcImageRange(src), destImage(dest), factor);    
+    \endcode
+    <b> Required Interface:</b>
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -658,16 +839,13 @@ inline int sizeForResamplingFactor(int oldsize, double factor)
     SrcAccessor src_accessor;
     
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
-
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
-    
     \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
+    src.shape(0) > 1  &&  src.shape(1) > 1  
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void resampleImage)
 
@@ -747,6 +925,44 @@ resampleImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
               pair<DestImageIterator, DestAccessor> dest, double xfactor, double yfactor)
 {
   resampleImage(src.first, src.second, src.third, dest.first, dest.second, xfactor, yfactor);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+resampleImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest, double factor)
+{
+    if(factor > 1.0)
+        vigra_precondition(floor(factor*src.shape()) == dest.shape(),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(factor*src.shape()) == dest.shape(),
+            "resampleImage(): shape mismatch between input and output.");
+            
+    resampleImage(srcImageRange(src), destImage(dest), factor);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+resampleImage(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest, double xfactor, double yfactor)
+{
+    if(xfactor > 1.0)
+        vigra_precondition(floor(xfactor*src.shape(0)) == dest.shape(0),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(xfactor*src.shape(0)) == dest.shape(0),
+            "resampleImage(): shape mismatch between input and output.");
+    if(yfactor > 1.0)
+        vigra_precondition(floor(yfactor*src.shape(1)) == dest.shape(1),
+            "resampleImage(): shape mismatch between input and output.");
+    else
+        vigra_precondition(ceil(yfactor*src.shape(1)) == dest.shape(1),
+            "resampleImage(): shape mismatch between input and output.");
+            
+    resampleImage(srcImageRange(src), destImage(dest), xfactor, yfactor);
 }
 
 //@}

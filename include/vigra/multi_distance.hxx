@@ -251,7 +251,31 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class Array>
+        void
+        separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, T2, S2> dest,
+                                  bool background,
+                                  Array const & pixelPitch);
+
+        // use default pixel pitch = 1.0 for each coordinate
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, T2, S2> dest, 
+                                  bool background);
+    }
+    \endcode
+
+    \deprecatedAPI{separableMultiDistSquared}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
@@ -273,7 +297,6 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -296,6 +319,7 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     }
     \endcode
+    \deprecatedEnd
 
     This function performs a squared Euclidean squared distance transform on the given
     multi-dimensional array. Both source and destination
@@ -320,16 +344,17 @@ inline void internalSeparableMultiArrayDistTmp( SrcIterator si, SrcShape const &
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_distance.hxx\>
+    <b>\#include</b> \<vigra/multi_distance.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned int> dest(shape);
     ...
 
     // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistSquared(srcMultiArrayRange(source), destMultiArray(dest), true);
+    separableMultiDistSquared(source, dest, true);
     \endcode
 
     \see vigra::distanceTransform(), vigra::separableMultiDistance()
@@ -399,6 +424,16 @@ void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccess
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline 
+void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
+                                DestIterator d, DestAccessor dest, bool background)
+{
+    ArrayVector<double> pixelPitch(shape.size(), 1.0);
+    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch );
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class Array>
 inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                        pair<DestIterator, DestAccessor> const & dest, bool background,
@@ -410,21 +445,37 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void separableMultiDistSquared( SrcIterator s, SrcShape const & shape, SrcAccessor src,
-                                DestIterator d, DestAccessor dest, bool background)
-{
-    ArrayVector<double> pixelPitch(shape.size(), 1.0);
-    separableMultiDistSquared( s, shape, src, d, dest, background, pixelPitch );
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor>
 inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                        pair<DestIterator, DestAccessor> const & dest, bool background)
 {
     separableMultiDistSquared( source.first, source.second, source.third,
                                dest.first, dest.second, background );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class Array>
+inline void
+separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest, bool background,
+                          Array const & pixelPitch)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistSquared(): shape mismatch between input and output.");
+    separableMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest), background, pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+separableMultiDistSquared(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, T2, S2> dest, bool background)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistSquared(): shape mismatch between input and output.");
+    separableMultiDistSquared( srcMultiArrayRange(source),
+                               destMultiArray(dest), background );
 }
 
 /********************************************************/
@@ -437,7 +488,30 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // explicitly specify pixel pitch for each coordinate
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2, class Array>
+        void 
+        separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest, 
+                               bool background,
+                               Array const & pixelPitch);
+
+        // use default pixel pitch = 1.0 for each coordinate
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
+        void 
+        separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest, 
+                               bool background);
+    }
+    \endcode
+
+    \deprecatedAPI{separableMultiDistance}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         // explicitly specify pixel pitch for each coordinate
@@ -459,7 +533,6 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -482,6 +555,7 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
 
     }
     \endcode
+    \deprecatedEnd
 
     This function performs a Euclidean distance transform on the given
     multi-dimensional array. It simply calls \ref separableMultiDistSquared()
@@ -490,16 +564,17 @@ inline void separableMultiDistSquared( triple<SrcIterator, SrcShape, SrcAccessor
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_distance.hxx\>
+    <b>\#include</b> \<vigra/multi_distance.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
 
     // Calculate Euclidean distance squared for all background pixels 
-    separableMultiDistance(srcMultiArrayRange(source), destMultiArray(dest), true);
+    separableMultiDistance(source, dest, true);
     \endcode
 
     \see vigra::distanceTransform(), vigra::separableMultiDistSquared()
@@ -550,6 +625,33 @@ inline void separableMultiDistance( triple<SrcIterator, SrcShape, SrcAccessor> c
 {
     separableMultiDistance( source.first, source.second, source.third,
                             dest.first, dest.second, background );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2, class Array>
+inline void 
+separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest, 
+                       bool background,
+                       Array const & pixelPitch)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistance(): shape mismatch between input and output.");
+    separableMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest), background, pixelPitch );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void 
+separableMultiDistance(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest, 
+                       bool background)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "separableMultiDistance(): shape mismatch between input and output.");
+    separableMultiDistance( srcMultiArrayRange(source),
+                            destMultiArray(dest), background );
 }
 
 //@}

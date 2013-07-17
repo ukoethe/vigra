@@ -277,7 +277,7 @@ class MappedBucketQueue
 
 /** \brief Heap-based priority queue compatible to BucketQueue.
 
-    This template is compatible to \ref vigra::BucketQueue, but except arbitrary priority
+    This template is compatible to \ref vigra::BucketQueue, but accepts arbitrary priority
     types. Internally, it uses a <tt>std::priority_queue</tt>, but implements an 
     API where priorities and payload data are separate, like in \ref vigra::BucketQueue.
 
@@ -371,6 +371,32 @@ class PriorityQueue
     {
         heap_.push(ElementType(v, priority));
     }
+};
+
+template <class ValueType,
+          bool Ascending>
+class PriorityQueue<ValueType, unsigned char, Ascending>
+: public BucketQueue<ValueType, Ascending>
+{
+  public:
+    typedef BucketQueue<ValueType, Ascending> BaseType;
+    
+    PriorityQueue()
+    : BaseType(NumericTraits<unsigned char>::max()+1)
+    {}
+};
+
+template <class ValueType,
+          bool Ascending>
+class PriorityQueue<ValueType, unsigned short, Ascending>
+: public BucketQueue<ValueType, Ascending>
+{
+  public:
+    typedef BucketQueue<ValueType, Ascending> BaseType;
+    
+    PriorityQueue()
+    : BaseType(NumericTraits<unsigned short>::max()+1)
+    {}
 };
 
 } // namespace vigra

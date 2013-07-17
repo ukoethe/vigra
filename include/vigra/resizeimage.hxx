@@ -45,6 +45,7 @@
 #include "separableconvolution.hxx"
 #include "resampling_convolution.hxx"
 #include "splines.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -201,11 +202,21 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     scaling factors are then calculated accordingly. Destination
     pixels are directly copied from the appropriate source pixels.
 
-    The function uses accessors.
-
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        resizeImageNoInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{resizeImageNoInterpolation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -216,8 +227,6 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -229,6 +238,7 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -236,14 +246,20 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageNoInterpolation(src, dest);
+    \endcode
+
+    \deprecatedUsage{resizeImageNoInterpolation}
+    \code
     vigra::resizeImageNoInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(),
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -254,16 +270,11 @@ resizeLineNoInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_accessor.set(src_accessor(src_upperleft), dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
-
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageNoInterpolation)
 
@@ -314,13 +325,22 @@ resizeImageNoInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void
+inline void
 resizeImageNoInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                            triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageNoInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
+                               dest.first, dest.second, dest.third);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+resizeImageNoInterpolation(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest)
+{
+    resizeImageNoInterpolation(srcImageRange(src),
+                               destImageRange(dest));
 }
 
 /********************************************************/
@@ -386,11 +406,22 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     exponential filter. The source value_type (SrcAccessor::value_type) must
     be a linear space, i.e. it must support addition, multiplication
     with a scalar real number and \ref NumericTraits "NumericTraits".
-    The function uses accessors.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{resizeImageLinearInterpolation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -401,8 +432,6 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               DestImageIterator id, DestImageIterator idend, DestAccessor da)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -414,6 +443,7 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
               triple<DestImageIterator, DestImageIterator, DestAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -421,14 +451,20 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageLinearInterpolation(src, dest);
+    \endcode
+
+    \deprecatedUsage{resizeImageLinearInterpolation}
+    \code
     vigra::resizeImageLinearInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(),
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -449,16 +485,11 @@ resizeLineLinearInterpolation(SrcIterator i1, SrcIterator iend, SrcAccessor as,
     dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 1
-    src_lowerright.y - src_upperleft.y > 1
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
-
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageLinearInterpolation)
 
@@ -541,13 +572,22 @@ resizeImageLinearInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void
+inline void
 resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageLinearInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+resizeImageLinearInterpolation(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest)
+{
+    resizeImageLinearInterpolation(srcImageRange(src),
+                                   destImageRange(dest));
 }
 
 /***************************************************************/
@@ -586,7 +626,21 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class SPLINE>
+        void
+        resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest,
+                                       SPLINE const & spline = BSpline<3, double>());
+    }
+    \endcode
+
+    \deprecatedAPI{resizeImageSplineInterpolation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -599,8 +653,6 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
               SPLINE spline = BSpline<3, double>())
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -614,6 +666,7 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
               SPLINE spline = BSpline<3, double>())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -621,14 +674,24 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     Namespace: vigra
 
     \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    // use default cubic spline interpolator
+    resizeImageSplineInterpolation(src, dest);
+    
+    // use 5th-order spline interpolator
+    resizeImageSplineInterpolation(src, dest, BSpline<5, double>());
+    \endcode
+
+    \deprecatedUsage{resizeImageSplineInterpolation}
+    \code
     vigra::resizeImageSplineInterpolation(
                src.upperLeft(), src.lowerRight(), src.accessor(),
                dest.upperLeft(), dest.lowerRight(), dest.accessor());
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft, src_lowerright;
@@ -653,16 +716,11 @@ resizeImageLinearInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
     dest_upperleft);
 
     \endcode
+    \deprecatedEnd
 
     <b> Preconditions:</b>
 
-    \code
-    src_lowerright.x - src_upperleft.x > 3
-    src_lowerright.y - src_upperleft.y > 3
-    dest_lowerright.x - dest_upperleft.x > 1
-    dest_lowerright.y - dest_upperleft.y > 1
-    \endcode
-
+    Source and destination must have at least 2 pixels along each axis.
 */
 doxygen_overloaded_function(template <...> void resizeImageSplineInterpolation)
 
@@ -815,19 +873,6 @@ resizeImageSplineInterpolation(
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class SPLINE>
-inline
-void
-resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest,
-                      SPLINE const & spline)
-{
-    resizeImageSplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third, spline);
-}
-
-template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
@@ -837,14 +882,47 @@ resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 }
 
 template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
+          class DestIterator, class DestAccessor,
+          class SPLINE>
+inline void
 resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
+                               triple<DestIterator, DestIterator, DestAccessor> dest,
+                               SPLINE const & spline)
+{
+    resizeImageSplineInterpolation(src.first, src.second, src.third,
+                                   dest.first, dest.second, dest.third, spline);
+}
+
+template <class SrcIterator, class SrcAccessor,
+          class DestIterator, class DestAccessor>
+inline void
+resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                               triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageSplineInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class SPLINE>
+inline void
+resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest,
+                               SPLINE const & spline)
+{
+    resizeImageSplineInterpolation(srcImageRange(src),
+                                   destImageRange(dest), spline);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+resizeImageSplineInterpolation(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest)
+{
+    resizeImageSplineInterpolation(srcImageRange(src),
+                                   destImageRange(dest));
 }
 
 /*****************************************************************/
@@ -862,7 +940,19 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                           MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{resizeImageCatmullRomInterpolation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -872,8 +962,6 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
                               DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -884,11 +972,17 @@ resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src
                               triple<DestIterator, DestIterator, DestAccessor> dest);
     }
     \endcode
-
+    \deprecatedEnd
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-
+    
+    \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageCatmullRomInterpolation(src, dest);
+    \endcode
 */
 doxygen_overloaded_function(template <...> void resizeImageCatmullRomInterpolation)
 
@@ -904,54 +998,23 @@ resizeImageCatmullRomInterpolation(SrcIterator src_iter, SrcIterator src_iter_en
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void
+inline void
 resizeImageCatmullRomInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
+                                   triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageCatmullRomInterpolation(src.first, src.second, src.third,
-                                     dest.first, dest.second, dest.third);
+                                       dest.first, dest.second, dest.third);
 }
 
-#if 0
-/*****************************************************************/
-/*                                                               */
-/*              resizeImageCubicInterpolation                    */
-/*                                                               */
-/*****************************************************************/
-
-/** \brief Resize image using the cardinal B-spline interpolation function.
-
-    The function calls like \ref resizeImageSplineInterpolation() with
-    \ref vigra::BSpline<3, double> and prefiltering as an interpolation kernel.
-    The interpolated function has two continuous derivatives.
-    (See \ref resizeImageSplineInterpolation() for more documentation)
-
-    <b>\#include</b> \<vigra/resizeimage.hxx\><br>
-    Namespace: vigra
-
-*/
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageCubicInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, SrcAccessor src_acc,
-                      DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc)
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+resizeImageCatmullRomInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest)
 {
-    resizeImageSplineInterpolation(src_iter, src_iter_end, src_acc, dest_iter, dest_iter_end, dest_acc,
-                                  BSpline<3, double>());
+    resizeImageCatmullRomInterpolation(srcImageRange(src),
+                                       destImageRange(dest));
 }
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
-resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
-{
-    resizeImageCubicInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
-}
-#endif
 
 /*****************************************************************/
 /*                                                               */
@@ -968,7 +1031,19 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        resizeImageCoscotInterpolation(MultiArrayView<2, T1, S1> const & src,
+                                       MultiArrayView<2, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{resizeImageCoscotInterpolation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -978,8 +1053,6 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                               DestIterator dest_iter, DestIterator dest_iter_end, DestAccessor dest_acc);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -990,11 +1063,18 @@ resizeImageCubicInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                               triple<DestIterator, DestIterator, DestAccessor> dest);
     }
     \endcode
+    \deprecatedEnd
 
 
     <b>\#include</b> \<vigra/resizeimage.hxx\><br>
     Namespace: vigra
-
+    
+    \code
+    MultiArray<2, unsigned char> src(w, h);
+    MultiArray<2, float>         dest(w_new, h_new);
+    
+    resizeImageCoscotInterpolation(src, dest);
+    \endcode
 */
 doxygen_overloaded_function(template <...> void resizeImageCoscotInterpolation)
 
@@ -1010,391 +1090,23 @@ resizeImageCoscotInterpolation(SrcIterator src_iter, SrcIterator src_iter_end, S
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void
+inline void
 resizeImageCoscotInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
+                               triple<DestIterator, DestIterator, DestAccessor> dest)
 {
     resizeImageCoscotInterpolation(src.first, src.second, src.third,
                                    dest.first, dest.second, dest.third);
 }
 
-
-#if 0 // old version of the spline interpolation algorithm
-
-/********************************************************/
-/*                                                      */
-/*           resizeCalculateSplineCoefficients          */
-/*         (internally used by resize functions)        */
-/*                                                      */
-/********************************************************/
-
-template <class SrcIterator, class SrcAccessor, class VALUETYPE>
-void
-resizeCalculateSplineCoefficients(SrcIterator i1, SrcIterator iend,
-                SrcAccessor a, VALUETYPE * i2)
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+resizeImageCoscotInterpolation(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest)
 {
-    int n = iend - i1;
-
-    if(n <= 0) return;
-
-    VALUETYPE zero = NumericTraits<VALUETYPE>::zero();
-    VALUETYPE two = 2.0 * NumericTraits<VALUETYPE>::one();
-    VALUETYPE half = 0.5 * NumericTraits<VALUETYPE>::one();
-
-    *i2 = zero;
-    if(n == 1) return;
-
-    std::vector<VALUETYPE> vec(n);
-    typename std::vector<VALUETYPE>::iterator u = vec.begin();
-
-    *u = zero;
-
-    for(++i1, ++i2, ++u, --iend; i1 != iend; ++i1, ++i2, ++u)
-    {
-        VALUETYPE p = 0.5 * i2[-1] + two;
-        *i2 = half / p;
-        *u = 3.0 *(a(i1,1) - 2.0 * a(i1) + a(i1, -1)) - 0.5 * u[-1] / p;
-    }
-
-    *i2 = zero;
-
-    for(--i2, --u; u != vec; --u, --i2)
-    {
-        *i2 = *i2 * i2[1] + *u;
-    }
+    resizeImageCoscotInterpolation(srcImageRange(src),
+                                   destImageRange(dest));
 }
-
-/********************************************************/
-/*                                                      */
-/*         resizeImageInternalSplineGradient            */
-/*                                                      */
-/********************************************************/
-
-template <class SrcIterator, class SrcAccessor,
-          class DoubleIterator, class TempIterator, class DestIterator>
-void
-resizeImageInternalSplineGradient(SrcIterator in, SrcIterator inend, SrcAccessor sa,
-                         DoubleIterator tmp, TempIterator r, DestIterator id)
-{
-    int w = inend - in;
-
-    int x;
-
-    typedef typename SrcAccessor::value_type SRCVT;
-    typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
-
-    // calculate border derivatives
-    SrcIterator xs = in;
-    TMPTYPE p0 = -11.0/6.0 * sa(xs);  ++xs;
-            p0 += 3.0 * sa(xs);  ++xs;
-            p0 += -1.5 * sa(xs);  ++xs;
-            p0 += 1.0/3.0 * sa(xs);
-
-    xs = in + w-1;
-    TMPTYPE pw = 11.0/6.0 * sa(xs);  --xs;
-            pw += -3.0 * sa(xs);  --xs;
-            pw +=  1.5 * sa(xs);  --xs;
-            pw += -1.0/3.0 * sa(xs);
-
-    xs = in + 2;
-    SrcIterator xs1 = in;
-
-    for(x=1; x<w-1; ++x, ++xs, ++xs1)
-    {
-        r[x] = 3.0 * (sa(xs) - sa(xs1));
-    }
-
-    r[1] -= p0;
-    r[w-2] -= pw;
-
-    double q = 0.25;
-
-    id[0] = p0;
-    id[w-1] = pw;
-    id[1] = 0.25 * r[1];
-
-    for(x=2; x<w-1; ++x)
-    {
-        tmp[x] = q;
-        q = 1.0 / (4.0 - q);
-        id[x] = q * (r[x] - id[x-1]);
-    }
-
-    for(x=w-3; x>=1; --x)
-    {
-        id[x] -= tmp[x+1]*id[x+1];
-    }
-}
-
-/********************************************************/
-/*                                                      */
-/*         resizeImageInternalSplineInterpolation       */
-/*                                                      */
-/********************************************************/
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageInternalSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                      DestIterator id, DestIterator idend, DestAccessor da)
-{
-    int w = iend.x - is.x;
-    int h = iend.y - is.y;
-
-    int wnew = idend.x - id.x;
-    int hnew = idend.y - id.y;
-
-    typedef typename SrcAccessor::value_type SRCVT;
-    typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
-    typedef typename BasicImage<TMPTYPE>::Iterator TMPITER;
-    typedef
-        NumericTraits<typename DestAccessor::value_type> DestTraits;
-
-    BasicImage<TMPTYPE> dx(w,h);
-    BasicImage<TMPTYPE> dy(w,h);
-    BasicImage<TMPTYPE> dxy(w,h);
-    BasicImage<TMPTYPE> W(4,4), W1(4,4);
-    std::vector<TMPTYPE> R(w > h ? w : h);
-    std::vector<double> tmp(w > h ? w : h);
-
-    typename BasicImage<TMPTYPE>::Accessor ta;
-
-    SrcIterator in = is;
-
-    TMPITER idx = dx.upperLeft();
-    TMPITER idy = dy.upperLeft();
-    TMPITER idxy = dxy.upperLeft();
-    typename std::vector<TMPTYPE>::iterator r = R.begin();
-    typename std::vector<double>::iterator it = tmp.begin();
-
-    double ig[] = { 1.0, 0.0, -3.0,  2.0,
-                    0.0, 1.0, -2.0,  1.0,
-                    0.0, 0.0,  3.0, -2.0,
-                    0.0, 0.0, -1.0,  1.0 };
-
-    int x, y, i, j, k;
-
-
-    // calculate x derivatives
-    for(y=0; y<h; ++y, ++in.y, ++idx.y)
-    {
-        typename SrcIterator::row_iterator sr = in.rowIterator();
-        typename TMPITER::row_iterator dr = idx.rowIterator();
-        resizeImageInternalSplineGradient(sr, sr+w, sa,
-                                          it, r, dr);
-    }
-
-    in = is;
-
-    // calculate y derivatives
-    for(x=0; x<w; ++x, ++in.x, ++idy.x)
-    {
-        typename SrcIterator::column_iterator sc = in.columnIterator();
-        typename TMPITER::column_iterator dc = idy.columnIterator();
-        resizeImageInternalSplineGradient(sc, sc+h, sa,
-                                          it, r, dc);
-    }
-
-    in = is;
-    idy = dy.upperLeft();
-
-    // calculate mixed derivatives
-    for(y=0; y<h; ++y, ++idy.y, ++idxy.y)
-    {
-        typename TMPITER::row_iterator sr = idy.rowIterator();
-        typename TMPITER::row_iterator dr = idxy.rowIterator();
-        resizeImageInternalSplineGradient(sr, sr+w, ta,
-                                          it, r, dr);
-    }
-
-    double du = (double)(w-1) / (wnew-1);
-    double dv = (double)(h-1) / (hnew-1);
-    double ov = 0.0;
-    int oy = 0;
-    int yy = oy;
-
-    DestIterator xxd = id, yyd = id;
-
-    const Diff2D down(0,1), right(1,0), downright(1,1);
-
-    for(y=0; y<h-1; ++y, ++in.y, ov -= 1.0)
-    {
-        if(y < h-2 && ov >= 1.0) continue;
-        int y1 = y+1;
-        double v = ov;
-        double ou = 0.0;
-        int ox = 0;
-        int xx = ox;
-
-        SrcIterator xs = in;
-        for(x=0; x<w-1; ++x, ++xs.x, ou -= 1.0)
-        {
-            if(x < w-2 && ou >= 1.0) continue;
-            int x1 = x+1;
-            double u = ou;
-
-            DestIterator xd = id + Diff2D(ox,oy);
-            W[0][0] = sa(xs);
-            W[0][1] = dy(x, y);
-            W[0][2] = sa(xs, down);
-            W[0][3] = dy(x, y1);
-            W[1][0] = dx(x, y);
-            W[1][1] = dxy(x, y);
-            W[1][2] = dx(x, y1);
-            W[1][3] = dxy(x, y1);
-            W[2][0] = sa(xs, right);
-            W[2][1] = dy(x1,y);
-            W[2][2] = sa(xs, downright);
-            W[2][3] = dy(x1, y1);
-            W[3][0] = dx(x1, y);
-            W[3][1] = dxy(x1, y);
-            W[3][2] = dx(x1, y1);
-            W[3][3] = dxy(x1, y1);
-
-            for(i=0; i<4; ++i)
-            {
-                for(j=0; j<4; ++j)
-                {
-                    W1[j][i] = ig[j] * W[0][i];
-                    for(k=1; k<4; ++k)
-                    {
-                        W1[j][i] += ig[j+4*k] * W[k][i];
-                    }
-                }
-            }
-            for(i=0; i<4; ++i)
-            {
-                for(j=0; j<4; ++j)
-                {
-                    W[j][i] = ig[i] * W1[j][0];
-                    for(k=1; k<4; ++k)
-                    {
-                       W[j][i] += ig[4*k+i] * W1[j][k];
-                    }
-                }
-            }
-
-            TMPTYPE a1,a2,a3,a4;
-
-            yyd = xd;
-            for(v=ov, yy=oy; v<1.0; v+=dv, ++yyd.y, ++yy)
-            {
-                a1 = W[0][0] + v * (W[0][1] +
-                               v * (W[0][2] + v * W[0][3]));
-                a2 = W[1][0] + v * (W[1][1] +
-                               v * (W[1][2] + v * W[1][3]));
-                a3 = W[2][0] + v * (W[2][1] +
-                               v * (W[2][2] + v * W[2][3]));
-                a4 = W[3][0] + v * (W[3][1] +
-                               v * (W[3][2] + v * W[3][3]));
-
-                xxd = yyd;
-                for(u=ou, xx=ox; u<1.0; u+=du, ++xxd.x, ++xx)
-                {
-                    da.set(DestTraits::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4))), xxd);
-                }
-
-                if(xx == wnew-1)
-                {
-                    da.set(DestTraits::fromRealPromote(a1 + a2 + a3 + a4), xxd);
-                }
-            }
-
-            if(yy == hnew-1)
-            {
-                a1 = W[0][0] + W[0][1] + W[0][2] + W[0][3];
-                a2 = W[1][0] + W[1][1] + W[1][2] + W[1][3];
-                a3 = W[2][0] + W[2][1] + W[2][2] + W[2][3];
-                a4 = W[3][0] + W[3][1] + W[3][2] + W[3][3];
-
-                DestIterator xxd = yyd;
-                for(u=ou, xx=ox; u<1.0; u+=du, ++xxd.x, ++xx)
-                {
-                    da.set(DestTraits::fromRealPromote(a1 + u * (a2 + u * (a3 + u * a4))), xxd);
-                }
-
-                if(xx == wnew-1)
-                {
-                    da.set(DestTraits::fromRealPromote(a1 + a2 + a3 + a4), xxd);
-                }
-            }
-
-            ou = u;
-            ox = xx;
-        }
-        ov = v;
-        oy = yy;
-    }
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-void
-resizeImageSplineInterpolation(SrcIterator is, SrcIterator iend, SrcAccessor sa,
-                      DestIterator id, DestIterator idend, DestAccessor da)
-{
-    int w = iend.x - is.x;
-    int h = iend.y - is.y;
-
-    int wnew = idend.x - id.x;
-    int hnew = idend.y - id.y;
-
-    vigra_precondition((w > 3) && (h > 3),
-                 "resizeImageSplineInterpolation(): "
-                 "Source image too small.\n");
-    vigra_precondition((wnew > 1) && (hnew > 1),
-                 "resizeImageSplineInterpolation(): "
-                 "Destination image too small.\n");
-
-    double scale = 2.0;
-
-    if(wnew < w || hnew < h)
-    {
-        typedef typename SrcAccessor::value_type SRCVT;
-        typedef typename NumericTraits<SRCVT>::RealPromote TMPTYPE;
-        typedef typename BasicImage<TMPTYPE>::Iterator TMPITER;
-
-        BasicImage<TMPTYPE> t(w,h);
-        TMPITER it = t.upperLeft();
-
-        if(wnew < w)
-        {
-            recursiveSmoothX(is, iend, sa,
-                    it, t.accessor(), (double)w/wnew/scale);
-
-            if(hnew < h)
-            {
-               recursiveSmoothY(it, t.lowerRight(), t.accessor(),
-                    it, t.accessor(), (double)h/hnew/scale);
-            }
-        }
-        else
-        {
-           recursiveSmoothY(is, iend, sa,
-                    it, t.accessor(), (double)h/hnew/scale);
-        }
-
-        resizeImageInternalSplineInterpolation(it, t.lowerRight(), t.accessor(),
-                                               id, idend, da);
-    }
-    else
-    {
-        resizeImageInternalSplineInterpolation(is, iend, sa, id, idend, da);
-    }
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline
-void
-resizeImageSplineInterpolation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                      triple<DestIterator, DestIterator, DestAccessor> dest)
-{
-    resizeImageSplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
-}
-#endif  // old algorithm version
 
 //@}
 

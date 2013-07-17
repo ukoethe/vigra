@@ -40,6 +40,8 @@
 #include "utilities.hxx"
 #include "numerictraits.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
+
 #include <cmath>
 
 namespace vigra {
@@ -112,17 +114,36 @@ combineThreeLines(SrcIterator1 s1,
 
 /** \brief Combine two source images into destination image.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
-    The function uses accessors to access the pixel data.
     Note that the binary functors of the STL can be used in addition to
     the functors specifically defined in \ref CombineFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class T2, class S2,
+                  class Functor>
+        void
+        combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
+                         MultiArrayView<2, T12, S12> const & src2,
+                         MultiArrayView<2, T2, S2> dest,
+                         Functor const & f);
+    }
+    \endcode
+    
+    \deprecatedAPI{combineTwoImages}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -137,8 +158,6 @@ combineThreeLines(SrcIterator1 s1,
                  Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -153,29 +172,37 @@ combineThreeLines(SrcIterator1 s1,
                  Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
     #include <functional>     // for plus
+    MultiArray<2, float> src1(width, height), src2(width, height),
+                         dest(width, height);
+    ... // fill source images 
+    
+    combineTwoImages(src1, src2, dest,
+                     std::plus<float>());
+    \endcode
 
+    \deprecatedUsage{combineTwoImages}
+    \code
+    #include <functional>     // for plus
+    FImage src1(width, height), src2(width, height),
+           dest(width, height);
+    ... // fill source images 
+    
     vigra::combineTwoImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
                 destIter(dest.upperLeft()),  
-                std::plus<SrcValueType>());
-    
+                std::plus<float>());
     \endcode
-    
-    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
-    the promote type of the input images' pixel type, see also 
-    \ref NumericPromotionTraits)
-    
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -195,8 +222,9 @@ combineThreeLines(SrcIterator1 s1,
           dx);
 
     \endcode
+    \deprecatedEnd
     
-    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineTwoImages)
 
@@ -230,13 +258,30 @@ template <class SrcImageIterator1, class SrcAccessor1,
 inline
 void
 combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-             pair<SrcImageIterator2, SrcAccessor2> src2,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor const & f)
+                 pair<SrcImageIterator2, SrcAccessor2> src2,
+                 pair<DestImageIterator, DestAccessor> dest,
+                 Functor const & f)
 {
     combineTwoImages(src1.first, src1.second, src1.third, 
                      src2.first, src2.second, 
-             dest.first, dest.second, f);
+                     dest.first, dest.second, f);
+}
+
+template <class T11, class S11,
+          class T12, class S12,
+          class T2, class S2,
+          class Functor>
+inline void
+combineTwoImages(MultiArrayView<2, T11, S11> const & src1,
+                 MultiArrayView<2, T12, S12> const & src2,
+                 MultiArrayView<2, T2, S2> dest,
+                 Functor const & f)
+{
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == dest.shape(),
+        "combineTwoImages(): shape mismatch between inputs and/or output.");
+    combineTwoImages(srcImageRange(src1), 
+                     srcImage(src2), 
+                     destImage(dest), f);
 }
 
 /********************************************************/
@@ -248,18 +293,35 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
 /** \brief Combine ROI of two source images into destination image.
 
     The transformation given by the functor is applied to all source 
-    pixels in the ROI (i.e. whenever the return value of the mask's accessor
-    is not zero)
+    pixels in the ROI (i.e. whenever the corresponding value of the mask array
+    is non-zero)
     and the result written into the corresponding destination pixel.
     This is typically used for operations like add and subtract.
-    The function uses accessors to access the pixel data.
     Note that the binary functors of the STL can be used in addition to
     the functors specifically defined in \ref CombineFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class TM, class SM,
+                  class T2, class S2,
+                  class Functor>
+        void
+        combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
+                           MultiArrayView<2, T12, S12> const & src2,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           MultiArrayView<2, T2, S2> dest,
+                           Functor const & f);
+    }
+    \endcode
+    
+    \deprecatedAPI{combineTwoImagesIf}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -276,8 +338,6 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -294,14 +354,29 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                    Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
     #include <functional>     // for plus
+    MultiArray<2, float> src1(width, height), src2(width, height), mask(width, height),
+                         dest(width, height);
+    ... // fill source and mask images 
+
+    combineTwoImagesIf(src1, src2, mask, dest,
+                       std::plus<float>());
+    \endcode
+
+    \deprecatedUsage{combineTwoImagesIf}
+    \code
+    #include <functional>     // for plus
+    FImage src1(width, height), src2(width, height), mask(width, height),
+           dest(width, height);
+    ... // fill source and mask images 
 
     vigra::combineTwoImagesIf(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
@@ -311,13 +386,7 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
                 std::plus<SrcValueType>());
     
     \endcode
-
-    Note that <TT>SrcValueType</TT> must be replaced with the appropriate type (e.g. 
-    the promote type of the input images' pixel type, see also 
-    \ref NumericPromotionTraits)
-    
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -342,7 +411,9 @@ combineTwoImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1
           dx);
 
     \endcode
+    \deprecatedEnd
     
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineTwoImagesIf)
 
@@ -381,15 +452,35 @@ template <class SrcImageIterator1, class SrcAccessor1,
 inline
 void
 combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-               pair<SrcImageIterator2, SrcAccessor2> src2,
-               pair<MaskImageIterator, MaskAccessor> mask,
-               pair<DestImageIterator, DestAccessor> dest,
-               Functor const & f)
+                   pair<SrcImageIterator2, SrcAccessor2> src2,
+                   pair<MaskImageIterator, MaskAccessor> mask,
+                   pair<DestImageIterator, DestAccessor> dest,
+                   Functor const & f)
 {
     combineTwoImagesIf(src1.first, src1.second, src1.third, 
                        src2.first, src2.second, 
                        mask.first, mask.second, 
                        dest.first, dest.second, f);
+}
+    
+template <class T11, class S11,
+          class T12, class S12,
+          class TM, class SM,
+          class T2, class S2,
+          class Functor>
+inline void
+combineTwoImagesIf(MultiArrayView<2, T11, S11> const & src1,
+                   MultiArrayView<2, T12, S12> const & src2,
+                   MultiArrayView<2, TM, SM> const & mask,
+                   MultiArrayView<2, T2, S2> dest,
+                   Functor const & f)
+{
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == mask.shape() && src1.shape() == dest.shape(),
+        "combineTwoImagesIf(): shape mismatch between inputs and/or output.");
+    combineTwoImagesIf(srcImageRange(src1), 
+                       srcImage(src2), 
+                       maskImage(mask), 
+                       destImage(dest), f);
 }
 
 /********************************************************/
@@ -400,14 +491,35 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
 
 /** \brief Combine three source images into destination image.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineThreeMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to the source 
     pixels and the result written into the corresponding destination pixel.
-    The function uses accessors to access the pixel data.
     Creation of new functors is easiest by using \ref FunctorExpressions.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T11, class S11,
+                  class T12, class S12,
+                  class T13, class S13,
+                  class T2, class S2,
+                  class Functor>
+        void
+        combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
+                           MultiArrayView<2, T12, S12> const & src2,
+                           MultiArrayView<2, T13, S13> const & src3,
+                           MultiArrayView<2, T2, S2> dest,
+                           Functor const & f);
+    }
+    \endcode
+    
+    \deprecatedAPI{combineThreeImages}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator1, class SrcAccessor1,
@@ -424,8 +536,6 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                    Functor const & f)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -442,13 +552,32 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                  Functor const & f)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/combineimages.hxx\><br>
     Namespace: vigra
-    
+
     \code
+    #include <vigra/functorexpression.hxx>
+    
+    MultiArray<2, float> src1(width, height), src2(width, height), src3(width, height),
+                         dest(width, height);
+    ... // fill source images 
+    
+    using namespace vigra::functor; // activate VIGRA's lambda library
+    
+    combineThreeImages(src1, src2, src3, dest,
+                       Arg1()*exp(-abs(Arg2()-Arg3())));
+    \endcode
+
+    \deprecatedUsage{combineThreeImages}
+    \code
+    FImage src1(width, height), src2(width, height), src3(width, height),
+           dest(width, height);
+    ... // fill source images 
+    
     vigra::combineThreeImages(
                 srcIterRange(src1.upperLeft(), src1.lowerRight()), 
                 srcIter(src2.upperLeft()), 
@@ -457,9 +586,7 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
                 SomeThreeArgumentFunctor());
     
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator1 src1_upperleft, src1_lowerright;
     SrcImageIterator2 src2_upperleft;
@@ -484,8 +611,9 @@ combineTwoImagesIf(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> sr
           dx);
 
     \endcode
+    \deprecatedEnd
     
-    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void combineThreeImages)
 
@@ -524,15 +652,35 @@ template <class SrcImageIterator1, class SrcAccessor1,
 inline
 void
 combineThreeImages(triple<SrcImageIterator1, SrcImageIterator1, SrcAccessor1> src1,
-             pair<SrcImageIterator2, SrcAccessor2> src2,
-             pair<SrcImageIterator3, SrcAccessor3> src3,
-             pair<DestImageIterator, DestAccessor> dest,
-             Functor const & f)
+                   pair<SrcImageIterator2, SrcAccessor2> src2,
+                   pair<SrcImageIterator3, SrcAccessor3> src3,
+                   pair<DestImageIterator, DestAccessor> dest,
+                   Functor const & f)
 {
     combineThreeImages(src1.first, src1.second, src1.third, 
-                     src2.first, src2.second, 
-                     src3.first, src3.second, 
-                     dest.first, dest.second, f);
+                       src2.first, src2.second, 
+                       src3.first, src3.second, 
+                       dest.first, dest.second, f);
+}
+
+template <class T11, class S11,
+          class T12, class S12,
+          class T13, class S13,
+          class T2, class S2,
+          class Functor>
+inline void
+combineThreeImages(MultiArrayView<2, T11, S11> const & src1,
+                   MultiArrayView<2, T12, S12> const & src2,
+                   MultiArrayView<2, T13, S13> const & src3,
+                   MultiArrayView<2, T2, S2> dest,
+                   Functor const & f)
+{
+    vigra_precondition(src1.shape() == src2.shape() && src1.shape() == src3.shape() && src1.shape() == dest.shape(),
+        "combineThreeImages(): shape mismatch between inputs and/or output.");
+    combineThreeImages(srcImageRange(src1), 
+                       srcImage(src2), 
+                       srcImage(src3), 
+                       destImage(dest), f);
 }
 
     

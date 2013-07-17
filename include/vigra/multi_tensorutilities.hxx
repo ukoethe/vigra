@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "mathutil.hxx"
 #include "metaprogramming.hxx"
+#include "multi_shape.hxx"
 #include "multi_pointoperators.hxx"
 
 namespace vigra {
@@ -206,7 +207,19 @@ public:
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                 MultiArrayView<N, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{vectorToTensorMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -216,7 +229,6 @@ public:
                                  DestIterator di, DestAccessor dest);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -227,20 +239,21 @@ public:
                                  pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 3> > gradient(shape);
-    MultiArray<3, TinyVector<float, 6> > tensor(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 3> >  gradient(shape);
+    MultiArray<3, TinyVector<float, 6> >  tensor(shape);
     
-    gaussianGradientMultiArray(srcMultiArrayRange(vol), destMultiArray(gradient), 2.0);
-    vectorToTensorMultiArray(srcMultiArrayRange(gradient), destMultiArray(tensor));
+    gaussianGradientMultiArray(vol, gradient, 2.0);
+    vectorToTensorMultiArray(gradient, tensor);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void vectorToTensorMultiArray)
 
@@ -278,6 +291,17 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     vectorToTensorMultiArray(s.first, s.second, s.third, d.first, d.second);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+vectorToTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "vectorToTensorMultiArray(): shape mismatch between input and output.");
+    vectorToTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
 /********************************************************/
 /*                                                      */
 /*                tensorTraceMultiArray                 */
@@ -294,7 +318,19 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorTraceMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -304,8 +340,6 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                               DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -316,20 +350,25 @@ vectorToTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                               pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, float> trace(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, float>                  trace(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorTraceMultiArray(srcMultiArrayRange(hessian), destMultiArray(trace));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorTraceMultiArray(hessian, trace);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorTraceMultiArray)
 
@@ -355,6 +394,17 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     tensorTraceMultiArray(s.first, s.second, s.third, d.first, d.second);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorTraceMultiArray(MultiArrayView<N, T1, S1> const & source,
+                      MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorTraceMultiArray(): shape mismatch between input and output.");
+    tensorTraceMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -373,7 +423,19 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorEigenvaluesMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -383,8 +445,6 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -395,20 +455,25 @@ tensorTraceMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, TinyVector<float, 3> > eigenvalues(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, TinyVector<float, 3> >  eigenvalues(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorEigenvaluesMultiArray(srcMultiArrayRange(hessian), destMultiArray(eigenvalues));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorEigenvaluesMultiArray(hessian, eigenvalues);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorEigenvaluesMultiArray)
 
@@ -446,6 +511,17 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     tensorEigenvaluesMultiArray(s.first, s.second, s.third, d.first, d.second);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorEigenvaluesMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorEigenvaluesMultiArray(): shape mismatch between input and output.");
+    tensorEigenvaluesMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
 /********************************************************/
 /*                                                      */
 /*             tensorDeterminantMultiArray              */
@@ -462,7 +538,19 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest);
+    }
+    \endcode
+
+    \deprecatedAPI{tensorDeterminantMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -472,8 +560,6 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     DestIterator di, DestAccessor dest);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -484,20 +570,25 @@ tensorEigenvaluesMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                                     pair<DestIterator, DestAccessor> d);
     }
     \endcode
+    \deprecatedEnd
 
-    <b> Usage:</b>
+    <b> Usage (MultiArrayView API):</b>
 
-    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\>
+    <b>\#include</b> \<vigra/multi_tensorutilities.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, float> vol(shape);
-    MultiArray<3, TinyVector<float, 6> > hessian(shape);
-    MultiArray<3, float> determinant(shape);
+    MultiArray<3, float>                  vol(shape);
+    MultiArray<3, TinyVector<float, 6> >  hessian(shape);
+    MultiArray<3, float>                  determinant(shape);
     
-    hessianOfGaussianMultiArray(srcMultiArrayRange(vol), destMultiArray(hessian), 2.0);
-    tensorDeterminantMultiArray(srcMultiArrayRange(hessian), destMultiArray(determinant));
+    hessianOfGaussianMultiArray(vol, hessian, 2.0);
+    tensorDeterminantMultiArray(hessian, determinant);
     \endcode
 
+    <b> Preconditions:</b>
+
+    <tt>N == 2</tt> or <tt>N == 3</tt>
 */
 doxygen_overloaded_function(template <...> void tensorDeterminantMultiArray)
 
@@ -530,6 +621,17 @@ tensorDeterminantMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> s,
                             pair<DestIterator, DestAccessor> d)
 {
     tensorDeterminantMultiArray(s.first, s.second, s.third, d.first, d.second);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+tensorDeterminantMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "tensorDeterminantMultiArray(): shape mismatch between input and output.");
+    tensorDeterminantMultiArray(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 //@}

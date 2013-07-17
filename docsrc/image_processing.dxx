@@ -18,37 +18,49 @@
 
     \section CallingConventions Calling Conventions
     
-    VIGRA's image processing functions follow a uniform calling convention: The argument list start with the input images or arrays, followed by the output images or arrays, followed by the function's parameters (if any). Some functions additionally support an option object that allows more fine-grained control of the function's actions and must be passed as the last argument.
+    VIGRA's image processing functions follow a uniform calling convention: The argument list start with the input images or arrays, followed by the output images or arrays, followed by the function's parameters (if any). Some functions additionally accept an option object that allows more fine-grained control of the function's actions and must be passed as the last argument. Most functions assume that the output arrays already have the appropriate shape.
     
-    Depending on the kind of function (and mainly for historical reasons), the input and output arrays must be specified in different ways:
+    All functions working on arrays expect their arguments to be passed as \ref vigra::MultiArrayView instances. Functions that only support 2-dimensional images usually contain the term "Image" in their name, whereas functions that act on arbitrary many dimensions usually contain the term "Multi" in their name. <br/>
+    Examples: 
+    \code
+    // determine the connected components in a binary image, using the 8-neighborhood
+    MultiArray<2, UInt8>   image(width, height);
+    MultiArray<2, UInt32>  labels(width, height);
+    ... // fill image
+    labelImage(image, labels, true);
+    
+    // smooth a 3D array with a gaussian filter with sigma=2.0
+    MultiArray<3, float> volume(Shape3(300, 200, 100)),
+                         smoothed(Shape3(300, 200, 100));
+    ... // fill volume
+    gaussianSmoothMultiArray(volume, smoothed, 2.0);
+    
+     // compute the determinant of a 5x5 matrix
+    MultiArray<2, float> matrix(Shape2(5, 5));
+    ... // fill matrix with data
+    float det = linalg::determinant(matrix);
+    \endcode
+    
+    For historical reasons, VIGRA also supports two alternative APIs in terms of iterators. While there are no plans to remove support for these APIs, they should not be used in new code because the MultiArrayView API described above is much simpler and works in all cases.
     
     <ul>
-    <li> Functions that can only act on 2-dimensional images usually contain the term "Image" in their name and are implemented in terms of \ref ImageIterators. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. We will see many examples of this calling conventions below, and a detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories. Example:
+    <li> Functions on 2-dimensional images may support an \ref ImageIterators API. These iterators are best passed to the functions via the convenience functions <tt>srcImageRange(array)</tt>, <tt>srcImage(array)</tt>, and <tt>destImage(array)</tt>. A detailed description of the convenience functions can be found in section \ref ArgumentObjectFactories. Example:
     \code
     // compute the pixel-wise square root of an image
     MultiArray<2, float> input(Shape2(200, 100)),
                          result(imput.shape());
     ... // fill input with data
-    transformImage(srcImageRange(input), destImage(result), &sqrt);
+    transformImage(srcImageRange(input), destImage(result), &sqrt);  // deprecated API
     \endcode
     
-    <li> Functions that can act on arbitrary many dimensions usually contain the term "multi" in their name and are implemented in terms of hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories. Example:
+    <li> Functions for arbitrary-dimensional arrays may support hierarchical \ref MultiIteratorPage. These iterators are best passed to the functions via the convenience functions <tt>srcMultiArrayRange(array)</tt>, <tt>srcMultiArray(array)</tt>, and <tt>destMultiArray(array)</tt>. A detailed description of these convenience functions can also be found in section \ref ArgumentObjectFactories. Example:
     \code
     // compute the element-wise square root of a 4-dimensional array
     MultiArray<4, float> input(Shape4(200, 100, 50, 30)),
                          result(imput.shape());
     ... // fill input with data
-    transformMultiArray(srcMultiArrayRange(input), destMultiArray(result), &sqrt);
+    transformMultiArray(srcMultiArrayRange(input), destMultiArray(result), &sqrt);  // deprecated API
     \endcode
-    
-    <li> Functions that use 2-dimensional arrays as matrices (rather than images), are implemented in terms of \ref vigra::MultiArrayView. You pass the arrays to these functions directly, without any convenience function.
-    \code
-    // compute the determinant of a 5x5 matrix
-    MultiArray<2, float> input(Shape2(5, 5));
-    ... // fill input with data
-    float det = linalg::determinant(input);
-    \endcode
-    </ul>
     
     \section ImageInversion Inverting an Image
     
@@ -105,13 +117,12 @@
     Let's come to a little gimmick. Given one input image we want to create a composite image 
     of 4 images reflected with respect to each other. The result resembles the effect of a
     kaleidoscope. Two of VIGRA's functions are sufficient for this purpose: \ref MultiArray_subarray 
-    and \ref reflectImage(). Input and output images of reflectImage() are specified by iterators
-    which are best created by the convenience functions srcImageRange() and destImage(). The third 
-    parameter specifies the desired reflection axis. The axis can either
+    and \ref reflectImage(). Input and output images of reflectImage() are specified by MultiArrayViews. 
+    The third parameter specifies the desired reflection axis. The axis can either
     be horizontal, vertical or both (as in this example):
 
     \code
-    reflectImage(srcImageRange(inputArray), destImage(outputArray), vigra::horizontal | vigra::vertical);
+    reflectImage(inputArray, outputArray, horizontal | vertical);
     \endcode
 
     Here's the code:
@@ -131,11 +142,11 @@
     
     There are many different ways to smooth an image. Before we use VIGRA's methods, we 
     want to write a smoothing code of our own. The idea is to choose each pixel in turn and 
-    replace it with the mean of itself and the pixels in 3x3 window around it.
+    replace it with the mean of itself and the pixels in 5x5 window around it.
     To calculate the mean in a window, we can just devide the sum of the pixel values 
     within the corresponding subarray by their number. MultiArrayView provides two useful 
     methods for doing this: <tt>sum</tt> and <tt>size</tt>. 
-    In our code we iterate over every pixel, construct the surrounding 3x3 window via 
+    In our code we iterate over every pixel, construct the surrounding 5x5 window via 
     <tt>subarray</tt>, and write the average of the window into the corresponding output pixel.
     Near the borders of the image we truncate the window appropriately so that it remains
     inside the image, and only take the average over the actually existing neighbours of the pixel.
@@ -151,12 +162,12 @@
     </TR>
     </Table>
 
-    The technical term for this kind of operation is <i>convolution</i>. VIGRA provides the 
+    The technical term for this kind of operation is <i>convolution</i>. VIGRA provides 
     <dfn>convolveImage</dfn> as a comfortable way to perform 2-dimensional convolutions 
     with arbitrary filters. You may use it as follows:
 
     \code
-    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
+    convolveImage(inputImage, resultImage, filter);
     \endcode
 
     The filter of <i>convolution kernel</i> is given as argument object by <dfn>kernel2d()</dfn>.
@@ -180,7 +191,7 @@
     A popular choice here is the 5x5 binomial filter. VIGRA allows to specify arbitrary filter
     shapes and coefficients via the <tt>Kernel2D::initExplicitly()</tt>:
     
-     \code
+    \code
     Kernel2D<float> filter;
     
     // specify filter shape (lower right corner is inclusive here!)
@@ -194,7 +205,7 @@
               1.0/256.0,  4.0/256.0,  6.0/256.0,  4.0/256.0,  1.0/256.0;
               
     // apply filter
-    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
+    convolveImage(inputImage, resultImage, filter);
     \endcode
    
     <tt>initExplicitly()</tt> receives the upper left and lower right corners of the 
@@ -221,8 +232,10 @@
     \code
     vigra::Kernel2D<float> filter; 
     filter.initGaussian(1.5);
-    convolveImage(srcImageRange(inputImage), destImage(resultImage), kernel2d(filter));
+    convolveImage(inputImage, resultImage, filter);
     \endcode
+    
+    A complete example using these possibilities can be found in <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>.
 
     <hr>
 
@@ -266,17 +279,25 @@
     filter.initGaussian(1.5);
     
     MultiArray<2, float> tmpImage(inputImage.shape());
-    separateConvolveX(srcImageRange(inputImage), destImage(tmpImage), kernel1d(filter));
-    separateConvolveY(srcImageRange(tmpImage), destImage(resultImage), kernel1d(filter));
+    separateConvolveX(inputImage, tmpImage, filter);
+    separateConvolveY(tmpImage, resultImage, filter);
     \endcode
 
     Note that we need an intermediate image to hold the result of the horizontal filtering.
-    The same result is more conveniently achieved by the function \ref gaussianSmoothing():
+    The same result is more conveniently achieved by the functions \ref convolveImage() and
+    \ref gaussianSmoothing() (see <a href="smooth_convolve_8cxx-example.html">smooth_convolve.cxx</a>
+    for a working example):
     
     \code
-    gaussianSmoothing(srcImageRange(inputImage), destImage(resultImage), 1.5);
-    \endcode
+    // apply 'filter' to both the x- and y-axis 
+    // (calls separateConvolveX() and separateConvolveY() internally)
+    convolveImage(inputImage, resultImage, filter, filter);
     
+    // smooth image with Gaussian filter with sigma=1.5
+    // (calls convolveImage() with Gaussian filter internally)
+    gaussianSmoothing(inputImage, resultImage, 1.5);
+    \endcode
+
     It is, of course, also possible to apply different filters in the x- and y-directions. 
     This is especially useful for derivative filters which are commonly used to compute
     image features, for example \ref gaussianGradient() and \ref gaussianGradientMagnitude().
@@ -289,19 +310,17 @@
     dimensions is implemented in \ref gaussianSmoothMultiArray():
     
     \code
-    MultiArray<3, unsigned char> inputArray(Shape3(100, 100, 100));
+    MultiArray<3, UInt8> inputArray(Shape3(100, 100, 100));
     ... // fill inputArray with data
     
     MultiArray<3, float> resultArray(inputArray.shape());
     
     // perform isotropic Gaussian smoothing at scale 1.5
-    gaussianSmoothMultiArray(srcMultiArrayRange(inputArray), destMultiArray(resultArray), 1.5);
+    gaussianSmoothMultiArray(inputArray, resultArray, 1.5);
     \endcode
     
-    (Note the different calling convention for multi-dimensional arrays in terms of 
-    <tt>srcMultiArrayRange()</tt> etc. instead of the 2D <tt>srcImageRange()</tt> ect.)
     More information about VIGRA's multi-dimensional convolution funcions can be found in
-    the reference manual under \ref MultiArrayConvolutionFilters
+    the reference manual under \ref MultiArrayConvolutionFilters .
 */
 
 /** \example invert_tutorial.cxx
@@ -323,13 +342,13 @@
 */
 
 /** \example smooth_explicitly.cxx
-    Smooth an image by averaging a 3x3-box (gray scale or color)
+    Smooth an image by averaging a 5x5-box (gray scale or color)
     <br>
-    Usage: <TT>smooth_ex infile outfile</TT>
+    Usage: <TT>smooth_explicitly infile outfile</TT>
 */
 
 /** \example smooth_convolve.cxx
-    Convolve an image on different ways (gray scale or color)
+    Convolve an image in different ways (gray scale or color)
     <br>
-    Usage: <TT>smooth_con infile outfile</TT>
+    Usage: <TT>smooth_convolve infile outfile</TT>
 */

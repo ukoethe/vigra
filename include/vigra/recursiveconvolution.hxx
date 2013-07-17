@@ -44,6 +44,7 @@
 #include "imageiteratoradapter.hxx"
 #include "bordertreatment.hxx"
 #include "array_vector.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -124,12 +125,12 @@ namespace vigra {
     vector<float> src, dest;    
     ...
     
-    vigra::DefaultAccessor<vector<float>::iterator, float> FAccessor;
+    DefaultAccessor<vector<float>::iterator, float> FAccessor;
     
     
-    vigra::recursiveFilterLine(src.begin(), src.end(), FAccessor(), 
-                               dest.begin(), FAccessor(), 
-                               0.5, BORDER_TREATMENT_REFLECT);
+    recursiveFilterLine(src.begin(), src.end(), FAccessor(), 
+                        dest.begin(), FAccessor(), 
+                        0.5, BORDER_TREATMENT_REFLECT);
     \endcode
 
     <b> Required Interface:</b>
@@ -149,7 +150,6 @@ namespace vigra {
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -431,7 +431,6 @@ void recursiveFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -575,7 +574,6 @@ recursiveGaussianFilterLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -664,7 +662,6 @@ void recursiveSmoothLine(SrcIterator is, SrcIterator isend, SrcAccessor as,
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -785,7 +782,6 @@ void recursiveFirstDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccessor
 
     dest_accessor.set(
         NumericTraits<DestAccessor::value_type>::fromRealPromote(s), id);
-
     \endcode
 
     <b> Preconditions:</b>
@@ -860,7 +856,29 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // first order filter
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b, BorderTreatmentMode border);
+                         
+        // second order filter
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b1, double b2);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveFilterX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // first order filter
@@ -880,8 +898,6 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
                                double b1, double b2);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -900,23 +916,32 @@ void recursiveSecondDerivativeLine(SrcIterator is, SrcIterator isend, SrcAccesso
                     triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, 
                     double b1, double b2);
-            }
+    }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    // apply a first-order filter to the x-axis
+    recursiveFilterX(src, dest, 0.5, BORDER_TREATMENT_REFLECT);
+    \endcode
+
+    \deprecatedUsage{recursiveFilterX}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
-    vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 
+    vigra::recursiveFilterX(srcImageRange(src), destImage(dest), 
            0.5, BORDER_TREATMENT_REFLECT);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFilterX)
 
@@ -945,13 +970,26 @@ void recursiveFilterX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double b, BorderTreatmentMode border)
+inline void 
+recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b, BorderTreatmentMode border)
 {
     recursiveFilterX(src.first, src.second, src.third,
-                      dest.first, dest.second, b, border);
+                     dest.first, dest.second, b, border);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b, BorderTreatmentMode border)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterX(): shape mismatch between input and output.");
+    recursiveFilterX(srcImageRange(src),
+                     destImage(dest), b, border);
 }
 
 /********************************************************/
@@ -985,16 +1023,27 @@ void recursiveFilterX(SrcImageIterator supperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
+inline void 
+recursiveFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b1, double b2)
 {
     recursiveFilterX(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
+                     dest.first, dest.second, b1, b2);
 }
-            
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveFilterX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b1, double b2)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterX(): shape mismatch between input and output.");
+    recursiveFilterX(srcImageRange(src),
+                     destImage(dest), b1, b2);
+}
 
 /********************************************************/
 /*                                                      */
@@ -1012,7 +1061,20 @@ inline void recursiveFilterX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest, 
+                                 double sigma);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveGaussianFilterX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1023,8 +1085,6 @@ inline void recursiveFilterX(
                                  double sigma);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1036,20 +1096,28 @@ inline void recursiveFilterX(
                                  double sigma);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveGaussianFilterX(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveGaussianFilterX}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveGaussianFilterX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveGaussianFilterX)
 
@@ -1087,7 +1155,19 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
-            
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveGaussianFilterX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double sigma)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveGaussianFilterX(): shape mismatch between input and output.");
+    recursiveGaussianFilterX(srcImageRange(src),
+                             destImage(dest), sigma);
+}
+
 /********************************************************/
 /*                                                      */
 /*                    recursiveSmoothX                  */
@@ -1102,7 +1182,20 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveSmoothX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1113,8 +1206,6 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1126,20 +1217,28 @@ recursiveGaussianFilterX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveSmoothX(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveGaussianFilterX}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveSmoothX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSmoothX)
 
@@ -1168,15 +1267,28 @@ void recursiveSmoothX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSmoothX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSmoothX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double scale)
 {
     recursiveSmoothX(src.first, src.second, src.third,
-                     dest. first, dest.second, scale);
+                     dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSmoothX(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSmoothX(): shape mismatch between input and output.");
+    recursiveSmoothX(srcImageRange(src),
+                     destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     recursiveFilterY                 */
@@ -1191,7 +1303,29 @@ inline void recursiveSmoothX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        // first order filter
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b, BorderTreatmentMode border);
+                         
+        // second order filter
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double b1, double b2);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveFilterY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         // first order filter
@@ -1211,8 +1345,6 @@ inline void recursiveSmoothX(
                                double b1, double b2);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1231,22 +1363,31 @@ inline void recursiveSmoothX(
                     triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                     pair<DestImageIterator, DestAccessor> dest, 
                     double b1, double b2);
-            }
+    }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    // apply a second-order filter to the y-axis
+    recursiveFilterY(src, dest, -0.6, -0.06);
+    \endcode
+
+    \deprecatedUsage{recursiveFilterY}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveFilterY(srcImageRange(src), destImage(dest), -0.6, -0.06);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFilterY)
 
@@ -1275,13 +1416,26 @@ void recursiveFilterY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double b, BorderTreatmentMode border)
+inline void
+recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b, BorderTreatmentMode border)
 {
     recursiveFilterY(src.first, src.second, src.third,
-                      dest.first, dest.second, b, border);
+                     dest.first, dest.second, b, border);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b, BorderTreatmentMode border)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterY(): shape mismatch between input and output.");
+    recursiveFilterY(srcImageRange(src),
+                     destImage(dest), b, border);
 }
 
 /********************************************************/
@@ -1315,15 +1469,27 @@ void recursiveFilterY(SrcImageIterator supperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFilterY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-                       double b1, double b2)
+inline void
+recursiveFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double b1, double b2)
 {
     recursiveFilterY(src.first, src.second, src.third,
-                      dest.first, dest.second, b1, b2);
+                     dest.first, dest.second, b1, b2);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFilterY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double b1, double b2)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFilterY(): shape mismatch between input and output.");
+    recursiveFilterY(srcImageRange(src),
+                     destImage(dest), b1, b2);
+}
 
 /********************************************************/
 /*                                                      */
@@ -1341,7 +1507,20 @@ inline void recursiveFilterY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest, 
+                                 double sigma);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveGaussianFilterY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1352,8 +1531,6 @@ inline void recursiveFilterY(
                                  double sigma);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1365,20 +1542,28 @@ inline void recursiveFilterY(
                                  double sigma);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveGaussianFilterY(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveGaussianFilterY}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveGaussianFilterY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveGaussianFilterY)
 
@@ -1416,6 +1601,19 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                              dest.first, dest.second, sigma);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveGaussianFilterY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double sigma)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveGaussianFilterY(): shape mismatch between input and output.");
+    recursiveGaussianFilterY(srcImageRange(src),
+                             destImage(dest), sigma);
+}
+
 
 /********************************************************/
 /*                                                      */
@@ -1431,7 +1629,20 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest, 
+                         double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveSmoothY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1442,8 +1653,6 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1455,20 +1664,28 @@ recursiveGaussianFilterY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor>
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveSmoothY(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveSmoothY}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveSmoothY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSmoothY)
 
@@ -1497,15 +1714,28 @@ void recursiveSmoothY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSmoothY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-            double scale)
+inline void 
+recursiveSmoothY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                 pair<DestImageIterator, DestAccessor> dest, 
+                 double scale)
 {
     recursiveSmoothY(src.first, src.second, src.third,
-                     dest. first, dest.second, scale);
+                     dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+recursiveSmoothY(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest, 
+                 double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSmoothY(): shape mismatch between input and output.");
+    recursiveSmoothY(srcImageRange(src),
+                     destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*              recursiveFirstDerivativeX               */
@@ -1521,7 +1751,20 @@ inline void recursiveSmoothY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest, 
+                                  double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveFirstDerivativeX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1532,8 +1775,6 @@ inline void recursiveSmoothY(
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1545,20 +1786,28 @@ inline void recursiveSmoothY(
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveFirstDerivativeX(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveFirstDerivativeX}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveFirstDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFirstDerivativeX)
 
@@ -1587,15 +1836,28 @@ void recursiveFirstDerivativeX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFirstDerivativeX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveFirstDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                          pair<DestImageIterator, DestAccessor> dest, 
+                          double scale)
 {
     recursiveFirstDerivativeX(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                              dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFirstDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest, 
+                          double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFirstDerivativeX(): shape mismatch between input and output.");
+    recursiveFirstDerivativeX(srcImageRange(src),
+                              destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*              recursiveFirstDerivativeY               */
@@ -1611,7 +1873,20 @@ inline void recursiveFirstDerivativeX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                                  MultiArrayView<2, T2, S2> dest, 
+                                  double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveFirstDerivativeY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1622,8 +1897,6 @@ inline void recursiveFirstDerivativeX(
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1635,20 +1908,28 @@ inline void recursiveFirstDerivativeX(
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveFirstDerivativeY(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveFirstDerivativeY}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveFirstDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveFirstDerivativeY)
 
@@ -1677,15 +1958,28 @@ void recursiveFirstDerivativeY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveFirstDerivativeY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveFirstDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                          pair<DestImageIterator, DestAccessor> dest, 
+                          double scale)
 {
     recursiveFirstDerivativeY(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                              dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveFirstDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                          MultiArrayView<2, T2, S2> dest, 
+                          double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveFirstDerivativeY(): shape mismatch between input and output.");
+    recursiveFirstDerivativeY(srcImageRange(src),
+                              destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*             recursiveSecondDerivativeX               */
@@ -1701,7 +1995,20 @@ inline void recursiveFirstDerivativeY(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest, 
+                                   double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveSecondDerivativeX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1712,8 +2019,6 @@ inline void recursiveFirstDerivativeY(
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1725,20 +2030,28 @@ inline void recursiveFirstDerivativeY(
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveSecondDerivativeX(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveSecondDerivativeX}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveSecondDerivativeX(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSecondDerivativeX)
 
@@ -1767,15 +2080,28 @@ void recursiveSecondDerivativeX(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSecondDerivativeX(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSecondDerivativeX(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                           pair<DestImageIterator, DestAccessor> dest, 
+                           double scale)
 {
     recursiveSecondDerivativeX(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                               dest.first, dest.second, scale);
 }
-            
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSecondDerivativeX(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest, 
+                           double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSecondDerivativeX(): shape mismatch between input and output.");
+    recursiveSecondDerivativeX(srcImageRange(src),
+                               destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*             recursiveSecondDerivativeY               */
@@ -1791,7 +2117,20 @@ inline void recursiveSecondDerivativeX(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest, 
+                                   double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{recursiveSecondDerivativeY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -1802,8 +2141,6 @@ inline void recursiveSecondDerivativeX(
                   double scale)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1815,20 +2152,28 @@ inline void recursiveSecondDerivativeX(
             double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/recursiveconvolution.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);    
+    ...
     
+    recursiveSecondDerivativeY(src, dest, 3.0);
+    \endcode
+
+    \deprecatedUsage{recursiveSecondDerivativeY}
     \code
     vigra::FImage src(w,h), dest(w,h);    
     ...
     
     vigra::recursiveSecondDerivativeY(srcImageRange(src), destImage(dest), 3.0);
-    
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void recursiveSecondDerivativeY)
 
@@ -1857,15 +2202,27 @@ void recursiveSecondDerivativeY(SrcImageIterator supperleft,
             
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor>
-inline void recursiveSecondDerivativeY(
-            triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
-            pair<DestImageIterator, DestAccessor> dest, 
-        double scale)
+inline void
+recursiveSecondDerivativeY(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
+                           pair<DestImageIterator, DestAccessor> dest, 
+                           double scale)
 {
     recursiveSecondDerivativeY(src.first, src.second, src.third,
-                          dest. first, dest.second, scale);
+                               dest.first, dest.second, scale);
 }
             
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+recursiveSecondDerivativeY(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest, 
+                           double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "recursiveSecondDerivativeY(): shape mismatch between input and output.");
+    recursiveSecondDerivativeY(srcImageRange(src),
+                               destImage(dest), scale);
+}
             
 //@}
 

@@ -44,6 +44,7 @@
 #include "functorexpression.hxx"
 #include "transformimage.hxx"
 #include "imagecontainer.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -247,7 +248,8 @@ resamplingReduceLine2(SrcIter s, SrcIter send, SrcAcc src,
 
     <b> Declaration:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     namespace vigra {
@@ -386,12 +388,27 @@ createResamplingKernels(Kernel const & kernel,
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
+    \ref resizeImageSplineInterpolation() is implemented by means of resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Kernel>
+        void
+        resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Kernel const & kernel,
+                            Rational<int> const & samplingRatio, Rational<int> const & offset);
+    }
+    \endcode
+
+    \deprecatedAPI{resamplingConvolveX}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -404,8 +421,6 @@ createResamplingKernels(Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -419,12 +434,29 @@ createResamplingKernels(Kernel const & kernel,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    Rational<int> ratio(2), offset(0);
 
+    MultiArray<2, float> src(w,h),
+                         dest(rational_cast<int>(ratio*w), h);
+
+    float sigma = 2.0;
+    Gaussian<float> smooth(sigma);
+    ...
+
+    // simultaneously enlarge and smooth source image
+    resamplingConvolveX(src, dest,
+                        smooth, ratio, offset);
+    \endcode
+
+    \deprecatedUsage{resamplingConvolveX}
     \code
     Rational<int> ratio(2), offset(0);
 
@@ -439,15 +471,14 @@ createResamplingKernels(Kernel const & kernel,
     resamplingConvolveX(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
     double x = ...;  // must be <= radius()
     double value = kernel(x);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveX)
 
@@ -498,6 +529,20 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                         kernel, samplingRatio, offset);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+resamplingConvolveX(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Kernel const & kernel,
+                    Rational<int> const & samplingRatio, Rational<int> const & offset)
+{
+    resamplingConvolveX(srcImageRange(src),
+                        destImageRange(dest),
+                        kernel, samplingRatio, offset);
+}
+
 /********************************************************/
 /*                                                      */
 /*                  resamplingConvolveY                 */
@@ -525,12 +570,27 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     which specifies the support (non-zero interval) of the kernel. VIGRA already
     provides a number of suitable functors, e.g. \ref vigra::Gaussian, \ref vigra::BSpline
     \ref vigra::CatmullRomSpline, and \ref vigra::CoscotFunction. The function
-    \ref resizeImageSplineInterpolation() is implemented by means resamplingConvolveX() and
+    \ref resizeImageSplineInterpolation() is implemented by means of resamplingConvolveX() and
     resamplingConvolveY().
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Kernel>
+        void
+        resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Kernel const & kernel,
+                            Rational<int> const & samplingRatio, Rational<int> const & offset);
+    }
+    \endcode
+
+    \deprecatedAPI{resamplingConvolveY}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIter, class SrcAcc,
@@ -543,8 +603,6 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -558,12 +616,29 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
                             Rational<int> const & samplingRatio, Rational<int> const & offset);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    Rational<int> ratio(2), offset(0);
 
+    MultiArray<2, float> src(w,h),
+                         dest(w, rational_cast<int>(ratio*h));
+
+    float sigma = 2.0;
+    Gaussian<float> smooth(sigma);
+    ...
+
+    // simultaneously enlarge and smooth source image
+    resamplingConvolveY(src, dest,
+                        smooth, ratio, offset);
+    \endcode
+
+    \deprecatedUsage{resamplingConvolveY}
     \code
     Rational<int> ratio(2), offset(0);
 
@@ -578,15 +653,14 @@ resamplingConvolveX(triple<SrcIter, SrcIter, SrcAcc> src,
     resamplingConvolveY(srcImageRange(src), destImageRange(dest),
                         smooth, ratio, offset);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     Kernel kernel;
     int kernelRadius = kernel.radius();
     double y = ...;  // must be <= radius()
     double value = kernel(y);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveY)
 
@@ -624,17 +698,31 @@ resamplingConvolveY(SrcIter sul, SrcIter slr, SrcAcc src,
     }
 }
 
-template <class SrcIter, class SrcAcc,
-          class DestIter, class DestAcc,
+template <class SrcIter, class SrcAccessor,
+          class DestIter, class DestAccessor,
           class Kernel>
 inline void
-resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
-                    triple<DestIter, DestIter, DestAcc> dest,
+resamplingConvolveY(triple<SrcIter, SrcIter, SrcAccessor> src,
+                    triple<DestIter, DestIter, DestAccessor> dest,
                     Kernel const & kernel,
                     Rational<int> const & samplingRatio, Rational<int> const & offset)
 {
     resamplingConvolveY(src.first, src.second, src.third,
                         dest.first, dest.second, dest.third,
+                        kernel, samplingRatio, offset);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+resamplingConvolveY(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    Kernel const & kernel,
+                    Rational<int> const & samplingRatio, Rational<int> const & offset)
+{
+    resamplingConvolveY(srcImageRange(src),
+                        destImageRange(dest),
                         kernel, samplingRatio, offset);
 }
 
@@ -653,7 +741,24 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class KernelX, class KernelY>
+        void
+        resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                KernelX const & kx,
+                                Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                                KernelY const & ky,
+                                Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
+    }
+    \endcode
+
+    \deprecatedAPI{resamplingConvolveImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -667,8 +772,6 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -684,29 +787,28 @@ resamplingConvolveY(triple<SrcIter, SrcIter, SrcAcc> src,
                            Rational<int> const & samplingRatioY, Rational<int> const & offsetY);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/resampling_convolution.hxx\>
-
+    <b>\#include</b> \<vigra/resampling_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     Rational<int> xratio(2), yratio(3), offset(0);
 
-    FImage src(w,h),
-           dest(rational_cast<int>(xratio*w), rational_cast<int>(yratio*h));
+    MultiArray<2, float> src(w,h),
+                         dest(rational_cast<int>(xratio*w), rational_cast<int>(yratio*h));
 
     float sigma = 2.0;
     Gaussian<float> smooth(sigma);
     ...
 
     // simultaneously enlarge and smooth source image
-    resamplingConvolveImage(srcImageRange(src), destImageRange(dest),
+    resamplingConvolveImage(src, dest,
                             smooth, xratio, offset,
                             smooth, yratio, offset);
-
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void resamplingConvolveImage)
 
@@ -739,14 +841,31 @@ template <class SrcIterator, class SrcAccessor,
           class KernelX, class KernelY>
 inline void
 resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                   triple<DestIterator, DestIterator, DestAccessor> dest,
-                   KernelX const & kx,
-                   Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
-                   KernelY const & ky,
-                   Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
+                        triple<DestIterator, DestIterator, DestAccessor> dest,
+                        KernelX const & kx,
+                        Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                        KernelY const & ky,
+                        Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
 {
     resamplingConvolveImage(src.first, src.second, src.third,
                             dest.first, dest.second, dest.third,
+                            kx, samplingRatioX, offsetX,
+                            ky, samplingRatioY, offsetY);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class KernelX, class KernelY>
+inline void
+resamplingConvolveImage(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        KernelX const & kx,
+                        Rational<int> const & samplingRatioX, Rational<int> const & offsetX,
+                        KernelY const & ky,
+                        Rational<int> const & samplingRatioY, Rational<int> const & offsetY)
+{
+    resamplingConvolveImage(srcImageRange(src),
+                            destImageRange(dest),
                             kx, samplingRatioX, offsetX,
                             ky, samplingRatioY, offsetY);
 }
@@ -760,7 +879,7 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -771,6 +890,17 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     }
     \endcode
 
+    \deprecatedAPI{pyramidReduceBurtFilter}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidReduceBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -781,6 +911,7 @@ resamplingConvolveImage(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                      double centerValue = 0.4);
     }
     \endcode
+    \deprecatedEnd
 
     use a \ref vigra::ImagePyramid :
     \code
@@ -883,7 +1014,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     <b>\#include</b> \<vigra/resampling_convolution.hxx\><br>
     Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -894,7 +1025,17 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     }
     \endcode
 
-
+    \deprecatedAPI{pyramidExpandBurtFilter}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void pyramidExpandBurtFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                     DestIterator dul, DestIterator dlr, DestAccessor dest,
+                                     double centerValue = 0.4);
+    }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -905,6 +1046,7 @@ void pyramidReduceBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
                                      double centerValue = 0.4);
     }
     \endcode
+    \deprecatedEnd
 
     use a \ref vigra::ImagePyramid :
     \code
@@ -1008,9 +1150,9 @@ void pyramidExpandBurtFilter(ImagePyramid<Image, Alloc> & pyramid, int fromLevel
     Namespace: vigra
 */
 template <class Image, class Alloc>
-inline
-void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                             double centerValue = 0.4)
+inline void
+pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                           double centerValue = 0.4)
 {
     using namespace functor;
     
@@ -1032,9 +1174,9 @@ void pyramidReduceBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLe
     Namespace: vigra
 */
 template <class Image, class Alloc>
-inline
-void pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
-                                double centerValue = 0.4)
+inline void
+pyramidExpandBurtLaplacian(ImagePyramid<Image, Alloc> & pyramid, int fromLevel, int toLevel,
+                           double centerValue = 0.4)
 {
     using namespace functor;
     

@@ -40,6 +40,7 @@
 #include <vector>
 #include "resizeimage.hxx"
 #include "navigator.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -117,7 +118,21 @@ internalResizeMultiArrayOneDimension(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class Kernel = BSpline<3, double> >
+        void
+        resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,
+                                            MultiArrayView<N, T2, S2> dest,
+                                            Kernel const & spline = BSpline<3, double>());
+    }
+    \endcode
+
+    \deprecatedAPI{resizeMultiArraySplineInterpolation}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class Shape, class SrcAccessor,
@@ -130,8 +145,6 @@ internalResizeMultiArrayOneDimension(
                               Kernel const & spline = BSpline<3, double>());
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -145,6 +158,7 @@ internalResizeMultiArrayOneDimension(
                               Kernel const & spline = BSpline<3, double>());
     }
     \endcode
+    \deprecatedEnd
 
     The function implements separable spline interpolation algorithm described in
 
@@ -178,9 +192,24 @@ internalResizeMultiArrayOneDimension(
     Namespace: vigra
 
     \code
-    typedef vigra::MultiArray<3, float>::difference_type Shape;
-    vigra::MultiArray<3, float> src(Shape(5, 7, 10)),
-                                dest(Shape(9, 13, 19)); // double the size
+    MultiArray<3, float> src(Shape3(5, 7, 10)),
+                         dest(Shape3(9, 13, 19)); // double the size
+
+    // use default cubic spline interpolator
+    resizeMultiArraySplineInterpolation(src, dest);
+
+    // use linear interpolator
+    resizeMultiArraySplineInterpolation(src, dest, BSpline<1, double>());
+    \endcode
+
+    \deprecatedUsage{resizeMultiArraySplineInterpolation}
+    \code
+    vigra::MultiArray<3, float> src(Shape3(5, 7, 10)),
+                                dest(Shape3(9, 13, 19)); // double the size
+
+    // use linear interpolator
+    vigra::resizeMultiArraySplineInterpolation(srcMultiArrayRange(src),
+               destMultiArrayRange(dest), BSpline<1, double>());
 
     // use default cubic spline interpolator
     vigra::resizeMultiArraySplineInterpolation(
@@ -188,11 +217,10 @@ internalResizeMultiArrayOneDimension(
                destMultiArrayRange(dest));
 
     \endcode
-
     <b> Required Interface:</b>
-
     The source and destination iterators must be compatible with \ref vigra::MultiIterator. The array value
     types must be models of \ref LinearSpace.
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void resizeMultiArraySplineInterpolation)
 
@@ -241,18 +269,6 @@ resizeMultiArraySplineInterpolation(
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
-          class DestIterator, class DestAccessor, 
-          class Kernel>
-inline void
-resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
-                      triple<DestIterator, Shape, DestAccessor> dest,
-                      Kernel const & spline)
-{
-    resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third, spline);
-}
-
-template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(
@@ -263,13 +279,47 @@ resizeMultiArraySplineInterpolation(
 }
 
 template <class SrcIterator, class Shape, class SrcAccessor,
+          class DestIterator, class DestAccessor, 
+          class Kernel>
+inline void
+resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
+                                    triple<DestIterator, Shape, DestAccessor> dest,
+                                    Kernel const & spline)
+{
+    resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
+                                        dest.first, dest.second, dest.third, spline);
+}
+
+template <class SrcIterator, class Shape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 resizeMultiArraySplineInterpolation(triple<SrcIterator, Shape, SrcAccessor> src,
-                      triple<DestIterator, Shape, DestAccessor> dest)
+                                    triple<DestIterator, Shape, DestAccessor> dest)
 {
     resizeMultiArraySplineInterpolation(src.first, src.second, src.third,
-                                   dest.first, dest.second, dest.third);
+                                        dest.first, dest.second, dest.third);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class Kernel>
+inline void
+resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest,
+                                    Kernel const & spline)
+{
+    resizeMultiArraySplineInterpolation(srcMultiArrayRange(source),
+                                        destMultiArrayRange(dest), spline);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+resizeMultiArraySplineInterpolation(MultiArrayView<N, T1, S1>  const & source,
+                                    MultiArrayView<N, T2, S2> dest)
+{
+    resizeMultiArraySplineInterpolation(srcMultiArrayRange(source),
+                                        destMultiArrayRange(dest));
 }
 
 //@}

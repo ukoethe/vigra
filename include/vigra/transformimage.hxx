@@ -43,6 +43,7 @@
 #include "rgbvalue.hxx"
 #include "functortraits.hxx"
 #include "inspectimage.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -94,16 +95,32 @@ transformLineIf(SrcIterator s,
 
 /** \brief Apply unary point transformation to each pixel.
 
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref transformMultiArray() provides the 
+    same functionality for arbitrary dimensional arrays.
+
     The transformation given by the functor is applied to every source
     pixel and the result written into the corresponding destination pixel.
-    The function uses accessors to access the pixel data.
     Note that the unary functors of the STL can be used in addition to
     the functors specifically defined in \ref TransformFunctor.
     Creation of new functors is easiest by using \ref FunctorExpressions.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+              class T2, class S2, class Functor>
+        void
+        transformImage(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       Functor const & f);
+    }
+    \endcode
+
+    \deprecatedAPI{transformImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -115,8 +132,6 @@ transformLineIf(SrcIterator s,
                Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -128,6 +143,7 @@ transformLineIf(SrcIterator s,
                Functor const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -135,17 +151,26 @@ transformLineIf(SrcIterator s,
     Namespace: vigra
 
     \code
-
     #include <cmath>         // for sqrt()
+    MultiArray<2, float>  src(100, 200),
+                          dest(100, 200);
+    ...
+    
+    transformImage(src, dest, &std::sqrt );
+    \endcode
+
+    \deprecatedUsage{transformImage}
+    \code
+    #include <cmath>         // for sqrt()
+    FImage  src(100, 200),
+            dest(100, 200);
 
     vigra::transformImage(srcImageRange(src),
                           destImage(dest),
                           (double(*)(double))&std::sqrt );
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator      dest_upperleft;
@@ -160,7 +185,9 @@ transformLineIf(SrcIterator s,
     dest_accessor.set(functor(src_accessor(sx)), dx);
 
     \endcode
-
+    \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImage)
 
@@ -184,14 +211,26 @@ transformImage(SrcImageIterator src_upperleft,
 
 template <class SrcImageIterator, class SrcAccessor,
       class DestImageIterator, class DestAccessor, class Functor>
-inline
-void
+inline void
 transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                pair<DestImageIterator, DestAccessor> dest,
                Functor const & f)
 {
     transformImage(src.first, src.second, src.third,
                    dest.first, dest.second, f);
+}
+
+template <class T1, class S1,
+      class T2, class S2, class Functor>
+inline void
+transformImage(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               Functor const & f)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "transformImage(): shape mismatch between input and output.");
+    transformImage(srcImageRange(src),
+                   destImage(dest), f);
 }
 
 /********************************************************/
@@ -202,6 +241,10 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
 /** \brief Apply unary point transformation to each pixel within the ROI
     (i.e., where the mask is non-zero).
+
+    After the introduction of arithmetic and algebraic \ref MultiMathModule "array experessions",
+    this function is rarely needed. Moreover, \ref combineTwoMultiArrays() provides the 
+    same functionality for arbitrary dimensional arrays.
 
     The transformation given by the functor is applied to every source
     pixel in the ROI (i.e. when the return value of the mask's accessor
@@ -214,7 +257,23 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2,
+                  class Functor>
+        void
+        transformImageIf(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, TM, SM> const & mask,
+                         MultiArrayView<2, T2, S2> dest,
+                         Functor const & f);
+    }
+    \endcode
+
+    \deprecatedAPI{transformImageIf}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -229,8 +288,6 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -245,12 +302,25 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                          Functor const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/transformimage.hxx\><br>
     Namespace: vigra
 
+    \code
+    #include <cmath>         // for sqrt()
+    
+    MultiArray<2, unsigned char>  mask(100, 200),
+    MultiArray<2, float>          src(100, 200),
+                                  dest(100, 200);
+    ... // fill src and mask
+    
+    transformImageIf(src, mask, dest, &std::sqrt );
+    \endcode
+
+    \deprecatedUsage{transformImageIf}
     \code
     #include <cmath>         // for sqrt()
 
@@ -260,9 +330,7 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                             (double(*)(double))&std::sqrt );
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator  dest_upperleft;
@@ -280,7 +348,9 @@ transformImage(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
        dest_accessor.set(functor(src_accessor(sx)), dx);
 
     \endcode
-
+    \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void transformImageIf)
 
@@ -311,8 +381,7 @@ template <class SrcImageIterator, class SrcAccessor,
           class MaskImageIterator, class MaskAccessor,
           class DestImageIterator, class DestAccessor,
           class Functor>
-inline
-void
+inline void
 transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                  pair<MaskImageIterator, MaskAccessor> mask,
                  pair<DestImageIterator, DestAccessor> dest,
@@ -321,6 +390,23 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     transformImageIf(src.first, src.second, src.third,
                      mask.first, mask.second,
                      dest.first, dest.second, f);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2,
+          class Functor>
+inline void
+transformImageIf(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, TM, SM> const & mask,
+                 MultiArrayView<2, T2, S2> dest,
+                 Functor const & f)
+{
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "transformImageIf(): shape mismatch between input and output.");
+    transformImageIf(srcImageRange(src),
+                     maskImage(mask),
+                     destImage(dest), f);
 }
 
 /********************************************************/
@@ -335,13 +421,27 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     are calculated in one go: for each location, the symmetric
     difference in x- and y-directions (asymmetric difference at the
     image borders) are passed to the given functor, and the result is
-    written the destination image. Functors to be used with this
+    written to the destination image. Functors to be used with this
     function include \ref MagnitudeFunctor and \ref
     RGBGradientMagnitudeFunctor.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2, 
+                  class Functor>
+        void
+        gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest, 
+                               Functor const & grad);
+    }
+    \endcode
+
+    \deprecatedAPI{gradientBasedTransform}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -351,8 +451,6 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                DestImageIterator destul, DestAccessor da, Functor const & f)
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -363,12 +461,22 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                                pair<DestImageIterator, DestAccessor> dest, Functor const & const & f)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/transformimage.hxx\>
-    Namespace: vigra	
+    <b>\#include</b> \<vigra/transformimage.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float> src(w,h), magnitude(w,h);
+    ...
+
+    gradientBasedTransform(src, magnitude,
+                           MagnitudeFunctor<float>());
+    \endcode
+
+    \deprecatedUsage{gradientBasedTransform}
     \code
     vigra::FImage src(w,h), magnitude(w,h);
     ...
@@ -376,9 +484,7 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     gradientBasedTransform(srcImageRange(src), destImage(magnitude),
                                 vigra::MagnitudeFunctor<float>());
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator is, isend;
     DestImageIterator id;
@@ -397,7 +503,9 @@ transformImageIf(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
     dest_accessor.set(f(diffx, diffy), id);
 
     \endcode
-
+    \deprecatedEnd
+    
+    \see TransformFunctor, MultiMathModule, \ref FunctorExpressions
 */
 doxygen_overloaded_function(template <...> void gradientBasedTransform)
 
@@ -485,13 +593,24 @@ gradientBasedTransform(SrcImageIterator srcul, SrcImageIterator srclr, SrcAccess
 
 template <class SrcImageIterator, class SrcAccessor,
           class DestImageIterator, class DestAccessor, class Functor>
-inline
-void
+inline void
 gradientBasedTransform(triple<SrcImageIterator, SrcImageIterator, SrcAccessor> src,
                        pair<DestImageIterator, DestAccessor> dest, Functor const & grad)
 {
     gradientBasedTransform(src.first, src.second, src.third,
                            dest.first, dest.second, grad);
+}
+
+template <class T1, class S1,
+          class T2, class S2, class Functor>
+inline void
+gradientBasedTransform(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest, Functor const & grad)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "gradientBasedTransform(): shape mismatch between input and output.");
+    gradientBasedTransform(srcImageRange(src),
+                           destImage(dest), grad);
 }
 
 /** @} */

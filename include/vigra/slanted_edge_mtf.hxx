@@ -51,6 +51,7 @@
 #include "stdimage.hxx"
 #include "transformimage.hxx"
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -78,12 +79,12 @@ namespace vigra {
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h);
+    MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
     
     ...
-    vigra::slantedEdgeMTF(srcImageRange(src), mtf,
-                          vigra::SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
+    slantedEdgeMTF(src, mtf,
+                   SlantedEdgeMTFOptions().mtfSmoothingScale(1.0));
     
     // print the frequency / attenuation pairs found
     for(int k=0; k<result.size(); ++k)
@@ -528,23 +529,34 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
          from the estimated MTF.
     </ul>
     
-    The source value type (<TT>SrcAccessor::value_type</TT>) must be a scalar type which is convertible to <tt>double</tt>.
-    The result is written into the \a result sequence, whose <tt>value_type</tt> must be constructible 
+    The source value type <TT>T1</TT> must be a scalar type which is convertible to <tt>double</tt>.
+    The result is written into the \a result sequence, which must be back-insertable (supports <tt>push_back()</tt>)
+    and whose <tt>value_type</tt> must be constructible 
     from two <tt>double</tt> values. Algorithm options can be set via the \a options object 
     (see \ref vigra::NoiseNormalizationOptions for details).
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1, class BackInsertable>
+        void
+        slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
+                       SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
+    }
+    \endcode
+    
+    \deprecatedAPI{slantedEdgeMTF}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
         void
         slantedEdgeMTF(SrcIterator sul, SrcIterator slr, SrcAccessor src, BackInsertable & mtf,
-                    SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
+                       SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -554,12 +566,27 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
                        SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/slanted_edge_mtf.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h);
+    std::vector<vigra::TinyVector<double, 2> > mtf;
     
+    ...
+    // keep all options at their default values
+    slantedEdgeMTF(src, mtf);
+    
+    // print the frequency / attenuation pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
+    \endcode
+
+    \deprecatedUsage{slantedEdgeMTF}
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
@@ -571,9 +598,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     for(int k=0; k<result.size(); ++k)
         std::cout << "frequency: " << mtf[k][0] << ", estimated attenuation: " << mtf[k][1] << std::endl;
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcIterator upperleft, lowerright;
     SrcAccessor src;
@@ -589,6 +614,7 @@ void slantedEdgeMTFImpl(Image const & i, BackInsertable & mtf, double angle,
     double intensity, variance;
     result.push_back(ResultType(intensity, variance));
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void slantedEdgeMTF)
 
@@ -617,6 +643,14 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
                SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
 {
     slantedEdgeMTF(src.first, src.second, src.third, mtf, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+slantedEdgeMTF(MultiArrayView<2, T1, S1> const & src, BackInsertable & mtf,
+               SlantedEdgeMTFOptions const & options = SlantedEdgeMTFOptions())
+{
+    slantedEdgeMTF(srcImageRange(src), mtf, options);
 }
 
 /********************************************************/
@@ -649,11 +683,11 @@ slantedEdgeMTF(triple<SrcIterator, SrcIterator, SrcAccessor> src, BackInsertable
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h);
+    MultiArray<2, float> src(w,h);
     std::vector<vigra::TinyVector<double, 2> > mtf;
     
     ...
-    vigra::slantedEdgeMTF(srcImageRange(src), mtf);
+    slantedEdgeMTF(src, mtf);
     double scale = vigra::mtfFitGaussian(mtf)
     
     std::cout << "The camera PSF is approximately a Gaussian at scale " << scale << std::endl;

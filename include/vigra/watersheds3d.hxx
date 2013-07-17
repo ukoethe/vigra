@@ -242,144 +242,6 @@ unsigned int watershedLabeling3D( SrcIterator s_Iter, SrcShape srcShape, SrcAcce
 */
 //@{
 
-/** \brief Generate seeds for watershed computation and seeded region growing.
-
-    The source image is a boundary indicator such as the gradient magnitude
-    or the trace of the \ref boundaryTensor(). Seeds are generally generated
-    at locations where the boundaryness (i.e. the likelihood of the point being on the
-    boundary) is very small. In particular, seeds can be placed by either
-    looking for local minima (possibly including minimal plateaus) of the boundaryness,
-    of by looking at level sets (i.e. regions where the boundaryness is below a threshold).
-    Both methods can also be combined, so that only minima below a threshold are returned.
-    The particular seeding strategy is specified by the <tt>options</tt> object 
-    (see \ref SeedOptions).
-    
-    The pixel type of the input image must be <tt>LessThanComparable</tt>.
-    The pixel type of the output image must be large enough to hold the labels for all seeds.
-    (typically, you will use <tt>UInt32</tt>). The function will label seeds by consecutive integers
-    (starting from 1) and returns the largest label it used.
-    
-    Pass \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode to determine the 
-    neighborhood where pixel values are compared. 
-    
-    The function uses accessors.
-
-    <b> Declarations:</b>
-
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class Neighborhood = EightNeighborCode>
-        unsigned int
-        generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                               DestIterator upperleftd, DestAccessor da, 
-                               Neighborhood neighborhood = EightNeighborCode(),
-                               SeedOptions const & options = SeedOptions());
-    }
-    \endcode
-
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor,
-                  class Neighborhood = EightNeighborCode>
-        unsigned int
-        generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                               pair<DestIterator, DestAccessor> dest, 
-                               Neighborhood neighborhood = EightNeighborCode(),
-                               SeedOptions const & options = SeedOptions());
-    }
-    \endcode
-
-    <b> Usage:</b>
-
-    <b>\#include</b> \<vigra/watersheds.hxx\><br>
-    Namespace: vigra
-
-    For detailed examples see watershedsRegionGrowing().
-*/
-doxygen_overloaded_function(template <...> unsigned int generateWatershedSeeds3D)
-
-#if 0
-template <unsigned int N, class T1, class C1, class T2, class C2>
-          class Neighborhood>
-unsigned int
-generateWatershedSeeds3D(MultiArrayView<N, T1, C1> in, MultiArrayView<N, T2, C2> out,
-                         Neighborhood neighborhood,
-                         SeedOptions const & options = SeedOptions())
-{
-    using namespace functor;
-    
-    vigra_precondition(in.shape() == out.shape(),
-        "generateWatershedSeeds3D(): Shape mismatch between input and output.");
-        
-    vigra_precondition(options.mini != SeedOptions::LevelSets || 
-                       options.thresholdIsValid<SrcType>(),
-        "generateWatershedSeeds3D(): SeedOptions.levelSets() must be specified with threshold.");
-    
-    MultiArray<N, UInt8> seeds(in.shape());
-    
-    if(options.mini == SeedOptions::LevelSets)
-    {
-        transformMultiArray(srcMultiArrayRange(in), destMultiArray(seeds),
-                            ifThenElse(Arg1() <= Param(options.thresh), Param(1), Param(0)));
-    }
-    else
-    {
-        localMinima(in, seeds,
-            LocalMinmaxOptions().neighborhood(Neighborhood::DirectionCount)
-                                .markWith(1.0)
-                                .threshold(options.thresh)
-                                .allowAtBorder()
-                                .allowPlateaus(options.mini == SeedOptions::ExtendedMinima));
-    }
-    
-    return labelVolumeWithBackground(srcMultiArrayRange(seeds), destMultiArray(out), 
-                                     neighborhood, 0);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline unsigned int
-generateWatershedSeeds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAccessor sa,
-                       DestIterator upperleftd, DestAccessor da, 
-                       SeedOptions const & options = SeedOptions())
-{
-    return generateWatershedSeeds(upperlefts, lowerrights, sa, upperleftd, da, 
-                                   EightNeighborCode(), options);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor,
-          class Neighborhood>
-inline unsigned int
-generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                       pair<DestIterator, DestAccessor> dest, 
-                       Neighborhood neighborhood,
-                       SeedOptions const & options = SeedOptions())
-{
-    return generateWatershedSeeds(src.first, src.second, src.third,
-                                   dest.first, dest.second,    
-                                   neighborhood, options);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor>
-inline unsigned int
-generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                       pair<DestIterator, DestAccessor> dest, 
-                       SeedOptions const & options = SeedOptions())
-{
-    return generateWatershedSeeds(src.first, src.second, src.third,
-                                   dest.first, dest.second,    
-                                   EightNeighborCode(), options);
-}
-
-#endif
-
 /********************************************************/
 /*                                                      */
 /*                     watersheds3D                     */
@@ -388,9 +250,12 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Region Segmentation by means of the watershed algorithm.
 
+    This function is deprecated, use \ref watershedsMultiArray() instead.
+    
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    \deprecatedAPI{watersheds3D}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,class SrcShape,
@@ -401,7 +266,6 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                   Neighborhood3D neighborhood3D);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -437,12 +301,13 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     
     }
     \endcode
-
+    \deprecatedEnd
+    
     This function implements the union-find version of the watershed algorithms
     as described in
 
-    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    J. Roerdink, R. Meijster: <em>"The watershed transform: definitions, algorithms,
+    and parallelization strategies"</em>, Fundamenta Informaticae, 41:187-228, 2000
 
     The source volume is a boundary indicator such as the gradient magnitude
     of the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
@@ -450,12 +315,6 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     region as their lowest neighbor. Pass \ref vigra::NeighborCode3DSix or 
     \ref vigra::NeighborCode3DTwentySix to determine the neighborhood where voxel values 
     are compared. The voxel type of the input volume must be <tt>LessThanComparable</tt>.
-    The function uses accessors. 
-    
-    ...probably soon in VIGRA:
-    Note that VIGRA provides an alternative implementation of the watershed transform via
-    \ref seededRegionGrowing3D(). It is slower, but handles plateaus better 
-    and allows to keep a one pixel wide boundary between regions.
     
     <b> Usage:</b>
 
@@ -464,6 +323,25 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     Example: watersheds3D of the gradient magnitude.
 
+    \code
+    Shape3 shape(w, h, d);
+    
+    MultiArray<3, float> src(shape), grad(shape);
+    ...
+    
+    double scale = 1;
+    gaussianGradientMagnitude(src, grad, scale);
+    
+    MultiArray<3, int> labels(shape);
+    
+    // find 6-connected regions
+    int max_region_label = watersheds3DSix(grad, labels);
+
+    // find 26-connected regions
+    max_region_label = watersheds3DTwentySix(grad, labels);
+    \endcode
+
+    \deprecatedUsage{watersheds3D}
     \code
     typedef vigra::MultiArray<3,int> IntVolume;
     typedef vigra::MultiArray<3,double> DVolume;
@@ -486,9 +364,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     max_region_label = vigra::watersheds3DTwentySix(srcMultiArrayRange(src), destMultiArray(dest));
     
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_begin;
     SrcShape src_shape;
@@ -504,6 +380,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     int label;
     dest_accessor.set(label, dest_begin);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int watersheds3D)
 
@@ -542,18 +419,40 @@ unsigned int watersheds3D( SrcIterator s_Iter, SrcShape srcShape, SrcAccessor sa
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline unsigned int watersheds3DSix( vigra::triple<SrcIterator, SrcShape, SrcAccessor> src, 
-                                     vigra::pair<DestIterator, DestAccessor> dest)
+inline unsigned int watersheds3DSix( triple<SrcIterator, SrcShape, SrcAccessor> src, 
+                                     pair<DestIterator, DestAccessor> dest)
 {
     return watersheds3D(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DSix());
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline unsigned int watersheds3DTwentySix( vigra::triple<SrcIterator, SrcShape, SrcAccessor> src, 
-                                           vigra::pair<DestIterator, DestAccessor> dest)
+inline unsigned int watersheds3DTwentySix( triple<SrcIterator, SrcShape, SrcAccessor> src, 
+                                           pair<DestIterator, DestAccessor> dest)
 {
     return watersheds3D(src.first, src.second, src.third, dest.first, dest.second, NeighborCode3DTwentySix());
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline unsigned int 
+watersheds3DSix(MultiArrayView<N, T1, S1> const & source, 
+                MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "watersheds3DSix(): shape mismatch between input and output.");
+    return watersheds3DSix(srcMultiArrayRange(source), destMultiArray(dest));
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+watersheds3DTwentySix(MultiArrayView<N, T1, S1> const & source, 
+                      MultiArrayView<N, T2, S2> dest)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "watersheds3DTwentySix(): shape mismatch between input and output.");
+    return watersheds3DTwentySix(srcMultiArrayRange(source), destMultiArray(dest));
 }
 
 }//namespace vigra

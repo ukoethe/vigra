@@ -40,6 +40,7 @@
 
 #include "vigra/watersheds3d.hxx"
 #include "vigra/multi_array.hxx"
+#include "vigra/multi_watersheds.hxx"
 #include "list"
 
 #include <stdlib.h>
@@ -47,11 +48,12 @@
 
 
 using namespace vigra;
+
 struct Watersheds3dTest
 {
-    typedef vigra::MultiArray<3,int> IntVolume;
-    typedef vigra::MultiArray<3,double> DVolume;
-    typedef vigra::TinyVector<int,3> IntVec;
+    typedef MultiArray<3,int> IntVolume;
+    typedef MultiArray<3,double> DVolume;
+    typedef TinyVector<int,3> IntVec;
 
     enum { WIDTH    =   100, // 
            HEIGHT   =   100, // Volume-Dimensionen
@@ -126,8 +128,8 @@ struct Watersheds3dTest
             //Watersheds3D
             IntVolume labelVolume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH));
 
-            int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(volume),
-                                                        vigra::destMultiArray(labelVolume));
+            int max_region_label = watersheds3DSix( srcMultiArrayRange(volume),
+                                                        destMultiArray(labelVolume));
             should(max_region_label == (int)(*list_iter).size());
         }
     }
@@ -152,8 +154,8 @@ struct Watersheds3dTest
             //Watersheds3D
             IntVolume labelVolume(IntVolume::difference_type(WIDTH,HEIGHT,DEPTH));
 
-            int max_region_label = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(volume),
-                                                                vigra::destMultiArray(labelVolume));
+            int max_region_label = watersheds3DTwentySix( srcMultiArrayRange(volume),
+                                                                destMultiArray(labelVolume));
             should(max_region_label == (int)(*list_iter).size());
         }
     }
@@ -210,10 +212,10 @@ struct Watersheds3dTest
             2, 2, 2, 2
         };
 
-        IntVolume labelVolume(IntVolume::difference_type(4,4,4));
+        IntVolume labelVolume(vol.shape()), labelVolume2(vol.shape());
 
-        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
-                                                       vigra::destMultiArray(labelVolume));
+        int max_region_label = watersheds3DSix( srcMultiArrayRange(vol),
+                                                       destMultiArray(labelVolume));
         
         shouldEqual(max_region_label, 2);
         
@@ -225,27 +227,30 @@ struct Watersheds3dTest
         //}
 
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
+
+        should(2 == watershedsMultiArray(vol, labelVolume2, DirectNeighborhood, WatershedOptions().unionFind()));
+        should(labelVolume == labelVolume2);
     }
 
     void testWatersheds3dSix2()
     {
-        static const int data[] = {
-            3, 2, 3,    
-            7, 6, 7,      
-            2, 3, 4,
+        static const double data[] = {
+            3.0, 2.0, 3.0,    
+            7.0, 6.0, 7.0,      
+            2.0, 3.0, 4.0,
 
-            2, 1, 2, 
-            6, 5, 6,
-            3, 2, 3,
+            2.0, 1.0, 2.0, 
+            6.0, 5.0, 6.0,
+            3.0, 2.1, 3.1,
 
-            3, 2, 3, 
-            7, 6, 7,    
-            4, 3, 4
+            3.0, 2.0, 3.0, 
+            7.0, 6.0, 7.0,    
+            4.0, 3.1, 4.0
         };
 
-        IntVolume vol(IntVolume::difference_type(3,3,3));
-        const int *i=data;
-        for(IntVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter, ++i){
+        DVolume vol(Shape3(3,3,3));
+        const double *i=data;
+        for(DVolume::iterator iter=vol.begin(); iter!=vol.end(); ++iter, ++i){
             *iter=*i;
         }
 
@@ -263,13 +268,15 @@ struct Watersheds3dTest
             2, 3, 3
         };
 
-        IntVolume labelVolume(IntVolume::difference_type(3,3,3));
+        IntVolume labelVolume(vol.shape()), labelVolume2(vol.shape());
 
-        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
-                                                       vigra::destMultiArray(labelVolume));
+        int max_region_label = watersheds3DSix( vol, labelVolume);
 
         shouldEqual(max_region_label, 3);
         shouldEqualSequence(labelVolume.begin(), labelVolume.end(), desired);
+
+        should(3 == watershedsMultiArray(vol, labelVolume2, DirectNeighborhood, WatershedOptions().unionFind()));
+        should(labelVolume == labelVolume2);
     }
 
     void testWatersheds3dGradient1()
@@ -278,7 +285,7 @@ struct Watersheds3dTest
 
         IntVolume vol(IntVolume::difference_type(w,h,d));
 
-                static const int data[] = {
+        static const int data[] = {
             0, 0, 0, 0, 
             0, 0, 0, 0, 
             0, 0, 0, 0, 
@@ -326,28 +333,28 @@ struct Watersheds3dTest
         }
 
  
-        IntVolume labelVolume(IntVolume::difference_type(w,h,d));
-        IntVolume labelVolume26(IntVolume::difference_type(w,h,d));
+        IntVolume labelVolume(vol.shape()), labelVolume2(vol.shape());
 
-        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
-                                                       vigra::destMultiArray(labelVolume));
-        int max_region_label26 = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(vol),
-                                                               vigra::destMultiArray(labelVolume26));
+        int max_region_label = watersheds3DSix( srcMultiArrayRange(vol),
+                                                       destMultiArray(labelVolume));
+        shouldEqual(2, max_region_label);
+        using namespace multi_math;
+        should(all(labelVolume.subarray(Shape3(0), Shape3(w,h,d/2)) == 1));
+        should(all(labelVolume.subarray(Shape3(w,h,d/2), Shape3(w,h,d)) == 2));
 
-        shouldEqual(max_region_label, max_region_label26);
+        max_region_label = watersheds3DTwentySix( srcMultiArrayRange(vol),
+                                                  destMultiArray(labelVolume2));
 
-        for(int z=0; z<d; ++z)
-            for(int y=0; y<h; ++y)
-                for(int x=0; x<w; ++x){
-                    if(z<d/2.0){
-                        shouldEqual( labelVolume(x,y,z), 1 );
-                        shouldEqual( labelVolume26(x,y,z), 1 );
-                    }
-                    else{
-                        shouldEqual( labelVolume(x,y,z), 2 );
-                        shouldEqual( labelVolume26(x,y,z), 2 );
-                    }
-                }
+        shouldEqual(2, max_region_label);        
+        should(all(labelVolume == labelVolume2));
+
+        labelVolume2.init(0);
+        should(2 == watershedsMultiArray(vol, labelVolume2, DirectNeighborhood, WatershedOptions().unionFind()));
+        should(all(labelVolume == labelVolume2));
+
+        labelVolume2.init(0);
+        should(2 == watershedsMultiArray(vol, labelVolume2, IndirectNeighborhood, WatershedOptions().unionFind()));
+        should(all(labelVolume == labelVolume2));
     }
 
     void testWatersheds3dGradient2()
@@ -356,7 +363,7 @@ struct Watersheds3dTest
 
         IntVolume vol(IntVolume::difference_type(w,h,d));
 
-                static const int data[] = {
+        static const int data[] = {
 
             0, 0, 4, 9, 9, 4, 0, 0,  
             0, 0, 4, 9, 9, 4, 0, 0,  
@@ -412,7 +419,7 @@ struct Watersheds3dTest
             4, 4, 4, 9, 9, 4, 4, 4,  
             4, 4, 4, 9, 9, 4, 4, 4,
 
-                        0, 0, 4, 9, 9, 4, 0, 0,  
+            0, 0, 4, 9, 9, 4, 0, 0,  
             0, 0, 4, 9, 9, 4, 0, 0,  
             4, 4, 4, 9, 9, 4, 4, 4,  
             9, 9, 9,10,10, 9, 9, 9,
@@ -437,16 +444,13 @@ struct Watersheds3dTest
             *iter=*i;
         }
 
-        IntVolume labelVolume(IntVolume::difference_type(w,h,d));
-        IntVolume labelVolume26(IntVolume::difference_type(w,h,d));
+        IntVolume labelVolume(Shape3(w,h,d)), labelVolume2(Shape3(w,h,d));
 
-        int max_region_label = vigra::watersheds3DSix( vigra::srcMultiArrayRange(vol),
-                                                       vigra::destMultiArray(labelVolume));
-        int max_region_label26 = vigra::watersheds3DTwentySix( vigra::srcMultiArrayRange(vol),
-                                                               vigra::destMultiArray(labelVolume26));
+        int max_region_label = watersheds3DSix( srcMultiArrayRange(vol),
+                                                       destMultiArray(labelVolume));
+        shouldEqual(8, max_region_label);
 
-        shouldEqual(max_region_label, max_region_label26);
-
+        // each octand should be one region
         for(int z=0; z<d; ++z){
             for(int y=0; y<h; ++y){
                 for(int x=0; x<w; ++x){
@@ -454,17 +458,29 @@ struct Watersheds3dTest
                 }
             }
         }
+
+        max_region_label = watersheds3DTwentySix( vol, labelVolume2);
+        shouldEqual(8, max_region_label);
+        should(labelVolume == labelVolume2);
+
+        labelVolume2.init(0);
+        max_region_label = watershedsMultiArray(vol, labelVolume2, DirectNeighborhood, WatershedOptions().unionFind());
+        shouldEqual(8, max_region_label);
+        should(labelVolume == labelVolume2);
+
+        labelVolume2.init(0);
+        max_region_label = watershedsMultiArray(vol, labelVolume2, IndirectNeighborhood, WatershedOptions().unionFind());
+        shouldEqual(8, max_region_label);
+        should(labelVolume == labelVolume2);
     }
-
-
 };
 
 
-struct SimpleAnalysisTestSuite
-: public vigra::test_suite
+struct Watershed3DTestSuite
+: public test_suite
 {
-    SimpleAnalysisTestSuite()
-    : vigra::test_suite("SimpleAnalysisTestSuite")
+    Watershed3DTestSuite()
+    : test_suite("Watershed3DTestSuite")
     {
         add( testCase( &Watersheds3dTest::testDistanceVolumesSix));
         add( testCase( &Watersheds3dTest::testDistanceVolumesTwentySix));
@@ -477,9 +493,9 @@ struct SimpleAnalysisTestSuite
 
 int main(int argc, char ** argv)
 {
-    SimpleAnalysisTestSuite test;
+    Watershed3DTestSuite test;
 
-    int failed = test.run(vigra::testsToBeExecuted(argc, argv));
+    int failed = test.run(testsToBeExecuted(argc, argv));
 
     std::cout << test.report() << std::endl;
     return (failed != 0);

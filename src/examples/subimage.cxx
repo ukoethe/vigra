@@ -35,9 +35,9 @@
  
 
 #include <iostream>
-#include "vigra/stdimage.hxx"
-#include "vigra/stdimagefunctions.hxx"
-#include "vigra/impex.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/stdimagefunctions.hxx>
+#include <vigra/impex.hxx>
 
 using namespace vigra; 
 
@@ -46,14 +46,14 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        vigra::ImageImportInfo info(argv[1]);
+        ImageImportInfo info(argv[1]);
         
         // define upper left and lower right corners of a 
         // subimage (region of interest)
@@ -64,40 +64,28 @@ int main(int argc, char ** argv)
             
         if(info.isGrayscale())
         {
-            vigra::BImage in(info.width(), info.height());
+            MultiArray<2, UInt8> in(info.width(), info.height());
             
-            importImage(info, destImage(in));
+            importImage(info, in);
             
-            // create output image of appropriate size
-            vigra::BImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
+            // create an array view for the desired subregion
+            MultiArrayView<2, UInt8> out = in.subarray(Shape2(sub_x0, sub_y0), Shape2(sub_x1, sub_y1));
             
-            // copy region of interest by moving the input 
-            // iterators to the appropriate positions
-            copyImage(srcIterRange(in.upperLeft() + vigra::Diff2D(sub_x0, sub_y0),
-                                   in.upperLeft() + vigra::Diff2D(sub_x1, sub_y1)),
-                      destImage(out));
-            
-            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+            exportImage(out, ImageExportInfo(argv[2]));
         }
         else
         {
-            vigra::BRGBImage in(info.width(), info.height());
+            MultiArray<2, RGBValue<UInt8> > in(info.width(), info.height());
             
-            importImage(info, destImage(in));
+            importImage(info, in);
             
-            // create output image of appropriate size
-            vigra::BRGBImage out(sub_x1 - sub_x0, sub_y1 - sub_y0);
+            // create an array view for the desired subregion
+            MultiArrayView<2, RGBValue<UInt8> > out = in.subarray(Shape2(sub_x0, sub_y0), Shape2(sub_x1, sub_y1));
             
-            // copy region of interest by moving the input 
-            // iterators to the appropriate positions
-            copyImage(srcIterRange(in.upperLeft() + vigra::Diff2D(sub_x0, sub_y0),
-                                   in.upperLeft() + vigra::Diff2D(sub_x1, sub_y1)),
-                      destImage(out));
-            
-            exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+            exportImage(out, ImageExportInfo(argv[2]));
         }
     }
-    catch (vigra::StdException & e)
+    catch (std::exception & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

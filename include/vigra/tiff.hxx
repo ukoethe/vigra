@@ -39,6 +39,8 @@
 #include "utilities.hxx"
 #include "numerictraits.hxx"
 #include "rgbvalue.hxx"
+#include "multi_shape.hxx"
+
 extern "C"
 {
 #include <tiff.h>
@@ -71,16 +73,26 @@ typedef TIFF TiffImage;
 /*                                                      */
 /********************************************************/
 
-/** \brief Convert given TiffImage into image specified by iterator range.
+/** \brief Read a given TIFF image.
 
-    Accessors are used to write the data.    
     This function calls \ref tiffToScalarImage() or \ref tiffToRGBImage(), depending on 
-    the accessor's value_type.
+    the destinations's value_type. Usually, it is better to use \ref importImage().
+    importTiffImage() should only be used if explicit access to the TIFF object
+    <tt>TiffImage</tt> is required.
 
-    
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S>
+        void
+        importTiffImage(TiffImage * tiff, MultiArrayView<2, T, S> dest);
+    }
+    \endcode
+    
+    \deprecatedAPI{importTiffImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -88,7 +100,6 @@ typedef TIFF TiffImage;
         importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -97,10 +108,12 @@ typedef TIFF TiffImage;
         importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
     
     \code
     uint32 w, h;
@@ -108,9 +121,9 @@ typedef TIFF TiffImage;
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
     
-    vigra::BImage img(w,h);
+    MultiArray<2, unsigned char> img(w,h);
     
-    vigra::importTiffImage(tiff, destImage(img));
+    importTiffImage(tiff, img);
     
     TIFFClose(tiff);
     \endcode
@@ -143,6 +156,13 @@ importTiffImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     importTiffImage(tiff, dest.first, dest.second);
 }
 
+template <class T, class S>
+inline void
+importTiffImage(TiffImage * tiff, MultiArrayView<2, T, S> dest)
+{
+    importTiffImage(tiff, destImage(dest));
+}
+
 template <class ImageIterator, class Accessor>
 inline void
 importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraTrueType)
@@ -165,11 +185,12 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 
 /** \brief Convert single-band TiffImage to scalar image.
 
-    This function uses accessors to write the data.
-    
+    Note that unexpected results can occur when the destination pixel type is weaker than the pixel type
+    in the file (e.g. when a <tt>float</tt> file is imported into a <tt>unsigned char</tt> image).
+
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -177,7 +198,16 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
         tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
     }
     \endcode
-
+    
+    \deprecatedAPI{tiffToScalarImage}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        void
+        tiffToScalarImage(TiffImage * tiff, ImageIterator iter, Accessor a)
+    }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -186,14 +216,39 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
         tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
     \code
     uint32 w, h;
-    uint16 photometric
+    uint16 photometric;
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_MINISWHITE &&
+       photometric != PHOTOMETRIC_MINISBLACK)
+    {
+        // not a scalar image - handle error
+    }
+    
+    MultiArray<2, unsigned char> img(w,h);
+    
+    tiffToScalarImage(tiff, img);
+    
+    TIFFClose(tiff);
+    \endcode
+
+    \deprecatedUsage{tiffToScalarImage}
+    \code
+    uint32 w, h;
+    uint16 photometric;
+    
     TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
     TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
     TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
@@ -211,9 +266,7 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
     
     TIFFClose(tiff);
     \endcode
-    
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> value;
@@ -222,10 +275,11 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
                
     accessor.set(value, upperleft);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
-    ImageIterator must refer to a large enough image.
+    The output array must have the correct shape.
     
     \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
@@ -237,16 +291,13 @@ importTiffImage(TiffImage * tiff, ImageIterator iter, Accessor a, VigraFalseType
 
     sampleFormat != SAMPLEFORMAT_VOID
     samplesPerPixel == 1
-    photometric == PHOTOMETRIC_MINISWHITE ||
-       photometric == PHOTOMETRIC_MINISBLACK
+    photometric == PHOTOMETRIC_MINISWHITE || photometric == PHOTOMETRIC_MINISBLACK
     bitsPerSample == 1 || 
        bitsPerSample == 8 || 
        bitsPerSample == 16 || 
        bitsPerSample == 32 || 
        bitsPerSample == 64
-    
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void tiffToScalarImage)
 
@@ -520,16 +571,15 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
 /*                                                      */
 /********************************************************/
 
-/** \brief Convert RGB (3-band or color-mapped) TiffImage 
-    to RGB image.
-    
-    This function uses \ref RGBAccessor to write the data.
-    A RGBImageIterator is an iterator which is associated with a
-    RGBAccessor.
+/** \brief Import a RGB (3-band or color-mapped) TiffImage 
+    into a RGB image.
+
+    Note that unexpected results can occur when the destination pixel type is weaker than the pixel type
+    in the file (e.g. when a <tt>float</tt> file is imported into a <tt>unsigned char</tt> image).
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
@@ -537,7 +587,16 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
         tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
     }
     \endcode
-
+    
+    \deprecatedAPI{tiffToRGBImage}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        void
+        tiffToRGBImage(TiffImage * tiff, RGBImageIterator iter, RGBAccessor a)
+    }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -546,11 +605,35 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
         tiffToRGBImage(TiffImage * tiff, pair<RGBImageIterator, RGBAccessor> dest)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
+    \code
+    uint32 w, h;
+    uint16 photometric
+    TiffImage * tiff = TIFFOpen("tiffimage.tiff", "r");
+    TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+    TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+    TIFFGetField(tiff_, TIFFTAG_PHOTOMETRIC, &photometric);
+        
+    if(photometric != PHOTOMETRIC_RGB &&
+       photometric != PHOTOMETRIC_PALETTE)
+    {
+        // not an RGB image - handle error
+    }
     
+    MultiArray<2, RGBValue<unsigned char> > img(w, h);
+    
+    tiffToRGBImage(tiff, img);
+    
+    TIFFClose(tiff);
+    \endcode
+
+    \deprecatedUsage{tiffToRGBImage}
     \code
     uint32 w, h;
     uint16 photometric
@@ -571,9 +654,7 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     
     TIFFClose(tiff);
     \endcode
-    
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     <unsigned char, short, long, float, double> rvalue, gvalue, bvalue;
@@ -584,10 +665,11 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
     accessor.setGreen(gvalue, upperleft);
     accessor.setBlue(bvalue, upperleft);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
-    ImageIterator must refer to a large enough image.
+    The destination image must have the appropriate size.
     
     \code
     uint16 sampleFormat, samplesPerPixel, bitsPerSample, photometric;
@@ -607,7 +689,6 @@ tiffToScalarImage(TiffImage * tiff, pair<ImageIterator, Accessor> dest)
        bitsPerSample == 32 || 
        bitsPerSample == 64
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void tiffToRGBImage)
 
@@ -1015,11 +1096,23 @@ struct CreateTiffImage;
     Type and size of the TiffImage are determined by the input image. 
     Currently, the function can create scalar images and RGB images of type 
     unsigned char, short, int, float, and double.
-    This function uses accessors to read the data.
+   
+    Usually, it is better to use \ref exportImage(). createTiffImage() should only be used if explicit access to the TIFF object
+    <tt>TiffImage</tt> is required.    
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S>
+        void
+        createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff);
+    }
+    \endcode
+    
+    \deprecatedAPI{createTiffImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1028,7 +1121,6 @@ struct CreateTiffImage;
                         Accessor a)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1037,11 +1129,26 @@ struct CreateTiffImage;
         createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, float> img(width, height);
     
+    ...
+    
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createTiffImage(img, tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
+
+    \deprecatedUsage{createTiffImage}
     \code
     vigra::BImage img(width, height);
     
@@ -1053,16 +1160,14 @@ struct CreateTiffImage;
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
-    
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createTiffImage)
 
@@ -1082,6 +1187,13 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
     createTiffImage(src.first, src.second, src.third, tiff);
 }
 
+template <class T, class S>
+inline void
+createTiffImage(MultiArrayView<2, T, S> const & src, TiffImage * tiff)
+{
+    createTiffImage(srcImageRange(src), tiff);
+}
+
 /********************************************************/
 /*                                                      */
 /*                createScalarTiffImage                 */
@@ -1092,11 +1204,10 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
 
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, short, int, float, or double).
-    This function uses accessors to read the data.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor>
@@ -1105,7 +1216,17 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
                   Accessor a)
     }
     \endcode
-
+    
+    \deprecatedAPI{createScalarTiffImage}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class ImageIterator, class Accessor>
+        TiffImage *
+        createScalarTiffImage(ImageIterator upperleft, ImageIterator lowerright, 
+                  Accessor a)
+    }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1114,14 +1235,27 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
         createScalarTiffImage(triple<ImageIterator, ImageIterator, Accessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
-    
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, float> img(width, height);
+    ...
+   
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createScalarTiffImage(img, tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
+
+    \deprecatedUsage{createScalarTiffImage}
     \code
     vigra::BImage img(width, height);
-    
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
@@ -1130,16 +1264,14 @@ createTiffImage(triple<ImageIterator, ImageIterator, Accessor> src, TiffImage * 
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
-    
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     Accessor accessor;
                            
     accessor(upperleft);   // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createScalarTiffImage)
 
@@ -1499,13 +1631,10 @@ struct CreateTiffImage<double>
 
     Type and size of the TiffImage are determined by the input image 
     (may be one of unsigned char, int, float, or double).
-    This function uses \ref RGBAccessor to read the data. A
-    RGBImageIterator is an iterator that is associated with a
-    RGBAccessor.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
         template <class RGBImageIterator, class RGBAccessor>
@@ -1514,7 +1643,17 @@ struct CreateTiffImage<double>
                    RGBAccessor a)
                 }
     \endcode
-
+    
+    \deprecatedAPI{createRGBTiffImage}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        template <class RGBImageIterator, class RGBAccessor>
+        TiffImage *
+        createRGBTiffImage(RGBImageIterator upperleft, RGBImageIterator lowerright,
+                   RGBAccessor a)
+                }
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1523,14 +1662,27 @@ struct CreateTiffImage<double>
         createRGBTiffImage(triple<RGBImageIterator, RGBImageIterator, RGBAccessor> src)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/tiff.hxx\>
+    <b>\#include</b> \<vigra/tiff.hxx\><br/>
+    Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<unsigned char> > img(width, height);
+    ...
     
+    TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
+
+    createRGBTiffImage(img, tiff);
+
+    TIFFClose(tiff);   // implicitly writes the image to the disk
+    \endcode
+
+    \deprecatedUsage{createRGBTiffImage}
     \code
     vigra::BRGBImage img(width, height);
-    
     ...
     
     TiffImage * tiff = TIFFOpen(("tiffimage.tiff", "w");
@@ -1539,9 +1691,7 @@ struct CreateTiffImage<double>
 
     TIFFClose(tiff);   // implicitly writes the image to the disk
     \endcode
-    
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft;
     RGBAccessor accessor;
@@ -1550,7 +1700,7 @@ struct CreateTiffImage<double>
     accessor.green(upperleft);   // result written into TiffImage
     accessor.blue(upperleft);    // result written into TiffImage
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createRGBTiffImage)
 

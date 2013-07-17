@@ -45,6 +45,7 @@
 #include "labelvolume.hxx"
 #include "pixelneighborhood.hxx"
 #include "voxelneighborhood.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra
 {
@@ -192,48 +193,7 @@ localMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
 
     if (allowExtremaAtBorder)
     {
-        throw std::runtime_error("not implemented!");
-        /*
-        SrcIterator is = sul;
-        DestIterator id = dul;
-
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(x, 0, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(0,1);
-        id = dul + Diff2D(0,1);
-
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(0, y, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(w-1,1);
-        id = dul + Diff2D(w-1,1);
-
-        for(y=1; y<h-1; ++y, ++is.y, ++id.y)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(w-1, y, w, h)))
-            da.set(marker, id);
-        }
-
-        is = sul + Diff2D(0,h-1);
-        id = dul + Diff2D(0,h-1);
-
-        for(x=0; x<w; ++x, ++is.x, ++id.x)
-        {
-            if(isLocalExtremum(is, sa, neighborhood, threshold, compare,
-                        isAtImageBorder(x, h-1, w, h)))
-            da.set(marker, id);
-        }
-    */
+        throw std::runtime_error("Not implemented (use localMinima() or localMaxima() instead).");
     }
 
     w -= 2;
@@ -509,77 +469,6 @@ extendedLocalMinMax3D(SrcIterator sul, SrcShape shp, SrcAccessor sa,
     }
 }
 
-template <class SrcIterator, class SrcAccessor,
-          class DestIterator, class DestAccessor, class DestValue,
-          class Neighborhood, class Compare, class Equal>
-void
-extendedLocalMinMaxOld(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
-            DestIterator dul, DestAccessor da, DestValue marker,
-            Neighborhood /*neighborhood*/,
-            Compare compare, Equal equal, 
-            typename SrcAccessor::value_type threshold,
-            bool allowExtremaAtBorder = false)
-{
-    typedef typename SrcAccessor::value_type SrcType;
-
-    int w = slr.x - sul.x;
-    int h = slr.y - sul.y;
-
-    int i,x,y;
-
-    BasicImage<int> labels(w,h);
-
-    int number_of_regions =
-        labelImage(sul, slr, sa, labels.upperLeft(), labels.accessor(),
-                   (Neighborhood::DirectionCount == 8), equal);
-
-    // assume that a region is a extremum until the opposite is proved
-    std::vector<unsigned char> isExtremum(number_of_regions+1, (unsigned char)1);
-
-    BasicImage<int>::traverser ly = labels.upperLeft();
-
-    for(y=0; y<h; ++y, ++sul.y, ++ly.y)
-    {
-        SrcIterator  sx = sul;
-        BasicImage<int>::traverser lx(ly);
-
-        for(x=0; x<w; ++x, ++sx.x, ++lx.x)
-        {
-            int lab = *lx;
-            SrcType v = sa(sx);
-            if(x == 0 || y == 0 || x == w-1 || y == h-1 || !compare(v, threshold))
-            {
-                // mark all regions that touch the image border as non-extremum
-                // likewise for all pixels that don't exceed the threshold
-                isExtremum[lab] = 0;
-                continue;
-            }
-
-            NeighborhoodCirculator<SrcIterator, Neighborhood> sc(sx);
-            NeighborhoodCirculator<BasicImage<int>::traverser, Neighborhood> lc(lx);
-            for(i=0; i<Neighborhood::DirectionCount; ++i, ++sc, ++lc)
-            {
-                if(lab != *lc && compare(sa(sc),v))
-                    isExtremum[lab] = 0;
-            }
-
-        }
-    }
-
-    ly = labels.upperLeft();
-    for(y=0; y<h; ++y, ++dul.y, ++ly.y)
-    {
-        DestIterator  xd = dul;
-        BasicImage<int>::Iterator lx(ly);
-
-        for(x=0; x<w; ++x, ++xd.x, ++lx.x)
-        {
-            if(isExtremum[*lx])
-                da.set(marker, xd);
-        }
-    }
-}
-
 } // namespace detail
 
 
@@ -591,13 +480,13 @@ extendedLocalMinMaxOld(SrcIterator sul, SrcIterator slr, SrcAccessor sa,
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h), minima(w,h);
+    MultiArray<2, unsigned char> src(w,h), minima(w,h);
     ... // fill src
 
     // use 4-neighborhood, allow minima at the image border, 
     // and discard those where the gray value is not below 5
-    vigra::localMinima(srcImageRange(src), destImage(minima),
-                       vigra::LocalMinmaxOptions().neighborhood(4).allowAtBorder().threshold(5));
+    localMinima(src, minima,
+                LocalMinmaxOptions().neighborhood(4).allowAtBorder().threshold(5));
 
     \endcode
 */
@@ -627,12 +516,19 @@ class LocalMinmaxOptions
             The value '0' indicates direct neighborhood (i.e. 4-neighborhood 
             in 2D, 6-neighborhood in 3D, 2*N neighborhood in N-D), the value '1'
             indicates indirect neighborhood (i.e. 8-neighborhood in 2D, 
-            26-neighborhood in 3D, 3<sup>N</sup>-1 neighborhood in N-D). The specific number 
-            of neighbors for the desired dimension can also be used.
+            26-neighborhood in 3D, 3<sup>N</sup>-1 neighborhood in N-D). The appropriate 
+            number of neighbors for the desired dimension and the constants
+            <tt>DirectNeighborhood</tt> and <tt>IndirectNeighborhood</tt> can be used as well.
         
             Default: 1 (indirect neighborhood)
          */
     LocalMinmaxOptions & neighborhood(unsigned int n)
+    {
+        neigh = n;
+        return *this;
+    }
+    
+    LocalMinmaxOptions & neighborhood(NeighborhoodType n)
     {
         neigh = n;
         return *this;
@@ -695,9 +591,6 @@ class LocalMinmaxOptions
 
 /** \brief Find local minima in an image or multi-dimensional array.
 
-    Note: the function is not yet implemented for arbitrary dimensional
-    arrays, but see \ref localMinima3D() for 3D.
-    
     By default, minima are defined as points which are not 
     at the array border and whose value is lower than the value 
     of all indirect neighbors (i.e. 8-neighbors in 2D, 
@@ -732,7 +625,8 @@ class LocalMinmaxOptions
     }
     \endcode
 
-    pass image iterators explicitly:
+    \deprecatedAPI{localMinima}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -743,7 +637,6 @@ class LocalMinmaxOptions
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -755,6 +648,7 @@ class LocalMinmaxOptions
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -763,47 +657,47 @@ class LocalMinmaxOptions
     Namespace: vigra
 
     \code
-    // 3D examples using MultiArray
-    vigra::MultiArrayShape<3>::type shape(w,h,d);
-    vigra::MultiArray<3, unsigned char> src(shape), minima(shape);
+    // 3D examples (other dimensions work likewise)
+    Shape3 shape(w,h,d);
+    MultiArray<3, unsigned char> src(shape), minima(shape);
     ... // fill src
 
     // use default parameterisation
-    vigra::localMinima(src, minima);
+    localMinima(src, minima);
 
     // reset destination image
     minima = 0;
 
-    // use 6-neighborhood and allow minima at the image border
-    vigra::localMinima(src, minima,
-                       vigra::LocalMinmaxOptions().neighborhood(6).allowAtBorder());
+    // use direct neighborhood (i.e. 6-neighborhood since we are in 3D) 
+    // and allow minima at the image border
+    localMinima(src, minima,
+                LocalMinmaxOptions().neighborhood(0).allowAtBorder());
     \endcode
 
+    \deprecatedUsage{localMinima}
     \code
     // 2D examples using BasicImage
-    vigra::BImage src(w,h), minima(w,h);
+    BImage src(w,h), minima(w,h);
     ... // fill src
 
     // use default parameterisation
-    vigra::localMinima(srcImageRange(src), destImage(minima));
+    localMinima(srcImageRange(src), destImage(minima));
 
     // reset destination image
     minima = 0;
 
     // use 4-neighborhood and allow minima at the image border
-    vigra::localMinima(srcImageRange(src), destImage(minima),
-                       vigra::LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+    localMinima(srcImageRange(src), destImage(minima),
+                       LocalMinmaxOptions().neighborhood(4).allowAtBorder());
 
     // reset destination image
     minima = 0;
 
     // allow extended minima (minimal plateaus) and use value '255' as a marker
-    vigra::localMinima(srcImageRange(src), destImage(minima),
-                       vigra::LocalMinmaxOptions().allowPlateaus().markWith(255));
+    localMinima(srcImageRange(src), destImage(minima),
+                       LocalMinmaxOptions().allowPlateaus().markWith(255));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -815,6 +709,7 @@ class LocalMinmaxOptions
 
     u < u
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void localMinima)
 
@@ -960,10 +855,7 @@ localMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Find local minima in a 3D multi array.
 
- By default, minima are defined as points which are not
- at the array border and whose value is lower than the value
- of all indirect neighbors.
- The detected points will be marked. See localMinima() for more details.
+    Deprecated, use localMinima() instead.
 
  */
 doxygen_overloaded_function(template <...> void localMinima3D)
@@ -1013,7 +905,7 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               NeighborCode3DSix neighborhood)
 {
     localMinima3D(src.first, src.second, src.third, dest.first, dest.second,
-                marker, neighborhood);
+                  marker, neighborhood);
 }
 
 template<class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1025,7 +917,33 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
               NeighborCode3DTwentySix neighborhood)
 {
     localMinima3D(src.first, src.second, src.third, dest.first, dest.second,
-                marker, neighborhood);
+                  marker, neighborhood);
+}
+
+template<class T1, class S1,
+         class T2, class S2,
+         class DestValue,
+         class Neighborhood>
+inline void 
+localMinima3D(MultiArrayView<3, T1, S1> const & src,
+              MultiArrayView<3, T2, S2> dest,
+              DestValue marker,
+              Neighborhood neighborhood)
+{
+    localMinima3D(srcMultiArrayRange(src), destMultiArray(dest),
+                  marker, neighborhood);
+}
+
+template<class T1, class S1,
+         class T2, class S2,
+         class DestValue>
+inline void
+localMinima3D(MultiArrayView<2, T1, S1> const & src,
+              MultiArrayView<2, T2, S2> dest,
+              DestValue marker)
+{
+    localMinima3D(srcMultiArrayRange(src), destMultiArray(dest),
+                  marker, NeighborCode3DSix());
 }
 
 /**************************************************************************/
@@ -1038,9 +956,6 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
 /** \brief Find local maxima in an image or multi-dimensional array.
 
-    Note: the function is not yet implemented for arbitrary dimensional
-    arrays, but see \ref localMaxima3D() for 3D.
-    
     By default, maxima are defined as points which are not 
     at the array border and whose value is higher than the value 
     of all indirect neighbors (i.e. 8-neighbors in 2D, 
@@ -1075,7 +990,8 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     }
     \endcode
 
-    pass image iterators explicitly:
+    \deprecatedAPI{localMaxima}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1086,7 +1002,6 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1098,6 +1013,7 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                     LocalMinmaxOptions const & options = LocalMinmaxOptions());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1106,47 +1022,47 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     Namespace: vigra
 
     \code
-    // 3D examples using MultiArray
-    vigra::MultiArrayShape<3>::type shape(w,h,d);
-    vigra::MultiArray<3, unsigned char> src(shape), maxima(shape);
+    // 3D examples (other dimensions work likewise)
+    Shape3 shape(w,h,d);
+    MultiArray<3, unsigned char> src(shape), maxima(shape);
     ... // fill src
 
     // use default parameterisation
-    vigra::localMaxima(src, maxima);
+    localMaxima(src, maxima);
 
     // reset destination image
     maxima = 0;
 
-    // use 6-neighborhood and allow maxima at the image border
-    vigra::localMaxima(src, maxima,
-                       vigra::LocalMinmaxOptions().neighborhood(6).allowAtBorder());
+    // use direct neighborhood (i.e. 6-neighborhood sine we are in 3D)
+    // and allow maxima at the image border
+    localMaxima(src, maxima,
+                LocalMinmaxOptions().neighborhood(0).allowAtBorder());
     \endcode
 
+    \deprecatedUsage{localMaxima}
     \code
     // 2D examples using BasicImage
-    vigra::BImage src(w,h), maxima(w,h);
+    BImage src(w,h), maxima(w,h);
     ... // fill src
 
     // use default parameterisation
-    vigra::localMaxima(srcImageRange(src), destImage(maxima));
+    localMaxima(srcImageRange(src), destImage(maxima));
 
     // reset destination image
     maxima = 0;
 
     // use 4-neighborhood and allow maxima at the image border
-    vigra::localMaxima(srcImageRange(src), destImage(maxima),
-                       vigra::LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+    localMaxima(srcImageRange(src), destImage(maxima),
+                       LocalMinmaxOptions().neighborhood(4).allowAtBorder());
 
     // reset destination image
     maxima = 0;
 
     // allow extended maxima (maximal plateaus) and use value '255' as a marker
-    vigra::localMaxima(srcImageRange(src), destImage(maxima),
-                       vigra::LocalMinmaxOptions().allowPlateaus().markWith(255));
+    localMaxima(srcImageRange(src), destImage(maxima),
+                       LocalMinmaxOptions().allowPlateaus().markWith(255));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -1158,6 +1074,7 @@ localMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
     u < u
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void localMaxima)
 
@@ -1302,10 +1219,7 @@ localMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Find local maxima in a 3D multi array.
 
- By default, maxima are defined as points which are not
- at the array border and whose value is higher than the value
- of all indirect neighbors.
- The detected points will be marked as specified. See localMaxima() for mor details.
+    Deprecated, use \ref localMaxima() instead.
  */
 doxygen_overloaded_function(template <...> void localMaxima3D)
 
@@ -1350,8 +1264,8 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 template<class SrcIterator, class SrcShape, class SrcAccessor,
          class DestIterator, class DestAccessor, class DestValue>
 inline void 
-localMaxima3D(vigra::triple<SrcIterator, SrcShape, SrcAccessor> src,
-              std::pair<DestIterator, DestAccessor> dest,
+localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
+              pair<DestIterator, DestAccessor> dest,
               DestValue marker)
 {
     localMaxima3D(src.first, src.second, src.third, dest.first, dest.second,
@@ -1370,6 +1284,33 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                 marker, neighborhood);
 }
 
+template<class T1, class S1,
+         class T2, class S2,
+         class DestValue,
+         class Neighborhood>
+inline void 
+localMaxima3D(MultiArrayView<3, T1, S1> const & src,
+              MultiArrayView<3, T2, S2> dest,
+              DestValue marker,
+              Neighborhood neighborhood)
+{
+    localMaxima3D(srcMultiArrayRange(src), destMultiArray(dest),
+                  marker, neighborhood);
+}
+
+template<class T1, class S1,
+         class T2, class S2,
+         class DestValue>
+inline void 
+localMaxima3D(MultiArrayView<3, T1, S1> const & src,
+              MultiArrayView<3, T2, S2> dest,
+              DestValue marker)
+{
+    localMaxima3D(srcMultiArrayRange(src), destMultiArray(dest),
+                  marker, NeighborCode3DSix());
+}
+
+
 /**************************************************************************/
 
 /********************************************************/
@@ -1378,46 +1319,39 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** \brief Find local minimal regions in an image or volume.
+/** \brief Find local minimal regions (plateaus) in an array.
 
-    Note: the function is not yet implemented for arbitrary dimensional
-    arrays, but see \ref extendedLocalMinima3D() for 3D.
+    This function is only needed when you want to pass a non-standard equality
+    predicate via <tt>EqualityFunctor</tt>. Otherwise (i.e. when equality
+    is defined by the '==' operator of the source value type <tt>T1</tt>),
+    you can simply call \ref localMinima() with the option 
+    <tt>LocalMinmaxOptions::allowPlateaus()</tt>.
     
-    This function finds regions of uniform pixel value
-    whose neighboring regions are all have smaller values
-    (minimal plateaus of arbitrary size). By default, the pixels
-    in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
-    with tolerance, one can allow for plateaus that are not quite constant
-    (this is often necessary with float pixel values). Pass
-    \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode
-    to determine the neighborhood where pixel values are compared.
-
-    Minimal regions are
-    marked in the destination image with the given marker value
-    (default is 1), all other destination pixels remain unchanged.
-    <TT>SrcAccessor::value_type</TT> must be equality-comparable and
-    less-comparable. A pixel or region touching the image border will 
-    never be marked as minimum or minimal plateau. Use localMinima() with the 
-    appropriate options if you need that functionality. Likewise if you want to
-    apply a threshold onl the fly. In fact, all functionality
-    except for 'equality with tolerance' can be accessed via that function in
-    a more readable way, so localMinima() should be preferred.
-    The function uses accessors.
+    This function finds regions of uniform pixel values
+    whose neighboring regions all have larger values, i.e. it finds minimal 
+    plateaus of arbitrary size (including size 1). The <tt>EqualityFunctor</tt>
+    determines when pixels are considered equal, so that one can allow 
+    for plateaus that are not quite constant (this is often necessary 
+    with float pixel values). Otherwise, the functionality is identical to 
+    \ref localMinima().
 
     <b> Declarations:</b>
 
-    use 3-dimensional arrays:
+    use arbitrary-dimensional arrays:
     \code
     namespace vigra {
-        template <class T1, class C1, class T2, class C2,
-                  class Neighborhood>
-        void
-        extendedLocalMinima(MultiArrayView<3, T1, C1> src,
-                            MultiArrayView<3, T2, C2> dest,
-                            LocalMinmaxOptions const & options = LocalMinmaxOptions());
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2,
+                  class EqualityFunctor>
+        unsigned int
+        extendedLocalMinima(MultiArrayView<N, T1, S1> const & src,
+                            MultiArrayView<N, T2, S2> dest,
+                            EqualityFunctor const & equal,
+                            LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
-    pass image iterators explicitly:
+    \deprecatedAPI{extendedLocalMinima}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1431,9 +1365,19 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             DestValue marker = NumericTraits<DestValue>::one(),
                             Neighborhood neighborhood = EightNeighborCode(),
                             EqualityFunctor equal = EqualityFunctor());
+                            
+        template<class SrcIterator, class SrcShape, class SrcAccessor,
+                 class DestIterator, class DestAccessor,
+                 class Neighborhood = NeighborCode3DSix,
+                 class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+        void 
+        extendedLocalMinima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                              DestIterator dul, DestAccessor da,
+                              typename DestAccessor::value_type marker,
+                              Neighborhood neighborhood = Neighborhood(),
+                              EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1448,8 +1392,18 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             DestValue marker = NumericTraits<DestValue>::one(),
                             Neighborhood neighborhood = EightNeighborCode(),
                             EqualityFunctor equal = EqualityFunctor());
+                            
+        template<class SrcIterator, class SrcAccessor, class SrcShape,
+                 class DestIterator, class DestAccessor, 
+                 class Neighborhood>
+        void 
+        extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                              pair<DestIterator, DestAccessor> dest,
+                              typename DestAccessor::value_type marker,
+                              Neighborhood neighborhood);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -1457,7 +1411,35 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     Namespace: vigra
 
     \code
+    // define an equality functor
+    template <class T>
+    struct EqualWithToleranceFunctor
+    {
+        EqualWithToleranceFunctor(T tolerance)
+        : t(tolerance)
+        {}
 
+        bool operator()(T l, T r) const
+        {
+            return abs(l-r) <= t;
+        }
+
+        T t;
+    };
+
+    MultiArray<2, unsigned char> src(w,h), minima(w,h);
+
+    // allow plateaus
+    localMinima(src, minima, LocalMinmaxOptions().allowPlateaus());
+
+    // reset result image
+    minima.init(0);
+    // allow plateaus with tolerance (grayvalues may differ by one)
+    extendedLocalMinima(src, minima, EqualWithToleranceFunctor<unsigned char>(1));
+    \endcode
+
+    \deprecatedUsage{extendedLocalMinima}
+    \code
     // optional: define an equality functor
     template <class T>
     struct EqualWithToleranceFunctor
@@ -1468,28 +1450,26 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
         bool operator()(T l, T r) const
         {
-            return vigra::abs(l-r) <= t;
+            return abs(l-r) <= t;
         }
 
         T t;
     };
 
-    vigra::BImage src(w,h), minima(w,h);
+    BImage src(w,h), minima(w,h);
 
     // init destiniation image
     minima.init(0);
 
-    vigra::extendedLocalMinima(srcImageRange(src), destImage(minima));
+    extendedLocalMinima(srcImageRange(src), destImage(minima));
 
     // allow plateaus with tolerance
     minima.init(0);
-    vigra::extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
+    extendedLocalMinima(srcImageRange(src), destImage(minima), 1.0,
                                FourNeighborCode(),
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -1507,7 +1487,7 @@ localMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void extendedLocalMinima)
 
@@ -1622,13 +1602,7 @@ extendedLocalMinima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Find local minimal regions in a volume.
 
- This function finds regions of uniform pixel value
- whose neighboring regions are all have smaller values
- (minimal plateaus of arbitrary size). By default, the pixels
- in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
- with tolerance, one can allow for plateaus that are not quite constant
- (this is often necessary with float pixel values). Pass the neighborhood
- where pixel values are compared. See extendedLocalMinima() for more details.
+    See \ref extendedLocalMinima().
 
 */
 doxygen_overloaded_function(template <...> void extendedLocalMinima3D)
@@ -1696,46 +1670,37 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 /*                                                      */
 /********************************************************/
 
-/** \brief Find local maximal regions in an image or volume.
+/** \brief Find local maximal regions in an array.
 
-    Note: the function is not yet implemented for arbitrary dimensional
-    arrays, but see \ref extendedLocalMaxima3D() for 3D.
+    This function is only needed when you want to pass a non-standard equality
+    predicate via <tt>EqualityFunctor</tt>. Otherwise (i.e. when equality
+    is defined by the '==' operator of the source value type <tt>T1</tt>),
+    you can simply call \ref localMaxima() with the option 
+    <tt>LocalMinmaxOptions::allowPlateaus()</tt>.
     
-    This function finds regions of uniform pixel value
-    whose neighboring regions are all have smaller values
-    (maximal plateaus of arbitrary size). By default, the pixels
-    in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
-    with tolerance, one can allow for plateaus that are not quite constant
-    (this is often necessary with float pixel values). Pass
-    \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode
-    to determine the neighborhood where pixel values are compared. 
-
-    Maximal regions are
-    marked in the destination image with the given marker value
-    (default is 1), all other destination pixels remain unchanged.
-    <TT>SrcAccessor::value_type</TT> must be equality-comparable and
-    less-comparable. A pixel or region touching the image border will 
-    never be marked as maximum or maximal plateau. Use localMaxima() with the 
-    appropriate options if you need that functionality. Likewise if you want to
-    apply a threshold onl the fly. In fact, all functionality
-    except for 'equality with tolerance' can be accessed via that function in
-    a more readable way, so localMaxima() should be preferred.
-    The function uses accessors.
+    This function finds regions of uniform pixel values
+    whose neighboring regions all have smaller values, i.e. it finds maximal 
+    plateaus of arbitrary size (including size 1). The <tt>EqualityFunctor</tt>
+    determines when pixels are considered equal, so that one can allow 
+    for plateaus that are not quite constant (this is often necessary 
+    with float pixel values). Otherwise, the functionality is identical to 
+    \ref localMaxima().
 
     <b> Declarations:</b>
 
-    use 3-dimensional arrays:
+    use arbitrary-dimensional arrays:
     \code
     namespace vigra {
-        template <class T1, class C1, class T2, class C2,
-                  class Neighborhood>
-        void
-        extendedLocalMaxima(MultiArrayView<3, T1, C1> src,
-                            MultiArrayView<3, T2, C2> dest,
-                            LocalMinmaxOptions const & options = LocalMinmaxOptions());
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        unsigned int // return number of maxima
+        extendedLocalMaxima(MultiArrayView<N, T1, S1> const & src,
+                            MultiArrayView<N, T2, S2> dest,
+                            LocalMinmaxOptions options = LocalMinmaxOptions());
     \endcode
 
-    pass image iterators explicitly:
+    \deprecatedAPI{extendedLocalMaxima}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1749,9 +1714,19 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             DestValue marker = NumericTraits<DestValue>::one(),
                             Neighborhood neighborhood = EightNeighborCode(),
                             EqualityFunctor equal = EqualityFunctor())
+                            
+        template<class SrcIterator, class SrcShape, class SrcAccessor,
+                 class DestIterator, class DestAccessor,
+                 class Neighborhood = NeighborCode3DSix,
+                 class EqualityFunctor = std::equal_to<typename SrcAssessor::value_type> >
+        void 
+        extendedLocalMaxima3D(SrcIterator sul, SrcShape slr, SrcAccessor sa,
+                              DestIterator dul, DestAccessor da,
+                              typename DestAccessor::value_type marker,
+                              Neighborhood neighborhood = Neighborhood(),
+                              EqualityFunctor equal = EqualityFunctor());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1766,14 +1741,53 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
                             DestValue marker = NumericTraits<DestValue>::one(),
                             Neighborhood neighborhood = EightNeighborCode(),
                             EqualityFunctor equal = EqualityFunctor())
+                            
+        template<class SrcIterator, class SrcAccessor, class SrcShape,
+                 class DestIterator, class DestAccessor, 
+                 class Neighborhood>
+        void 
+        extendedLocalMaxima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
+                              pair<DestIterator, DestAccessor> dest,
+                              typename DestAccessor::value_type marker,
+                              Neighborhood neighborhood);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/localminmax.hxx\><br>
     Namespace: vigra
 
+    \code
+    // define an equality functor
+    template <class T>
+    struct EqualWithToleranceFunctor
+    {
+        EqualWithToleranceFunctor(T tolerance)
+        : t(tolerance)
+        {}
+
+        bool operator()(T l, T r) const
+        {
+            return abs(l-r) <= t;
+        }
+
+        T t;
+    };
+
+    MultiArray<2, unsigned char> src(w,h), maxima(w,h);
+
+    // allow plateaus
+    localMaxima(src, maxima, LocalMinmaxOptions().allowPlateaus());
+
+    // reset result image
+    maxima.init(0);
+    // allow plateaus with tolerance (grayvalues may differ by one)
+    extendedLocalMaxima(src, maxima, EqualWithToleranceFunctor<unsigned char>(1));
+    \endcode
+
+    \deprecatedUsage{extendedLocalMaxima}
     \code
 
     // optional: define an equality functor
@@ -1786,28 +1800,26 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
 
         bool operator()(T l, T r) const
         {
-            return vigra::abs(l-r) <= t;
+            return abs(l-r) <= t;
         }
 
         T t;
     };
 
-    vigra::BImage src(w,h), maxima(w,h);
+    BImage src(w,h), maxima(w,h);
 
     // init destiniation image
     maxima.init(0);
 
-    vigra::extendedLocalMaxima(srcImageRange(src), destImage(maxima));
+    extendedLocalMaxima(srcImageRange(src), destImage(maxima));
 
     // allow plateaus with tolerance
     maxima.init(0);
-    vigra::extendedLocalMaxima(srcImageRange(src), destImage(maxima), 1.0,
+    extendedLocalMaxima(srcImageRange(src), destImage(maxima), 1.0,
                                FourNeighborCode(),
                                EqualWithToleranceFunctor<unsigned char>(1));
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -1825,7 +1837,7 @@ extendedLocalMinima3D(triple<SrcIterator, SrcShape, SrcAccessor> src,
     DestValue marker;
     dest_accessor.set(marker, dest_upperleft);
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void extendedLocalMaxima)
 
@@ -1938,13 +1950,7 @@ extendedLocalMaxima(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Find local maximal regions in 3D multi array.
 
- This function finds regions of uniform pixel value
- whose neighboring regions are all have smaller values
- (maximal plateaus of arbitrary size). By default, the pixels
- in a plateau have exactly identical values. By passing an <tt>EqualityFunctor</tt>
- with tolerance, one can allow for plateaus that are not quite constant
- (this is often necessary with float pixel values). Pass
- the neighborhood where pixel values are compared. See extendedLocalMaxima() for more details.
+    See \ref extendedLocalMaxima().
  */
 
 doxygen_overloaded_function(template <...> void extendedLocalMaxima3D)

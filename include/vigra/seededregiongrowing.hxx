@@ -44,6 +44,7 @@
 #include "stdimagefunctions.hxx"
 #include "pixelneighborhood.hxx"
 #include "bucket_queue.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -184,7 +185,7 @@ enum SRGType {
 
     This algorithm implements seeded region growing as described in
 
-    R. Adams, L. Bischof: "<em> Seeded Region Growing</em>", IEEE Trans. on Pattern
+    R. Adams, L. Bischof: <em>"Seeded Region Growing"</em>, IEEE Trans. on Pattern
     Analysis and Maschine Intelligence, vol 16, no 6, 1994, and
 
     Ullrich K&ouml;the:
@@ -271,7 +272,26 @@ enum SRGType {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TS, class AS,
+                  class T2, class S2,
+                  class RegionStatisticsArray, class Neighborhood>
+        TS
+        seededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, TS, AS> const & seeds,
+                            MultiArrayView<2, T2, S2>         labels,
+                            RegionStatisticsArray &           stats,
+                            SRGType                           srgType = CompleteGrow, 
+                            Neighborhood                      n = FourNeighborCode(),
+                            double                            max_cost = NumericTraits<double>::max());
+    }
+    \endcode
+
+    \deprecatedAPI{seededRegionGrowing}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -288,7 +308,6 @@ enum SRGType {
                             double max_cost = NumericTraits<double>::max());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -306,6 +325,7 @@ enum SRGType {
                             double max_cost = NumericTraits<double>::max());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -314,6 +334,28 @@ enum SRGType {
 
     Example: implementation of the voronoi tesselation
 
+    \code
+    MultiArray<2, int>      points(w,h);
+    MultiArray<2, float>    dist(x,y);
+
+    int max_region_label = 100;
+
+    // throw in some random points:
+    for(int i = 1; i <= max_region_label; ++i)
+           points(w * rand() / RAND_MAX , h * rand() / RAND_MAX) = i;
+
+    // calculate Euclidean distance transform
+    distanceTransform(points, dist, 2);
+
+    // init statistics functor
+    ArrayOfRegionStatistics<SeedRgDirectValueFunctor<float> >  stats(max_region_label);
+
+    // find voronoi region of each point (the point image is overwritten with the 
+    // voronoi region labels)
+    seededRegionGrowing(dist, points, points, stats);
+    \endcode
+
+    \deprecatedUsage{seededRegionGrowing}
     \code
     vigra::BImage points(w,h);
     vigra::FImage dist(x,y);
@@ -339,9 +381,7 @@ enum SRGType {
     vigra:: seededRegionGrowing(srcImageRange(dist), srcImage(points),
                                destImage(points), stats);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_upperleft, src_lowerright;
     SeedImageIterator seed_upperleft;
@@ -366,6 +406,7 @@ enum SRGType {
     // set result
     dest_accessor.set(seed_accessor(seed_upperleft), dest_upperleft);
     \endcode
+    \deprecatedEnd
 
     Further requirements are determined by the <TT>RegionStatisticsArray</TT>.
 */
@@ -590,30 +631,12 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                     RegionStatisticsArray & stats,
                     SRGType srgType, 
                     Neighborhood n,
-                    double max_cost)
+                    double max_cost = NumericTraits<double>::max())
 {
     return seededRegionGrowing(img1.first, img1.second, img1.third,
                                 img3.first, img3.second,
                                 img4.first, img4.second,
                                 stats, srgType, n, max_cost);
-}
-
-template <class SrcIterator, class SrcAccessor,
-          class SeedImageIterator, class SeedAccessor,
-          class DestIterator, class DestAccessor,
-          class RegionStatisticsArray, class Neighborhood>
-inline typename SeedAccessor::value_type
-seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
-                    pair<SeedImageIterator, SeedAccessor> img3,
-                    pair<DestIterator, DestAccessor> img4,
-                    RegionStatisticsArray & stats,
-                    SRGType srgType, 
-                    Neighborhood n)
-{
-    return seededRegionGrowing(img1.first, img1.second, img1.third,
-                                img3.first, img3.second,
-                                img4.first, img4.second,
-                                stats, srgType, n, NumericTraits<double>::max());
 }
 
 template <class SrcIterator, class SrcAccessor,
@@ -648,6 +671,70 @@ seededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> img1,
                             img4.first, img4.second,
                             stats, CompleteGrow);
 }
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType, 
+                    Neighborhood n,
+                    double max_cost = NumericTraits<double>::max())
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, srgType, n, max_cost);
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats,
+                    SRGType srgType)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, srgType, FourNeighborCode());
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline TS
+seededRegionGrowing(MultiArrayView<2, T1, S1> const & img1,
+                    MultiArrayView<2, TS, AS> const & img3,
+                    MultiArrayView<2, T2, S2> img4,
+                    RegionStatisticsArray & stats)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing(): shape mismatch between input and output.");
+    return seededRegionGrowing(srcImageRange(img1),
+                               srcImage(img3),
+                               destImage(img4),
+                               stats, CompleteGrow);
+}
+
+/********************************************************/
+/*                                                      */
+/*                fastSeededRegionGrowing               */
+/*                                                      */
+/********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
@@ -833,8 +920,27 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         std::ptrdiff_t bucket_count = 256)
 {
     return fastSeededRegionGrowing(src.first, src.second, src.third,
-                                    dest.first, dest.second,
-                                    stats, srgType, n, max_cost, bucket_count);
+                                   dest.first, dest.second,
+                                   stats, srgType, n, max_cost, bucket_count);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline T2
+fastSeededRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        RegionStatisticsArray & stats,
+                        SRGType srgType, 
+                        Neighborhood n,
+                        double max_cost,
+                        std::ptrdiff_t bucket_count = 256)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "fastSeededRegionGrowing(): shape mismatch between input and output.");
+    return fastSeededRegionGrowing(srcImageRange(src),
+                                   destImage(dest),
+                                   stats, srgType, n, max_cost, bucket_count);
 }
 
 /********************************************************/
@@ -852,11 +958,6 @@ fastSeededRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b>\#include</b> \<vigra/seededregiongrowing.hxx\><br>
     Namespace: vigra
-
-
-    <b> Required Interface:</b>
-
-    no requirements
 */
 template <class Value>
 class SeedRgDirectValueFunctor

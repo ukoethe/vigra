@@ -58,8 +58,8 @@
 #include <cstring>
 #include <cstddef>
 #include <vector> 
-#include "vigra/multi_array.hxx"
-#include "vigra/array_vector.hxx"
+#include "multi_array.hxx"
+#include "array_vector.hxx"
 
 namespace vigra {
  
@@ -180,7 +180,7 @@ class SIFImportInfo
     \code
     namespace vigra {
         void 
-        readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
+        readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
     }
     \endcode
     
@@ -199,10 +199,21 @@ class SIFImportInfo
     readSIF(info, in); 
     \endcode
 */
-VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array);
+VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float> array);
+
+template <unsigned int N, class T, class S>
+void readSIF(const SIFImportInfo &info, MultiArrayView<N, T, S> array)
+{
+    vigra_precondition(false, "readSIF(): Destination array must be MultiArrayView<3, float>.");
+}
+
+inline void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, UnstridedArrayTag> array)
+{
+    readSIF(info, MultiArrayView<3, float>(array));
+}
 
 /**
-    \brief Read parts of the image data from an Andor SIF file specified with an SIFImportinfo object
+    \brief Read parts of the image data from an Andor SIF file specified with an SIFImportInfo object
     and write them into the MultiArray array.
     
     \code
@@ -215,7 +226,18 @@ VIGRA_EXPORT void readSIF(const SIFImportInfo &info, MultiArrayView<3, float, Un
 
     \endcode
 */
-VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array);
+VIGRA_EXPORT void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float> array);
+
+template <unsigned int N, class T, class S>
+void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<N, T, S> array)
+{
+    vigra_precondition(false, "readSIFBlock(): Destination array must be MultiArrayView<3, float>.");
+}
+
+inline void readSIFBlock(const SIFImportInfo &info, Shape3 offset, Shape3 shape, MultiArrayView<3, float, UnstridedArrayTag> array)
+{
+    readSIFBlock(info, offset, shape, MultiArrayView<3, float>(array));
+}
 
 VIGRA_EXPORT std::ostream& operator<<(std::ostream& os, const SIFImportInfo& info);
 

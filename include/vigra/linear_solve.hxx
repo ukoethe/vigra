@@ -1121,6 +1121,24 @@ void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const 
 }
 
     /** Solve a linear system.
+    
+        <b> Declarations:</b>
+        
+        \code
+        // use MultiArrayViews for input and output
+        template <class T, class C1, class C2, class C3>
+        bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+                         MultiArrayView<2, T, C2> const & b,
+                         MultiArrayView<2, T, C3> res, 
+                         std::string method = "QR");
+                         
+        // use TinyVector for RHS and result
+        template <class T, class C1, int N>
+        bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+                         TinyVector<T, N> const & b,
+                         TinyVector<T, N> & res, 
+                         std::string method = "QR");
+        \endcode
 
         \a A is the coefficient matrix, and the column vectors
         in \a b are the right-hand sides of the equation (so, several equations
@@ -1128,6 +1146,8 @@ void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const 
         in \a res, whose columns contain the solutions for the corresponding
         columns of \a b. The number of columns of \a A must equal the number of rows of
         both \a b and \a res, and the number of columns of \a b and \a res must match. 
+        If right-hand-side and result are specified as TinyVector, the number of columns 
+        of \a A must equal N.
         
         \a method must be one of the following:
         <DL>
@@ -1169,9 +1189,13 @@ void choleskySolve(MultiArrayView<2, T, C1> & L, MultiArrayView<2, T, C2> const 
         <b>\#include</b> \<vigra/linear_algebra.hxx\><br>
         Namespaces: vigra and vigra::linalg
      */
+doxygen_overloaded_function(template <...> bool linearSolve)
+
 template <class T, class C1, class C2, class C3>
-bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C2> &b,
-                 MultiArrayView<2, T, C3> & res, std::string method = "QR")
+bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+                 MultiArrayView<2, T, C2> const & b,
+                 MultiArrayView<2, T, C3> res, 
+                 std::string method = "QR")
 {
     typedef typename Matrix<T>::difference_type Shape;
     typedef typename Matrix<T>::view_type SubMatrix;
@@ -1227,6 +1251,16 @@ bool linearSolve(const MultiArrayView<2, T, C1> &A, const MultiArrayView<2, T, C
         vigra_precondition(false, "linearSolve(): Unknown solution method.");
     }
     return true;
+}
+
+template <class T, class C1, int N>
+bool linearSolve(MultiArrayView<2, T, C1> const & A, 
+                 TinyVector<T, N> const & b,
+                 TinyVector<T, N> & res, 
+                 std::string method = "QR")
+{
+    Shape2 shape(N, 1);
+    return linearSolve(A, MultiArrayView<2, T>(shape, b.data()), MultiArrayView<2, T>(shape, res.data()), method);
 }
 
 //@}

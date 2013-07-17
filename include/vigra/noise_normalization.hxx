@@ -49,6 +49,8 @@
 #include "linear_solve.hxx"
 #include "array_vector.hxx"
 #include "static_assert.hxx"
+#include "multi_shape.hxx"
+
 #include <algorithm>
 
 namespace vigra {
@@ -76,12 +78,12 @@ namespace vigra {
     Namespace: vigra
     
     \code
-    vigra::BImage src(w,h);
-    std::vector<vigra::TinyVector<double, 2> > result;
+    MultiArray<2, float> src(w,h);
+    std::vector<TinyVector<double, 2> > result;
     
     ...
-    vigra::noiseVarianceEstimation(srcImageRange(src), result, 
-                                  vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
+    noiseVarianceEstimation(src, result, 
+                            NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
     \endcode
 */
 class NoiseNormalizationOptions
@@ -976,7 +978,19 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1, class BackInsertable>
+        void
+        noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
+                                BackInsertable & result,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    \deprecatedAPI{noiseVarianceEstimation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -985,7 +999,6 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -995,12 +1008,27 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
                                      NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h);
+    std::vector<TinyVector<double, 2> > result;
     
+    ...
+    noiseVarianceEstimation(src, result, 
+                            NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0));
+    
+    // print the intensity / variance pairs found
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
+    \endcode
+
+    \deprecatedUsage{noiseVarianceEstimation}
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
@@ -1013,9 +1041,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     for(int k=0; k<result.size(); ++k)
         std::cout << "Intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcIterator upperleft, lowerright;
     SrcAccessor src;
@@ -1031,6 +1057,7 @@ struct noiseVarianceEstimation_can_only_work_on_scalar_images
     double intensity, variance;
     result.push_back(ResultType(intensity, variance));
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void noiseVarianceEstimation)
 
@@ -1051,12 +1078,21 @@ void noiseVarianceEstimation(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline
-void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           BackInsertable & result,
-                           NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline void
+noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     noiseVarianceEstimation(src.first, src.second, src.third, result, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+noiseVarianceEstimation(MultiArrayView<2, T1, S1> const & src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    noiseVarianceEstimation(srcImageRange(src), result, options);
 }
 
 /********************************************************/
@@ -1078,7 +1114,19 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1, class BackInsertable>
+        void
+        noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
+                                BackInsertable & result,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    \deprecatedAPI{noiseVarianceClustering}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor, class BackInsertable>
@@ -1087,7 +1135,6 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1097,12 +1144,28 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, float> src(w,h);
+    std::vector<TinyVector<double, 2> > result;
     
+    ...
+    noiseVarianceClustering(src, result, 
+                            NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                            clusterCount(15));
+    
+    // print the intensity / variance pairs representing the cluster centers
+    for(int k=0; k<result.size(); ++k)
+        std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
+    \endcode
+
+    \deprecatedUsage{noiseVarianceClustering}
     \code
     vigra::BImage src(w,h);
     std::vector<vigra::TinyVector<double, 2> > result;
@@ -1116,10 +1179,9 @@ void noiseVarianceEstimation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     for(int k=0; k<result.size(); ++k)
         std::cout << "Cluster: " << k << ", intensity: " << result[k][0] << ", estimated variance: " << result[k][1] << std::endl;
     \endcode
-
     <b> Required Interface:</b>
-    
     same as \ref noiseVarianceEstimation()
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void noiseVarianceClustering)
 
@@ -1135,12 +1197,21 @@ void noiseVarianceClustering(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 }
 
 template <class SrcIterator, class SrcAccessor, class BackInsertable>
-inline
-void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                           BackInsertable & result,
-                           NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline void
+noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     noiseVarianceClustering(src.first, src.second, src.third, result, options);
+}
+
+template <class T1, class S1, class BackInsertable>
+inline void
+noiseVarianceClustering(MultiArrayView<2, T1, S1> const & src,
+                        BackInsertable & result,
+                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    noiseVarianceClustering(srcImageRange(src), result, options);
 }
 
 /********************************************************/
@@ -1170,9 +1241,24 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     The \a options object may use all options described in \ref vigra::NoiseNormalizationOptions.
     
+    The function returns <tt>false</tt> if the noise estimation failed, so that no normalization could be performed.
+    
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                        MultiArrayView<2, T2, S2> dest,
+                                        NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+    }
+    \endcode
+    
+    \deprecatedAPI{nonparametricNoiseNormalization}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1182,7 +1268,6 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                              NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1193,12 +1278,23 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                              NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<float> > src(w,h), dest(w, h);
     
+    ...
+    nonparametricNoiseNormalization(src, dest, 
+                                    NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                    clusterCount(15));
+    \endcode
+
+    \deprecatedUsage{nonparametricNoiseNormalization}
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
@@ -1207,10 +1303,9 @@ void noiseVarianceClustering(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                            vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                            clusterCount(15));
     \endcode
-
     <b> Required Interface:</b>
-    
     same as \ref noiseVarianceEstimation()
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> bool nonparametricNoiseNormalization)
 
@@ -1229,12 +1324,24 @@ nonparametricNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor sr
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                pair<DestIterator, DestAccessor> dest,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return nonparametricNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+nonparametricNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonparametricNoiseNormalization(): shape mismatch between input and output.");
+    return nonparametricNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
@@ -1243,54 +1350,122 @@ bool nonparametricNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccesso
 /*                                                      */
 /********************************************************/
 
-/** \brief Noise normalization by means of an estimated quadratic noise model.
+/** \brief Noise normalization by means of an estimated or given quadratic noise model.
 
-    This function works in the same way as \ref nonparametricNoiseNormalization() with the exception of the 
-    model for the dependency between intensity and noise variance: it assumes that this dependency is a 
-    quadratic function rather than a piecewise linear function. If the quadratic model is applicable, it leads
-    to a somewhat smoother transformation.
+    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the 
+    dependency between intensity and noise variance is assumed to be a 
+    quadratic function rather than a piecewise linear function. If the data conform to the quadratic model, 
+    this leads to a somewhat smoother transformation. The function returns <tt>false</tt> if the noise 
+    estimation failed, so that no normalization could be performed.
+
+    In the second variant of the function, the parameters of the quadratic model are not estimated, 
+    but explicitly given according to:
+    \code
+    variance = a0 + a1 * intensity + a2 * sq(intensity)
+    \endcode
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
+        // estimate and apply a quadratic noise model
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+        
+        // apply a given quadratic noise model
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    double a0, double a1, double a2);
+    }
+    \endcode
+    
+    \deprecatedAPI{quadraticNoiseNormalization}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        // estimate and apply a quadratic noise model
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         bool quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                          DestIterator dul, DestAccessor dest,
                                          NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+
+        // apply a given quadratic noise model
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                         DestIterator dul, DestAccessor dest,
+                                         double a0, double a1, double a2);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // estimate and apply a quadratic noise model
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                          pair<DestIterator, DestAccessor> dest,
                                          NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+
+        // apply a given quadratic noise model
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                         pair<DestIterator, DestAccessor> dest,
+                                         double a0, double a1, double a2);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<float> > src(w,h), dest(w, h);
     
+    ...
+    // estimate the noise model and apply it to normalize the noise variance
+    bool success = quadraticNoiseNormalization(src, dest, 
+                                NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                                clusterCount(15));
+    vigra_postcondition(success, "quadraticNoiseNormalization(): Unable to estimate noise model.");
+    
+    // apply a pre-computed noise model
+    quadraticNoiseNormalization(src, dest, 100, 0.02, 1e-6);
+    \endcode
+
+    \deprecatedUsage{quadraticNoiseNormalization}
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
     ...
+    // estimate the noise model and apply it to normalize the noise variance
     vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
                                        vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                        clusterCount(15));
+
+    // apply a pre-computed noise model
+    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                       100, 0.02, 1e-6);
     \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
-    same as \ref noiseVarianceEstimation()
+    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
+    are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
+    or a vector whose elements are assignable from <tt>double</tt>.
 */
 doxygen_overloaded_function(template <...> bool quadraticNoiseNormalization)
 
@@ -1298,8 +1473,8 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline bool
 quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                DestIterator dul, DestAccessor dest,
-                                NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+                            DestIterator dul, DestAccessor dest,
+                            NoiseNormalizationOptions const & options)
 {
     typedef typename SrcAccessor::value_type SrcType;
 
@@ -1309,74 +1484,32 @@ quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "quadraticNoiseNormalization(): shape mismatch between input and output.");
+    return quadraticNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
 /*                                                      */
 /*               quadraticNoiseNormalization            */
+/*                       (variant)                      */
 /*                                                      */
 /********************************************************/
-
-/** \brief Noise normalization by means of a given quadratic noise model.
-
-    This function works similar to \ref nonparametricNoiseNormalization() with the exception that the 
-    functional dependency of the noise variance from the intensity is given (by a quadratic function)
-    rather than estimated:
-    
-    \code
-    variance = a0 + a1 * intensity + a2 * sq(intensity)
-    \endcode
-    
-    <b> Declarations:</b>
-    
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                         DestIterator dul, DestAccessor dest,
-                                         double a0, double a1, double a2);
-    }
-    \endcode
-    
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                        pair<DestIterator, DestAccessor> dest,
-                                        double a0, double a1, double a2);
-    }
-    \endcode
-    
-    <b> Usage:</b>
-    
-    <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
-    Namespace: vigra
-    
-    \code
-    vigra::BRGBImage src(w,h), dest(w, h);
-    
-    ...
-    vigra::quadraticNoiseNormalization(srcImageRange(src), destImage(dest), 
-                                       100, 0.02, 1e-6);
-    \endcode
-
-    <b> Required Interface:</b>
-    
-    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
-    are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
-    or a vector whose elements are assignable from <tt>double</tt>.
-*/
-doxygen_overloaded_function(template <...> void quadraticNoiseNormalization)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -1393,12 +1526,24 @@ quadraticNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                 pair<DestIterator, DestAccessor> dest,
-                                 double a0, double a1, double a2)
+inline void
+quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            double a0, double a1, double a2)
 {
     quadraticNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1, a2);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+quadraticNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double a0, double a1, double a2)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "quadraticNoiseNormalization(): shape mismatch between input and output.");
+    quadraticNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1, a2);
 }
 
 /********************************************************/
@@ -1407,54 +1552,123 @@ void quadraticNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> s
 /*                                                      */
 /********************************************************/
 
-/** \brief Noise normalization by means of an estimated linear noise model.
+/** \brief Noise normalization by means of an estimated or given linear noise model.
 
-    This function works in the same way as \ref nonparametricNoiseNormalization() with the exception of the 
-    model for the dependency between intensity and noise variance: it assumes that this dependency is a 
-    linear function rather than a piecewise linear function. If the linear model is applicable, it leads
-    to a very simple transformation which is similar to the familiar gamma correction.
+    This function works like \ref nonparametricNoiseNormalization() excapt that the model for the 
+    dependency between intensity and noise variance is assumed to be a 
+    linear function rather than a piecewise linear function. If the data conform to the linear model, 
+    this leads to a very simple transformation which is similar to the familiar gamma correction. 
+    The function returns <tt>false</tt> if the noise estimation failed, so that no 
+    normalization could be performed.
+
+    In the second variant of the function, the parameters of the linear model are not estimated, 
+    but explicitly given according to:
+    \code
+    variance = a0 + a1 * intensity
+    \endcode
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
     \code
     namespace vigra {
+        // estimate and apply a linear noise model
+        template <class T1, class S1,
+                  class T2, class S2>
+        bool
+        linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+
+        // apply a given linear noise model
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                                 MultiArrayView<2, T2, S2> dest,
+                                 double a0, double a1);
+    }
+    \endcode
+    
+    \deprecatedAPI{linearNoiseNormalization}
+    pass \ref ImageIterators and \ref DataAccessors :
+    \code
+    namespace vigra {
+        // estimate and apply a linear noise model
         template <class SrcIterator, class SrcAccessor,
                 class DestIterator, class DestAccessor>
         bool linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
                                       DestIterator dul, DestAccessor dest,
                                       NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+
+        // apply a given linear noise model
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
+                                      DestIterator dul, DestAccessor dest,
+                                      double a0, double a1);
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
+        // estimate and apply a linear noise model
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
         bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                       pair<DestIterator, DestAccessor> dest,
                                       NoiseNormalizationOptions const & options = NoiseNormalizationOptions());
+
+        // apply a given linear noise model
+        template <class SrcIterator, class SrcAccessor,
+                  class DestIterator, class DestAccessor>
+        void linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                                      pair<DestIterator, DestAccessor> dest,
+                                      double a0, double a1);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
     Namespace: vigra
-    
+
     \code
     vigra::BRGBImage src(w,h), dest(w, h);
     
     ...
+    // estimate the noise model and apply it to normalize the noise variance
+    bool success = linearNoiseNormalization(src, dest, 
+                             NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
+                             clusterCount(15));
+    vigra_postcondition(success, "linearNoiseNormalization(): Unable to estimate noise model.");
+    
+    // apply a pre-computed noise model
+    linearNoiseNormalization(src, dest, 100, 0.02);
+    \endcode
+
+    \deprecatedUsage{linearNoiseNormalization}
+    \code
+    vigra::BRGBImage src(w,h), dest(w, h);
+    
+    ...
+    // estimate the noise model and apply it to normalize the noise variance
     vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
                                     vigra::NoiseNormalizationOptions().windowRadius(9).noiseVarianceInitialGuess(25.0).
                                     clusterCount(15));
+                                    
+    // apply a pre-computed noise model
+    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
+                                    100, 0.02);
     \endcode
+    \deprecatedEnd
 
     <b> Required Interface:</b>
     
-    same as \ref noiseVarianceEstimation()
+    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
+    are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
+    or a vector whose elements are assignable from <tt>double</tt>.
 */
 doxygen_overloaded_function(template <...> bool linearNoiseNormalization)
 
@@ -1473,74 +1687,32 @@ linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-bool linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                     pair<DestIterator, DestAccessor> dest,
-                                     NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+inline bool
+linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
 {
     return linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline bool
+linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         NoiseNormalizationOptions const & options = NoiseNormalizationOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "linearNoiseNormalization(): shape mismatch between input and output.");
+    return linearNoiseNormalization(srcImageRange(src), destImage(dest), options);
 }
 
 /********************************************************/
 /*                                                      */
 /*                 linearNoiseNormalization             */
+/*                       (variant)                      */
 /*                                                      */
 /********************************************************/
-
-/** \brief Noise normalization by means of a given linear noise model.
-
-    This function works similar to \ref nonparametricNoiseNormalization() with the exception that the 
-    functional dependency of the noise variance from the intensity is given (as a linear function) 
-    rather than estimated:
-    
-    \code
-    variance = a0 + a1 * intensity
-    \endcode
-    
-    <b> Declarations:</b>
-    
-    pass arguments explicitly:
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
-                                      DestIterator dul, DestAccessor dest,
-                                      double a0, double a1);
-    }
-    \endcode
-    
-    use argument objects in conjunction with \ref ArgumentObjectFactories :
-    \code
-    namespace vigra {
-        template <class SrcIterator, class SrcAccessor,
-                  class DestIterator, class DestAccessor>
-        void linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                                      pair<DestIterator, DestAccessor> dest,
-                                      double a0, double a1);
-    }
-    \endcode
-    
-    <b> Usage:</b>
-    
-    <b>\#include</b> \<vigra/noise_normalization.hxx\><br>
-    Namespace: vigra
-    
-    \code
-    vigra::BRGBImage src(w,h), dest(w, h);
-    
-    ...
-    vigra::linearNoiseNormalization(srcImageRange(src), destImage(dest), 
-                                    100, 0.02);
-    \endcode
-
-    <b> Required Interface:</b>
-    
-    The source value type must be convertible to <tt>double</tt> or must be a vector whose elements 
-    are convertible to <tt>double</tt>. Likewise, the destination type must be assignable from <tt>double</tt>
-    or a vector whose elements are assignable from <tt>double</tt>.
-*/
-doxygen_overloaded_function(template <...> void linearNoiseNormalization)
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
@@ -1557,12 +1729,24 @@ void linearNoiseNormalization(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                              pair<DestIterator, DestAccessor> dest,
-                              double a0, double a1)
+inline void
+linearNoiseNormalization(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                         pair<DestIterator, DestAccessor> dest,
+                         double a0, double a1)
 {
     linearNoiseNormalization(src.first, src.second, src.third, dest.first, dest.second, a0, a1);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+linearNoiseNormalization(MultiArrayView<2, T1, S1> const & src,
+                         MultiArrayView<2, T2, S2> dest,
+                         double a0, double a1)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "linearNoiseNormalization(): shape mismatch between input and output.");
+    linearNoiseNormalization(srcImageRange(src), destImage(dest), a0, a1);
 }
 
 //@}

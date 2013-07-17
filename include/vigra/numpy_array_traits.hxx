@@ -36,83 +36,15 @@
 #ifndef VIGRA_NUMPY_ARRAY_TRAITS_HXX
 #define VIGRA_NUMPY_ARRAY_TRAITS_HXX
 
+#ifndef NPY_NO_DEPRECATED_API
+# define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif 
+
 #include "numerictraits.hxx"
 #include "multi_array.hxx"
 #include "numpy_array_taggedshape.hxx"
 
 namespace vigra {
-
-/********************************************************/
-/*                                                      */
-/*              Singleband and Multiband                */
-/*                                                      */
-/********************************************************/
-
-template <class T>
-struct Singleband  // the resulting NumpyArray has no explicit channel axis 
-                   // (i.e. the number of channels is implicitly one)
-{
-    typedef T value_type;
-};
-
-template <class T>
-struct Multiband  // the last axis is explicitly designated as channel axis
-{
-    typedef T value_type;
-};
-
-template<class T>
-struct NumericTraits<Singleband<T> >
-: public NumericTraits<T>
-{};
-
-template<class T>
-struct NumericTraits<Multiband<T> >
-{
-    typedef Multiband<T> Type;
-/*
-    typedef int Promote;
-    typedef unsigned int UnsignedPromote;
-    typedef double RealPromote;
-    typedef std::complex<RealPromote> ComplexPromote;
-*/
-    typedef Type ValueType;
-
-    typedef typename NumericTraits<T>::isIntegral isIntegral;
-    typedef VigraFalseType isScalar;
-    typedef typename NumericTraits<T>::isSigned isSigned;
-    typedef typename NumericTraits<T>::isSigned isOrdered;
-    typedef typename NumericTraits<T>::isSigned isComplex;
-/*
-    static signed char zero() { return 0; }
-    static signed char one() { return 1; }
-    static signed char nonZero() { return 1; }
-    static signed char min() { return SCHAR_MIN; }
-    static signed char max() { return SCHAR_MAX; }
-
-#ifdef NO_INLINE_STATIC_CONST_DEFINITION
-    enum { minConst = SCHAR_MIN, maxConst = SCHAR_MIN };
-#else
-    static const signed char minConst = SCHAR_MIN;
-    static const signed char maxConst = SCHAR_MIN;
-#endif
-
-    static Promote toPromote(signed char v) { return v; }
-    static RealPromote toRealPromote(signed char v) { return v; }
-    static signed char fromPromote(Promote v) {
-        return ((v < SCHAR_MIN) ? SCHAR_MIN : (v > SCHAR_MAX) ? SCHAR_MAX : v);
-    }
-    static signed char fromRealPromote(RealPromote v) {
-        return ((v < 0.0)
-                   ? ((v < (RealPromote)SCHAR_MIN)
-                       ? SCHAR_MIN
-                       : static_cast<signed char>(v - 0.5))
-                   : (v > (RealPromote)SCHAR_MAX)
-                       ? SCHAR_MAX
-                       : static_cast<signed char>(v + 0.5));
-    }
-*/
-};
 
 /********************************************************/
 /*                                                      */
@@ -158,8 +90,8 @@ struct NumpyArrayValuetypeTraits<type > \
 { \
     static bool isValuetypeCompatible(PyArrayObject const * obj) /* obj must not be NULL */ \
     { \
-        return PyArray_EquivTypenums(typeID, PyArray_DESCR((PyObject *)obj)->type_num) && \
-               PyArray_ITEMSIZE((PyObject *)obj) == sizeof(type); \
+        return PyArray_EquivTypenums(typeID, PyArray_DESCR((PyArrayObject *)obj)->type_num) && \
+               PyArray_ITEMSIZE((PyArrayObject *)obj) == sizeof(type); \
     } \
     \
     static NPY_TYPES const typeCode = typeID; \
@@ -260,7 +192,7 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
 
         return ndim == N;
     }
@@ -366,10 +298,10 @@ struct NumpyArrayTraits<N, T, UnstridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(obj);
+        npy_intp * strides = PyArray_STRIDES(array);
         
         if(channelIndex < ndim)
         {
@@ -407,7 +339,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         
         // If we have no channel axis (because either we don't have axistags, 
@@ -416,7 +348,7 @@ struct NumpyArrayTraits<N, Singleband<T>, StridedArrayTag>
             return ndim == N;
             
         // Otherwise, the channel axis must be a singleton axis that we can drop.
-        return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1;
+        return ndim == N+1 && PyArray_DIM(array, channelIndex) == 1;
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -502,10 +434,10 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(obj);
+        npy_intp * strides = PyArray_STRIDES(array);
         
         // If we have no axistags, ndim must match, and axis 0 must be unstrided.
         if(majorIndex == ndim) 
@@ -518,7 +450,7 @@ struct NumpyArrayTraits<N, Singleband<T>, UnstridedArrayTag>
             
         // Otherwise, the channel axis must be a singleton axis that we can drop,
         // and the major non-channel axis must be unstrided.
-        return ndim == N+1 && PyArray_DIM(obj, channelIndex) == 1 && 
+        return ndim == N+1 && PyArray_DIM(array, channelIndex) == 1 && 
                 strides[majorIndex] == sizeof(T);
     }
 
@@ -540,7 +472,7 @@ struct NumpyArrayTraits<N, Multiband<T>, StridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
         PyObject * obj = (PyObject*)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
         
@@ -675,10 +607,10 @@ struct NumpyArrayTraits<N, Multiband<T>, UnstridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(obj);
+        npy_intp * strides = PyArray_STRIDES(array);
 
         if(channelIndex < ndim)
         {
@@ -731,14 +663,14 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, StridedArrayTag>
         PyObject * obj = (PyObject *)array;
         
          // We need an extra channel axis.
-         if(PyArray_NDIM(obj) != N+1)
+         if(PyArray_NDIM(array) != N+1)
             return false;
             
         // When there are no axistags, we assume that the last axis represents the channels.
         long channelIndex = pythonGetAttr(obj, "channelIndex", N);
-        npy_intp * strides = PyArray_STRIDES(obj);
+        npy_intp * strides = PyArray_STRIDES(array);
         
-        return PyArray_DIM(obj, channelIndex) == M && strides[channelIndex] == sizeof(T);
+        return PyArray_DIM(array, channelIndex) == M && strides[channelIndex] == sizeof(T);
     }
 
     static bool isPropertyCompatible(PyArrayObject * obj) /* obj must not be NULL */
@@ -833,7 +765,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
     static bool isShapeCompatible(PyArrayObject * array) /* obj must not be NULL */
     {
         PyObject * obj = (PyObject *)array;
-        int ndim = PyArray_NDIM(obj);
+        int ndim = PyArray_NDIM(array);
         
          // We need an extra channel axis. 
         if(ndim != N+1)
@@ -841,7 +773,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
             
         long channelIndex = pythonGetAttr(obj, "channelIndex", ndim);
         long majorIndex = pythonGetAttr(obj, "innerNonchannelIndex", ndim);
-        npy_intp * strides = PyArray_STRIDES(obj);
+        npy_intp * strides = PyArray_STRIDES(array);
         
         if(majorIndex < ndim)
         {
@@ -850,7 +782,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
                 return false;
                 
             // We have an explicit channel axis => shapes and strides must match
-            return PyArray_DIM(obj, channelIndex) == M && 
+            return PyArray_DIM(array, channelIndex) == M && 
                    strides[channelIndex] == sizeof(T) &&
                    strides[majorIndex] == sizeof(TinyVector<T, M>);
             
@@ -859,7 +791,7 @@ struct NumpyArrayTraits<N, TinyVector<T, M>, UnstridedArrayTag>
         else
         {
             // we have no axistags => we assume that the channel axis is last
-            return PyArray_DIM(obj, N) == M && 
+            return PyArray_DIM(array, N) == M && 
                    strides[N] == sizeof(T) &&
                    strides[0] == sizeof(TinyVector<T, M>);
         }

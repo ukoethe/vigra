@@ -388,6 +388,19 @@ operator!=(RGBValue<V1, RIDX1, GIDX1, BIDX1> const & l,
            (l.blue() != r.blue());
 }
 
+template <class V, unsigned int RIDX1, unsigned int GIDX1, unsigned int BIDX1,
+                   unsigned int RIDX2, unsigned int GIDX2, unsigned int BIDX2>
+inline
+bool
+closeAtTolerance(RGBValue<V, RIDX1, GIDX1, BIDX1> const & l,
+                 RGBValue<V, RIDX2, GIDX2, BIDX2> const & r,
+                 V epsilon = NumericTraits<V>::epsilon())
+{
+    return closeAtTolerance(l.red(), r.red(), epsilon) &&
+           closeAtTolerance(l.green(), r.green(), epsilon) &&
+           closeAtTolerance(l.blue(), r.blue(), epsilon);
+}
+
 
 //@}
 

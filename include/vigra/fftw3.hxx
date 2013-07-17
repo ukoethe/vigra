@@ -2015,7 +2015,20 @@ fourierTransformInverse(triple<FFTWComplexImage::const_traverser,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor,
+                  class FilterImageIterator, class FilterAccessor,
+                  class DestImageIterator, class DestAccessor>
+        void applyFourierFilter(SrcImageIterator srcUpperLeft,
+                                SrcImageIterator srcLowerRight, SrcAccessor sa,
+                                FilterImageIterator filterUpperLeft, FilterAccessor fa,
+                                DestImageIterator destUpperLeft, DestAccessor da);
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor,
@@ -2245,7 +2258,18 @@ void applyFourierFilterImplNormalization(FFTWComplexImage const & srcImage,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcImageIterator, class SrcAccessor, class FilterType>
+        void applyFourierFilterFamily(SrcImageIterator srcUpperLeft,
+                                      SrcImageIterator srcLowerRight, SrcAccessor sa,
+                                      const ImageArray<FilterType> &filters,
+                                      ImageArray<FFTWComplexImage> &results)
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class SrcAccessor, class FilterType>
@@ -2464,7 +2488,20 @@ void applyFourierFilterFamilyImpl(
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class SrcTraverser, class SrcAccessor,
+                  class DestTraverser, class DestAccessor>
+        void
+        fourierTransformRealEE(SrcTraverser sul, SrcTraverser slr, SrcAccessor src,
+                               DestTraverser dul, DestAccessor dest, fftw_real norm);
+
+        fourierTransformRealEO, fourierTransformRealOE, fourierTransformRealOO likewise
+    }
+    \endcode
+
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcTraverser, class SrcAccessor,

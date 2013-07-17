@@ -35,9 +35,9 @@
  
 
 #include <iostream>
-#include "vigra/stdimage.hxx"
-#include "vigra/edgedetection.hxx"
-#include "vigra/impex.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/edgedetection.hxx>
+#include <vigra/impex.hxx>
 
 using namespace vigra; 
 
@@ -47,20 +47,20 @@ int main(int argc, char ** argv)
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " infile outfile" << std::endl;
-        std::cout << "(supported formats: " << vigra::impexListFormats() << ")" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
         
         return 1;
     }
     
     try
     {
-        vigra::ImageImportInfo info(argv[1]);
+        ImageImportInfo info(argv[1]);
         
         vigra_precondition(info.isGrayscale(), "Sorry, cannot operate on color images");
         
-        vigra::BImage in(info.width(), info.height());
+        MultiArray<2, UInt8> in(info.shape());
 
-        importImage(info, destImage(in));
+        importImage(info, in);
 
         // input width of edge detection filter
         int which;
@@ -78,29 +78,27 @@ int main(int argc, char ** argv)
         std::cin >> threshold;
     
         // create output image of appropriate size
-        vigra::BImage out(info.width(), info.height());
+        MultiArray<2, UInt8> out(info.shape());
         
         // paint output image white
         out = 255;
         
         if(which == 2)
         {
-            // call edge detection algorithm
+            // call Shen-Castan edge detection algorithm
             // edges will be marked black
-            differenceOfExponentialEdgeImage(srcImageRange(in), destImage(out),
-                           scale, threshold, 0);
+            differenceOfExponentialEdgeImage(in, out, scale, threshold, 0);
         }
         else
         {
-            // call edge detection algorithm
+            // call Canny edge detection algorithm
             // edges will be marked black
-            cannyEdgeImage(srcImageRange(in), destImage(out),
-                           scale, threshold, 0);
+            cannyEdgeImage(in, out, scale, threshold, 0);
         }
         
-        exportImage(srcImageRange(out), vigra::ImageExportInfo(argv[2]));
+        exportImage(out, ImageExportInfo(argv[2]));
     }
-    catch (vigra::StdException & e)
+    catch (std::exception & e)
     {
         std::cout << e.what() << std::endl;
         return 1;

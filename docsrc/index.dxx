@@ -126,6 +126,7 @@
             <UL style="list-style-image:url(documents/bullet.gif)">
             <LI> \ref vigra::Rational
             <LI> \ref vigra::TinyVector
+            <LI> \ref vigra::autodiff::DualVector
             <LI> \ref vigra::FFTWComplex
             <LI> \ref vigra::FixedPoint16
             <LI> \ref vigra::Quaternion

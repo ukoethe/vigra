@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "initimage.hxx"
 #include "stdconvolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -83,7 +84,20 @@ namespace vigra {
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double sigma, double rho);
+    }
+    \endcode
+
+    \deprecatedAPI{hourGlassFilter}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -93,8 +107,6 @@ namespace vigra {
                              double sigma, double rho);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -106,11 +118,24 @@ namespace vigra {
                              double sigma, double rho);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/orientedtensorfilters.hxx\>
+    <b>\#include</b> \<vigra/orientedtensorfilters.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    MultiArray<2, float>                  img(w,h);
+    MultiArray<2, TinyVector<float, 2> >  gradient(w,h);
+    MultiArray<2, TinyVector<float, 3> >  tensor(w,h), smoothedTensor(w,h);
+    
+    gaussianGradient(img, gradient, 1.0);
+    vectorToTensor(gradient, tensor);
+    hourGlassFilter(tensor, smoothedTensor, 2.0, 0.4);
+    \endcode
+
+    \deprecatedUsage{hourGlassFilter}
     \code
     FImage img(w,h);
     FVector2Image gradient(w,h);
@@ -120,6 +145,7 @@ namespace vigra {
     vectorToTensor(srcImageRange(gradient), destImage(tensor));
     hourGlassFilter(srcImageRange(tensor), destImage(smoothedTensor), 2.0, 0.4);
     \endcode
+    \deprecatedEnd
     
     \see vectorToTensor()
 */
@@ -191,12 +217,24 @@ void hourGlassFilter(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                     pair<DestIterator, DestAccessor> d,
-                     double sigma, double rho)
+inline void
+hourGlassFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
+                pair<DestIterator, DestAccessor> d,
+                double sigma, double rho)
 {
     hourGlassFilter(s.first, s.second, s.third, d.first, d.second, sigma, rho);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+hourGlassFilter(MultiArrayView<2, T1, S1> const & src,
+                MultiArrayView<2, T2, S2> dest,
+                double sigma, double rho)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "hourGlassFilter(): shape mismatch between input and output.");
+    hourGlassFilter(srcImageRange(src), destImage(dest), sigma, rho);
 }
 
 /********************************************************/
@@ -267,12 +305,24 @@ void ellipticGaussian(SrcIterator sul, SrcIterator slr, SrcAccessor src,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                      pair<DestIterator, DestAccessor> d,
-                      double sigmax, double sigmin)
+inline void
+ellipticGaussian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                 pair<DestIterator, DestAccessor> dest,
+                 double sigmax, double sigmin)
 {
-    ellipticGaussian(s.first, s.second, s.third, d.first, d.second, sigmax, sigmin);
+    ellipticGaussian(src.first, src.second, src.third, dest.first, dest.second, sigmax, sigmin);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+ellipticGaussian(MultiArrayView<2, T1, S1> const & src,
+                 MultiArrayView<2, T2, S2> dest,
+                 double sigmax, double sigmin)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "ellipticGaussian(): shape mismatch between input and output.");
+    ellipticGaussian(srcImageRange(src), destImage(dest), sigmax, sigmin);
 }
 
 /********************************************************/
@@ -562,12 +612,25 @@ void orientedTrigonometricFilter(SrcIterator sul, SrcIterator slr, SrcAccessor s
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class Kernel>
-inline
-void orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> s,
-                      pair<DestIterator, DestAccessor> d,
-                      Kernel const & kernel)
+inline void
+orientedTrigonometricFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                            pair<DestIterator, DestAccessor> dest,
+                            Kernel const & kernel)
 {
-    orientedTrigonometricFilter(s.first, s.second, s.third, d.first, d.second, kernel);
+    orientedTrigonometricFilter(src.first, src.second, src.third, dest.first, dest.second, kernel);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class Kernel>
+inline void
+orientedTrigonometricFilter(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            Kernel const & kernel)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "orientedTrigonometricFilter(): shape mismatch between input and output.");
+    orientedTrigonometricFilter(srcImageRange(src), destImage(dest), kernel);
 }
 
 //@}

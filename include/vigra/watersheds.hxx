@@ -45,6 +45,7 @@
 #include "seededregiongrowing.hxx"
 #include "functorexpression.hxx"
 #include "union_find.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -318,11 +319,11 @@ void prepareWatersheds(SrcIterator upperlefts, SrcIterator lowerrights, SrcAcces
         Namespace: vigra
         
         \code
-        IImage seeds(boundary_indicator.size());
+        MultiArray<2, float>  boundary_indicator(w, h);
+        MultiArray<2, int>    seeds(boundary_indicator.shape());
         
         // detect all minima in 'boundary_indicator' that are below gray level 22
-        generateWatershedSeeds(srcImageRange(boundary_indicator),
-                               destImage(seeds),
+        generateWatershedSeeds(boundary_indicator, seeds,
                                SeedOptions().minima().threshold(22.0));
         \endcode
      */
@@ -430,14 +431,28 @@ public:
     (typically, you will use <tt>UInt32</tt>). The function will label seeds by consecutive integers
     (starting from 1) and returns the largest label it used.
     
-    Pass \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode to determine the 
+    Pass \ref vigra::NeighborhoodType "IndirectNeighborhood" or \ref vigra::NeighborhoodType "DirectNeighborhood" 
+    (first form of the function) 
+    or \ref vigra::EightNeighborCode or \ref vigra::FourNeighborCode (second and third forms) to determine the 
     neighborhood where pixel values are compared. 
-    
-    The function uses accessors.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    use arbitrary-dimensional arrays:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T, class S1,
+                                  class Label, class S2>
+        Label
+        generateWatershedSeeds(MultiArrayView<N, T, S1> const & data,
+                               MultiArrayView<N, Label, S2> seeds,
+                               NeighborhoodType neighborhood = IndirectNeighborhood,
+                               SeedOptions const & options = SeedOptions());
+    }
+    \endcode
+
+    \deprecatedAPI{generateWatershedSeeds}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -450,7 +465,6 @@ public:
                                SeedOptions const & options = SeedOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -464,13 +478,15 @@ public:
                                SeedOptions const & options = SeedOptions());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/watersheds.hxx\><br>
+    <b>\#include</b> \<vigra/multi_watersheds.hxx\> (MultiArray variant)<br>
+    <b>\#include</b> \<vigra/watersheds.hxx\> (deprecated variants)<br>
     Namespace: vigra
 
-    For detailed examples see watershedsRegionGrowing().
+    For detailed examples see \ref watershedsMultiArray() and \ref watershedsRegionGrowing().
 */
 doxygen_overloaded_function(template <...> unsigned int generateWatershedSeeds)
 
@@ -556,17 +572,20 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /********************************************************/
 /*                                                      */
-/*                      watersheds                      */
+/*                 watershedsUnionFind                  */
 /*                                                      */
 /********************************************************/
 
 /** \brief Region segmentation by means of the union-find watershed algorithm.
 
+    Note: This function is largely obsolete, \ref watershedsMultiArray() should be
+    preferred unless top speed is required.
+    
     This function implements the union-find version of the watershed algorithms
-    as described in
+    described as algorithm 4.7 in
 
-    J. Roerdink, R. Meijster: "<em>The watershed transform: definitions, algorithms,
-    and parallelization strategies</em>", Fundamenta Informaticae, 41:187-228, 2000
+    J. Roerdink, R. Meijster: <em>"The watershed transform: definitions, algorithms,
+    and parallelization strategies"</em>, Fundamenta Informaticae, 41:187-228, 2000
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(). Local minima of the boundary indicator
@@ -581,7 +600,21 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Neighborhood>
+        unsigned int
+        watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest, 
+                            Neighborhood neighborhood = EightNeighborCode());
+    }
+    \endcode
+
+    \deprecatedAPI{watershedsUnionFind}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -593,7 +626,6 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             Neighborhood neighborhood = EightNeighborCode())
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -606,12 +638,30 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             Neighborhood neighborhood = EightNeighborCode())
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/watersheds.hxx\><br>
     Namespace: vigra
 
+    Example: watersheds of the gradient magnitude.
+
+    \code
+    MultiArray<2, float> in(w,h);
+    ... // read input data
+
+    // compute gradient magnitude as boundary indicator
+    MultiArray<2, float> gradMag(w, h);
+    gaussianGradientMagnitude(src, gradMag, 3.0);
+
+    // the pixel type of the destination image must be large enough to hold
+    // numbers up to 'max_region_label' to prevent overflow
+    MultiArray<2, unsigned int> labeling(w,h);
+    unsigned int max_region_label = watershedsUnionFind(gradMag, labeling);
+    \endcode
+
+    \deprecatedUsage{watershedsUnionFind}
     Example: watersheds of the gradient magnitude.
 
     \code
@@ -628,9 +678,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     int max_region_label = watershedsUnionFind(srcImageRange(gradMag), destImage(labeling));
 
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -645,6 +693,7 @@ generateWatershedSeeds(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     int label;
     dest_accessor.set(label, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int watershedsUnionFind)
 
@@ -678,35 +727,63 @@ template <class SrcIterator, class SrcAccessor,
           class Neighborhood>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
+                    pair<DestIterator, DestAccessor> dest, Neighborhood neighborhood)
 {
     return watershedsUnionFind(src.first, src.second, src.third, 
-                                dest.first, dest.second, neighborhood);
+                               dest.first, dest.second, neighborhood);
 }
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline unsigned int
 watershedsUnionFind(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest)
+                    pair<DestIterator, DestAccessor> dest)
 {
     return watershedsUnionFind(src.first, src.second, src.third, 
-                                dest.first, dest.second);
+                               dest.first, dest.second);
 }
 
-/** \brief Options object for watershedsRegionGrowing().
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
+inline unsigned int
+watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest, Neighborhood neighborhood)
+{
+    return watershedsUnionFind(srcImageRange(src), 
+                               destImage(dest), neighborhood);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+watershedsUnionFind(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsUnionFind(): shape mismatch between input and output.");
+    return watershedsUnionFind(srcImageRange(src), 
+                               destImage(dest));
+}
+
+/** \brief Options object for watershed algorithms.
 
     <b> Usage:</b>
 
-    see watershedsRegionGrowing() for detailed examples.
+    see \ref watershedsMultiArray() and watershedsRegionGrowing() for detailed examples.
 */
 class WatershedOptions
 {
   public:
+    enum Method { RegionGrowing, UnionFind };
+  
     double max_cost, bias;
     SRGType terminate;
+    Method method;
     unsigned int biased_label, bucket_count;
     SeedOptions seed_options;
+    
+    
     
         /** \brief Create options object with default settings.
 
@@ -718,6 +795,7 @@ class WatershedOptions
     : max_cost(0.0),
       bias(1.0),
       terminate(CompleteGrow),
+      method(RegionGrowing),
       biased_label(0),
       bucket_count(0),
       seed_options(SeedOptions().unspecified())
@@ -785,6 +863,7 @@ class WatershedOptions
     WatershedOptions & turboAlgorithm(unsigned int bucket_count = 256)
     {
         this->bucket_count = bucket_count;
+        method = RegionGrowing;
         return *this;
     }
     
@@ -816,6 +895,46 @@ class WatershedOptions
     {
         biased_label = label;
         bias = factor;
+        return *this;
+    }
+    
+        /** \brief Specify the algorithm to be used.
+        
+            Possible values are <tt>WatershedOptions::RegionGrowing</tt> and
+            <tt>WatershedOptions::UnionFind</tt>. The latter algorithm is fastest
+            but doesn't support seeds and any of the other options.
+        
+            Default: RegionGrowing.
+        */
+    WatershedOptions & useMethod(Method method)
+    {
+        this->method = method;
+        return *this;
+    }
+    
+        /** \brief Use region-growing watershed.
+        
+            Use this method when you want to specify seeds explicitly (seeded watersheds) 
+            or use any of the other options.
+        
+            Default: true.
+        */
+    WatershedOptions & regionGrowing()
+    {
+        method = RegionGrowing;
+        return *this;
+    }
+    
+        /** \brief Use union-find watershed.
+        
+            This is the fasted method, but it doesn't support seeds and any of the other 
+            options (they will be silently ignored).
+        
+            Default: false.
+        */
+    WatershedOptions & unionFind()
+    {
+        method = UnionFind;
         return *this;
     }
 };
@@ -974,15 +1093,18 @@ class BiasedWatershedStatistics
 
 /** \brief Region segmentation by means of a flooding-based watershed algorithm.
 
+    Note: This function is largely obsolete, \ref watershedsMultiArray() should be
+    preferred unless top speed is required.
+    
     This function implements variants of the watershed algorithm
     described in
 
-    L. Vincent and P. Soille: "<em>Watersheds in digital spaces: An efficient algorithm
-    based on immersion simulations</em>", IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
+    L. Vincent and P. Soille: <em>"Watersheds in digital spaces: An efficient algorithm
+    based on immersion simulations"</em>, IEEE Trans. Patt. Analysis Mach. Intell. 13(6):583-598, 1991
 
     The source image is a boundary indicator such as the gaussianGradientMagnitude()
     or the trace of the \ref boundaryTensor(), and the destination is a label image
-    designating membership of each pixel in one of the regions. Plateaus in the boundary
+    designating membership of each point in one of the regions. Plateaus in the boundary
     indicator (i.e. regions of constant gray value) are handled via a Euclidean distance
     transform by default.
     
@@ -1020,7 +1142,29 @@ class BiasedWatershedStatistics
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class Neighborhood = EightNeighborCode>
+        unsigned int
+        watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest, 
+                                Neighborhood neighborhood = EightNeighborCode(),
+                                WatershedOptions const & options = WatershedOptions());
+
+        template <class T1, class S1,
+                  class T2, class S2>
+        unsigned int
+        watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest, 
+                                WatershedOptions const & options = WatershedOptions());
+    }
+    \endcode
+
+    \deprecatedAPI{watershedsRegionGrowing}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1040,7 +1184,6 @@ class BiasedWatershedStatistics
                                 WatershedOptions const & options = WatershedOptions());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1061,7 +1204,8 @@ class BiasedWatershedStatistics
                                 WatershedOptions const & options = WatershedOptions());
     }
     \endcode
-
+    \deprecatedEnd
+    
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/watersheds.hxx\><br>
@@ -1069,6 +1213,66 @@ class BiasedWatershedStatistics
 
     Example: watersheds of the gradient magnitude.
 
+    \code
+    MultiArray<2, float> src(w, h);
+    ... // read input data
+    
+    // compute gradient magnitude at scale 1.0 as a boundary indicator
+    MultiArray<2, float> gradMag(w, h);
+    gaussianGradientMagnitude(src, gradMag, 1.0);
+
+    // example 1
+    {
+        // the pixel type of the destination image must be large enough to hold
+        // numbers up to 'max_region_label' to prevent overflow
+        MultiArray<2, unsigned int> labeling(w, h);
+        
+        // call watershed algorithm for 4-neighborhood, leave a 1-pixel boundary between regions,
+        // and autogenerate seeds from all gradient minima where the magnitude is below 2.0
+        unsigned int max_region_label = 
+              watershedsRegionGrowing(gradMag, labeling,
+                                      FourNeighborCode(),
+                                      WatershedOptions().keepContours()
+                                           .seedOptions(SeedOptions().minima().threshold(2.0)));
+    }
+    
+    // example 2
+    {
+        MultiArray<2, unsigned int> labeling(w, h);
+        
+        // compute seeds beforehand (use connected components of all pixels 
+        // where the gradient  is below 4.0)
+        unsigned int max_region_label = 
+              generateWatershedSeeds(gradMag, labeling,
+                                     SeedOptions().levelSets(4.0));
+        
+        // quantize the gradient image to 256 gray levels
+        MultiArray<2, unsigned char> gradMag256(w, h);
+        FindMinMax<float> minmax; 
+        inspectImage(gradMag, minmax); // find original range
+        transformImage(gradMag, gradMag256,
+                       linearRangeMapping(minmax, 0, 255));
+        
+        // call the turbo algorithm with 256 bins, using 8-neighborhood
+        watershedsRegionGrowing(gradMag256, labeling,
+                                WatershedOptions().turboAlgorithm(256));
+    }
+    
+    // example 3
+    {
+       MultiArray<2, unsigned int> labeling(w, h);
+        
+        .. // get seeds from somewhere, e.g. an interactive labeling program,
+           // make sure that label 1 corresponds to the background
+        
+        // bias the watershed algorithm so that the background is preferred
+        // by reducing the cost for label 1 to 90%
+        watershedsRegionGrowing(gradMag, labeling,
+                                WatershedOptions().biasLabel(1, 0.9));
+    }
+    \endcode
+
+    \deprecatedUsage{watershedsRegionGrowing}
     \code
     vigra::BImage src(w, h);
     ... // read input data
@@ -1127,9 +1331,7 @@ class BiasedWatershedStatistics
                                 WatershedOptions().biasLabel(1, 0.9));
     }
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcIterator src_upperleft, src_lowerright;
     DestIterator dest_upperleft;
@@ -1144,6 +1346,7 @@ class BiasedWatershedStatistics
     int label;
     dest_accessor.set(label, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> unsigned int watershedsRegionGrowing)
 
@@ -1254,10 +1457,39 @@ watershedsRegionGrowing(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         WatershedOptions const & options = WatershedOptions())
 {
     return watershedsRegionGrowing(src.first, src.second, src.third,
-                                    dest.first, dest.second,    
-                                    EightNeighborCode(), options);
+                                   dest.first, dest.second,    
+                                   EightNeighborCode(), options);
 }
 
+template <class T1, class S1,
+          class T2, class S2,
+          class Neighborhood>
+inline unsigned int
+watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        Neighborhood neighborhood,
+                        WatershedOptions const & options = WatershedOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsRegionGrowing(): shape mismatch between input and output.");
+    return watershedsRegionGrowing(srcImageRange(src),
+                                   destImage(dest),    
+                                   neighborhood, options);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline unsigned int
+watershedsRegionGrowing(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest, 
+                        WatershedOptions const & options = WatershedOptions())
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "watershedsRegionGrowing(): shape mismatch between input and output.");
+    return watershedsRegionGrowing(srcImageRange(src),
+                                   destImage(dest),    
+                                   EightNeighborCode(), options);
+}
 
 //@}
 

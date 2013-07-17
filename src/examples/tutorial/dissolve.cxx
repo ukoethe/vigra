@@ -1,103 +1,62 @@
 #include <vigra/multi_array.hxx>
-#include "vigra/impex.hxx"
+#include <vigra/impex.hxx>
 #include <vigra/multi_math.hxx>
 #include <iostream>
 
 using namespace vigra;
 
-int main (int argc, char ** argv) {
-
-    // read the images given as first and second argument
-    vigra::ImageImportInfo info1(argv[1]);
-    vigra::ImageImportInfo info2(argv[2]);
-
-    // process grayscale images
-    if (info1.isGrayscale() && info2.isGrayscale()) {
-
-        // instantiate array for image data
-        vigra::MultiArray<2, unsigned char> imageArray1(info1.shape());
-        vigra::MultiArray<2, unsigned char> imageArray2(info2.shape());
-
-        // copy image data into array
-        importImage(info1, destImage(imageArray1));
-        importImage(info2, destImage(imageArray2));
-
-        // calculate size of dissolved image
-        int width = info1.width() < info2.width() ? info1.width() : info2.width();
-        int height = info1.height() < info2.height() ? info1.height() : info2.height(); 
+int main (int argc, char ** argv) 
+{
+    if(argc != 4)
+    {
+        std::cout << "Usage: " << argv[0] << " infile1 infile2 outfile" << std::endl;
+        std::cout << "(supported formats: " << impexListFormats() << ")" << std::endl;
+        
+        return 1;
+    }
+    
+    try 
+    {
+        // read the images given as first and second argument
+        ImageImportInfo info1(argv[1]),
+                        info2(argv[2]);
+        
+        // for simplicity, we always use RGB images, even when the inputs are grayscale
+        // (in which case all three channels will be equal)
+        MultiArray<2, RGBValue<UInt8> > imageArray1(info1.shape()),
+                                        imageArray2(info2.shape());
+        
+        importImage(info1, imageArray1);
+        importImage(info2, imageArray2);
+        
+        // calculate size of dissolved image (take the minimum along both axes)
+        Shape2 resultShape = min(info1.shape(), info2.shape());
         
         // instantiate array of appropriate size for the dissolved image
-        vigra::MultiArray<2, unsigned char> exportArray(Shape2(width, height));
+        MultiArray<2, RGBValue<UInt8> > exportArray(resultShape);
 
         // create subviews for dissolving
         // the middle parts of the two images will be dissolved
-        int x0, x1, y0, y1;
-        x0 = 0.5*(info1.width()-width);
-        y0 = 0.5*(info1.height()-height);
-        x1 = 0.5*(info1.width()+width);
-        y1 = 0.5*(info1.height()+height);
-        vigra::MultiArray<2, unsigned char> subImageArray1 = 
-            imageArray1.subarray(Shape2(x0,y0), Shape2(x1,y1));
-  
-        x0 = 0.5*(info2.width()-width);
-        y0 = 0.5*(info2.height()-height);
-        x1 = 0.5*(info2.width()+width);
-        y1 = 0.5*(info2.height()+height);
-        vigra::MultiArray<2, unsigned char> subImageArray2 = 
-            imageArray2.subarray(Shape2(x0,y0), Shape2(x1,y1));
+        Shape2 start1 = (info1.shape() - resultShape) / 2,
+               end1   = start1 + resultShape;
+        MultiArray<2, RGBValue<UInt8> > subImageArray1 = imageArray1.subarray(start1, end1);
+
+        Shape2 start2 = (info2.shape() - resultShape) / 2,
+               end2   = start2 + resultShape;
+        MultiArray<2, RGBValue<UInt8> > subImageArray2 = imageArray2.subarray(start2, end2);
 
         // dissolve images
-        using namespace vigra::multi_math;
+        using namespace multi_math;
         exportArray = 0.5*subImageArray1 + 0.5*subImageArray2;
 
         // write image data to the file given as third argument
-        exportImage(srcImageRange(exportArray), vigra::ImageExportInfo(argv[3]));
+        exportImage(exportArray, ImageExportInfo(argv[3]));
     }
-
-    // process color images
-    else if (!info1.isGrayscale() && !info2.isGrayscale()) {
-        // instantiate array for image data
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > imageArray1(info1.shape());
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > imageArray2(info2.shape());
-
-        // copy image data into array
-        importImage(info1, destImage(imageArray1));
-        importImage(info2, destImage(imageArray2));
-
-        // calculate size of dissolved image
-        int width = info1.width() < info2.width() ? info1.width() : info2.width();
-        int height = info1.height() < info2.height() ? info1.height() : info2.height(); 
-        
-        // instantiate array of appropriate size for the dissolved image
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > exportArray(Shape2(width, height));
-
-        // create subviews for dissolving
-        // the middle parts of the two images will be dissolved
-        int x0, x1, y0, y1;
-        x0 = 0.5*(info1.width()-width);
-        y0 = 0.5*(info1.height()-height);
-        x1 = 0.5*(info1.width()+width);
-        y1 = 0.5*(info1.height()+height);
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > subImageArray1 = 
-            imageArray1.subarray(Shape2(x0,y0), Shape2(x1,y1));
-  
-        x0 = 0.5*(info2.width()-width);
-        y0 = 0.5*(info2.height()-height);
-        x1 = 0.5*(info2.width()+width);
-        y1 = 0.5*(info2.height()+height);
-        vigra::MultiArray<2, vigra::RGBValue<unsigned char> > subImageArray2 = 
-            imageArray2.subarray(Shape2(x0,y0), Shape2(x1,y1));
-
-        // dissolve images
-        using namespace vigra::multi_math;
-        exportArray = 0.5*subImageArray1 + 0.5*subImageArray2;
-
-        // write image data to the file given as third argument
-        exportImage(srcImageRange(exportArray), vigra::ImageExportInfo(argv[3]));
-    }
-
-    else {
-        std::cout << "Error: Cannot dissolve color and grayscale image!\n";
+    catch (std::exception & e) 
+    {
+        // catch any errors that might have occurred and print their reason
+        std::cout << e.what() << std::endl;
+        return 1;
     }
     return 0;
 }

@@ -163,7 +163,20 @@ struct MultiBinaryMorphologyImpl<bool, bool>
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, T2, S2> dest, 
+                           double radius);
+    }
+    \endcode
+
+    \deprecatedAPI{multiBinaryErosion}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -174,7 +187,6 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -187,22 +199,24 @@ struct MultiBinaryMorphologyImpl<bool, bool>
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic binary erosion
-    multiBinaryErosion(srcMultiArrayRange(source), destMultiArray(dest), 3);
+    multiBinaryErosion(source, dest, 3);
     \endcode
 
-    \see vigra::discErosion()
+    \see vigra::discErosion(), vigra::multiGrayscaleErosion()
 */
 doxygen_overloaded_function(template <...> void multiBinaryErosion)
 
@@ -230,15 +244,26 @@ multiBinaryErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void multiBinaryErosion(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double radius)
+inline void
+multiBinaryErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                   pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryErosion( source.first, source.second, source.third,
-                                 dest.first, dest.second, radius );
+                        dest.first, dest.second, radius );
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+multiBinaryErosion(MultiArrayView<N, T1, S1> const & source,
+                   MultiArrayView<N, T2, S2> dest, 
+                   double radius)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiBinaryErosion(): shape mismatch between input and output.");
+    multiBinaryErosion( srcMultiArrayRange(source),
+                        destMultiArray(dest), radius );
+}
 
 /********************************************************/
 /*                                                      */
@@ -262,7 +287,20 @@ void multiBinaryErosion(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest,
+                            double radius);
+    }
+    \endcode
+
+    \deprecatedAPI{multiBinaryDilation}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -273,7 +311,6 @@ void multiBinaryErosion(
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -286,22 +323,24 @@ void multiBinaryErosion(
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic binary erosion
-    multiBinaryDilation(srcMultiArrayRange(source), destMultiArray(dest), 3);
+    multiBinaryDilation(source, dest, 3);
     \endcode
 
-    \see vigra::discDilation()
+    \see vigra::discDilation(), vigra::multiGrayscaleDilation()
 */
 doxygen_overloaded_function(template <...> void multiBinaryDilation)
 
@@ -329,13 +368,25 @@ multiBinaryDilation( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void multiBinaryDilation(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double radius)
+inline void 
+multiBinaryDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                    pair<DestIterator, DestAccessor> const & dest, double radius)
 {
     multiBinaryDilation( source.first, source.second, source.third,
-                                 dest.first, dest.second, radius );
+                         dest.first, dest.second, radius );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+multiBinaryDilation(MultiArrayView<N, T1, S1> const & source,
+                    MultiArrayView<N, T2, S2> dest,
+                    double radius)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiBinaryDilation(): shape mismatch between input and output.");
+    multiBinaryDilation( srcMultiArrayRange(source),
+                         destMultiArray(dest), radius );
 }
 
 /********************************************************/
@@ -357,7 +408,20 @@ void multiBinaryDilation(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest, 
+                              double sigma);
+    }
+    \endcode
+
+    \deprecatedAPI{multiGrayscaleErosion}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -368,7 +432,6 @@ void multiBinaryDilation(
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -381,22 +444,24 @@ void multiBinaryDilation(
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic grayscale erosion
-    multiGrayscaleErosion(srcMultiArrayRange(source), destMultiArray(dest), 3.0);
+    multiGrayscaleErosion(source, dest, 3.0);
     \endcode
 
-    \see vigra::discErosion()
+    \see vigra::discErosion(), vigra::multiBinaryErosion()
 */
 doxygen_overloaded_function(template <...> void multiGrayscaleErosion)
 
@@ -448,13 +513,25 @@ multiGrayscaleErosion( SrcIterator s, SrcShape const & shape, SrcAccessor src,
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void multiGrayscaleErosion(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double sigma)
+inline void
+multiGrayscaleErosion(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                      pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleErosion( source.first, source.second, source.third, 
-            dest.first, dest.second, sigma);
+                           dest.first, dest.second, sigma);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+multiGrayscaleErosion(MultiArrayView<N, T1, S1> const & source,
+                      MultiArrayView<N, T2, S2> dest, 
+                      double sigma)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiGrayscaleErosion(): shape mismatch between input and output.");
+    multiGrayscaleErosion( srcMultiArrayRange(source), 
+                           destMultiArray(dest), sigma);
 }
 
 /********************************************************/
@@ -476,7 +553,20 @@ void multiGrayscaleErosion(
            
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest,
+                               double sigma);
+    }
+    \endcode
+
+    \deprecatedAPI{multiGrayscaleDilation}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -487,7 +577,6 @@ void multiGrayscaleErosion(
 
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -500,22 +589,24 @@ void multiGrayscaleErosion(
 
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_morphology.hxx\>
+    <b>\#include</b> \<vigra/multi_morphology.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, unsigned char> dest(shape);
     ...
 
     // perform isotropic grayscale erosion
-    multiGrayscaleDilation(srcMultiArrayRange(source), destMultiArray(dest), 3.0);
+    multiGrayscaleDilation(source, dest, 3.0);
     \endcode
 
-    \see vigra::discErosion()
+    \see vigra::discDilation(), vigra::multiBinaryDilation()
 */
 doxygen_overloaded_function(template <...> void multiGrayscaleDilation)
 
@@ -564,18 +655,28 @@ void multiGrayscaleDilation( SrcIterator s, SrcShape const & shape, SrcAccessor 
 
 }
 
-
 template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void multiGrayscaleDilation(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, double sigma)
+inline void
+multiGrayscaleDilation(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                       pair<DestIterator, DestAccessor> const & dest, double sigma)
 {
     multiGrayscaleDilation( source.first, source.second, source.third, 
-            dest.first, dest.second, sigma);
+                            dest.first, dest.second, sigma);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+multiGrayscaleDilation(MultiArrayView<N, T1, S1> const & source,
+                       MultiArrayView<N, T2, S2> dest,
+                       double sigma)
+{
+    vigra_precondition(source.shape() == dest.shape(),
+        "multiGrayscaleDilation(): shape mismatch between input and output.");
+    multiGrayscaleDilation( srcMultiArrayRange(source), 
+                            destMultiArray(dest), sigma);
+}
 
 //@}
 

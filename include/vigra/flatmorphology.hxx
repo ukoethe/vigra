@@ -40,6 +40,7 @@
 #include <cmath>
 #include <vector>
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -66,7 +67,20 @@ namespace vigra {
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            int radius, float rank);
+    }
+    \endcode
+    
+    \deprecatedAPI{discRankOrderFilter}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -78,8 +92,6 @@ namespace vigra {
                             int radius, float rank)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -91,21 +103,28 @@ namespace vigra {
                             int radius, float rank)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w, h), dest(w, h);
     
+    // do median filtering (because rank=0.5) in a cricle with radius 10
+    discRankOrderFilter(src, dest, 10, 0.5);
+    \endcode
+
+    \deprecatedUsage{discRankOrderFilter}
     \code
     vigra::CImage src, dest;
     
     // do median filtering
     vigra::discRankOrderFilter(srcImageRange(src), destImage(dest), 10, 0.5);
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
@@ -120,6 +139,7 @@ namespace vigra {
     
     dest_accessor.set(value, dest_upperleft, x, y);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -129,7 +149,6 @@ namespace vigra {
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void discRankOrderFilter)
 
@@ -352,13 +371,27 @@ discRankOrderFilter(SrcIterator upperleft1,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-void
+inline void
 discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     pair<DestIterator, DestAccessor> dest,
                     int radius, float rank)
 {
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
+                        radius, rank);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+discRankOrderFilter(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    int radius, float rank)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "discRankOrderFilter(): shape mismatch between input and output.");
+    discRankOrderFilter(srcImageRange(src),
+                        destImage(dest),
                         radius, rank);
 }
 
@@ -370,12 +403,25 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Apply erosion (minimum) filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 0.0.
+    This is an abbreviation for the rank order filter with rank = 0.0.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discErosion(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discErosion}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -387,8 +433,6 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -400,7 +444,7 @@ discRankOrderFilter(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discErosion)
 
@@ -432,6 +476,18 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         radius, 0.0);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+discErosion(MultiArrayView<2, T1, S1> const & src,
+            MultiArrayView<2, T2, S2> dest,
+            int radius)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "discErosion(): shape mismatch between input and output.");
+    discErosion(srcImageRange(src), destImage(dest), radius);
+}
+
 /********************************************************/
 /*                                                      */
 /*                     discDilation                     */
@@ -440,12 +496,25 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Apply dilation (maximum) filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 1.0.
+    This is an abbreviation for the rank order filter with rank = 1.0.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discDilation(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2, S2> dest,
+                     int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discDilation}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -457,8 +526,6 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -470,7 +537,7 @@ discErosion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discDilation)
 
@@ -492,14 +559,26 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            int radius)
+             pair<DestIterator, DestAccessor> dest,
+             int radius)
 {
     vigra_precondition(radius >= 0, "discDilation(): Radius must be >= 0.");
     
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
                         radius, 1.0);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+discDilation(MultiArrayView<2, T1, S1> const & src,
+             MultiArrayView<2, T2, S2> dest,
+             int radius)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "discDilation(): shape mismatch between input and output.");
+    discDilation(srcImageRange(src), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -510,12 +589,25 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
 /** \brief Apply median filter with disc of given radius to image.
 
-    This is an abbreviation vor the rank order filter with rank = 0.5.
+    This is an abbreviation for the rank order filter with rank = 0.5.
     See \ref discRankOrderFilter() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        discMedian(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discMedian}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -527,8 +619,6 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -540,7 +630,7 @@ discDilation(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                     int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discMedian)
 
@@ -562,14 +652,26 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 void
 discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-            pair<DestIterator, DestAccessor> dest,
-            int radius)
+           pair<DestIterator, DestAccessor> dest,
+           int radius)
 {
     vigra_precondition(radius >= 0, "discMedian(): Radius must be >= 0.");
     
     discRankOrderFilter(src.first, src.second, src.third,
                         dest.first, dest.second,
                         radius, 0.5);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+discMedian(MultiArrayView<2, T1, S1> const & src,
+           MultiArrayView<2, T2, S2> dest,
+           int radius)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "discMedian(): shape mismatch between input and output.");
+    discMedian(srcImageRange(src), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -594,7 +696,22 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
+        void
+        discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
+                                    MultiArrayView<2, TM, SM> const & mask,
+                                    MultiArrayView<2, T2, S2> dest,
+                                    int radius, float rank);
+    }
+    \endcode
+    
+    \deprecatedAPI{discRankOrderFilterWithMask}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -608,8 +725,6 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     int radius, float rank)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -623,12 +738,22 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                                     int radius, float rank)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/flatmorphology.hxx\><br>
     Namespace: vigra
-    
+
+    \code
+    MultiArray<2, unsigned char> src(w, h), dest(w, h), mask(w, h);
+    ...
+    // do median filtering (since rank=0.5) in a circle with radius 10
+    // but change only the pixels under the mask
+    discRankOrderFilterWithMask(src, mask, dest, 10, 0.5);
+    \endcode
+
+    \deprecatedUsage{discRankOrderFilterWithMask}
     \code
     vigra::CImage src, dest, mask;
     
@@ -636,9 +761,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra::discRankOrderFilterWithMask(srcImageRange(src), 
                                 maskImage(mask), destImage(dest), 10, 0.5);
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcIterator src_upperleft;
     DestIterator dest_upperleft;
@@ -657,6 +780,7 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     
     dest_accessor.set(value, dest_upperleft, x, y);
     \endcode
+    \deprecatedEnd
     
     <b> Preconditions:</b>
     
@@ -666,7 +790,6 @@ discMedian(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     (rank >= 0.0) && (rank <= 1.0)
     radius >= 0
     \endcode
-    
 */
 doxygen_overloaded_function(template <...> void discRankOrderFilterWithMask)
 
@@ -930,16 +1053,33 @@ discRankOrderFilterWithMask(SrcIterator upperleft1,
 template <class SrcIterator, class SrcAccessor,
           class MaskIterator, class MaskAccessor,
           class DestIterator, class DestAccessor>
-void
+inline void
 discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             pair<MaskIterator, MaskAccessor> mask,
                             pair<DestIterator, DestAccessor> dest,
                             int radius, float rank)
 {
     discRankOrderFilterWithMask(src.first, src.second, src.third,
-                        mask.first, mask.second,
-                        dest.first, dest.second,
-                        radius, rank);
+                                mask.first, mask.second,
+                                dest.first, dest.second,
+                                radius, rank);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
+inline void
+discRankOrderFilterWithMask(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, TM, SM> const & mask,
+                            MultiArrayView<2, T2, S2> dest,
+                            int radius, float rank)
+{
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discRankOrderFilterWithMask(): shape mismatch between input and output.");
+    discRankOrderFilterWithMask(srcImageRange(src),
+                                maskImage(mask),
+                                destImage(dest),
+                                radius, rank);
 }
 
 /********************************************************/
@@ -951,12 +1091,27 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Apply erosion (minimum) filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 0.0. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
+        void 
+        discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, TM, SM> const & mask,
+                            MultiArrayView<2, T2, S2> dest,
+                            int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discErosionWithMask}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -970,8 +1125,6 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -985,7 +1138,7 @@ discRankOrderFilterWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discErosionWithMask)
 
@@ -1019,9 +1172,23 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     vigra_precondition(radius >= 0, "discErosionWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(src.first, src.second, src.third,
-                        mask.first, mask.second,
-                        dest.first, dest.second,
-                        radius, 0.0);
+                                mask.first, mask.second,
+                                dest.first, dest.second,
+                                radius, 0.0);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
+inline void 
+discErosionWithMask(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, TM, SM> const & mask,
+                    MultiArrayView<2, T2, S2> dest,
+                    int radius)
+{
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discErosionWithMask(): shape mismatch between input and output.");
+    discErosionWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -1033,12 +1200,27 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Apply dilation (maximum) filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 1.0. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
+        void 
+        discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
+                             MultiArrayView<2, TM, SM> const & mask,
+                             MultiArrayView<2, T2, S2> dest,
+                             int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discDilationWithMask}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1052,8 +1234,6 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -1067,7 +1247,7 @@ discErosionWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discDilationWithMask)
 
@@ -1076,10 +1256,10 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
 discDilationWithMask(SrcIterator upperleft1, 
-                    SrcIterator lowerright1, SrcAccessor sa,
-                    MaskIterator upperleftm, MaskAccessor mask,
-                    DestIterator upperleft2, DestAccessor da,
-                    int radius)
+                     SrcIterator lowerright1, SrcAccessor sa,
+                     MaskIterator upperleftm, MaskAccessor mask,
+                     DestIterator upperleft2, DestAccessor da,
+                     int radius)
 {
     vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
     
@@ -1094,16 +1274,30 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
 discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                    pair<MaskIterator, MaskAccessor> mask,
-                    pair<DestIterator, DestAccessor> dest,
-                    int radius)
+                     pair<MaskIterator, MaskAccessor> mask,
+                     pair<DestIterator, DestAccessor> dest,
+                     int radius)
 {
     vigra_precondition(radius >= 0, "discDilationWithMask(): Radius must be >= 0.");
     
     discRankOrderFilterWithMask(src.first, src.second, src.third,
-                        mask.first, mask.second,
-                        dest.first, dest.second,
-                        radius, 1.0);
+                                mask.first, mask.second,
+                                dest.first, dest.second,
+                                radius, 1.0);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
+inline void 
+discDilationWithMask(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, TM, SM> const & mask,
+                     MultiArrayView<2, T2, S2> dest,
+                     int radius)
+{
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discDilationWithMask(): shape mismatch between input and output.");
+    discDilationWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 /********************************************************/
@@ -1115,12 +1309,27 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 /** \brief Apply median filter with disc of given radius to image
     using a mask.
     
-    This is an abbreviation vor the masked rank order filter with 
+    This is an abbreviation for the masked rank order filter with 
     rank = 0.5. See \ref discRankOrderFilterWithMask() for more information.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TM, class SM,
+                  class T2, class S2>
+        void 
+        discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, TM, SM> const & mask,
+                           MultiArrayView<2, T2, S2> dest,
+                           int radius);
+    }
+    \endcode
+    
+    \deprecatedAPI{discMedianWithMask}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -1134,8 +1343,6 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-    
-    
     group arguments (use in conjunction with \ref ArgumentObjectFactories):
     \code
     namespace vigra {
@@ -1149,7 +1356,7 @@ discDilationWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             int radius)
     }
     \endcode
-
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void discMedianWithMask)
 
@@ -1176,9 +1383,9 @@ template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void 
 discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
-                    pair<MaskIterator, MaskAccessor> mask,
-                    pair<DestIterator, DestAccessor> dest,
-                    int radius)
+                   pair<MaskIterator, MaskAccessor> mask,
+                   pair<DestIterator, DestAccessor> dest,
+                   int radius)
 {
     vigra_precondition(radius >= 0, "discMedianWithMask(): Radius must be >= 0.");
     
@@ -1186,6 +1393,20 @@ discMedianWithMask(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                         mask.first, mask.second,
                         dest.first, dest.second,
                         radius, 0.5);
+}
+
+template <class T1, class S1,
+          class TM, class SM,
+          class T2, class S2>
+inline void 
+discMedianWithMask(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, TM, SM> const & mask,
+                   MultiArrayView<2, T2, S2> dest,
+                   int radius)
+{
+    vigra_precondition(src.shape() == mask.shape() && src.shape() == dest.shape(),
+        "discMedianWithMask(): shape mismatch between input and output.");
+    discMedianWithMask(srcImageRange(src), maskImage(mask), destImage(dest), radius);
 }
 
 //@}

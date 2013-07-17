@@ -5,9 +5,11 @@ SET(TARGETS
     invert_explicitly
     resize
     smooth
+    palette
     profile
     pyramid
     edge
+    boundarytensor
     watershed
     weightedWatersheds
     voronoi

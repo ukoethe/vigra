@@ -1,0 +1,141 @@
+
+The Why and How of Axistags in Vigranumpy
+=========================================
+
+History of the problem
+----------------------
+
+A Fortran array declaration
+
+    real f(20,10)
+
+is compiled such that the elements of the first index are consecutive in memory. In contrast, a C array declaration 
+
+    float c[20][10];
+
+places the elements of the last index consecutive in memory. The two possibilities are commonly referred to as "Fortran order" and "C order", but we will see that these terms are actually ambiguous because their meaning depends on what the array is used for.
+
+Arrays as Matrices
+------------------
+
+When the array represents a matrix, users require the syntax to conform to the mathematical syntax conventions (in order to avoid bugs when typing formulas). In mathematics, m_{ij} means that the first index i refers to rows, and the second index j refers to columns. Thus, Fortran's f(i, j) and C's c[i][j] have exactly the same meaning, but the memory layouts of the two matrices differ: Since in Fortran the first index changes quickest, this is referred to as the "column major" format (the elements of a column are consecutive in memory). In contrast, C uses the "row major" format (the elements of a row are consecutive in memory).
+
+In short: When the array is a matrix, the syntax is the same, but the memory layouts differ.
+
+Arrays as Images
+----------------
+
+When the array represents an image, users require the memory layout to be the same as in the image files which store the data (in order to ensure fast I/O). All image formats (JPEG, TIFF, PNG, ...) follow the convention of analog television to scan an image left to right, then top to bottom. Consequently, the horizontal pixels are consecutive in memory, and therefore Fortran (where the first axis changes fastest) must use the syntax f(x, y), whereas C (where the last axis changes fastest) must use c[y][x].
+
+In short: When the array is an image, the memory layout is the same, but the syntax differs.
+
+Thus, we have four basic conventions: FM and CM for matrices, FI and CI for images. The meaning of the terms "Fortran order" and "C order" depends on whether we are talking about matrices (where they refer to FM and CM, i.e. a difference in memory layout) or images (where they refer to FI and CI, i.e. a difference in index order).
+
+Multi-Dimensional Arrays
+------------------------
+
+When we add more dimensions, the confusion increases, because there are no universally accepted memory and indexing conventions. For example, an RGB image can be stored in "interleaved format"
+
+    RGB RGB RGB ...
+    RGB RGB RGB ...
+    :
+    :
+
+where the color values of each pixel are consecutive in memory, or in "banded format"
+
+    R R R ...
+    R R R ...
+    :
+    G G G ...
+    G G G ...
+    :
+    B B B ...
+    B B B ...
+    :
+    
+where we have a separate scalar image for each color. In Fortran, interleaved and banded images must be indexed as f(color, x, y) and f(x, y, color) respectively, whereas in C we must use c[y][x][color] or c[color][y][x].
+
+VIGRA and numpy
+---------------
+
+From the beginning, VIGRA adopted Fortran conventions, i.e. its default behavior is according to FM and FI (this is possible because VIGRA uses array classes, where the mapping from indices to memory is encapsulated in the appropriate way).
+
+In contrast, numpy adopted C conventions, i.e. its default behavior is CM and CI. 
+
+In addition, both packages provide array views which keep the memory layout intact, but change the index order. Thus, VIGRA also supports the CI convention, and numpy also supports FI. Note that changing the index order is only allowed for images. Matrices always use the fixed index order dictated by mathematics where transpose(m) is a well-defined mathematical operation (which just happens to revert the index order). Therefore, the existence of array views does not imply that VIGRA supports CM or numpy supports FM.
+
+However, numpy's array constructor provides an argument 'order' which can take the values 'C' (default) and 'F' to construct arrays with C or Fortran memory order. By this mechanism, numpy also supports the FM convention (and thus all four basic possibilities).
+
+But here is the catch: When you get a numpy array view, you have no way to tell which convention it adheres to. It simply doesn't contain this information.
+
+The usual solution to this problem is to enforce a fixed axis order in the entire application, but this workaround breaks down when the application must simultaneously handle arrays with different meaning (e.g. sequences 'xyt' vs. volumes 'xyz' vs. multi-spectral images 'xyc') or when the application uses modules with conflicting requirements (e.g. numpy's 'yx' vs. PyQt's 'xy').
+
+Vigranumpy Axistags
+-------------------
+
+This is precisely where axistags enter: They attach information to array views that allows the user to figure out which convention applies to a given view. Thus, the primary purpose of axistags is entirely passive - they just keep track of how users manipulate the axis order when creating new array views. The main use case of axistags is therefore to re-adjust the axis order whenever an algorithm has specific order requirements. Using axistags, one can easily ensure that arrays conform to the desired order at the beginning of every algorithm. Consider the following example: Let 'image' be a scalar 2D image with axistags. Then we can ask for the image's width and height independently of the current axis order:
+
+    width  = image.width    # this works for any axis order!
+    height = image.height
+    
+Now suppose we want to execute a numpy algorithm which expects the [y, x] ordering. We simply transpose the array before calling the algorithm like this:
+
+    # adjust the axis order
+    numpy_image = image.transposeToNumpyOrder()
+    
+    # execute the algorithm
+    for y in xrange(height):
+        for x in xrange(width):
+            numpy_image[y, x] = ...   # note the index order
+            
+When we want to execute a VIGRA algorithm which expects the [x, y] ordering, we do
+
+    # adjust the axis order
+    vigra_image = image.transposeToVigraOrder()
+    
+    # execute the algorithm
+    for y in xrange(height):
+        for x in xrange(width):
+            vigra_image[x, y] = ...   # note the index order
+
+Notice that the order of the loops (the inner loop runs over x) is the same in both cases: To maximize cache locality and therefore speed, the inner loop should operate on consecutive memory cells. Since image memory order derives from file memory order (where the x-axis is consecutive), and array views can never change the memory order, this loop ordering is always preferable, regardless of the index order.
+
+Vigranumpy Conventions
+----------------------
+
+To handle axis meaning in a well-defined way, vigranumpy adopts the following conventions, which are designed such that The Right Thing (TM) should happen automatically, at least most of the time:
+
+1. When the array represents a matrix, no axistags are allowed because the index order has a fixed semantic meaning and must not be messed around with. In vigranumpy, this requirement is enforced by an assertion
+
+    vigra_precondition( !matrix.axistags(), "matrix must not have axistags");
+    
+in the C++ gluecode functions. This applies, for example, to the feature matrices passed to a random forest and to unsupervised learning algorithms. If desired, we can introduce additional axistags for features and samples in the future because this is a common use case.
+
+2. When arrays represent image data with up to five dimensions, axistags should be used. To sort indices according to the requirements of the next algorithm to be executed, the appropriate convenience function should be called (many more convenience functions are documented in VigraArray):
+
+    numpy_array   = array.transposeToNumpyOrder()    # gives 'yx', 'zyx' etc. 
+    vigra_array   = array.transposeToVigraOrder()    # gives 'xy', 'xyz' etc.
+    ilastik_array = array.view5D()                   # gives 'txyzc' (inserts singleton axes if necessary)
+    user_defined  = array.withAxes('y', 'x', 't')    # specify order explicitly (inserts singleton axes if necessary)
+    
+Algorithms with special order requirements can then check for the correct order in an assertion. 
+
+3. The function 'vigra.taggedView()' allows to attach axistags to an array very conveniently. For example, when you know from the context that the axes of a given array are to be interpreted as 'xyzt' in that order, you can make this knowledge explicit by calling
+
+    tagged_array = vigra.taggedView(array, 'xyzt')
+
+4. When you call a vigranumpy function that executes a C++ VIGRA function, 'image.transposeToVigraOrder()' will be invoked automatically on the input arrays, and the original axis order will be restored in the output arrays.
+
+5. When you call a vigranumpy function that is forwarded to a numpy function (in particular, a ufunc like '+', '-', 'sqrt' etc.), 'image.transposeToNumpyOrder()' will be invoked automatically on the input arrays, and the original axis order will be restored in the output arrays.
+
+6. When vigranumpy writes arrays to a file, it will always order the axes such that the memory order conforms to the established file conventions (e.g. values along the x-axis are consecutive). In particular, when you use 'vigra.impex.writeHDF5()' to create HDF5 datasets, 'array.transposeToNumpyOrder()' will be called before writing the data (this is a consequence of item 5, because 'writeHDF5()' eventually forwards the actual work to h5py). In addition, the axistags (in numpy order) will be stored in a dataset attribute 'axistags'.
+
+7. When vigranumpy reads data from a file, it preserves the file's memory order and attaches the appropriate axistags. In case of images, the axis order follows from the usual file conventions. If you call 'vigra.impex.readHDF5()' to read HDF5, the axistags will be read from the attribute 'axistags' (if present). Upon return, the read functions automatically call 'array.transposeToVigraOrder()', but this only changes the index order, not the memory layout. This latter convention was adopted to ensure that the default index order is the same in the Python and C++ versions of VIGRA. 
+
+8. When you display an image via 'image.imshow()' or 'image.show()', the axes are re-ordered automatically such that the image is displayed upright (i.e. x goes to the right, y goes down). If you want to override this (i.e. want to enforce transposed display), you can remove the axistags by calling 'image.view(numpy.ndarray)'.
+
+Item 4. has two important consequences one should be aware of:
+
+* When a function needs parameters that depend on the axis order (such as the new shape in 'vigra.sampling.resize()' or axis-dependent sigmas in 'vigra.filters.gaussianSmoothing()'), these parameters must be re-ordered on the C++ side in the same way as the axes. This is achieved by a call to 'NumpyArray::permuteLikewise()' in the C++ gluecode functions.
+
+* When a vigranumpy function computes a gradient image, the gradient vector elements will always be stored in the order (dx, dy, dz), regardless of the array's original axis ordering. The same applies to any function producing vector-valued elements whose interpretation depends on the axis meaning (e.g. the Hessian matrix and the structure tensor). For example, the output of the Hessian is ordered as (dxx, dxy, dxz, dyy, dyz, dzz).

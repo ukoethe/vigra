@@ -36,6 +36,10 @@
 #ifndef VIGRA_NUMPY_ARRAY_TAGGEDSHAPE_HXX
 #define VIGRA_NUMPY_ARRAY_TAGGEDSHAPE_HXX
 
+#ifndef NPY_NO_DEPRECATED_API
+# define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif 
+
 #include <string>
 #include "array_vector.hxx"
 #include "python_utility.hxx"

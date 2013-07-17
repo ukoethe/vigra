@@ -40,6 +40,7 @@
 #include "utilities.hxx"
 #include "iteratortraits.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -149,17 +150,34 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
 /** \brief Write a value to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image.
-    It uses an accessor to access the pixel data.    
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
     cases are automatically distinguished when <tt>FunctorTraits<FUNCTOR>::isInitializer</tt>
     yields <tt>VigraTrueType</tt>. Since the functor is passed by <tt>const</tt> reference, its 
     <tt>operator()</tt> must be const, and its internal state may need to be <tt>mutable</tt>.
+    
+    Function \ref initMultiArray() implements the same functionality for arbitrary dimensional
+    arrays. In many situations, the assignment functions of \ref vigra::MultiArrayView offer
+    a simpler and more readable alternative to the init functions.
 
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S, class VALUETYPE>
+        void
+        initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v);
+        
+        template <class T, class S, class FUNCTOR>
+        void
+        initImage(MultiArrayView<2, T, S> img, FUNCTOR const & v);
+    }
+    \endcode
+    
+    \deprecatedAPI{initImage}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -171,7 +189,6 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
                        Accessor a, FUNCTOR const & v);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -182,6 +199,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         void initImage(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -189,16 +207,22 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     Namespace: vigra
     
     Initialize with a constant:
-    
     \code
-    vigra::BImage img(100, 100);
+    MultiArray<2, unsigned char> img(100, 100);
     
     // init the image with the value 128
-    vigra::initImage(destImageRange(img), 128);
+    initImage(img, 128);
+    
+    // init the interior with the value 1
+    initImage(img.subarray(Shape2(10), Shape2(-10)), 1);
+    
+    // equivalent to
+    img = 128;
+    img.init(128);
+    img.subarray(Shape2(10), Shape2(-10)) = 1;
     \endcode
 
     Initialize with a functor:
-    
     \code
     struct Counter {
         Counter() : count(0) {}
@@ -208,15 +232,37 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
         mutable int count;
     };
     
-    vigra::IImage img(100, 100);
+    MultiArray<2, int> img(100, 100);
         
+    // write the current count in every pixel
+    initImage(img, Counter());
+    
+    // equivalent to
+    #include <vigra/algorithm.hxx>
+    
+    linearSequence(img.begin(), img.end());
+    \endcode
+
+    \deprecatedUsage{initImage}
+    \code
+    vigra::BImage img(100, 100);
+    
+    // init the image with the value 128
+    vigra::initImage(destImageRange(img), 128);
+
+    // Initialize with a functor:
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
+    
+        mutable int count;
+    };
+    
     // write the current count in every pixel
     vigra::initImage(destImageRange(img), Counter());
     \endcode
-    
-
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft, lowerright;
     ImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -226,7 +272,7 @@ initLineFunctorIf(DestIterator d, DestIterator dend, DestAccessor dest,
     
     accessor.set(v, ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImage)
 
@@ -245,11 +291,17 @@ initImage(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class VALUETYPE>
-inline 
-void
+inline void
 initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & v)
 {
     initImage(img.first, img.second, img.third, v);
+}
+    
+template <class T, class S, class VALUETYPE>
+inline void
+initImage(MultiArrayView<2, T, S> img, VALUETYPE const & v)
+{
+    initImage(destImageRange(img), v);
 }
     
 /********************************************************/
@@ -261,12 +313,22 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
 /** \brief Write the result of a functor call to every pixel in an image or rectangular ROI.
 
     This function can be used to init the image by calling the given 
-    functor for each pixel. It uses an accessor to access the pixel data. The functor is 
+    functor for each pixel. The functor is 
     passed by reference, so that its internal state can be updated in each call.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S, class FUNCTOR>
+        void
+        initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f);
+    }
+    \endcode
+    
+    \deprecatedAPI{initImageWithFunctor}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class FUNCTOR>
@@ -275,7 +337,6 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
                   Accessor a,  FUNCTOR & f);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -284,12 +345,35 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
         initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
+
+    \code
+    struct Counter {
+        Counter() : count(0) {}
+        
+        int operator()() const { return count++; }
     
+        int count;
+    };
+    
+    MultiArray<2, int> img(100, 100);
+        
+    // write the current count in every pixel
+    Counter counter;
+    initImageWithFunctor(img, counter);
+    
+    // equivalent to
+    #include <vigra/algorithm.hxx>
+    
+    linearSequence(img.begin(), img.end());
+    \endcode
+
+    \deprecatedUsage{initImageWithFunctor}
     \code
     struct Counter {
         Counter() : count(0) {}
@@ -305,9 +389,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     Counter counter;
     vigra::initImageWithFunctor(destImageRange(img), counter);
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft, lowerright;
     ImageIterator::row_iterator ix = upperleft.rowIterator();
@@ -317,7 +399,7 @@ initImage(triple<ImageIterator, ImageIterator, Accessor> img, VALUETYPE const & 
     
     accessor.set(f(), ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageWithFunctor)
 
@@ -335,11 +417,17 @@ initImageWithFunctor(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class FUNCTOR>
-inline 
-void
+inline void
 initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR & f)
 {
     initImageWithFunctor(img.first, img.second, img.third, f);
+}
+    
+template <class T, class S, class FUNCTOR>
+inline void
+initImageWithFunctor(MultiArrayView<2, T, S> img, FUNCTOR & f)
+{
+    initImageWithFunctor(destImageRange(img), f);
 }
     
 /********************************************************/
@@ -351,7 +439,6 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
 /** \brief Write value to pixel in the image if mask is true.
 
     This function can be used to init a region-of-interest of the image.
-    It uses an accessor to access the pixel data.
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
@@ -361,7 +448,28 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S, 
+                  class TM, class SM,
+                  class VALUETYPE>
+        void
+        initImageIf(MultiArrayView<2, T, S> img, 
+                    MultiArrayView<2, TM, SM> const & mask,
+                    VALUETYPE const & v);
+                    
+        template <class T, class S, 
+                  class TM, class SM,
+                  class FUNCTOR>
+        void
+        initImageIf(MultiArrayView<2, T, S> img, 
+                    MultiArrayView<2, TM, SM> const & mask,
+                    FUNCTOR const & v);
+    }
+    \endcode     
+    \deprecatedAPI{initImageIf}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, 
@@ -378,8 +486,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
                          MaskImageIterator mask_upperleft, MaskAccessor ma,
                          FUNCTOR const & v);
     }
-    \endcode    
-    
+    \endcode
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -398,12 +505,24 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
                          FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/initimage.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, RGBValue<unsigned char> >  img(100, 100),
+    MultiArray<2, unsigned char>             mask(100, 100);
+    ... // init the ROI mask
     
+    // set the ROI to one
+    initImageIf(img, mask,
+                NumericTraits<RGBValue<unsigned char> >::one());
+    \endcode
+
+    \deprecatedUsage{initImageIf}
     \code
     vigra::BImage img(100, 100);
     vigra::BImage mask(100, 100);
@@ -413,9 +532,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
                 maskImage(mask),
                 vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     ImageIterator upperleft, lowerright;
     MaskImageIterator mask_upperleft;
@@ -428,7 +545,7 @@ initImageWithFunctor(triple<ImageIterator, ImageIterator, Accessor> img, FUNCTOR
     
     if(mask_accessor(mx)) accessor.set(v, ix); 
     \endcode
-    
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageIf)
 
@@ -454,13 +571,25 @@ initImageIf(ImageIterator upperleft, ImageIterator lowerright, Accessor a,
 template <class ImageIterator, class Accessor, 
           class MaskImageIterator, class MaskAccessor,
           class VALUETYPE>
-inline 
-void
+inline void
 initImageIf(triple<ImageIterator, ImageIterator, Accessor> img, 
             pair<MaskImageIterator, MaskAccessor> mask,
             VALUETYPE const & v)
 {
     initImageIf(img.first, img.second, img.third, mask.first, mask.second, v);
+}
+    
+template <class T, class S, 
+          class TM, class SM,
+          class VALUETYPE>
+inline void
+initImageIf(MultiArrayView<2, T, S> img, 
+            MultiArrayView<2, TM, SM> const & mask,
+            VALUETYPE const & v)
+{
+    vigra_precondition(img.shape() == mask.shape(),
+        "initImageIf(): shape mismatch between input and mask.");
+    initImageIf(destImageRange(img), maskImage(mask), v);
 }
     
 /********************************************************/
@@ -472,7 +601,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
 /** \brief Write value to the specified border pixels in the image.
 
     A pixel is initialized if its distance to the border 
-    is at most 'borderwidth'. It uses an accessor to access the pixel data.
+    is at most 'borderwidth'. 
     
     The initial value can either be a constant of appropriate type (compatible with 
     the destination's value_type), or a functor with compatible result_type. These two 
@@ -482,7 +611,23 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S, class VALUETYPE>
+        void
+        initImageBorder(MultiArrayView<2, T, S> img, 
+                        int border_width, VALUETYPE const & v);
+                        
+        template <class T, class S, class FUNCTOR>
+        void
+        initImageBorder(MultiArrayView<2, T, S> img, 
+                        int border_width, FUNCTOR const & v);
+    }
+    \endcode
+    
+    \deprecatedAPI{initImageBorder}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class ImageIterator, class Accessor, class VALUETYPE>
@@ -494,7 +639,6 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                              int border_width, FUNCTOR const & v);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -507,6 +651,7 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
                              int border_width, FUNCTOR const & v);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
@@ -514,17 +659,25 @@ initImageIf(triple<ImageIterator, ImageIterator, Accessor> img,
     Namespace: vigra
     
     \code
+    #include <vigra/random.hxx>
+    
+    MultiArray<2, int> img(100, 100);
+    
+    // fill a border of 5 pixels with random numbers
+    initImageBorder(img, 5, MersenneTwister());
+    \endcode
+
+    \deprecatedUsage{initImageBorder}
+    \code
     vigra::BImage img(100, 100);
     
     // zero a border of 5 pixel
     vigra::initImageBorder(destImageRange(img),
                     5, vigra::NumericTraits<vigra::BImage::PixelType>::zero());
     \endcode
-
     <b> Required Interface:</b>
-    
-    see \ref initImage()
-    
+    <br/>see \ref initImage()
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void initImageBorder)
 
@@ -547,12 +700,19 @@ initImageBorder(ImageIterator upperleft, ImageIterator lowerright,
 }
     
 template <class ImageIterator, class Accessor, class VALUETYPE>
-inline 
-void
+inline void
 initImageBorder(triple<ImageIterator, ImageIterator, Accessor> img, 
                 int border_width, VALUETYPE const & v)
 {
     initImageBorder(img.first, img.second, img.third, border_width, v);
+}
+    
+template <class T, class S, class VALUETYPE>
+inline void
+initImageBorder(MultiArrayView<2, T, S> img, 
+                int border_width, VALUETYPE const & v)
+{
+    initImageBorder(destImageRange(img), border_width, v);
 }
     
 //@}

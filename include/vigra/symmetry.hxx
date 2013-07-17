@@ -40,6 +40,7 @@
 #include "numerictraits.hxx"
 #include "stdimage.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -69,7 +70,20 @@ namespace vigra {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                double scale);
+    }
+    \endcode
+
+    \deprecatedAPI{radialSymmetryTransform}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -80,7 +94,6 @@ namespace vigra {
                                 double scale)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -93,12 +106,35 @@ namespace vigra {
                double scale)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
     <b>\#include</b> \<vigra/symmetry.hxx\><br>
     Namespace: vigra
 
+    \code
+    MultiArray<2, unsigned char>  src(w,h), centers(w,h);
+    MultiArray<2, float>          symmetry(w,h);
+
+    // use edge detection filters at various scales
+    for(double scale = 2.0; scale <= 8.0; scale *= 2.0)
+    {
+        MultiArray<2, float> tmp(w,h);
+
+        // find centers of symmetry
+        radialSymmetryTransform(src, tmp, scale);
+
+        symmetry += tmp;
+    }
+
+    // mark centers of symmetry
+    centers.init(128);
+    localMinima(symmetry, centers, 0);
+    localMaxima(symmetry, centers, 255);
+    \endcode
+
+    \deprecatedUsage{radialSymmetryTransform}
     \code
     vigra::BImage src(w,h), centers(w,h);
     vigra::FImage symmetry(w,h);
@@ -122,9 +158,7 @@ namespace vigra {
     localMinima(srcImageRange(symmetry), destImage(centers), 0);
     localMaxima(srcImageRange(symmetry), destImage(centers), 255);
     \endcode
-
     <b> Required Interface:</b>
-
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -137,6 +171,7 @@ namespace vigra {
 
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void radialSymmetryTransform)
 
@@ -245,17 +280,29 @@ radialSymmetryTransform(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline
-void radialSymmetryTransform(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-       pair<DestIterator, DestAccessor> dest,
-       double scale)
+inline void
+radialSymmetryTransform(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        double scale)
 {
     radialSymmetryTransform(src.first, src.second, src.third,
                             dest.first, dest.second,
-                scale);
+                            scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+radialSymmetryTransform(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "radialSymmetryTransform(): shape mismatch between input and output.");
+    radialSymmetryTransform(srcImageRange(src),
+                            destImage(dest),
+                            scale);
+}
 
 //@}
 

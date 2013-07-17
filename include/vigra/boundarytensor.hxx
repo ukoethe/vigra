@@ -45,6 +45,7 @@
 #include "combineimages.hxx"
 #include "numerictraits.hxx"
 #include "convolution.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -382,7 +383,20 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
+                            MultiArrayView<2, T2, S2> dest,
+                            double scale, unsigned int xorder, unsigned int yorder);
+    }
+    \endcode
+
+    \deprecatedAPI{rieszTransformOfLOG}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -392,8 +406,6 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
                                  double scale, unsigned int xorder, unsigned int yorder);
     }
     \endcode
-
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -404,19 +416,20 @@ oddPolarFilters(SrcIterator supperleft, SrcIterator slowerright, SrcAccessor src
                                  double scale, unsigned int xorder, unsigned int yorder);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br>
+    Namespace: vigra
 
     \code
-    FImage impulse(17,17), res(17, 17);
+    MultiArrayView<2, double> impulse(17,17), res(17, 17);
     impulse(8,8) = 1.0;
 
     // calculate the impulse response of the first order Riesz transform in x-direction
-    rieszTransformOfLOG(srcImageRange(impulse), destImage(res), 2.0, 1, 0);
+    rieszTransformOfLOG(impulse, res, 2.0, 1, 0);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void rieszTransformOfLOG)
 
@@ -529,6 +542,20 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
     rieszTransformOfLOG(src.first, src.second, src.third, dest.first, dest.second,
                         scale, xorder, yorder);
 }
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+rieszTransformOfLOG(MultiArrayView<2, T1, S1> const & src,
+                    MultiArrayView<2, T2, S2> dest,
+                    double scale, unsigned int xorder, unsigned int yorder)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "rieszTransformOfLOG(): shape mismatch between input and output.");
+    rieszTransformOfLOG(srcImageRange(src), destImage(dest),
+                        scale, xorder, yorder);
+}
+
 //@}
 
 /** \addtogroup TensorImaging Tensor Image Processing
@@ -560,7 +587,20 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        boundaryTensor(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale);
+    }
+    \endcode
+
+    \deprecatedAPI{boundaryTensor}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -570,7 +610,6 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -581,18 +620,19 @@ void rieszTransformOfLOG(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                             double scale);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br/>
+    Namespace: vigra
 
     \code
-    FImage img(w,h);
-    FVector3Image bt(w,h);
+    MultiArray<2, float>               img(w,h);
+    MultiArray<2, TinyVector<float, 3> bt(w,h);
     ...
-    boundaryTensor(srcImageRange(img), destImage(bt), 2.0);
+    boundaryTensor(img, bt, 2.0);
     \endcode
-
 */
 doxygen_overloaded_function(template <...> void boundaryTensor)
 
@@ -624,6 +664,19 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    dest.first, dest.second, scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+boundaryTensor(MultiArrayView<2, T1, S1> const & src,
+               MultiArrayView<2, T2, S2> dest,
+               double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "boundaryTensor(): shape mismatch between input and output.");
+    boundaryTensor(srcImageRange(src),
+                   destImage(dest), scale);
+}
+
 /** \brief Boundary tensor variant.
 
     This function implements a variant of the boundary tensor where the 
@@ -633,9 +686,23 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 
     <b> Declarations:</b>
 
-    <b>\#include</b> \<vigra/boundarytensor.hxx\>
+    <b>\#include</b> \<vigra/boundarytensor.hxx\><br/>
+    Namespace: vigra
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale);
+    }
+    \endcode
+
+    \deprecatedAPI{boundaryTensor1}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -645,7 +712,6 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              double scale);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -656,6 +722,7 @@ void boundaryTensor(triple<SrcIterator, SrcIterator, SrcAccessor> src,
                              double scale);
     }
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void boundaryTensor1)
 
@@ -685,6 +752,19 @@ void boundaryTensor1(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     boundaryTensor1(src.first, src.second, src.third,
                     dest.first, dest.second, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+boundaryTensor1(MultiArrayView<2, T1, S1> const & src,
+                MultiArrayView<2, T2, S2> dest,
+                double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "boundaryTensor1(): shape mismatch between input and output.");
+    boundaryTensor1(srcImageRange(src),
+                    destImage(dest), scale);
 }
 
 /********************************************************/
@@ -793,6 +873,21 @@ void boundaryTensor3(triple<SrcIterator, SrcIterator, SrcAccessor> src,
 {
     boundaryTensor3(src.first, src.second, src.third,
                     even.first, even.second, odd.first, odd.second, scale);
+}
+
+template <class T1, class S1,
+          class T2E, class S2Even,
+          class T2O, class S2Odd>
+inline
+void boundaryTensor3(MultiArrayView<2, T1, S1> const & src,
+                     MultiArrayView<2, T2E, S2Even> even,
+                     MultiArrayView<2, T2O, S2Odd> odd,
+                     double scale)
+{
+    vigra_precondition(src.shape() == even.shape() && src.shape() == odd.shape(),
+        "boundaryTensor3(): shape mismatch between input and output.");
+    boundaryTensor3(srcImageRange(src),
+                    destImage(even), destImage(odd), scale);
 }
 
 //@}

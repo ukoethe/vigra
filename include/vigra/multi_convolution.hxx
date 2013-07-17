@@ -46,6 +46,7 @@
 #include "navigator.hxx"
 #include "metaprogramming.hxx"
 #include "multi_pointoperators.hxx"
+#include "multi_math.hxx"
 #include "functorexpression.hxx"
 #include "tinyvector.hxx"
 #include "algorithm.hxx"
@@ -233,7 +234,8 @@ struct multiArrayScaleParam
 
 /** \brief  Options class template for convolutions.
  
-  <b>\#include</b> \<vigra/multi_convolution.hxx\>
+  <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+  Namespace: vigra
   
   This class enables the calculation of scale space convolutions
   such as \ref gaussianGradientMultiArray() on data with anisotropic
@@ -308,9 +310,9 @@ struct multiArrayScaleParam
   \code
   MultiArray<3, double> test_image;
   MultiArray<3, double> out_image;
-  gaussianSmoothMultiArray(srcMultiArrayRange(test_image),
-                           destMultiArray(out_image),
-                           5.0,
+  
+  double scale = 5.0;
+  gaussianSmoothMultiArray(test_image, out_image, scale,
                            ConvolutionOptions<3>()
                               .stepSize        (1, 1, 3.2)
                               .resolutionStdDev(1, 1, 4)
@@ -472,7 +474,9 @@ class ConvolutionOptions
 
             This is useful for speeding up computations by ignoring irrelevant 
             areas in the array. <b>Note:</b> It is assumed that the output array
-            of the convolution has the size given in this function.
+            of the convolution has the size given in this function.  Negative ROI 
+            boundaries are interpreted relative to the end of the respective dimension 
+            (i.e. <tt>if(to[k] < 0) to[k] += source.shape(k);</tt>).
             
             Default: <tt>from = Shape(), to = Shape()</tt> (i.e. use entire array)
         */
@@ -684,24 +688,52 @@ scaleKernel(K & kernel, double a)
     whereas the other requires an iterator referencing a sequence of
     \ref vigra::Kernel1D objects, one for every dimension of the data.
     Then the first kernel in this sequence is applied to the innermost
-    dimension (e.g. the x-dimension of an image), while the last is applied to the
-    outermost dimension (e.g. the z-dimension in a 3D image).
+    dimension (e.g. the x-axis of an image), while the last is applied to the
+    outermost dimension (e.g. the z-axis in a 3D image).
 
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+    This function may work in-place, which means that <tt>source.data() == dest.data()</tt> is allowed.
     A full-sized internal array is only allocated if working on the destination
     array directly would cause round-off errors (i.e. if
-    <tt>typeid(typename NumericTraits<typename DestAccessor::value_type>::RealPromote)
-    != typeid(typename DestAccessor::value_type)</tt>.
+    <tt>typeid(typename NumericTraits<T2>::RealPromote) != typeid(T2)</tt>).
     
     If <tt>start</tt> and <tt>stop</tt> have non-default values, they must represent
     a valid subarray of the input array. The convolution is then restricted to that 
     subarray, and it is assumed that the output array only refers to the
-    subarray (i.e. <tt>diter</tt> points to the element corresponding to 
-    <tt>start</tt>). 
+    subarray (i.e. <tt>dest.shape() == stop - start</tt>). Negative ROI boundaries are
+    interpreted relative to the end of the respective dimension 
+    (i.e. <tt>if(stop[k] < 0) stop[k] += source.shape(k);</tt>).
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // apply each kernel from the sequence 'kernels' in turn
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class KernelIterator>
+        void
+        separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest, 
+                                    KernelIterator kernels,
+                                    typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
+                                    typename MultiArrayShape<N>::type stop  = typename MultiArrayShape<N>::type());
+
+        // apply the same kernel to all dimensions
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class T>
+        void
+        separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, T2, S2> dest,
+                                    Kernel1D<T> const & kernel,
+                                    typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
+                                    typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type());
+    }
+    \endcode
+
+    \deprecatedAPI{separableConvolveMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         // apply the same kernel to all dimensions
@@ -725,7 +757,6 @@ scaleKernel(K & kernel, double a)
                                     SrcShape const & stop = SrcShape());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -750,11 +781,39 @@ scaleKernel(K & kernel, double a)
                                     SrcShape const & stop = SrcShape());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, unsigned char> source(shape);
+    MultiArray<3, float>         dest(shape);
+    ...
+    Kernel1D<float> gauss;
+    gauss.initGaussian(sigma);
+
+    // smooth all dimensions with the same kernel
+    separableConvolveMultiArray(source, dest, gauss);
+    
+    // create 3 Gauss kernels, one for each dimension, but smooth the z-axis less
+    ArrayVector<Kernel1D<float> > kernels(3, gauss);
+    kernels[2].initGaussian(sigma / 2.0);
+
+    // perform Gaussian smoothing on all dimensions
+    separableConvolveMultiArray(source, dest, kernels.begin());
+    
+    // create output array for a ROI
+    MultiArray<3, float> destROI(shape - Shape3(10,10,10));
+     
+    // only smooth the given ROI (ignore 5 pixels on all sides of the array)
+    separableConvolveMultiArray(source, destROI, gauss, Shape3(5,5,5), Shape3(-5,-5,-5));
+    \endcode
+
+    \deprecatedUsage{separableConvolveMultiArray}
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
@@ -766,18 +825,19 @@ scaleKernel(K & kernel, double a)
     ArrayVector<Kernel1D<float> > kernels(3, gauss);
 
     // perform Gaussian smoothing on all dimensions
-    separableConvolveMultiArray(srcMultiArrayRange(source), destMultiArray(dest), 
+    separableConvolveMultiArray(source, dest, 
                                 kernels.begin());
     \endcode
-
     <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
     \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
+    see \ref separableConvolveImage(), in addition:
+
+    NumericTraits<T1>::RealPromote s = src[0];
+
+    s = s + s;
+    s = kernel(0) * s;
     \endcode
+    \deprecatedEnd
 
     \see vigra::Kernel1D, convolveLine()
 */
@@ -789,14 +849,19 @@ void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
                              DestIterator d, DestAccessor dest, 
                              KernelIterator kernels,
-                             SrcShape const & start = SrcShape(),
-                             SrcShape const & stop = SrcShape())
+                             SrcShape start = SrcShape(),
+                             SrcShape stop = SrcShape())
 {
     typedef typename NumericTraits<typename DestAccessor::value_type>::RealPromote TmpType;
 
+
     if(stop != SrcShape())
     {
+        
         enum { N = 1 + SrcIterator::level };
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, start);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, stop);
+        
         for(int k=0; k<N; ++k)
             vigra_precondition(0 <= start[k] && start[k] < stop[k] && stop[k] <= shape[k],
               "separableConvolveMultiArray(): invalid subarray shape.");
@@ -819,20 +884,6 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
-          class DestIterator, class DestAccessor, class KernelIterator>
-inline
-void separableConvolveMultiArray(
-    triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-    pair<DestIterator, DestAccessor> const & dest, 
-    KernelIterator kit,
-    SrcShape const & start = SrcShape(),
-    SrcShape const & stop = SrcShape())
-{
-    separableConvolveMultiArray( source.first, source.second, source.third,
-                                 dest.first, dest.second, kit, start, stop );
-}
-
-template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor, class T>
 inline void
 separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor src,
@@ -844,6 +895,19 @@ separableConvolveMultiArray( SrcIterator s, SrcShape const & shape, SrcAccessor 
     ArrayVector<Kernel1D<T> > kernels(shape.size(), kernel);
 
     separableConvolveMultiArray( s, shape, src, d, dest, kernels.begin(), start, stop);
+}
+
+template <class SrcIterator, class SrcShape, class SrcAccessor,
+          class DestIterator, class DestAccessor, class KernelIterator>
+inline void
+separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
+                            pair<DestIterator, DestAccessor> const & dest, 
+                            KernelIterator kit,
+                            SrcShape const & start = SrcShape(),
+                            SrcShape const & stop = SrcShape())
+{
+    separableConvolveMultiArray( source.first, source.second, source.third,
+                                 dest.first, dest.second, kit, start, stop );
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -861,6 +925,46 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                                  dest.first, dest.second, kernels.begin(), start, stop);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class KernelIterator>
+inline void
+separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest, 
+                            KernelIterator kit,
+                            typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
+                            typename MultiArrayShape<N>::type stop = typename MultiArrayShape<N>::type())
+{
+    if(stop != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), start);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), stop);
+        vigra_precondition(dest.shape() == (stop - start),
+            "separableConvolveMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "separableConvolveMultiArray(): shape mismatch between input and output.");
+    }
+    separableConvolveMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), kit, start, stop );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class T>
+inline void
+separableConvolveMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, T2, S2> dest,
+                            Kernel1D<T> const & kernel,
+                            typename MultiArrayShape<N>::type const & start = typename MultiArrayShape<N>::type(),
+                            typename MultiArrayShape<N>::type const & stop = typename MultiArrayShape<N>::type())
+{
+    ArrayVector<Kernel1D<T> > kernels(N, kernel);
+    separableConvolveMultiArray(source, dest, kernels.begin(), start, stop);
+}
+
 /********************************************************/
 /*                                                      */
 /*            convolveMultiArrayOneDimension            */
@@ -871,21 +975,37 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     This function computes a convolution along one dimension (specified by
     the parameter <tt>dim</tt> of the given multi-dimensional array with the given
-    <tt>kernel</tt>. Both source and destination arrays are represented by
-    iterators, shape objects and accessors. The destination array is required to
-    already have the correct size.
+    <tt>kernel</tt>. The destination array must already have the correct size.
 
     If <tt>start</tt> and <tt>stop</tt> have non-default values, they must represent
     a valid subarray of the input array. The convolution is then restricted to that 
     subarray, and it is assumed that the output array only refers to the
-    subarray (i.e. <tt>diter</tt> points to the element corresponding to 
-    <tt>start</tt>). 
+    subarray (i.e. <tt>dest.shape() == stop - start</tt>). Negative ROI boundaries are
+    interpreted relative to the end of the respective dimension 
+    (i.e. <tt>if(stop[k] < 0) stop[k] += source.shape(k);</tt>).
 
-    This function may work in-place, which means that <tt>siter == diter</tt> is allowed.
+    This function may work in-place, which means that <tt>source.data() == dest.data()</tt> is allowed.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2, 
+                  class T>
+        void
+        convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
+                                       MultiArrayView<N, T2, S2> dest,
+                                       unsigned int dim, 
+                                       Kernel1D<T> const & kernel,
+                                       typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
+                                       typename MultiArrayShape<N>::type stop  = typename MultiArrayShape<N>::type());
+    }
+    \endcode
+
+    \deprecatedAPI{convolveMultiArrayOneDimension}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -898,7 +1018,6 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                                        SrcShape const & stop = SrcShape());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -912,21 +1031,23 @@ separableConvolveMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                                        SrcShape const & stop = SrcShape());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, float> dest(shape);
     ...
     Kernel1D<float> gauss;
     gauss.initGaussian(sigma);
 
-    // perform Gaussian smoothing along dimensions 1 (height)
-    convolveMultiArrayOneDimension(srcMultiArrayRange(source), destMultiArray(dest), 1, gauss);
+    // perform Gaussian smoothing along dimension 1 (height)
+    convolveMultiArrayOneDimension(source, dest, 1, gauss);
     \endcode
 
     \see separableConvolveMultiArray()
@@ -970,13 +1091,13 @@ convolveMultiArrayOneDimension(SrcIterator s, SrcShape const & shape, SrcAccesso
 
     for( ; snav.hasMore(); snav++, dnav++ )
     {
-         // first copy source to temp for maximum cache efficiency
-         copyLine( snav.begin(), snav.end(), src,
-           tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
+        // first copy source to temp for maximum cache efficiency
+        copyLine(snav.begin(), snav.end(), src,
+                 tmp.begin(), typename AccessorTraits<TmpType>::default_accessor() );
 
-         convolveLine(srcIterRange( tmp.begin(), tmp.end(), TmpAccessor()),
-                      destIter( dnav.begin(), dest ),
-                      kernel1d( kernel), start[dim], stop[dim]);
+        convolveLine(srcIterRange( tmp.begin(), tmp.end(), TmpAccessor()),
+                     destIter( dnav.begin(), dest ),
+                     kernel1d( kernel), start[dim], stop[dim]);
     }
 }
 
@@ -985,12 +1106,40 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                pair<DestIterator, DestAccessor> const & dest,
-                               unsigned int dim, vigra::Kernel1D<T> const & kernel,
+                               unsigned int dim,
+                               Kernel1D<T> const & kernel,
                                SrcShape const & start = SrcShape(),
                                SrcShape const & stop = SrcShape())
 {
     convolveMultiArrayOneDimension(source.first, source.second, source.third,
                                    dest.first, dest.second, dim, kernel, start, stop);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2, 
+          class T>
+inline void
+convolveMultiArrayOneDimension(MultiArrayView<N, T1, S1> const & source,
+                               MultiArrayView<N, T2, S2> dest,
+                               unsigned int dim, 
+                               Kernel1D<T> const & kernel,
+                               typename MultiArrayShape<N>::type start = typename MultiArrayShape<N>::type(),
+                               typename MultiArrayShape<N>::type stop = typename MultiArrayShape<N>::type())
+{
+    if(stop != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), start);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), stop);
+        vigra_precondition(dest.shape() == (stop - start),
+            "convolveMultiArrayOneDimension(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "convolveMultiArrayOneDimension(): shape mismatch between input and output.");
+    }
+    convolveMultiArrayOneDimension(srcMultiArrayRange(source),
+                                   destMultiArray(dest), dim, kernel, start, stop);
 }
 
 /********************************************************/
@@ -1006,16 +1155,39 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
     Both source and destination arrays are represented by
     iterators, shape objects and accessors. The destination array is required to
     already have the correct size. This function may work in-place, which means
-    that <tt>siter == diter</tt> is allowed. It is implemented by a call to
+    that <tt>source.data() == dest.data()</tt> is allowed. It is implemented by a call to
     \ref separableConvolveMultiArray() with the appropriate kernel.
 
     Anisotropic data should be passed with appropriate
     \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
-    unless the parameter <tt>sigma</tt> is left out.
+    unless the parameter <tt>sigma</tt> is omitted.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // pass filter scale explicitly
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                 MultiArrayView<N, T2, S2> dest,
+                                 double sigma,
+                                 ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+
+        // pass filer scale(s) in the option object
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                 MultiArrayView<N, T2, S2> dest,
+                                 ConvolutionOptions<N> opt);
+    }
+    \endcode
+
+    \deprecatedAPI{gaussianSmoothMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1023,10 +1195,10 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
         void
         gaussianSmoothMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                  DestIterator diter, DestAccessor dest,
-                                 double sigma, const ConvolutionOptions<N> & opt);
+                                 double sigma,
+                                 const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1035,36 +1207,37 @@ convolveMultiArrayOneDimension(triple<SrcIterator, SrcShape, SrcAccessor> const 
         void
         gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                  pair<DestIterator, DestAccessor> const & dest,
-                                 double sigma, const ConvolutionOptions<N> & opt);
+                                 double sigma,
+                                 const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, float> dest(shape);
+    MultiArray<3, float>         dest(shape);
     ...
     // perform isotropic Gaussian smoothing at scale 'sigma'
-    gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    gaussianSmoothMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
-
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
-    MultiArray<3, float> dest(shape);
+    MultiArray<3, float>         dest(shape);
     TinyVector<float, 3> step_size;
     TinyVector<float, 3> resolution_sigmas;
     ...
     // perform anisotropic Gaussian smoothing at scale 'sigma'
-    gaussianSmoothMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    gaussianSmoothMultiArray(source, dest, sigma,
                              ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
     \endcode
 
@@ -1108,8 +1281,8 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest,
-                  const ConvolutionOptions<SrcShape::static_size> & opt)
+                         pair<DestIterator, DestAccessor> const & dest,
+                         const ConvolutionOptions<SrcShape::static_size> & opt)
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, opt );
@@ -1119,11 +1292,46 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
           class DestIterator, class DestAccessor>
 inline void
 gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
-                  pair<DestIterator, DestAccessor> const & dest, double sigma,
-                  const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                         pair<DestIterator, DestAccessor> const & dest, double sigma,
+                         const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
 {
     gaussianSmoothMultiArray( source.first, source.second, source.third,
                               dest.first, dest.second, sigma, opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         ConvolutionOptions<N> opt)
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "gaussianSmoothMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "gaussianSmoothMultiArray(): shape mismatch between input and output.");
+    }
+
+    gaussianSmoothMultiArray( srcMultiArrayRange(source),
+                              destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianSmoothMultiArray(MultiArrayView<N, T1, S1> const & source,
+                         MultiArrayView<N, T2, S2> dest,
+                         double sigma,
+                         ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianSmoothMultiArray( source, dest, opt.stdDev(sigma) );
 }
 
 
@@ -1138,19 +1346,41 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
     This function computes the Gaussian gradient of the given N-dimensional
     array with a sequence of first-derivative-of-Gaussian filters at the given
     standard deviation <tt>sigma</tt> (differentiation is applied to each dimension
-    in turn, starting with the innermost dimension). Both source and destination arrays
-    are represented by iterators, shape objects and accessors. The destination array is
+    in turn, starting with the innermost dimension). The destination array is
     required to have a vector valued pixel type with as many elements as the number of
     dimensions. This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
 
     Anisotropic data should be passed with appropriate
     \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
-    unless the parameter <tt>sigma</tt> is left out.
+    unless the parameter <tt>sigma</tt> is omitted.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // pass filter scale explicitly
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
+        void
+        gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                   MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                   double sigma,
+                                   ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+
+        // pass filter scale(s) in option object
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                   MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                   ConvolutionOptions<N> opt);
+    }
+    \endcode
+
+    \deprecatedAPI{gaussianGradientMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1158,10 +1388,10 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
         void
         gaussianGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                    DestIterator diter, DestAccessor dest,
-                                   double sigma, const ConvolutionOptions<N> & opt);
+                                   double sigma, 
+                                   const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1170,46 +1400,38 @@ gaussianSmoothMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sour
         void
         gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                    pair<DestIterator, DestAccessor> const & dest,
-                                   double sigma, const ConvolutionOptions<N> & opt);
+                                   double sigma,
+                                   const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     ...
     // compute Gaussian gradient at scale sigma
-    gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    gaussianGradientMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
-
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     TinyVector<float, 3> step_size;
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Gaussian gradient at scale sigma
-    gaussianGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    gaussianGradientMultiArray(source, dest, sigma,
                                ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
-    \endcode
-
-    <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
-    \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see separableConvolveMultiArray()
@@ -1266,10 +1488,9 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 void
 gaussianGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                            DestIterator di, DestAccessor dest, double sigma,
-                           const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                           ConvolutionOptions<SrcShape::static_size> opt = ConvolutionOptions<SrcShape::static_size>())
 {
-    ConvolutionOptions<SrcShape::static_size> par = opt;
-    gaussianGradientMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
+    gaussianGradientMultiArray(si, shape, src, di, dest, opt.stdDev(sigma));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1295,6 +1516,151 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
                                 dest.first, dest.second, sigma, opt );
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           ConvolutionOptions<N> opt )
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "gaussianGradientMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "gaussianGradientMultiArray(): shape mismatch between input and output.");
+    }
+
+    gaussianGradientMultiArray( srcMultiArrayRange(source),
+                                destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+gaussianGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                           MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                           double sigma,
+                           ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianGradientMultiArray( source, dest, opt.stdDev(sigma) );
+}
+
+/********************************************************/
+/*                                                      */
+/*              gaussianGradientMagnitude               */
+/*                                                      */
+/********************************************************/
+
+namespace detail {
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+void 
+gaussianGradientMagnitudeImpl(MultiArrayView<N+1, T1, S1> const & src,
+                              MultiArrayView<N, T2, S2> dest,
+                              ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    typename MultiArrayShape<N>::type shape(src.shape().template subarray<0,N>());
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "gaussianGradientMagnitude(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(shape == dest.shape(),
+            "gaussianGradientMagnitude(): shape mismatch between input and output.");
+    }
+              
+    dest.init(0.0);
+    
+    typedef typename NumericTraits<T1>::RealPromote TmpType;
+    MultiArray<N, TinyVector<TmpType, N> > grad(dest.shape());
+    
+    using namespace multi_math;
+    
+    for(int k=0; k<src.shape(N); ++k)
+    {
+        gaussianGradientMultiArray(src.bindOuter(k), grad, opt);
+        
+        dest += squaredNorm(grad);
+    }
+    dest = sqrt(dest);
+}
+
+} // namespace detail
+
+    // documentation is in convolution.hxx
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          ConvolutionOptions<N> const & opt)
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src, dest, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          ConvolutionOptions<N> const & opt)
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.insertSingletonDimension(N), dest, opt);
+}
+
+template <unsigned int N, class T1, int M, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, TinyVector<T1, M>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          ConvolutionOptions<N> const & opt)
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.expandElements(N), dest, opt);
+}
+
+template <unsigned int N, class T1, unsigned int R, unsigned int G, unsigned int B, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, RGBValue<T1, R, G, B>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          ConvolutionOptions<N> const & opt)
+{
+    detail::gaussianGradientMagnitudeImpl<N, T1>(src.expandElements(N), dest, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N, T1, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianGradientMagnitude(src, dest, opt.stdDev(sigma));
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianGradientMagnitude(MultiArrayView<N+1, Multiband<T1>, S1> const & src,
+                          MultiArrayView<N, T2, S2> dest,
+                          double sigma,
+                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianGradientMagnitude<N>(src, dest, opt.stdDev(sigma));
+}
+
 /********************************************************/
 /*                                                      */
 /*             symmetricGradientMultiArray              */
@@ -1305,8 +1671,7 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     This function computes the gradient of the given N-dimensional
     array with a sequence of symmetric difference filters a (differentiation is applied
-    to each dimension in turn, starting with the innermost dimension). Both source and
-    destination arrays are represented by iterators, shape objects and accessors.
+    to each dimension in turn, starting with the innermost dimension). 
     The destination array is required to have a vector valued pixel type with as many
     elements as the number of dimensions. This function is implemented by calls to
     \ref convolveMultiArrayOneDimension() with the symmetric difference kernel.
@@ -1317,7 +1682,20 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
     
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                                    ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+    }
+    \endcode
+
+    \deprecatedAPI{symmetricGradientMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1325,10 +1703,9 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
         void
         symmetricGradientMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest,
-                                    const ConvolutionOptions<N> & opt);
+                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1337,13 +1714,15 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
         void
         symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest,
-                                    const ConvolutionOptions<N> & opt);
+                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
     MultiArray<3, unsigned char>::size_type shape(width, height, depth);
@@ -1356,26 +1735,15 @@ gaussianGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & so
 
     <b> Usage with anisotropic data:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
-
     \code
-    MultiArray<3, unsigned char>::size_type shape(width, height, depth);
+    Shape3 shape(width, height, depth);
     MultiArray<3, unsigned char> source(shape);
     MultiArray<3, TinyVector<float, 3> > dest(shape);
     TinyVector<float, 3> step_size;
     ...
     // compute gradient
-    symmetricGradientMultiArray(srcMultiArrayRange(source), destMultiArray(dest),
+    symmetricGradientMultiArray(source, dest,
                                 ConvolutionOptions<3>().stepSize(step_size));
-    \endcode
-
-    <b> Required Interface:</b>
-
-    see \ref convolveMultiArrayOneDimension(), in addition:
-
-    \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see convolveMultiArrayOneDimension()
@@ -1404,7 +1772,7 @@ symmetricGradientMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor 
         "symmetricGradientMultiArray(): Wrong number of channels in output array.");
 
     Kernel1D<KernelType> filter;
-    filter.initSymmetricGradient();
+    filter.initSymmetricDifference();
 
     StepType step_size_it = opt.stepParams();
 
@@ -1432,6 +1800,30 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
                                 dest.first, dest.second, opt);
 }
 
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+symmetricGradientMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, N>, S2> dest,
+                            ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "symmetricGradientMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "symmetricGradientMultiArray(): shape mismatch between input and output.");
+    }
+
+    symmetricGradientMultiArray(srcMultiArrayRange(source),
+                                destMultiArray(dest), opt);
+}
+
 /********************************************************/
 /*                                                      */
 /*            laplacianOfGaussianMultiArray             */
@@ -1440,10 +1832,9 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
 /** \brief Calculate Laplacian of a N-dimensional arrays using Gaussian derivative filters.
 
-    This function computes the Laplacian the given N-dimensional
+    This function computes the Laplacian of the given N-dimensional
     array with a sequence of second-derivative-of-Gaussian filters at the given
-    standard deviation <tt>sigma</tt>. Both source and destination arrays
-    are represented by iterators, shape objects and accessors. Both source and destination 
+    standard deviation <tt>sigma</tt>. Both source and destination 
     arrays must have scalar value_type. This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels, followed by summation.
 
@@ -1453,7 +1844,30 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // pass scale explicitly
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
+        void
+        laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                      MultiArrayView<N, T2, S2> dest,
+                                      double sigma,
+                                      ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+        
+        // pass scale(s) in option object
+        template <unsigned int N, class T1, class S1,
+                  class T2, class S2>
+        void
+        laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                      MultiArrayView<N, T2, S2> dest,
+                                      ConvolutionOptions<N> opt );
+    }
+    \endcode
+
+    \deprecatedAPI{laplacianOfGaussianMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1461,10 +1875,10 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         laplacianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                       DestIterator diter, DestAccessor dest,
-                                      double sigma, const ConvolutionOptions<N> & opt);
+                                      double sigma,
+                                      const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1473,25 +1887,27 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
         void
         laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                       pair<DestIterator, DestAccessor> const & dest,
-                                      double sigma, const ConvolutionOptions<N> & opt);
+                                      double sigma,
+                                      const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, float> source(shape);
     MultiArray<3, float> laplacian(shape);
     ...
     // compute Laplacian at scale sigma
-    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma);
+    laplacianOfGaussianMultiArray(source, laplacian, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
-
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, float> source(shape);
@@ -1500,17 +1916,8 @@ symmetricGradientMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Laplacian at scale sigma
-    laplacianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(laplacian), sigma,
+    laplacianOfGaussianMultiArray(source, laplacian, sigma,
                                   ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
-    \endcode
-
-    <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
-    \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see separableConvolveMultiArray()
@@ -1577,10 +1984,9 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 void
 laplacianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                               DestIterator di, DestAccessor dest, double sigma,
-                              const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                              ConvolutionOptions<SrcShape::static_size> opt = ConvolutionOptions<SrcShape::static_size>())
 {
-    ConvolutionOptions<SrcShape::static_size> par = opt;
-    laplacianOfGaussianMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
+    laplacianOfGaussianMultiArray(si, shape, src, di, dest, opt.stdDev(sigma));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1606,6 +2012,209 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
                                    dest.first, dest.second,  sigma, opt );
 }
 
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest,
+                              ConvolutionOptions<N> opt )
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "laplacianOfGaussianMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "laplacianOfGaussianMultiArray(): shape mismatch between input and output.");
+    }
+
+    laplacianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                   destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+          class T2, class S2>
+inline void
+laplacianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                              MultiArrayView<N, T2, S2> dest,
+                              double sigma,
+                              ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    laplacianOfGaussianMultiArray( source, dest, opt.stdDev(sigma) );
+}
+
+/********************************************************/
+/*                                                      */
+/*             gaussianDivergenceMultiArray             */
+/*                                                      */
+/********************************************************/
+
+/** \brief Calculate the divergence of a vector field using Gaussian derivative filters.
+
+    This function computes the divergence of the given N-dimensional vector field
+    with a sequence of first-derivative-of-Gaussian filters at the given
+    standard deviation <tt>sigma</tt>. The input vector field can either be given as a sequence
+    of scalar array views (one for each vector field component), represented by an
+    iterator range, or by a single vector array with the appropriate shape.
+    This function is implemented by calls to
+    \ref separableConvolveMultiArray() with the suitable kernels, followed by summation.
+
+    Anisotropic data should be passed with appropriate
+    \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
+    unless the parameter <tt>sigma</tt> is omitted.
+
+    <b> Declarations:</b>
+
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // specify input vector field as a sequence of scalar arrays
+        template <class Iterator, 
+                  unsigned int N, class T, class S>
+        void 
+        gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                                     MultiArrayView<N, T, S> divergence,
+                                     ConvolutionOptions<N> const & opt);
+        
+        template <class Iterator, 
+                  unsigned int N, class T, class S>
+        void 
+        gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                                     MultiArrayView<N, T, S> divergence,
+                                     double sigma,
+                                     ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+        
+        // pass input vector field as an array of vectors
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                                     MultiArrayView<N, T2, S2> divergence,
+                                     ConvolutionOptions<N> const & opt);
+                                     
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void 
+        gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                                     MultiArrayView<N, T2, S2> divergence,
+                                     double sigma,
+                                     ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+    }
+    \endcode
+
+    <b> Usage:</b>
+
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
+
+    \code
+    Shape3 shape(width, height, depth);
+    MultiArray<3, TinyVector<float, 3> > source(shape);
+    MultiArray<3, float> laplacian(shape);
+    ...
+    // compute divergence at scale sigma
+    gaussianDivergenceMultiArray(source, laplacian, sigma);
+    \endcode
+
+    <b> Usage with anisotropic data:</b>
+
+    \code
+    MultiArray<3, TinyVector<float, 3> > source(shape);
+    MultiArray<3, float> laplacian(shape);
+    TinyVector<float, 3> step_size;
+    TinyVector<float, 3> resolution_sigmas;
+    ...
+    // compute divergence at scale sigma
+    gaussianDivergenceMultiArray(source, laplacian, sigma,
+                                 ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
+    \endcode
+*/
+doxygen_overloaded_function(template <...> void gaussianDivergenceMultiArray)
+
+template <class Iterator, 
+          unsigned int N, class T, class S>
+void 
+gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                             MultiArrayView<N, T, S> divergence,
+                             ConvolutionOptions<N> opt)
+{
+    typedef typename MultiArrayShape<N>::type                    Shape;
+    typedef typename std::iterator_traits<Iterator>::value_type  ArrayType;
+    typedef typename ArrayType::value_type                       SrcType;
+    typedef typename NumericTraits<SrcType>::RealPromote         TmpType;
+    typedef Kernel1D<double>                                     Kernel;
+    
+    vigra_precondition(std::distance(vectorField, vectorFieldEnd) == N,
+        "gaussianDivergenceMultiArray(): wrong number of input arrays.");
+    // more checks are performed in separableConvolveMultiArray()
+    
+    typename ConvolutionOptions<N>::ScaleIterator params = opt.scaleParams();
+    ArrayVector<double> sigmas(N);
+    ArrayVector<Kernel> kernels(N);
+    for(unsigned int k = 0; k < N; ++k, ++params)
+    {
+        sigmas[k] = params.sigma_scaled("gaussianDivergenceMultiArray");
+        kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
+    }
+    
+    MultiArray<N, TmpType> tmpDeriv(divergence.shape());
+    
+    for(unsigned int k=0; k < N; ++k, ++vectorField)
+    {
+        kernels[k].initGaussianDerivative(sigmas[k], 1, 1.0, opt.window_ratio);
+        if(k == 0)
+        {
+            separableConvolveMultiArray(*vectorField, divergence, kernels.begin(), opt.from_point, opt.to_point);
+        }
+        else
+        {
+            separableConvolveMultiArray(*vectorField, tmpDeriv, kernels.begin(), opt.from_point, opt.to_point);
+            divergence += tmpDeriv;
+        }
+        kernels[k].initGaussian(sigmas[k], 1.0, opt.window_ratio);
+    }
+}
+
+template <class Iterator, 
+          unsigned int N, class T, class S>
+inline void 
+gaussianDivergenceMultiArray(Iterator vectorField, Iterator vectorFieldEnd,
+                             MultiArrayView<N, T, S> divergence,
+                             double sigma,
+                             ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianDivergenceMultiArray(vectorField, vectorFieldEnd, divergence, opt.stdDev(sigma));
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                             MultiArrayView<N, T2, S2> divergence,
+                             ConvolutionOptions<N> const & opt)
+{
+    ArrayVector<MultiArrayView<N, T1> > field;
+    for(unsigned int k=0; k<N; ++k)
+        field.push_back(vectorField.bindElementChannel(k));
+
+    gaussianDivergenceMultiArray(field.begin(), field.end(), divergence, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void 
+gaussianDivergenceMultiArray(MultiArrayView<N, TinyVector<T1, N>, S1> const & vectorField,
+                             MultiArrayView<N, T2, S2> divergence,
+                             double sigma,
+                             ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    gaussianDivergenceMultiArray(vectorField, divergence, opt.stdDev(sigma));
+}
+
 /********************************************************/
 /*                                                      */
 /*              hessianOfGaussianMultiArray             */
@@ -1616,19 +2225,42 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
 
     This function computes the Hessian matrix the given scalar N-dimensional
     array with a sequence of second-derivative-of-Gaussian filters at the given
-    standard deviation <tt>sigma</tt>. Both source and destination arrays
-    are represented by iterators, shape objects and accessors. The destination array must 
+    standard deviation <tt>sigma</tt>. The destination array must 
     have a vector valued element type with N*(N+1)/2 elements (it represents the
-    upper triangular part of the symmetric Hessian matrix). This function is implemented by calls to
+    upper triangular part of the symmetric Hessian matrix, flattened row-wise). 
+    This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
 
     Anisotropic data should be passed with appropriate
     \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
-    unless the parameter <tt>sigma</tt> is left out.
+    unless the parameter <tt>sigma</tt> is omitted.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // pass scale explicitly
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                                    double sigma,
+                                    ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+        
+        // pass scale(s) in option object
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                    MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                                    ConvolutionOptions<N> opt);
+    }
+    \endcode
+
+    \deprecatedAPI{hessianOfGaussianMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1636,10 +2268,10 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
         void
         hessianOfGaussianMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                     DestIterator diter, DestAccessor dest,
-                                    double sigma, const ConvolutionOptions<N> & opt);
+                                    double sigma,
+                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1648,25 +2280,27 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
         void
         hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & source,
                                     pair<DestIterator, DestAccessor> const & dest,
-                                    double sigma, const ConvolutionOptions<N> & opt);
+                                    double sigma,
+                                    const ConvolutionOptions<N> & opt = ConvolutionOptions<N>());
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, float> source(shape);
     MultiArray<3, TinyVector<float, 6> > dest(shape);
     ...
     // compute Hessian at scale sigma
-    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma);
+    hessianOfGaussianMultiArray(source, dest, sigma);
     \endcode
 
     <b> Usage with anisotropic data:</b>
-
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, float> source(shape);
@@ -1675,17 +2309,8 @@ laplacianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const &
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute Hessian at scale sigma
-    hessianOfGaussianMultiArray(srcMultiArrayRange(source), destMultiArray(dest), sigma,
+    hessianOfGaussianMultiArray(source, dest, sigma,
                                 ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
-    \endcode
-
-    <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
-    \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see separableConvolveMultiArray(), vectorToTensorMultiArray()
@@ -1756,10 +2381,9 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 inline void
 hessianOfGaussianMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                             DestIterator di, DestAccessor dest, double sigma,
-                            const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                            ConvolutionOptions<SrcShape::static_size> opt = ConvolutionOptions<SrcShape::static_size>())
 {
-    ConvolutionOptions<SrcShape::static_size> par = opt;
-    hessianOfGaussianMultiArray(si, shape, src, di, dest, par.stdDev(sigma));
+    hessianOfGaussianMultiArray(si, shape, src, di, dest, opt.stdDev(sigma));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1783,6 +2407,41 @@ hessianOfGaussianMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & s
 {
     hessianOfGaussianMultiArray( source.first, source.second, source.third,
                                  dest.first, dest.second, sigma, opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                            ConvolutionOptions<N> opt )
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "hessianOfGaussianMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "hessianOfGaussianMultiArray(): shape mismatch between input and output.");
+    }
+
+    hessianOfGaussianMultiArray( srcMultiArrayRange(source),
+                                 destMultiArray(dest), opt );
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+hessianOfGaussianMultiArray(MultiArrayView<N, T1, S1> const & source,
+                            MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                            double sigma,
+                            ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    hessianOfGaussianMultiArray( source, dest, opt.stdDev(sigma) );
 }
 
 namespace detail {
@@ -1821,10 +2480,9 @@ struct StructurTensorFunctor
     This function computes the gradient (outer product) tensor for each element
     of the given N-dimensional array with first-derivative-of-Gaussian filters at 
     the given <tt>innerScale</tt>, followed by Gaussian smoothing at <tt>outerScale</tt>.
-    Both source and destination arrays are represented by iterators, shape objects and 
-    accessors. The destination array must have a vector valued pixel type with 
+    The destination array must have a vector valued pixel type with 
     N*(N+1)/2 elements (it represents the upper triangular part of the symmetric 
-    structure tensor matrix). If the source array is also vector valued, the 
+    structure tensor matrix, flattened row-wise). If the source array is also vector valued, the 
     resulting structure tensor is the sum of the individual tensors for each channel.
     This function is implemented by calls to
     \ref separableConvolveMultiArray() with the appropriate kernels.
@@ -1832,11 +2490,34 @@ struct StructurTensorFunctor
     Anisotropic data should be passed with appropriate
     \ref ConvolutionOptions, the parameter <tt>opt</tt> is otherwise optional
     unless the parameters <tt>innerScale</tt> and <tt>outerScale</tt> are
-    both left out.
+    both omitted.
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass arbitrary-dimensional array views:
+    \code
+    namespace vigra {
+        // pass scales explicitly
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                                  double innerScale, double outerScale,
+                                  ConvolutionOptions<N> opt = ConvolutionOptions<N>());
+        
+        // pass scales in option object
+        template <unsigned int N, class T1, class S1,
+                                  class T2, class S2>
+        void
+        structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                                  MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest, 
+                                  ConvolutionOptions<N> opt );
+    }
+    \endcode
+
+    \deprecatedAPI{structureTensorMultiArray}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1845,10 +2526,9 @@ struct StructurTensorFunctor
         structureTensorMultiArray(SrcIterator siter, SrcShape const & shape, SrcAccessor src,
                                   DestIterator diter, DestAccessor dest,
                                   double innerScale, double outerScale,
-                                  const ConvolutionOptions<N> & opt);
+                                  ConvolutionOptions<N> opt);
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -1861,22 +2541,23 @@ struct StructurTensorFunctor
                                   const ConvolutionOptions<N> & opt);
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
+    <b>\#include</b> \<vigra/multi_convolution.hxx\><br/>
+    Namespace: vigra
 
     \code
+    Shape3 shape(width, height, depth);
     MultiArray<3, RGBValue<float> > source(shape);
     MultiArray<3, TinyVector<float, 6> > dest(shape);
     ...
     // compute structure tensor at scales innerScale and outerScale
-    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale);
+    structureTensorMultiArray(source, dest, innerScale, outerScale);
     \endcode
 
     <b> Usage with anisotropic data:</b>
-
-    <b>\#include</b> \<vigra/multi_convolution.hxx\>
 
     \code
     MultiArray<3, RGBValue<float> > source(shape);
@@ -1885,17 +2566,8 @@ struct StructurTensorFunctor
     TinyVector<float, 3> resolution_sigmas;
     ...
     // compute structure tensor at scales innerScale and outerScale
-    structureTensorMultiArray(srcMultiArrayRange(source), destMultiArray(dest), innerScale, outerScale,
+    structureTensorMultiArray(source, dest, innerScale, outerScale,
                               ConvolutionOptions<3>().stepSize(step_size).resolutionStdDev(resolution_sigmas));
-    \endcode
-
-    <b> Required Interface:</b>
-
-    see \ref separableConvolveMultiArray(), in addition:
-
-    \code
-    int dimension = 0;
-    VectorElementAccessor<DestAccessor> elementAccessor(0, dest);
     \endcode
 
     \see separableConvolveMultiArray(), vectorToTensorMultiArray()
@@ -1907,7 +2579,7 @@ template <class SrcIterator, class SrcShape, class SrcAccessor,
 void
 structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                           DestIterator di, DestAccessor dest, 
-                          ConvolutionOptions<SrcShape::static_size> const & opt)
+                          ConvolutionOptions<SrcShape::static_size> opt)
 {
     static const int N = SrcShape::static_size;
     static const int M = N*(N+1)/2;
@@ -1933,6 +2605,9 @@ structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor sr
     SrcShape gradientShape(shape);
     if(opt.to_point != SrcShape())
     {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(shape, opt.to_point);
+        
         for(int k=0; k<N; ++k, ++params)
         {
             Kernel1D<double> gauss;
@@ -1968,11 +2643,10 @@ inline void
 structureTensorMultiArray(SrcIterator si, SrcShape const & shape, SrcAccessor src,
                           DestIterator di, DestAccessor dest,
                           double innerScale, double outerScale,
-                          const ConvolutionOptions<SrcShape::static_size> & opt = ConvolutionOptions<SrcShape::static_size>())
+                          ConvolutionOptions<SrcShape::static_size> opt = ConvolutionOptions<SrcShape::static_size>())
 {
-    ConvolutionOptions<SrcShape::static_size> par = opt;
     structureTensorMultiArray(si, shape, src, di, dest,
-                              par.stdDev(innerScale).outerScale(outerScale));
+                              opt.stdDev(innerScale).outerScale(outerScale));
 }
 
 template <class SrcIterator, class SrcShape, class SrcAccessor,
@@ -1998,6 +2672,42 @@ structureTensorMultiArray(triple<SrcIterator, SrcShape, SrcAccessor> const & sou
     structureTensorMultiArray( source.first, source.second, source.third,
                                dest.first, dest.second,
                                innerScale, outerScale, opt);
+}
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest, 
+                          ConvolutionOptions<N> opt )
+{
+    if(opt.to_point != typename MultiArrayShape<N>::type())
+    {
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.from_point);
+        detail::RelativeToAbsoluteCoordinate<N-1>::exec(source.shape(), opt.to_point);
+        vigra_precondition(dest.shape() == (opt.to_point - opt.from_point),
+            "structureTensorMultiArray(): shape mismatch between ROI and output.");
+    }
+    else
+    {
+        vigra_precondition(source.shape() == dest.shape(),
+            "structureTensorMultiArray(): shape mismatch between input and output.");
+    }
+
+    structureTensorMultiArray( srcMultiArrayRange(source),
+                               destMultiArray(dest), opt );
+}
+
+
+template <unsigned int N, class T1, class S1,
+                          class T2, class S2>
+inline void
+structureTensorMultiArray(MultiArrayView<N, T1, S1> const & source,
+                          MultiArrayView<N, TinyVector<T2, int(N*(N+1)/2)>, S2> dest,
+                          double innerScale, double outerScale,
+                          ConvolutionOptions<N> opt = ConvolutionOptions<N>())
+{
+    structureTensorMultiArray(source, dest, opt.innerScale(innerScale).outerScale(outerScale));
 }
 
 //@}

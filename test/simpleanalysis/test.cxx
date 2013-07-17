@@ -43,10 +43,12 @@
 #include "vigra/edgedetection.hxx"
 #include "vigra/distancetransform.hxx"
 #include "vigra/localminmax.hxx"
+#include "vigra/multi_localminmax.hxx"
 #include "vigra/seededregiongrowing.hxx"
 #include "vigra/cornerdetection.hxx"
 #include "vigra/symmetry.hxx"
 #include "vigra/watersheds.hxx"
+#include "vigra/multi_watersheds.hxx"
 #include "vigra/noise_normalization.hxx"
 #include "vigra/affinegeometry.hxx"
 #include "vigra/affine_registration.hxx"
@@ -61,6 +63,7 @@ using namespace vigra;
 struct LabelingTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     LabelingTest()
     : img1(5,5), img2(5,5), img3(9,5), img4(11,11)
@@ -229,14 +232,14 @@ struct LabelingTest
         }
     }
 
-    void labelingToCrackEdgeTest()
+    void labelingToEdgeTest()
     {
         Image tmp(img1);
-        Image res(9, 9);
+        Image res(9, 9), res2(img1.size());
 
-        should(2 == labelImage(srcImageRange(img1), destImage(tmp), false));
+        should(2 == labelImage(View(img1), View(tmp), false));
 
-        regionImageToCrackEdgeImage(srcImageRange(tmp), destImage(res), 0.0);
+        regionImageToCrackEdgeImage(View(tmp), View(res), 0.0);
 
         static const double desired[] = {
                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -258,6 +261,17 @@ struct LabelingTest
         {
             should(*i1 == acc(i2));
         }
+
+        regionImageToEdgeImage(View(tmp), View(res2), 1.0);
+
+        static const double edges[] = {
+            0, 1, 1, 1, 0, 
+            1, 0, 0, 1, 0, 
+            1, 0, 0, 1, 0, 
+            1, 1, 1, 1, 0, 
+            0, 0, 0, 0, 0};
+
+        shouldEqualSequence(res2.begin(), res2.end(), edges);
     }
 
     void labelingEightTest1()
@@ -349,7 +363,7 @@ struct LabelingTest
 
     void labelingEightWithBackgroundTest()
     {
-        Image res(img2);
+        Image res(img2), res2(img2);
 
         should(1 == labelImageWithBackground(srcImageRange(img2),
                                              destImage(res),
@@ -364,6 +378,10 @@ struct LabelingTest
         {
             should(acc(i1) == acc(i2));
         }
+
+        should(1 == labelImageWithBackground(View(img2), View(res2),
+                                             true, 0.0));
+        should(View(res) == View(res2));
     }
 
     Image img1, img2, img3, img4;
@@ -372,6 +390,7 @@ struct LabelingTest
 struct EdgeDetectionTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     EdgeDetectionTest()
     : img1(5,5), img2(9,11), imgCanny(40, 40)
@@ -433,8 +452,8 @@ struct EdgeDetectionTest
         Image res(img1);
         res = 0.0;
 
-        differenceOfExponentialEdgeImage(srcImageRange(img1), destImage(res),
-            0.7, 0.1, 1.0);
+        differenceOfExponentialEdgeImage(View(img1), View(res),
+                                         0.7, 0.1, 1.0);
 
         static const double desired[] = {0.0, 1.0, 1.0, 1.0, 0.0,
                                          1.0, 0.0, 0.0, 0.0, 1.0,
@@ -460,9 +479,8 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -493,10 +511,9 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
-        removeShortEdges(destImageRange(res), 9, 0.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
+        removeShortEdges(View(res), 9, 0.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -527,10 +544,9 @@ struct EdgeDetectionTest
         Image res(9,9);
         res = 0.0;
 
-        differenceOfExponentialCrackEdgeImage(srcImageRange(img1),
-                                                destImage(res),
-                                                0.7, 0.1, 1.0);
-        beautifyCrackEdgeImage(destImageRange(res), 1.0, 0.0);
+        differenceOfExponentialCrackEdgeImage(View(img1), View(res),
+                                              0.7, 0.1, 1.0);
+        beautifyCrackEdgeImage(View(res), 1.0, 0.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -556,7 +572,7 @@ struct EdgeDetectionTest
 
     void closeGapsInCrackEdgeTest()
     {
-        closeGapsInCrackEdgeImage(destImageRange(img2), 1.0);
+        closeGapsInCrackEdgeImage(View(img2), 1.0);
 
         static const double desired[] = {
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -584,38 +600,57 @@ struct EdgeDetectionTest
 
     void cannyEdgelListTest()
     {
-        std::vector<vigra::Edgel> edgels;
-        cannyEdgelList(srcImageRange(imgCanny), edgels, 1.0);
-        int count = 0;
-        for(unsigned int i=0; i<edgels.size(); ++i)
         {
-            if (edgels[i].strength < 1.0e-10)
-                continue;  // ignore edgels that result from round off error during convolution
-            ++count;
-            should(edgels[i].x == edgels[i].y);
-            should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
-        }
-        should(count == 75);
+            std::vector<vigra::Edgel> edgels;
+            cannyEdgelList(View(imgCanny), edgels, 1.0);
+            int count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength < 1.0e-10)
+                    continue;  // ignore edgels that result from round off error during convolution
+                ++count;
+                should(edgels[i].x == edgels[i].y);
+                should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
+            }
+            should(count == 75);
 
-        std::vector<vigra::Edgel> edgelsThresh;
-        double threshold = 1.25;
-        cannyEdgelListThreshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
-        count = 0;
-        for(unsigned int i=0; i<edgels.size(); ++i)
-        {
-            if (edgels[i].strength <= threshold)
-                continue;  // ignore edgels below threshold
-            should(edgels[i].x == edgelsThresh[count].x);
-            should(edgels[i].y == edgelsThresh[count].y);
-            ++count;
+            std::vector<vigra::Edgel> edgelsThresh;
+            double threshold = 1.25;
+            cannyEdgelListThreshold(View(imgCanny), edgelsThresh, 1.0, threshold);
+            count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength <= threshold)
+                    continue;  // ignore edgels below threshold
+                should(edgels[i].x == edgelsThresh[count].x);
+                should(edgels[i].y == edgelsThresh[count].y);
+                ++count;
+            }
+            should(count == 38);
         }
-        should(count == 38);
+        {
+            std::vector<vigra::Edgel> edgels;
+            MultiArray<2, TinyVector<double, 2> > grad(imgCanny.width(), imgCanny.height());
+            gaussianGradient(View(imgCanny), grad, 1.0);
+
+            cannyEdgelList(grad, edgels);
+            int count = 0;
+            for(unsigned int i=0; i<edgels.size(); ++i)
+            {
+                if (edgels[i].strength < 1.0e-10)
+                    continue;  // ignore edgels that result from round off error during convolution
+                ++count;
+                should(edgels[i].x == edgels[i].y);
+                should(VIGRA_CSTD::fabs(edgels[i].orientation-M_PI*0.25) < 0.1);
+            }
+            should(count == 75);
+        }
     }
 
     void cannyEdgelList3x3Test()
     {
         std::vector<vigra::Edgel> edgels;
-        cannyEdgelList3x3(srcImageRange(imgCanny), edgels, 1.0);
+        cannyEdgelList3x3(View(imgCanny), edgels, 1.0);
         int count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -629,7 +664,7 @@ struct EdgeDetectionTest
 
         std::vector<vigra::Edgel> edgelsThresh;
         double threshold = 1.3;
-        cannyEdgelList3x3Threshold(srcImageRange(imgCanny), edgelsThresh, 1.0, threshold);
+        cannyEdgelList3x3Threshold(View(imgCanny), edgelsThresh, 1.0, threshold);
         count = 0;
         for(unsigned int i=0; i<edgels.size(); ++i)
         {
@@ -647,7 +682,7 @@ struct EdgeDetectionTest
         vigra::BImage result(40, 40);
         result = 0;
 
-        cannyEdgeImage(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1);
+        cannyEdgeImage(View(imgCanny), MultiArrayView<2, unsigned char>(result), 1.0, 0.1, 1);
 
         for(int y=1; y<39; ++y)
         {
@@ -666,7 +701,7 @@ struct EdgeDetectionTest
         vigra::BImage result(40, 40);
         result = 0;
 
-        cannyEdgeImageWithThinning(srcImageRange(imgCanny), destImage(result), 1.0, 0.1, 1, false);
+        cannyEdgeImageWithThinning(View(imgCanny), MultiArrayView<2, unsigned char>(result), 1.0, 0.1, 1, false);
 
         for(int y=1; y<39; ++y)
         {
@@ -686,6 +721,7 @@ struct EdgeDetectionTest
 struct DistanceTransformTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     DistanceTransformTest()
     : img(7,7)
@@ -713,6 +749,7 @@ struct DistanceTransformTest
     void distanceTransformL1Test()
     {
         Image res(img);
+        Image res1(img);
 
         distanceTransform(srcImageRange(img), destImage(res), 0.0, 1);
 
@@ -732,6 +769,9 @@ struct DistanceTransformTest
                 shouldEqualTolerance(dist, desired, 1e-14);
             }
         }
+
+        distanceTransform(View(img), View(res1), 0.0, 1);
+        should(View(res) == View(res1));
     }
 
     void distanceTransformL2Test()
@@ -739,7 +779,7 @@ struct DistanceTransformTest
 
         Image res(img);
 
-        distanceTransform(srcImageRange(img), destImage(res), 0.0, 2);
+        distanceTransform(View(img), View(res), 0.0, 2);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -766,7 +806,7 @@ struct DistanceTransformTest
 
         Image res(img);
 
-        distanceTransform(srcImageRange(img), destImage(res), 0.0, 0);
+        distanceTransform(View(img), View(res), 0.0, 0);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -809,12 +849,12 @@ struct EqualWithToleranceFunctor
 
 struct LocalMinMaxTest
 {
-    typedef vigra::DImage Image;
-    typedef vigra::MultiArray<3,double> Volume;
+    typedef vigra::MultiArray<2, double> Image;
+    typedef vigra::MultiArray<3, double> Volume;
     typedef MultiArrayShape<3>::type Shp3D;
 
     LocalMinMaxTest()
-    : img(9,9), vol()
+    : img(Shape2(9,9)), vol()
     {
         static const double in[] = {
             0.2,  0.1,  0.1,  0.3,  0.5,  0.3,  0.0,  0.0, -0.1,
@@ -827,14 +867,13 @@ struct LocalMinMaxTest
             1.0,  0.0,  0.0,  0.0, -1.0,  0.0, -0.1,  0.1,  0.0,
             0.0,  0.0,  0.0,  0.0, -0.5, -0.3, -0.1, -0.1,  0.0};
 
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator end = img.end();
-        Image::Accessor acc = img.accessor();
+        Image::iterator i = img.begin();
+        Image::iterator end = img.end();
         const double * p = in;
 
         for(; i != end; ++i, ++p)
         {
-            acc.set(*p, i);
+            *i = *p;
         }
 
         //prepare the multiarray
@@ -865,10 +904,9 @@ struct LocalMinMaxTest
 
     void localMinimum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
-        localMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMinima3D(srcMultiArrayRange(vol), destMultiArray(res), 1, NeighborCode3DSix());
 
         Volume desired(vol);
         desired.init(0);
@@ -883,12 +921,17 @@ struct LocalMinMaxTest
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
+        should(3 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1)));
+        should(res == res2);
+
+        res2 = 0;
+        localMinima3D(vol, res2, 1, NeighborCode3DSix());
+        should(res == res2);
     }
 
     void extendedLocalMinimum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
@@ -899,7 +942,7 @@ struct LocalMinMaxTest
         desired(7,1,15)=1;
         desired(7,1,19)=1;
 
-        desired(3,15,26)=1; //plateaux
+        desired(3,15,26)=1; //plateau
         desired(3,15,27)=1;
         desired(3,15,28)=1;
         desired(3,16,26)=1;
@@ -909,12 +952,13 @@ struct LocalMinMaxTest
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
+        should(4 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
     
-        void extendedLocalMinimum3DTest2()
+    void extendedLocalMinimum3DTest2()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMinima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
 
@@ -935,14 +979,15 @@ struct LocalMinMaxTest
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
 
+        should(4 == localMinima(vol, res2, LocalMinmaxOptions().neighborhood(1).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
 
     void localMaximum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
-        localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
+        localMaxima3D(srcMultiArrayRange(vol), destMultiArray(res), 1, NeighborCode3DSix());
 
         Volume desired(vol);
         desired.init(0);
@@ -954,12 +999,18 @@ struct LocalMinMaxTest
             for(int y=0; y<vol.shape(1); ++y)
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
+
+        should(2 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1)));
+        should(res == res2);
+
+        res2 = 0;
+        localMaxima3D(vol, res2, 1, NeighborCode3DSix());
+        should(res == res2);
     }
 
     void extendedLocalMaximum3DTest()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DSix());
 
@@ -977,12 +1028,14 @@ struct LocalMinMaxTest
             for(int y=0; y<vol.shape(1); ++y)
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
+
+        should(3 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(0).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
     
-        void extendedLocalMaximum3DTest2()
+    void extendedLocalMaximum3DTest2()
     {
-        Volume res(vol);
-        res.init(0);
+        Volume res(vol.shape()), res2(vol.shape());
 
         extendedLocalMaxima3D(srcMultiArrayRange(vol), destMultiArray(res),1,NeighborCode3DTwentySix());
 
@@ -1000,12 +1053,14 @@ struct LocalMinMaxTest
             for(int y=0; y<vol.shape(1); ++y)
                 for(int x=0; x<vol.shape(0); ++x)
                     shouldEqual(res(x,y,z), desired(x,y,z));
+
+        should(3 == localMaxima(vol, res2, LocalMinmaxOptions().neighborhood(1).markWith(1).allowPlateaus()));
+        should(res == res2);
     }
 
     void localMinimumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMinima(srcImageRange(img), destImage(res));
 
@@ -1022,18 +1077,24 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(2 == localMinima(img, res2));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder());
         desired[8] = 1.0;
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(4 == localMinima(img, res2, LocalMinmaxOptions().allowAtBorder()));
+        should(res == res2);
     }
 
     void localMinimum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMinima(srcImageRange(img), destImage(res), LocalMinmaxOptions().neighborhood(4));
 
@@ -1050,19 +1111,25 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(5 == localMinima(img, res2, LocalMinmaxOptions().neighborhood(4)));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
-                    LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+                    LocalMinmaxOptions().neighborhood(0).allowAtBorder());
         desired[8] = 1.0;
         desired[26] = 1.0;
         desired[53] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(8 == localMinima(img, res2, LocalMinmaxOptions().allowAtBorder().neighborhood(4)));
+        should(res == res2);
     }
 
     void localMinimumTestThr()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMinima(srcImageRange(img), destImage(res),
                     LocalMinmaxOptions().neighborhood(8).markWith(1.0).threshold(-1.0));
@@ -1080,17 +1147,25 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(1 == localMinima(img, res2,
+                                LocalMinmaxOptions().neighborhood(8).markWith(1.0).threshold(-1.0)));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder());
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(2 == localMinima(img, res2, 
+                                LocalMinmaxOptions().neighborhood(8).threshold(-1.0).allowAtBorder()));
+        should(res == res2);
     }
 
     void localMaximumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMaxima(srcImageRange(img), destImage(res));
 
@@ -1107,18 +1182,25 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(2 == localMaxima(img, res2));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder());
         desired[0] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(4 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder()));
+        should(res == res2);
     }
 
     void localMaximum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(4));
@@ -1136,19 +1218,27 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(4 == localMaxima(img, res2,
+                                LocalMinmaxOptions().neighborhood(4)));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
-                    LocalMinmaxOptions().neighborhood(4).allowAtBorder());
+                    LocalMinmaxOptions().neighborhood(DirectNeighborhood).allowAtBorder());
         desired[0] = 1.0;
         desired[27] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(7 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().neighborhood(DirectNeighborhood).allowAtBorder()));
+        should(res == res2);
     }
 
     void localMaximumTestThr()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().markWith(1.0).neighborhood(8).threshold(0.2));
@@ -1166,17 +1256,25 @@ struct LocalMinMaxTest
 
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(1 == localMaxima(img, res2,
+                                LocalMinmaxOptions().neighborhood(8).markWith(1.0).threshold(0.2)));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder().threshold(0.2));
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(2 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().neighborhood(IndirectNeighborhood).threshold(0.2).allowAtBorder()));
+        should(res == res2);
     }
 
     void extendedLocalMinimumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMinima(srcImageRange(img), destImage(res), 1.0);
 
@@ -1198,18 +1296,26 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(4 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus()));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[8] = 1.0;
         desired[26] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(6 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
+        should(res == res2);
     }
 
     void extendedLocalMinimum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMinima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
 
@@ -1231,6 +1337,10 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(7 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus().neighborhood(0)));
+        should(res == res2);
+
         res.init(0);
         localMinima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
@@ -1238,12 +1348,16 @@ struct LocalMinMaxTest
         desired[26] = 1.0;
         desired[53] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(10 == localMinima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
+        should(res == res2);
    }
 
     void extendedLocalMaximumTest()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0);
 
@@ -1264,18 +1378,26 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus());
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(4 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus()));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().allowAtBorder().allowPlateaus());
         desired[0] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(6 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus()));
+        should(res == res2);
    }
 
     void extendedLocalMaximum4Test()
     {
-        Image res(img);
-        res.init(0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0, FourNeighborCode());
 
@@ -1297,6 +1419,10 @@ struct LocalMinMaxTest
                     LocalMinmaxOptions().allowPlateaus().neighborhood(4));
         shouldEqualSequence(res.begin(), res.end(), desired);
 
+        should(6 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowPlateaus().neighborhood(DirectNeighborhood)));
+        should(res == res2);
+
         res.init(0);
         localMaxima(srcImageRange(img), destImage(res), 
                     LocalMinmaxOptions().neighborhood(4).allowAtBorder().allowPlateaus());
@@ -1304,6 +1430,11 @@ struct LocalMinMaxTest
         desired[27] = 1.0;
         desired[63] = 1.0;
         shouldEqualSequence(res.begin(), res.end(), desired);
+
+        res2.init(0);
+        should(9 == localMaxima(img, res2, 
+                                LocalMinmaxOptions().allowAtBorder().allowPlateaus().neighborhood(4)));
+        should(res == res2);
    }
 
     void plateauWithHolesTest()
@@ -1320,7 +1451,7 @@ struct LocalMinMaxTest
             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
         std::copy(in, in+81, img.begin());
-        Image res(img.size(), 0.0);
+        Image res(img.shape()), res2(img.shape());
 
         extendedLocalMaxima(srcImageRange(img), destImage(res), 1.0,
                             EightNeighborCode(),
@@ -1346,10 +1477,11 @@ struct LocalMinMaxTest
 
 struct WatershedsTest
 {
-    typedef vigra::DImage Image;
+    typedef vigra::MultiArray<2, double> Image;
+    typedef vigra::MultiArray<2, int> IntImage;
 
     WatershedsTest()
-    : img(9,9)
+    : img(Shape2(9,9))
     {
         static const double in[] = {
             0.0,  0.1,  0.1,  0.3,  0.5,  0.3,  0.0,  0.0, 0.0,
@@ -1362,22 +1494,23 @@ struct WatershedsTest
             0.0,  0.0,  0.0,  0.0, -1.0,  0.0, -0.1,  0.1, 0.0,
             0.0,  0.0,  0.0,  0.0, -0.5, -0.3, -0.1, -0.1, 0.0};
 
-        Image::ScanOrderIterator i = img.begin();
-        Image::ScanOrderIterator end = img.end();
-        Image::Accessor acc = img.accessor();
+        Image::iterator i = img.begin();
+        Image::iterator end = img.end();
         const double * p = in;
 
         for(; i != end; ++i, ++p)
         {
             // transform data to a range suitable for BucketQueue (in the turbo algorithm)
-            acc.set(*p*10.0 + 30.0, i);
+            *i = *p*10.0 + 30.0;
         }
     }
 
     void watershedsTest()
     {
-        IImage res(img.size());
+        IntImage res(img.shape()), res2(img.shape());
 
+        /*******************************************************************/
+        
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  3.0,  3.0,  3.0,  3.0,  4.0,
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  3.0,  4.0,
@@ -1394,9 +1527,15 @@ struct WatershedsTest
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        res.init(0);
-        count = generateWatershedSeeds(srcImageRange(img), destImage(res),
-                                       SeedOptions().extendedMinima());
+        /*******************************************************************/
+        
+        // break ties explicitly to make the test independent of tie breaking rules
+        img(3,1) -= 0.01;
+        img(3,2) -= 0.01;
+        img(5,4) += 0.01;
+        img(6,4) += 0.01;
+        img(7,5) += 0.01;
+        img(8,5) += 0.01;
 
         static const double desiredSeeds[] = {
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
@@ -1409,11 +1548,19 @@ struct WatershedsTest
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
+
+        res.init(0);
+        count = generateWatershedSeeds(srcImageRange(img), destImage(res),
+                                       SeedOptions().extendedMinima());
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
 
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
+        res2.init(0);
+        should(5 == generateWatershedSeeds(img, res2, IndirectNeighborhood, SeedOptions().extendedMinima()));
+        shouldEqualSequence(res2.begin(), res2.end(), desiredSeeds);
 
+        /*******************************************************************/
+        
         static const double desiredRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
@@ -1425,14 +1572,13 @@ struct WatershedsTest
             4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0};
 
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res));
+
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
-        res.init(0);
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
-                                        WatershedOptions().keepContours()
-                                          .seedOptions(SeedOptions().extendedMinima()));
-
+        /*******************************************************************/
+        
         static const double desiredRGC[] = {
             2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  1.0,  1.0,  1.0,  1.0,  
@@ -1444,14 +1590,20 @@ struct WatershedsTest
             4.0,  4.0,  4.0,  4.0,  4.0,  0.0,  0.0,  0.0,  0.0,  
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0};
 
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+                                        WatershedOptions().keepContours()
+                                          .seedOptions(SeedOptions().extendedMinima()));
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRGC);
 
-        res.init(0);
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
-                                        WatershedOptions().turboAlgorithm()
-                                          .seedOptions(SeedOptions().extendedMinima()));
+        res2.init(0);
+        generateWatershedSeeds(img, res2, IndirectNeighborhood, SeedOptions().extendedMinima());
+        should(5 == watershedsMultiArray(img, res2, IndirectNeighborhood, WatershedOptions().regionGrowing().keepContours()));
+        should(res == res2);
 
+        /*******************************************************************/
+        
         static const double desiredTRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
@@ -1463,8 +1615,21 @@ struct WatershedsTest
             4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0,  5.0,  5.0,  
             4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  4.0,  5.0,  5.0};
 
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res),
+                                        WatershedOptions().turboAlgorithm()
+                                          .seedOptions(SeedOptions().extendedMinima()));
         shouldEqual(5, count);
         shouldEqualSequence(res.begin(), res.end(), desiredTRG);
+
+        res2.init(0);
+        generateWatershedSeeds(img, res2, IndirectNeighborhood, SeedOptions().extendedMinima());
+        should(5 == watershedsMultiArray(img, res2, IndirectNeighborhood, WatershedOptions().regionGrowing()));
+        should(res == res2);
+
+        res2.init(1);  // check that this is overridden by explicit seed computation
+        should(5 == watershedsMultiArray(img, res2, IndirectNeighborhood, WatershedOptions().regionGrowing().seedOptions(SeedOptions().extendedMinima())));
+        should(res == res2);
 
 #if 0
         std::cerr << count << "\n";
@@ -1480,8 +1645,10 @@ struct WatershedsTest
 
     void watersheds4Test()
     {
-        IImage res(img.size());
+        IntImage res(img.shape()), res2(img.shape());
 
+        /*******************************************************************/
+        
         static const double desired[] = {
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  4.0,  4.0,  5.0,
             1.0,  1.0,  1.0,  2.0,  2.0,  3.0,  3.0,  4.0,  5.0,
@@ -1498,9 +1665,18 @@ struct WatershedsTest
         should(10 == count);
         shouldEqualSequence(res.begin(), res.end(), desired);
 
-        res.init(0);
-        count = generateWatershedSeeds(srcImageRange(img), destImage(res), FourNeighborCode(),
-                                       SeedOptions().extendedMinima());
+        /*******************************************************************/
+        
+        // break ties explicitly to make the test independent of tie breaking rules
+        img(3,0) += 0.01;
+        img(3,4) += 0.01;
+        img(5,1) += 0.01;
+        img(0,3) += 0.01;
+        img(1,3) += 0.01;
+        img(8,5) += 0.01;
+        img(6,8) += 0.01;
+        img(7,8) += 0.01;
+        img(8,8) += 0.01;
 
         static const double desiredSeeds[] = {
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
@@ -1513,11 +1689,18 @@ struct WatershedsTest
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  
             0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0,  0.0};
 
+        res.init(0);
+        count = generateWatershedSeeds(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                       SeedOptions().extendedMinima());
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredSeeds);
 
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
+        res2.init(0);
+        should(7 == generateWatershedSeeds(img, res2, DirectNeighborhood, SeedOptions().extendedMinima()));
+        shouldEqualSequence(res2.begin(), res2.end(), desiredSeeds);
 
+        /*******************************************************************/
+        
         static const double desiredRG[] = {
             2.0,  2.0,  2.0,  3.0,  3.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  3.0,  3.0,  4.0,  4.0,  1.0,  1.0,  1.0,  
@@ -1529,14 +1712,13 @@ struct WatershedsTest
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0};
 
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode());
+
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRG);
 
-        res.init(0);
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
-                                        WatershedOptions().keepContours()
-                                          .seedOptions(SeedOptions().extendedMinima()));
-
+        /*******************************************************************/
+        
         static const double desiredRGC[] = {
             2.0,  2.0,  2.0,  0.0,  0.0,  0.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  0.0,  3.0,  0.0,  4.0,  0.0,  1.0,  1.0,  
@@ -1548,14 +1730,20 @@ struct WatershedsTest
             6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0,  7.0,  
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  0.0,  7.0,  7.0};
 
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                        WatershedOptions().keepContours()
+                                          .seedOptions(SeedOptions().extendedMinima()));
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredRGC);
 
-        res.init(0);
-        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
-                                        WatershedOptions().turboAlgorithm()
-                                          .seedOptions(SeedOptions().extendedMinima()));
+        res2.init(0);
+        generateWatershedSeeds(img, res2, DirectNeighborhood, SeedOptions().extendedMinima());
+        should(7 == watershedsMultiArray(img, res2, DirectNeighborhood, WatershedOptions().regionGrowing().keepContours()));
+        should(res == res2);
 
+        /*******************************************************************/
+        
         static const double desiredTRG[] = {
             2.0,  2.0,  2.0,  3.0,  1.0,  1.0,  1.0,  1.0,  1.0,  
             2.0,  2.0,  2.0,  3.0,  3.0,  4.0,  1.0,  1.0,  1.0,  
@@ -1567,17 +1755,29 @@ struct WatershedsTest
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  7.0,  7.0,  7.0,  
             6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0,  6.0};
 
+        res.init(0);
+        count = watershedsRegionGrowing(srcImageRange(img), destImage(res), FourNeighborCode(),
+                                        WatershedOptions().turboAlgorithm()
+                                          .seedOptions(SeedOptions().extendedMinima()));
         shouldEqual(7, count);
         shouldEqualSequence(res.begin(), res.end(), desiredTRG);
 
+        res2.init(0);
+        generateWatershedSeeds(img, res2, DirectNeighborhood, SeedOptions().extendedMinima());
+        should(7 == watershedsMultiArray(img, res2, DirectNeighborhood, WatershedOptions().regionGrowing()));
+        should(res == res2);
+
+        res2.init(1);  // check that this is overridden by explicit seed computation
+        should(7 == watershedsMultiArray(img, res2, DirectNeighborhood, WatershedOptions().regionGrowing().seedOptions(SeedOptions().extendedMinima())));
+        should(res == res2);
+
 #if 0
         std::cerr << count << "\n";
-        for(int y=0;y<9;++y)
+        for(int k=0; k<res.size(); ++k)
         {
-            std::cerr << "            ";
-            for(int x=0;x<9;++x)
-                std::cerr << res(x,y) << ".0,  ";
-            std::cerr << "\n";
+            std::cerr << res[k] << (res[k] == res2[k] ? " " : "*");
+            if(k%res.shape(0) == res.shape(0)-1)
+                std::cerr << "\n";
         }
 #endif /* #if 0 */
     }
@@ -1588,6 +1788,7 @@ struct WatershedsTest
 struct RegionGrowingTest
 {
     typedef vigra::DImage Image;
+    typedef MultiArrayView<2, double> View;
 
     RegionGrowingTest()
     : img(7,7), seeds(7,7)
@@ -1639,8 +1840,7 @@ struct RegionGrowingTest
         Image res(img);
 
         vigra::ArrayOfRegionStatistics<DirectCostFunctor> cost(2);
-        seededRegionGrowing(srcImageRange(img), srcImage(seeds),
-                            destImage(res), cost);
+        seededRegionGrowing(View(img), View(seeds), View(res), cost);
 
         Image::Iterator i = res.upperLeft();
         Image::Accessor acc = res.accessor();
@@ -1697,6 +1897,7 @@ struct RegionGrowingTest
 struct InterestOperatorTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
 
     InterestOperatorTest()
     : img(9,9)
@@ -1726,6 +1927,7 @@ struct InterestOperatorTest
     void cornerResponseFunctionTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1752,11 +1954,15 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        cornerResponseFunction(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void foerstnerCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1783,11 +1989,15 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        foerstnerCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void rohrCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1814,12 +2024,16 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        rohrCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
 
     void beaudetCornerTest()
     {
         Image tmp(img);
+        Image tmp1(img);
         Image res(img);
         res = 0.0;
 
@@ -1846,6 +2060,9 @@ struct InterestOperatorTest
         {
             should(*i1 == acc(i2));
         }
+
+        beaudetCornerDetector(View(img), View(tmp1), 1.0);
+        should(View(tmp) == View(tmp1));
     }
 
     void radialSymmetryTest()
@@ -1854,7 +2071,7 @@ struct InterestOperatorTest
         Image res(img);
         res = 0.0;
 
-        radialSymmetryTransform(srcImageRange(img), destImage(tmp), 1.0);
+        radialSymmetryTransform(View(img), View(tmp), 1.0);
         localMaxima(srcImageRange(tmp), destImage(res), 1.0);
         localMinima(srcImageRange(tmp), destImage(res), -1.0);
 
@@ -1888,6 +2105,7 @@ struct NoiseNormalizationTest
     typedef vigra::BImage U8Image;
     typedef vigra::DImage GrayImage;
     typedef vigra::DRGBImage RGBImage;
+    typedef MultiArrayView<2, double> View;
     U8Image u8image;
     GrayImage image;
     RGBImage rgb;
@@ -1948,13 +2166,13 @@ struct NoiseNormalizationTest
     void testParametricNoiseNormalization()
     {
         GrayImage res(image.size());
-        linearNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02);
+        linearNoiseNormalization(View(image), View(res), 1.0, 0.02);
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        linearNoiseNormalization(srcImageRange(image), destImage(res));
+        linearNoiseNormalization(View(image), View(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        quadraticNoiseNormalization(srcImageRange(image), destImage(res), 1.0, 0.02, 0.0);
+        quadraticNoiseNormalization(View(image), View(res), 1.0, 0.02, 0.0);
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
-        quadraticNoiseNormalization(srcImageRange(image), destImage(res));
+        quadraticNoiseNormalization(View(image), View(res));
         checkVariance(res.upperLeft(), res.accessor(), 0.1);
    }
   
@@ -2016,7 +2234,7 @@ struct NoiseNormalizationTest
 #ifdef HasFFTW3
 struct SlantedEdgeMTFTest
 {
-    typedef vigra::DImage Image;
+    typedef vigra::MultiArray<2, double> Image;
     typedef vigra::ArrayVector<vigra::TinyVector<double, 2> > Result;
     typedef Result::value_type Pair;
     
@@ -2027,7 +2245,7 @@ struct SlantedEdgeMTFTest
     {
         vigra::ImageImportInfo info("slantedEdgeMTF.xv");
            
-        image.resize(info.size());
+        image.reshape(info.shape());
         importImage(info, destImage(image));
         
         reference.push_back(Pair(0, 1));
@@ -2052,7 +2270,7 @@ struct SlantedEdgeMTFTest
     void testSlantedEdgeMTF()
     {
         Result res;
-        slantedEdgeMTF(srcImageRange(image), res);
+        slantedEdgeMTF(image, res);
         
         shouldEqual(res.size(), reference.size());
         
@@ -2070,6 +2288,7 @@ struct SlantedEdgeMTFTest
 struct AffineRegistrationTest
 {
     typedef vigra::DImage Image;
+    typedef vigra::MultiArrayView<2, double> View;
     typedef vigra::TinyVector<double, 2> Vector2;
     typedef vigra::ArrayVector<Vector2> PointList;
     
@@ -2122,6 +2341,13 @@ struct AffineRegistrationTest
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+        
+        estimated = identityMatrix<double>(3);
+        estimateTranslation(View(image), View(timg), estimated,
+                            AffineMotionEstimationOptions<1>().highestPyramidLevel(3));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
     }
 
     void testSimilarityRegistration()
@@ -2145,6 +2371,13 @@ struct AffineRegistrationTest
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
+
+        estimated = identityMatrix<double>(3);
+        estimateSimilarityTransform(View(image),View(timg).subarray(Shape2(), Shape2(-20)), estimated,
+                            AffineMotionEstimationOptions<>().useLaplacianPyramid(true));
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] , estimated.data()[i], 1e-2);
     }
 
     void testAffineRegistration()
@@ -2156,6 +2389,12 @@ struct AffineRegistrationTest
 
         Matrix<double> estimated = identityMatrix<double>(3);
         estimateAffineTransform(srcImageRange(image), srcImageRange(timg), estimated);
+        
+        for(int i=0; i<9; ++i)
+            shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
+
+        estimated = identityMatrix<double>(3);
+        estimateAffineTransform(View(image), View(timg), estimated);
         
         for(int i=0; i<9; ++i)
             shouldEqualTolerance(m.data()[i] - estimated.data()[i], 0.0, 1e-6);
@@ -2172,7 +2411,7 @@ struct SimpleAnalysisTestSuite
         add( testCase( &LabelingTest::labelingFourTest2));
         add( testCase( &LabelingTest::labelingFourTest3));
         add( testCase( &LabelingTest::labelingFourTest4));
-        add( testCase( &LabelingTest::labelingToCrackEdgeTest));
+        add( testCase( &LabelingTest::labelingToEdgeTest));
         add( testCase( &LabelingTest::labelingEightTest1));
         add( testCase( &LabelingTest::labelingEightTest2));
         add( testCase( &LabelingTest::labelingFourWithBackgroundTest1));

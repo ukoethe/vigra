@@ -44,6 +44,7 @@
 #include "stdimage.hxx"
 #include "stdimagefunctions.hxx"
 #include "seededregiongrowing.hxx"
+#include "multi_shape.hxx"
 #include "multi_pointoperators.hxx"
 #include "voxelneighborhood.hxx"
 
@@ -250,7 +251,26 @@ public:
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 3D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class TS, class AS,
+                  class T2, class S2,
+                  class RegionStatisticsArray, class Neighborhood>
+        void
+        seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & src,
+                              MultiArrayView<3, TS, AS> const & seeds,
+                              MultiArrayView<3, T2, S2>         labels,
+                              RegionStatisticsArray &           stats, 
+                              SRGType                           srgType = CompleteGrow,
+                              Neighborhood                      neighborhood = NeighborCode3DSix(),
+                              double                            max_cost = NumericTraits<double>::max());
+    }
+    \endcode
+
+    \deprecatedAPI{seededRegionGrowing3D}
+    pass \ref MultiIteratorPage "MultiIterators" and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcImageIterator, class Shape, class SrcAccessor,
@@ -267,7 +287,6 @@ public:
                               double max_cost = NumericTraits<double>::max());
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -285,7 +304,14 @@ public:
                               double max_cost = NumericTraits<double>::max());
     }
     \endcode
+    \deprecatedEnd
 
+    <b> Usage:</b>
+    
+    <b>\#include</b> \<vigra/seededregiongrowing3d.hxx\><br>
+    Namespace: vigra
+    
+    See \ref seededRegionGrowing() for an example
 */
 doxygen_overloaded_function(template <...> void seededRegionGrowing3D)
 
@@ -559,6 +585,80 @@ seededRegionGrowing3D(triple<SrcImageIterator, Shape, SrcAccessor> img1,
     seededRegionGrowing3D(img1.first, img1.second, img1.third,
                           img3.first, img3.second,
                           img4.first, img4.second,
+                          stats);
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline void
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
+                      RegionStatisticsArray & stats, 
+                      SRGType srgType, Neighborhood n, double max_cost)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
+    seededRegionGrowing3D(srcMultiArrayRange(img1),
+                          srcMultiArray(img3),
+                          destMultiArray(img4),
+                          stats, srgType, n, max_cost);
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray, class Neighborhood>
+inline void
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
+                      RegionStatisticsArray & stats, 
+                      SRGType srgType, Neighborhood n)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
+    seededRegionGrowing3D(srcMultiArrayRange(img1),
+                          srcMultiArray(img3),
+                          destMultiArray(img4),
+                          stats, srgType, n, NumericTraits<double>::max());
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline void
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
+                      RegionStatisticsArray & stats, SRGType srgType)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
+    seededRegionGrowing3D(srcMultiArrayRange(img1),
+                          srcMultiArray(img3),
+                          destMultiArray(img4),
+                          stats, srgType, NeighborCode3DSix());
+}
+
+template <class T1, class S1,
+          class TS, class AS,
+          class T2, class S2,
+          class RegionStatisticsArray>
+inline void
+seededRegionGrowing3D(MultiArrayView<3, T1, S1> const & img1,
+                      MultiArrayView<3, TS, AS> const & img3,
+                      MultiArrayView<3, T2, S2> img4,
+                      RegionStatisticsArray & stats)
+{
+    vigra_precondition(img1.shape() == img3.shape(),
+        "seededRegionGrowing3D(): shape mismatch between input and output.");
+    seededRegionGrowing3D(srcMultiArrayRange(img1),
+                          srcMultiArray(img3),
+                          destMultiArray(img4),
                           stats);
 }
 

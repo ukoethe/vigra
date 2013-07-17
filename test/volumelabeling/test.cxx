@@ -39,6 +39,7 @@
 #include "unittest.hxx"
 
 #include "vigra/labelvolume.hxx"
+#include "vigra/multi_labeling.hxx"
 
 using namespace vigra;
 
@@ -170,7 +171,7 @@ struct VolumeLabelingTest
 
     void labelingSixTest1()
     {
-        IntVolume res(vol1);
+        IntVolume res(vol1.shape()), res2(vol1.shape());
         
         unsigned int maxLabel = labelVolumeSix(srcMultiArrayRange(vol1), destMultiArray(res));
         should(2 == maxLabel);
@@ -183,11 +184,25 @@ struct VolumeLabelingTest
         {
             should( *i1 == (*i2 - 1.0) );
         }
+
+        maxLabel = labelMultiArray(vol1, res2, DirectNeighborhood);
+        should(2 == maxLabel);
+        should(res == res2);
+
+        res2 = 0;
+        maxLabel = labelVolumeSix(vol1, res2);
+        should(2 == maxLabel);
+        should(res == res2);
+
+        res2 = 0;
+        maxLabel = labelVolume(vol1, res2, NeighborCode3DSix());
+        should(2 == maxLabel);
+        should(res == res2);
     }
 
     void labelingSixTest2()
     {
-        IntVolume res(vol2);
+        IntVolume res(vol2.shape()), res2(vol2.shape());
 
         should(64 == labelVolume(srcMultiArrayRange(vol2), destMultiArray(res), NeighborCode3DSix()));
 
@@ -199,11 +214,14 @@ struct VolumeLabelingTest
         {
             should( *i2 == address+1 );
         }
+
+        should(64 == labelMultiArray(vol2, res2, DirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingSixTest3()
     {
-        IntVolume res(vol3);
+        IntVolume res(vol3.shape()), res2(vol3.shape());
 
         should(5 == labelVolume(srcMultiArrayRange(vol3), destMultiArray(res), NeighborCode3DSix()));
 
@@ -221,11 +239,14 @@ struct VolumeLabelingTest
         {
             should( *i2 == *p );
         }
+
+        should(5 == labelMultiArray(vol3, res2, DirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingSixTest4()
     {
-        IntVolume res(vol4);
+        IntVolume res(vol4.shape()), res2(vol4.shape());
 
         should(18 == labelVolume(srcMultiArrayRange(vol4), destMultiArray(res), NeighborCode3DSix()));
 
@@ -243,11 +264,14 @@ struct VolumeLabelingTest
         {
             should( *i2 == *p );
         }
+
+        should(18 == labelMultiArray(vol4, res2, DirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingSixWithBackgroundTest1()
     {
-        IntVolume res(vol5);
+        IntVolume res(vol5.shape()), res2(vol5.shape());
 
         unsigned int maxLabel = labelVolumeWithBackground(srcMultiArrayRange(vol5), destMultiArray(res), NeighborCode3DSix(), 0);
         should(4 == maxLabel);
@@ -266,12 +290,19 @@ struct VolumeLabelingTest
         {
             should( *i2 == *p );
         }
+
+        should(4 == labelMultiArrayWithBackground(vol5, res2, DirectNeighborhood));
+        should(res == res2);
+
+        res2 = 0;
+        should(4 == labelVolumeWithBackground(vol5, res2, NeighborCode3DSix(), 0));
+        should(res == res2);
     }
 
 
     void labelingTwentySixTest1()
     {
-        IntVolume res(vol1);
+        IntVolume res(vol1.shape()), res2(vol1.shape());
 
         should(2 == labelVolume(srcMultiArrayRange(vol1), destMultiArray(res), NeighborCode3DTwentySix()));
 
@@ -283,11 +314,14 @@ struct VolumeLabelingTest
         {
             should( *i1 == (*i2 - 1.0) );
         }
+
+        should(2 == labelMultiArray(vol1, res2, IndirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingTwentySixTest2()
     {
-        IntVolume res(vol2);
+        IntVolume res(vol2.shape()), res2(vol2.shape());
 
         should(2 == labelVolume(srcMultiArrayRange(vol2), destMultiArray(res), NeighborCode3DTwentySix()));
 
@@ -299,11 +333,14 @@ struct VolumeLabelingTest
         {
             should( *i1 == (*i2 - 1.0) );
         }
+
+        should(2 == labelMultiArray(vol2, res2, IndirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingTwentySixTest3()
     {
-        IntVolume res(vol4);
+        IntVolume res(vol4.shape()), res2(vol4.shape());
 
         should(2 == labelVolume(srcMultiArrayRange(vol4), destMultiArray(res), NeighborCode3DTwentySix()));
 
@@ -315,11 +352,14 @@ struct VolumeLabelingTest
         {
             should( *i1 == 2-*i2 );
         }
+
+        should(2 == labelMultiArray(vol4, res2, IndirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingTwentySixWithBackgroundTest1()
     {
-        IntVolume res(vol5);
+        IntVolume res(vol5.shape()), res2(vol5.shape());
 
         should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol5), destMultiArray(res), NeighborCode3DTwentySix(), 0));
 
@@ -331,6 +371,9 @@ struct VolumeLabelingTest
         {
             should( *i1 == *i2 );
         }
+
+        should(2 == labelMultiArrayWithBackground(vol5, res2, IndirectNeighborhood));
+        should(res == res2);
     }
 
     void labelingAllTest()
@@ -367,20 +410,41 @@ struct VolumeLabelingTest
                 0, 0, 0, 0, 0, 
                 0, 0, 0, 0, 0 };
 
+        res = 0;
         should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DSix(), 0));
         shouldEqualSequence(res.begin(), res.end(), out6);
 
+        res = 0;
         should(2 == labelVolumeWithBackground(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix(), 0));
         shouldEqualSequence(res.begin(), res.end(), out6);
 
+        res = 0;
         should(3 == labelVolume(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DSix()));
         res -= 1;
         shouldEqualSequence(res.begin(), res.end(), out6);
 
+        res = 0;
         should(3 == labelVolume(srcMultiArrayRange(vol6), destMultiArray(res), NeighborCode3DTwentySix()));
         res -= 1;
         shouldEqualSequence(res.begin(), res.end(), out6);
 
+        res = 0;
+        should(2 == labelMultiArrayWithBackground(vol6, res, DirectNeighborhood));
+        shouldEqualSequence(res.begin(), res.end(), out6);
+
+        res = 0;
+        should(2 == labelMultiArrayWithBackground(vol6, res, IndirectNeighborhood, 0.0));
+        shouldEqualSequence(res.begin(), res.end(), out6);
+
+        res = 0;
+        should(3 == labelMultiArray(vol6, res, DirectNeighborhood));
+        res -= 1;
+        shouldEqualSequence(res.begin(), res.end(), out6);
+
+        res = 0;
+        should(3 == labelMultiArray(vol6, res, IndirectNeighborhood));
+        res -= 1;
+        shouldEqualSequence(res.begin(), res.end(), out6);
     }
 
     IntVolume vol1, vol2, vol3;

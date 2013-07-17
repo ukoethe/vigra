@@ -35,15 +35,12 @@
  
 
 #include <iostream>
-#include <functional>
-#include "vigra/stdimage.hxx"
-#include "vigra/combineimages.hxx"
-#include "vigra/tensorutilities.hxx"
-#include "vigra/boundarytensor.hxx"
-#include "vigra/impex.hxx"
+#include <vigra/multi_array.hxx>
+#include <vigra/tensorutilities.hxx>
+#include <vigra/boundarytensor.hxx>
+#include <vigra/impex.hxx>
 
 using namespace vigra; 
-
 
 int main(int argc, char ** argv)
 {
@@ -60,8 +57,9 @@ int main(int argc, char ** argv)
     {
         ImageImportInfo info(argv[1]);
         int w = info.width(), h = info.height();
+        
         // create image of appropriate size for boundary tensor
-        FVector3Image boundarytensor(w, h);
+        MultiArray<2, TinyVector<float, 3> > boundarytensor(w, h);
         
         // input scale of the bandpass to be used
         double scale;
@@ -70,25 +68,23 @@ int main(int argc, char ** argv)
         
         if(info.isGrayscale())
         {
-            FImage in(w, h);
-            importImage(info, destImage(in));
+            MultiArray<2, float> in(w, h);
+            importImage(info, in);
 
-            boundaryTensor(srcImageRange(in), destImage(boundarytensor), scale);
+            boundaryTensor(in, boundarytensor, scale);
         }
         else if(info.isColor())
         {
-            FRGBImage in(w, h);
-            importImage(info, destImage(in));
+            MultiArray<2, RGBValue<float> > in(w, h);
+            importImage(info, in);
             
             // calculate the boundary tensor for every channel and add the results
-            FVector3Image bandtensor(w, h);
+            MultiArray<2, TinyVector<float, 3> > bandtensor(w, h);
             for(int b=0; b<3; ++b)
             {
-                VectorElementAccessor<FRGBImage::Accessor> band(b);
-                boundaryTensor(srcImageRange(in, band), destImage(bandtensor), scale);
-                combineTwoImages(srcImageRange(boundarytensor), srcImage(bandtensor),
-                                 destImage(boundarytensor), 
-                                 std::plus<FVector3Image::value_type>());
+                boundaryTensor(in.bindElementChannel(b), bandtensor, scale);
+                
+                boundarytensor += bandtensor;
             }
         }
         else
@@ -97,14 +93,17 @@ int main(int argc, char ** argv)
             return 1;
         }
         
-        FImage boundarystrength(w, h), cornerness(w, h);
-        FVector2Image edgeness(w,h);
+        MultiArray<2, float> boundarystrength(w, h), cornerness(w, h);
+        MultiArray<2, TinyVector<float, 2> > edgeness(w,h);
         
-        tensorTrace(srcImageRange(boundarytensor), destImage(boundarystrength));
-        tensorToEdgeCorner(srcImageRange(boundarytensor), destImage(edgeness), destImage(cornerness));
+        // compute the total boundary strength in each pixel
+        tensorTrace(boundarytensor, boundarystrength);
+        
+        // decompose the boundary strength into corner and edge parts (where edge part also contains an orientation)
+        tensorToEdgeCorner(boundarytensor, edgeness, cornerness);
 
-        exportImage(srcImageRange(boundarystrength), ImageExportInfo("boundarystrength.tif").setPixelType("UINT8"));
-        exportImage(srcImageRange(cornerness), ImageExportInfo("cornerstrength.tif").setPixelType("UINT8"));
+        exportImage(boundarystrength, ImageExportInfo("boundarystrength.tif").setPixelType("UINT8"));
+        exportImage(cornerness, ImageExportInfo("cornerstrength.tif").setPixelType("UINT8"));
     }
     catch (std::exception & e)
     {

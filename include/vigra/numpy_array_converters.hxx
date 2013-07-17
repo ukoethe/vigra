@@ -219,7 +219,9 @@ template <class T1, \
           class T7 = void, \
           class T8 = void, \
           class T9 = void, \
-          class T10 = void> \
+          class T10 = void, \
+          class T11 = void, \
+          class T12 = void> \
 struct functor_name \
 : public boost::python::TypeList<typename functor_name##Impl<T1>::type, \
          boost::python::TypeList<typename functor_name##Impl<T2>::type, \
@@ -231,7 +233,9 @@ struct functor_name \
          boost::python::TypeList<typename functor_name##Impl<T8>::type, \
          boost::python::TypeList<typename functor_name##Impl<T9>::type, \
          boost::python::TypeList<typename functor_name##Impl<T10>::type, \
-         boost::python::TypeList<void, void> > > > > > > > > > > \
+         boost::python::TypeList<typename functor_name##Impl<T11>::type, \
+         boost::python::TypeList<typename functor_name##Impl<T12>::type, \
+         boost::python::TypeList<void, void> > > > > > > > > > > > > \
 {};
 
 template <class Head, class Tail>

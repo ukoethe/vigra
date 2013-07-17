@@ -43,6 +43,10 @@
 #include "unittest.hxx"
 #include "vigra/multi_array.hxx"
 
+#if HasTIFF
+# include "vigra/tiff.hxx"
+#endif
+
 using namespace vigra;
 
 template <class Image>
@@ -64,6 +68,7 @@ void failCodec(Image const & img, ImageExportInfo const & info)
 class ByteImageExportImportTest
 {
     typedef vigra::BImage Image;
+    typedef vigra::MultiArrayView<2, unsigned char> View;
 
 public:
 
@@ -126,14 +131,14 @@ public:
     {
         should(isImage("lenna.xv"));
         should(!isImage("no-image.txt"));
+        should(!isImage("filename-does-not-exist.gif"));
     }
 
     void testFile (const char *filename);
 
     void testGIF ()
     {
-        vigra::ImageExportInfo exportinfo ("res.gif");
-        exportImage (srcImageRange (img), exportinfo);
+        exportImage (View(img), "res.gif");
 
         vigra::ImageImportInfo info ("res.gif");
 
@@ -144,7 +149,7 @@ public:
 
         Image res (info.width (), info.height ());
 
-        importImage (info, destImage (res));
+        importImage (info, View (res));
 
         Image::ScanOrderIterator i = img.begin ();
         Image::ScanOrderIterator i1 = res.begin ();
@@ -155,6 +160,23 @@ public:
             sum += std::abs (acc (i) - acc (i1));
 
         should (sum / (info.width () * info.height ()) < 0.1);
+
+        MultiArray<2, unsigned char> res1;
+        importImage("res.gif", res1);
+        should(res1 == View(res));
+    }
+
+    void testGrayToRGB()
+    {
+        MultiArray<2, RGBValue<unsigned char> > rgb;
+
+        importImage("lenna.xv", rgb);
+
+        should (rgb.shape(0) == img.width());
+        should (rgb.shape(1) == img.height());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(0).begin());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(1).begin());
+        shouldEqualSequence(img.begin(), img.end(), rgb.bindElementChannel(2).begin());
     }
 
     void testJPEG ()
@@ -215,6 +237,23 @@ public:
 
         for (; i != img.end (); ++i, ++i1)
             should (acc (i) == acc (i1));
+
+        TiffImage * tiff = TIFFOpen("res2.tif", "w");
+        createTiffImage(View(img), tiff);
+        TIFFClose(tiff);
+
+        uint32 w, h;
+        tiff = TIFFOpen("res2.tif", "r");
+        TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+        shouldEqual(w, img.width());
+        shouldEqual(h, img.height());
+    
+        MultiArray<2, unsigned char> res2(w,h);
+        importTiffImage(tiff, res2);
+        TIFFClose(tiff);
+
+        shouldEqualSequence(res2.begin(), res2.end(), img.data());
 #endif
     }
 
@@ -471,6 +510,23 @@ public:
             {
                 should (acc (i) == acc (i1));
             }
+
+        TiffImage * tiff = TIFFOpen("res2.tif", "w");
+        createTiffImage(MultiArrayView<2, RGBValue<unsigned char> >(img), tiff);
+        TIFFClose(tiff);
+
+        uint32 w, h;
+        tiff = TIFFOpen("res2.tif", "r");
+        TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+        TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+        shouldEqual(w, img.width());
+        shouldEqual(h, img.height());
+    
+        MultiArray<2, RGBValue<unsigned char> > res2(w,h);
+        importTiffImage(tiff, res2);
+        TIFFClose(tiff);
+
+        shouldEqualSequence(res2.begin(), res2.end(), img.data());
 #endif
     }
 
@@ -1467,6 +1523,33 @@ public:
             should(rc);
         }
     }
+
+    void testShapeMismatch ()
+    {
+        MultiArray<2, RGBValue<UInt8> > rgb(1,1);
+
+        try {
+            importImage(ImageImportInfo("lennargb.xv"), rgb);
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) {
+            std::string expected = "\nPrecondition violation!\nimportImage(): shape mismatch between input and output.";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+
+        MultiArray<2, TinyVector<UInt8, 4> > vec4;
+        
+        try {
+            importImage("lennargb.xv", vec4);
+            failTest( "Failed to throw exception." );
+        }
+        catch( vigra::PreconditionViolation & e ) {
+            std::string expected = "\nPrecondition violation!\nimportImage(): Number of channels in input and destination image don't match.";
+            const bool rc = std::strncmp( expected.c_str(), e.what(), expected.length() ) == 0;
+            should(rc);
+        }
+    }
 };
 
 class GrayscaleImportExportAlphaTest
@@ -1490,6 +1573,7 @@ public:
     }
 
     void testFile(const char* filename);
+    void testFileMultiArray(const char* filename);
 
     void testTIFF()
     {
@@ -1497,6 +1581,7 @@ public:
 
 #if defined(HasTIFF)
         testFile(filename);
+        testFileMultiArray(filename);
 #else
         failCodec(image_, vigra::ImageExportInfo(filename));
 #endif
@@ -1508,6 +1593,7 @@ public:
 
 #if defined(HasPNG)
         testFile(filename);
+        testFileMultiArray(filename);
 #else
         failCodec(image_, vigra::ImageExportInfo(filename));
 #endif
@@ -1547,6 +1633,33 @@ GrayscaleImportExportAlphaTest::testFile(const char* filename)
     }
 
     for (BImage::const_iterator x = image_.begin(), xx = image.begin(); x != image_.end(); ++x, ++xx)
+    {
+        should(*x == *xx);
+    }
+}
+
+void
+GrayscaleImportExportAlphaTest::testFileMultiArray(const char* filename)
+{
+    typedef MultiArrayView<2, unsigned char> View;
+
+    exportImageAlpha(View(image_), View(alpha_), vigra::ImageExportInfo(filename));
+
+    vigra::ImageImportInfo info(filename);
+    MultiArray<2, unsigned char> image(info.shape()),
+                                 alpha(info.shape());
+
+    importImageAlpha(info, image, alpha);
+
+    MultiArray<2, unsigned char>::iterator xx = alpha.begin();
+    for (BImage::const_iterator x = alpha_.begin(); x != alpha_.end(); ++x, ++xx)
+    {
+        should(*x == 255);
+        should(*x == *xx);
+    }
+
+    xx = image.begin();
+    for (BImage::const_iterator x = image_.begin(); x != image_.end(); ++x, ++xx)
     {
         should(*x == *xx);
     }
@@ -1657,7 +1770,8 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ByteImageExportImportTest::testSUN));
         add(testCase(&ByteImageExportImportTest::testVIFF1));
         add(testCase(&ByteImageExportImportTest::testVIFF2));
-
+        add(testCase(&ByteImageExportImportTest::testGrayToRGB));
+        
         // rgb byte images
         add(testCase(&ByteRGBImageExportImportTest::testGIF));
         add(testCase(&ByteRGBImageExportImportTest::testJPEG));
@@ -1725,6 +1839,7 @@ struct ImageImportExportTestSuite : public vigra::test_suite
         add(testCase(&ImageExportImportFailureTest::testSUNImport));
         add(testCase(&ImageExportImportFailureTest::testVIFFExport));
         add(testCase(&ImageExportImportFailureTest::testVIFFImport));
+        add(testCase(&ImageExportImportFailureTest::testShapeMismatch));
 
         // alpha-channel tests
         add(testCase(&GrayscaleImportExportAlphaTest::testTIFF));

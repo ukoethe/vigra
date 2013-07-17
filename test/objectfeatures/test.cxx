@@ -258,7 +258,7 @@ struct AccumulatorTest
         shouldEqual(StandardizeTag<RegionRadii>::type::name(), "Coord<RootDivideByCount<Principal<PowerSum<2> > > >");
 
             // HasModifierPriority
-        using namespace vigra::acc::detail;
+        using namespace vigra::acc::acc_detail;
         should((HasModifierPriority<StandardizeTag<Count>::type, AccumulatorPriority>::value));
         should(!(HasModifierPriority<StandardizeTag<Count>::type, AccessDataPriority>::value));
         should((HasModifierPriority<StandardizeTag<Weighted<Count> >::type, WeightingPriority>::value));
@@ -272,7 +272,7 @@ struct AccumulatorTest
     void testLongFormImpl(const char * message)
     {
         using namespace vigra::acc;
-        using namespace vigra::acc::detail;
+        using namespace vigra::acc::acc_detail;
 
         typedef typename StandardizeTag<SOURCE >::type StdSource;
         typedef typename TagLongForm<StdSource, MinPriority>::type LongSource;
@@ -290,7 +290,7 @@ struct AccumulatorTest
 #define TEST_LONG_FORM(SOURCE, TARGET) testLongFormImpl<SOURCE, TARGET >(#SOURCE)
 #define DM DefaultModifier
         {
-            using namespace vigra::acc::detail;
+            using namespace vigra::acc::acc_detail;
 
 
             TEST_LONG_FORM(Minimum, DM<DM<DM<DM<DM<Minimum> > > > >);
@@ -902,7 +902,12 @@ struct AccumulatorTest
         shouldEqual(1.0, get<ArgMaxWeight>(a));
         shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(a));
         shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
-        
+
+        AccumulatorChain<CoupledArrays<3, double>, Select<WeightArg<1>, Coord<ArgMinWeight> > > b;
+
+        extractFeatures(weights, b);
+
+        shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(b));
     }
   
     void testHistogram()
@@ -1109,7 +1114,7 @@ struct AccumulatorTest
     {
         typedef typename acc::LookupDependency<TAG, A>::Tag StandardizedTag;
         typedef typename acc::LookupDependency<TAG, A>::reference reference;
-        return acc::detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
+        return acc::acc_detail::CastImpl<StandardizedTag, typename A::Tag, reference>::exec(a);
     }
 
     void testLabelDispatch()
@@ -1123,9 +1128,9 @@ struct AccumulatorTest
             typedef Select<Count, Coord<Sum>, Global<Count>, Global<Coord<Minimum> >, LabelArg<1>, DataArg<1> > Selected;
             typedef AccumulatorChainArray<Handle, Selected> A;
 
-            should((IsSameType<acc::detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
+            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::GlobalTags, 
                                TypeList<Count,TypeList<Coord<Minimum>,TypeList<DataArg<1>, TypeList<LabelArg<1>, void> > > > >::value));
-            should((IsSameType<acc::detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
+            should((IsSameType<acc::acc_detail::ConfigureAccumulatorChainArray<Handle, Selected>::RegionTags, 
                                TypeList<Count,TypeList<Coord<Sum>,TypeList<DataArg<1>, void> > > >::value));
 
             typedef LookupTag<Count, A>::type RegionCount;
@@ -1243,11 +1248,12 @@ struct AccumulatorTest
             typedef CoupledIteratorType<2, double, int>::type Iterator;
             typedef Iterator::value_type Handle;
 
-            typedef DynamicAccumulatorChainArray<Handle, Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
-                                                                AutoRangeHistogram<3>, 
-                                                                Global<Count>, Global<Coord<Mean> >, 
-                                                                StandardQuantiles<GlobalRangeHistogram<3> >, 
-                                                                LabelArg<2>, DataArg<1>
+            typedef DynamicAccumulatorChainArray<CoupledArrays<2, double, int>, 
+                                                Select<Count, Coord<Mean>, GlobalRangeHistogram<3>,
+                                                       AutoRangeHistogram<3>, 
+                                                       Global<Count>, Global<Coord<Mean> >, 
+                                                       StandardQuantiles<GlobalRangeHistogram<3> >, 
+                                                       LabelArg<2>, DataArg<1>
                                                  > > A;
 
             A a;
@@ -1337,7 +1343,7 @@ struct AccumulatorTest
             A b;
             b.activateAll();
 
-            extractFeatures(start, end, b);
+            extractFeatures(data, labels, b);
             
             shouldEqual(W(4, 0, 0), get<GlobalRangeHistogram<3> >(b,0));
             shouldEqual(W(0, 0, 2), get<GlobalRangeHistogram<3> >(b,1));

@@ -43,6 +43,7 @@
 #include "combineimages.hxx"
 #include "convolution.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -170,7 +171,20 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void 
+        cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
+                               MultiArrayView<2, T2, S2> dest,
+                               double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{cornerResponseFunction}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -181,25 +195,45 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
                                double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void cornerResponseFunction(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         corner_response(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    cornerResponseFunction(src, corner_response, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(corner_response, corners);
+    
+    // threshold corner response to keep only strong corners (above 400.0)
+    transformImage(corner_response, corner_response,
+                   Threshold<double, double>(400.0, std::numeric_limits<double>::max(), 0.0, 1.0)); 
+
+    // combine thresholding and local maxima
+    combineTwoImages(corners, corner_response,
+                     corners, std::multiplies<float>());
+    \endcode
+
+    \deprecatedUsage{cornerResponseFunction}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage corner_response(w,h);
@@ -224,9 +258,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     vigra::combineTwoImages(srcImageRange(corners), srcImage(corner_response),
                      destImage(corners), std::multiplies<float>());
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -244,6 +276,7 @@ class FunctorTraits<BeaudetCornerFunctor<T> >
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void cornerResponseFunction)
 
@@ -293,6 +326,18 @@ void cornerResponseFunction(
                             scale);
 }
 
+template <class T1, class S1,
+          class T2, class S2>
+inline void 
+cornerResponseFunction(MultiArrayView<2, T1, S1> const & src,
+                       MultiArrayView<2, T2, S2> dest,
+                       double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "cornerResponseFunction(): shape mismatch between input and output.");
+    cornerResponseFunction(srcImageRange(src), destImage(dest), scale);
+}
+
 /********************************************************/
 /*                                                      */
 /*               foerstnerCornerDetector                */
@@ -311,7 +356,8 @@ void cornerResponseFunction(
     another detector invented by Harris.
     
     The algorithm first determines the structure tensor at each pixel by calling
-    \ref structureTensor(). Then the entries of the structure tensor are combined as 
+    \ref structureTensor(), where the given scale is used for both the inner and outer scales. 
+    Then the entries of the structure tensor are combined as 
     
     \f[
         \mbox{\rm FoerstnerCornerStrength} = \frac{\mbox{\rm det(StructureTensor)}}{\mbox{\rm tr(StructureTensor)}} = 
@@ -328,7 +374,20 @@ void cornerResponseFunction(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                                MultiArrayView<2, T2, S2> dest,
+                                double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{foerstnerCornerDetector}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -339,25 +398,37 @@ void cornerResponseFunction(
                                double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
-        void foerstnerCornerDetector(
+         void foerstnerCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         foerstner_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    foerstnerCornerDetector(src, foerstner_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(foerstner_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{foerstnerCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage foerstner_corner_strength(w,h);
@@ -373,9 +444,7 @@ void cornerResponseFunction(
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(foerstner_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -394,6 +463,7 @@ void cornerResponseFunction(
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void foerstnerCornerDetector)
 
@@ -432,14 +502,27 @@ foerstnerCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void foerstnerCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+foerstnerCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                        pair<DestIterator, DestAccessor> dest,
+                        double scale)
 {
     foerstnerCornerDetector(src.first, src.second, src.third,
                             dest.first, dest.second,
+                            scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+foerstnerCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                        MultiArrayView<2, T2, S2> dest,
+                        double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "foerstnerCornerDetector(): shape mismatch between input and output.");
+    foerstnerCornerDetector(srcImageRange(src),
+                            destImage(dest),
                             scale);
 }
 
@@ -460,7 +543,8 @@ void foerstnerCornerDetector(
     Direct Corner Detectors"</em>, J. of Mathematical Imaging and Vision 4:2 (1994) 139-150]. 
     
     The algorithm first determines the structure tensor at each pixel by calling
-    \ref structureTensor(). Then the entries of the structure tensor are combined as 
+    \ref structureTensor(), where the given scale is used for both the inner and outer scales. 
+    Then the entries of the structure tensor are combined as 
     
     \f[
         \mbox{\rm RohrCornerStrength} = \mbox{\rm det(StructureTensor)} = A B - C^2
@@ -471,12 +555,24 @@ void foerstnerCornerDetector(
     
     The source value type must be a linear algebra, i.e. addition, subtraction, and
     multiplication with itself, multiplication with doubles and 
-    \ref NumericTraits "NumericTraits" must 
-    be defined.
+    \ref NumericTraits "NumericTraits" must be defined.
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{rohrCornerDetector}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -487,25 +583,37 @@ void foerstnerCornerDetector(
                            double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void rohrCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         rohr_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    rohrCornerDetector(src, rohr_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(rohr_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{rohrCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage rohr_corner_strength(w,h);
@@ -521,9 +629,7 @@ void foerstnerCornerDetector(
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(rohr_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -541,6 +647,7 @@ void foerstnerCornerDetector(
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void rohrCornerDetector)
 
@@ -579,15 +686,28 @@ rohrCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void rohrCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+rohrCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   double scale)
 {
     rohrCornerDetector(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            scale);
+                       dest.first, dest.second,
+                       scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+rohrCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "rohrCornerDetector(): shape mismatch between input and output.");
+    rohrCornerDetector(srcImageRange(src),
+                       destImage(dest),
+                       scale);
 }
 
 /********************************************************/
@@ -614,7 +734,20 @@ void rohrCornerDetector(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2>
+        void
+        beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                              MultiArrayView<2, T2, S2> dest,
+                              double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{beaudetCornerDetector}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -625,25 +758,37 @@ void rohrCornerDetector(
                            double scale)
     }
     \endcode
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
                   class DestIterator, class DestAccessor>
-        inline 
         void beaudetCornerDetector(
                    triple<SrcIterator, SrcIterator, SrcAccessor> src,
                    pair<DestIterator, DestAccessor> dest,
                    double scale)
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
     <b>\#include</b> \<vigra/cornerdetection.hxx\><br>
     Namespace: vigra
+
+    \code
+    MultiArray<2, unsigned char> src(w,h), corners(w,h);
+    MultiArray<2, float>         beaudet_corner_strength(w,h);
+    ...
     
+    // find corner response at scale 1.0
+    beaudetCornerDetector(src, beaudet_corner_strength, 1.0);
+    
+    // find local maxima of corner response, mark with 1
+    localMaxima(beaudet_corner_strength, corners);
+    \endcode
+
+    \deprecatedUsage{beaudetCornerDetector}
     \code
     vigra::BImage src(w,h), corners(w,h);
     vigra::FImage beaudet_corner_strength(w,h);
@@ -659,9 +804,7 @@ void rohrCornerDetector(
     // find local maxima of corner response, mark with 1
     vigra::localMaxima(srcImageRange(beaudet_corner_strength), destImage(corners));
     \endcode
-
     <b> Required Interface:</b>
-    
     \code
     SrcImageIterator src_upperleft, src_lowerright;
     DestImageIterator dest_upperleft;
@@ -679,6 +822,7 @@ void rohrCornerDetector(
     
     dest_accessor.set(u, dest_upperleft);
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void beaudetCornerDetector)
 
@@ -717,15 +861,28 @@ beaudetCornerDetector(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor>
-inline 
-void beaudetCornerDetector(
-           triple<SrcIterator, SrcIterator, SrcAccessor> src,
-           pair<DestIterator, DestAccessor> dest,
-           double scale)
+inline void
+beaudetCornerDetector(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                      pair<DestIterator, DestAccessor> dest,
+                      double scale)
 {
     beaudetCornerDetector(src.first, src.second, src.third,
-                            dest.first, dest.second,
-                            scale);
+                          dest.first, dest.second,
+                          scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2>
+inline void
+beaudetCornerDetector(MultiArrayView<2, T1, S1> const & src,
+                      MultiArrayView<2, T2, S2> dest,
+                      double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "beaudetCornerDetector(): shape mismatch between input and output.");
+    beaudetCornerDetector(srcImageRange(src),
+                          destImage(dest),
+                          scale);
 }
 
 

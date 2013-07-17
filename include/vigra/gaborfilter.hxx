@@ -44,6 +44,7 @@
 #include "transformimage.hxx"
 #include "combineimages.hxx"
 #include "utilities.hxx"
+#include "multi_shape.hxx"
 
 #include <functional>
 #include <vector>
@@ -73,7 +74,19 @@ namespace vigra {
 
     <b> Declarations:</b>
 
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T, class S>
+        void
+        createGaborFilter(MultiArrayView<2, T, S> dest,
+                          double orientation, double centerFrequency,
+                          double angularSigma, double radialSigma);
+    }
+    \endcode
+
+    \deprecatedAPI{createGaborFilter}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class DestImageIterator, class DestAccessor>
@@ -84,7 +97,6 @@ namespace vigra {
                                double angularSigma, double radialSigma)
     }
     \endcode
-
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -96,6 +108,7 @@ namespace vigra {
                                double angularSigma, double radialSigma)
     }
     \endcode
+    \deprecatedEnd
 
     <b> Usage:</b>
 
@@ -103,12 +116,22 @@ namespace vigra {
     Namespace: vigra
 
     \code
+    MultiArray<2, float> gabor(w,h);
+
+    createGaborFilter(gabor, orient, freq,
+                      angularGaborSigma(directionCount, freq),
+                      radialGaborSigma(freq));
+    \endcode
+
+    \deprecatedUsage{createGaborFilter}
+    \code
     vigra::FImage gabor(w,h);
 
     vigra::createGaborFilter(destImageRange(gabor), orient, freq,
-                             angularGaborSigma(directionCount, freq)
+                             angularGaborSigma(directionCount, freq),
                              radialGaborSigma(freq));
     \endcode
+    \deprecatedEnd
 */
 doxygen_overloaded_function(template <...> void createGaborFilter)
 
@@ -177,13 +200,23 @@ void createGaborFilter(DestImageIterator destUpperLeft,
 }
 
 template <class DestImageIterator, class DestAccessor>
-inline
-void createGaborFilter(triple<DestImageIterator, DestImageIterator,
-                              DestAccessor> dest,
-                              double orientation, double centerFrequency,
-                              double angularSigma, double radialSigma)
+inline void
+createGaborFilter(triple<DestImageIterator, DestImageIterator, DestAccessor> dest,
+                  double orientation, double centerFrequency,
+                  double angularSigma, double radialSigma)
 {
     createGaborFilter(dest.first, dest.second, dest.third,
+                      orientation, centerFrequency,
+                      angularSigma, radialSigma);
+}
+
+template <class T, class S>
+inline void
+createGaborFilter(MultiArrayView<2, T, S> dest,
+                  double orientation, double centerFrequency,
+                  double angularSigma, double radialSigma)
+{
+    createGaborFilter(destImageRange(dest),
                       orientation, centerFrequency,
                       angularSigma, radialSigma);
 }
@@ -279,11 +312,11 @@ inline double angularGaborSigma(int directionCount, double centerFrequency)
 
     The template parameter ImageType should be a scalar image type suitable for filling in
 
-    <b>\#include</b> \<vigra/gaborfilter.hxx\> <br/>
+    <b>\#include</b> \<vigra/gaborfilter.hxx\><br/>
     Namespace: vigra
 */
 template <class ImageType, 
-      class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
+          class Alloc = typename ImageType::allocator_type::template rebind<ImageType>::other >
 class GaborFilterFamily 
 : public ImageArray<ImageType, Alloc>
 {

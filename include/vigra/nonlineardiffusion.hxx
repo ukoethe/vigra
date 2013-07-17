@@ -41,6 +41,7 @@
 #include "stdimagefunctions.hxx"
 #include "imageiteratoradapter.hxx"
 #include "functortraits.hxx"
+#include "multi_shape.hxx"
 
 namespace vigra {
 
@@ -210,10 +211,8 @@ void internalNonlinearDiffusionAOSStep(
     <em> g(.)</em> is the location dependent diffusivity. At time zero, the image
     <em> u(</em><b> x</b><em> , 0)</em> is simply the original image. The time is
     proportional to the square of the scale parameter: \f$t = s^2\f$.
-    The diffusion
-    equation is solved iteratively according
+    The diffusion equation is solved iteratively according
     to the Additive Operator Splitting Scheme (AOS) from
-    
     
     J. Weickert: <em>"Recursive Separable Schemes for Nonlinear Diffusion
     Filters"</em>,
@@ -221,7 +220,7 @@ void internalNonlinearDiffusionAOSStep(
         1st Intl. Conf. on Scale-Space Theory in Computer Vision 1997,
         Springer LNCS 1252
 
-    <TT>DiffusivityFunctor</TT> implements the gradient dependent local diffusivity.
+    <TT>DiffusivityFunctor</TT> implements the gradient-dependent local diffusivity.
     It is passed
     as an argument to \ref gradientBasedTransform(). The return value must be
     between 0 and 1 and determines the weight a pixel gets when
@@ -244,7 +243,29 @@ void internalNonlinearDiffusionAOSStep(
     
     <b> Declarations:</b>
     
-    pass arguments explicitly:
+    pass 2D array views:
+    \code
+    namespace vigra {
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class DiffusivityFunc>
+        void
+        nonlinearDiffusion(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           DiffusivityFunc const & weight, double scale);
+                                   
+        template <class T1, class S1,
+                  class T2, class S2,
+                  class DiffusivityFunc>
+        void
+        nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
+                                   MultiArrayView<2, T2, S2> dest,
+                                   DiffusivityFunc const & weight, double scale);
+    }
+    \endcode
+    
+    \deprecatedAPI{nonlinearDiffusion}
+    pass \ref ImageIterators and \ref DataAccessors :
     \code
     namespace vigra {
         template <class SrcIterator, class SrcAccessor,
@@ -255,8 +276,6 @@ void internalNonlinearDiffusionAOSStep(
                                 DiffusivityFunctor const & weight, double scale);
     }
     \endcode
-    
-    
     use argument objects in conjunction with \ref ArgumentObjectFactories :
     \code
     namespace vigra {
@@ -269,12 +288,23 @@ void internalNonlinearDiffusionAOSStep(
                   DiffusivityFunctor const & weight, double scale);
     }
     \endcode
+    \deprecatedEnd
     
     <b> Usage:</b>
     
-    <b>\#include</b> \<vigra/nonlineardiffusion.hxx\>
+    <b>\#include</b> \<vigra/nonlineardiffusion.hxx\><br/>
+    Namespace: vigra
     
+    \code
+    MultiArray<2, float> src(w,h), dest(w,h);
+    float edge_threshold, scale;
+    ...
     
+    nonlinearDiffusion(src, dest,
+                       DiffusivityFunctor<float>(edge_threshold), scale);
+    \endcode
+
+    \deprecatedUsage{nonlinearDiffusion}
     \code
     FImage src(w,h), dest(w,h);
     float edge_threshold, scale;
@@ -283,23 +313,22 @@ void internalNonlinearDiffusionAOSStep(
     nonlinearDiffusion(srcImageRange(src), destImage(dest),
                        DiffusivityFunctor<float>(edge_threshold), scale);
     \endcode
-
     <b> Required Interface:</b>
-    
     <ul>
-    
     <li> <TT>SrcIterator</TT> and <TT>DestIterator</TT> are models of ImageIterator
     <li> <TT>SrcAccessor</TT> and <TT>DestAccessor</TT> are models of StandardAccessor
     <li> <TT>SrcAccessor::value_type</TT> is a linear space
     <li> <TT>DiffusivityFunctor</TT> conforms to the requirements of
           \ref gradientBasedTransform(). Its range is between 0 and 1.
     <li> <TT>DiffusivityFunctor::value_type</TT> is an algebraic field
-    
     </ul>
+    \deprecatedEnd
     
     <b> Precondition:</b>
     
     <TT>scale > 0</TT>
+    
+    \see vigra::DiffusivityFunctor
 */
 doxygen_overloaded_function(template <...> void nonlinearDiffusion)
 
@@ -355,16 +384,32 @@ void nonlinearDiffusion(SrcIterator sul, SrcIterator slr, SrcAccessor as,
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>
-inline
-void nonlinearDiffusion(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    DiffusivityFunc const & weight, double scale)
+inline void
+nonlinearDiffusion(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                   pair<DestIterator, DestAccessor> dest,
+                   DiffusivityFunc const & weight, double scale)
 {
     nonlinearDiffusion(src.first, src.second, src.third,
-                           dest.first, dest.second,
-                           weight, scale);
+                       dest.first, dest.second,
+                       weight, scale);
 }
+
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
+inline void
+nonlinearDiffusion(MultiArrayView<2, T1, S1> const & src,
+                   MultiArrayView<2, T2, S2> dest,
+                   DiffusivityFunc const & weight, double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonlinearDiffusion(): shape mismatch between input and output.");
+    nonlinearDiffusion(srcImageRange(src),
+                       destImage(dest),
+                       weight, scale);
+}
+
+/********************************************************/
 
 template <class SrcIterator, class SrcAccessor,
           class WeightIterator, class WeightAccessor,
@@ -557,6 +602,12 @@ void internalNonlinearDiffusionExplicitStep(
     ad.set(sum, xd);
 }
 
+/** \brief Perform edge-preserving smoothing at the given scale using an explicit scheme.
+
+    See \ref nonlinearDiffusion().
+*/
+doxygen_overloaded_function(template <...> void nonlinearDiffusionExplicit)
+
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>
@@ -609,15 +660,29 @@ void nonlinearDiffusionExplicit(SrcIterator sul, SrcIterator slr, SrcAccessor as
 template <class SrcIterator, class SrcAccessor,
           class DestIterator, class DestAccessor,
           class DiffusivityFunc>
-inline
-void nonlinearDiffusionExplicit(
-    triple<SrcIterator, SrcIterator, SrcAccessor> src,
-    pair<DestIterator, DestAccessor> dest,
-    DiffusivityFunc const & weight, double scale)
+inline void
+nonlinearDiffusionExplicit(triple<SrcIterator, SrcIterator, SrcAccessor> src,
+                           pair<DestIterator, DestAccessor> dest,
+                           DiffusivityFunc const & weight, double scale)
 {
     nonlinearDiffusionExplicit(src.first, src.second, src.third,
-                           dest.first, dest.second,
-                           weight, scale);
+                               dest.first, dest.second,
+                               weight, scale);
+}
+
+template <class T1, class S1,
+          class T2, class S2,
+          class DiffusivityFunc>
+inline void
+nonlinearDiffusionExplicit(MultiArrayView<2, T1, S1> const & src,
+                           MultiArrayView<2, T2, S2> dest,
+                           DiffusivityFunc const & weight, double scale)
+{
+    vigra_precondition(src.shape() == dest.shape(),
+        "nonlinearDiffusionExplicit(): shape mismatch between input and output.");
+    nonlinearDiffusionExplicit(srcImageRange(src),
+                               destImage(dest),
+                               weight, scale);
 }
 
 /********************************************************/
