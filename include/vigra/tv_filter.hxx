@@ -53,6 +53,8 @@
 #define VIGRA_MIXED_2ND_DERIVATIVES 1
 #endif
 
+#define setZeroX(A) A.subarray(Shape2(width-1,0),Shape2(width,height))*=0;
+#define setZeroY(A) A.subarray(Shape2(0,height-1),Shape2(width,height))*=0;
 
 namespace vigra{
   
@@ -140,12 +142,13 @@ template <class stride1,class stride2>
 void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> out, double alpha, int steps, double eps=0){
 
   using namespace multi_math;
+  int width=data.shape(0),height=data.shape(1);
   
   MultiArray<2,double> temp1(data.shape()),temp2(data.shape()),vx(data.shape()),vy(data.shape()),u_bar(data.shape());
   Kernel1D<double> Lx,LTx;
-  Lx.initExplicitly(0,1)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
+  Lx.initExplicitly(-1,0)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
   Lx.setBorderTreatment(BORDER_TREATMENT_REFLECT);   //   with hom. Neumann boundary conditions
-  LTx.initExplicitly(-1,0)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
+  LTx.initExplicitly(0,1)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
   LTx.setBorderTreatment(BORDER_TREATMENT_ZEROPAD);  //   with hom. Dirichlet b. c.
 
   out=data;
@@ -156,9 +159,9 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2
     
   for (int i=0;i<steps;i++){
   
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     vx+=(sigma*temp1);
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     vy+=(sigma*temp1);
     
     //project to constraint set
@@ -181,8 +184,8 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2
     
     //stopping criterion
     if (eps>0){
-      separableConvolveX(srcImageRange(out),destImage(temp1),kernel1d(Lx));
-      separableConvolveY(srcImageRange(out),destImage(temp2),kernel1d(Lx));
+      separableConvolveX(srcImageRange(out),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
+      separableConvolveY(srcImageRange(out),destImage(temp2),kernel1d(Lx));setZeroY(temp2);
       
       double f_primal=0,f_dual=0;
       for (int y=0;y<data.shape(1);y++){
@@ -209,12 +212,13 @@ template <class stride1,class stride2, class stride3>
 void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double,stride2> weight, MultiArrayView<2,double,stride3> out,double alpha, int steps, double eps=0){
 
   using namespace multi_math;
+  int width=data.shape(0),height=data.shape(1);
   
   MultiArray<2,double> temp1(data.shape()),temp2(data.shape()),vx(data.shape()),vy(data.shape()),u_bar(data.shape());
   Kernel1D<double> Lx,LTx; 
-  Lx.initExplicitly(0,1)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
+  Lx.initExplicitly(-1,0)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
   Lx.setBorderTreatment(BORDER_TREATMENT_REFLECT);   //   with hom. Neumann boundary conditions
-  LTx.initExplicitly(-1,0)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
+  LTx.initExplicitly(0,1)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
   LTx.setBorderTreatment(BORDER_TREATMENT_ZEROPAD);  //   with hom. Dirichlet b. c.
   
   out=data;
@@ -224,9 +228,9 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2
   double sigma=1.0 / std::sqrt(8.0) / 0.06;
   
   for (int i=0;i<steps;i++){
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     vx+=(sigma*temp1);
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     vy+=(sigma*temp1);
     
     //project to constraint set
@@ -249,8 +253,8 @@ void totalVariationFilter(MultiArrayView<2,double,stride1> data,MultiArrayView<2
     
     //stopping criterion
     if (eps>0){
-      separableConvolveX(srcImageRange(out),destImage(temp1),kernel1d(Lx));
-      separableConvolveY(srcImageRange(out),destImage(temp2),kernel1d(Lx));
+      separableConvolveX(srcImageRange(out),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
+      separableConvolveY(srcImageRange(out),destImage(temp2),kernel1d(Lx));setZeroY(temp2);
       
       double f_primal=0,f_dual=0;
       for (int y=0;y<data.shape(1);y++){
@@ -339,6 +343,7 @@ void getAnisotropy(MultiArrayView<2,double,stride1> data,MultiArrayView<2,double
                     double alpha_par, double beta_par, double sigma_par, double rho_par, double K_par){
   
   using namespace multi_math;
+  int width=data.shape(0),height=data.shape(1);
   
   MultiArray<2,double> smooth(data.shape()),tmp(data.shape());
   vigra::Kernel1D<double> gauss;
@@ -468,14 +473,15 @@ void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> data,Multi
                     int steps){
   
   using namespace multi_math;
+  int width=data.shape(0),height=data.shape(1);
   
   MultiArray<2,double> temp1(data.shape()),temp2(data.shape()),vx(data.shape()),vy(data.shape()),u_bar(data.shape());
   MultiArray<2,double> rx(data.shape()),ry(data.shape());
   
   Kernel1D<double> Lx,LTx;
-  Lx.initExplicitly(0,1)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
+  Lx.initExplicitly(-1,0)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
   Lx.setBorderTreatment(BORDER_TREATMENT_REFLECT);   //   with hom. Neumann boundary conditions
-  LTx.initExplicitly(-1,0)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
+  LTx.initExplicitly(0,1)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
   LTx.setBorderTreatment(BORDER_TREATMENT_ZEROPAD);  //   with hom. Dirichlet b. c.
   
   u_bar=out;
@@ -493,9 +499,9 @@ void anisotropicTotalVariationFilter(MultiArrayView<2,double,stride1> data,Multi
   
     
   for (int i=0;i<steps;i++){
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     vx+=(sigma*temp1);
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     vy+=(sigma*temp1);
     
     //project to constraint set
@@ -624,6 +630,7 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
                             int steps){
   
   using namespace multi_math;
+  int width=data.shape(0),height=data.shape(1);
   
   MultiArray<2,double> temp1(data.shape()),temp2(data.shape()),vx(data.shape()),vy(data.shape()),u_bar(data.shape());
   MultiArray<2,double> rx(data.shape()),ry(data.shape());
@@ -631,9 +638,9 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
   
   
   Kernel1D<double> Lx,LTx;
-  Lx.initExplicitly(0,1)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
+  Lx.initExplicitly(-1,0)=1,-1;                       // = Right sided finite differences for d/dx and d/dy
   Lx.setBorderTreatment(BORDER_TREATMENT_REFLECT);   //   with hom. Neumann boundary conditions
-  LTx.initExplicitly(-1,0)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
+  LTx.initExplicitly(0,1)=-1,1;                     //  = Left sided finite differences for -d/dx  and -d/dy
   LTx.setBorderTreatment(BORDER_TREATMENT_ZEROPAD);  //   with hom. Dirichlet b. c.
   
   u_bar=out;
@@ -643,28 +650,31 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
     for (int x=0;x<data.shape(0);x++){
       m=std::max(m,alpha(x,y));
       m=std::max(m,beta (x,y));
+      m=std::max(m,gamma(x,y));
      }
   }  
   m=std::max(m,1.);
   double tau=.1/m;//std::sqrt(8)*0.06;  
   double sigma=.1;//m;/std::sqrt(8)/0.06;
   
+  //std::cout<<"tau= "<<tau<<std::endl;
+  
   for (int i=0;i<steps;i++){
     
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     vx+=(sigma*temp1);
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     vy+=(sigma*temp1);
     
     
     // update wx
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     temp1*=xedges;
     separableConvolveX(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     wx-=sigma*temp2;//(-Lx'*(xedges.*(Lx*u)));
     
     //update wy
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     temp1*=yedges;
     separableConvolveY(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     wy-=sigma*temp2;//(-Ly'*(yedges.*(Ly*u)));
@@ -672,12 +682,12 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
     
     //update wz
     #if (VIGRA_MIXED_2ND_DERIVATIVES)
-    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     temp1*=yedges;
     separableConvolveX(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     wz-=sigma*temp2;//-Lx'*(yedges.*(Ly*u))
     
-    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(u_bar),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     temp1*=xedges;
     separableConvolveY(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     wz-=sigma*temp2;//-Ly'*(xedges.*(Lx*u)));
@@ -719,14 +729,14 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
     
     
     // update wx
-    separableConvolveX(srcImageRange(wx),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(wx),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     temp1*=xedges;
     separableConvolveX(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     out+=tau*temp2; // (-1)^2
     
     
     //update wy
-    separableConvolveY(srcImageRange(wy),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(wy),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     temp1*=yedges;
     separableConvolveY(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     out+=tau*temp2; 
@@ -734,12 +744,12 @@ void secondOrderTotalVariationFilter(MultiArrayView<2,double,stride1> data,
     //update wz
     #if (VIGRA_MIXED_2ND_DERIVATIVES)
     
-    separableConvolveY(srcImageRange(wz),destImage(temp1),kernel1d(Lx));
+    separableConvolveY(srcImageRange(wz),destImage(temp1),kernel1d(Lx));setZeroY(temp1);
     temp1*=yedges;
     separableConvolveX(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     out+=tau*temp2;
     
-    separableConvolveX(srcImageRange(wz),destImage(temp1),kernel1d(Lx));
+    separableConvolveX(srcImageRange(wz),destImage(temp1),kernel1d(Lx));setZeroX(temp1);
     temp1*=xedges;
     separableConvolveY(srcImageRange(temp1),destImage(temp2),kernel1d(LTx));
     out+=tau*temp2;
