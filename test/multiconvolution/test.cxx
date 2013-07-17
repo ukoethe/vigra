@@ -454,20 +454,28 @@ struct MultiArraySeparableConvolutionTest
         laplacian = 0;
         laplacianOfGaussianMultiArray(src, laplacian, 2.0 );
         shouldEqualSequenceTolerance(laplacian.data(), laplacian.data()+size, rlaplacian.data(), 1e-12);
+    }
 
+    void test_divergence()
+    {
         // test divergence of gradient - theoretically, it equals the Laplacian, but in practice this requires
         //                               large kernel windows, a high tolerance, and doesn't hold near the border
-        rlaplacian = 0;
-        laplacianOfGaussianMultiArray(src, rlaplacian, 2.0, ConvolutionOptions<2>().filterWindowSize(5));
+        MultiArray<2, double> src;
+        importImage("oi_single.gif", src);
 
-        laplacian = 0;
-        MultiArray<2, TinyVector<double, 2> > grad(laplacian.shape());
+        MultiArray<2, double> laplacian(src.shape()), divergence(src.shape());
+        MultiArray<2, TinyVector<double, 2> > grad(src.shape());
+
+        laplacianOfGaussianMultiArray(src, laplacian, 2.0, ConvolutionOptions<2>().filterWindowSize(5));
+
         gaussianGradientMultiArray(src, grad, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
-        gaussianDivergenceMultiArray(grad, laplacian, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
+        gaussianDivergenceMultiArray(grad, divergence, sqrt(2.0), ConvolutionOptions<2>().filterWindowSize(5));
 
-        MultiArrayView <2, double> center(laplacian.subarray(Shape2(10,10), Shape2(-10,-10))),
-                                   rcenter(rlaplacian.subarray(Shape2(10,10), Shape2(-10,-10)));
-        shouldEqualSequenceTolerance(center.begin(), center.end(), rcenter.begin(), 0.01);
+        divergence -= laplacian;
+        MultiArrayView <2, double> center(divergence.subarray(Shape2(10,10), Shape2(-10,-10)));
+
+        using namespace multi_math;
+        should(all(abs(center) < 0.001));
     }
 
     void test_hessian()
@@ -586,6 +594,7 @@ struct MultiArraySeparableConvolutionTestSuite
                 add( testCase( &MultiArraySeparableConvolutionTest::testSmoothing ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_gradient1 ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_laplacian ) );
+                add( testCase( &MultiArraySeparableConvolutionTest::test_divergence ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_hessian ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_structureTensor ) );
                 add( testCase( &MultiArraySeparableConvolutionTest::test_gradient_magnitude ) );
