@@ -2397,7 +2397,7 @@ struct TotalVariationTest{
       anisotropicTotalVariationFilter(data,weight,phi,alpha,beta,out,inner_steps);  
     }
     //exportImage(srcImageRange(out), vigra::ImageExportInfo("test_aniso.pgm"));
-    shouldEqualSequenceTolerance(out.begin(), out.end(), result_aniso_tv, 1e-12); 
+    shouldEqualSequenceTolerance(out.begin(), out.end(), result_aniso_tv, 1e-8); 
   }
     
   void testSecondOrderTotalVariation(){
