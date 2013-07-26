@@ -2823,7 +2823,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape,
     if (N == 0)
     {
         this->m_shape [0] = 1;
-        this->m_stride [0] = 0;
+        this->m_stride [0] = 1;
     }
     allocate (this->m_ptr, this->elementCount (), value_type());
 }
@@ -2839,7 +2839,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_reference 
     if (N == 0)
     {
         this->m_shape [0] = 1;
-        this->m_stride [0] = 0;
+        this->m_stride [0] = 1;
     }
     allocate (this->m_ptr, this->elementCount (), init);
 }
@@ -2855,7 +2855,7 @@ MultiArray <N, T, A>::MultiArray (const difference_type &shape, const_pointer in
     if (N == 0)
     {
         this->m_shape [0] = 1;
-        this->m_stride [0] = 0;
+        this->m_stride [0] = 1;
     }
     allocate (this->m_ptr, this->elementCount (), init);
 }
