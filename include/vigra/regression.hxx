@@ -1059,7 +1059,7 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
                          ? std::max(epsilonT, epsilonU)
                          : options.epsilon;
     
-    linalg::Matrix<T> j(N,1), jj(N,N);  // Jacobian and its outer product
+    linalg::Matrix<T> jj(N,N);  // outer product of the Jacobian
     TinyVector<U, N> jr, dp;
     
     T residual = 0.0;
@@ -1073,7 +1073,6 @@ nonlinearLeastSquaresImpl(MultiArrayView<D, T, S1> const & features,
             residual = 0.0;
             jr = 0.0;
             jj = 0.0;
-            j = 0.0;
             
             for(int i=0; i<features.shape(0); ++i)
             {
