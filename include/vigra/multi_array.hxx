@@ -2069,7 +2069,7 @@ MultiArrayView <N, T, StrideTag>::bindOuter (const TinyVector <Index, M> &d) con
     if (N-M == 0)
     {
         inner_shape [0] = 1;
-        inner_stride [0] = 0;
+        inner_stride [0] = 1;
     }
     else
     {
@@ -2092,7 +2092,7 @@ MultiArrayView <N, T, StrideTag>::bindInner (const TinyVector <Index, M> &d) con
     if (N-M == 0)
     {
         outer_shape [0] = 1;
-        outer_stride [0] = 0;
+        outer_stride [0] = 1;
     }
     else
     {
@@ -2114,7 +2114,7 @@ MultiArrayView <N, T, StrideTag>::bind (difference_type_1 d) const
     if (N-1 == 0)
     {
         shape[0] = 1;
-        stride[0] = 0;
+        stride[0] = 1;
     }
     else
     {
@@ -2138,7 +2138,7 @@ MultiArrayView <N, T, StrideTag>::bindOuter (difference_type_1 d) const
     if (N-1 == 0)
     {
         inner_shape [0] = 1;
-        inner_stride [0] = 0;
+        inner_stride [0] = 1;
     }
     else
     {
@@ -2158,7 +2158,7 @@ MultiArrayView <N, T, StrideTag>::bindInner (difference_type_1 d) const
     if (N-1 == 0)
     {
         outer_shape [0] = 1;
-        outer_stride [0] = 0;
+        outer_stride [0] = 1;
     }
     else
     {
@@ -2182,7 +2182,7 @@ MultiArrayView <N, T, StrideTag>::bindAt (difference_type_1 n, difference_type_1
     if (N-1 == 0)
     {
         shape [0] = 1;
-        stride [0] = 0;
+        stride [0] = 1;
     }
     else
     {
