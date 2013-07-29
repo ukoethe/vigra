@@ -339,27 +339,48 @@ template<class T>
 void pythonGray2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T> >& image, 
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
-    vigra::NumpyArray<1, T> normalize = boost::python::object()
-) {
+    NumpyArray<1, T> normalize = boost::python::object()
+) 
+{
+    vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
+        "gray2qimage_ARGB32Premultiplied(): Can only handle arrays with contiguous memory.");
+    typedef typename NumericTraits<T>::RealPromote TmpType;
+    
     T* data = image.data(); 
-    unsigned char* imgData = qimageView.data();
     const T* dataEnd = data+image.size();
-    T pixel;
+    UInt8* imgData = qimageView.data();
+    UInt8 pixel;
     
     T normalizeLow, normalizeHigh; 
-    if(normalize != boost::python::object()) {
+    if(normalize != boost::python::object())
+    {
+        vigra_precondition(normalize.shape(0) == 2,
+            "gray2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
+            
         //normalize = None
         normalizeLow = normalize[0];
         normalizeHigh = normalize[1];
         
-        const float div = static_cast<float>(normalizeHigh-normalizeLow);
-        while(data < dataEnd) {
+        vigra_precondition(normalizeHigh > normalizeLow,
+            "gray2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
+            
+        const TmpType f = TmpType(255) / static_cast<TmpType>(normalizeHigh-normalizeLow);
+        while(data < dataEnd) 
+        {
             pixel = *data;
             
-            if(pixel < normalizeLow) pixel = normalizeLow;
-            else if(pixel > normalizeHigh) pixel = normalizeHigh;
-            
-            pixel = 255*(pixel-normalizeLow)/div;
+            if(*data < normalizeLow) 
+            {
+                pixel = 0;
+            }
+            else if(*data > normalizeHigh) 
+            {
+                pixel = 255;
+            }
+            else
+            {
+                pixel = detail::RequiresExplicitCast<UInt8>::cast((pixel-normalizeLow)*f);
+            }
             *imgData = pixel; ++imgData; //B
             *imgData = pixel; ++imgData; //G
             *imgData = pixel; ++imgData; //R
@@ -367,9 +388,11 @@ void pythonGray2QImage_ARGB32Premultiplied(
             ++data;
         }
     }
-    else {
-        while(data < dataEnd) {
-            pixel = *data;
+    else 
+    {
+        while(data < dataEnd) 
+        {
+            pixel = detail::RequiresExplicitCast<UInt8>::cast(*data);
             *imgData = pixel; ++imgData; //B
             *imgData = pixel; ++imgData; //G
             *imgData = pixel; ++imgData; //R
@@ -384,30 +407,51 @@ template<class T>
 void pythonAlphaModulated2QImage_ARGB32Premultiplied(
     const NumpyArray<2, Singleband<T> >& image, 
     NumpyArray<3, Multiband<npy_uint8> > qimageView,
-    vigra::NumpyArray<1, float> tintColor,
-    vigra::NumpyArray<1, T> normalize
-) {
-    const T l = normalize[0];
-    const T h = normalize[1];
+    NumpyArray<1, float> tintColor,
+    NumpyArray<1, T> normalize
+) 
+{
+    vigra_precondition(image.isUnstrided() || image.transpose().isUnstrided(),
+        "alphamodulated2qimage_ARGB32Premultiplied(): Can only handle arrays with contiguous memory.");
+    typedef typename NumericTraits<T>::RealPromote TmpType;
+    
+    vigra_precondition(normalize.shape(0) == 2,
+        "alphamodulated2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
+            
+    const TmpType l = normalize[0];
+    const TmpType h = normalize[1];
+    
+    vigra_precondition(h > l,
+        "alphamodulated2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
     
     const float r = tintColor[0];
     const float g = tintColor[1];
     const float b = tintColor[2];
     
     T* data = image.data();
-    unsigned char* imgData = qimageView.data();
     const T* dataEnd = image.data()+image.size();
-    float pixelF;
-    const float div = static_cast<float>(h-l);
-    while(data < dataEnd) {
-        pixelF = *data;
-        if(pixelF < l) pixelF = l;
-        else if(pixelF > h) pixelF = h;
-        pixelF = (pixelF-l)/div;
-        *imgData = 255*pixelF*b; ++imgData; //B
-        *imgData = 255*pixelF*g; ++imgData; //G
-        *imgData = 255*pixelF*r; ++imgData; //R
-        *imgData = 255*pixelF;   ++imgData; //A
+    unsigned char* imgData = qimageView.data();
+    TmpType pixelF;
+    const TmpType f = TmpType(255) / static_cast<TmpType>(h-l);
+    while(data < dataEnd) 
+    {
+        pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
+        if(pixelF < l)
+        {
+            pixelF = TmpType();
+        }
+        else if(pixelF > h)
+        {
+            pixelF = TmpType(255);
+        }
+        else
+        {
+            pixelF = (pixelF-l)*f;
+        }
+        *imgData = detail::RequiresExplicitCast<UInt8>::cast(pixelF*b); ++imgData; //B
+        *imgData = detail::RequiresExplicitCast<UInt8>::cast(pixelF*g); ++imgData; //G
+        *imgData = detail::RequiresExplicitCast<UInt8>::cast(pixelF*r); ++imgData; //R
+        *imgData = detail::RequiresExplicitCast<UInt8>::cast(pixelF);   ++imgData; //A
         ++data;
     }
 }
