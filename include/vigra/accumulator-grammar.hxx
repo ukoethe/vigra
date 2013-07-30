@@ -679,22 +679,22 @@ struct SubstituteModifiers<A, B, false>
     typedef B type;
 };
 
-template <class A0, template <class> class A1, class B0, template <class> class B1>
-struct SubstituteModifiers<A1<A0>, B1<B0>, true>
+template <class A, template <class> class AA, class B, template <class> class BB>
+struct SubstituteModifiers<AA<A>, BB<B>, true>
 {
-    typedef A1<typename SubstituteModifiers<A0, B0>::type> type;
+    typedef AA<typename SubstituteModifiers<A, B>::type> type;
 };
 
-template <class A0, class B0, template <class> class B1>
-struct SubstituteModifiers<DefaultModifier<A0>, B1<B0>, true>
+template <class A, class B, template <class> class BB>
+struct SubstituteModifiers<DefaultModifier<A>, BB<B>, true>
 {
-    typedef B1<typename SubstituteModifiers<A0, B0>::type> type;
+    typedef BB<typename SubstituteModifiers<A, B>::type> type;
 };
 
-template <class A0, template <class> class A1, class B0, template <class> class B1>
-struct SubstituteModifiers<A1<A0>, B1<B0>, false>
+template <class A, template <class> class AA, class B, template <class> class BB>
+struct SubstituteModifiers<AA<A>, BB<B>, false>
 {
-    typedef B1<typename SubstituteModifiers<A0, B0>::type> type;
+    typedef BB<typename SubstituteModifiers<A, B>::type> type;
 };
 
 } // namespace acc_detail
