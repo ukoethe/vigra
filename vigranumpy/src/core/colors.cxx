@@ -349,9 +349,10 @@ void pythonGray2QImage_ARGB32Premultiplied(
     T* data = image.data(); 
     const T* dataEnd = data+image.size();
     UInt8* imgData = qimageView.data();
-    UInt8 pixel;
+    UInt8 pixel = 0;
+    TmpType pixelF;
     
-    T normalizeLow, normalizeHigh; 
+    TmpType normalizeLow, normalizeHigh; 
     if(normalize != boost::python::object())
     {
         vigra_precondition(normalize.shape(0) == 2,
@@ -365,21 +366,22 @@ void pythonGray2QImage_ARGB32Premultiplied(
             "gray2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
             
         const TmpType f = TmpType(255) / static_cast<TmpType>(normalizeHigh-normalizeLow);
+        
         while(data < dataEnd) 
         {
-            pixel = *data;
+            pixelF = detail::RequiresExplicitCast<TmpType>::cast(*data);
             
-            if(*data < normalizeLow) 
+            if(pixelF < normalizeLow) 
             {
                 pixel = 0;
             }
-            else if(*data > normalizeHigh) 
+            else if(pixelF > normalizeHigh) 
             {
                 pixel = 255;
             }
             else
             {
-                pixel = detail::RequiresExplicitCast<UInt8>::cast((pixel-normalizeLow)*f);
+                pixel = detail::RequiresExplicitCast<UInt8>::cast((pixelF-normalizeLow)*f);
             }
             *imgData = pixel; ++imgData; //B
             *imgData = pixel; ++imgData; //G
@@ -417,6 +419,8 @@ void pythonAlphaModulated2QImage_ARGB32Premultiplied(
     
     vigra_precondition(normalize.shape(0) == 2,
         "alphamodulated2qimage_ARGB32Premultiplied(): normalize.shape[0] == 2 required.");
+    vigra_precondition(tintColor.shape(0) == 3,
+        "alphamodulated2qimage_ARGB32Premultiplied(): tintColor.shape[0] == 3 required.");
             
     const TmpType l = normalize[0];
     const TmpType h = normalize[1];
@@ -424,9 +428,9 @@ void pythonAlphaModulated2QImage_ARGB32Premultiplied(
     vigra_precondition(h > l,
         "alphamodulated2qimage_ARGB32Premultiplied(): normalize[0] < normalize[1] is required.");
     
-    const float r = tintColor[0];
-    const float g = tintColor[1];
-    const float b = tintColor[2];
+    const TmpType r = tintColor[0];
+    const TmpType g = tintColor[1];
+    const TmpType b = tintColor[2];
     
     T* data = image.data();
     const T* dataEnd = image.data()+image.size();
