@@ -1051,12 +1051,12 @@ struct AutodiffTest
         N2 a(1.2,2.3,3.4), b(4.5,5.6,6.7);
         should(closeAtTolerance(sq(sqrt(a)), a));
         should(closeAtTolerance(exp(log(a)), a));
-        should(closeAtTolerance(sq(sin(x)) + sq(cos(x)), N1(1.0, 0.0)));
+        should(closeAtTolerance(sq(sin(x)) + sq(cos(x)), N1(1.0, 0.0), 1e-13));
         should(closeAtTolerance(sin(2.0*a), 2.0*cos(a)*sin(a), 1e-13));
         should(closeAtTolerance(cos(2.0*a), sq(cos(a)) - sq(sin(a)), 1e-13));
         should(closeAtTolerance(sin(a) / cos(a), tan(a), 1e-13));
         should(closeAtTolerance(tan(atan(a)), a, 1e-13));
-        should(closeAtTolerance(sq(cosh(x)) - sq(sinh(x)), N1(1.0, 0.0)));
+        should(closeAtTolerance(sq(cosh(x)) - sq(sinh(x)), N1(1.0, 0.0), 1e-13));
         should(closeAtTolerance(tanh(a+b), (tanh(a) + tanh(b)) / (1.0 + tanh(a) * tanh(b)), 1e-12));
         should(closeAtTolerance(atan2(b*sin(a), b*cos(a)), a, 1e-13));
         should(closeAtTolerance(pow(a, 1.0), a));
