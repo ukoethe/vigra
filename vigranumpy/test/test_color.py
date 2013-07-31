@@ -53,7 +53,7 @@ def test_gray2qimage():
     if not _have_qt:
         return
     
-    a = numpy.random.random((100,200)).astype(dtype=numpy.float32)-0.5
+    a = numpy.random.random((100,200)).astype(numpy.float32)-0.5
     a[0,0] =-0.5 #make sure we get the correct bounds
     a[0,1] = 0.5
     vigra.impex.writeImage(a.swapaxes(0,1), "tmp1.png")
@@ -74,7 +74,7 @@ def test_alphamodulated2qimage():
     if not _have_qt:
         return
     
-    a = numpy.random.random((100,200)).astype(dtype=numpy.float32)-0.5
+    a = numpy.random.random((100,200)).astype(numpy.float32)-0.5
     a[0,0] =-0.5
     a[0,1] = 0.5
     vigra.impex.writeImage(a.swapaxes(0,1), "tmp1.png")
