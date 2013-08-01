@@ -7,6 +7,12 @@ IF(VIGRANUMPY_DEPENDENCIES_FOUND)
 
     INCLUDE_DIRECTORIES(${VIGRANUMPY_INCLUDE_DIRS})
 
+    # configure boost's autolink magic to use the right library name
+    # (default on Windows is a mangled name like 'boost_python-vc110-mt-1_51.lib')
+    if("${Boost_PYTHON_LIBRARY}" MATCHES "boost_python\\.lib")
+        ADD_DEFINITIONS(-DBOOST_AUTO_LINK_NOMANGLE)
+    endif()
+        
     IF(HDF5_FOUND)
         ADD_DEFINITIONS(-DHasHDF5 ${HDF5_CPPFLAGS})
         INCLUDE_DIRECTORIES(${HDF5_INCLUDE_DIR})
