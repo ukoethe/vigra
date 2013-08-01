@@ -38,7 +38,7 @@
 #include <cstdlib>
 #include <cstring>
 #include "vigra/stdimage.hxx"
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/hdf5impex.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_impex.hxx"

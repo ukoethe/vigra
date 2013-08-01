@@ -38,7 +38,7 @@
 #include <iterator>
 #include <algorithm>
 #include <queue>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/accessor.hxx"
 #include "vigra/array_vector.hxx"
 #include "vigra/copyimage.hxx"

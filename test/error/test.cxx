@@ -39,7 +39,7 @@
 #undef NDEBUG
 #endif
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/error.hxx"
 
 struct ErrorTest

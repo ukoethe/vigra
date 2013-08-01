@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include <vigra/slic.hxx>
 #include <vigra/impex.hxx>

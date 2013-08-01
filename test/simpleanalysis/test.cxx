@@ -37,7 +37,7 @@
 #include <fstream>
 #include <functional>
 #include <cmath>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/labelimage.hxx"
 #include "vigra/edgedetection.hxx"

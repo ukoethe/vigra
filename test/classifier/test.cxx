@@ -47,7 +47,7 @@
 #include <vigra/random_forest.hxx>
 #include <vigra/random_forest_deprec.hxx>
 #include <vigra/multi_math.hxx>
-#include <unittest.hxx>
+#include <vigra/unittest.hxx>
 #include <vector>
 #include <limits>
 //#include "data/RF_results.hxx"

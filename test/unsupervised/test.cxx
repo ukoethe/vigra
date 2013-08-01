@@ -43,7 +43,7 @@
 #include <functional>
 #include <cmath>
 #include <vigra/unsupervised_decomposition.hxx>
-#include <unittest.hxx>
+#include <vigra/unittest.hxx>
 #include <vector>
 #include <limits>
 #include "test_data.hxx"

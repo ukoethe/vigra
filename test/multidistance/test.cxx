@@ -37,7 +37,7 @@
 #include <functional>
 #include <cmath>
 #include <list>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include "vigra/multi_distance.hxx"
 #include "vigra/distancetransform.hxx"

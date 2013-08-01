@@ -38,7 +38,7 @@
 #include <map>
 #include <set>
 
-#include <unittest.hxx>
+#include <vigra/unittest.hxx>
 
 //#include <vigra/accessor.hxx>
 //#include <vigra/tinyvector.hxx>

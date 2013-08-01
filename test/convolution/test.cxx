@@ -37,7 +37,7 @@
 #include <cmath>
 #include <cstdio>
 #include "vigra/convolution.hxx"
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/impex.hxx"

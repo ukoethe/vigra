@@ -40,7 +40,7 @@
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/impexalpha.hxx"
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 
 #if HasTIFF
