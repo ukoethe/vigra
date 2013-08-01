@@ -44,7 +44,7 @@
 #include <algorithm>
 #include <sstream>
 #include <cstdlib>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/mathutil.hxx"
 #include "vigra/algorithm.hxx"
 #include "vigra/functorexpression.hxx"

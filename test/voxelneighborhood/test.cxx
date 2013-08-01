@@ -37,7 +37,7 @@
 #include <functional>
 #include <cmath>
 #include <set>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include "vigra/voxelneighborhood.hxx"
 #include "vigra/multi_array.hxx"

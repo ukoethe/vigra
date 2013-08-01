@@ -34,7 +34,7 @@
 /************************************************************************/
 
 #include <iostream>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/multi_morphology.hxx"
 #include "vigra/linear_algebra.hxx"

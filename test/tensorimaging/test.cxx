@@ -38,7 +38,7 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/impex.hxx"
 #include "vigra/tensorutilities.hxx"

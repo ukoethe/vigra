@@ -44,7 +44,7 @@
 #include <functional>
 #include <cmath>
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_convolution.hxx"
 #include "vigra/basicimageview.hxx"
