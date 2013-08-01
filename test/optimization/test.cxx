@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include <iostream>
 #include <iomanip>

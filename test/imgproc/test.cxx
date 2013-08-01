@@ -38,7 +38,7 @@
 #include <cmath>
 #include <time.h>
 #include <stdio.h>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/stdimage.hxx"
 #include "vigra/stdimagefunctions.hxx"
 #include "vigra/splineimageview.hxx"

@@ -35,7 +35,7 @@
 
 #include <algorithm>
 #include <iostream>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/colorconversions.hxx"
 
 using namespace vigra;

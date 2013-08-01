@@ -38,7 +38,7 @@
 #include <cmath>
 #include <time.h>
 #include <stdio.h>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include <vigra/wigner-matrix.hxx>
 #include <vigra/multi_pointoperators.hxx>
 #include "wigner-matrix-reference.hxx"

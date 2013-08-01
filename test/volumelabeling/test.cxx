@@ -36,7 +36,7 @@
 #include <iostream>
 #include <functional>
 #include <cmath>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include "vigra/labelvolume.hxx"
 #include "vigra/multi_labeling.hxx"
