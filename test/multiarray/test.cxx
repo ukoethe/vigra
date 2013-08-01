@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include "vigra/multi_array.hxx"
 #include "vigra/multi_iterator_coupled.hxx"
 #include "vigra/multi_impex.hxx"

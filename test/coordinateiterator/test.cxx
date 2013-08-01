@@ -3,7 +3,7 @@
 #include <utility>
 #include <string>
 #include <sstream>
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 
 #include "vigra/multi_pointoperators.hxx"
 #include "vigra/multi_array.hxx"

@@ -34,7 +34,7 @@
 /************************************************************************/
 
 #define VIGRA_CHECK_BOUNDS
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include <cstdlib>
 #include <algorithm>
 #include <functional>

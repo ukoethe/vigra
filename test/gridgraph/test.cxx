@@ -34,7 +34,7 @@
 /************************************************************************/
 
 #define VIGRA_CHECK_BOUNDS
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include <vigra/multi_shape.hxx>
 #include <vigra/multi_iterator.hxx>
 #include <vigra/multi_array.hxx>

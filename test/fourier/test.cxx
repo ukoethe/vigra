@@ -33,7 +33,7 @@
 /*                                                                      */
 /************************************************************************/
 
-#include "unittest.hxx"
+#include "vigra/unittest.hxx"
 #include <stdlib.h>
 #include <algorithm>
 #include <functional>
