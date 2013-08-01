@@ -9,7 +9,8 @@ env:
    
 before_script:
   - sudo apt-get install --assume-yes libhdf5-serial-dev libboost-python-dev libjpeg-dev libtiff4-dev libpng12-dev libfftw3-dev cmake
-  - pip install nosetests
+  - pip install nose
+  - pip install numpy
 #   - sudo sh .travis_scripts/install_vigra.sh $VIRTUAL_ENV
    
 script:
