@@ -178,7 +178,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
       inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
       i_(i + start_)
     {
-        if(stop_[inner_dimension] > 0)
+        if(stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
@@ -189,7 +189,7 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
       inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
       i_(i + start_)
     {
-        if(stop_[inner_dimension] > 0)
+        if(stop_[inner_dimension] > start_[inner_dimension])
             stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
