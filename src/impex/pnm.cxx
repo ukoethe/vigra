@@ -56,10 +56,9 @@ namespace vigra {
         desc.fileType = "PNM";
 
         // init pixel types
-        desc.pixelTypes.resize(3);
+        desc.pixelTypes.resize(2);
         desc.pixelTypes[0] = "UINT8";
         desc.pixelTypes[1] = "UINT16";
-        desc.pixelTypes[2] = "UINT32";
 
         // init compression types
         desc.compressionTypes.resize(3);
