@@ -80,6 +80,9 @@ void distParabola(SrcIterator is, SrcIterator iend, SrcAccessor sa,
 {
     // We assume that the data in the input is distance squared and treat it as such
     double w = iend - is;
+    if(w <= 0)
+        return;
+        
     double sigma2 = sigma * sigma;
     double sigma22 = 2.0 * sigma2;
     

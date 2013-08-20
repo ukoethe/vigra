@@ -178,7 +178,8 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
       inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
       i_(i + start_)
     {
-        stop_[inner_dimension] = start_[inner_dimension] + 1;
+        if(stop_[inner_dimension] > 0)
+            stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
     MultiArrayNavigator(MULTI_ITERATOR const & i, shape_type const & start, shape_type const & stop, 
@@ -188,7 +189,8 @@ class MultiArrayNavigator<MULTI_ITERATOR, 1>
       inner_shape_(stop_[inner_dimension] - start_[inner_dimension]),
       i_(i + start_)
     {
-        stop_[inner_dimension] = start_[inner_dimension] + 1;
+        if(stop_[inner_dimension] > 0)
+            stop_[inner_dimension] = start_[inner_dimension] + 1;
     }
 
     void operator++()
