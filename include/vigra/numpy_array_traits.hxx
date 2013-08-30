@@ -191,7 +191,6 @@ struct NumpyArrayTraits<N, T, StridedArrayTag>
 
     static bool isShapeCompatible(PyArrayObject * array) /* array must not be NULL */
     {
-        PyObject * obj = (PyObject *)array;
         int ndim = PyArray_NDIM(array);
 
         return ndim == N;
