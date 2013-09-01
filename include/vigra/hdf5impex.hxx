@@ -2230,7 +2230,7 @@ void HDF5File::write_(std::string &datasetName,
             ArrayVector<hsize_t>(shape.size(), 1).swap(chunks);
             chunks[0] = numBandsOfType;
             MultiArrayIndex prod = 1;
-            for(int k=0; k<N;  ++k)
+            for(unsigned int k=0; k<N;  ++k)
             {
                 chunks[k+offset] = array.shape(k);
                 prod *= array.shape(k);
@@ -2247,7 +2247,7 @@ void HDF5File::write_(std::string &datasetName,
         
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
-        for(int k=offset; k<chunks.size(); ++k)
+        for(unsigned int k=offset; k<chunks.size(); ++k)
         {
             chunkMaxShape[k-offset] = chunks[k];
             chunkCount[k-offset] = (MultiArrayIndex)std::ceil(double(shape[k]) / chunks[k]);
@@ -2261,7 +2261,7 @@ void HDF5File::write_(std::string &datasetName,
                   chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
             MultiArray<N, T> buffer(array.subarray(chunkStart, chunkStop));
             
-            for(int k=0; k<N; ++k)
+            for(unsigned int k=0; k<N; ++k)
             {
                 start[N-1-offset-k] = chunkStart[k];
                 count[N-1-offset-k] = buffer.shape(k);
@@ -2461,7 +2461,7 @@ void HDF5File::read_(std::string datasetName,
             // otherwise, we compute a suitable chunk size.
             chunks[0] = numBandsOfType;
             MultiArrayIndex prod = 1;
-            for(int k=0; k<N;  ++k)
+            for(unsigned int k=0; k<N; ++k)
             {
                 chunks[k+offset] = array.shape(k);
                 prod *= array.shape(k);
@@ -2474,7 +2474,7 @@ void HDF5File::read_(std::string datasetName,
         
         typedef typename MultiArrayShape<N>::type Shape;
         Shape chunkCount, chunkMaxShape;
-        for(int k=offset; k<chunks.size(); ++k)
+        for(unsigned int k=offset; k<chunks.size(); ++k)
         {
             chunkMaxShape[k-offset] = chunks[k];
             chunkCount[k-offset] = (MultiArrayIndex)std::ceil(double(dimshape[k]) / chunks[k]);
@@ -2488,7 +2488,7 @@ void HDF5File::read_(std::string datasetName,
                   chunkStop(min(chunkStart + chunkMaxShape, array.shape()));
             MultiArray<N, T> buffer(chunkStop - chunkStart);
             
-            for(int k=0; k<N; ++k)
+            for(unsigned int k=0; k<N; ++k)
             {
                 start[N-1-offset-k] = chunkStart[k];
                 count[N-1-offset-k] = buffer.shape(k);
