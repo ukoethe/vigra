@@ -2490,8 +2490,13 @@ void HDF5File::read_(std::string datasetName,
             
             for(unsigned int k=0; k<N; ++k)
             {
-                start[N-1-offset-k] = chunkStart[k];
-                count[N-1-offset-k] = buffer.shape(k);
+                start[N-1-k] = chunkStart[k];
+                count[N-1-k] = buffer.shape(k);
+            }
+            if(offset == 1)
+            {
+                start[N] = 0;
+                count[N] = numBandsOfType;
             }
             HDF5Handle filespace(H5Dget_space(datasetHandle),
                                  &H5Sclose, "HDF5File::read(): unable to create hyperslabs.");
@@ -2694,46 +2699,6 @@ selectHyperslabs(HDF5Handle & mid1, HDF5Handle & mid2,
     H5Sselect_hyperslab(mid2, H5S_SELECT_SET, startData, strideData, countData, blockData);
 }
 
-template <class DestIterator, class Shape, class T>
-inline void
-readHDF5Impl(DestIterator d, Shape const & shape, 
-             const hid_t dataset_id, const hid_t datatype, 
-             ArrayVector<T> & buffer, int & counter, 
-             const int elements, const int numBandsOfType, MetaInt<0>)
-{
-    HDF5Handle mid1, mid2;
-
-    // select hyperslabs
-    selectHyperslabs(mid1, mid2, shape, counter, elements, numBandsOfType);
-
-    // read from hdf5
-    herr_t read_status = H5Dread(dataset_id, datatype, mid2, mid1, H5P_DEFAULT, buffer.data());
-    vigra_precondition(read_status >= 0, "readHDF5Impl(): read from dataset failed.");
-
-    // increase counter
-    counter++;
-
-    //std::cout << "numBandsOfType: " << numBandsOfType << std::endl;
-    DestIterator dend = d + shape[0];
-    int k = 0;
-    for(; d < dend; ++d, k++)
-    {
-        *d = buffer[k];
-        //std::cout << buffer[k] << "| ";
-    }
-}
-
-template <class DestIterator, class Shape, class T, int N>
-void
-readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const hid_t datatype, ArrayVector<T> & buffer, int & counter, const int elements, const int numBandsOfType, MetaInt<N>)
-{
-    DestIterator dend = d + shape[N];
-    for(; d < dend; ++d)
-    {
-        readHDF5Impl(d.begin(), shape, dataset_id, datatype, buffer, counter, elements, numBandsOfType, MetaInt<N-1>());
-    }
-}
-
 } // namespace detail
 
 /** \brief Read the data specified by the given \ref vigra::HDF5ImportInfo object
@@ -2773,103 +2738,18 @@ readHDF5Impl(DestIterator d, Shape const & shape, const hid_t dataset_id, const 
 */
 doxygen_overloaded_function(template <...> void readHDF5)
 
-// scalar and unstrided target multi array
-template<unsigned int N, class T>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, UnstridedArrayTag> array) // scalar
+template<unsigned int N, class T, class StrideTag>
+inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array)
 {
-    readHDF5(info, array, detail::getH5DataType<T>(), 1);
+    readHDF5(info, array, 0, 0); // last two arguments are not used
 }
 
-// non-scalar (TinyVector) and unstrided target multi array
-template<unsigned int N, class T, int SIZE>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, TinyVector<T, SIZE>, UnstridedArrayTag> array)
+template<unsigned int N, class T, class StrideTag>
+void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, StrideTag> array, const hid_t datatype, const int numBandsOfType)
 {
-    readHDF5(info, array, detail::getH5DataType<T>(), SIZE);
-}
-
-// non-scalar (RGBValue) and unstrided target multi array
-template<unsigned int N, class T>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, RGBValue<T>, UnstridedArrayTag> array)
-{
-    readHDF5(info, array, detail::getH5DataType<T>(), 3);
-}
-
-// non-scalar (FFTWComplex) and unstrided target multi array
-template<unsigned int N, class T>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, FFTWComplex<T>, UnstridedArrayTag> array)
-{
-    readHDF5(info, array, detail::getH5DataType<T>(), 2);
-}
-
-// unstrided target multi array
-template<unsigned int N, class T>
-void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, UnstridedArrayTag> array, const hid_t datatype, const int numBandsOfType) 
-{
-    int offset = (numBandsOfType > 1);
-
-    //std::cout << "offset: " << offset << ", N: " << N << ", dims: " << info.numDimensions() << std::endl;
-    vigra_precondition(( (N + offset ) == info.numDimensions()), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-        "readHDF5(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
-
-    typename MultiArrayShape<N>::type shape;
-    for(int k=offset; k<info.numDimensions(); ++k) {
-        shape[k-offset] = info.shapeOfDimension(k); 
-    }
-
-    vigra_precondition(shape == array.shape(), 
-         "readHDF5(): Array shape disagrees with HDF5ImportInfo.");
-
-    // simply read in the data as is
-    H5Dread( info.getDatasetHandle(), datatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, array.data() ); // .data() possible since void pointer!
-}
-
-// scalar and strided target multi array
-template<unsigned int N, class T, class Stride>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, Stride> array) // scalar
-{
-    readHDF5(info, array, detail::getH5DataType<T>(), 1);
-}
-
-// non-scalar (TinyVector) and strided target multi array
-template<unsigned int N, class T, int SIZE, class Stride>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, TinyVector<T, SIZE>, Stride> array) 
-{
-    readHDF5(info, array, detail::getH5DataType<T>(), SIZE);
-}
-
-// non-scalar (RGBValue) and strided target multi array
-template<unsigned int N, class T, class Stride>
-inline void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, RGBValue<T>, Stride> array) 
-{
-    readHDF5(info, array, detail::getH5DataType<T>(), 3);
-}
-
-// strided target multi array
-template<unsigned int N, class T, class Stride>
-void readHDF5(const HDF5ImportInfo &info, MultiArrayView<N, T, Stride> array, 
-              const hid_t datatype, const int numBandsOfType)
-{
-    int offset = (numBandsOfType > 1);
-
-    //std::cout << "offset: " << offset << ", N: " << N << ", dims: " << info.numDimensions() << std::endl;
-    vigra_precondition(( (N + offset ) == info.numDimensions()), // the object in the HDF5 file may have one additional dimension which we then interpret as the pixel type bands
-        "readHDF5(): Array dimension disagrees with HDF5ImportInfo.numDimensions().");
-
-    typename MultiArrayShape<N>::type shape;
-    for(int k=offset; k<info.numDimensions(); ++k) {
-        shape[k-offset] = info.shapeOfDimension(k); 
-    }
-
-    vigra_precondition(shape == array.shape(), 
-         "readHDF5(): Array shape disagrees with HDF5ImportInfo.");
-
-    //Get the data
-    int counter = 0;
-    int elements = numBandsOfType;
-    for(unsigned int i=0;i<N;++i)
-        elements *= shape[i];
-    ArrayVector<T> buffer(shape[0]);
-    detail::readHDF5Impl(array.traverser_begin(), shape, info.getDatasetHandle(), datatype, buffer, counter, elements, numBandsOfType, vigra::MetaInt<N-1>());
+    HDF5File file(info.getFilePath(), HDF5File::OpenReadOnly);
+    file.read(info.getPathInFile(), array);
+    file.close();
 }
 
 inline hid_t openGroup(hid_t parent, std::string group_name)
