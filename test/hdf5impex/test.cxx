@@ -1055,6 +1055,12 @@ public:
         should (in_data_5(1,2,3) == init);
         // ...data block
         should (in_data_block(1,2,3) == 42);
+
+        // read same data with readHDF5()
+        HDF5ImportInfo infoHDF5(file_name.c_str(), "/dataset_rgb");
+        MultiArray<2, RGBValue<double> > in_data_4_2(MultiArrayShape<2>::type(5,8));
+        readHDF5(infoHDF5, in_data_4_2);
+        should (in_data_4_2 == out_data_4);
     }
 
 
