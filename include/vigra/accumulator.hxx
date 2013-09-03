@@ -1075,6 +1075,46 @@ void reshapeImpl(Matrix<T, Alloc> & a, Shape const & s, T const & initial = T())
     Matrix<T, Alloc>(s, initial).swap(a);
 }
 
+template <class T, class U>
+void copyShapeImpl(T const &, U const &)   // to be used for scalars and static arrays
+{}
+
+template <unsigned int N, class T, class Alloc, class U>
+void copyShapeImpl(MultiArray<N, T, Alloc> const & from, U & to) 
+{
+    to.reshape(from.shape());
+}
+
+template <class T, class Alloc, class U>
+void copyShapeImpl(Matrix<T, Alloc> const & from, U & to) 
+{
+    to.reshape(from.shape());
+}
+
+template <class T, class U>
+bool hasDataImpl(T const &)   // to be used for scalars and static arrays
+{
+    return true;
+}
+
+template <unsigned int N, class T, class Stride>
+bool hasDataImpl(MultiArrayView<N, T, Stride> const & a) 
+{
+    return a.hasData();
+}
+
+template <unsigned int N, class T, class Alloc>
+bool hasDataImpl(MultiArray<N, T, Alloc> const & a) 
+{
+    return a.hasData();
+}
+
+template <class T, class Alloc>
+bool hasDataImpl(Matrix<T, Alloc> const & a) 
+{
+    return a.hasData();
+}
+
     // generic functions to create suitable shape objects from various input data types 
 template <unsigned int N, class T, class Stride>
 inline typename MultiArrayShape<N>::type
@@ -1279,6 +1319,10 @@ struct LabelDispatch
     void applyHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions)
     {
         region_histogram_options_ = regionoptions;
+        for(unsigned int k=0; k<regions_.size(); ++k)
+        {
+            regions_[k].applyHistogramOptions(region_histogram_options_);
+        }
         next_.applyHistogramOptions(globaloptions);
     }
     
@@ -2158,6 +2202,13 @@ class AccumulatorChainArray
     unsigned int regionCount() const
     {
         return this->next_.regions_.size();
+    }
+    
+    /** Equivalent to <tt>merge(o)</tt>.
+    */
+    void operator+=(AccumulatorChainArray const & o)
+    {
+        merge(o);
     }
     
     /** Merge region i with region j. 
@@ -4540,8 +4591,13 @@ class ScatterMatrixEigensystem
         : value_()
         {}
         
-        void operator+=(Impl const &)
+        void operator+=(Impl const & o)
         {
+            if(!acc_detail::hasDataImpl(value_.second))
+            {
+                acc_detail::copyShapeImpl(o.value_.first, value_.first);
+                acc_detail::copyShapeImpl(o.value_.second, value_.second);
+            }
             this->setDirty();
         }
 
@@ -5186,7 +5242,16 @@ class HistogramBase<BASE, 0>
     
     void operator+=(HistogramBase const & o)
     {
-        value_ += o.value_;
+        if(value_.size() == 0)
+        {
+            value_ = o.value_;
+        }
+        else if(o.value_.size() > 0)
+        {
+            vigra_precondition(value_.size() == o.value_.size(),
+                "HistogramBase::operator+=(): bin counts must be equal.");
+            value_ += o.value_;
+        }
         left_outliers += o.left_outliers;
         right_outliers += o.right_outliers;
     }

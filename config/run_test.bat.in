@@ -1,7 +1,12 @@
 @echo off
 if [%1] NEQ [] (
     set CONFIGURATION=%1
+) else (
+    set CONFIGURATION=Release
 )
+
+echo Testing configuration '%CONFIGURATION%'
+
 set PATH=@VIGRA_PATH@%PATH%
 cd @VIGRA_CURRENT_BINARY_DIR@
 
