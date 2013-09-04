@@ -85,6 +85,8 @@ public:
         should(array3.hasData());
         array3_type empty;
         should(!empty.hasData());
+        array3_type empty2(Shape3(2,1,0));
+        should(!empty2.hasData());
     }
 
     void testEquality ()

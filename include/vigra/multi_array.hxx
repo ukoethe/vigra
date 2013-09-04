@@ -2928,6 +2928,11 @@ template <unsigned int N, class T, class A>
 void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
                                      const_reference init)
 {
+    if(s == 0)
+    {
+        ptr = 0;
+        return;
+    }
     ptr = m_alloc.allocate ((typename A::size_type)s);
     difference_type_1 i;
     try {
@@ -2947,6 +2952,11 @@ template <class U>
 void MultiArray <N, T, A>::allocate (pointer & ptr, difference_type_1 s,
                                      U const * init)
 {
+    if(s == 0)
+    {
+        ptr = 0;
+        return;
+    }
     ptr = m_alloc.allocate ((typename A::size_type)s);
     difference_type_1 i;
     try {
@@ -2966,6 +2976,11 @@ template <class U, class StrideTag>
 void MultiArray <N, T, A>::allocate (pointer & ptr, MultiArrayView<N, U, StrideTag> const & init)
 {
     difference_type_1 s = init.elementCount();
+    if(s == 0)
+    {
+        ptr = 0;
+        return;
+    }
     ptr = m_alloc.allocate ((typename A::size_type)s);
     pointer p = ptr;
     try {
