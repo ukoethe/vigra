@@ -1103,18 +1103,6 @@ bool hasDataImpl(MultiArrayView<N, T, Stride> const & a)
     return a.hasData();
 }
 
-template <unsigned int N, class T, class Alloc>
-bool hasDataImpl(MultiArray<N, T, Alloc> const & a) 
-{
-    return a.hasData();
-}
-
-template <class T, class Alloc>
-bool hasDataImpl(Matrix<T, Alloc> const & a) 
-{
-    return a.hasData();
-}
-
     // generic functions to create suitable shape objects from various input data types 
 template <unsigned int N, class T, class Stride>
 inline typename MultiArrayShape<N>::type
