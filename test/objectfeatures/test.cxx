@@ -39,29 +39,7 @@
 #include <set>
 
 #include <vigra/unittest.hxx>
-
-//#include <vigra/accessor.hxx>
-//#include <vigra/tinyvector.hxx>
-//#include <vigra/rgbvalue.hxx>
-
-//#include <vigra/coordinate_iterator.hxx>
-//#include <vigra/object_features.hxx>
-
-//#include <vigra/multi_pointoperators.hxx>
-
-//#include <vigra/basicimage.hxx>
-//#include <vigra/stdimage.hxx> // BImage
-//#include <vigra/inspectimage.hxx> // FindAverageAndVariance
-
 #include <vigra/multi_array.hxx>
-//#include <vigra/multi_convolution.hxx>
-//#include <vigra/impex.hxx>
-//#include <vigra/imageinfo.hxx>
-//#include <vigra/functorexpression.hxx>
-
-//#include <vigra/algorithm.hxx>
-//#include <vigra/random.hxx>
-//#include <vigra/convolution.hxx>
 #include <vigra/accumulator.hxx>
 
 namespace std {
@@ -861,6 +839,27 @@ struct AccumulatorTest
             shouldEqual(1.0, get<ArgMaxWeight>(a));
             shouldEqual(V(3,1,2), get<Coord<ArgMinWeight> >(a));
             shouldEqual(V(2,3,1), get<Coord<ArgMaxWeight> >(a));
+
+            // test coordinate offset
+            A b;
+            b.setCoordinateOffset(W(0.5, 1.5, -0.5));
+
+            b(*(i+V(1,2,3)));
+            b(*(i+V(2,3,1)));
+            b(*(i+V(3,1,2)));
+
+            shouldEqual(get<Count>(b), 3.0);
+            shouldEqual(get<Coord<Minimum> >(b), W(1.5, 2.5, 0.5));
+            shouldEqual(get<Coord<Maximum> >(b), W(3.5, 4.5, 2.5));
+            shouldEqual(get<Coord<Mean> >(b), W(2.5, 3.5, 1.5));
+            shouldEqualTolerance(get<Weighted<Mean> >(b), 1.2857142857142858, 1e-15);
+            shouldEqualTolerance(get<Mean>(b), 1.8333333333333333, 1e-15);
+            coordWeightedMean = W(2.3571428571428572, 3.9285714285714284,  1.2142857142857142);
+            shouldEqualTolerance(coordWeightedMean, get<CoordWeighted<Mean> >(b), W(1e-15));
+            shouldEqual(4.0, get<ArgMinWeight>(b));
+            shouldEqual(1.0, get<ArgMaxWeight>(b));
+            shouldEqual(W(3.5,2.5,1.5), get<Coord<ArgMinWeight> >(b));
+            shouldEqual(W(2.5,4.5,0.5), get<Coord<ArgMaxWeight> >(b));
         }
     }
 
@@ -1170,6 +1169,21 @@ struct AccumulatorTest
             shouldEqual(V(2,2), get<Coord<Sum> >(a, 0));
             shouldEqual(V(4,1), get<Coord<Sum> >(a, 1));
             shouldEqual(V(0,0), get<Global<Coord<Minimum> > >(a));
+
+            A aa;
+            aa.setMaxRegionLabel(1);
+            aa.setCoordinateOffset(V(2, -1));
+
+            for(i = start; i < end; ++i)
+                aa(*i);
+            
+            shouldEqual(4, get<Count>(aa, 0));
+            shouldEqual(2, get<Count>(aa, 1));
+            shouldEqual(6, get<Global<Count> >(aa));
+
+            shouldEqual(V(10,-2), get<Coord<Sum> >(aa, 0));
+            shouldEqual(V(8,-1), get<Coord<Sum> >(aa, 1));
+            shouldEqual(V(2,-1), get<Global<Coord<Minimum> > >(aa));
 
             A b;
             b.ignoreLabel(0);

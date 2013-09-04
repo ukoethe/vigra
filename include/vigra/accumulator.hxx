@@ -268,9 +268,50 @@ Pixel coordinates are always at index 0. To collect statistics, you simply pass 
 
     extractFeatures(data.begin(), data.begin()+data.size()/2, a); // this works because 
     extractFeatures(data.begin()+data.size()/2, data.end(), a);   // all statistics only need pass 1
-
     \endcode
+    
+    More care is needed to merge coordinate-based statistics. By default, all coordinate statistics are computed in the local coordinate system of the current region of interest. That is, the upper left corner of the ROI has the coordinate (0, 0) by default. This behavior is not desirable when you want to merge coordinate statistics from different ROIs: then, all accumulators should use the same coordinate system, usually the global system of the entire dataset. This can be achieved by the <tt>setCoordinateOffset()</tt> function. The following code demonstrates this for the <tt>RegionCenter</tt> statistic:
 
+    \code
+    using namespace vigra;
+    using namespace vigra::acc;
+    
+    MultiArray<2, double> data(width, height);
+    MultiArray<2, int>    labels(width, height);
+    
+    AccumulatorChainArray<CoupledArrays<2, double, int>,
+                          Select<DataArg<1>, LabelArg<2>, 
+                                 RegionCenter> >
+    a1, a2;
+    
+    // a1 is responsible for the left half of the image. The local coordinate system of this ROI 
+    // happens to be identical to the global coordinate system, so the offset is zero.
+    Shape2 origin(0,0);
+    a1.setCoordinateOffset(origin);
+    extractFeatures(data.subarray(origin, Shape2(width/2, height)), 
+                    labels.subarray(origin, Shape2(width/2, height)),
+                    a1);
+                    
+    // a2 is responsible for the right half, so the offset of the local coordinate system is (width/2, 0)
+    origin = Shape2(width/2, 0);
+    a2.setCoordinateOffset(origin);
+    extractFeatures(data.subarray(origin, Shape2(width, height)), 
+                    labels.subarray(origin, Shape2(width, height)),
+                    a2);
+   
+    // since both accumulators worked in the same global coordinate system, we can safely merge them
+    a1.merge(a2);
+    \endcode
+    
+    When you compute region statistics in ROIs, it is sometimes desirable to use a local region labeling in each ROI. In this way, the labels of each ROI cover a consecutive range of numbers starting with 0. This can save a lot of memory, because <tt>AccumulatorChainArray</tt> internally uses dense arrays -- accumulators will be allocated for all labels from 0 to the maxmimum label, even when many of them are unused. This is avoided by a local labeling. However, this means that label 1 (say) may refer to two different regions in different ROIs. To adjust for this mismatch, you can pass a label mapping to <tt>merge()</tt> that provides a global label for each label of the accumulator to be merged. Thus, each region on the right hand side will be merged into the left-hand-side accumulator with the given <i>global</i> label. For example, let us assume that the left and right half of the image contain just one region and background. Then, the accumulators of both ROIs have the label 0 (background) and 1 (the region). Upon merging, the region from the right ROI should be given the global label 2, whereas the background should keep its label 0. This is achieved like this:
+    
+    \code
+    std::vector<int> labelMapping(2);
+    labelMapping[0] = 0;   // background keeps label 0
+    labelMapping[1] = 2;   // local region 1 becomes global region 2
+    
+    a1.merge(a2, labelMapping);
+    \endcode
 
     \anchor histogram
     Four kinds of <b>histograms</b> are currently implemented:
@@ -868,11 +909,15 @@ struct AccumulatorEndImpl
     {}
     
     template <class U>
-    void merge(U const &) 
+    void mergeImpl(U const &) 
     {}
     
     template <class U>
     void resize(U const &) 
+    {}
+        
+    template <class U>
+    void setCoordinateOffsetImpl(U const &)
     {}
     
     void activate() 
@@ -968,7 +1013,7 @@ struct DecoratorImpl<A, CurrentPass, false, CurrentPass>
         return a();
     }
 
-    static void merge(A & a, A const & o)
+    static void mergeImpl(A & a, A const & o)
     {
         a += o;
     }
@@ -1024,7 +1069,7 @@ struct DecoratorImpl<A, CurrentPass, true, CurrentPass>
         return a();
     }
 
-    static void merge(A & a, A const & o)
+    static void mergeImpl(A & a, A const & o)
     {
         if(isActive(a))
             a += o;
@@ -1176,11 +1221,28 @@ struct LabelDispatch
     
     static const int index = GlobalAccumulatorChain::index + 1;
     
+    template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
+    struct CoordIndexSelector
+    {
+        static const int value = 0; // default: CoupledHandle holds coordinates at index 0 
+    };
+    
+    template <class IndexDefinition>
+    struct CoordIndexSelector<IndexDefinition, CoordArgTag>
+    {
+        static const int value = IndexDefinition::value;
+    };
+    
+    static const int coordIndex = CoordIndexSelector<typename LookupTag<CoordArgTag, GlobalAccumulatorChain>::type>::value;
+    static const int coordSize  = CoupledHandleCast<coordIndex, T>::type::value_type::static_size;
+    typedef TinyVector<double, coordSize> CoordinateType;
+    
     GlobalAccumulatorChain next_;
     RegionAccumulatorArray regions_;
     HistogramOptions region_histogram_options_;
     MultiArrayIndex ignore_label_;
     ActiveFlagsType active_region_accumulators_;
+    CoordinateType coordinateOffset_;
     
     template <class IndexDefinition, class TagFound=typename IndexDefinition::Tag>
     struct LabelIndexSelector
@@ -1291,6 +1353,7 @@ struct LabelDispatch
             getAccumulator<AccumulatorEnd>(regions_[k]).setGlobalAccumulator(&next_);
             getAccumulator<AccumulatorEnd>(regions_[k]).active_accumulators_ = active_region_accumulators_;
             regions_[k].applyHistogramOptions(region_histogram_options_);
+            regions_[k].setCoordinateOffsetImpl(coordinateOffset_);
         }
     }
     
@@ -1312,6 +1375,16 @@ struct LabelDispatch
             regions_[k].applyHistogramOptions(region_histogram_options_);
         }
         next_.applyHistogramOptions(globaloptions);
+    }
+    
+    void setCoordinateOffsetImpl(CoordinateType const & offset)
+    {
+        coordinateOffset_ = offset;
+        for(unsigned int k=0; k<regions_.size(); ++k)
+        {
+            regions_[k].setCoordinateOffsetImpl(coordinateOffset_);
+        }
+        next_.setCoordinateOffsetImpl(coordinateOffset_);
     }
     
     template <class U>
@@ -1397,28 +1470,28 @@ struct LabelDispatch
         return ActivateImpl<TAG>::isActive(next_, active_region_accumulators_);
     }
     
-    void merge(LabelDispatch const & o)
+    void mergeImpl(LabelDispatch const & o)
     {
         for(unsigned int k=0; k<regions_.size(); ++k)
-            regions_[k].merge(o.regions_[k]);
-        next_.merge(o.next_);
+            regions_[k].mergeImpl(o.regions_[k]);
+        next_.mergeImpl(o.next_);
     }
     
-    void merge(unsigned i, unsigned j)
+    void mergeImpl(unsigned i, unsigned j)
     {
-        regions_[i].merge(regions_[j]);
+        regions_[i].mergeImpl(regions_[j]);
         regions_[j].reset();
         getAccumulator<AccumulatorEnd>(regions_[j]).active_accumulators_ = active_region_accumulators_;
     }
     
     template <class ArrayLike>
-    void merge(LabelDispatch const & o, ArrayLike const & labelMapping)
+    void mergeImpl(LabelDispatch const & o, ArrayLike const & labelMapping)
     {
         MultiArrayIndex newMaxLabel = std::max<MultiArrayIndex>(maxRegionLabel(), *argMax(labelMapping.begin(), labelMapping.end()));
         setMaxRegionLabel(newMaxLabel);
         for(unsigned int k=0; k<labelMapping.size(); ++k)
-            regions_[labelMapping[k]].merge(o.regions_[k]);
-        next_.merge(o.next_);
+            regions_[labelMapping[k]].mergeImpl(o.regions_[k]);
+        next_.mergeImpl(o.next_);
     }
 };
 
@@ -1558,6 +1631,10 @@ struct AccumulatorFactory
         {}
         
         template <class Shape>
+        void setCoordinateOffset(Shape const &)
+        {}
+        
+        template <class Shape>
         void reshape(Shape const &)
         {}
         
@@ -1630,16 +1707,23 @@ struct AccumulatorFactory
             DecoratorImpl<Accumulator, N, allowRuntimeActivation>::exec(*this, t, weight);
         }
         
-        void merge(Accumulator const & o)
+        void mergeImpl(Accumulator const & o)
         {
-            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::merge(*this, o);
-            this->next_.merge(o.next_);
+            DecoratorImpl<Accumulator, Accumulator::workInPass, allowRuntimeActivation>::mergeImpl(*this, o);
+            this->next_.mergeImpl(o.next_);
         }
         
         void applyHistogramOptions(HistogramOptions const & options)
         {
             DecoratorImpl<Accumulator, workInPass, allowRuntimeActivation>::applyHistogramOptions(*this, options);
             this->next_.applyHistogramOptions(options);
+        }
+        
+        template <class SHAPE>
+        void setCoordinateOffsetImpl(SHAPE const & offset)
+        {
+            this->setCoordinateOffset(offset);
+            this->next_.setCoordinateOffsetImpl(offset);
         }
         
         static unsigned int passesRequired()
@@ -1775,6 +1859,18 @@ class AccumulatorChainImpl
         next_.applyHistogramOptions(regionoptions, globaloptions);
     }
     
+    /** Set an offset for <tt>Coord<...></tt> statistics.
+    
+        If the offset is non-zero, coordinate statistics such as <tt>RegionCenter</tt> are computed
+        in the global coordinate system defined by the \a offset. Without an offset, these statistics
+        are computed in the local coordinate system of the current region of interest.
+    */    
+    template <class SHAPE>
+    void setCoordinateOffset(SHAPE const & offset)
+    {
+        next_.setCoordinateOffsetImpl(offset);
+    }
+    
     /** Reset current_pass_ of the accumulator chain to 'reset_to_pass'.
     */
     void reset(unsigned int reset_to_pass = 0)
@@ -1839,7 +1935,7 @@ class AccumulatorChainImpl
     */
     void merge(AccumulatorChainImpl const & o)
     {
-        next_.merge(o.next_);
+        next_.mergeImpl(o.next_);
     }
 
     result_type operator()() const
@@ -1975,6 +2071,15 @@ class AccumulatorChain
   /** Set options for all histograms in the accumulator chain. See histogram accumulators for possible options. The function is ignored if there is no histogram in the accumulator chain.
    */
   void setHistogramOptions(HistogramOptions const & options);
+    
+  /** Set an offset for <tt>Coord<...></tt> statistics.
+  
+      If the offset is non-zero, coordinate statistics such as <tt>RegionCenter</tt> are computed
+      in the global coordinate system defined by the \a offset. Without an offset, these statistics
+      are computed in the local coordinate system of the current region of interest.
+  */    
+  template <class SHAPE>
+  void setCoordinateOffset(SHAPE const & offset);
     
   /** Reset current_pass_ of the accumulator chain to 'reset_to_pass'. */
   void reset(unsigned int reset_to_pass = 0);
@@ -2205,7 +2310,7 @@ class AccumulatorChainArray
     {
         vigra_precondition(i <= maxRegionLabel() && j <= maxRegionLabel(),
             "AccumulatorChainArray::merge(): region labels out of range.");
-        this->next_.merge(i, j);
+        this->next_.mergeImpl(i, j);
     }
     
     /** Merge with accumulator chain o. maxRegionLabel() of the two accumulators must be equal.
@@ -2216,7 +2321,7 @@ class AccumulatorChainArray
             setMaxRegionLabel(o.maxRegionLabel());
         vigra_precondition(maxRegionLabel() == o.maxRegionLabel(),
             "AccumulatorChainArray::merge(): maxRegionLabel must be equal.");
-        this->next_.merge(o.next_);
+        this->next_.mergeImpl(o.next_);
     }
 
     /** Merge with accumulator chain o using a mapping between labels of the two accumulators. Label l of accumulator chain o is mapped to labelMapping[l]. Hence, all elements of labelMapping must be <= maxRegionLabel() and size of labelMapping must match o.regionCount().
@@ -2226,7 +2331,7 @@ class AccumulatorChainArray
     {
         vigra_precondition(labelMapping.size() == o.regionCount(),
             "AccumulatorChainArray::merge(): labelMapping.size() must match regionCount() of RHS.");
-        this->next_.merge(o.next_, labelMapping);
+        this->next_.mergeImpl(o.next_, labelMapping);
     }
 
     /** Return names of all tags in the accumulator chain (selected statistics and their dependencies).
@@ -2246,6 +2351,11 @@ class AccumulatorChainArray
   /** Set regional and global options for all histograms in the accumulator chain.
    */
   void setHistogramOptions(HistogramOptions const & regionoptions, HistogramOptions const & globaloptions);
+    
+  /** \copydoc vigra::acc::AccumulatorChain::setCoordinateOffset(SHAPE const &)
+  */    
+  template <class SHAPE>
+  void setCoordinateOffset(SHAPE const & offset)
   
   /** \copydoc vigra::acc::AccumulatorChain::reset() */
   void reset(unsigned int reset_to_pass = 0);
@@ -3173,19 +3283,31 @@ class Coord
         typedef typename LookupTag<CoordArgTag, BASE>::type FindDataIndex;
         typedef CoordIndexSelector<FindDataIndex> CoordIndex;
         typedef typename CoupledHandleCast<CoordIndex::value, T>::type::value_type type;
+        static const int size = type::static_size;
     };
     
     template <class T, class BASE>
     struct Impl
-    : public TargetTag::template Impl<typename SelectInputType<T, BASE>::type, BASE>
+    : public TargetTag::template Impl<TinyVector<double, SelectInputType<T, BASE>::size>, BASE>
     {
-        typedef SelectInputType<T, BASE>                InputTypeSelector;
-        typedef typename InputTypeSelector::CoordIndex  CoordIndex;
-        typedef typename InputTypeSelector::type        input_type;
-        typedef input_type const &                      argument_type;
-        typedef argument_type                           first_argument_type;
+        typedef SelectInputType<T, BASE>                              InputTypeSelector;
+        typedef typename InputTypeSelector::CoordIndex                CoordIndex;
+        typedef TinyVector<double, SelectInputType<T, BASE>::size>    input_type;
+        typedef input_type const &                                    argument_type;
+        typedef argument_type                                         first_argument_type;
         
         typedef typename TargetTag::template Impl<input_type, BASE> ImplType;
+        
+        input_type offset_;
+        
+        Impl()
+        : offset_()
+        {}
+        
+        void setCoordinateOffset(input_type const & offset)
+        {
+            offset_ = offset;
+        }
         
         using ImplType::reshape;
         
@@ -3198,13 +3320,13 @@ class Coord
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t)
         {
-            ImplType::update(CoordIndex::exec(t));
+            ImplType::update(CoordIndex::exec(t)+offset_);
         }
         
         template <class U, class NEXT>
         void update(CoupledHandle<U, NEXT> const & t, double weight)
         {
-            ImplType::update(CoordIndex::exec(t), weight);
+            ImplType::update(CoordIndex::exec(t)+offset_, weight);
         }
     };
 };
