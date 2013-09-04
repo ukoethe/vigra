@@ -5348,6 +5348,10 @@ class RangeHistogramBase
     void computeStandardQuantiles(double minimum, double maximum, double count, 
                                   ArrayLike const & desiredQuantiles, ArrayLike & res) const
     {
+        if(count == 0.0) {
+            return;
+        }
+        
         ArrayVector<double> keypoints, cumhist;
         double mappedMinimum = mapItem(minimum);
         double mappedMaximum = mapItem(maximum);
