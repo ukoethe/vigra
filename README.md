@@ -36,14 +36,18 @@ or online at
 Documentation
 -------------
 
-The documentation can be found in $VIGRA_PATH/doc/vigra/, the start file 
-is $VIGRA_PATH/doc/vigra/index.html. Online documentation is at 
+If you downloaded an official release, the documentation can be found in $VIGRA_PATH/doc/vigra/, the start file 
+is $VIGRA_PATH/doc/vigra/index.html. Online documentation for the latest release is at 
 http://hci.iwr.uni-heidelberg.de/vigra/doc/vigra/index.html
+
+When you use the development version from github, you can generate documentation by `make doc`. Up-to-date 
+online documentation for the 'master' branch is at http://ukoethe.github.io/vigra/doc/vigra/index.html
 
 Download
 --------
 
-VIGRA can be downloaded at http://hci.iwr.uni-heidelberg.de/vigra/#download
+VIGRA can be downloaded at http://hci.iwr.uni-heidelberg.de/vigra/#download The official development 
+repository is at https://github.com/ukoethe/vigra
 
 What is VIGRA
 -------------
